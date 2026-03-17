@@ -5,6 +5,11 @@
     "fmt": "deno fmt extensions/vaults/",
     "fmt:check": "deno fmt --check extensions/vaults/"
   },
+  "lint": {
+    "rules": {
+      "exclude": ["no-import-prefix"]
+    }
+  },
   "imports": {
     "zod": "npm:zod@4.3.6",
     "@aws-sdk/client-secrets-manager": "npm:@aws-sdk/client-secrets-manager@3.1010.0"
