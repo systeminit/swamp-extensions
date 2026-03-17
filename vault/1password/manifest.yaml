@@ -2,6 +2,7 @@ manifestVersion: 1
 name: "@swamp/1password"
 version: "2026.03.17.1"
 description: "1Password vault provider — uses the op CLI for secret operations"
+repository: "https://github.com/systeminit/swamp-extensions"
 vaults:
   - onepassword.ts
 labels:
