@@ -14,7 +14,7 @@ jobs:
       fail-fast: false
       matrix:
         vault: [1password, aws-sm, azure-kv]
-        task: [check, lint, fmt]
+        task: [check, lint, fmt, test]
     defaults:
       run:
         working-directory: vault/${{ matrix.vault }}
@@ -29,6 +29,8 @@ jobs:
             deno fmt --check extensions/vaults/
           elif [ "${{ matrix.task }}" = "lint" ]; then
             deno lint extensions/vaults/
+          elif [ "${{ matrix.task }}" = "test" ]; then
+            deno test --allow-env extensions/vaults/
           else
             deno check extensions/vaults/*.ts
           fi
