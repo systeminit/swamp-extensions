@@ -1,0 +1,13 @@
+{
+  "tasks": {
+    "check": "deno check extensions/vaults/azure_kv.ts",
+    "lint": "deno lint extensions/vaults/",
+    "fmt": "deno fmt extensions/vaults/",
+    "fmt:check": "deno fmt --check extensions/vaults/"
+  },
+  "imports": {
+    "zod": "npm:zod@4.3.6",
+    "@azure/identity": "npm:@azure/identity@4.13.0",
+    "@azure/keyvault-secrets": "npm:@azure/keyvault-secrets@4.10.0"
+  }
+}

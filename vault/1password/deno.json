@@ -1,0 +1,11 @@
+{
+  "tasks": {
+    "check": "deno check extensions/vaults/onepassword.ts",
+    "lint": "deno lint extensions/vaults/",
+    "fmt": "deno fmt extensions/vaults/",
+    "fmt:check": "deno fmt --check extensions/vaults/"
+  },
+  "imports": {
+    "zod": "npm:zod@4.3.6"
+  }
+}

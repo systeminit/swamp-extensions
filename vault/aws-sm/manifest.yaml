@@ -1,0 +1,11 @@
+manifestVersion: 1
+name: "@swamp/aws-sm"
+version: "2026.03.17.1"
+description: "AWS Secrets Manager vault provider"
+vaults:
+  - aws_sm.ts
+labels:
+  - vault
+  - aws
+  - secrets-manager
+  - secrets
