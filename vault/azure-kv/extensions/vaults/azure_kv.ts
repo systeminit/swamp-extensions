@@ -21,11 +21,6 @@ import { z } from "npm:zod@4.3.6";
 import { DefaultAzureCredential } from "npm:@azure/identity@4.13.0";
 import { SecretClient } from "npm:@azure/keyvault-secrets@4.10.0";
 
-const configSchema = z.object({
-  vault_url: z.string().url("Azure Key Vault URL is required"),
-  secret_prefix: z.string().optional(),
-});
-
 interface VaultProvider {
   get(secretKey: string): Promise<string>;
   put(secretKey: string, secretValue: string): Promise<void>;
@@ -107,12 +102,17 @@ export const vault = {
   name: "Azure Key Vault",
   description:
     "Azure Key Vault vault provider. Uses DefaultAzureCredential for authentication.",
-  configSchema,
+  configSchema: z.object({
+    // deno-fmt-ignore
+    vault_url: z.string().url("Azure Key Vault URL is required").describe("Full URL of the Azure Key Vault e.g. https://my-vault.vault.azure.net"),
+    // deno-fmt-ignore
+    secret_prefix: z.string().optional().describe("Optional prefix to namespace secrets within the vault e.g. swamp- to scope all reads and writes"),
+  }),
   createProvider(
     name: string,
     config: Record<string, unknown>,
   ): VaultProvider {
-    const parsed = configSchema.parse(config);
+    const parsed = vault.configSchema.parse(config);
     return new AzureKvVaultProvider(name, parsed);
   },
 };

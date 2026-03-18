@@ -19,11 +19,6 @@
 
 import { z } from "npm:zod@4.3.6";
 
-const configSchema = z.object({
-  op_vault: z.string().min(1, "1Password vault name is required"),
-  op_account: z.string().optional(),
-});
-
 interface VaultProvider {
   get(secretKey: string): Promise<string>;
   put(secretKey: string, secretValue: string): Promise<void>;
@@ -264,12 +259,15 @@ export const vault = {
   name: "1Password",
   description:
     "1Password vault provider. Uses the 1Password CLI (op) for secret operations.",
-  configSchema,
+  configSchema: z.object({
+    op_vault: z.string().min(1).describe("The 1Password vault to use"),
+    op_account: z.string().optional().describe("Account shorthand or UUID"),
+  }),
   createProvider(
     name: string,
     config: Record<string, unknown>,
   ): VaultProvider {
-    const parsed = configSchema.parse(config);
+    const parsed = vault.configSchema.parse(config);
     return new OnePasswordVaultProvider(name, parsed);
   },
 };
