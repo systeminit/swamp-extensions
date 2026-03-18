@@ -1,7 +1,34 @@
 manifestVersion: 1
 name: "@swamp/azure-kv"
-version: "2026.03.17.1"
-description: "Azure Key Vault vault provider"
+version: "2026.03.18.1"
+description: |
+  Read and write secrets stored in Azure Key Vault.
+
+  ## Authentication
+
+  Uses `DefaultAzureCredential` — no credentials in config. Provide
+  credentials via one of:
+  - Environment variables: `AZURE_CLIENT_ID`, `AZURE_TENANT_ID`, `AZURE_CLIENT_SECRET`
+  - Azure CLI: `az login`
+  - Managed Identity attached to the VM or container
+
+  ## Usage
+
+  ```bash
+  swamp vault create @swamp/azure-kv my-azure-kv \
+    --config '{"vault_url": "https://my-vault.vault.azure.net"}' --json
+
+  swamp vault get my-azure-kv my-secret --json
+  swamp vault put my-azure-kv my-secret "s3cr3t" --json
+  swamp vault list-keys my-azure-kv --json
+  ```
+
+  ## Secret Key Format
+
+  Secret keys map to Azure Key Vault secret names. Slashes and underscores are
+  converted to hyphens (Azure only allows alphanumeric characters and hyphens).
+  Use `secret_prefix` to namespace secrets when sharing a vault across multiple
+  swamp instances.
 repository: "https://github.com/systeminit/swamp-extensions"
 vaults:
   - azure_kv.ts

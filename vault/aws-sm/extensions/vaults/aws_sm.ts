@@ -27,10 +27,6 @@ import {
   SecretsManagerClient,
 } from "npm:@aws-sdk/client-secrets-manager@3.1010.0";
 
-const configSchema = z.object({
-  region: z.string().min(1, "AWS region is required"),
-});
-
 interface VaultProvider {
   get(secretKey: string): Promise<string>;
   put(secretKey: string, secretValue: string): Promise<void>;
@@ -115,12 +111,15 @@ export const vault = {
   name: "AWS Secrets Manager",
   description:
     "AWS Secrets Manager vault provider. Uses the default AWS credential chain for authentication.",
-  configSchema,
+  configSchema: z.object({
+    // deno-fmt-ignore
+    region: z.string().min(1).describe("AWS region where the Secrets Manager secrets are stored e.g. us-east-1"),
+  }),
   createProvider(
     name: string,
     config: Record<string, unknown>,
   ): VaultProvider {
-    const parsed = configSchema.parse(config);
+    const parsed = vault.configSchema.parse(config);
     return new AwsSmVaultProvider(name, parsed);
   },
 };

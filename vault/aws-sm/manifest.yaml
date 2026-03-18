@@ -1,7 +1,39 @@
 manifestVersion: 1
 name: "@swamp/aws-sm"
-version: "2026.03.17.1"
-description: "AWS Secrets Manager vault provider"
+version: "2026.03.18.1"
+description: |
+  Read and write secrets stored in AWS Secrets Manager.
+
+  ## Authentication
+
+  Uses the default AWS credential chain — no credentials in config. Provide
+  credentials via one of:
+  - Environment variables: `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`
+  - AWS profile: `~/.aws/credentials`
+  - IAM role attached to the instance or task
+
+  ## Required IAM Permissions
+
+  - `secretsmanager:GetSecretValue`
+  - `secretsmanager:PutSecretValue`
+  - `secretsmanager:CreateSecret`
+  - `secretsmanager:ListSecrets`
+
+  ## Usage
+
+  ```bash
+  swamp vault create @swamp/aws-sm my-aws-sm \
+    --config '{"region": "us-east-1"}' --json
+
+  swamp vault get my-aws-sm my/secret/name --json
+  swamp vault put my-aws-sm my/secret/name "s3cr3t" --json
+  swamp vault list-keys my-aws-sm --json
+  ```
+
+  ## Secret Key Format
+
+  Secret keys map directly to AWS Secrets Manager secret names, including
+  path-style names such as `myapp/production/db-password`.
 repository: "https://github.com/systeminit/swamp-extensions"
 vaults:
   - aws_sm.ts

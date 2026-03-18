@@ -1,7 +1,33 @@
 manifestVersion: 1
 name: "@swamp/1password"
-version: "2026.03.17.1"
-description: "1Password vault provider — uses the op CLI for secret operations"
+version: "2026.03.18.5"
+description: |
+  Read and write secrets stored in 1Password using the `op` CLI.
+
+  ## Prerequisites
+
+  - [1Password CLI](https://developer.1password.com/docs/cli/get-started/) installed and in `PATH`
+  - Authenticated via one of:
+    - **Service account**: `export OP_SERVICE_ACCOUNT_TOKEN=<token>`
+    - **Desktop app**: enable CLI integration in 1Password settings
+    - **Connect Server**: `export OP_CONNECT_HOST=<url>` and `export OP_CONNECT_TOKEN=<token>`
+
+  ## Usage
+
+  ```bash
+  swamp vault create @swamp/1password my-1password \
+    --config '{"op_vault": "Private"}' --json
+
+  swamp vault get my-1password my-api-key --json
+  swamp vault put my-1password my-api-key "s3cr3t" --json
+  swamp vault list-keys my-1password --json
+  ```
+
+  ## Secret Key Format
+
+  - `item-name` — reads the `password` field of the named item
+  - `item-name/field` — reads a specific field
+  - `op://vault/item/field` — full 1Password URI (passthrough)
 repository: "https://github.com/systeminit/swamp-extensions"
 vaults:
   - onepassword.ts
