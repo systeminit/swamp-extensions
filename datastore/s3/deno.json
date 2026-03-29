@@ -1,0 +1,20 @@
+{
+  "tasks": {
+    "check": "deno check extensions/datastores/s3.ts",
+    "lint": "deno lint extensions/datastores/",
+    "fmt": "deno fmt extensions/datastores/",
+    "fmt:check": "deno fmt --check extensions/datastores/",
+    "test": "deno test --allow-read --allow-write --allow-env --allow-net --allow-sys extensions/datastores/"
+  },
+  "lint": {
+    "rules": {
+      "exclude": ["no-import-prefix"]
+    }
+  },
+  "imports": {
+    "zod": "npm:zod@4.3.6",
+    "@aws-sdk/client-s3": "npm:@aws-sdk/client-s3@3.1010.0",
+    "@std/path": "jsr:@std/path@1",
+    "@std/fs": "jsr:@std/fs@1"
+  }
+}
