@@ -18,6 +18,7 @@
 // along with Swamp.  If not, see <https://www.gnu.org/licenses/>.
 
 import { assertEquals, assertRejects } from "jsr:@std/assert@1.0.19";
+import { assertLockConformance } from "@systeminit/swamp-testing";
 import { LockTimeoutError, S3Lock } from "./s3_lock.ts";
 import type { S3Client } from "./s3_client.ts";
 import type { LockInfo } from "./interfaces.ts";
@@ -240,4 +241,12 @@ Deno.test("S3Lock: custom lock key", async () => {
   assertEquals(mock.storage.has(".datastore.lock"), false);
 
   await lock.release();
+});
+
+// --- Conformance suite: verifies S3Lock satisfies the DistributedLock contract ---
+
+Deno.test("S3Lock: passes DistributedLock conformance suite", async () => {
+  const mock = createMockS3Client();
+  const lock = new S3Lock(mock, { ttlMs: 5000 });
+  await assertLockConformance(lock);
 });

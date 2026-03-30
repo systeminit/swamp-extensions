@@ -1,9 +1,29 @@
 {
   "version": "5",
   "specifiers": {
+    "jsr:@std/assert@1.0.19": "1.0.19",
+    "jsr:@std/internal@^1.0.12": "1.0.12",
+    "jsr:@systeminit/swamp-testing@0.20260330.3": "0.20260330.3",
     "npm:@azure/identity@4.13.0": "4.13.0",
     "npm:@azure/keyvault-secrets@4.10.0": "4.10.0_@azure+core-rest-pipeline@1.23.0",
     "npm:zod@4.3.6": "4.3.6"
+  },
+  "jsr": {
+    "@std/assert@1.0.19": {
+      "integrity": "eaada96ee120cb980bc47e040f82814d786fe8162ecc53c91d8df60b8755991e",
+      "dependencies": [
+        "jsr:@std/internal"
+      ]
+    },
+    "@std/internal@1.0.12": {
+      "integrity": "972a634fd5bc34b242024402972cd5143eac68d8dffaca5eaa4dba30ce17b027"
+    },
+    "@systeminit/swamp-testing@0.20260330.3": {
+      "integrity": "36c7954359acd9281f1f4cd5a2be073954b745e72ef6fb211666b914a47084d0",
+      "dependencies": [
+        "jsr:@std/assert"
+      ]
+    }
   },
   "npm": {
     "@azure-rest/core-client@2.5.1": {
@@ -330,6 +350,7 @@
   },
   "workspace": {
     "dependencies": [
+      "jsr:@systeminit/swamp-testing@0.20260330.3",
       "npm:@azure/identity@4.13.0",
       "npm:@azure/keyvault-secrets@4.10.0",
       "npm:zod@4.3.6"

@@ -1,6 +1,6 @@
 manifestVersion: 1
 name: "@swamp/aws-sm"
-version: "2026.03.18.1"
+version: "2026.03.30.1"
 description: |
   Read and write secrets stored in AWS Secrets Manager.
 

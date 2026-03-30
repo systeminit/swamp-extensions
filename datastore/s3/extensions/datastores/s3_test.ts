@@ -17,79 +17,34 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with Swamp.  If not, see <https://www.gnu.org/licenses/>.
 
+import { assertEquals, assertThrows } from "jsr:@std/assert@1.0.19";
 import {
-  assertEquals,
-  assertExists,
-  assertThrows,
-} from "jsr:@std/assert@1.0.19";
+  assertDatastoreExportConformance,
+  assertVerifierConformance,
+} from "@systeminit/swamp-testing";
 import { datastore } from "./s3.ts";
 
-Deno.test("datastore export has correct metadata", () => {
-  assertEquals(datastore.type, "@swamp/s3-datastore");
-  assertEquals(datastore.name, "Amazon S3");
-  assertExists(datastore.description);
-  assertExists(datastore.configSchema);
-  assertEquals(typeof datastore.createProvider, "function");
-});
-
-Deno.test("configSchema validates valid config", () => {
-  const result = datastore.configSchema.safeParse({
-    bucket: "my-test-bucket",
-    region: "us-east-1",
+Deno.test("datastore export conforms to DatastoreProvider contract", () => {
+  assertDatastoreExportConformance(datastore, {
+    validConfigs: [
+      { bucket: "my-test-bucket", region: "us-east-1" },
+      { bucket: "my-test-bucket" },
+      {
+        bucket: "my-test-bucket",
+        prefix: "swamp-data",
+        region: "eu-west-1",
+        endpoint: "https://nyc3.digitaloceanspaces.com",
+        forcePathStyle: true,
+      },
+    ],
+    invalidConfigs: [
+      {},
+      { region: "us-east-1" },
+      { bucket: "ab" },
+      { bucket: "MyBucket" },
+      { bucket: "my-test-bucket", endpoint: "not-a-url" },
+    ],
   });
-  assertEquals(result.success, true);
-});
-
-Deno.test("configSchema validates config with all options", () => {
-  const result = datastore.configSchema.safeParse({
-    bucket: "my-test-bucket",
-    prefix: "swamp-data",
-    region: "eu-west-1",
-    endpoint: "https://nyc3.digitaloceanspaces.com",
-    forcePathStyle: true,
-  });
-  assertEquals(result.success, true);
-});
-
-Deno.test("configSchema validates config with only bucket", () => {
-  const result = datastore.configSchema.safeParse({
-    bucket: "my-test-bucket",
-  });
-  assertEquals(result.success, true);
-});
-
-Deno.test("configSchema rejects missing bucket", () => {
-  const result = datastore.configSchema.safeParse({
-    region: "us-east-1",
-  });
-  assertEquals(result.success, false);
-});
-
-Deno.test("configSchema rejects invalid bucket name - too short", () => {
-  const result = datastore.configSchema.safeParse({
-    bucket: "ab",
-  });
-  assertEquals(result.success, false);
-});
-
-Deno.test("configSchema rejects invalid bucket name - uppercase", () => {
-  const result = datastore.configSchema.safeParse({
-    bucket: "MyBucket",
-  });
-  assertEquals(result.success, false);
-});
-
-Deno.test("configSchema rejects invalid endpoint URL", () => {
-  const result = datastore.configSchema.safeParse({
-    bucket: "my-test-bucket",
-    endpoint: "not-a-url",
-  });
-  assertEquals(result.success, false);
-});
-
-Deno.test("configSchema rejects empty config", () => {
-  const result = datastore.configSchema.safeParse({});
-  assertEquals(result.success, false);
 });
 
 Deno.test("createProvider throws on invalid config", () => {
@@ -99,58 +54,115 @@ Deno.test("createProvider throws on invalid config", () => {
   );
 });
 
-Deno.test("createProvider returns a DatastoreProvider", () => {
-  const provider = datastore.createProvider({
-    bucket: "my-test-bucket",
-    region: "us-east-1",
-  });
-  assertExists(provider);
-  assertEquals(typeof provider.createLock, "function");
-  assertEquals(typeof provider.createVerifier, "function");
-  assertEquals(typeof provider.createSyncService, "function");
-  assertEquals(typeof provider.resolveDatastorePath, "function");
-  assertEquals(typeof provider.resolveCachePath, "function");
-});
-
 Deno.test("provider.resolveDatastorePath returns .swamp under repoDir", () => {
-  const provider = datastore.createProvider({
-    bucket: "my-test-bucket",
-  });
-  const path = provider.resolveDatastorePath("/tmp/my-repo");
-  assertEquals(path, "/tmp/my-repo/.swamp");
+  const provider = datastore.createProvider({ bucket: "my-test-bucket" });
+  assertEquals(
+    provider.resolveDatastorePath("/tmp/my-repo"),
+    "/tmp/my-repo/.swamp",
+  );
 });
 
-Deno.test("provider.createLock returns a DistributedLock", () => {
-  const provider = datastore.createProvider({
-    bucket: "my-test-bucket",
-    region: "us-east-1",
-  });
-  const lock = provider.createLock("/tmp/ds");
-  assertExists(lock);
-  assertEquals(typeof lock.acquire, "function");
-  assertEquals(typeof lock.release, "function");
-  assertEquals(typeof lock.withLock, "function");
-  assertEquals(typeof lock.inspect, "function");
-  assertEquals(typeof lock.forceRelease, "function");
+// --- Verifier behavioral test using a local mock S3 server ---
+
+Deno.test({
+  name: "s3 verifier: reports healthy when bucket is accessible",
+  sanitizeResources: false,
+  fn: async () => {
+    // Start a mock S3 server that responds to HeadBucket
+    const server = Deno.serve({ port: 0, onListen() {} }, (req) => {
+      // HeadBucket is a HEAD request to /{bucket}
+      if (req.method === "HEAD") {
+        return new Response(null, { status: 200 });
+      }
+      return new Response(null, { status: 404 });
+    });
+
+    const addr = server.addr as Deno.NetAddr;
+    const endpoint = `http://localhost:${addr.port}`;
+
+    const originalKey = Deno.env.get("AWS_ACCESS_KEY_ID");
+    const originalSecret = Deno.env.get("AWS_SECRET_ACCESS_KEY");
+    Deno.env.set("AWS_ACCESS_KEY_ID", "test");
+    Deno.env.set("AWS_SECRET_ACCESS_KEY", "test");
+
+    try {
+      const provider = datastore.createProvider({
+        bucket: "my-test-bucket",
+        region: "us-east-1",
+        endpoint,
+        forcePathStyle: true,
+      });
+
+      const verifier = provider.createVerifier();
+      const result = await verifier.verify();
+
+      assertEquals(result.healthy, true);
+      assertEquals(result.datastoreType, "@swamp/s3-datastore");
+      assertEquals(result.details?.bucket, "my-test-bucket");
+      assertEquals(typeof result.latencyMs, "number");
+
+      // Also passes the generic verifier conformance
+      await assertVerifierConformance(verifier);
+    } finally {
+      if (originalKey) {
+        Deno.env.set("AWS_ACCESS_KEY_ID", originalKey);
+      } else {
+        Deno.env.delete("AWS_ACCESS_KEY_ID");
+      }
+      if (originalSecret) {
+        Deno.env.set("AWS_SECRET_ACCESS_KEY", originalSecret);
+      } else {
+        Deno.env.delete("AWS_SECRET_ACCESS_KEY");
+      }
+      await server.shutdown();
+    }
+  },
 });
 
-Deno.test("provider.createVerifier returns a DatastoreVerifier", () => {
-  const provider = datastore.createProvider({
-    bucket: "my-test-bucket",
-    region: "us-east-1",
-  });
-  const verifier = provider.createVerifier();
-  assertExists(verifier);
-  assertEquals(typeof verifier.verify, "function");
-});
+Deno.test({
+  name: "s3 verifier: reports unhealthy when bucket is not accessible",
+  sanitizeResources: false,
+  fn: async () => {
+    const server = Deno.serve({ port: 0, onListen() {} }, (req) => {
+      if (req.method === "HEAD") {
+        return new Response(null, { status: 404 });
+      }
+      return new Response(null, { status: 404 });
+    });
 
-Deno.test("provider.createSyncService returns a DatastoreSyncService", () => {
-  const provider = datastore.createProvider({
-    bucket: "my-test-bucket",
-    region: "us-east-1",
-  });
-  const sync = provider.createSyncService!("/tmp/repo", "/tmp/cache");
-  assertExists(sync);
-  assertEquals(typeof sync.pullChanged, "function");
-  assertEquals(typeof sync.pushChanged, "function");
+    const addr = server.addr as Deno.NetAddr;
+    const endpoint = `http://localhost:${addr.port}`;
+
+    const originalKey = Deno.env.get("AWS_ACCESS_KEY_ID");
+    const originalSecret = Deno.env.get("AWS_SECRET_ACCESS_KEY");
+    Deno.env.set("AWS_ACCESS_KEY_ID", "test");
+    Deno.env.set("AWS_SECRET_ACCESS_KEY", "test");
+
+    try {
+      const provider = datastore.createProvider({
+        bucket: "nonexistent-bucket",
+        region: "us-east-1",
+        endpoint,
+        forcePathStyle: true,
+      });
+
+      const verifier = provider.createVerifier();
+      const result = await verifier.verify();
+
+      assertEquals(result.healthy, false);
+      assertEquals(result.datastoreType, "@swamp/s3-datastore");
+    } finally {
+      if (originalKey) {
+        Deno.env.set("AWS_ACCESS_KEY_ID", originalKey);
+      } else {
+        Deno.env.delete("AWS_ACCESS_KEY_ID");
+      }
+      if (originalSecret) {
+        Deno.env.set("AWS_SECRET_ACCESS_KEY", originalSecret);
+      } else {
+        Deno.env.delete("AWS_SECRET_ACCESS_KEY");
+      }
+      await server.shutdown();
+    }
+  },
 });

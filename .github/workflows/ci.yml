@@ -30,7 +30,7 @@ jobs:
           elif [ "${{ matrix.task }}" = "lint" ]; then
             deno lint extensions/vaults/
           elif [ "${{ matrix.task }}" = "test" ]; then
-            deno test --allow-env extensions/vaults/
+            deno test --allow-env --allow-net --allow-sys extensions/vaults/
           else
             deno check extensions/vaults/*.ts
           fi
