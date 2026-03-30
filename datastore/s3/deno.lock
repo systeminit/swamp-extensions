@@ -6,6 +6,7 @@
     "jsr:@std/internal@^1.0.12": "1.0.12",
     "jsr:@std/path@1": "1.1.4",
     "jsr:@std/path@^1.1.4": "1.1.4",
+    "jsr:@systeminit/swamp-testing@0.20260330.3": "0.20260330.3",
     "npm:@aws-sdk/client-s3@3.1010.0": "3.1010.0",
     "npm:zod@4.3.6": "4.3.6"
   },
@@ -30,6 +31,12 @@
       "integrity": "1d2d43f39efb1b42f0b1882a25486647cb851481862dc7313390b2bb044314b5",
       "dependencies": [
         "jsr:@std/internal"
+      ]
+    },
+    "@systeminit/swamp-testing@0.20260330.3": {
+      "integrity": "36c7954359acd9281f1f4cd5a2be073954b745e72ef6fb211666b914a47084d0",
+      "dependencies": [
+        "jsr:@std/assert"
       ]
     }
   },
@@ -1023,6 +1030,7 @@
     "dependencies": [
       "jsr:@std/fs@1",
       "jsr:@std/path@1",
+      "jsr:@systeminit/swamp-testing@0.20260330.3",
       "npm:@aws-sdk/client-s3@3.1010.0",
       "npm:zod@4.3.6"
     ]

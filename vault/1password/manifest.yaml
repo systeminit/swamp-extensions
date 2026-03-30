@@ -1,6 +1,6 @@
 manifestVersion: 1
 name: "@swamp/1password"
-version: "2026.03.18.5"
+version: "2026.03.30.1"
 description: |
   Read and write secrets stored in 1Password using the `op` CLI.
 
