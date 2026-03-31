@@ -57,4 +57,5 @@ jobs:
         with:
           api-key: ${{ secrets.SWAMP_API_KEY }}
       - name: Publish extension
-        run: swamp extension push ${{ matrix.extension }}/manifest.yaml
+        working-directory: ${{ matrix.extension }}
+        run: swamp extension push manifest.yaml
