@@ -59,7 +59,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        datastore: [s3]
+        datastore: [s3, gcs]
         task: [check, lint, fmt, test]
     defaults:
       run:
@@ -87,7 +87,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        datastore: [s3]
+        datastore: [s3, gcs]
     defaults:
       run:
         working-directory: datastore/${{ matrix.datastore }}
