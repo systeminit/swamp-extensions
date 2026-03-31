@@ -1,0 +1,213 @@
+// Auto-generated extension model for @swamp/digitalocean/container-registry
+// Do not edit manually. Re-generate with: deno task generate:digitalocean
+
+// deno-lint-ignore-file no-explicit-any
+
+import { z } from "zod";
+import {
+  create,
+  discover,
+  read,
+  remove,
+  tryRead,
+} from "./_lib/digitalocean.ts";
+
+const GlobalArgsSchema = z.object({
+  name: z.string().max(63).regex(new RegExp("^[a-z0-9-]{1,63}$")).describe(
+    "A globally unique name for the container registry. Must be lowercase and be composed only of numbers, letters and `-`, up to a limit of 63 characters.",
+  ),
+  subscription_tier_slug: z.enum(["starter", "basic", "professional"]).describe(
+    "The slug of the subscription tier to sign up for. Valid values can be retrieved using the options endpoint.",
+  ).optional(),
+  region: z.enum([
+    "nyc1",
+    "sfo1",
+    "nyc2",
+    "ams2",
+    "sgp1",
+    "lon1",
+    "nyc3",
+    "ams3",
+    "fra1",
+    "tor1",
+    "sfo2",
+    "blr1",
+    "sfo3",
+    "syd1",
+    "atl1",
+  ]).describe(
+    "Slug of the region where registry data is stored. When not provided, a region will be selected.",
+  ).optional(),
+});
+
+const ResourceSchema = z.object({
+  name: z.string(),
+  created_at: z.string().optional(),
+  region: z.string().optional(),
+  storage_usage_bytes: z.number().optional(),
+  storage_usage_bytes_updated_at: z.string().optional(),
+}).passthrough();
+
+type ResourceData = z.infer<typeof ResourceSchema>;
+
+const InputsSchema = z.object({
+  name: z.string().max(63).regex(new RegExp("^[a-z0-9-]{1,63}$")).optional(),
+  subscription_tier_slug: z.enum(["starter", "basic", "professional"])
+    .optional(),
+  region: z.enum([
+    "nyc1",
+    "sfo1",
+    "nyc2",
+    "ams2",
+    "sgp1",
+    "lon1",
+    "nyc3",
+    "ams3",
+    "fra1",
+    "tor1",
+    "sfo2",
+    "blr1",
+    "sfo3",
+    "syd1",
+    "atl1",
+  ]).optional(),
+});
+
+export const model = {
+  type: "@swamp/digitalocean/container-registry",
+  version: "2026.03.27.2",
+  upgrades: [
+    {
+      toVersion: "2026.03.27.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.03.27.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+  ],
+  globalArguments: GlobalArgsSchema,
+  inputsSchema: InputsSchema,
+  resources: {
+    state: {
+      description: "Container Registry resource state",
+      schema: ResourceSchema,
+      lifetime: "infinite",
+      garbageCollection: 10,
+    },
+  },
+  methods: {
+    create: {
+      description: "Create a container registry",
+      arguments: z.object({
+        checkExists: z.boolean().describe(
+          "If true, check whether a resource with this name already exists before creating and fail if it does (default: false)",
+        ).optional(),
+      }),
+      execute: async (args: { checkExists?: boolean }, context: any) => {
+        const g = context.globalArgs;
+        const instanceName = g.name?.toString() ?? "current";
+        if (args.checkExists) {
+          const existing = await tryRead("/v2/registries", g.name);
+          if (existing) {
+            throw new Error(`Resource already exists: ${g.name}`);
+          }
+        }
+        const body: Record<string, unknown> = {};
+        if (g.name !== undefined) body.name = g.name;
+        if (g.subscription_tier_slug !== undefined) {
+          body.subscription_tier_slug = g.subscription_tier_slug;
+        }
+        if (g.region !== undefined) body.region = g.region;
+        const result = await create("/v2/registries", body) as ResourceData;
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    get: {
+      description: "Get a container registry",
+      arguments: z.object({
+        name: z.string().describe("The name of the container registry"),
+      }),
+      execute: async (args: { name: string }, context: any) => {
+        const result = await read("/v2/registries", args.name) as ResourceData;
+        const instanceName = result.name?.toString() ?? args.name.toString();
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    delete: {
+      description: "Delete the container registry",
+      arguments: z.object({
+        name: z.string().describe("The name of the container registry"),
+      }),
+      execute: async (args: { name: string }, context: any) => {
+        const { existed } = await remove("/v2/registries", args.name);
+        const instanceName = context.globalArgs.name?.toString() ??
+          args.name.toString();
+        const handle = await context.writeResource("state", instanceName, {
+          name: args.name,
+          existed,
+          status: existed ? "deleted" : "not_found",
+          deletedAt: new Date().toISOString(),
+        });
+        return { dataHandles: [handle] };
+      },
+    },
+    sync: {
+      description: "Sync container registry state from DigitalOcean",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const instanceName = g.name?.toString() ?? "current";
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          instanceName,
+        );
+        if (!content) {
+          throw new Error("No data found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        const result = await tryRead(
+          "/v2/registries",
+          existing.name ?? existing.id,
+        ) as ResourceData | null;
+        if (result) {
+          const handle = await context.writeResource(
+            "state",
+            instanceName,
+            result,
+          );
+          return { dataHandles: [handle] };
+        }
+        const handle = await context.writeResource("state", instanceName, {
+          name: existing.name ?? existing.id,
+          status: "not_found",
+          syncedAt: new Date().toISOString(),
+        });
+        return { dataHandles: [handle] };
+      },
+    },
+    list_options: {
+      description:
+        "List available options for container registry (versions, sizes, regions)",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const result = await discover("/v2/registries/options");
+        const handle = await context.writeResource("state", "options", result);
+        return { dataHandles: [handle] };
+      },
+    },
+  },
+};

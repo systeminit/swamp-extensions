@@ -1,0 +1,165 @@
+// Auto-generated extension model for @swamp/hetzner-cloud/placement-groups
+// Do not edit manually. Re-generate with: deno task generate:hetzner
+
+// deno-lint-ignore-file no-explicit-any
+
+import { z } from "zod";
+import { create, read, remove, tryRead, update } from "./_lib/hetzner.ts";
+
+const GlobalArgsSchema = z.object({
+  name: z.string().describe("Name of the Placement Group."),
+  labels: z.record(z.string(), z.unknown()).describe(
+    'User-defined labels (`key/value` pairs) for the Resource.\nFor more information, see "[Labels](#description/labels)".\n',
+  ).optional(),
+  type: z.enum(["spread"]).describe("Define the Placement Group Type."),
+});
+
+const ResourceSchema = z.object({
+  id: z.number(),
+  name: z.string().optional(),
+  labels: z.record(z.string(), z.unknown()).optional(),
+  type: z.string().optional(),
+  created: z.string().optional(),
+  servers: z.array(z.number()).optional(),
+}).passthrough();
+
+type ResourceData = z.infer<typeof ResourceSchema>;
+
+const InputsSchema = z.object({
+  name: z.string().optional(),
+  labels: z.record(z.string(), z.unknown()).optional(),
+  type: z.enum(["spread"]).optional(),
+});
+
+export const model = {
+  type: "@swamp/hetzner-cloud/placement-groups",
+  version: "2026.03.23.1",
+  globalArguments: GlobalArgsSchema,
+  inputsSchema: InputsSchema,
+  resources: {
+    state: {
+      description: "Placement group resource state",
+      schema: ResourceSchema,
+      lifetime: "infinite",
+      garbageCollection: 10,
+    },
+  },
+  methods: {
+    create: {
+      description: "Create a placement group",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const body: Record<string, unknown> = {};
+        if (g.name !== undefined) body.name = g.name;
+        if (g.labels !== undefined) body.labels = g.labels;
+        if (g.type !== undefined) body.type = g.type;
+        const result = await create("/placement_groups", body) as ResourceData;
+        const instanceName = g.name?.toString() ?? "current";
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    get: {
+      description: "Get a placement group",
+      arguments: z.object({
+        id: z.number().int().describe("The ID of the placement group"),
+      }),
+      execute: async (args: { id: number }, context: any) => {
+        const result = await read("/placement_groups", args.id) as ResourceData;
+        const instanceName = result.name?.toString() ?? args.id.toString();
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    update: {
+      description: "Update placement group attributes",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const instanceName = g.name?.toString() ?? "current";
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          instanceName,
+        );
+        if (!content) throw new Error("No data found - run create first");
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        const body: Record<string, unknown> = {};
+        if (g.name !== undefined) body.name = g.name;
+        if (g.labels !== undefined) body.labels = g.labels;
+        const result = await update(
+          "/placement_groups",
+          existing.id,
+          body,
+        ) as ResourceData;
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    delete: {
+      description: "Delete the placement group",
+      arguments: z.object({
+        id: z.number().int().describe("The ID of the placement group"),
+      }),
+      execute: async (args: { id: number }, context: any) => {
+        const { existed } = await remove("/placement_groups", args.id);
+        const instanceName = context.globalArgs.name?.toString() ??
+          args.id.toString();
+        const handle = await context.writeResource("state", instanceName, {
+          id: args.id,
+          existed,
+          status: existed ? "deleted" : "not_found",
+          deletedAt: new Date().toISOString(),
+        });
+        return { dataHandles: [handle] };
+      },
+    },
+    sync: {
+      description: "Sync placement group state from Hetzner",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const instanceName = g.name?.toString() ?? "current";
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          instanceName,
+        );
+        if (!content) {
+          throw new Error("No data found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        const result = await tryRead("/placement_groups", existing.id) as
+          | ResourceData
+          | null;
+        if (result) {
+          const handle = await context.writeResource(
+            "state",
+            instanceName,
+            result,
+          );
+          return { dataHandles: [handle] };
+        }
+        const handle = await context.writeResource("state", instanceName, {
+          id: existing.id,
+          status: "not_found",
+          syncedAt: new Date().toISOString(),
+        });
+        return { dataHandles: [handle] };
+      },
+    },
+  },
+};

@@ -1,0 +1,156 @@
+// Auto-generated extension model for @swamp/digitalocean/domain
+// Do not edit manually. Re-generate with: deno task generate:digitalocean
+
+// deno-lint-ignore-file no-explicit-any
+
+import { z } from "zod";
+import { create, read, remove, tryRead } from "./_lib/digitalocean.ts";
+
+const GlobalArgsSchema = z.object({
+  name: z.string().describe(
+    "The name of the domain itself. This should follow the standard domain format of domain.TLD. For instance, `example.com` is a valid domain name.",
+  ).optional(),
+  ip_address: z.string().describe(
+    "This optional attribute may contain an IP address. When provided, an A record will be automatically created pointing to the apex domain.",
+  ).optional(),
+});
+
+const ResourceSchema = z.object({
+  name: z.string(),
+  ip_address: z.string().optional(),
+  ttl: z.number().nullable().optional(),
+  zone_file: z.string().nullable().optional(),
+}).passthrough();
+
+type ResourceData = z.infer<typeof ResourceSchema>;
+
+const InputsSchema = z.object({
+  name: z.string().optional(),
+  ip_address: z.string().optional(),
+});
+
+export const model = {
+  type: "@swamp/digitalocean/domain",
+  version: "2026.03.27.2",
+  upgrades: [
+    {
+      toVersion: "2026.03.27.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.03.27.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+  ],
+  globalArguments: GlobalArgsSchema,
+  inputsSchema: InputsSchema,
+  resources: {
+    state: {
+      description: "Domain resource state",
+      schema: ResourceSchema,
+      lifetime: "infinite",
+      garbageCollection: 10,
+    },
+  },
+  methods: {
+    create: {
+      description: "Create a domain",
+      arguments: z.object({
+        checkExists: z.boolean().describe(
+          "If true, check whether a resource with this name already exists before creating and fail if it does (default: false)",
+        ).optional(),
+      }),
+      execute: async (args: { checkExists?: boolean }, context: any) => {
+        const g = context.globalArgs;
+        const instanceName = g.name?.toString() ?? "current";
+        if (args.checkExists) {
+          const existing = await tryRead("/v2/domains", g.name);
+          if (existing) {
+            throw new Error(`Resource already exists: ${g.name}`);
+          }
+        }
+        const body: Record<string, unknown> = {};
+        if (g.name !== undefined) body.name = g.name;
+        if (g.ip_address !== undefined) body.ip_address = g.ip_address;
+        const result = await create("/v2/domains", body) as ResourceData;
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    get: {
+      description: "Get a domain",
+      arguments: z.object({
+        name: z.string().describe("The name of the domain"),
+      }),
+      execute: async (args: { name: string }, context: any) => {
+        const result = await read("/v2/domains", args.name) as ResourceData;
+        const instanceName = result.name?.toString() ?? args.name.toString();
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    delete: {
+      description: "Delete the domain",
+      arguments: z.object({
+        name: z.string().describe("The name of the domain"),
+      }),
+      execute: async (args: { name: string }, context: any) => {
+        const { existed } = await remove("/v2/domains", args.name);
+        const instanceName = context.globalArgs.name?.toString() ??
+          args.name.toString();
+        const handle = await context.writeResource("state", instanceName, {
+          name: args.name,
+          existed,
+          status: existed ? "deleted" : "not_found",
+          deletedAt: new Date().toISOString(),
+        });
+        return { dataHandles: [handle] };
+      },
+    },
+    sync: {
+      description: "Sync domain state from DigitalOcean",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const instanceName = g.name?.toString() ?? "current";
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          instanceName,
+        );
+        if (!content) {
+          throw new Error("No data found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        const result = await tryRead(
+          "/v2/domains",
+          existing.name ?? existing.id,
+        ) as ResourceData | null;
+        if (result) {
+          const handle = await context.writeResource(
+            "state",
+            instanceName,
+            result,
+          );
+          return { dataHandles: [handle] };
+        }
+        const handle = await context.writeResource("state", instanceName, {
+          name: existing.name ?? existing.id,
+          status: "not_found",
+          syncedAt: new Date().toISOString(),
+        });
+        return { dataHandles: [handle] };
+      },
+    },
+  },
+};
