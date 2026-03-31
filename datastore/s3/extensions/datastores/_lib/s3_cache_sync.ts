@@ -143,7 +143,7 @@ export class S3CacheSyncService implements DatastoreSyncService {
    * Fetches the remote index, compares against local files, and only
    * downloads files that are missing locally or have a different size.
    */
-  async pullChanged(): Promise<void> {
+  async pullChanged(): Promise<number | void> {
     await this.pullIndex();
 
     // Build list of files that need pulling
@@ -162,6 +162,7 @@ export class S3CacheSyncService implements DatastoreSyncService {
     }
 
     // Download concurrently in batches
+    let pulled = 0;
     const failedFiles: string[] = [];
     for (let i = 0; i < toPull.length; i += MAX_CONCURRENCY) {
       const batch = toPull.slice(i, i + MAX_CONCURRENCY);
@@ -181,7 +182,9 @@ export class S3CacheSyncService implements DatastoreSyncService {
         }),
       );
       for (let j = 0; j < results.length; j++) {
-        if (results[j].status === "rejected") {
+        if (results[j].status === "fulfilled") {
+          pulled++;
+        } else {
           failedFiles.push(batch[j]);
         }
       }
@@ -194,6 +197,8 @@ export class S3CacheSyncService implements DatastoreSyncService {
         }`,
       );
     }
+
+    return pulled;
   }
 
   /** Pushes a single file from the local cache to S3. */
@@ -218,7 +223,7 @@ export class S3CacheSyncService implements DatastoreSyncService {
    * Pushes only new or modified files from the local cache to S3.
    * Compares each file's size against the index to detect changes.
    */
-  async pushChanged(): Promise<void> {
+  async pushChanged(): Promise<number | void> {
     await this.loadIndex();
 
     // Build list of files that need pushing
@@ -295,6 +300,8 @@ export class S3CacheSyncService implements DatastoreSyncService {
       // Also update the local cache
       await atomicWriteTextFile(this.indexPath, indexJson);
     }
+
+    return pushed;
   }
 
   private async loadIndex(): Promise<void> {

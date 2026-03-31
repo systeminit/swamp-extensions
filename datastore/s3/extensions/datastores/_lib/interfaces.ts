@@ -59,8 +59,8 @@ export interface DatastoreVerifier {
 }
 
 export interface DatastoreSyncService {
-  pullChanged(): Promise<void>;
-  pushChanged(): Promise<void>;
+  pullChanged(): Promise<number | void>;
+  pushChanged(): Promise<number | void>;
 }
 
 export interface DatastoreProvider {
