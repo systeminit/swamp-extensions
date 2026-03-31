@@ -56,6 +56,29 @@ jobs:
       - uses: systeminit/setup-swamp@v0.1.0
         with:
           api-key: ${{ secrets.SWAMP_API_KEY }}
+      - name: Check if version already published
+        id: version-check
+        working-directory: ${{ matrix.extension }}
+        run: |
+          # Extract local version and extension name from manifest
+          LOCAL_VERSION=$(grep '^version:' manifest.yaml | sed 's/version: *"\{0,1\}\([^"]*\)"\{0,1\}/\1/')
+          EXTENSION_NAME=$(grep '^name:' manifest.yaml | sed 's/name: *"\{0,1\}\([^"]*\)"\{0,1\}/\1/')
+
+          # Query the registry for the latest published version
+          VERSION_JSON=$(swamp extension version "$EXTENSION_NAME" --json 2>&1) || true
+          UPSTREAM_VERSION=$(echo "$VERSION_JSON" | jq -r '.currentPublished // empty' 2>/dev/null || true)
+
+          echo "Extension: $EXTENSION_NAME"
+          echo "Local version: $LOCAL_VERSION"
+          echo "Upstream version: $UPSTREAM_VERSION"
+
+          if [ "$LOCAL_VERSION" = "$UPSTREAM_VERSION" ]; then
+            echo "Version $LOCAL_VERSION already published — skipping"
+            echo "skip=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "skip=false" >> "$GITHUB_OUTPUT"
+          fi
       - name: Publish extension
+        if: steps.version-check.outputs.skip != 'true'
         working-directory: ${{ matrix.extension }}
         run: swamp extension push manifest.yaml

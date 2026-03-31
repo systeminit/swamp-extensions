@@ -1,0 +1,159 @@
+# @swamp/gcs-datastore
+
+Store swamp data in a Google Cloud Storage bucket with local cache
+synchronization, distributed locking, and health checks.
+
+## Installation
+
+```bash
+swamp extension pull @swamp/gcs-datastore
+```
+
+## Configuration
+
+```bash
+swamp datastore setup @swamp/gcs-datastore \
+  --config '{"bucket": "my-swamp-bucket", "prefix": "swamp"}' --json
+```
+
+| Field | Required | Description |
+|---|---|---|
+| `bucket` | Yes | GCS bucket name (3-63 chars, lowercase `[a-z0-9._-]`, cannot start with `goog` or contain `google`) |
+| `prefix` | No | Object name prefix within the bucket (e.g. `swamp/prod`) |
+| `projectId` | No | GCP project ID. Defaults to the project from Application Default Credentials. |
+| `apiEndpoint` | No | Custom API endpoint URL for emulators (e.g. [fake-gcs-server](https://github.com/fsouza/fake-gcs-server)). When set, authentication is skipped — matching the behavior of Google's official client libraries with `STORAGE_EMULATOR_HOST`. |
+
+### Example `.swamp.yaml`
+
+```yaml
+datastore:
+  type: "@swamp/gcs-datastore"
+  config:
+    bucket: my-team-swamp
+    prefix: production
+```
+
+## Authentication
+
+This datastore uses **Google Cloud Application Default Credentials (ADC)**.
+No credentials are stored in the config — authentication is resolved from the
+environment at runtime.
+
+> **Note:** When `apiEndpoint` is configured (emulator mode), authentication
+> is skipped entirely. No credentials are required.
+
+ADC checks the following sources in order:
+
+1. **`GOOGLE_APPLICATION_CREDENTIALS`** environment variable — path to a
+   service account key JSON file.
+2. **gcloud CLI credentials** — created by running
+   `gcloud auth application-default login`. Stored at
+   `~/.config/gcloud/application_default_credentials.json`.
+3. **Attached service account** — automatically available on GCE instances,
+   Cloud Run services, GKE pods, and Cloud Functions.
+
+For local development, the simplest approach is:
+
+```bash
+gcloud auth application-default login
+```
+
+For CI/CD and production, use a service account key or
+[workload identity federation](https://cloud.google.com/iam/docs/workload-identity-federation).
+
+## Required IAM Permissions
+
+The authenticated principal needs the following permissions on the bucket:
+
+| Permission | Used for |
+|---|---|
+| `storage.buckets.get` | Health checks (verify bucket exists) |
+| `storage.objects.get` | Reading data and lock files |
+| `storage.objects.create` | Writing data and acquiring locks |
+| `storage.objects.delete` | Releasing locks and cleanup |
+| `storage.objects.list` | Sync service (listing remote files) |
+
+### Recommended approach: custom role
+
+For least-privilege, create a custom role with exactly these permissions:
+
+```bash
+gcloud iam roles create swampDatastore \
+  --project=my-project \
+  --title="Swamp Datastore" \
+  --permissions=storage.buckets.get,storage.objects.get,storage.objects.create,storage.objects.delete,storage.objects.list
+```
+
+Then bind it to your service account:
+
+```bash
+gcloud storage buckets add-iam-policy-binding gs://my-swamp-bucket \
+  --member="serviceAccount:swamp@my-project.iam.gserviceaccount.com" \
+  --role="projects/my-project/roles/swampDatastore"
+```
+
+### Alternative: predefined roles
+
+If you prefer predefined roles, you need two:
+
+- **`roles/storage.objectUser`** — covers `objects.get`, `objects.create`,
+  `objects.delete`, and `objects.list` (lighter than `objectAdmin` — no
+  IAM policy permissions)
+- **`roles/storage.legacyBucketReader`** — covers `buckets.get`
+
+```bash
+gcloud storage buckets add-iam-policy-binding gs://my-swamp-bucket \
+  --member="serviceAccount:swamp@my-project.iam.gserviceaccount.com" \
+  --role="roles/storage.objectUser"
+
+gcloud storage buckets add-iam-policy-binding gs://my-swamp-bucket \
+  --member="serviceAccount:swamp@my-project.iam.gserviceaccount.com" \
+  --role="roles/storage.legacyBucketReader"
+```
+
+## How It Works
+
+### Distributed Locking
+
+Locks use **GCS generation-based preconditions** for atomic lock acquisition.
+Every GCS object has a `generation` number — a monotonically increasing value
+assigned by GCS on each write — enabling compare-and-swap (CAS) semantics:
+
+- **Acquire** — writes a lock object with `ifGenerationMatch=0`, which only
+  succeeds if no live version of the object exists (generation 0 means
+  "create only"). This is an atomic create-if-absent operation.
+- **Heartbeat** — while the lock is held, a background interval extends the
+  lock using a CAS write with `ifGenerationMatch=<current generation>`.
+  If the generation changed (meaning another process took the lock), the
+  CAS fails and the holder knows it lost ownership.
+- **Release** — deletes the lock object with `ifGenerationMatch=<current generation>`,
+  ensuring we only delete our own lock. If a heartbeat raced with the
+  release, the cleanup path handles the new generation.
+- **Stale lock cleanup** — if a lock object's `updated` timestamp plus its
+  TTL is in the past, another acquirer will delete the stale lock and retry.
+  Default TTL is 30 seconds.
+
+### Health Checks
+
+The verifier issues a `GET /storage/v1/b/{bucket}` request (the standard
+GCS bucket metadata endpoint) to confirm:
+- The bucket exists
+- Credentials are valid
+- IAM permissions are sufficient (`storage.buckets.get`)
+
+Returns latency metrics and diagnostic hints on failure (missing bucket,
+bad credentials, insufficient permissions).
+
+### Bidirectional Sync
+
+The cache sync service maintains a local cache directory and syncs with GCS:
+
+- **Pull** — downloads a metadata index from GCS, compares file sizes against
+  local files, and downloads only new or changed files. Uses concurrent
+  batches of 10 for throughput.
+- **Push** — walks the local cache directory, compares size and mtime against
+  the index, and uploads only changed files. Updates the remote index after
+  a successful push.
+- **Index** — a `.datastore-index.json` file in GCS tracks file sizes and
+  timestamps. The local copy has a 60-second TTL to avoid redundant fetches
+  during rapid command sequences.

@@ -4,17 +4,18 @@ Official extensions for [swamp](https://github.com/systeminit/swamp).
 
 ## Vault Extensions
 
-| Extension | Description | Dependencies |
-|-----------|-------------|--------------|
-| [`@swamp/1password`](vault/1password/) | 1Password vault provider via the `op` CLI | None (shells out to `op`) |
-| [`@swamp/aws-sm`](vault/aws-sm/) | AWS Secrets Manager vault provider | `@aws-sdk/client-secrets-manager` |
-| [`@swamp/azure-kv`](vault/azure-kv/) | Azure Key Vault vault provider | `@azure/identity`, `@azure/keyvault-secrets` |
+| Extension                              | Description                               | Dependencies                                 |
+| -------------------------------------- | ----------------------------------------- | -------------------------------------------- |
+| [`@swamp/1password`](vault/1password/) | 1Password vault provider via the `op` CLI | None (shells out to `op`)                    |
+| [`@swamp/aws-sm`](vault/aws-sm/)       | AWS Secrets Manager vault provider        | `@aws-sdk/client-secrets-manager`            |
+| [`@swamp/azure-kv`](vault/azure-kv/)   | Azure Key Vault vault provider            | `@azure/identity`, `@azure/keyvault-secrets` |
 
 ## Datastore Extensions
 
-| Extension | Description | Dependencies |
-|-----------|-------------|--------------|
-| [`@swamp/s3-datastore`](datastore/s3/) | Amazon S3 datastore with local cache sync and distributed locking | `@aws-sdk/client-s3` |
+| Extension                                | Description                                                       | Dependencies         |
+| ---------------------------------------- | ----------------------------------------------------------------- | -------------------- |
+| [`@swamp/s3-datastore`](datastore/s3/)   | Amazon S3 datastore with local cache sync and distributed locking | `@aws-sdk/client-s3` |
+| [`@swamp/gcs-datastore`](datastore/gcs/) | Google Cloud Storage datastore with local cache sync and distributed locking | None (GCS JSON REST API via `fetch`) |
 
 ## Installation
 
@@ -30,6 +31,7 @@ swamp extension pull @swamp/azure-kv
 
 # Datastore extensions
 swamp extension pull @swamp/s3-datastore
+swamp extension pull @swamp/gcs-datastore
 ```
 
 ## Usage
@@ -54,19 +56,32 @@ swamp vault create @swamp/azure-kv my-vault --config '{"vault_url":"https://myva
 Configure a datastore in `.swamp.yaml`:
 
 ```yaml
+# Amazon S3
 datastore:
   type: "@swamp/s3-datastore"
   config:
     bucket: my-bucket
     prefix: swamp-data
     region: us-east-1
+
+# Google Cloud Storage
+datastore:
+  type: "@swamp/gcs-datastore"
+  config:
+    bucket: my-bucket
+    prefix: swamp-data
 ```
 
 Or set up interactively:
 
 ```bash
+# S3
 swamp datastore setup @swamp/s3-datastore \
   --config '{"bucket":"my-bucket","prefix":"swamp-data","region":"us-east-1"}'
+
+# GCS
+swamp datastore setup @swamp/gcs-datastore \
+  --config '{"bucket":"my-bucket","prefix":"swamp-data"}'
 ```
 
 ## Issues and Contributing
