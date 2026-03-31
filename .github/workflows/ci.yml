@@ -206,3 +206,43 @@ jobs:
             git diff --stat
             exit 1
           fi
+
+  deps-audit:
+    name: Dependency Audit
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v6
+      - uses: denoland/setup-deno@v2
+        with:
+          deno-version: v2.x
+      - name: Scan for known vulnerabilities
+        run: deno run --allow-read --allow-net=api.osv.dev --allow-env=GITHUB_STEP_SUMMARY --allow-write scripts/audit_deps.ts
+      - name: Check for outdated dependencies
+        run: |
+          has_outdated=false
+          for lockdir in $(find vault datastore model codegen -name "deno.lock" -exec dirname {} \;); do
+            output=$(cd "$lockdir" && deno outdated 2>&1) || true
+            if [ -n "$output" ]; then
+              echo "::warning::Outdated dependencies in $lockdir"
+              echo "$output"
+              has_outdated=true
+            fi
+          done
+          if [ "$has_outdated" = false ]; then
+            echo "All dependencies are up to date"
+          fi
+
+  actions-audit:
+    name: Actions Audit
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v6
+      - uses: denoland/setup-deno@v2
+        with:
+          deno-version: v2.x
+      - name: Check for unpinned or outdated GitHub Actions
+        run: deno run --allow-read --allow-net=api.github.com --allow-env=GITHUB_STEP_SUMMARY,GITHUB_TOKEN --allow-write scripts/audit_actions.ts
