@@ -1,6 +1,6 @@
 manifestVersion: 1
 name: "@swamp/azure-kv"
-version: "2026.03.30.1"
+version: "2026.03.31.1"
 description: |
   Read and write secrets stored in Azure Key Vault.
 
