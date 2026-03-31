@@ -101,10 +101,9 @@ class S3DatastoreProviderImpl implements DatastoreProvider {
     return join(repoDir, ".swamp");
   }
 
-  resolveCachePath(_repoDir: string): string {
-    // Cache path is determined by swamp core based on repoId;
-    // return a sensible default that core will override
-    return join(Deno.env.get("HOME") ?? ".", ".swamp", "repos", "unknown");
+  resolveCachePath(_repoDir: string): string | undefined {
+    // Let swamp core determine the cache path based on repoId.
+    return undefined;
   }
 }
 

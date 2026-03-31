@@ -153,7 +153,17 @@ export class S3CacheSyncService implements DatastoreSyncService {
       try {
         const stat = await Deno.stat(localPath);
         if (stat.size === entry.size) {
-          continue; // Unchanged
+          // File exists locally with matching size — no download needed.
+          // Reconcile localMtime so pushChanged() doesn't treat it as
+          // changed due to mtime drift (e.g. file was placed by migration
+          // or a different machine pushed the index).
+          if (
+            this.index && stat.mtime &&
+            entry.localMtime !== stat.mtime.toISOString()
+          ) {
+            this.index.entries[rel].localMtime = stat.mtime.toISOString();
+          }
+          continue;
         }
       } catch {
         // File doesn't exist locally — needs pull
@@ -228,12 +238,15 @@ export class S3CacheSyncService implements DatastoreSyncService {
 
     // Build list of files that need pushing
     const toPush: string[] = [];
+    let totalFiles = 0;
+    let skippedFiles = 0;
     try {
       for await (
         const entry of walk(this.cachePath, {
           includeDirs: false,
         })
       ) {
+        totalFiles++;
         const rel = relative(this.cachePath, entry.path);
         // Skip internal metadata files
         if (
@@ -252,10 +265,12 @@ export class S3CacheSyncService implements DatastoreSyncService {
             existing.localMtime && stat.mtime &&
             existing.localMtime === stat.mtime.toISOString()
           ) {
+            skippedFiles++;
             continue; // Both size and mtime match — unchanged
           }
           // If no localMtime recorded (old index format), fall back to size-only
           if (!stat.mtime || existing.localMtime === undefined) {
+            skippedFiles++;
             continue;
           }
         }
@@ -264,6 +279,20 @@ export class S3CacheSyncService implements DatastoreSyncService {
       }
     } catch {
       // Cache directory may not exist yet
+    }
+
+    // Debug: log walk summary
+    console.log(
+      `[pushChanged] cachePath=${this.cachePath} total=${totalFiles} skipped=${skippedFiles} toPush=${toPush.length} indexEntries=${
+        Object.keys(this.index?.entries ?? {}).length
+      }`,
+    );
+    if (toPush.length > 0) {
+      console.log(
+        `[pushChanged] pushing: ${toPush.slice(0, 5).join(", ")}${
+          toPush.length > 5 ? ` ... and ${toPush.length - 5} more` : ""
+        }`,
+      );
     }
 
     // Upload concurrently in batches
