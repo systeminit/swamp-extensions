@@ -162,6 +162,7 @@ export class S3CacheSyncService implements DatastoreSyncService {
     }
 
     // Download concurrently in batches
+    let pulled = 0;
     const failedFiles: string[] = [];
     for (let i = 0; i < toPull.length; i += MAX_CONCURRENCY) {
       const batch = toPull.slice(i, i + MAX_CONCURRENCY);
@@ -181,7 +182,9 @@ export class S3CacheSyncService implements DatastoreSyncService {
         }),
       );
       for (let j = 0; j < results.length; j++) {
-        if (results[j].status === "rejected") {
+        if (results[j].status === "fulfilled") {
+          pulled++;
+        } else {
           failedFiles.push(batch[j]);
         }
       }
@@ -194,6 +197,7 @@ export class S3CacheSyncService implements DatastoreSyncService {
         }`,
       );
     }
+
   }
 
   /** Pushes a single file from the local cache to S3. */
@@ -295,6 +299,7 @@ export class S3CacheSyncService implements DatastoreSyncService {
       // Also update the local cache
       await atomicWriteTextFile(this.indexPath, indexJson);
     }
+
   }
 
   private async loadIndex(): Promise<void> {
