@@ -14,6 +14,6 @@
     "zod": "npm:zod@4.3.6",
     "@azure/identity": "npm:@azure/identity@4.13.0",
     "@azure/keyvault-secrets": "npm:@azure/keyvault-secrets@4.10.0",
-    "@systeminit/swamp-testing": "jsr:@systeminit/swamp-testing@0.20260330.3"
+    "@systeminit/swamp-testing": "jsr:@systeminit/swamp-testing@0.20260331.5"
   }
 }
