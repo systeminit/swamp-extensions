@@ -1,0 +1,198 @@
+// Auto-generated extension model for @swamp/hetzner-cloud/certificates
+// Do not edit manually. Re-generate with: deno task generate:hetzner
+
+// deno-lint-ignore-file no-explicit-any
+
+import { z } from "zod";
+import { create, read, remove, tryRead, update } from "./_lib/hetzner.ts";
+
+const GlobalArgsSchema = z.object({
+  name: z.string().describe("Name of the Certificate."),
+  labels: z.record(z.string(), z.unknown()).describe(
+    'User-defined labels (`key/value` pairs) for the Resource.\nFor more information, see "[Labels](#description/labels)".\n',
+  ).optional(),
+  type: z.enum(["uploaded", "managed"]).describe(
+    "Choose between uploading a Certificate in PEM format or requesting a managed *Let's Encrypt* Certificate.",
+  ).optional(),
+  certificate: z.string().describe(
+    "Certificate and chain in PEM format, in order so that each record directly certifies the one preceding. Required for type `uploaded` Certificates.",
+  ).optional(),
+  private_key: z.string().describe(
+    "Certificate key in PEM format. Required for type `uploaded` Certificates.",
+  ).optional(),
+  domain_names: z.array(z.string()).describe(
+    "Domains and subdomains that should be contained in the Certificate issued by *Let's Encrypt*. Required for type `managed` Certificates.",
+  ).optional(),
+});
+
+const ResourceSchema = z.object({
+  id: z.number(),
+  name: z.string().optional(),
+  labels: z.record(z.string(), z.unknown()).optional(),
+  type: z.string().optional(),
+  certificate: z.string().optional(),
+  created: z.string().optional(),
+  not_valid_before: z.string().optional(),
+  not_valid_after: z.string().optional(),
+  domain_names: z.array(z.string()).optional(),
+  fingerprint: z.string().optional(),
+  status: z.object({
+    issuance: z.string().optional(),
+    renewal: z.string().optional(),
+    error: z.object({
+      code: z.string().optional(),
+      message: z.string().optional(),
+    }).optional(),
+  }).optional(),
+  used_by: z.array(z.object({
+    id: z.number().optional(),
+    type: z.string().optional(),
+  })).optional(),
+}).passthrough();
+
+type ResourceData = z.infer<typeof ResourceSchema>;
+
+const InputsSchema = z.object({
+  name: z.string().optional(),
+  labels: z.record(z.string(), z.unknown()).optional(),
+  type: z.enum(["uploaded", "managed"]).optional(),
+  certificate: z.string().optional(),
+  private_key: z.string().optional(),
+  domain_names: z.array(z.string()).optional(),
+});
+
+export const model = {
+  type: "@swamp/hetzner-cloud/certificates",
+  version: "2026.03.23.1",
+  globalArguments: GlobalArgsSchema,
+  inputsSchema: InputsSchema,
+  resources: {
+    state: {
+      description: "Certificate resource state",
+      schema: ResourceSchema,
+      lifetime: "infinite",
+      garbageCollection: 10,
+    },
+  },
+  methods: {
+    create: {
+      description: "Create a certificate",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const body: Record<string, unknown> = {};
+        if (g.name !== undefined) body.name = g.name;
+        if (g.labels !== undefined) body.labels = g.labels;
+        if (g.type !== undefined) body.type = g.type;
+        if (g.certificate !== undefined) body.certificate = g.certificate;
+        if (g.private_key !== undefined) body.private_key = g.private_key;
+        if (g.domain_names !== undefined) body.domain_names = g.domain_names;
+        const result = await create("/certificates", body) as ResourceData;
+        const instanceName = g.name?.toString() ?? "current";
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    get: {
+      description: "Get a certificate",
+      arguments: z.object({
+        id: z.number().int().describe("The ID of the certificate"),
+      }),
+      execute: async (args: { id: number }, context: any) => {
+        const result = await read("/certificates", args.id) as ResourceData;
+        const instanceName = result.name?.toString() ?? args.id.toString();
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    update: {
+      description: "Update certificate attributes",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const instanceName = g.name?.toString() ?? "current";
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          instanceName,
+        );
+        if (!content) throw new Error("No data found - run create first");
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        const body: Record<string, unknown> = {};
+        if (g.name !== undefined) body.name = g.name;
+        if (g.labels !== undefined) body.labels = g.labels;
+        const result = await update(
+          "/certificates",
+          existing.id,
+          body,
+        ) as ResourceData;
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    delete: {
+      description: "Delete the certificate",
+      arguments: z.object({
+        id: z.number().int().describe("The ID of the certificate"),
+      }),
+      execute: async (args: { id: number }, context: any) => {
+        const { existed } = await remove("/certificates", args.id);
+        const instanceName = context.globalArgs.name?.toString() ??
+          args.id.toString();
+        const handle = await context.writeResource("state", instanceName, {
+          id: args.id,
+          existed,
+          status: existed ? "deleted" : "not_found",
+          deletedAt: new Date().toISOString(),
+        });
+        return { dataHandles: [handle] };
+      },
+    },
+    sync: {
+      description: "Sync certificate state from Hetzner",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const instanceName = g.name?.toString() ?? "current";
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          instanceName,
+        );
+        if (!content) {
+          throw new Error("No data found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        const result = await tryRead("/certificates", existing.id) as
+          | ResourceData
+          | null;
+        if (result) {
+          const handle = await context.writeResource(
+            "state",
+            instanceName,
+            result,
+          );
+          return { dataHandles: [handle] };
+        }
+        const handle = await context.writeResource("state", instanceName, {
+          id: existing.id,
+          status: "not_found",
+          syncedAt: new Date().toISOString(),
+        });
+        return { dataHandles: [handle] };
+      },
+    },
+  },
+};

@@ -12,10 +12,20 @@ Official extensions for [swamp](https://github.com/systeminit/swamp).
 
 ## Datastore Extensions
 
-| Extension                                | Description                                                       | Dependencies         |
-| ---------------------------------------- | ----------------------------------------------------------------- | -------------------- |
-| [`@swamp/s3-datastore`](datastore/s3/)   | Amazon S3 datastore with local cache sync and distributed locking | `@aws-sdk/client-s3` |
+| Extension                                | Description                                                                  | Dependencies                         |
+| ---------------------------------------- | ---------------------------------------------------------------------------- | ------------------------------------ |
+| [`@swamp/s3-datastore`](datastore/s3/)   | Amazon S3 datastore with local cache sync and distributed locking            | `@aws-sdk/client-s3`                 |
 | [`@swamp/gcs-datastore`](datastore/gcs/) | Google Cloud Storage datastore with local cache sync and distributed locking | None (GCS JSON REST API via `fetch`) |
+
+## Model Extensions (Auto-Generated)
+
+| Extension                                      | Description                         |
+| ---------------------------------------------- | ----------------------------------- |
+| [`@swamp/hetzner-cloud`](model/hetzner-cloud/) | Hetzner Cloud infrastructure models |
+| [`@swamp/digitalocean`](model/digitalocean/)   | DigitalOcean infrastructure models  |
+
+These are auto-generated from provider OpenAPI specs. See
+[Code Generation](#code-generation) for how to regenerate them.
 
 ## Installation
 
@@ -32,6 +42,10 @@ swamp extension pull @swamp/azure-kv
 # Datastore extensions
 swamp extension pull @swamp/s3-datastore
 swamp extension pull @swamp/gcs-datastore
+
+# Model extensions
+swamp extension pull @swamp/hetzner-cloud
+swamp extension pull @swamp/digitalocean
 ```
 
 ## Usage
@@ -84,35 +98,78 @@ swamp datastore setup @swamp/gcs-datastore \
   --config '{"bucket":"my-bucket","prefix":"swamp-data"}'
 ```
 
-## Issues and Contributing
+### Contributing
 
-Issues and pull requests for these extensions are managed in the main
-[swamp repository](https://github.com/systeminit/swamp/issues). Issues and PRs
-are disabled on this repo.
+Swamp Extensions uses an **issue-driven contribution model**. We don't accept pull requests
+from external contributors. This isn't about
+gatekeeping; it's about supply chain security in the age of AI-generated code.
+When AI agents can produce large, plausible-looking changes, the only way to
+maintain quality and security is to tightly control the inputs to the
+development process.
+
+**Here's how it works:**
+
+1. **You file an issue** —
+   [bug reports and feature requests](https://github.com/systeminit/swamp-extensions/issues)
+   are very welcome. Be as detailed as you like.
+2. **We triage it** — A maintainer will start the triage workflow on the issue and Claude
+   analyzes the report, confirms bugs by tracing through the codebase, and
+   generates a detailed implementation plan right in the issue thread.
+3. **We build it** — System Initiative engineers (with AI agents under our
+   direct control) implement the plan, with full test coverage and code review.
+4. **You get credit** — We're happy to include you as a co-author on any PR
+   generated from your request.
+
+This means you get the feature you asked for, maintained over time, without
+having to worry about keeping a fork in sync. See
+[CONTRIBUTING.md](CONTRIBUTING.md) for the full details.
 
 ## Development
 
-Each extension is a standalone package with its own `deno.json`. All npm
-dependencies are pinned to exact versions for reproducible builds.
+Each extension is a standalone Deno package with its own `deno.json`, `deno.lock`,
+`manifest.yaml`, and source under `extensions/`. All npm dependencies are pinned
+to exact versions.
+
+### Extension Patterns
+
+**Vault extensions** live in `vault/<name>/extensions/vaults/<name>.ts` and
+export a `vault` object with `configSchema`, `createProvider(name, config)` that
+returns `{ get, put, list, getName }`. See `vault/aws-sm/` for the canonical
+example.
+
+**Datastore extensions** live in `datastore/<name>/extensions/datastores/<name>.ts`
+with shared library code in `_lib/`. They export a `datastore` object with
+`configSchema`, `createProvider(config)` that returns lock, verifier, and sync
+service factories. See `datastore/s3/` for the canonical example.
+
+**Model extensions** under `model/` are auto-generated — never edit by hand.
+
+### Running Checks
 
 ```bash
-# Vault extension example
-cd vault/aws-sm
-deno check extensions/vaults/aws_sm.ts
-deno lint extensions/vaults/
-deno fmt extensions/vaults/
-deno test --allow-env extensions/vaults/
-
-# Datastore extension example
-cd datastore/s3
-deno check extensions/datastores/s3.ts
-deno lint extensions/datastores/
-deno fmt extensions/datastores/
-deno test --allow-read --allow-write --allow-env --allow-net --allow-sys extensions/datastores/
-
-# Generate / update lockfile
-deno install
+# From any extension directory:
+cd vault/aws-sm  # or datastore/s3, model/hetzner-cloud, etc.
+deno check extensions/<type>/*.ts
+deno lint extensions/<type>/
+deno fmt extensions/<type>/
+deno test <flags> extensions/<type>/
+deno install --frozen
 ```
+
+### Code Generation
+
+Model extensions are regenerated from provider OpenAPI specs:
+
+```bash
+cd codegen
+deno task fetch-schema:hetzner
+deno task fetch-schema:digitalocean
+deno task generate:hetzner
+deno task generate:digitalocean
+```
+
+Generation is idempotent — versions only bump when content changes. Design
+documents for each provider are in `codegen/designs/`.
 
 ## Publishing
 
@@ -120,6 +177,8 @@ deno install
 cd vault/aws-sm     # or datastore/s3
 swamp extension push manifest.yaml
 ```
+
+CI auto-publishes when `manifest.yaml` changes on main and the version is new.
 
 ## License
 

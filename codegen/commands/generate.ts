@@ -1,0 +1,237 @@
+// generate-models command implementation
+
+import { generateDigitalOceanModels } from "../digitalocean/pipeline.ts";
+import { generateHetznerModels } from "../hetzner/pipeline.ts";
+
+export async function generateModels(options: {
+  provider: string;
+  outputDir: string;
+  schemaPath?: string;
+}): Promise<void> {
+  switch (options.provider) {
+    case "hetzner":
+      await generateHetznerProvider(options);
+      break;
+    case "digitalocean":
+      await generateDigitalOceanProvider(options);
+      break;
+    default:
+      throw new Error(
+        `Unsupported provider: ${options.provider}. Supported: "hetzner", "digitalocean".`,
+      );
+  }
+}
+
+async function generateHetznerProvider(options: {
+  outputDir: string;
+  schemaPath?: string;
+}): Promise<void> {
+  const hetznerOutputDir = `${options.outputDir}/hetzner-cloud`;
+  console.log(`Generating hetzner models...`);
+  console.log(`Output directory: ${hetznerOutputDir}`);
+
+  const {
+    version,
+    models,
+    libFile,
+    manifest,
+    readmeFile,
+    licenseFile,
+    denoConfigFile,
+    skipped,
+    errors,
+    modelChanges,
+    hasChanges,
+  } = await generateHetznerModels({
+    outputDir: hetznerOutputDir,
+    schemaPath: options.schemaPath,
+  });
+
+  // Write the shared lib file
+  const libPath = `${hetznerOutputDir}/${libFile.filePath}`;
+  const libDir = libPath.substring(0, libPath.lastIndexOf("/"));
+  await Deno.mkdir(libDir, { recursive: true });
+  await Deno.writeTextFile(libPath, libFile.sourceCode);
+
+  // Write each model file
+  for (const model of models) {
+    const modelPath = `${hetznerOutputDir}/${model.filePath}`;
+    const modelDir = modelPath.substring(0, modelPath.lastIndexOf("/"));
+    await Deno.mkdir(modelDir, { recursive: true });
+    await Deno.writeTextFile(modelPath, model.sourceCode);
+  }
+
+  // Write README, LICENSE, and deno.json
+  await Deno.writeTextFile(
+    `${hetznerOutputDir}/README.md`,
+    readmeFile.sourceCode,
+  );
+  await Deno.writeTextFile(
+    `${hetznerOutputDir}/LICENSE.txt`,
+    licenseFile.sourceCode,
+  );
+  await Deno.writeTextFile(
+    `${hetznerOutputDir}/deno.json`,
+    denoConfigFile.sourceCode,
+  );
+
+  // Report changes from pipeline
+  const changedCount = modelChanges.filter((c) => c.status !== "unchanged")
+    .length;
+  const unchangedCount = modelChanges.filter((c) => c.status === "unchanged")
+    .length;
+
+  // Write manifest only when content actually differs from disk
+  if (hasChanges) {
+    const manifestPath = `${hetznerOutputDir}/${manifest.filePath}`;
+    let manifestChanged = true;
+    try {
+      const existingManifest = await Deno.readTextFile(manifestPath);
+      manifestChanged = existingManifest !== manifest.sourceCode;
+    } catch {
+      // File doesn't exist — write it
+    }
+    if (manifestChanged) {
+      await Deno.writeTextFile(manifestPath, manifest.sourceCode);
+    }
+  }
+
+  // Format generated files with deno fmt
+  console.log(`\nFormatting generated files...`);
+  const fmtCmd = new Deno.Command("deno", {
+    args: ["fmt", "--no-config", hetznerOutputDir],
+  });
+  const fmtResult = await fmtCmd.output();
+  if (!fmtResult.success) {
+    console.warn(
+      `  Warning: deno fmt failed: ${
+        new TextDecoder().decode(fmtResult.stderr)
+      }`,
+    );
+  }
+
+  console.log(`\nGeneration complete!`);
+  console.log(
+    `  Models: ${changedCount} changed, ${unchangedCount} unchanged`,
+  );
+  console.log(`  Manifest: ${hasChanges ? "changed" : "unchanged"}`);
+  console.log(`  Skipped: ${skipped.length}`);
+  for (const s of skipped) {
+    console.log(`    ${s.path}: ${s.reason}`);
+  }
+  if (errors.length > 0) {
+    console.log(`  Errors: ${errors.length}`);
+    for (const err of errors) {
+      console.log(`    ${err}`);
+    }
+  }
+  console.log(`  Version: ${version}`);
+  console.log(`  Output directory: ${hetznerOutputDir}`);
+}
+
+async function generateDigitalOceanProvider(options: {
+  outputDir: string;
+  schemaPath?: string;
+}): Promise<void> {
+  const doOutputDir = `${options.outputDir}/digitalocean`;
+  console.log(`Generating digitalocean models...`);
+  console.log(`Output directory: ${doOutputDir}`);
+
+  const {
+    version,
+    models,
+    libFile,
+    manifest,
+    readmeFile,
+    licenseFile,
+    denoConfigFile,
+    skipped,
+    errors,
+    modelChanges,
+    hasChanges,
+  } = await generateDigitalOceanModels({
+    outputDir: doOutputDir,
+    schemaPath: options.schemaPath,
+  });
+
+  // Write the shared lib file
+  const libPath = `${doOutputDir}/${libFile.filePath}`;
+  const libDir = libPath.substring(0, libPath.lastIndexOf("/"));
+  await Deno.mkdir(libDir, { recursive: true });
+  await Deno.writeTextFile(libPath, libFile.sourceCode);
+
+  // Write each model file
+  for (const model of models) {
+    const modelPath = `${doOutputDir}/${model.filePath}`;
+    const modelDir = modelPath.substring(0, modelPath.lastIndexOf("/"));
+    await Deno.mkdir(modelDir, { recursive: true });
+    await Deno.writeTextFile(modelPath, model.sourceCode);
+  }
+
+  // Write README, LICENSE, and deno.json
+  await Deno.writeTextFile(
+    `${doOutputDir}/README.md`,
+    readmeFile.sourceCode,
+  );
+  await Deno.writeTextFile(
+    `${doOutputDir}/LICENSE.txt`,
+    licenseFile.sourceCode,
+  );
+  await Deno.writeTextFile(
+    `${doOutputDir}/deno.json`,
+    denoConfigFile.sourceCode,
+  );
+
+  // Report changes from pipeline
+  const changedCount = modelChanges.filter((c) => c.status !== "unchanged")
+    .length;
+  const unchangedCount = modelChanges.filter((c) => c.status === "unchanged")
+    .length;
+
+  // Write manifest only when content actually differs from disk
+  if (hasChanges) {
+    const manifestPath = `${doOutputDir}/${manifest.filePath}`;
+    let manifestChanged = true;
+    try {
+      const existingManifest = await Deno.readTextFile(manifestPath);
+      manifestChanged = existingManifest !== manifest.sourceCode;
+    } catch {
+      // File doesn't exist — write it
+    }
+    if (manifestChanged) {
+      await Deno.writeTextFile(manifestPath, manifest.sourceCode);
+    }
+  }
+
+  // Format generated files with deno fmt
+  console.log(`\nFormatting generated files...`);
+  const fmtCmd = new Deno.Command("deno", {
+    args: ["fmt", "--no-config", doOutputDir],
+  });
+  const fmtResult = await fmtCmd.output();
+  if (!fmtResult.success) {
+    console.warn(
+      `  Warning: deno fmt failed: ${
+        new TextDecoder().decode(fmtResult.stderr)
+      }`,
+    );
+  }
+
+  console.log(`\nGeneration complete!`);
+  console.log(
+    `  Models: ${changedCount} changed, ${unchangedCount} unchanged`,
+  );
+  console.log(`  Manifest: ${hasChanges ? "changed" : "unchanged"}`);
+  console.log(`  Skipped: ${skipped.length}`);
+  for (const s of skipped) {
+    console.log(`    ${s.path}: ${s.reason}`);
+  }
+  if (errors.length > 0) {
+    console.log(`  Errors: ${errors.length}`);
+    for (const err of errors) {
+      console.log(`    ${err}`);
+    }
+  }
+  console.log(`  Version: ${version}`);
+  console.log(`  Output directory: ${doOutputDir}`);
+}

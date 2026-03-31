@@ -1,0 +1,225 @@
+// Auto-generated extension model for @swamp/hetzner-cloud/firewalls
+// Do not edit manually. Re-generate with: deno task generate:hetzner
+
+// deno-lint-ignore-file no-explicit-any
+
+import { z } from "zod";
+import { create, read, remove, tryRead, update } from "./_lib/hetzner.ts";
+
+const GlobalArgsSchema = z.object({
+  name: z.string().describe(
+    "Name of the [Firewall](#tag/firewalls).\n\nLimited to a maximum of 128 characters.\n\nMust be unique per Project.\n",
+  ),
+  labels: z.record(z.string(), z.unknown()).describe(
+    'User-defined labels (`key/value` pairs) for the Resource.\nFor more information, see "[Labels](#description/labels)".\n',
+  ).optional(),
+  rules: z.array(z.object({
+    description: z.string().max(255).optional(),
+    direction: z.enum(["in", "out"]),
+    source_ips: z.array(z.string()).optional(),
+    destination_ips: z.array(z.string()).optional(),
+    protocol: z.enum(["tcp", "udp", "icmp", "esp", "gre"]),
+    port: z.string().optional(),
+  })).describe(
+    "Array of rules.\n\nRules are limited to 50 entries per [Firewall](#tag/firewalls) and [500 effective rules](https://docs.hetzner.com/cloud/firewalls/overview#limits).\n",
+  ).optional(),
+  apply_to: z.array(z.object({
+    type: z.enum(["server", "label_selector"]),
+    server: z.object({
+      id: z.number().int(),
+    }).optional(),
+    label_selector: z.object({
+      selector: z.string(),
+    }).optional(),
+  })).describe(
+    "Resources to apply the [Firewall](#tag/firewalls) to.\n\nResources added directly are taking precedence over those added via a [Label Selector](#description/label-selector).\n",
+  ).optional(),
+});
+
+const ResourceSchema = z.object({
+  id: z.number(),
+  name: z.string().optional(),
+  labels: z.record(z.string(), z.unknown()).optional(),
+  created: z.string().optional(),
+  rules: z.array(z.object({
+    description: z.string().optional(),
+    direction: z.string().optional(),
+    source_ips: z.array(z.string()).optional(),
+    destination_ips: z.array(z.string()).optional(),
+    protocol: z.string().optional(),
+    port: z.string().optional(),
+  })).optional(),
+  applied_to: z.array(z.object({
+    type: z.string().optional(),
+    server: z.object({
+      id: z.number().optional(),
+    }).optional(),
+    label_selector: z.object({
+      selector: z.string().optional(),
+    }).optional(),
+    applied_to_resources: z.array(z.object({
+      type: z.string().optional(),
+      server: z.object({
+        id: z.number().optional(),
+      }).optional(),
+    })).optional(),
+  })).optional(),
+}).passthrough();
+
+type ResourceData = z.infer<typeof ResourceSchema>;
+
+const InputsSchema = z.object({
+  name: z.string().optional(),
+  labels: z.record(z.string(), z.unknown()).optional(),
+  rules: z.array(z.object({
+    description: z.string().max(255).optional(),
+    direction: z.enum(["in", "out"]),
+    source_ips: z.array(z.string()).optional(),
+    destination_ips: z.array(z.string()).optional(),
+    protocol: z.enum(["tcp", "udp", "icmp", "esp", "gre"]),
+    port: z.string().optional(),
+  })).optional(),
+  apply_to: z.array(z.object({
+    type: z.enum(["server", "label_selector"]),
+    server: z.object({
+      id: z.number().int(),
+    }).optional(),
+    label_selector: z.object({
+      selector: z.string(),
+    }).optional(),
+  })).optional(),
+});
+
+export const model = {
+  type: "@swamp/hetzner-cloud/firewalls",
+  version: "2026.03.23.1",
+  globalArguments: GlobalArgsSchema,
+  inputsSchema: InputsSchema,
+  resources: {
+    state: {
+      description: "Firewall resource state",
+      schema: ResourceSchema,
+      lifetime: "infinite",
+      garbageCollection: 10,
+    },
+  },
+  methods: {
+    create: {
+      description: "Create a firewall",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const body: Record<string, unknown> = {};
+        if (g.name !== undefined) body.name = g.name;
+        if (g.labels !== undefined) body.labels = g.labels;
+        if (g.rules !== undefined) body.rules = g.rules;
+        if (g.apply_to !== undefined) body.apply_to = g.apply_to;
+        const result = await create("/firewalls", body) as ResourceData;
+        const instanceName = g.name?.toString() ?? "current";
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    get: {
+      description: "Get a firewall",
+      arguments: z.object({
+        id: z.number().int().describe("The ID of the firewall"),
+      }),
+      execute: async (args: { id: number }, context: any) => {
+        const result = await read("/firewalls", args.id) as ResourceData;
+        const instanceName = result.name?.toString() ?? args.id.toString();
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    update: {
+      description: "Update firewall attributes",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const instanceName = g.name?.toString() ?? "current";
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          instanceName,
+        );
+        if (!content) throw new Error("No data found - run create first");
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        const body: Record<string, unknown> = {};
+        if (g.name !== undefined) body.name = g.name;
+        if (g.labels !== undefined) body.labels = g.labels;
+        const result = await update(
+          "/firewalls",
+          existing.id,
+          body,
+        ) as ResourceData;
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    delete: {
+      description: "Delete the firewall",
+      arguments: z.object({
+        id: z.number().int().describe("The ID of the firewall"),
+      }),
+      execute: async (args: { id: number }, context: any) => {
+        const { existed } = await remove("/firewalls", args.id);
+        const instanceName = context.globalArgs.name?.toString() ??
+          args.id.toString();
+        const handle = await context.writeResource("state", instanceName, {
+          id: args.id,
+          existed,
+          status: existed ? "deleted" : "not_found",
+          deletedAt: new Date().toISOString(),
+        });
+        return { dataHandles: [handle] };
+      },
+    },
+    sync: {
+      description: "Sync firewall state from Hetzner",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const instanceName = g.name?.toString() ?? "current";
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          instanceName,
+        );
+        if (!content) {
+          throw new Error("No data found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        const result = await tryRead("/firewalls", existing.id) as
+          | ResourceData
+          | null;
+        if (result) {
+          const handle = await context.writeResource(
+            "state",
+            instanceName,
+            result,
+          );
+          return { dataHandles: [handle] };
+        }
+        const handle = await context.writeResource("state", instanceName, {
+          id: existing.id,
+          status: "not_found",
+          syncedAt: new Date().toISOString(),
+        });
+        return { dataHandles: [handle] };
+      },
+    },
+  },
+};

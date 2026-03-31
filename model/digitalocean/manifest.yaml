@@ -1,0 +1,48 @@
+# Auto-generated manifest. Re-generate with the appropriate deno task.
+manifestVersion: 1
+name: "@swamp/digitalocean"
+version: "2026.03.31.1"
+description: "DigitalOcean infrastructure models"
+labels:
+  - digitalocean
+  - cloud
+  - infrastructure
+releaseNotes: |
+  - Updated: droplet, droplet_autoscale
+models:
+  - app_platform.ts
+  - byoip_prefix.ts
+  - cdn_endpoint.ts
+  - container_registry.ts
+  - custom_image.ts
+  - database_cluster.ts
+  - dedicated_inference.ts
+  - domain.ts
+  - droplet.ts
+  - droplet_autoscale.ts
+  - firewall.ts
+  - floating_ip.ts
+  - function_namespace.ts
+  - kubernetes_cluster.ts
+  - load_balancer.ts
+  - monitoring_alert_policy.ts
+  - monitoring_sink.ts
+  - monitoring_sink_destination.ts
+  - nfs.ts
+  - partner_network_connect_attachment.ts
+  - project.ts
+  - reserved_ip.ts
+  - reserved_ipv6.ts
+  - security_scan.ts
+  - space_key.ts
+  - ssh_key.ts
+  - ssl_certificate.ts
+  - tag.ts
+  - uptime_check.ts
+  - volume.ts
+  - vpc.ts
+  - vpc_nat_gateway.ts
+  - vpc_peering.ts
+additionalFiles:
+  - LICENSE.txt
+  - README.md
