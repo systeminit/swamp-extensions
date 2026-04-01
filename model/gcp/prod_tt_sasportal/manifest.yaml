@@ -1,0 +1,36 @@
+# Auto-generated manifest. Re-generate with the appropriate deno task.
+manifestVersion: 1
+name: "@swamp/gcp/prod_tt_sasportal"
+version: "2026.03.27.1"
+description: "Google Cloud prod_tt_sasportal infrastructure models"
+labels:
+  - gcp
+  - google-cloud
+  - prod_tt_sasportal
+  - cloud
+  - infrastructure
+releaseNotes: |
+  - Added: customers, customers_deployments, customers_deployments_devices, customers_devices, customers_nodes, customers_nodes_deployments, customers_nodes_devices, customers_nodes_nodes, deployments, deployments_devices, nodes, nodes_deployments, nodes_deployments_devices, nodes_devices, nodes_nodes, nodes_nodes_deployments, nodes_nodes_devices, nodes_nodes_nodes, policies
+models:
+  - customers.ts
+  - customers_deployments.ts
+  - customers_deployments_devices.ts
+  - customers_devices.ts
+  - customers_nodes.ts
+  - customers_nodes_deployments.ts
+  - customers_nodes_devices.ts
+  - customers_nodes_nodes.ts
+  - deployments.ts
+  - deployments_devices.ts
+  - nodes.ts
+  - nodes_deployments.ts
+  - nodes_deployments_devices.ts
+  - nodes_devices.ts
+  - nodes_nodes.ts
+  - nodes_nodes_deployments.ts
+  - nodes_nodes_devices.ts
+  - nodes_nodes_nodes.ts
+  - policies.ts
+additionalFiles:
+  - LICENSE.txt
+  - README.md

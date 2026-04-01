@@ -1,0 +1,21 @@
+# Auto-generated manifest. Re-generate with the appropriate deno task.
+manifestVersion: 1
+name: "@swamp/gcp/datafusion"
+version: "2026.03.27.1"
+description: "Google Cloud datafusion infrastructure models"
+labels:
+  - gcp
+  - google-cloud
+  - datafusion
+  - cloud
+  - infrastructure
+releaseNotes: |
+  - Added: locations, instances, instances_dnspeerings, versions
+models:
+  - instances.ts
+  - instances_dnspeerings.ts
+  - locations.ts
+  - versions.ts
+additionalFiles:
+  - LICENSE.txt
+  - README.md

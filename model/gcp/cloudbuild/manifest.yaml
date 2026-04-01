@@ -1,0 +1,20 @@
+# Auto-generated manifest. Re-generate with the appropriate deno task.
+manifestVersion: 1
+name: "@swamp/gcp/cloudbuild"
+version: "2026.03.27.1"
+description: "Google Cloud cloudbuild infrastructure models"
+labels:
+  - gcp
+  - google-cloud
+  - cloudbuild
+  - cloud
+  - infrastructure
+releaseNotes: |
+  - Added: locations, connections, connections_repositories
+models:
+  - connections.ts
+  - connections_repositories.ts
+  - locations.ts
+additionalFiles:
+  - LICENSE.txt
+  - README.md

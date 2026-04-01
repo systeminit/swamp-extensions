@@ -1,0 +1,241 @@
+// Auto-generated extension model for @swamp/gcp/clouderrorreporting/events
+// Do not edit manually. Re-generate with: deno task generate:gcp
+
+// deno-lint-ignore-file no-explicit-any
+
+import { z } from "zod";
+import {
+  createResource,
+  getProjectId,
+  isResourceNotFoundError,
+  readViaList,
+} from "./_lib/gcp.ts";
+
+const BASE_URL = "https://clouderrorreporting.googleapis.com/";
+
+const LIST_CONFIG = {
+  "id": "clouderrorreporting.projects.events.list",
+  "path": "v1beta1/{+projectName}/events",
+  "httpMethod": "GET",
+  "parameterOrder": [
+    "projectName",
+  ],
+  "parameters": {
+    "groupId": {
+      "location": "query",
+    },
+    "pageSize": {
+      "location": "query",
+    },
+    "pageToken": {
+      "location": "query",
+    },
+    "projectName": {
+      "location": "path",
+      "required": true,
+    },
+    "serviceFilter.resourceType": {
+      "location": "query",
+    },
+    "serviceFilter.service": {
+      "location": "query",
+    },
+    "serviceFilter.version": {
+      "location": "query",
+    },
+    "timeRange.period": {
+      "location": "query",
+    },
+  },
+} as const;
+
+const GlobalArgsSchema = z.object({
+  name: z.string().describe(
+    "Instance name for this resource (used as the unique identifier in the factory pattern)",
+  ),
+});
+
+const StateSchema = z.object({
+  context: z.object({
+    httpRequest: z.object({
+      method: z.string(),
+      referrer: z.string(),
+      remoteIp: z.string(),
+      responseStatusCode: z.number(),
+      url: z.string(),
+      userAgent: z.string(),
+    }),
+    reportLocation: z.object({
+      filePath: z.string(),
+      functionName: z.string(),
+      lineNumber: z.number(),
+    }),
+    sourceReferences: z.array(z.object({
+      repository: z.string(),
+      revisionId: z.string(),
+    })),
+    user: z.string(),
+  }).optional(),
+  eventTime: z.string().optional(),
+  message: z.string().optional(),
+  serviceContext: z.object({
+    resourceType: z.string(),
+    service: z.string(),
+    version: z.string(),
+  }).optional(),
+}).passthrough();
+
+type StateData = z.infer<typeof StateSchema>;
+
+const InputsSchema = z.object({
+  name: z.string().optional(),
+});
+
+export const model = {
+  type: "@swamp/gcp/clouderrorreporting/events",
+  version: "2026.03.27.1",
+  globalArguments: GlobalArgsSchema,
+  inputsSchema: InputsSchema,
+  resources: {
+    state: {
+      description:
+        "An error event which is returned by the Error Reporting system.",
+      schema: StateSchema,
+      lifetime: "infinite",
+      garbageCollection: 10,
+    },
+  },
+  methods: {
+    get: {
+      description: "Get a events",
+      arguments: z.object({
+        identifier: z.string().describe("The name of the events"),
+      }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const projectId = await getProjectId();
+        const params: Record<string, string> = { project: projectId };
+        const g = context.globalArgs;
+        if (g["projectName"] !== undefined) {
+          params["projectName"] = String(g["projectName"]);
+        }
+        const result = await readViaList(
+          BASE_URL,
+          LIST_CONFIG,
+          params,
+          "name",
+          args.identifier,
+        ) as StateData;
+        const instanceName = g.name?.toString() ?? args.identifier;
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    sync: {
+      description: "Sync events state from GCP",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const projectId = await getProjectId();
+        const instanceName = g.name?.toString() ?? "current";
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          instanceName,
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        try {
+          const params: Record<string, string> = { project: projectId };
+          if (g["projectName"] !== undefined) {
+            params["projectName"] = String(g["projectName"]);
+          } else if (existing["projectName"]) {
+            params["projectName"] = String(existing["projectName"]);
+          }
+          const identifier = existing.name?.toString() ?? g["name"]?.toString();
+          if (!identifier) {
+            throw new Error(
+              "No identifier found in existing state or globalArgs",
+            );
+          }
+          const result = await readViaList(
+            BASE_URL,
+            LIST_CONFIG,
+            params,
+            "name",
+            identifier,
+          ) as StateData;
+          const handle = await context.writeResource(
+            "state",
+            instanceName,
+            result,
+          );
+          return { dataHandles: [handle] };
+        } catch (error: unknown) {
+          if (isResourceNotFoundError(error)) {
+            const handle = await context.writeResource("state", instanceName, {
+              status: "not_found",
+              syncedAt: new Date().toISOString(),
+            });
+            return { dataHandles: [handle] };
+          }
+          throw error;
+        }
+      },
+    },
+    report: {
+      description: "report",
+      arguments: z.object({
+        context: z.any().optional(),
+        eventTime: z.any().optional(),
+        message: z.any().optional(),
+        serviceContext: z.any().optional(),
+      }),
+      execute: async (args: Record<string, unknown>, context: any) => {
+        const g = context.globalArgs;
+        const projectId = await getProjectId();
+        const params: Record<string, string> = { project: projectId };
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          g.name?.toString() ?? "current",
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        params["projectName"] = existing["name"]?.toString() ??
+          g["name"]?.toString() ?? "";
+        const body: Record<string, unknown> = {};
+        if (args["context"] !== undefined) body["context"] = args["context"];
+        if (args["eventTime"] !== undefined) {
+          body["eventTime"] = args["eventTime"];
+        }
+        if (args["message"] !== undefined) body["message"] = args["message"];
+        if (args["serviceContext"] !== undefined) {
+          body["serviceContext"] = args["serviceContext"];
+        }
+        const result = await createResource(
+          BASE_URL,
+          {
+            "id": "clouderrorreporting.projects.events.report",
+            "path": "v1beta1/{+projectName}/events:report",
+            "httpMethod": "POST",
+            "parameterOrder": ["projectName"],
+            "parameters": {
+              "projectName": { "location": "path", "required": true },
+            },
+          },
+          params,
+          body,
+        );
+        return { result };
+      },
+    },
+  },
+};

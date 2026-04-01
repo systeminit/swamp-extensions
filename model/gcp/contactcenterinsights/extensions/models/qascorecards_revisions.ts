@@ -1,0 +1,429 @@
+// Auto-generated extension model for @swamp/gcp/contactcenterinsights/qascorecards-revisions
+// Do not edit manually. Re-generate with: deno task generate:gcp
+
+// deno-lint-ignore-file no-explicit-any
+
+import { z } from "zod";
+import {
+  createResource,
+  deleteResource,
+  getProjectId,
+  isResourceNotFoundError,
+  readResource,
+} from "./_lib/gcp.ts";
+
+/** Construct the fully-qualified resource name from parent and short name. */
+function buildResourceName(parent: string, shortName: string): string {
+  return `${parent}/revisions/${shortName}`;
+}
+
+const BASE_URL = "https://contactcenterinsights.googleapis.com/";
+
+const GET_CONFIG = {
+  "id": "contactcenterinsights.projects.locations.qaScorecards.revisions.get",
+  "path": "v1/{+name}",
+  "httpMethod": "GET",
+  "parameterOrder": [
+    "name",
+  ],
+  "parameters": {
+    "name": {
+      "location": "path",
+      "required": true,
+    },
+  },
+} as const;
+
+const INSERT_CONFIG = {
+  "id":
+    "contactcenterinsights.projects.locations.qaScorecards.revisions.create",
+  "path": "v1/{+parent}/revisions",
+  "httpMethod": "POST",
+  "parameterOrder": [
+    "parent",
+  ],
+  "parameters": {
+    "parent": {
+      "location": "path",
+      "required": true,
+    },
+    "qaScorecardRevisionId": {
+      "location": "query",
+    },
+  },
+} as const;
+
+const DELETE_CONFIG = {
+  "id":
+    "contactcenterinsights.projects.locations.qaScorecards.revisions.delete",
+  "path": "v1/{+name}",
+  "httpMethod": "DELETE",
+  "parameterOrder": [
+    "name",
+  ],
+  "parameters": {
+    "force": {
+      "location": "query",
+    },
+    "name": {
+      "location": "path",
+      "required": true,
+    },
+  },
+} as const;
+
+const GlobalArgsSchema = z.object({
+  name: z.string().describe(
+    "Identifier. The name of the scorecard revision. Format: projects/{project}/locations/{location}/qaScorecards/{qa_scorecard}/revisions/{revision}",
+  ).optional(),
+  snapshot: z.object({
+    createTime: z.string().describe(
+      "Output only. The time at which this scorecard was created.",
+    ).optional(),
+    description: z.string().describe(
+      "A text description explaining the intent of the scorecard.",
+    ).optional(),
+    displayName: z.string().describe(
+      "The user-specified display name of the scorecard.",
+    ).optional(),
+    isDefault: z.boolean().describe(
+      "Whether the scorecard is the default one for the project. A default scorecard cannot be deleted and will always appear first in scorecard selector.",
+    ).optional(),
+    name: z.string().describe(
+      "Identifier. The scorecard name. Format: projects/{project}/locations/{location}/qaScorecards/{qa_scorecard}",
+    ).optional(),
+    source: z.enum([
+      "QA_SCORECARD_SOURCE_UNSPECIFIED",
+      "QA_SCORECARD_SOURCE_CUSTOMER_DEFINED",
+      "QA_SCORECARD_SOURCE_DISCOVERY_ENGINE",
+    ]).describe("Output only. The source of the scorecard.").optional(),
+    updateTime: z.string().describe(
+      "Output only. The most recent time at which the scorecard was updated.",
+    ).optional(),
+  }).describe(
+    "A QaScorecard represents a collection of questions to be scored during analysis.",
+  ).optional(),
+  qaScorecardRevisionId: z.string().describe(
+    "Optional. A unique ID for the new QaScorecardRevision. This ID will become the final component of the QaScorecardRevision's resource name. If no ID is specified, a server-generated ID will be used. This value should be 4-64 characters and must match the regular expression `^[a-z0-9-]{4,64}$`. Valid characters are `a-z-`.",
+  ).optional(),
+  location: z.string().describe(
+    "The location for this resource (e.g., 'us', 'us-central1', 'europe-west1')",
+  ).optional(),
+});
+
+const StateSchema = z.object({
+  alternateIds: z.array(z.string()).optional(),
+  createTime: z.string().optional(),
+  name: z.string(),
+  snapshot: z.object({
+    createTime: z.string(),
+    description: z.string(),
+    displayName: z.string(),
+    isDefault: z.boolean(),
+    name: z.string(),
+    source: z.string(),
+    updateTime: z.string(),
+  }).optional(),
+  state: z.string().optional(),
+}).passthrough();
+
+type StateData = z.infer<typeof StateSchema>;
+
+const InputsSchema = z.object({
+  name: z.string().describe(
+    "Identifier. The name of the scorecard revision. Format: projects/{project}/locations/{location}/qaScorecards/{qa_scorecard}/revisions/{revision}",
+  ).optional(),
+  snapshot: z.object({
+    createTime: z.string().describe(
+      "Output only. The time at which this scorecard was created.",
+    ).optional(),
+    description: z.string().describe(
+      "A text description explaining the intent of the scorecard.",
+    ).optional(),
+    displayName: z.string().describe(
+      "The user-specified display name of the scorecard.",
+    ).optional(),
+    isDefault: z.boolean().describe(
+      "Whether the scorecard is the default one for the project. A default scorecard cannot be deleted and will always appear first in scorecard selector.",
+    ).optional(),
+    name: z.string().describe(
+      "Identifier. The scorecard name. Format: projects/{project}/locations/{location}/qaScorecards/{qa_scorecard}",
+    ).optional(),
+    source: z.enum([
+      "QA_SCORECARD_SOURCE_UNSPECIFIED",
+      "QA_SCORECARD_SOURCE_CUSTOMER_DEFINED",
+      "QA_SCORECARD_SOURCE_DISCOVERY_ENGINE",
+    ]).describe("Output only. The source of the scorecard.").optional(),
+    updateTime: z.string().describe(
+      "Output only. The most recent time at which the scorecard was updated.",
+    ).optional(),
+  }).describe(
+    "A QaScorecard represents a collection of questions to be scored during analysis.",
+  ).optional(),
+  qaScorecardRevisionId: z.string().describe(
+    "Optional. A unique ID for the new QaScorecardRevision. This ID will become the final component of the QaScorecardRevision's resource name. If no ID is specified, a server-generated ID will be used. This value should be 4-64 characters and must match the regular expression `^[a-z0-9-]{4,64}$`. Valid characters are `a-z-`.",
+  ).optional(),
+  location: z.string().describe(
+    "The location for this resource (e.g., 'us', 'us-central1', 'europe-west1')",
+  ).optional(),
+});
+
+export const model = {
+  type: "@swamp/gcp/contactcenterinsights/qascorecards-revisions",
+  version: "2026.03.27.1",
+  globalArguments: GlobalArgsSchema,
+  inputsSchema: InputsSchema,
+  resources: {
+    state: {
+      description:
+        "A revision of a QaScorecard. Modifying published scorecard fields would inval...",
+      schema: StateSchema,
+      lifetime: "infinite",
+      garbageCollection: 10,
+    },
+  },
+  methods: {
+    create: {
+      description: "Create a revisions",
+      arguments: z.object({
+        waitForReady: z.boolean().describe(
+          "Wait for the resource to reach a ready state after creation (default: true)",
+        ).optional(),
+      }),
+      execute: async (args: { waitForReady?: boolean }, context: any) => {
+        const g = context.globalArgs;
+        const projectId = await getProjectId();
+        const params: Record<string, string> = { project: projectId };
+        if (g["parent"] !== undefined) params["parent"] = String(g["parent"]);
+        const body: Record<string, unknown> = {};
+        if (g["name"] !== undefined) body["name"] = g["name"];
+        if (g["snapshot"] !== undefined) body["snapshot"] = g["snapshot"];
+        if (g["qaScorecardRevisionId"] !== undefined) {
+          body["qaScorecardRevisionId"] = g["qaScorecardRevisionId"];
+        }
+        if (g["parent"] !== undefined && g["name"] !== undefined) {
+          params["name"] = buildResourceName(
+            String(g["parent"]),
+            String(g["name"]),
+          );
+        }
+        const result = await createResource(
+          BASE_URL,
+          INSERT_CONFIG,
+          params,
+          body,
+          GET_CONFIG,
+          (args.waitForReady ?? true)
+            ? {
+              "statusField": "state",
+              "readyValues": ["READY"],
+              "failedValues": [],
+            }
+            : undefined,
+        ) as StateData;
+        const instanceName = (result.name ?? g.name)?.toString() ?? "current";
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    get: {
+      description: "Get a revisions",
+      arguments: z.object({
+        identifier: z.string().describe("The name of the revisions"),
+      }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const projectId = await getProjectId();
+        const params: Record<string, string> = { project: projectId };
+        const g = context.globalArgs;
+        params["name"] = buildResourceName(
+          String(g["parent"] ?? ""),
+          args.identifier,
+        );
+        const result = await readResource(
+          BASE_URL,
+          GET_CONFIG,
+          params,
+        ) as StateData;
+        const instanceName = (result.name ?? g.name)?.toString() ??
+          args.identifier;
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    delete: {
+      description: "Delete the revisions",
+      arguments: z.object({
+        identifier: z.string().describe("The name of the revisions"),
+      }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const g = context.globalArgs;
+        const projectId = await getProjectId();
+        const params: Record<string, string> = { project: projectId };
+        params["name"] = buildResourceName(
+          String(g["parent"] ?? ""),
+          args.identifier,
+        );
+        const { existed } = await deleteResource(
+          BASE_URL,
+          DELETE_CONFIG,
+          params,
+        );
+        const instanceName = g.name?.toString() ?? args.identifier;
+        const handle = await context.writeResource("state", instanceName, {
+          identifier: args.identifier,
+          existed,
+          status: existed ? "deleted" : "not_found",
+          deletedAt: new Date().toISOString(),
+        });
+        return { dataHandles: [handle] };
+      },
+    },
+    sync: {
+      description: "Sync revisions state from GCP",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const projectId = await getProjectId();
+        const instanceName = g.name?.toString() ?? "current";
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          instanceName,
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        try {
+          const params: Record<string, string> = { project: projectId };
+          const shortName = existing.name?.toString() ?? g["name"]?.toString();
+          if (!shortName) throw new Error("No identifier found");
+          params["name"] = buildResourceName(
+            String(g["parent"] ?? ""),
+            shortName,
+          );
+          const result = await readResource(
+            BASE_URL,
+            GET_CONFIG,
+            params,
+          ) as StateData;
+          const handle = await context.writeResource(
+            "state",
+            instanceName,
+            result,
+          );
+          return { dataHandles: [handle] };
+        } catch (error: unknown) {
+          if (isResourceNotFoundError(error)) {
+            const handle = await context.writeResource("state", instanceName, {
+              status: "not_found",
+              syncedAt: new Date().toISOString(),
+            });
+            return { dataHandles: [handle] };
+          }
+          throw error;
+        }
+      },
+    },
+    deploy: {
+      description: "deploy",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, unknown>, context: any) => {
+        const g = context.globalArgs;
+        const projectId = await getProjectId();
+        const params: Record<string, string> = { project: projectId };
+        if (g["parent"] !== undefined && g["name"] !== undefined) {
+          params["name"] = buildResourceName(
+            String(g["parent"]),
+            String(g["name"]),
+          );
+        }
+        const result = await createResource(
+          BASE_URL,
+          {
+            "id":
+              "contactcenterinsights.projects.locations.qaScorecards.revisions.deploy",
+            "path": "v1/{+name}:deploy",
+            "httpMethod": "POST",
+            "parameterOrder": ["name"],
+            "parameters": { "name": { "location": "path", "required": true } },
+          },
+          params,
+          {},
+        );
+        return { result };
+      },
+    },
+    tune_qa_scorecard_revision: {
+      description: "tune qa scorecard revision",
+      arguments: z.object({
+        filter: z.any().optional(),
+        validateOnly: z.any().optional(),
+      }),
+      execute: async (args: Record<string, unknown>, context: any) => {
+        const g = context.globalArgs;
+        const projectId = await getProjectId();
+        const params: Record<string, string> = { project: projectId };
+        if (g["parent"] !== undefined) params["parent"] = String(g["parent"]);
+        const body: Record<string, unknown> = {};
+        if (args["filter"] !== undefined) body["filter"] = args["filter"];
+        if (args["validateOnly"] !== undefined) {
+          body["validateOnly"] = args["validateOnly"];
+        }
+        const result = await createResource(
+          BASE_URL,
+          {
+            "id":
+              "contactcenterinsights.projects.locations.qaScorecards.revisions.tuneQaScorecardRevision",
+            "path": "v1/{+parent}:tuneQaScorecardRevision",
+            "httpMethod": "POST",
+            "parameterOrder": ["parent"],
+            "parameters": {
+              "parent": { "location": "path", "required": true },
+            },
+          },
+          params,
+          body,
+        );
+        return { result };
+      },
+    },
+    undeploy: {
+      description: "undeploy",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, unknown>, context: any) => {
+        const g = context.globalArgs;
+        const projectId = await getProjectId();
+        const params: Record<string, string> = { project: projectId };
+        if (g["parent"] !== undefined && g["name"] !== undefined) {
+          params["name"] = buildResourceName(
+            String(g["parent"]),
+            String(g["name"]),
+          );
+        }
+        const result = await createResource(
+          BASE_URL,
+          {
+            "id":
+              "contactcenterinsights.projects.locations.qaScorecards.revisions.undeploy",
+            "path": "v1/{+name}:undeploy",
+            "httpMethod": "POST",
+            "parameterOrder": ["name"],
+            "parameters": { "name": { "location": "path", "required": true } },
+          },
+          params,
+          {},
+        );
+        return { result };
+      },
+    },
+  },
+};

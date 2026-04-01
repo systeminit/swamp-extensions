@@ -1,0 +1,304 @@
+// Auto-generated extension model for @swamp/gcp/keep/notes
+// Do not edit manually. Re-generate with: deno task generate:gcp
+
+// deno-lint-ignore-file no-explicit-any
+
+import { z } from "zod";
+import {
+  createResource,
+  deleteResource,
+  getProjectId,
+  isResourceNotFoundError,
+  readResource,
+} from "./_lib/gcp.ts";
+
+const BASE_URL = "https://keep.googleapis.com/";
+
+const GET_CONFIG = {
+  "id": "keep.notes.get",
+  "path": "v1/{+name}",
+  "httpMethod": "GET",
+  "parameterOrder": [
+    "name",
+  ],
+  "parameters": {
+    "name": {
+      "location": "path",
+      "required": true,
+    },
+  },
+} as const;
+
+const INSERT_CONFIG = {
+  "id": "keep.notes.create",
+  "path": "v1/notes",
+  "httpMethod": "POST",
+  "parameterOrder": [],
+  "parameters": {},
+} as const;
+
+const DELETE_CONFIG = {
+  "id": "keep.notes.delete",
+  "path": "v1/{+name}",
+  "httpMethod": "DELETE",
+  "parameterOrder": [
+    "name",
+  ],
+  "parameters": {
+    "name": {
+      "location": "path",
+      "required": true,
+    },
+  },
+} as const;
+
+const GlobalArgsSchema = z.object({
+  name: z.string().describe(
+    "Instance name for this resource (used as the unique identifier in the factory pattern)",
+  ),
+  body: z.object({
+    list: z.object({
+      listItems: z.array(z.object({
+        checked: z.boolean().describe(
+          "Whether this item has been checked off or not.",
+        ).optional(),
+        childListItems: z.array(z.string()).describe(
+          "If set, list of list items nested under this list item. Only one level of nesting is allowed.",
+        ).optional(),
+        text: z.object({
+          text: z.string().describe(
+            "The text of the note. The limits on this vary with the specific field using this type.",
+          ).optional(),
+        }).describe("The block of text for a single text section or list item.")
+          .optional(),
+      })).describe(
+        "The items in the list. The number of items must be less than 1,000.",
+      ).optional(),
+    }).describe("The list of items for a single list note.").optional(),
+    text: z.object({
+      text: z.string().describe(
+        "The text of the note. The limits on this vary with the specific field using this type.",
+      ).optional(),
+    }).describe("The block of text for a single text section or list item.")
+      .optional(),
+  }).describe("The content of the note.").optional(),
+  title: z.string().describe(
+    "The title of the note. Length must be less than 1,000 characters.",
+  ).optional(),
+});
+
+const StateSchema = z.object({
+  attachments: z.array(z.object({
+    mimeType: z.array(z.string()),
+    name: z.string(),
+  })).optional(),
+  body: z.object({
+    list: z.object({
+      listItems: z.array(z.object({
+        checked: z.boolean(),
+        childListItems: z.array(z.string()),
+        text: z.object({
+          text: z.string(),
+        }),
+      })),
+    }),
+    text: z.object({
+      text: z.string(),
+    }),
+  }).optional(),
+  createTime: z.string().optional(),
+  name: z.string(),
+  permissions: z.array(z.object({
+    deleted: z.boolean(),
+    email: z.string(),
+    family: z.object({}),
+    group: z.object({
+      email: z.string(),
+    }),
+    name: z.string(),
+    role: z.string(),
+    user: z.object({
+      email: z.string(),
+    }),
+  })).optional(),
+  title: z.string().optional(),
+  trashTime: z.string().optional(),
+  trashed: z.boolean().optional(),
+  updateTime: z.string().optional(),
+}).passthrough();
+
+type StateData = z.infer<typeof StateSchema>;
+
+const InputsSchema = z.object({
+  name: z.string().optional(),
+  body: z.object({
+    list: z.object({
+      listItems: z.array(z.object({
+        checked: z.boolean().describe(
+          "Whether this item has been checked off or not.",
+        ).optional(),
+        childListItems: z.array(z.string()).describe(
+          "If set, list of list items nested under this list item. Only one level of nesting is allowed.",
+        ).optional(),
+        text: z.object({
+          text: z.string().describe(
+            "The text of the note. The limits on this vary with the specific field using this type.",
+          ).optional(),
+        }).describe("The block of text for a single text section or list item.")
+          .optional(),
+      })).describe(
+        "The items in the list. The number of items must be less than 1,000.",
+      ).optional(),
+    }).describe("The list of items for a single list note.").optional(),
+    text: z.object({
+      text: z.string().describe(
+        "The text of the note. The limits on this vary with the specific field using this type.",
+      ).optional(),
+    }).describe("The block of text for a single text section or list item.")
+      .optional(),
+  }).describe("The content of the note.").optional(),
+  title: z.string().describe(
+    "The title of the note. Length must be less than 1,000 characters.",
+  ).optional(),
+});
+
+export const model = {
+  type: "@swamp/gcp/keep/notes",
+  version: "2026.03.27.1",
+  globalArguments: GlobalArgsSchema,
+  inputsSchema: InputsSchema,
+  resources: {
+    state: {
+      description: "A single note.",
+      schema: StateSchema,
+      lifetime: "infinite",
+      garbageCollection: 10,
+    },
+  },
+  methods: {
+    create: {
+      description: "Create a notes",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const projectId = await getProjectId();
+        const params: Record<string, string> = { project: projectId };
+        const body: Record<string, unknown> = {};
+        if (g["body"] !== undefined) body["body"] = g["body"];
+        if (g["title"] !== undefined) body["title"] = g["title"];
+        if (g["name"] !== undefined) params["name"] = String(g["name"]);
+        const result = await createResource(
+          BASE_URL,
+          INSERT_CONFIG,
+          params,
+          body,
+          GET_CONFIG,
+        ) as StateData;
+        const instanceName = g.name?.toString() ?? "current";
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    get: {
+      description: "Get a notes",
+      arguments: z.object({
+        identifier: z.string().describe("The name of the notes"),
+      }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const projectId = await getProjectId();
+        const params: Record<string, string> = { project: projectId };
+        const g = context.globalArgs;
+        params["name"] = args.identifier;
+        const result = await readResource(
+          BASE_URL,
+          GET_CONFIG,
+          params,
+        ) as StateData;
+        const instanceName = g.name?.toString() ?? args.identifier;
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    delete: {
+      description: "Delete the notes",
+      arguments: z.object({
+        identifier: z.string().describe("The name of the notes"),
+      }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const g = context.globalArgs;
+        const projectId = await getProjectId();
+        const params: Record<string, string> = { project: projectId };
+        params["name"] = args.identifier;
+        const { existed } = await deleteResource(
+          BASE_URL,
+          DELETE_CONFIG,
+          params,
+        );
+        const instanceName = g.name?.toString() ?? args.identifier;
+        const handle = await context.writeResource("state", instanceName, {
+          identifier: args.identifier,
+          existed,
+          status: existed ? "deleted" : "not_found",
+          deletedAt: new Date().toISOString(),
+        });
+        return { dataHandles: [handle] };
+      },
+    },
+    sync: {
+      description: "Sync notes state from GCP",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const projectId = await getProjectId();
+        const instanceName = g.name?.toString() ?? "current";
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          instanceName,
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        try {
+          const params: Record<string, string> = { project: projectId };
+          const identifier = existing.name?.toString() ?? g["name"]?.toString();
+          if (!identifier) {
+            throw new Error(
+              "No identifier found in existing state or globalArgs",
+            );
+          }
+          params["name"] = identifier;
+          const result = await readResource(
+            BASE_URL,
+            GET_CONFIG,
+            params,
+          ) as StateData;
+          const handle = await context.writeResource(
+            "state",
+            instanceName,
+            result,
+          );
+          return { dataHandles: [handle] };
+        } catch (error: unknown) {
+          if (isResourceNotFoundError(error)) {
+            const handle = await context.writeResource("state", instanceName, {
+              status: "not_found",
+              syncedAt: new Date().toISOString(),
+            });
+            return { dataHandles: [handle] };
+          }
+          throw error;
+        }
+      },
+    },
+  },
+};

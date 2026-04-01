@@ -1,0 +1,824 @@
+// Auto-generated extension model for @swamp/gcp/classroom/courses-coursework-studentsubmissions
+// Do not edit manually. Re-generate with: deno task generate:gcp
+
+// deno-lint-ignore-file no-explicit-any
+
+import { z } from "zod";
+import {
+  createResource,
+  getProjectId,
+  isResourceNotFoundError,
+  readResource,
+  updateResource,
+} from "./_lib/gcp.ts";
+
+const BASE_URL = "https://classroom.googleapis.com/";
+
+const GET_CONFIG = {
+  "id": "classroom.courses.courseWork.studentSubmissions.get",
+  "path":
+    "v1/courses/{courseId}/courseWork/{courseWorkId}/studentSubmissions/{id}",
+  "httpMethod": "GET",
+  "parameterOrder": [
+    "courseId",
+    "courseWorkId",
+    "id",
+  ],
+  "parameters": {
+    "courseId": {
+      "location": "path",
+      "required": true,
+    },
+    "courseWorkId": {
+      "location": "path",
+      "required": true,
+    },
+    "id": {
+      "location": "path",
+      "required": true,
+    },
+  },
+} as const;
+
+const PATCH_CONFIG = {
+  "id": "classroom.courses.courseWork.studentSubmissions.patch",
+  "path":
+    "v1/courses/{courseId}/courseWork/{courseWorkId}/studentSubmissions/{id}",
+  "httpMethod": "PATCH",
+  "parameterOrder": [
+    "courseId",
+    "courseWorkId",
+    "id",
+  ],
+  "parameters": {
+    "courseId": {
+      "location": "path",
+      "required": true,
+    },
+    "courseWorkId": {
+      "location": "path",
+      "required": true,
+    },
+    "id": {
+      "location": "path",
+      "required": true,
+    },
+    "updateMask": {
+      "location": "query",
+    },
+  },
+} as const;
+
+const GlobalArgsSchema = z.object({
+  alternateLink: z.string().describe(
+    "Absolute link to the submission in the Classroom web UI. Read-only.",
+  ).optional(),
+  assignedGrade: z.number().describe(
+    "Optional grade. If unset, no grade was set. This value must be non-negative. Decimal (that is, non-integer) values are allowed, but are rounded to two decimal places. This may be modified only by course teachers.",
+  ).optional(),
+  assignedRubricGrades: z.record(
+    z.string(),
+    z.object({
+      criterionId: z.string().describe("Optional. Criterion ID.").optional(),
+      levelId: z.string().describe(
+        "Optional. Optional level ID of the selected level. If empty, no level was selected.",
+      ).optional(),
+      points: z.number().describe(
+        "Optional. Optional points assigned for this criterion, typically based on the level. Levels might or might not have points. If unset, no points were set for this criterion.",
+      ).optional(),
+    }),
+  ).describe(
+    "Assigned rubric grades based on the rubric's Criteria. This map is empty if there is no rubric attached to this course work or if a rubric is attached, but no grades have been set on any Criteria. Entries are only populated for grades that have been set. Key: The rubric's criterion ID. Read-only.",
+  ).optional(),
+  assignmentSubmission: z.object({
+    attachments: z.array(z.object({
+      driveFile: z.object({
+        alternateLink: z.string().describe(
+          "URL that can be used to access the Drive item. Read-only.",
+        ).optional(),
+        id: z.string().describe("Drive API resource ID.").optional(),
+        thumbnailUrl: z.string().describe(
+          "URL of a thumbnail image of the Drive item. Read-only.",
+        ).optional(),
+        title: z.string().describe("Title of the Drive item. Read-only.")
+          .optional(),
+      }).describe("Representation of a Google Drive file.").optional(),
+      form: z.object({
+        formUrl: z.string().describe("URL of the form.").optional(),
+        responseUrl: z.string().describe(
+          "URL of the form responses document. Only set if responses have been recorded and only when the requesting user is an editor of the form. Read-only.",
+        ).optional(),
+        thumbnailUrl: z.string().describe(
+          "URL of a thumbnail image of the Form. Read-only.",
+        ).optional(),
+        title: z.string().describe("Title of the Form. Read-only.").optional(),
+      }).describe("Google Forms item.").optional(),
+      link: z.object({
+        thumbnailUrl: z.string().describe(
+          "URL of a thumbnail image of the target URL. Read-only.",
+        ).optional(),
+        title: z.string().describe("Title of the target of the URL. Read-only.")
+          .optional(),
+        url: z.string().describe(
+          "URL to link to. This must be a valid UTF-8 string containing between 1 and 2024 characters.",
+        ).optional(),
+      }).describe("URL item.").optional(),
+      youTubeVideo: z.object({
+        alternateLink: z.string().describe(
+          "URL that can be used to view the YouTube video. Read-only.",
+        ).optional(),
+        id: z.string().describe("YouTube API resource ID.").optional(),
+        thumbnailUrl: z.string().describe(
+          "URL of a thumbnail image of the YouTube video. Read-only.",
+        ).optional(),
+        title: z.string().describe("Title of the YouTube video. Read-only.")
+          .optional(),
+      }).describe("YouTube video item.").optional(),
+    })).describe(
+      "Attachments added by the student. Drive files that correspond to materials with a share mode of STUDENT_COPY may not exist yet if the student has not accessed the assignment in Classroom. Some attachment metadata is only populated if the requesting user has permission to access it. Identifier and alternate_link fields are always available, but others (for example, title) may not be.",
+    ).optional(),
+  }).describe("Student work for an assignment.").optional(),
+  associatedWithDeveloper: z.boolean().describe(
+    "Whether this student submission is associated with the Developer Console project making the request. See CreateCourseWork for more details. Read-only.",
+  ).optional(),
+  courseId: z.string().describe("Identifier of the course. Read-only.")
+    .optional(),
+  courseWorkId: z.string().describe(
+    "Identifier for the course work this corresponds to. Read-only.",
+  ).optional(),
+  courseWorkType: z.enum([
+    "COURSE_WORK_TYPE_UNSPECIFIED",
+    "ASSIGNMENT",
+    "SHORT_ANSWER_QUESTION",
+    "MULTIPLE_CHOICE_QUESTION",
+  ]).describe("Type of course work this submission is for. Read-only.")
+    .optional(),
+  creationTime: z.string().describe(
+    "Creation time of this submission. This may be unset if the student has not accessed this item. Read-only.",
+  ).optional(),
+  draftGrade: z.number().describe(
+    "Optional pending grade. If unset, no grade was set. This value must be non-negative. Decimal (that is, non-integer) values are allowed, but are rounded to two decimal places. This is only visible to and modifiable by course teachers.",
+  ).optional(),
+  draftRubricGrades: z.record(
+    z.string(),
+    z.object({
+      criterionId: z.string().describe("Optional. Criterion ID.").optional(),
+      levelId: z.string().describe(
+        "Optional. Optional level ID of the selected level. If empty, no level was selected.",
+      ).optional(),
+      points: z.number().describe(
+        "Optional. Optional points assigned for this criterion, typically based on the level. Levels might or might not have points. If unset, no points were set for this criterion.",
+      ).optional(),
+    }),
+  ).describe(
+    "Pending rubric grades based on the rubric's criteria. This map is empty if there is no rubric attached to this course work or if a rubric is attached, but no grades have been set on any criteria. Entries are only populated for grades that have been set. Key: The rubric's criterion ID. Read-only.",
+  ).optional(),
+  id: z.string().describe(
+    "Classroom-assigned Identifier for the student submission. This is unique among submissions for the relevant course work. Read-only.",
+  ).optional(),
+  late: z.boolean().describe("Whether this submission is late. Read-only.")
+    .optional(),
+  multipleChoiceSubmission: z.object({
+    answer: z.string().describe("Student's select choice.").optional(),
+  }).describe("Student work for a multiple-choice question.").optional(),
+  shortAnswerSubmission: z.object({
+    answer: z.string().describe("Student response to a short-answer question.")
+      .optional(),
+  }).describe("Student work for a short answer question.").optional(),
+  state: z.enum([
+    "SUBMISSION_STATE_UNSPECIFIED",
+    "NEW",
+    "CREATED",
+    "TURNED_IN",
+    "RETURNED",
+    "RECLAIMED_BY_STUDENT",
+  ]).describe("State of this submission. Read-only.").optional(),
+  submissionHistory: z.array(z.object({
+    gradeHistory: z.object({
+      actorUserId: z.string().describe("The teacher who made the grade change.")
+        .optional(),
+      gradeChangeType: z.enum([
+        "UNKNOWN_GRADE_CHANGE_TYPE",
+        "DRAFT_GRADE_POINTS_EARNED_CHANGE",
+        "ASSIGNED_GRADE_POINTS_EARNED_CHANGE",
+        "MAX_POINTS_CHANGE",
+      ]).describe(
+        "The type of grade change at this time in the submission grade history.",
+      ).optional(),
+      gradeTimestamp: z.string().describe(
+        "When the grade of the submission was changed.",
+      ).optional(),
+      maxPoints: z.number().describe(
+        "The denominator of the grade at this time in the submission grade history.",
+      ).optional(),
+      pointsEarned: z.number().describe(
+        "The numerator of the grade at this time in the submission grade history.",
+      ).optional(),
+    }).describe("The history of each grade on this submission.").optional(),
+    stateHistory: z.object({
+      actorUserId: z.string().describe(
+        "The teacher or student who made the change.",
+      ).optional(),
+      state: z.enum([
+        "STATE_UNSPECIFIED",
+        "CREATED",
+        "TURNED_IN",
+        "RETURNED",
+        "RECLAIMED_BY_STUDENT",
+        "STUDENT_EDITED_AFTER_TURN_IN",
+      ]).describe("The workflow pipeline stage.").optional(),
+      stateTimestamp: z.string().describe(
+        "When the submission entered this state.",
+      ).optional(),
+    }).describe("The history of each state this submission has been in.")
+      .optional(),
+  })).describe(
+    "The history of the submission (includes state and grade histories). Read-only.",
+  ).optional(),
+  updateTime: z.string().describe(
+    "Last update time of this submission. This may be unset if the student has not accessed this item. Read-only.",
+  ).optional(),
+  userId: z.string().describe(
+    "Identifier for the student that owns this submission. Read-only.",
+  ).optional(),
+});
+
+const StateSchema = z.object({
+  alternateLink: z.string().optional(),
+  assignedGrade: z.number().optional(),
+  assignedRubricGrades: z.record(z.string(), z.unknown()).optional(),
+  assignmentSubmission: z.object({
+    attachments: z.array(z.object({
+      driveFile: z.object({
+        alternateLink: z.string(),
+        id: z.string(),
+        thumbnailUrl: z.string(),
+        title: z.string(),
+      }),
+      form: z.object({
+        formUrl: z.string(),
+        responseUrl: z.string(),
+        thumbnailUrl: z.string(),
+        title: z.string(),
+      }),
+      link: z.object({
+        thumbnailUrl: z.string(),
+        title: z.string(),
+        url: z.string(),
+      }),
+      youTubeVideo: z.object({
+        alternateLink: z.string(),
+        id: z.string(),
+        thumbnailUrl: z.string(),
+        title: z.string(),
+      }),
+    })),
+  }).optional(),
+  associatedWithDeveloper: z.boolean().optional(),
+  courseId: z.string().optional(),
+  courseWorkId: z.string().optional(),
+  courseWorkType: z.string().optional(),
+  creationTime: z.string().optional(),
+  draftGrade: z.number().optional(),
+  draftRubricGrades: z.record(z.string(), z.unknown()).optional(),
+  id: z.string(),
+  late: z.boolean().optional(),
+  multipleChoiceSubmission: z.object({
+    answer: z.string(),
+  }).optional(),
+  shortAnswerSubmission: z.object({
+    answer: z.string(),
+  }).optional(),
+  state: z.string().optional(),
+  submissionHistory: z.array(z.object({
+    gradeHistory: z.object({
+      actorUserId: z.string(),
+      gradeChangeType: z.string(),
+      gradeTimestamp: z.string(),
+      maxPoints: z.number(),
+      pointsEarned: z.number(),
+    }),
+    stateHistory: z.object({
+      actorUserId: z.string(),
+      state: z.string(),
+      stateTimestamp: z.string(),
+    }),
+  })).optional(),
+  updateTime: z.string().optional(),
+  userId: z.string().optional(),
+}).passthrough();
+
+type StateData = z.infer<typeof StateSchema>;
+
+const InputsSchema = z.object({
+  alternateLink: z.string().describe(
+    "Absolute link to the submission in the Classroom web UI. Read-only.",
+  ).optional(),
+  assignedGrade: z.number().describe(
+    "Optional grade. If unset, no grade was set. This value must be non-negative. Decimal (that is, non-integer) values are allowed, but are rounded to two decimal places. This may be modified only by course teachers.",
+  ).optional(),
+  assignedRubricGrades: z.record(
+    z.string(),
+    z.object({
+      criterionId: z.string().describe("Optional. Criterion ID.").optional(),
+      levelId: z.string().describe(
+        "Optional. Optional level ID of the selected level. If empty, no level was selected.",
+      ).optional(),
+      points: z.number().describe(
+        "Optional. Optional points assigned for this criterion, typically based on the level. Levels might or might not have points. If unset, no points were set for this criterion.",
+      ).optional(),
+    }),
+  ).describe(
+    "Assigned rubric grades based on the rubric's Criteria. This map is empty if there is no rubric attached to this course work or if a rubric is attached, but no grades have been set on any Criteria. Entries are only populated for grades that have been set. Key: The rubric's criterion ID. Read-only.",
+  ).optional(),
+  assignmentSubmission: z.object({
+    attachments: z.array(z.object({
+      driveFile: z.object({
+        alternateLink: z.string().describe(
+          "URL that can be used to access the Drive item. Read-only.",
+        ).optional(),
+        id: z.string().describe("Drive API resource ID.").optional(),
+        thumbnailUrl: z.string().describe(
+          "URL of a thumbnail image of the Drive item. Read-only.",
+        ).optional(),
+        title: z.string().describe("Title of the Drive item. Read-only.")
+          .optional(),
+      }).describe("Representation of a Google Drive file.").optional(),
+      form: z.object({
+        formUrl: z.string().describe("URL of the form.").optional(),
+        responseUrl: z.string().describe(
+          "URL of the form responses document. Only set if responses have been recorded and only when the requesting user is an editor of the form. Read-only.",
+        ).optional(),
+        thumbnailUrl: z.string().describe(
+          "URL of a thumbnail image of the Form. Read-only.",
+        ).optional(),
+        title: z.string().describe("Title of the Form. Read-only.").optional(),
+      }).describe("Google Forms item.").optional(),
+      link: z.object({
+        thumbnailUrl: z.string().describe(
+          "URL of a thumbnail image of the target URL. Read-only.",
+        ).optional(),
+        title: z.string().describe("Title of the target of the URL. Read-only.")
+          .optional(),
+        url: z.string().describe(
+          "URL to link to. This must be a valid UTF-8 string containing between 1 and 2024 characters.",
+        ).optional(),
+      }).describe("URL item.").optional(),
+      youTubeVideo: z.object({
+        alternateLink: z.string().describe(
+          "URL that can be used to view the YouTube video. Read-only.",
+        ).optional(),
+        id: z.string().describe("YouTube API resource ID.").optional(),
+        thumbnailUrl: z.string().describe(
+          "URL of a thumbnail image of the YouTube video. Read-only.",
+        ).optional(),
+        title: z.string().describe("Title of the YouTube video. Read-only.")
+          .optional(),
+      }).describe("YouTube video item.").optional(),
+    })).describe(
+      "Attachments added by the student. Drive files that correspond to materials with a share mode of STUDENT_COPY may not exist yet if the student has not accessed the assignment in Classroom. Some attachment metadata is only populated if the requesting user has permission to access it. Identifier and alternate_link fields are always available, but others (for example, title) may not be.",
+    ).optional(),
+  }).describe("Student work for an assignment.").optional(),
+  associatedWithDeveloper: z.boolean().describe(
+    "Whether this student submission is associated with the Developer Console project making the request. See CreateCourseWork for more details. Read-only.",
+  ).optional(),
+  courseId: z.string().describe("Identifier of the course. Read-only.")
+    .optional(),
+  courseWorkId: z.string().describe(
+    "Identifier for the course work this corresponds to. Read-only.",
+  ).optional(),
+  courseWorkType: z.enum([
+    "COURSE_WORK_TYPE_UNSPECIFIED",
+    "ASSIGNMENT",
+    "SHORT_ANSWER_QUESTION",
+    "MULTIPLE_CHOICE_QUESTION",
+  ]).describe("Type of course work this submission is for. Read-only.")
+    .optional(),
+  creationTime: z.string().describe(
+    "Creation time of this submission. This may be unset if the student has not accessed this item. Read-only.",
+  ).optional(),
+  draftGrade: z.number().describe(
+    "Optional pending grade. If unset, no grade was set. This value must be non-negative. Decimal (that is, non-integer) values are allowed, but are rounded to two decimal places. This is only visible to and modifiable by course teachers.",
+  ).optional(),
+  draftRubricGrades: z.record(
+    z.string(),
+    z.object({
+      criterionId: z.string().describe("Optional. Criterion ID.").optional(),
+      levelId: z.string().describe(
+        "Optional. Optional level ID of the selected level. If empty, no level was selected.",
+      ).optional(),
+      points: z.number().describe(
+        "Optional. Optional points assigned for this criterion, typically based on the level. Levels might or might not have points. If unset, no points were set for this criterion.",
+      ).optional(),
+    }),
+  ).describe(
+    "Pending rubric grades based on the rubric's criteria. This map is empty if there is no rubric attached to this course work or if a rubric is attached, but no grades have been set on any criteria. Entries are only populated for grades that have been set. Key: The rubric's criterion ID. Read-only.",
+  ).optional(),
+  id: z.string().describe(
+    "Classroom-assigned Identifier for the student submission. This is unique among submissions for the relevant course work. Read-only.",
+  ).optional(),
+  late: z.boolean().describe("Whether this submission is late. Read-only.")
+    .optional(),
+  multipleChoiceSubmission: z.object({
+    answer: z.string().describe("Student's select choice.").optional(),
+  }).describe("Student work for a multiple-choice question.").optional(),
+  shortAnswerSubmission: z.object({
+    answer: z.string().describe("Student response to a short-answer question.")
+      .optional(),
+  }).describe("Student work for a short answer question.").optional(),
+  state: z.enum([
+    "SUBMISSION_STATE_UNSPECIFIED",
+    "NEW",
+    "CREATED",
+    "TURNED_IN",
+    "RETURNED",
+    "RECLAIMED_BY_STUDENT",
+  ]).describe("State of this submission. Read-only.").optional(),
+  submissionHistory: z.array(z.object({
+    gradeHistory: z.object({
+      actorUserId: z.string().describe("The teacher who made the grade change.")
+        .optional(),
+      gradeChangeType: z.enum([
+        "UNKNOWN_GRADE_CHANGE_TYPE",
+        "DRAFT_GRADE_POINTS_EARNED_CHANGE",
+        "ASSIGNED_GRADE_POINTS_EARNED_CHANGE",
+        "MAX_POINTS_CHANGE",
+      ]).describe(
+        "The type of grade change at this time in the submission grade history.",
+      ).optional(),
+      gradeTimestamp: z.string().describe(
+        "When the grade of the submission was changed.",
+      ).optional(),
+      maxPoints: z.number().describe(
+        "The denominator of the grade at this time in the submission grade history.",
+      ).optional(),
+      pointsEarned: z.number().describe(
+        "The numerator of the grade at this time in the submission grade history.",
+      ).optional(),
+    }).describe("The history of each grade on this submission.").optional(),
+    stateHistory: z.object({
+      actorUserId: z.string().describe(
+        "The teacher or student who made the change.",
+      ).optional(),
+      state: z.enum([
+        "STATE_UNSPECIFIED",
+        "CREATED",
+        "TURNED_IN",
+        "RETURNED",
+        "RECLAIMED_BY_STUDENT",
+        "STUDENT_EDITED_AFTER_TURN_IN",
+      ]).describe("The workflow pipeline stage.").optional(),
+      stateTimestamp: z.string().describe(
+        "When the submission entered this state.",
+      ).optional(),
+    }).describe("The history of each state this submission has been in.")
+      .optional(),
+  })).describe(
+    "The history of the submission (includes state and grade histories). Read-only.",
+  ).optional(),
+  updateTime: z.string().describe(
+    "Last update time of this submission. This may be unset if the student has not accessed this item. Read-only.",
+  ).optional(),
+  userId: z.string().describe(
+    "Identifier for the student that owns this submission. Read-only.",
+  ).optional(),
+});
+
+export const model = {
+  type: "@swamp/gcp/classroom/courses-coursework-studentsubmissions",
+  version: "2026.03.27.1",
+  globalArguments: GlobalArgsSchema,
+  inputsSchema: InputsSchema,
+  resources: {
+    state: {
+      description:
+        "Student submission for course work. `StudentSubmission` items are generated w...",
+      schema: StateSchema,
+      lifetime: "infinite",
+      garbageCollection: 10,
+    },
+  },
+  methods: {
+    get: {
+      description: "Get a studentSubmissions",
+      arguments: z.object({
+        identifier: z.string().describe("The id of the studentSubmissions"),
+      }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const projectId = await getProjectId();
+        const params: Record<string, string> = { project: projectId };
+        const g = context.globalArgs;
+        if (g["courseId"] !== undefined) {
+          params["courseId"] = String(g["courseId"]);
+        }
+        if (g["courseWorkId"] !== undefined) {
+          params["courseWorkId"] = String(g["courseWorkId"]);
+        }
+        params["id"] = args.identifier;
+        const result = await readResource(
+          BASE_URL,
+          GET_CONFIG,
+          params,
+        ) as StateData;
+        const instanceName = (result.id ?? g.id)?.toString() ?? args.identifier;
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    update: {
+      description: "Update studentSubmissions attributes",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const projectId = await getProjectId();
+        const instanceName = g.id?.toString() ?? "current";
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          instanceName,
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        const params: Record<string, string> = { project: projectId };
+        if (g["courseId"] !== undefined) {
+          params["courseId"] = String(g["courseId"]);
+        } else if (existing["courseId"]) {
+          params["courseId"] = String(existing["courseId"]);
+        }
+        if (g["courseWorkId"] !== undefined) {
+          params["courseWorkId"] = String(g["courseWorkId"]);
+        } else if (existing["courseWorkId"]) {
+          params["courseWorkId"] = String(existing["courseWorkId"]);
+        }
+        params["id"] = existing["id"]?.toString() ?? "";
+        const body: Record<string, unknown> = {};
+        if (g["alternateLink"] !== undefined) {
+          body["alternateLink"] = g["alternateLink"];
+        }
+        if (g["assignedGrade"] !== undefined) {
+          body["assignedGrade"] = g["assignedGrade"];
+        }
+        if (g["assignedRubricGrades"] !== undefined) {
+          body["assignedRubricGrades"] = g["assignedRubricGrades"];
+        }
+        if (g["assignmentSubmission"] !== undefined) {
+          body["assignmentSubmission"] = g["assignmentSubmission"];
+        }
+        if (g["associatedWithDeveloper"] !== undefined) {
+          body["associatedWithDeveloper"] = g["associatedWithDeveloper"];
+        }
+        if (g["courseWorkType"] !== undefined) {
+          body["courseWorkType"] = g["courseWorkType"];
+        }
+        if (g["creationTime"] !== undefined) {
+          body["creationTime"] = g["creationTime"];
+        }
+        if (g["draftGrade"] !== undefined) body["draftGrade"] = g["draftGrade"];
+        if (g["draftRubricGrades"] !== undefined) {
+          body["draftRubricGrades"] = g["draftRubricGrades"];
+        }
+        if (g["late"] !== undefined) body["late"] = g["late"];
+        if (g["multipleChoiceSubmission"] !== undefined) {
+          body["multipleChoiceSubmission"] = g["multipleChoiceSubmission"];
+        }
+        if (g["shortAnswerSubmission"] !== undefined) {
+          body["shortAnswerSubmission"] = g["shortAnswerSubmission"];
+        }
+        if (g["state"] !== undefined) body["state"] = g["state"];
+        if (g["submissionHistory"] !== undefined) {
+          body["submissionHistory"] = g["submissionHistory"];
+        }
+        if (g["updateTime"] !== undefined) body["updateTime"] = g["updateTime"];
+        if (g["userId"] !== undefined) body["userId"] = g["userId"];
+        for (const key of Object.keys(existing)) {
+          if (
+            key === "fingerprint" || key === "labelFingerprint" ||
+            key === "etag" || key.endsWith("Fingerprint")
+          ) {
+            body[key] = existing[key];
+          }
+        }
+        const result = await updateResource(
+          BASE_URL,
+          PATCH_CONFIG,
+          params,
+          body,
+          GET_CONFIG,
+        ) as StateData;
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    sync: {
+      description: "Sync studentSubmissions state from GCP",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const projectId = await getProjectId();
+        const instanceName = g.id?.toString() ?? "current";
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          instanceName,
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        try {
+          const params: Record<string, string> = { project: projectId };
+          if (g["courseId"] !== undefined) {
+            params["courseId"] = String(g["courseId"]);
+          } else if (existing["courseId"]) {
+            params["courseId"] = String(existing["courseId"]);
+          }
+          if (g["courseWorkId"] !== undefined) {
+            params["courseWorkId"] = String(g["courseWorkId"]);
+          } else if (existing["courseWorkId"]) {
+            params["courseWorkId"] = String(existing["courseWorkId"]);
+          }
+          const identifier = existing.id?.toString() ?? g["id"]?.toString();
+          if (!identifier) {
+            throw new Error(
+              "No identifier found in existing state or globalArgs",
+            );
+          }
+          params["id"] = identifier;
+          const result = await readResource(
+            BASE_URL,
+            GET_CONFIG,
+            params,
+          ) as StateData;
+          const handle = await context.writeResource(
+            "state",
+            instanceName,
+            result,
+          );
+          return { dataHandles: [handle] };
+        } catch (error: unknown) {
+          if (isResourceNotFoundError(error)) {
+            const handle = await context.writeResource("state", instanceName, {
+              status: "not_found",
+              syncedAt: new Date().toISOString(),
+            });
+            return { dataHandles: [handle] };
+          }
+          throw error;
+        }
+      },
+    },
+    modify_attachments: {
+      description: "modify attachments",
+      arguments: z.object({
+        addAttachments: z.any().optional(),
+      }),
+      execute: async (args: Record<string, unknown>, context: any) => {
+        const g = context.globalArgs;
+        const projectId = await getProjectId();
+        const params: Record<string, string> = { project: projectId };
+        if (g["courseId"] !== undefined) {
+          params["courseId"] = String(g["courseId"]);
+        }
+        if (g["courseWorkId"] !== undefined) {
+          params["courseWorkId"] = String(g["courseWorkId"]);
+        }
+        if (g["id"] !== undefined) params["id"] = String(g["id"]);
+        const body: Record<string, unknown> = {};
+        if (args["addAttachments"] !== undefined) {
+          body["addAttachments"] = args["addAttachments"];
+        }
+        const result = await createResource(
+          BASE_URL,
+          {
+            "id":
+              "classroom.courses.courseWork.studentSubmissions.modifyAttachments",
+            "path":
+              "v1/courses/{courseId}/courseWork/{courseWorkId}/studentSubmissions/{id}:modifyAttachments",
+            "httpMethod": "POST",
+            "parameterOrder": ["courseId", "courseWorkId", "id"],
+            "parameters": {
+              "courseId": { "location": "path", "required": true },
+              "courseWorkId": { "location": "path", "required": true },
+              "id": { "location": "path", "required": true },
+            },
+          },
+          params,
+          body,
+        );
+        return { result };
+      },
+    },
+    reclaim: {
+      description: "reclaim",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, unknown>, context: any) => {
+        const g = context.globalArgs;
+        const projectId = await getProjectId();
+        const params: Record<string, string> = { project: projectId };
+        if (g["courseId"] !== undefined) {
+          params["courseId"] = String(g["courseId"]);
+        }
+        if (g["courseWorkId"] !== undefined) {
+          params["courseWorkId"] = String(g["courseWorkId"]);
+        }
+        if (g["id"] !== undefined) params["id"] = String(g["id"]);
+        const result = await createResource(
+          BASE_URL,
+          {
+            "id": "classroom.courses.courseWork.studentSubmissions.reclaim",
+            "path":
+              "v1/courses/{courseId}/courseWork/{courseWorkId}/studentSubmissions/{id}:reclaim",
+            "httpMethod": "POST",
+            "parameterOrder": ["courseId", "courseWorkId", "id"],
+            "parameters": {
+              "courseId": { "location": "path", "required": true },
+              "courseWorkId": { "location": "path", "required": true },
+              "id": { "location": "path", "required": true },
+            },
+          },
+          params,
+          {},
+        );
+        return { result };
+      },
+    },
+    return: {
+      description: "return",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, unknown>, context: any) => {
+        const g = context.globalArgs;
+        const projectId = await getProjectId();
+        const params: Record<string, string> = { project: projectId };
+        if (g["courseId"] !== undefined) {
+          params["courseId"] = String(g["courseId"]);
+        }
+        if (g["courseWorkId"] !== undefined) {
+          params["courseWorkId"] = String(g["courseWorkId"]);
+        }
+        if (g["id"] !== undefined) params["id"] = String(g["id"]);
+        const result = await createResource(
+          BASE_URL,
+          {
+            "id": "classroom.courses.courseWork.studentSubmissions.return",
+            "path":
+              "v1/courses/{courseId}/courseWork/{courseWorkId}/studentSubmissions/{id}:return",
+            "httpMethod": "POST",
+            "parameterOrder": ["courseId", "courseWorkId", "id"],
+            "parameters": {
+              "courseId": { "location": "path", "required": true },
+              "courseWorkId": { "location": "path", "required": true },
+              "id": { "location": "path", "required": true },
+            },
+          },
+          params,
+          {},
+        );
+        return { result };
+      },
+    },
+    turn_in: {
+      description: "turn in",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, unknown>, context: any) => {
+        const g = context.globalArgs;
+        const projectId = await getProjectId();
+        const params: Record<string, string> = { project: projectId };
+        if (g["courseId"] !== undefined) {
+          params["courseId"] = String(g["courseId"]);
+        }
+        if (g["courseWorkId"] !== undefined) {
+          params["courseWorkId"] = String(g["courseWorkId"]);
+        }
+        if (g["id"] !== undefined) params["id"] = String(g["id"]);
+        const result = await createResource(
+          BASE_URL,
+          {
+            "id": "classroom.courses.courseWork.studentSubmissions.turnIn",
+            "path":
+              "v1/courses/{courseId}/courseWork/{courseWorkId}/studentSubmissions/{id}:turnIn",
+            "httpMethod": "POST",
+            "parameterOrder": ["courseId", "courseWorkId", "id"],
+            "parameters": {
+              "courseId": { "location": "path", "required": true },
+              "courseWorkId": { "location": "path", "required": true },
+              "id": { "location": "path", "required": true },
+            },
+          },
+          params,
+          {},
+        );
+        return { result };
+      },
+    },
+  },
+};

@@ -1,0 +1,36 @@
+# Auto-generated manifest. Re-generate with the appropriate deno task.
+manifestVersion: 1
+name: "@swamp/gcp/networkconnectivity"
+version: "2026.03.31.1"
+description: "Google Cloud networkconnectivity infrastructure models"
+labels:
+  - gcp
+  - google-cloud
+  - networkconnectivity
+  - cloud
+  - infrastructure
+releaseNotes: |
+  - Added: remotetransportprofiles, transports
+models:
+  - automateddnsrecords.ts
+  - global_hubs.ts
+  - global_hubs_groups.ts
+  - global_hubs_routetables.ts
+  - global_hubs_routetables_routes.ts
+  - global_policybasedroutes.ts
+  - internalranges.ts
+  - locations.ts
+  - multiclouddatatransferconfigs.ts
+  - multiclouddatatransferconfigs_destinations.ts
+  - multiclouddatatransfersupportedservices.ts
+  - regionalendpoints.ts
+  - remotetransportprofiles.ts
+  - serviceclasses.ts
+  - serviceconnectionmaps.ts
+  - serviceconnectionpolicies.ts
+  - serviceconnectiontokens.ts
+  - spokes.ts
+  - transports.ts
+additionalFiles:
+  - LICENSE.txt
+  - README.md

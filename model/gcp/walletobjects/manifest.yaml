@@ -1,0 +1,33 @@
+# Auto-generated manifest. Re-generate with the appropriate deno task.
+manifestVersion: 1
+name: "@swamp/gcp/walletobjects"
+version: "2026.03.27.1"
+description: "Google Cloud walletobjects infrastructure models"
+labels:
+  - gcp
+  - google-cloud
+  - walletobjects
+  - cloud
+  - infrastructure
+releaseNotes: |
+  - Added: eventticketclass, eventticketobject, flightclass, flightobject, genericclass, genericobject, giftcardclass, giftcardobject, issuer, loyaltyclass, loyaltyobject, offerclass, offerobject, permissions, transitclass, transitobject
+models:
+  - eventticketclass.ts
+  - eventticketobject.ts
+  - flightclass.ts
+  - flightobject.ts
+  - genericclass.ts
+  - genericobject.ts
+  - giftcardclass.ts
+  - giftcardobject.ts
+  - issuer.ts
+  - loyaltyclass.ts
+  - loyaltyobject.ts
+  - offerclass.ts
+  - offerobject.ts
+  - permissions.ts
+  - transitclass.ts
+  - transitobject.ts
+additionalFiles:
+  - LICENSE.txt
+  - README.md

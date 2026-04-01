@@ -1,0 +1,25 @@
+# Auto-generated manifest. Re-generate with the appropriate deno task.
+manifestVersion: 1
+name: "@swamp/gcp/bigquery"
+version: "2026.03.27.1"
+description: "Google Cloud bigquery infrastructure models"
+labels:
+  - gcp
+  - google-cloud
+  - bigquery
+  - cloud
+  - infrastructure
+releaseNotes: |
+  - Added: datasets, jobs, models, projects, routines, rowaccesspolicies, tabledata, tables
+models:
+  - datasets.ts
+  - jobs.ts
+  - models.ts
+  - projects.ts
+  - routines.ts
+  - rowaccesspolicies.ts
+  - tabledata.ts
+  - tables.ts
+additionalFiles:
+  - LICENSE.txt
+  - README.md

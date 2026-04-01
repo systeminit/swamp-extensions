@@ -1,0 +1,269 @@
+// Auto-generated extension model for @swamp/gcp/games/applications
+// Do not edit manually. Re-generate with: deno task generate:gcp
+
+// deno-lint-ignore-file no-explicit-any
+
+import { z } from "zod";
+import {
+  createResource,
+  getProjectId,
+  isResourceNotFoundError,
+  readResource,
+} from "./_lib/gcp.ts";
+
+const BASE_URL = "https://games.googleapis.com/";
+
+const GET_CONFIG = {
+  "id": "games.applications.get",
+  "path": "games/v1/applications/{applicationId}",
+  "httpMethod": "GET",
+  "parameterOrder": [
+    "applicationId",
+  ],
+  "parameters": {
+    "applicationId": {
+      "location": "path",
+      "required": true,
+    },
+    "language": {
+      "location": "query",
+    },
+    "platformType": {
+      "location": "query",
+    },
+  },
+} as const;
+
+const GlobalArgsSchema = z.object({
+  name: z.string().describe(
+    "Instance name for this resource (used as the unique identifier in the factory pattern)",
+  ),
+});
+
+const StateSchema = z.object({
+  achievement_count: z.number().optional(),
+  assets: z.array(z.object({
+    height: z.number(),
+    kind: z.string(),
+    name: z.string(),
+    url: z.string(),
+    width: z.number(),
+  })).optional(),
+  author: z.string().optional(),
+  category: z.object({
+    kind: z.string(),
+    primary: z.string(),
+    secondary: z.string(),
+  }).optional(),
+  description: z.string().optional(),
+  enabledFeatures: z.array(z.string()).optional(),
+  id: z.string().optional(),
+  instances: z.array(z.object({
+    acquisitionUri: z.string(),
+    androidInstance: z.object({
+      enablePiracyCheck: z.boolean(),
+      kind: z.string(),
+      packageName: z.string(),
+      preferred: z.boolean(),
+    }),
+    iosInstance: z.object({
+      bundleIdentifier: z.string(),
+      itunesAppId: z.string(),
+      kind: z.string(),
+      preferredForIpad: z.boolean(),
+      preferredForIphone: z.boolean(),
+      supportIpad: z.boolean(),
+      supportIphone: z.boolean(),
+    }),
+    kind: z.string(),
+    name: z.string(),
+    platformType: z.string(),
+    realtimePlay: z.boolean(),
+    turnBasedPlay: z.boolean(),
+    webInstance: z.object({
+      kind: z.string(),
+      launchUrl: z.string(),
+      preferred: z.boolean(),
+    }),
+  })).optional(),
+  kind: z.string().optional(),
+  lastUpdatedTimestamp: z.string().optional(),
+  leaderboard_count: z.number().optional(),
+  name: z.string(),
+  themeColor: z.string().optional(),
+}).passthrough();
+
+type StateData = z.infer<typeof StateSchema>;
+
+const InputsSchema = z.object({
+  name: z.string().optional(),
+});
+
+export const model = {
+  type: "@swamp/gcp/games/applications",
+  version: "2026.03.27.1",
+  globalArguments: GlobalArgsSchema,
+  inputsSchema: InputsSchema,
+  resources: {
+    state: {
+      description: "The Application resource.",
+      schema: StateSchema,
+      lifetime: "infinite",
+      garbageCollection: 10,
+    },
+  },
+  methods: {
+    get: {
+      description: "Get a applications",
+      arguments: z.object({
+        identifier: z.string().describe("The name of the applications"),
+      }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const projectId = await getProjectId();
+        const params: Record<string, string> = { project: projectId };
+        const g = context.globalArgs;
+        params["applicationId"] = args.identifier;
+        const result = await readResource(
+          BASE_URL,
+          GET_CONFIG,
+          params,
+        ) as StateData;
+        const instanceName = g.name?.toString() ?? args.identifier;
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    sync: {
+      description: "Sync applications state from GCP",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const projectId = await getProjectId();
+        const instanceName = g.name?.toString() ?? "current";
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          instanceName,
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        try {
+          const params: Record<string, string> = { project: projectId };
+          const identifier = existing.name?.toString() ?? g["name"]?.toString();
+          if (!identifier) {
+            throw new Error(
+              "No identifier found in existing state or globalArgs",
+            );
+          }
+          params["applicationId"] = identifier;
+          const result = await readResource(
+            BASE_URL,
+            GET_CONFIG,
+            params,
+          ) as StateData;
+          const handle = await context.writeResource(
+            "state",
+            instanceName,
+            result,
+          );
+          return { dataHandles: [handle] };
+        } catch (error: unknown) {
+          if (isResourceNotFoundError(error)) {
+            const handle = await context.writeResource("state", instanceName, {
+              status: "not_found",
+              syncedAt: new Date().toISOString(),
+            });
+            return { dataHandles: [handle] };
+          }
+          throw error;
+        }
+      },
+    },
+    get_end_point: {
+      description: "get end point",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, unknown>, _context: any) => {
+        const projectId = await getProjectId();
+        const params: Record<string, string> = { project: projectId };
+        const result = await createResource(
+          BASE_URL,
+          {
+            "id": "games.applications.getEndPoint",
+            "path": "games/v1/applications/getEndPoint",
+            "httpMethod": "POST",
+            "parameterOrder": [],
+            "parameters": {
+              "applicationId": { "location": "query" },
+              "endPointType": { "location": "query" },
+            },
+          },
+          params,
+          {},
+        );
+        return { result };
+      },
+    },
+    played: {
+      description: "played",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, unknown>, _context: any) => {
+        const projectId = await getProjectId();
+        const params: Record<string, string> = { project: projectId };
+        const result = await createResource(
+          BASE_URL,
+          {
+            "id": "games.applications.played",
+            "path": "games/v1/applications/played",
+            "httpMethod": "POST",
+            "parameterOrder": [],
+            "parameters": {},
+          },
+          params,
+          {},
+        );
+        return { result };
+      },
+    },
+    verify: {
+      description: "verify",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, unknown>, context: any) => {
+        const g = context.globalArgs;
+        const projectId = await getProjectId();
+        const params: Record<string, string> = { project: projectId };
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          g.name?.toString() ?? "current",
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        params["applicationId"] = existing["name"]?.toString() ??
+          g["name"]?.toString() ?? "";
+        const result = await createResource(
+          BASE_URL,
+          {
+            "id": "games.applications.verify",
+            "path": "games/v1/applications/{applicationId}/verify",
+            "httpMethod": "GET",
+            "parameterOrder": ["applicationId"],
+            "parameters": {
+              "applicationId": { "location": "path", "required": true },
+            },
+          },
+          params,
+          {},
+        );
+        return { result };
+      },
+    },
+  },
+};

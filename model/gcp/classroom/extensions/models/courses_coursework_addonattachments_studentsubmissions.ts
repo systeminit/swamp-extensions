@@ -1,0 +1,310 @@
+// Auto-generated extension model for @swamp/gcp/classroom/courses-coursework-addonattachments-studentsubmissions
+// Do not edit manually. Re-generate with: deno task generate:gcp
+
+// deno-lint-ignore-file no-explicit-any
+
+import { z } from "zod";
+import {
+  getProjectId,
+  isResourceNotFoundError,
+  readResource,
+  updateResource,
+} from "./_lib/gcp.ts";
+
+const BASE_URL = "https://classroom.googleapis.com/";
+
+const GET_CONFIG = {
+  "id": "classroom.courses.courseWork.addOnAttachments.studentSubmissions.get",
+  "path":
+    "v1/courses/{courseId}/courseWork/{itemId}/addOnAttachments/{attachmentId}/studentSubmissions/{submissionId}",
+  "httpMethod": "GET",
+  "parameterOrder": [
+    "courseId",
+    "itemId",
+    "attachmentId",
+    "submissionId",
+  ],
+  "parameters": {
+    "attachmentId": {
+      "location": "path",
+      "required": true,
+    },
+    "courseId": {
+      "location": "path",
+      "required": true,
+    },
+    "itemId": {
+      "location": "path",
+      "required": true,
+    },
+    "postId": {
+      "location": "query",
+    },
+    "submissionId": {
+      "location": "path",
+      "required": true,
+    },
+  },
+} as const;
+
+const PATCH_CONFIG = {
+  "id":
+    "classroom.courses.courseWork.addOnAttachments.studentSubmissions.patch",
+  "path":
+    "v1/courses/{courseId}/courseWork/{itemId}/addOnAttachments/{attachmentId}/studentSubmissions/{submissionId}",
+  "httpMethod": "PATCH",
+  "parameterOrder": [
+    "courseId",
+    "itemId",
+    "attachmentId",
+    "submissionId",
+  ],
+  "parameters": {
+    "attachmentId": {
+      "location": "path",
+      "required": true,
+    },
+    "courseId": {
+      "location": "path",
+      "required": true,
+    },
+    "itemId": {
+      "location": "path",
+      "required": true,
+    },
+    "postId": {
+      "location": "query",
+    },
+    "submissionId": {
+      "location": "path",
+      "required": true,
+    },
+    "updateMask": {
+      "location": "query",
+    },
+  },
+} as const;
+
+const GlobalArgsSchema = z.object({
+  name: z.string().describe(
+    "Instance name for this resource (used as the unique identifier in the factory pattern)",
+  ),
+  pointsEarned: z.number().describe(
+    "Student grade on this attachment. If unset, no grade was set.",
+  ).optional(),
+  postSubmissionState: z.enum([
+    "SUBMISSION_STATE_UNSPECIFIED",
+    "NEW",
+    "CREATED",
+    "TURNED_IN",
+    "RETURNED",
+    "RECLAIMED_BY_STUDENT",
+  ]).describe(
+    "Submission state of add-on attachment's parent post (i.e. assignment).",
+  ).optional(),
+  userId: z.string().describe(
+    "Identifier for the student that owns this submission. Requires the user to be a teacher in the course and have permission to read student submissions. Read-only.",
+  ).optional(),
+});
+
+const StateSchema = z.object({
+  pointsEarned: z.number().optional(),
+  postSubmissionState: z.string().optional(),
+  userId: z.string().optional(),
+}).passthrough();
+
+type StateData = z.infer<typeof StateSchema>;
+
+const InputsSchema = z.object({
+  name: z.string().optional(),
+  pointsEarned: z.number().describe(
+    "Student grade on this attachment. If unset, no grade was set.",
+  ).optional(),
+  postSubmissionState: z.enum([
+    "SUBMISSION_STATE_UNSPECIFIED",
+    "NEW",
+    "CREATED",
+    "TURNED_IN",
+    "RETURNED",
+    "RECLAIMED_BY_STUDENT",
+  ]).describe(
+    "Submission state of add-on attachment's parent post (i.e. assignment).",
+  ).optional(),
+  userId: z.string().describe(
+    "Identifier for the student that owns this submission. Requires the user to be a teacher in the course and have permission to read student submissions. Read-only.",
+  ).optional(),
+});
+
+export const model = {
+  type:
+    "@swamp/gcp/classroom/courses-coursework-addonattachments-studentsubmissions",
+  version: "2026.03.27.1",
+  globalArguments: GlobalArgsSchema,
+  inputsSchema: InputsSchema,
+  resources: {
+    state: {
+      description: "Payload for grade update requests.",
+      schema: StateSchema,
+      lifetime: "infinite",
+      garbageCollection: 10,
+    },
+  },
+  methods: {
+    get: {
+      description: "Get a studentSubmissions",
+      arguments: z.object({
+        identifier: z.string().describe("The name of the studentSubmissions"),
+      }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const projectId = await getProjectId();
+        const params: Record<string, string> = { project: projectId };
+        const g = context.globalArgs;
+        if (g["courseId"] !== undefined) {
+          params["courseId"] = String(g["courseId"]);
+        }
+        if (g["itemId"] !== undefined) params["itemId"] = String(g["itemId"]);
+        if (g["attachmentId"] !== undefined) {
+          params["attachmentId"] = String(g["attachmentId"]);
+        }
+        params["submissionId"] = args.identifier;
+        const result = await readResource(
+          BASE_URL,
+          GET_CONFIG,
+          params,
+        ) as StateData;
+        const instanceName = g.name?.toString() ?? args.identifier;
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    update: {
+      description: "Update studentSubmissions attributes",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const projectId = await getProjectId();
+        const instanceName = g.name?.toString() ?? "current";
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          instanceName,
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        const params: Record<string, string> = { project: projectId };
+        if (g["courseId"] !== undefined) {
+          params["courseId"] = String(g["courseId"]);
+        } else if (existing["courseId"]) {
+          params["courseId"] = String(existing["courseId"]);
+        }
+        if (g["itemId"] !== undefined) params["itemId"] = String(g["itemId"]);
+        else if (existing["itemId"]) {
+          params["itemId"] = String(existing["itemId"]);
+        }
+        if (g["attachmentId"] !== undefined) {
+          params["attachmentId"] = String(g["attachmentId"]);
+        } else if (existing["attachmentId"]) {
+          params["attachmentId"] = String(existing["attachmentId"]);
+        }
+        params["submissionId"] = existing["name"]?.toString() ?? "";
+        const body: Record<string, unknown> = {};
+        if (g["pointsEarned"] !== undefined) {
+          body["pointsEarned"] = g["pointsEarned"];
+        }
+        if (g["postSubmissionState"] !== undefined) {
+          body["postSubmissionState"] = g["postSubmissionState"];
+        }
+        if (g["userId"] !== undefined) body["userId"] = g["userId"];
+        for (const key of Object.keys(existing)) {
+          if (
+            key === "fingerprint" || key === "labelFingerprint" ||
+            key === "etag" || key.endsWith("Fingerprint")
+          ) {
+            body[key] = existing[key];
+          }
+        }
+        const result = await updateResource(
+          BASE_URL,
+          PATCH_CONFIG,
+          params,
+          body,
+          GET_CONFIG,
+        ) as StateData;
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    sync: {
+      description: "Sync studentSubmissions state from GCP",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const projectId = await getProjectId();
+        const instanceName = g.name?.toString() ?? "current";
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          instanceName,
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        try {
+          const params: Record<string, string> = { project: projectId };
+          if (g["courseId"] !== undefined) {
+            params["courseId"] = String(g["courseId"]);
+          } else if (existing["courseId"]) {
+            params["courseId"] = String(existing["courseId"]);
+          }
+          if (g["itemId"] !== undefined) params["itemId"] = String(g["itemId"]);
+          else if (existing["itemId"]) {
+            params["itemId"] = String(existing["itemId"]);
+          }
+          if (g["attachmentId"] !== undefined) {
+            params["attachmentId"] = String(g["attachmentId"]);
+          } else if (existing["attachmentId"]) {
+            params["attachmentId"] = String(existing["attachmentId"]);
+          }
+          const identifier = existing.name?.toString() ?? g["name"]?.toString();
+          if (!identifier) {
+            throw new Error(
+              "No identifier found in existing state or globalArgs",
+            );
+          }
+          params["submissionId"] = identifier;
+          const result = await readResource(
+            BASE_URL,
+            GET_CONFIG,
+            params,
+          ) as StateData;
+          const handle = await context.writeResource(
+            "state",
+            instanceName,
+            result,
+          );
+          return { dataHandles: [handle] };
+        } catch (error: unknown) {
+          if (isResourceNotFoundError(error)) {
+            const handle = await context.writeResource("state", instanceName, {
+              status: "not_found",
+              syncedAt: new Date().toISOString(),
+            });
+            return { dataHandles: [handle] };
+          }
+          throw error;
+        }
+      },
+    },
+  },
+};

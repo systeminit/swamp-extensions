@@ -1,0 +1,376 @@
+// Auto-generated extension model for @swamp/gcp/androidpublisher/applications-devicetierconfigs
+// Do not edit manually. Re-generate with: deno task generate:gcp
+
+// deno-lint-ignore-file no-explicit-any
+
+import { z } from "zod";
+import {
+  createResource,
+  getProjectId,
+  isResourceNotFoundError,
+  readResource,
+} from "./_lib/gcp.ts";
+
+const BASE_URL = "https://androidpublisher.googleapis.com/";
+
+const GET_CONFIG = {
+  "id": "androidpublisher.applications.deviceTierConfigs.get",
+  "path":
+    "androidpublisher/v3/applications/{packageName}/deviceTierConfigs/{deviceTierConfigId}",
+  "httpMethod": "GET",
+  "parameterOrder": [
+    "packageName",
+    "deviceTierConfigId",
+  ],
+  "parameters": {
+    "deviceTierConfigId": {
+      "location": "path",
+      "required": true,
+    },
+    "packageName": {
+      "location": "path",
+      "required": true,
+    },
+  },
+} as const;
+
+const INSERT_CONFIG = {
+  "id": "androidpublisher.applications.deviceTierConfigs.create",
+  "path": "androidpublisher/v3/applications/{packageName}/deviceTierConfigs",
+  "httpMethod": "POST",
+  "parameterOrder": [
+    "packageName",
+  ],
+  "parameters": {
+    "allowUnknownDevices": {
+      "location": "query",
+    },
+    "packageName": {
+      "location": "path",
+      "required": true,
+    },
+  },
+} as const;
+
+const GlobalArgsSchema = z.object({
+  name: z.string().describe(
+    "Instance name for this resource (used as the unique identifier in the factory pattern)",
+  ),
+  deviceGroups: z.array(z.object({
+    deviceSelectors: z.array(z.object({
+      deviceRam: z.object({
+        maxBytes: z.string().describe("Maximum RAM in bytes (bound excluded).")
+          .optional(),
+        minBytes: z.string().describe("Minimum RAM in bytes (bound included).")
+          .optional(),
+      }).describe("Conditions about a device's RAM capabilities.").optional(),
+      excludedDeviceIds: z.array(z.object({
+        buildBrand: z.string().describe("Value of Build.BRAND.").optional(),
+        buildDevice: z.string().describe("Value of Build.DEVICE.").optional(),
+      })).describe(
+        "Device models excluded by this selector, even if they match all other conditions.",
+      ).optional(),
+      forbiddenSystemFeatures: z.array(z.object({
+        name: z.string().describe("The name of the feature.").optional(),
+      })).describe(
+        "A device that has any of these system features is excluded by this selector, even if it matches all other conditions.",
+      ).optional(),
+      includedDeviceIds: z.array(z.object({
+        buildBrand: z.string().describe("Value of Build.BRAND.").optional(),
+        buildDevice: z.string().describe("Value of Build.DEVICE.").optional(),
+      })).describe("Device models included by this selector.").optional(),
+      requiredSystemFeatures: z.array(z.object({
+        name: z.string().describe("The name of the feature.").optional(),
+      })).describe(
+        "A device needs to have all these system features to be included by the selector.",
+      ).optional(),
+      systemOnChips: z.array(z.object({
+        manufacturer: z.string().describe(
+          'Required. The designer of the SoC, eg. "Google" Value of build property "ro.soc.manufacturer" https://developer.android.com/reference/android/os/Build#SOC_MANUFACTURER Required.',
+        ).optional(),
+        model: z.string().describe(
+          'Required. The model of the SoC, eg. "Tensor" Value of build property "ro.soc.model" https://developer.android.com/reference/android/os/Build#SOC_MODEL Required.',
+        ).optional(),
+      })).describe(
+        "Optional. The SoCs included by this selector. Only works for Android S+ devices.",
+      ).optional(),
+    })).describe(
+      "Device selectors for this group. A device matching any of the selectors is included in this group.",
+    ).optional(),
+    name: z.string().describe("The name of the group.").optional(),
+  })).describe("Definition of device groups for the app.").optional(),
+  deviceTierSet: z.object({
+    deviceTiers: z.array(z.object({
+      deviceGroupNames: z.array(z.string()).describe(
+        "Groups of devices included in this tier. These groups must be defined explicitly under device_groups in this configuration.",
+      ).optional(),
+      level: z.number().int().describe(
+        "The priority level of the tier. Tiers are evaluated in descending order of level: the highest level tier has the highest priority. The highest tier matching a given device is selected for that device. You should use a contiguous range of levels for your tiers in a tier set; tier levels in a tier set must be unique. For instance, if your tier set has 4 tiers (including the global fallback), you should define tiers 1, 2 and 3 in this configuration. Note: tier 0 is implicitly defined as a global fallback and selected for devices that don't match any of the tiers explicitly defined here. You mustn't define level 0 explicitly in this configuration.",
+      ).optional(),
+    })).describe("Device tiers belonging to the set.").optional(),
+  }).describe(
+    "A set of device tiers. A tier set determines what variation of app content gets served to a specific device, for device-targeted content. You should assign a priority level to each tier, which determines the ordering by which they are evaluated by Play. See the documentation of DeviceTier.level for more details.",
+  ).optional(),
+  userCountrySets: z.array(z.object({
+    countryCodes: z.array(z.string()).describe(
+      'List of country codes representing countries. A Country code is represented in ISO 3166 alpha-2 format. For Example:- "IT" for Italy, "GE" for Georgia.',
+    ).optional(),
+    name: z.string().describe("Country set name.").optional(),
+  })).describe("Definition of user country sets for the app.").optional(),
+  packageName: z.string().describe("Package name of the app."),
+  allowUnknownDevices: z.string().describe(
+    "Whether the service should accept device IDs that are unknown to Play's device catalog.",
+  ).optional(),
+});
+
+const StateSchema = z.object({
+  deviceGroups: z.array(z.object({
+    deviceSelectors: z.array(z.object({
+      deviceRam: z.object({
+        maxBytes: z.string(),
+        minBytes: z.string(),
+      }),
+      excludedDeviceIds: z.array(z.object({
+        buildBrand: z.string(),
+        buildDevice: z.string(),
+      })),
+      forbiddenSystemFeatures: z.array(z.object({
+        name: z.string(),
+      })),
+      includedDeviceIds: z.array(z.object({
+        buildBrand: z.string(),
+        buildDevice: z.string(),
+      })),
+      requiredSystemFeatures: z.array(z.object({
+        name: z.string(),
+      })),
+      systemOnChips: z.array(z.object({
+        manufacturer: z.string(),
+        model: z.string(),
+      })),
+    })),
+    name: z.string(),
+  })).optional(),
+  deviceTierConfigId: z.string().optional(),
+  deviceTierSet: z.object({
+    deviceTiers: z.array(z.object({
+      deviceGroupNames: z.array(z.string()),
+      level: z.number(),
+    })),
+  }).optional(),
+  userCountrySets: z.array(z.object({
+    countryCodes: z.array(z.string()),
+    name: z.string(),
+  })).optional(),
+}).passthrough();
+
+type StateData = z.infer<typeof StateSchema>;
+
+const InputsSchema = z.object({
+  name: z.string().optional(),
+  deviceGroups: z.array(z.object({
+    deviceSelectors: z.array(z.object({
+      deviceRam: z.object({
+        maxBytes: z.string().describe("Maximum RAM in bytes (bound excluded).")
+          .optional(),
+        minBytes: z.string().describe("Minimum RAM in bytes (bound included).")
+          .optional(),
+      }).describe("Conditions about a device's RAM capabilities.").optional(),
+      excludedDeviceIds: z.array(z.object({
+        buildBrand: z.string().describe("Value of Build.BRAND.").optional(),
+        buildDevice: z.string().describe("Value of Build.DEVICE.").optional(),
+      })).describe(
+        "Device models excluded by this selector, even if they match all other conditions.",
+      ).optional(),
+      forbiddenSystemFeatures: z.array(z.object({
+        name: z.string().describe("The name of the feature.").optional(),
+      })).describe(
+        "A device that has any of these system features is excluded by this selector, even if it matches all other conditions.",
+      ).optional(),
+      includedDeviceIds: z.array(z.object({
+        buildBrand: z.string().describe("Value of Build.BRAND.").optional(),
+        buildDevice: z.string().describe("Value of Build.DEVICE.").optional(),
+      })).describe("Device models included by this selector.").optional(),
+      requiredSystemFeatures: z.array(z.object({
+        name: z.string().describe("The name of the feature.").optional(),
+      })).describe(
+        "A device needs to have all these system features to be included by the selector.",
+      ).optional(),
+      systemOnChips: z.array(z.object({
+        manufacturer: z.string().describe(
+          'Required. The designer of the SoC, eg. "Google" Value of build property "ro.soc.manufacturer" https://developer.android.com/reference/android/os/Build#SOC_MANUFACTURER Required.',
+        ).optional(),
+        model: z.string().describe(
+          'Required. The model of the SoC, eg. "Tensor" Value of build property "ro.soc.model" https://developer.android.com/reference/android/os/Build#SOC_MODEL Required.',
+        ).optional(),
+      })).describe(
+        "Optional. The SoCs included by this selector. Only works for Android S+ devices.",
+      ).optional(),
+    })).describe(
+      "Device selectors for this group. A device matching any of the selectors is included in this group.",
+    ).optional(),
+    name: z.string().describe("The name of the group.").optional(),
+  })).describe("Definition of device groups for the app.").optional(),
+  deviceTierSet: z.object({
+    deviceTiers: z.array(z.object({
+      deviceGroupNames: z.array(z.string()).describe(
+        "Groups of devices included in this tier. These groups must be defined explicitly under device_groups in this configuration.",
+      ).optional(),
+      level: z.number().int().describe(
+        "The priority level of the tier. Tiers are evaluated in descending order of level: the highest level tier has the highest priority. The highest tier matching a given device is selected for that device. You should use a contiguous range of levels for your tiers in a tier set; tier levels in a tier set must be unique. For instance, if your tier set has 4 tiers (including the global fallback), you should define tiers 1, 2 and 3 in this configuration. Note: tier 0 is implicitly defined as a global fallback and selected for devices that don't match any of the tiers explicitly defined here. You mustn't define level 0 explicitly in this configuration.",
+      ).optional(),
+    })).describe("Device tiers belonging to the set.").optional(),
+  }).describe(
+    "A set of device tiers. A tier set determines what variation of app content gets served to a specific device, for device-targeted content. You should assign a priority level to each tier, which determines the ordering by which they are evaluated by Play. See the documentation of DeviceTier.level for more details.",
+  ).optional(),
+  userCountrySets: z.array(z.object({
+    countryCodes: z.array(z.string()).describe(
+      'List of country codes representing countries. A Country code is represented in ISO 3166 alpha-2 format. For Example:- "IT" for Italy, "GE" for Georgia.',
+    ).optional(),
+    name: z.string().describe("Country set name.").optional(),
+  })).describe("Definition of user country sets for the app.").optional(),
+  packageName: z.string().describe("Package name of the app.").optional(),
+  allowUnknownDevices: z.string().describe(
+    "Whether the service should accept device IDs that are unknown to Play's device catalog.",
+  ).optional(),
+});
+
+export const model = {
+  type: "@swamp/gcp/androidpublisher/applications-devicetierconfigs",
+  version: "2026.03.27.1",
+  globalArguments: GlobalArgsSchema,
+  inputsSchema: InputsSchema,
+  resources: {
+    state: {
+      description:
+        "Configuration describing device targeting criteria for the content of an app.",
+      schema: StateSchema,
+      lifetime: "infinite",
+      garbageCollection: 10,
+    },
+  },
+  methods: {
+    create: {
+      description: "Create a deviceTierConfigs",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const projectId = await getProjectId();
+        const params: Record<string, string> = { project: projectId };
+        if (g["packageName"] !== undefined) {
+          params["packageName"] = String(g["packageName"]);
+        }
+        const body: Record<string, unknown> = {};
+        if (g["deviceGroups"] !== undefined) {
+          body["deviceGroups"] = g["deviceGroups"];
+        }
+        if (g["deviceTierSet"] !== undefined) {
+          body["deviceTierSet"] = g["deviceTierSet"];
+        }
+        if (g["userCountrySets"] !== undefined) {
+          body["userCountrySets"] = g["userCountrySets"];
+        }
+        if (g["allowUnknownDevices"] !== undefined) {
+          body["allowUnknownDevices"] = g["allowUnknownDevices"];
+        }
+        if (g["name"] !== undefined) {
+          params["deviceTierConfigId"] = String(g["name"]);
+        }
+        const result = await createResource(
+          BASE_URL,
+          INSERT_CONFIG,
+          params,
+          body,
+          GET_CONFIG,
+        ) as StateData;
+        const instanceName = g.name?.toString() ?? "current";
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    get: {
+      description: "Get a deviceTierConfigs",
+      arguments: z.object({
+        identifier: z.string().describe("The name of the deviceTierConfigs"),
+      }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const projectId = await getProjectId();
+        const params: Record<string, string> = { project: projectId };
+        const g = context.globalArgs;
+        if (g["packageName"] !== undefined) {
+          params["packageName"] = String(g["packageName"]);
+        }
+        params["deviceTierConfigId"] = args.identifier;
+        const result = await readResource(
+          BASE_URL,
+          GET_CONFIG,
+          params,
+        ) as StateData;
+        const instanceName = g.name?.toString() ?? args.identifier;
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    sync: {
+      description: "Sync deviceTierConfigs state from GCP",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const projectId = await getProjectId();
+        const instanceName = g.name?.toString() ?? "current";
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          instanceName,
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        try {
+          const params: Record<string, string> = { project: projectId };
+          if (g["packageName"] !== undefined) {
+            params["packageName"] = String(g["packageName"]);
+          } else if (existing["packageName"]) {
+            params["packageName"] = String(existing["packageName"]);
+          }
+          const identifier = existing.name?.toString() ?? g["name"]?.toString();
+          if (!identifier) {
+            throw new Error(
+              "No identifier found in existing state or globalArgs",
+            );
+          }
+          params["deviceTierConfigId"] = identifier;
+          const result = await readResource(
+            BASE_URL,
+            GET_CONFIG,
+            params,
+          ) as StateData;
+          const handle = await context.writeResource(
+            "state",
+            instanceName,
+            result,
+          );
+          return { dataHandles: [handle] };
+        } catch (error: unknown) {
+          if (isResourceNotFoundError(error)) {
+            const handle = await context.writeResource("state", instanceName, {
+              status: "not_found",
+              syncedAt: new Date().toISOString(),
+            });
+            return { dataHandles: [handle] };
+          }
+          throw error;
+        }
+      },
+    },
+  },
+};

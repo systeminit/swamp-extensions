@@ -1,0 +1,24 @@
+# Auto-generated manifest. Re-generate with the appropriate deno task.
+manifestVersion: 1
+name: "@swamp/gcp/accesscontextmanager"
+version: "2026.03.27.1"
+description: "Google Cloud accesscontextmanager infrastructure models"
+labels:
+  - gcp
+  - google-cloud
+  - accesscontextmanager
+  - cloud
+  - infrastructure
+releaseNotes: |
+  - Added: accesspolicies, accesspolicies_accesslevels, accesspolicies_authorizedorgsdescs, accesspolicies_serviceperimeters, gcpuseraccessbindings, permissions, services
+models:
+  - accesspolicies.ts
+  - accesspolicies_accesslevels.ts
+  - accesspolicies_authorizedorgsdescs.ts
+  - accesspolicies_serviceperimeters.ts
+  - gcpuseraccessbindings.ts
+  - permissions.ts
+  - services.ts
+additionalFiles:
+  - LICENSE.txt
+  - README.md

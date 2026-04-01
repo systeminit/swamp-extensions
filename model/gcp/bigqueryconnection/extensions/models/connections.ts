@@ -1,0 +1,761 @@
+// Auto-generated extension model for @swamp/gcp/bigqueryconnection/connections
+// Do not edit manually. Re-generate with: deno task generate:gcp
+
+// deno-lint-ignore-file no-explicit-any
+
+import { z } from "zod";
+import {
+  createResource,
+  deleteResource,
+  getProjectId,
+  isResourceNotFoundError,
+  readResource,
+  updateResource,
+} from "./_lib/gcp.ts";
+
+/** Construct the fully-qualified resource name from parent and short name. */
+function buildResourceName(parent: string, shortName: string): string {
+  return `${parent}/connections/${shortName}`;
+}
+
+const BASE_URL = "https://bigqueryconnection.googleapis.com/";
+
+const GET_CONFIG = {
+  "id": "bigqueryconnection.projects.locations.connections.get",
+  "path": "v1/{+name}",
+  "httpMethod": "GET",
+  "parameterOrder": [
+    "name",
+  ],
+  "parameters": {
+    "name": {
+      "location": "path",
+      "required": true,
+    },
+  },
+} as const;
+
+const INSERT_CONFIG = {
+  "id": "bigqueryconnection.projects.locations.connections.create",
+  "path": "v1/{+parent}/connections",
+  "httpMethod": "POST",
+  "parameterOrder": [
+    "parent",
+  ],
+  "parameters": {
+    "connectionId": {
+      "location": "query",
+    },
+    "parent": {
+      "location": "path",
+      "required": true,
+    },
+  },
+} as const;
+
+const PATCH_CONFIG = {
+  "id": "bigqueryconnection.projects.locations.connections.patch",
+  "path": "v1/{+name}",
+  "httpMethod": "PATCH",
+  "parameterOrder": [
+    "name",
+  ],
+  "parameters": {
+    "name": {
+      "location": "path",
+      "required": true,
+    },
+    "updateMask": {
+      "location": "query",
+    },
+  },
+} as const;
+
+const DELETE_CONFIG = {
+  "id": "bigqueryconnection.projects.locations.connections.delete",
+  "path": "v1/{+name}",
+  "httpMethod": "DELETE",
+  "parameterOrder": [
+    "name",
+  ],
+  "parameters": {
+    "name": {
+      "location": "path",
+      "required": true,
+    },
+  },
+} as const;
+
+const GlobalArgsSchema = z.object({
+  name: z.string().describe(
+    "Instance name for this resource (used as the unique identifier in the factory pattern)",
+  ),
+  aws: z.object({
+    accessRole: z.object({
+      iamRoleId: z.string().describe(
+        "The user’s AWS IAM Role that trusts the Google-owned AWS IAM user Connection.",
+      ).optional(),
+      identity: z.string().describe(
+        "A unique Google-owned and Google-generated identity for the Connection. This identity will be used to access the user's AWS IAM Role.",
+      ).optional(),
+    }).describe(
+      "Authentication method for Amazon Web Services (AWS) that uses Google owned Google service account to assume into customer's AWS IAM Role.",
+    ).optional(),
+  }).describe("Connection properties specific to Amazon Web Services (AWS).")
+    .optional(),
+  azure: z.object({
+    application: z.string().describe(
+      "Output only. The name of the Azure Active Directory Application.",
+    ).optional(),
+    clientId: z.string().describe(
+      "Output only. The client id of the Azure Active Directory Application.",
+    ).optional(),
+    customerTenantId: z.string().describe(
+      "The id of customer's directory that host the data.",
+    ).optional(),
+    federatedApplicationClientId: z.string().describe(
+      "The client ID of the user's Azure Active Directory Application used for a federated connection.",
+    ).optional(),
+    identity: z.string().describe(
+      "Output only. A unique Google-owned and Google-generated identity for the Connection. This identity will be used to access the user's Azure Active Directory Application.",
+    ).optional(),
+    objectId: z.string().describe(
+      "Output only. The object id of the Azure Active Directory Application.",
+    ).optional(),
+    redirectUri: z.string().describe(
+      "The URL user will be redirected to after granting consent during connection setup.",
+    ).optional(),
+  }).describe("Container for connection properties specific to Azure.")
+    .optional(),
+  cloudResource: z.object({
+    serviceAccountId: z.string().describe(
+      "Output only. The account ID of the service created for the purpose of this connection. The service account does not have any permissions associated with it when it is created. After creation, customers delegate permissions to the service account. When the connection is used in the context of an operation in BigQuery, the service account will be used to connect to the desired resources in GCP. The account ID is in the form of: @gcp-sa-bigquery-cloudresource.iam.gserviceaccount.com",
+    ).optional(),
+  }).describe(
+    "Container for connection properties for delegation of access to GCP resources.",
+  ).optional(),
+  cloudSpanner: z.object({
+    database: z.string().describe(
+      "Cloud Spanner database in the form `project/instance/database'",
+    ).optional(),
+    databaseRole: z.string().describe(
+      "Optional. Cloud Spanner database role for fine-grained access control. The Cloud Spanner admin should have provisioned the database role with appropriate permissions, such as `SELECT` and `INSERT`. Other users should only use roles provided by their Cloud Spanner admins. For more details, see [About fine-grained access control] (https://cloud.google.com/spanner/docs/fgac-about). REQUIRES: The database role name must start with a letter, and can only contain letters, numbers, and underscores.",
+    ).optional(),
+    maxParallelism: z.number().int().describe(
+      "Allows setting max parallelism per query when executing on Spanner independent compute resources. If unspecified, default values of parallelism are chosen that are dependent on the Cloud Spanner instance configuration. REQUIRES: `use_parallelism` must be set. REQUIRES: `use_data_boost` must be set.",
+    ).optional(),
+    useDataBoost: z.boolean().describe(
+      "If set, the request will be executed via Spanner independent compute resources. REQUIRES: `use_parallelism` must be set.",
+    ).optional(),
+    useParallelism: z.boolean().describe(
+      "If parallelism should be used when reading from Cloud Spanner",
+    ).optional(),
+    useServerlessAnalytics: z.boolean().describe(
+      "Deprecated: prefer use_data_boost instead. If the serverless analytics service should be used to read data from Cloud Spanner. Note: `use_parallelism` must be set when using serverless analytics.",
+    ).optional(),
+  }).describe("Connection properties specific to Cloud Spanner.").optional(),
+  cloudSql: z.object({
+    credential: z.object({
+      password: z.string().describe("The password for the credential.")
+        .optional(),
+      username: z.string().describe("The username for the credential.")
+        .optional(),
+    }).describe("Credential info for the Cloud SQL.").optional(),
+    database: z.string().describe("Database name.").optional(),
+    instanceId: z.string().describe(
+      "Cloud SQL instance ID in the form `project:location:instance`.",
+    ).optional(),
+    serviceAccountId: z.string().describe(
+      "Output only. The account ID of the service used for the purpose of this connection. When the connection is used in the context of an operation in BigQuery, this service account will serve as the identity being used for connecting to the CloudSQL instance specified in this connection.",
+    ).optional(),
+    type: z.enum(["DATABASE_TYPE_UNSPECIFIED", "POSTGRES", "MYSQL"]).describe(
+      "Type of the Cloud SQL database.",
+    ).optional(),
+  }).describe("Connection properties specific to the Cloud SQL.").optional(),
+  configuration: z.object({
+    asset: z.object({
+      database: z.string().describe("Name of the database.").optional(),
+      googleCloudResource: z.string().describe(
+        "Full Google Cloud resource name - https://cloud.google.com/apis/design/resource_names#full_resource_name. Example: `//library.googleapis.com/shelves/shelf1/books/book2`",
+      ).optional(),
+    }).describe(
+      "Data Asset - a resource within instance of the system, reachable under specified endpoint. For example a database name in a SQL DB.",
+    ).optional(),
+    authentication: z.object({
+      serviceAccount: z.string().describe(
+        "Output only. Google-managed service account associated with this connection, e.g., `service-{project_number}@gcp-sa-bigqueryconnection.iam.gserviceaccount.com`. BigQuery jobs using this connection will act as `service_account` identity while connecting to the datasource.",
+      ).optional(),
+      usernamePassword: z.object({
+        password: z.object({
+          plaintext: z.string().describe("Input only. Secret as plaintext.")
+            .optional(),
+          secretType: z.enum(["SECRET_TYPE_UNSPECIFIED", "PLAINTEXT"]).describe(
+            "Output only. Indicates type of secret. Can be used to check type of stored secret value even if it's `INPUT_ONLY`.",
+          ).optional(),
+        }).describe("Secret value parameter.").optional(),
+        username: z.string().describe("Required. Username.").optional(),
+      }).describe("Username and Password authentication.").optional(),
+    }).describe("Client authentication.").optional(),
+    connectorId: z.string().describe(
+      "Required. Immutable. The ID of the Connector these parameters are configured for.",
+    ).optional(),
+    endpoint: z.object({
+      hostPort: z.string().describe(
+        "Host and port in a format of `hostname:port` as defined in https://www.ietf.org/rfc/rfc3986.html#section-3.2.2 and https://www.ietf.org/rfc/rfc3986.html#section-3.2.3.",
+      ).optional(),
+    }).describe("Remote endpoint specification.").optional(),
+    network: z.object({
+      privateServiceConnect: z.object({
+        networkAttachment: z.string().describe(
+          "Required. Network Attachment name in the format of `projects/{project}/regions/{region}/networkAttachments/{networkattachment}`.",
+        ).optional(),
+      }).describe("Private Service Connect configuration.").optional(),
+    }).describe("Network related configuration.").optional(),
+  }).describe(
+    "Represents concrete parameter values for Connector Configuration.",
+  ).optional(),
+  description: z.string().describe("User provided description.").optional(),
+  friendlyName: z.string().describe(
+    "User provided display name for the connection.",
+  ).optional(),
+  kmsKeyName: z.string().describe(
+    "Optional. The Cloud KMS key that is used for credentials encryption. If omitted, internal Google owned encryption keys are used. Example: `projects/[kms_project_id]/locations/[region]/keyRings/[key_region]/cryptoKeys/[key]`",
+  ).optional(),
+  salesforceDataCloud: z.object({
+    identity: z.string().describe(
+      "Output only. A unique Google-owned and Google-generated service account identity for the connection.",
+    ).optional(),
+    instanceUri: z.string().describe(
+      "The URL to the user's Salesforce DataCloud instance.",
+    ).optional(),
+    tenantId: z.string().describe("The ID of the user's Salesforce tenant.")
+      .optional(),
+  }).describe(
+    "Connection properties specific to Salesforce DataCloud. This is intended for use only by Salesforce partner projects.",
+  ).optional(),
+  spark: z.object({
+    metastoreServiceConfig: z.object({
+      metastoreService: z.string().describe(
+        "Optional. Resource name of an existing Dataproc Metastore service. Example: * `projects/[project_id]/locations/[region]/services/[service_id]`",
+      ).optional(),
+    }).describe("Configuration of the Dataproc Metastore Service.").optional(),
+    serviceAccountId: z.string().describe(
+      "Output only. The account ID of the service created for the purpose of this connection. The service account does not have any permissions associated with it when it is created. After creation, customers delegate permissions to the service account. When the connection is used in the context of a stored procedure for Apache Spark in BigQuery, the service account is used to connect to the desired resources in Google Cloud. The account ID is in the form of: bqcx--@gcp-sa-bigquery-consp.iam.gserviceaccount.com",
+    ).optional(),
+    sparkHistoryServerConfig: z.object({
+      dataprocCluster: z.string().describe(
+        "Optional. Resource name of an existing Dataproc Cluster to act as a Spark History Server for the connection. Example: * `projects/[project_id]/regions/[region]/clusters/[cluster_name]`",
+      ).optional(),
+    }).describe("Configuration of the Spark History Server.").optional(),
+  }).describe(
+    "Container for connection properties to execute stored procedures for Apache Spark.",
+  ).optional(),
+  connectionId: z.string().describe(
+    "Optional. Connection id that should be assigned to the created connection.",
+  ).optional(),
+  location: z.string().describe(
+    "The location for this resource (e.g., 'us', 'us-central1', 'europe-west1')",
+  ).optional(),
+});
+
+const StateSchema = z.object({
+  aws: z.object({
+    accessRole: z.object({
+      iamRoleId: z.string(),
+      identity: z.string(),
+    }),
+  }).optional(),
+  azure: z.object({
+    application: z.string(),
+    clientId: z.string(),
+    customerTenantId: z.string(),
+    federatedApplicationClientId: z.string(),
+    identity: z.string(),
+    objectId: z.string(),
+    redirectUri: z.string(),
+  }).optional(),
+  cloudResource: z.object({
+    serviceAccountId: z.string(),
+  }).optional(),
+  cloudSpanner: z.object({
+    database: z.string(),
+    databaseRole: z.string(),
+    maxParallelism: z.number(),
+    useDataBoost: z.boolean(),
+    useParallelism: z.boolean(),
+    useServerlessAnalytics: z.boolean(),
+  }).optional(),
+  cloudSql: z.object({
+    credential: z.object({
+      password: z.string(),
+      username: z.string(),
+    }),
+    database: z.string(),
+    instanceId: z.string(),
+    serviceAccountId: z.string(),
+    type: z.string(),
+  }).optional(),
+  configuration: z.object({
+    asset: z.object({
+      database: z.string(),
+      googleCloudResource: z.string(),
+    }),
+    authentication: z.object({
+      serviceAccount: z.string(),
+      usernamePassword: z.object({
+        password: z.object({
+          plaintext: z.string(),
+          secretType: z.string(),
+        }),
+        username: z.string(),
+      }),
+    }),
+    connectorId: z.string(),
+    endpoint: z.object({
+      hostPort: z.string(),
+    }),
+    network: z.object({
+      privateServiceConnect: z.object({
+        networkAttachment: z.string(),
+      }),
+    }),
+  }).optional(),
+  creationTime: z.string().optional(),
+  description: z.string().optional(),
+  friendlyName: z.string().optional(),
+  hasCredential: z.boolean().optional(),
+  kmsKeyName: z.string().optional(),
+  lastModifiedTime: z.string().optional(),
+  name: z.string(),
+  salesforceDataCloud: z.object({
+    identity: z.string(),
+    instanceUri: z.string(),
+    tenantId: z.string(),
+  }).optional(),
+  spark: z.object({
+    metastoreServiceConfig: z.object({
+      metastoreService: z.string(),
+    }),
+    serviceAccountId: z.string(),
+    sparkHistoryServerConfig: z.object({
+      dataprocCluster: z.string(),
+    }),
+  }).optional(),
+}).passthrough();
+
+type StateData = z.infer<typeof StateSchema>;
+
+const InputsSchema = z.object({
+  name: z.string().optional(),
+  aws: z.object({
+    accessRole: z.object({
+      iamRoleId: z.string().describe(
+        "The user’s AWS IAM Role that trusts the Google-owned AWS IAM user Connection.",
+      ).optional(),
+      identity: z.string().describe(
+        "A unique Google-owned and Google-generated identity for the Connection. This identity will be used to access the user's AWS IAM Role.",
+      ).optional(),
+    }).describe(
+      "Authentication method for Amazon Web Services (AWS) that uses Google owned Google service account to assume into customer's AWS IAM Role.",
+    ).optional(),
+  }).describe("Connection properties specific to Amazon Web Services (AWS).")
+    .optional(),
+  azure: z.object({
+    application: z.string().describe(
+      "Output only. The name of the Azure Active Directory Application.",
+    ).optional(),
+    clientId: z.string().describe(
+      "Output only. The client id of the Azure Active Directory Application.",
+    ).optional(),
+    customerTenantId: z.string().describe(
+      "The id of customer's directory that host the data.",
+    ).optional(),
+    federatedApplicationClientId: z.string().describe(
+      "The client ID of the user's Azure Active Directory Application used for a federated connection.",
+    ).optional(),
+    identity: z.string().describe(
+      "Output only. A unique Google-owned and Google-generated identity for the Connection. This identity will be used to access the user's Azure Active Directory Application.",
+    ).optional(),
+    objectId: z.string().describe(
+      "Output only. The object id of the Azure Active Directory Application.",
+    ).optional(),
+    redirectUri: z.string().describe(
+      "The URL user will be redirected to after granting consent during connection setup.",
+    ).optional(),
+  }).describe("Container for connection properties specific to Azure.")
+    .optional(),
+  cloudResource: z.object({
+    serviceAccountId: z.string().describe(
+      "Output only. The account ID of the service created for the purpose of this connection. The service account does not have any permissions associated with it when it is created. After creation, customers delegate permissions to the service account. When the connection is used in the context of an operation in BigQuery, the service account will be used to connect to the desired resources in GCP. The account ID is in the form of: @gcp-sa-bigquery-cloudresource.iam.gserviceaccount.com",
+    ).optional(),
+  }).describe(
+    "Container for connection properties for delegation of access to GCP resources.",
+  ).optional(),
+  cloudSpanner: z.object({
+    database: z.string().describe(
+      "Cloud Spanner database in the form `project/instance/database'",
+    ).optional(),
+    databaseRole: z.string().describe(
+      "Optional. Cloud Spanner database role for fine-grained access control. The Cloud Spanner admin should have provisioned the database role with appropriate permissions, such as `SELECT` and `INSERT`. Other users should only use roles provided by their Cloud Spanner admins. For more details, see [About fine-grained access control] (https://cloud.google.com/spanner/docs/fgac-about). REQUIRES: The database role name must start with a letter, and can only contain letters, numbers, and underscores.",
+    ).optional(),
+    maxParallelism: z.number().int().describe(
+      "Allows setting max parallelism per query when executing on Spanner independent compute resources. If unspecified, default values of parallelism are chosen that are dependent on the Cloud Spanner instance configuration. REQUIRES: `use_parallelism` must be set. REQUIRES: `use_data_boost` must be set.",
+    ).optional(),
+    useDataBoost: z.boolean().describe(
+      "If set, the request will be executed via Spanner independent compute resources. REQUIRES: `use_parallelism` must be set.",
+    ).optional(),
+    useParallelism: z.boolean().describe(
+      "If parallelism should be used when reading from Cloud Spanner",
+    ).optional(),
+    useServerlessAnalytics: z.boolean().describe(
+      "Deprecated: prefer use_data_boost instead. If the serverless analytics service should be used to read data from Cloud Spanner. Note: `use_parallelism` must be set when using serverless analytics.",
+    ).optional(),
+  }).describe("Connection properties specific to Cloud Spanner.").optional(),
+  cloudSql: z.object({
+    credential: z.object({
+      password: z.string().describe("The password for the credential.")
+        .optional(),
+      username: z.string().describe("The username for the credential.")
+        .optional(),
+    }).describe("Credential info for the Cloud SQL.").optional(),
+    database: z.string().describe("Database name.").optional(),
+    instanceId: z.string().describe(
+      "Cloud SQL instance ID in the form `project:location:instance`.",
+    ).optional(),
+    serviceAccountId: z.string().describe(
+      "Output only. The account ID of the service used for the purpose of this connection. When the connection is used in the context of an operation in BigQuery, this service account will serve as the identity being used for connecting to the CloudSQL instance specified in this connection.",
+    ).optional(),
+    type: z.enum(["DATABASE_TYPE_UNSPECIFIED", "POSTGRES", "MYSQL"]).describe(
+      "Type of the Cloud SQL database.",
+    ).optional(),
+  }).describe("Connection properties specific to the Cloud SQL.").optional(),
+  configuration: z.object({
+    asset: z.object({
+      database: z.string().describe("Name of the database.").optional(),
+      googleCloudResource: z.string().describe(
+        "Full Google Cloud resource name - https://cloud.google.com/apis/design/resource_names#full_resource_name. Example: `//library.googleapis.com/shelves/shelf1/books/book2`",
+      ).optional(),
+    }).describe(
+      "Data Asset - a resource within instance of the system, reachable under specified endpoint. For example a database name in a SQL DB.",
+    ).optional(),
+    authentication: z.object({
+      serviceAccount: z.string().describe(
+        "Output only. Google-managed service account associated with this connection, e.g., `service-{project_number}@gcp-sa-bigqueryconnection.iam.gserviceaccount.com`. BigQuery jobs using this connection will act as `service_account` identity while connecting to the datasource.",
+      ).optional(),
+      usernamePassword: z.object({
+        password: z.object({
+          plaintext: z.string().describe("Input only. Secret as plaintext.")
+            .optional(),
+          secretType: z.enum(["SECRET_TYPE_UNSPECIFIED", "PLAINTEXT"]).describe(
+            "Output only. Indicates type of secret. Can be used to check type of stored secret value even if it's `INPUT_ONLY`.",
+          ).optional(),
+        }).describe("Secret value parameter.").optional(),
+        username: z.string().describe("Required. Username.").optional(),
+      }).describe("Username and Password authentication.").optional(),
+    }).describe("Client authentication.").optional(),
+    connectorId: z.string().describe(
+      "Required. Immutable. The ID of the Connector these parameters are configured for.",
+    ).optional(),
+    endpoint: z.object({
+      hostPort: z.string().describe(
+        "Host and port in a format of `hostname:port` as defined in https://www.ietf.org/rfc/rfc3986.html#section-3.2.2 and https://www.ietf.org/rfc/rfc3986.html#section-3.2.3.",
+      ).optional(),
+    }).describe("Remote endpoint specification.").optional(),
+    network: z.object({
+      privateServiceConnect: z.object({
+        networkAttachment: z.string().describe(
+          "Required. Network Attachment name in the format of `projects/{project}/regions/{region}/networkAttachments/{networkattachment}`.",
+        ).optional(),
+      }).describe("Private Service Connect configuration.").optional(),
+    }).describe("Network related configuration.").optional(),
+  }).describe(
+    "Represents concrete parameter values for Connector Configuration.",
+  ).optional(),
+  description: z.string().describe("User provided description.").optional(),
+  friendlyName: z.string().describe(
+    "User provided display name for the connection.",
+  ).optional(),
+  kmsKeyName: z.string().describe(
+    "Optional. The Cloud KMS key that is used for credentials encryption. If omitted, internal Google owned encryption keys are used. Example: `projects/[kms_project_id]/locations/[region]/keyRings/[key_region]/cryptoKeys/[key]`",
+  ).optional(),
+  salesforceDataCloud: z.object({
+    identity: z.string().describe(
+      "Output only. A unique Google-owned and Google-generated service account identity for the connection.",
+    ).optional(),
+    instanceUri: z.string().describe(
+      "The URL to the user's Salesforce DataCloud instance.",
+    ).optional(),
+    tenantId: z.string().describe("The ID of the user's Salesforce tenant.")
+      .optional(),
+  }).describe(
+    "Connection properties specific to Salesforce DataCloud. This is intended for use only by Salesforce partner projects.",
+  ).optional(),
+  spark: z.object({
+    metastoreServiceConfig: z.object({
+      metastoreService: z.string().describe(
+        "Optional. Resource name of an existing Dataproc Metastore service. Example: * `projects/[project_id]/locations/[region]/services/[service_id]`",
+      ).optional(),
+    }).describe("Configuration of the Dataproc Metastore Service.").optional(),
+    serviceAccountId: z.string().describe(
+      "Output only. The account ID of the service created for the purpose of this connection. The service account does not have any permissions associated with it when it is created. After creation, customers delegate permissions to the service account. When the connection is used in the context of a stored procedure for Apache Spark in BigQuery, the service account is used to connect to the desired resources in Google Cloud. The account ID is in the form of: bqcx--@gcp-sa-bigquery-consp.iam.gserviceaccount.com",
+    ).optional(),
+    sparkHistoryServerConfig: z.object({
+      dataprocCluster: z.string().describe(
+        "Optional. Resource name of an existing Dataproc Cluster to act as a Spark History Server for the connection. Example: * `projects/[project_id]/regions/[region]/clusters/[cluster_name]`",
+      ).optional(),
+    }).describe("Configuration of the Spark History Server.").optional(),
+  }).describe(
+    "Container for connection properties to execute stored procedures for Apache Spark.",
+  ).optional(),
+  connectionId: z.string().describe(
+    "Optional. Connection id that should be assigned to the created connection.",
+  ).optional(),
+  location: z.string().describe(
+    "The location for this resource (e.g., 'us', 'us-central1', 'europe-west1')",
+  ).optional(),
+});
+
+export const model = {
+  type: "@swamp/gcp/bigqueryconnection/connections",
+  version: "2026.03.27.1",
+  globalArguments: GlobalArgsSchema,
+  inputsSchema: InputsSchema,
+  resources: {
+    state: {
+      description:
+        "Configuration parameters to establish connection with an external data source...",
+      schema: StateSchema,
+      lifetime: "infinite",
+      garbageCollection: 10,
+    },
+  },
+  methods: {
+    create: {
+      description: "Create a connections",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const projectId = await getProjectId();
+        const params: Record<string, string> = { project: projectId };
+        if (g["parent"] !== undefined) params["parent"] = String(g["parent"]);
+        const body: Record<string, unknown> = {};
+        if (g["aws"] !== undefined) body["aws"] = g["aws"];
+        if (g["azure"] !== undefined) body["azure"] = g["azure"];
+        if (g["cloudResource"] !== undefined) {
+          body["cloudResource"] = g["cloudResource"];
+        }
+        if (g["cloudSpanner"] !== undefined) {
+          body["cloudSpanner"] = g["cloudSpanner"];
+        }
+        if (g["cloudSql"] !== undefined) body["cloudSql"] = g["cloudSql"];
+        if (g["configuration"] !== undefined) {
+          body["configuration"] = g["configuration"];
+        }
+        if (g["description"] !== undefined) {
+          body["description"] = g["description"];
+        }
+        if (g["friendlyName"] !== undefined) {
+          body["friendlyName"] = g["friendlyName"];
+        }
+        if (g["kmsKeyName"] !== undefined) body["kmsKeyName"] = g["kmsKeyName"];
+        if (g["salesforceDataCloud"] !== undefined) {
+          body["salesforceDataCloud"] = g["salesforceDataCloud"];
+        }
+        if (g["spark"] !== undefined) body["spark"] = g["spark"];
+        if (g["connectionId"] !== undefined) {
+          body["connectionId"] = g["connectionId"];
+        }
+        if (g["parent"] !== undefined && g["name"] !== undefined) {
+          params["name"] = buildResourceName(
+            String(g["parent"]),
+            String(g["name"]),
+          );
+        }
+        const result = await createResource(
+          BASE_URL,
+          INSERT_CONFIG,
+          params,
+          body,
+          GET_CONFIG,
+        ) as StateData;
+        const instanceName = g.name?.toString() ?? "current";
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    get: {
+      description: "Get a connections",
+      arguments: z.object({
+        identifier: z.string().describe("The name of the connections"),
+      }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const projectId = await getProjectId();
+        const params: Record<string, string> = { project: projectId };
+        const g = context.globalArgs;
+        params["name"] = buildResourceName(
+          String(g["parent"] ?? ""),
+          args.identifier,
+        );
+        const result = await readResource(
+          BASE_URL,
+          GET_CONFIG,
+          params,
+        ) as StateData;
+        const instanceName = g.name?.toString() ?? args.identifier;
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    update: {
+      description: "Update connections attributes",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const projectId = await getProjectId();
+        const instanceName = g.name?.toString() ?? "current";
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          instanceName,
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        const params: Record<string, string> = { project: projectId };
+        params["name"] = buildResourceName(
+          String(g["parent"] ?? ""),
+          existing["name"]?.toString() ?? g["name"]?.toString() ?? "",
+        );
+        const body: Record<string, unknown> = {};
+        if (g["aws"] !== undefined) body["aws"] = g["aws"];
+        if (g["azure"] !== undefined) body["azure"] = g["azure"];
+        if (g["cloudResource"] !== undefined) {
+          body["cloudResource"] = g["cloudResource"];
+        }
+        if (g["cloudSpanner"] !== undefined) {
+          body["cloudSpanner"] = g["cloudSpanner"];
+        }
+        if (g["cloudSql"] !== undefined) body["cloudSql"] = g["cloudSql"];
+        if (g["configuration"] !== undefined) {
+          body["configuration"] = g["configuration"];
+        }
+        if (g["description"] !== undefined) {
+          body["description"] = g["description"];
+        }
+        if (g["friendlyName"] !== undefined) {
+          body["friendlyName"] = g["friendlyName"];
+        }
+        if (g["kmsKeyName"] !== undefined) body["kmsKeyName"] = g["kmsKeyName"];
+        if (g["salesforceDataCloud"] !== undefined) {
+          body["salesforceDataCloud"] = g["salesforceDataCloud"];
+        }
+        if (g["spark"] !== undefined) body["spark"] = g["spark"];
+        for (const key of Object.keys(existing)) {
+          if (
+            key === "fingerprint" || key === "labelFingerprint" ||
+            key === "etag" || key.endsWith("Fingerprint")
+          ) {
+            body[key] = existing[key];
+          }
+        }
+        const result = await updateResource(
+          BASE_URL,
+          PATCH_CONFIG,
+          params,
+          body,
+          GET_CONFIG,
+        ) as StateData;
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    delete: {
+      description: "Delete the connections",
+      arguments: z.object({
+        identifier: z.string().describe("The name of the connections"),
+      }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const g = context.globalArgs;
+        const projectId = await getProjectId();
+        const params: Record<string, string> = { project: projectId };
+        params["name"] = buildResourceName(
+          String(g["parent"] ?? ""),
+          args.identifier,
+        );
+        const { existed } = await deleteResource(
+          BASE_URL,
+          DELETE_CONFIG,
+          params,
+        );
+        const instanceName = g.name?.toString() ?? args.identifier;
+        const handle = await context.writeResource("state", instanceName, {
+          identifier: args.identifier,
+          existed,
+          status: existed ? "deleted" : "not_found",
+          deletedAt: new Date().toISOString(),
+        });
+        return { dataHandles: [handle] };
+      },
+    },
+    sync: {
+      description: "Sync connections state from GCP",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const projectId = await getProjectId();
+        const instanceName = g.name?.toString() ?? "current";
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          instanceName,
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        try {
+          const params: Record<string, string> = { project: projectId };
+          const shortName = existing.name?.toString() ?? g["name"]?.toString();
+          if (!shortName) throw new Error("No identifier found");
+          params["name"] = buildResourceName(
+            String(g["parent"] ?? ""),
+            shortName,
+          );
+          const result = await readResource(
+            BASE_URL,
+            GET_CONFIG,
+            params,
+          ) as StateData;
+          const handle = await context.writeResource(
+            "state",
+            instanceName,
+            result,
+          );
+          return { dataHandles: [handle] };
+        } catch (error: unknown) {
+          if (isResourceNotFoundError(error)) {
+            const handle = await context.writeResource("state", instanceName, {
+              status: "not_found",
+              syncedAt: new Date().toISOString(),
+            });
+            return { dataHandles: [handle] };
+          }
+          throw error;
+        }
+      },
+    },
+  },
+};

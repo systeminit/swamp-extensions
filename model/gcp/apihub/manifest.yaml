@@ -1,0 +1,34 @@
+# Auto-generated manifest. Re-generate with the appropriate deno task.
+manifestVersion: 1
+name: "@swamp/gcp/apihub"
+version: "2026.03.27.1"
+description: "Google Cloud apihub infrastructure models"
+labels:
+  - gcp
+  - google-cloud
+  - apihub
+  - cloud
+  - infrastructure
+releaseNotes: |
+  - Added: locations, addons, apihubinstances, apis, apis_versions, apis_versions_definitions, apis_versions_specs, attributes, curations, dependencies, deployments, discoveredapiobservations, externalapis, hostprojectregistrations, plugins, plugins_instances, runtimeprojectattachments
+models:
+  - addons.ts
+  - apihubinstances.ts
+  - apis.ts
+  - apis_versions.ts
+  - apis_versions_definitions.ts
+  - apis_versions_specs.ts
+  - attributes.ts
+  - curations.ts
+  - dependencies.ts
+  - deployments.ts
+  - discoveredapiobservations.ts
+  - externalapis.ts
+  - hostprojectregistrations.ts
+  - locations.ts
+  - plugins.ts
+  - plugins_instances.ts
+  - runtimeprojectattachments.ts
+additionalFiles:
+  - LICENSE.txt
+  - README.md

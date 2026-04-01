@@ -1,0 +1,535 @@
+// Auto-generated extension model for @swamp/gcp/tagmanager/accounts-containers-workspaces
+// Do not edit manually. Re-generate with: deno task generate:gcp
+
+// deno-lint-ignore-file no-explicit-any
+
+import { z } from "zod";
+import {
+  createResource,
+  deleteResource,
+  getProjectId,
+  isResourceNotFoundError,
+  readResource,
+  updateResource,
+} from "./_lib/gcp.ts";
+
+const BASE_URL = "https://tagmanager.googleapis.com/";
+
+const GET_CONFIG = {
+  "id": "tagmanager.accounts.containers.workspaces.get",
+  "path": "tagmanager/v2/{+path}",
+  "httpMethod": "GET",
+  "parameterOrder": [
+    "path",
+  ],
+  "parameters": {
+    "path": {
+      "location": "path",
+      "required": true,
+    },
+  },
+} as const;
+
+const INSERT_CONFIG = {
+  "id": "tagmanager.accounts.containers.workspaces.create",
+  "path": "tagmanager/v2/{+parent}/workspaces",
+  "httpMethod": "POST",
+  "parameterOrder": [
+    "parent",
+  ],
+  "parameters": {
+    "parent": {
+      "location": "path",
+      "required": true,
+    },
+  },
+} as const;
+
+const UPDATE_CONFIG = {
+  "id": "tagmanager.accounts.containers.workspaces.update",
+  "path": "tagmanager/v2/{+path}",
+  "httpMethod": "PUT",
+  "parameterOrder": [
+    "path",
+  ],
+  "parameters": {
+    "fingerprint": {
+      "location": "query",
+    },
+    "path": {
+      "location": "path",
+      "required": true,
+    },
+  },
+} as const;
+
+const DELETE_CONFIG = {
+  "id": "tagmanager.accounts.containers.workspaces.delete",
+  "path": "tagmanager/v2/{+path}",
+  "httpMethod": "DELETE",
+  "parameterOrder": [
+    "path",
+  ],
+  "parameters": {
+    "path": {
+      "location": "path",
+      "required": true,
+    },
+  },
+} as const;
+
+const GlobalArgsSchema = z.object({
+  accountId: z.string().describe("GTM Account ID.").optional(),
+  containerId: z.string().describe("GTM Container ID.").optional(),
+  description: z.string().describe("Workspace description.").optional(),
+  fingerprint: z.string().describe(
+    "The fingerprint of the GTM Workspace as computed at storage time. This value is recomputed whenever the workspace is modified.",
+  ).optional(),
+  name: z.string().describe("Workspace display name.").optional(),
+  path: z.string().describe("GTM Workspace's API relative path.").optional(),
+  tagManagerUrl: z.string().describe(
+    "Auto generated link to the tag manager UI",
+  ).optional(),
+  workspaceId: z.string().describe(
+    "The Workspace ID uniquely identifies the GTM Workspace.",
+  ).optional(),
+  parent: z.string().describe(
+    "The parent resource name (e.g., projects/my-project/locations/us-central1, organizations/123, folders/456)",
+  ).optional(),
+});
+
+const StateSchema = z.object({
+  accountId: z.string().optional(),
+  containerId: z.string().optional(),
+  description: z.string().optional(),
+  fingerprint: z.string().optional(),
+  name: z.string(),
+  path: z.string().optional(),
+  tagManagerUrl: z.string().optional(),
+  workspaceId: z.string().optional(),
+}).passthrough();
+
+type StateData = z.infer<typeof StateSchema>;
+
+const InputsSchema = z.object({
+  accountId: z.string().describe("GTM Account ID.").optional(),
+  containerId: z.string().describe("GTM Container ID.").optional(),
+  description: z.string().describe("Workspace description.").optional(),
+  fingerprint: z.string().describe(
+    "The fingerprint of the GTM Workspace as computed at storage time. This value is recomputed whenever the workspace is modified.",
+  ).optional(),
+  name: z.string().describe("Workspace display name.").optional(),
+  path: z.string().describe("GTM Workspace's API relative path.").optional(),
+  tagManagerUrl: z.string().describe(
+    "Auto generated link to the tag manager UI",
+  ).optional(),
+  workspaceId: z.string().describe(
+    "The Workspace ID uniquely identifies the GTM Workspace.",
+  ).optional(),
+  parent: z.string().describe(
+    "The parent resource name (e.g., projects/my-project/locations/us-central1, organizations/123, folders/456)",
+  ).optional(),
+});
+
+export const model = {
+  type: "@swamp/gcp/tagmanager/accounts-containers-workspaces",
+  version: "2026.03.27.1",
+  globalArguments: GlobalArgsSchema,
+  inputsSchema: InputsSchema,
+  resources: {
+    state: {
+      description: "Represents a Google Tag Manager Container Workspace.",
+      schema: StateSchema,
+      lifetime: "infinite",
+      garbageCollection: 10,
+    },
+  },
+  methods: {
+    create: {
+      description: "Create a workspaces",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const projectId = await getProjectId();
+        const params: Record<string, string> = { project: projectId };
+        if (g["parent"] !== undefined) params["parent"] = String(g["parent"]);
+        const body: Record<string, unknown> = {};
+        if (g["accountId"] !== undefined) body["accountId"] = g["accountId"];
+        if (g["containerId"] !== undefined) {
+          body["containerId"] = g["containerId"];
+        }
+        if (g["description"] !== undefined) {
+          body["description"] = g["description"];
+        }
+        if (g["fingerprint"] !== undefined) {
+          body["fingerprint"] = g["fingerprint"];
+        }
+        if (g["name"] !== undefined) body["name"] = g["name"];
+        if (g["path"] !== undefined) body["path"] = g["path"];
+        if (g["tagManagerUrl"] !== undefined) {
+          body["tagManagerUrl"] = g["tagManagerUrl"];
+        }
+        if (g["workspaceId"] !== undefined) {
+          body["workspaceId"] = g["workspaceId"];
+        }
+        if (g["name"] !== undefined) params["path"] = String(g["name"]);
+        const result = await createResource(
+          BASE_URL,
+          INSERT_CONFIG,
+          params,
+          body,
+          GET_CONFIG,
+        ) as StateData;
+        const instanceName = (result.name ?? g.name)?.toString() ?? "current";
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    get: {
+      description: "Get a workspaces",
+      arguments: z.object({
+        identifier: z.string().describe("The name of the workspaces"),
+      }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const projectId = await getProjectId();
+        const params: Record<string, string> = { project: projectId };
+        const g = context.globalArgs;
+        params["path"] = args.identifier;
+        const result = await readResource(
+          BASE_URL,
+          GET_CONFIG,
+          params,
+        ) as StateData;
+        const instanceName = (result.name ?? g.name)?.toString() ??
+          args.identifier;
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    update: {
+      description: "Update workspaces attributes",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const projectId = await getProjectId();
+        const instanceName = g.name?.toString() ?? "current";
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          instanceName,
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        const params: Record<string, string> = { project: projectId };
+        params["path"] = existing["name"]?.toString() ?? "";
+        const body: Record<string, unknown> = {};
+        if (g["accountId"] !== undefined) body["accountId"] = g["accountId"];
+        if (g["containerId"] !== undefined) {
+          body["containerId"] = g["containerId"];
+        }
+        if (g["description"] !== undefined) {
+          body["description"] = g["description"];
+        }
+        if (g["fingerprint"] !== undefined) {
+          body["fingerprint"] = g["fingerprint"];
+        }
+        if (g["name"] !== undefined) body["name"] = g["name"];
+        if (g["tagManagerUrl"] !== undefined) {
+          body["tagManagerUrl"] = g["tagManagerUrl"];
+        }
+        if (g["workspaceId"] !== undefined) {
+          body["workspaceId"] = g["workspaceId"];
+        }
+        for (const key of Object.keys(existing)) {
+          if (
+            key === "fingerprint" || key === "labelFingerprint" ||
+            key === "etag" || key.endsWith("Fingerprint")
+          ) {
+            body[key] = existing[key];
+          }
+        }
+        const result = await updateResource(
+          BASE_URL,
+          UPDATE_CONFIG,
+          params,
+          body,
+          GET_CONFIG,
+        ) as StateData;
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    delete: {
+      description: "Delete the workspaces",
+      arguments: z.object({
+        identifier: z.string().describe("The name of the workspaces"),
+      }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const g = context.globalArgs;
+        const projectId = await getProjectId();
+        const params: Record<string, string> = { project: projectId };
+        params["path"] = args.identifier;
+        const { existed } = await deleteResource(
+          BASE_URL,
+          DELETE_CONFIG,
+          params,
+        );
+        const instanceName = g.name?.toString() ?? args.identifier;
+        const handle = await context.writeResource("state", instanceName, {
+          identifier: args.identifier,
+          existed,
+          status: existed ? "deleted" : "not_found",
+          deletedAt: new Date().toISOString(),
+        });
+        return { dataHandles: [handle] };
+      },
+    },
+    sync: {
+      description: "Sync workspaces state from GCP",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const projectId = await getProjectId();
+        const instanceName = g.name?.toString() ?? "current";
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          instanceName,
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        try {
+          const params: Record<string, string> = { project: projectId };
+          const identifier = existing.name?.toString() ?? g["name"]?.toString();
+          if (!identifier) {
+            throw new Error(
+              "No identifier found in existing state or globalArgs",
+            );
+          }
+          params["path"] = identifier;
+          const result = await readResource(
+            BASE_URL,
+            GET_CONFIG,
+            params,
+          ) as StateData;
+          const handle = await context.writeResource(
+            "state",
+            instanceName,
+            result,
+          );
+          return { dataHandles: [handle] };
+        } catch (error: unknown) {
+          if (isResourceNotFoundError(error)) {
+            const handle = await context.writeResource("state", instanceName, {
+              status: "not_found",
+              syncedAt: new Date().toISOString(),
+            });
+            return { dataHandles: [handle] };
+          }
+          throw error;
+        }
+      },
+    },
+    bulk_update: {
+      description: "bulk_update",
+      arguments: z.object({
+        changes: z.any().optional(),
+      }),
+      execute: async (args: Record<string, unknown>, context: any) => {
+        const g = context.globalArgs;
+        const projectId = await getProjectId();
+        const params: Record<string, string> = { project: projectId };
+        if (g["path"] !== undefined) params["path"] = String(g["path"]);
+        const body: Record<string, unknown> = {};
+        if (args["changes"] !== undefined) body["changes"] = args["changes"];
+        const result = await createResource(
+          BASE_URL,
+          {
+            "id": "tagmanager.accounts.containers.workspaces.bulk_update",
+            "path": "tagmanager/v2/{+path}/bulk_update",
+            "httpMethod": "POST",
+            "parameterOrder": ["path"],
+            "parameters": { "path": { "location": "path", "required": true } },
+          },
+          params,
+          body,
+        );
+        return { result };
+      },
+    },
+    create_version: {
+      description: "create_version",
+      arguments: z.object({
+        name: z.any().optional(),
+        notes: z.any().optional(),
+      }),
+      execute: async (args: Record<string, unknown>, context: any) => {
+        const g = context.globalArgs;
+        const projectId = await getProjectId();
+        const params: Record<string, string> = { project: projectId };
+        if (g["path"] !== undefined) params["path"] = String(g["path"]);
+        const body: Record<string, unknown> = {};
+        if (args["name"] !== undefined) body["name"] = args["name"];
+        if (args["notes"] !== undefined) body["notes"] = args["notes"];
+        const result = await createResource(
+          BASE_URL,
+          {
+            "id": "tagmanager.accounts.containers.workspaces.create_version",
+            "path": "tagmanager/v2/{+path}:create_version",
+            "httpMethod": "POST",
+            "parameterOrder": ["path"],
+            "parameters": { "path": { "location": "path", "required": true } },
+          },
+          params,
+          body,
+        );
+        return { result };
+      },
+    },
+    get_status: {
+      description: "get status",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, unknown>, context: any) => {
+        const g = context.globalArgs;
+        const projectId = await getProjectId();
+        const params: Record<string, string> = { project: projectId };
+        if (g["path"] !== undefined) params["path"] = String(g["path"]);
+        const result = await createResource(
+          BASE_URL,
+          {
+            "id": "tagmanager.accounts.containers.workspaces.getStatus",
+            "path": "tagmanager/v2/{+path}/status",
+            "httpMethod": "GET",
+            "parameterOrder": ["path"],
+            "parameters": { "path": { "location": "path", "required": true } },
+          },
+          params,
+          {},
+        );
+        return { result };
+      },
+    },
+    quick_preview: {
+      description: "quick_preview",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, unknown>, context: any) => {
+        const g = context.globalArgs;
+        const projectId = await getProjectId();
+        const params: Record<string, string> = { project: projectId };
+        if (g["path"] !== undefined) params["path"] = String(g["path"]);
+        const result = await createResource(
+          BASE_URL,
+          {
+            "id": "tagmanager.accounts.containers.workspaces.quick_preview",
+            "path": "tagmanager/v2/{+path}:quick_preview",
+            "httpMethod": "POST",
+            "parameterOrder": ["path"],
+            "parameters": { "path": { "location": "path", "required": true } },
+          },
+          params,
+          {},
+        );
+        return { result };
+      },
+    },
+    resolve_conflict: {
+      description: "resolve_conflict",
+      arguments: z.object({
+        builtInVariable: z.any().optional(),
+        changeStatus: z.any().optional(),
+        client: z.any().optional(),
+        customTemplate: z.any().optional(),
+        folder: z.any().optional(),
+        gtagConfig: z.any().optional(),
+        tag: z.any().optional(),
+        transformation: z.any().optional(),
+        trigger: z.any().optional(),
+        variable: z.any().optional(),
+        zone: z.any().optional(),
+      }),
+      execute: async (args: Record<string, unknown>, context: any) => {
+        const g = context.globalArgs;
+        const projectId = await getProjectId();
+        const params: Record<string, string> = { project: projectId };
+        if (g["path"] !== undefined) params["path"] = String(g["path"]);
+        const body: Record<string, unknown> = {};
+        if (args["builtInVariable"] !== undefined) {
+          body["builtInVariable"] = args["builtInVariable"];
+        }
+        if (args["changeStatus"] !== undefined) {
+          body["changeStatus"] = args["changeStatus"];
+        }
+        if (args["client"] !== undefined) body["client"] = args["client"];
+        if (args["customTemplate"] !== undefined) {
+          body["customTemplate"] = args["customTemplate"];
+        }
+        if (args["folder"] !== undefined) body["folder"] = args["folder"];
+        if (args["gtagConfig"] !== undefined) {
+          body["gtagConfig"] = args["gtagConfig"];
+        }
+        if (args["tag"] !== undefined) body["tag"] = args["tag"];
+        if (args["transformation"] !== undefined) {
+          body["transformation"] = args["transformation"];
+        }
+        if (args["trigger"] !== undefined) body["trigger"] = args["trigger"];
+        if (args["variable"] !== undefined) body["variable"] = args["variable"];
+        if (args["zone"] !== undefined) body["zone"] = args["zone"];
+        const result = await createResource(
+          BASE_URL,
+          {
+            "id": "tagmanager.accounts.containers.workspaces.resolve_conflict",
+            "path": "tagmanager/v2/{+path}:resolve_conflict",
+            "httpMethod": "POST",
+            "parameterOrder": ["path"],
+            "parameters": {
+              "fingerprint": { "location": "query" },
+              "path": { "location": "path", "required": true },
+            },
+          },
+          params,
+          body,
+        );
+        return { result };
+      },
+    },
+    action_sync: {
+      description: "sync",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, unknown>, context: any) => {
+        const g = context.globalArgs;
+        const projectId = await getProjectId();
+        const params: Record<string, string> = { project: projectId };
+        if (g["path"] !== undefined) params["path"] = String(g["path"]);
+        const result = await createResource(
+          BASE_URL,
+          {
+            "id": "tagmanager.accounts.containers.workspaces.sync",
+            "path": "tagmanager/v2/{+path}:sync",
+            "httpMethod": "POST",
+            "parameterOrder": ["path"],
+            "parameters": { "path": { "location": "path", "required": true } },
+          },
+          params,
+          {},
+        );
+        return { result };
+      },
+    },
+  },
+};

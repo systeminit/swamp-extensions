@@ -1,0 +1,459 @@
+// Auto-generated extension model for @swamp/gcp/saasservicemgmt/units
+// Do not edit manually. Re-generate with: deno task generate:gcp
+
+// deno-lint-ignore-file no-explicit-any
+
+import { z } from "zod";
+import {
+  createResource,
+  deleteResource,
+  getProjectId,
+  isResourceNotFoundError,
+  readResource,
+  updateResource,
+} from "./_lib/gcp.ts";
+
+/** Construct the fully-qualified resource name from parent and short name. */
+function buildResourceName(parent: string, shortName: string): string {
+  return `${parent}/units/${shortName}`;
+}
+
+const BASE_URL = "https://saasservicemgmt.googleapis.com/";
+
+const GET_CONFIG = {
+  "id": "saasservicemgmt.projects.locations.units.get",
+  "path": "v1/{+name}",
+  "httpMethod": "GET",
+  "parameterOrder": [
+    "name",
+  ],
+  "parameters": {
+    "name": {
+      "location": "path",
+      "required": true,
+    },
+  },
+} as const;
+
+const INSERT_CONFIG = {
+  "id": "saasservicemgmt.projects.locations.units.create",
+  "path": "v1/{+parent}/units",
+  "httpMethod": "POST",
+  "parameterOrder": [
+    "parent",
+  ],
+  "parameters": {
+    "parent": {
+      "location": "path",
+      "required": true,
+    },
+    "requestId": {
+      "location": "query",
+    },
+    "unitId": {
+      "location": "query",
+    },
+    "validateOnly": {
+      "location": "query",
+    },
+  },
+} as const;
+
+const PATCH_CONFIG = {
+  "id": "saasservicemgmt.projects.locations.units.patch",
+  "path": "v1/{+name}",
+  "httpMethod": "PATCH",
+  "parameterOrder": [
+    "name",
+  ],
+  "parameters": {
+    "name": {
+      "location": "path",
+      "required": true,
+    },
+    "requestId": {
+      "location": "query",
+    },
+    "updateMask": {
+      "location": "query",
+    },
+    "validateOnly": {
+      "location": "query",
+    },
+  },
+} as const;
+
+const DELETE_CONFIG = {
+  "id": "saasservicemgmt.projects.locations.units.delete",
+  "path": "v1/{+name}",
+  "httpMethod": "DELETE",
+  "parameterOrder": [
+    "name",
+  ],
+  "parameters": {
+    "etag": {
+      "location": "query",
+    },
+    "name": {
+      "location": "path",
+      "required": true,
+    },
+    "requestId": {
+      "location": "query",
+    },
+    "validateOnly": {
+      "location": "query",
+    },
+  },
+} as const;
+
+const GlobalArgsSchema = z.object({
+  annotations: z.record(z.string(), z.string()).describe(
+    "Optional. Annotations is an unstructured key-value map stored with a resource that may be set by external tools to store and retrieve arbitrary metadata. They are not queryable and should be preserved when modifying objects. More info: https://kubernetes.io/docs/user-guide/annotations",
+  ).optional(),
+  labels: z.record(z.string(), z.string()).describe(
+    "Optional. The labels on the resource, which can be used for categorization. similar to Kubernetes resource labels.",
+  ).optional(),
+  maintenance: z.object({
+    pinnedUntilTime: z.string().describe(
+      "Optional. If present, it fixes the release on the unit until the given time; i.e. changes to the release field will be rejected. Rollouts should and will also respect this by not requesting an upgrade in the first place.",
+    ).optional(),
+  }).describe(
+    "Captures requested directives for performing future maintenance on the unit. This includes a request for the unit to skip maintenance for a period of time and remain pinned to its current release as well as controls for postponing maintenance scheduled in future.",
+  ).optional(),
+  managementMode: z.enum([
+    "MANAGEMENT_MODE_UNSPECIFIED",
+    "MANAGEMENT_MODE_USER",
+    "MANAGEMENT_MODE_SYSTEM",
+  ]).describe(
+    "Optional. Immutable. Indicates whether the Unit life cycle is controlled by the user or by the system. Immutable once created.",
+  ).optional(),
+  name: z.string().describe(
+    'Identifier. The resource name (full URI of the resource) following the standard naming scheme: "projects/{project}/locations/{location}/units/{unit}"',
+  ).optional(),
+  tenant: z.string().describe(
+    "Optional. Reference to the Saas Tenant resource this unit belongs to. This for example informs the maintenance policies to use for scheduling future updates on a unit. (optional and immutable once created)",
+  ).optional(),
+  unitKind: z.string().describe(
+    "Optional. Reference to the UnitKind this Unit belongs to. Immutable once set.",
+  ).optional(),
+  requestId: z.string().describe(
+    "An optional request ID to identify requests. Specify a unique request ID so that if you must retry your request, the server will know to ignore the request if it has already been completed. The server will guarantee that for at least 60 minutes since the first request. For example, consider a situation where you make an initial request and the request times out. If you make the request again with the same request ID, the server can check if original operation with the same request ID was received, and if so, will ignore the second request. This prevents clients from accidentally creating duplicate commitments. The request ID must be a valid UUID with the exception that zero UUID is not supported (00000000-0000-0000-0000-000000000000).",
+  ).optional(),
+  unitId: z.string().describe("Required. The ID value for the new unit.")
+    .optional(),
+  location: z.string().describe(
+    "The location for this resource (e.g., 'us', 'us-central1', 'europe-west1')",
+  ).optional(),
+});
+
+const StateSchema = z.object({
+  annotations: z.record(z.string(), z.unknown()).optional(),
+  conditions: z.array(z.object({
+    lastTransitionTime: z.string(),
+    message: z.string(),
+    reason: z.string(),
+    status: z.string(),
+    type: z.string(),
+  })).optional(),
+  createTime: z.string().optional(),
+  dependencies: z.array(z.object({
+    alias: z.string(),
+    unit: z.string(),
+  })).optional(),
+  dependents: z.array(z.object({
+    alias: z.string(),
+    unit: z.string(),
+  })).optional(),
+  etag: z.string().optional(),
+  inputVariables: z.array(z.object({
+    type: z.string(),
+    value: z.string(),
+    variable: z.string(),
+  })).optional(),
+  labels: z.record(z.string(), z.unknown()).optional(),
+  maintenance: z.object({
+    pinnedUntilTime: z.string(),
+  }).optional(),
+  managementMode: z.string().optional(),
+  name: z.string(),
+  ongoingOperations: z.array(z.string()).optional(),
+  outputVariables: z.array(z.object({
+    type: z.string(),
+    value: z.string(),
+    variable: z.string(),
+  })).optional(),
+  pendingOperations: z.array(z.string()).optional(),
+  release: z.string().optional(),
+  satisfiesPzi: z.boolean().optional(),
+  satisfiesPzs: z.boolean().optional(),
+  scheduledOperations: z.array(z.string()).optional(),
+  state: z.string().optional(),
+  systemCleanupAt: z.string().optional(),
+  systemManagedState: z.string().optional(),
+  tenant: z.string().optional(),
+  uid: z.string().optional(),
+  unitKind: z.string().optional(),
+  updateTime: z.string().optional(),
+}).passthrough();
+
+type StateData = z.infer<typeof StateSchema>;
+
+const InputsSchema = z.object({
+  annotations: z.record(z.string(), z.string()).describe(
+    "Optional. Annotations is an unstructured key-value map stored with a resource that may be set by external tools to store and retrieve arbitrary metadata. They are not queryable and should be preserved when modifying objects. More info: https://kubernetes.io/docs/user-guide/annotations",
+  ).optional(),
+  labels: z.record(z.string(), z.string()).describe(
+    "Optional. The labels on the resource, which can be used for categorization. similar to Kubernetes resource labels.",
+  ).optional(),
+  maintenance: z.object({
+    pinnedUntilTime: z.string().describe(
+      "Optional. If present, it fixes the release on the unit until the given time; i.e. changes to the release field will be rejected. Rollouts should and will also respect this by not requesting an upgrade in the first place.",
+    ).optional(),
+  }).describe(
+    "Captures requested directives for performing future maintenance on the unit. This includes a request for the unit to skip maintenance for a period of time and remain pinned to its current release as well as controls for postponing maintenance scheduled in future.",
+  ).optional(),
+  managementMode: z.enum([
+    "MANAGEMENT_MODE_UNSPECIFIED",
+    "MANAGEMENT_MODE_USER",
+    "MANAGEMENT_MODE_SYSTEM",
+  ]).describe(
+    "Optional. Immutable. Indicates whether the Unit life cycle is controlled by the user or by the system. Immutable once created.",
+  ).optional(),
+  name: z.string().describe(
+    'Identifier. The resource name (full URI of the resource) following the standard naming scheme: "projects/{project}/locations/{location}/units/{unit}"',
+  ).optional(),
+  tenant: z.string().describe(
+    "Optional. Reference to the Saas Tenant resource this unit belongs to. This for example informs the maintenance policies to use for scheduling future updates on a unit. (optional and immutable once created)",
+  ).optional(),
+  unitKind: z.string().describe(
+    "Optional. Reference to the UnitKind this Unit belongs to. Immutable once set.",
+  ).optional(),
+  requestId: z.string().describe(
+    "An optional request ID to identify requests. Specify a unique request ID so that if you must retry your request, the server will know to ignore the request if it has already been completed. The server will guarantee that for at least 60 minutes since the first request. For example, consider a situation where you make an initial request and the request times out. If you make the request again with the same request ID, the server can check if original operation with the same request ID was received, and if so, will ignore the second request. This prevents clients from accidentally creating duplicate commitments. The request ID must be a valid UUID with the exception that zero UUID is not supported (00000000-0000-0000-0000-000000000000).",
+  ).optional(),
+  unitId: z.string().describe("Required. The ID value for the new unit.")
+    .optional(),
+  location: z.string().describe(
+    "The location for this resource (e.g., 'us', 'us-central1', 'europe-west1')",
+  ).optional(),
+});
+
+export const model = {
+  type: "@swamp/gcp/saasservicemgmt/units",
+  version: "2026.03.27.1",
+  globalArguments: GlobalArgsSchema,
+  inputsSchema: InputsSchema,
+  resources: {
+    state: {
+      description:
+        "A unit of deployment that has its lifecycle via a CRUD API using an actuation...",
+      schema: StateSchema,
+      lifetime: "infinite",
+      garbageCollection: 10,
+    },
+  },
+  methods: {
+    create: {
+      description: "Create a units",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const projectId = await getProjectId();
+        const params: Record<string, string> = { project: projectId };
+        if (g["parent"] !== undefined) params["parent"] = String(g["parent"]);
+        const body: Record<string, unknown> = {};
+        if (g["annotations"] !== undefined) {
+          body["annotations"] = g["annotations"];
+        }
+        if (g["labels"] !== undefined) body["labels"] = g["labels"];
+        if (g["maintenance"] !== undefined) {
+          body["maintenance"] = g["maintenance"];
+        }
+        if (g["managementMode"] !== undefined) {
+          body["managementMode"] = g["managementMode"];
+        }
+        if (g["name"] !== undefined) body["name"] = g["name"];
+        if (g["tenant"] !== undefined) body["tenant"] = g["tenant"];
+        if (g["unitKind"] !== undefined) body["unitKind"] = g["unitKind"];
+        if (g["requestId"] !== undefined) body["requestId"] = g["requestId"];
+        if (g["unitId"] !== undefined) body["unitId"] = g["unitId"];
+        if (g["parent"] !== undefined && g["name"] !== undefined) {
+          params["name"] = buildResourceName(
+            String(g["parent"]),
+            String(g["name"]),
+          );
+        }
+        const result = await createResource(
+          BASE_URL,
+          INSERT_CONFIG,
+          params,
+          body,
+          GET_CONFIG,
+        ) as StateData;
+        const instanceName = (result.name ?? g.name)?.toString() ?? "current";
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    get: {
+      description: "Get a units",
+      arguments: z.object({
+        identifier: z.string().describe("The name of the units"),
+      }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const projectId = await getProjectId();
+        const params: Record<string, string> = { project: projectId };
+        const g = context.globalArgs;
+        params["name"] = buildResourceName(
+          String(g["parent"] ?? ""),
+          args.identifier,
+        );
+        const result = await readResource(
+          BASE_URL,
+          GET_CONFIG,
+          params,
+        ) as StateData;
+        const instanceName = (result.name ?? g.name)?.toString() ??
+          args.identifier;
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    update: {
+      description: "Update units attributes",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const projectId = await getProjectId();
+        const instanceName = g.name?.toString() ?? "current";
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          instanceName,
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        const params: Record<string, string> = { project: projectId };
+        params["name"] = buildResourceName(
+          String(g["parent"] ?? ""),
+          existing["name"]?.toString() ?? g["name"]?.toString() ?? "",
+        );
+        const body: Record<string, unknown> = {};
+        if (g["annotations"] !== undefined) {
+          body["annotations"] = g["annotations"];
+        }
+        if (g["labels"] !== undefined) body["labels"] = g["labels"];
+        if (g["maintenance"] !== undefined) {
+          body["maintenance"] = g["maintenance"];
+        }
+        for (const key of Object.keys(existing)) {
+          if (
+            key === "fingerprint" || key === "labelFingerprint" ||
+            key === "etag" || key.endsWith("Fingerprint")
+          ) {
+            body[key] = existing[key];
+          }
+        }
+        const result = await updateResource(
+          BASE_URL,
+          PATCH_CONFIG,
+          params,
+          body,
+          GET_CONFIG,
+        ) as StateData;
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    delete: {
+      description: "Delete the units",
+      arguments: z.object({
+        identifier: z.string().describe("The name of the units"),
+      }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const g = context.globalArgs;
+        const projectId = await getProjectId();
+        const params: Record<string, string> = { project: projectId };
+        params["name"] = buildResourceName(
+          String(g["parent"] ?? ""),
+          args.identifier,
+        );
+        const { existed } = await deleteResource(
+          BASE_URL,
+          DELETE_CONFIG,
+          params,
+        );
+        const instanceName = g.name?.toString() ?? args.identifier;
+        const handle = await context.writeResource("state", instanceName, {
+          identifier: args.identifier,
+          existed,
+          status: existed ? "deleted" : "not_found",
+          deletedAt: new Date().toISOString(),
+        });
+        return { dataHandles: [handle] };
+      },
+    },
+    sync: {
+      description: "Sync units state from GCP",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const projectId = await getProjectId();
+        const instanceName = g.name?.toString() ?? "current";
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          instanceName,
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        try {
+          const params: Record<string, string> = { project: projectId };
+          const shortName = existing.name?.toString() ?? g["name"]?.toString();
+          if (!shortName) throw new Error("No identifier found");
+          params["name"] = buildResourceName(
+            String(g["parent"] ?? ""),
+            shortName,
+          );
+          const result = await readResource(
+            BASE_URL,
+            GET_CONFIG,
+            params,
+          ) as StateData;
+          const handle = await context.writeResource(
+            "state",
+            instanceName,
+            result,
+          );
+          return { dataHandles: [handle] };
+        } catch (error: unknown) {
+          if (isResourceNotFoundError(error)) {
+            const handle = await context.writeResource("state", instanceName, {
+              status: "not_found",
+              syncedAt: new Date().toISOString(),
+            });
+            return { dataHandles: [handle] };
+          }
+          throw error;
+        }
+      },
+    },
+  },
+};

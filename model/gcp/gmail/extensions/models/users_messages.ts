@@ -1,0 +1,716 @@
+// Auto-generated extension model for @swamp/gcp/gmail/users-messages
+// Do not edit manually. Re-generate with: deno task generate:gcp
+
+// deno-lint-ignore-file no-explicit-any
+
+import { z } from "zod";
+import {
+  createResource,
+  deleteResource,
+  getProjectId,
+  isResourceNotFoundError,
+  readResource,
+} from "./_lib/gcp.ts";
+
+const BASE_URL = "https://gmail.googleapis.com/";
+
+const GET_CONFIG = {
+  "id": "gmail.users.messages.get",
+  "path": "gmail/v1/users/{userId}/messages/{id}",
+  "httpMethod": "GET",
+  "parameterOrder": [
+    "userId",
+    "id",
+  ],
+  "parameters": {
+    "format": {
+      "location": "query",
+    },
+    "id": {
+      "location": "path",
+      "required": true,
+    },
+    "metadataHeaders": {
+      "location": "query",
+    },
+    "userId": {
+      "location": "path",
+      "required": true,
+    },
+  },
+} as const;
+
+const INSERT_CONFIG = {
+  "id": "gmail.users.messages.insert",
+  "path": "gmail/v1/users/{userId}/messages",
+  "httpMethod": "POST",
+  "parameterOrder": [
+    "userId",
+  ],
+  "parameters": {
+    "deleted": {
+      "location": "query",
+    },
+    "internalDateSource": {
+      "location": "query",
+    },
+    "userId": {
+      "location": "path",
+      "required": true,
+    },
+  },
+} as const;
+
+const DELETE_CONFIG = {
+  "id": "gmail.users.messages.delete",
+  "path": "gmail/v1/users/{userId}/messages/{id}",
+  "httpMethod": "DELETE",
+  "parameterOrder": [
+    "userId",
+    "id",
+  ],
+  "parameters": {
+    "id": {
+      "location": "path",
+      "required": true,
+    },
+    "userId": {
+      "location": "path",
+      "required": true,
+    },
+  },
+} as const;
+
+const GlobalArgsSchema = z.object({
+  classificationLabelValues: z.array(z.object({
+    fields: z.array(z.object({
+      fieldId: z.string().describe(
+        "Required. The field ID for the Classification Label Value. Maps to the ID field of the Google Drive `Label.Field` object.",
+      ).optional(),
+      selection: z.string().describe(
+        "Selection choice ID for the selection option. Should only be set if the field type is `SELECTION` in the Google Drive `Label.Field` object. Maps to the id field of the Google Drive `Label.Field.SelectionOptions` resource.",
+      ).optional(),
+    })).describe("Field values for the given classification label ID.")
+      .optional(),
+    labelId: z.string().describe(
+      "Required. The canonical or raw alphanumeric classification label ID. Maps to the ID field of the Google Drive Label resource.",
+    ).optional(),
+  })).describe(
+    "Classification Label values on the message. Available Classification Label schemas can be queried using the Google Drive Labels API. Each classification label ID must be unique. If duplicate IDs are provided, only one will be retained, and the selection is arbitrary. Only used for Google Workspace accounts.",
+  ).optional(),
+  historyId: z.string().describe(
+    "The ID of the last history record that modified this message.",
+  ).optional(),
+  id: z.string().describe("The immutable ID of the message.").optional(),
+  internalDate: z.string().describe(
+    "The internal message creation timestamp (epoch ms), which determines ordering in the inbox. For normal SMTP-received email, this represents the time the message was originally accepted by Google, which is more reliable than the `Date` header. However, for API-migrated mail, it can be configured by client to be based on the `Date` header.",
+  ).optional(),
+  labelIds: z.array(z.string()).describe(
+    "List of IDs of labels applied to this message.",
+  ).optional(),
+  payload: z.object({
+    body: z.object({
+      attachmentId: z.string().describe(
+        "When present, contains the ID of an external attachment that can be retrieved in a separate `messages.attachments.get` request. When not present, the entire content of the message part body is contained in the data field.",
+      ).optional(),
+      data: z.string().describe(
+        "The body data of a MIME message part as a base64url encoded string. May be empty for MIME container types that have no message body or when the body data is sent as a separate attachment. An attachment ID is present if the body data is contained in a separate attachment.",
+      ).optional(),
+      size: z.number().int().describe(
+        "Number of bytes for the message part data (encoding notwithstanding).",
+      ).optional(),
+    }).describe("The body of a single MIME message part.").optional(),
+    filename: z.string().describe(
+      "The filename of the attachment. Only present if this message part represents an attachment.",
+    ).optional(),
+    headers: z.array(z.object({
+      name: z.string().describe(
+        "The name of the header before the `:` separator. For example, `To`.",
+      ).optional(),
+      value: z.string().describe(
+        "The value of the header after the `:` separator. For example, `someuser@example.com`.",
+      ).optional(),
+    })).describe(
+      "List of headers on this message part. For the top-level message part, representing the entire message payload, it will contain the standard RFC 2822 email headers such as `To`, `From`, and `Subject`.",
+    ).optional(),
+    mimeType: z.string().describe("The MIME type of the message part.")
+      .optional(),
+    partId: z.string().describe("The immutable ID of the message part.")
+      .optional(),
+    parts: z.array(z.string()).describe(
+      "The child MIME message parts of this part. This only applies to container MIME message parts, for example `multipart/*`. For non- container MIME message part types, such as `text/plain`, this field is empty. For more information, see RFC 1521.",
+    ).optional(),
+  }).describe("A single MIME message part.").optional(),
+  raw: z.string().describe(
+    "The entire email message in an RFC 2822 formatted and base64url encoded string. Returned in `messages.get` and `drafts.get` responses when the `format=RAW` parameter is supplied.",
+  ),
+  sizeEstimate: z.number().int().describe(
+    "Estimated size in bytes of the message.",
+  ).optional(),
+  snippet: z.string().describe("A short part of the message text.").optional(),
+  threadId: z.string().describe(
+    "The ID of the thread the message belongs to. To add a message or draft to a thread, the following criteria must be met: 1. The requested `threadId` must be specified on the `Message` or `Draft.Message` you supply with your request. 2. The `References` and `In-Reply-To` headers must be set in compliance with the [RFC 2822](https://tools.ietf.org/html/rfc2822) standard. 3. The `Subject` headers must match.",
+  ).optional(),
+  userId: z.string().describe(
+    "The user's email address. The special value `me` can be used to indicate the authenticated user.",
+  ),
+  deleted: z.string().describe(
+    "Mark the email as permanently deleted (not TRASH) and only visible in Google Vault to a Vault administrator. Only used for Google Workspace accounts.",
+  ).optional(),
+  internalDateSource: z.string().describe(
+    "Source for Gmail's internal date of the message.",
+  ).optional(),
+});
+
+const StateSchema = z.object({
+  classificationLabelValues: z.array(z.object({
+    fields: z.array(z.object({
+      fieldId: z.string(),
+      selection: z.string(),
+    })),
+    labelId: z.string(),
+  })).optional(),
+  historyId: z.string().optional(),
+  id: z.string(),
+  internalDate: z.string().optional(),
+  labelIds: z.array(z.string()).optional(),
+  payload: z.object({
+    body: z.object({
+      attachmentId: z.string(),
+      data: z.string(),
+      size: z.number(),
+    }),
+    filename: z.string(),
+    headers: z.array(z.object({
+      name: z.string(),
+      value: z.string(),
+    })),
+    mimeType: z.string(),
+    partId: z.string(),
+    parts: z.array(z.string()),
+  }).optional(),
+  raw: z.string().optional(),
+  sizeEstimate: z.number().optional(),
+  snippet: z.string().optional(),
+  threadId: z.string().optional(),
+}).passthrough();
+
+type StateData = z.infer<typeof StateSchema>;
+
+const InputsSchema = z.object({
+  classificationLabelValues: z.array(z.object({
+    fields: z.array(z.object({
+      fieldId: z.string().describe(
+        "Required. The field ID for the Classification Label Value. Maps to the ID field of the Google Drive `Label.Field` object.",
+      ).optional(),
+      selection: z.string().describe(
+        "Selection choice ID for the selection option. Should only be set if the field type is `SELECTION` in the Google Drive `Label.Field` object. Maps to the id field of the Google Drive `Label.Field.SelectionOptions` resource.",
+      ).optional(),
+    })).describe("Field values for the given classification label ID.")
+      .optional(),
+    labelId: z.string().describe(
+      "Required. The canonical or raw alphanumeric classification label ID. Maps to the ID field of the Google Drive Label resource.",
+    ).optional(),
+  })).describe(
+    "Classification Label values on the message. Available Classification Label schemas can be queried using the Google Drive Labels API. Each classification label ID must be unique. If duplicate IDs are provided, only one will be retained, and the selection is arbitrary. Only used for Google Workspace accounts.",
+  ).optional(),
+  historyId: z.string().describe(
+    "The ID of the last history record that modified this message.",
+  ).optional(),
+  id: z.string().describe("The immutable ID of the message.").optional(),
+  internalDate: z.string().describe(
+    "The internal message creation timestamp (epoch ms), which determines ordering in the inbox. For normal SMTP-received email, this represents the time the message was originally accepted by Google, which is more reliable than the `Date` header. However, for API-migrated mail, it can be configured by client to be based on the `Date` header.",
+  ).optional(),
+  labelIds: z.array(z.string()).describe(
+    "List of IDs of labels applied to this message.",
+  ).optional(),
+  payload: z.object({
+    body: z.object({
+      attachmentId: z.string().describe(
+        "When present, contains the ID of an external attachment that can be retrieved in a separate `messages.attachments.get` request. When not present, the entire content of the message part body is contained in the data field.",
+      ).optional(),
+      data: z.string().describe(
+        "The body data of a MIME message part as a base64url encoded string. May be empty for MIME container types that have no message body or when the body data is sent as a separate attachment. An attachment ID is present if the body data is contained in a separate attachment.",
+      ).optional(),
+      size: z.number().int().describe(
+        "Number of bytes for the message part data (encoding notwithstanding).",
+      ).optional(),
+    }).describe("The body of a single MIME message part.").optional(),
+    filename: z.string().describe(
+      "The filename of the attachment. Only present if this message part represents an attachment.",
+    ).optional(),
+    headers: z.array(z.object({
+      name: z.string().describe(
+        "The name of the header before the `:` separator. For example, `To`.",
+      ).optional(),
+      value: z.string().describe(
+        "The value of the header after the `:` separator. For example, `someuser@example.com`.",
+      ).optional(),
+    })).describe(
+      "List of headers on this message part. For the top-level message part, representing the entire message payload, it will contain the standard RFC 2822 email headers such as `To`, `From`, and `Subject`.",
+    ).optional(),
+    mimeType: z.string().describe("The MIME type of the message part.")
+      .optional(),
+    partId: z.string().describe("The immutable ID of the message part.")
+      .optional(),
+    parts: z.array(z.string()).describe(
+      "The child MIME message parts of this part. This only applies to container MIME message parts, for example `multipart/*`. For non- container MIME message part types, such as `text/plain`, this field is empty. For more information, see RFC 1521.",
+    ).optional(),
+  }).describe("A single MIME message part.").optional(),
+  raw: z.string().describe(
+    "The entire email message in an RFC 2822 formatted and base64url encoded string. Returned in `messages.get` and `drafts.get` responses when the `format=RAW` parameter is supplied.",
+  ).optional(),
+  sizeEstimate: z.number().int().describe(
+    "Estimated size in bytes of the message.",
+  ).optional(),
+  snippet: z.string().describe("A short part of the message text.").optional(),
+  threadId: z.string().describe(
+    "The ID of the thread the message belongs to. To add a message or draft to a thread, the following criteria must be met: 1. The requested `threadId` must be specified on the `Message` or `Draft.Message` you supply with your request. 2. The `References` and `In-Reply-To` headers must be set in compliance with the [RFC 2822](https://tools.ietf.org/html/rfc2822) standard. 3. The `Subject` headers must match.",
+  ).optional(),
+  userId: z.string().describe(
+    "The user's email address. The special value `me` can be used to indicate the authenticated user.",
+  ).optional(),
+  deleted: z.string().describe(
+    "Mark the email as permanently deleted (not TRASH) and only visible in Google Vault to a Vault administrator. Only used for Google Workspace accounts.",
+  ).optional(),
+  internalDateSource: z.string().describe(
+    "Source for Gmail's internal date of the message.",
+  ).optional(),
+});
+
+export const model = {
+  type: "@swamp/gcp/gmail/users-messages",
+  version: "2026.03.27.1",
+  globalArguments: GlobalArgsSchema,
+  inputsSchema: InputsSchema,
+  resources: {
+    state: {
+      description: "An email message.",
+      schema: StateSchema,
+      lifetime: "infinite",
+      garbageCollection: 10,
+    },
+  },
+  methods: {
+    create: {
+      description: "Create a messages",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const projectId = await getProjectId();
+        const params: Record<string, string> = { project: projectId };
+        if (g["userId"] !== undefined) params["userId"] = String(g["userId"]);
+        const body: Record<string, unknown> = {};
+        if (g["classificationLabelValues"] !== undefined) {
+          body["classificationLabelValues"] = g["classificationLabelValues"];
+        }
+        if (g["historyId"] !== undefined) body["historyId"] = g["historyId"];
+        if (g["id"] !== undefined) body["id"] = g["id"];
+        if (g["internalDate"] !== undefined) {
+          body["internalDate"] = g["internalDate"];
+        }
+        if (g["labelIds"] !== undefined) body["labelIds"] = g["labelIds"];
+        if (g["payload"] !== undefined) body["payload"] = g["payload"];
+        if (g["raw"] !== undefined) body["raw"] = g["raw"];
+        if (g["sizeEstimate"] !== undefined) {
+          body["sizeEstimate"] = g["sizeEstimate"];
+        }
+        if (g["snippet"] !== undefined) body["snippet"] = g["snippet"];
+        if (g["threadId"] !== undefined) body["threadId"] = g["threadId"];
+        if (g["deleted"] !== undefined) body["deleted"] = g["deleted"];
+        if (g["internalDateSource"] !== undefined) {
+          body["internalDateSource"] = g["internalDateSource"];
+        }
+        if (g["id"] !== undefined) params["id"] = String(g["id"]);
+        const result = await createResource(
+          BASE_URL,
+          INSERT_CONFIG,
+          params,
+          body,
+          GET_CONFIG,
+        ) as StateData;
+        const instanceName = (result.id ?? g.id)?.toString() ?? "current";
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    get: {
+      description: "Get a messages",
+      arguments: z.object({
+        identifier: z.string().describe("The id of the messages"),
+      }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const projectId = await getProjectId();
+        const params: Record<string, string> = { project: projectId };
+        const g = context.globalArgs;
+        if (g["userId"] !== undefined) params["userId"] = String(g["userId"]);
+        params["id"] = args.identifier;
+        const result = await readResource(
+          BASE_URL,
+          GET_CONFIG,
+          params,
+        ) as StateData;
+        const instanceName = (result.id ?? g.id)?.toString() ?? args.identifier;
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    delete: {
+      description: "Delete the messages",
+      arguments: z.object({
+        identifier: z.string().describe("The id of the messages"),
+      }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const g = context.globalArgs;
+        const projectId = await getProjectId();
+        const params: Record<string, string> = { project: projectId };
+        if (g["userId"] !== undefined) params["userId"] = String(g["userId"]);
+        params["id"] = args.identifier;
+        const { existed } = await deleteResource(
+          BASE_URL,
+          DELETE_CONFIG,
+          params,
+        );
+        const instanceName = g.id?.toString() ?? args.identifier;
+        const handle = await context.writeResource("state", instanceName, {
+          identifier: args.identifier,
+          existed,
+          status: existed ? "deleted" : "not_found",
+          deletedAt: new Date().toISOString(),
+        });
+        return { dataHandles: [handle] };
+      },
+    },
+    sync: {
+      description: "Sync messages state from GCP",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const projectId = await getProjectId();
+        const instanceName = g.id?.toString() ?? "current";
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          instanceName,
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        try {
+          const params: Record<string, string> = { project: projectId };
+          if (g["userId"] !== undefined) params["userId"] = String(g["userId"]);
+          else if (existing["userId"]) {
+            params["userId"] = String(existing["userId"]);
+          }
+          const identifier = existing.id?.toString() ?? g["id"]?.toString();
+          if (!identifier) {
+            throw new Error(
+              "No identifier found in existing state or globalArgs",
+            );
+          }
+          params["id"] = identifier;
+          const result = await readResource(
+            BASE_URL,
+            GET_CONFIG,
+            params,
+          ) as StateData;
+          const handle = await context.writeResource(
+            "state",
+            instanceName,
+            result,
+          );
+          return { dataHandles: [handle] };
+        } catch (error: unknown) {
+          if (isResourceNotFoundError(error)) {
+            const handle = await context.writeResource("state", instanceName, {
+              status: "not_found",
+              syncedAt: new Date().toISOString(),
+            });
+            return { dataHandles: [handle] };
+          }
+          throw error;
+        }
+      },
+    },
+    batch_delete: {
+      description: "batch delete",
+      arguments: z.object({
+        ids: z.any().optional(),
+      }),
+      execute: async (args: Record<string, unknown>, context: any) => {
+        const g = context.globalArgs;
+        const projectId = await getProjectId();
+        const params: Record<string, string> = { project: projectId };
+        if (g["userId"] !== undefined) params["userId"] = String(g["userId"]);
+        const body: Record<string, unknown> = {};
+        if (args["ids"] !== undefined) body["ids"] = args["ids"];
+        const result = await createResource(
+          BASE_URL,
+          {
+            "id": "gmail.users.messages.batchDelete",
+            "path": "gmail/v1/users/{userId}/messages/batchDelete",
+            "httpMethod": "POST",
+            "parameterOrder": ["userId"],
+            "parameters": {
+              "userId": { "location": "path", "required": true },
+            },
+          },
+          params,
+          body,
+        );
+        return { result };
+      },
+    },
+    batch_modify: {
+      description: "batch modify",
+      arguments: z.object({
+        addLabelIds: z.any().optional(),
+        ids: z.any().optional(),
+        removeLabelIds: z.any().optional(),
+      }),
+      execute: async (args: Record<string, unknown>, context: any) => {
+        const g = context.globalArgs;
+        const projectId = await getProjectId();
+        const params: Record<string, string> = { project: projectId };
+        if (g["userId"] !== undefined) params["userId"] = String(g["userId"]);
+        const body: Record<string, unknown> = {};
+        if (args["addLabelIds"] !== undefined) {
+          body["addLabelIds"] = args["addLabelIds"];
+        }
+        if (args["ids"] !== undefined) body["ids"] = args["ids"];
+        if (args["removeLabelIds"] !== undefined) {
+          body["removeLabelIds"] = args["removeLabelIds"];
+        }
+        const result = await createResource(
+          BASE_URL,
+          {
+            "id": "gmail.users.messages.batchModify",
+            "path": "gmail/v1/users/{userId}/messages/batchModify",
+            "httpMethod": "POST",
+            "parameterOrder": ["userId"],
+            "parameters": {
+              "userId": { "location": "path", "required": true },
+            },
+          },
+          params,
+          body,
+        );
+        return { result };
+      },
+    },
+    import: {
+      description: "import",
+      arguments: z.object({
+        classificationLabelValues: z.any().optional(),
+        historyId: z.any().optional(),
+        id: z.any().optional(),
+        internalDate: z.any().optional(),
+        labelIds: z.any().optional(),
+        payload: z.any().optional(),
+        raw: z.any().optional(),
+        sizeEstimate: z.any().optional(),
+        snippet: z.any().optional(),
+        threadId: z.any().optional(),
+      }),
+      execute: async (args: Record<string, unknown>, context: any) => {
+        const g = context.globalArgs;
+        const projectId = await getProjectId();
+        const params: Record<string, string> = { project: projectId };
+        if (g["userId"] !== undefined) params["userId"] = String(g["userId"]);
+        const body: Record<string, unknown> = {};
+        if (args["classificationLabelValues"] !== undefined) {
+          body["classificationLabelValues"] = args["classificationLabelValues"];
+        }
+        if (args["historyId"] !== undefined) {
+          body["historyId"] = args["historyId"];
+        }
+        if (args["id"] !== undefined) body["id"] = args["id"];
+        if (args["internalDate"] !== undefined) {
+          body["internalDate"] = args["internalDate"];
+        }
+        if (args["labelIds"] !== undefined) body["labelIds"] = args["labelIds"];
+        if (args["payload"] !== undefined) body["payload"] = args["payload"];
+        if (args["raw"] !== undefined) body["raw"] = args["raw"];
+        if (args["sizeEstimate"] !== undefined) {
+          body["sizeEstimate"] = args["sizeEstimate"];
+        }
+        if (args["snippet"] !== undefined) body["snippet"] = args["snippet"];
+        if (args["threadId"] !== undefined) body["threadId"] = args["threadId"];
+        const result = await createResource(
+          BASE_URL,
+          {
+            "id": "gmail.users.messages.import",
+            "path": "gmail/v1/users/{userId}/messages/import",
+            "httpMethod": "POST",
+            "parameterOrder": ["userId"],
+            "parameters": {
+              "deleted": { "location": "query" },
+              "internalDateSource": { "location": "query" },
+              "neverMarkSpam": { "location": "query" },
+              "processForCalendar": { "location": "query" },
+              "userId": { "location": "path", "required": true },
+            },
+          },
+          params,
+          body,
+        );
+        return { result };
+      },
+    },
+    modify: {
+      description: "modify",
+      arguments: z.object({
+        addLabelIds: z.any().optional(),
+        removeLabelIds: z.any().optional(),
+      }),
+      execute: async (args: Record<string, unknown>, context: any) => {
+        const g = context.globalArgs;
+        const projectId = await getProjectId();
+        const params: Record<string, string> = { project: projectId };
+        if (g["userId"] !== undefined) params["userId"] = String(g["userId"]);
+        if (g["id"] !== undefined) params["id"] = String(g["id"]);
+        const body: Record<string, unknown> = {};
+        if (args["addLabelIds"] !== undefined) {
+          body["addLabelIds"] = args["addLabelIds"];
+        }
+        if (args["removeLabelIds"] !== undefined) {
+          body["removeLabelIds"] = args["removeLabelIds"];
+        }
+        const result = await createResource(
+          BASE_URL,
+          {
+            "id": "gmail.users.messages.modify",
+            "path": "gmail/v1/users/{userId}/messages/{id}/modify",
+            "httpMethod": "POST",
+            "parameterOrder": ["userId", "id"],
+            "parameters": {
+              "id": { "location": "path", "required": true },
+              "userId": { "location": "path", "required": true },
+            },
+          },
+          params,
+          body,
+        );
+        return { result };
+      },
+    },
+    send: {
+      description: "send",
+      arguments: z.object({
+        classificationLabelValues: z.any().optional(),
+        historyId: z.any().optional(),
+        id: z.any().optional(),
+        internalDate: z.any().optional(),
+        labelIds: z.any().optional(),
+        payload: z.any().optional(),
+        raw: z.any().optional(),
+        sizeEstimate: z.any().optional(),
+        snippet: z.any().optional(),
+        threadId: z.any().optional(),
+      }),
+      execute: async (args: Record<string, unknown>, context: any) => {
+        const g = context.globalArgs;
+        const projectId = await getProjectId();
+        const params: Record<string, string> = { project: projectId };
+        if (g["userId"] !== undefined) params["userId"] = String(g["userId"]);
+        const body: Record<string, unknown> = {};
+        if (args["classificationLabelValues"] !== undefined) {
+          body["classificationLabelValues"] = args["classificationLabelValues"];
+        }
+        if (args["historyId"] !== undefined) {
+          body["historyId"] = args["historyId"];
+        }
+        if (args["id"] !== undefined) body["id"] = args["id"];
+        if (args["internalDate"] !== undefined) {
+          body["internalDate"] = args["internalDate"];
+        }
+        if (args["labelIds"] !== undefined) body["labelIds"] = args["labelIds"];
+        if (args["payload"] !== undefined) body["payload"] = args["payload"];
+        if (args["raw"] !== undefined) body["raw"] = args["raw"];
+        if (args["sizeEstimate"] !== undefined) {
+          body["sizeEstimate"] = args["sizeEstimate"];
+        }
+        if (args["snippet"] !== undefined) body["snippet"] = args["snippet"];
+        if (args["threadId"] !== undefined) body["threadId"] = args["threadId"];
+        const result = await createResource(
+          BASE_URL,
+          {
+            "id": "gmail.users.messages.send",
+            "path": "gmail/v1/users/{userId}/messages/send",
+            "httpMethod": "POST",
+            "parameterOrder": ["userId"],
+            "parameters": {
+              "userId": { "location": "path", "required": true },
+            },
+          },
+          params,
+          body,
+        );
+        return { result };
+      },
+    },
+    trash: {
+      description: "trash",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, unknown>, context: any) => {
+        const g = context.globalArgs;
+        const projectId = await getProjectId();
+        const params: Record<string, string> = { project: projectId };
+        if (g["userId"] !== undefined) params["userId"] = String(g["userId"]);
+        if (g["id"] !== undefined) params["id"] = String(g["id"]);
+        const result = await createResource(
+          BASE_URL,
+          {
+            "id": "gmail.users.messages.trash",
+            "path": "gmail/v1/users/{userId}/messages/{id}/trash",
+            "httpMethod": "POST",
+            "parameterOrder": ["userId", "id"],
+            "parameters": {
+              "id": { "location": "path", "required": true },
+              "userId": { "location": "path", "required": true },
+            },
+          },
+          params,
+          {},
+        );
+        return { result };
+      },
+    },
+    untrash: {
+      description: "untrash",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, unknown>, context: any) => {
+        const g = context.globalArgs;
+        const projectId = await getProjectId();
+        const params: Record<string, string> = { project: projectId };
+        if (g["userId"] !== undefined) params["userId"] = String(g["userId"]);
+        if (g["id"] !== undefined) params["id"] = String(g["id"]);
+        const result = await createResource(
+          BASE_URL,
+          {
+            "id": "gmail.users.messages.untrash",
+            "path": "gmail/v1/users/{userId}/messages/{id}/untrash",
+            "httpMethod": "POST",
+            "parameterOrder": ["userId", "id"],
+            "parameters": {
+              "id": { "location": "path", "required": true },
+              "userId": { "location": "path", "required": true },
+            },
+          },
+          params,
+          {},
+        );
+        return { result };
+      },
+    },
+  },
+};

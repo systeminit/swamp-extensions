@@ -22,12 +22,13 @@ Official extensions for [swamp](https://github.com/systeminit/swamp).
 | Extension                                      | Description                         |
 | ---------------------------------------------- | ----------------------------------- |
 | [`@swamp/aws/*`](model/aws/)                   | AWS infrastructure models           |
+| [`@swamp/gcp/*`](model/gcp/)                   | Google Cloud infrastructure models  |
 | [`@swamp/hetzner-cloud`](model/hetzner-cloud/) | Hetzner Cloud infrastructure models |
 | [`@swamp/digitalocean`](model/digitalocean/)   | DigitalOcean infrastructure models  |
 
-AWS models are published per-service (e.g., `@swamp/aws/ec2`, `@swamp/aws/s3`).
-All model extensions are auto-generated from provider schemas. See
-[Code Generation](#code-generation) for how to regenerate them.
+AWS and GCP models are published per-service (e.g., `@swamp/aws/ec2`,
+`@swamp/gcp/compute`). All model extensions are auto-generated from provider
+schemas. See [Code Generation](#code-generation) for how to regenerate them.
 
 ## Installation
 
@@ -171,19 +172,22 @@ Model extensions are regenerated from provider schemas:
 ```bash
 cd codegen
 deno task fetch-schema:aws
+deno task fetch-schema:gcp
 deno task fetch-schema:hetzner
 deno task fetch-schema:digitalocean
 deno task generate:aws
+deno task generate:gcp
 deno task generate:hetzner
 deno task generate:digitalocean
 ```
 
-AWS supports service filtering: `deno task generate:aws ec2 s3 lambda`
+AWS and GCP support service filtering: `deno task generate:aws ec2 s3 lambda`
 
 Generation is idempotent — versions only bump when content changes.
 
 Design documents explain how each provider's schema is mapped to swamp models:
 - [AWS](codegen/designs/aws.md)
+- [GCP](codegen/designs/gcp.md)
 - [Hetzner Cloud](codegen/designs/hetzner.md)
 - [DigitalOcean](codegen/designs/digitalocean.md)
 

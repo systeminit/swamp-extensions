@@ -1,0 +1,283 @@
+// Auto-generated extension model for @swamp/gcp/classroom/courses-studentgroups-studentgroupmembers
+// Do not edit manually. Re-generate with: deno task generate:gcp
+
+// deno-lint-ignore-file no-explicit-any
+
+import { z } from "zod";
+import {
+  createResource,
+  deleteResource,
+  getProjectId,
+  isResourceNotFoundError,
+  readViaList,
+} from "./_lib/gcp.ts";
+
+const BASE_URL = "https://classroom.googleapis.com/";
+
+const INSERT_CONFIG = {
+  "id": "classroom.courses.studentGroups.studentGroupMembers.create",
+  "path":
+    "v1/courses/{courseId}/studentGroups/{studentGroupId}/studentGroupMembers",
+  "httpMethod": "POST",
+  "parameterOrder": [
+    "courseId",
+    "studentGroupId",
+  ],
+  "parameters": {
+    "courseId": {
+      "location": "path",
+      "required": true,
+    },
+    "studentGroupId": {
+      "location": "path",
+      "required": true,
+    },
+  },
+} as const;
+
+const DELETE_CONFIG = {
+  "id": "classroom.courses.studentGroups.studentGroupMembers.delete",
+  "path":
+    "v1/courses/{courseId}/studentGroups/{studentGroupId}/studentGroupMembers/{userId}",
+  "httpMethod": "DELETE",
+  "parameterOrder": [
+    "courseId",
+    "studentGroupId",
+    "userId",
+  ],
+  "parameters": {
+    "courseId": {
+      "location": "path",
+      "required": true,
+    },
+    "studentGroupId": {
+      "location": "path",
+      "required": true,
+    },
+    "userId": {
+      "location": "path",
+      "required": true,
+    },
+  },
+} as const;
+
+const LIST_CONFIG = {
+  "id": "classroom.courses.studentGroups.studentGroupMembers.list",
+  "path":
+    "v1/courses/{courseId}/studentGroups/{studentGroupId}/studentGroupMembers",
+  "httpMethod": "GET",
+  "parameterOrder": [
+    "courseId",
+    "studentGroupId",
+  ],
+  "parameters": {
+    "courseId": {
+      "location": "path",
+      "required": true,
+    },
+    "pageSize": {
+      "location": "query",
+    },
+    "pageToken": {
+      "location": "query",
+    },
+    "studentGroupId": {
+      "location": "path",
+      "required": true,
+    },
+  },
+} as const;
+
+const GlobalArgsSchema = z.object({
+  name: z.string().describe(
+    "Instance name for this resource (used as the unique identifier in the factory pattern)",
+  ),
+  courseId: z.string().describe("The identifier of the course.").optional(),
+  studentGroupId: z.string().describe("The identifier of the student group.")
+    .optional(),
+  userId: z.string().describe("Identifier of the student.").optional(),
+});
+
+const StateSchema = z.object({
+  courseId: z.string().optional(),
+  studentGroupId: z.string().optional(),
+  userId: z.string().optional(),
+}).passthrough();
+
+type StateData = z.infer<typeof StateSchema>;
+
+const InputsSchema = z.object({
+  name: z.string().optional(),
+  courseId: z.string().describe("The identifier of the course.").optional(),
+  studentGroupId: z.string().describe("The identifier of the student group.")
+    .optional(),
+  userId: z.string().describe("Identifier of the student.").optional(),
+});
+
+export const model = {
+  type: "@swamp/gcp/classroom/courses-studentgroups-studentgroupmembers",
+  version: "2026.03.27.1",
+  globalArguments: GlobalArgsSchema,
+  inputsSchema: InputsSchema,
+  resources: {
+    state: {
+      description: "A student member in a student group.",
+      schema: StateSchema,
+      lifetime: "infinite",
+      garbageCollection: 10,
+    },
+  },
+  methods: {
+    create: {
+      description: "Create a studentGroupMembers",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const projectId = await getProjectId();
+        const params: Record<string, string> = { project: projectId };
+        if (g["courseId"] !== undefined) {
+          params["courseId"] = String(g["courseId"]);
+        }
+        if (g["studentGroupId"] !== undefined) {
+          params["studentGroupId"] = String(g["studentGroupId"]);
+        }
+        const body: Record<string, unknown> = {};
+        if (g["userId"] !== undefined) body["userId"] = g["userId"];
+        const result = await createResource(
+          BASE_URL,
+          INSERT_CONFIG,
+          params,
+          body,
+        ) as StateData;
+        const instanceName = g.name?.toString() ?? "current";
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    get: {
+      description: "Get a studentGroupMembers",
+      arguments: z.object({
+        identifier: z.string().describe("The name of the studentGroupMembers"),
+      }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const projectId = await getProjectId();
+        const params: Record<string, string> = { project: projectId };
+        const g = context.globalArgs;
+        if (g["courseId"] !== undefined) {
+          params["courseId"] = String(g["courseId"]);
+        }
+        if (g["studentGroupId"] !== undefined) {
+          params["studentGroupId"] = String(g["studentGroupId"]);
+        }
+        const result = await readViaList(
+          BASE_URL,
+          LIST_CONFIG,
+          params,
+          "name",
+          args.identifier,
+        ) as StateData;
+        const instanceName = g.name?.toString() ?? args.identifier;
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    delete: {
+      description: "Delete the studentGroupMembers",
+      arguments: z.object({
+        identifier: z.string().describe("The name of the studentGroupMembers"),
+      }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const g = context.globalArgs;
+        const projectId = await getProjectId();
+        const params: Record<string, string> = { project: projectId };
+        if (g["courseId"] !== undefined) {
+          params["courseId"] = String(g["courseId"]);
+        }
+        if (g["studentGroupId"] !== undefined) {
+          params["studentGroupId"] = String(g["studentGroupId"]);
+        }
+        params["userId"] = args.identifier;
+        const { existed } = await deleteResource(
+          BASE_URL,
+          DELETE_CONFIG,
+          params,
+        );
+        const instanceName = g.name?.toString() ?? args.identifier;
+        const handle = await context.writeResource("state", instanceName, {
+          identifier: args.identifier,
+          existed,
+          status: existed ? "deleted" : "not_found",
+          deletedAt: new Date().toISOString(),
+        });
+        return { dataHandles: [handle] };
+      },
+    },
+    sync: {
+      description: "Sync studentGroupMembers state from GCP",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const projectId = await getProjectId();
+        const instanceName = g.name?.toString() ?? "current";
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          instanceName,
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        try {
+          const params: Record<string, string> = { project: projectId };
+          if (g["courseId"] !== undefined) {
+            params["courseId"] = String(g["courseId"]);
+          } else if (existing["courseId"]) {
+            params["courseId"] = String(existing["courseId"]);
+          }
+          if (g["studentGroupId"] !== undefined) {
+            params["studentGroupId"] = String(g["studentGroupId"]);
+          } else if (existing["studentGroupId"]) {
+            params["studentGroupId"] = String(existing["studentGroupId"]);
+          }
+          const identifier = existing.name?.toString() ?? g["name"]?.toString();
+          if (!identifier) {
+            throw new Error(
+              "No identifier found in existing state or globalArgs",
+            );
+          }
+          const result = await readViaList(
+            BASE_URL,
+            LIST_CONFIG,
+            params,
+            "name",
+            identifier,
+          ) as StateData;
+          const handle = await context.writeResource(
+            "state",
+            instanceName,
+            result,
+          );
+          return { dataHandles: [handle] };
+        } catch (error: unknown) {
+          if (isResourceNotFoundError(error)) {
+            const handle = await context.writeResource("state", instanceName, {
+              status: "not_found",
+              syncedAt: new Date().toISOString(),
+            });
+            return { dataHandles: [handle] };
+          }
+          throw error;
+        }
+      },
+    },
+  },
+};

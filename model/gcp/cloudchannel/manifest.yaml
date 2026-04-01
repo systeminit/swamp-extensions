@@ -1,0 +1,29 @@
+# Auto-generated manifest. Re-generate with the appropriate deno task.
+manifestVersion: 1
+name: "@swamp/gcp/cloudchannel"
+version: "2026.03.27.1"
+description: "Google Cloud cloudchannel infrastructure models"
+labels:
+  - gcp
+  - google-cloud
+  - cloudchannel
+  - cloud
+  - infrastructure
+releaseNotes: |
+  - Added: accounts_channelpartnerlinks, accounts_channelpartnerlinks_channelpartnerrepricingconfigs, accounts_channelpartnerlinks_customers, accounts_customers, accounts_customers_customerrepricingconfigs, accounts_customers_entitlements, accounts_offers, accounts_reports, accounts_skugroups, accounts_skugroups_billableskus, products, products_skus
+models:
+  - accounts_channelpartnerlinks.ts
+  - accounts_channelpartnerlinks_channelpartnerrepricingconfigs.ts
+  - accounts_channelpartnerlinks_customers.ts
+  - accounts_customers.ts
+  - accounts_customers_customerrepricingconfigs.ts
+  - accounts_customers_entitlements.ts
+  - accounts_offers.ts
+  - accounts_reports.ts
+  - accounts_skugroups.ts
+  - accounts_skugroups_billableskus.ts
+  - products.ts
+  - products_skus.ts
+additionalFiles:
+  - LICENSE.txt
+  - README.md

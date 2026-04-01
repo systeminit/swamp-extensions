@@ -1,0 +1,528 @@
+// Auto-generated extension model for @swamp/gcp/apikeys/keys
+// Do not edit manually. Re-generate with: deno task generate:gcp
+
+// deno-lint-ignore-file no-explicit-any
+
+import { z } from "zod";
+import {
+  createResource,
+  deleteResource,
+  getProjectId,
+  isResourceNotFoundError,
+  readResource,
+  updateResource,
+} from "./_lib/gcp.ts";
+
+/** Construct the fully-qualified resource name from parent and short name. */
+function buildResourceName(parent: string, shortName: string): string {
+  return `${parent}/keys/${shortName}`;
+}
+
+const BASE_URL = "https://apikeys.googleapis.com/";
+
+const GET_CONFIG = {
+  "id": "apikeys.projects.locations.keys.get",
+  "path": "v2/{+name}",
+  "httpMethod": "GET",
+  "parameterOrder": [
+    "name",
+  ],
+  "parameters": {
+    "name": {
+      "location": "path",
+      "required": true,
+    },
+  },
+} as const;
+
+const INSERT_CONFIG = {
+  "id": "apikeys.projects.locations.keys.create",
+  "path": "v2/{+parent}/keys",
+  "httpMethod": "POST",
+  "parameterOrder": [
+    "parent",
+  ],
+  "parameters": {
+    "keyId": {
+      "location": "query",
+    },
+    "parent": {
+      "location": "path",
+      "required": true,
+    },
+  },
+} as const;
+
+const PATCH_CONFIG = {
+  "id": "apikeys.projects.locations.keys.patch",
+  "path": "v2/{+name}",
+  "httpMethod": "PATCH",
+  "parameterOrder": [
+    "name",
+  ],
+  "parameters": {
+    "name": {
+      "location": "path",
+      "required": true,
+    },
+    "updateMask": {
+      "location": "query",
+    },
+  },
+} as const;
+
+const DELETE_CONFIG = {
+  "id": "apikeys.projects.locations.keys.delete",
+  "path": "v2/{+name}",
+  "httpMethod": "DELETE",
+  "parameterOrder": [
+    "name",
+  ],
+  "parameters": {
+    "etag": {
+      "location": "query",
+    },
+    "name": {
+      "location": "path",
+      "required": true,
+    },
+  },
+} as const;
+
+const GlobalArgsSchema = z.object({
+  annotations: z.record(z.string(), z.string()).describe(
+    "Annotations is an unstructured key-value map stored with a policy that may be set by external tools to store and retrieve arbitrary metadata. They are not queryable and should be preserved when modifying objects.",
+  ).optional(),
+  displayName: z.string().describe(
+    "Human-readable display name of this key that you can modify. The maximum length is 63 characters.",
+  ).optional(),
+  name: z.string().describe(
+    "Identifier. The resource name of the key. The `name` has the form: `projects//locations/global/keys/`. For example: `projects/123456867718/locations/global/keys/b7ff1f9f-8275-410a-94dd-3855ee9b5dd2` NOTE: Key is a global resource; hence the only supported value for location is `global`.",
+  ).optional(),
+  restrictions: z.object({
+    androidKeyRestrictions: z.object({
+      allowedApplications: z.array(z.object({
+        packageName: z.string().describe("The package name of the application.")
+          .optional(),
+        sha1Fingerprint: z.string().describe(
+          "The SHA1 fingerprint of the application. For example, both sha1 formats are acceptable: DA:39:A3:EE:5E:6B:4B:0D:32:55:BF:EF:95:60:18:90:AF:D8:07:09 or DA39A3EE5E6B4B0D3255BFEF95601890AFD80709. Output format is the latter.",
+        ).optional(),
+      })).describe(
+        "A list of Android applications that are allowed to make API calls with this key.",
+      ).optional(),
+    }).describe("The Android apps that are allowed to use the key.").optional(),
+    apiTargets: z.array(z.object({
+      methods: z.array(z.string()).describe(
+        "Optional. List of one or more methods that can be called. If empty, all methods for the service are allowed. A wildcard (*) can be used as the last symbol. Valid examples: `google.cloud.translate.v2.TranslateService.GetSupportedLanguage` `TranslateText` `Get*` `translate.googleapis.com.Get*`",
+      ).optional(),
+      service: z.string().describe(
+        "The service for this restriction. It should be the canonical service name, for example: `translate.googleapis.com`. You can use [`gcloud services list`](https://cloud.google.com/sdk/gcloud/reference/services/list) to get a list of services that are enabled in the project.",
+      ).optional(),
+    })).describe(
+      "A restriction for a specific service and optionally one or more specific methods. Requests are allowed if they match any of these restrictions. If no restrictions are specified, all targets are allowed.",
+    ).optional(),
+    browserKeyRestrictions: z.object({
+      allowedReferrers: z.array(z.string()).describe(
+        "A list of regular expressions for the referrer URLs that are allowed to make API calls with this key.",
+      ).optional(),
+    }).describe(
+      "The HTTP referrers (websites) that are allowed to use the key.",
+    ).optional(),
+    iosKeyRestrictions: z.object({
+      allowedBundleIds: z.array(z.string()).describe(
+        "A list of bundle IDs that are allowed when making API calls with this key.",
+      ).optional(),
+    }).describe("The iOS apps that are allowed to use the key.").optional(),
+    serverKeyRestrictions: z.object({
+      allowedIps: z.array(z.string()).describe(
+        "A list of the caller IP addresses that are allowed to make API calls with this key.",
+      ).optional(),
+    }).describe("The IP addresses of callers that are allowed to use the key.")
+      .optional(),
+  }).describe("Describes the restrictions on the key.").optional(),
+  serviceAccountEmail: z.string().describe(
+    "Optional. The email address of [the service account](https://cloud.google.com/iam/docs/service-accounts) the key is bound to.",
+  ).optional(),
+  keyId: z.string().describe(
+    "User specified key id (optional). If specified, it will become the final component of the key resource name. The id must be unique within the project, must conform with RFC-1034, is restricted to lower-cased letters, and has a maximum length of 63 characters. In another word, the id must match the regular expression: `[a-z]([a-z0-9-]{0,61}[a-z0-9])?`. The id must NOT be a UUID-like string.",
+  ).optional(),
+  location: z.string().describe(
+    "The location for this resource (this resource only supports 'global')",
+  ).optional(),
+});
+
+const StateSchema = z.object({
+  annotations: z.record(z.string(), z.unknown()).optional(),
+  createTime: z.string().optional(),
+  deleteTime: z.string().optional(),
+  displayName: z.string().optional(),
+  etag: z.string().optional(),
+  keyString: z.string().optional(),
+  name: z.string(),
+  restrictions: z.object({
+    androidKeyRestrictions: z.object({
+      allowedApplications: z.array(z.object({
+        packageName: z.string(),
+        sha1Fingerprint: z.string(),
+      })),
+    }),
+    apiTargets: z.array(z.object({
+      methods: z.array(z.string()),
+      service: z.string(),
+    })),
+    browserKeyRestrictions: z.object({
+      allowedReferrers: z.array(z.string()),
+    }),
+    iosKeyRestrictions: z.object({
+      allowedBundleIds: z.array(z.string()),
+    }),
+    serverKeyRestrictions: z.object({
+      allowedIps: z.array(z.string()),
+    }),
+  }).optional(),
+  serviceAccountEmail: z.string().optional(),
+  uid: z.string().optional(),
+  updateTime: z.string().optional(),
+}).passthrough();
+
+type StateData = z.infer<typeof StateSchema>;
+
+const InputsSchema = z.object({
+  annotations: z.record(z.string(), z.string()).describe(
+    "Annotations is an unstructured key-value map stored with a policy that may be set by external tools to store and retrieve arbitrary metadata. They are not queryable and should be preserved when modifying objects.",
+  ).optional(),
+  displayName: z.string().describe(
+    "Human-readable display name of this key that you can modify. The maximum length is 63 characters.",
+  ).optional(),
+  name: z.string().describe(
+    "Identifier. The resource name of the key. The `name` has the form: `projects//locations/global/keys/`. For example: `projects/123456867718/locations/global/keys/b7ff1f9f-8275-410a-94dd-3855ee9b5dd2` NOTE: Key is a global resource; hence the only supported value for location is `global`.",
+  ).optional(),
+  restrictions: z.object({
+    androidKeyRestrictions: z.object({
+      allowedApplications: z.array(z.object({
+        packageName: z.string().describe("The package name of the application.")
+          .optional(),
+        sha1Fingerprint: z.string().describe(
+          "The SHA1 fingerprint of the application. For example, both sha1 formats are acceptable: DA:39:A3:EE:5E:6B:4B:0D:32:55:BF:EF:95:60:18:90:AF:D8:07:09 or DA39A3EE5E6B4B0D3255BFEF95601890AFD80709. Output format is the latter.",
+        ).optional(),
+      })).describe(
+        "A list of Android applications that are allowed to make API calls with this key.",
+      ).optional(),
+    }).describe("The Android apps that are allowed to use the key.").optional(),
+    apiTargets: z.array(z.object({
+      methods: z.array(z.string()).describe(
+        "Optional. List of one or more methods that can be called. If empty, all methods for the service are allowed. A wildcard (*) can be used as the last symbol. Valid examples: `google.cloud.translate.v2.TranslateService.GetSupportedLanguage` `TranslateText` `Get*` `translate.googleapis.com.Get*`",
+      ).optional(),
+      service: z.string().describe(
+        "The service for this restriction. It should be the canonical service name, for example: `translate.googleapis.com`. You can use [`gcloud services list`](https://cloud.google.com/sdk/gcloud/reference/services/list) to get a list of services that are enabled in the project.",
+      ).optional(),
+    })).describe(
+      "A restriction for a specific service and optionally one or more specific methods. Requests are allowed if they match any of these restrictions. If no restrictions are specified, all targets are allowed.",
+    ).optional(),
+    browserKeyRestrictions: z.object({
+      allowedReferrers: z.array(z.string()).describe(
+        "A list of regular expressions for the referrer URLs that are allowed to make API calls with this key.",
+      ).optional(),
+    }).describe(
+      "The HTTP referrers (websites) that are allowed to use the key.",
+    ).optional(),
+    iosKeyRestrictions: z.object({
+      allowedBundleIds: z.array(z.string()).describe(
+        "A list of bundle IDs that are allowed when making API calls with this key.",
+      ).optional(),
+    }).describe("The iOS apps that are allowed to use the key.").optional(),
+    serverKeyRestrictions: z.object({
+      allowedIps: z.array(z.string()).describe(
+        "A list of the caller IP addresses that are allowed to make API calls with this key.",
+      ).optional(),
+    }).describe("The IP addresses of callers that are allowed to use the key.")
+      .optional(),
+  }).describe("Describes the restrictions on the key.").optional(),
+  serviceAccountEmail: z.string().describe(
+    "Optional. The email address of [the service account](https://cloud.google.com/iam/docs/service-accounts) the key is bound to.",
+  ).optional(),
+  keyId: z.string().describe(
+    "User specified key id (optional). If specified, it will become the final component of the key resource name. The id must be unique within the project, must conform with RFC-1034, is restricted to lower-cased letters, and has a maximum length of 63 characters. In another word, the id must match the regular expression: `[a-z]([a-z0-9-]{0,61}[a-z0-9])?`. The id must NOT be a UUID-like string.",
+  ).optional(),
+  location: z.string().describe(
+    "The location for this resource (this resource only supports 'global')",
+  ).optional(),
+});
+
+export const model = {
+  type: "@swamp/gcp/apikeys/keys",
+  version: "2026.03.27.1",
+  globalArguments: GlobalArgsSchema,
+  inputsSchema: InputsSchema,
+  resources: {
+    state: {
+      description: "The representation of a key managed by the API Keys API.",
+      schema: StateSchema,
+      lifetime: "infinite",
+      garbageCollection: 10,
+    },
+  },
+  methods: {
+    create: {
+      description: "Create a keys",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const projectId = await getProjectId();
+        const params: Record<string, string> = { project: projectId };
+        if (g["parent"] !== undefined) params["parent"] = String(g["parent"]);
+        const body: Record<string, unknown> = {};
+        if (g["annotations"] !== undefined) {
+          body["annotations"] = g["annotations"];
+        }
+        if (g["displayName"] !== undefined) {
+          body["displayName"] = g["displayName"];
+        }
+        if (g["name"] !== undefined) body["name"] = g["name"];
+        if (g["restrictions"] !== undefined) {
+          body["restrictions"] = g["restrictions"];
+        }
+        if (g["serviceAccountEmail"] !== undefined) {
+          body["serviceAccountEmail"] = g["serviceAccountEmail"];
+        }
+        if (g["keyId"] !== undefined) body["keyId"] = g["keyId"];
+        if (g["parent"] !== undefined && g["name"] !== undefined) {
+          params["name"] = buildResourceName(
+            String(g["parent"]),
+            String(g["name"]),
+          );
+        }
+        const result = await createResource(
+          BASE_URL,
+          INSERT_CONFIG,
+          params,
+          body,
+          GET_CONFIG,
+        ) as StateData;
+        const instanceName = (result.name ?? g.name)?.toString() ?? "current";
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    get: {
+      description: "Get a keys",
+      arguments: z.object({
+        identifier: z.string().describe("The name of the keys"),
+      }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const projectId = await getProjectId();
+        const params: Record<string, string> = { project: projectId };
+        const g = context.globalArgs;
+        params["name"] = buildResourceName(
+          String(g["parent"] ?? ""),
+          args.identifier,
+        );
+        const result = await readResource(
+          BASE_URL,
+          GET_CONFIG,
+          params,
+        ) as StateData;
+        const instanceName = (result.name ?? g.name)?.toString() ??
+          args.identifier;
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    update: {
+      description: "Update keys attributes",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const projectId = await getProjectId();
+        const instanceName = g.name?.toString() ?? "current";
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          instanceName,
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        const params: Record<string, string> = { project: projectId };
+        params["name"] = buildResourceName(
+          String(g["parent"] ?? ""),
+          existing["name"]?.toString() ?? g["name"]?.toString() ?? "",
+        );
+        const body: Record<string, unknown> = {};
+        if (g["annotations"] !== undefined) {
+          body["annotations"] = g["annotations"];
+        }
+        if (g["displayName"] !== undefined) {
+          body["displayName"] = g["displayName"];
+        }
+        if (g["restrictions"] !== undefined) {
+          body["restrictions"] = g["restrictions"];
+        }
+        if (g["serviceAccountEmail"] !== undefined) {
+          body["serviceAccountEmail"] = g["serviceAccountEmail"];
+        }
+        for (const key of Object.keys(existing)) {
+          if (
+            key === "fingerprint" || key === "labelFingerprint" ||
+            key === "etag" || key.endsWith("Fingerprint")
+          ) {
+            body[key] = existing[key];
+          }
+        }
+        const result = await updateResource(
+          BASE_URL,
+          PATCH_CONFIG,
+          params,
+          body,
+          GET_CONFIG,
+        ) as StateData;
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    delete: {
+      description: "Delete the keys",
+      arguments: z.object({
+        identifier: z.string().describe("The name of the keys"),
+      }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const g = context.globalArgs;
+        const projectId = await getProjectId();
+        const params: Record<string, string> = { project: projectId };
+        params["name"] = buildResourceName(
+          String(g["parent"] ?? ""),
+          args.identifier,
+        );
+        const { existed } = await deleteResource(
+          BASE_URL,
+          DELETE_CONFIG,
+          params,
+        );
+        const instanceName = g.name?.toString() ?? args.identifier;
+        const handle = await context.writeResource("state", instanceName, {
+          identifier: args.identifier,
+          existed,
+          status: existed ? "deleted" : "not_found",
+          deletedAt: new Date().toISOString(),
+        });
+        return { dataHandles: [handle] };
+      },
+    },
+    sync: {
+      description: "Sync keys state from GCP",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const projectId = await getProjectId();
+        const instanceName = g.name?.toString() ?? "current";
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          instanceName,
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        try {
+          const params: Record<string, string> = { project: projectId };
+          const shortName = existing.name?.toString() ?? g["name"]?.toString();
+          if (!shortName) throw new Error("No identifier found");
+          params["name"] = buildResourceName(
+            String(g["parent"] ?? ""),
+            shortName,
+          );
+          const result = await readResource(
+            BASE_URL,
+            GET_CONFIG,
+            params,
+          ) as StateData;
+          const handle = await context.writeResource(
+            "state",
+            instanceName,
+            result,
+          );
+          return { dataHandles: [handle] };
+        } catch (error: unknown) {
+          if (isResourceNotFoundError(error)) {
+            const handle = await context.writeResource("state", instanceName, {
+              status: "not_found",
+              syncedAt: new Date().toISOString(),
+            });
+            return { dataHandles: [handle] };
+          }
+          throw error;
+        }
+      },
+    },
+    get_key_string: {
+      description: "get key string",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, unknown>, context: any) => {
+        const g = context.globalArgs;
+        const projectId = await getProjectId();
+        const params: Record<string, string> = { project: projectId };
+        if (g["parent"] !== undefined && g["name"] !== undefined) {
+          params["name"] = buildResourceName(
+            String(g["parent"]),
+            String(g["name"]),
+          );
+        }
+        const result = await createResource(
+          BASE_URL,
+          {
+            "id": "apikeys.projects.locations.keys.getKeyString",
+            "path": "v2/{+name}/keyString",
+            "httpMethod": "GET",
+            "parameterOrder": ["name"],
+            "parameters": { "name": { "location": "path", "required": true } },
+          },
+          params,
+          {},
+        );
+        return { result };
+      },
+    },
+    undelete: {
+      description: "undelete",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, unknown>, context: any) => {
+        const g = context.globalArgs;
+        const projectId = await getProjectId();
+        const params: Record<string, string> = { project: projectId };
+        if (g["parent"] !== undefined && g["name"] !== undefined) {
+          params["name"] = buildResourceName(
+            String(g["parent"]),
+            String(g["name"]),
+          );
+        }
+        const result = await createResource(
+          BASE_URL,
+          {
+            "id": "apikeys.projects.locations.keys.undelete",
+            "path": "v2/{+name}:undelete",
+            "httpMethod": "POST",
+            "parameterOrder": ["name"],
+            "parameters": { "name": { "location": "path", "required": true } },
+          },
+          params,
+          {},
+        );
+        return { result };
+      },
+    },
+  },
+};

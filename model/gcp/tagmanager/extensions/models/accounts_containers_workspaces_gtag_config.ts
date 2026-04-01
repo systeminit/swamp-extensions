@@ -1,0 +1,427 @@
+// Auto-generated extension model for @swamp/gcp/tagmanager/accounts-containers-workspaces-gtag-config
+// Do not edit manually. Re-generate with: deno task generate:gcp
+
+// deno-lint-ignore-file no-explicit-any
+
+import { z } from "zod";
+import {
+  createResource,
+  deleteResource,
+  getProjectId,
+  isResourceNotFoundError,
+  readResource,
+  updateResource,
+} from "./_lib/gcp.ts";
+
+const BASE_URL = "https://tagmanager.googleapis.com/";
+
+const GET_CONFIG = {
+  "id": "tagmanager.accounts.containers.workspaces.gtag_config.get",
+  "path": "tagmanager/v2/{+path}",
+  "httpMethod": "GET",
+  "parameterOrder": [
+    "path",
+  ],
+  "parameters": {
+    "path": {
+      "location": "path",
+      "required": true,
+    },
+  },
+} as const;
+
+const INSERT_CONFIG = {
+  "id": "tagmanager.accounts.containers.workspaces.gtag_config.create",
+  "path": "tagmanager/v2/{+parent}/gtag_config",
+  "httpMethod": "POST",
+  "parameterOrder": [
+    "parent",
+  ],
+  "parameters": {
+    "parent": {
+      "location": "path",
+      "required": true,
+    },
+  },
+} as const;
+
+const UPDATE_CONFIG = {
+  "id": "tagmanager.accounts.containers.workspaces.gtag_config.update",
+  "path": "tagmanager/v2/{+path}",
+  "httpMethod": "PUT",
+  "parameterOrder": [
+    "path",
+  ],
+  "parameters": {
+    "fingerprint": {
+      "location": "query",
+    },
+    "path": {
+      "location": "path",
+      "required": true,
+    },
+  },
+} as const;
+
+const DELETE_CONFIG = {
+  "id": "tagmanager.accounts.containers.workspaces.gtag_config.delete",
+  "path": "tagmanager/v2/{+path}",
+  "httpMethod": "DELETE",
+  "parameterOrder": [
+    "path",
+  ],
+  "parameters": {
+    "path": {
+      "location": "path",
+      "required": true,
+    },
+  },
+} as const;
+
+const GlobalArgsSchema = z.object({
+  name: z.string().describe(
+    "Instance name for this resource (used as the unique identifier in the factory pattern)",
+  ),
+  accountId: z.string().describe("Google tag account ID.").optional(),
+  containerId: z.string().describe("Google tag container ID.").optional(),
+  fingerprint: z.string().describe(
+    "The fingerprint of the Google tag config as computed at storage time. This value is recomputed whenever the config is modified.",
+  ).optional(),
+  gtagConfigId: z.string().describe(
+    "The ID uniquely identifies the Google tag config.",
+  ).optional(),
+  parameter: z.array(z.object({
+    isWeakReference: z.boolean().describe(
+      "Whether or not a reference type parameter is strongly or weakly referenced. Only used by Transformations.",
+    ).optional(),
+    key: z.string().describe(
+      "The named key that uniquely identifies a parameter. Required for top-level parameters, as well as map values. Ignored for list values.",
+    ).optional(),
+    list: z.array(z.string()).describe(
+      "This list parameter's parameters (keys will be ignored).",
+    ).optional(),
+    map: z.array(z.string()).describe(
+      "This map parameter's parameters (must have keys; keys must be unique).",
+    ).optional(),
+    type: z.enum([
+      "typeUnspecified",
+      "template",
+      "integer",
+      "boolean",
+      "list",
+      "map",
+      "triggerReference",
+      "tagReference",
+    ]).describe(
+      "The parameter type. Valid values are: - boolean: The value represents a boolean, represented as 'true' or 'false' - integer: The value represents a 64-bit signed integer value, in base 10 - list: A list of parameters should be specified - map: A map of parameters should be specified - template: The value represents any text; this can include variable references (even variable references that might return non-string types) - trigger_reference: The value represents a trigger, represented as the trigger id - tag_reference: The value represents a tag, represented as the tag name",
+    ).optional(),
+    value: z.string().describe(
+      "A parameter's value (may contain variable references). as appropriate to the specified type.",
+    ).optional(),
+  })).describe("The Google tag config's parameters.").optional(),
+  path: z.string().describe("Google tag config's API relative path.")
+    .optional(),
+  tagManagerUrl: z.string().describe(
+    "Auto generated link to the tag manager UI",
+  ).optional(),
+  type: z.string().describe("Google tag config type.").optional(),
+  workspaceId: z.string().describe(
+    "Google tag workspace ID. Only used by GTM containers. Set to 0 otherwise.",
+  ).optional(),
+  parent: z.string().describe(
+    "The parent resource name (e.g., projects/my-project/locations/us-central1, organizations/123, folders/456)",
+  ).optional(),
+});
+
+const StateSchema = z.object({
+  accountId: z.string().optional(),
+  containerId: z.string().optional(),
+  fingerprint: z.string().optional(),
+  gtagConfigId: z.string().optional(),
+  parameter: z.array(z.object({
+    isWeakReference: z.boolean(),
+    key: z.string(),
+    list: z.array(z.string()),
+    map: z.array(z.string()),
+    type: z.string(),
+    value: z.string(),
+  })).optional(),
+  path: z.string().optional(),
+  tagManagerUrl: z.string().optional(),
+  type: z.string().optional(),
+  workspaceId: z.string().optional(),
+}).passthrough();
+
+type StateData = z.infer<typeof StateSchema>;
+
+const InputsSchema = z.object({
+  name: z.string().optional(),
+  accountId: z.string().describe("Google tag account ID.").optional(),
+  containerId: z.string().describe("Google tag container ID.").optional(),
+  fingerprint: z.string().describe(
+    "The fingerprint of the Google tag config as computed at storage time. This value is recomputed whenever the config is modified.",
+  ).optional(),
+  gtagConfigId: z.string().describe(
+    "The ID uniquely identifies the Google tag config.",
+  ).optional(),
+  parameter: z.array(z.object({
+    isWeakReference: z.boolean().describe(
+      "Whether or not a reference type parameter is strongly or weakly referenced. Only used by Transformations.",
+    ).optional(),
+    key: z.string().describe(
+      "The named key that uniquely identifies a parameter. Required for top-level parameters, as well as map values. Ignored for list values.",
+    ).optional(),
+    list: z.array(z.string()).describe(
+      "This list parameter's parameters (keys will be ignored).",
+    ).optional(),
+    map: z.array(z.string()).describe(
+      "This map parameter's parameters (must have keys; keys must be unique).",
+    ).optional(),
+    type: z.enum([
+      "typeUnspecified",
+      "template",
+      "integer",
+      "boolean",
+      "list",
+      "map",
+      "triggerReference",
+      "tagReference",
+    ]).describe(
+      "The parameter type. Valid values are: - boolean: The value represents a boolean, represented as 'true' or 'false' - integer: The value represents a 64-bit signed integer value, in base 10 - list: A list of parameters should be specified - map: A map of parameters should be specified - template: The value represents any text; this can include variable references (even variable references that might return non-string types) - trigger_reference: The value represents a trigger, represented as the trigger id - tag_reference: The value represents a tag, represented as the tag name",
+    ).optional(),
+    value: z.string().describe(
+      "A parameter's value (may contain variable references). as appropriate to the specified type.",
+    ).optional(),
+  })).describe("The Google tag config's parameters.").optional(),
+  path: z.string().describe("Google tag config's API relative path.")
+    .optional(),
+  tagManagerUrl: z.string().describe(
+    "Auto generated link to the tag manager UI",
+  ).optional(),
+  type: z.string().describe("Google tag config type.").optional(),
+  workspaceId: z.string().describe(
+    "Google tag workspace ID. Only used by GTM containers. Set to 0 otherwise.",
+  ).optional(),
+  parent: z.string().describe(
+    "The parent resource name (e.g., projects/my-project/locations/us-central1, organizations/123, folders/456)",
+  ).optional(),
+});
+
+export const model = {
+  type: "@swamp/gcp/tagmanager/accounts-containers-workspaces-gtag-config",
+  version: "2026.03.27.1",
+  globalArguments: GlobalArgsSchema,
+  inputsSchema: InputsSchema,
+  resources: {
+    state: {
+      description: "Represents a Google tag configuration.",
+      schema: StateSchema,
+      lifetime: "infinite",
+      garbageCollection: 10,
+    },
+  },
+  methods: {
+    create: {
+      description: "Create a gtag_config",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const projectId = await getProjectId();
+        const params: Record<string, string> = { project: projectId };
+        if (g["parent"] !== undefined) params["parent"] = String(g["parent"]);
+        const body: Record<string, unknown> = {};
+        if (g["accountId"] !== undefined) body["accountId"] = g["accountId"];
+        if (g["containerId"] !== undefined) {
+          body["containerId"] = g["containerId"];
+        }
+        if (g["fingerprint"] !== undefined) {
+          body["fingerprint"] = g["fingerprint"];
+        }
+        if (g["gtagConfigId"] !== undefined) {
+          body["gtagConfigId"] = g["gtagConfigId"];
+        }
+        if (g["parameter"] !== undefined) body["parameter"] = g["parameter"];
+        if (g["path"] !== undefined) body["path"] = g["path"];
+        if (g["tagManagerUrl"] !== undefined) {
+          body["tagManagerUrl"] = g["tagManagerUrl"];
+        }
+        if (g["type"] !== undefined) body["type"] = g["type"];
+        if (g["workspaceId"] !== undefined) {
+          body["workspaceId"] = g["workspaceId"];
+        }
+        if (g["name"] !== undefined) params["path"] = String(g["name"]);
+        const result = await createResource(
+          BASE_URL,
+          INSERT_CONFIG,
+          params,
+          body,
+          GET_CONFIG,
+        ) as StateData;
+        const instanceName = g.name?.toString() ?? "current";
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    get: {
+      description: "Get a gtag_config",
+      arguments: z.object({
+        identifier: z.string().describe("The name of the gtag_config"),
+      }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const projectId = await getProjectId();
+        const params: Record<string, string> = { project: projectId };
+        const g = context.globalArgs;
+        params["path"] = args.identifier;
+        const result = await readResource(
+          BASE_URL,
+          GET_CONFIG,
+          params,
+        ) as StateData;
+        const instanceName = g.name?.toString() ?? args.identifier;
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    update: {
+      description: "Update gtag_config attributes",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const projectId = await getProjectId();
+        const instanceName = g.name?.toString() ?? "current";
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          instanceName,
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        const params: Record<string, string> = { project: projectId };
+        params["path"] = existing["name"]?.toString() ?? "";
+        const body: Record<string, unknown> = {};
+        if (g["accountId"] !== undefined) body["accountId"] = g["accountId"];
+        if (g["containerId"] !== undefined) {
+          body["containerId"] = g["containerId"];
+        }
+        if (g["fingerprint"] !== undefined) {
+          body["fingerprint"] = g["fingerprint"];
+        }
+        if (g["gtagConfigId"] !== undefined) {
+          body["gtagConfigId"] = g["gtagConfigId"];
+        }
+        if (g["parameter"] !== undefined) body["parameter"] = g["parameter"];
+        if (g["tagManagerUrl"] !== undefined) {
+          body["tagManagerUrl"] = g["tagManagerUrl"];
+        }
+        if (g["type"] !== undefined) body["type"] = g["type"];
+        if (g["workspaceId"] !== undefined) {
+          body["workspaceId"] = g["workspaceId"];
+        }
+        for (const key of Object.keys(existing)) {
+          if (
+            key === "fingerprint" || key === "labelFingerprint" ||
+            key === "etag" || key.endsWith("Fingerprint")
+          ) {
+            body[key] = existing[key];
+          }
+        }
+        const result = await updateResource(
+          BASE_URL,
+          UPDATE_CONFIG,
+          params,
+          body,
+          GET_CONFIG,
+        ) as StateData;
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    delete: {
+      description: "Delete the gtag_config",
+      arguments: z.object({
+        identifier: z.string().describe("The name of the gtag_config"),
+      }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const g = context.globalArgs;
+        const projectId = await getProjectId();
+        const params: Record<string, string> = { project: projectId };
+        params["path"] = args.identifier;
+        const { existed } = await deleteResource(
+          BASE_URL,
+          DELETE_CONFIG,
+          params,
+        );
+        const instanceName = g.name?.toString() ?? args.identifier;
+        const handle = await context.writeResource("state", instanceName, {
+          identifier: args.identifier,
+          existed,
+          status: existed ? "deleted" : "not_found",
+          deletedAt: new Date().toISOString(),
+        });
+        return { dataHandles: [handle] };
+      },
+    },
+    sync: {
+      description: "Sync gtag_config state from GCP",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const projectId = await getProjectId();
+        const instanceName = g.name?.toString() ?? "current";
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          instanceName,
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        try {
+          const params: Record<string, string> = { project: projectId };
+          const identifier = existing.name?.toString() ?? g["name"]?.toString();
+          if (!identifier) {
+            throw new Error(
+              "No identifier found in existing state or globalArgs",
+            );
+          }
+          params["path"] = identifier;
+          const result = await readResource(
+            BASE_URL,
+            GET_CONFIG,
+            params,
+          ) as StateData;
+          const handle = await context.writeResource(
+            "state",
+            instanceName,
+            result,
+          );
+          return { dataHandles: [handle] };
+        } catch (error: unknown) {
+          if (isResourceNotFoundError(error)) {
+            const handle = await context.writeResource("state", instanceName, {
+              status: "not_found",
+              syncedAt: new Date().toISOString(),
+            });
+            return { dataHandles: [handle] };
+          }
+          throw error;
+        }
+      },
+    },
+  },
+};

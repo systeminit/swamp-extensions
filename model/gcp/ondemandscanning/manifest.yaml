@@ -1,0 +1,18 @@
+# Auto-generated manifest. Re-generate with the appropriate deno task.
+manifestVersion: 1
+name: "@swamp/gcp/ondemandscanning"
+version: "2026.03.27.1"
+description: "Google Cloud ondemandscanning infrastructure models"
+labels:
+  - gcp
+  - google-cloud
+  - ondemandscanning
+  - cloud
+  - infrastructure
+releaseNotes: |
+  - Added: scans_vulnerabilities
+models:
+  - scans_vulnerabilities.ts
+additionalFiles:
+  - LICENSE.txt
+  - README.md

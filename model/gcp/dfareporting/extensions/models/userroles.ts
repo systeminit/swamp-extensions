@@ -1,0 +1,416 @@
+// Auto-generated extension model for @swamp/gcp/dfareporting/userroles
+// Do not edit manually. Re-generate with: deno task generate:gcp
+
+// deno-lint-ignore-file no-explicit-any
+
+import { z } from "zod";
+import {
+  createResource,
+  deleteResource,
+  getProjectId,
+  isResourceNotFoundError,
+  readResource,
+  updateResource,
+} from "./_lib/gcp.ts";
+
+const BASE_URL = "https://dfareporting.googleapis.com/dfareporting/v5/";
+
+const GET_CONFIG = {
+  "id": "dfareporting.userRoles.get",
+  "path": "userprofiles/{+profileId}/userRoles/{+id}",
+  "httpMethod": "GET",
+  "parameterOrder": [
+    "profileId",
+    "id",
+  ],
+  "parameters": {
+    "id": {
+      "location": "path",
+      "required": true,
+    },
+    "profileId": {
+      "location": "path",
+      "required": true,
+    },
+  },
+} as const;
+
+const INSERT_CONFIG = {
+  "id": "dfareporting.userRoles.insert",
+  "path": "userprofiles/{+profileId}/userRoles",
+  "httpMethod": "POST",
+  "parameterOrder": [
+    "profileId",
+  ],
+  "parameters": {
+    "profileId": {
+      "location": "path",
+      "required": true,
+    },
+  },
+} as const;
+
+const UPDATE_CONFIG = {
+  "id": "dfareporting.userRoles.update",
+  "path": "userprofiles/{+profileId}/userRoles",
+  "httpMethod": "PUT",
+  "parameterOrder": [
+    "profileId",
+  ],
+  "parameters": {
+    "profileId": {
+      "location": "path",
+      "required": true,
+    },
+  },
+} as const;
+
+const DELETE_CONFIG = {
+  "id": "dfareporting.userRoles.delete",
+  "path": "userprofiles/{+profileId}/userRoles/{+id}",
+  "httpMethod": "DELETE",
+  "parameterOrder": [
+    "profileId",
+    "id",
+  ],
+  "parameters": {
+    "id": {
+      "location": "path",
+      "required": true,
+    },
+    "profileId": {
+      "location": "path",
+      "required": true,
+    },
+  },
+} as const;
+
+const GlobalArgsSchema = z.object({
+  accountId: z.string().describe(
+    "Account ID of this user role. This is a read-only field that can be left blank.",
+  ).optional(),
+  defaultUserRole: z.boolean().describe(
+    "Whether this is a default user role. Default user roles are created by the system for the account/subaccount and cannot be modified or deleted. Each default user role comes with a basic set of preassigned permissions.",
+  ).optional(),
+  id: z.string().describe(
+    "ID of this user role. This is a read-only, auto-generated field.",
+  ).optional(),
+  name: z.string().describe(
+    "Name of this user role. This is a required field. Must be less than 256 characters long. If this user role is under a subaccount, the name must be unique among sites of the same subaccount. Otherwise, this user role is a top-level user role, and the name must be unique among top-level user roles of the same account.",
+  ).optional(),
+  parentUserRoleId: z.string().describe(
+    "ID of the user role that this user role is based on or copied from. This is a required field.",
+  ).optional(),
+  permissions: z.array(z.object({
+    availability: z.enum([
+      "NOT_AVAILABLE_BY_DEFAULT",
+      "ACCOUNT_BY_DEFAULT",
+      "SUBACCOUNT_AND_ACCOUNT_BY_DEFAULT",
+      "ACCOUNT_ALWAYS",
+      "SUBACCOUNT_AND_ACCOUNT_ALWAYS",
+      "USER_PROFILE_ONLY",
+    ]).describe("Levels of availability for a user role permission.")
+      .optional(),
+    id: z.string().describe("ID of this user role permission.").optional(),
+    kind: z.string().describe(
+      'Identifies what kind of resource this is. Value: the fixed string "dfareporting#userRolePermission".',
+    ).optional(),
+    name: z.string().describe("Name of this user role permission.").optional(),
+    permissionGroupId: z.string().describe(
+      "ID of the permission group that this user role permission belongs to.",
+    ).optional(),
+  })).describe("List of permissions associated with this user role.")
+    .optional(),
+  subaccountId: z.string().describe(
+    "Subaccount ID of this user role. This is a read-only field that can be left blank.",
+  ).optional(),
+  profileId: z.string().describe(
+    "User profile ID associated with this request.",
+  ),
+});
+
+const StateSchema = z.object({
+  accountId: z.string().optional(),
+  defaultUserRole: z.boolean().optional(),
+  id: z.string(),
+  kind: z.string().optional(),
+  name: z.string().optional(),
+  parentUserRoleId: z.string().optional(),
+  permissions: z.array(z.object({
+    availability: z.string(),
+    id: z.string(),
+    kind: z.string(),
+    name: z.string(),
+    permissionGroupId: z.string(),
+  })).optional(),
+  subaccountId: z.string().optional(),
+}).passthrough();
+
+type StateData = z.infer<typeof StateSchema>;
+
+const InputsSchema = z.object({
+  accountId: z.string().describe(
+    "Account ID of this user role. This is a read-only field that can be left blank.",
+  ).optional(),
+  defaultUserRole: z.boolean().describe(
+    "Whether this is a default user role. Default user roles are created by the system for the account/subaccount and cannot be modified or deleted. Each default user role comes with a basic set of preassigned permissions.",
+  ).optional(),
+  id: z.string().describe(
+    "ID of this user role. This is a read-only, auto-generated field.",
+  ).optional(),
+  name: z.string().describe(
+    "Name of this user role. This is a required field. Must be less than 256 characters long. If this user role is under a subaccount, the name must be unique among sites of the same subaccount. Otherwise, this user role is a top-level user role, and the name must be unique among top-level user roles of the same account.",
+  ).optional(),
+  parentUserRoleId: z.string().describe(
+    "ID of the user role that this user role is based on or copied from. This is a required field.",
+  ).optional(),
+  permissions: z.array(z.object({
+    availability: z.enum([
+      "NOT_AVAILABLE_BY_DEFAULT",
+      "ACCOUNT_BY_DEFAULT",
+      "SUBACCOUNT_AND_ACCOUNT_BY_DEFAULT",
+      "ACCOUNT_ALWAYS",
+      "SUBACCOUNT_AND_ACCOUNT_ALWAYS",
+      "USER_PROFILE_ONLY",
+    ]).describe("Levels of availability for a user role permission.")
+      .optional(),
+    id: z.string().describe("ID of this user role permission.").optional(),
+    kind: z.string().describe(
+      'Identifies what kind of resource this is. Value: the fixed string "dfareporting#userRolePermission".',
+    ).optional(),
+    name: z.string().describe("Name of this user role permission.").optional(),
+    permissionGroupId: z.string().describe(
+      "ID of the permission group that this user role permission belongs to.",
+    ).optional(),
+  })).describe("List of permissions associated with this user role.")
+    .optional(),
+  subaccountId: z.string().describe(
+    "Subaccount ID of this user role. This is a read-only field that can be left blank.",
+  ).optional(),
+  profileId: z.string().describe(
+    "User profile ID associated with this request.",
+  ).optional(),
+});
+
+export const model = {
+  type: "@swamp/gcp/dfareporting/userroles",
+  version: "2026.03.27.1",
+  globalArguments: GlobalArgsSchema,
+  inputsSchema: InputsSchema,
+  resources: {
+    state: {
+      description:
+        "Contains properties of auser role, which is used to manage user access.",
+      schema: StateSchema,
+      lifetime: "infinite",
+      garbageCollection: 10,
+    },
+  },
+  methods: {
+    create: {
+      description: "Create a userRoles",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const projectId = await getProjectId();
+        const params: Record<string, string> = { project: projectId };
+        if (g["profileId"] !== undefined) {
+          params["profileId"] = String(g["profileId"]);
+        }
+        const body: Record<string, unknown> = {};
+        if (g["accountId"] !== undefined) body["accountId"] = g["accountId"];
+        if (g["defaultUserRole"] !== undefined) {
+          body["defaultUserRole"] = g["defaultUserRole"];
+        }
+        if (g["id"] !== undefined) body["id"] = g["id"];
+        if (g["name"] !== undefined) body["name"] = g["name"];
+        if (g["parentUserRoleId"] !== undefined) {
+          body["parentUserRoleId"] = g["parentUserRoleId"];
+        }
+        if (g["permissions"] !== undefined) {
+          body["permissions"] = g["permissions"];
+        }
+        if (g["subaccountId"] !== undefined) {
+          body["subaccountId"] = g["subaccountId"];
+        }
+        if (g["id"] !== undefined) params["id"] = String(g["id"]);
+        const result = await createResource(
+          BASE_URL,
+          INSERT_CONFIG,
+          params,
+          body,
+          GET_CONFIG,
+        ) as StateData;
+        const instanceName = (result.id ?? g.id)?.toString() ?? "current";
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    get: {
+      description: "Get a userRoles",
+      arguments: z.object({
+        identifier: z.string().describe("The id of the userRoles"),
+      }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const projectId = await getProjectId();
+        const params: Record<string, string> = { project: projectId };
+        const g = context.globalArgs;
+        if (g["profileId"] !== undefined) {
+          params["profileId"] = String(g["profileId"]);
+        }
+        params["id"] = args.identifier;
+        const result = await readResource(
+          BASE_URL,
+          GET_CONFIG,
+          params,
+        ) as StateData;
+        const instanceName = (result.id ?? g.id)?.toString() ?? args.identifier;
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    update: {
+      description: "Update userRoles attributes",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const projectId = await getProjectId();
+        const instanceName = g.id?.toString() ?? "current";
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          instanceName,
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        const params: Record<string, string> = { project: projectId };
+        params["profileId"] = existing["id"]?.toString() ?? "";
+        const body: Record<string, unknown> = {};
+        if (g["accountId"] !== undefined) body["accountId"] = g["accountId"];
+        if (g["id"] !== undefined) body["id"] = g["id"];
+        if (g["name"] !== undefined) body["name"] = g["name"];
+        if (g["parentUserRoleId"] !== undefined) {
+          body["parentUserRoleId"] = g["parentUserRoleId"];
+        }
+        if (g["permissions"] !== undefined) {
+          body["permissions"] = g["permissions"];
+        }
+        if (g["subaccountId"] !== undefined) {
+          body["subaccountId"] = g["subaccountId"];
+        }
+        for (const key of Object.keys(existing)) {
+          if (
+            key === "fingerprint" || key === "labelFingerprint" ||
+            key === "etag" || key.endsWith("Fingerprint")
+          ) {
+            body[key] = existing[key];
+          }
+        }
+        const result = await updateResource(
+          BASE_URL,
+          UPDATE_CONFIG,
+          params,
+          body,
+          GET_CONFIG,
+        ) as StateData;
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    delete: {
+      description: "Delete the userRoles",
+      arguments: z.object({
+        identifier: z.string().describe("The id of the userRoles"),
+      }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const g = context.globalArgs;
+        const projectId = await getProjectId();
+        const params: Record<string, string> = { project: projectId };
+        if (g["profileId"] !== undefined) {
+          params["profileId"] = String(g["profileId"]);
+        }
+        params["id"] = args.identifier;
+        const { existed } = await deleteResource(
+          BASE_URL,
+          DELETE_CONFIG,
+          params,
+        );
+        const instanceName = g.id?.toString() ?? args.identifier;
+        const handle = await context.writeResource("state", instanceName, {
+          identifier: args.identifier,
+          existed,
+          status: existed ? "deleted" : "not_found",
+          deletedAt: new Date().toISOString(),
+        });
+        return { dataHandles: [handle] };
+      },
+    },
+    sync: {
+      description: "Sync userRoles state from GCP",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const projectId = await getProjectId();
+        const instanceName = g.id?.toString() ?? "current";
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          instanceName,
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        try {
+          const params: Record<string, string> = { project: projectId };
+          if (g["profileId"] !== undefined) {
+            params["profileId"] = String(g["profileId"]);
+          } else if (existing["profileId"]) {
+            params["profileId"] = String(existing["profileId"]);
+          }
+          const identifier = existing.id?.toString() ?? g["id"]?.toString();
+          if (!identifier) {
+            throw new Error(
+              "No identifier found in existing state or globalArgs",
+            );
+          }
+          params["id"] = identifier;
+          const result = await readResource(
+            BASE_URL,
+            GET_CONFIG,
+            params,
+          ) as StateData;
+          const handle = await context.writeResource(
+            "state",
+            instanceName,
+            result,
+          );
+          return { dataHandles: [handle] };
+        } catch (error: unknown) {
+          if (isResourceNotFoundError(error)) {
+            const handle = await context.writeResource("state", instanceName, {
+              status: "not_found",
+              syncedAt: new Date().toISOString(),
+            });
+            return { dataHandles: [handle] };
+          }
+          throw error;
+        }
+      },
+    },
+  },
+};

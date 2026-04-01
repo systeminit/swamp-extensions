@@ -1,0 +1,43 @@
+# Auto-generated manifest. Re-generate with the appropriate deno task.
+manifestVersion: 1
+name: "@swamp/gcp/dialogflow"
+version: "2026.03.27.1"
+description: "Google Cloud dialogflow infrastructure models"
+labels:
+  - gcp
+  - google-cloud
+  - dialogflow
+  - cloud
+  - infrastructure
+releaseNotes: |
+  - Added: locations, agents, agents_changelogs, agents_entitytypes, agents_environments, agents_environments_continuoustestresults, agents_environments_deployments, agents_environments_experiments, agents_environments_sessions_entitytypes, agents_flows, agents_flows_pages, agents_flows_transitionroutegroups, agents_flows_versions, agents_generators, agents_intents, agents_playbooks, agents_playbooks_examples, agents_playbooks_versions, agents_sessions_entitytypes, agents_testcases, agents_testcases_results, agents_tools, agents_tools_versions, agents_transitionroutegroups, agents_webhooks, securitysettings
+models:
+  - agents.ts
+  - agents_changelogs.ts
+  - agents_entitytypes.ts
+  - agents_environments.ts
+  - agents_environments_continuoustestresults.ts
+  - agents_environments_deployments.ts
+  - agents_environments_experiments.ts
+  - agents_environments_sessions_entitytypes.ts
+  - agents_flows.ts
+  - agents_flows_pages.ts
+  - agents_flows_transitionroutegroups.ts
+  - agents_flows_versions.ts
+  - agents_generators.ts
+  - agents_intents.ts
+  - agents_playbooks.ts
+  - agents_playbooks_examples.ts
+  - agents_playbooks_versions.ts
+  - agents_sessions_entitytypes.ts
+  - agents_testcases.ts
+  - agents_testcases_results.ts
+  - agents_tools.ts
+  - agents_tools_versions.ts
+  - agents_transitionroutegroups.ts
+  - agents_webhooks.ts
+  - locations.ts
+  - securitysettings.ts
+additionalFiles:
+  - LICENSE.txt
+  - README.md

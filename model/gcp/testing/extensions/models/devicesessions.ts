@@ -1,0 +1,380 @@
+// Auto-generated extension model for @swamp/gcp/testing/devicesessions
+// Do not edit manually. Re-generate with: deno task generate:gcp
+
+// deno-lint-ignore-file no-explicit-any
+
+import { z } from "zod";
+import {
+  createResource,
+  getProjectId,
+  isResourceNotFoundError,
+  readResource,
+  updateResource,
+} from "./_lib/gcp.ts";
+
+/** Construct the fully-qualified resource name from parent and short name. */
+function buildResourceName(parent: string, shortName: string): string {
+  return `${parent}/deviceSessions/${shortName}`;
+}
+
+const BASE_URL = "https://testing.googleapis.com/";
+
+const GET_CONFIG = {
+  "id": "testing.projects.deviceSessions.get",
+  "path": "v1/{+name}",
+  "httpMethod": "GET",
+  "parameterOrder": [
+    "name",
+  ],
+  "parameters": {
+    "name": {
+      "location": "path",
+      "required": true,
+    },
+  },
+} as const;
+
+const INSERT_CONFIG = {
+  "id": "testing.projects.deviceSessions.create",
+  "path": "v1/{+parent}/deviceSessions",
+  "httpMethod": "POST",
+  "parameterOrder": [
+    "parent",
+  ],
+  "parameters": {
+    "parent": {
+      "location": "path",
+      "required": true,
+    },
+  },
+} as const;
+
+const PATCH_CONFIG = {
+  "id": "testing.projects.deviceSessions.patch",
+  "path": "v1/{+name}",
+  "httpMethod": "PATCH",
+  "parameterOrder": [
+    "name",
+  ],
+  "parameters": {
+    "name": {
+      "location": "path",
+      "required": true,
+    },
+    "updateMask": {
+      "location": "query",
+    },
+  },
+} as const;
+
+const GlobalArgsSchema = z.object({
+  androidDevice: z.object({
+    androidModelId: z.string().describe(
+      "Required. The id of the Android device to be used. Use the TestEnvironmentDiscoveryService to get supported options.",
+    ).optional(),
+    androidVersionId: z.string().describe(
+      "Required. The id of the Android OS version to be used. Use the TestEnvironmentDiscoveryService to get supported options.",
+    ).optional(),
+    locale: z.string().describe(
+      "Required. The locale the test device used for testing. Use the TestEnvironmentDiscoveryService to get supported options.",
+    ).optional(),
+    orientation: z.string().describe(
+      "Required. How the device is oriented during the test. Use the TestEnvironmentDiscoveryService to get supported options.",
+    ).optional(),
+  }).describe("A single Android device.").optional(),
+  expireTime: z.string().describe(
+    "Optional. If the device is still in use at this time, any connections will be ended and the SessionState will transition from ACTIVE to FINISHED.",
+  ).optional(),
+  name: z.string().describe(
+    'Optional. Name of the DeviceSession, e.g. "projects/{project_id}/deviceSessions/{session_id}"',
+  ).optional(),
+  ttl: z.string().describe(
+    "Optional. The amount of time that a device will be initially allocated for. This can eventually be extended with the UpdateDeviceSession RPC. Default: 15 minutes.",
+  ).optional(),
+  location: z.string().describe(
+    "The location for this resource (e.g., 'us', 'us-central1', 'europe-west1')",
+  ).optional(),
+});
+
+const StateSchema = z.object({
+  activeStartTime: z.string().optional(),
+  androidDevice: z.object({
+    androidModelId: z.string(),
+    androidVersionId: z.string(),
+    locale: z.string(),
+    orientation: z.string(),
+  }).optional(),
+  createTime: z.string().optional(),
+  displayName: z.string().optional(),
+  expireTime: z.string().optional(),
+  inactivityTimeout: z.string().optional(),
+  name: z.string(),
+  state: z.string().optional(),
+  stateHistories: z.array(z.object({
+    eventTime: z.string(),
+    sessionState: z.string(),
+    stateMessage: z.string(),
+  })).optional(),
+  ttl: z.string().optional(),
+}).passthrough();
+
+type StateData = z.infer<typeof StateSchema>;
+
+const InputsSchema = z.object({
+  androidDevice: z.object({
+    androidModelId: z.string().describe(
+      "Required. The id of the Android device to be used. Use the TestEnvironmentDiscoveryService to get supported options.",
+    ).optional(),
+    androidVersionId: z.string().describe(
+      "Required. The id of the Android OS version to be used. Use the TestEnvironmentDiscoveryService to get supported options.",
+    ).optional(),
+    locale: z.string().describe(
+      "Required. The locale the test device used for testing. Use the TestEnvironmentDiscoveryService to get supported options.",
+    ).optional(),
+    orientation: z.string().describe(
+      "Required. How the device is oriented during the test. Use the TestEnvironmentDiscoveryService to get supported options.",
+    ).optional(),
+  }).describe("A single Android device.").optional(),
+  expireTime: z.string().describe(
+    "Optional. If the device is still in use at this time, any connections will be ended and the SessionState will transition from ACTIVE to FINISHED.",
+  ).optional(),
+  name: z.string().describe(
+    'Optional. Name of the DeviceSession, e.g. "projects/{project_id}/deviceSessions/{session_id}"',
+  ).optional(),
+  ttl: z.string().describe(
+    "Optional. The amount of time that a device will be initially allocated for. This can eventually be extended with the UpdateDeviceSession RPC. Default: 15 minutes.",
+  ).optional(),
+  location: z.string().describe(
+    "The location for this resource (e.g., 'us', 'us-central1', 'europe-west1')",
+  ).optional(),
+});
+
+export const model = {
+  type: "@swamp/gcp/testing/devicesessions",
+  version: "2026.03.27.1",
+  globalArguments: GlobalArgsSchema,
+  inputsSchema: InputsSchema,
+  resources: {
+    state: {
+      description:
+        "Protobuf message describing the device message, used from several RPCs.",
+      schema: StateSchema,
+      lifetime: "infinite",
+      garbageCollection: 10,
+    },
+  },
+  methods: {
+    create: {
+      description: "Create a deviceSessions",
+      arguments: z.object({
+        waitForReady: z.boolean().describe(
+          "Wait for the resource to reach a ready state after creation (default: true)",
+        ).optional(),
+      }),
+      execute: async (args: { waitForReady?: boolean }, context: any) => {
+        const g = context.globalArgs;
+        const projectId = await getProjectId();
+        const params: Record<string, string> = { project: projectId };
+        if (g["parent"] !== undefined) params["parent"] = String(g["parent"]);
+        const body: Record<string, unknown> = {};
+        if (g["androidDevice"] !== undefined) {
+          body["androidDevice"] = g["androidDevice"];
+        }
+        if (g["expireTime"] !== undefined) body["expireTime"] = g["expireTime"];
+        if (g["name"] !== undefined) body["name"] = g["name"];
+        if (g["ttl"] !== undefined) body["ttl"] = g["ttl"];
+        if (g["parent"] !== undefined && g["name"] !== undefined) {
+          params["name"] = buildResourceName(
+            String(g["parent"]),
+            String(g["name"]),
+          );
+        }
+        const result = await createResource(
+          BASE_URL,
+          INSERT_CONFIG,
+          params,
+          body,
+          GET_CONFIG,
+          (args.waitForReady ?? true)
+            ? {
+              "statusField": "state",
+              "readyValues": ["ACTIVE"],
+              "failedValues": ["ERROR"],
+            }
+            : undefined,
+        ) as StateData;
+        const instanceName = (result.name ?? g.name)?.toString() ?? "current";
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    get: {
+      description: "Get a deviceSessions",
+      arguments: z.object({
+        identifier: z.string().describe("The name of the deviceSessions"),
+      }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const projectId = await getProjectId();
+        const params: Record<string, string> = { project: projectId };
+        const g = context.globalArgs;
+        params["name"] = buildResourceName(
+          String(g["parent"] ?? ""),
+          args.identifier,
+        );
+        const result = await readResource(
+          BASE_URL,
+          GET_CONFIG,
+          params,
+        ) as StateData;
+        const instanceName = (result.name ?? g.name)?.toString() ??
+          args.identifier;
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    update: {
+      description: "Update deviceSessions attributes",
+      arguments: z.object({
+        waitForReady: z.boolean().describe(
+          "Wait for the resource to reach a ready state after update (default: true)",
+        ).optional(),
+      }),
+      execute: async (args: { waitForReady?: boolean }, context: any) => {
+        const g = context.globalArgs;
+        const projectId = await getProjectId();
+        const instanceName = g.name?.toString() ?? "current";
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          instanceName,
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        const params: Record<string, string> = { project: projectId };
+        params["name"] = buildResourceName(
+          String(g["parent"] ?? ""),
+          existing["name"]?.toString() ?? g["name"]?.toString() ?? "",
+        );
+        const body: Record<string, unknown> = {};
+        if (g["androidDevice"] !== undefined) {
+          body["androidDevice"] = g["androidDevice"];
+        }
+        if (g["expireTime"] !== undefined) body["expireTime"] = g["expireTime"];
+        if (g["ttl"] !== undefined) body["ttl"] = g["ttl"];
+        for (const key of Object.keys(existing)) {
+          if (
+            key === "fingerprint" || key === "labelFingerprint" ||
+            key === "etag" || key.endsWith("Fingerprint")
+          ) {
+            body[key] = existing[key];
+          }
+        }
+        const result = await updateResource(
+          BASE_URL,
+          PATCH_CONFIG,
+          params,
+          body,
+          GET_CONFIG,
+          (args.waitForReady ?? true)
+            ? {
+              "statusField": "state",
+              "readyValues": ["ACTIVE"],
+              "failedValues": ["ERROR"],
+            }
+            : undefined,
+        ) as StateData;
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    sync: {
+      description: "Sync deviceSessions state from GCP",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const projectId = await getProjectId();
+        const instanceName = g.name?.toString() ?? "current";
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          instanceName,
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        try {
+          const params: Record<string, string> = { project: projectId };
+          const shortName = existing.name?.toString() ?? g["name"]?.toString();
+          if (!shortName) throw new Error("No identifier found");
+          params["name"] = buildResourceName(
+            String(g["parent"] ?? ""),
+            shortName,
+          );
+          const result = await readResource(
+            BASE_URL,
+            GET_CONFIG,
+            params,
+          ) as StateData;
+          const handle = await context.writeResource(
+            "state",
+            instanceName,
+            result,
+          );
+          return { dataHandles: [handle] };
+        } catch (error: unknown) {
+          if (isResourceNotFoundError(error)) {
+            const handle = await context.writeResource("state", instanceName, {
+              status: "not_found",
+              syncedAt: new Date().toISOString(),
+            });
+            return { dataHandles: [handle] };
+          }
+          throw error;
+        }
+      },
+    },
+    cancel: {
+      description: "cancel",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, unknown>, context: any) => {
+        const g = context.globalArgs;
+        const projectId = await getProjectId();
+        const params: Record<string, string> = { project: projectId };
+        if (g["parent"] !== undefined && g["name"] !== undefined) {
+          params["name"] = buildResourceName(
+            String(g["parent"]),
+            String(g["name"]),
+          );
+        }
+        const result = await createResource(
+          BASE_URL,
+          {
+            "id": "testing.projects.deviceSessions.cancel",
+            "path": "v1/{+name}:cancel",
+            "httpMethod": "POST",
+            "parameterOrder": ["name"],
+            "parameters": { "name": { "location": "path", "required": true } },
+          },
+          params,
+          {},
+        );
+        return { result };
+      },
+    },
+  },
+};

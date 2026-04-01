@@ -1,0 +1,20 @@
+# Auto-generated manifest. Re-generate with the appropriate deno task.
+manifestVersion: 1
+name: "@swamp/gcp/cloudsupport"
+version: "2026.03.27.1"
+description: "Google Cloud cloudsupport infrastructure models"
+labels:
+  - gcp
+  - google-cloud
+  - cloudsupport
+  - cloud
+  - infrastructure
+releaseNotes: |
+  - Added: cases, cases_attachments, cases_comments
+models:
+  - cases.ts
+  - cases_attachments.ts
+  - cases_comments.ts
+additionalFiles:
+  - LICENSE.txt
+  - README.md

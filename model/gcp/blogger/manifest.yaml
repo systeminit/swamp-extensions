@@ -1,0 +1,25 @@
+# Auto-generated manifest. Re-generate with the appropriate deno task.
+manifestVersion: 1
+name: "@swamp/gcp/blogger"
+version: "2026.03.27.1"
+description: "Google Cloud blogger infrastructure models"
+labels:
+  - gcp
+  - google-cloud
+  - blogger
+  - cloud
+  - infrastructure
+releaseNotes: |
+  - Added: bloguserinfos, blogs, comments, pageviews, pages, postuserinfos, posts, users
+models:
+  - blogs.ts
+  - bloguserinfos.ts
+  - comments.ts
+  - pages.ts
+  - pageviews.ts
+  - posts.ts
+  - postuserinfos.ts
+  - users.ts
+additionalFiles:
+  - LICENSE.txt
+  - README.md

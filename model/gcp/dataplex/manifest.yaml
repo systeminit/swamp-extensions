@@ -1,0 +1,44 @@
+# Auto-generated manifest. Re-generate with the appropriate deno task.
+manifestVersion: 1
+name: "@swamp/gcp/dataplex"
+version: "2026.04.01.1"
+description: "Google Cloud dataplex infrastructure models"
+labels:
+  - gcp
+  - google-cloud
+  - dataplex
+  - cloud
+  - infrastructure
+releaseNotes: |
+  - Updated: datascans, datascans_jobs
+models:
+  - aspecttypes.ts
+  - dataattributebindings.ts
+  - dataproducts.ts
+  - dataproducts_dataassets.ts
+  - datascans.ts
+  - datascans_jobs.ts
+  - datataxonomies.ts
+  - datataxonomies_attributes.ts
+  - encryptionconfigs.ts
+  - entrygroups.ts
+  - entrygroups_entries.ts
+  - entrygroups_entrylinks.ts
+  - entrytypes.ts
+  - glossaries.ts
+  - glossaries_categories.ts
+  - glossaries_terms.ts
+  - lakes.ts
+  - lakes_actions.ts
+  - lakes_assets.ts
+  - lakes_assets_actions.ts
+  - lakes_entities.ts
+  - lakes_entities_partitions.ts
+  - lakes_tasks.ts
+  - lakes_tasks_jobs.ts
+  - locations.ts
+  - metadatafeeds.ts
+  - metadatajobs.ts
+additionalFiles:
+  - LICENSE.txt
+  - README.md

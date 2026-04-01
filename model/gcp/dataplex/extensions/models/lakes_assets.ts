@@ -1,0 +1,672 @@
+// Auto-generated extension model for @swamp/gcp/dataplex/lakes-assets
+// Do not edit manually. Re-generate with: deno task generate:gcp
+
+// deno-lint-ignore-file no-explicit-any
+
+import { z } from "zod";
+import {
+  createResource,
+  deleteResource,
+  getProjectId,
+  isResourceNotFoundError,
+  readResource,
+  updateResource,
+} from "./_lib/gcp.ts";
+
+/** Construct the fully-qualified resource name from parent and short name. */
+function buildResourceName(parent: string, shortName: string): string {
+  return `${parent}/assets/${shortName}`;
+}
+
+const BASE_URL = "https://dataplex.googleapis.com/";
+
+const GET_CONFIG = {
+  "id": "dataplex.projects.locations.lakes.zones.assets.get",
+  "path": "v1/{+name}",
+  "httpMethod": "GET",
+  "parameterOrder": [
+    "name",
+  ],
+  "parameters": {
+    "name": {
+      "location": "path",
+      "required": true,
+    },
+  },
+} as const;
+
+const INSERT_CONFIG = {
+  "id": "dataplex.projects.locations.lakes.zones.assets.create",
+  "path": "v1/{+parent}/assets",
+  "httpMethod": "POST",
+  "parameterOrder": [
+    "parent",
+  ],
+  "parameters": {
+    "assetId": {
+      "location": "query",
+    },
+    "parent": {
+      "location": "path",
+      "required": true,
+    },
+    "validateOnly": {
+      "location": "query",
+    },
+  },
+} as const;
+
+const PATCH_CONFIG = {
+  "id": "dataplex.projects.locations.lakes.zones.assets.patch",
+  "path": "v1/{+name}",
+  "httpMethod": "PATCH",
+  "parameterOrder": [
+    "name",
+  ],
+  "parameters": {
+    "name": {
+      "location": "path",
+      "required": true,
+    },
+    "updateMask": {
+      "location": "query",
+    },
+    "validateOnly": {
+      "location": "query",
+    },
+  },
+} as const;
+
+const DELETE_CONFIG = {
+  "id": "dataplex.projects.locations.lakes.zones.assets.delete",
+  "path": "v1/{+name}",
+  "httpMethod": "DELETE",
+  "parameterOrder": [
+    "name",
+  ],
+  "parameters": {
+    "name": {
+      "location": "path",
+      "required": true,
+    },
+  },
+} as const;
+
+const GlobalArgsSchema = z.object({
+  name: z.string().describe(
+    "Instance name for this resource (used as the unique identifier in the factory pattern)",
+  ),
+  description: z.string().describe("Optional. Description of the asset.")
+    .optional(),
+  discoverySpec: z.object({
+    csvOptions: z.object({
+      delimiter: z.string().describe(
+        "Optional. The delimiter being used to separate values. This defaults to ','.",
+      ).optional(),
+      disableTypeInference: z.boolean().describe(
+        "Optional. Whether to disable the inference of data type for CSV data. If true, all columns will be registered as strings.",
+      ).optional(),
+      encoding: z.string().describe(
+        "Optional. The character encoding of the data. The default is UTF-8.",
+      ).optional(),
+      headerRows: z.number().int().describe(
+        "Optional. The number of rows to interpret as header rows that should be skipped when reading data rows.",
+      ).optional(),
+    }).describe("Describe CSV and similar semi-structured data formats.")
+      .optional(),
+    enabled: z.boolean().describe("Optional. Whether discovery is enabled.")
+      .optional(),
+    excludePatterns: z.array(z.string()).describe(
+      "Optional. The list of patterns to apply for selecting data to exclude during discovery. For Cloud Storage bucket assets, these are interpreted as glob patterns used to match object names. For BigQuery dataset assets, these are interpreted as patterns to match table names.",
+    ).optional(),
+    includePatterns: z.array(z.string()).describe(
+      "Optional. The list of patterns to apply for selecting data to include during discovery if only a subset of the data should considered. For Cloud Storage bucket assets, these are interpreted as glob patterns used to match object names. For BigQuery dataset assets, these are interpreted as patterns to match table names.",
+    ).optional(),
+    jsonOptions: z.object({
+      disableTypeInference: z.boolean().describe(
+        "Optional. Whether to disable the inference of data type for Json data. If true, all columns will be registered as their primitive types (strings, number or boolean).",
+      ).optional(),
+      encoding: z.string().describe(
+        "Optional. The character encoding of the data. The default is UTF-8.",
+      ).optional(),
+    }).describe("Describe JSON data format.").optional(),
+    schedule: z.string().describe(
+      'Optional. Cron schedule (https://en.wikipedia.org/wiki/Cron) for running discovery periodically. Successive discovery runs must be scheduled at least 60 minutes apart. The default value is to run discovery every 60 minutes.To explicitly set a timezone to the cron tab, apply a prefix in the cron tab: "CRON_TZ=${IANA_TIME_ZONE}" or TZ=${IANA_TIME_ZONE}". The ${IANA_TIME_ZONE} may only be a valid string from IANA time zone database. For example, CRON_TZ=America/New_York 1 * * * *, or TZ=America/New_York 1 * * * *.',
+    ).optional(),
+  }).describe(
+    "Settings to manage the metadata discovery and publishing for an asset.",
+  ).optional(),
+  discoveryStatus: z.object({
+    lastRunDuration: z.string().describe(
+      "The duration of the last discovery run.",
+    ).optional(),
+    lastRunTime: z.string().describe(
+      "The start time of the last discovery run.",
+    ).optional(),
+    message: z.string().describe(
+      "Additional information about the current state.",
+    ).optional(),
+    state: z.enum([
+      "STATE_UNSPECIFIED",
+      "SCHEDULED",
+      "IN_PROGRESS",
+      "PAUSED",
+      "DISABLED",
+    ]).describe("The current status of the discovery feature.").optional(),
+    stats: z.object({
+      dataItems: z.string().describe(
+        "The count of data items within the referenced resource.",
+      ).optional(),
+      dataSize: z.string().describe(
+        "The number of stored data bytes within the referenced resource.",
+      ).optional(),
+      filesets: z.string().describe(
+        "The count of fileset entities within the referenced resource.",
+      ).optional(),
+      tables: z.string().describe(
+        "The count of table entities within the referenced resource.",
+      ).optional(),
+    }).describe(
+      "The aggregated data statistics for the asset reported by discovery.",
+    ).optional(),
+    updateTime: z.string().describe("Last update time of the status.")
+      .optional(),
+  }).describe("Status of discovery for an asset.").optional(),
+  displayName: z.string().describe("Optional. User friendly display name.")
+    .optional(),
+  labels: z.record(z.string(), z.string()).describe(
+    "Optional. User defined labels for the asset.",
+  ).optional(),
+  resourceSpec: z.object({
+    name: z.string().describe(
+      "Immutable. Relative name of the cloud resource that contains the data that is being managed within a lake. For example: projects/{project_number}/buckets/{bucket_id} projects/{project_number}/datasets/{dataset_id}",
+    ).optional(),
+    readAccessMode: z.enum(["ACCESS_MODE_UNSPECIFIED", "DIRECT", "MANAGED"])
+      .describe(
+        "Optional. Determines how read permissions are handled for each asset and their associated tables. Only available to storage buckets assets.",
+      ).optional(),
+    type: z.enum(["TYPE_UNSPECIFIED", "STORAGE_BUCKET", "BIGQUERY_DATASET"])
+      .describe("Required. Immutable. Type of resource.").optional(),
+  }).describe("Identifies the cloud resource that is referenced by this asset.")
+    .optional(),
+  resourceStatus: z.object({
+    managedAccessIdentity: z.string().describe(
+      "Output only. Service account associated with the BigQuery Connection.",
+    ).optional(),
+    message: z.string().describe(
+      "Additional information about the current state.",
+    ).optional(),
+    state: z.enum(["STATE_UNSPECIFIED", "READY", "ERROR"]).describe(
+      "The current state of the managed resource.",
+    ).optional(),
+    updateTime: z.string().describe("Last update time of the status.")
+      .optional(),
+  }).describe("Status of the resource referenced by an asset.").optional(),
+  securityStatus: z.object({
+    message: z.string().describe(
+      "Additional information about the current state.",
+    ).optional(),
+    state: z.enum(["STATE_UNSPECIFIED", "READY", "APPLYING", "ERROR"]).describe(
+      "The current state of the security policy applied to the attached resource.",
+    ).optional(),
+    updateTime: z.string().describe("Last update time of the status.")
+      .optional(),
+  }).describe(
+    "Security policy status of the asset. Data security policy, i.e., readers, writers & owners, should be specified in the lake/zone/asset IAM policy.",
+  ).optional(),
+  assetId: z.string().describe(
+    "Required. Asset identifier. This ID will be used to generate names such as table names when publishing metadata to Hive Metastore and BigQuery. * Must contain only lowercase letters, numbers and hyphens. * Must start with a letter. * Must end with a number or a letter. * Must be between 1-63 characters. * Must be unique within the zone.",
+  ).optional(),
+  location: z.string().describe(
+    "The location for this resource (e.g., 'us', 'us-central1', 'europe-west1')",
+  ).optional(),
+});
+
+const StateSchema = z.object({
+  createTime: z.string().optional(),
+  description: z.string().optional(),
+  discoverySpec: z.object({
+    csvOptions: z.object({
+      delimiter: z.string(),
+      disableTypeInference: z.boolean(),
+      encoding: z.string(),
+      headerRows: z.number(),
+    }),
+    enabled: z.boolean(),
+    excludePatterns: z.array(z.string()),
+    includePatterns: z.array(z.string()),
+    jsonOptions: z.object({
+      disableTypeInference: z.boolean(),
+      encoding: z.string(),
+    }),
+    schedule: z.string(),
+  }).optional(),
+  discoveryStatus: z.object({
+    lastRunDuration: z.string(),
+    lastRunTime: z.string(),
+    message: z.string(),
+    state: z.string(),
+    stats: z.object({
+      dataItems: z.string(),
+      dataSize: z.string(),
+      filesets: z.string(),
+      tables: z.string(),
+    }),
+    updateTime: z.string(),
+  }).optional(),
+  displayName: z.string().optional(),
+  labels: z.record(z.string(), z.unknown()).optional(),
+  name: z.string(),
+  resourceSpec: z.object({
+    name: z.string(),
+    readAccessMode: z.string(),
+    type: z.string(),
+  }).optional(),
+  resourceStatus: z.object({
+    managedAccessIdentity: z.string(),
+    message: z.string(),
+    state: z.string(),
+    updateTime: z.string(),
+  }).optional(),
+  securityStatus: z.object({
+    message: z.string(),
+    state: z.string(),
+    updateTime: z.string(),
+  }).optional(),
+  state: z.string().optional(),
+  uid: z.string().optional(),
+  updateTime: z.string().optional(),
+}).passthrough();
+
+type StateData = z.infer<typeof StateSchema>;
+
+const InputsSchema = z.object({
+  name: z.string().optional(),
+  description: z.string().describe("Optional. Description of the asset.")
+    .optional(),
+  discoverySpec: z.object({
+    csvOptions: z.object({
+      delimiter: z.string().describe(
+        "Optional. The delimiter being used to separate values. This defaults to ','.",
+      ).optional(),
+      disableTypeInference: z.boolean().describe(
+        "Optional. Whether to disable the inference of data type for CSV data. If true, all columns will be registered as strings.",
+      ).optional(),
+      encoding: z.string().describe(
+        "Optional. The character encoding of the data. The default is UTF-8.",
+      ).optional(),
+      headerRows: z.number().int().describe(
+        "Optional. The number of rows to interpret as header rows that should be skipped when reading data rows.",
+      ).optional(),
+    }).describe("Describe CSV and similar semi-structured data formats.")
+      .optional(),
+    enabled: z.boolean().describe("Optional. Whether discovery is enabled.")
+      .optional(),
+    excludePatterns: z.array(z.string()).describe(
+      "Optional. The list of patterns to apply for selecting data to exclude during discovery. For Cloud Storage bucket assets, these are interpreted as glob patterns used to match object names. For BigQuery dataset assets, these are interpreted as patterns to match table names.",
+    ).optional(),
+    includePatterns: z.array(z.string()).describe(
+      "Optional. The list of patterns to apply for selecting data to include during discovery if only a subset of the data should considered. For Cloud Storage bucket assets, these are interpreted as glob patterns used to match object names. For BigQuery dataset assets, these are interpreted as patterns to match table names.",
+    ).optional(),
+    jsonOptions: z.object({
+      disableTypeInference: z.boolean().describe(
+        "Optional. Whether to disable the inference of data type for Json data. If true, all columns will be registered as their primitive types (strings, number or boolean).",
+      ).optional(),
+      encoding: z.string().describe(
+        "Optional. The character encoding of the data. The default is UTF-8.",
+      ).optional(),
+    }).describe("Describe JSON data format.").optional(),
+    schedule: z.string().describe(
+      'Optional. Cron schedule (https://en.wikipedia.org/wiki/Cron) for running discovery periodically. Successive discovery runs must be scheduled at least 60 minutes apart. The default value is to run discovery every 60 minutes.To explicitly set a timezone to the cron tab, apply a prefix in the cron tab: "CRON_TZ=${IANA_TIME_ZONE}" or TZ=${IANA_TIME_ZONE}". The ${IANA_TIME_ZONE} may only be a valid string from IANA time zone database. For example, CRON_TZ=America/New_York 1 * * * *, or TZ=America/New_York 1 * * * *.',
+    ).optional(),
+  }).describe(
+    "Settings to manage the metadata discovery and publishing for an asset.",
+  ).optional(),
+  discoveryStatus: z.object({
+    lastRunDuration: z.string().describe(
+      "The duration of the last discovery run.",
+    ).optional(),
+    lastRunTime: z.string().describe(
+      "The start time of the last discovery run.",
+    ).optional(),
+    message: z.string().describe(
+      "Additional information about the current state.",
+    ).optional(),
+    state: z.enum([
+      "STATE_UNSPECIFIED",
+      "SCHEDULED",
+      "IN_PROGRESS",
+      "PAUSED",
+      "DISABLED",
+    ]).describe("The current status of the discovery feature.").optional(),
+    stats: z.object({
+      dataItems: z.string().describe(
+        "The count of data items within the referenced resource.",
+      ).optional(),
+      dataSize: z.string().describe(
+        "The number of stored data bytes within the referenced resource.",
+      ).optional(),
+      filesets: z.string().describe(
+        "The count of fileset entities within the referenced resource.",
+      ).optional(),
+      tables: z.string().describe(
+        "The count of table entities within the referenced resource.",
+      ).optional(),
+    }).describe(
+      "The aggregated data statistics for the asset reported by discovery.",
+    ).optional(),
+    updateTime: z.string().describe("Last update time of the status.")
+      .optional(),
+  }).describe("Status of discovery for an asset.").optional(),
+  displayName: z.string().describe("Optional. User friendly display name.")
+    .optional(),
+  labels: z.record(z.string(), z.string()).describe(
+    "Optional. User defined labels for the asset.",
+  ).optional(),
+  resourceSpec: z.object({
+    name: z.string().describe(
+      "Immutable. Relative name of the cloud resource that contains the data that is being managed within a lake. For example: projects/{project_number}/buckets/{bucket_id} projects/{project_number}/datasets/{dataset_id}",
+    ).optional(),
+    readAccessMode: z.enum(["ACCESS_MODE_UNSPECIFIED", "DIRECT", "MANAGED"])
+      .describe(
+        "Optional. Determines how read permissions are handled for each asset and their associated tables. Only available to storage buckets assets.",
+      ).optional(),
+    type: z.enum(["TYPE_UNSPECIFIED", "STORAGE_BUCKET", "BIGQUERY_DATASET"])
+      .describe("Required. Immutable. Type of resource.").optional(),
+  }).describe("Identifies the cloud resource that is referenced by this asset.")
+    .optional(),
+  resourceStatus: z.object({
+    managedAccessIdentity: z.string().describe(
+      "Output only. Service account associated with the BigQuery Connection.",
+    ).optional(),
+    message: z.string().describe(
+      "Additional information about the current state.",
+    ).optional(),
+    state: z.enum(["STATE_UNSPECIFIED", "READY", "ERROR"]).describe(
+      "The current state of the managed resource.",
+    ).optional(),
+    updateTime: z.string().describe("Last update time of the status.")
+      .optional(),
+  }).describe("Status of the resource referenced by an asset.").optional(),
+  securityStatus: z.object({
+    message: z.string().describe(
+      "Additional information about the current state.",
+    ).optional(),
+    state: z.enum(["STATE_UNSPECIFIED", "READY", "APPLYING", "ERROR"]).describe(
+      "The current state of the security policy applied to the attached resource.",
+    ).optional(),
+    updateTime: z.string().describe("Last update time of the status.")
+      .optional(),
+  }).describe(
+    "Security policy status of the asset. Data security policy, i.e., readers, writers & owners, should be specified in the lake/zone/asset IAM policy.",
+  ).optional(),
+  assetId: z.string().describe(
+    "Required. Asset identifier. This ID will be used to generate names such as table names when publishing metadata to Hive Metastore and BigQuery. * Must contain only lowercase letters, numbers and hyphens. * Must start with a letter. * Must end with a number or a letter. * Must be between 1-63 characters. * Must be unique within the zone.",
+  ).optional(),
+  location: z.string().describe(
+    "The location for this resource (e.g., 'us', 'us-central1', 'europe-west1')",
+  ).optional(),
+});
+
+export const model = {
+  type: "@swamp/gcp/dataplex/lakes-assets",
+  version: "2026.03.27.1",
+  globalArguments: GlobalArgsSchema,
+  inputsSchema: InputsSchema,
+  resources: {
+    state: {
+      description:
+        "An asset represents a cloud resource that is being managed within a lake as a...",
+      schema: StateSchema,
+      lifetime: "infinite",
+      garbageCollection: 10,
+    },
+  },
+  methods: {
+    create: {
+      description: "Create a assets",
+      arguments: z.object({
+        waitForReady: z.boolean().describe(
+          "Wait for the resource to reach a ready state after creation (default: true)",
+        ).optional(),
+      }),
+      execute: async (args: { waitForReady?: boolean }, context: any) => {
+        const g = context.globalArgs;
+        const projectId = await getProjectId();
+        const params: Record<string, string> = { project: projectId };
+        if (g["parent"] !== undefined) params["parent"] = String(g["parent"]);
+        const body: Record<string, unknown> = {};
+        if (g["description"] !== undefined) {
+          body["description"] = g["description"];
+        }
+        if (g["discoverySpec"] !== undefined) {
+          body["discoverySpec"] = g["discoverySpec"];
+        }
+        if (g["discoveryStatus"] !== undefined) {
+          body["discoveryStatus"] = g["discoveryStatus"];
+        }
+        if (g["displayName"] !== undefined) {
+          body["displayName"] = g["displayName"];
+        }
+        if (g["labels"] !== undefined) body["labels"] = g["labels"];
+        if (g["resourceSpec"] !== undefined) {
+          body["resourceSpec"] = g["resourceSpec"];
+        }
+        if (g["resourceStatus"] !== undefined) {
+          body["resourceStatus"] = g["resourceStatus"];
+        }
+        if (g["securityStatus"] !== undefined) {
+          body["securityStatus"] = g["securityStatus"];
+        }
+        if (g["assetId"] !== undefined) body["assetId"] = g["assetId"];
+        if (g["parent"] !== undefined && g["name"] !== undefined) {
+          params["name"] = buildResourceName(
+            String(g["parent"]),
+            String(g["name"]),
+          );
+        }
+        const result = await createResource(
+          BASE_URL,
+          INSERT_CONFIG,
+          params,
+          body,
+          GET_CONFIG,
+          (args.waitForReady ?? true)
+            ? {
+              "statusField": "state",
+              "readyValues": ["ACTIVE"],
+              "failedValues": [],
+            }
+            : undefined,
+        ) as StateData;
+        const instanceName = g.name?.toString() ?? "current";
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    get: {
+      description: "Get a assets",
+      arguments: z.object({
+        identifier: z.string().describe("The name of the assets"),
+      }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const projectId = await getProjectId();
+        const params: Record<string, string> = { project: projectId };
+        const g = context.globalArgs;
+        params["name"] = buildResourceName(
+          String(g["parent"] ?? ""),
+          args.identifier,
+        );
+        const result = await readResource(
+          BASE_URL,
+          GET_CONFIG,
+          params,
+        ) as StateData;
+        const instanceName = g.name?.toString() ?? args.identifier;
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    update: {
+      description: "Update assets attributes",
+      arguments: z.object({
+        waitForReady: z.boolean().describe(
+          "Wait for the resource to reach a ready state after update (default: true)",
+        ).optional(),
+      }),
+      execute: async (args: { waitForReady?: boolean }, context: any) => {
+        const g = context.globalArgs;
+        const projectId = await getProjectId();
+        const instanceName = g.name?.toString() ?? "current";
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          instanceName,
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        const params: Record<string, string> = { project: projectId };
+        params["name"] = buildResourceName(
+          String(g["parent"] ?? ""),
+          existing["name"]?.toString() ?? g["name"]?.toString() ?? "",
+        );
+        const body: Record<string, unknown> = {};
+        if (g["description"] !== undefined) {
+          body["description"] = g["description"];
+        }
+        if (g["discoverySpec"] !== undefined) {
+          body["discoverySpec"] = g["discoverySpec"];
+        }
+        if (g["discoveryStatus"] !== undefined) {
+          body["discoveryStatus"] = g["discoveryStatus"];
+        }
+        if (g["displayName"] !== undefined) {
+          body["displayName"] = g["displayName"];
+        }
+        if (g["labels"] !== undefined) body["labels"] = g["labels"];
+        if (g["resourceSpec"] !== undefined) {
+          body["resourceSpec"] = g["resourceSpec"];
+        }
+        if (g["resourceStatus"] !== undefined) {
+          body["resourceStatus"] = g["resourceStatus"];
+        }
+        if (g["securityStatus"] !== undefined) {
+          body["securityStatus"] = g["securityStatus"];
+        }
+        for (const key of Object.keys(existing)) {
+          if (
+            key === "fingerprint" || key === "labelFingerprint" ||
+            key === "etag" || key.endsWith("Fingerprint")
+          ) {
+            body[key] = existing[key];
+          }
+        }
+        const result = await updateResource(
+          BASE_URL,
+          PATCH_CONFIG,
+          params,
+          body,
+          GET_CONFIG,
+          (args.waitForReady ?? true)
+            ? {
+              "statusField": "state",
+              "readyValues": ["ACTIVE"],
+              "failedValues": [],
+            }
+            : undefined,
+        ) as StateData;
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    delete: {
+      description: "Delete the assets",
+      arguments: z.object({
+        identifier: z.string().describe("The name of the assets"),
+      }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const g = context.globalArgs;
+        const projectId = await getProjectId();
+        const params: Record<string, string> = { project: projectId };
+        params["name"] = buildResourceName(
+          String(g["parent"] ?? ""),
+          args.identifier,
+        );
+        const { existed } = await deleteResource(
+          BASE_URL,
+          DELETE_CONFIG,
+          params,
+        );
+        const instanceName = g.name?.toString() ?? args.identifier;
+        const handle = await context.writeResource("state", instanceName, {
+          identifier: args.identifier,
+          existed,
+          status: existed ? "deleted" : "not_found",
+          deletedAt: new Date().toISOString(),
+        });
+        return { dataHandles: [handle] };
+      },
+    },
+    sync: {
+      description: "Sync assets state from GCP",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const projectId = await getProjectId();
+        const instanceName = g.name?.toString() ?? "current";
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          instanceName,
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        try {
+          const params: Record<string, string> = { project: projectId };
+          const shortName = existing.name?.toString() ?? g["name"]?.toString();
+          if (!shortName) throw new Error("No identifier found");
+          params["name"] = buildResourceName(
+            String(g["parent"] ?? ""),
+            shortName,
+          );
+          const result = await readResource(
+            BASE_URL,
+            GET_CONFIG,
+            params,
+          ) as StateData;
+          const handle = await context.writeResource(
+            "state",
+            instanceName,
+            result,
+          );
+          return { dataHandles: [handle] };
+        } catch (error: unknown) {
+          if (isResourceNotFoundError(error)) {
+            const handle = await context.writeResource("state", instanceName, {
+              status: "not_found",
+              syncedAt: new Date().toISOString(),
+            });
+            return { dataHandles: [handle] };
+          }
+          throw error;
+        }
+      },
+    },
+  },
+};

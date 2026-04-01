@@ -1,0 +1,28 @@
+# Auto-generated manifest. Re-generate with the appropriate deno task.
+manifestVersion: 1
+name: "@swamp/gcp/ces"
+version: "2026.04.01.1"
+description: "Google Cloud ces infrastructure models"
+labels:
+  - gcp
+  - google-cloud
+  - ces
+  - cloud
+  - infrastructure
+releaseNotes: |
+  - Updated: apps, apps_versions
+models:
+  - apps.ts
+  - apps_agents.ts
+  - apps_changelogs.ts
+  - apps_conversations.ts
+  - apps_deployments.ts
+  - apps_examples.ts
+  - apps_guardrails.ts
+  - apps_tools.ts
+  - apps_toolsets.ts
+  - apps_versions.ts
+  - locations.ts
+additionalFiles:
+  - LICENSE.txt
+  - README.md

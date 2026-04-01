@@ -1,0 +1,592 @@
+// Auto-generated extension model for @swamp/gcp/apigee/environments-securityactions
+// Do not edit manually. Re-generate with: deno task generate:gcp
+
+// deno-lint-ignore-file no-explicit-any
+
+import { z } from "zod";
+import {
+  createResource,
+  deleteResource,
+  getProjectId,
+  isResourceNotFoundError,
+  readResource,
+  updateResource,
+} from "./_lib/gcp.ts";
+
+/** Construct the fully-qualified resource name from parent and short name. */
+function buildResourceName(parent: string, shortName: string): string {
+  return `${parent}/securityActions/${shortName}`;
+}
+
+const BASE_URL = "https://apigee.googleapis.com/";
+
+const GET_CONFIG = {
+  "id": "apigee.organizations.environments.securityActions.get",
+  "path": "v1/{+name}",
+  "httpMethod": "GET",
+  "parameterOrder": [
+    "name",
+  ],
+  "parameters": {
+    "name": {
+      "location": "path",
+      "required": true,
+    },
+  },
+} as const;
+
+const INSERT_CONFIG = {
+  "id": "apigee.organizations.environments.securityActions.create",
+  "path": "v1/{+parent}/securityActions",
+  "httpMethod": "POST",
+  "parameterOrder": [
+    "parent",
+  ],
+  "parameters": {
+    "parent": {
+      "location": "path",
+      "required": true,
+    },
+    "securityActionId": {
+      "location": "query",
+    },
+  },
+} as const;
+
+const PATCH_CONFIG = {
+  "id": "apigee.organizations.environments.securityActions.patch",
+  "path": "v1/{+name}",
+  "httpMethod": "PATCH",
+  "parameterOrder": [
+    "name",
+  ],
+  "parameters": {
+    "name": {
+      "location": "path",
+      "required": true,
+    },
+    "updateMask": {
+      "location": "query",
+    },
+  },
+} as const;
+
+const DELETE_CONFIG = {
+  "id": "apigee.organizations.environments.securityActions.delete",
+  "path": "v1/{+name}",
+  "httpMethod": "DELETE",
+  "parameterOrder": [
+    "name",
+  ],
+  "parameters": {
+    "name": {
+      "location": "path",
+      "required": true,
+    },
+  },
+} as const;
+
+const GlobalArgsSchema = z.object({
+  allow: z.object({}).describe(
+    "Message that should be set in case of an Allow Action. This does not have any fields.",
+  ).optional(),
+  apiProxies: z.array(z.string()).describe(
+    "Optional. If unset, this would apply to all proxies in the environment. If set, this action is enforced only if at least one proxy in the repeated list is deployed at the time of enforcement. If set, several restrictions are enforced on SecurityActions. There can be at most 100 enabled actions with proxies set in an env. Several other restrictions apply on conditions and are detailed later.",
+  ).optional(),
+  conditionConfig: z.object({
+    accessTokens: z.array(z.string()).describe(
+      "Optional. A list of access_tokens. Limit 1000 per action.",
+    ).optional(),
+    apiKeys: z.array(z.string()).describe(
+      "Optional. A list of API keys. Limit 1000 per action.",
+    ).optional(),
+    apiProducts: z.array(z.string()).describe(
+      "Optional. A list of API Products. Limit 1000 per action.",
+    ).optional(),
+    asns: z.array(z.string()).describe(
+      "Optional. A list of ASN numbers to act on, e.g. 23. https://en.wikipedia.org/wiki/Autonomous_system_(Internet) This uses int64 instead of uint32 because of https://linter.aip.dev/141/forbidden-types.",
+    ).optional(),
+    botReasons: z.array(z.string()).describe(
+      "Optional. A list of Bot Reasons. Current options: Flooder, Brute Guessor, Static Content Scraper, OAuth Abuser, Robot Abuser, TorListRule, Advanced Anomaly Detection, Advanced API Scraper, Search Engine Crawlers, Public Clouds, Public Cloud AWS, Public Cloud Azure, and Public Cloud Google.",
+    ).optional(),
+    developerApps: z.array(z.string()).describe(
+      "Optional. A list of developer apps. Limit 1000 per action.",
+    ).optional(),
+    developers: z.array(z.string()).describe(
+      "Optional. A list of developers. Limit 1000 per action.",
+    ).optional(),
+    httpMethods: z.array(z.string()).describe(
+      "Optional. Act only on particular HTTP methods. E.g. A read-only API can block POST/PUT/DELETE methods. Accepted values are: GET, HEAD, POST, PUT, DELETE, CONNECT, OPTIONS, TRACE and PATCH.",
+    ).optional(),
+    ipAddressRanges: z.array(z.string()).describe(
+      "Optional. A list of IP addresses. This could be either IPv4 or IPv6. Limited to 100 per action.",
+    ).optional(),
+    regionCodes: z.array(z.string()).describe(
+      "Optional. A list of countries/region codes to act on, e.g. US. This follows https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2.",
+    ).optional(),
+    userAgents: z.array(z.string()).describe(
+      "Optional. A list of user agents to deny. We look for exact matches. Limit 50 per action.",
+    ).optional(),
+  }).describe(
+    'The following are a list of conditions. A valid SecurityAction must contain at least one condition. Within a condition, each element is ORed. Across conditions elements are ANDed. For example if a SecurityAction has the following: ip_address_ranges: ["ip1", "ip2"] and bot_reasons: ["Flooder", "Robot Abuser"] then this is interpreted as: enforce the action if the incoming request has ((ip_address_ranges = "ip1" OR ip_address_ranges = "ip2") AND (bot_reasons="Flooder" OR bot_reasons="Robot Abuser")). Conditions other than ip_address_ranges and bot_reasons cannot be ANDed.',
+  ).optional(),
+  deny: z.object({
+    responseCode: z.number().int().describe(
+      "Optional. The HTTP response code if the Action = DENY.",
+    ).optional(),
+  }).describe("Message that should be set in case of a Deny Action.")
+    .optional(),
+  description: z.string().describe(
+    "Optional. An optional user provided description of the SecurityAction.",
+  ).optional(),
+  expireTime: z.string().describe("The expiration for this SecurityAction.")
+    .optional(),
+  flag: z.object({
+    headers: z.array(z.object({
+      name: z.string().describe("The header name to be sent to the target.")
+        .optional(),
+      value: z.string().describe("The header value to be sent to the target.")
+        .optional(),
+    })).describe(
+      "Optional. A list of HTTP headers to be sent to the target in case of a FLAG SecurityAction. Limit 5 headers per SecurityAction. At least one is mandatory.",
+    ).optional(),
+  }).describe("The message that should be set in the case of a Flag action.")
+    .optional(),
+  name: z.string().describe(
+    "Immutable. This field is ignored during creation as per AIP-133. Please set the `security_action_id` field in the CreateSecurityActionRequest when creating a new SecurityAction. Format: organizations/{org}/environments/{env}/securityActions/{security_action}",
+  ).optional(),
+  state: z.enum(["STATE_UNSPECIFIED", "ENABLED", "DISABLED"]).describe(
+    "Required. Only an ENABLED SecurityAction is enforced. An ENABLED SecurityAction past its expiration time will not be enforced.",
+  ).optional(),
+  ttl: z.string().describe("Input only. The TTL for this SecurityAction.")
+    .optional(),
+  securityActionId: z.string().describe(
+    "Required. The ID to use for the SecurityAction, which will become the final component of the action's resource name. This value should be 0-61 characters, and valid format is (^[a-z]([a-z0-9-]{​0,61}[a-z0-9])?$).",
+  ).optional(),
+  parent: z.string().describe(
+    "The parent resource name (e.g., projects/my-project/locations/us-central1, organizations/123, folders/456)",
+  ).optional(),
+});
+
+const StateSchema = z.object({
+  allow: z.object({}).optional(),
+  apiProxies: z.array(z.string()).optional(),
+  conditionConfig: z.object({
+    accessTokens: z.array(z.string()),
+    apiKeys: z.array(z.string()),
+    apiProducts: z.array(z.string()),
+    asns: z.array(z.string()),
+    botReasons: z.array(z.string()),
+    developerApps: z.array(z.string()),
+    developers: z.array(z.string()),
+    httpMethods: z.array(z.string()),
+    ipAddressRanges: z.array(z.string()),
+    regionCodes: z.array(z.string()),
+    userAgents: z.array(z.string()),
+  }).optional(),
+  createTime: z.string().optional(),
+  deny: z.object({
+    responseCode: z.number(),
+  }).optional(),
+  description: z.string().optional(),
+  expireTime: z.string().optional(),
+  flag: z.object({
+    headers: z.array(z.object({
+      name: z.string(),
+      value: z.string(),
+    })),
+  }).optional(),
+  name: z.string(),
+  state: z.string().optional(),
+  ttl: z.string().optional(),
+  updateTime: z.string().optional(),
+}).passthrough();
+
+type StateData = z.infer<typeof StateSchema>;
+
+const InputsSchema = z.object({
+  allow: z.object({}).describe(
+    "Message that should be set in case of an Allow Action. This does not have any fields.",
+  ).optional(),
+  apiProxies: z.array(z.string()).describe(
+    "Optional. If unset, this would apply to all proxies in the environment. If set, this action is enforced only if at least one proxy in the repeated list is deployed at the time of enforcement. If set, several restrictions are enforced on SecurityActions. There can be at most 100 enabled actions with proxies set in an env. Several other restrictions apply on conditions and are detailed later.",
+  ).optional(),
+  conditionConfig: z.object({
+    accessTokens: z.array(z.string()).describe(
+      "Optional. A list of access_tokens. Limit 1000 per action.",
+    ).optional(),
+    apiKeys: z.array(z.string()).describe(
+      "Optional. A list of API keys. Limit 1000 per action.",
+    ).optional(),
+    apiProducts: z.array(z.string()).describe(
+      "Optional. A list of API Products. Limit 1000 per action.",
+    ).optional(),
+    asns: z.array(z.string()).describe(
+      "Optional. A list of ASN numbers to act on, e.g. 23. https://en.wikipedia.org/wiki/Autonomous_system_(Internet) This uses int64 instead of uint32 because of https://linter.aip.dev/141/forbidden-types.",
+    ).optional(),
+    botReasons: z.array(z.string()).describe(
+      "Optional. A list of Bot Reasons. Current options: Flooder, Brute Guessor, Static Content Scraper, OAuth Abuser, Robot Abuser, TorListRule, Advanced Anomaly Detection, Advanced API Scraper, Search Engine Crawlers, Public Clouds, Public Cloud AWS, Public Cloud Azure, and Public Cloud Google.",
+    ).optional(),
+    developerApps: z.array(z.string()).describe(
+      "Optional. A list of developer apps. Limit 1000 per action.",
+    ).optional(),
+    developers: z.array(z.string()).describe(
+      "Optional. A list of developers. Limit 1000 per action.",
+    ).optional(),
+    httpMethods: z.array(z.string()).describe(
+      "Optional. Act only on particular HTTP methods. E.g. A read-only API can block POST/PUT/DELETE methods. Accepted values are: GET, HEAD, POST, PUT, DELETE, CONNECT, OPTIONS, TRACE and PATCH.",
+    ).optional(),
+    ipAddressRanges: z.array(z.string()).describe(
+      "Optional. A list of IP addresses. This could be either IPv4 or IPv6. Limited to 100 per action.",
+    ).optional(),
+    regionCodes: z.array(z.string()).describe(
+      "Optional. A list of countries/region codes to act on, e.g. US. This follows https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2.",
+    ).optional(),
+    userAgents: z.array(z.string()).describe(
+      "Optional. A list of user agents to deny. We look for exact matches. Limit 50 per action.",
+    ).optional(),
+  }).describe(
+    'The following are a list of conditions. A valid SecurityAction must contain at least one condition. Within a condition, each element is ORed. Across conditions elements are ANDed. For example if a SecurityAction has the following: ip_address_ranges: ["ip1", "ip2"] and bot_reasons: ["Flooder", "Robot Abuser"] then this is interpreted as: enforce the action if the incoming request has ((ip_address_ranges = "ip1" OR ip_address_ranges = "ip2") AND (bot_reasons="Flooder" OR bot_reasons="Robot Abuser")). Conditions other than ip_address_ranges and bot_reasons cannot be ANDed.',
+  ).optional(),
+  deny: z.object({
+    responseCode: z.number().int().describe(
+      "Optional. The HTTP response code if the Action = DENY.",
+    ).optional(),
+  }).describe("Message that should be set in case of a Deny Action.")
+    .optional(),
+  description: z.string().describe(
+    "Optional. An optional user provided description of the SecurityAction.",
+  ).optional(),
+  expireTime: z.string().describe("The expiration for this SecurityAction.")
+    .optional(),
+  flag: z.object({
+    headers: z.array(z.object({
+      name: z.string().describe("The header name to be sent to the target.")
+        .optional(),
+      value: z.string().describe("The header value to be sent to the target.")
+        .optional(),
+    })).describe(
+      "Optional. A list of HTTP headers to be sent to the target in case of a FLAG SecurityAction. Limit 5 headers per SecurityAction. At least one is mandatory.",
+    ).optional(),
+  }).describe("The message that should be set in the case of a Flag action.")
+    .optional(),
+  name: z.string().describe(
+    "Immutable. This field is ignored during creation as per AIP-133. Please set the `security_action_id` field in the CreateSecurityActionRequest when creating a new SecurityAction. Format: organizations/{org}/environments/{env}/securityActions/{security_action}",
+  ).optional(),
+  state: z.enum(["STATE_UNSPECIFIED", "ENABLED", "DISABLED"]).describe(
+    "Required. Only an ENABLED SecurityAction is enforced. An ENABLED SecurityAction past its expiration time will not be enforced.",
+  ).optional(),
+  ttl: z.string().describe("Input only. The TTL for this SecurityAction.")
+    .optional(),
+  securityActionId: z.string().describe(
+    "Required. The ID to use for the SecurityAction, which will become the final component of the action's resource name. This value should be 0-61 characters, and valid format is (^[a-z]([a-z0-9-]{​0,61}[a-z0-9])?$).",
+  ).optional(),
+  parent: z.string().describe(
+    "The parent resource name (e.g., projects/my-project/locations/us-central1, organizations/123, folders/456)",
+  ).optional(),
+});
+
+export const model = {
+  type: "@swamp/gcp/apigee/environments-securityactions",
+  version: "2026.03.27.1",
+  globalArguments: GlobalArgsSchema,
+  inputsSchema: InputsSchema,
+  resources: {
+    state: {
+      description:
+        "A SecurityAction is rule that can be enforced at an environment level. The re...",
+      schema: StateSchema,
+      lifetime: "infinite",
+      garbageCollection: 10,
+    },
+  },
+  methods: {
+    create: {
+      description: "Create a securityActions",
+      arguments: z.object({
+        waitForReady: z.boolean().describe(
+          "Wait for the resource to reach a ready state after creation (default: true)",
+        ).optional(),
+      }),
+      execute: async (args: { waitForReady?: boolean }, context: any) => {
+        const g = context.globalArgs;
+        const projectId = await getProjectId();
+        const params: Record<string, string> = { project: projectId };
+        if (g["parent"] !== undefined) params["parent"] = String(g["parent"]);
+        const body: Record<string, unknown> = {};
+        if (g["allow"] !== undefined) body["allow"] = g["allow"];
+        if (g["apiProxies"] !== undefined) body["apiProxies"] = g["apiProxies"];
+        if (g["conditionConfig"] !== undefined) {
+          body["conditionConfig"] = g["conditionConfig"];
+        }
+        if (g["deny"] !== undefined) body["deny"] = g["deny"];
+        if (g["description"] !== undefined) {
+          body["description"] = g["description"];
+        }
+        if (g["expireTime"] !== undefined) body["expireTime"] = g["expireTime"];
+        if (g["flag"] !== undefined) body["flag"] = g["flag"];
+        if (g["name"] !== undefined) body["name"] = g["name"];
+        if (g["state"] !== undefined) body["state"] = g["state"];
+        if (g["ttl"] !== undefined) body["ttl"] = g["ttl"];
+        if (g["securityActionId"] !== undefined) {
+          body["securityActionId"] = g["securityActionId"];
+        }
+        if (g["parent"] !== undefined && g["name"] !== undefined) {
+          params["name"] = buildResourceName(
+            String(g["parent"]),
+            String(g["name"]),
+          );
+        }
+        const result = await createResource(
+          BASE_URL,
+          INSERT_CONFIG,
+          params,
+          body,
+          GET_CONFIG,
+          (args.waitForReady ?? true)
+            ? {
+              "statusField": "state",
+              "readyValues": ["ENABLED"],
+              "failedValues": [],
+            }
+            : undefined,
+        ) as StateData;
+        const instanceName = (result.name ?? g.name)?.toString() ?? "current";
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    get: {
+      description: "Get a securityActions",
+      arguments: z.object({
+        identifier: z.string().describe("The name of the securityActions"),
+      }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const projectId = await getProjectId();
+        const params: Record<string, string> = { project: projectId };
+        const g = context.globalArgs;
+        params["name"] = buildResourceName(
+          String(g["parent"] ?? ""),
+          args.identifier,
+        );
+        const result = await readResource(
+          BASE_URL,
+          GET_CONFIG,
+          params,
+        ) as StateData;
+        const instanceName = (result.name ?? g.name)?.toString() ??
+          args.identifier;
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    update: {
+      description: "Update securityActions attributes",
+      arguments: z.object({
+        waitForReady: z.boolean().describe(
+          "Wait for the resource to reach a ready state after update (default: true)",
+        ).optional(),
+      }),
+      execute: async (args: { waitForReady?: boolean }, context: any) => {
+        const g = context.globalArgs;
+        const projectId = await getProjectId();
+        const instanceName = g.name?.toString() ?? "current";
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          instanceName,
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        const params: Record<string, string> = { project: projectId };
+        params["name"] = buildResourceName(
+          String(g["parent"] ?? ""),
+          existing["name"]?.toString() ?? g["name"]?.toString() ?? "",
+        );
+        const body: Record<string, unknown> = {};
+        if (g["allow"] !== undefined) body["allow"] = g["allow"];
+        if (g["apiProxies"] !== undefined) body["apiProxies"] = g["apiProxies"];
+        if (g["conditionConfig"] !== undefined) {
+          body["conditionConfig"] = g["conditionConfig"];
+        }
+        if (g["deny"] !== undefined) body["deny"] = g["deny"];
+        if (g["description"] !== undefined) {
+          body["description"] = g["description"];
+        }
+        if (g["expireTime"] !== undefined) body["expireTime"] = g["expireTime"];
+        if (g["flag"] !== undefined) body["flag"] = g["flag"];
+        if (g["state"] !== undefined) body["state"] = g["state"];
+        if (g["ttl"] !== undefined) body["ttl"] = g["ttl"];
+        for (const key of Object.keys(existing)) {
+          if (
+            key === "fingerprint" || key === "labelFingerprint" ||
+            key === "etag" || key.endsWith("Fingerprint")
+          ) {
+            body[key] = existing[key];
+          }
+        }
+        const result = await updateResource(
+          BASE_URL,
+          PATCH_CONFIG,
+          params,
+          body,
+          GET_CONFIG,
+          (args.waitForReady ?? true)
+            ? {
+              "statusField": "state",
+              "readyValues": ["ENABLED"],
+              "failedValues": [],
+            }
+            : undefined,
+        ) as StateData;
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    delete: {
+      description: "Delete the securityActions",
+      arguments: z.object({
+        identifier: z.string().describe("The name of the securityActions"),
+      }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const g = context.globalArgs;
+        const projectId = await getProjectId();
+        const params: Record<string, string> = { project: projectId };
+        params["name"] = buildResourceName(
+          String(g["parent"] ?? ""),
+          args.identifier,
+        );
+        const { existed } = await deleteResource(
+          BASE_URL,
+          DELETE_CONFIG,
+          params,
+        );
+        const instanceName = g.name?.toString() ?? args.identifier;
+        const handle = await context.writeResource("state", instanceName, {
+          identifier: args.identifier,
+          existed,
+          status: existed ? "deleted" : "not_found",
+          deletedAt: new Date().toISOString(),
+        });
+        return { dataHandles: [handle] };
+      },
+    },
+    sync: {
+      description: "Sync securityActions state from GCP",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const projectId = await getProjectId();
+        const instanceName = g.name?.toString() ?? "current";
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          instanceName,
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        try {
+          const params: Record<string, string> = { project: projectId };
+          const shortName = existing.name?.toString() ?? g["name"]?.toString();
+          if (!shortName) throw new Error("No identifier found");
+          params["name"] = buildResourceName(
+            String(g["parent"] ?? ""),
+            shortName,
+          );
+          const result = await readResource(
+            BASE_URL,
+            GET_CONFIG,
+            params,
+          ) as StateData;
+          const handle = await context.writeResource(
+            "state",
+            instanceName,
+            result,
+          );
+          return { dataHandles: [handle] };
+        } catch (error: unknown) {
+          if (isResourceNotFoundError(error)) {
+            const handle = await context.writeResource("state", instanceName, {
+              status: "not_found",
+              syncedAt: new Date().toISOString(),
+            });
+            return { dataHandles: [handle] };
+          }
+          throw error;
+        }
+      },
+    },
+    disable: {
+      description: "disable",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, unknown>, context: any) => {
+        const g = context.globalArgs;
+        const projectId = await getProjectId();
+        const params: Record<string, string> = { project: projectId };
+        if (g["parent"] !== undefined && g["name"] !== undefined) {
+          params["name"] = buildResourceName(
+            String(g["parent"]),
+            String(g["name"]),
+          );
+        }
+        const result = await createResource(
+          BASE_URL,
+          {
+            "id": "apigee.organizations.environments.securityActions.disable",
+            "path": "v1/{+name}:disable",
+            "httpMethod": "POST",
+            "parameterOrder": ["name"],
+            "parameters": { "name": { "location": "path", "required": true } },
+          },
+          params,
+          {},
+        );
+        return { result };
+      },
+    },
+    enable: {
+      description: "enable",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, unknown>, context: any) => {
+        const g = context.globalArgs;
+        const projectId = await getProjectId();
+        const params: Record<string, string> = { project: projectId };
+        if (g["parent"] !== undefined && g["name"] !== undefined) {
+          params["name"] = buildResourceName(
+            String(g["parent"]),
+            String(g["name"]),
+          );
+        }
+        const result = await createResource(
+          BASE_URL,
+          {
+            "id": "apigee.organizations.environments.securityActions.enable",
+            "path": "v1/{+name}:enable",
+            "httpMethod": "POST",
+            "parameterOrder": ["name"],
+            "parameters": { "name": { "location": "path", "required": true } },
+          },
+          params,
+          {},
+        );
+        return { result };
+      },
+    },
+  },
+};

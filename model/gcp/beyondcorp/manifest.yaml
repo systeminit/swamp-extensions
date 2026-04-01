@@ -1,0 +1,23 @@
+# Auto-generated manifest. Re-generate with the appropriate deno task.
+manifestVersion: 1
+name: "@swamp/gcp/beyondcorp"
+version: "2026.03.27.1"
+description: "Google Cloud beyondcorp infrastructure models"
+labels:
+  - gcp
+  - google-cloud
+  - beyondcorp
+  - cloud
+  - infrastructure
+releaseNotes: |
+  - Added: locations, appconnections, appconnectors, appgateways, securitygateways, securitygateways_applications
+models:
+  - appconnections.ts
+  - appconnectors.ts
+  - appgateways.ts
+  - locations.ts
+  - securitygateways.ts
+  - securitygateways_applications.ts
+additionalFiles:
+  - LICENSE.txt
+  - README.md

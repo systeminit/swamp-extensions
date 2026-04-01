@@ -1,0 +1,36 @@
+# Auto-generated manifest. Re-generate with the appropriate deno task.
+manifestVersion: 1
+name: "@swamp/gcp/securitycenter"
+version: "2026.04.01.1"
+description: "Google Cloud securitycenter infrastructure models"
+labels:
+  - gcp
+  - google-cloud
+  - securitycenter
+  - cloud
+  - infrastructure
+releaseNotes: |
+  - Updated: sources_findings
+models:
+  - assets.ts
+  - attackpaths.ts
+  - bigqueryexports.ts
+  - eventthreatdetectionsettings_custommodules.ts
+  - eventthreatdetectionsettings_effectivecustommodules.ts
+  - muteconfigs.ts
+  - notificationconfigs.ts
+  - resourcevalueconfigs.ts
+  - securityhealthanalyticssettings_custommodules.ts
+  - securityhealthanalyticssettings_effectivecustommodules.ts
+  - simulations.ts
+  - simulations_attackexposureresults_attackpaths.ts
+  - simulations_attackexposureresults_valuedresources.ts
+  - simulations_attackpaths.ts
+  - simulations_valuedresources.ts
+  - simulations_valuedresources_attackpaths.ts
+  - sources.ts
+  - sources_findings.ts
+  - valuedresources.ts
+additionalFiles:
+  - LICENSE.txt
+  - README.md

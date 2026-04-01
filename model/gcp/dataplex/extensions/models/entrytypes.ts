@@ -1,0 +1,422 @@
+// Auto-generated extension model for @swamp/gcp/dataplex/entrytypes
+// Do not edit manually. Re-generate with: deno task generate:gcp
+
+// deno-lint-ignore-file no-explicit-any
+
+import { z } from "zod";
+import {
+  createResource,
+  deleteResource,
+  getProjectId,
+  isResourceNotFoundError,
+  readResource,
+  updateResource,
+} from "./_lib/gcp.ts";
+
+/** Construct the fully-qualified resource name from parent and short name. */
+function buildResourceName(parent: string, shortName: string): string {
+  return `${parent}/entryTypes/${shortName}`;
+}
+
+const BASE_URL = "https://dataplex.googleapis.com/";
+
+const GET_CONFIG = {
+  "id": "dataplex.projects.locations.entryTypes.get",
+  "path": "v1/{+name}",
+  "httpMethod": "GET",
+  "parameterOrder": [
+    "name",
+  ],
+  "parameters": {
+    "name": {
+      "location": "path",
+      "required": true,
+    },
+  },
+} as const;
+
+const INSERT_CONFIG = {
+  "id": "dataplex.projects.locations.entryTypes.create",
+  "path": "v1/{+parent}/entryTypes",
+  "httpMethod": "POST",
+  "parameterOrder": [
+    "parent",
+  ],
+  "parameters": {
+    "entryTypeId": {
+      "location": "query",
+    },
+    "parent": {
+      "location": "path",
+      "required": true,
+    },
+    "validateOnly": {
+      "location": "query",
+    },
+  },
+} as const;
+
+const PATCH_CONFIG = {
+  "id": "dataplex.projects.locations.entryTypes.patch",
+  "path": "v1/{+name}",
+  "httpMethod": "PATCH",
+  "parameterOrder": [
+    "name",
+  ],
+  "parameters": {
+    "name": {
+      "location": "path",
+      "required": true,
+    },
+    "updateMask": {
+      "location": "query",
+    },
+    "validateOnly": {
+      "location": "query",
+    },
+  },
+} as const;
+
+const DELETE_CONFIG = {
+  "id": "dataplex.projects.locations.entryTypes.delete",
+  "path": "v1/{+name}",
+  "httpMethod": "DELETE",
+  "parameterOrder": [
+    "name",
+  ],
+  "parameters": {
+    "etag": {
+      "location": "query",
+    },
+    "name": {
+      "location": "path",
+      "required": true,
+    },
+  },
+} as const;
+
+const GlobalArgsSchema = z.object({
+  name: z.string().describe(
+    "Instance name for this resource (used as the unique identifier in the factory pattern)",
+  ),
+  authorization: z.object({
+    alternateUsePermission: z.string().describe(
+      "Immutable. The IAM permission grantable on the Entry Group to allow access to instantiate Entries of Dataplex Universal Catalog owned Entry Types, only settable for Dataplex Universal Catalog owned Types.",
+    ).optional(),
+  }).describe("Authorization for an Entry Type.").optional(),
+  description: z.string().describe("Optional. Description of the EntryType.")
+    .optional(),
+  displayName: z.string().describe("Optional. User friendly display name.")
+    .optional(),
+  labels: z.record(z.string(), z.string()).describe(
+    "Optional. User-defined labels for the EntryType.",
+  ).optional(),
+  platform: z.string().describe(
+    "Optional. The platform that Entries of this type belongs to.",
+  ).optional(),
+  requiredAspects: z.array(z.object({
+    type: z.string().describe("Required aspect type for the entry type.")
+      .optional(),
+  })).describe("AspectInfo for the entry type.").optional(),
+  system: z.string().describe(
+    "Optional. The system that Entries of this type belongs to. Examples include CloudSQL, MariaDB etc",
+  ).optional(),
+  typeAliases: z.array(z.string()).describe(
+    "Optional. Indicates the classes this Entry Type belongs to, for example, TABLE, DATABASE, MODEL.",
+  ).optional(),
+  entryTypeId: z.string().describe("Required. EntryType identifier.")
+    .optional(),
+  location: z.string().describe(
+    "The location for this resource (e.g., 'us', 'us-central1', 'europe-west1')",
+  ).optional(),
+});
+
+const StateSchema = z.object({
+  authorization: z.object({
+    alternateUsePermission: z.string(),
+  }).optional(),
+  createTime: z.string().optional(),
+  description: z.string().optional(),
+  displayName: z.string().optional(),
+  etag: z.string().optional(),
+  labels: z.record(z.string(), z.unknown()).optional(),
+  name: z.string(),
+  platform: z.string().optional(),
+  requiredAspects: z.array(z.object({
+    type: z.string(),
+  })).optional(),
+  system: z.string().optional(),
+  typeAliases: z.array(z.string()).optional(),
+  uid: z.string().optional(),
+  updateTime: z.string().optional(),
+}).passthrough();
+
+type StateData = z.infer<typeof StateSchema>;
+
+const InputsSchema = z.object({
+  name: z.string().optional(),
+  authorization: z.object({
+    alternateUsePermission: z.string().describe(
+      "Immutable. The IAM permission grantable on the Entry Group to allow access to instantiate Entries of Dataplex Universal Catalog owned Entry Types, only settable for Dataplex Universal Catalog owned Types.",
+    ).optional(),
+  }).describe("Authorization for an Entry Type.").optional(),
+  description: z.string().describe("Optional. Description of the EntryType.")
+    .optional(),
+  displayName: z.string().describe("Optional. User friendly display name.")
+    .optional(),
+  labels: z.record(z.string(), z.string()).describe(
+    "Optional. User-defined labels for the EntryType.",
+  ).optional(),
+  platform: z.string().describe(
+    "Optional. The platform that Entries of this type belongs to.",
+  ).optional(),
+  requiredAspects: z.array(z.object({
+    type: z.string().describe("Required aspect type for the entry type.")
+      .optional(),
+  })).describe("AspectInfo for the entry type.").optional(),
+  system: z.string().describe(
+    "Optional. The system that Entries of this type belongs to. Examples include CloudSQL, MariaDB etc",
+  ).optional(),
+  typeAliases: z.array(z.string()).describe(
+    "Optional. Indicates the classes this Entry Type belongs to, for example, TABLE, DATABASE, MODEL.",
+  ).optional(),
+  entryTypeId: z.string().describe("Required. EntryType identifier.")
+    .optional(),
+  location: z.string().describe(
+    "The location for this resource (e.g., 'us', 'us-central1', 'europe-west1')",
+  ).optional(),
+});
+
+export const model = {
+  type: "@swamp/gcp/dataplex/entrytypes",
+  version: "2026.03.27.1",
+  globalArguments: GlobalArgsSchema,
+  inputsSchema: InputsSchema,
+  resources: {
+    state: {
+      description: "Entry Type is a template for creating Entries.",
+      schema: StateSchema,
+      lifetime: "infinite",
+      garbageCollection: 10,
+    },
+  },
+  methods: {
+    create: {
+      description: "Create a entryTypes",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const projectId = await getProjectId();
+        const params: Record<string, string> = { project: projectId };
+        if (g["parent"] !== undefined) params["parent"] = String(g["parent"]);
+        const body: Record<string, unknown> = {};
+        if (g["authorization"] !== undefined) {
+          body["authorization"] = g["authorization"];
+        }
+        if (g["description"] !== undefined) {
+          body["description"] = g["description"];
+        }
+        if (g["displayName"] !== undefined) {
+          body["displayName"] = g["displayName"];
+        }
+        if (g["labels"] !== undefined) body["labels"] = g["labels"];
+        if (g["platform"] !== undefined) body["platform"] = g["platform"];
+        if (g["requiredAspects"] !== undefined) {
+          body["requiredAspects"] = g["requiredAspects"];
+        }
+        if (g["system"] !== undefined) body["system"] = g["system"];
+        if (g["typeAliases"] !== undefined) {
+          body["typeAliases"] = g["typeAliases"];
+        }
+        if (g["entryTypeId"] !== undefined) {
+          body["entryTypeId"] = g["entryTypeId"];
+        }
+        if (g["parent"] !== undefined && g["name"] !== undefined) {
+          params["name"] = buildResourceName(
+            String(g["parent"]),
+            String(g["name"]),
+          );
+        }
+        const result = await createResource(
+          BASE_URL,
+          INSERT_CONFIG,
+          params,
+          body,
+          GET_CONFIG,
+        ) as StateData;
+        const instanceName = g.name?.toString() ?? "current";
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    get: {
+      description: "Get a entryTypes",
+      arguments: z.object({
+        identifier: z.string().describe("The name of the entryTypes"),
+      }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const projectId = await getProjectId();
+        const params: Record<string, string> = { project: projectId };
+        const g = context.globalArgs;
+        params["name"] = buildResourceName(
+          String(g["parent"] ?? ""),
+          args.identifier,
+        );
+        const result = await readResource(
+          BASE_URL,
+          GET_CONFIG,
+          params,
+        ) as StateData;
+        const instanceName = g.name?.toString() ?? args.identifier;
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    update: {
+      description: "Update entryTypes attributes",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const projectId = await getProjectId();
+        const instanceName = g.name?.toString() ?? "current";
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          instanceName,
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        const params: Record<string, string> = { project: projectId };
+        params["name"] = buildResourceName(
+          String(g["parent"] ?? ""),
+          existing["name"]?.toString() ?? g["name"]?.toString() ?? "",
+        );
+        const body: Record<string, unknown> = {};
+        if (g["authorization"] !== undefined) {
+          body["authorization"] = g["authorization"];
+        }
+        if (g["description"] !== undefined) {
+          body["description"] = g["description"];
+        }
+        if (g["displayName"] !== undefined) {
+          body["displayName"] = g["displayName"];
+        }
+        if (g["labels"] !== undefined) body["labels"] = g["labels"];
+        if (g["platform"] !== undefined) body["platform"] = g["platform"];
+        if (g["requiredAspects"] !== undefined) {
+          body["requiredAspects"] = g["requiredAspects"];
+        }
+        if (g["system"] !== undefined) body["system"] = g["system"];
+        if (g["typeAliases"] !== undefined) {
+          body["typeAliases"] = g["typeAliases"];
+        }
+        for (const key of Object.keys(existing)) {
+          if (
+            key === "fingerprint" || key === "labelFingerprint" ||
+            key === "etag" || key.endsWith("Fingerprint")
+          ) {
+            body[key] = existing[key];
+          }
+        }
+        const result = await updateResource(
+          BASE_URL,
+          PATCH_CONFIG,
+          params,
+          body,
+          GET_CONFIG,
+        ) as StateData;
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    delete: {
+      description: "Delete the entryTypes",
+      arguments: z.object({
+        identifier: z.string().describe("The name of the entryTypes"),
+      }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const g = context.globalArgs;
+        const projectId = await getProjectId();
+        const params: Record<string, string> = { project: projectId };
+        params["name"] = buildResourceName(
+          String(g["parent"] ?? ""),
+          args.identifier,
+        );
+        const { existed } = await deleteResource(
+          BASE_URL,
+          DELETE_CONFIG,
+          params,
+        );
+        const instanceName = g.name?.toString() ?? args.identifier;
+        const handle = await context.writeResource("state", instanceName, {
+          identifier: args.identifier,
+          existed,
+          status: existed ? "deleted" : "not_found",
+          deletedAt: new Date().toISOString(),
+        });
+        return { dataHandles: [handle] };
+      },
+    },
+    sync: {
+      description: "Sync entryTypes state from GCP",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const projectId = await getProjectId();
+        const instanceName = g.name?.toString() ?? "current";
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          instanceName,
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        try {
+          const params: Record<string, string> = { project: projectId };
+          const shortName = existing.name?.toString() ?? g["name"]?.toString();
+          if (!shortName) throw new Error("No identifier found");
+          params["name"] = buildResourceName(
+            String(g["parent"] ?? ""),
+            shortName,
+          );
+          const result = await readResource(
+            BASE_URL,
+            GET_CONFIG,
+            params,
+          ) as StateData;
+          const handle = await context.writeResource(
+            "state",
+            instanceName,
+            result,
+          );
+          return { dataHandles: [handle] };
+        } catch (error: unknown) {
+          if (isResourceNotFoundError(error)) {
+            const handle = await context.writeResource("state", instanceName, {
+              status: "not_found",
+              syncedAt: new Date().toISOString(),
+            });
+            return { dataHandles: [handle] };
+          }
+          throw error;
+        }
+      },
+    },
+  },
+};

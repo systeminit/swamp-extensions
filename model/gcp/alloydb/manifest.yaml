@@ -1,0 +1,23 @@
+# Auto-generated manifest. Re-generate with the appropriate deno task.
+manifestVersion: 1
+name: "@swamp/gcp/alloydb"
+version: "2026.03.27.1"
+description: "Google Cloud alloydb infrastructure models"
+labels:
+  - gcp
+  - google-cloud
+  - alloydb
+  - cloud
+  - infrastructure
+releaseNotes: |
+  - Added: locations, backups, clusters, clusters_instances, clusters_users, supporteddatabaseflags
+models:
+  - backups.ts
+  - clusters.ts
+  - clusters_instances.ts
+  - clusters_users.ts
+  - locations.ts
+  - supporteddatabaseflags.ts
+additionalFiles:
+  - LICENSE.txt
+  - README.md

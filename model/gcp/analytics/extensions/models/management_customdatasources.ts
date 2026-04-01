@@ -1,0 +1,184 @@
+// Auto-generated extension model for @swamp/gcp/analytics/management-customdatasources
+// Do not edit manually. Re-generate with: deno task generate:gcp
+
+// deno-lint-ignore-file no-explicit-any
+
+import { z } from "zod";
+import {
+  getProjectId,
+  isResourceNotFoundError,
+  readViaList,
+} from "./_lib/gcp.ts";
+
+const BASE_URL = "https://www.googleapis.com/analytics/v3/";
+
+const LIST_CONFIG = {
+  "id": "analytics.management.customDataSources.list",
+  "path":
+    "management/accounts/{accountId}/webproperties/{webPropertyId}/customDataSources",
+  "httpMethod": "GET",
+  "parameterOrder": [
+    "accountId",
+    "webPropertyId",
+  ],
+  "parameters": {
+    "accountId": {
+      "location": "path",
+      "required": true,
+    },
+    "max-results": {
+      "location": "query",
+    },
+    "start-index": {
+      "location": "query",
+    },
+    "webPropertyId": {
+      "location": "path",
+      "required": true,
+    },
+  },
+} as const;
+
+const GlobalArgsSchema = z.object({
+  name: z.string().describe(
+    "Instance name for this resource (used as the unique identifier in the factory pattern)",
+  ),
+});
+
+const StateSchema = z.object({
+  accountId: z.string().optional(),
+  childLink: z.object({
+    href: z.string(),
+    type: z.string(),
+  }).optional(),
+  created: z.string().optional(),
+  description: z.string().optional(),
+  id: z.string().optional(),
+  importBehavior: z.string().optional(),
+  kind: z.string().optional(),
+  name: z.string(),
+  parentLink: z.object({
+    href: z.string(),
+    type: z.string(),
+  }).optional(),
+  profilesLinked: z.array(z.string()).optional(),
+  schema: z.array(z.string()).optional(),
+  selfLink: z.string().optional(),
+  type: z.string().optional(),
+  updated: z.string().optional(),
+  uploadType: z.string().optional(),
+  webPropertyId: z.string().optional(),
+}).passthrough();
+
+type StateData = z.infer<typeof StateSchema>;
+
+const InputsSchema = z.object({
+  name: z.string().optional(),
+});
+
+export const model = {
+  type: "@swamp/gcp/analytics/management-customdatasources",
+  version: "2026.03.27.1",
+  globalArguments: GlobalArgsSchema,
+  inputsSchema: InputsSchema,
+  resources: {
+    state: {
+      description: "JSON template for an Analytics custom data source.",
+      schema: StateSchema,
+      lifetime: "infinite",
+      garbageCollection: 10,
+    },
+  },
+  methods: {
+    get: {
+      description: "Get a customDataSources",
+      arguments: z.object({
+        identifier: z.string().describe("The name of the customDataSources"),
+      }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const projectId = await getProjectId();
+        const params: Record<string, string> = { project: projectId };
+        const g = context.globalArgs;
+        if (g["accountId"] !== undefined) {
+          params["accountId"] = String(g["accountId"]);
+        }
+        if (g["webPropertyId"] !== undefined) {
+          params["webPropertyId"] = String(g["webPropertyId"]);
+        }
+        const result = await readViaList(
+          BASE_URL,
+          LIST_CONFIG,
+          params,
+          "name",
+          args.identifier,
+        ) as StateData;
+        const instanceName = g.name?.toString() ?? args.identifier;
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    sync: {
+      description: "Sync customDataSources state from GCP",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const projectId = await getProjectId();
+        const instanceName = g.name?.toString() ?? "current";
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          instanceName,
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        try {
+          const params: Record<string, string> = { project: projectId };
+          if (g["accountId"] !== undefined) {
+            params["accountId"] = String(g["accountId"]);
+          } else if (existing["accountId"]) {
+            params["accountId"] = String(existing["accountId"]);
+          }
+          if (g["webPropertyId"] !== undefined) {
+            params["webPropertyId"] = String(g["webPropertyId"]);
+          } else if (existing["webPropertyId"]) {
+            params["webPropertyId"] = String(existing["webPropertyId"]);
+          }
+          const identifier = existing.name?.toString() ?? g["name"]?.toString();
+          if (!identifier) {
+            throw new Error(
+              "No identifier found in existing state or globalArgs",
+            );
+          }
+          const result = await readViaList(
+            BASE_URL,
+            LIST_CONFIG,
+            params,
+            "name",
+            identifier,
+          ) as StateData;
+          const handle = await context.writeResource(
+            "state",
+            instanceName,
+            result,
+          );
+          return { dataHandles: [handle] };
+        } catch (error: unknown) {
+          if (isResourceNotFoundError(error)) {
+            const handle = await context.writeResource("state", instanceName, {
+              status: "not_found",
+              syncedAt: new Date().toISOString(),
+            });
+            return { dataHandles: [handle] };
+          }
+          throw error;
+        }
+      },
+    },
+  },
+};

@@ -1,0 +1,25 @@
+# Auto-generated manifest. Re-generate with the appropriate deno task.
+manifestVersion: 1
+name: "@swamp/gcp/sqladmin"
+version: "2026.04.01.1"
+description: "Google Cloud sqladmin infrastructure models"
+labels:
+  - gcp
+  - google-cloud
+  - sqladmin
+  - cloud
+  - infrastructure
+releaseNotes: |
+  - Updated: instances
+models:
+  - backupruns.ts
+  - connect.ts
+  - databases.ts
+  - flags.ts
+  - instances.ts
+  - sslcerts.ts
+  - tiers.ts
+  - users.ts
+additionalFiles:
+  - LICENSE.txt
+  - README.md

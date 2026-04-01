@@ -1,0 +1,19 @@
+# Auto-generated manifest. Re-generate with the appropriate deno task.
+manifestVersion: 1
+name: "@swamp/gcp/vpcaccess"
+version: "2026.03.27.1"
+description: "Google Cloud vpcaccess infrastructure models"
+labels:
+  - gcp
+  - google-cloud
+  - vpcaccess
+  - cloud
+  - infrastructure
+releaseNotes: |
+  - Added: locations, connectors
+models:
+  - connectors.ts
+  - locations.ts
+additionalFiles:
+  - LICENSE.txt
+  - README.md

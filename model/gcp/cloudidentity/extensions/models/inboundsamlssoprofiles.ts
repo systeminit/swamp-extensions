@@ -1,0 +1,353 @@
+// Auto-generated extension model for @swamp/gcp/cloudidentity/inboundsamlssoprofiles
+// Do not edit manually. Re-generate with: deno task generate:gcp
+
+// deno-lint-ignore-file no-explicit-any
+
+import { z } from "zod";
+import {
+  createResource,
+  deleteResource,
+  getProjectId,
+  isResourceNotFoundError,
+  readResource,
+  updateResource,
+} from "./_lib/gcp.ts";
+
+const BASE_URL = "https://cloudidentity.googleapis.com/";
+
+const GET_CONFIG = {
+  "id": "cloudidentity.inboundSamlSsoProfiles.get",
+  "path": "v1/{+name}",
+  "httpMethod": "GET",
+  "parameterOrder": [
+    "name",
+  ],
+  "parameters": {
+    "name": {
+      "location": "path",
+      "required": true,
+    },
+  },
+} as const;
+
+const INSERT_CONFIG = {
+  "id": "cloudidentity.inboundSamlSsoProfiles.create",
+  "path": "v1/inboundSamlSsoProfiles",
+  "httpMethod": "POST",
+  "parameterOrder": [],
+  "parameters": {},
+} as const;
+
+const PATCH_CONFIG = {
+  "id": "cloudidentity.inboundSamlSsoProfiles.patch",
+  "path": "v1/{+name}",
+  "httpMethod": "PATCH",
+  "parameterOrder": [
+    "name",
+  ],
+  "parameters": {
+    "name": {
+      "location": "path",
+      "required": true,
+    },
+    "updateMask": {
+      "location": "query",
+    },
+  },
+} as const;
+
+const DELETE_CONFIG = {
+  "id": "cloudidentity.inboundSamlSsoProfiles.delete",
+  "path": "v1/{+name}",
+  "httpMethod": "DELETE",
+  "parameterOrder": [
+    "name",
+  ],
+  "parameters": {
+    "name": {
+      "location": "path",
+      "required": true,
+    },
+  },
+} as const;
+
+const GlobalArgsSchema = z.object({
+  name: z.string().describe(
+    "Instance name for this resource (used as the unique identifier in the factory pattern)",
+  ),
+  customer: z.string().describe(
+    "Immutable. The customer. For example: `customers/C0123abc`.",
+  ).optional(),
+  displayName: z.string().describe(
+    "Human-readable name of the SAML SSO profile.",
+  ).optional(),
+  idpConfig: z.object({
+    changePasswordUri: z.string().describe(
+      "The **Change Password URL** of the identity provider. Users will be sent to this URL when changing their passwords at `myaccount.google.com`. This takes precedence over the change password URL configured at customer-level. Must use `HTTPS`.",
+    ).optional(),
+    entityId: z.string().describe(
+      "Required. The SAML **Entity ID** of the identity provider.",
+    ).optional(),
+    logoutRedirectUri: z.string().describe(
+      "The **Logout Redirect URL** (sign-out page URL) of the identity provider. When a user clicks the sign-out link on a Google page, they will be redirected to this URL. This is a pure redirect with no attached SAML `LogoutRequest` i.e. SAML single logout is not supported. Must use `HTTPS`.",
+    ).optional(),
+    singleSignOnServiceUri: z.string().describe(
+      "Required. The `SingleSignOnService` endpoint location (sign-in page URL) of the identity provider. This is the URL where the `AuthnRequest` will be sent. Must use `HTTPS`. Assumed to accept the `HTTP-Redirect` binding.",
+    ).optional(),
+  }).describe("SAML IDP (identity provider) configuration.").optional(),
+  spConfig: z.object({
+    assertionConsumerServiceUri: z.string().describe(
+      "Output only. The SAML **Assertion Consumer Service (ACS) URL** to be used for the IDP-initiated login. Assumed to accept response messages via the `HTTP-POST` binding.",
+    ).optional(),
+    entityId: z.string().describe(
+      "Output only. The SAML **Entity ID** for this service provider.",
+    ).optional(),
+  }).describe("SAML SP (service provider) configuration.").optional(),
+});
+
+const StateSchema = z.object({
+  customer: z.string().optional(),
+  displayName: z.string().optional(),
+  idpConfig: z.object({
+    changePasswordUri: z.string(),
+    entityId: z.string(),
+    logoutRedirectUri: z.string(),
+    singleSignOnServiceUri: z.string(),
+  }).optional(),
+  name: z.string(),
+  spConfig: z.object({
+    assertionConsumerServiceUri: z.string(),
+    entityId: z.string(),
+  }).optional(),
+}).passthrough();
+
+type StateData = z.infer<typeof StateSchema>;
+
+const InputsSchema = z.object({
+  name: z.string().optional(),
+  customer: z.string().describe(
+    "Immutable. The customer. For example: `customers/C0123abc`.",
+  ).optional(),
+  displayName: z.string().describe(
+    "Human-readable name of the SAML SSO profile.",
+  ).optional(),
+  idpConfig: z.object({
+    changePasswordUri: z.string().describe(
+      "The **Change Password URL** of the identity provider. Users will be sent to this URL when changing their passwords at `myaccount.google.com`. This takes precedence over the change password URL configured at customer-level. Must use `HTTPS`.",
+    ).optional(),
+    entityId: z.string().describe(
+      "Required. The SAML **Entity ID** of the identity provider.",
+    ).optional(),
+    logoutRedirectUri: z.string().describe(
+      "The **Logout Redirect URL** (sign-out page URL) of the identity provider. When a user clicks the sign-out link on a Google page, they will be redirected to this URL. This is a pure redirect with no attached SAML `LogoutRequest` i.e. SAML single logout is not supported. Must use `HTTPS`.",
+    ).optional(),
+    singleSignOnServiceUri: z.string().describe(
+      "Required. The `SingleSignOnService` endpoint location (sign-in page URL) of the identity provider. This is the URL where the `AuthnRequest` will be sent. Must use `HTTPS`. Assumed to accept the `HTTP-Redirect` binding.",
+    ).optional(),
+  }).describe("SAML IDP (identity provider) configuration.").optional(),
+  spConfig: z.object({
+    assertionConsumerServiceUri: z.string().describe(
+      "Output only. The SAML **Assertion Consumer Service (ACS) URL** to be used for the IDP-initiated login. Assumed to accept response messages via the `HTTP-POST` binding.",
+    ).optional(),
+    entityId: z.string().describe(
+      "Output only. The SAML **Entity ID** for this service provider.",
+    ).optional(),
+  }).describe("SAML SP (service provider) configuration.").optional(),
+});
+
+export const model = {
+  type: "@swamp/gcp/cloudidentity/inboundsamlssoprofiles",
+  version: "2026.03.27.1",
+  globalArguments: GlobalArgsSchema,
+  inputsSchema: InputsSchema,
+  resources: {
+    state: {
+      description:
+        "A [SAML 2.0](https://www.oasis-open.org/standards#samlv2.0) federation betwee...",
+      schema: StateSchema,
+      lifetime: "infinite",
+      garbageCollection: 10,
+    },
+  },
+  methods: {
+    create: {
+      description: "Create a inboundSamlSsoProfiles",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const projectId = await getProjectId();
+        const params: Record<string, string> = { project: projectId };
+        const body: Record<string, unknown> = {};
+        if (g["customer"] !== undefined) body["customer"] = g["customer"];
+        if (g["displayName"] !== undefined) {
+          body["displayName"] = g["displayName"];
+        }
+        if (g["idpConfig"] !== undefined) body["idpConfig"] = g["idpConfig"];
+        if (g["spConfig"] !== undefined) body["spConfig"] = g["spConfig"];
+        if (g["name"] !== undefined) params["name"] = String(g["name"]);
+        const result = await createResource(
+          BASE_URL,
+          INSERT_CONFIG,
+          params,
+          body,
+          GET_CONFIG,
+        ) as StateData;
+        const instanceName = g.name?.toString() ?? "current";
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    get: {
+      description: "Get a inboundSamlSsoProfiles",
+      arguments: z.object({
+        identifier: z.string().describe(
+          "The name of the inboundSamlSsoProfiles",
+        ),
+      }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const projectId = await getProjectId();
+        const params: Record<string, string> = { project: projectId };
+        const g = context.globalArgs;
+        params["name"] = args.identifier;
+        const result = await readResource(
+          BASE_URL,
+          GET_CONFIG,
+          params,
+        ) as StateData;
+        const instanceName = g.name?.toString() ?? args.identifier;
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    update: {
+      description: "Update inboundSamlSsoProfiles attributes",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const projectId = await getProjectId();
+        const instanceName = g.name?.toString() ?? "current";
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          instanceName,
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        const params: Record<string, string> = { project: projectId };
+        params["name"] = existing["name"]?.toString() ?? "";
+        const body: Record<string, unknown> = {};
+        if (g["displayName"] !== undefined) {
+          body["displayName"] = g["displayName"];
+        }
+        if (g["idpConfig"] !== undefined) body["idpConfig"] = g["idpConfig"];
+        if (g["spConfig"] !== undefined) body["spConfig"] = g["spConfig"];
+        for (const key of Object.keys(existing)) {
+          if (
+            key === "fingerprint" || key === "labelFingerprint" ||
+            key === "etag" || key.endsWith("Fingerprint")
+          ) {
+            body[key] = existing[key];
+          }
+        }
+        const result = await updateResource(
+          BASE_URL,
+          PATCH_CONFIG,
+          params,
+          body,
+          GET_CONFIG,
+        ) as StateData;
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    delete: {
+      description: "Delete the inboundSamlSsoProfiles",
+      arguments: z.object({
+        identifier: z.string().describe(
+          "The name of the inboundSamlSsoProfiles",
+        ),
+      }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const g = context.globalArgs;
+        const projectId = await getProjectId();
+        const params: Record<string, string> = { project: projectId };
+        params["name"] = args.identifier;
+        const { existed } = await deleteResource(
+          BASE_URL,
+          DELETE_CONFIG,
+          params,
+        );
+        const instanceName = g.name?.toString() ?? args.identifier;
+        const handle = await context.writeResource("state", instanceName, {
+          identifier: args.identifier,
+          existed,
+          status: existed ? "deleted" : "not_found",
+          deletedAt: new Date().toISOString(),
+        });
+        return { dataHandles: [handle] };
+      },
+    },
+    sync: {
+      description: "Sync inboundSamlSsoProfiles state from GCP",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const projectId = await getProjectId();
+        const instanceName = g.name?.toString() ?? "current";
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          instanceName,
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        try {
+          const params: Record<string, string> = { project: projectId };
+          const identifier = existing.name?.toString() ?? g["name"]?.toString();
+          if (!identifier) {
+            throw new Error(
+              "No identifier found in existing state or globalArgs",
+            );
+          }
+          params["name"] = identifier;
+          const result = await readResource(
+            BASE_URL,
+            GET_CONFIG,
+            params,
+          ) as StateData;
+          const handle = await context.writeResource(
+            "state",
+            instanceName,
+            result,
+          );
+          return { dataHandles: [handle] };
+        } catch (error: unknown) {
+          if (isResourceNotFoundError(error)) {
+            const handle = await context.writeResource("state", instanceName, {
+              status: "not_found",
+              syncedAt: new Date().toISOString(),
+            });
+            return { dataHandles: [handle] };
+          }
+          throw error;
+        }
+      },
+    },
+  },
+};

@@ -1,0 +1,26 @@
+# Auto-generated manifest. Re-generate with the appropriate deno task.
+manifestVersion: 1
+name: "@swamp/gcp/securesourcemanager"
+version: "2026.03.27.1"
+description: "Google Cloud securesourcemanager infrastructure models"
+labels:
+  - gcp
+  - google-cloud
+  - securesourcemanager
+  - cloud
+  - infrastructure
+releaseNotes: |
+  - Added: locations, instances, repositories, repositories_branchrules, repositories_hooks, repositories_issues, repositories_issues_issuecomments, repositories_pullrequests, repositories_pullrequests_pullrequestcomments
+models:
+  - instances.ts
+  - locations.ts
+  - repositories.ts
+  - repositories_branchrules.ts
+  - repositories_hooks.ts
+  - repositories_issues.ts
+  - repositories_issues_issuecomments.ts
+  - repositories_pullrequests.ts
+  - repositories_pullrequests_pullrequestcomments.ts
+additionalFiles:
+  - LICENSE.txt
+  - README.md

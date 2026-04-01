@@ -1,0 +1,438 @@
+// Auto-generated extension model for @swamp/gcp/aiplatform/reasoningengines-sessions
+// Do not edit manually. Re-generate with: deno task generate:gcp
+
+// deno-lint-ignore-file no-explicit-any
+
+import { z } from "zod";
+import {
+  createResource,
+  deleteResource,
+  getProjectId,
+  isResourceNotFoundError,
+  readResource,
+  updateResource,
+} from "./_lib/gcp.ts";
+
+/** Construct the fully-qualified resource name from parent and short name. */
+function buildResourceName(parent: string, shortName: string): string {
+  return `${parent}/sessions/${shortName}`;
+}
+
+const BASE_URL = "https://aiplatform.googleapis.com/";
+
+const GET_CONFIG = {
+  "id": "aiplatform.projects.locations.reasoningEngines.sessions.get",
+  "path": "v1/{+name}",
+  "httpMethod": "GET",
+  "parameterOrder": [
+    "name",
+  ],
+  "parameters": {
+    "name": {
+      "location": "path",
+      "required": true,
+    },
+  },
+} as const;
+
+const INSERT_CONFIG = {
+  "id": "aiplatform.projects.locations.reasoningEngines.sessions.create",
+  "path": "v1/{+parent}/sessions",
+  "httpMethod": "POST",
+  "parameterOrder": [
+    "parent",
+  ],
+  "parameters": {
+    "parent": {
+      "location": "path",
+      "required": true,
+    },
+    "sessionId": {
+      "location": "query",
+    },
+  },
+} as const;
+
+const PATCH_CONFIG = {
+  "id": "aiplatform.projects.locations.reasoningEngines.sessions.patch",
+  "path": "v1/{+name}",
+  "httpMethod": "PATCH",
+  "parameterOrder": [
+    "name",
+  ],
+  "parameters": {
+    "name": {
+      "location": "path",
+      "required": true,
+    },
+    "updateMask": {
+      "location": "query",
+    },
+  },
+} as const;
+
+const DELETE_CONFIG = {
+  "id": "aiplatform.projects.locations.reasoningEngines.sessions.delete",
+  "path": "v1/{+name}",
+  "httpMethod": "DELETE",
+  "parameterOrder": [
+    "name",
+  ],
+  "parameters": {
+    "name": {
+      "location": "path",
+      "required": true,
+    },
+  },
+} as const;
+
+const GlobalArgsSchema = z.object({
+  displayName: z.string().describe("Optional. The display name of the session.")
+    .optional(),
+  expireTime: z.string().describe(
+    "Optional. Timestamp of when this session is considered expired. This is *always* provided on output, regardless of what was sent on input. The minimum value is 24 hours from the time of creation.",
+  ).optional(),
+  labels: z.record(z.string(), z.string()).describe(
+    "The labels with user-defined metadata to organize your Sessions. Label keys and values can be no longer than 64 characters (Unicode codepoints), can only contain lowercase letters, numeric characters, underscores and dashes. International characters are allowed. See https://goo.gl/xmQnxf for more information and examples of labels.",
+  ).optional(),
+  name: z.string().describe(
+    "Identifier. The resource name of the session. Format: 'projects/{project}/locations/{location}/reasoningEngines/{reasoning_engine}/sessions/{session}'.",
+  ).optional(),
+  sessionState: z.record(z.string(), z.string()).describe(
+    "Optional. Session specific memory which stores key conversation points.",
+  ).optional(),
+  ttl: z.string().describe(
+    "Optional. Input only. The TTL for this session. The minimum value is 24 hours.",
+  ).optional(),
+  userId: z.string().describe(
+    "Required. Immutable. String id provided by the user",
+  ).optional(),
+  sessionId: z.string().describe(
+    "Optional. The user defined ID to use for session, which will become the final component of the session resource name. If not provided, Vertex AI will generate a value for this ID. This value may be up to 63 characters, and valid characters are `[a-z0-9-]`. The first and last characters must be a letter or number.",
+  ).optional(),
+  location: z.string().describe(
+    "The location for this resource (e.g., 'us', 'us-central1', 'europe-west1')",
+  ).optional(),
+});
+
+const StateSchema = z.object({
+  createTime: z.string().optional(),
+  displayName: z.string().optional(),
+  expireTime: z.string().optional(),
+  labels: z.record(z.string(), z.unknown()).optional(),
+  name: z.string(),
+  sessionState: z.record(z.string(), z.unknown()).optional(),
+  ttl: z.string().optional(),
+  updateTime: z.string().optional(),
+  userId: z.string().optional(),
+}).passthrough();
+
+type StateData = z.infer<typeof StateSchema>;
+
+const InputsSchema = z.object({
+  displayName: z.string().describe("Optional. The display name of the session.")
+    .optional(),
+  expireTime: z.string().describe(
+    "Optional. Timestamp of when this session is considered expired. This is *always* provided on output, regardless of what was sent on input. The minimum value is 24 hours from the time of creation.",
+  ).optional(),
+  labels: z.record(z.string(), z.string()).describe(
+    "The labels with user-defined metadata to organize your Sessions. Label keys and values can be no longer than 64 characters (Unicode codepoints), can only contain lowercase letters, numeric characters, underscores and dashes. International characters are allowed. See https://goo.gl/xmQnxf for more information and examples of labels.",
+  ).optional(),
+  name: z.string().describe(
+    "Identifier. The resource name of the session. Format: 'projects/{project}/locations/{location}/reasoningEngines/{reasoning_engine}/sessions/{session}'.",
+  ).optional(),
+  sessionState: z.record(z.string(), z.string()).describe(
+    "Optional. Session specific memory which stores key conversation points.",
+  ).optional(),
+  ttl: z.string().describe(
+    "Optional. Input only. The TTL for this session. The minimum value is 24 hours.",
+  ).optional(),
+  userId: z.string().describe(
+    "Required. Immutable. String id provided by the user",
+  ).optional(),
+  sessionId: z.string().describe(
+    "Optional. The user defined ID to use for session, which will become the final component of the session resource name. If not provided, Vertex AI will generate a value for this ID. This value may be up to 63 characters, and valid characters are `[a-z0-9-]`. The first and last characters must be a letter or number.",
+  ).optional(),
+  location: z.string().describe(
+    "The location for this resource (e.g., 'us', 'us-central1', 'europe-west1')",
+  ).optional(),
+});
+
+export const model = {
+  type: "@swamp/gcp/aiplatform/reasoningengines-sessions",
+  version: "2026.03.27.1",
+  globalArguments: GlobalArgsSchema,
+  inputsSchema: InputsSchema,
+  resources: {
+    state: {
+      description:
+        "A session contains a set of actions between users and Vertex agents.",
+      schema: StateSchema,
+      lifetime: "infinite",
+      garbageCollection: 10,
+    },
+  },
+  methods: {
+    create: {
+      description: "Create a sessions",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const projectId = await getProjectId();
+        const params: Record<string, string> = { project: projectId };
+        if (g["parent"] !== undefined) params["parent"] = String(g["parent"]);
+        const body: Record<string, unknown> = {};
+        if (g["displayName"] !== undefined) {
+          body["displayName"] = g["displayName"];
+        }
+        if (g["expireTime"] !== undefined) body["expireTime"] = g["expireTime"];
+        if (g["labels"] !== undefined) body["labels"] = g["labels"];
+        if (g["name"] !== undefined) body["name"] = g["name"];
+        if (g["sessionState"] !== undefined) {
+          body["sessionState"] = g["sessionState"];
+        }
+        if (g["ttl"] !== undefined) body["ttl"] = g["ttl"];
+        if (g["userId"] !== undefined) body["userId"] = g["userId"];
+        if (g["sessionId"] !== undefined) body["sessionId"] = g["sessionId"];
+        if (g["parent"] !== undefined && g["name"] !== undefined) {
+          params["name"] = buildResourceName(
+            String(g["parent"]),
+            String(g["name"]),
+          );
+        }
+        const result = await createResource(
+          BASE_URL,
+          INSERT_CONFIG,
+          params,
+          body,
+          GET_CONFIG,
+        ) as StateData;
+        const instanceName = (result.name ?? g.name)?.toString() ?? "current";
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    get: {
+      description: "Get a sessions",
+      arguments: z.object({
+        identifier: z.string().describe("The name of the sessions"),
+      }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const projectId = await getProjectId();
+        const params: Record<string, string> = { project: projectId };
+        const g = context.globalArgs;
+        params["name"] = buildResourceName(
+          String(g["parent"] ?? ""),
+          args.identifier,
+        );
+        const result = await readResource(
+          BASE_URL,
+          GET_CONFIG,
+          params,
+        ) as StateData;
+        const instanceName = (result.name ?? g.name)?.toString() ??
+          args.identifier;
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    update: {
+      description: "Update sessions attributes",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const projectId = await getProjectId();
+        const instanceName = g.name?.toString() ?? "current";
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          instanceName,
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        const params: Record<string, string> = { project: projectId };
+        params["name"] = buildResourceName(
+          String(g["parent"] ?? ""),
+          existing["name"]?.toString() ?? g["name"]?.toString() ?? "",
+        );
+        const body: Record<string, unknown> = {};
+        if (g["displayName"] !== undefined) {
+          body["displayName"] = g["displayName"];
+        }
+        if (g["expireTime"] !== undefined) body["expireTime"] = g["expireTime"];
+        if (g["labels"] !== undefined) body["labels"] = g["labels"];
+        if (g["sessionState"] !== undefined) {
+          body["sessionState"] = g["sessionState"];
+        }
+        if (g["ttl"] !== undefined) body["ttl"] = g["ttl"];
+        for (const key of Object.keys(existing)) {
+          if (
+            key === "fingerprint" || key === "labelFingerprint" ||
+            key === "etag" || key.endsWith("Fingerprint")
+          ) {
+            body[key] = existing[key];
+          }
+        }
+        const result = await updateResource(
+          BASE_URL,
+          PATCH_CONFIG,
+          params,
+          body,
+          GET_CONFIG,
+        ) as StateData;
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    delete: {
+      description: "Delete the sessions",
+      arguments: z.object({
+        identifier: z.string().describe("The name of the sessions"),
+      }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const g = context.globalArgs;
+        const projectId = await getProjectId();
+        const params: Record<string, string> = { project: projectId };
+        params["name"] = buildResourceName(
+          String(g["parent"] ?? ""),
+          args.identifier,
+        );
+        const { existed } = await deleteResource(
+          BASE_URL,
+          DELETE_CONFIG,
+          params,
+        );
+        const instanceName = g.name?.toString() ?? args.identifier;
+        const handle = await context.writeResource("state", instanceName, {
+          identifier: args.identifier,
+          existed,
+          status: existed ? "deleted" : "not_found",
+          deletedAt: new Date().toISOString(),
+        });
+        return { dataHandles: [handle] };
+      },
+    },
+    sync: {
+      description: "Sync sessions state from GCP",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const projectId = await getProjectId();
+        const instanceName = g.name?.toString() ?? "current";
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          instanceName,
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        try {
+          const params: Record<string, string> = { project: projectId };
+          const shortName = existing.name?.toString() ?? g["name"]?.toString();
+          if (!shortName) throw new Error("No identifier found");
+          params["name"] = buildResourceName(
+            String(g["parent"] ?? ""),
+            shortName,
+          );
+          const result = await readResource(
+            BASE_URL,
+            GET_CONFIG,
+            params,
+          ) as StateData;
+          const handle = await context.writeResource(
+            "state",
+            instanceName,
+            result,
+          );
+          return { dataHandles: [handle] };
+        } catch (error: unknown) {
+          if (isResourceNotFoundError(error)) {
+            const handle = await context.writeResource("state", instanceName, {
+              status: "not_found",
+              syncedAt: new Date().toISOString(),
+            });
+            return { dataHandles: [handle] };
+          }
+          throw error;
+        }
+      },
+    },
+    append_event: {
+      description: "append event",
+      arguments: z.object({
+        actions: z.any().optional(),
+        author: z.any().optional(),
+        content: z.any().optional(),
+        errorCode: z.any().optional(),
+        errorMessage: z.any().optional(),
+        eventMetadata: z.any().optional(),
+        invocationId: z.any().optional(),
+        name: z.any().optional(),
+        rawEvent: z.any().optional(),
+        timestamp: z.any().optional(),
+      }),
+      execute: async (args: Record<string, unknown>, context: any) => {
+        const g = context.globalArgs;
+        const projectId = await getProjectId();
+        const params: Record<string, string> = { project: projectId };
+        if (g["parent"] !== undefined && g["name"] !== undefined) {
+          params["name"] = buildResourceName(
+            String(g["parent"]),
+            String(g["name"]),
+          );
+        }
+        const body: Record<string, unknown> = {};
+        if (args["actions"] !== undefined) body["actions"] = args["actions"];
+        if (args["author"] !== undefined) body["author"] = args["author"];
+        if (args["content"] !== undefined) body["content"] = args["content"];
+        if (args["errorCode"] !== undefined) {
+          body["errorCode"] = args["errorCode"];
+        }
+        if (args["errorMessage"] !== undefined) {
+          body["errorMessage"] = args["errorMessage"];
+        }
+        if (args["eventMetadata"] !== undefined) {
+          body["eventMetadata"] = args["eventMetadata"];
+        }
+        if (args["invocationId"] !== undefined) {
+          body["invocationId"] = args["invocationId"];
+        }
+        if (args["name"] !== undefined) body["name"] = args["name"];
+        if (args["rawEvent"] !== undefined) body["rawEvent"] = args["rawEvent"];
+        if (args["timestamp"] !== undefined) {
+          body["timestamp"] = args["timestamp"];
+        }
+        const result = await createResource(
+          BASE_URL,
+          {
+            "id":
+              "aiplatform.projects.locations.reasoningEngines.sessions.appendEvent",
+            "path": "v1/{+name}:appendEvent",
+            "httpMethod": "POST",
+            "parameterOrder": ["name"],
+            "parameters": { "name": { "location": "path", "required": true } },
+          },
+          params,
+          body,
+        );
+        return { result };
+      },
+    },
+  },
+};

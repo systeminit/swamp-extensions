@@ -1,0 +1,546 @@
+// Auto-generated extension model for @swamp/gcp/classroom/courses-courseworkmaterials-addonattachments
+// Do not edit manually. Re-generate with: deno task generate:gcp
+
+// deno-lint-ignore-file no-explicit-any
+
+import { z } from "zod";
+import {
+  createResource,
+  deleteResource,
+  getProjectId,
+  isResourceNotFoundError,
+  readResource,
+  updateResource,
+} from "./_lib/gcp.ts";
+
+const BASE_URL = "https://classroom.googleapis.com/";
+
+const GET_CONFIG = {
+  "id": "classroom.courses.courseWorkMaterials.addOnAttachments.get",
+  "path":
+    "v1/courses/{courseId}/courseWorkMaterials/{itemId}/addOnAttachments/{attachmentId}",
+  "httpMethod": "GET",
+  "parameterOrder": [
+    "courseId",
+    "itemId",
+    "attachmentId",
+  ],
+  "parameters": {
+    "attachmentId": {
+      "location": "path",
+      "required": true,
+    },
+    "courseId": {
+      "location": "path",
+      "required": true,
+    },
+    "itemId": {
+      "location": "path",
+      "required": true,
+    },
+    "postId": {
+      "location": "query",
+    },
+  },
+} as const;
+
+const INSERT_CONFIG = {
+  "id": "classroom.courses.courseWorkMaterials.addOnAttachments.create",
+  "path": "v1/courses/{courseId}/courseWorkMaterials/{itemId}/addOnAttachments",
+  "httpMethod": "POST",
+  "parameterOrder": [
+    "courseId",
+    "itemId",
+  ],
+  "parameters": {
+    "addOnToken": {
+      "location": "query",
+    },
+    "courseId": {
+      "location": "path",
+      "required": true,
+    },
+    "itemId": {
+      "location": "path",
+      "required": true,
+    },
+    "postId": {
+      "location": "query",
+    },
+  },
+} as const;
+
+const PATCH_CONFIG = {
+  "id": "classroom.courses.courseWorkMaterials.addOnAttachments.patch",
+  "path":
+    "v1/courses/{courseId}/courseWorkMaterials/{itemId}/addOnAttachments/{attachmentId}",
+  "httpMethod": "PATCH",
+  "parameterOrder": [
+    "courseId",
+    "itemId",
+    "attachmentId",
+  ],
+  "parameters": {
+    "attachmentId": {
+      "location": "path",
+      "required": true,
+    },
+    "courseId": {
+      "location": "path",
+      "required": true,
+    },
+    "itemId": {
+      "location": "path",
+      "required": true,
+    },
+    "postId": {
+      "location": "query",
+    },
+    "updateMask": {
+      "location": "query",
+    },
+  },
+} as const;
+
+const DELETE_CONFIG = {
+  "id": "classroom.courses.courseWorkMaterials.addOnAttachments.delete",
+  "path":
+    "v1/courses/{courseId}/courseWorkMaterials/{itemId}/addOnAttachments/{attachmentId}",
+  "httpMethod": "DELETE",
+  "parameterOrder": [
+    "courseId",
+    "itemId",
+    "attachmentId",
+  ],
+  "parameters": {
+    "attachmentId": {
+      "location": "path",
+      "required": true,
+    },
+    "courseId": {
+      "location": "path",
+      "required": true,
+    },
+    "itemId": {
+      "location": "path",
+      "required": true,
+    },
+    "postId": {
+      "location": "query",
+    },
+  },
+} as const;
+
+const GlobalArgsSchema = z.object({
+  name: z.string().describe(
+    "Instance name for this resource (used as the unique identifier in the factory pattern)",
+  ),
+  courseId: z.string().describe("Immutable. Identifier of the course.")
+    .optional(),
+  dueDate: z.object({
+    day: z.number().int().describe(
+      "Day of a month. Must be from 1 to 31 and valid for the year and month, or 0 to specify a year by itself or a year and month where the day isn't significant.",
+    ).optional(),
+    month: z.number().int().describe(
+      "Month of a year. Must be from 1 to 12, or 0 to specify a year without a month and day.",
+    ).optional(),
+    year: z.number().int().describe(
+      "Year of the date. Must be from 1 to 9999, or 0 to specify a date without a year.",
+    ).optional(),
+  }).describe(
+    "Represents a whole or partial calendar date, such as a birthday. The time of day and time zone are either specified elsewhere or are insignificant. The date is relative to the Gregorian Calendar. This can represent one of the following: * A full date, with non-zero year, month, and day values. * A month and day, with a zero year (for example, an anniversary). * A year on its own, with a zero month and a zero day. * A year and month, with a zero day (for example, a credit card expiration date). Related types: * google.type.TimeOfDay * google.type.DateTime * google.protobuf.Timestamp",
+  ).optional(),
+  dueTime: z.object({
+    hours: z.number().int().describe(
+      'Hours of a day in 24 hour format. Must be greater than or equal to 0 and typically must be less than or equal to 23. An API may choose to allow the value "24:00:00" for scenarios like business closing time.',
+    ).optional(),
+    minutes: z.number().int().describe(
+      "Minutes of an hour. Must be greater than or equal to 0 and less than or equal to 59.",
+    ).optional(),
+    nanos: z.number().int().describe(
+      "Fractions of seconds, in nanoseconds. Must be greater than or equal to 0 and less than or equal to 999,999,999.",
+    ).optional(),
+    seconds: z.number().int().describe(
+      "Seconds of a minute. Must be greater than or equal to 0 and typically must be less than or equal to 59. An API may allow the value 60 if it allows leap-seconds.",
+    ).optional(),
+  }).describe(
+    "Represents a time of day. The date and time zone are either not significant or are specified elsewhere. An API may choose to allow leap seconds. Related types are google.type.Date and `google.protobuf.Timestamp`.",
+  ).optional(),
+  id: z.string().describe(
+    "Immutable. Classroom-assigned identifier for this attachment, unique per post.",
+  ).optional(),
+  itemId: z.string().describe(
+    "Immutable. Identifier of the `Announcement`, `CourseWork`, or `CourseWorkMaterial` under which the attachment is attached. Unique per course.",
+  ).optional(),
+  maxPoints: z.number().describe(
+    "Maximum grade for this attachment. Can only be set if `studentWorkReviewUri` is set. Set to a non-zero value to indicate that the attachment supports grade passback. If set, this must be a non-negative integer value. When set to zero, the attachment will not support grade passback.",
+  ).optional(),
+  studentViewUri: z.object({
+    uri: z.string().describe(
+      "Required. URI to be iframed after being populated with query parameters. This must be a valid UTF-8 string containing between 1 and 1800 characters.",
+    ).optional(),
+  }).describe("URI to be iframed after being populated with query parameters.")
+    .optional(),
+  studentWorkReviewUri: z.object({
+    uri: z.string().describe(
+      "Required. URI to be iframed after being populated with query parameters. This must be a valid UTF-8 string containing between 1 and 1800 characters.",
+    ).optional(),
+  }).describe("URI to be iframed after being populated with query parameters.")
+    .optional(),
+  teacherViewUri: z.object({
+    uri: z.string().describe(
+      "Required. URI to be iframed after being populated with query parameters. This must be a valid UTF-8 string containing between 1 and 1800 characters.",
+    ).optional(),
+  }).describe("URI to be iframed after being populated with query parameters.")
+    .optional(),
+  title: z.string().describe(
+    "Required. Title of this attachment. The title must be between 1 and 1000 characters.",
+  ).optional(),
+  addOnToken: z.string().describe(
+    "Optional. Token that authorizes the request. The token is passed as a query parameter when the user is redirected from Classroom to the add-on's URL. This authorization token is required for in-Classroom attachment creation but optional for partner-first attachment creation. Returns an error if not provided for partner-first attachment creation and the developer projects that created the attachment and its parent stream item do not match.",
+  ).optional(),
+});
+
+const StateSchema = z.object({
+  copyHistory: z.array(z.object({
+    attachmentId: z.string(),
+    courseId: z.string(),
+    itemId: z.string(),
+    postId: z.string(),
+  })).optional(),
+  courseId: z.string().optional(),
+  dueDate: z.object({
+    day: z.number(),
+    month: z.number(),
+    year: z.number(),
+  }).optional(),
+  dueTime: z.object({
+    hours: z.number(),
+    minutes: z.number(),
+    nanos: z.number(),
+    seconds: z.number(),
+  }).optional(),
+  id: z.string().optional(),
+  itemId: z.string().optional(),
+  maxPoints: z.number().optional(),
+  postId: z.string().optional(),
+  studentViewUri: z.object({
+    uri: z.string(),
+  }).optional(),
+  studentWorkReviewUri: z.object({
+    uri: z.string(),
+  }).optional(),
+  teacherViewUri: z.object({
+    uri: z.string(),
+  }).optional(),
+  title: z.string().optional(),
+}).passthrough();
+
+type StateData = z.infer<typeof StateSchema>;
+
+const InputsSchema = z.object({
+  name: z.string().optional(),
+  courseId: z.string().describe("Immutable. Identifier of the course.")
+    .optional(),
+  dueDate: z.object({
+    day: z.number().int().describe(
+      "Day of a month. Must be from 1 to 31 and valid for the year and month, or 0 to specify a year by itself or a year and month where the day isn't significant.",
+    ).optional(),
+    month: z.number().int().describe(
+      "Month of a year. Must be from 1 to 12, or 0 to specify a year without a month and day.",
+    ).optional(),
+    year: z.number().int().describe(
+      "Year of the date. Must be from 1 to 9999, or 0 to specify a date without a year.",
+    ).optional(),
+  }).describe(
+    "Represents a whole or partial calendar date, such as a birthday. The time of day and time zone are either specified elsewhere or are insignificant. The date is relative to the Gregorian Calendar. This can represent one of the following: * A full date, with non-zero year, month, and day values. * A month and day, with a zero year (for example, an anniversary). * A year on its own, with a zero month and a zero day. * A year and month, with a zero day (for example, a credit card expiration date). Related types: * google.type.TimeOfDay * google.type.DateTime * google.protobuf.Timestamp",
+  ).optional(),
+  dueTime: z.object({
+    hours: z.number().int().describe(
+      'Hours of a day in 24 hour format. Must be greater than or equal to 0 and typically must be less than or equal to 23. An API may choose to allow the value "24:00:00" for scenarios like business closing time.',
+    ).optional(),
+    minutes: z.number().int().describe(
+      "Minutes of an hour. Must be greater than or equal to 0 and less than or equal to 59.",
+    ).optional(),
+    nanos: z.number().int().describe(
+      "Fractions of seconds, in nanoseconds. Must be greater than or equal to 0 and less than or equal to 999,999,999.",
+    ).optional(),
+    seconds: z.number().int().describe(
+      "Seconds of a minute. Must be greater than or equal to 0 and typically must be less than or equal to 59. An API may allow the value 60 if it allows leap-seconds.",
+    ).optional(),
+  }).describe(
+    "Represents a time of day. The date and time zone are either not significant or are specified elsewhere. An API may choose to allow leap seconds. Related types are google.type.Date and `google.protobuf.Timestamp`.",
+  ).optional(),
+  id: z.string().describe(
+    "Immutable. Classroom-assigned identifier for this attachment, unique per post.",
+  ).optional(),
+  itemId: z.string().describe(
+    "Immutable. Identifier of the `Announcement`, `CourseWork`, or `CourseWorkMaterial` under which the attachment is attached. Unique per course.",
+  ).optional(),
+  maxPoints: z.number().describe(
+    "Maximum grade for this attachment. Can only be set if `studentWorkReviewUri` is set. Set to a non-zero value to indicate that the attachment supports grade passback. If set, this must be a non-negative integer value. When set to zero, the attachment will not support grade passback.",
+  ).optional(),
+  studentViewUri: z.object({
+    uri: z.string().describe(
+      "Required. URI to be iframed after being populated with query parameters. This must be a valid UTF-8 string containing between 1 and 1800 characters.",
+    ).optional(),
+  }).describe("URI to be iframed after being populated with query parameters.")
+    .optional(),
+  studentWorkReviewUri: z.object({
+    uri: z.string().describe(
+      "Required. URI to be iframed after being populated with query parameters. This must be a valid UTF-8 string containing between 1 and 1800 characters.",
+    ).optional(),
+  }).describe("URI to be iframed after being populated with query parameters.")
+    .optional(),
+  teacherViewUri: z.object({
+    uri: z.string().describe(
+      "Required. URI to be iframed after being populated with query parameters. This must be a valid UTF-8 string containing between 1 and 1800 characters.",
+    ).optional(),
+  }).describe("URI to be iframed after being populated with query parameters.")
+    .optional(),
+  title: z.string().describe(
+    "Required. Title of this attachment. The title must be between 1 and 1000 characters.",
+  ).optional(),
+  addOnToken: z.string().describe(
+    "Optional. Token that authorizes the request. The token is passed as a query parameter when the user is redirected from Classroom to the add-on's URL. This authorization token is required for in-Classroom attachment creation but optional for partner-first attachment creation. Returns an error if not provided for partner-first attachment creation and the developer projects that created the attachment and its parent stream item do not match.",
+  ).optional(),
+});
+
+export const model = {
+  type: "@swamp/gcp/classroom/courses-courseworkmaterials-addonattachments",
+  version: "2026.03.27.1",
+  globalArguments: GlobalArgsSchema,
+  inputsSchema: InputsSchema,
+  resources: {
+    state: {
+      description: "An add-on attachment on a post.",
+      schema: StateSchema,
+      lifetime: "infinite",
+      garbageCollection: 10,
+    },
+  },
+  methods: {
+    create: {
+      description: "Create a addOnAttachments",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const projectId = await getProjectId();
+        const params: Record<string, string> = { project: projectId };
+        if (g["courseId"] !== undefined) {
+          params["courseId"] = String(g["courseId"]);
+        }
+        if (g["itemId"] !== undefined) params["itemId"] = String(g["itemId"]);
+        const body: Record<string, unknown> = {};
+        if (g["dueDate"] !== undefined) body["dueDate"] = g["dueDate"];
+        if (g["dueTime"] !== undefined) body["dueTime"] = g["dueTime"];
+        if (g["id"] !== undefined) body["id"] = g["id"];
+        if (g["maxPoints"] !== undefined) body["maxPoints"] = g["maxPoints"];
+        if (g["studentViewUri"] !== undefined) {
+          body["studentViewUri"] = g["studentViewUri"];
+        }
+        if (g["studentWorkReviewUri"] !== undefined) {
+          body["studentWorkReviewUri"] = g["studentWorkReviewUri"];
+        }
+        if (g["teacherViewUri"] !== undefined) {
+          body["teacherViewUri"] = g["teacherViewUri"];
+        }
+        if (g["title"] !== undefined) body["title"] = g["title"];
+        if (g["addOnToken"] !== undefined) body["addOnToken"] = g["addOnToken"];
+        if (g["name"] !== undefined) params["attachmentId"] = String(g["name"]);
+        const result = await createResource(
+          BASE_URL,
+          INSERT_CONFIG,
+          params,
+          body,
+          GET_CONFIG,
+        ) as StateData;
+        const instanceName = g.name?.toString() ?? "current";
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    get: {
+      description: "Get a addOnAttachments",
+      arguments: z.object({
+        identifier: z.string().describe("The name of the addOnAttachments"),
+      }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const projectId = await getProjectId();
+        const params: Record<string, string> = { project: projectId };
+        const g = context.globalArgs;
+        if (g["courseId"] !== undefined) {
+          params["courseId"] = String(g["courseId"]);
+        }
+        if (g["itemId"] !== undefined) params["itemId"] = String(g["itemId"]);
+        params["attachmentId"] = args.identifier;
+        const result = await readResource(
+          BASE_URL,
+          GET_CONFIG,
+          params,
+        ) as StateData;
+        const instanceName = g.name?.toString() ?? args.identifier;
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    update: {
+      description: "Update addOnAttachments attributes",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const projectId = await getProjectId();
+        const instanceName = g.name?.toString() ?? "current";
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          instanceName,
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        const params: Record<string, string> = { project: projectId };
+        if (g["courseId"] !== undefined) {
+          params["courseId"] = String(g["courseId"]);
+        } else if (existing["courseId"]) {
+          params["courseId"] = String(existing["courseId"]);
+        }
+        if (g["itemId"] !== undefined) params["itemId"] = String(g["itemId"]);
+        else if (existing["itemId"]) {
+          params["itemId"] = String(existing["itemId"]);
+        }
+        params["attachmentId"] = existing["name"]?.toString() ?? "";
+        const body: Record<string, unknown> = {};
+        if (g["dueDate"] !== undefined) body["dueDate"] = g["dueDate"];
+        if (g["dueTime"] !== undefined) body["dueTime"] = g["dueTime"];
+        if (g["maxPoints"] !== undefined) body["maxPoints"] = g["maxPoints"];
+        if (g["studentViewUri"] !== undefined) {
+          body["studentViewUri"] = g["studentViewUri"];
+        }
+        if (g["studentWorkReviewUri"] !== undefined) {
+          body["studentWorkReviewUri"] = g["studentWorkReviewUri"];
+        }
+        if (g["teacherViewUri"] !== undefined) {
+          body["teacherViewUri"] = g["teacherViewUri"];
+        }
+        if (g["title"] !== undefined) body["title"] = g["title"];
+        for (const key of Object.keys(existing)) {
+          if (
+            key === "fingerprint" || key === "labelFingerprint" ||
+            key === "etag" || key.endsWith("Fingerprint")
+          ) {
+            body[key] = existing[key];
+          }
+        }
+        const result = await updateResource(
+          BASE_URL,
+          PATCH_CONFIG,
+          params,
+          body,
+          GET_CONFIG,
+        ) as StateData;
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    delete: {
+      description: "Delete the addOnAttachments",
+      arguments: z.object({
+        identifier: z.string().describe("The name of the addOnAttachments"),
+      }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const g = context.globalArgs;
+        const projectId = await getProjectId();
+        const params: Record<string, string> = { project: projectId };
+        if (g["courseId"] !== undefined) {
+          params["courseId"] = String(g["courseId"]);
+        }
+        if (g["itemId"] !== undefined) params["itemId"] = String(g["itemId"]);
+        params["attachmentId"] = args.identifier;
+        const { existed } = await deleteResource(
+          BASE_URL,
+          DELETE_CONFIG,
+          params,
+        );
+        const instanceName = g.name?.toString() ?? args.identifier;
+        const handle = await context.writeResource("state", instanceName, {
+          identifier: args.identifier,
+          existed,
+          status: existed ? "deleted" : "not_found",
+          deletedAt: new Date().toISOString(),
+        });
+        return { dataHandles: [handle] };
+      },
+    },
+    sync: {
+      description: "Sync addOnAttachments state from GCP",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const projectId = await getProjectId();
+        const instanceName = g.name?.toString() ?? "current";
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          instanceName,
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        try {
+          const params: Record<string, string> = { project: projectId };
+          if (g["courseId"] !== undefined) {
+            params["courseId"] = String(g["courseId"]);
+          } else if (existing["courseId"]) {
+            params["courseId"] = String(existing["courseId"]);
+          }
+          if (g["itemId"] !== undefined) params["itemId"] = String(g["itemId"]);
+          else if (existing["itemId"]) {
+            params["itemId"] = String(existing["itemId"]);
+          }
+          const identifier = existing.name?.toString() ?? g["name"]?.toString();
+          if (!identifier) {
+            throw new Error(
+              "No identifier found in existing state or globalArgs",
+            );
+          }
+          params["attachmentId"] = identifier;
+          const result = await readResource(
+            BASE_URL,
+            GET_CONFIG,
+            params,
+          ) as StateData;
+          const handle = await context.writeResource(
+            "state",
+            instanceName,
+            result,
+          );
+          return { dataHandles: [handle] };
+        } catch (error: unknown) {
+          if (isResourceNotFoundError(error)) {
+            const handle = await context.writeResource("state", instanceName, {
+              status: "not_found",
+              syncedAt: new Date().toISOString(),
+            });
+            return { dataHandles: [handle] };
+          }
+          throw error;
+        }
+      },
+    },
+  },
+};

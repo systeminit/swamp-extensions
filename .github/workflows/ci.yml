@@ -231,6 +231,55 @@ jobs:
             exit 1
           fi
 
+  gcp-check:
+    name: gcp models - ${{ matrix.task }}
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    strategy:
+      fail-fast: false
+      matrix:
+        task: [check, lint, fmt]
+    steps:
+      - uses: actions/checkout@v6
+      - uses: denoland/setup-deno@v2
+        with:
+          deno-version: v2.x
+      - name: deno ${{ matrix.task }}
+        run: |
+          if [ "${{ matrix.task }}" = "fmt" ]; then
+            find model/gcp -name "*.ts" -path "*/extensions/models/*" | xargs deno fmt --no-config --check
+          elif [ "${{ matrix.task }}" = "lint" ]; then
+            find model/gcp -name "*.ts" -path "*/extensions/models/*" | xargs deno lint --no-config
+          else
+            for service in model/gcp/*/; do
+              (cd "$service" && deno check extensions/models/*.ts)
+            done
+          fi
+
+  gcp-lockfile:
+    name: gcp models - lockfiles up to date
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v6
+      - uses: denoland/setup-deno@v2
+        with:
+          deno-version: v2.x
+      - name: Verify all GCP lockfiles are up to date
+        run: |
+          failed=false
+          for service in model/gcp/*/; do
+            if ! (cd "$service" && deno install --frozen 2>&1); then
+              echo "::error::Lockfile out of date in $service"
+              failed=true
+            fi
+          done
+          if [ "$failed" = true ]; then
+            exit 1
+          fi
+
   codegen-check:
     name: codegen - ${{ matrix.task }}
     runs-on: ubuntu-latest
@@ -353,6 +402,8 @@ jobs:
         model-lockfile,
         aws-check,
         aws-lockfile,
+        gcp-check,
+        gcp-lockfile,
         codegen-check,
         codegen-lockfile,
         codegen-verify,
@@ -484,6 +535,8 @@ jobs:
         datastore-lockfile,
         aws-check,
         aws-lockfile,
+        gcp-check,
+        gcp-lockfile,
         codegen-check,
         codegen-lockfile,
         codegen-verify,

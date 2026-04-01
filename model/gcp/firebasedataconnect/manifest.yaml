@@ -1,0 +1,21 @@
+# Auto-generated manifest. Re-generate with the appropriate deno task.
+manifestVersion: 1
+name: "@swamp/gcp/firebasedataconnect"
+version: "2026.03.27.1"
+description: "Google Cloud firebasedataconnect infrastructure models"
+labels:
+  - gcp
+  - google-cloud
+  - firebasedataconnect
+  - cloud
+  - infrastructure
+releaseNotes: |
+  - Added: locations, services, services_connectors, services_schemas
+models:
+  - locations.ts
+  - services.ts
+  - services_connectors.ts
+  - services_schemas.ts
+additionalFiles:
+  - LICENSE.txt
+  - README.md

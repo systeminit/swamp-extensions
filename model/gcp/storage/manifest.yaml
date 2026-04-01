@@ -1,0 +1,28 @@
+# Auto-generated manifest. Re-generate with the appropriate deno task.
+manifestVersion: 1
+name: "@swamp/gcp/storage"
+version: "2026.03.27.1"
+description: "Google Cloud storage infrastructure models"
+labels:
+  - gcp
+  - google-cloud
+  - storage
+  - cloud
+  - infrastructure
+releaseNotes: |
+  - Added: anywherecaches, bucketaccesscontrols, buckets, defaultobjectaccesscontrols, folders, managedfolders, notifications, objectaccesscontrols, objects, hmackeys, serviceaccount
+models:
+  - anywherecaches.ts
+  - bucketaccesscontrols.ts
+  - buckets.ts
+  - defaultobjectaccesscontrols.ts
+  - folders.ts
+  - hmackeys.ts
+  - managedfolders.ts
+  - notifications.ts
+  - objectaccesscontrols.ts
+  - objects.ts
+  - serviceaccount.ts
+additionalFiles:
+  - LICENSE.txt
+  - README.md

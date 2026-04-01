@@ -1,0 +1,343 @@
+// Auto-generated extension model for @swamp/gcp/content/accounts-returncarrier
+// Do not edit manually. Re-generate with: deno task generate:gcp
+
+// deno-lint-ignore-file no-explicit-any
+
+import { z } from "zod";
+import {
+  createResource,
+  deleteResource,
+  getProjectId,
+  isResourceNotFoundError,
+  readViaList,
+  updateResource,
+} from "./_lib/gcp.ts";
+
+const BASE_URL = "https://shoppingcontent.googleapis.com/content/v2.1/";
+
+const INSERT_CONFIG = {
+  "id": "content.accounts.returncarrier.create",
+  "path": "accounts/{accountId}/returncarrier",
+  "httpMethod": "POST",
+  "parameterOrder": [
+    "accountId",
+  ],
+  "parameters": {
+    "accountId": {
+      "location": "path",
+      "required": true,
+    },
+  },
+} as const;
+
+const PATCH_CONFIG = {
+  "id": "content.accounts.returncarrier.patch",
+  "path": "accounts/{accountId}/returncarrier/{carrierAccountId}",
+  "httpMethod": "PATCH",
+  "parameterOrder": [
+    "accountId",
+    "carrierAccountId",
+  ],
+  "parameters": {
+    "accountId": {
+      "location": "path",
+      "required": true,
+    },
+    "carrierAccountId": {
+      "location": "path",
+      "required": true,
+    },
+  },
+} as const;
+
+const DELETE_CONFIG = {
+  "id": "content.accounts.returncarrier.delete",
+  "path": "accounts/{accountId}/returncarrier/{carrierAccountId}",
+  "httpMethod": "DELETE",
+  "parameterOrder": [
+    "accountId",
+    "carrierAccountId",
+  ],
+  "parameters": {
+    "accountId": {
+      "location": "path",
+      "required": true,
+    },
+    "carrierAccountId": {
+      "location": "path",
+      "required": true,
+    },
+  },
+} as const;
+
+const LIST_CONFIG = {
+  "id": "content.accounts.returncarrier.list",
+  "path": "accounts/{accountId}/returncarrier",
+  "httpMethod": "GET",
+  "parameterOrder": [
+    "accountId",
+  ],
+  "parameters": {
+    "accountId": {
+      "location": "path",
+      "required": true,
+    },
+  },
+} as const;
+
+const GlobalArgsSchema = z.object({
+  name: z.string().describe(
+    "Instance name for this resource (used as the unique identifier in the factory pattern)",
+  ),
+  carrierAccountName: z.string().describe("Name of the carrier account.")
+    .optional(),
+  carrierAccountNumber: z.string().describe("Number of the carrier account.")
+    .optional(),
+  carrierCode: z.enum(["CARRIER_CODE_UNSPECIFIED", "FEDEX", "UPS"]).describe(
+    "The carrier code enum. Accepts the values FEDEX or UPS.",
+  ).optional(),
+  accountId: z.string().describe(
+    "Required. The Merchant Center Account Id under which the Return Carrier is to be linked.",
+  ),
+});
+
+const StateSchema = z.object({
+  carrierAccountId: z.string().optional(),
+  carrierAccountName: z.string().optional(),
+  carrierAccountNumber: z.string().optional(),
+  carrierCode: z.string().optional(),
+}).passthrough();
+
+type StateData = z.infer<typeof StateSchema>;
+
+const InputsSchema = z.object({
+  name: z.string().optional(),
+  carrierAccountName: z.string().describe("Name of the carrier account.")
+    .optional(),
+  carrierAccountNumber: z.string().describe("Number of the carrier account.")
+    .optional(),
+  carrierCode: z.enum(["CARRIER_CODE_UNSPECIFIED", "FEDEX", "UPS"]).describe(
+    "The carrier code enum. Accepts the values FEDEX or UPS.",
+  ).optional(),
+  accountId: z.string().describe(
+    "Required. The Merchant Center Account Id under which the Return Carrier is to be linked.",
+  ).optional(),
+});
+
+export const model = {
+  type: "@swamp/gcp/content/accounts-returncarrier",
+  version: "2026.03.27.1",
+  globalArguments: GlobalArgsSchema,
+  inputsSchema: InputsSchema,
+  resources: {
+    state: {
+      description:
+        "The return carrier information. This service is designed for merchants enroll...",
+      schema: StateSchema,
+      lifetime: "infinite",
+      garbageCollection: 10,
+    },
+  },
+  methods: {
+    create: {
+      description: "Create a returncarrier",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const projectId = await getProjectId();
+        const params: Record<string, string> = { project: projectId };
+        if (g["accountId"] !== undefined) {
+          params["accountId"] = String(g["accountId"]);
+        }
+        const body: Record<string, unknown> = {};
+        if (g["carrierAccountName"] !== undefined) {
+          body["carrierAccountName"] = g["carrierAccountName"];
+        }
+        if (g["carrierAccountNumber"] !== undefined) {
+          body["carrierAccountNumber"] = g["carrierAccountNumber"];
+        }
+        if (g["carrierCode"] !== undefined) {
+          body["carrierCode"] = g["carrierCode"];
+        }
+        const result = await createResource(
+          BASE_URL,
+          INSERT_CONFIG,
+          params,
+          body,
+        ) as StateData;
+        const instanceName = g.name?.toString() ?? "current";
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    get: {
+      description: "Get a returncarrier",
+      arguments: z.object({
+        identifier: z.string().describe("The name of the returncarrier"),
+      }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const projectId = await getProjectId();
+        const params: Record<string, string> = { project: projectId };
+        const g = context.globalArgs;
+        if (g["accountId"] !== undefined) {
+          params["accountId"] = String(g["accountId"]);
+        }
+        const result = await readViaList(
+          BASE_URL,
+          LIST_CONFIG,
+          params,
+          "name",
+          args.identifier,
+        ) as StateData;
+        const instanceName = g.name?.toString() ?? args.identifier;
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    update: {
+      description: "Update returncarrier attributes",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const projectId = await getProjectId();
+        const instanceName = g.name?.toString() ?? "current";
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          instanceName,
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        const params: Record<string, string> = { project: projectId };
+        if (g["accountId"] !== undefined) {
+          params["accountId"] = String(g["accountId"]);
+        } else if (existing["accountId"]) {
+          params["accountId"] = String(existing["accountId"]);
+        }
+        params["carrierAccountId"] = existing["name"]?.toString() ?? "";
+        const body: Record<string, unknown> = {};
+        if (g["carrierAccountName"] !== undefined) {
+          body["carrierAccountName"] = g["carrierAccountName"];
+        }
+        if (g["carrierAccountNumber"] !== undefined) {
+          body["carrierAccountNumber"] = g["carrierAccountNumber"];
+        }
+        if (g["carrierCode"] !== undefined) {
+          body["carrierCode"] = g["carrierCode"];
+        }
+        for (const key of Object.keys(existing)) {
+          if (
+            key === "fingerprint" || key === "labelFingerprint" ||
+            key === "etag" || key.endsWith("Fingerprint")
+          ) {
+            body[key] = existing[key];
+          }
+        }
+        const result = await updateResource(
+          BASE_URL,
+          PATCH_CONFIG,
+          params,
+          body,
+        ) as StateData;
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    delete: {
+      description: "Delete the returncarrier",
+      arguments: z.object({
+        identifier: z.string().describe("The name of the returncarrier"),
+      }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const g = context.globalArgs;
+        const projectId = await getProjectId();
+        const params: Record<string, string> = { project: projectId };
+        if (g["accountId"] !== undefined) {
+          params["accountId"] = String(g["accountId"]);
+        }
+        params["carrierAccountId"] = args.identifier;
+        const { existed } = await deleteResource(
+          BASE_URL,
+          DELETE_CONFIG,
+          params,
+        );
+        const instanceName = g.name?.toString() ?? args.identifier;
+        const handle = await context.writeResource("state", instanceName, {
+          identifier: args.identifier,
+          existed,
+          status: existed ? "deleted" : "not_found",
+          deletedAt: new Date().toISOString(),
+        });
+        return { dataHandles: [handle] };
+      },
+    },
+    sync: {
+      description: "Sync returncarrier state from GCP",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const projectId = await getProjectId();
+        const instanceName = g.name?.toString() ?? "current";
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          instanceName,
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        try {
+          const params: Record<string, string> = { project: projectId };
+          if (g["accountId"] !== undefined) {
+            params["accountId"] = String(g["accountId"]);
+          } else if (existing["accountId"]) {
+            params["accountId"] = String(existing["accountId"]);
+          }
+          const identifier = existing.name?.toString() ?? g["name"]?.toString();
+          if (!identifier) {
+            throw new Error(
+              "No identifier found in existing state or globalArgs",
+            );
+          }
+          const result = await readViaList(
+            BASE_URL,
+            LIST_CONFIG,
+            params,
+            "name",
+            identifier,
+          ) as StateData;
+          const handle = await context.writeResource(
+            "state",
+            instanceName,
+            result,
+          );
+          return { dataHandles: [handle] };
+        } catch (error: unknown) {
+          if (isResourceNotFoundError(error)) {
+            const handle = await context.writeResource("state", instanceName, {
+              status: "not_found",
+              syncedAt: new Date().toISOString(),
+            });
+            return { dataHandles: [handle] };
+          }
+          throw error;
+        }
+      },
+    },
+  },
+};

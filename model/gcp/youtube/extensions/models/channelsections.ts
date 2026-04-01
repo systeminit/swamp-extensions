@@ -1,0 +1,501 @@
+// Auto-generated extension model for @swamp/gcp/youtube/channelsections
+// Do not edit manually. Re-generate with: deno task generate:gcp
+
+// deno-lint-ignore-file no-explicit-any
+
+import { z } from "zod";
+import {
+  createResource,
+  deleteResource,
+  getProjectId,
+  isResourceNotFoundError,
+  readViaList,
+  updateResource,
+} from "./_lib/gcp.ts";
+
+const BASE_URL = "https://youtube.googleapis.com/";
+
+const INSERT_CONFIG = {
+  "id": "youtube.channelSections.insert",
+  "path": "youtube/v3/channelSections",
+  "httpMethod": "POST",
+  "parameterOrder": [
+    "part",
+  ],
+  "parameters": {
+    "onBehalfOfContentOwner": {
+      "location": "query",
+    },
+    "onBehalfOfContentOwnerChannel": {
+      "location": "query",
+    },
+    "part": {
+      "location": "query",
+      "required": true,
+    },
+  },
+} as const;
+
+const UPDATE_CONFIG = {
+  "id": "youtube.channelSections.update",
+  "path": "youtube/v3/channelSections",
+  "httpMethod": "PUT",
+  "parameterOrder": [
+    "part",
+  ],
+  "parameters": {
+    "onBehalfOfContentOwner": {
+      "location": "query",
+    },
+    "part": {
+      "location": "query",
+      "required": true,
+    },
+  },
+} as const;
+
+const DELETE_CONFIG = {
+  "id": "youtube.channelSections.delete",
+  "path": "youtube/v3/channelSections",
+  "httpMethod": "DELETE",
+  "parameterOrder": [
+    "id",
+  ],
+  "parameters": {
+    "id": {
+      "location": "query",
+      "required": true,
+    },
+    "onBehalfOfContentOwner": {
+      "location": "query",
+    },
+  },
+} as const;
+
+const LIST_CONFIG = {
+  "id": "youtube.channelSections.list",
+  "path": "youtube/v3/channelSections",
+  "httpMethod": "GET",
+  "parameterOrder": [
+    "part",
+  ],
+  "parameters": {
+    "channelId": {
+      "location": "query",
+    },
+    "hl": {
+      "location": "query",
+    },
+    "id": {
+      "location": "query",
+    },
+    "mine": {
+      "location": "query",
+    },
+    "onBehalfOfContentOwner": {
+      "location": "query",
+    },
+    "part": {
+      "location": "query",
+      "required": true,
+    },
+  },
+} as const;
+
+const GlobalArgsSchema = z.object({
+  name: z.string().describe(
+    "Instance name for this resource (used as the unique identifier in the factory pattern)",
+  ),
+  contentDetails: z.object({
+    channels: z.array(z.string()).describe(
+      "The channel ids for type multiple_channels.",
+    ).optional(),
+    playlists: z.array(z.string()).describe(
+      "The playlist ids for type single_playlist and multiple_playlists. For singlePlaylist, only one playlistId is allowed.",
+    ).optional(),
+  }).describe(
+    "Details about a channelsection, including playlists and channels.",
+  ).optional(),
+  id: z.string().describe(
+    "The ID that YouTube uses to uniquely identify the channel section.",
+  ).optional(),
+  snippet: z.object({
+    channelId: z.string().describe(
+      "The ID that YouTube uses to uniquely identify the channel that published the channel section.",
+    ).optional(),
+    defaultLanguage: z.string().describe(
+      "The language of the channel section's default title and description.",
+    ).optional(),
+    localized: z.object({
+      title: z.string().describe(
+        "The localized strings for channel section's title.",
+      ).optional(),
+    }).describe("ChannelSection localization setting").optional(),
+    position: z.number().int().describe(
+      "The position of the channel section in the channel.",
+    ).optional(),
+    style: z.enum([
+      "channelsectionStyleUnspecified",
+      "horizontalRow",
+      "verticalList",
+    ]).describe("The style of the channel section.").optional(),
+    title: z.string().describe(
+      "The channel section's title for multiple_playlists and multiple_channels.",
+    ).optional(),
+    type: z.enum([
+      "channelsectionTypeUndefined",
+      "singlePlaylist",
+      "multiplePlaylists",
+      "popularUploads",
+      "recentUploads",
+      "likes",
+      "allPlaylists",
+      "likedPlaylists",
+      "recentPosts",
+      "recentActivity",
+      "liveEvents",
+      "upcomingEvents",
+      "completedEvents",
+      "multipleChannels",
+      "postedVideos",
+      "postedPlaylists",
+      "subscriptions",
+    ]).describe("The type of the channel section.").optional(),
+  }).describe(
+    "Basic details about a channel section, including title, style and position.",
+  ).optional(),
+  targeting: z.object({
+    countries: z.array(z.string()).describe(
+      "The country the channel section is targeting.",
+    ).optional(),
+    languages: z.array(z.string()).describe(
+      "The language the channel section is targeting.",
+    ).optional(),
+    regions: z.array(z.string()).describe(
+      "The region the channel section is targeting.",
+    ).optional(),
+  }).describe("ChannelSection targeting setting.").optional(),
+  part: z.string().describe(
+    "The *part* parameter serves two purposes in this operation. It identifies the properties that the write operation will set as well as the properties that the API response will include. The part names that you can include in the parameter value are snippet and contentDetails.",
+  ),
+  onBehalfOfContentOwner: z.string().describe(
+    "*Note:* This parameter is intended exclusively for YouTube content partners. The *onBehalfOfContentOwner* parameter indicates that the request's authorization credentials identify a YouTube CMS user who is acting on behalf of the content owner specified in the parameter value. This parameter is intended for YouTube content partners that own and manage many different YouTube channels. It allows content owners to authenticate once and get access to all their video and channel data, without having to provide authentication credentials for each individual channel. The CMS account that the user authenticates with must be linked to the specified YouTube content owner.",
+  ).optional(),
+  onBehalfOfContentOwnerChannel: z.string().describe(
+    "This parameter can only be used in a properly authorized request. *Note:* This parameter is intended exclusively for YouTube content partners. The *onBehalfOfContentOwnerChannel* parameter specifies the YouTube channel ID of the channel to which a video is being added. This parameter is required when a request specifies a value for the onBehalfOfContentOwner parameter, and it can only be used in conjunction with that parameter. In addition, the request must be authorized using a CMS account that is linked to the content owner that the onBehalfOfContentOwner parameter specifies. Finally, the channel that the onBehalfOfContentOwnerChannel parameter value specifies must be linked to the content owner that the onBehalfOfContentOwner parameter specifies. This parameter is intended for YouTube content partners that own and manage many different YouTube channels. It allows content owners to authenticate once and perform actions on behalf of the channel specified in the parameter value, without having to provide authentication credentials for each separate channel.",
+  ).optional(),
+});
+
+const StateSchema = z.object({
+  contentDetails: z.object({
+    channels: z.array(z.string()),
+    playlists: z.array(z.string()),
+  }).optional(),
+  etag: z.string().optional(),
+  id: z.string().optional(),
+  kind: z.string().optional(),
+  localizations: z.record(z.string(), z.unknown()).optional(),
+  snippet: z.object({
+    channelId: z.string(),
+    defaultLanguage: z.string(),
+    localized: z.object({
+      title: z.string(),
+    }),
+    position: z.number(),
+    style: z.string(),
+    title: z.string(),
+    type: z.string(),
+  }).optional(),
+  targeting: z.object({
+    countries: z.array(z.string()),
+    languages: z.array(z.string()),
+    regions: z.array(z.string()),
+  }).optional(),
+}).passthrough();
+
+type StateData = z.infer<typeof StateSchema>;
+
+const InputsSchema = z.object({
+  name: z.string().optional(),
+  contentDetails: z.object({
+    channels: z.array(z.string()).describe(
+      "The channel ids for type multiple_channels.",
+    ).optional(),
+    playlists: z.array(z.string()).describe(
+      "The playlist ids for type single_playlist and multiple_playlists. For singlePlaylist, only one playlistId is allowed.",
+    ).optional(),
+  }).describe(
+    "Details about a channelsection, including playlists and channels.",
+  ).optional(),
+  id: z.string().describe(
+    "The ID that YouTube uses to uniquely identify the channel section.",
+  ).optional(),
+  snippet: z.object({
+    channelId: z.string().describe(
+      "The ID that YouTube uses to uniquely identify the channel that published the channel section.",
+    ).optional(),
+    defaultLanguage: z.string().describe(
+      "The language of the channel section's default title and description.",
+    ).optional(),
+    localized: z.object({
+      title: z.string().describe(
+        "The localized strings for channel section's title.",
+      ).optional(),
+    }).describe("ChannelSection localization setting").optional(),
+    position: z.number().int().describe(
+      "The position of the channel section in the channel.",
+    ).optional(),
+    style: z.enum([
+      "channelsectionStyleUnspecified",
+      "horizontalRow",
+      "verticalList",
+    ]).describe("The style of the channel section.").optional(),
+    title: z.string().describe(
+      "The channel section's title for multiple_playlists and multiple_channels.",
+    ).optional(),
+    type: z.enum([
+      "channelsectionTypeUndefined",
+      "singlePlaylist",
+      "multiplePlaylists",
+      "popularUploads",
+      "recentUploads",
+      "likes",
+      "allPlaylists",
+      "likedPlaylists",
+      "recentPosts",
+      "recentActivity",
+      "liveEvents",
+      "upcomingEvents",
+      "completedEvents",
+      "multipleChannels",
+      "postedVideos",
+      "postedPlaylists",
+      "subscriptions",
+    ]).describe("The type of the channel section.").optional(),
+  }).describe(
+    "Basic details about a channel section, including title, style and position.",
+  ).optional(),
+  targeting: z.object({
+    countries: z.array(z.string()).describe(
+      "The country the channel section is targeting.",
+    ).optional(),
+    languages: z.array(z.string()).describe(
+      "The language the channel section is targeting.",
+    ).optional(),
+    regions: z.array(z.string()).describe(
+      "The region the channel section is targeting.",
+    ).optional(),
+  }).describe("ChannelSection targeting setting.").optional(),
+  part: z.string().describe(
+    "The *part* parameter serves two purposes in this operation. It identifies the properties that the write operation will set as well as the properties that the API response will include. The part names that you can include in the parameter value are snippet and contentDetails.",
+  ).optional(),
+  onBehalfOfContentOwner: z.string().describe(
+    "*Note:* This parameter is intended exclusively for YouTube content partners. The *onBehalfOfContentOwner* parameter indicates that the request's authorization credentials identify a YouTube CMS user who is acting on behalf of the content owner specified in the parameter value. This parameter is intended for YouTube content partners that own and manage many different YouTube channels. It allows content owners to authenticate once and get access to all their video and channel data, without having to provide authentication credentials for each individual channel. The CMS account that the user authenticates with must be linked to the specified YouTube content owner.",
+  ).optional(),
+  onBehalfOfContentOwnerChannel: z.string().describe(
+    "This parameter can only be used in a properly authorized request. *Note:* This parameter is intended exclusively for YouTube content partners. The *onBehalfOfContentOwnerChannel* parameter specifies the YouTube channel ID of the channel to which a video is being added. This parameter is required when a request specifies a value for the onBehalfOfContentOwner parameter, and it can only be used in conjunction with that parameter. In addition, the request must be authorized using a CMS account that is linked to the content owner that the onBehalfOfContentOwner parameter specifies. Finally, the channel that the onBehalfOfContentOwnerChannel parameter value specifies must be linked to the content owner that the onBehalfOfContentOwner parameter specifies. This parameter is intended for YouTube content partners that own and manage many different YouTube channels. It allows content owners to authenticate once and perform actions on behalf of the channel specified in the parameter value, without having to provide authentication credentials for each separate channel.",
+  ).optional(),
+});
+
+export const model = {
+  type: "@swamp/gcp/youtube/channelsections",
+  version: "2026.03.27.1",
+  globalArguments: GlobalArgsSchema,
+  inputsSchema: InputsSchema,
+  resources: {
+    state: {
+      description: "Retrieves a list of resources, possibly filtered.",
+      schema: StateSchema,
+      lifetime: "infinite",
+      garbageCollection: 10,
+    },
+  },
+  methods: {
+    create: {
+      description: "Create a channelSections",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const projectId = await getProjectId();
+        const params: Record<string, string> = { project: projectId };
+        if (g["part"] !== undefined) params["part"] = String(g["part"]);
+        const body: Record<string, unknown> = {};
+        if (g["contentDetails"] !== undefined) {
+          body["contentDetails"] = g["contentDetails"];
+        }
+        if (g["id"] !== undefined) body["id"] = g["id"];
+        if (g["snippet"] !== undefined) body["snippet"] = g["snippet"];
+        if (g["targeting"] !== undefined) body["targeting"] = g["targeting"];
+        if (g["onBehalfOfContentOwner"] !== undefined) {
+          body["onBehalfOfContentOwner"] = g["onBehalfOfContentOwner"];
+        }
+        if (g["onBehalfOfContentOwnerChannel"] !== undefined) {
+          body["onBehalfOfContentOwnerChannel"] =
+            g["onBehalfOfContentOwnerChannel"];
+        }
+        const result = await createResource(
+          BASE_URL,
+          INSERT_CONFIG,
+          params,
+          body,
+        ) as StateData;
+        const instanceName = g.name?.toString() ?? "current";
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    get: {
+      description: "Get a channelSections",
+      arguments: z.object({
+        identifier: z.string().describe("The name of the channelSections"),
+      }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const projectId = await getProjectId();
+        const params: Record<string, string> = { project: projectId };
+        const g = context.globalArgs;
+        if (g["part"] !== undefined) params["part"] = String(g["part"]);
+        const result = await readViaList(
+          BASE_URL,
+          LIST_CONFIG,
+          params,
+          "name",
+          args.identifier,
+        ) as StateData;
+        const instanceName = g.name?.toString() ?? args.identifier;
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    update: {
+      description: "Update channelSections attributes",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const projectId = await getProjectId();
+        const instanceName = g.name?.toString() ?? "current";
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          instanceName,
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        const params: Record<string, string> = { project: projectId };
+        params["part"] = existing["name"]?.toString() ?? "";
+        const body: Record<string, unknown> = {};
+        if (g["contentDetails"] !== undefined) {
+          body["contentDetails"] = g["contentDetails"];
+        }
+        if (g["id"] !== undefined) body["id"] = g["id"];
+        if (g["snippet"] !== undefined) body["snippet"] = g["snippet"];
+        if (g["targeting"] !== undefined) body["targeting"] = g["targeting"];
+        for (const key of Object.keys(existing)) {
+          if (
+            key === "fingerprint" || key === "labelFingerprint" ||
+            key === "etag" || key.endsWith("Fingerprint")
+          ) {
+            body[key] = existing[key];
+          }
+        }
+        const result = await updateResource(
+          BASE_URL,
+          UPDATE_CONFIG,
+          params,
+          body,
+        ) as StateData;
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    delete: {
+      description: "Delete the channelSections",
+      arguments: z.object({
+        identifier: z.string().describe("The name of the channelSections"),
+      }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const g = context.globalArgs;
+        const projectId = await getProjectId();
+        const params: Record<string, string> = { project: projectId };
+        params["id"] = args.identifier;
+        const { existed } = await deleteResource(
+          BASE_URL,
+          DELETE_CONFIG,
+          params,
+        );
+        const instanceName = g.name?.toString() ?? args.identifier;
+        const handle = await context.writeResource("state", instanceName, {
+          identifier: args.identifier,
+          existed,
+          status: existed ? "deleted" : "not_found",
+          deletedAt: new Date().toISOString(),
+        });
+        return { dataHandles: [handle] };
+      },
+    },
+    sync: {
+      description: "Sync channelSections state from GCP",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const projectId = await getProjectId();
+        const instanceName = g.name?.toString() ?? "current";
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          instanceName,
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        try {
+          const params: Record<string, string> = { project: projectId };
+          if (g["part"] !== undefined) params["part"] = String(g["part"]);
+          else if (existing["part"]) params["part"] = String(existing["part"]);
+          const identifier = existing.name?.toString() ?? g["name"]?.toString();
+          if (!identifier) {
+            throw new Error(
+              "No identifier found in existing state or globalArgs",
+            );
+          }
+          const result = await readViaList(
+            BASE_URL,
+            LIST_CONFIG,
+            params,
+            "name",
+            identifier,
+          ) as StateData;
+          const handle = await context.writeResource(
+            "state",
+            instanceName,
+            result,
+          );
+          return { dataHandles: [handle] };
+        } catch (error: unknown) {
+          if (isResourceNotFoundError(error)) {
+            const handle = await context.writeResource("state", instanceName, {
+              status: "not_found",
+              syncedAt: new Date().toISOString(),
+            });
+            return { dataHandles: [handle] };
+          }
+          throw error;
+        }
+      },
+    },
+  },
+};

@@ -1,0 +1,443 @@
+// Auto-generated extension model for @swamp/gcp/networksecurity/clienttlspolicies
+// Do not edit manually. Re-generate with: deno task generate:gcp
+
+// deno-lint-ignore-file no-explicit-any
+
+import { z } from "zod";
+import {
+  createResource,
+  deleteResource,
+  getProjectId,
+  isResourceNotFoundError,
+  readResource,
+  updateResource,
+} from "./_lib/gcp.ts";
+
+/** Construct the fully-qualified resource name from parent and short name. */
+function buildResourceName(parent: string, shortName: string): string {
+  return `${parent}/clientTlsPolicies/${shortName}`;
+}
+
+const BASE_URL = "https://networksecurity.googleapis.com/";
+
+const GET_CONFIG = {
+  "id": "networksecurity.projects.locations.clientTlsPolicies.get",
+  "path": "v1/{+name}",
+  "httpMethod": "GET",
+  "parameterOrder": [
+    "name",
+  ],
+  "parameters": {
+    "name": {
+      "location": "path",
+      "required": true,
+    },
+  },
+} as const;
+
+const INSERT_CONFIG = {
+  "id": "networksecurity.projects.locations.clientTlsPolicies.create",
+  "path": "v1/{+parent}/clientTlsPolicies",
+  "httpMethod": "POST",
+  "parameterOrder": [
+    "parent",
+  ],
+  "parameters": {
+    "clientTlsPolicyId": {
+      "location": "query",
+    },
+    "parent": {
+      "location": "path",
+      "required": true,
+    },
+  },
+} as const;
+
+const PATCH_CONFIG = {
+  "id": "networksecurity.projects.locations.clientTlsPolicies.patch",
+  "path": "v1/{+name}",
+  "httpMethod": "PATCH",
+  "parameterOrder": [
+    "name",
+  ],
+  "parameters": {
+    "name": {
+      "location": "path",
+      "required": true,
+    },
+    "updateMask": {
+      "location": "query",
+    },
+  },
+} as const;
+
+const DELETE_CONFIG = {
+  "id": "networksecurity.projects.locations.clientTlsPolicies.delete",
+  "path": "v1/{+name}",
+  "httpMethod": "DELETE",
+  "parameterOrder": [
+    "name",
+  ],
+  "parameters": {
+    "name": {
+      "location": "path",
+      "required": true,
+    },
+  },
+} as const;
+
+const GlobalArgsSchema = z.object({
+  clientCertificate: z.object({
+    certificateProviderInstance: z.object({
+      pluginInstance: z.string().describe(
+        'Required. Plugin instance name, used to locate and load CertificateProvider instance configuration. Set to "google_cloud_private_spiffe" to use Certificate Authority Service certificate provider instance.',
+      ).optional(),
+    }).describe(
+      "Specification of a TLS certificate provider instance. Workloads may have one or more CertificateProvider instances (plugins) and one of them is enabled and configured by specifying this message. Workloads use the values from this message to locate and load the CertificateProvider instance configuration.",
+    ).optional(),
+    grpcEndpoint: z.object({
+      targetUri: z.string().describe(
+        'Required. The target URI of the gRPC endpoint. Only UDS path is supported, and should start with "unix:".',
+      ).optional(),
+    }).describe("Specification of the GRPC Endpoint.").optional(),
+  }).describe(
+    "Specification of certificate provider. Defines the mechanism to obtain the certificate and private key for peer to peer authentication.",
+  ).optional(),
+  description: z.string().describe(
+    "Optional. Free-text description of the resource.",
+  ).optional(),
+  labels: z.record(z.string(), z.string()).describe(
+    "Optional. Set of label tags associated with the resource.",
+  ).optional(),
+  name: z.string().describe(
+    "Required. Name of the ClientTlsPolicy resource. It matches the pattern `projects/{project}/locations/{location}/clientTlsPolicies/{client_tls_policy}`",
+  ).optional(),
+  serverValidationCa: z.array(z.object({
+    certificateProviderInstance: z.object({
+      pluginInstance: z.string().describe(
+        'Required. Plugin instance name, used to locate and load CertificateProvider instance configuration. Set to "google_cloud_private_spiffe" to use Certificate Authority Service certificate provider instance.',
+      ).optional(),
+    }).describe(
+      "Specification of a TLS certificate provider instance. Workloads may have one or more CertificateProvider instances (plugins) and one of them is enabled and configured by specifying this message. Workloads use the values from this message to locate and load the CertificateProvider instance configuration.",
+    ).optional(),
+    grpcEndpoint: z.object({
+      targetUri: z.string().describe(
+        'Required. The target URI of the gRPC endpoint. Only UDS path is supported, and should start with "unix:".',
+      ).optional(),
+    }).describe("Specification of the GRPC Endpoint.").optional(),
+  })).describe(
+    "Optional. Defines the mechanism to obtain the Certificate Authority certificate to validate the server certificate. If empty, client does not validate the server certificate.",
+  ).optional(),
+  sni: z.string().describe(
+    'Optional. Server Name Indication string to present to the server during TLS handshake. E.g: "secure.example.com".',
+  ).optional(),
+  clientTlsPolicyId: z.string().describe(
+    'Required. Short name of the ClientTlsPolicy resource to be created. This value should be 1-63 characters long, containing only letters, numbers, hyphens, and underscores, and should not start with a number. E.g. "client_mtls_policy".',
+  ).optional(),
+  location: z.string().describe(
+    "The location for this resource (e.g., 'us', 'us-central1', 'europe-west1')",
+  ).optional(),
+});
+
+const StateSchema = z.object({
+  clientCertificate: z.object({
+    certificateProviderInstance: z.object({
+      pluginInstance: z.string(),
+    }),
+    grpcEndpoint: z.object({
+      targetUri: z.string(),
+    }),
+  }).optional(),
+  createTime: z.string().optional(),
+  description: z.string().optional(),
+  labels: z.record(z.string(), z.unknown()).optional(),
+  name: z.string(),
+  serverValidationCa: z.array(z.object({
+    certificateProviderInstance: z.object({
+      pluginInstance: z.string(),
+    }),
+    grpcEndpoint: z.object({
+      targetUri: z.string(),
+    }),
+  })).optional(),
+  sni: z.string().optional(),
+  updateTime: z.string().optional(),
+}).passthrough();
+
+type StateData = z.infer<typeof StateSchema>;
+
+const InputsSchema = z.object({
+  clientCertificate: z.object({
+    certificateProviderInstance: z.object({
+      pluginInstance: z.string().describe(
+        'Required. Plugin instance name, used to locate and load CertificateProvider instance configuration. Set to "google_cloud_private_spiffe" to use Certificate Authority Service certificate provider instance.',
+      ).optional(),
+    }).describe(
+      "Specification of a TLS certificate provider instance. Workloads may have one or more CertificateProvider instances (plugins) and one of them is enabled and configured by specifying this message. Workloads use the values from this message to locate and load the CertificateProvider instance configuration.",
+    ).optional(),
+    grpcEndpoint: z.object({
+      targetUri: z.string().describe(
+        'Required. The target URI of the gRPC endpoint. Only UDS path is supported, and should start with "unix:".',
+      ).optional(),
+    }).describe("Specification of the GRPC Endpoint.").optional(),
+  }).describe(
+    "Specification of certificate provider. Defines the mechanism to obtain the certificate and private key for peer to peer authentication.",
+  ).optional(),
+  description: z.string().describe(
+    "Optional. Free-text description of the resource.",
+  ).optional(),
+  labels: z.record(z.string(), z.string()).describe(
+    "Optional. Set of label tags associated with the resource.",
+  ).optional(),
+  name: z.string().describe(
+    "Required. Name of the ClientTlsPolicy resource. It matches the pattern `projects/{project}/locations/{location}/clientTlsPolicies/{client_tls_policy}`",
+  ).optional(),
+  serverValidationCa: z.array(z.object({
+    certificateProviderInstance: z.object({
+      pluginInstance: z.string().describe(
+        'Required. Plugin instance name, used to locate and load CertificateProvider instance configuration. Set to "google_cloud_private_spiffe" to use Certificate Authority Service certificate provider instance.',
+      ).optional(),
+    }).describe(
+      "Specification of a TLS certificate provider instance. Workloads may have one or more CertificateProvider instances (plugins) and one of them is enabled and configured by specifying this message. Workloads use the values from this message to locate and load the CertificateProvider instance configuration.",
+    ).optional(),
+    grpcEndpoint: z.object({
+      targetUri: z.string().describe(
+        'Required. The target URI of the gRPC endpoint. Only UDS path is supported, and should start with "unix:".',
+      ).optional(),
+    }).describe("Specification of the GRPC Endpoint.").optional(),
+  })).describe(
+    "Optional. Defines the mechanism to obtain the Certificate Authority certificate to validate the server certificate. If empty, client does not validate the server certificate.",
+  ).optional(),
+  sni: z.string().describe(
+    'Optional. Server Name Indication string to present to the server during TLS handshake. E.g: "secure.example.com".',
+  ).optional(),
+  clientTlsPolicyId: z.string().describe(
+    'Required. Short name of the ClientTlsPolicy resource to be created. This value should be 1-63 characters long, containing only letters, numbers, hyphens, and underscores, and should not start with a number. E.g. "client_mtls_policy".',
+  ).optional(),
+  location: z.string().describe(
+    "The location for this resource (e.g., 'us', 'us-central1', 'europe-west1')",
+  ).optional(),
+});
+
+export const model = {
+  type: "@swamp/gcp/networksecurity/clienttlspolicies",
+  version: "2026.03.27.1",
+  globalArguments: GlobalArgsSchema,
+  inputsSchema: InputsSchema,
+  resources: {
+    state: {
+      description:
+        "ClientTlsPolicy is a resource that specifies how a client should authenticate...",
+      schema: StateSchema,
+      lifetime: "infinite",
+      garbageCollection: 10,
+    },
+  },
+  methods: {
+    create: {
+      description: "Create a clientTlsPolicies",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const projectId = await getProjectId();
+        const params: Record<string, string> = { project: projectId };
+        if (g["parent"] !== undefined) params["parent"] = String(g["parent"]);
+        const body: Record<string, unknown> = {};
+        if (g["clientCertificate"] !== undefined) {
+          body["clientCertificate"] = g["clientCertificate"];
+        }
+        if (g["description"] !== undefined) {
+          body["description"] = g["description"];
+        }
+        if (g["labels"] !== undefined) body["labels"] = g["labels"];
+        if (g["name"] !== undefined) body["name"] = g["name"];
+        if (g["serverValidationCa"] !== undefined) {
+          body["serverValidationCa"] = g["serverValidationCa"];
+        }
+        if (g["sni"] !== undefined) body["sni"] = g["sni"];
+        if (g["clientTlsPolicyId"] !== undefined) {
+          body["clientTlsPolicyId"] = g["clientTlsPolicyId"];
+        }
+        if (g["parent"] !== undefined && g["name"] !== undefined) {
+          params["name"] = buildResourceName(
+            String(g["parent"]),
+            String(g["name"]),
+          );
+        }
+        const result = await createResource(
+          BASE_URL,
+          INSERT_CONFIG,
+          params,
+          body,
+          GET_CONFIG,
+        ) as StateData;
+        const instanceName = (result.name ?? g.name)?.toString() ?? "current";
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    get: {
+      description: "Get a clientTlsPolicies",
+      arguments: z.object({
+        identifier: z.string().describe("The name of the clientTlsPolicies"),
+      }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const projectId = await getProjectId();
+        const params: Record<string, string> = { project: projectId };
+        const g = context.globalArgs;
+        params["name"] = buildResourceName(
+          String(g["parent"] ?? ""),
+          args.identifier,
+        );
+        const result = await readResource(
+          BASE_URL,
+          GET_CONFIG,
+          params,
+        ) as StateData;
+        const instanceName = (result.name ?? g.name)?.toString() ??
+          args.identifier;
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    update: {
+      description: "Update clientTlsPolicies attributes",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const projectId = await getProjectId();
+        const instanceName = g.name?.toString() ?? "current";
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          instanceName,
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        const params: Record<string, string> = { project: projectId };
+        params["name"] = buildResourceName(
+          String(g["parent"] ?? ""),
+          existing["name"]?.toString() ?? g["name"]?.toString() ?? "",
+        );
+        const body: Record<string, unknown> = {};
+        if (g["clientCertificate"] !== undefined) {
+          body["clientCertificate"] = g["clientCertificate"];
+        }
+        if (g["description"] !== undefined) {
+          body["description"] = g["description"];
+        }
+        if (g["labels"] !== undefined) body["labels"] = g["labels"];
+        if (g["serverValidationCa"] !== undefined) {
+          body["serverValidationCa"] = g["serverValidationCa"];
+        }
+        if (g["sni"] !== undefined) body["sni"] = g["sni"];
+        for (const key of Object.keys(existing)) {
+          if (
+            key === "fingerprint" || key === "labelFingerprint" ||
+            key === "etag" || key.endsWith("Fingerprint")
+          ) {
+            body[key] = existing[key];
+          }
+        }
+        const result = await updateResource(
+          BASE_URL,
+          PATCH_CONFIG,
+          params,
+          body,
+          GET_CONFIG,
+        ) as StateData;
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    delete: {
+      description: "Delete the clientTlsPolicies",
+      arguments: z.object({
+        identifier: z.string().describe("The name of the clientTlsPolicies"),
+      }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const g = context.globalArgs;
+        const projectId = await getProjectId();
+        const params: Record<string, string> = { project: projectId };
+        params["name"] = buildResourceName(
+          String(g["parent"] ?? ""),
+          args.identifier,
+        );
+        const { existed } = await deleteResource(
+          BASE_URL,
+          DELETE_CONFIG,
+          params,
+        );
+        const instanceName = g.name?.toString() ?? args.identifier;
+        const handle = await context.writeResource("state", instanceName, {
+          identifier: args.identifier,
+          existed,
+          status: existed ? "deleted" : "not_found",
+          deletedAt: new Date().toISOString(),
+        });
+        return { dataHandles: [handle] };
+      },
+    },
+    sync: {
+      description: "Sync clientTlsPolicies state from GCP",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const projectId = await getProjectId();
+        const instanceName = g.name?.toString() ?? "current";
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          instanceName,
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        try {
+          const params: Record<string, string> = { project: projectId };
+          const shortName = existing.name?.toString() ?? g["name"]?.toString();
+          if (!shortName) throw new Error("No identifier found");
+          params["name"] = buildResourceName(
+            String(g["parent"] ?? ""),
+            shortName,
+          );
+          const result = await readResource(
+            BASE_URL,
+            GET_CONFIG,
+            params,
+          ) as StateData;
+          const handle = await context.writeResource(
+            "state",
+            instanceName,
+            result,
+          );
+          return { dataHandles: [handle] };
+        } catch (error: unknown) {
+          if (isResourceNotFoundError(error)) {
+            const handle = await context.writeResource("state", instanceName, {
+              status: "not_found",
+              syncedAt: new Date().toISOString(),
+            });
+            return { dataHandles: [handle] };
+          }
+          throw error;
+        }
+      },
+    },
+  },
+};

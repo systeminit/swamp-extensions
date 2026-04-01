@@ -1,0 +1,324 @@
+// Auto-generated extension model for @swamp/gcp/integrations/integrations-executions-suspensions
+// Do not edit manually. Re-generate with: deno task generate:gcp
+
+// deno-lint-ignore-file no-explicit-any
+
+import { z } from "zod";
+import {
+  createResource,
+  getProjectId,
+  isResourceNotFoundError,
+  readViaList,
+} from "./_lib/gcp.ts";
+
+const BASE_URL = "https://integrations.googleapis.com/";
+
+const LIST_CONFIG = {
+  "id":
+    "integrations.projects.locations.integrations.executions.suspensions.list",
+  "path": "v1/{+parent}/suspensions",
+  "httpMethod": "GET",
+  "parameterOrder": [
+    "parent",
+  ],
+  "parameters": {
+    "filter": {
+      "location": "query",
+    },
+    "orderBy": {
+      "location": "query",
+    },
+    "pageSize": {
+      "location": "query",
+    },
+    "pageToken": {
+      "location": "query",
+    },
+    "parent": {
+      "location": "path",
+      "required": true,
+    },
+  },
+} as const;
+
+const GlobalArgsSchema = z.object({
+  name: z.string().describe(
+    "Instance name for this resource (used as the unique identifier in the factory pattern)",
+  ),
+  location: z.string().describe(
+    "The location for this resource (e.g., 'us', 'us-central1', 'europe-west1')",
+  ).optional(),
+});
+
+const StateSchema = z.object({
+  approvalConfig: z.object({
+    customMessage: z.string(),
+    emailAddresses: z.array(z.string()),
+    expiration: z.object({
+      expireTime: z.string(),
+      liftWhenExpired: z.boolean(),
+      remindTime: z.string(),
+    }),
+  }).optional(),
+  audit: z.object({
+    resolveTime: z.string(),
+    resolver: z.string(),
+  }).optional(),
+  createTime: z.string().optional(),
+  eventExecutionInfoId: z.string().optional(),
+  integration: z.string().optional(),
+  lastModifyTime: z.string().optional(),
+  name: z.string(),
+  state: z.string().optional(),
+  suspensionConfig: z.object({
+    customMessage: z.string(),
+    notifications: z.array(z.object({
+      buganizerNotification: z.object({
+        assigneeEmailAddress: z.string(),
+        componentId: z.string(),
+        templateId: z.string(),
+        title: z.string(),
+      }),
+      emailAddress: z.object({
+        email: z.string(),
+        name: z.string(),
+        tokens: z.array(z.object({
+          name: z.string(),
+          value: z.string(),
+        })),
+      }),
+      escalatorQueue: z.string(),
+      pubsubTopic: z.string(),
+      request: z.object({
+        postToQueueWithTriggerIdRequest: z.object({
+          clientId: z.string(),
+          ignoreErrorIfNoActiveWorkflow: z.boolean(),
+          parameters: z.object({
+            parameters: z.array(z.object({
+              key: z.string(),
+              masked: z.boolean(),
+              value: z.object({
+                booleanArray: z.object({
+                  booleanValues: z.array(z.boolean()),
+                }),
+                booleanValue: z.boolean(),
+                doubleArray: z.object({
+                  doubleValues: z.array(z.number()),
+                }),
+                doubleValue: z.number(),
+                intArray: z.object({
+                  intValues: z.array(z.string()),
+                }),
+                intValue: z.string(),
+                protoArray: z.object({
+                  protoValues: z.array(z.record(z.string(), z.unknown())),
+                }),
+                protoValue: z.record(z.string(), z.unknown()),
+                serializedObjectValue: z.object({
+                  objectValue: z.string(),
+                }),
+                stringArray: z.object({
+                  stringValues: z.array(z.string()),
+                }),
+                stringValue: z.string(),
+              }),
+            })),
+          }),
+          priority: z.string(),
+          quotaRetryCount: z.number(),
+          requestId: z.string(),
+          resourceName: z.string(),
+          scheduledTime: z.string(),
+          testMode: z.boolean(),
+          triggerId: z.string(),
+          userGeneratedExecutionId: z.string(),
+          workflowName: z.string(),
+        }),
+        suspensionInfoEventParameterKey: z.string(),
+      }),
+    })),
+    suspensionExpiration: z.object({
+      expireAfterMs: z.number(),
+      liftWhenExpired: z.boolean(),
+      remindAfterMs: z.number(),
+    }),
+    whoMayResolve: z.array(z.object({
+      gaiaIdentity: z.object({
+        emailAddress: z.string(),
+        gaiaId: z.string(),
+      }),
+      googleGroup: z.object({
+        emailAddress: z.string(),
+        gaiaId: z.string(),
+      }),
+      loasRole: z.string(),
+      mdbGroup: z.string(),
+    })),
+  }).optional(),
+  taskId: z.string().optional(),
+}).passthrough();
+
+type StateData = z.infer<typeof StateSchema>;
+
+const InputsSchema = z.object({
+  name: z.string().optional(),
+  location: z.string().describe(
+    "The location for this resource (e.g., 'us', 'us-central1', 'europe-west1')",
+  ).optional(),
+});
+
+export const model = {
+  type: "@swamp/gcp/integrations/integrations-executions-suspensions",
+  version: "2026.03.27.1",
+  globalArguments: GlobalArgsSchema,
+  inputsSchema: InputsSchema,
+  resources: {
+    state: {
+      description: "A record representing a suspension.",
+      schema: StateSchema,
+      lifetime: "infinite",
+      garbageCollection: 10,
+    },
+  },
+  methods: {
+    get: {
+      description: "Get a suspensions",
+      arguments: z.object({
+        identifier: z.string().describe("The name of the suspensions"),
+      }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const projectId = await getProjectId();
+        const params: Record<string, string> = { project: projectId };
+        const g = context.globalArgs;
+        if (g["parent"] !== undefined) params["parent"] = String(g["parent"]);
+        const result = await readViaList(
+          BASE_URL,
+          LIST_CONFIG,
+          params,
+          "name",
+          args.identifier,
+        ) as StateData;
+        const instanceName = g.name?.toString() ?? args.identifier;
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    sync: {
+      description: "Sync suspensions state from GCP",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const projectId = await getProjectId();
+        const instanceName = g.name?.toString() ?? "current";
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          instanceName,
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        try {
+          const params: Record<string, string> = { project: projectId };
+          if (g["parent"] !== undefined) params["parent"] = String(g["parent"]);
+          else if (existing["parent"]) {
+            params["parent"] = String(existing["parent"]);
+          }
+          const identifier = existing.name?.toString() ?? g["name"]?.toString();
+          if (!identifier) {
+            throw new Error(
+              "No identifier found in existing state or globalArgs",
+            );
+          }
+          const result = await readViaList(
+            BASE_URL,
+            LIST_CONFIG,
+            params,
+            "name",
+            identifier,
+          ) as StateData;
+          const handle = await context.writeResource(
+            "state",
+            instanceName,
+            result,
+          );
+          return { dataHandles: [handle] };
+        } catch (error: unknown) {
+          if (isResourceNotFoundError(error)) {
+            const handle = await context.writeResource("state", instanceName, {
+              status: "not_found",
+              syncedAt: new Date().toISOString(),
+            });
+            return { dataHandles: [handle] };
+          }
+          throw error;
+        }
+      },
+    },
+    lift: {
+      description: "lift",
+      arguments: z.object({
+        suspensionResult: z.any().optional(),
+      }),
+      execute: async (args: Record<string, unknown>, context: any) => {
+        const g = context.globalArgs;
+        const projectId = await getProjectId();
+        const params: Record<string, string> = { project: projectId };
+        if (g["name"] !== undefined) params["name"] = String(g["name"]);
+        const body: Record<string, unknown> = {};
+        if (args["suspensionResult"] !== undefined) {
+          body["suspensionResult"] = args["suspensionResult"];
+        }
+        const result = await createResource(
+          BASE_URL,
+          {
+            "id":
+              "integrations.projects.locations.integrations.executions.suspensions.lift",
+            "path": "v1/{+name}:lift",
+            "httpMethod": "POST",
+            "parameterOrder": ["name"],
+            "parameters": { "name": { "location": "path", "required": true } },
+          },
+          params,
+          body,
+        );
+        return { result };
+      },
+    },
+    resolve: {
+      description: "resolve",
+      arguments: z.object({
+        suspension: z.any().optional(),
+      }),
+      execute: async (args: Record<string, unknown>, context: any) => {
+        const g = context.globalArgs;
+        const projectId = await getProjectId();
+        const params: Record<string, string> = { project: projectId };
+        if (g["name"] !== undefined) params["name"] = String(g["name"]);
+        const body: Record<string, unknown> = {};
+        if (args["suspension"] !== undefined) {
+          body["suspension"] = args["suspension"];
+        }
+        const result = await createResource(
+          BASE_URL,
+          {
+            "id":
+              "integrations.projects.locations.integrations.executions.suspensions.resolve",
+            "path": "v1/{+name}:resolve",
+            "httpMethod": "POST",
+            "parameterOrder": ["name"],
+            "parameters": { "name": { "location": "path", "required": true } },
+          },
+          params,
+          body,
+        );
+        return { result };
+      },
+    },
+  },
+};

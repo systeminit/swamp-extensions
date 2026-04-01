@@ -1,0 +1,261 @@
+// Auto-generated extension model for @swamp/gcp/books/layers-annotationdata
+// Do not edit manually. Re-generate with: deno task generate:gcp
+
+// deno-lint-ignore-file no-explicit-any
+
+import { z } from "zod";
+import {
+  getProjectId,
+  isResourceNotFoundError,
+  readResource,
+} from "./_lib/gcp.ts";
+
+const BASE_URL = "https://books.googleapis.com/";
+
+const GET_CONFIG = {
+  "id": "books.layers.annotationData.get",
+  "path":
+    "books/v1/volumes/{volumeId}/layers/{layerId}/data/{annotationDataId}",
+  "httpMethod": "GET",
+  "parameterOrder": [
+    "volumeId",
+    "layerId",
+    "annotationDataId",
+    "contentVersion",
+  ],
+  "parameters": {
+    "allowWebDefinitions": {
+      "location": "query",
+    },
+    "annotationDataId": {
+      "location": "path",
+      "required": true,
+    },
+    "contentVersion": {
+      "location": "query",
+      "required": true,
+    },
+    "h": {
+      "location": "query",
+    },
+    "layerId": {
+      "location": "path",
+      "required": true,
+    },
+    "locale": {
+      "location": "query",
+    },
+    "scale": {
+      "location": "query",
+    },
+    "source": {
+      "location": "query",
+    },
+    "volumeId": {
+      "location": "path",
+      "required": true,
+    },
+    "w": {
+      "location": "query",
+    },
+  },
+} as const;
+
+const GlobalArgsSchema = z.object({
+  name: z.string().describe(
+    "Instance name for this resource (used as the unique identifier in the factory pattern)",
+  ),
+});
+
+const StateSchema = z.object({
+  annotationType: z.string().optional(),
+  data: z.object({
+    common: z.object({
+      title: z.string(),
+    }),
+    dict: z.object({
+      source: z.object({
+        attribution: z.string(),
+        url: z.string(),
+      }),
+      words: z.array(z.object({
+        derivatives: z.array(z.object({
+          source: z.object({
+            attribution: z.string(),
+            url: z.string(),
+          }),
+          text: z.string(),
+        })),
+        examples: z.array(z.object({
+          source: z.object({
+            attribution: z.string(),
+            url: z.string(),
+          }),
+          text: z.string(),
+        })),
+        senses: z.array(z.object({
+          conjugations: z.array(z.object({
+            type: z.string(),
+            value: z.string(),
+          })),
+          definitions: z.array(z.object({
+            definition: z.string(),
+            examples: z.array(z.object({
+              source: z.object({
+                attribution: z.string(),
+                url: z.string(),
+              }),
+              text: z.string(),
+            })),
+          })),
+          partOfSpeech: z.string(),
+          pronunciation: z.string(),
+          pronunciationUrl: z.string(),
+          source: z.object({
+            attribution: z.string(),
+            url: z.string(),
+          }),
+          syllabification: z.string(),
+          synonyms: z.array(z.object({
+            source: z.object({
+              attribution: z.string(),
+              url: z.string(),
+            }),
+            text: z.string(),
+          })),
+        })),
+        source: z.object({
+          attribution: z.string(),
+          url: z.string(),
+        }),
+      })),
+    }),
+    kind: z.string(),
+  }).optional(),
+  encodedData: z.string().optional(),
+  id: z.string().optional(),
+  kind: z.string().optional(),
+  layerId: z.string().optional(),
+  selfLink: z.string().optional(),
+  updated: z.string().optional(),
+  volumeId: z.string().optional(),
+}).passthrough();
+
+type StateData = z.infer<typeof StateSchema>;
+
+const InputsSchema = z.object({
+  name: z.string().optional(),
+});
+
+export const model = {
+  type: "@swamp/gcp/books/layers-annotationdata",
+  version: "2026.03.27.1",
+  globalArguments: GlobalArgsSchema,
+  inputsSchema: InputsSchema,
+  resources: {
+    state: {
+      description: "Gets the annotation data.",
+      schema: StateSchema,
+      lifetime: "infinite",
+      garbageCollection: 10,
+    },
+  },
+  methods: {
+    get: {
+      description: "Get a annotationData",
+      arguments: z.object({
+        identifier: z.string().describe("The name of the annotationData"),
+      }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const projectId = await getProjectId();
+        const params: Record<string, string> = { project: projectId };
+        const g = context.globalArgs;
+        if (g["volumeId"] !== undefined) {
+          params["volumeId"] = String(g["volumeId"]);
+        }
+        if (g["layerId"] !== undefined) {
+          params["layerId"] = String(g["layerId"]);
+        }
+        if (g["annotationDataId"] !== undefined) {
+          params["annotationDataId"] = String(g["annotationDataId"]);
+        }
+        params["contentVersion"] = args.identifier;
+        const result = await readResource(
+          BASE_URL,
+          GET_CONFIG,
+          params,
+        ) as StateData;
+        const instanceName = g.name?.toString() ?? args.identifier;
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    sync: {
+      description: "Sync annotationData state from GCP",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const projectId = await getProjectId();
+        const instanceName = g.name?.toString() ?? "current";
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          instanceName,
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        try {
+          const params: Record<string, string> = { project: projectId };
+          if (g["volumeId"] !== undefined) {
+            params["volumeId"] = String(g["volumeId"]);
+          } else if (existing["volumeId"]) {
+            params["volumeId"] = String(existing["volumeId"]);
+          }
+          if (g["layerId"] !== undefined) {
+            params["layerId"] = String(g["layerId"]);
+          } else if (existing["layerId"]) {
+            params["layerId"] = String(existing["layerId"]);
+          }
+          if (g["annotationDataId"] !== undefined) {
+            params["annotationDataId"] = String(g["annotationDataId"]);
+          } else if (existing["annotationDataId"]) {
+            params["annotationDataId"] = String(existing["annotationDataId"]);
+          }
+          const identifier = existing.name?.toString() ?? g["name"]?.toString();
+          if (!identifier) {
+            throw new Error(
+              "No identifier found in existing state or globalArgs",
+            );
+          }
+          params["contentVersion"] = identifier;
+          const result = await readResource(
+            BASE_URL,
+            GET_CONFIG,
+            params,
+          ) as StateData;
+          const handle = await context.writeResource(
+            "state",
+            instanceName,
+            result,
+          );
+          return { dataHandles: [handle] };
+        } catch (error: unknown) {
+          if (isResourceNotFoundError(error)) {
+            const handle = await context.writeResource("state", instanceName, {
+              status: "not_found",
+              syncedAt: new Date().toISOString(),
+            });
+            return { dataHandles: [handle] };
+          }
+          throw error;
+        }
+      },
+    },
+  },
+};

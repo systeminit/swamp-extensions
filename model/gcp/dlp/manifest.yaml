@@ -1,0 +1,29 @@
+# Auto-generated manifest. Re-generate with the appropriate deno task.
+manifestVersion: 1
+name: "@swamp/gcp/dlp"
+version: "2026.03.27.1"
+description: "Google Cloud dlp infrastructure models"
+labels:
+  - gcp
+  - google-cloud
+  - dlp
+  - cloud
+  - infrastructure
+releaseNotes: |
+  - Added: infotypes, deidentifytemplates, inspecttemplates, columndataprofiles, connections, discoveryconfigs, dlpjobs, filestoredataprofiles, jobtriggers, projectdataprofiles, storedinfotypes, tabledataprofiles
+models:
+  - columndataprofiles.ts
+  - connections.ts
+  - deidentifytemplates.ts
+  - discoveryconfigs.ts
+  - dlpjobs.ts
+  - filestoredataprofiles.ts
+  - infotypes.ts
+  - inspecttemplates.ts
+  - jobtriggers.ts
+  - projectdataprofiles.ts
+  - storedinfotypes.ts
+  - tabledataprofiles.ts
+additionalFiles:
+  - LICENSE.txt
+  - README.md

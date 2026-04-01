@@ -1,0 +1,21 @@
+# Auto-generated manifest. Re-generate with the appropriate deno task.
+manifestVersion: 1
+name: "@swamp/gcp/servicedirectory"
+version: "2026.03.27.1"
+description: "Google Cloud servicedirectory infrastructure models"
+labels:
+  - gcp
+  - google-cloud
+  - servicedirectory
+  - cloud
+  - infrastructure
+releaseNotes: |
+  - Added: locations, namespaces, namespaces_services, namespaces_services_endpoints
+models:
+  - locations.ts
+  - namespaces.ts
+  - namespaces_services.ts
+  - namespaces_services_endpoints.ts
+additionalFiles:
+  - LICENSE.txt
+  - README.md

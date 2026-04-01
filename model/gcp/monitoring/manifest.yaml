@@ -1,0 +1,31 @@
+# Auto-generated manifest. Re-generate with the appropriate deno task.
+manifestVersion: 1
+name: "@swamp/gcp/monitoring"
+version: "2026.03.27.1"
+description: "Google Cloud monitoring infrastructure models"
+labels:
+  - gcp
+  - google-cloud
+  - monitoring
+  - cloud
+  - infrastructure
+releaseNotes: |
+  - Added: timeseries, alertpolicies, alerts, groups, groups_members, metricdescriptors, monitoredresourcedescriptors, notificationchanneldescriptors, notificationchannels, snoozes, uptimecheckconfigs, services, services_servicelevelobjectives, uptimecheckips
+models:
+  - alertpolicies.ts
+  - alerts.ts
+  - groups.ts
+  - groups_members.ts
+  - metricdescriptors.ts
+  - monitoredresourcedescriptors.ts
+  - notificationchanneldescriptors.ts
+  - notificationchannels.ts
+  - services.ts
+  - services_servicelevelobjectives.ts
+  - snoozes.ts
+  - timeseries.ts
+  - uptimecheckconfigs.ts
+  - uptimecheckips.ts
+additionalFiles:
+  - LICENSE.txt
+  - README.md

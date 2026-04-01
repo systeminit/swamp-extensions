@@ -1,0 +1,18 @@
+# Auto-generated manifest. Re-generate with the appropriate deno task.
+manifestVersion: 1
+name: "@swamp/gcp/readerrevenuesubscriptionlinking"
+version: "2026.03.27.1"
+description: "Google Cloud readerrevenuesubscriptionlinking infrastructure models"
+labels:
+  - gcp
+  - google-cloud
+  - readerrevenuesubscriptionlinking
+  - cloud
+  - infrastructure
+releaseNotes: |
+  - Added: publications_readers
+models:
+  - publications_readers.ts
+additionalFiles:
+  - LICENSE.txt
+  - README.md

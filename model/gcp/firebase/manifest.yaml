@@ -1,0 +1,24 @@
+# Auto-generated manifest. Re-generate with the appropriate deno task.
+manifestVersion: 1
+name: "@swamp/gcp/firebase"
+version: "2026.03.27.1"
+description: "Google Cloud firebase infrastructure models"
+labels:
+  - gcp
+  - google-cloud
+  - firebase
+  - cloud
+  - infrastructure
+releaseNotes: |
+  - Added: availableprojects, projects, androidapps, androidapps_sha, availablelocations, iosapps, webapps
+models:
+  - androidapps.ts
+  - androidapps_sha.ts
+  - availablelocations.ts
+  - availableprojects.ts
+  - iosapps.ts
+  - projects.ts
+  - webapps.ts
+additionalFiles:
+  - LICENSE.txt
+  - README.md

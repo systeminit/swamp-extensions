@@ -1,0 +1,19 @@
+# Auto-generated manifest. Re-generate with the appropriate deno task.
+manifestVersion: 1
+name: "@swamp/gcp/safebrowsing"
+version: "2026.03.27.1"
+description: "Google Cloud safebrowsing infrastructure models"
+labels:
+  - gcp
+  - google-cloud
+  - safebrowsing
+  - cloud
+  - infrastructure
+releaseNotes: |
+  - Added: hashlist, hashlists
+models:
+  - hashlist.ts
+  - hashlists.ts
+additionalFiles:
+  - LICENSE.txt
+  - README.md

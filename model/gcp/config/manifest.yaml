@@ -1,0 +1,28 @@
+# Auto-generated manifest. Re-generate with the appropriate deno task.
+manifestVersion: 1
+name: "@swamp/gcp/config"
+version: "2026.03.31.1"
+description: "Google Cloud config infrastructure models"
+labels:
+  - gcp
+  - google-cloud
+  - config
+  - cloud
+  - infrastructure
+releaseNotes: |
+  - Added: deploymentgroups, deploymentgroups_revisions
+  - Updated: deployments, deployments_revisions, previews
+models:
+  - deploymentgroups.ts
+  - deploymentgroups_revisions.ts
+  - deployments.ts
+  - deployments_revisions.ts
+  - deployments_revisions_resources.ts
+  - locations.ts
+  - previews.ts
+  - previews_resourcechanges.ts
+  - previews_resourcedrifts.ts
+  - terraformversions.ts
+additionalFiles:
+  - LICENSE.txt
+  - README.md

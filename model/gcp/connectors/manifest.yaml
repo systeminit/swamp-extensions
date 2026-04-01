@@ -1,0 +1,22 @@
+# Auto-generated manifest. Re-generate with the appropriate deno task.
+manifestVersion: 1
+name: "@swamp/gcp/connectors"
+version: "2026.03.27.1"
+description: "Google Cloud connectors infrastructure models"
+labels:
+  - gcp
+  - google-cloud
+  - connectors
+  - cloud
+  - infrastructure
+releaseNotes: |
+  - Added: connections_actions, connections_entitytypes, connections_entitytypes_entities, connections_resources, connections_tools
+models:
+  - connections_actions.ts
+  - connections_entitytypes.ts
+  - connections_entitytypes_entities.ts
+  - connections_resources.ts
+  - connections_tools.ts
+additionalFiles:
+  - LICENSE.txt
+  - README.md

@@ -1,0 +1,575 @@
+// Auto-generated extension model for @swamp/gcp/ml/studies-trials
+// Do not edit manually. Re-generate with: deno task generate:gcp
+
+// deno-lint-ignore-file no-explicit-any
+
+import { z } from "zod";
+import {
+  createResource,
+  deleteResource,
+  getProjectId,
+  isResourceNotFoundError,
+  readResource,
+} from "./_lib/gcp.ts";
+
+/** Construct the fully-qualified resource name from parent and short name. */
+function buildResourceName(parent: string, shortName: string): string {
+  return `${parent}/trials/${shortName}`;
+}
+
+const BASE_URL = "https://ml.googleapis.com/";
+
+const GET_CONFIG = {
+  "id": "ml.projects.locations.studies.trials.get",
+  "path": "v1/{+name}",
+  "httpMethod": "GET",
+  "parameterOrder": [
+    "name",
+  ],
+  "parameters": {
+    "name": {
+      "location": "path",
+      "required": true,
+    },
+  },
+} as const;
+
+const INSERT_CONFIG = {
+  "id": "ml.projects.locations.studies.trials.create",
+  "path": "v1/{+parent}/trials",
+  "httpMethod": "POST",
+  "parameterOrder": [
+    "parent",
+  ],
+  "parameters": {
+    "parent": {
+      "location": "path",
+      "required": true,
+    },
+  },
+} as const;
+
+const DELETE_CONFIG = {
+  "id": "ml.projects.locations.studies.trials.delete",
+  "path": "v1/{+name}",
+  "httpMethod": "DELETE",
+  "parameterOrder": [
+    "name",
+  ],
+  "parameters": {
+    "name": {
+      "location": "path",
+      "required": true,
+    },
+  },
+} as const;
+
+const GlobalArgsSchema = z.object({
+  name: z.string().describe(
+    "Instance name for this resource (used as the unique identifier in the factory pattern)",
+  ),
+  finalMeasurement: z.object({
+    elapsedTime: z.string().describe(
+      "Output only. Time that the trial has been running at the point of this measurement.",
+    ).optional(),
+    metrics: z.array(z.object({
+      metric: z.string().describe("Required. Metric name.").optional(),
+      value: z.number().describe("Required. The value for this metric.")
+        .optional(),
+    })).describe(
+      "Provides a list of metrics that act as inputs into the objective function.",
+    ).optional(),
+    stepCount: z.string().describe(
+      "The number of steps a machine learning model has been trained for. Must be non-negative.",
+    ).optional(),
+  }).describe("A message representing a measurement.").optional(),
+  measurements: z.array(z.object({
+    elapsedTime: z.string().describe(
+      "Output only. Time that the trial has been running at the point of this measurement.",
+    ).optional(),
+    metrics: z.array(z.object({
+      metric: z.string().describe("Required. Metric name.").optional(),
+      value: z.number().describe("Required. The value for this metric.")
+        .optional(),
+    })).describe(
+      "Provides a list of metrics that act as inputs into the objective function.",
+    ).optional(),
+    stepCount: z.string().describe(
+      "The number of steps a machine learning model has been trained for. Must be non-negative.",
+    ).optional(),
+  })).describe(
+    "A list of measurements that are strictly lexicographically ordered by their induced tuples (steps, elapsed_time). These are used for early stopping computations.",
+  ).optional(),
+  parameters: z.array(z.object({
+    floatValue: z.number().describe(
+      "Must be set if ParameterType is DOUBLE or DISCRETE.",
+    ).optional(),
+    intValue: z.string().describe("Must be set if ParameterType is INTEGER")
+      .optional(),
+    parameter: z.string().describe("The name of the parameter.").optional(),
+    stringValue: z.string().describe(
+      "Must be set if ParameterTypeis CATEGORICAL",
+    ).optional(),
+  })).describe("The parameters of the trial.").optional(),
+  state: z.enum([
+    "STATE_UNSPECIFIED",
+    "REQUESTED",
+    "ACTIVE",
+    "COMPLETED",
+    "STOPPING",
+  ]).describe("The detailed state of a trial.").optional(),
+  location: z.string().describe(
+    "The location for this resource (e.g., 'us', 'us-central1', 'europe-west1')",
+  ).optional(),
+});
+
+const StateSchema = z.object({
+  clientId: z.string().optional(),
+  endTime: z.string().optional(),
+  finalMeasurement: z.object({
+    elapsedTime: z.string(),
+    metrics: z.array(z.object({
+      metric: z.string(),
+      value: z.number(),
+    })),
+    stepCount: z.string(),
+  }).optional(),
+  infeasibleReason: z.string().optional(),
+  measurements: z.array(z.object({
+    elapsedTime: z.string(),
+    metrics: z.array(z.object({
+      metric: z.string(),
+      value: z.number(),
+    })),
+    stepCount: z.string(),
+  })).optional(),
+  name: z.string(),
+  parameters: z.array(z.object({
+    floatValue: z.number(),
+    intValue: z.string(),
+    parameter: z.string(),
+    stringValue: z.string(),
+  })).optional(),
+  startTime: z.string().optional(),
+  state: z.string().optional(),
+  trialInfeasible: z.boolean().optional(),
+}).passthrough();
+
+type StateData = z.infer<typeof StateSchema>;
+
+const InputsSchema = z.object({
+  name: z.string().optional(),
+  finalMeasurement: z.object({
+    elapsedTime: z.string().describe(
+      "Output only. Time that the trial has been running at the point of this measurement.",
+    ).optional(),
+    metrics: z.array(z.object({
+      metric: z.string().describe("Required. Metric name.").optional(),
+      value: z.number().describe("Required. The value for this metric.")
+        .optional(),
+    })).describe(
+      "Provides a list of metrics that act as inputs into the objective function.",
+    ).optional(),
+    stepCount: z.string().describe(
+      "The number of steps a machine learning model has been trained for. Must be non-negative.",
+    ).optional(),
+  }).describe("A message representing a measurement.").optional(),
+  measurements: z.array(z.object({
+    elapsedTime: z.string().describe(
+      "Output only. Time that the trial has been running at the point of this measurement.",
+    ).optional(),
+    metrics: z.array(z.object({
+      metric: z.string().describe("Required. Metric name.").optional(),
+      value: z.number().describe("Required. The value for this metric.")
+        .optional(),
+    })).describe(
+      "Provides a list of metrics that act as inputs into the objective function.",
+    ).optional(),
+    stepCount: z.string().describe(
+      "The number of steps a machine learning model has been trained for. Must be non-negative.",
+    ).optional(),
+  })).describe(
+    "A list of measurements that are strictly lexicographically ordered by their induced tuples (steps, elapsed_time). These are used for early stopping computations.",
+  ).optional(),
+  parameters: z.array(z.object({
+    floatValue: z.number().describe(
+      "Must be set if ParameterType is DOUBLE or DISCRETE.",
+    ).optional(),
+    intValue: z.string().describe("Must be set if ParameterType is INTEGER")
+      .optional(),
+    parameter: z.string().describe("The name of the parameter.").optional(),
+    stringValue: z.string().describe(
+      "Must be set if ParameterTypeis CATEGORICAL",
+    ).optional(),
+  })).describe("The parameters of the trial.").optional(),
+  state: z.enum([
+    "STATE_UNSPECIFIED",
+    "REQUESTED",
+    "ACTIVE",
+    "COMPLETED",
+    "STOPPING",
+  ]).describe("The detailed state of a trial.").optional(),
+  location: z.string().describe(
+    "The location for this resource (e.g., 'us', 'us-central1', 'europe-west1')",
+  ).optional(),
+});
+
+export const model = {
+  type: "@swamp/gcp/ml/studies-trials",
+  version: "2026.03.27.1",
+  globalArguments: GlobalArgsSchema,
+  inputsSchema: InputsSchema,
+  resources: {
+    state: {
+      description: "A message representing a trial.",
+      schema: StateSchema,
+      lifetime: "infinite",
+      garbageCollection: 10,
+    },
+  },
+  methods: {
+    create: {
+      description: "Create a trials",
+      arguments: z.object({
+        waitForReady: z.boolean().describe(
+          "Wait for the resource to reach a ready state after creation (default: true)",
+        ).optional(),
+      }),
+      execute: async (args: { waitForReady?: boolean }, context: any) => {
+        const g = context.globalArgs;
+        const projectId = await getProjectId();
+        const params: Record<string, string> = { project: projectId };
+        if (g["parent"] !== undefined) params["parent"] = String(g["parent"]);
+        const body: Record<string, unknown> = {};
+        if (g["finalMeasurement"] !== undefined) {
+          body["finalMeasurement"] = g["finalMeasurement"];
+        }
+        if (g["measurements"] !== undefined) {
+          body["measurements"] = g["measurements"];
+        }
+        if (g["parameters"] !== undefined) body["parameters"] = g["parameters"];
+        if (g["state"] !== undefined) body["state"] = g["state"];
+        if (g["parent"] !== undefined && g["name"] !== undefined) {
+          params["name"] = buildResourceName(
+            String(g["parent"]),
+            String(g["name"]),
+          );
+        }
+        const result = await createResource(
+          BASE_URL,
+          INSERT_CONFIG,
+          params,
+          body,
+          GET_CONFIG,
+          (args.waitForReady ?? true)
+            ? {
+              "statusField": "state",
+              "readyValues": ["ACTIVE", "COMPLETED"],
+              "failedValues": [],
+            }
+            : undefined,
+        ) as StateData;
+        const instanceName = g.name?.toString() ?? "current";
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    get: {
+      description: "Get a trials",
+      arguments: z.object({
+        identifier: z.string().describe("The name of the trials"),
+      }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const projectId = await getProjectId();
+        const params: Record<string, string> = { project: projectId };
+        const g = context.globalArgs;
+        params["name"] = buildResourceName(
+          String(g["parent"] ?? ""),
+          args.identifier,
+        );
+        const result = await readResource(
+          BASE_URL,
+          GET_CONFIG,
+          params,
+        ) as StateData;
+        const instanceName = g.name?.toString() ?? args.identifier;
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    delete: {
+      description: "Delete the trials",
+      arguments: z.object({
+        identifier: z.string().describe("The name of the trials"),
+      }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const g = context.globalArgs;
+        const projectId = await getProjectId();
+        const params: Record<string, string> = { project: projectId };
+        params["name"] = buildResourceName(
+          String(g["parent"] ?? ""),
+          args.identifier,
+        );
+        const { existed } = await deleteResource(
+          BASE_URL,
+          DELETE_CONFIG,
+          params,
+        );
+        const instanceName = g.name?.toString() ?? args.identifier;
+        const handle = await context.writeResource("state", instanceName, {
+          identifier: args.identifier,
+          existed,
+          status: existed ? "deleted" : "not_found",
+          deletedAt: new Date().toISOString(),
+        });
+        return { dataHandles: [handle] };
+      },
+    },
+    sync: {
+      description: "Sync trials state from GCP",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const projectId = await getProjectId();
+        const instanceName = g.name?.toString() ?? "current";
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          instanceName,
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        try {
+          const params: Record<string, string> = { project: projectId };
+          const shortName = existing.name?.toString() ?? g["name"]?.toString();
+          if (!shortName) throw new Error("No identifier found");
+          params["name"] = buildResourceName(
+            String(g["parent"] ?? ""),
+            shortName,
+          );
+          const result = await readResource(
+            BASE_URL,
+            GET_CONFIG,
+            params,
+          ) as StateData;
+          const handle = await context.writeResource(
+            "state",
+            instanceName,
+            result,
+          );
+          return { dataHandles: [handle] };
+        } catch (error: unknown) {
+          if (isResourceNotFoundError(error)) {
+            const handle = await context.writeResource("state", instanceName, {
+              status: "not_found",
+              syncedAt: new Date().toISOString(),
+            });
+            return { dataHandles: [handle] };
+          }
+          throw error;
+        }
+      },
+    },
+    add_measurement: {
+      description: "add measurement",
+      arguments: z.object({
+        measurement: z.any().optional(),
+      }),
+      execute: async (args: Record<string, unknown>, context: any) => {
+        const g = context.globalArgs;
+        const projectId = await getProjectId();
+        const params: Record<string, string> = { project: projectId };
+        if (g["parent"] !== undefined && g["name"] !== undefined) {
+          params["name"] = buildResourceName(
+            String(g["parent"]),
+            String(g["name"]),
+          );
+        }
+        const body: Record<string, unknown> = {};
+        if (args["measurement"] !== undefined) {
+          body["measurement"] = args["measurement"];
+        }
+        const result = await createResource(
+          BASE_URL,
+          {
+            "id": "ml.projects.locations.studies.trials.addMeasurement",
+            "path": "v1/{+name}:addMeasurement",
+            "httpMethod": "POST",
+            "parameterOrder": ["name"],
+            "parameters": { "name": { "location": "path", "required": true } },
+          },
+          params,
+          body,
+        );
+        return { result };
+      },
+    },
+    check_early_stopping_state: {
+      description: "check early stopping state",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, unknown>, context: any) => {
+        const g = context.globalArgs;
+        const projectId = await getProjectId();
+        const params: Record<string, string> = { project: projectId };
+        if (g["parent"] !== undefined && g["name"] !== undefined) {
+          params["name"] = buildResourceName(
+            String(g["parent"]),
+            String(g["name"]),
+          );
+        }
+        const result = await createResource(
+          BASE_URL,
+          {
+            "id":
+              "ml.projects.locations.studies.trials.checkEarlyStoppingState",
+            "path": "v1/{+name}:checkEarlyStoppingState",
+            "httpMethod": "POST",
+            "parameterOrder": ["name"],
+            "parameters": { "name": { "location": "path", "required": true } },
+          },
+          params,
+          {},
+        );
+        return { result };
+      },
+    },
+    complete: {
+      description: "complete",
+      arguments: z.object({
+        finalMeasurement: z.any().optional(),
+        infeasibleReason: z.any().optional(),
+        trialInfeasible: z.any().optional(),
+      }),
+      execute: async (args: Record<string, unknown>, context: any) => {
+        const g = context.globalArgs;
+        const projectId = await getProjectId();
+        const params: Record<string, string> = { project: projectId };
+        if (g["parent"] !== undefined && g["name"] !== undefined) {
+          params["name"] = buildResourceName(
+            String(g["parent"]),
+            String(g["name"]),
+          );
+        }
+        const body: Record<string, unknown> = {};
+        if (args["finalMeasurement"] !== undefined) {
+          body["finalMeasurement"] = args["finalMeasurement"];
+        }
+        if (args["infeasibleReason"] !== undefined) {
+          body["infeasibleReason"] = args["infeasibleReason"];
+        }
+        if (args["trialInfeasible"] !== undefined) {
+          body["trialInfeasible"] = args["trialInfeasible"];
+        }
+        const result = await createResource(
+          BASE_URL,
+          {
+            "id": "ml.projects.locations.studies.trials.complete",
+            "path": "v1/{+name}:complete",
+            "httpMethod": "POST",
+            "parameterOrder": ["name"],
+            "parameters": { "name": { "location": "path", "required": true } },
+          },
+          params,
+          body,
+        );
+        return { result };
+      },
+    },
+    list_optimal_trials: {
+      description: "list optimal trials",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, unknown>, context: any) => {
+        const g = context.globalArgs;
+        const projectId = await getProjectId();
+        const params: Record<string, string> = { project: projectId };
+        if (g["parent"] !== undefined) params["parent"] = String(g["parent"]);
+        const result = await createResource(
+          BASE_URL,
+          {
+            "id": "ml.projects.locations.studies.trials.listOptimalTrials",
+            "path": "v1/{+parent}/trials:listOptimalTrials",
+            "httpMethod": "POST",
+            "parameterOrder": ["parent"],
+            "parameters": {
+              "parent": { "location": "path", "required": true },
+            },
+          },
+          params,
+          {},
+        );
+        return { result };
+      },
+    },
+    stop: {
+      description: "stop",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, unknown>, context: any) => {
+        const g = context.globalArgs;
+        const projectId = await getProjectId();
+        const params: Record<string, string> = { project: projectId };
+        if (g["parent"] !== undefined && g["name"] !== undefined) {
+          params["name"] = buildResourceName(
+            String(g["parent"]),
+            String(g["name"]),
+          );
+        }
+        const result = await createResource(
+          BASE_URL,
+          {
+            "id": "ml.projects.locations.studies.trials.stop",
+            "path": "v1/{+name}:stop",
+            "httpMethod": "POST",
+            "parameterOrder": ["name"],
+            "parameters": { "name": { "location": "path", "required": true } },
+          },
+          params,
+          {},
+        );
+        return { result };
+      },
+    },
+    suggest: {
+      description: "suggest",
+      arguments: z.object({
+        clientId: z.any().optional(),
+        suggestionCount: z.any().optional(),
+      }),
+      execute: async (args: Record<string, unknown>, context: any) => {
+        const g = context.globalArgs;
+        const projectId = await getProjectId();
+        const params: Record<string, string> = { project: projectId };
+        if (g["parent"] !== undefined) params["parent"] = String(g["parent"]);
+        const body: Record<string, unknown> = {};
+        if (args["clientId"] !== undefined) body["clientId"] = args["clientId"];
+        if (args["suggestionCount"] !== undefined) {
+          body["suggestionCount"] = args["suggestionCount"];
+        }
+        const result = await createResource(
+          BASE_URL,
+          {
+            "id": "ml.projects.locations.studies.trials.suggest",
+            "path": "v1/{+parent}/trials:suggest",
+            "httpMethod": "POST",
+            "parameterOrder": ["parent"],
+            "parameters": {
+              "parent": { "location": "path", "required": true },
+            },
+          },
+          params,
+          body,
+        );
+        return { result };
+      },
+    },
+  },
+};

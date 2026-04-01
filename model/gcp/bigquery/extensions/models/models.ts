@@ -1,0 +1,6296 @@
+// Auto-generated extension model for @swamp/gcp/bigquery/models
+// Do not edit manually. Re-generate with: deno task generate:gcp
+
+// deno-lint-ignore-file no-explicit-any
+
+import { z } from "zod";
+import {
+  deleteResource,
+  getProjectId,
+  isResourceNotFoundError,
+  readResource,
+  updateResource,
+} from "./_lib/gcp.ts";
+
+const BASE_URL = "https://bigquery.googleapis.com/bigquery/v2/";
+
+const GET_CONFIG = {
+  "id": "bigquery.models.get",
+  "path": "projects/{+projectId}/datasets/{+datasetId}/models/{+modelId}",
+  "httpMethod": "GET",
+  "parameterOrder": [
+    "projectId",
+    "datasetId",
+    "modelId",
+  ],
+  "parameters": {
+    "datasetId": {
+      "location": "path",
+      "required": true,
+    },
+    "modelId": {
+      "location": "path",
+      "required": true,
+    },
+    "projectId": {
+      "location": "path",
+      "required": true,
+    },
+  },
+} as const;
+
+const PATCH_CONFIG = {
+  "id": "bigquery.models.patch",
+  "path": "projects/{+projectId}/datasets/{+datasetId}/models/{+modelId}",
+  "httpMethod": "PATCH",
+  "parameterOrder": [
+    "projectId",
+    "datasetId",
+    "modelId",
+  ],
+  "parameters": {
+    "datasetId": {
+      "location": "path",
+      "required": true,
+    },
+    "modelId": {
+      "location": "path",
+      "required": true,
+    },
+    "projectId": {
+      "location": "path",
+      "required": true,
+    },
+  },
+} as const;
+
+const DELETE_CONFIG = {
+  "id": "bigquery.models.delete",
+  "path": "projects/{+projectId}/datasets/{+datasetId}/models/{+modelId}",
+  "httpMethod": "DELETE",
+  "parameterOrder": [
+    "projectId",
+    "datasetId",
+    "modelId",
+  ],
+  "parameters": {
+    "datasetId": {
+      "location": "path",
+      "required": true,
+    },
+    "modelId": {
+      "location": "path",
+      "required": true,
+    },
+    "projectId": {
+      "location": "path",
+      "required": true,
+    },
+  },
+} as const;
+
+const GlobalArgsSchema = z.object({
+  name: z.string().describe(
+    "Instance name for this resource (used as the unique identifier in the factory pattern)",
+  ),
+  creationTime: z.string().describe(
+    "Output only. The time when this model was created, in millisecs since the epoch.",
+  ).optional(),
+  defaultTrialId: z.string().describe(
+    "Output only. The default trial_id to use in TVFs when the trial_id is not passed in. For single-objective [hyperparameter tuning](https://cloud.google.com/bigquery-ml/docs/reference/standard-sql/bigqueryml-syntax-hp-tuning-overview) models, this is the best trial ID. For multi-objective [hyperparameter tuning](https://cloud.google.com/bigquery-ml/docs/reference/standard-sql/bigqueryml-syntax-hp-tuning-overview) models, this is the smallest trial ID among all Pareto optimal trials.",
+  ).optional(),
+  description: z.string().describe(
+    "Optional. A user-friendly description of this model.",
+  ).optional(),
+  encryptionConfiguration: z.object({
+    kmsKeyName: z.string().describe(
+      "Optional. Describes the Cloud KMS encryption key that will be used to protect destination BigQuery table. The BigQuery Service Account associated with your project requires access to this encryption key.",
+    ).optional(),
+  }).describe("Configuration for Cloud KMS encryption settings.").optional(),
+  etag: z.string().describe("Output only. A hash of this resource.").optional(),
+  expirationTime: z.string().describe(
+    "Optional. The time when this model expires, in milliseconds since the epoch. If not present, the model will persist indefinitely. Expired models will be deleted and their storage reclaimed. The defaultTableExpirationMs property of the encapsulating dataset can be used to set a default expirationTime on newly created models.",
+  ).optional(),
+  featureColumns: z.array(z.object({
+    name: z.string().describe(
+      "Optional. The name of this field. Can be absent for struct fields.",
+    ).optional(),
+    type: z.object({
+      arrayElementType: z.string().describe(
+        "Circular reference to StandardSqlDataType",
+      ).optional(),
+      rangeElementType: z.string().describe(
+        "Circular reference to StandardSqlDataType",
+      ).optional(),
+      structType: z.object({
+        fields: z.array(z.string()).describe("Fields within the struct.")
+          .optional(),
+      }).describe("The representation of a SQL STRUCT type.").optional(),
+      typeKind: z.enum([
+        "TYPE_KIND_UNSPECIFIED",
+        "INT64",
+        "BOOL",
+        "FLOAT64",
+        "STRING",
+        "BYTES",
+        "TIMESTAMP",
+        "DATE",
+        "TIME",
+        "DATETIME",
+        "INTERVAL",
+        "GEOGRAPHY",
+        "NUMERIC",
+        "BIGNUMERIC",
+        "JSON",
+        "ARRAY",
+        "STRUCT",
+        "RANGE",
+      ]).describe(
+        'Required. The top level type of this field. Can be any GoogleSQL data type (e.g., "INT64", "DATE", "ARRAY").',
+      ).optional(),
+    }).describe(
+      'The data type of a variable such as a function argument. Examples include: * INT64: `{"typeKind": "INT64"}` * ARRAY: { "typeKind": "ARRAY", "arrayElementType": {"typeKind": "STRING"} } * STRUCT>: { "typeKind": "STRUCT", "structType": { "fields": [ { "name": "x", "type": {"typeKind": "STRING"} }, { "name": "y", "type": { "typeKind": "ARRAY", "arrayElementType": {"typeKind": "DATE"} } } ] } } * RANGE: { "typeKind": "RANGE", "rangeElementType": {"typeKind": "DATE"} }',
+    ).optional(),
+  })).describe(
+    "Output only. Input feature columns for the model inference. If the model is trained with TRANSFORM clause, these are the input of the TRANSFORM clause.",
+  ).optional(),
+  friendlyName: z.string().describe(
+    "Optional. A descriptive name for this model.",
+  ).optional(),
+  hparamSearchSpaces: z.object({
+    activationFn: z.object({
+      candidates: z.array(z.string()).describe(
+        "Canididates for the string or enum parameter in lower case.",
+      ).optional(),
+    }).describe("Search space for string and enum.").optional(),
+    batchSize: z.object({
+      candidates: z.object({
+        candidates: z.array(z.string()).describe(
+          "Candidates for the int parameter in increasing order.",
+        ).optional(),
+      }).describe("Discrete candidates of an int hyperparameter.").optional(),
+      range: z.object({
+        max: z.string().describe("Max value of the int parameter.").optional(),
+        min: z.string().describe("Min value of the int parameter.").optional(),
+      }).describe("Range of an int hyperparameter.").optional(),
+    }).describe("Search space for an int hyperparameter.").optional(),
+    boosterType: z.object({
+      candidates: z.array(z.string()).describe(
+        "Canididates for the string or enum parameter in lower case.",
+      ).optional(),
+    }).describe("Search space for string and enum.").optional(),
+    colsampleBylevel: z.object({
+      candidates: z.object({
+        candidates: z.array(z.number()).describe(
+          "Candidates for the double parameter in increasing order.",
+        ).optional(),
+      }).describe("Discrete candidates of a double hyperparameter.").optional(),
+      range: z.object({
+        max: z.number().describe("Max value of the double parameter.")
+          .optional(),
+        min: z.number().describe("Min value of the double parameter.")
+          .optional(),
+      }).describe("Range of a double hyperparameter.").optional(),
+    }).describe("Search space for a double hyperparameter.").optional(),
+    colsampleBynode: z.object({
+      candidates: z.object({
+        candidates: z.array(z.number()).describe(
+          "Candidates for the double parameter in increasing order.",
+        ).optional(),
+      }).describe("Discrete candidates of a double hyperparameter.").optional(),
+      range: z.object({
+        max: z.number().describe("Max value of the double parameter.")
+          .optional(),
+        min: z.number().describe("Min value of the double parameter.")
+          .optional(),
+      }).describe("Range of a double hyperparameter.").optional(),
+    }).describe("Search space for a double hyperparameter.").optional(),
+    colsampleBytree: z.object({
+      candidates: z.object({
+        candidates: z.array(z.number()).describe(
+          "Candidates for the double parameter in increasing order.",
+        ).optional(),
+      }).describe("Discrete candidates of a double hyperparameter.").optional(),
+      range: z.object({
+        max: z.number().describe("Max value of the double parameter.")
+          .optional(),
+        min: z.number().describe("Min value of the double parameter.")
+          .optional(),
+      }).describe("Range of a double hyperparameter.").optional(),
+    }).describe("Search space for a double hyperparameter.").optional(),
+    dartNormalizeType: z.object({
+      candidates: z.array(z.string()).describe(
+        "Canididates for the string or enum parameter in lower case.",
+      ).optional(),
+    }).describe("Search space for string and enum.").optional(),
+    dropout: z.object({
+      candidates: z.object({
+        candidates: z.array(z.number()).describe(
+          "Candidates for the double parameter in increasing order.",
+        ).optional(),
+      }).describe("Discrete candidates of a double hyperparameter.").optional(),
+      range: z.object({
+        max: z.number().describe("Max value of the double parameter.")
+          .optional(),
+        min: z.number().describe("Min value of the double parameter.")
+          .optional(),
+      }).describe("Range of a double hyperparameter.").optional(),
+    }).describe("Search space for a double hyperparameter.").optional(),
+    hiddenUnits: z.object({
+      candidates: z.array(z.object({
+        elements: z.array(z.string()).describe("Elements in the int array.")
+          .optional(),
+      })).describe("Candidates for the int array parameter.").optional(),
+    }).describe("Search space for int array.").optional(),
+    l1Reg: z.object({
+      candidates: z.object({
+        candidates: z.array(z.number()).describe(
+          "Candidates for the double parameter in increasing order.",
+        ).optional(),
+      }).describe("Discrete candidates of a double hyperparameter.").optional(),
+      range: z.object({
+        max: z.number().describe("Max value of the double parameter.")
+          .optional(),
+        min: z.number().describe("Min value of the double parameter.")
+          .optional(),
+      }).describe("Range of a double hyperparameter.").optional(),
+    }).describe("Search space for a double hyperparameter.").optional(),
+    l2Reg: z.object({
+      candidates: z.object({
+        candidates: z.array(z.number()).describe(
+          "Candidates for the double parameter in increasing order.",
+        ).optional(),
+      }).describe("Discrete candidates of a double hyperparameter.").optional(),
+      range: z.object({
+        max: z.number().describe("Max value of the double parameter.")
+          .optional(),
+        min: z.number().describe("Min value of the double parameter.")
+          .optional(),
+      }).describe("Range of a double hyperparameter.").optional(),
+    }).describe("Search space for a double hyperparameter.").optional(),
+    learnRate: z.object({
+      candidates: z.object({
+        candidates: z.array(z.number()).describe(
+          "Candidates for the double parameter in increasing order.",
+        ).optional(),
+      }).describe("Discrete candidates of a double hyperparameter.").optional(),
+      range: z.object({
+        max: z.number().describe("Max value of the double parameter.")
+          .optional(),
+        min: z.number().describe("Min value of the double parameter.")
+          .optional(),
+      }).describe("Range of a double hyperparameter.").optional(),
+    }).describe("Search space for a double hyperparameter.").optional(),
+    maxTreeDepth: z.object({
+      candidates: z.object({
+        candidates: z.array(z.string()).describe(
+          "Candidates for the int parameter in increasing order.",
+        ).optional(),
+      }).describe("Discrete candidates of an int hyperparameter.").optional(),
+      range: z.object({
+        max: z.string().describe("Max value of the int parameter.").optional(),
+        min: z.string().describe("Min value of the int parameter.").optional(),
+      }).describe("Range of an int hyperparameter.").optional(),
+    }).describe("Search space for an int hyperparameter.").optional(),
+    minSplitLoss: z.object({
+      candidates: z.object({
+        candidates: z.array(z.number()).describe(
+          "Candidates for the double parameter in increasing order.",
+        ).optional(),
+      }).describe("Discrete candidates of a double hyperparameter.").optional(),
+      range: z.object({
+        max: z.number().describe("Max value of the double parameter.")
+          .optional(),
+        min: z.number().describe("Min value of the double parameter.")
+          .optional(),
+      }).describe("Range of a double hyperparameter.").optional(),
+    }).describe("Search space for a double hyperparameter.").optional(),
+    minTreeChildWeight: z.object({
+      candidates: z.object({
+        candidates: z.array(z.string()).describe(
+          "Candidates for the int parameter in increasing order.",
+        ).optional(),
+      }).describe("Discrete candidates of an int hyperparameter.").optional(),
+      range: z.object({
+        max: z.string().describe("Max value of the int parameter.").optional(),
+        min: z.string().describe("Min value of the int parameter.").optional(),
+      }).describe("Range of an int hyperparameter.").optional(),
+    }).describe("Search space for an int hyperparameter.").optional(),
+    numClusters: z.object({
+      candidates: z.object({
+        candidates: z.array(z.string()).describe(
+          "Candidates for the int parameter in increasing order.",
+        ).optional(),
+      }).describe("Discrete candidates of an int hyperparameter.").optional(),
+      range: z.object({
+        max: z.string().describe("Max value of the int parameter.").optional(),
+        min: z.string().describe("Min value of the int parameter.").optional(),
+      }).describe("Range of an int hyperparameter.").optional(),
+    }).describe("Search space for an int hyperparameter.").optional(),
+    numFactors: z.object({
+      candidates: z.object({
+        candidates: z.array(z.string()).describe(
+          "Candidates for the int parameter in increasing order.",
+        ).optional(),
+      }).describe("Discrete candidates of an int hyperparameter.").optional(),
+      range: z.object({
+        max: z.string().describe("Max value of the int parameter.").optional(),
+        min: z.string().describe("Min value of the int parameter.").optional(),
+      }).describe("Range of an int hyperparameter.").optional(),
+    }).describe("Search space for an int hyperparameter.").optional(),
+    numParallelTree: z.object({
+      candidates: z.object({
+        candidates: z.array(z.string()).describe(
+          "Candidates for the int parameter in increasing order.",
+        ).optional(),
+      }).describe("Discrete candidates of an int hyperparameter.").optional(),
+      range: z.object({
+        max: z.string().describe("Max value of the int parameter.").optional(),
+        min: z.string().describe("Min value of the int parameter.").optional(),
+      }).describe("Range of an int hyperparameter.").optional(),
+    }).describe("Search space for an int hyperparameter.").optional(),
+    optimizer: z.object({
+      candidates: z.array(z.string()).describe(
+        "Canididates for the string or enum parameter in lower case.",
+      ).optional(),
+    }).describe("Search space for string and enum.").optional(),
+    subsample: z.object({
+      candidates: z.object({
+        candidates: z.array(z.number()).describe(
+          "Candidates for the double parameter in increasing order.",
+        ).optional(),
+      }).describe("Discrete candidates of a double hyperparameter.").optional(),
+      range: z.object({
+        max: z.number().describe("Max value of the double parameter.")
+          .optional(),
+        min: z.number().describe("Min value of the double parameter.")
+          .optional(),
+      }).describe("Range of a double hyperparameter.").optional(),
+    }).describe("Search space for a double hyperparameter.").optional(),
+    treeMethod: z.object({
+      candidates: z.array(z.string()).describe(
+        "Canididates for the string or enum parameter in lower case.",
+      ).optional(),
+    }).describe("Search space for string and enum.").optional(),
+    walsAlpha: z.object({
+      candidates: z.object({
+        candidates: z.array(z.number()).describe(
+          "Candidates for the double parameter in increasing order.",
+        ).optional(),
+      }).describe("Discrete candidates of a double hyperparameter.").optional(),
+      range: z.object({
+        max: z.number().describe("Max value of the double parameter.")
+          .optional(),
+        min: z.number().describe("Min value of the double parameter.")
+          .optional(),
+      }).describe("Range of a double hyperparameter.").optional(),
+    }).describe("Search space for a double hyperparameter.").optional(),
+  }).describe(
+    "Hyperparameter search spaces. These should be a subset of training_options.",
+  ).optional(),
+  hparamTrials: z.array(z.object({
+    endTimeMs: z.string().describe("Ending time of the trial.").optional(),
+    errorMessage: z.string().describe(
+      "Error message for FAILED and INFEASIBLE trial.",
+    ).optional(),
+    evalLoss: z.number().describe(
+      "Loss computed on the eval data at the end of trial.",
+    ).optional(),
+    evaluationMetrics: z.object({
+      arimaForecastingMetrics: z.object({
+        arimaFittingMetrics: z.array(z.object({
+          aic: z.number().describe("AIC.").optional(),
+          logLikelihood: z.number().describe("Log-likelihood.").optional(),
+          variance: z.number().describe("Variance.").optional(),
+        })).describe("Arima model fitting metrics.").optional(),
+        arimaSingleModelForecastingMetrics: z.array(z.object({
+          arimaFittingMetrics: z.object({
+            aic: z.number().describe("AIC.").optional(),
+            logLikelihood: z.number().describe("Log-likelihood.").optional(),
+            variance: z.number().describe("Variance.").optional(),
+          }).describe("ARIMA model fitting metrics.").optional(),
+          hasDrift: z.boolean().describe(
+            "Is arima model fitted with drift or not. It is always false when d is not 1.",
+          ).optional(),
+          hasHolidayEffect: z.boolean().describe(
+            "If true, holiday_effect is a part of time series decomposition result.",
+          ).optional(),
+          hasSpikesAndDips: z.boolean().describe(
+            "If true, spikes_and_dips is a part of time series decomposition result.",
+          ).optional(),
+          hasStepChanges: z.boolean().describe(
+            "If true, step_changes is a part of time series decomposition result.",
+          ).optional(),
+          nonSeasonalOrder: z.object({
+            d: z.string().describe("Order of the differencing part.")
+              .optional(),
+            p: z.string().describe("Order of the autoregressive part.")
+              .optional(),
+            q: z.string().describe("Order of the moving-average part.")
+              .optional(),
+          }).describe(
+            "Arima order, can be used for both non-seasonal and seasonal parts.",
+          ).optional(),
+          seasonalPeriods: z.array(
+            z.enum([
+              "SEASONAL_PERIOD_TYPE_UNSPECIFIED",
+              "NO_SEASONALITY",
+              "DAILY",
+              "WEEKLY",
+              "MONTHLY",
+              "QUARTERLY",
+              "YEARLY",
+              "HOURLY",
+            ]),
+          ).describe(
+            "Seasonal periods. Repeated because multiple periods are supported for one time series.",
+          ).optional(),
+          timeSeriesId: z.string().describe(
+            "The time_series_id value for this time series. It will be one of the unique values from the time_series_id_column specified during ARIMA model training. Only present when time_series_id_column training option was used.",
+          ).optional(),
+          timeSeriesIds: z.array(z.string()).describe(
+            "The tuple of time_series_ids identifying this time series. It will be one of the unique tuples of values present in the time_series_id_columns specified during ARIMA model training. Only present when time_series_id_columns training option was used and the order of values here are same as the order of time_series_id_columns.",
+          ).optional(),
+        })).describe(
+          "Repeated as there can be many metric sets (one for each model) in auto-arima and the large-scale case.",
+        ).optional(),
+        hasDrift: z.array(z.boolean()).describe(
+          "Whether Arima model fitted with drift or not. It is always false when d is not 1.",
+        ).optional(),
+        nonSeasonalOrder: z.array(z.object({
+          d: z.string().describe("Order of the differencing part.").optional(),
+          p: z.string().describe("Order of the autoregressive part.")
+            .optional(),
+          q: z.string().describe("Order of the moving-average part.")
+            .optional(),
+        })).describe("Non-seasonal order.").optional(),
+        seasonalPeriods: z.array(
+          z.enum([
+            "SEASONAL_PERIOD_TYPE_UNSPECIFIED",
+            "NO_SEASONALITY",
+            "DAILY",
+            "WEEKLY",
+            "MONTHLY",
+            "QUARTERLY",
+            "YEARLY",
+            "HOURLY",
+          ]),
+        ).describe(
+          "Seasonal periods. Repeated because multiple periods are supported for one time series.",
+        ).optional(),
+        timeSeriesId: z.array(z.string()).describe(
+          "Id to differentiate different time series for the large-scale case.",
+        ).optional(),
+      }).describe("Model evaluation metrics for ARIMA forecasting models.")
+        .optional(),
+      binaryClassificationMetrics: z.object({
+        aggregateClassificationMetrics: z.object({
+          accuracy: z.number().describe(
+            "Accuracy is the fraction of predictions given the correct label. For multiclass this is a micro-averaged metric.",
+          ).optional(),
+          f1Score: z.number().describe(
+            "The F1 score is an average of recall and precision. For multiclass this is a macro-averaged metric.",
+          ).optional(),
+          logLoss: z.number().describe(
+            "Logarithmic Loss. For multiclass this is a macro-averaged metric.",
+          ).optional(),
+          precision: z.number().describe(
+            "Precision is the fraction of actual positive predictions that had positive actual labels. For multiclass this is a macro-averaged metric treating each class as a binary classifier.",
+          ).optional(),
+          recall: z.number().describe(
+            "Recall is the fraction of actual positive labels that were given a positive prediction. For multiclass this is a macro-averaged metric.",
+          ).optional(),
+          rocAuc: z.number().describe(
+            "Area Under a ROC Curve. For multiclass this is a macro-averaged metric.",
+          ).optional(),
+          threshold: z.number().describe(
+            "Threshold at which the metrics are computed. For binary classification models this is the positive class threshold. For multi-class classification models this is the confidence threshold.",
+          ).optional(),
+        }).describe(
+          "Aggregate metrics for classification/classifier models. For multi-class models, the metrics are either macro-averaged or micro-averaged. When macro-averaged, the metrics are calculated for each label and then an unweighted average is taken of those values. When micro-averaged, the metric is calculated globally by counting the total number of correctly predicted rows.",
+        ).optional(),
+        binaryConfusionMatrixList: z.array(z.object({
+          accuracy: z.number().describe(
+            "The fraction of predictions given the correct label.",
+          ).optional(),
+          f1Score: z.number().describe(
+            "The equally weighted average of recall and precision.",
+          ).optional(),
+          falseNegatives: z.string().describe(
+            "Number of false samples predicted as false.",
+          ).optional(),
+          falsePositives: z.string().describe(
+            "Number of false samples predicted as true.",
+          ).optional(),
+          positiveClassThreshold: z.number().describe(
+            "Threshold value used when computing each of the following metric.",
+          ).optional(),
+          precision: z.number().describe(
+            "The fraction of actual positive predictions that had positive actual labels.",
+          ).optional(),
+          recall: z.number().describe(
+            "The fraction of actual positive labels that were given a positive prediction.",
+          ).optional(),
+          trueNegatives: z.string().describe(
+            "Number of true samples predicted as false.",
+          ).optional(),
+          truePositives: z.string().describe(
+            "Number of true samples predicted as true.",
+          ).optional(),
+        })).describe("Binary confusion matrix at multiple thresholds.")
+          .optional(),
+        negativeLabel: z.string().describe(
+          "Label representing the negative class.",
+        ).optional(),
+        positiveLabel: z.string().describe(
+          "Label representing the positive class.",
+        ).optional(),
+      }).describe(
+        "Evaluation metrics for binary classification/classifier models.",
+      ).optional(),
+      clusteringMetrics: z.object({
+        clusters: z.array(z.object({
+          centroidId: z.string().describe("Centroid id.").optional(),
+          count: z.string().describe(
+            "Count of training data rows that were assigned to this cluster.",
+          ).optional(),
+          featureValues: z.array(z.object({
+            categoricalValue: z.object({
+              categoryCounts: z.array(z.object({
+                category: z.string().describe("The name of category.")
+                  .optional(),
+                count: z.string().describe(
+                  "The count of training samples matching the category within the cluster.",
+                ).optional(),
+              })).describe(
+                'Counts of all categories for the categorical feature. If there are more than ten categories, we return top ten (by count) and return one more CategoryCount with category "_OTHER_" and count as aggregate counts of remaining categories.',
+              ).optional(),
+            }).describe("Representative value of a categorical feature.")
+              .optional(),
+            featureColumn: z.string().describe("The feature column name.")
+              .optional(),
+            numericalValue: z.number().describe(
+              "The numerical feature value. This is the centroid value for this feature.",
+            ).optional(),
+          })).describe("Values of highly variant features for this cluster.")
+            .optional(),
+        })).describe("Information for all clusters.").optional(),
+        daviesBouldinIndex: z.number().describe("Davies-Bouldin index.")
+          .optional(),
+        meanSquaredDistance: z.number().describe(
+          "Mean of squared distances between each sample to its cluster centroid.",
+        ).optional(),
+      }).describe("Evaluation metrics for clustering models.").optional(),
+      dimensionalityReductionMetrics: z.object({
+        totalExplainedVarianceRatio: z.number().describe(
+          "Total percentage of variance explained by the selected principal components.",
+        ).optional(),
+      }).describe(
+        "Model evaluation metrics for dimensionality reduction models.",
+      ).optional(),
+      multiClassClassificationMetrics: z.object({
+        aggregateClassificationMetrics: z.object({
+          accuracy: z.number().describe(
+            "Accuracy is the fraction of predictions given the correct label. For multiclass this is a micro-averaged metric.",
+          ).optional(),
+          f1Score: z.number().describe(
+            "The F1 score is an average of recall and precision. For multiclass this is a macro-averaged metric.",
+          ).optional(),
+          logLoss: z.number().describe(
+            "Logarithmic Loss. For multiclass this is a macro-averaged metric.",
+          ).optional(),
+          precision: z.number().describe(
+            "Precision is the fraction of actual positive predictions that had positive actual labels. For multiclass this is a macro-averaged metric treating each class as a binary classifier.",
+          ).optional(),
+          recall: z.number().describe(
+            "Recall is the fraction of actual positive labels that were given a positive prediction. For multiclass this is a macro-averaged metric.",
+          ).optional(),
+          rocAuc: z.number().describe(
+            "Area Under a ROC Curve. For multiclass this is a macro-averaged metric.",
+          ).optional(),
+          threshold: z.number().describe(
+            "Threshold at which the metrics are computed. For binary classification models this is the positive class threshold. For multi-class classification models this is the confidence threshold.",
+          ).optional(),
+        }).describe(
+          "Aggregate metrics for classification/classifier models. For multi-class models, the metrics are either macro-averaged or micro-averaged. When macro-averaged, the metrics are calculated for each label and then an unweighted average is taken of those values. When micro-averaged, the metric is calculated globally by counting the total number of correctly predicted rows.",
+        ).optional(),
+        confusionMatrixList: z.array(z.object({
+          confidenceThreshold: z.number().describe(
+            "Confidence threshold used when computing the entries of the confusion matrix.",
+          ).optional(),
+          rows: z.array(z.object({
+            actualLabel: z.string().describe("The original label of this row.")
+              .optional(),
+            entries: z.array(z.object({
+              itemCount: z.string().describe(
+                "Number of items being predicted as this label.",
+              ).optional(),
+              predictedLabel: z.string().describe(
+                "The predicted label. For confidence_threshold > 0, we will also add an entry indicating the number of items under the confidence threshold.",
+              ).optional(),
+            })).describe("Info describing predicted label distribution.")
+              .optional(),
+          })).describe("One row per actual label.").optional(),
+        })).describe("Confusion matrix at different thresholds.").optional(),
+      }).describe(
+        "Evaluation metrics for multi-class classification/classifier models.",
+      ).optional(),
+      rankingMetrics: z.object({
+        averageRank: z.number().describe(
+          "Determines the goodness of a ranking by computing the percentile rank from the predicted confidence and dividing it by the original rank.",
+        ).optional(),
+        meanAveragePrecision: z.number().describe(
+          "Calculates a precision per user for all the items by ranking them and then averages all the precisions across all the users.",
+        ).optional(),
+        meanSquaredError: z.number().describe(
+          "Similar to the mean squared error computed in regression and explicit recommendation models except instead of computing the rating directly, the output from evaluate is computed against a preference which is 1 or 0 depending on if the rating exists or not.",
+        ).optional(),
+        normalizedDiscountedCumulativeGain: z.number().describe(
+          "A metric to determine the goodness of a ranking calculated from the predicted confidence by comparing it to an ideal rank measured by the original ratings.",
+        ).optional(),
+      }).describe(
+        "Evaluation metrics used by weighted-ALS models specified by feedback_type=implicit.",
+      ).optional(),
+      regressionMetrics: z.object({
+        meanAbsoluteError: z.number().describe("Mean absolute error.")
+          .optional(),
+        meanSquaredError: z.number().describe("Mean squared error.").optional(),
+        meanSquaredLogError: z.number().describe("Mean squared log error.")
+          .optional(),
+        medianAbsoluteError: z.number().describe("Median absolute error.")
+          .optional(),
+        rSquared: z.number().describe(
+          "R^2 score. This corresponds to r2_score in ML.EVALUATE.",
+        ).optional(),
+      }).describe(
+        "Evaluation metrics for regression and explicit feedback type matrix factorization models.",
+      ).optional(),
+    }).describe(
+      "Evaluation metrics of a model. These are either computed on all training data or just the eval data based on whether eval data was used during training. These are not present for imported models.",
+    ).optional(),
+    hparamTuningEvaluationMetrics: z.object({
+      arimaForecastingMetrics: z.object({
+        arimaFittingMetrics: z.array(z.object({
+          aic: z.number().describe("AIC.").optional(),
+          logLikelihood: z.number().describe("Log-likelihood.").optional(),
+          variance: z.number().describe("Variance.").optional(),
+        })).describe("Arima model fitting metrics.").optional(),
+        arimaSingleModelForecastingMetrics: z.array(z.object({
+          arimaFittingMetrics: z.object({
+            aic: z.number().describe("AIC.").optional(),
+            logLikelihood: z.number().describe("Log-likelihood.").optional(),
+            variance: z.number().describe("Variance.").optional(),
+          }).describe("ARIMA model fitting metrics.").optional(),
+          hasDrift: z.boolean().describe(
+            "Is arima model fitted with drift or not. It is always false when d is not 1.",
+          ).optional(),
+          hasHolidayEffect: z.boolean().describe(
+            "If true, holiday_effect is a part of time series decomposition result.",
+          ).optional(),
+          hasSpikesAndDips: z.boolean().describe(
+            "If true, spikes_and_dips is a part of time series decomposition result.",
+          ).optional(),
+          hasStepChanges: z.boolean().describe(
+            "If true, step_changes is a part of time series decomposition result.",
+          ).optional(),
+          nonSeasonalOrder: z.object({
+            d: z.string().describe("Order of the differencing part.")
+              .optional(),
+            p: z.string().describe("Order of the autoregressive part.")
+              .optional(),
+            q: z.string().describe("Order of the moving-average part.")
+              .optional(),
+          }).describe(
+            "Arima order, can be used for both non-seasonal and seasonal parts.",
+          ).optional(),
+          seasonalPeriods: z.array(
+            z.enum([
+              "SEASONAL_PERIOD_TYPE_UNSPECIFIED",
+              "NO_SEASONALITY",
+              "DAILY",
+              "WEEKLY",
+              "MONTHLY",
+              "QUARTERLY",
+              "YEARLY",
+              "HOURLY",
+            ]),
+          ).describe(
+            "Seasonal periods. Repeated because multiple periods are supported for one time series.",
+          ).optional(),
+          timeSeriesId: z.string().describe(
+            "The time_series_id value for this time series. It will be one of the unique values from the time_series_id_column specified during ARIMA model training. Only present when time_series_id_column training option was used.",
+          ).optional(),
+          timeSeriesIds: z.array(z.string()).describe(
+            "The tuple of time_series_ids identifying this time series. It will be one of the unique tuples of values present in the time_series_id_columns specified during ARIMA model training. Only present when time_series_id_columns training option was used and the order of values here are same as the order of time_series_id_columns.",
+          ).optional(),
+        })).describe(
+          "Repeated as there can be many metric sets (one for each model) in auto-arima and the large-scale case.",
+        ).optional(),
+        hasDrift: z.array(z.boolean()).describe(
+          "Whether Arima model fitted with drift or not. It is always false when d is not 1.",
+        ).optional(),
+        nonSeasonalOrder: z.array(z.object({
+          d: z.string().describe("Order of the differencing part.").optional(),
+          p: z.string().describe("Order of the autoregressive part.")
+            .optional(),
+          q: z.string().describe("Order of the moving-average part.")
+            .optional(),
+        })).describe("Non-seasonal order.").optional(),
+        seasonalPeriods: z.array(
+          z.enum([
+            "SEASONAL_PERIOD_TYPE_UNSPECIFIED",
+            "NO_SEASONALITY",
+            "DAILY",
+            "WEEKLY",
+            "MONTHLY",
+            "QUARTERLY",
+            "YEARLY",
+            "HOURLY",
+          ]),
+        ).describe(
+          "Seasonal periods. Repeated because multiple periods are supported for one time series.",
+        ).optional(),
+        timeSeriesId: z.array(z.string()).describe(
+          "Id to differentiate different time series for the large-scale case.",
+        ).optional(),
+      }).describe("Model evaluation metrics for ARIMA forecasting models.")
+        .optional(),
+      binaryClassificationMetrics: z.object({
+        aggregateClassificationMetrics: z.object({
+          accuracy: z.number().describe(
+            "Accuracy is the fraction of predictions given the correct label. For multiclass this is a micro-averaged metric.",
+          ).optional(),
+          f1Score: z.number().describe(
+            "The F1 score is an average of recall and precision. For multiclass this is a macro-averaged metric.",
+          ).optional(),
+          logLoss: z.number().describe(
+            "Logarithmic Loss. For multiclass this is a macro-averaged metric.",
+          ).optional(),
+          precision: z.number().describe(
+            "Precision is the fraction of actual positive predictions that had positive actual labels. For multiclass this is a macro-averaged metric treating each class as a binary classifier.",
+          ).optional(),
+          recall: z.number().describe(
+            "Recall is the fraction of actual positive labels that were given a positive prediction. For multiclass this is a macro-averaged metric.",
+          ).optional(),
+          rocAuc: z.number().describe(
+            "Area Under a ROC Curve. For multiclass this is a macro-averaged metric.",
+          ).optional(),
+          threshold: z.number().describe(
+            "Threshold at which the metrics are computed. For binary classification models this is the positive class threshold. For multi-class classification models this is the confidence threshold.",
+          ).optional(),
+        }).describe(
+          "Aggregate metrics for classification/classifier models. For multi-class models, the metrics are either macro-averaged or micro-averaged. When macro-averaged, the metrics are calculated for each label and then an unweighted average is taken of those values. When micro-averaged, the metric is calculated globally by counting the total number of correctly predicted rows.",
+        ).optional(),
+        binaryConfusionMatrixList: z.array(z.object({
+          accuracy: z.number().describe(
+            "The fraction of predictions given the correct label.",
+          ).optional(),
+          f1Score: z.number().describe(
+            "The equally weighted average of recall and precision.",
+          ).optional(),
+          falseNegatives: z.string().describe(
+            "Number of false samples predicted as false.",
+          ).optional(),
+          falsePositives: z.string().describe(
+            "Number of false samples predicted as true.",
+          ).optional(),
+          positiveClassThreshold: z.number().describe(
+            "Threshold value used when computing each of the following metric.",
+          ).optional(),
+          precision: z.number().describe(
+            "The fraction of actual positive predictions that had positive actual labels.",
+          ).optional(),
+          recall: z.number().describe(
+            "The fraction of actual positive labels that were given a positive prediction.",
+          ).optional(),
+          trueNegatives: z.string().describe(
+            "Number of true samples predicted as false.",
+          ).optional(),
+          truePositives: z.string().describe(
+            "Number of true samples predicted as true.",
+          ).optional(),
+        })).describe("Binary confusion matrix at multiple thresholds.")
+          .optional(),
+        negativeLabel: z.string().describe(
+          "Label representing the negative class.",
+        ).optional(),
+        positiveLabel: z.string().describe(
+          "Label representing the positive class.",
+        ).optional(),
+      }).describe(
+        "Evaluation metrics for binary classification/classifier models.",
+      ).optional(),
+      clusteringMetrics: z.object({
+        clusters: z.array(z.object({
+          centroidId: z.string().describe("Centroid id.").optional(),
+          count: z.string().describe(
+            "Count of training data rows that were assigned to this cluster.",
+          ).optional(),
+          featureValues: z.array(z.object({
+            categoricalValue: z.object({
+              categoryCounts: z.array(z.object({
+                category: z.string().describe("The name of category.")
+                  .optional(),
+                count: z.string().describe(
+                  "The count of training samples matching the category within the cluster.",
+                ).optional(),
+              })).describe(
+                'Counts of all categories for the categorical feature. If there are more than ten categories, we return top ten (by count) and return one more CategoryCount with category "_OTHER_" and count as aggregate counts of remaining categories.',
+              ).optional(),
+            }).describe("Representative value of a categorical feature.")
+              .optional(),
+            featureColumn: z.string().describe("The feature column name.")
+              .optional(),
+            numericalValue: z.number().describe(
+              "The numerical feature value. This is the centroid value for this feature.",
+            ).optional(),
+          })).describe("Values of highly variant features for this cluster.")
+            .optional(),
+        })).describe("Information for all clusters.").optional(),
+        daviesBouldinIndex: z.number().describe("Davies-Bouldin index.")
+          .optional(),
+        meanSquaredDistance: z.number().describe(
+          "Mean of squared distances between each sample to its cluster centroid.",
+        ).optional(),
+      }).describe("Evaluation metrics for clustering models.").optional(),
+      dimensionalityReductionMetrics: z.object({
+        totalExplainedVarianceRatio: z.number().describe(
+          "Total percentage of variance explained by the selected principal components.",
+        ).optional(),
+      }).describe(
+        "Model evaluation metrics for dimensionality reduction models.",
+      ).optional(),
+      multiClassClassificationMetrics: z.object({
+        aggregateClassificationMetrics: z.object({
+          accuracy: z.number().describe(
+            "Accuracy is the fraction of predictions given the correct label. For multiclass this is a micro-averaged metric.",
+          ).optional(),
+          f1Score: z.number().describe(
+            "The F1 score is an average of recall and precision. For multiclass this is a macro-averaged metric.",
+          ).optional(),
+          logLoss: z.number().describe(
+            "Logarithmic Loss. For multiclass this is a macro-averaged metric.",
+          ).optional(),
+          precision: z.number().describe(
+            "Precision is the fraction of actual positive predictions that had positive actual labels. For multiclass this is a macro-averaged metric treating each class as a binary classifier.",
+          ).optional(),
+          recall: z.number().describe(
+            "Recall is the fraction of actual positive labels that were given a positive prediction. For multiclass this is a macro-averaged metric.",
+          ).optional(),
+          rocAuc: z.number().describe(
+            "Area Under a ROC Curve. For multiclass this is a macro-averaged metric.",
+          ).optional(),
+          threshold: z.number().describe(
+            "Threshold at which the metrics are computed. For binary classification models this is the positive class threshold. For multi-class classification models this is the confidence threshold.",
+          ).optional(),
+        }).describe(
+          "Aggregate metrics for classification/classifier models. For multi-class models, the metrics are either macro-averaged or micro-averaged. When macro-averaged, the metrics are calculated for each label and then an unweighted average is taken of those values. When micro-averaged, the metric is calculated globally by counting the total number of correctly predicted rows.",
+        ).optional(),
+        confusionMatrixList: z.array(z.object({
+          confidenceThreshold: z.number().describe(
+            "Confidence threshold used when computing the entries of the confusion matrix.",
+          ).optional(),
+          rows: z.array(z.object({
+            actualLabel: z.string().describe("The original label of this row.")
+              .optional(),
+            entries: z.array(z.object({
+              itemCount: z.string().describe(
+                "Number of items being predicted as this label.",
+              ).optional(),
+              predictedLabel: z.string().describe(
+                "The predicted label. For confidence_threshold > 0, we will also add an entry indicating the number of items under the confidence threshold.",
+              ).optional(),
+            })).describe("Info describing predicted label distribution.")
+              .optional(),
+          })).describe("One row per actual label.").optional(),
+        })).describe("Confusion matrix at different thresholds.").optional(),
+      }).describe(
+        "Evaluation metrics for multi-class classification/classifier models.",
+      ).optional(),
+      rankingMetrics: z.object({
+        averageRank: z.number().describe(
+          "Determines the goodness of a ranking by computing the percentile rank from the predicted confidence and dividing it by the original rank.",
+        ).optional(),
+        meanAveragePrecision: z.number().describe(
+          "Calculates a precision per user for all the items by ranking them and then averages all the precisions across all the users.",
+        ).optional(),
+        meanSquaredError: z.number().describe(
+          "Similar to the mean squared error computed in regression and explicit recommendation models except instead of computing the rating directly, the output from evaluate is computed against a preference which is 1 or 0 depending on if the rating exists or not.",
+        ).optional(),
+        normalizedDiscountedCumulativeGain: z.number().describe(
+          "A metric to determine the goodness of a ranking calculated from the predicted confidence by comparing it to an ideal rank measured by the original ratings.",
+        ).optional(),
+      }).describe(
+        "Evaluation metrics used by weighted-ALS models specified by feedback_type=implicit.",
+      ).optional(),
+      regressionMetrics: z.object({
+        meanAbsoluteError: z.number().describe("Mean absolute error.")
+          .optional(),
+        meanSquaredError: z.number().describe("Mean squared error.").optional(),
+        meanSquaredLogError: z.number().describe("Mean squared log error.")
+          .optional(),
+        medianAbsoluteError: z.number().describe("Median absolute error.")
+          .optional(),
+        rSquared: z.number().describe(
+          "R^2 score. This corresponds to r2_score in ML.EVALUATE.",
+        ).optional(),
+      }).describe(
+        "Evaluation metrics for regression and explicit feedback type matrix factorization models.",
+      ).optional(),
+    }).describe(
+      "Evaluation metrics of a model. These are either computed on all training data or just the eval data based on whether eval data was used during training. These are not present for imported models.",
+    ).optional(),
+    hparams: z.object({
+      activationFn: z.string().describe(
+        "Activation function of the neural nets.",
+      ).optional(),
+      adjustStepChanges: z.boolean().describe(
+        "If true, detect step changes and make data adjustment in the input time series.",
+      ).optional(),
+      approxGlobalFeatureContrib: z.boolean().describe(
+        "Whether to use approximate feature contribution method in XGBoost model explanation for global explain.",
+      ).optional(),
+      autoArima: z.boolean().describe("Whether to enable auto ARIMA or not.")
+        .optional(),
+      autoArimaMaxOrder: z.string().describe(
+        "The max value of the sum of non-seasonal p and q.",
+      ).optional(),
+      autoArimaMinOrder: z.string().describe(
+        "The min value of the sum of non-seasonal p and q.",
+      ).optional(),
+      autoClassWeights: z.boolean().describe(
+        "Whether to calculate class weights automatically based on the popularity of each label.",
+      ).optional(),
+      batchSize: z.string().describe("Batch size for dnn models.").optional(),
+      boosterType: z.enum(["BOOSTER_TYPE_UNSPECIFIED", "GBTREE", "DART"])
+        .describe("Booster type for boosted tree models.").optional(),
+      budgetHours: z.number().describe("Budget in hours for AutoML training.")
+        .optional(),
+      calculatePValues: z.boolean().describe(
+        "Whether or not p-value test should be computed for this model. Only available for linear and logistic regression models.",
+      ).optional(),
+      categoryEncodingMethod: z.enum([
+        "ENCODING_METHOD_UNSPECIFIED",
+        "ONE_HOT_ENCODING",
+        "LABEL_ENCODING",
+        "DUMMY_ENCODING",
+      ]).describe("Categorical feature encoding method.").optional(),
+      cleanSpikesAndDips: z.boolean().describe(
+        "If true, clean spikes and dips in the input time series.",
+      ).optional(),
+      colorSpace: z.enum([
+        "COLOR_SPACE_UNSPECIFIED",
+        "RGB",
+        "HSV",
+        "YIQ",
+        "YUV",
+        "GRAYSCALE",
+      ]).describe(
+        "Enums for color space, used for processing images in Object Table. See more details at https://www.tensorflow.org/io/tutorials/colorspace.",
+      ).optional(),
+      colsampleBylevel: z.number().describe(
+        "Subsample ratio of columns for each level for boosted tree models.",
+      ).optional(),
+      colsampleBynode: z.number().describe(
+        "Subsample ratio of columns for each node(split) for boosted tree models.",
+      ).optional(),
+      colsampleBytree: z.number().describe(
+        "Subsample ratio of columns when constructing each tree for boosted tree models.",
+      ).optional(),
+      contributionMetric: z.string().describe(
+        "The contribution metric. Applies to contribution analysis models. Allowed formats supported are for summable and summable ratio contribution metrics. These include expressions such as `SUM(x)` or `SUM(x)/SUM(y)`, where x and y are column names from the base table.",
+      ).optional(),
+      dartNormalizeType: z.enum([
+        "DART_NORMALIZE_TYPE_UNSPECIFIED",
+        "TREE",
+        "FOREST",
+      ]).describe(
+        "Type of normalization algorithm for boosted tree models using dart booster.",
+      ).optional(),
+      dataFrequency: z.enum([
+        "DATA_FREQUENCY_UNSPECIFIED",
+        "AUTO_FREQUENCY",
+        "YEARLY",
+        "QUARTERLY",
+        "MONTHLY",
+        "WEEKLY",
+        "DAILY",
+        "HOURLY",
+        "PER_MINUTE",
+      ]).describe("The data frequency of a time series.").optional(),
+      dataSplitColumn: z.string().describe(
+        "The column to split data with. This column won't be used as a feature. 1. When data_split_method is CUSTOM, the corresponding column should be boolean. The rows with true value tag are eval data, and the false are training data. 2. When data_split_method is SEQ, the first DATA_SPLIT_EVAL_FRACTION rows (from smallest to largest) in the corresponding column are used as training data, and the rest are eval data. It respects the order in Orderable data types: https://cloud.google.com/bigquery/docs/reference/standard-sql/data-types#data_type_properties",
+      ).optional(),
+      dataSplitEvalFraction: z.number().describe(
+        "The fraction of evaluation data over the whole input data. The rest of data will be used as training data. The format should be double. Accurate to two decimal places. Default value is 0.2.",
+      ).optional(),
+      dataSplitMethod: z.enum([
+        "DATA_SPLIT_METHOD_UNSPECIFIED",
+        "RANDOM",
+        "CUSTOM",
+        "SEQUENTIAL",
+        "NO_SPLIT",
+        "AUTO_SPLIT",
+      ]).describe(
+        "The data split type for training and evaluation, e.g. RANDOM.",
+      ).optional(),
+      decomposeTimeSeries: z.boolean().describe(
+        "If true, perform decompose time series and save the results.",
+      ).optional(),
+      dimensionIdColumns: z.array(z.string()).describe(
+        "Optional. Names of the columns to slice on. Applies to contribution analysis models.",
+      ).optional(),
+      distanceType: z.enum(["DISTANCE_TYPE_UNSPECIFIED", "EUCLIDEAN", "COSINE"])
+        .describe("Distance type for clustering models.").optional(),
+      dropout: z.number().describe("Dropout probability for dnn models.")
+        .optional(),
+      earlyStop: z.boolean().describe(
+        "Whether to stop early when the loss doesn't improve significantly any more (compared to min_relative_progress). Used only for iterative training algorithms.",
+      ).optional(),
+      enableGlobalExplain: z.boolean().describe(
+        "If true, enable global explanation during training.",
+      ).optional(),
+      endpointIdleTtl: z.string().describe(
+        "The idle TTL of the endpoint before the resources get destroyed. The default value is 6.5 hours.",
+      ).optional(),
+      feedbackType: z.enum([
+        "FEEDBACK_TYPE_UNSPECIFIED",
+        "IMPLICIT",
+        "EXPLICIT",
+      ]).describe(
+        "Feedback type that specifies which algorithm to run for matrix factorization.",
+      ).optional(),
+      fitIntercept: z.boolean().describe(
+        "Whether the model should include intercept during model training.",
+      ).optional(),
+      forecastLimitLowerBound: z.number().describe(
+        "The forecast limit lower bound that was used during ARIMA model training with limits. To see more details of the algorithm: https://otexts.com/fpp2/limits.html",
+      ).optional(),
+      forecastLimitUpperBound: z.number().describe(
+        "The forecast limit upper bound that was used during ARIMA model training with limits.",
+      ).optional(),
+      hiddenUnits: z.array(z.string()).describe("Hidden units for dnn models.")
+        .optional(),
+      holidayRegion: z.enum([
+        "HOLIDAY_REGION_UNSPECIFIED",
+        "GLOBAL",
+        "NA",
+        "JAPAC",
+        "EMEA",
+        "LAC",
+        "AE",
+        "AR",
+        "AT",
+        "AU",
+        "BE",
+        "BR",
+        "CA",
+        "CH",
+        "CL",
+        "CN",
+        "CO",
+        "CS",
+        "CZ",
+        "DE",
+        "DK",
+        "DZ",
+        "EC",
+        "EE",
+        "EG",
+        "ES",
+        "FI",
+        "FR",
+        "GB",
+        "GR",
+        "HK",
+        "HU",
+        "ID",
+        "IE",
+        "IL",
+        "IN",
+        "IR",
+        "IT",
+        "JP",
+        "KR",
+        "LV",
+        "MA",
+        "MX",
+        "MY",
+        "NG",
+        "NL",
+        "NO",
+        "NZ",
+        "PE",
+        "PH",
+        "PK",
+        "PL",
+        "PT",
+        "RO",
+        "RS",
+        "RU",
+        "SA",
+        "SE",
+        "SG",
+        "SI",
+        "SK",
+        "TH",
+        "TR",
+        "TW",
+        "UA",
+        "US",
+        "VE",
+        "VN",
+        "ZA",
+      ]).describe(
+        "The geographical region based on which the holidays are considered in time series modeling. If a valid value is specified, then holiday effects modeling is enabled.",
+      ).optional(),
+      holidayRegions: z.array(
+        z.enum([
+          "HOLIDAY_REGION_UNSPECIFIED",
+          "GLOBAL",
+          "NA",
+          "JAPAC",
+          "EMEA",
+          "LAC",
+          "AE",
+          "AR",
+          "AT",
+          "AU",
+          "BE",
+          "BR",
+          "CA",
+          "CH",
+          "CL",
+          "CN",
+          "CO",
+          "CS",
+          "CZ",
+          "DE",
+          "DK",
+          "DZ",
+          "EC",
+          "EE",
+          "EG",
+          "ES",
+          "FI",
+          "FR",
+          "GB",
+          "GR",
+          "HK",
+          "HU",
+          "ID",
+          "IE",
+          "IL",
+          "IN",
+          "IR",
+          "IT",
+          "JP",
+          "KR",
+          "LV",
+          "MA",
+          "MX",
+          "MY",
+          "NG",
+          "NL",
+          "NO",
+          "NZ",
+          "PE",
+          "PH",
+          "PK",
+          "PL",
+          "PT",
+          "RO",
+          "RS",
+          "RU",
+          "SA",
+          "SE",
+          "SG",
+          "SI",
+          "SK",
+          "TH",
+          "TR",
+          "TW",
+          "UA",
+          "US",
+          "VE",
+          "VN",
+          "ZA",
+        ]),
+      ).describe(
+        "A list of geographical regions that are used for time series modeling.",
+      ).optional(),
+      horizon: z.string().describe(
+        "The number of periods ahead that need to be forecasted.",
+      ).optional(),
+      hparamTuningObjectives: z.array(
+        z.enum([
+          "HPARAM_TUNING_OBJECTIVE_UNSPECIFIED",
+          "MEAN_ABSOLUTE_ERROR",
+          "MEAN_SQUARED_ERROR",
+          "MEAN_SQUARED_LOG_ERROR",
+          "MEDIAN_ABSOLUTE_ERROR",
+          "R_SQUARED",
+          "EXPLAINED_VARIANCE",
+          "PRECISION",
+          "RECALL",
+          "ACCURACY",
+          "F1_SCORE",
+          "LOG_LOSS",
+          "ROC_AUC",
+          "DAVIES_BOULDIN_INDEX",
+          "MEAN_AVERAGE_PRECISION",
+          "NORMALIZED_DISCOUNTED_CUMULATIVE_GAIN",
+          "AVERAGE_RANK",
+        ]),
+      ).describe(
+        "The target evaluation metrics to optimize the hyperparameters for.",
+      ).optional(),
+      huggingFaceModelId: z.string().describe(
+        "The id of a Hugging Face model. For example, `google/gemma-2-2b-it`.",
+      ).optional(),
+      includeDrift: z.boolean().describe(
+        "Include drift when fitting an ARIMA model.",
+      ).optional(),
+      initialLearnRate: z.number().describe(
+        "Specifies the initial learning rate for the line search learn rate strategy.",
+      ).optional(),
+      inputLabelColumns: z.array(z.string()).describe(
+        "Name of input label columns in training data.",
+      ).optional(),
+      instanceWeightColumn: z.string().describe(
+        "Name of the instance weight column for training data. This column isn't be used as a feature.",
+      ).optional(),
+      integratedGradientsNumSteps: z.string().describe(
+        "Number of integral steps for the integrated gradients explain method.",
+      ).optional(),
+      isTestColumn: z.string().describe(
+        "Name of the column used to determine the rows corresponding to control and test. Applies to contribution analysis models.",
+      ).optional(),
+      itemColumn: z.string().describe(
+        "Item column specified for matrix factorization models.",
+      ).optional(),
+      kmeansInitializationColumn: z.string().describe(
+        "The column used to provide the initial centroids for kmeans algorithm when kmeans_initialization_method is CUSTOM.",
+      ).optional(),
+      kmeansInitializationMethod: z.enum([
+        "KMEANS_INITIALIZATION_METHOD_UNSPECIFIED",
+        "RANDOM",
+        "CUSTOM",
+        "KMEANS_PLUS_PLUS",
+      ]).describe(
+        "The method used to initialize the centroids for kmeans algorithm.",
+      ).optional(),
+      l1RegActivation: z.number().describe(
+        "L1 regularization coefficient to activations.",
+      ).optional(),
+      l1Regularization: z.number().describe("L1 regularization coefficient.")
+        .optional(),
+      l2Regularization: z.number().describe("L2 regularization coefficient.")
+        .optional(),
+      labelClassWeights: z.record(z.string(), z.number()).describe(
+        "Weights associated with each label class, for rebalancing the training data. Only applicable for classification models.",
+      ).optional(),
+      learnRate: z.number().describe(
+        "Learning rate in training. Used only for iterative training algorithms.",
+      ).optional(),
+      learnRateStrategy: z.enum([
+        "LEARN_RATE_STRATEGY_UNSPECIFIED",
+        "LINE_SEARCH",
+        "CONSTANT",
+      ]).describe(
+        "The strategy to determine learn rate for the current iteration.",
+      ).optional(),
+      lossType: z.enum([
+        "LOSS_TYPE_UNSPECIFIED",
+        "MEAN_SQUARED_LOSS",
+        "MEAN_LOG_LOSS",
+      ]).describe("Type of loss function used during training run.").optional(),
+      machineType: z.string().describe(
+        "The type of the machine used to deploy and serve the model.",
+      ).optional(),
+      maxIterations: z.string().describe(
+        "The maximum number of iterations in training. Used only for iterative training algorithms.",
+      ).optional(),
+      maxParallelTrials: z.string().describe(
+        "Maximum number of trials to run in parallel.",
+      ).optional(),
+      maxReplicaCount: z.string().describe(
+        "The maximum number of machine replicas that will be deployed on an endpoint. The default value is equal to min_replica_count.",
+      ).optional(),
+      maxTimeSeriesLength: z.string().describe(
+        "The maximum number of time points in a time series that can be used in modeling the trend component of the time series. Don't use this option with the `timeSeriesLengthFraction` or `minTimeSeriesLength` options.",
+      ).optional(),
+      maxTreeDepth: z.string().describe(
+        "Maximum depth of a tree for boosted tree models.",
+      ).optional(),
+      minAprioriSupport: z.number().describe(
+        "The apriori support minimum. Applies to contribution analysis models.",
+      ).optional(),
+      minRelativeProgress: z.number().describe(
+        "When early_stop is true, stops training when accuracy improvement is less than 'min_relative_progress'. Used only for iterative training algorithms.",
+      ).optional(),
+      minReplicaCount: z.string().describe(
+        "The minimum number of machine replicas that will be always deployed on an endpoint. This value must be greater than or equal to 1. The default value is 1.",
+      ).optional(),
+      minSplitLoss: z.number().describe(
+        "Minimum split loss for boosted tree models.",
+      ).optional(),
+      minTimeSeriesLength: z.string().describe(
+        "The minimum number of time points in a time series that are used in modeling the trend component of the time series. If you use this option you must also set the `timeSeriesLengthFraction` option. This training option ensures that enough time points are available when you use `timeSeriesLengthFraction` in trend modeling. This is particularly important when forecasting multiple time series in a single query using `timeSeriesIdColumn`. If the total number of time points is less than the `minTimeSeriesLength` value, then the query uses all available time points.",
+      ).optional(),
+      minTreeChildWeight: z.string().describe(
+        "Minimum sum of instance weight needed in a child for boosted tree models.",
+      ).optional(),
+      modelGardenModelName: z.string().describe(
+        "The name of a Vertex model garden publisher model. Format is `publishers/{publisher}/models/{model}@{optional_version_id}`.",
+      ).optional(),
+      modelRegistry: z.enum(["MODEL_REGISTRY_UNSPECIFIED", "VERTEX_AI"])
+        .describe("The model registry.").optional(),
+      modelUri: z.string().describe(
+        "Google Cloud Storage URI from which the model was imported. Only applicable for imported models.",
+      ).optional(),
+      nonSeasonalOrder: z.object({
+        d: z.string().describe("Order of the differencing part.").optional(),
+        p: z.string().describe("Order of the autoregressive part.").optional(),
+        q: z.string().describe("Order of the moving-average part.").optional(),
+      }).describe(
+        "Arima order, can be used for both non-seasonal and seasonal parts.",
+      ).optional(),
+      numClusters: z.string().describe(
+        "Number of clusters for clustering models.",
+      ).optional(),
+      numFactors: z.string().describe(
+        "Num factors specified for matrix factorization models.",
+      ).optional(),
+      numParallelTree: z.string().describe(
+        "Number of parallel trees constructed during each iteration for boosted tree models.",
+      ).optional(),
+      numPrincipalComponents: z.string().describe(
+        "Number of principal components to keep in the PCA model. Must be <= the number of features.",
+      ).optional(),
+      numTrials: z.string().describe(
+        "Number of trials to run this hyperparameter tuning job.",
+      ).optional(),
+      optimizationStrategy: z.enum([
+        "OPTIMIZATION_STRATEGY_UNSPECIFIED",
+        "BATCH_GRADIENT_DESCENT",
+        "NORMAL_EQUATION",
+      ]).describe(
+        "Optimization strategy for training linear regression models.",
+      ).optional(),
+      optimizer: z.string().describe(
+        "Optimizer used for training the neural nets.",
+      ).optional(),
+      pcaExplainedVarianceRatio: z.number().describe(
+        "The minimum ratio of cumulative explained variance that needs to be given by the PCA model.",
+      ).optional(),
+      pcaSolver: z.enum(["UNSPECIFIED", "FULL", "RANDOMIZED", "AUTO"]).describe(
+        "The solver for PCA.",
+      ).optional(),
+      reservationAffinityKey: z.string().describe(
+        "Corresponds to the label key of a reservation resource used by Vertex AI. To target a SPECIFIC_RESERVATION by name, use `compute.googleapis.com/reservation-name` as the key and specify the name of your reservation as its value.",
+      ).optional(),
+      reservationAffinityType: z.enum([
+        "RESERVATION_AFFINITY_TYPE_UNSPECIFIED",
+        "NO_RESERVATION",
+        "ANY_RESERVATION",
+        "SPECIFIC_RESERVATION",
+      ]).describe(
+        "Specifies the reservation affinity type used to configure a Vertex AI resource. The default value is `NO_RESERVATION`.",
+      ).optional(),
+      reservationAffinityValues: z.array(z.string()).describe(
+        "Corresponds to the label values of a reservation resource used by Vertex AI. This must be the full resource name of the reservation or reservation block.",
+      ).optional(),
+      sampledShapleyNumPaths: z.string().describe(
+        "Number of paths for the sampled Shapley explain method.",
+      ).optional(),
+      scaleFeatures: z.boolean().describe(
+        "If true, scale the feature values by dividing the feature standard deviation. Currently only apply to PCA.",
+      ).optional(),
+      standardizeFeatures: z.boolean().describe(
+        "Whether to standardize numerical features. Default to true.",
+      ).optional(),
+      subsample: z.number().describe(
+        "Subsample fraction of the training data to grow tree to prevent overfitting for boosted tree models.",
+      ).optional(),
+      tfVersion: z.string().describe(
+        "Based on the selected TF version, the corresponding docker image is used to train external models.",
+      ).optional(),
+      timeSeriesDataColumn: z.string().describe(
+        "Column to be designated as time series data for ARIMA model.",
+      ).optional(),
+      timeSeriesIdColumn: z.string().describe(
+        "The time series id column that was used during ARIMA model training.",
+      ).optional(),
+      timeSeriesIdColumns: z.array(z.string()).describe(
+        "The time series id columns that were used during ARIMA model training.",
+      ).optional(),
+      timeSeriesLengthFraction: z.number().describe(
+        "The fraction of the interpolated length of the time series that's used to model the time series trend component. All of the time points of the time series are used to model the non-trend component. This training option accelerates modeling training without sacrificing much forecasting accuracy. You can use this option with `minTimeSeriesLength` but not with `maxTimeSeriesLength`.",
+      ).optional(),
+      timeSeriesTimestampColumn: z.string().describe(
+        "Column to be designated as time series timestamp for ARIMA model.",
+      ).optional(),
+      treeMethod: z.enum([
+        "TREE_METHOD_UNSPECIFIED",
+        "AUTO",
+        "EXACT",
+        "APPROX",
+        "HIST",
+      ]).describe("Tree construction algorithm for boosted tree models.")
+        .optional(),
+      trendSmoothingWindowSize: z.string().describe(
+        "Smoothing window size for the trend component. When a positive value is specified, a center moving average smoothing is applied on the history trend. When the smoothing window is out of the boundary at the beginning or the end of the trend, the first element or the last element is padded to fill the smoothing window before the average is applied.",
+      ).optional(),
+      userColumn: z.string().describe(
+        "User column specified for matrix factorization models.",
+      ).optional(),
+      vertexAiModelVersionAliases: z.array(z.string()).describe(
+        "The version aliases to apply in Vertex AI model registry. Always overwrite if the version aliases exists in a existing model.",
+      ).optional(),
+      walsAlpha: z.number().describe(
+        "Hyperparameter for matrix factoration when implicit feedback type is specified.",
+      ).optional(),
+      warmStart: z.boolean().describe(
+        "Whether to train a model from the last checkpoint.",
+      ).optional(),
+      xgboostVersion: z.string().describe(
+        "User-selected XGBoost versions for training of XGBoost models.",
+      ).optional(),
+    }).describe("Options used in model training.").optional(),
+    startTimeMs: z.string().describe("Starting time of the trial.").optional(),
+    status: z.enum([
+      "TRIAL_STATUS_UNSPECIFIED",
+      "NOT_STARTED",
+      "RUNNING",
+      "SUCCEEDED",
+      "FAILED",
+      "INFEASIBLE",
+      "STOPPED_EARLY",
+    ]).describe("The status of the trial.").optional(),
+    trainingLoss: z.number().describe(
+      "Loss computed on the training data at the end of trial.",
+    ).optional(),
+    trialId: z.string().describe("1-based index of the trial.").optional(),
+  })).describe(
+    "Output only. Trials of a [hyperparameter tuning](https://cloud.google.com/bigquery-ml/docs/reference/standard-sql/bigqueryml-syntax-hp-tuning-overview) model sorted by trial_id.",
+  ).optional(),
+  labelColumns: z.array(z.object({
+    name: z.string().describe(
+      "Optional. The name of this field. Can be absent for struct fields.",
+    ).optional(),
+    type: z.object({
+      arrayElementType: z.string().describe(
+        "Circular reference to StandardSqlDataType",
+      ).optional(),
+      rangeElementType: z.string().describe(
+        "Circular reference to StandardSqlDataType",
+      ).optional(),
+      structType: z.object({
+        fields: z.array(z.string()).describe("Fields within the struct.")
+          .optional(),
+      }).describe("The representation of a SQL STRUCT type.").optional(),
+      typeKind: z.enum([
+        "TYPE_KIND_UNSPECIFIED",
+        "INT64",
+        "BOOL",
+        "FLOAT64",
+        "STRING",
+        "BYTES",
+        "TIMESTAMP",
+        "DATE",
+        "TIME",
+        "DATETIME",
+        "INTERVAL",
+        "GEOGRAPHY",
+        "NUMERIC",
+        "BIGNUMERIC",
+        "JSON",
+        "ARRAY",
+        "STRUCT",
+        "RANGE",
+      ]).describe(
+        'Required. The top level type of this field. Can be any GoogleSQL data type (e.g., "INT64", "DATE", "ARRAY").',
+      ).optional(),
+    }).describe(
+      'The data type of a variable such as a function argument. Examples include: * INT64: `{"typeKind": "INT64"}` * ARRAY: { "typeKind": "ARRAY", "arrayElementType": {"typeKind": "STRING"} } * STRUCT>: { "typeKind": "STRUCT", "structType": { "fields": [ { "name": "x", "type": {"typeKind": "STRING"} }, { "name": "y", "type": { "typeKind": "ARRAY", "arrayElementType": {"typeKind": "DATE"} } } ] } } * RANGE: { "typeKind": "RANGE", "rangeElementType": {"typeKind": "DATE"} }',
+    ).optional(),
+  })).describe(
+    'Output only. Label columns that were used to train this model. The output of the model will have a "predicted_" prefix to these columns.',
+  ).optional(),
+  labels: z.record(z.string(), z.string()).describe(
+    "The labels associated with this model. You can use these to organize and group your models. Label keys and values can be no longer than 63 characters, can only contain lowercase letters, numeric characters, underscores and dashes. International characters are allowed. Label values are optional. Label keys must start with a letter and each label in the list must have a different key.",
+  ).optional(),
+  lastModifiedTime: z.string().describe(
+    "Output only. The time when this model was last modified, in millisecs since the epoch.",
+  ).optional(),
+  location: z.string().describe(
+    "Output only. The geographic location where the model resides. This value is inherited from the dataset.",
+  ).optional(),
+  modelReference: z.object({
+    datasetId: z.string().describe(
+      "Required. The ID of the dataset containing this model.",
+    ).optional(),
+    modelId: z.string().describe(
+      "Required. The ID of the model. The ID must contain only letters (a-z, A-Z), numbers (0-9), or underscores (_). The maximum length is 1,024 characters.",
+    ).optional(),
+    projectId: z.string().describe(
+      "Required. The ID of the project containing this model.",
+    ).optional(),
+  }).describe("Id path of a model.").optional(),
+  modelType: z.enum([
+    "MODEL_TYPE_UNSPECIFIED",
+    "LINEAR_REGRESSION",
+    "LOGISTIC_REGRESSION",
+    "KMEANS",
+    "MATRIX_FACTORIZATION",
+    "DNN_CLASSIFIER",
+    "TENSORFLOW",
+    "DNN_REGRESSOR",
+    "XGBOOST",
+    "BOOSTED_TREE_REGRESSOR",
+    "BOOSTED_TREE_CLASSIFIER",
+    "ARIMA",
+    "AUTOML_REGRESSOR",
+    "AUTOML_CLASSIFIER",
+    "PCA",
+    "DNN_LINEAR_COMBINED_CLASSIFIER",
+    "DNN_LINEAR_COMBINED_REGRESSOR",
+    "AUTOENCODER",
+    "ARIMA_PLUS",
+    "ARIMA_PLUS_XREG",
+    "RANDOM_FOREST_REGRESSOR",
+    "RANDOM_FOREST_CLASSIFIER",
+    "TENSORFLOW_LITE",
+    "ONNX",
+    "TRANSFORM_ONLY",
+    "CONTRIBUTION_ANALYSIS",
+  ]).describe("Output only. Type of the model resource.").optional(),
+  optimalTrialIds: z.array(z.string()).describe(
+    "Output only. For single-objective [hyperparameter tuning](https://cloud.google.com/bigquery-ml/docs/reference/standard-sql/bigqueryml-syntax-hp-tuning-overview) models, it only contains the best trial. For multi-objective [hyperparameter tuning](https://cloud.google.com/bigquery-ml/docs/reference/standard-sql/bigqueryml-syntax-hp-tuning-overview) models, it contains all Pareto optimal trials sorted by trial_id.",
+  ).optional(),
+  remoteModelInfo: z.object({
+    connection: z.string().describe(
+      'Output only. Fully qualified name of the user-provided connection object of the remote model. Format: ` "projects/{project_id}/locations/{location_id}/connections/{connection_id}" `',
+    ).optional(),
+    endpoint: z.string().describe("Output only. The endpoint for remote model.")
+      .optional(),
+    maxBatchingRows: z.string().describe(
+      "Output only. Max number of rows in each batch sent to the remote service. If unset, the number of rows in each batch is set dynamically.",
+    ).optional(),
+    remoteModelVersion: z.string().describe(
+      "Output only. The model version for LLM.",
+    ).optional(),
+    remoteServiceType: z.enum([
+      "REMOTE_SERVICE_TYPE_UNSPECIFIED",
+      "CLOUD_AI_TRANSLATE_V3",
+      "CLOUD_AI_VISION_V1",
+      "CLOUD_AI_NATURAL_LANGUAGE_V1",
+      "CLOUD_AI_SPEECH_TO_TEXT_V2",
+    ]).describe("Output only. The remote service type for remote model.")
+      .optional(),
+    speechRecognizer: z.string().describe(
+      "Output only. The name of the speech recognizer to use for speech recognition. The expected format is `projects/{project}/locations/{location}/recognizers/{recognizer}`. Customers can specify this field at model creation. If not specified, a default recognizer `projects/{model project}/locations/global/recognizers/_` will be used. See more details at [recognizers](https://cloud.google.com/speech-to-text/v2/docs/reference/rest/v2/projects.locations.recognizers)",
+    ).optional(),
+  }).describe("Remote Model Info").optional(),
+  trainingRuns: z.array(z.object({
+    classLevelGlobalExplanations: z.array(z.object({
+      classLabel: z.string().describe(
+        "Class label for this set of global explanations. Will be empty/null for binary logistic and linear regression models. Sorted alphabetically in descending order.",
+      ).optional(),
+      explanations: z.array(z.object({
+        attribution: z.number().describe("Attribution of feature.").optional(),
+        featureName: z.string().describe(
+          "The full feature name. For non-numerical features, will be formatted like `.`. Overall size of feature name will always be truncated to first 120 characters.",
+        ).optional(),
+      })).describe(
+        "A list of the top global explanations. Sorted by absolute value of attribution in descending order.",
+      ).optional(),
+    })).describe(
+      "Output only. Global explanation contains the explanation of top features on the class level. Applies to classification models only.",
+    ).optional(),
+    dataSplitResult: z.object({
+      evaluationTable: z.object({
+        datasetId: z.string().describe(
+          "Required. The ID of the dataset containing this table.",
+        ).optional(),
+        projectId: z.string().describe(
+          "Required. The ID of the project containing this table.",
+        ).optional(),
+        tableId: z.string().describe(
+          "Required. The ID of the table. The ID can contain Unicode characters in category L (letter), M (mark), N (number), Pc (connector, including underscore), Pd (dash), and Zs (space). For more information, see [General Category](https://wikipedia.org/wiki/Unicode_character_property#General_Category). The maximum length is 1,024 characters. Certain operations allow suffixing of the table ID with a partition decorator, such as `sample_table$20190123`.",
+        ).optional(),
+      }).optional(),
+      testTable: z.object({
+        datasetId: z.string().describe(
+          "Required. The ID of the dataset containing this table.",
+        ).optional(),
+        projectId: z.string().describe(
+          "Required. The ID of the project containing this table.",
+        ).optional(),
+        tableId: z.string().describe(
+          "Required. The ID of the table. The ID can contain Unicode characters in category L (letter), M (mark), N (number), Pc (connector, including underscore), Pd (dash), and Zs (space). For more information, see [General Category](https://wikipedia.org/wiki/Unicode_character_property#General_Category). The maximum length is 1,024 characters. Certain operations allow suffixing of the table ID with a partition decorator, such as `sample_table$20190123`.",
+        ).optional(),
+      }).optional(),
+      trainingTable: z.object({
+        datasetId: z.string().describe(
+          "Required. The ID of the dataset containing this table.",
+        ).optional(),
+        projectId: z.string().describe(
+          "Required. The ID of the project containing this table.",
+        ).optional(),
+        tableId: z.string().describe(
+          "Required. The ID of the table. The ID can contain Unicode characters in category L (letter), M (mark), N (number), Pc (connector, including underscore), Pd (dash), and Zs (space). For more information, see [General Category](https://wikipedia.org/wiki/Unicode_character_property#General_Category). The maximum length is 1,024 characters. Certain operations allow suffixing of the table ID with a partition decorator, such as `sample_table$20190123`.",
+        ).optional(),
+      }).optional(),
+    }).describe(
+      "Data split result. This contains references to the training and evaluation data tables that were used to train the model.",
+    ).optional(),
+    evaluationMetrics: z.object({
+      arimaForecastingMetrics: z.object({
+        arimaFittingMetrics: z.array(z.object({
+          aic: z.number().describe("AIC.").optional(),
+          logLikelihood: z.number().describe("Log-likelihood.").optional(),
+          variance: z.number().describe("Variance.").optional(),
+        })).describe("Arima model fitting metrics.").optional(),
+        arimaSingleModelForecastingMetrics: z.array(z.object({
+          arimaFittingMetrics: z.object({
+            aic: z.number().describe("AIC.").optional(),
+            logLikelihood: z.number().describe("Log-likelihood.").optional(),
+            variance: z.number().describe("Variance.").optional(),
+          }).describe("ARIMA model fitting metrics.").optional(),
+          hasDrift: z.boolean().describe(
+            "Is arima model fitted with drift or not. It is always false when d is not 1.",
+          ).optional(),
+          hasHolidayEffect: z.boolean().describe(
+            "If true, holiday_effect is a part of time series decomposition result.",
+          ).optional(),
+          hasSpikesAndDips: z.boolean().describe(
+            "If true, spikes_and_dips is a part of time series decomposition result.",
+          ).optional(),
+          hasStepChanges: z.boolean().describe(
+            "If true, step_changes is a part of time series decomposition result.",
+          ).optional(),
+          nonSeasonalOrder: z.object({
+            d: z.string().describe("Order of the differencing part.")
+              .optional(),
+            p: z.string().describe("Order of the autoregressive part.")
+              .optional(),
+            q: z.string().describe("Order of the moving-average part.")
+              .optional(),
+          }).describe(
+            "Arima order, can be used for both non-seasonal and seasonal parts.",
+          ).optional(),
+          seasonalPeriods: z.array(
+            z.enum([
+              "SEASONAL_PERIOD_TYPE_UNSPECIFIED",
+              "NO_SEASONALITY",
+              "DAILY",
+              "WEEKLY",
+              "MONTHLY",
+              "QUARTERLY",
+              "YEARLY",
+              "HOURLY",
+            ]),
+          ).describe(
+            "Seasonal periods. Repeated because multiple periods are supported for one time series.",
+          ).optional(),
+          timeSeriesId: z.string().describe(
+            "The time_series_id value for this time series. It will be one of the unique values from the time_series_id_column specified during ARIMA model training. Only present when time_series_id_column training option was used.",
+          ).optional(),
+          timeSeriesIds: z.array(z.string()).describe(
+            "The tuple of time_series_ids identifying this time series. It will be one of the unique tuples of values present in the time_series_id_columns specified during ARIMA model training. Only present when time_series_id_columns training option was used and the order of values here are same as the order of time_series_id_columns.",
+          ).optional(),
+        })).describe(
+          "Repeated as there can be many metric sets (one for each model) in auto-arima and the large-scale case.",
+        ).optional(),
+        hasDrift: z.array(z.boolean()).describe(
+          "Whether Arima model fitted with drift or not. It is always false when d is not 1.",
+        ).optional(),
+        nonSeasonalOrder: z.array(z.object({
+          d: z.string().describe("Order of the differencing part.").optional(),
+          p: z.string().describe("Order of the autoregressive part.")
+            .optional(),
+          q: z.string().describe("Order of the moving-average part.")
+            .optional(),
+        })).describe("Non-seasonal order.").optional(),
+        seasonalPeriods: z.array(
+          z.enum([
+            "SEASONAL_PERIOD_TYPE_UNSPECIFIED",
+            "NO_SEASONALITY",
+            "DAILY",
+            "WEEKLY",
+            "MONTHLY",
+            "QUARTERLY",
+            "YEARLY",
+            "HOURLY",
+          ]),
+        ).describe(
+          "Seasonal periods. Repeated because multiple periods are supported for one time series.",
+        ).optional(),
+        timeSeriesId: z.array(z.string()).describe(
+          "Id to differentiate different time series for the large-scale case.",
+        ).optional(),
+      }).describe("Model evaluation metrics for ARIMA forecasting models.")
+        .optional(),
+      binaryClassificationMetrics: z.object({
+        aggregateClassificationMetrics: z.object({
+          accuracy: z.number().describe(
+            "Accuracy is the fraction of predictions given the correct label. For multiclass this is a micro-averaged metric.",
+          ).optional(),
+          f1Score: z.number().describe(
+            "The F1 score is an average of recall and precision. For multiclass this is a macro-averaged metric.",
+          ).optional(),
+          logLoss: z.number().describe(
+            "Logarithmic Loss. For multiclass this is a macro-averaged metric.",
+          ).optional(),
+          precision: z.number().describe(
+            "Precision is the fraction of actual positive predictions that had positive actual labels. For multiclass this is a macro-averaged metric treating each class as a binary classifier.",
+          ).optional(),
+          recall: z.number().describe(
+            "Recall is the fraction of actual positive labels that were given a positive prediction. For multiclass this is a macro-averaged metric.",
+          ).optional(),
+          rocAuc: z.number().describe(
+            "Area Under a ROC Curve. For multiclass this is a macro-averaged metric.",
+          ).optional(),
+          threshold: z.number().describe(
+            "Threshold at which the metrics are computed. For binary classification models this is the positive class threshold. For multi-class classification models this is the confidence threshold.",
+          ).optional(),
+        }).describe(
+          "Aggregate metrics for classification/classifier models. For multi-class models, the metrics are either macro-averaged or micro-averaged. When macro-averaged, the metrics are calculated for each label and then an unweighted average is taken of those values. When micro-averaged, the metric is calculated globally by counting the total number of correctly predicted rows.",
+        ).optional(),
+        binaryConfusionMatrixList: z.array(z.object({
+          accuracy: z.number().describe(
+            "The fraction of predictions given the correct label.",
+          ).optional(),
+          f1Score: z.number().describe(
+            "The equally weighted average of recall and precision.",
+          ).optional(),
+          falseNegatives: z.string().describe(
+            "Number of false samples predicted as false.",
+          ).optional(),
+          falsePositives: z.string().describe(
+            "Number of false samples predicted as true.",
+          ).optional(),
+          positiveClassThreshold: z.number().describe(
+            "Threshold value used when computing each of the following metric.",
+          ).optional(),
+          precision: z.number().describe(
+            "The fraction of actual positive predictions that had positive actual labels.",
+          ).optional(),
+          recall: z.number().describe(
+            "The fraction of actual positive labels that were given a positive prediction.",
+          ).optional(),
+          trueNegatives: z.string().describe(
+            "Number of true samples predicted as false.",
+          ).optional(),
+          truePositives: z.string().describe(
+            "Number of true samples predicted as true.",
+          ).optional(),
+        })).describe("Binary confusion matrix at multiple thresholds.")
+          .optional(),
+        negativeLabel: z.string().describe(
+          "Label representing the negative class.",
+        ).optional(),
+        positiveLabel: z.string().describe(
+          "Label representing the positive class.",
+        ).optional(),
+      }).describe(
+        "Evaluation metrics for binary classification/classifier models.",
+      ).optional(),
+      clusteringMetrics: z.object({
+        clusters: z.array(z.object({
+          centroidId: z.string().describe("Centroid id.").optional(),
+          count: z.string().describe(
+            "Count of training data rows that were assigned to this cluster.",
+          ).optional(),
+          featureValues: z.array(z.object({
+            categoricalValue: z.object({
+              categoryCounts: z.array(z.object({
+                category: z.string().describe("The name of category.")
+                  .optional(),
+                count: z.string().describe(
+                  "The count of training samples matching the category within the cluster.",
+                ).optional(),
+              })).describe(
+                'Counts of all categories for the categorical feature. If there are more than ten categories, we return top ten (by count) and return one more CategoryCount with category "_OTHER_" and count as aggregate counts of remaining categories.',
+              ).optional(),
+            }).describe("Representative value of a categorical feature.")
+              .optional(),
+            featureColumn: z.string().describe("The feature column name.")
+              .optional(),
+            numericalValue: z.number().describe(
+              "The numerical feature value. This is the centroid value for this feature.",
+            ).optional(),
+          })).describe("Values of highly variant features for this cluster.")
+            .optional(),
+        })).describe("Information for all clusters.").optional(),
+        daviesBouldinIndex: z.number().describe("Davies-Bouldin index.")
+          .optional(),
+        meanSquaredDistance: z.number().describe(
+          "Mean of squared distances between each sample to its cluster centroid.",
+        ).optional(),
+      }).describe("Evaluation metrics for clustering models.").optional(),
+      dimensionalityReductionMetrics: z.object({
+        totalExplainedVarianceRatio: z.number().describe(
+          "Total percentage of variance explained by the selected principal components.",
+        ).optional(),
+      }).describe(
+        "Model evaluation metrics for dimensionality reduction models.",
+      ).optional(),
+      multiClassClassificationMetrics: z.object({
+        aggregateClassificationMetrics: z.object({
+          accuracy: z.number().describe(
+            "Accuracy is the fraction of predictions given the correct label. For multiclass this is a micro-averaged metric.",
+          ).optional(),
+          f1Score: z.number().describe(
+            "The F1 score is an average of recall and precision. For multiclass this is a macro-averaged metric.",
+          ).optional(),
+          logLoss: z.number().describe(
+            "Logarithmic Loss. For multiclass this is a macro-averaged metric.",
+          ).optional(),
+          precision: z.number().describe(
+            "Precision is the fraction of actual positive predictions that had positive actual labels. For multiclass this is a macro-averaged metric treating each class as a binary classifier.",
+          ).optional(),
+          recall: z.number().describe(
+            "Recall is the fraction of actual positive labels that were given a positive prediction. For multiclass this is a macro-averaged metric.",
+          ).optional(),
+          rocAuc: z.number().describe(
+            "Area Under a ROC Curve. For multiclass this is a macro-averaged metric.",
+          ).optional(),
+          threshold: z.number().describe(
+            "Threshold at which the metrics are computed. For binary classification models this is the positive class threshold. For multi-class classification models this is the confidence threshold.",
+          ).optional(),
+        }).describe(
+          "Aggregate metrics for classification/classifier models. For multi-class models, the metrics are either macro-averaged or micro-averaged. When macro-averaged, the metrics are calculated for each label and then an unweighted average is taken of those values. When micro-averaged, the metric is calculated globally by counting the total number of correctly predicted rows.",
+        ).optional(),
+        confusionMatrixList: z.array(z.object({
+          confidenceThreshold: z.number().describe(
+            "Confidence threshold used when computing the entries of the confusion matrix.",
+          ).optional(),
+          rows: z.array(z.object({
+            actualLabel: z.string().describe("The original label of this row.")
+              .optional(),
+            entries: z.array(z.object({
+              itemCount: z.string().describe(
+                "Number of items being predicted as this label.",
+              ).optional(),
+              predictedLabel: z.string().describe(
+                "The predicted label. For confidence_threshold > 0, we will also add an entry indicating the number of items under the confidence threshold.",
+              ).optional(),
+            })).describe("Info describing predicted label distribution.")
+              .optional(),
+          })).describe("One row per actual label.").optional(),
+        })).describe("Confusion matrix at different thresholds.").optional(),
+      }).describe(
+        "Evaluation metrics for multi-class classification/classifier models.",
+      ).optional(),
+      rankingMetrics: z.object({
+        averageRank: z.number().describe(
+          "Determines the goodness of a ranking by computing the percentile rank from the predicted confidence and dividing it by the original rank.",
+        ).optional(),
+        meanAveragePrecision: z.number().describe(
+          "Calculates a precision per user for all the items by ranking them and then averages all the precisions across all the users.",
+        ).optional(),
+        meanSquaredError: z.number().describe(
+          "Similar to the mean squared error computed in regression and explicit recommendation models except instead of computing the rating directly, the output from evaluate is computed against a preference which is 1 or 0 depending on if the rating exists or not.",
+        ).optional(),
+        normalizedDiscountedCumulativeGain: z.number().describe(
+          "A metric to determine the goodness of a ranking calculated from the predicted confidence by comparing it to an ideal rank measured by the original ratings.",
+        ).optional(),
+      }).describe(
+        "Evaluation metrics used by weighted-ALS models specified by feedback_type=implicit.",
+      ).optional(),
+      regressionMetrics: z.object({
+        meanAbsoluteError: z.number().describe("Mean absolute error.")
+          .optional(),
+        meanSquaredError: z.number().describe("Mean squared error.").optional(),
+        meanSquaredLogError: z.number().describe("Mean squared log error.")
+          .optional(),
+        medianAbsoluteError: z.number().describe("Median absolute error.")
+          .optional(),
+        rSquared: z.number().describe(
+          "R^2 score. This corresponds to r2_score in ML.EVALUATE.",
+        ).optional(),
+      }).describe(
+        "Evaluation metrics for regression and explicit feedback type matrix factorization models.",
+      ).optional(),
+    }).describe(
+      "Evaluation metrics of a model. These are either computed on all training data or just the eval data based on whether eval data was used during training. These are not present for imported models.",
+    ).optional(),
+    modelLevelGlobalExplanation: z.object({
+      classLabel: z.string().describe(
+        "Class label for this set of global explanations. Will be empty/null for binary logistic and linear regression models. Sorted alphabetically in descending order.",
+      ).optional(),
+      explanations: z.array(z.object({
+        attribution: z.number().describe("Attribution of feature.").optional(),
+        featureName: z.string().describe(
+          "The full feature name. For non-numerical features, will be formatted like `.`. Overall size of feature name will always be truncated to first 120 characters.",
+        ).optional(),
+      })).describe(
+        "A list of the top global explanations. Sorted by absolute value of attribution in descending order.",
+      ).optional(),
+    }).describe(
+      "Global explanations containing the top most important features after training.",
+    ).optional(),
+    results: z.array(z.object({
+      arimaResult: z.object({
+        arimaModelInfo: z.array(z.object({
+          arimaCoefficients: z.object({
+            autoRegressiveCoefficients: z.array(z.number()).describe(
+              "Auto-regressive coefficients, an array of double.",
+            ).optional(),
+            interceptCoefficient: z.number().describe(
+              "Intercept coefficient, just a double not an array.",
+            ).optional(),
+            movingAverageCoefficients: z.array(z.number()).describe(
+              "Moving-average coefficients, an array of double.",
+            ).optional(),
+          }).describe("Arima coefficients.").optional(),
+          arimaFittingMetrics: z.object({
+            aic: z.number().describe("AIC.").optional(),
+            logLikelihood: z.number().describe("Log-likelihood.").optional(),
+            variance: z.number().describe("Variance.").optional(),
+          }).describe("ARIMA model fitting metrics.").optional(),
+          hasDrift: z.boolean().describe(
+            "Whether Arima model fitted with drift or not. It is always false when d is not 1.",
+          ).optional(),
+          hasHolidayEffect: z.boolean().describe(
+            "If true, holiday_effect is a part of time series decomposition result.",
+          ).optional(),
+          hasSpikesAndDips: z.boolean().describe(
+            "If true, spikes_and_dips is a part of time series decomposition result.",
+          ).optional(),
+          hasStepChanges: z.boolean().describe(
+            "If true, step_changes is a part of time series decomposition result.",
+          ).optional(),
+          nonSeasonalOrder: z.object({
+            d: z.string().describe("Order of the differencing part.")
+              .optional(),
+            p: z.string().describe("Order of the autoregressive part.")
+              .optional(),
+            q: z.string().describe("Order of the moving-average part.")
+              .optional(),
+          }).describe(
+            "Arima order, can be used for both non-seasonal and seasonal parts.",
+          ).optional(),
+          seasonalPeriods: z.array(
+            z.enum([
+              "SEASONAL_PERIOD_TYPE_UNSPECIFIED",
+              "NO_SEASONALITY",
+              "DAILY",
+              "WEEKLY",
+              "MONTHLY",
+              "QUARTERLY",
+              "YEARLY",
+              "HOURLY",
+            ]),
+          ).describe(
+            "Seasonal periods. Repeated because multiple periods are supported for one time series.",
+          ).optional(),
+          timeSeriesId: z.string().describe(
+            "The time_series_id value for this time series. It will be one of the unique values from the time_series_id_column specified during ARIMA model training. Only present when time_series_id_column training option was used.",
+          ).optional(),
+          timeSeriesIds: z.array(z.string()).describe(
+            "The tuple of time_series_ids identifying this time series. It will be one of the unique tuples of values present in the time_series_id_columns specified during ARIMA model training. Only present when time_series_id_columns training option was used and the order of values here are same as the order of time_series_id_columns.",
+          ).optional(),
+        })).describe(
+          "This message is repeated because there are multiple arima models fitted in auto-arima. For non-auto-arima model, its size is one.",
+        ).optional(),
+        seasonalPeriods: z.array(
+          z.enum([
+            "SEASONAL_PERIOD_TYPE_UNSPECIFIED",
+            "NO_SEASONALITY",
+            "DAILY",
+            "WEEKLY",
+            "MONTHLY",
+            "QUARTERLY",
+            "YEARLY",
+            "HOURLY",
+          ]),
+        ).describe(
+          "Seasonal periods. Repeated because multiple periods are supported for one time series.",
+        ).optional(),
+      }).describe(
+        "(Auto-)arima fitting result. Wrap everything in ArimaResult for easier refactoring if we want to use model-specific iteration results.",
+      ).optional(),
+      clusterInfos: z.array(z.object({
+        centroidId: z.string().describe("Centroid id.").optional(),
+        clusterRadius: z.number().describe(
+          "Cluster radius, the average distance from centroid to each point assigned to the cluster.",
+        ).optional(),
+        clusterSize: z.string().describe(
+          "Cluster size, the total number of points assigned to the cluster.",
+        ).optional(),
+      })).describe("Information about top clusters for clustering models.")
+        .optional(),
+      durationMs: z.string().describe(
+        "Time taken to run the iteration in milliseconds.",
+      ).optional(),
+      evalLoss: z.number().describe(
+        "Loss computed on the eval data at the end of iteration.",
+      ).optional(),
+      index: z.number().int().describe("Index of the iteration, 0 based.")
+        .optional(),
+      learnRate: z.number().describe("Learn rate used for this iteration.")
+        .optional(),
+      principalComponentInfos: z.array(z.object({
+        cumulativeExplainedVarianceRatio: z.number().describe(
+          "The explained_variance is pre-ordered in the descending order to compute the cumulative explained variance ratio.",
+        ).optional(),
+        explainedVariance: z.number().describe(
+          "Explained variance by this principal component, which is simply the eigenvalue.",
+        ).optional(),
+        explainedVarianceRatio: z.number().describe(
+          "Explained_variance over the total explained variance.",
+        ).optional(),
+        principalComponentId: z.string().describe(
+          "Id of the principal component.",
+        ).optional(),
+      })).describe("The information of the principal components.").optional(),
+      trainingLoss: z.number().describe(
+        "Loss computed on the training data at the end of iteration.",
+      ).optional(),
+    })).describe(
+      "Output only. Output of each iteration run, results.size() <= max_iterations.",
+    ).optional(),
+    startTime: z.string().describe(
+      "Output only. The start time of this training run.",
+    ).optional(),
+    trainingOptions: z.object({
+      activationFn: z.string().describe(
+        "Activation function of the neural nets.",
+      ).optional(),
+      adjustStepChanges: z.boolean().describe(
+        "If true, detect step changes and make data adjustment in the input time series.",
+      ).optional(),
+      approxGlobalFeatureContrib: z.boolean().describe(
+        "Whether to use approximate feature contribution method in XGBoost model explanation for global explain.",
+      ).optional(),
+      autoArima: z.boolean().describe("Whether to enable auto ARIMA or not.")
+        .optional(),
+      autoArimaMaxOrder: z.string().describe(
+        "The max value of the sum of non-seasonal p and q.",
+      ).optional(),
+      autoArimaMinOrder: z.string().describe(
+        "The min value of the sum of non-seasonal p and q.",
+      ).optional(),
+      autoClassWeights: z.boolean().describe(
+        "Whether to calculate class weights automatically based on the popularity of each label.",
+      ).optional(),
+      batchSize: z.string().describe("Batch size for dnn models.").optional(),
+      boosterType: z.enum(["BOOSTER_TYPE_UNSPECIFIED", "GBTREE", "DART"])
+        .describe("Booster type for boosted tree models.").optional(),
+      budgetHours: z.number().describe("Budget in hours for AutoML training.")
+        .optional(),
+      calculatePValues: z.boolean().describe(
+        "Whether or not p-value test should be computed for this model. Only available for linear and logistic regression models.",
+      ).optional(),
+      categoryEncodingMethod: z.enum([
+        "ENCODING_METHOD_UNSPECIFIED",
+        "ONE_HOT_ENCODING",
+        "LABEL_ENCODING",
+        "DUMMY_ENCODING",
+      ]).describe("Categorical feature encoding method.").optional(),
+      cleanSpikesAndDips: z.boolean().describe(
+        "If true, clean spikes and dips in the input time series.",
+      ).optional(),
+      colorSpace: z.enum([
+        "COLOR_SPACE_UNSPECIFIED",
+        "RGB",
+        "HSV",
+        "YIQ",
+        "YUV",
+        "GRAYSCALE",
+      ]).describe(
+        "Enums for color space, used for processing images in Object Table. See more details at https://www.tensorflow.org/io/tutorials/colorspace.",
+      ).optional(),
+      colsampleBylevel: z.number().describe(
+        "Subsample ratio of columns for each level for boosted tree models.",
+      ).optional(),
+      colsampleBynode: z.number().describe(
+        "Subsample ratio of columns for each node(split) for boosted tree models.",
+      ).optional(),
+      colsampleBytree: z.number().describe(
+        "Subsample ratio of columns when constructing each tree for boosted tree models.",
+      ).optional(),
+      contributionMetric: z.string().describe(
+        "The contribution metric. Applies to contribution analysis models. Allowed formats supported are for summable and summable ratio contribution metrics. These include expressions such as `SUM(x)` or `SUM(x)/SUM(y)`, where x and y are column names from the base table.",
+      ).optional(),
+      dartNormalizeType: z.enum([
+        "DART_NORMALIZE_TYPE_UNSPECIFIED",
+        "TREE",
+        "FOREST",
+      ]).describe(
+        "Type of normalization algorithm for boosted tree models using dart booster.",
+      ).optional(),
+      dataFrequency: z.enum([
+        "DATA_FREQUENCY_UNSPECIFIED",
+        "AUTO_FREQUENCY",
+        "YEARLY",
+        "QUARTERLY",
+        "MONTHLY",
+        "WEEKLY",
+        "DAILY",
+        "HOURLY",
+        "PER_MINUTE",
+      ]).describe("The data frequency of a time series.").optional(),
+      dataSplitColumn: z.string().describe(
+        "The column to split data with. This column won't be used as a feature. 1. When data_split_method is CUSTOM, the corresponding column should be boolean. The rows with true value tag are eval data, and the false are training data. 2. When data_split_method is SEQ, the first DATA_SPLIT_EVAL_FRACTION rows (from smallest to largest) in the corresponding column are used as training data, and the rest are eval data. It respects the order in Orderable data types: https://cloud.google.com/bigquery/docs/reference/standard-sql/data-types#data_type_properties",
+      ).optional(),
+      dataSplitEvalFraction: z.number().describe(
+        "The fraction of evaluation data over the whole input data. The rest of data will be used as training data. The format should be double. Accurate to two decimal places. Default value is 0.2.",
+      ).optional(),
+      dataSplitMethod: z.enum([
+        "DATA_SPLIT_METHOD_UNSPECIFIED",
+        "RANDOM",
+        "CUSTOM",
+        "SEQUENTIAL",
+        "NO_SPLIT",
+        "AUTO_SPLIT",
+      ]).describe(
+        "The data split type for training and evaluation, e.g. RANDOM.",
+      ).optional(),
+      decomposeTimeSeries: z.boolean().describe(
+        "If true, perform decompose time series and save the results.",
+      ).optional(),
+      dimensionIdColumns: z.array(z.string()).describe(
+        "Optional. Names of the columns to slice on. Applies to contribution analysis models.",
+      ).optional(),
+      distanceType: z.enum(["DISTANCE_TYPE_UNSPECIFIED", "EUCLIDEAN", "COSINE"])
+        .describe("Distance type for clustering models.").optional(),
+      dropout: z.number().describe("Dropout probability for dnn models.")
+        .optional(),
+      earlyStop: z.boolean().describe(
+        "Whether to stop early when the loss doesn't improve significantly any more (compared to min_relative_progress). Used only for iterative training algorithms.",
+      ).optional(),
+      enableGlobalExplain: z.boolean().describe(
+        "If true, enable global explanation during training.",
+      ).optional(),
+      endpointIdleTtl: z.string().describe(
+        "The idle TTL of the endpoint before the resources get destroyed. The default value is 6.5 hours.",
+      ).optional(),
+      feedbackType: z.enum([
+        "FEEDBACK_TYPE_UNSPECIFIED",
+        "IMPLICIT",
+        "EXPLICIT",
+      ]).describe(
+        "Feedback type that specifies which algorithm to run for matrix factorization.",
+      ).optional(),
+      fitIntercept: z.boolean().describe(
+        "Whether the model should include intercept during model training.",
+      ).optional(),
+      forecastLimitLowerBound: z.number().describe(
+        "The forecast limit lower bound that was used during ARIMA model training with limits. To see more details of the algorithm: https://otexts.com/fpp2/limits.html",
+      ).optional(),
+      forecastLimitUpperBound: z.number().describe(
+        "The forecast limit upper bound that was used during ARIMA model training with limits.",
+      ).optional(),
+      hiddenUnits: z.array(z.string()).describe("Hidden units for dnn models.")
+        .optional(),
+      holidayRegion: z.enum([
+        "HOLIDAY_REGION_UNSPECIFIED",
+        "GLOBAL",
+        "NA",
+        "JAPAC",
+        "EMEA",
+        "LAC",
+        "AE",
+        "AR",
+        "AT",
+        "AU",
+        "BE",
+        "BR",
+        "CA",
+        "CH",
+        "CL",
+        "CN",
+        "CO",
+        "CS",
+        "CZ",
+        "DE",
+        "DK",
+        "DZ",
+        "EC",
+        "EE",
+        "EG",
+        "ES",
+        "FI",
+        "FR",
+        "GB",
+        "GR",
+        "HK",
+        "HU",
+        "ID",
+        "IE",
+        "IL",
+        "IN",
+        "IR",
+        "IT",
+        "JP",
+        "KR",
+        "LV",
+        "MA",
+        "MX",
+        "MY",
+        "NG",
+        "NL",
+        "NO",
+        "NZ",
+        "PE",
+        "PH",
+        "PK",
+        "PL",
+        "PT",
+        "RO",
+        "RS",
+        "RU",
+        "SA",
+        "SE",
+        "SG",
+        "SI",
+        "SK",
+        "TH",
+        "TR",
+        "TW",
+        "UA",
+        "US",
+        "VE",
+        "VN",
+        "ZA",
+      ]).describe(
+        "The geographical region based on which the holidays are considered in time series modeling. If a valid value is specified, then holiday effects modeling is enabled.",
+      ).optional(),
+      holidayRegions: z.array(
+        z.enum([
+          "HOLIDAY_REGION_UNSPECIFIED",
+          "GLOBAL",
+          "NA",
+          "JAPAC",
+          "EMEA",
+          "LAC",
+          "AE",
+          "AR",
+          "AT",
+          "AU",
+          "BE",
+          "BR",
+          "CA",
+          "CH",
+          "CL",
+          "CN",
+          "CO",
+          "CS",
+          "CZ",
+          "DE",
+          "DK",
+          "DZ",
+          "EC",
+          "EE",
+          "EG",
+          "ES",
+          "FI",
+          "FR",
+          "GB",
+          "GR",
+          "HK",
+          "HU",
+          "ID",
+          "IE",
+          "IL",
+          "IN",
+          "IR",
+          "IT",
+          "JP",
+          "KR",
+          "LV",
+          "MA",
+          "MX",
+          "MY",
+          "NG",
+          "NL",
+          "NO",
+          "NZ",
+          "PE",
+          "PH",
+          "PK",
+          "PL",
+          "PT",
+          "RO",
+          "RS",
+          "RU",
+          "SA",
+          "SE",
+          "SG",
+          "SI",
+          "SK",
+          "TH",
+          "TR",
+          "TW",
+          "UA",
+          "US",
+          "VE",
+          "VN",
+          "ZA",
+        ]),
+      ).describe(
+        "A list of geographical regions that are used for time series modeling.",
+      ).optional(),
+      horizon: z.string().describe(
+        "The number of periods ahead that need to be forecasted.",
+      ).optional(),
+      hparamTuningObjectives: z.array(
+        z.enum([
+          "HPARAM_TUNING_OBJECTIVE_UNSPECIFIED",
+          "MEAN_ABSOLUTE_ERROR",
+          "MEAN_SQUARED_ERROR",
+          "MEAN_SQUARED_LOG_ERROR",
+          "MEDIAN_ABSOLUTE_ERROR",
+          "R_SQUARED",
+          "EXPLAINED_VARIANCE",
+          "PRECISION",
+          "RECALL",
+          "ACCURACY",
+          "F1_SCORE",
+          "LOG_LOSS",
+          "ROC_AUC",
+          "DAVIES_BOULDIN_INDEX",
+          "MEAN_AVERAGE_PRECISION",
+          "NORMALIZED_DISCOUNTED_CUMULATIVE_GAIN",
+          "AVERAGE_RANK",
+        ]),
+      ).describe(
+        "The target evaluation metrics to optimize the hyperparameters for.",
+      ).optional(),
+      huggingFaceModelId: z.string().describe(
+        "The id of a Hugging Face model. For example, `google/gemma-2-2b-it`.",
+      ).optional(),
+      includeDrift: z.boolean().describe(
+        "Include drift when fitting an ARIMA model.",
+      ).optional(),
+      initialLearnRate: z.number().describe(
+        "Specifies the initial learning rate for the line search learn rate strategy.",
+      ).optional(),
+      inputLabelColumns: z.array(z.string()).describe(
+        "Name of input label columns in training data.",
+      ).optional(),
+      instanceWeightColumn: z.string().describe(
+        "Name of the instance weight column for training data. This column isn't be used as a feature.",
+      ).optional(),
+      integratedGradientsNumSteps: z.string().describe(
+        "Number of integral steps for the integrated gradients explain method.",
+      ).optional(),
+      isTestColumn: z.string().describe(
+        "Name of the column used to determine the rows corresponding to control and test. Applies to contribution analysis models.",
+      ).optional(),
+      itemColumn: z.string().describe(
+        "Item column specified for matrix factorization models.",
+      ).optional(),
+      kmeansInitializationColumn: z.string().describe(
+        "The column used to provide the initial centroids for kmeans algorithm when kmeans_initialization_method is CUSTOM.",
+      ).optional(),
+      kmeansInitializationMethod: z.enum([
+        "KMEANS_INITIALIZATION_METHOD_UNSPECIFIED",
+        "RANDOM",
+        "CUSTOM",
+        "KMEANS_PLUS_PLUS",
+      ]).describe(
+        "The method used to initialize the centroids for kmeans algorithm.",
+      ).optional(),
+      l1RegActivation: z.number().describe(
+        "L1 regularization coefficient to activations.",
+      ).optional(),
+      l1Regularization: z.number().describe("L1 regularization coefficient.")
+        .optional(),
+      l2Regularization: z.number().describe("L2 regularization coefficient.")
+        .optional(),
+      labelClassWeights: z.record(z.string(), z.number()).describe(
+        "Weights associated with each label class, for rebalancing the training data. Only applicable for classification models.",
+      ).optional(),
+      learnRate: z.number().describe(
+        "Learning rate in training. Used only for iterative training algorithms.",
+      ).optional(),
+      learnRateStrategy: z.enum([
+        "LEARN_RATE_STRATEGY_UNSPECIFIED",
+        "LINE_SEARCH",
+        "CONSTANT",
+      ]).describe(
+        "The strategy to determine learn rate for the current iteration.",
+      ).optional(),
+      lossType: z.enum([
+        "LOSS_TYPE_UNSPECIFIED",
+        "MEAN_SQUARED_LOSS",
+        "MEAN_LOG_LOSS",
+      ]).describe("Type of loss function used during training run.").optional(),
+      machineType: z.string().describe(
+        "The type of the machine used to deploy and serve the model.",
+      ).optional(),
+      maxIterations: z.string().describe(
+        "The maximum number of iterations in training. Used only for iterative training algorithms.",
+      ).optional(),
+      maxParallelTrials: z.string().describe(
+        "Maximum number of trials to run in parallel.",
+      ).optional(),
+      maxReplicaCount: z.string().describe(
+        "The maximum number of machine replicas that will be deployed on an endpoint. The default value is equal to min_replica_count.",
+      ).optional(),
+      maxTimeSeriesLength: z.string().describe(
+        "The maximum number of time points in a time series that can be used in modeling the trend component of the time series. Don't use this option with the `timeSeriesLengthFraction` or `minTimeSeriesLength` options.",
+      ).optional(),
+      maxTreeDepth: z.string().describe(
+        "Maximum depth of a tree for boosted tree models.",
+      ).optional(),
+      minAprioriSupport: z.number().describe(
+        "The apriori support minimum. Applies to contribution analysis models.",
+      ).optional(),
+      minRelativeProgress: z.number().describe(
+        "When early_stop is true, stops training when accuracy improvement is less than 'min_relative_progress'. Used only for iterative training algorithms.",
+      ).optional(),
+      minReplicaCount: z.string().describe(
+        "The minimum number of machine replicas that will be always deployed on an endpoint. This value must be greater than or equal to 1. The default value is 1.",
+      ).optional(),
+      minSplitLoss: z.number().describe(
+        "Minimum split loss for boosted tree models.",
+      ).optional(),
+      minTimeSeriesLength: z.string().describe(
+        "The minimum number of time points in a time series that are used in modeling the trend component of the time series. If you use this option you must also set the `timeSeriesLengthFraction` option. This training option ensures that enough time points are available when you use `timeSeriesLengthFraction` in trend modeling. This is particularly important when forecasting multiple time series in a single query using `timeSeriesIdColumn`. If the total number of time points is less than the `minTimeSeriesLength` value, then the query uses all available time points.",
+      ).optional(),
+      minTreeChildWeight: z.string().describe(
+        "Minimum sum of instance weight needed in a child for boosted tree models.",
+      ).optional(),
+      modelGardenModelName: z.string().describe(
+        "The name of a Vertex model garden publisher model. Format is `publishers/{publisher}/models/{model}@{optional_version_id}`.",
+      ).optional(),
+      modelRegistry: z.enum(["MODEL_REGISTRY_UNSPECIFIED", "VERTEX_AI"])
+        .describe("The model registry.").optional(),
+      modelUri: z.string().describe(
+        "Google Cloud Storage URI from which the model was imported. Only applicable for imported models.",
+      ).optional(),
+      nonSeasonalOrder: z.object({
+        d: z.string().describe("Order of the differencing part.").optional(),
+        p: z.string().describe("Order of the autoregressive part.").optional(),
+        q: z.string().describe("Order of the moving-average part.").optional(),
+      }).describe(
+        "Arima order, can be used for both non-seasonal and seasonal parts.",
+      ).optional(),
+      numClusters: z.string().describe(
+        "Number of clusters for clustering models.",
+      ).optional(),
+      numFactors: z.string().describe(
+        "Num factors specified for matrix factorization models.",
+      ).optional(),
+      numParallelTree: z.string().describe(
+        "Number of parallel trees constructed during each iteration for boosted tree models.",
+      ).optional(),
+      numPrincipalComponents: z.string().describe(
+        "Number of principal components to keep in the PCA model. Must be <= the number of features.",
+      ).optional(),
+      numTrials: z.string().describe(
+        "Number of trials to run this hyperparameter tuning job.",
+      ).optional(),
+      optimizationStrategy: z.enum([
+        "OPTIMIZATION_STRATEGY_UNSPECIFIED",
+        "BATCH_GRADIENT_DESCENT",
+        "NORMAL_EQUATION",
+      ]).describe(
+        "Optimization strategy for training linear regression models.",
+      ).optional(),
+      optimizer: z.string().describe(
+        "Optimizer used for training the neural nets.",
+      ).optional(),
+      pcaExplainedVarianceRatio: z.number().describe(
+        "The minimum ratio of cumulative explained variance that needs to be given by the PCA model.",
+      ).optional(),
+      pcaSolver: z.enum(["UNSPECIFIED", "FULL", "RANDOMIZED", "AUTO"]).describe(
+        "The solver for PCA.",
+      ).optional(),
+      reservationAffinityKey: z.string().describe(
+        "Corresponds to the label key of a reservation resource used by Vertex AI. To target a SPECIFIC_RESERVATION by name, use `compute.googleapis.com/reservation-name` as the key and specify the name of your reservation as its value.",
+      ).optional(),
+      reservationAffinityType: z.enum([
+        "RESERVATION_AFFINITY_TYPE_UNSPECIFIED",
+        "NO_RESERVATION",
+        "ANY_RESERVATION",
+        "SPECIFIC_RESERVATION",
+      ]).describe(
+        "Specifies the reservation affinity type used to configure a Vertex AI resource. The default value is `NO_RESERVATION`.",
+      ).optional(),
+      reservationAffinityValues: z.array(z.string()).describe(
+        "Corresponds to the label values of a reservation resource used by Vertex AI. This must be the full resource name of the reservation or reservation block.",
+      ).optional(),
+      sampledShapleyNumPaths: z.string().describe(
+        "Number of paths for the sampled Shapley explain method.",
+      ).optional(),
+      scaleFeatures: z.boolean().describe(
+        "If true, scale the feature values by dividing the feature standard deviation. Currently only apply to PCA.",
+      ).optional(),
+      standardizeFeatures: z.boolean().describe(
+        "Whether to standardize numerical features. Default to true.",
+      ).optional(),
+      subsample: z.number().describe(
+        "Subsample fraction of the training data to grow tree to prevent overfitting for boosted tree models.",
+      ).optional(),
+      tfVersion: z.string().describe(
+        "Based on the selected TF version, the corresponding docker image is used to train external models.",
+      ).optional(),
+      timeSeriesDataColumn: z.string().describe(
+        "Column to be designated as time series data for ARIMA model.",
+      ).optional(),
+      timeSeriesIdColumn: z.string().describe(
+        "The time series id column that was used during ARIMA model training.",
+      ).optional(),
+      timeSeriesIdColumns: z.array(z.string()).describe(
+        "The time series id columns that were used during ARIMA model training.",
+      ).optional(),
+      timeSeriesLengthFraction: z.number().describe(
+        "The fraction of the interpolated length of the time series that's used to model the time series trend component. All of the time points of the time series are used to model the non-trend component. This training option accelerates modeling training without sacrificing much forecasting accuracy. You can use this option with `minTimeSeriesLength` but not with `maxTimeSeriesLength`.",
+      ).optional(),
+      timeSeriesTimestampColumn: z.string().describe(
+        "Column to be designated as time series timestamp for ARIMA model.",
+      ).optional(),
+      treeMethod: z.enum([
+        "TREE_METHOD_UNSPECIFIED",
+        "AUTO",
+        "EXACT",
+        "APPROX",
+        "HIST",
+      ]).describe("Tree construction algorithm for boosted tree models.")
+        .optional(),
+      trendSmoothingWindowSize: z.string().describe(
+        "Smoothing window size for the trend component. When a positive value is specified, a center moving average smoothing is applied on the history trend. When the smoothing window is out of the boundary at the beginning or the end of the trend, the first element or the last element is padded to fill the smoothing window before the average is applied.",
+      ).optional(),
+      userColumn: z.string().describe(
+        "User column specified for matrix factorization models.",
+      ).optional(),
+      vertexAiModelVersionAliases: z.array(z.string()).describe(
+        "The version aliases to apply in Vertex AI model registry. Always overwrite if the version aliases exists in a existing model.",
+      ).optional(),
+      walsAlpha: z.number().describe(
+        "Hyperparameter for matrix factoration when implicit feedback type is specified.",
+      ).optional(),
+      warmStart: z.boolean().describe(
+        "Whether to train a model from the last checkpoint.",
+      ).optional(),
+      xgboostVersion: z.string().describe(
+        "User-selected XGBoost versions for training of XGBoost models.",
+      ).optional(),
+    }).describe("Options used in model training.").optional(),
+    trainingStartTime: z.string().describe(
+      "Output only. The start time of this training run, in milliseconds since epoch.",
+    ).optional(),
+    vertexAiModelId: z.string().describe(
+      "The model id in the [Vertex AI Model Registry](https://cloud.google.com/vertex-ai/docs/model-registry/introduction) for this training run.",
+    ).optional(),
+    vertexAiModelVersion: z.string().describe(
+      "Output only. The model version in the [Vertex AI Model Registry](https://cloud.google.com/vertex-ai/docs/model-registry/introduction) for this training run.",
+    ).optional(),
+  })).describe(
+    "Information for all training runs in increasing order of start_time.",
+  ).optional(),
+  transformColumns: z.array(z.object({
+    name: z.string().describe("Output only. Name of the column.").optional(),
+    transformSql: z.string().describe(
+      "Output only. The SQL expression used in the column transform.",
+    ).optional(),
+    type: z.object({
+      arrayElementType: z.string().describe(
+        "Circular reference to StandardSqlDataType",
+      ).optional(),
+      rangeElementType: z.string().describe(
+        "Circular reference to StandardSqlDataType",
+      ).optional(),
+      structType: z.object({
+        fields: z.array(z.object({
+          name: z.string().describe(
+            "Optional. The name of this field. Can be absent for struct fields.",
+          ).optional(),
+          type: z.string().describe("Circular reference to StandardSqlDataType")
+            .optional(),
+        })).describe("Fields within the struct.").optional(),
+      }).describe("The representation of a SQL STRUCT type.").optional(),
+      typeKind: z.enum([
+        "TYPE_KIND_UNSPECIFIED",
+        "INT64",
+        "BOOL",
+        "FLOAT64",
+        "STRING",
+        "BYTES",
+        "TIMESTAMP",
+        "DATE",
+        "TIME",
+        "DATETIME",
+        "INTERVAL",
+        "GEOGRAPHY",
+        "NUMERIC",
+        "BIGNUMERIC",
+        "JSON",
+        "ARRAY",
+        "STRUCT",
+        "RANGE",
+      ]).describe(
+        'Required. The top level type of this field. Can be any GoogleSQL data type (e.g., "INT64", "DATE", "ARRAY").',
+      ).optional(),
+    }).describe(
+      'The data type of a variable such as a function argument. Examples include: * INT64: `{"typeKind": "INT64"}` * ARRAY: { "typeKind": "ARRAY", "arrayElementType": {"typeKind": "STRING"} } * STRUCT>: { "typeKind": "STRUCT", "structType": { "fields": [ { "name": "x", "type": {"typeKind": "STRING"} }, { "name": "y", "type": { "typeKind": "ARRAY", "arrayElementType": {"typeKind": "DATE"} } } ] } } * RANGE: { "typeKind": "RANGE", "rangeElementType": {"typeKind": "DATE"} }',
+    ).optional(),
+  })).describe(
+    "Output only. This field will be populated if a TRANSFORM clause was used to train a model. TRANSFORM clause (if used) takes feature_columns as input and outputs transform_columns. transform_columns then are used to train the model.",
+  ).optional(),
+});
+
+const StateSchema = z.object({
+  bestTrialId: z.string().optional(),
+  creationTime: z.string().optional(),
+  defaultTrialId: z.string().optional(),
+  description: z.string().optional(),
+  encryptionConfiguration: z.object({
+    kmsKeyName: z.string(),
+  }).optional(),
+  etag: z.string().optional(),
+  expirationTime: z.string().optional(),
+  featureColumns: z.array(z.object({
+    name: z.string(),
+    type: z.object({
+      arrayElementType: z.string(),
+      rangeElementType: z.string(),
+      structType: z.object({
+        fields: z.array(z.string()),
+      }),
+      typeKind: z.string(),
+    }),
+  })).optional(),
+  friendlyName: z.string().optional(),
+  hparamSearchSpaces: z.object({
+    activationFn: z.object({
+      candidates: z.array(z.string()),
+    }),
+    batchSize: z.object({
+      candidates: z.object({
+        candidates: z.array(z.string()),
+      }),
+      range: z.object({
+        max: z.string(),
+        min: z.string(),
+      }),
+    }),
+    boosterType: z.object({
+      candidates: z.array(z.string()),
+    }),
+    colsampleBylevel: z.object({
+      candidates: z.object({
+        candidates: z.array(z.number()),
+      }),
+      range: z.object({
+        max: z.number(),
+        min: z.number(),
+      }),
+    }),
+    colsampleBynode: z.object({
+      candidates: z.object({
+        candidates: z.array(z.number()),
+      }),
+      range: z.object({
+        max: z.number(),
+        min: z.number(),
+      }),
+    }),
+    colsampleBytree: z.object({
+      candidates: z.object({
+        candidates: z.array(z.number()),
+      }),
+      range: z.object({
+        max: z.number(),
+        min: z.number(),
+      }),
+    }),
+    dartNormalizeType: z.object({
+      candidates: z.array(z.string()),
+    }),
+    dropout: z.object({
+      candidates: z.object({
+        candidates: z.array(z.number()),
+      }),
+      range: z.object({
+        max: z.number(),
+        min: z.number(),
+      }),
+    }),
+    hiddenUnits: z.object({
+      candidates: z.array(z.object({
+        elements: z.array(z.string()),
+      })),
+    }),
+    l1Reg: z.object({
+      candidates: z.object({
+        candidates: z.array(z.number()),
+      }),
+      range: z.object({
+        max: z.number(),
+        min: z.number(),
+      }),
+    }),
+    l2Reg: z.object({
+      candidates: z.object({
+        candidates: z.array(z.number()),
+      }),
+      range: z.object({
+        max: z.number(),
+        min: z.number(),
+      }),
+    }),
+    learnRate: z.object({
+      candidates: z.object({
+        candidates: z.array(z.number()),
+      }),
+      range: z.object({
+        max: z.number(),
+        min: z.number(),
+      }),
+    }),
+    maxTreeDepth: z.object({
+      candidates: z.object({
+        candidates: z.array(z.string()),
+      }),
+      range: z.object({
+        max: z.string(),
+        min: z.string(),
+      }),
+    }),
+    minSplitLoss: z.object({
+      candidates: z.object({
+        candidates: z.array(z.number()),
+      }),
+      range: z.object({
+        max: z.number(),
+        min: z.number(),
+      }),
+    }),
+    minTreeChildWeight: z.object({
+      candidates: z.object({
+        candidates: z.array(z.string()),
+      }),
+      range: z.object({
+        max: z.string(),
+        min: z.string(),
+      }),
+    }),
+    numClusters: z.object({
+      candidates: z.object({
+        candidates: z.array(z.string()),
+      }),
+      range: z.object({
+        max: z.string(),
+        min: z.string(),
+      }),
+    }),
+    numFactors: z.object({
+      candidates: z.object({
+        candidates: z.array(z.string()),
+      }),
+      range: z.object({
+        max: z.string(),
+        min: z.string(),
+      }),
+    }),
+    numParallelTree: z.object({
+      candidates: z.object({
+        candidates: z.array(z.string()),
+      }),
+      range: z.object({
+        max: z.string(),
+        min: z.string(),
+      }),
+    }),
+    optimizer: z.object({
+      candidates: z.array(z.string()),
+    }),
+    subsample: z.object({
+      candidates: z.object({
+        candidates: z.array(z.number()),
+      }),
+      range: z.object({
+        max: z.number(),
+        min: z.number(),
+      }),
+    }),
+    treeMethod: z.object({
+      candidates: z.array(z.string()),
+    }),
+    walsAlpha: z.object({
+      candidates: z.object({
+        candidates: z.array(z.number()),
+      }),
+      range: z.object({
+        max: z.number(),
+        min: z.number(),
+      }),
+    }),
+  }).optional(),
+  hparamTrials: z.array(z.object({
+    endTimeMs: z.string(),
+    errorMessage: z.string(),
+    evalLoss: z.number(),
+    evaluationMetrics: z.object({
+      arimaForecastingMetrics: z.object({
+        arimaFittingMetrics: z.array(z.object({
+          aic: z.number(),
+          logLikelihood: z.number(),
+          variance: z.number(),
+        })),
+        arimaSingleModelForecastingMetrics: z.array(z.object({
+          arimaFittingMetrics: z.object({
+            aic: z.number(),
+            logLikelihood: z.number(),
+            variance: z.number(),
+          }),
+          hasDrift: z.boolean(),
+          hasHolidayEffect: z.boolean(),
+          hasSpikesAndDips: z.boolean(),
+          hasStepChanges: z.boolean(),
+          nonSeasonalOrder: z.object({
+            d: z.string(),
+            p: z.string(),
+            q: z.string(),
+          }),
+          seasonalPeriods: z.array(z.string()),
+          timeSeriesId: z.string(),
+          timeSeriesIds: z.array(z.string()),
+        })),
+        hasDrift: z.array(z.boolean()),
+        nonSeasonalOrder: z.array(z.object({
+          d: z.string(),
+          p: z.string(),
+          q: z.string(),
+        })),
+        seasonalPeriods: z.array(z.string()),
+        timeSeriesId: z.array(z.string()),
+      }),
+      binaryClassificationMetrics: z.object({
+        aggregateClassificationMetrics: z.object({
+          accuracy: z.number(),
+          f1Score: z.number(),
+          logLoss: z.number(),
+          precision: z.number(),
+          recall: z.number(),
+          rocAuc: z.number(),
+          threshold: z.number(),
+        }),
+        binaryConfusionMatrixList: z.array(z.object({
+          accuracy: z.number(),
+          f1Score: z.number(),
+          falseNegatives: z.string(),
+          falsePositives: z.string(),
+          positiveClassThreshold: z.number(),
+          precision: z.number(),
+          recall: z.number(),
+          trueNegatives: z.string(),
+          truePositives: z.string(),
+        })),
+        negativeLabel: z.string(),
+        positiveLabel: z.string(),
+      }),
+      clusteringMetrics: z.object({
+        clusters: z.array(z.object({
+          centroidId: z.string(),
+          count: z.string(),
+          featureValues: z.array(z.object({
+            categoricalValue: z.object({
+              categoryCounts: z.array(z.object({
+                category: z.string(),
+                count: z.string(),
+              })),
+            }),
+            featureColumn: z.string(),
+            numericalValue: z.number(),
+          })),
+        })),
+        daviesBouldinIndex: z.number(),
+        meanSquaredDistance: z.number(),
+      }),
+      dimensionalityReductionMetrics: z.object({
+        totalExplainedVarianceRatio: z.number(),
+      }),
+      multiClassClassificationMetrics: z.object({
+        aggregateClassificationMetrics: z.object({
+          accuracy: z.number(),
+          f1Score: z.number(),
+          logLoss: z.number(),
+          precision: z.number(),
+          recall: z.number(),
+          rocAuc: z.number(),
+          threshold: z.number(),
+        }),
+        confusionMatrixList: z.array(z.object({
+          confidenceThreshold: z.number(),
+          rows: z.array(z.object({
+            actualLabel: z.string(),
+            entries: z.array(z.object({
+              itemCount: z.string(),
+              predictedLabel: z.string(),
+            })),
+          })),
+        })),
+      }),
+      rankingMetrics: z.object({
+        averageRank: z.number(),
+        meanAveragePrecision: z.number(),
+        meanSquaredError: z.number(),
+        normalizedDiscountedCumulativeGain: z.number(),
+      }),
+      regressionMetrics: z.object({
+        meanAbsoluteError: z.number(),
+        meanSquaredError: z.number(),
+        meanSquaredLogError: z.number(),
+        medianAbsoluteError: z.number(),
+        rSquared: z.number(),
+      }),
+    }),
+    hparamTuningEvaluationMetrics: z.object({
+      arimaForecastingMetrics: z.object({
+        arimaFittingMetrics: z.array(z.object({
+          aic: z.number(),
+          logLikelihood: z.number(),
+          variance: z.number(),
+        })),
+        arimaSingleModelForecastingMetrics: z.array(z.object({
+          arimaFittingMetrics: z.object({
+            aic: z.number(),
+            logLikelihood: z.number(),
+            variance: z.number(),
+          }),
+          hasDrift: z.boolean(),
+          hasHolidayEffect: z.boolean(),
+          hasSpikesAndDips: z.boolean(),
+          hasStepChanges: z.boolean(),
+          nonSeasonalOrder: z.object({
+            d: z.string(),
+            p: z.string(),
+            q: z.string(),
+          }),
+          seasonalPeriods: z.array(z.string()),
+          timeSeriesId: z.string(),
+          timeSeriesIds: z.array(z.string()),
+        })),
+        hasDrift: z.array(z.boolean()),
+        nonSeasonalOrder: z.array(z.object({
+          d: z.string(),
+          p: z.string(),
+          q: z.string(),
+        })),
+        seasonalPeriods: z.array(z.string()),
+        timeSeriesId: z.array(z.string()),
+      }),
+      binaryClassificationMetrics: z.object({
+        aggregateClassificationMetrics: z.object({
+          accuracy: z.number(),
+          f1Score: z.number(),
+          logLoss: z.number(),
+          precision: z.number(),
+          recall: z.number(),
+          rocAuc: z.number(),
+          threshold: z.number(),
+        }),
+        binaryConfusionMatrixList: z.array(z.object({
+          accuracy: z.number(),
+          f1Score: z.number(),
+          falseNegatives: z.string(),
+          falsePositives: z.string(),
+          positiveClassThreshold: z.number(),
+          precision: z.number(),
+          recall: z.number(),
+          trueNegatives: z.string(),
+          truePositives: z.string(),
+        })),
+        negativeLabel: z.string(),
+        positiveLabel: z.string(),
+      }),
+      clusteringMetrics: z.object({
+        clusters: z.array(z.object({
+          centroidId: z.string(),
+          count: z.string(),
+          featureValues: z.array(z.object({
+            categoricalValue: z.object({
+              categoryCounts: z.array(z.object({
+                category: z.string(),
+                count: z.string(),
+              })),
+            }),
+            featureColumn: z.string(),
+            numericalValue: z.number(),
+          })),
+        })),
+        daviesBouldinIndex: z.number(),
+        meanSquaredDistance: z.number(),
+      }),
+      dimensionalityReductionMetrics: z.object({
+        totalExplainedVarianceRatio: z.number(),
+      }),
+      multiClassClassificationMetrics: z.object({
+        aggregateClassificationMetrics: z.object({
+          accuracy: z.number(),
+          f1Score: z.number(),
+          logLoss: z.number(),
+          precision: z.number(),
+          recall: z.number(),
+          rocAuc: z.number(),
+          threshold: z.number(),
+        }),
+        confusionMatrixList: z.array(z.object({
+          confidenceThreshold: z.number(),
+          rows: z.array(z.object({
+            actualLabel: z.string(),
+            entries: z.array(z.object({
+              itemCount: z.string(),
+              predictedLabel: z.string(),
+            })),
+          })),
+        })),
+      }),
+      rankingMetrics: z.object({
+        averageRank: z.number(),
+        meanAveragePrecision: z.number(),
+        meanSquaredError: z.number(),
+        normalizedDiscountedCumulativeGain: z.number(),
+      }),
+      regressionMetrics: z.object({
+        meanAbsoluteError: z.number(),
+        meanSquaredError: z.number(),
+        meanSquaredLogError: z.number(),
+        medianAbsoluteError: z.number(),
+        rSquared: z.number(),
+      }),
+    }),
+    hparams: z.object({
+      activationFn: z.string(),
+      adjustStepChanges: z.boolean(),
+      approxGlobalFeatureContrib: z.boolean(),
+      autoArima: z.boolean(),
+      autoArimaMaxOrder: z.string(),
+      autoArimaMinOrder: z.string(),
+      autoClassWeights: z.boolean(),
+      batchSize: z.string(),
+      boosterType: z.string(),
+      budgetHours: z.number(),
+      calculatePValues: z.boolean(),
+      categoryEncodingMethod: z.string(),
+      cleanSpikesAndDips: z.boolean(),
+      colorSpace: z.string(),
+      colsampleBylevel: z.number(),
+      colsampleBynode: z.number(),
+      colsampleBytree: z.number(),
+      contributionMetric: z.string(),
+      dartNormalizeType: z.string(),
+      dataFrequency: z.string(),
+      dataSplitColumn: z.string(),
+      dataSplitEvalFraction: z.number(),
+      dataSplitMethod: z.string(),
+      decomposeTimeSeries: z.boolean(),
+      dimensionIdColumns: z.array(z.string()),
+      distanceType: z.string(),
+      dropout: z.number(),
+      earlyStop: z.boolean(),
+      enableGlobalExplain: z.boolean(),
+      endpointIdleTtl: z.string(),
+      feedbackType: z.string(),
+      fitIntercept: z.boolean(),
+      forecastLimitLowerBound: z.number(),
+      forecastLimitUpperBound: z.number(),
+      hiddenUnits: z.array(z.string()),
+      holidayRegion: z.string(),
+      holidayRegions: z.array(z.string()),
+      horizon: z.string(),
+      hparamTuningObjectives: z.array(z.string()),
+      huggingFaceModelId: z.string(),
+      includeDrift: z.boolean(),
+      initialLearnRate: z.number(),
+      inputLabelColumns: z.array(z.string()),
+      instanceWeightColumn: z.string(),
+      integratedGradientsNumSteps: z.string(),
+      isTestColumn: z.string(),
+      itemColumn: z.string(),
+      kmeansInitializationColumn: z.string(),
+      kmeansInitializationMethod: z.string(),
+      l1RegActivation: z.number(),
+      l1Regularization: z.number(),
+      l2Regularization: z.number(),
+      labelClassWeights: z.record(z.string(), z.unknown()),
+      learnRate: z.number(),
+      learnRateStrategy: z.string(),
+      lossType: z.string(),
+      machineType: z.string(),
+      maxIterations: z.string(),
+      maxParallelTrials: z.string(),
+      maxReplicaCount: z.string(),
+      maxTimeSeriesLength: z.string(),
+      maxTreeDepth: z.string(),
+      minAprioriSupport: z.number(),
+      minRelativeProgress: z.number(),
+      minReplicaCount: z.string(),
+      minSplitLoss: z.number(),
+      minTimeSeriesLength: z.string(),
+      minTreeChildWeight: z.string(),
+      modelGardenModelName: z.string(),
+      modelRegistry: z.string(),
+      modelUri: z.string(),
+      nonSeasonalOrder: z.object({
+        d: z.string(),
+        p: z.string(),
+        q: z.string(),
+      }),
+      numClusters: z.string(),
+      numFactors: z.string(),
+      numParallelTree: z.string(),
+      numPrincipalComponents: z.string(),
+      numTrials: z.string(),
+      optimizationStrategy: z.string(),
+      optimizer: z.string(),
+      pcaExplainedVarianceRatio: z.number(),
+      pcaSolver: z.string(),
+      reservationAffinityKey: z.string(),
+      reservationAffinityType: z.string(),
+      reservationAffinityValues: z.array(z.string()),
+      sampledShapleyNumPaths: z.string(),
+      scaleFeatures: z.boolean(),
+      standardizeFeatures: z.boolean(),
+      subsample: z.number(),
+      tfVersion: z.string(),
+      timeSeriesDataColumn: z.string(),
+      timeSeriesIdColumn: z.string(),
+      timeSeriesIdColumns: z.array(z.string()),
+      timeSeriesLengthFraction: z.number(),
+      timeSeriesTimestampColumn: z.string(),
+      treeMethod: z.string(),
+      trendSmoothingWindowSize: z.string(),
+      userColumn: z.string(),
+      vertexAiModelVersionAliases: z.array(z.string()),
+      walsAlpha: z.number(),
+      warmStart: z.boolean(),
+      xgboostVersion: z.string(),
+    }),
+    startTimeMs: z.string(),
+    status: z.string(),
+    trainingLoss: z.number(),
+    trialId: z.string(),
+  })).optional(),
+  labelColumns: z.array(z.object({
+    name: z.string(),
+    type: z.object({
+      arrayElementType: z.string(),
+      rangeElementType: z.string(),
+      structType: z.object({
+        fields: z.array(z.string()),
+      }),
+      typeKind: z.string(),
+    }),
+  })).optional(),
+  labels: z.record(z.string(), z.unknown()).optional(),
+  lastModifiedTime: z.string().optional(),
+  location: z.string().optional(),
+  modelReference: z.object({
+    datasetId: z.string(),
+    modelId: z.string(),
+    projectId: z.string(),
+  }).optional(),
+  modelType: z.string().optional(),
+  optimalTrialIds: z.array(z.string()).optional(),
+  remoteModelInfo: z.object({
+    connection: z.string(),
+    endpoint: z.string(),
+    maxBatchingRows: z.string(),
+    remoteModelVersion: z.string(),
+    remoteServiceType: z.string(),
+    speechRecognizer: z.string(),
+  }).optional(),
+  trainingRuns: z.array(z.object({
+    classLevelGlobalExplanations: z.array(z.object({
+      classLabel: z.string(),
+      explanations: z.array(z.object({
+        attribution: z.number(),
+        featureName: z.string(),
+      })),
+    })),
+    dataSplitResult: z.object({
+      evaluationTable: z.object({
+        datasetId: z.string(),
+        projectId: z.string(),
+        tableId: z.string(),
+      }),
+      testTable: z.object({
+        datasetId: z.string(),
+        projectId: z.string(),
+        tableId: z.string(),
+      }),
+      trainingTable: z.object({
+        datasetId: z.string(),
+        projectId: z.string(),
+        tableId: z.string(),
+      }),
+    }),
+    evaluationMetrics: z.object({
+      arimaForecastingMetrics: z.object({
+        arimaFittingMetrics: z.array(z.object({
+          aic: z.number(),
+          logLikelihood: z.number(),
+          variance: z.number(),
+        })),
+        arimaSingleModelForecastingMetrics: z.array(z.object({
+          arimaFittingMetrics: z.object({
+            aic: z.number(),
+            logLikelihood: z.number(),
+            variance: z.number(),
+          }),
+          hasDrift: z.boolean(),
+          hasHolidayEffect: z.boolean(),
+          hasSpikesAndDips: z.boolean(),
+          hasStepChanges: z.boolean(),
+          nonSeasonalOrder: z.object({
+            d: z.string(),
+            p: z.string(),
+            q: z.string(),
+          }),
+          seasonalPeriods: z.array(z.string()),
+          timeSeriesId: z.string(),
+          timeSeriesIds: z.array(z.string()),
+        })),
+        hasDrift: z.array(z.boolean()),
+        nonSeasonalOrder: z.array(z.object({
+          d: z.string(),
+          p: z.string(),
+          q: z.string(),
+        })),
+        seasonalPeriods: z.array(z.string()),
+        timeSeriesId: z.array(z.string()),
+      }),
+      binaryClassificationMetrics: z.object({
+        aggregateClassificationMetrics: z.object({
+          accuracy: z.number(),
+          f1Score: z.number(),
+          logLoss: z.number(),
+          precision: z.number(),
+          recall: z.number(),
+          rocAuc: z.number(),
+          threshold: z.number(),
+        }),
+        binaryConfusionMatrixList: z.array(z.object({
+          accuracy: z.number(),
+          f1Score: z.number(),
+          falseNegatives: z.string(),
+          falsePositives: z.string(),
+          positiveClassThreshold: z.number(),
+          precision: z.number(),
+          recall: z.number(),
+          trueNegatives: z.string(),
+          truePositives: z.string(),
+        })),
+        negativeLabel: z.string(),
+        positiveLabel: z.string(),
+      }),
+      clusteringMetrics: z.object({
+        clusters: z.array(z.object({
+          centroidId: z.string(),
+          count: z.string(),
+          featureValues: z.array(z.object({
+            categoricalValue: z.object({
+              categoryCounts: z.array(z.object({
+                category: z.string(),
+                count: z.string(),
+              })),
+            }),
+            featureColumn: z.string(),
+            numericalValue: z.number(),
+          })),
+        })),
+        daviesBouldinIndex: z.number(),
+        meanSquaredDistance: z.number(),
+      }),
+      dimensionalityReductionMetrics: z.object({
+        totalExplainedVarianceRatio: z.number(),
+      }),
+      multiClassClassificationMetrics: z.object({
+        aggregateClassificationMetrics: z.object({
+          accuracy: z.number(),
+          f1Score: z.number(),
+          logLoss: z.number(),
+          precision: z.number(),
+          recall: z.number(),
+          rocAuc: z.number(),
+          threshold: z.number(),
+        }),
+        confusionMatrixList: z.array(z.object({
+          confidenceThreshold: z.number(),
+          rows: z.array(z.object({
+            actualLabel: z.string(),
+            entries: z.array(z.object({
+              itemCount: z.string(),
+              predictedLabel: z.string(),
+            })),
+          })),
+        })),
+      }),
+      rankingMetrics: z.object({
+        averageRank: z.number(),
+        meanAveragePrecision: z.number(),
+        meanSquaredError: z.number(),
+        normalizedDiscountedCumulativeGain: z.number(),
+      }),
+      regressionMetrics: z.object({
+        meanAbsoluteError: z.number(),
+        meanSquaredError: z.number(),
+        meanSquaredLogError: z.number(),
+        medianAbsoluteError: z.number(),
+        rSquared: z.number(),
+      }),
+    }),
+    modelLevelGlobalExplanation: z.object({
+      classLabel: z.string(),
+      explanations: z.array(z.object({
+        attribution: z.number(),
+        featureName: z.string(),
+      })),
+    }),
+    results: z.array(z.object({
+      arimaResult: z.object({
+        arimaModelInfo: z.array(z.object({
+          arimaCoefficients: z.object({
+            autoRegressiveCoefficients: z.array(z.number()),
+            interceptCoefficient: z.number(),
+            movingAverageCoefficients: z.array(z.number()),
+          }),
+          arimaFittingMetrics: z.object({
+            aic: z.number(),
+            logLikelihood: z.number(),
+            variance: z.number(),
+          }),
+          hasDrift: z.boolean(),
+          hasHolidayEffect: z.boolean(),
+          hasSpikesAndDips: z.boolean(),
+          hasStepChanges: z.boolean(),
+          nonSeasonalOrder: z.object({
+            d: z.string(),
+            p: z.string(),
+            q: z.string(),
+          }),
+          seasonalPeriods: z.array(z.string()),
+          timeSeriesId: z.string(),
+          timeSeriesIds: z.array(z.string()),
+        })),
+        seasonalPeriods: z.array(z.string()),
+      }),
+      clusterInfos: z.array(z.object({
+        centroidId: z.string(),
+        clusterRadius: z.number(),
+        clusterSize: z.string(),
+      })),
+      durationMs: z.string(),
+      evalLoss: z.number(),
+      index: z.number(),
+      learnRate: z.number(),
+      principalComponentInfos: z.array(z.object({
+        cumulativeExplainedVarianceRatio: z.number(),
+        explainedVariance: z.number(),
+        explainedVarianceRatio: z.number(),
+        principalComponentId: z.string(),
+      })),
+      trainingLoss: z.number(),
+    })),
+    startTime: z.string(),
+    trainingOptions: z.object({
+      activationFn: z.string(),
+      adjustStepChanges: z.boolean(),
+      approxGlobalFeatureContrib: z.boolean(),
+      autoArima: z.boolean(),
+      autoArimaMaxOrder: z.string(),
+      autoArimaMinOrder: z.string(),
+      autoClassWeights: z.boolean(),
+      batchSize: z.string(),
+      boosterType: z.string(),
+      budgetHours: z.number(),
+      calculatePValues: z.boolean(),
+      categoryEncodingMethod: z.string(),
+      cleanSpikesAndDips: z.boolean(),
+      colorSpace: z.string(),
+      colsampleBylevel: z.number(),
+      colsampleBynode: z.number(),
+      colsampleBytree: z.number(),
+      contributionMetric: z.string(),
+      dartNormalizeType: z.string(),
+      dataFrequency: z.string(),
+      dataSplitColumn: z.string(),
+      dataSplitEvalFraction: z.number(),
+      dataSplitMethod: z.string(),
+      decomposeTimeSeries: z.boolean(),
+      dimensionIdColumns: z.array(z.string()),
+      distanceType: z.string(),
+      dropout: z.number(),
+      earlyStop: z.boolean(),
+      enableGlobalExplain: z.boolean(),
+      endpointIdleTtl: z.string(),
+      feedbackType: z.string(),
+      fitIntercept: z.boolean(),
+      forecastLimitLowerBound: z.number(),
+      forecastLimitUpperBound: z.number(),
+      hiddenUnits: z.array(z.string()),
+      holidayRegion: z.string(),
+      holidayRegions: z.array(z.string()),
+      horizon: z.string(),
+      hparamTuningObjectives: z.array(z.string()),
+      huggingFaceModelId: z.string(),
+      includeDrift: z.boolean(),
+      initialLearnRate: z.number(),
+      inputLabelColumns: z.array(z.string()),
+      instanceWeightColumn: z.string(),
+      integratedGradientsNumSteps: z.string(),
+      isTestColumn: z.string(),
+      itemColumn: z.string(),
+      kmeansInitializationColumn: z.string(),
+      kmeansInitializationMethod: z.string(),
+      l1RegActivation: z.number(),
+      l1Regularization: z.number(),
+      l2Regularization: z.number(),
+      labelClassWeights: z.record(z.string(), z.unknown()),
+      learnRate: z.number(),
+      learnRateStrategy: z.string(),
+      lossType: z.string(),
+      machineType: z.string(),
+      maxIterations: z.string(),
+      maxParallelTrials: z.string(),
+      maxReplicaCount: z.string(),
+      maxTimeSeriesLength: z.string(),
+      maxTreeDepth: z.string(),
+      minAprioriSupport: z.number(),
+      minRelativeProgress: z.number(),
+      minReplicaCount: z.string(),
+      minSplitLoss: z.number(),
+      minTimeSeriesLength: z.string(),
+      minTreeChildWeight: z.string(),
+      modelGardenModelName: z.string(),
+      modelRegistry: z.string(),
+      modelUri: z.string(),
+      nonSeasonalOrder: z.object({
+        d: z.string(),
+        p: z.string(),
+        q: z.string(),
+      }),
+      numClusters: z.string(),
+      numFactors: z.string(),
+      numParallelTree: z.string(),
+      numPrincipalComponents: z.string(),
+      numTrials: z.string(),
+      optimizationStrategy: z.string(),
+      optimizer: z.string(),
+      pcaExplainedVarianceRatio: z.number(),
+      pcaSolver: z.string(),
+      reservationAffinityKey: z.string(),
+      reservationAffinityType: z.string(),
+      reservationAffinityValues: z.array(z.string()),
+      sampledShapleyNumPaths: z.string(),
+      scaleFeatures: z.boolean(),
+      standardizeFeatures: z.boolean(),
+      subsample: z.number(),
+      tfVersion: z.string(),
+      timeSeriesDataColumn: z.string(),
+      timeSeriesIdColumn: z.string(),
+      timeSeriesIdColumns: z.array(z.string()),
+      timeSeriesLengthFraction: z.number(),
+      timeSeriesTimestampColumn: z.string(),
+      treeMethod: z.string(),
+      trendSmoothingWindowSize: z.string(),
+      userColumn: z.string(),
+      vertexAiModelVersionAliases: z.array(z.string()),
+      walsAlpha: z.number(),
+      warmStart: z.boolean(),
+      xgboostVersion: z.string(),
+    }),
+    trainingStartTime: z.string(),
+    vertexAiModelId: z.string(),
+    vertexAiModelVersion: z.string(),
+  })).optional(),
+  transformColumns: z.array(z.object({
+    name: z.string(),
+    transformSql: z.string(),
+    type: z.object({
+      arrayElementType: z.string(),
+      rangeElementType: z.string(),
+      structType: z.object({
+        fields: z.array(z.object({
+          name: z.string(),
+          type: z.string(),
+        })),
+      }),
+      typeKind: z.string(),
+    }),
+  })).optional(),
+}).passthrough();
+
+type StateData = z.infer<typeof StateSchema>;
+
+const InputsSchema = z.object({
+  name: z.string().optional(),
+  creationTime: z.string().describe(
+    "Output only. The time when this model was created, in millisecs since the epoch.",
+  ).optional(),
+  defaultTrialId: z.string().describe(
+    "Output only. The default trial_id to use in TVFs when the trial_id is not passed in. For single-objective [hyperparameter tuning](https://cloud.google.com/bigquery-ml/docs/reference/standard-sql/bigqueryml-syntax-hp-tuning-overview) models, this is the best trial ID. For multi-objective [hyperparameter tuning](https://cloud.google.com/bigquery-ml/docs/reference/standard-sql/bigqueryml-syntax-hp-tuning-overview) models, this is the smallest trial ID among all Pareto optimal trials.",
+  ).optional(),
+  description: z.string().describe(
+    "Optional. A user-friendly description of this model.",
+  ).optional(),
+  encryptionConfiguration: z.object({
+    kmsKeyName: z.string().describe(
+      "Optional. Describes the Cloud KMS encryption key that will be used to protect destination BigQuery table. The BigQuery Service Account associated with your project requires access to this encryption key.",
+    ).optional(),
+  }).describe("Configuration for Cloud KMS encryption settings.").optional(),
+  etag: z.string().describe("Output only. A hash of this resource.").optional(),
+  expirationTime: z.string().describe(
+    "Optional. The time when this model expires, in milliseconds since the epoch. If not present, the model will persist indefinitely. Expired models will be deleted and their storage reclaimed. The defaultTableExpirationMs property of the encapsulating dataset can be used to set a default expirationTime on newly created models.",
+  ).optional(),
+  featureColumns: z.array(z.object({
+    name: z.string().describe(
+      "Optional. The name of this field. Can be absent for struct fields.",
+    ).optional(),
+    type: z.object({
+      arrayElementType: z.string().describe(
+        "Circular reference to StandardSqlDataType",
+      ).optional(),
+      rangeElementType: z.string().describe(
+        "Circular reference to StandardSqlDataType",
+      ).optional(),
+      structType: z.object({
+        fields: z.array(z.string()).describe("Fields within the struct.")
+          .optional(),
+      }).describe("The representation of a SQL STRUCT type.").optional(),
+      typeKind: z.enum([
+        "TYPE_KIND_UNSPECIFIED",
+        "INT64",
+        "BOOL",
+        "FLOAT64",
+        "STRING",
+        "BYTES",
+        "TIMESTAMP",
+        "DATE",
+        "TIME",
+        "DATETIME",
+        "INTERVAL",
+        "GEOGRAPHY",
+        "NUMERIC",
+        "BIGNUMERIC",
+        "JSON",
+        "ARRAY",
+        "STRUCT",
+        "RANGE",
+      ]).describe(
+        'Required. The top level type of this field. Can be any GoogleSQL data type (e.g., "INT64", "DATE", "ARRAY").',
+      ).optional(),
+    }).describe(
+      'The data type of a variable such as a function argument. Examples include: * INT64: `{"typeKind": "INT64"}` * ARRAY: { "typeKind": "ARRAY", "arrayElementType": {"typeKind": "STRING"} } * STRUCT>: { "typeKind": "STRUCT", "structType": { "fields": [ { "name": "x", "type": {"typeKind": "STRING"} }, { "name": "y", "type": { "typeKind": "ARRAY", "arrayElementType": {"typeKind": "DATE"} } } ] } } * RANGE: { "typeKind": "RANGE", "rangeElementType": {"typeKind": "DATE"} }',
+    ).optional(),
+  })).describe(
+    "Output only. Input feature columns for the model inference. If the model is trained with TRANSFORM clause, these are the input of the TRANSFORM clause.",
+  ).optional(),
+  friendlyName: z.string().describe(
+    "Optional. A descriptive name for this model.",
+  ).optional(),
+  hparamSearchSpaces: z.object({
+    activationFn: z.object({
+      candidates: z.array(z.string()).describe(
+        "Canididates for the string or enum parameter in lower case.",
+      ).optional(),
+    }).describe("Search space for string and enum.").optional(),
+    batchSize: z.object({
+      candidates: z.object({
+        candidates: z.array(z.string()).describe(
+          "Candidates for the int parameter in increasing order.",
+        ).optional(),
+      }).describe("Discrete candidates of an int hyperparameter.").optional(),
+      range: z.object({
+        max: z.string().describe("Max value of the int parameter.").optional(),
+        min: z.string().describe("Min value of the int parameter.").optional(),
+      }).describe("Range of an int hyperparameter.").optional(),
+    }).describe("Search space for an int hyperparameter.").optional(),
+    boosterType: z.object({
+      candidates: z.array(z.string()).describe(
+        "Canididates for the string or enum parameter in lower case.",
+      ).optional(),
+    }).describe("Search space for string and enum.").optional(),
+    colsampleBylevel: z.object({
+      candidates: z.object({
+        candidates: z.array(z.number()).describe(
+          "Candidates for the double parameter in increasing order.",
+        ).optional(),
+      }).describe("Discrete candidates of a double hyperparameter.").optional(),
+      range: z.object({
+        max: z.number().describe("Max value of the double parameter.")
+          .optional(),
+        min: z.number().describe("Min value of the double parameter.")
+          .optional(),
+      }).describe("Range of a double hyperparameter.").optional(),
+    }).describe("Search space for a double hyperparameter.").optional(),
+    colsampleBynode: z.object({
+      candidates: z.object({
+        candidates: z.array(z.number()).describe(
+          "Candidates for the double parameter in increasing order.",
+        ).optional(),
+      }).describe("Discrete candidates of a double hyperparameter.").optional(),
+      range: z.object({
+        max: z.number().describe("Max value of the double parameter.")
+          .optional(),
+        min: z.number().describe("Min value of the double parameter.")
+          .optional(),
+      }).describe("Range of a double hyperparameter.").optional(),
+    }).describe("Search space for a double hyperparameter.").optional(),
+    colsampleBytree: z.object({
+      candidates: z.object({
+        candidates: z.array(z.number()).describe(
+          "Candidates for the double parameter in increasing order.",
+        ).optional(),
+      }).describe("Discrete candidates of a double hyperparameter.").optional(),
+      range: z.object({
+        max: z.number().describe("Max value of the double parameter.")
+          .optional(),
+        min: z.number().describe("Min value of the double parameter.")
+          .optional(),
+      }).describe("Range of a double hyperparameter.").optional(),
+    }).describe("Search space for a double hyperparameter.").optional(),
+    dartNormalizeType: z.object({
+      candidates: z.array(z.string()).describe(
+        "Canididates for the string or enum parameter in lower case.",
+      ).optional(),
+    }).describe("Search space for string and enum.").optional(),
+    dropout: z.object({
+      candidates: z.object({
+        candidates: z.array(z.number()).describe(
+          "Candidates for the double parameter in increasing order.",
+        ).optional(),
+      }).describe("Discrete candidates of a double hyperparameter.").optional(),
+      range: z.object({
+        max: z.number().describe("Max value of the double parameter.")
+          .optional(),
+        min: z.number().describe("Min value of the double parameter.")
+          .optional(),
+      }).describe("Range of a double hyperparameter.").optional(),
+    }).describe("Search space for a double hyperparameter.").optional(),
+    hiddenUnits: z.object({
+      candidates: z.array(z.object({
+        elements: z.array(z.string()).describe("Elements in the int array.")
+          .optional(),
+      })).describe("Candidates for the int array parameter.").optional(),
+    }).describe("Search space for int array.").optional(),
+    l1Reg: z.object({
+      candidates: z.object({
+        candidates: z.array(z.number()).describe(
+          "Candidates for the double parameter in increasing order.",
+        ).optional(),
+      }).describe("Discrete candidates of a double hyperparameter.").optional(),
+      range: z.object({
+        max: z.number().describe("Max value of the double parameter.")
+          .optional(),
+        min: z.number().describe("Min value of the double parameter.")
+          .optional(),
+      }).describe("Range of a double hyperparameter.").optional(),
+    }).describe("Search space for a double hyperparameter.").optional(),
+    l2Reg: z.object({
+      candidates: z.object({
+        candidates: z.array(z.number()).describe(
+          "Candidates for the double parameter in increasing order.",
+        ).optional(),
+      }).describe("Discrete candidates of a double hyperparameter.").optional(),
+      range: z.object({
+        max: z.number().describe("Max value of the double parameter.")
+          .optional(),
+        min: z.number().describe("Min value of the double parameter.")
+          .optional(),
+      }).describe("Range of a double hyperparameter.").optional(),
+    }).describe("Search space for a double hyperparameter.").optional(),
+    learnRate: z.object({
+      candidates: z.object({
+        candidates: z.array(z.number()).describe(
+          "Candidates for the double parameter in increasing order.",
+        ).optional(),
+      }).describe("Discrete candidates of a double hyperparameter.").optional(),
+      range: z.object({
+        max: z.number().describe("Max value of the double parameter.")
+          .optional(),
+        min: z.number().describe("Min value of the double parameter.")
+          .optional(),
+      }).describe("Range of a double hyperparameter.").optional(),
+    }).describe("Search space for a double hyperparameter.").optional(),
+    maxTreeDepth: z.object({
+      candidates: z.object({
+        candidates: z.array(z.string()).describe(
+          "Candidates for the int parameter in increasing order.",
+        ).optional(),
+      }).describe("Discrete candidates of an int hyperparameter.").optional(),
+      range: z.object({
+        max: z.string().describe("Max value of the int parameter.").optional(),
+        min: z.string().describe("Min value of the int parameter.").optional(),
+      }).describe("Range of an int hyperparameter.").optional(),
+    }).describe("Search space for an int hyperparameter.").optional(),
+    minSplitLoss: z.object({
+      candidates: z.object({
+        candidates: z.array(z.number()).describe(
+          "Candidates for the double parameter in increasing order.",
+        ).optional(),
+      }).describe("Discrete candidates of a double hyperparameter.").optional(),
+      range: z.object({
+        max: z.number().describe("Max value of the double parameter.")
+          .optional(),
+        min: z.number().describe("Min value of the double parameter.")
+          .optional(),
+      }).describe("Range of a double hyperparameter.").optional(),
+    }).describe("Search space for a double hyperparameter.").optional(),
+    minTreeChildWeight: z.object({
+      candidates: z.object({
+        candidates: z.array(z.string()).describe(
+          "Candidates for the int parameter in increasing order.",
+        ).optional(),
+      }).describe("Discrete candidates of an int hyperparameter.").optional(),
+      range: z.object({
+        max: z.string().describe("Max value of the int parameter.").optional(),
+        min: z.string().describe("Min value of the int parameter.").optional(),
+      }).describe("Range of an int hyperparameter.").optional(),
+    }).describe("Search space for an int hyperparameter.").optional(),
+    numClusters: z.object({
+      candidates: z.object({
+        candidates: z.array(z.string()).describe(
+          "Candidates for the int parameter in increasing order.",
+        ).optional(),
+      }).describe("Discrete candidates of an int hyperparameter.").optional(),
+      range: z.object({
+        max: z.string().describe("Max value of the int parameter.").optional(),
+        min: z.string().describe("Min value of the int parameter.").optional(),
+      }).describe("Range of an int hyperparameter.").optional(),
+    }).describe("Search space for an int hyperparameter.").optional(),
+    numFactors: z.object({
+      candidates: z.object({
+        candidates: z.array(z.string()).describe(
+          "Candidates for the int parameter in increasing order.",
+        ).optional(),
+      }).describe("Discrete candidates of an int hyperparameter.").optional(),
+      range: z.object({
+        max: z.string().describe("Max value of the int parameter.").optional(),
+        min: z.string().describe("Min value of the int parameter.").optional(),
+      }).describe("Range of an int hyperparameter.").optional(),
+    }).describe("Search space for an int hyperparameter.").optional(),
+    numParallelTree: z.object({
+      candidates: z.object({
+        candidates: z.array(z.string()).describe(
+          "Candidates for the int parameter in increasing order.",
+        ).optional(),
+      }).describe("Discrete candidates of an int hyperparameter.").optional(),
+      range: z.object({
+        max: z.string().describe("Max value of the int parameter.").optional(),
+        min: z.string().describe("Min value of the int parameter.").optional(),
+      }).describe("Range of an int hyperparameter.").optional(),
+    }).describe("Search space for an int hyperparameter.").optional(),
+    optimizer: z.object({
+      candidates: z.array(z.string()).describe(
+        "Canididates for the string or enum parameter in lower case.",
+      ).optional(),
+    }).describe("Search space for string and enum.").optional(),
+    subsample: z.object({
+      candidates: z.object({
+        candidates: z.array(z.number()).describe(
+          "Candidates for the double parameter in increasing order.",
+        ).optional(),
+      }).describe("Discrete candidates of a double hyperparameter.").optional(),
+      range: z.object({
+        max: z.number().describe("Max value of the double parameter.")
+          .optional(),
+        min: z.number().describe("Min value of the double parameter.")
+          .optional(),
+      }).describe("Range of a double hyperparameter.").optional(),
+    }).describe("Search space for a double hyperparameter.").optional(),
+    treeMethod: z.object({
+      candidates: z.array(z.string()).describe(
+        "Canididates for the string or enum parameter in lower case.",
+      ).optional(),
+    }).describe("Search space for string and enum.").optional(),
+    walsAlpha: z.object({
+      candidates: z.object({
+        candidates: z.array(z.number()).describe(
+          "Candidates for the double parameter in increasing order.",
+        ).optional(),
+      }).describe("Discrete candidates of a double hyperparameter.").optional(),
+      range: z.object({
+        max: z.number().describe("Max value of the double parameter.")
+          .optional(),
+        min: z.number().describe("Min value of the double parameter.")
+          .optional(),
+      }).describe("Range of a double hyperparameter.").optional(),
+    }).describe("Search space for a double hyperparameter.").optional(),
+  }).describe(
+    "Hyperparameter search spaces. These should be a subset of training_options.",
+  ).optional(),
+  hparamTrials: z.array(z.object({
+    endTimeMs: z.string().describe("Ending time of the trial.").optional(),
+    errorMessage: z.string().describe(
+      "Error message for FAILED and INFEASIBLE trial.",
+    ).optional(),
+    evalLoss: z.number().describe(
+      "Loss computed on the eval data at the end of trial.",
+    ).optional(),
+    evaluationMetrics: z.object({
+      arimaForecastingMetrics: z.object({
+        arimaFittingMetrics: z.array(z.object({
+          aic: z.number().describe("AIC.").optional(),
+          logLikelihood: z.number().describe("Log-likelihood.").optional(),
+          variance: z.number().describe("Variance.").optional(),
+        })).describe("Arima model fitting metrics.").optional(),
+        arimaSingleModelForecastingMetrics: z.array(z.object({
+          arimaFittingMetrics: z.object({
+            aic: z.number().describe("AIC.").optional(),
+            logLikelihood: z.number().describe("Log-likelihood.").optional(),
+            variance: z.number().describe("Variance.").optional(),
+          }).describe("ARIMA model fitting metrics.").optional(),
+          hasDrift: z.boolean().describe(
+            "Is arima model fitted with drift or not. It is always false when d is not 1.",
+          ).optional(),
+          hasHolidayEffect: z.boolean().describe(
+            "If true, holiday_effect is a part of time series decomposition result.",
+          ).optional(),
+          hasSpikesAndDips: z.boolean().describe(
+            "If true, spikes_and_dips is a part of time series decomposition result.",
+          ).optional(),
+          hasStepChanges: z.boolean().describe(
+            "If true, step_changes is a part of time series decomposition result.",
+          ).optional(),
+          nonSeasonalOrder: z.object({
+            d: z.string().describe("Order of the differencing part.")
+              .optional(),
+            p: z.string().describe("Order of the autoregressive part.")
+              .optional(),
+            q: z.string().describe("Order of the moving-average part.")
+              .optional(),
+          }).describe(
+            "Arima order, can be used for both non-seasonal and seasonal parts.",
+          ).optional(),
+          seasonalPeriods: z.array(
+            z.enum([
+              "SEASONAL_PERIOD_TYPE_UNSPECIFIED",
+              "NO_SEASONALITY",
+              "DAILY",
+              "WEEKLY",
+              "MONTHLY",
+              "QUARTERLY",
+              "YEARLY",
+              "HOURLY",
+            ]),
+          ).describe(
+            "Seasonal periods. Repeated because multiple periods are supported for one time series.",
+          ).optional(),
+          timeSeriesId: z.string().describe(
+            "The time_series_id value for this time series. It will be one of the unique values from the time_series_id_column specified during ARIMA model training. Only present when time_series_id_column training option was used.",
+          ).optional(),
+          timeSeriesIds: z.array(z.string()).describe(
+            "The tuple of time_series_ids identifying this time series. It will be one of the unique tuples of values present in the time_series_id_columns specified during ARIMA model training. Only present when time_series_id_columns training option was used and the order of values here are same as the order of time_series_id_columns.",
+          ).optional(),
+        })).describe(
+          "Repeated as there can be many metric sets (one for each model) in auto-arima and the large-scale case.",
+        ).optional(),
+        hasDrift: z.array(z.boolean()).describe(
+          "Whether Arima model fitted with drift or not. It is always false when d is not 1.",
+        ).optional(),
+        nonSeasonalOrder: z.array(z.object({
+          d: z.string().describe("Order of the differencing part.").optional(),
+          p: z.string().describe("Order of the autoregressive part.")
+            .optional(),
+          q: z.string().describe("Order of the moving-average part.")
+            .optional(),
+        })).describe("Non-seasonal order.").optional(),
+        seasonalPeriods: z.array(
+          z.enum([
+            "SEASONAL_PERIOD_TYPE_UNSPECIFIED",
+            "NO_SEASONALITY",
+            "DAILY",
+            "WEEKLY",
+            "MONTHLY",
+            "QUARTERLY",
+            "YEARLY",
+            "HOURLY",
+          ]),
+        ).describe(
+          "Seasonal periods. Repeated because multiple periods are supported for one time series.",
+        ).optional(),
+        timeSeriesId: z.array(z.string()).describe(
+          "Id to differentiate different time series for the large-scale case.",
+        ).optional(),
+      }).describe("Model evaluation metrics for ARIMA forecasting models.")
+        .optional(),
+      binaryClassificationMetrics: z.object({
+        aggregateClassificationMetrics: z.object({
+          accuracy: z.number().describe(
+            "Accuracy is the fraction of predictions given the correct label. For multiclass this is a micro-averaged metric.",
+          ).optional(),
+          f1Score: z.number().describe(
+            "The F1 score is an average of recall and precision. For multiclass this is a macro-averaged metric.",
+          ).optional(),
+          logLoss: z.number().describe(
+            "Logarithmic Loss. For multiclass this is a macro-averaged metric.",
+          ).optional(),
+          precision: z.number().describe(
+            "Precision is the fraction of actual positive predictions that had positive actual labels. For multiclass this is a macro-averaged metric treating each class as a binary classifier.",
+          ).optional(),
+          recall: z.number().describe(
+            "Recall is the fraction of actual positive labels that were given a positive prediction. For multiclass this is a macro-averaged metric.",
+          ).optional(),
+          rocAuc: z.number().describe(
+            "Area Under a ROC Curve. For multiclass this is a macro-averaged metric.",
+          ).optional(),
+          threshold: z.number().describe(
+            "Threshold at which the metrics are computed. For binary classification models this is the positive class threshold. For multi-class classification models this is the confidence threshold.",
+          ).optional(),
+        }).describe(
+          "Aggregate metrics for classification/classifier models. For multi-class models, the metrics are either macro-averaged or micro-averaged. When macro-averaged, the metrics are calculated for each label and then an unweighted average is taken of those values. When micro-averaged, the metric is calculated globally by counting the total number of correctly predicted rows.",
+        ).optional(),
+        binaryConfusionMatrixList: z.array(z.object({
+          accuracy: z.number().describe(
+            "The fraction of predictions given the correct label.",
+          ).optional(),
+          f1Score: z.number().describe(
+            "The equally weighted average of recall and precision.",
+          ).optional(),
+          falseNegatives: z.string().describe(
+            "Number of false samples predicted as false.",
+          ).optional(),
+          falsePositives: z.string().describe(
+            "Number of false samples predicted as true.",
+          ).optional(),
+          positiveClassThreshold: z.number().describe(
+            "Threshold value used when computing each of the following metric.",
+          ).optional(),
+          precision: z.number().describe(
+            "The fraction of actual positive predictions that had positive actual labels.",
+          ).optional(),
+          recall: z.number().describe(
+            "The fraction of actual positive labels that were given a positive prediction.",
+          ).optional(),
+          trueNegatives: z.string().describe(
+            "Number of true samples predicted as false.",
+          ).optional(),
+          truePositives: z.string().describe(
+            "Number of true samples predicted as true.",
+          ).optional(),
+        })).describe("Binary confusion matrix at multiple thresholds.")
+          .optional(),
+        negativeLabel: z.string().describe(
+          "Label representing the negative class.",
+        ).optional(),
+        positiveLabel: z.string().describe(
+          "Label representing the positive class.",
+        ).optional(),
+      }).describe(
+        "Evaluation metrics for binary classification/classifier models.",
+      ).optional(),
+      clusteringMetrics: z.object({
+        clusters: z.array(z.object({
+          centroidId: z.string().describe("Centroid id.").optional(),
+          count: z.string().describe(
+            "Count of training data rows that were assigned to this cluster.",
+          ).optional(),
+          featureValues: z.array(z.object({
+            categoricalValue: z.object({
+              categoryCounts: z.array(z.object({
+                category: z.string().describe("The name of category.")
+                  .optional(),
+                count: z.string().describe(
+                  "The count of training samples matching the category within the cluster.",
+                ).optional(),
+              })).describe(
+                'Counts of all categories for the categorical feature. If there are more than ten categories, we return top ten (by count) and return one more CategoryCount with category "_OTHER_" and count as aggregate counts of remaining categories.',
+              ).optional(),
+            }).describe("Representative value of a categorical feature.")
+              .optional(),
+            featureColumn: z.string().describe("The feature column name.")
+              .optional(),
+            numericalValue: z.number().describe(
+              "The numerical feature value. This is the centroid value for this feature.",
+            ).optional(),
+          })).describe("Values of highly variant features for this cluster.")
+            .optional(),
+        })).describe("Information for all clusters.").optional(),
+        daviesBouldinIndex: z.number().describe("Davies-Bouldin index.")
+          .optional(),
+        meanSquaredDistance: z.number().describe(
+          "Mean of squared distances between each sample to its cluster centroid.",
+        ).optional(),
+      }).describe("Evaluation metrics for clustering models.").optional(),
+      dimensionalityReductionMetrics: z.object({
+        totalExplainedVarianceRatio: z.number().describe(
+          "Total percentage of variance explained by the selected principal components.",
+        ).optional(),
+      }).describe(
+        "Model evaluation metrics for dimensionality reduction models.",
+      ).optional(),
+      multiClassClassificationMetrics: z.object({
+        aggregateClassificationMetrics: z.object({
+          accuracy: z.number().describe(
+            "Accuracy is the fraction of predictions given the correct label. For multiclass this is a micro-averaged metric.",
+          ).optional(),
+          f1Score: z.number().describe(
+            "The F1 score is an average of recall and precision. For multiclass this is a macro-averaged metric.",
+          ).optional(),
+          logLoss: z.number().describe(
+            "Logarithmic Loss. For multiclass this is a macro-averaged metric.",
+          ).optional(),
+          precision: z.number().describe(
+            "Precision is the fraction of actual positive predictions that had positive actual labels. For multiclass this is a macro-averaged metric treating each class as a binary classifier.",
+          ).optional(),
+          recall: z.number().describe(
+            "Recall is the fraction of actual positive labels that were given a positive prediction. For multiclass this is a macro-averaged metric.",
+          ).optional(),
+          rocAuc: z.number().describe(
+            "Area Under a ROC Curve. For multiclass this is a macro-averaged metric.",
+          ).optional(),
+          threshold: z.number().describe(
+            "Threshold at which the metrics are computed. For binary classification models this is the positive class threshold. For multi-class classification models this is the confidence threshold.",
+          ).optional(),
+        }).describe(
+          "Aggregate metrics for classification/classifier models. For multi-class models, the metrics are either macro-averaged or micro-averaged. When macro-averaged, the metrics are calculated for each label and then an unweighted average is taken of those values. When micro-averaged, the metric is calculated globally by counting the total number of correctly predicted rows.",
+        ).optional(),
+        confusionMatrixList: z.array(z.object({
+          confidenceThreshold: z.number().describe(
+            "Confidence threshold used when computing the entries of the confusion matrix.",
+          ).optional(),
+          rows: z.array(z.object({
+            actualLabel: z.string().describe("The original label of this row.")
+              .optional(),
+            entries: z.array(z.object({
+              itemCount: z.string().describe(
+                "Number of items being predicted as this label.",
+              ).optional(),
+              predictedLabel: z.string().describe(
+                "The predicted label. For confidence_threshold > 0, we will also add an entry indicating the number of items under the confidence threshold.",
+              ).optional(),
+            })).describe("Info describing predicted label distribution.")
+              .optional(),
+          })).describe("One row per actual label.").optional(),
+        })).describe("Confusion matrix at different thresholds.").optional(),
+      }).describe(
+        "Evaluation metrics for multi-class classification/classifier models.",
+      ).optional(),
+      rankingMetrics: z.object({
+        averageRank: z.number().describe(
+          "Determines the goodness of a ranking by computing the percentile rank from the predicted confidence and dividing it by the original rank.",
+        ).optional(),
+        meanAveragePrecision: z.number().describe(
+          "Calculates a precision per user for all the items by ranking them and then averages all the precisions across all the users.",
+        ).optional(),
+        meanSquaredError: z.number().describe(
+          "Similar to the mean squared error computed in regression and explicit recommendation models except instead of computing the rating directly, the output from evaluate is computed against a preference which is 1 or 0 depending on if the rating exists or not.",
+        ).optional(),
+        normalizedDiscountedCumulativeGain: z.number().describe(
+          "A metric to determine the goodness of a ranking calculated from the predicted confidence by comparing it to an ideal rank measured by the original ratings.",
+        ).optional(),
+      }).describe(
+        "Evaluation metrics used by weighted-ALS models specified by feedback_type=implicit.",
+      ).optional(),
+      regressionMetrics: z.object({
+        meanAbsoluteError: z.number().describe("Mean absolute error.")
+          .optional(),
+        meanSquaredError: z.number().describe("Mean squared error.").optional(),
+        meanSquaredLogError: z.number().describe("Mean squared log error.")
+          .optional(),
+        medianAbsoluteError: z.number().describe("Median absolute error.")
+          .optional(),
+        rSquared: z.number().describe(
+          "R^2 score. This corresponds to r2_score in ML.EVALUATE.",
+        ).optional(),
+      }).describe(
+        "Evaluation metrics for regression and explicit feedback type matrix factorization models.",
+      ).optional(),
+    }).describe(
+      "Evaluation metrics of a model. These are either computed on all training data or just the eval data based on whether eval data was used during training. These are not present for imported models.",
+    ).optional(),
+    hparamTuningEvaluationMetrics: z.object({
+      arimaForecastingMetrics: z.object({
+        arimaFittingMetrics: z.array(z.object({
+          aic: z.number().describe("AIC.").optional(),
+          logLikelihood: z.number().describe("Log-likelihood.").optional(),
+          variance: z.number().describe("Variance.").optional(),
+        })).describe("Arima model fitting metrics.").optional(),
+        arimaSingleModelForecastingMetrics: z.array(z.object({
+          arimaFittingMetrics: z.object({
+            aic: z.number().describe("AIC.").optional(),
+            logLikelihood: z.number().describe("Log-likelihood.").optional(),
+            variance: z.number().describe("Variance.").optional(),
+          }).describe("ARIMA model fitting metrics.").optional(),
+          hasDrift: z.boolean().describe(
+            "Is arima model fitted with drift or not. It is always false when d is not 1.",
+          ).optional(),
+          hasHolidayEffect: z.boolean().describe(
+            "If true, holiday_effect is a part of time series decomposition result.",
+          ).optional(),
+          hasSpikesAndDips: z.boolean().describe(
+            "If true, spikes_and_dips is a part of time series decomposition result.",
+          ).optional(),
+          hasStepChanges: z.boolean().describe(
+            "If true, step_changes is a part of time series decomposition result.",
+          ).optional(),
+          nonSeasonalOrder: z.object({
+            d: z.string().describe("Order of the differencing part.")
+              .optional(),
+            p: z.string().describe("Order of the autoregressive part.")
+              .optional(),
+            q: z.string().describe("Order of the moving-average part.")
+              .optional(),
+          }).describe(
+            "Arima order, can be used for both non-seasonal and seasonal parts.",
+          ).optional(),
+          seasonalPeriods: z.array(
+            z.enum([
+              "SEASONAL_PERIOD_TYPE_UNSPECIFIED",
+              "NO_SEASONALITY",
+              "DAILY",
+              "WEEKLY",
+              "MONTHLY",
+              "QUARTERLY",
+              "YEARLY",
+              "HOURLY",
+            ]),
+          ).describe(
+            "Seasonal periods. Repeated because multiple periods are supported for one time series.",
+          ).optional(),
+          timeSeriesId: z.string().describe(
+            "The time_series_id value for this time series. It will be one of the unique values from the time_series_id_column specified during ARIMA model training. Only present when time_series_id_column training option was used.",
+          ).optional(),
+          timeSeriesIds: z.array(z.string()).describe(
+            "The tuple of time_series_ids identifying this time series. It will be one of the unique tuples of values present in the time_series_id_columns specified during ARIMA model training. Only present when time_series_id_columns training option was used and the order of values here are same as the order of time_series_id_columns.",
+          ).optional(),
+        })).describe(
+          "Repeated as there can be many metric sets (one for each model) in auto-arima and the large-scale case.",
+        ).optional(),
+        hasDrift: z.array(z.boolean()).describe(
+          "Whether Arima model fitted with drift or not. It is always false when d is not 1.",
+        ).optional(),
+        nonSeasonalOrder: z.array(z.object({
+          d: z.string().describe("Order of the differencing part.").optional(),
+          p: z.string().describe("Order of the autoregressive part.")
+            .optional(),
+          q: z.string().describe("Order of the moving-average part.")
+            .optional(),
+        })).describe("Non-seasonal order.").optional(),
+        seasonalPeriods: z.array(
+          z.enum([
+            "SEASONAL_PERIOD_TYPE_UNSPECIFIED",
+            "NO_SEASONALITY",
+            "DAILY",
+            "WEEKLY",
+            "MONTHLY",
+            "QUARTERLY",
+            "YEARLY",
+            "HOURLY",
+          ]),
+        ).describe(
+          "Seasonal periods. Repeated because multiple periods are supported for one time series.",
+        ).optional(),
+        timeSeriesId: z.array(z.string()).describe(
+          "Id to differentiate different time series for the large-scale case.",
+        ).optional(),
+      }).describe("Model evaluation metrics for ARIMA forecasting models.")
+        .optional(),
+      binaryClassificationMetrics: z.object({
+        aggregateClassificationMetrics: z.object({
+          accuracy: z.number().describe(
+            "Accuracy is the fraction of predictions given the correct label. For multiclass this is a micro-averaged metric.",
+          ).optional(),
+          f1Score: z.number().describe(
+            "The F1 score is an average of recall and precision. For multiclass this is a macro-averaged metric.",
+          ).optional(),
+          logLoss: z.number().describe(
+            "Logarithmic Loss. For multiclass this is a macro-averaged metric.",
+          ).optional(),
+          precision: z.number().describe(
+            "Precision is the fraction of actual positive predictions that had positive actual labels. For multiclass this is a macro-averaged metric treating each class as a binary classifier.",
+          ).optional(),
+          recall: z.number().describe(
+            "Recall is the fraction of actual positive labels that were given a positive prediction. For multiclass this is a macro-averaged metric.",
+          ).optional(),
+          rocAuc: z.number().describe(
+            "Area Under a ROC Curve. For multiclass this is a macro-averaged metric.",
+          ).optional(),
+          threshold: z.number().describe(
+            "Threshold at which the metrics are computed. For binary classification models this is the positive class threshold. For multi-class classification models this is the confidence threshold.",
+          ).optional(),
+        }).describe(
+          "Aggregate metrics for classification/classifier models. For multi-class models, the metrics are either macro-averaged or micro-averaged. When macro-averaged, the metrics are calculated for each label and then an unweighted average is taken of those values. When micro-averaged, the metric is calculated globally by counting the total number of correctly predicted rows.",
+        ).optional(),
+        binaryConfusionMatrixList: z.array(z.object({
+          accuracy: z.number().describe(
+            "The fraction of predictions given the correct label.",
+          ).optional(),
+          f1Score: z.number().describe(
+            "The equally weighted average of recall and precision.",
+          ).optional(),
+          falseNegatives: z.string().describe(
+            "Number of false samples predicted as false.",
+          ).optional(),
+          falsePositives: z.string().describe(
+            "Number of false samples predicted as true.",
+          ).optional(),
+          positiveClassThreshold: z.number().describe(
+            "Threshold value used when computing each of the following metric.",
+          ).optional(),
+          precision: z.number().describe(
+            "The fraction of actual positive predictions that had positive actual labels.",
+          ).optional(),
+          recall: z.number().describe(
+            "The fraction of actual positive labels that were given a positive prediction.",
+          ).optional(),
+          trueNegatives: z.string().describe(
+            "Number of true samples predicted as false.",
+          ).optional(),
+          truePositives: z.string().describe(
+            "Number of true samples predicted as true.",
+          ).optional(),
+        })).describe("Binary confusion matrix at multiple thresholds.")
+          .optional(),
+        negativeLabel: z.string().describe(
+          "Label representing the negative class.",
+        ).optional(),
+        positiveLabel: z.string().describe(
+          "Label representing the positive class.",
+        ).optional(),
+      }).describe(
+        "Evaluation metrics for binary classification/classifier models.",
+      ).optional(),
+      clusteringMetrics: z.object({
+        clusters: z.array(z.object({
+          centroidId: z.string().describe("Centroid id.").optional(),
+          count: z.string().describe(
+            "Count of training data rows that were assigned to this cluster.",
+          ).optional(),
+          featureValues: z.array(z.object({
+            categoricalValue: z.object({
+              categoryCounts: z.array(z.object({
+                category: z.string().describe("The name of category.")
+                  .optional(),
+                count: z.string().describe(
+                  "The count of training samples matching the category within the cluster.",
+                ).optional(),
+              })).describe(
+                'Counts of all categories for the categorical feature. If there are more than ten categories, we return top ten (by count) and return one more CategoryCount with category "_OTHER_" and count as aggregate counts of remaining categories.',
+              ).optional(),
+            }).describe("Representative value of a categorical feature.")
+              .optional(),
+            featureColumn: z.string().describe("The feature column name.")
+              .optional(),
+            numericalValue: z.number().describe(
+              "The numerical feature value. This is the centroid value for this feature.",
+            ).optional(),
+          })).describe("Values of highly variant features for this cluster.")
+            .optional(),
+        })).describe("Information for all clusters.").optional(),
+        daviesBouldinIndex: z.number().describe("Davies-Bouldin index.")
+          .optional(),
+        meanSquaredDistance: z.number().describe(
+          "Mean of squared distances between each sample to its cluster centroid.",
+        ).optional(),
+      }).describe("Evaluation metrics for clustering models.").optional(),
+      dimensionalityReductionMetrics: z.object({
+        totalExplainedVarianceRatio: z.number().describe(
+          "Total percentage of variance explained by the selected principal components.",
+        ).optional(),
+      }).describe(
+        "Model evaluation metrics for dimensionality reduction models.",
+      ).optional(),
+      multiClassClassificationMetrics: z.object({
+        aggregateClassificationMetrics: z.object({
+          accuracy: z.number().describe(
+            "Accuracy is the fraction of predictions given the correct label. For multiclass this is a micro-averaged metric.",
+          ).optional(),
+          f1Score: z.number().describe(
+            "The F1 score is an average of recall and precision. For multiclass this is a macro-averaged metric.",
+          ).optional(),
+          logLoss: z.number().describe(
+            "Logarithmic Loss. For multiclass this is a macro-averaged metric.",
+          ).optional(),
+          precision: z.number().describe(
+            "Precision is the fraction of actual positive predictions that had positive actual labels. For multiclass this is a macro-averaged metric treating each class as a binary classifier.",
+          ).optional(),
+          recall: z.number().describe(
+            "Recall is the fraction of actual positive labels that were given a positive prediction. For multiclass this is a macro-averaged metric.",
+          ).optional(),
+          rocAuc: z.number().describe(
+            "Area Under a ROC Curve. For multiclass this is a macro-averaged metric.",
+          ).optional(),
+          threshold: z.number().describe(
+            "Threshold at which the metrics are computed. For binary classification models this is the positive class threshold. For multi-class classification models this is the confidence threshold.",
+          ).optional(),
+        }).describe(
+          "Aggregate metrics for classification/classifier models. For multi-class models, the metrics are either macro-averaged or micro-averaged. When macro-averaged, the metrics are calculated for each label and then an unweighted average is taken of those values. When micro-averaged, the metric is calculated globally by counting the total number of correctly predicted rows.",
+        ).optional(),
+        confusionMatrixList: z.array(z.object({
+          confidenceThreshold: z.number().describe(
+            "Confidence threshold used when computing the entries of the confusion matrix.",
+          ).optional(),
+          rows: z.array(z.object({
+            actualLabel: z.string().describe("The original label of this row.")
+              .optional(),
+            entries: z.array(z.object({
+              itemCount: z.string().describe(
+                "Number of items being predicted as this label.",
+              ).optional(),
+              predictedLabel: z.string().describe(
+                "The predicted label. For confidence_threshold > 0, we will also add an entry indicating the number of items under the confidence threshold.",
+              ).optional(),
+            })).describe("Info describing predicted label distribution.")
+              .optional(),
+          })).describe("One row per actual label.").optional(),
+        })).describe("Confusion matrix at different thresholds.").optional(),
+      }).describe(
+        "Evaluation metrics for multi-class classification/classifier models.",
+      ).optional(),
+      rankingMetrics: z.object({
+        averageRank: z.number().describe(
+          "Determines the goodness of a ranking by computing the percentile rank from the predicted confidence and dividing it by the original rank.",
+        ).optional(),
+        meanAveragePrecision: z.number().describe(
+          "Calculates a precision per user for all the items by ranking them and then averages all the precisions across all the users.",
+        ).optional(),
+        meanSquaredError: z.number().describe(
+          "Similar to the mean squared error computed in regression and explicit recommendation models except instead of computing the rating directly, the output from evaluate is computed against a preference which is 1 or 0 depending on if the rating exists or not.",
+        ).optional(),
+        normalizedDiscountedCumulativeGain: z.number().describe(
+          "A metric to determine the goodness of a ranking calculated from the predicted confidence by comparing it to an ideal rank measured by the original ratings.",
+        ).optional(),
+      }).describe(
+        "Evaluation metrics used by weighted-ALS models specified by feedback_type=implicit.",
+      ).optional(),
+      regressionMetrics: z.object({
+        meanAbsoluteError: z.number().describe("Mean absolute error.")
+          .optional(),
+        meanSquaredError: z.number().describe("Mean squared error.").optional(),
+        meanSquaredLogError: z.number().describe("Mean squared log error.")
+          .optional(),
+        medianAbsoluteError: z.number().describe("Median absolute error.")
+          .optional(),
+        rSquared: z.number().describe(
+          "R^2 score. This corresponds to r2_score in ML.EVALUATE.",
+        ).optional(),
+      }).describe(
+        "Evaluation metrics for regression and explicit feedback type matrix factorization models.",
+      ).optional(),
+    }).describe(
+      "Evaluation metrics of a model. These are either computed on all training data or just the eval data based on whether eval data was used during training. These are not present for imported models.",
+    ).optional(),
+    hparams: z.object({
+      activationFn: z.string().describe(
+        "Activation function of the neural nets.",
+      ).optional(),
+      adjustStepChanges: z.boolean().describe(
+        "If true, detect step changes and make data adjustment in the input time series.",
+      ).optional(),
+      approxGlobalFeatureContrib: z.boolean().describe(
+        "Whether to use approximate feature contribution method in XGBoost model explanation for global explain.",
+      ).optional(),
+      autoArima: z.boolean().describe("Whether to enable auto ARIMA or not.")
+        .optional(),
+      autoArimaMaxOrder: z.string().describe(
+        "The max value of the sum of non-seasonal p and q.",
+      ).optional(),
+      autoArimaMinOrder: z.string().describe(
+        "The min value of the sum of non-seasonal p and q.",
+      ).optional(),
+      autoClassWeights: z.boolean().describe(
+        "Whether to calculate class weights automatically based on the popularity of each label.",
+      ).optional(),
+      batchSize: z.string().describe("Batch size for dnn models.").optional(),
+      boosterType: z.enum(["BOOSTER_TYPE_UNSPECIFIED", "GBTREE", "DART"])
+        .describe("Booster type for boosted tree models.").optional(),
+      budgetHours: z.number().describe("Budget in hours for AutoML training.")
+        .optional(),
+      calculatePValues: z.boolean().describe(
+        "Whether or not p-value test should be computed for this model. Only available for linear and logistic regression models.",
+      ).optional(),
+      categoryEncodingMethod: z.enum([
+        "ENCODING_METHOD_UNSPECIFIED",
+        "ONE_HOT_ENCODING",
+        "LABEL_ENCODING",
+        "DUMMY_ENCODING",
+      ]).describe("Categorical feature encoding method.").optional(),
+      cleanSpikesAndDips: z.boolean().describe(
+        "If true, clean spikes and dips in the input time series.",
+      ).optional(),
+      colorSpace: z.enum([
+        "COLOR_SPACE_UNSPECIFIED",
+        "RGB",
+        "HSV",
+        "YIQ",
+        "YUV",
+        "GRAYSCALE",
+      ]).describe(
+        "Enums for color space, used for processing images in Object Table. See more details at https://www.tensorflow.org/io/tutorials/colorspace.",
+      ).optional(),
+      colsampleBylevel: z.number().describe(
+        "Subsample ratio of columns for each level for boosted tree models.",
+      ).optional(),
+      colsampleBynode: z.number().describe(
+        "Subsample ratio of columns for each node(split) for boosted tree models.",
+      ).optional(),
+      colsampleBytree: z.number().describe(
+        "Subsample ratio of columns when constructing each tree for boosted tree models.",
+      ).optional(),
+      contributionMetric: z.string().describe(
+        "The contribution metric. Applies to contribution analysis models. Allowed formats supported are for summable and summable ratio contribution metrics. These include expressions such as `SUM(x)` or `SUM(x)/SUM(y)`, where x and y are column names from the base table.",
+      ).optional(),
+      dartNormalizeType: z.enum([
+        "DART_NORMALIZE_TYPE_UNSPECIFIED",
+        "TREE",
+        "FOREST",
+      ]).describe(
+        "Type of normalization algorithm for boosted tree models using dart booster.",
+      ).optional(),
+      dataFrequency: z.enum([
+        "DATA_FREQUENCY_UNSPECIFIED",
+        "AUTO_FREQUENCY",
+        "YEARLY",
+        "QUARTERLY",
+        "MONTHLY",
+        "WEEKLY",
+        "DAILY",
+        "HOURLY",
+        "PER_MINUTE",
+      ]).describe("The data frequency of a time series.").optional(),
+      dataSplitColumn: z.string().describe(
+        "The column to split data with. This column won't be used as a feature. 1. When data_split_method is CUSTOM, the corresponding column should be boolean. The rows with true value tag are eval data, and the false are training data. 2. When data_split_method is SEQ, the first DATA_SPLIT_EVAL_FRACTION rows (from smallest to largest) in the corresponding column are used as training data, and the rest are eval data. It respects the order in Orderable data types: https://cloud.google.com/bigquery/docs/reference/standard-sql/data-types#data_type_properties",
+      ).optional(),
+      dataSplitEvalFraction: z.number().describe(
+        "The fraction of evaluation data over the whole input data. The rest of data will be used as training data. The format should be double. Accurate to two decimal places. Default value is 0.2.",
+      ).optional(),
+      dataSplitMethod: z.enum([
+        "DATA_SPLIT_METHOD_UNSPECIFIED",
+        "RANDOM",
+        "CUSTOM",
+        "SEQUENTIAL",
+        "NO_SPLIT",
+        "AUTO_SPLIT",
+      ]).describe(
+        "The data split type for training and evaluation, e.g. RANDOM.",
+      ).optional(),
+      decomposeTimeSeries: z.boolean().describe(
+        "If true, perform decompose time series and save the results.",
+      ).optional(),
+      dimensionIdColumns: z.array(z.string()).describe(
+        "Optional. Names of the columns to slice on. Applies to contribution analysis models.",
+      ).optional(),
+      distanceType: z.enum(["DISTANCE_TYPE_UNSPECIFIED", "EUCLIDEAN", "COSINE"])
+        .describe("Distance type for clustering models.").optional(),
+      dropout: z.number().describe("Dropout probability for dnn models.")
+        .optional(),
+      earlyStop: z.boolean().describe(
+        "Whether to stop early when the loss doesn't improve significantly any more (compared to min_relative_progress). Used only for iterative training algorithms.",
+      ).optional(),
+      enableGlobalExplain: z.boolean().describe(
+        "If true, enable global explanation during training.",
+      ).optional(),
+      endpointIdleTtl: z.string().describe(
+        "The idle TTL of the endpoint before the resources get destroyed. The default value is 6.5 hours.",
+      ).optional(),
+      feedbackType: z.enum([
+        "FEEDBACK_TYPE_UNSPECIFIED",
+        "IMPLICIT",
+        "EXPLICIT",
+      ]).describe(
+        "Feedback type that specifies which algorithm to run for matrix factorization.",
+      ).optional(),
+      fitIntercept: z.boolean().describe(
+        "Whether the model should include intercept during model training.",
+      ).optional(),
+      forecastLimitLowerBound: z.number().describe(
+        "The forecast limit lower bound that was used during ARIMA model training with limits. To see more details of the algorithm: https://otexts.com/fpp2/limits.html",
+      ).optional(),
+      forecastLimitUpperBound: z.number().describe(
+        "The forecast limit upper bound that was used during ARIMA model training with limits.",
+      ).optional(),
+      hiddenUnits: z.array(z.string()).describe("Hidden units for dnn models.")
+        .optional(),
+      holidayRegion: z.enum([
+        "HOLIDAY_REGION_UNSPECIFIED",
+        "GLOBAL",
+        "NA",
+        "JAPAC",
+        "EMEA",
+        "LAC",
+        "AE",
+        "AR",
+        "AT",
+        "AU",
+        "BE",
+        "BR",
+        "CA",
+        "CH",
+        "CL",
+        "CN",
+        "CO",
+        "CS",
+        "CZ",
+        "DE",
+        "DK",
+        "DZ",
+        "EC",
+        "EE",
+        "EG",
+        "ES",
+        "FI",
+        "FR",
+        "GB",
+        "GR",
+        "HK",
+        "HU",
+        "ID",
+        "IE",
+        "IL",
+        "IN",
+        "IR",
+        "IT",
+        "JP",
+        "KR",
+        "LV",
+        "MA",
+        "MX",
+        "MY",
+        "NG",
+        "NL",
+        "NO",
+        "NZ",
+        "PE",
+        "PH",
+        "PK",
+        "PL",
+        "PT",
+        "RO",
+        "RS",
+        "RU",
+        "SA",
+        "SE",
+        "SG",
+        "SI",
+        "SK",
+        "TH",
+        "TR",
+        "TW",
+        "UA",
+        "US",
+        "VE",
+        "VN",
+        "ZA",
+      ]).describe(
+        "The geographical region based on which the holidays are considered in time series modeling. If a valid value is specified, then holiday effects modeling is enabled.",
+      ).optional(),
+      holidayRegions: z.array(
+        z.enum([
+          "HOLIDAY_REGION_UNSPECIFIED",
+          "GLOBAL",
+          "NA",
+          "JAPAC",
+          "EMEA",
+          "LAC",
+          "AE",
+          "AR",
+          "AT",
+          "AU",
+          "BE",
+          "BR",
+          "CA",
+          "CH",
+          "CL",
+          "CN",
+          "CO",
+          "CS",
+          "CZ",
+          "DE",
+          "DK",
+          "DZ",
+          "EC",
+          "EE",
+          "EG",
+          "ES",
+          "FI",
+          "FR",
+          "GB",
+          "GR",
+          "HK",
+          "HU",
+          "ID",
+          "IE",
+          "IL",
+          "IN",
+          "IR",
+          "IT",
+          "JP",
+          "KR",
+          "LV",
+          "MA",
+          "MX",
+          "MY",
+          "NG",
+          "NL",
+          "NO",
+          "NZ",
+          "PE",
+          "PH",
+          "PK",
+          "PL",
+          "PT",
+          "RO",
+          "RS",
+          "RU",
+          "SA",
+          "SE",
+          "SG",
+          "SI",
+          "SK",
+          "TH",
+          "TR",
+          "TW",
+          "UA",
+          "US",
+          "VE",
+          "VN",
+          "ZA",
+        ]),
+      ).describe(
+        "A list of geographical regions that are used for time series modeling.",
+      ).optional(),
+      horizon: z.string().describe(
+        "The number of periods ahead that need to be forecasted.",
+      ).optional(),
+      hparamTuningObjectives: z.array(
+        z.enum([
+          "HPARAM_TUNING_OBJECTIVE_UNSPECIFIED",
+          "MEAN_ABSOLUTE_ERROR",
+          "MEAN_SQUARED_ERROR",
+          "MEAN_SQUARED_LOG_ERROR",
+          "MEDIAN_ABSOLUTE_ERROR",
+          "R_SQUARED",
+          "EXPLAINED_VARIANCE",
+          "PRECISION",
+          "RECALL",
+          "ACCURACY",
+          "F1_SCORE",
+          "LOG_LOSS",
+          "ROC_AUC",
+          "DAVIES_BOULDIN_INDEX",
+          "MEAN_AVERAGE_PRECISION",
+          "NORMALIZED_DISCOUNTED_CUMULATIVE_GAIN",
+          "AVERAGE_RANK",
+        ]),
+      ).describe(
+        "The target evaluation metrics to optimize the hyperparameters for.",
+      ).optional(),
+      huggingFaceModelId: z.string().describe(
+        "The id of a Hugging Face model. For example, `google/gemma-2-2b-it`.",
+      ).optional(),
+      includeDrift: z.boolean().describe(
+        "Include drift when fitting an ARIMA model.",
+      ).optional(),
+      initialLearnRate: z.number().describe(
+        "Specifies the initial learning rate for the line search learn rate strategy.",
+      ).optional(),
+      inputLabelColumns: z.array(z.string()).describe(
+        "Name of input label columns in training data.",
+      ).optional(),
+      instanceWeightColumn: z.string().describe(
+        "Name of the instance weight column for training data. This column isn't be used as a feature.",
+      ).optional(),
+      integratedGradientsNumSteps: z.string().describe(
+        "Number of integral steps for the integrated gradients explain method.",
+      ).optional(),
+      isTestColumn: z.string().describe(
+        "Name of the column used to determine the rows corresponding to control and test. Applies to contribution analysis models.",
+      ).optional(),
+      itemColumn: z.string().describe(
+        "Item column specified for matrix factorization models.",
+      ).optional(),
+      kmeansInitializationColumn: z.string().describe(
+        "The column used to provide the initial centroids for kmeans algorithm when kmeans_initialization_method is CUSTOM.",
+      ).optional(),
+      kmeansInitializationMethod: z.enum([
+        "KMEANS_INITIALIZATION_METHOD_UNSPECIFIED",
+        "RANDOM",
+        "CUSTOM",
+        "KMEANS_PLUS_PLUS",
+      ]).describe(
+        "The method used to initialize the centroids for kmeans algorithm.",
+      ).optional(),
+      l1RegActivation: z.number().describe(
+        "L1 regularization coefficient to activations.",
+      ).optional(),
+      l1Regularization: z.number().describe("L1 regularization coefficient.")
+        .optional(),
+      l2Regularization: z.number().describe("L2 regularization coefficient.")
+        .optional(),
+      labelClassWeights: z.record(z.string(), z.number()).describe(
+        "Weights associated with each label class, for rebalancing the training data. Only applicable for classification models.",
+      ).optional(),
+      learnRate: z.number().describe(
+        "Learning rate in training. Used only for iterative training algorithms.",
+      ).optional(),
+      learnRateStrategy: z.enum([
+        "LEARN_RATE_STRATEGY_UNSPECIFIED",
+        "LINE_SEARCH",
+        "CONSTANT",
+      ]).describe(
+        "The strategy to determine learn rate for the current iteration.",
+      ).optional(),
+      lossType: z.enum([
+        "LOSS_TYPE_UNSPECIFIED",
+        "MEAN_SQUARED_LOSS",
+        "MEAN_LOG_LOSS",
+      ]).describe("Type of loss function used during training run.").optional(),
+      machineType: z.string().describe(
+        "The type of the machine used to deploy and serve the model.",
+      ).optional(),
+      maxIterations: z.string().describe(
+        "The maximum number of iterations in training. Used only for iterative training algorithms.",
+      ).optional(),
+      maxParallelTrials: z.string().describe(
+        "Maximum number of trials to run in parallel.",
+      ).optional(),
+      maxReplicaCount: z.string().describe(
+        "The maximum number of machine replicas that will be deployed on an endpoint. The default value is equal to min_replica_count.",
+      ).optional(),
+      maxTimeSeriesLength: z.string().describe(
+        "The maximum number of time points in a time series that can be used in modeling the trend component of the time series. Don't use this option with the `timeSeriesLengthFraction` or `minTimeSeriesLength` options.",
+      ).optional(),
+      maxTreeDepth: z.string().describe(
+        "Maximum depth of a tree for boosted tree models.",
+      ).optional(),
+      minAprioriSupport: z.number().describe(
+        "The apriori support minimum. Applies to contribution analysis models.",
+      ).optional(),
+      minRelativeProgress: z.number().describe(
+        "When early_stop is true, stops training when accuracy improvement is less than 'min_relative_progress'. Used only for iterative training algorithms.",
+      ).optional(),
+      minReplicaCount: z.string().describe(
+        "The minimum number of machine replicas that will be always deployed on an endpoint. This value must be greater than or equal to 1. The default value is 1.",
+      ).optional(),
+      minSplitLoss: z.number().describe(
+        "Minimum split loss for boosted tree models.",
+      ).optional(),
+      minTimeSeriesLength: z.string().describe(
+        "The minimum number of time points in a time series that are used in modeling the trend component of the time series. If you use this option you must also set the `timeSeriesLengthFraction` option. This training option ensures that enough time points are available when you use `timeSeriesLengthFraction` in trend modeling. This is particularly important when forecasting multiple time series in a single query using `timeSeriesIdColumn`. If the total number of time points is less than the `minTimeSeriesLength` value, then the query uses all available time points.",
+      ).optional(),
+      minTreeChildWeight: z.string().describe(
+        "Minimum sum of instance weight needed in a child for boosted tree models.",
+      ).optional(),
+      modelGardenModelName: z.string().describe(
+        "The name of a Vertex model garden publisher model. Format is `publishers/{publisher}/models/{model}@{optional_version_id}`.",
+      ).optional(),
+      modelRegistry: z.enum(["MODEL_REGISTRY_UNSPECIFIED", "VERTEX_AI"])
+        .describe("The model registry.").optional(),
+      modelUri: z.string().describe(
+        "Google Cloud Storage URI from which the model was imported. Only applicable for imported models.",
+      ).optional(),
+      nonSeasonalOrder: z.object({
+        d: z.string().describe("Order of the differencing part.").optional(),
+        p: z.string().describe("Order of the autoregressive part.").optional(),
+        q: z.string().describe("Order of the moving-average part.").optional(),
+      }).describe(
+        "Arima order, can be used for both non-seasonal and seasonal parts.",
+      ).optional(),
+      numClusters: z.string().describe(
+        "Number of clusters for clustering models.",
+      ).optional(),
+      numFactors: z.string().describe(
+        "Num factors specified for matrix factorization models.",
+      ).optional(),
+      numParallelTree: z.string().describe(
+        "Number of parallel trees constructed during each iteration for boosted tree models.",
+      ).optional(),
+      numPrincipalComponents: z.string().describe(
+        "Number of principal components to keep in the PCA model. Must be <= the number of features.",
+      ).optional(),
+      numTrials: z.string().describe(
+        "Number of trials to run this hyperparameter tuning job.",
+      ).optional(),
+      optimizationStrategy: z.enum([
+        "OPTIMIZATION_STRATEGY_UNSPECIFIED",
+        "BATCH_GRADIENT_DESCENT",
+        "NORMAL_EQUATION",
+      ]).describe(
+        "Optimization strategy for training linear regression models.",
+      ).optional(),
+      optimizer: z.string().describe(
+        "Optimizer used for training the neural nets.",
+      ).optional(),
+      pcaExplainedVarianceRatio: z.number().describe(
+        "The minimum ratio of cumulative explained variance that needs to be given by the PCA model.",
+      ).optional(),
+      pcaSolver: z.enum(["UNSPECIFIED", "FULL", "RANDOMIZED", "AUTO"]).describe(
+        "The solver for PCA.",
+      ).optional(),
+      reservationAffinityKey: z.string().describe(
+        "Corresponds to the label key of a reservation resource used by Vertex AI. To target a SPECIFIC_RESERVATION by name, use `compute.googleapis.com/reservation-name` as the key and specify the name of your reservation as its value.",
+      ).optional(),
+      reservationAffinityType: z.enum([
+        "RESERVATION_AFFINITY_TYPE_UNSPECIFIED",
+        "NO_RESERVATION",
+        "ANY_RESERVATION",
+        "SPECIFIC_RESERVATION",
+      ]).describe(
+        "Specifies the reservation affinity type used to configure a Vertex AI resource. The default value is `NO_RESERVATION`.",
+      ).optional(),
+      reservationAffinityValues: z.array(z.string()).describe(
+        "Corresponds to the label values of a reservation resource used by Vertex AI. This must be the full resource name of the reservation or reservation block.",
+      ).optional(),
+      sampledShapleyNumPaths: z.string().describe(
+        "Number of paths for the sampled Shapley explain method.",
+      ).optional(),
+      scaleFeatures: z.boolean().describe(
+        "If true, scale the feature values by dividing the feature standard deviation. Currently only apply to PCA.",
+      ).optional(),
+      standardizeFeatures: z.boolean().describe(
+        "Whether to standardize numerical features. Default to true.",
+      ).optional(),
+      subsample: z.number().describe(
+        "Subsample fraction of the training data to grow tree to prevent overfitting for boosted tree models.",
+      ).optional(),
+      tfVersion: z.string().describe(
+        "Based on the selected TF version, the corresponding docker image is used to train external models.",
+      ).optional(),
+      timeSeriesDataColumn: z.string().describe(
+        "Column to be designated as time series data for ARIMA model.",
+      ).optional(),
+      timeSeriesIdColumn: z.string().describe(
+        "The time series id column that was used during ARIMA model training.",
+      ).optional(),
+      timeSeriesIdColumns: z.array(z.string()).describe(
+        "The time series id columns that were used during ARIMA model training.",
+      ).optional(),
+      timeSeriesLengthFraction: z.number().describe(
+        "The fraction of the interpolated length of the time series that's used to model the time series trend component. All of the time points of the time series are used to model the non-trend component. This training option accelerates modeling training without sacrificing much forecasting accuracy. You can use this option with `minTimeSeriesLength` but not with `maxTimeSeriesLength`.",
+      ).optional(),
+      timeSeriesTimestampColumn: z.string().describe(
+        "Column to be designated as time series timestamp for ARIMA model.",
+      ).optional(),
+      treeMethod: z.enum([
+        "TREE_METHOD_UNSPECIFIED",
+        "AUTO",
+        "EXACT",
+        "APPROX",
+        "HIST",
+      ]).describe("Tree construction algorithm for boosted tree models.")
+        .optional(),
+      trendSmoothingWindowSize: z.string().describe(
+        "Smoothing window size for the trend component. When a positive value is specified, a center moving average smoothing is applied on the history trend. When the smoothing window is out of the boundary at the beginning or the end of the trend, the first element or the last element is padded to fill the smoothing window before the average is applied.",
+      ).optional(),
+      userColumn: z.string().describe(
+        "User column specified for matrix factorization models.",
+      ).optional(),
+      vertexAiModelVersionAliases: z.array(z.string()).describe(
+        "The version aliases to apply in Vertex AI model registry. Always overwrite if the version aliases exists in a existing model.",
+      ).optional(),
+      walsAlpha: z.number().describe(
+        "Hyperparameter for matrix factoration when implicit feedback type is specified.",
+      ).optional(),
+      warmStart: z.boolean().describe(
+        "Whether to train a model from the last checkpoint.",
+      ).optional(),
+      xgboostVersion: z.string().describe(
+        "User-selected XGBoost versions for training of XGBoost models.",
+      ).optional(),
+    }).describe("Options used in model training.").optional(),
+    startTimeMs: z.string().describe("Starting time of the trial.").optional(),
+    status: z.enum([
+      "TRIAL_STATUS_UNSPECIFIED",
+      "NOT_STARTED",
+      "RUNNING",
+      "SUCCEEDED",
+      "FAILED",
+      "INFEASIBLE",
+      "STOPPED_EARLY",
+    ]).describe("The status of the trial.").optional(),
+    trainingLoss: z.number().describe(
+      "Loss computed on the training data at the end of trial.",
+    ).optional(),
+    trialId: z.string().describe("1-based index of the trial.").optional(),
+  })).describe(
+    "Output only. Trials of a [hyperparameter tuning](https://cloud.google.com/bigquery-ml/docs/reference/standard-sql/bigqueryml-syntax-hp-tuning-overview) model sorted by trial_id.",
+  ).optional(),
+  labelColumns: z.array(z.object({
+    name: z.string().describe(
+      "Optional. The name of this field. Can be absent for struct fields.",
+    ).optional(),
+    type: z.object({
+      arrayElementType: z.string().describe(
+        "Circular reference to StandardSqlDataType",
+      ).optional(),
+      rangeElementType: z.string().describe(
+        "Circular reference to StandardSqlDataType",
+      ).optional(),
+      structType: z.object({
+        fields: z.array(z.string()).describe("Fields within the struct.")
+          .optional(),
+      }).describe("The representation of a SQL STRUCT type.").optional(),
+      typeKind: z.enum([
+        "TYPE_KIND_UNSPECIFIED",
+        "INT64",
+        "BOOL",
+        "FLOAT64",
+        "STRING",
+        "BYTES",
+        "TIMESTAMP",
+        "DATE",
+        "TIME",
+        "DATETIME",
+        "INTERVAL",
+        "GEOGRAPHY",
+        "NUMERIC",
+        "BIGNUMERIC",
+        "JSON",
+        "ARRAY",
+        "STRUCT",
+        "RANGE",
+      ]).describe(
+        'Required. The top level type of this field. Can be any GoogleSQL data type (e.g., "INT64", "DATE", "ARRAY").',
+      ).optional(),
+    }).describe(
+      'The data type of a variable such as a function argument. Examples include: * INT64: `{"typeKind": "INT64"}` * ARRAY: { "typeKind": "ARRAY", "arrayElementType": {"typeKind": "STRING"} } * STRUCT>: { "typeKind": "STRUCT", "structType": { "fields": [ { "name": "x", "type": {"typeKind": "STRING"} }, { "name": "y", "type": { "typeKind": "ARRAY", "arrayElementType": {"typeKind": "DATE"} } } ] } } * RANGE: { "typeKind": "RANGE", "rangeElementType": {"typeKind": "DATE"} }',
+    ).optional(),
+  })).describe(
+    'Output only. Label columns that were used to train this model. The output of the model will have a "predicted_" prefix to these columns.',
+  ).optional(),
+  labels: z.record(z.string(), z.string()).describe(
+    "The labels associated with this model. You can use these to organize and group your models. Label keys and values can be no longer than 63 characters, can only contain lowercase letters, numeric characters, underscores and dashes. International characters are allowed. Label values are optional. Label keys must start with a letter and each label in the list must have a different key.",
+  ).optional(),
+  lastModifiedTime: z.string().describe(
+    "Output only. The time when this model was last modified, in millisecs since the epoch.",
+  ).optional(),
+  location: z.string().describe(
+    "Output only. The geographic location where the model resides. This value is inherited from the dataset.",
+  ).optional(),
+  modelReference: z.object({
+    datasetId: z.string().describe(
+      "Required. The ID of the dataset containing this model.",
+    ).optional(),
+    modelId: z.string().describe(
+      "Required. The ID of the model. The ID must contain only letters (a-z, A-Z), numbers (0-9), or underscores (_). The maximum length is 1,024 characters.",
+    ).optional(),
+    projectId: z.string().describe(
+      "Required. The ID of the project containing this model.",
+    ).optional(),
+  }).describe("Id path of a model.").optional(),
+  modelType: z.enum([
+    "MODEL_TYPE_UNSPECIFIED",
+    "LINEAR_REGRESSION",
+    "LOGISTIC_REGRESSION",
+    "KMEANS",
+    "MATRIX_FACTORIZATION",
+    "DNN_CLASSIFIER",
+    "TENSORFLOW",
+    "DNN_REGRESSOR",
+    "XGBOOST",
+    "BOOSTED_TREE_REGRESSOR",
+    "BOOSTED_TREE_CLASSIFIER",
+    "ARIMA",
+    "AUTOML_REGRESSOR",
+    "AUTOML_CLASSIFIER",
+    "PCA",
+    "DNN_LINEAR_COMBINED_CLASSIFIER",
+    "DNN_LINEAR_COMBINED_REGRESSOR",
+    "AUTOENCODER",
+    "ARIMA_PLUS",
+    "ARIMA_PLUS_XREG",
+    "RANDOM_FOREST_REGRESSOR",
+    "RANDOM_FOREST_CLASSIFIER",
+    "TENSORFLOW_LITE",
+    "ONNX",
+    "TRANSFORM_ONLY",
+    "CONTRIBUTION_ANALYSIS",
+  ]).describe("Output only. Type of the model resource.").optional(),
+  optimalTrialIds: z.array(z.string()).describe(
+    "Output only. For single-objective [hyperparameter tuning](https://cloud.google.com/bigquery-ml/docs/reference/standard-sql/bigqueryml-syntax-hp-tuning-overview) models, it only contains the best trial. For multi-objective [hyperparameter tuning](https://cloud.google.com/bigquery-ml/docs/reference/standard-sql/bigqueryml-syntax-hp-tuning-overview) models, it contains all Pareto optimal trials sorted by trial_id.",
+  ).optional(),
+  remoteModelInfo: z.object({
+    connection: z.string().describe(
+      'Output only. Fully qualified name of the user-provided connection object of the remote model. Format: ` "projects/{project_id}/locations/{location_id}/connections/{connection_id}" `',
+    ).optional(),
+    endpoint: z.string().describe("Output only. The endpoint for remote model.")
+      .optional(),
+    maxBatchingRows: z.string().describe(
+      "Output only. Max number of rows in each batch sent to the remote service. If unset, the number of rows in each batch is set dynamically.",
+    ).optional(),
+    remoteModelVersion: z.string().describe(
+      "Output only. The model version for LLM.",
+    ).optional(),
+    remoteServiceType: z.enum([
+      "REMOTE_SERVICE_TYPE_UNSPECIFIED",
+      "CLOUD_AI_TRANSLATE_V3",
+      "CLOUD_AI_VISION_V1",
+      "CLOUD_AI_NATURAL_LANGUAGE_V1",
+      "CLOUD_AI_SPEECH_TO_TEXT_V2",
+    ]).describe("Output only. The remote service type for remote model.")
+      .optional(),
+    speechRecognizer: z.string().describe(
+      "Output only. The name of the speech recognizer to use for speech recognition. The expected format is `projects/{project}/locations/{location}/recognizers/{recognizer}`. Customers can specify this field at model creation. If not specified, a default recognizer `projects/{model project}/locations/global/recognizers/_` will be used. See more details at [recognizers](https://cloud.google.com/speech-to-text/v2/docs/reference/rest/v2/projects.locations.recognizers)",
+    ).optional(),
+  }).describe("Remote Model Info").optional(),
+  trainingRuns: z.array(z.object({
+    classLevelGlobalExplanations: z.array(z.object({
+      classLabel: z.string().describe(
+        "Class label for this set of global explanations. Will be empty/null for binary logistic and linear regression models. Sorted alphabetically in descending order.",
+      ).optional(),
+      explanations: z.array(z.object({
+        attribution: z.number().describe("Attribution of feature.").optional(),
+        featureName: z.string().describe(
+          "The full feature name. For non-numerical features, will be formatted like `.`. Overall size of feature name will always be truncated to first 120 characters.",
+        ).optional(),
+      })).describe(
+        "A list of the top global explanations. Sorted by absolute value of attribution in descending order.",
+      ).optional(),
+    })).describe(
+      "Output only. Global explanation contains the explanation of top features on the class level. Applies to classification models only.",
+    ).optional(),
+    dataSplitResult: z.object({
+      evaluationTable: z.object({
+        datasetId: z.string().describe(
+          "Required. The ID of the dataset containing this table.",
+        ).optional(),
+        projectId: z.string().describe(
+          "Required. The ID of the project containing this table.",
+        ).optional(),
+        tableId: z.string().describe(
+          "Required. The ID of the table. The ID can contain Unicode characters in category L (letter), M (mark), N (number), Pc (connector, including underscore), Pd (dash), and Zs (space). For more information, see [General Category](https://wikipedia.org/wiki/Unicode_character_property#General_Category). The maximum length is 1,024 characters. Certain operations allow suffixing of the table ID with a partition decorator, such as `sample_table$20190123`.",
+        ).optional(),
+      }).optional(),
+      testTable: z.object({
+        datasetId: z.string().describe(
+          "Required. The ID of the dataset containing this table.",
+        ).optional(),
+        projectId: z.string().describe(
+          "Required. The ID of the project containing this table.",
+        ).optional(),
+        tableId: z.string().describe(
+          "Required. The ID of the table. The ID can contain Unicode characters in category L (letter), M (mark), N (number), Pc (connector, including underscore), Pd (dash), and Zs (space). For more information, see [General Category](https://wikipedia.org/wiki/Unicode_character_property#General_Category). The maximum length is 1,024 characters. Certain operations allow suffixing of the table ID with a partition decorator, such as `sample_table$20190123`.",
+        ).optional(),
+      }).optional(),
+      trainingTable: z.object({
+        datasetId: z.string().describe(
+          "Required. The ID of the dataset containing this table.",
+        ).optional(),
+        projectId: z.string().describe(
+          "Required. The ID of the project containing this table.",
+        ).optional(),
+        tableId: z.string().describe(
+          "Required. The ID of the table. The ID can contain Unicode characters in category L (letter), M (mark), N (number), Pc (connector, including underscore), Pd (dash), and Zs (space). For more information, see [General Category](https://wikipedia.org/wiki/Unicode_character_property#General_Category). The maximum length is 1,024 characters. Certain operations allow suffixing of the table ID with a partition decorator, such as `sample_table$20190123`.",
+        ).optional(),
+      }).optional(),
+    }).describe(
+      "Data split result. This contains references to the training and evaluation data tables that were used to train the model.",
+    ).optional(),
+    evaluationMetrics: z.object({
+      arimaForecastingMetrics: z.object({
+        arimaFittingMetrics: z.array(z.object({
+          aic: z.number().describe("AIC.").optional(),
+          logLikelihood: z.number().describe("Log-likelihood.").optional(),
+          variance: z.number().describe("Variance.").optional(),
+        })).describe("Arima model fitting metrics.").optional(),
+        arimaSingleModelForecastingMetrics: z.array(z.object({
+          arimaFittingMetrics: z.object({
+            aic: z.number().describe("AIC.").optional(),
+            logLikelihood: z.number().describe("Log-likelihood.").optional(),
+            variance: z.number().describe("Variance.").optional(),
+          }).describe("ARIMA model fitting metrics.").optional(),
+          hasDrift: z.boolean().describe(
+            "Is arima model fitted with drift or not. It is always false when d is not 1.",
+          ).optional(),
+          hasHolidayEffect: z.boolean().describe(
+            "If true, holiday_effect is a part of time series decomposition result.",
+          ).optional(),
+          hasSpikesAndDips: z.boolean().describe(
+            "If true, spikes_and_dips is a part of time series decomposition result.",
+          ).optional(),
+          hasStepChanges: z.boolean().describe(
+            "If true, step_changes is a part of time series decomposition result.",
+          ).optional(),
+          nonSeasonalOrder: z.object({
+            d: z.string().describe("Order of the differencing part.")
+              .optional(),
+            p: z.string().describe("Order of the autoregressive part.")
+              .optional(),
+            q: z.string().describe("Order of the moving-average part.")
+              .optional(),
+          }).describe(
+            "Arima order, can be used for both non-seasonal and seasonal parts.",
+          ).optional(),
+          seasonalPeriods: z.array(
+            z.enum([
+              "SEASONAL_PERIOD_TYPE_UNSPECIFIED",
+              "NO_SEASONALITY",
+              "DAILY",
+              "WEEKLY",
+              "MONTHLY",
+              "QUARTERLY",
+              "YEARLY",
+              "HOURLY",
+            ]),
+          ).describe(
+            "Seasonal periods. Repeated because multiple periods are supported for one time series.",
+          ).optional(),
+          timeSeriesId: z.string().describe(
+            "The time_series_id value for this time series. It will be one of the unique values from the time_series_id_column specified during ARIMA model training. Only present when time_series_id_column training option was used.",
+          ).optional(),
+          timeSeriesIds: z.array(z.string()).describe(
+            "The tuple of time_series_ids identifying this time series. It will be one of the unique tuples of values present in the time_series_id_columns specified during ARIMA model training. Only present when time_series_id_columns training option was used and the order of values here are same as the order of time_series_id_columns.",
+          ).optional(),
+        })).describe(
+          "Repeated as there can be many metric sets (one for each model) in auto-arima and the large-scale case.",
+        ).optional(),
+        hasDrift: z.array(z.boolean()).describe(
+          "Whether Arima model fitted with drift or not. It is always false when d is not 1.",
+        ).optional(),
+        nonSeasonalOrder: z.array(z.object({
+          d: z.string().describe("Order of the differencing part.").optional(),
+          p: z.string().describe("Order of the autoregressive part.")
+            .optional(),
+          q: z.string().describe("Order of the moving-average part.")
+            .optional(),
+        })).describe("Non-seasonal order.").optional(),
+        seasonalPeriods: z.array(
+          z.enum([
+            "SEASONAL_PERIOD_TYPE_UNSPECIFIED",
+            "NO_SEASONALITY",
+            "DAILY",
+            "WEEKLY",
+            "MONTHLY",
+            "QUARTERLY",
+            "YEARLY",
+            "HOURLY",
+          ]),
+        ).describe(
+          "Seasonal periods. Repeated because multiple periods are supported for one time series.",
+        ).optional(),
+        timeSeriesId: z.array(z.string()).describe(
+          "Id to differentiate different time series for the large-scale case.",
+        ).optional(),
+      }).describe("Model evaluation metrics for ARIMA forecasting models.")
+        .optional(),
+      binaryClassificationMetrics: z.object({
+        aggregateClassificationMetrics: z.object({
+          accuracy: z.number().describe(
+            "Accuracy is the fraction of predictions given the correct label. For multiclass this is a micro-averaged metric.",
+          ).optional(),
+          f1Score: z.number().describe(
+            "The F1 score is an average of recall and precision. For multiclass this is a macro-averaged metric.",
+          ).optional(),
+          logLoss: z.number().describe(
+            "Logarithmic Loss. For multiclass this is a macro-averaged metric.",
+          ).optional(),
+          precision: z.number().describe(
+            "Precision is the fraction of actual positive predictions that had positive actual labels. For multiclass this is a macro-averaged metric treating each class as a binary classifier.",
+          ).optional(),
+          recall: z.number().describe(
+            "Recall is the fraction of actual positive labels that were given a positive prediction. For multiclass this is a macro-averaged metric.",
+          ).optional(),
+          rocAuc: z.number().describe(
+            "Area Under a ROC Curve. For multiclass this is a macro-averaged metric.",
+          ).optional(),
+          threshold: z.number().describe(
+            "Threshold at which the metrics are computed. For binary classification models this is the positive class threshold. For multi-class classification models this is the confidence threshold.",
+          ).optional(),
+        }).describe(
+          "Aggregate metrics for classification/classifier models. For multi-class models, the metrics are either macro-averaged or micro-averaged. When macro-averaged, the metrics are calculated for each label and then an unweighted average is taken of those values. When micro-averaged, the metric is calculated globally by counting the total number of correctly predicted rows.",
+        ).optional(),
+        binaryConfusionMatrixList: z.array(z.object({
+          accuracy: z.number().describe(
+            "The fraction of predictions given the correct label.",
+          ).optional(),
+          f1Score: z.number().describe(
+            "The equally weighted average of recall and precision.",
+          ).optional(),
+          falseNegatives: z.string().describe(
+            "Number of false samples predicted as false.",
+          ).optional(),
+          falsePositives: z.string().describe(
+            "Number of false samples predicted as true.",
+          ).optional(),
+          positiveClassThreshold: z.number().describe(
+            "Threshold value used when computing each of the following metric.",
+          ).optional(),
+          precision: z.number().describe(
+            "The fraction of actual positive predictions that had positive actual labels.",
+          ).optional(),
+          recall: z.number().describe(
+            "The fraction of actual positive labels that were given a positive prediction.",
+          ).optional(),
+          trueNegatives: z.string().describe(
+            "Number of true samples predicted as false.",
+          ).optional(),
+          truePositives: z.string().describe(
+            "Number of true samples predicted as true.",
+          ).optional(),
+        })).describe("Binary confusion matrix at multiple thresholds.")
+          .optional(),
+        negativeLabel: z.string().describe(
+          "Label representing the negative class.",
+        ).optional(),
+        positiveLabel: z.string().describe(
+          "Label representing the positive class.",
+        ).optional(),
+      }).describe(
+        "Evaluation metrics for binary classification/classifier models.",
+      ).optional(),
+      clusteringMetrics: z.object({
+        clusters: z.array(z.object({
+          centroidId: z.string().describe("Centroid id.").optional(),
+          count: z.string().describe(
+            "Count of training data rows that were assigned to this cluster.",
+          ).optional(),
+          featureValues: z.array(z.object({
+            categoricalValue: z.object({
+              categoryCounts: z.array(z.object({
+                category: z.string().describe("The name of category.")
+                  .optional(),
+                count: z.string().describe(
+                  "The count of training samples matching the category within the cluster.",
+                ).optional(),
+              })).describe(
+                'Counts of all categories for the categorical feature. If there are more than ten categories, we return top ten (by count) and return one more CategoryCount with category "_OTHER_" and count as aggregate counts of remaining categories.',
+              ).optional(),
+            }).describe("Representative value of a categorical feature.")
+              .optional(),
+            featureColumn: z.string().describe("The feature column name.")
+              .optional(),
+            numericalValue: z.number().describe(
+              "The numerical feature value. This is the centroid value for this feature.",
+            ).optional(),
+          })).describe("Values of highly variant features for this cluster.")
+            .optional(),
+        })).describe("Information for all clusters.").optional(),
+        daviesBouldinIndex: z.number().describe("Davies-Bouldin index.")
+          .optional(),
+        meanSquaredDistance: z.number().describe(
+          "Mean of squared distances between each sample to its cluster centroid.",
+        ).optional(),
+      }).describe("Evaluation metrics for clustering models.").optional(),
+      dimensionalityReductionMetrics: z.object({
+        totalExplainedVarianceRatio: z.number().describe(
+          "Total percentage of variance explained by the selected principal components.",
+        ).optional(),
+      }).describe(
+        "Model evaluation metrics for dimensionality reduction models.",
+      ).optional(),
+      multiClassClassificationMetrics: z.object({
+        aggregateClassificationMetrics: z.object({
+          accuracy: z.number().describe(
+            "Accuracy is the fraction of predictions given the correct label. For multiclass this is a micro-averaged metric.",
+          ).optional(),
+          f1Score: z.number().describe(
+            "The F1 score is an average of recall and precision. For multiclass this is a macro-averaged metric.",
+          ).optional(),
+          logLoss: z.number().describe(
+            "Logarithmic Loss. For multiclass this is a macro-averaged metric.",
+          ).optional(),
+          precision: z.number().describe(
+            "Precision is the fraction of actual positive predictions that had positive actual labels. For multiclass this is a macro-averaged metric treating each class as a binary classifier.",
+          ).optional(),
+          recall: z.number().describe(
+            "Recall is the fraction of actual positive labels that were given a positive prediction. For multiclass this is a macro-averaged metric.",
+          ).optional(),
+          rocAuc: z.number().describe(
+            "Area Under a ROC Curve. For multiclass this is a macro-averaged metric.",
+          ).optional(),
+          threshold: z.number().describe(
+            "Threshold at which the metrics are computed. For binary classification models this is the positive class threshold. For multi-class classification models this is the confidence threshold.",
+          ).optional(),
+        }).describe(
+          "Aggregate metrics for classification/classifier models. For multi-class models, the metrics are either macro-averaged or micro-averaged. When macro-averaged, the metrics are calculated for each label and then an unweighted average is taken of those values. When micro-averaged, the metric is calculated globally by counting the total number of correctly predicted rows.",
+        ).optional(),
+        confusionMatrixList: z.array(z.object({
+          confidenceThreshold: z.number().describe(
+            "Confidence threshold used when computing the entries of the confusion matrix.",
+          ).optional(),
+          rows: z.array(z.object({
+            actualLabel: z.string().describe("The original label of this row.")
+              .optional(),
+            entries: z.array(z.object({
+              itemCount: z.string().describe(
+                "Number of items being predicted as this label.",
+              ).optional(),
+              predictedLabel: z.string().describe(
+                "The predicted label. For confidence_threshold > 0, we will also add an entry indicating the number of items under the confidence threshold.",
+              ).optional(),
+            })).describe("Info describing predicted label distribution.")
+              .optional(),
+          })).describe("One row per actual label.").optional(),
+        })).describe("Confusion matrix at different thresholds.").optional(),
+      }).describe(
+        "Evaluation metrics for multi-class classification/classifier models.",
+      ).optional(),
+      rankingMetrics: z.object({
+        averageRank: z.number().describe(
+          "Determines the goodness of a ranking by computing the percentile rank from the predicted confidence and dividing it by the original rank.",
+        ).optional(),
+        meanAveragePrecision: z.number().describe(
+          "Calculates a precision per user for all the items by ranking them and then averages all the precisions across all the users.",
+        ).optional(),
+        meanSquaredError: z.number().describe(
+          "Similar to the mean squared error computed in regression and explicit recommendation models except instead of computing the rating directly, the output from evaluate is computed against a preference which is 1 or 0 depending on if the rating exists or not.",
+        ).optional(),
+        normalizedDiscountedCumulativeGain: z.number().describe(
+          "A metric to determine the goodness of a ranking calculated from the predicted confidence by comparing it to an ideal rank measured by the original ratings.",
+        ).optional(),
+      }).describe(
+        "Evaluation metrics used by weighted-ALS models specified by feedback_type=implicit.",
+      ).optional(),
+      regressionMetrics: z.object({
+        meanAbsoluteError: z.number().describe("Mean absolute error.")
+          .optional(),
+        meanSquaredError: z.number().describe("Mean squared error.").optional(),
+        meanSquaredLogError: z.number().describe("Mean squared log error.")
+          .optional(),
+        medianAbsoluteError: z.number().describe("Median absolute error.")
+          .optional(),
+        rSquared: z.number().describe(
+          "R^2 score. This corresponds to r2_score in ML.EVALUATE.",
+        ).optional(),
+      }).describe(
+        "Evaluation metrics for regression and explicit feedback type matrix factorization models.",
+      ).optional(),
+    }).describe(
+      "Evaluation metrics of a model. These are either computed on all training data or just the eval data based on whether eval data was used during training. These are not present for imported models.",
+    ).optional(),
+    modelLevelGlobalExplanation: z.object({
+      classLabel: z.string().describe(
+        "Class label for this set of global explanations. Will be empty/null for binary logistic and linear regression models. Sorted alphabetically in descending order.",
+      ).optional(),
+      explanations: z.array(z.object({
+        attribution: z.number().describe("Attribution of feature.").optional(),
+        featureName: z.string().describe(
+          "The full feature name. For non-numerical features, will be formatted like `.`. Overall size of feature name will always be truncated to first 120 characters.",
+        ).optional(),
+      })).describe(
+        "A list of the top global explanations. Sorted by absolute value of attribution in descending order.",
+      ).optional(),
+    }).describe(
+      "Global explanations containing the top most important features after training.",
+    ).optional(),
+    results: z.array(z.object({
+      arimaResult: z.object({
+        arimaModelInfo: z.array(z.object({
+          arimaCoefficients: z.object({
+            autoRegressiveCoefficients: z.array(z.number()).describe(
+              "Auto-regressive coefficients, an array of double.",
+            ).optional(),
+            interceptCoefficient: z.number().describe(
+              "Intercept coefficient, just a double not an array.",
+            ).optional(),
+            movingAverageCoefficients: z.array(z.number()).describe(
+              "Moving-average coefficients, an array of double.",
+            ).optional(),
+          }).describe("Arima coefficients.").optional(),
+          arimaFittingMetrics: z.object({
+            aic: z.number().describe("AIC.").optional(),
+            logLikelihood: z.number().describe("Log-likelihood.").optional(),
+            variance: z.number().describe("Variance.").optional(),
+          }).describe("ARIMA model fitting metrics.").optional(),
+          hasDrift: z.boolean().describe(
+            "Whether Arima model fitted with drift or not. It is always false when d is not 1.",
+          ).optional(),
+          hasHolidayEffect: z.boolean().describe(
+            "If true, holiday_effect is a part of time series decomposition result.",
+          ).optional(),
+          hasSpikesAndDips: z.boolean().describe(
+            "If true, spikes_and_dips is a part of time series decomposition result.",
+          ).optional(),
+          hasStepChanges: z.boolean().describe(
+            "If true, step_changes is a part of time series decomposition result.",
+          ).optional(),
+          nonSeasonalOrder: z.object({
+            d: z.string().describe("Order of the differencing part.")
+              .optional(),
+            p: z.string().describe("Order of the autoregressive part.")
+              .optional(),
+            q: z.string().describe("Order of the moving-average part.")
+              .optional(),
+          }).describe(
+            "Arima order, can be used for both non-seasonal and seasonal parts.",
+          ).optional(),
+          seasonalPeriods: z.array(
+            z.enum([
+              "SEASONAL_PERIOD_TYPE_UNSPECIFIED",
+              "NO_SEASONALITY",
+              "DAILY",
+              "WEEKLY",
+              "MONTHLY",
+              "QUARTERLY",
+              "YEARLY",
+              "HOURLY",
+            ]),
+          ).describe(
+            "Seasonal periods. Repeated because multiple periods are supported for one time series.",
+          ).optional(),
+          timeSeriesId: z.string().describe(
+            "The time_series_id value for this time series. It will be one of the unique values from the time_series_id_column specified during ARIMA model training. Only present when time_series_id_column training option was used.",
+          ).optional(),
+          timeSeriesIds: z.array(z.string()).describe(
+            "The tuple of time_series_ids identifying this time series. It will be one of the unique tuples of values present in the time_series_id_columns specified during ARIMA model training. Only present when time_series_id_columns training option was used and the order of values here are same as the order of time_series_id_columns.",
+          ).optional(),
+        })).describe(
+          "This message is repeated because there are multiple arima models fitted in auto-arima. For non-auto-arima model, its size is one.",
+        ).optional(),
+        seasonalPeriods: z.array(
+          z.enum([
+            "SEASONAL_PERIOD_TYPE_UNSPECIFIED",
+            "NO_SEASONALITY",
+            "DAILY",
+            "WEEKLY",
+            "MONTHLY",
+            "QUARTERLY",
+            "YEARLY",
+            "HOURLY",
+          ]),
+        ).describe(
+          "Seasonal periods. Repeated because multiple periods are supported for one time series.",
+        ).optional(),
+      }).describe(
+        "(Auto-)arima fitting result. Wrap everything in ArimaResult for easier refactoring if we want to use model-specific iteration results.",
+      ).optional(),
+      clusterInfos: z.array(z.object({
+        centroidId: z.string().describe("Centroid id.").optional(),
+        clusterRadius: z.number().describe(
+          "Cluster radius, the average distance from centroid to each point assigned to the cluster.",
+        ).optional(),
+        clusterSize: z.string().describe(
+          "Cluster size, the total number of points assigned to the cluster.",
+        ).optional(),
+      })).describe("Information about top clusters for clustering models.")
+        .optional(),
+      durationMs: z.string().describe(
+        "Time taken to run the iteration in milliseconds.",
+      ).optional(),
+      evalLoss: z.number().describe(
+        "Loss computed on the eval data at the end of iteration.",
+      ).optional(),
+      index: z.number().int().describe("Index of the iteration, 0 based.")
+        .optional(),
+      learnRate: z.number().describe("Learn rate used for this iteration.")
+        .optional(),
+      principalComponentInfos: z.array(z.object({
+        cumulativeExplainedVarianceRatio: z.number().describe(
+          "The explained_variance is pre-ordered in the descending order to compute the cumulative explained variance ratio.",
+        ).optional(),
+        explainedVariance: z.number().describe(
+          "Explained variance by this principal component, which is simply the eigenvalue.",
+        ).optional(),
+        explainedVarianceRatio: z.number().describe(
+          "Explained_variance over the total explained variance.",
+        ).optional(),
+        principalComponentId: z.string().describe(
+          "Id of the principal component.",
+        ).optional(),
+      })).describe("The information of the principal components.").optional(),
+      trainingLoss: z.number().describe(
+        "Loss computed on the training data at the end of iteration.",
+      ).optional(),
+    })).describe(
+      "Output only. Output of each iteration run, results.size() <= max_iterations.",
+    ).optional(),
+    startTime: z.string().describe(
+      "Output only. The start time of this training run.",
+    ).optional(),
+    trainingOptions: z.object({
+      activationFn: z.string().describe(
+        "Activation function of the neural nets.",
+      ).optional(),
+      adjustStepChanges: z.boolean().describe(
+        "If true, detect step changes and make data adjustment in the input time series.",
+      ).optional(),
+      approxGlobalFeatureContrib: z.boolean().describe(
+        "Whether to use approximate feature contribution method in XGBoost model explanation for global explain.",
+      ).optional(),
+      autoArima: z.boolean().describe("Whether to enable auto ARIMA or not.")
+        .optional(),
+      autoArimaMaxOrder: z.string().describe(
+        "The max value of the sum of non-seasonal p and q.",
+      ).optional(),
+      autoArimaMinOrder: z.string().describe(
+        "The min value of the sum of non-seasonal p and q.",
+      ).optional(),
+      autoClassWeights: z.boolean().describe(
+        "Whether to calculate class weights automatically based on the popularity of each label.",
+      ).optional(),
+      batchSize: z.string().describe("Batch size for dnn models.").optional(),
+      boosterType: z.enum(["BOOSTER_TYPE_UNSPECIFIED", "GBTREE", "DART"])
+        .describe("Booster type for boosted tree models.").optional(),
+      budgetHours: z.number().describe("Budget in hours for AutoML training.")
+        .optional(),
+      calculatePValues: z.boolean().describe(
+        "Whether or not p-value test should be computed for this model. Only available for linear and logistic regression models.",
+      ).optional(),
+      categoryEncodingMethod: z.enum([
+        "ENCODING_METHOD_UNSPECIFIED",
+        "ONE_HOT_ENCODING",
+        "LABEL_ENCODING",
+        "DUMMY_ENCODING",
+      ]).describe("Categorical feature encoding method.").optional(),
+      cleanSpikesAndDips: z.boolean().describe(
+        "If true, clean spikes and dips in the input time series.",
+      ).optional(),
+      colorSpace: z.enum([
+        "COLOR_SPACE_UNSPECIFIED",
+        "RGB",
+        "HSV",
+        "YIQ",
+        "YUV",
+        "GRAYSCALE",
+      ]).describe(
+        "Enums for color space, used for processing images in Object Table. See more details at https://www.tensorflow.org/io/tutorials/colorspace.",
+      ).optional(),
+      colsampleBylevel: z.number().describe(
+        "Subsample ratio of columns for each level for boosted tree models.",
+      ).optional(),
+      colsampleBynode: z.number().describe(
+        "Subsample ratio of columns for each node(split) for boosted tree models.",
+      ).optional(),
+      colsampleBytree: z.number().describe(
+        "Subsample ratio of columns when constructing each tree for boosted tree models.",
+      ).optional(),
+      contributionMetric: z.string().describe(
+        "The contribution metric. Applies to contribution analysis models. Allowed formats supported are for summable and summable ratio contribution metrics. These include expressions such as `SUM(x)` or `SUM(x)/SUM(y)`, where x and y are column names from the base table.",
+      ).optional(),
+      dartNormalizeType: z.enum([
+        "DART_NORMALIZE_TYPE_UNSPECIFIED",
+        "TREE",
+        "FOREST",
+      ]).describe(
+        "Type of normalization algorithm for boosted tree models using dart booster.",
+      ).optional(),
+      dataFrequency: z.enum([
+        "DATA_FREQUENCY_UNSPECIFIED",
+        "AUTO_FREQUENCY",
+        "YEARLY",
+        "QUARTERLY",
+        "MONTHLY",
+        "WEEKLY",
+        "DAILY",
+        "HOURLY",
+        "PER_MINUTE",
+      ]).describe("The data frequency of a time series.").optional(),
+      dataSplitColumn: z.string().describe(
+        "The column to split data with. This column won't be used as a feature. 1. When data_split_method is CUSTOM, the corresponding column should be boolean. The rows with true value tag are eval data, and the false are training data. 2. When data_split_method is SEQ, the first DATA_SPLIT_EVAL_FRACTION rows (from smallest to largest) in the corresponding column are used as training data, and the rest are eval data. It respects the order in Orderable data types: https://cloud.google.com/bigquery/docs/reference/standard-sql/data-types#data_type_properties",
+      ).optional(),
+      dataSplitEvalFraction: z.number().describe(
+        "The fraction of evaluation data over the whole input data. The rest of data will be used as training data. The format should be double. Accurate to two decimal places. Default value is 0.2.",
+      ).optional(),
+      dataSplitMethod: z.enum([
+        "DATA_SPLIT_METHOD_UNSPECIFIED",
+        "RANDOM",
+        "CUSTOM",
+        "SEQUENTIAL",
+        "NO_SPLIT",
+        "AUTO_SPLIT",
+      ]).describe(
+        "The data split type for training and evaluation, e.g. RANDOM.",
+      ).optional(),
+      decomposeTimeSeries: z.boolean().describe(
+        "If true, perform decompose time series and save the results.",
+      ).optional(),
+      dimensionIdColumns: z.array(z.string()).describe(
+        "Optional. Names of the columns to slice on. Applies to contribution analysis models.",
+      ).optional(),
+      distanceType: z.enum(["DISTANCE_TYPE_UNSPECIFIED", "EUCLIDEAN", "COSINE"])
+        .describe("Distance type for clustering models.").optional(),
+      dropout: z.number().describe("Dropout probability for dnn models.")
+        .optional(),
+      earlyStop: z.boolean().describe(
+        "Whether to stop early when the loss doesn't improve significantly any more (compared to min_relative_progress). Used only for iterative training algorithms.",
+      ).optional(),
+      enableGlobalExplain: z.boolean().describe(
+        "If true, enable global explanation during training.",
+      ).optional(),
+      endpointIdleTtl: z.string().describe(
+        "The idle TTL of the endpoint before the resources get destroyed. The default value is 6.5 hours.",
+      ).optional(),
+      feedbackType: z.enum([
+        "FEEDBACK_TYPE_UNSPECIFIED",
+        "IMPLICIT",
+        "EXPLICIT",
+      ]).describe(
+        "Feedback type that specifies which algorithm to run for matrix factorization.",
+      ).optional(),
+      fitIntercept: z.boolean().describe(
+        "Whether the model should include intercept during model training.",
+      ).optional(),
+      forecastLimitLowerBound: z.number().describe(
+        "The forecast limit lower bound that was used during ARIMA model training with limits. To see more details of the algorithm: https://otexts.com/fpp2/limits.html",
+      ).optional(),
+      forecastLimitUpperBound: z.number().describe(
+        "The forecast limit upper bound that was used during ARIMA model training with limits.",
+      ).optional(),
+      hiddenUnits: z.array(z.string()).describe("Hidden units for dnn models.")
+        .optional(),
+      holidayRegion: z.enum([
+        "HOLIDAY_REGION_UNSPECIFIED",
+        "GLOBAL",
+        "NA",
+        "JAPAC",
+        "EMEA",
+        "LAC",
+        "AE",
+        "AR",
+        "AT",
+        "AU",
+        "BE",
+        "BR",
+        "CA",
+        "CH",
+        "CL",
+        "CN",
+        "CO",
+        "CS",
+        "CZ",
+        "DE",
+        "DK",
+        "DZ",
+        "EC",
+        "EE",
+        "EG",
+        "ES",
+        "FI",
+        "FR",
+        "GB",
+        "GR",
+        "HK",
+        "HU",
+        "ID",
+        "IE",
+        "IL",
+        "IN",
+        "IR",
+        "IT",
+        "JP",
+        "KR",
+        "LV",
+        "MA",
+        "MX",
+        "MY",
+        "NG",
+        "NL",
+        "NO",
+        "NZ",
+        "PE",
+        "PH",
+        "PK",
+        "PL",
+        "PT",
+        "RO",
+        "RS",
+        "RU",
+        "SA",
+        "SE",
+        "SG",
+        "SI",
+        "SK",
+        "TH",
+        "TR",
+        "TW",
+        "UA",
+        "US",
+        "VE",
+        "VN",
+        "ZA",
+      ]).describe(
+        "The geographical region based on which the holidays are considered in time series modeling. If a valid value is specified, then holiday effects modeling is enabled.",
+      ).optional(),
+      holidayRegions: z.array(
+        z.enum([
+          "HOLIDAY_REGION_UNSPECIFIED",
+          "GLOBAL",
+          "NA",
+          "JAPAC",
+          "EMEA",
+          "LAC",
+          "AE",
+          "AR",
+          "AT",
+          "AU",
+          "BE",
+          "BR",
+          "CA",
+          "CH",
+          "CL",
+          "CN",
+          "CO",
+          "CS",
+          "CZ",
+          "DE",
+          "DK",
+          "DZ",
+          "EC",
+          "EE",
+          "EG",
+          "ES",
+          "FI",
+          "FR",
+          "GB",
+          "GR",
+          "HK",
+          "HU",
+          "ID",
+          "IE",
+          "IL",
+          "IN",
+          "IR",
+          "IT",
+          "JP",
+          "KR",
+          "LV",
+          "MA",
+          "MX",
+          "MY",
+          "NG",
+          "NL",
+          "NO",
+          "NZ",
+          "PE",
+          "PH",
+          "PK",
+          "PL",
+          "PT",
+          "RO",
+          "RS",
+          "RU",
+          "SA",
+          "SE",
+          "SG",
+          "SI",
+          "SK",
+          "TH",
+          "TR",
+          "TW",
+          "UA",
+          "US",
+          "VE",
+          "VN",
+          "ZA",
+        ]),
+      ).describe(
+        "A list of geographical regions that are used for time series modeling.",
+      ).optional(),
+      horizon: z.string().describe(
+        "The number of periods ahead that need to be forecasted.",
+      ).optional(),
+      hparamTuningObjectives: z.array(
+        z.enum([
+          "HPARAM_TUNING_OBJECTIVE_UNSPECIFIED",
+          "MEAN_ABSOLUTE_ERROR",
+          "MEAN_SQUARED_ERROR",
+          "MEAN_SQUARED_LOG_ERROR",
+          "MEDIAN_ABSOLUTE_ERROR",
+          "R_SQUARED",
+          "EXPLAINED_VARIANCE",
+          "PRECISION",
+          "RECALL",
+          "ACCURACY",
+          "F1_SCORE",
+          "LOG_LOSS",
+          "ROC_AUC",
+          "DAVIES_BOULDIN_INDEX",
+          "MEAN_AVERAGE_PRECISION",
+          "NORMALIZED_DISCOUNTED_CUMULATIVE_GAIN",
+          "AVERAGE_RANK",
+        ]),
+      ).describe(
+        "The target evaluation metrics to optimize the hyperparameters for.",
+      ).optional(),
+      huggingFaceModelId: z.string().describe(
+        "The id of a Hugging Face model. For example, `google/gemma-2-2b-it`.",
+      ).optional(),
+      includeDrift: z.boolean().describe(
+        "Include drift when fitting an ARIMA model.",
+      ).optional(),
+      initialLearnRate: z.number().describe(
+        "Specifies the initial learning rate for the line search learn rate strategy.",
+      ).optional(),
+      inputLabelColumns: z.array(z.string()).describe(
+        "Name of input label columns in training data.",
+      ).optional(),
+      instanceWeightColumn: z.string().describe(
+        "Name of the instance weight column for training data. This column isn't be used as a feature.",
+      ).optional(),
+      integratedGradientsNumSteps: z.string().describe(
+        "Number of integral steps for the integrated gradients explain method.",
+      ).optional(),
+      isTestColumn: z.string().describe(
+        "Name of the column used to determine the rows corresponding to control and test. Applies to contribution analysis models.",
+      ).optional(),
+      itemColumn: z.string().describe(
+        "Item column specified for matrix factorization models.",
+      ).optional(),
+      kmeansInitializationColumn: z.string().describe(
+        "The column used to provide the initial centroids for kmeans algorithm when kmeans_initialization_method is CUSTOM.",
+      ).optional(),
+      kmeansInitializationMethod: z.enum([
+        "KMEANS_INITIALIZATION_METHOD_UNSPECIFIED",
+        "RANDOM",
+        "CUSTOM",
+        "KMEANS_PLUS_PLUS",
+      ]).describe(
+        "The method used to initialize the centroids for kmeans algorithm.",
+      ).optional(),
+      l1RegActivation: z.number().describe(
+        "L1 regularization coefficient to activations.",
+      ).optional(),
+      l1Regularization: z.number().describe("L1 regularization coefficient.")
+        .optional(),
+      l2Regularization: z.number().describe("L2 regularization coefficient.")
+        .optional(),
+      labelClassWeights: z.record(z.string(), z.number()).describe(
+        "Weights associated with each label class, for rebalancing the training data. Only applicable for classification models.",
+      ).optional(),
+      learnRate: z.number().describe(
+        "Learning rate in training. Used only for iterative training algorithms.",
+      ).optional(),
+      learnRateStrategy: z.enum([
+        "LEARN_RATE_STRATEGY_UNSPECIFIED",
+        "LINE_SEARCH",
+        "CONSTANT",
+      ]).describe(
+        "The strategy to determine learn rate for the current iteration.",
+      ).optional(),
+      lossType: z.enum([
+        "LOSS_TYPE_UNSPECIFIED",
+        "MEAN_SQUARED_LOSS",
+        "MEAN_LOG_LOSS",
+      ]).describe("Type of loss function used during training run.").optional(),
+      machineType: z.string().describe(
+        "The type of the machine used to deploy and serve the model.",
+      ).optional(),
+      maxIterations: z.string().describe(
+        "The maximum number of iterations in training. Used only for iterative training algorithms.",
+      ).optional(),
+      maxParallelTrials: z.string().describe(
+        "Maximum number of trials to run in parallel.",
+      ).optional(),
+      maxReplicaCount: z.string().describe(
+        "The maximum number of machine replicas that will be deployed on an endpoint. The default value is equal to min_replica_count.",
+      ).optional(),
+      maxTimeSeriesLength: z.string().describe(
+        "The maximum number of time points in a time series that can be used in modeling the trend component of the time series. Don't use this option with the `timeSeriesLengthFraction` or `minTimeSeriesLength` options.",
+      ).optional(),
+      maxTreeDepth: z.string().describe(
+        "Maximum depth of a tree for boosted tree models.",
+      ).optional(),
+      minAprioriSupport: z.number().describe(
+        "The apriori support minimum. Applies to contribution analysis models.",
+      ).optional(),
+      minRelativeProgress: z.number().describe(
+        "When early_stop is true, stops training when accuracy improvement is less than 'min_relative_progress'. Used only for iterative training algorithms.",
+      ).optional(),
+      minReplicaCount: z.string().describe(
+        "The minimum number of machine replicas that will be always deployed on an endpoint. This value must be greater than or equal to 1. The default value is 1.",
+      ).optional(),
+      minSplitLoss: z.number().describe(
+        "Minimum split loss for boosted tree models.",
+      ).optional(),
+      minTimeSeriesLength: z.string().describe(
+        "The minimum number of time points in a time series that are used in modeling the trend component of the time series. If you use this option you must also set the `timeSeriesLengthFraction` option. This training option ensures that enough time points are available when you use `timeSeriesLengthFraction` in trend modeling. This is particularly important when forecasting multiple time series in a single query using `timeSeriesIdColumn`. If the total number of time points is less than the `minTimeSeriesLength` value, then the query uses all available time points.",
+      ).optional(),
+      minTreeChildWeight: z.string().describe(
+        "Minimum sum of instance weight needed in a child for boosted tree models.",
+      ).optional(),
+      modelGardenModelName: z.string().describe(
+        "The name of a Vertex model garden publisher model. Format is `publishers/{publisher}/models/{model}@{optional_version_id}`.",
+      ).optional(),
+      modelRegistry: z.enum(["MODEL_REGISTRY_UNSPECIFIED", "VERTEX_AI"])
+        .describe("The model registry.").optional(),
+      modelUri: z.string().describe(
+        "Google Cloud Storage URI from which the model was imported. Only applicable for imported models.",
+      ).optional(),
+      nonSeasonalOrder: z.object({
+        d: z.string().describe("Order of the differencing part.").optional(),
+        p: z.string().describe("Order of the autoregressive part.").optional(),
+        q: z.string().describe("Order of the moving-average part.").optional(),
+      }).describe(
+        "Arima order, can be used for both non-seasonal and seasonal parts.",
+      ).optional(),
+      numClusters: z.string().describe(
+        "Number of clusters for clustering models.",
+      ).optional(),
+      numFactors: z.string().describe(
+        "Num factors specified for matrix factorization models.",
+      ).optional(),
+      numParallelTree: z.string().describe(
+        "Number of parallel trees constructed during each iteration for boosted tree models.",
+      ).optional(),
+      numPrincipalComponents: z.string().describe(
+        "Number of principal components to keep in the PCA model. Must be <= the number of features.",
+      ).optional(),
+      numTrials: z.string().describe(
+        "Number of trials to run this hyperparameter tuning job.",
+      ).optional(),
+      optimizationStrategy: z.enum([
+        "OPTIMIZATION_STRATEGY_UNSPECIFIED",
+        "BATCH_GRADIENT_DESCENT",
+        "NORMAL_EQUATION",
+      ]).describe(
+        "Optimization strategy for training linear regression models.",
+      ).optional(),
+      optimizer: z.string().describe(
+        "Optimizer used for training the neural nets.",
+      ).optional(),
+      pcaExplainedVarianceRatio: z.number().describe(
+        "The minimum ratio of cumulative explained variance that needs to be given by the PCA model.",
+      ).optional(),
+      pcaSolver: z.enum(["UNSPECIFIED", "FULL", "RANDOMIZED", "AUTO"]).describe(
+        "The solver for PCA.",
+      ).optional(),
+      reservationAffinityKey: z.string().describe(
+        "Corresponds to the label key of a reservation resource used by Vertex AI. To target a SPECIFIC_RESERVATION by name, use `compute.googleapis.com/reservation-name` as the key and specify the name of your reservation as its value.",
+      ).optional(),
+      reservationAffinityType: z.enum([
+        "RESERVATION_AFFINITY_TYPE_UNSPECIFIED",
+        "NO_RESERVATION",
+        "ANY_RESERVATION",
+        "SPECIFIC_RESERVATION",
+      ]).describe(
+        "Specifies the reservation affinity type used to configure a Vertex AI resource. The default value is `NO_RESERVATION`.",
+      ).optional(),
+      reservationAffinityValues: z.array(z.string()).describe(
+        "Corresponds to the label values of a reservation resource used by Vertex AI. This must be the full resource name of the reservation or reservation block.",
+      ).optional(),
+      sampledShapleyNumPaths: z.string().describe(
+        "Number of paths for the sampled Shapley explain method.",
+      ).optional(),
+      scaleFeatures: z.boolean().describe(
+        "If true, scale the feature values by dividing the feature standard deviation. Currently only apply to PCA.",
+      ).optional(),
+      standardizeFeatures: z.boolean().describe(
+        "Whether to standardize numerical features. Default to true.",
+      ).optional(),
+      subsample: z.number().describe(
+        "Subsample fraction of the training data to grow tree to prevent overfitting for boosted tree models.",
+      ).optional(),
+      tfVersion: z.string().describe(
+        "Based on the selected TF version, the corresponding docker image is used to train external models.",
+      ).optional(),
+      timeSeriesDataColumn: z.string().describe(
+        "Column to be designated as time series data for ARIMA model.",
+      ).optional(),
+      timeSeriesIdColumn: z.string().describe(
+        "The time series id column that was used during ARIMA model training.",
+      ).optional(),
+      timeSeriesIdColumns: z.array(z.string()).describe(
+        "The time series id columns that were used during ARIMA model training.",
+      ).optional(),
+      timeSeriesLengthFraction: z.number().describe(
+        "The fraction of the interpolated length of the time series that's used to model the time series trend component. All of the time points of the time series are used to model the non-trend component. This training option accelerates modeling training without sacrificing much forecasting accuracy. You can use this option with `minTimeSeriesLength` but not with `maxTimeSeriesLength`.",
+      ).optional(),
+      timeSeriesTimestampColumn: z.string().describe(
+        "Column to be designated as time series timestamp for ARIMA model.",
+      ).optional(),
+      treeMethod: z.enum([
+        "TREE_METHOD_UNSPECIFIED",
+        "AUTO",
+        "EXACT",
+        "APPROX",
+        "HIST",
+      ]).describe("Tree construction algorithm for boosted tree models.")
+        .optional(),
+      trendSmoothingWindowSize: z.string().describe(
+        "Smoothing window size for the trend component. When a positive value is specified, a center moving average smoothing is applied on the history trend. When the smoothing window is out of the boundary at the beginning or the end of the trend, the first element or the last element is padded to fill the smoothing window before the average is applied.",
+      ).optional(),
+      userColumn: z.string().describe(
+        "User column specified for matrix factorization models.",
+      ).optional(),
+      vertexAiModelVersionAliases: z.array(z.string()).describe(
+        "The version aliases to apply in Vertex AI model registry. Always overwrite if the version aliases exists in a existing model.",
+      ).optional(),
+      walsAlpha: z.number().describe(
+        "Hyperparameter for matrix factoration when implicit feedback type is specified.",
+      ).optional(),
+      warmStart: z.boolean().describe(
+        "Whether to train a model from the last checkpoint.",
+      ).optional(),
+      xgboostVersion: z.string().describe(
+        "User-selected XGBoost versions for training of XGBoost models.",
+      ).optional(),
+    }).describe("Options used in model training.").optional(),
+    trainingStartTime: z.string().describe(
+      "Output only. The start time of this training run, in milliseconds since epoch.",
+    ).optional(),
+    vertexAiModelId: z.string().describe(
+      "The model id in the [Vertex AI Model Registry](https://cloud.google.com/vertex-ai/docs/model-registry/introduction) for this training run.",
+    ).optional(),
+    vertexAiModelVersion: z.string().describe(
+      "Output only. The model version in the [Vertex AI Model Registry](https://cloud.google.com/vertex-ai/docs/model-registry/introduction) for this training run.",
+    ).optional(),
+  })).describe(
+    "Information for all training runs in increasing order of start_time.",
+  ).optional(),
+  transformColumns: z.array(z.object({
+    name: z.string().describe("Output only. Name of the column.").optional(),
+    transformSql: z.string().describe(
+      "Output only. The SQL expression used in the column transform.",
+    ).optional(),
+    type: z.object({
+      arrayElementType: z.string().describe(
+        "Circular reference to StandardSqlDataType",
+      ).optional(),
+      rangeElementType: z.string().describe(
+        "Circular reference to StandardSqlDataType",
+      ).optional(),
+      structType: z.object({
+        fields: z.array(z.object({
+          name: z.string().describe(
+            "Optional. The name of this field. Can be absent for struct fields.",
+          ).optional(),
+          type: z.string().describe("Circular reference to StandardSqlDataType")
+            .optional(),
+        })).describe("Fields within the struct.").optional(),
+      }).describe("The representation of a SQL STRUCT type.").optional(),
+      typeKind: z.enum([
+        "TYPE_KIND_UNSPECIFIED",
+        "INT64",
+        "BOOL",
+        "FLOAT64",
+        "STRING",
+        "BYTES",
+        "TIMESTAMP",
+        "DATE",
+        "TIME",
+        "DATETIME",
+        "INTERVAL",
+        "GEOGRAPHY",
+        "NUMERIC",
+        "BIGNUMERIC",
+        "JSON",
+        "ARRAY",
+        "STRUCT",
+        "RANGE",
+      ]).describe(
+        'Required. The top level type of this field. Can be any GoogleSQL data type (e.g., "INT64", "DATE", "ARRAY").',
+      ).optional(),
+    }).describe(
+      'The data type of a variable such as a function argument. Examples include: * INT64: `{"typeKind": "INT64"}` * ARRAY: { "typeKind": "ARRAY", "arrayElementType": {"typeKind": "STRING"} } * STRUCT>: { "typeKind": "STRUCT", "structType": { "fields": [ { "name": "x", "type": {"typeKind": "STRING"} }, { "name": "y", "type": { "typeKind": "ARRAY", "arrayElementType": {"typeKind": "DATE"} } } ] } } * RANGE: { "typeKind": "RANGE", "rangeElementType": {"typeKind": "DATE"} }',
+    ).optional(),
+  })).describe(
+    "Output only. This field will be populated if a TRANSFORM clause was used to train a model. TRANSFORM clause (if used) takes feature_columns as input and outputs transform_columns. transform_columns then are used to train the model.",
+  ).optional(),
+});
+
+export const model = {
+  type: "@swamp/gcp/bigquery/models",
+  version: "2026.03.27.1",
+  globalArguments: GlobalArgsSchema,
+  inputsSchema: InputsSchema,
+  resources: {
+    state: {
+      description: "Gets the specified model resource by model ID.",
+      schema: StateSchema,
+      lifetime: "infinite",
+      garbageCollection: 10,
+    },
+  },
+  methods: {
+    get: {
+      description: "Get a models",
+      arguments: z.object({
+        identifier: z.string().describe("The name of the models"),
+      }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const projectId = await getProjectId();
+        const params: Record<string, string> = { project: projectId };
+        const g = context.globalArgs;
+        if (g["datasetId"] !== undefined) {
+          params["datasetId"] = String(g["datasetId"]);
+        }
+        params["modelId"] = args.identifier;
+        const result = await readResource(
+          BASE_URL,
+          GET_CONFIG,
+          params,
+        ) as StateData;
+        const instanceName = g.name?.toString() ?? args.identifier;
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    update: {
+      description: "Update models attributes",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const projectId = await getProjectId();
+        const instanceName = g.name?.toString() ?? "current";
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          instanceName,
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        const params: Record<string, string> = { project: projectId };
+        if (g["datasetId"] !== undefined) {
+          params["datasetId"] = String(g["datasetId"]);
+        } else if (existing["datasetId"]) {
+          params["datasetId"] = String(existing["datasetId"]);
+        }
+        params["modelId"] = existing["name"]?.toString() ?? "";
+        const body: Record<string, unknown> = {};
+        if (g["creationTime"] !== undefined) {
+          body["creationTime"] = g["creationTime"];
+        }
+        if (g["defaultTrialId"] !== undefined) {
+          body["defaultTrialId"] = g["defaultTrialId"];
+        }
+        if (g["description"] !== undefined) {
+          body["description"] = g["description"];
+        }
+        if (g["encryptionConfiguration"] !== undefined) {
+          body["encryptionConfiguration"] = g["encryptionConfiguration"];
+        }
+        if (g["etag"] !== undefined) body["etag"] = g["etag"];
+        if (g["expirationTime"] !== undefined) {
+          body["expirationTime"] = g["expirationTime"];
+        }
+        if (g["featureColumns"] !== undefined) {
+          body["featureColumns"] = g["featureColumns"];
+        }
+        if (g["friendlyName"] !== undefined) {
+          body["friendlyName"] = g["friendlyName"];
+        }
+        if (g["hparamSearchSpaces"] !== undefined) {
+          body["hparamSearchSpaces"] = g["hparamSearchSpaces"];
+        }
+        if (g["hparamTrials"] !== undefined) {
+          body["hparamTrials"] = g["hparamTrials"];
+        }
+        if (g["labelColumns"] !== undefined) {
+          body["labelColumns"] = g["labelColumns"];
+        }
+        if (g["labels"] !== undefined) body["labels"] = g["labels"];
+        if (g["lastModifiedTime"] !== undefined) {
+          body["lastModifiedTime"] = g["lastModifiedTime"];
+        }
+        if (g["location"] !== undefined) body["location"] = g["location"];
+        if (g["modelReference"] !== undefined) {
+          body["modelReference"] = g["modelReference"];
+        }
+        if (g["modelType"] !== undefined) body["modelType"] = g["modelType"];
+        if (g["optimalTrialIds"] !== undefined) {
+          body["optimalTrialIds"] = g["optimalTrialIds"];
+        }
+        if (g["remoteModelInfo"] !== undefined) {
+          body["remoteModelInfo"] = g["remoteModelInfo"];
+        }
+        if (g["trainingRuns"] !== undefined) {
+          body["trainingRuns"] = g["trainingRuns"];
+        }
+        if (g["transformColumns"] !== undefined) {
+          body["transformColumns"] = g["transformColumns"];
+        }
+        for (const key of Object.keys(existing)) {
+          if (
+            key === "fingerprint" || key === "labelFingerprint" ||
+            key === "etag" || key.endsWith("Fingerprint")
+          ) {
+            body[key] = existing[key];
+          }
+        }
+        const result = await updateResource(
+          BASE_URL,
+          PATCH_CONFIG,
+          params,
+          body,
+          GET_CONFIG,
+        ) as StateData;
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    delete: {
+      description: "Delete the models",
+      arguments: z.object({
+        identifier: z.string().describe("The name of the models"),
+      }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const g = context.globalArgs;
+        const projectId = await getProjectId();
+        const params: Record<string, string> = { project: projectId };
+        if (g["datasetId"] !== undefined) {
+          params["datasetId"] = String(g["datasetId"]);
+        }
+        params["modelId"] = args.identifier;
+        const { existed } = await deleteResource(
+          BASE_URL,
+          DELETE_CONFIG,
+          params,
+        );
+        const instanceName = g.name?.toString() ?? args.identifier;
+        const handle = await context.writeResource("state", instanceName, {
+          identifier: args.identifier,
+          existed,
+          status: existed ? "deleted" : "not_found",
+          deletedAt: new Date().toISOString(),
+        });
+        return { dataHandles: [handle] };
+      },
+    },
+    sync: {
+      description: "Sync models state from GCP",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const projectId = await getProjectId();
+        const instanceName = g.name?.toString() ?? "current";
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          instanceName,
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        try {
+          const params: Record<string, string> = { project: projectId };
+          if (g["datasetId"] !== undefined) {
+            params["datasetId"] = String(g["datasetId"]);
+          } else if (existing["datasetId"]) {
+            params["datasetId"] = String(existing["datasetId"]);
+          }
+          const identifier = existing.name?.toString() ?? g["name"]?.toString();
+          if (!identifier) {
+            throw new Error(
+              "No identifier found in existing state or globalArgs",
+            );
+          }
+          params["modelId"] = identifier;
+          const result = await readResource(
+            BASE_URL,
+            GET_CONFIG,
+            params,
+          ) as StateData;
+          const handle = await context.writeResource(
+            "state",
+            instanceName,
+            result,
+          );
+          return { dataHandles: [handle] };
+        } catch (error: unknown) {
+          if (isResourceNotFoundError(error)) {
+            const handle = await context.writeResource("state", instanceName, {
+              status: "not_found",
+              syncedAt: new Date().toISOString(),
+            });
+            return { dataHandles: [handle] };
+          }
+          throw error;
+        }
+      },
+    },
+  },
+};

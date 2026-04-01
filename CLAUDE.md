@@ -38,19 +38,21 @@ deno install --frozen
 ```bash
 cd codegen
 deno task fetch-schema:aws
+deno task fetch-schema:gcp
 deno task fetch-schema:hetzner
 deno task fetch-schema:digitalocean
 deno task generate:aws
+deno task generate:gcp
 deno task generate:hetzner
 deno task generate:digitalocean
 ```
 
-AWS supports service filtering: `deno task generate:aws ec2 s3 lambda`
+AWS and GCP support service filtering: `deno task generate:aws ec2 s3 lambda`
 
-**Note:** AWS models live under `model/aws/<service>/` (one directory per AWS
-service, ~249 services). Hetzner and DigitalOcean each have a single directory
-(`model/hetzner-cloud/`, `model/digitalocean/`). Each AWS service directory has
-its own `deno.json`, `deno.lock`, and `manifest.yaml`.
+**Note:** AWS and GCP models live under `model/aws/<service>/` and
+`model/gcp/<service>/` (one directory per service, ~249 AWS / ~260 GCP).
+Hetzner and DigitalOcean each have a single directory. Each service directory
+has its own `deno.json`, `deno.lock`, and `manifest.yaml`.
 
 ### Codegen verification (run from codegen/)
 
@@ -63,6 +65,28 @@ deno fmt
 After regenerating, review the diffs in `model/` to confirm only the intended
 changes appear. Run generation a second time to verify idempotency — there
 should be zero new diffs on the second run.
+
+### Codegen architecture
+
+Each provider has a pipeline in `codegen/<provider>/` with:
+- `pipeline.ts` — schema fetching and model generation orchestration
+- `extensionModelGenerator.ts` — TypeScript model file generation
+- `libGenerator.ts` — shared library file generation
+
+Shared code in `codegen/shared/` handles:
+- `schema/` — schema loading, normalization, property splitting, and types
+- `zodGenerator.ts` — CfProperty → Zod schema code generation
+- `denoConfigGenerator.ts` — generated `deno.json` files
+- `manifestGenerator.ts` — generated `manifest.yaml` files
+- `version.ts` — CalVer versioning with content-based change detection
+
+Design documents explain each provider's schema-to-model mapping decisions:
+- [AWS](codegen/designs/aws.md) — CloudFormation schema → CloudControl models
+- [GCP](codegen/designs/gcp.md) — Cloud Asset Inventory schema → GCP models
+- [Hetzner Cloud](codegen/designs/hetzner.md) — OpenAPI → Hetzner models
+- [DigitalOcean](codegen/designs/digitalocean.md) — OpenAPI → DigitalOcean models
+
+**Read the relevant design doc before modifying a provider's codegen pipeline.**
 
 ## Publishing
 

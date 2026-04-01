@@ -1,0 +1,18 @@
+# Auto-generated manifest. Re-generate with the appropriate deno task.
+manifestVersion: 1
+name: "@swamp/gcp/licensing"
+version: "2026.03.27.1"
+description: "Google Cloud licensing infrastructure models"
+labels:
+  - gcp
+  - google-cloud
+  - licensing
+  - cloud
+  - infrastructure
+releaseNotes: |
+  - Added: licenseassignments
+models:
+  - licenseassignments.ts
+additionalFiles:
+  - LICENSE.txt
+  - README.md

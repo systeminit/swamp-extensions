@@ -1,0 +1,23 @@
+# Auto-generated manifest. Re-generate with the appropriate deno task.
+manifestVersion: 1
+name: "@swamp/gcp/retail"
+version: "2026.03.27.1"
+description: "Google Cloud retail infrastructure models"
+labels:
+  - gcp
+  - google-cloud
+  - retail
+  - cloud
+  - infrastructure
+releaseNotes: |
+  - Added: catalogs, catalogs_branches_products, catalogs_controls, catalogs_generativequestions, catalogs_models, catalogs_servingconfigs
+models:
+  - catalogs.ts
+  - catalogs_branches_products.ts
+  - catalogs_controls.ts
+  - catalogs_generativequestions.ts
+  - catalogs_models.ts
+  - catalogs_servingconfigs.ts
+additionalFiles:
+  - LICENSE.txt
+  - README.md

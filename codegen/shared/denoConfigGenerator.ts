@@ -21,6 +21,21 @@ export function generateAwsDenoConfig(): string {
 }
 
 /**
+ * Generates a deno.json with import mappings for a GCP extension package.
+ */
+export function generateGcpDenoConfig(): string {
+  return JSON.stringify(
+    {
+      imports: {
+        "zod": "npm:zod@4.3.6",
+      },
+    },
+    null,
+    2,
+  ) + "\n";
+}
+
+/**
  * Generates a deno.json with import mappings for a Hetzner extension package.
  */
 export function generateHetznerDenoConfig(): string {

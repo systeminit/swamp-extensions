@@ -1,0 +1,446 @@
+// Auto-generated extension model for @swamp/gcp/backupdr/managementservers
+// Do not edit manually. Re-generate with: deno task generate:gcp
+
+// deno-lint-ignore-file no-explicit-any
+
+import { z } from "zod";
+import {
+  createResource,
+  deleteResource,
+  getProjectId,
+  isResourceNotFoundError,
+  readResource,
+} from "./_lib/gcp.ts";
+
+/** Construct the fully-qualified resource name from parent and short name. */
+function buildResourceName(parent: string, shortName: string): string {
+  return `${parent}/managementServers/${shortName}`;
+}
+
+const BASE_URL = "https://backupdr.googleapis.com/";
+
+const GET_CONFIG = {
+  "id": "backupdr.projects.locations.managementServers.get",
+  "path": "v1/{+name}",
+  "httpMethod": "GET",
+  "parameterOrder": [
+    "name",
+  ],
+  "parameters": {
+    "name": {
+      "location": "path",
+      "required": true,
+    },
+  },
+} as const;
+
+const INSERT_CONFIG = {
+  "id": "backupdr.projects.locations.managementServers.create",
+  "path": "v1/{+parent}/managementServers",
+  "httpMethod": "POST",
+  "parameterOrder": [
+    "parent",
+  ],
+  "parameters": {
+    "managementServerId": {
+      "location": "query",
+    },
+    "parent": {
+      "location": "path",
+      "required": true,
+    },
+    "requestId": {
+      "location": "query",
+    },
+  },
+} as const;
+
+const DELETE_CONFIG = {
+  "id": "backupdr.projects.locations.managementServers.delete",
+  "path": "v1/{+name}",
+  "httpMethod": "DELETE",
+  "parameterOrder": [
+    "name",
+  ],
+  "parameters": {
+    "name": {
+      "location": "path",
+      "required": true,
+    },
+    "requestId": {
+      "location": "query",
+    },
+  },
+} as const;
+
+const GlobalArgsSchema = z.object({
+  name: z.string().describe(
+    "Instance name for this resource (used as the unique identifier in the factory pattern)",
+  ),
+  description: z.string().describe(
+    "Optional. The description of the ManagementServer instance (2048 characters or less).",
+  ).optional(),
+  labels: z.record(z.string(), z.string()).describe(
+    "Optional. Resource labels to represent user provided metadata. Labels currently defined: 1. migrate_from_go= If set to true, the MS is created in migration ready mode.",
+  ).optional(),
+  managementUri: z.object({
+    api: z.string().describe(
+      "Output only. The ManagementServer AGM/RD API URL.",
+    ).optional(),
+    webUi: z.string().describe(
+      "Output only. The ManagementServer AGM/RD WebUI URL.",
+    ).optional(),
+  }).describe("ManagementURI for the Management Server resource.").optional(),
+  networks: z.array(z.object({
+    network: z.string().describe(
+      "Optional. The resource name of the Google Compute Engine VPC network to which the ManagementServer instance is connected.",
+    ).optional(),
+    peeringMode: z.enum(["PEERING_MODE_UNSPECIFIED", "PRIVATE_SERVICE_ACCESS"])
+      .describe(
+        "Optional. The network connect mode of the ManagementServer instance. For this version, only PRIVATE_SERVICE_ACCESS is supported.",
+      ).optional(),
+  })).describe(
+    "Optional. VPC networks to which the ManagementServer instance is connected. For this version, only a single network is supported. This field is optional if MS is created without PSA",
+  ).optional(),
+  type: z.enum(["INSTANCE_TYPE_UNSPECIFIED", "BACKUP_RESTORE"]).describe(
+    "Optional. The type of the ManagementServer resource.",
+  ).optional(),
+  workforceIdentityBasedManagementUri: z.object({
+    firstPartyManagementUri: z.string().describe(
+      "Output only. First party Management URI for Google Identities.",
+    ).optional(),
+    thirdPartyManagementUri: z.string().describe(
+      "Output only. Third party Management URI for External Identity Providers.",
+    ).optional(),
+  }).describe(
+    "ManagementURI depending on the Workforce Identity i.e. either 1p or 3p.",
+  ).optional(),
+  workforceIdentityBasedOauth2ClientId: z.object({
+    firstPartyOauth2ClientId: z.string().describe(
+      "Output only. First party OAuth Client ID for Google Identities.",
+    ).optional(),
+    thirdPartyOauth2ClientId: z.string().describe(
+      "Output only. Third party OAuth Client ID for External Identity Providers.",
+    ).optional(),
+  }).describe(
+    "OAuth Client ID depending on the Workforce Identity i.e. either 1p or 3p,",
+  ).optional(),
+  managementServerId: z.string().describe(
+    "Required. The name of the management server to create. The name must be unique for the specified project and location.",
+  ).optional(),
+  requestId: z.string().describe(
+    "Optional. An optional request ID to identify requests. Specify a unique request ID so that if you must retry your request, the server will know to ignore the request if it has already been completed. The server will guarantee that for at least 60 minutes since the first request. For example, consider a situation where you make an initial request and the request times out. If you make the request again with the same request ID, the server can check if original operation with the same request ID was received, and if so, will ignore the second request. This prevents clients from accidentally creating duplicate commitments. The request ID must be a valid UUID with the exception that zero UUID is not supported (00000000-0000-0000-0000-000000000000).",
+  ).optional(),
+  location: z.string().describe(
+    "The location for this resource (e.g., 'us', 'us-central1', 'europe-west1')",
+  ).optional(),
+});
+
+const StateSchema = z.object({
+  baProxyUri: z.array(z.string()).optional(),
+  createTime: z.string().optional(),
+  description: z.string().optional(),
+  etag: z.string().optional(),
+  labels: z.record(z.string(), z.unknown()).optional(),
+  managementUri: z.object({
+    api: z.string(),
+    webUi: z.string(),
+  }).optional(),
+  name: z.string(),
+  networks: z.array(z.object({
+    network: z.string(),
+    peeringMode: z.string(),
+  })).optional(),
+  oauth2ClientId: z.string().optional(),
+  satisfiesPzi: z.boolean().optional(),
+  satisfiesPzs: z.boolean().optional(),
+  state: z.string().optional(),
+  type: z.string().optional(),
+  updateTime: z.string().optional(),
+  workforceIdentityBasedManagementUri: z.object({
+    firstPartyManagementUri: z.string(),
+    thirdPartyManagementUri: z.string(),
+  }).optional(),
+  workforceIdentityBasedOauth2ClientId: z.object({
+    firstPartyOauth2ClientId: z.string(),
+    thirdPartyOauth2ClientId: z.string(),
+  }).optional(),
+}).passthrough();
+
+type StateData = z.infer<typeof StateSchema>;
+
+const InputsSchema = z.object({
+  name: z.string().optional(),
+  description: z.string().describe(
+    "Optional. The description of the ManagementServer instance (2048 characters or less).",
+  ).optional(),
+  labels: z.record(z.string(), z.string()).describe(
+    "Optional. Resource labels to represent user provided metadata. Labels currently defined: 1. migrate_from_go= If set to true, the MS is created in migration ready mode.",
+  ).optional(),
+  managementUri: z.object({
+    api: z.string().describe(
+      "Output only. The ManagementServer AGM/RD API URL.",
+    ).optional(),
+    webUi: z.string().describe(
+      "Output only. The ManagementServer AGM/RD WebUI URL.",
+    ).optional(),
+  }).describe("ManagementURI for the Management Server resource.").optional(),
+  networks: z.array(z.object({
+    network: z.string().describe(
+      "Optional. The resource name of the Google Compute Engine VPC network to which the ManagementServer instance is connected.",
+    ).optional(),
+    peeringMode: z.enum(["PEERING_MODE_UNSPECIFIED", "PRIVATE_SERVICE_ACCESS"])
+      .describe(
+        "Optional. The network connect mode of the ManagementServer instance. For this version, only PRIVATE_SERVICE_ACCESS is supported.",
+      ).optional(),
+  })).describe(
+    "Optional. VPC networks to which the ManagementServer instance is connected. For this version, only a single network is supported. This field is optional if MS is created without PSA",
+  ).optional(),
+  type: z.enum(["INSTANCE_TYPE_UNSPECIFIED", "BACKUP_RESTORE"]).describe(
+    "Optional. The type of the ManagementServer resource.",
+  ).optional(),
+  workforceIdentityBasedManagementUri: z.object({
+    firstPartyManagementUri: z.string().describe(
+      "Output only. First party Management URI for Google Identities.",
+    ).optional(),
+    thirdPartyManagementUri: z.string().describe(
+      "Output only. Third party Management URI for External Identity Providers.",
+    ).optional(),
+  }).describe(
+    "ManagementURI depending on the Workforce Identity i.e. either 1p or 3p.",
+  ).optional(),
+  workforceIdentityBasedOauth2ClientId: z.object({
+    firstPartyOauth2ClientId: z.string().describe(
+      "Output only. First party OAuth Client ID for Google Identities.",
+    ).optional(),
+    thirdPartyOauth2ClientId: z.string().describe(
+      "Output only. Third party OAuth Client ID for External Identity Providers.",
+    ).optional(),
+  }).describe(
+    "OAuth Client ID depending on the Workforce Identity i.e. either 1p or 3p,",
+  ).optional(),
+  managementServerId: z.string().describe(
+    "Required. The name of the management server to create. The name must be unique for the specified project and location.",
+  ).optional(),
+  requestId: z.string().describe(
+    "Optional. An optional request ID to identify requests. Specify a unique request ID so that if you must retry your request, the server will know to ignore the request if it has already been completed. The server will guarantee that for at least 60 minutes since the first request. For example, consider a situation where you make an initial request and the request times out. If you make the request again with the same request ID, the server can check if original operation with the same request ID was received, and if so, will ignore the second request. This prevents clients from accidentally creating duplicate commitments. The request ID must be a valid UUID with the exception that zero UUID is not supported (00000000-0000-0000-0000-000000000000).",
+  ).optional(),
+  location: z.string().describe(
+    "The location for this resource (e.g., 'us', 'us-central1', 'europe-west1')",
+  ).optional(),
+});
+
+export const model = {
+  type: "@swamp/gcp/backupdr/managementservers",
+  version: "2026.03.27.1",
+  globalArguments: GlobalArgsSchema,
+  inputsSchema: InputsSchema,
+  resources: {
+    state: {
+      description:
+        "ManagementServer describes a single BackupDR ManagementServer instance.",
+      schema: StateSchema,
+      lifetime: "infinite",
+      garbageCollection: 10,
+    },
+  },
+  methods: {
+    create: {
+      description: "Create a managementServers",
+      arguments: z.object({
+        waitForReady: z.boolean().describe(
+          "Wait for the resource to reach a ready state after creation (default: true)",
+        ).optional(),
+      }),
+      execute: async (args: { waitForReady?: boolean }, context: any) => {
+        const g = context.globalArgs;
+        const projectId = await getProjectId();
+        const params: Record<string, string> = { project: projectId };
+        if (g["parent"] !== undefined) params["parent"] = String(g["parent"]);
+        const body: Record<string, unknown> = {};
+        if (g["description"] !== undefined) {
+          body["description"] = g["description"];
+        }
+        if (g["labels"] !== undefined) body["labels"] = g["labels"];
+        if (g["managementUri"] !== undefined) {
+          body["managementUri"] = g["managementUri"];
+        }
+        if (g["networks"] !== undefined) body["networks"] = g["networks"];
+        if (g["type"] !== undefined) body["type"] = g["type"];
+        if (g["workforceIdentityBasedManagementUri"] !== undefined) {
+          body["workforceIdentityBasedManagementUri"] =
+            g["workforceIdentityBasedManagementUri"];
+        }
+        if (g["workforceIdentityBasedOauth2ClientId"] !== undefined) {
+          body["workforceIdentityBasedOauth2ClientId"] =
+            g["workforceIdentityBasedOauth2ClientId"];
+        }
+        if (g["managementServerId"] !== undefined) {
+          body["managementServerId"] = g["managementServerId"];
+        }
+        if (g["requestId"] !== undefined) body["requestId"] = g["requestId"];
+        if (g["parent"] !== undefined && g["name"] !== undefined) {
+          params["name"] = buildResourceName(
+            String(g["parent"]),
+            String(g["name"]),
+          );
+        }
+        const result = await createResource(
+          BASE_URL,
+          INSERT_CONFIG,
+          params,
+          body,
+          GET_CONFIG,
+          (args.waitForReady ?? true)
+            ? {
+              "statusField": "state",
+              "readyValues": ["READY"],
+              "failedValues": ["ERROR"],
+            }
+            : undefined,
+        ) as StateData;
+        const instanceName = g.name?.toString() ?? "current";
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    get: {
+      description: "Get a managementServers",
+      arguments: z.object({
+        identifier: z.string().describe("The name of the managementServers"),
+      }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const projectId = await getProjectId();
+        const params: Record<string, string> = { project: projectId };
+        const g = context.globalArgs;
+        params["name"] = buildResourceName(
+          String(g["parent"] ?? ""),
+          args.identifier,
+        );
+        const result = await readResource(
+          BASE_URL,
+          GET_CONFIG,
+          params,
+        ) as StateData;
+        const instanceName = g.name?.toString() ?? args.identifier;
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    delete: {
+      description: "Delete the managementServers",
+      arguments: z.object({
+        identifier: z.string().describe("The name of the managementServers"),
+      }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const g = context.globalArgs;
+        const projectId = await getProjectId();
+        const params: Record<string, string> = { project: projectId };
+        params["name"] = buildResourceName(
+          String(g["parent"] ?? ""),
+          args.identifier,
+        );
+        const { existed } = await deleteResource(
+          BASE_URL,
+          DELETE_CONFIG,
+          params,
+        );
+        const instanceName = g.name?.toString() ?? args.identifier;
+        const handle = await context.writeResource("state", instanceName, {
+          identifier: args.identifier,
+          existed,
+          status: existed ? "deleted" : "not_found",
+          deletedAt: new Date().toISOString(),
+        });
+        return { dataHandles: [handle] };
+      },
+    },
+    sync: {
+      description: "Sync managementServers state from GCP",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const projectId = await getProjectId();
+        const instanceName = g.name?.toString() ?? "current";
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          instanceName,
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        try {
+          const params: Record<string, string> = { project: projectId };
+          const shortName = existing.name?.toString() ?? g["name"]?.toString();
+          if (!shortName) throw new Error("No identifier found");
+          params["name"] = buildResourceName(
+            String(g["parent"] ?? ""),
+            shortName,
+          );
+          const result = await readResource(
+            BASE_URL,
+            GET_CONFIG,
+            params,
+          ) as StateData;
+          const handle = await context.writeResource(
+            "state",
+            instanceName,
+            result,
+          );
+          return { dataHandles: [handle] };
+        } catch (error: unknown) {
+          if (isResourceNotFoundError(error)) {
+            const handle = await context.writeResource("state", instanceName, {
+              status: "not_found",
+              syncedAt: new Date().toISOString(),
+            });
+            return { dataHandles: [handle] };
+          }
+          throw error;
+        }
+      },
+    },
+    ms_compliance_metadata: {
+      description: "ms compliance metadata",
+      arguments: z.object({
+        projectId: z.any().optional(),
+      }),
+      execute: async (args: Record<string, unknown>, context: any) => {
+        const g = context.globalArgs;
+        const projectId = await getProjectId();
+        const params: Record<string, string> = { project: projectId };
+        if (g["parent"] !== undefined) params["parent"] = String(g["parent"]);
+        const body: Record<string, unknown> = {};
+        if (args["projectId"] !== undefined) {
+          body["projectId"] = args["projectId"];
+        }
+        const result = await createResource(
+          BASE_URL,
+          {
+            "id":
+              "backupdr.projects.locations.managementServers.msComplianceMetadata",
+            "path": "v1/{+parent}:msComplianceMetadata",
+            "httpMethod": "POST",
+            "parameterOrder": ["parent"],
+            "parameters": {
+              "parent": { "location": "path", "required": true },
+            },
+          },
+          params,
+          body,
+        );
+        return { result };
+      },
+    },
+  },
+};

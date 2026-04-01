@@ -2,6 +2,7 @@
 
 import { fetchAwsSchema } from "../aws/pipeline.ts";
 import { fetchDigitalOceanSchema } from "../digitalocean/pipeline.ts";
+import { fetchGcpSchema } from "../gcp/pipeline.ts";
 import { fetchHetznerSchema } from "../hetzner/pipeline.ts";
 
 /**
@@ -22,9 +23,12 @@ export async function fetchSchema(options: {
     case "digitalocean":
       await fetchDigitalOceanSchema({ outputPath: options.outputPath });
       break;
+    case "gcp":
+      await fetchGcpSchema({ outputPath: options.outputPath });
+      break;
     default:
       throw new Error(
-        `Unsupported provider: ${options.provider}. Supported: "aws", "hetzner", "digitalocean".`,
+        `Unsupported provider: ${options.provider}. Supported: "aws", "gcp", "hetzner", "digitalocean".`,
       );
   }
 }

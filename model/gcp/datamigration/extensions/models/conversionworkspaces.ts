@@ -1,0 +1,793 @@
+// Auto-generated extension model for @swamp/gcp/datamigration/conversionworkspaces
+// Do not edit manually. Re-generate with: deno task generate:gcp
+
+// deno-lint-ignore-file no-explicit-any
+
+import { z } from "zod";
+import {
+  createResource,
+  deleteResource,
+  getProjectId,
+  isResourceNotFoundError,
+  readResource,
+  updateResource,
+} from "./_lib/gcp.ts";
+
+/** Construct the fully-qualified resource name from parent and short name. */
+function buildResourceName(parent: string, shortName: string): string {
+  return `${parent}/conversionWorkspaces/${shortName}`;
+}
+
+const BASE_URL = "https://datamigration.googleapis.com/";
+
+const GET_CONFIG = {
+  "id": "datamigration.projects.locations.conversionWorkspaces.get",
+  "path": "v1/{+name}",
+  "httpMethod": "GET",
+  "parameterOrder": [
+    "name",
+  ],
+  "parameters": {
+    "name": {
+      "location": "path",
+      "required": true,
+    },
+  },
+} as const;
+
+const INSERT_CONFIG = {
+  "id": "datamigration.projects.locations.conversionWorkspaces.create",
+  "path": "v1/{+parent}/conversionWorkspaces",
+  "httpMethod": "POST",
+  "parameterOrder": [
+    "parent",
+  ],
+  "parameters": {
+    "conversionWorkspaceId": {
+      "location": "query",
+    },
+    "parent": {
+      "location": "path",
+      "required": true,
+    },
+    "requestId": {
+      "location": "query",
+    },
+  },
+} as const;
+
+const PATCH_CONFIG = {
+  "id": "datamigration.projects.locations.conversionWorkspaces.patch",
+  "path": "v1/{+name}",
+  "httpMethod": "PATCH",
+  "parameterOrder": [
+    "name",
+  ],
+  "parameters": {
+    "name": {
+      "location": "path",
+      "required": true,
+    },
+    "requestId": {
+      "location": "query",
+    },
+    "updateMask": {
+      "location": "query",
+    },
+  },
+} as const;
+
+const DELETE_CONFIG = {
+  "id": "datamigration.projects.locations.conversionWorkspaces.delete",
+  "path": "v1/{+name}",
+  "httpMethod": "DELETE",
+  "parameterOrder": [
+    "name",
+  ],
+  "parameters": {
+    "force": {
+      "location": "query",
+    },
+    "name": {
+      "location": "path",
+      "required": true,
+    },
+    "requestId": {
+      "location": "query",
+    },
+  },
+} as const;
+
+const GlobalArgsSchema = z.object({
+  destination: z.object({
+    engine: z.enum([
+      "DATABASE_ENGINE_UNSPECIFIED",
+      "MYSQL",
+      "POSTGRESQL",
+      "SQLSERVER",
+      "ORACLE",
+    ]).describe("Required. Engine type.").optional(),
+    version: z.string().describe(
+      'Required. Engine version, for example "12.c.1".',
+    ).optional(),
+  }).describe("The type and version of a source or destination database.")
+    .optional(),
+  destinationProvider: z.enum([
+    "DATABASE_PROVIDER_UNSPECIFIED",
+    "CLOUDSQL",
+    "RDS",
+    "AURORA",
+    "ALLOYDB",
+    "AZURE_DATABASE",
+  ]).describe("Optional. The provider for the destination database.")
+    .optional(),
+  displayName: z.string().describe(
+    "Optional. The display name for the workspace.",
+  ).optional(),
+  globalSettings: z.record(z.string(), z.string()).describe(
+    "Optional. A generic list of settings for the workspace. The settings are database pair dependant and can indicate default behavior for the mapping rules engine or turn on or off specific features. Such examples can be: convert_foreign_key_to_interleave=true, skip_triggers=false, ignore_non_table_synonyms=true",
+  ).optional(),
+  name: z.string().describe(
+    "Full name of the workspace resource, in the form of: projects/{project}/locations/{location}/conversionWorkspaces/{conversion_workspace}.",
+  ).optional(),
+  source: z.object({
+    engine: z.enum([
+      "DATABASE_ENGINE_UNSPECIFIED",
+      "MYSQL",
+      "POSTGRESQL",
+      "SQLSERVER",
+      "ORACLE",
+    ]).describe("Required. Engine type.").optional(),
+    version: z.string().describe(
+      'Required. Engine version, for example "12.c.1".',
+    ).optional(),
+  }).describe("The type and version of a source or destination database.")
+    .optional(),
+  sourceProvider: z.enum([
+    "DATABASE_PROVIDER_UNSPECIFIED",
+    "CLOUDSQL",
+    "RDS",
+    "AURORA",
+    "ALLOYDB",
+    "AZURE_DATABASE",
+  ]).describe("Optional. The provider for the source database.").optional(),
+  conversionWorkspaceId: z.string().describe(
+    "Required. The ID of the conversion workspace to create.",
+  ).optional(),
+  requestId: z.string().describe(
+    "Optional. A unique ID used to identify the request. If the server receives two requests with the same ID, then the second request is ignored. It is recommended to always set this value to a UUID. The ID must contain only letters (a-z, A-Z), numbers (0-9), underscores (_), and hyphens (-). The maximum length is 40 characters.",
+  ).optional(),
+  location: z.string().describe(
+    "The location for this resource (e.g., 'us', 'us-central1', 'europe-west1')",
+  ).optional(),
+});
+
+const StateSchema = z.object({
+  createTime: z.string().optional(),
+  destination: z.object({
+    engine: z.string(),
+    version: z.string(),
+  }).optional(),
+  destinationProvider: z.string().optional(),
+  displayName: z.string().optional(),
+  globalSettings: z.record(z.string(), z.unknown()).optional(),
+  hasUncommittedChanges: z.boolean().optional(),
+  latestCommitId: z.string().optional(),
+  latestCommitTime: z.string().optional(),
+  name: z.string(),
+  source: z.object({
+    engine: z.string(),
+    version: z.string(),
+  }).optional(),
+  sourceProvider: z.string().optional(),
+  updateTime: z.string().optional(),
+}).passthrough();
+
+type StateData = z.infer<typeof StateSchema>;
+
+const InputsSchema = z.object({
+  destination: z.object({
+    engine: z.enum([
+      "DATABASE_ENGINE_UNSPECIFIED",
+      "MYSQL",
+      "POSTGRESQL",
+      "SQLSERVER",
+      "ORACLE",
+    ]).describe("Required. Engine type.").optional(),
+    version: z.string().describe(
+      'Required. Engine version, for example "12.c.1".',
+    ).optional(),
+  }).describe("The type and version of a source or destination database.")
+    .optional(),
+  destinationProvider: z.enum([
+    "DATABASE_PROVIDER_UNSPECIFIED",
+    "CLOUDSQL",
+    "RDS",
+    "AURORA",
+    "ALLOYDB",
+    "AZURE_DATABASE",
+  ]).describe("Optional. The provider for the destination database.")
+    .optional(),
+  displayName: z.string().describe(
+    "Optional. The display name for the workspace.",
+  ).optional(),
+  globalSettings: z.record(z.string(), z.string()).describe(
+    "Optional. A generic list of settings for the workspace. The settings are database pair dependant and can indicate default behavior for the mapping rules engine or turn on or off specific features. Such examples can be: convert_foreign_key_to_interleave=true, skip_triggers=false, ignore_non_table_synonyms=true",
+  ).optional(),
+  name: z.string().describe(
+    "Full name of the workspace resource, in the form of: projects/{project}/locations/{location}/conversionWorkspaces/{conversion_workspace}.",
+  ).optional(),
+  source: z.object({
+    engine: z.enum([
+      "DATABASE_ENGINE_UNSPECIFIED",
+      "MYSQL",
+      "POSTGRESQL",
+      "SQLSERVER",
+      "ORACLE",
+    ]).describe("Required. Engine type.").optional(),
+    version: z.string().describe(
+      'Required. Engine version, for example "12.c.1".',
+    ).optional(),
+  }).describe("The type and version of a source or destination database.")
+    .optional(),
+  sourceProvider: z.enum([
+    "DATABASE_PROVIDER_UNSPECIFIED",
+    "CLOUDSQL",
+    "RDS",
+    "AURORA",
+    "ALLOYDB",
+    "AZURE_DATABASE",
+  ]).describe("Optional. The provider for the source database.").optional(),
+  conversionWorkspaceId: z.string().describe(
+    "Required. The ID of the conversion workspace to create.",
+  ).optional(),
+  requestId: z.string().describe(
+    "Optional. A unique ID used to identify the request. If the server receives two requests with the same ID, then the second request is ignored. It is recommended to always set this value to a UUID. The ID must contain only letters (a-z, A-Z), numbers (0-9), underscores (_), and hyphens (-). The maximum length is 40 characters.",
+  ).optional(),
+  location: z.string().describe(
+    "The location for this resource (e.g., 'us', 'us-central1', 'europe-west1')",
+  ).optional(),
+});
+
+export const model = {
+  type: "@swamp/gcp/datamigration/conversionworkspaces",
+  version: "2026.03.27.1",
+  globalArguments: GlobalArgsSchema,
+  inputsSchema: InputsSchema,
+  resources: {
+    state: {
+      description: "The main conversion workspace resource entity.",
+      schema: StateSchema,
+      lifetime: "infinite",
+      garbageCollection: 10,
+    },
+  },
+  methods: {
+    create: {
+      description: "Create a conversionWorkspaces",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const projectId = await getProjectId();
+        const params: Record<string, string> = { project: projectId };
+        if (g["parent"] !== undefined) params["parent"] = String(g["parent"]);
+        const body: Record<string, unknown> = {};
+        if (g["destination"] !== undefined) {
+          body["destination"] = g["destination"];
+        }
+        if (g["destinationProvider"] !== undefined) {
+          body["destinationProvider"] = g["destinationProvider"];
+        }
+        if (g["displayName"] !== undefined) {
+          body["displayName"] = g["displayName"];
+        }
+        if (g["globalSettings"] !== undefined) {
+          body["globalSettings"] = g["globalSettings"];
+        }
+        if (g["name"] !== undefined) body["name"] = g["name"];
+        if (g["source"] !== undefined) body["source"] = g["source"];
+        if (g["sourceProvider"] !== undefined) {
+          body["sourceProvider"] = g["sourceProvider"];
+        }
+        if (g["conversionWorkspaceId"] !== undefined) {
+          body["conversionWorkspaceId"] = g["conversionWorkspaceId"];
+        }
+        if (g["requestId"] !== undefined) body["requestId"] = g["requestId"];
+        if (g["parent"] !== undefined && g["name"] !== undefined) {
+          params["name"] = buildResourceName(
+            String(g["parent"]),
+            String(g["name"]),
+          );
+        }
+        const result = await createResource(
+          BASE_URL,
+          INSERT_CONFIG,
+          params,
+          body,
+          GET_CONFIG,
+        ) as StateData;
+        const instanceName = (result.name ?? g.name)?.toString() ?? "current";
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    get: {
+      description: "Get a conversionWorkspaces",
+      arguments: z.object({
+        identifier: z.string().describe("The name of the conversionWorkspaces"),
+      }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const projectId = await getProjectId();
+        const params: Record<string, string> = { project: projectId };
+        const g = context.globalArgs;
+        params["name"] = buildResourceName(
+          String(g["parent"] ?? ""),
+          args.identifier,
+        );
+        const result = await readResource(
+          BASE_URL,
+          GET_CONFIG,
+          params,
+        ) as StateData;
+        const instanceName = (result.name ?? g.name)?.toString() ??
+          args.identifier;
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    update: {
+      description: "Update conversionWorkspaces attributes",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const projectId = await getProjectId();
+        const instanceName = g.name?.toString() ?? "current";
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          instanceName,
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        const params: Record<string, string> = { project: projectId };
+        params["name"] = buildResourceName(
+          String(g["parent"] ?? ""),
+          existing["name"]?.toString() ?? g["name"]?.toString() ?? "",
+        );
+        const body: Record<string, unknown> = {};
+        if (g["destination"] !== undefined) {
+          body["destination"] = g["destination"];
+        }
+        if (g["destinationProvider"] !== undefined) {
+          body["destinationProvider"] = g["destinationProvider"];
+        }
+        if (g["displayName"] !== undefined) {
+          body["displayName"] = g["displayName"];
+        }
+        if (g["globalSettings"] !== undefined) {
+          body["globalSettings"] = g["globalSettings"];
+        }
+        if (g["source"] !== undefined) body["source"] = g["source"];
+        if (g["sourceProvider"] !== undefined) {
+          body["sourceProvider"] = g["sourceProvider"];
+        }
+        for (const key of Object.keys(existing)) {
+          if (
+            key === "fingerprint" || key === "labelFingerprint" ||
+            key === "etag" || key.endsWith("Fingerprint")
+          ) {
+            body[key] = existing[key];
+          }
+        }
+        const result = await updateResource(
+          BASE_URL,
+          PATCH_CONFIG,
+          params,
+          body,
+          GET_CONFIG,
+        ) as StateData;
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    delete: {
+      description: "Delete the conversionWorkspaces",
+      arguments: z.object({
+        identifier: z.string().describe("The name of the conversionWorkspaces"),
+      }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const g = context.globalArgs;
+        const projectId = await getProjectId();
+        const params: Record<string, string> = { project: projectId };
+        params["name"] = buildResourceName(
+          String(g["parent"] ?? ""),
+          args.identifier,
+        );
+        const { existed } = await deleteResource(
+          BASE_URL,
+          DELETE_CONFIG,
+          params,
+        );
+        const instanceName = g.name?.toString() ?? args.identifier;
+        const handle = await context.writeResource("state", instanceName, {
+          identifier: args.identifier,
+          existed,
+          status: existed ? "deleted" : "not_found",
+          deletedAt: new Date().toISOString(),
+        });
+        return { dataHandles: [handle] };
+      },
+    },
+    sync: {
+      description: "Sync conversionWorkspaces state from GCP",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const projectId = await getProjectId();
+        const instanceName = g.name?.toString() ?? "current";
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          instanceName,
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        try {
+          const params: Record<string, string> = { project: projectId };
+          const shortName = existing.name?.toString() ?? g["name"]?.toString();
+          if (!shortName) throw new Error("No identifier found");
+          params["name"] = buildResourceName(
+            String(g["parent"] ?? ""),
+            shortName,
+          );
+          const result = await readResource(
+            BASE_URL,
+            GET_CONFIG,
+            params,
+          ) as StateData;
+          const handle = await context.writeResource(
+            "state",
+            instanceName,
+            result,
+          );
+          return { dataHandles: [handle] };
+        } catch (error: unknown) {
+          if (isResourceNotFoundError(error)) {
+            const handle = await context.writeResource("state", instanceName, {
+              status: "not_found",
+              syncedAt: new Date().toISOString(),
+            });
+            return { dataHandles: [handle] };
+          }
+          throw error;
+        }
+      },
+    },
+    apply: {
+      description: "apply",
+      arguments: z.object({
+        autoCommit: z.any().optional(),
+        connectionProfile: z.any().optional(),
+        dryRun: z.any().optional(),
+        filter: z.any().optional(),
+      }),
+      execute: async (args: Record<string, unknown>, context: any) => {
+        const g = context.globalArgs;
+        const projectId = await getProjectId();
+        const params: Record<string, string> = { project: projectId };
+        if (g["parent"] !== undefined && g["name"] !== undefined) {
+          params["name"] = buildResourceName(
+            String(g["parent"]),
+            String(g["name"]),
+          );
+        }
+        const body: Record<string, unknown> = {};
+        if (args["autoCommit"] !== undefined) {
+          body["autoCommit"] = args["autoCommit"];
+        }
+        if (args["connectionProfile"] !== undefined) {
+          body["connectionProfile"] = args["connectionProfile"];
+        }
+        if (args["dryRun"] !== undefined) body["dryRun"] = args["dryRun"];
+        if (args["filter"] !== undefined) body["filter"] = args["filter"];
+        const result = await createResource(
+          BASE_URL,
+          {
+            "id": "datamigration.projects.locations.conversionWorkspaces.apply",
+            "path": "v1/{+name}:apply",
+            "httpMethod": "POST",
+            "parameterOrder": ["name"],
+            "parameters": { "name": { "location": "path", "required": true } },
+          },
+          params,
+          body,
+        );
+        return { result };
+      },
+    },
+    commit: {
+      description: "commit",
+      arguments: z.object({
+        commitName: z.any().optional(),
+      }),
+      execute: async (args: Record<string, unknown>, context: any) => {
+        const g = context.globalArgs;
+        const projectId = await getProjectId();
+        const params: Record<string, string> = { project: projectId };
+        if (g["parent"] !== undefined && g["name"] !== undefined) {
+          params["name"] = buildResourceName(
+            String(g["parent"]),
+            String(g["name"]),
+          );
+        }
+        const body: Record<string, unknown> = {};
+        if (args["commitName"] !== undefined) {
+          body["commitName"] = args["commitName"];
+        }
+        const result = await createResource(
+          BASE_URL,
+          {
+            "id":
+              "datamigration.projects.locations.conversionWorkspaces.commit",
+            "path": "v1/{+name}:commit",
+            "httpMethod": "POST",
+            "parameterOrder": ["name"],
+            "parameters": { "name": { "location": "path", "required": true } },
+          },
+          params,
+          body,
+        );
+        return { result };
+      },
+    },
+    convert: {
+      description: "convert",
+      arguments: z.object({
+        autoCommit: z.any().optional(),
+        convertFullPath: z.any().optional(),
+        filter: z.any().optional(),
+      }),
+      execute: async (args: Record<string, unknown>, context: any) => {
+        const g = context.globalArgs;
+        const projectId = await getProjectId();
+        const params: Record<string, string> = { project: projectId };
+        if (g["parent"] !== undefined && g["name"] !== undefined) {
+          params["name"] = buildResourceName(
+            String(g["parent"]),
+            String(g["name"]),
+          );
+        }
+        const body: Record<string, unknown> = {};
+        if (args["autoCommit"] !== undefined) {
+          body["autoCommit"] = args["autoCommit"];
+        }
+        if (args["convertFullPath"] !== undefined) {
+          body["convertFullPath"] = args["convertFullPath"];
+        }
+        if (args["filter"] !== undefined) body["filter"] = args["filter"];
+        const result = await createResource(
+          BASE_URL,
+          {
+            "id":
+              "datamigration.projects.locations.conversionWorkspaces.convert",
+            "path": "v1/{+name}:convert",
+            "httpMethod": "POST",
+            "parameterOrder": ["name"],
+            "parameters": { "name": { "location": "path", "required": true } },
+          },
+          params,
+          body,
+        );
+        return { result };
+      },
+    },
+    describe_conversion_workspace_revisions: {
+      description: "describe conversion workspace revisions",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, unknown>, context: any) => {
+        const g = context.globalArgs;
+        const projectId = await getProjectId();
+        const params: Record<string, string> = { project: projectId };
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          g.name?.toString() ?? "current",
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        params["conversionWorkspace"] = existing["name"]?.toString() ??
+          g["name"]?.toString() ?? "";
+        const result = await createResource(
+          BASE_URL,
+          {
+            "id":
+              "datamigration.projects.locations.conversionWorkspaces.describeConversionWorkspaceRevisions",
+            "path":
+              "v1/{+conversionWorkspace}:describeConversionWorkspaceRevisions",
+            "httpMethod": "GET",
+            "parameterOrder": ["conversionWorkspace"],
+            "parameters": {
+              "commitId": { "location": "query" },
+              "conversionWorkspace": { "location": "path", "required": true },
+            },
+          },
+          params,
+          {},
+        );
+        return { result };
+      },
+    },
+    describe_database_entities: {
+      description: "describe database entities",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, unknown>, context: any) => {
+        const g = context.globalArgs;
+        const projectId = await getProjectId();
+        const params: Record<string, string> = { project: projectId };
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          g.name?.toString() ?? "current",
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        params["conversionWorkspace"] = existing["name"]?.toString() ??
+          g["name"]?.toString() ?? "";
+        const result = await createResource(
+          BASE_URL,
+          {
+            "id":
+              "datamigration.projects.locations.conversionWorkspaces.describeDatabaseEntities",
+            "path": "v1/{+conversionWorkspace}:describeDatabaseEntities",
+            "httpMethod": "GET",
+            "parameterOrder": ["conversionWorkspace"],
+            "parameters": {
+              "commitId": { "location": "query" },
+              "conversionWorkspace": { "location": "path", "required": true },
+              "filter": { "location": "query" },
+              "pageSize": { "location": "query" },
+              "pageToken": { "location": "query" },
+              "tree": { "location": "query" },
+              "uncommitted": { "location": "query" },
+              "view": { "location": "query" },
+            },
+          },
+          params,
+          {},
+        );
+        return { result };
+      },
+    },
+    rollback: {
+      description: "rollback",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, unknown>, context: any) => {
+        const g = context.globalArgs;
+        const projectId = await getProjectId();
+        const params: Record<string, string> = { project: projectId };
+        if (g["parent"] !== undefined && g["name"] !== undefined) {
+          params["name"] = buildResourceName(
+            String(g["parent"]),
+            String(g["name"]),
+          );
+        }
+        const result = await createResource(
+          BASE_URL,
+          {
+            "id":
+              "datamigration.projects.locations.conversionWorkspaces.rollback",
+            "path": "v1/{+name}:rollback",
+            "httpMethod": "POST",
+            "parameterOrder": ["name"],
+            "parameters": { "name": { "location": "path", "required": true } },
+          },
+          params,
+          {},
+        );
+        return { result };
+      },
+    },
+    search_background_jobs: {
+      description: "search background jobs",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, unknown>, context: any) => {
+        const g = context.globalArgs;
+        const projectId = await getProjectId();
+        const params: Record<string, string> = { project: projectId };
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          g.name?.toString() ?? "current",
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        params["conversionWorkspace"] = existing["name"]?.toString() ??
+          g["name"]?.toString() ?? "";
+        const result = await createResource(
+          BASE_URL,
+          {
+            "id":
+              "datamigration.projects.locations.conversionWorkspaces.searchBackgroundJobs",
+            "path": "v1/{+conversionWorkspace}:searchBackgroundJobs",
+            "httpMethod": "GET",
+            "parameterOrder": ["conversionWorkspace"],
+            "parameters": {
+              "completedUntilTime": { "location": "query" },
+              "conversionWorkspace": { "location": "path", "required": true },
+              "maxSize": { "location": "query" },
+              "returnMostRecentPerJobType": { "location": "query" },
+            },
+          },
+          params,
+          {},
+        );
+        return { result };
+      },
+    },
+    seed: {
+      description: "seed",
+      arguments: z.object({
+        autoCommit: z.any().optional(),
+        destinationConnectionProfile: z.any().optional(),
+        sourceConnectionProfile: z.any().optional(),
+      }),
+      execute: async (args: Record<string, unknown>, context: any) => {
+        const g = context.globalArgs;
+        const projectId = await getProjectId();
+        const params: Record<string, string> = { project: projectId };
+        if (g["parent"] !== undefined && g["name"] !== undefined) {
+          params["name"] = buildResourceName(
+            String(g["parent"]),
+            String(g["name"]),
+          );
+        }
+        const body: Record<string, unknown> = {};
+        if (args["autoCommit"] !== undefined) {
+          body["autoCommit"] = args["autoCommit"];
+        }
+        if (args["destinationConnectionProfile"] !== undefined) {
+          body["destinationConnectionProfile"] =
+            args["destinationConnectionProfile"];
+        }
+        if (args["sourceConnectionProfile"] !== undefined) {
+          body["sourceConnectionProfile"] = args["sourceConnectionProfile"];
+        }
+        const result = await createResource(
+          BASE_URL,
+          {
+            "id": "datamigration.projects.locations.conversionWorkspaces.seed",
+            "path": "v1/{+name}:seed",
+            "httpMethod": "POST",
+            "parameterOrder": ["name"],
+            "parameters": { "name": { "location": "path", "required": true } },
+          },
+          params,
+          body,
+        );
+        return { result };
+      },
+    },
+  },
+};

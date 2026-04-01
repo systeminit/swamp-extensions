@@ -1,0 +1,79 @@
+# Auto-generated manifest. Re-generate with the appropriate deno task.
+manifestVersion: 1
+name: "@swamp/gcp/aiplatform"
+version: "2026.03.27.1"
+description: "Google Cloud aiplatform infrastructure models"
+labels:
+  - gcp
+  - google-cloud
+  - aiplatform
+  - cloud
+  - infrastructure
+releaseNotes: |
+  - Added: batchpredictionjobs, datasets, datasets_datasetversions, locations, cachedcontents, customjobs, datalabelingjobs, datasets_annotationspecs, datasets_dataitems, datasets_dataitems_annotations, datasets_savedqueries, deploymentresourcepools, endpoints, evaluationitems, evaluationruns, evaluationsets, featuregroups, featuregroups_features, featureonlinestores, featureonlinestores_featureviews, featureonlinestores_featureviews_featureviewsyncs, featurestores, featurestores_entitytypes, featurestores_entitytypes_features, hyperparametertuningjobs, indexendpoints, indexes, metadatastores, metadatastores_artifacts, metadatastores_contexts, metadatastores_executions, metadatastores_metadataschemas, modeldeploymentmonitoringjobs, models, models_evaluations, models_evaluations_slices, nasjobs, nasjobs_nastrialdetails, notebookexecutionjobs, notebookruntimetemplates, notebookruntimes, persistentresources, pipelinejobs, ragcorpora, ragcorpora_ragfiles, reasoningengines, reasoningengines_memories, reasoningengines_memories_revisions, reasoningengines_sandboxenvironments, reasoningengines_sessions, reasoningengines_sessions_events, schedules, specialistpools, studies, studies_trials, tensorboards, tensorboards_experiments, tensorboards_experiments_runs, tensorboards_experiments_runs_timeseries, trainingpipelines, tuningjobs, publishers_models
+models:
+  - batchpredictionjobs.ts
+  - cachedcontents.ts
+  - customjobs.ts
+  - datalabelingjobs.ts
+  - datasets.ts
+  - datasets_annotationspecs.ts
+  - datasets_dataitems.ts
+  - datasets_dataitems_annotations.ts
+  - datasets_datasetversions.ts
+  - datasets_savedqueries.ts
+  - deploymentresourcepools.ts
+  - endpoints.ts
+  - evaluationitems.ts
+  - evaluationruns.ts
+  - evaluationsets.ts
+  - featuregroups.ts
+  - featuregroups_features.ts
+  - featureonlinestores.ts
+  - featureonlinestores_featureviews.ts
+  - featureonlinestores_featureviews_featureviewsyncs.ts
+  - featurestores.ts
+  - featurestores_entitytypes.ts
+  - featurestores_entitytypes_features.ts
+  - hyperparametertuningjobs.ts
+  - indexendpoints.ts
+  - indexes.ts
+  - locations.ts
+  - metadatastores.ts
+  - metadatastores_artifacts.ts
+  - metadatastores_contexts.ts
+  - metadatastores_executions.ts
+  - metadatastores_metadataschemas.ts
+  - modeldeploymentmonitoringjobs.ts
+  - models.ts
+  - models_evaluations.ts
+  - models_evaluations_slices.ts
+  - nasjobs.ts
+  - nasjobs_nastrialdetails.ts
+  - notebookexecutionjobs.ts
+  - notebookruntimes.ts
+  - notebookruntimetemplates.ts
+  - persistentresources.ts
+  - pipelinejobs.ts
+  - publishers_models.ts
+  - ragcorpora.ts
+  - ragcorpora_ragfiles.ts
+  - reasoningengines.ts
+  - reasoningengines_memories.ts
+  - reasoningengines_memories_revisions.ts
+  - reasoningengines_sandboxenvironments.ts
+  - reasoningengines_sessions.ts
+  - reasoningengines_sessions_events.ts
+  - schedules.ts
+  - specialistpools.ts
+  - studies.ts
+  - studies_trials.ts
+  - tensorboards.ts
+  - tensorboards_experiments.ts
+  - tensorboards_experiments_runs.ts
+  - tensorboards_experiments_runs_timeseries.ts
+  - trainingpipelines.ts
+  - tuningjobs.ts
+additionalFiles:
+  - LICENSE.txt
+  - README.md

@@ -1,0 +1,304 @@
+// Auto-generated extension model for @swamp/gcp/storage/notifications
+// Do not edit manually. Re-generate with: deno task generate:gcp
+
+// deno-lint-ignore-file no-explicit-any
+
+import { z } from "zod";
+import {
+  createResource,
+  deleteResource,
+  getProjectId,
+  isResourceNotFoundError,
+  readResource,
+} from "./_lib/gcp.ts";
+
+const BASE_URL = "https://storage.googleapis.com/storage/v1/";
+
+const GET_CONFIG = {
+  "id": "storage.notifications.get",
+  "path": "b/{bucket}/notificationConfigs/{notification}",
+  "httpMethod": "GET",
+  "parameterOrder": [
+    "bucket",
+    "notification",
+  ],
+  "parameters": {
+    "bucket": {
+      "location": "path",
+      "required": true,
+    },
+    "notification": {
+      "location": "path",
+      "required": true,
+    },
+    "userProject": {
+      "location": "query",
+    },
+  },
+} as const;
+
+const INSERT_CONFIG = {
+  "id": "storage.notifications.insert",
+  "path": "b/{bucket}/notificationConfigs",
+  "httpMethod": "POST",
+  "parameterOrder": [
+    "bucket",
+  ],
+  "parameters": {
+    "bucket": {
+      "location": "path",
+      "required": true,
+    },
+    "userProject": {
+      "location": "query",
+    },
+  },
+} as const;
+
+const DELETE_CONFIG = {
+  "id": "storage.notifications.delete",
+  "path": "b/{bucket}/notificationConfigs/{notification}",
+  "httpMethod": "DELETE",
+  "parameterOrder": [
+    "bucket",
+    "notification",
+  ],
+  "parameters": {
+    "bucket": {
+      "location": "path",
+      "required": true,
+    },
+    "notification": {
+      "location": "path",
+      "required": true,
+    },
+    "userProject": {
+      "location": "query",
+    },
+  },
+} as const;
+
+const GlobalArgsSchema = z.object({
+  name: z.string().describe(
+    "Instance name for this resource (used as the unique identifier in the factory pattern)",
+  ),
+  custom_attributes: z.record(z.string(), z.string()).describe(
+    "An optional list of additional attributes to attach to each Cloud PubSub message published for this notification subscription.",
+  ).optional(),
+  event_types: z.array(z.string()).describe(
+    "If present, only send notifications about listed event types. If empty, sent notifications for all event types.",
+  ).optional(),
+  id: z.string().describe("The ID of the notification.").optional(),
+  object_name_prefix: z.string().describe(
+    "If present, only apply this notification configuration to object names that begin with this prefix.",
+  ).optional(),
+  payload_format: z.string().describe("The desired content of the Payload."),
+  topic: z.string().describe(
+    "The Cloud PubSub topic to which this subscription publishes. Formatted as: '//pubsub.googleapis.com/projects/{project-identifier}/topics/{my-topic}'",
+  ),
+  bucket: z.string().describe("The parent bucket of the notification."),
+  userProject: z.string().describe(
+    "The project to be billed for this request. Required for Requester Pays buckets.",
+  ).optional(),
+});
+
+const StateSchema = z.object({
+  custom_attributes: z.record(z.string(), z.unknown()).optional(),
+  etag: z.string().optional(),
+  event_types: z.array(z.string()).optional(),
+  id: z.string().optional(),
+  kind: z.string().optional(),
+  object_name_prefix: z.string().optional(),
+  payload_format: z.string().optional(),
+  selfLink: z.string().optional(),
+  topic: z.string().optional(),
+}).passthrough();
+
+type StateData = z.infer<typeof StateSchema>;
+
+const InputsSchema = z.object({
+  name: z.string().optional(),
+  custom_attributes: z.record(z.string(), z.string()).describe(
+    "An optional list of additional attributes to attach to each Cloud PubSub message published for this notification subscription.",
+  ).optional(),
+  event_types: z.array(z.string()).describe(
+    "If present, only send notifications about listed event types. If empty, sent notifications for all event types.",
+  ).optional(),
+  id: z.string().describe("The ID of the notification.").optional(),
+  object_name_prefix: z.string().describe(
+    "If present, only apply this notification configuration to object names that begin with this prefix.",
+  ).optional(),
+  payload_format: z.string().describe("The desired content of the Payload.")
+    .optional(),
+  topic: z.string().describe(
+    "The Cloud PubSub topic to which this subscription publishes. Formatted as: '//pubsub.googleapis.com/projects/{project-identifier}/topics/{my-topic}'",
+  ).optional(),
+  bucket: z.string().describe("The parent bucket of the notification.")
+    .optional(),
+  userProject: z.string().describe(
+    "The project to be billed for this request. Required for Requester Pays buckets.",
+  ).optional(),
+});
+
+export const model = {
+  type: "@swamp/gcp/storage/notifications",
+  version: "2026.03.27.1",
+  globalArguments: GlobalArgsSchema,
+  inputsSchema: InputsSchema,
+  resources: {
+    state: {
+      description: "A subscription to receive Google PubSub notifications.",
+      schema: StateSchema,
+      lifetime: "infinite",
+      garbageCollection: 10,
+    },
+  },
+  methods: {
+    create: {
+      description: "Create a notifications",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const projectId = await getProjectId();
+        const params: Record<string, string> = { project: projectId };
+        if (g["bucket"] !== undefined) params["bucket"] = String(g["bucket"]);
+        const body: Record<string, unknown> = {};
+        if (g["custom_attributes"] !== undefined) {
+          body["custom_attributes"] = g["custom_attributes"];
+        }
+        if (g["event_types"] !== undefined) {
+          body["event_types"] = g["event_types"];
+        }
+        if (g["id"] !== undefined) body["id"] = g["id"];
+        if (g["object_name_prefix"] !== undefined) {
+          body["object_name_prefix"] = g["object_name_prefix"];
+        }
+        if (g["payload_format"] !== undefined) {
+          body["payload_format"] = g["payload_format"];
+        }
+        if (g["topic"] !== undefined) body["topic"] = g["topic"];
+        if (g["userProject"] !== undefined) {
+          body["userProject"] = g["userProject"];
+        }
+        if (g["name"] !== undefined) params["notification"] = String(g["name"]);
+        const result = await createResource(
+          BASE_URL,
+          INSERT_CONFIG,
+          params,
+          body,
+          GET_CONFIG,
+        ) as StateData;
+        const instanceName = g.name?.toString() ?? "current";
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    get: {
+      description: "Get a notifications",
+      arguments: z.object({
+        identifier: z.string().describe("The name of the notifications"),
+      }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const projectId = await getProjectId();
+        const params: Record<string, string> = { project: projectId };
+        const g = context.globalArgs;
+        if (g["bucket"] !== undefined) params["bucket"] = String(g["bucket"]);
+        params["notification"] = args.identifier;
+        const result = await readResource(
+          BASE_URL,
+          GET_CONFIG,
+          params,
+        ) as StateData;
+        const instanceName = g.name?.toString() ?? args.identifier;
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    delete: {
+      description: "Delete the notifications",
+      arguments: z.object({
+        identifier: z.string().describe("The name of the notifications"),
+      }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const g = context.globalArgs;
+        const projectId = await getProjectId();
+        const params: Record<string, string> = { project: projectId };
+        if (g["bucket"] !== undefined) params["bucket"] = String(g["bucket"]);
+        params["notification"] = args.identifier;
+        const { existed } = await deleteResource(
+          BASE_URL,
+          DELETE_CONFIG,
+          params,
+        );
+        const instanceName = g.name?.toString() ?? args.identifier;
+        const handle = await context.writeResource("state", instanceName, {
+          identifier: args.identifier,
+          existed,
+          status: existed ? "deleted" : "not_found",
+          deletedAt: new Date().toISOString(),
+        });
+        return { dataHandles: [handle] };
+      },
+    },
+    sync: {
+      description: "Sync notifications state from GCP",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const projectId = await getProjectId();
+        const instanceName = g.name?.toString() ?? "current";
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          instanceName,
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        try {
+          const params: Record<string, string> = { project: projectId };
+          if (g["bucket"] !== undefined) params["bucket"] = String(g["bucket"]);
+          else if (existing["bucket"]) {
+            params["bucket"] = String(existing["bucket"]);
+          }
+          const identifier = existing.name?.toString() ?? g["name"]?.toString();
+          if (!identifier) {
+            throw new Error(
+              "No identifier found in existing state or globalArgs",
+            );
+          }
+          params["notification"] = identifier;
+          const result = await readResource(
+            BASE_URL,
+            GET_CONFIG,
+            params,
+          ) as StateData;
+          const handle = await context.writeResource(
+            "state",
+            instanceName,
+            result,
+          );
+          return { dataHandles: [handle] };
+        } catch (error: unknown) {
+          if (isResourceNotFoundError(error)) {
+            const handle = await context.writeResource("state", instanceName, {
+              status: "not_found",
+              syncedAt: new Date().toISOString(),
+            });
+            return { dataHandles: [handle] };
+          }
+          throw error;
+        }
+      },
+    },
+  },
+};

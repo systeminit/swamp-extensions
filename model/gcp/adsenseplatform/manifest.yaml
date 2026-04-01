@@ -1,0 +1,19 @@
+# Auto-generated manifest. Re-generate with the appropriate deno task.
+manifestVersion: 1
+name: "@swamp/gcp/adsenseplatform"
+version: "2026.03.27.1"
+description: "Google Cloud adsenseplatform infrastructure models"
+labels:
+  - gcp
+  - google-cloud
+  - adsenseplatform
+  - cloud
+  - infrastructure
+releaseNotes: |
+  - Added: platforms_accounts, platforms_accounts_sites
+models:
+  - platforms_accounts.ts
+  - platforms_accounts_sites.ts
+additionalFiles:
+  - LICENSE.txt
+  - README.md

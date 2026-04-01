@@ -1,0 +1,22 @@
+# Auto-generated manifest. Re-generate with the appropriate deno task.
+manifestVersion: 1
+name: "@swamp/gcp/agentregistry"
+version: "2026.03.27.1"
+description: "Google Cloud agentregistry infrastructure models"
+labels:
+  - gcp
+  - google-cloud
+  - agentregistry
+  - cloud
+  - infrastructure
+releaseNotes: |
+  - Added: locations, agents, endpoints, mcpservers, services
+models:
+  - agents.ts
+  - endpoints.ts
+  - locations.ts
+  - mcpservers.ts
+  - services.ts
+additionalFiles:
+  - LICENSE.txt
+  - README.md

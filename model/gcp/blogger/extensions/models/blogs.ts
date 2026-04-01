@@ -1,0 +1,304 @@
+// Auto-generated extension model for @swamp/gcp/blogger/blogs
+// Do not edit manually. Re-generate with: deno task generate:gcp
+
+// deno-lint-ignore-file no-explicit-any
+
+import { z } from "zod";
+import {
+  createResource,
+  getProjectId,
+  isResourceNotFoundError,
+  readResource,
+} from "./_lib/gcp.ts";
+
+const BASE_URL = "https://blogger.googleapis.com/";
+
+const GET_CONFIG = {
+  "id": "blogger.blogs.get",
+  "path": "v3/blogs/{blogId}",
+  "httpMethod": "GET",
+  "parameterOrder": [
+    "blogId",
+  ],
+  "parameters": {
+    "blogId": {
+      "location": "path",
+      "required": true,
+    },
+    "maxPosts": {
+      "location": "query",
+    },
+    "view": {
+      "location": "query",
+    },
+  },
+} as const;
+
+const GlobalArgsSchema = z.object({
+  name: z.string().describe(
+    "Instance name for this resource (used as the unique identifier in the factory pattern)",
+  ),
+});
+
+const StateSchema = z.object({
+  customMetaData: z.string().optional(),
+  description: z.string().optional(),
+  id: z.string().optional(),
+  kind: z.string().optional(),
+  locale: z.object({
+    country: z.string(),
+    language: z.string(),
+    variant: z.string(),
+  }).optional(),
+  name: z.string(),
+  pages: z.object({
+    selfLink: z.string(),
+    totalItems: z.number(),
+  }).optional(),
+  posts: z.object({
+    items: z.array(z.object({
+      author: z.object({
+        displayName: z.string(),
+        id: z.string(),
+        image: z.object({
+          url: z.string(),
+        }),
+        url: z.string(),
+      }),
+      blog: z.object({
+        id: z.string(),
+      }),
+      content: z.string(),
+      customMetaData: z.string(),
+      etag: z.string(),
+      id: z.string(),
+      images: z.array(z.object({
+        url: z.string(),
+      })),
+      kind: z.string(),
+      labels: z.array(z.string()),
+      location: z.object({
+        lat: z.number(),
+        lng: z.number(),
+        name: z.string(),
+        span: z.string(),
+      }),
+      published: z.string(),
+      readerComments: z.string(),
+      replies: z.object({
+        items: z.array(z.object({
+          author: z.object({
+            displayName: z.string(),
+            id: z.string(),
+            image: z.object({
+              url: z.string(),
+            }),
+            url: z.string(),
+          }),
+          blog: z.object({
+            id: z.string(),
+          }),
+          content: z.string(),
+          id: z.string(),
+          inReplyTo: z.object({
+            id: z.string(),
+          }),
+          kind: z.string(),
+          post: z.object({
+            id: z.string(),
+          }),
+          published: z.string(),
+          selfLink: z.string(),
+          status: z.string(),
+          updated: z.string(),
+        })),
+        selfLink: z.string(),
+        totalItems: z.string(),
+      }),
+      selfLink: z.string(),
+      status: z.string(),
+      title: z.string(),
+      titleLink: z.string(),
+      trashed: z.string(),
+      updated: z.string(),
+      url: z.string(),
+    })),
+    selfLink: z.string(),
+    totalItems: z.number(),
+  }).optional(),
+  published: z.string().optional(),
+  selfLink: z.string().optional(),
+  status: z.string().optional(),
+  updated: z.string().optional(),
+  url: z.string().optional(),
+}).passthrough();
+
+type StateData = z.infer<typeof StateSchema>;
+
+const InputsSchema = z.object({
+  name: z.string().optional(),
+});
+
+export const model = {
+  type: "@swamp/gcp/blogger/blogs",
+  version: "2026.03.27.1",
+  globalArguments: GlobalArgsSchema,
+  inputsSchema: InputsSchema,
+  resources: {
+    state: {
+      description: "Gets a blog by id.",
+      schema: StateSchema,
+      lifetime: "infinite",
+      garbageCollection: 10,
+    },
+  },
+  methods: {
+    get: {
+      description: "Get a blogs",
+      arguments: z.object({
+        identifier: z.string().describe("The name of the blogs"),
+      }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const projectId = await getProjectId();
+        const params: Record<string, string> = { project: projectId };
+        const g = context.globalArgs;
+        params["blogId"] = args.identifier;
+        const result = await readResource(
+          BASE_URL,
+          GET_CONFIG,
+          params,
+        ) as StateData;
+        const instanceName = g.name?.toString() ?? args.identifier;
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    sync: {
+      description: "Sync blogs state from GCP",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const projectId = await getProjectId();
+        const instanceName = g.name?.toString() ?? "current";
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          instanceName,
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        try {
+          const params: Record<string, string> = { project: projectId };
+          const identifier = existing.name?.toString() ?? g["name"]?.toString();
+          if (!identifier) {
+            throw new Error(
+              "No identifier found in existing state or globalArgs",
+            );
+          }
+          params["blogId"] = identifier;
+          const result = await readResource(
+            BASE_URL,
+            GET_CONFIG,
+            params,
+          ) as StateData;
+          const handle = await context.writeResource(
+            "state",
+            instanceName,
+            result,
+          );
+          return { dataHandles: [handle] };
+        } catch (error: unknown) {
+          if (isResourceNotFoundError(error)) {
+            const handle = await context.writeResource("state", instanceName, {
+              status: "not_found",
+              syncedAt: new Date().toISOString(),
+            });
+            return { dataHandles: [handle] };
+          }
+          throw error;
+        }
+      },
+    },
+    get_by_url: {
+      description: "get by url",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, unknown>, context: any) => {
+        const g = context.globalArgs;
+        const projectId = await getProjectId();
+        const params: Record<string, string> = { project: projectId };
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          g.name?.toString() ?? "current",
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        params["url"] = existing["name"]?.toString() ?? g["name"]?.toString() ??
+          "";
+        const result = await createResource(
+          BASE_URL,
+          {
+            "id": "blogger.blogs.getByUrl",
+            "path": "v3/blogs/byurl",
+            "httpMethod": "GET",
+            "parameterOrder": ["url"],
+            "parameters": {
+              "url": { "location": "query", "required": true },
+              "view": { "location": "query" },
+            },
+          },
+          params,
+          {},
+        );
+        return { result };
+      },
+    },
+    list_by_user: {
+      description: "list by user",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, unknown>, context: any) => {
+        const g = context.globalArgs;
+        const projectId = await getProjectId();
+        const params: Record<string, string> = { project: projectId };
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          g.name?.toString() ?? "current",
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        params["userId"] = existing["name"]?.toString() ??
+          g["name"]?.toString() ?? "";
+        const result = await createResource(
+          BASE_URL,
+          {
+            "id": "blogger.blogs.listByUser",
+            "path": "v3/users/{userId}/blogs",
+            "httpMethod": "GET",
+            "parameterOrder": ["userId"],
+            "parameters": {
+              "fetchUserInfo": { "location": "query" },
+              "role": { "location": "query" },
+              "status": { "location": "query" },
+              "userId": { "location": "path", "required": true },
+              "view": { "location": "query" },
+            },
+          },
+          params,
+          {},
+        );
+        return { result };
+      },
+    },
+  },
+};

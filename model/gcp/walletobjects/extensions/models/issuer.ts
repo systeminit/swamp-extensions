@@ -1,0 +1,343 @@
+// Auto-generated extension model for @swamp/gcp/walletobjects/issuer
+// Do not edit manually. Re-generate with: deno task generate:gcp
+
+// deno-lint-ignore-file no-explicit-any
+
+import { z } from "zod";
+import {
+  createResource,
+  getProjectId,
+  isResourceNotFoundError,
+  readResource,
+  updateResource,
+} from "./_lib/gcp.ts";
+
+const BASE_URL = "https://walletobjects.googleapis.com/";
+
+const GET_CONFIG = {
+  "id": "walletobjects.issuer.get",
+  "path": "walletobjects/v1/issuer/{resourceId}",
+  "httpMethod": "GET",
+  "parameterOrder": [
+    "resourceId",
+  ],
+  "parameters": {
+    "resourceId": {
+      "location": "path",
+      "required": true,
+    },
+  },
+} as const;
+
+const INSERT_CONFIG = {
+  "id": "walletobjects.issuer.insert",
+  "path": "walletobjects/v1/issuer",
+  "httpMethod": "POST",
+  "parameterOrder": [],
+  "parameters": {},
+} as const;
+
+const UPDATE_CONFIG = {
+  "id": "walletobjects.issuer.update",
+  "path": "walletobjects/v1/issuer/{resourceId}",
+  "httpMethod": "PUT",
+  "parameterOrder": [
+    "resourceId",
+  ],
+  "parameters": {
+    "resourceId": {
+      "location": "path",
+      "required": true,
+    },
+  },
+} as const;
+
+const GlobalArgsSchema = z.object({
+  callbackOptions: z.object({
+    updateRequestUrl: z.string().describe(
+      "URL for the merchant endpoint that would be called to request updates. The URL should be hosted on HTTPS and robots.txt should allow the URL path to be accessible by UserAgent:Googlebot. Deprecated.",
+    ).optional(),
+    url: z.string().describe(
+      "The HTTPS url configured by the merchant. The URL should be hosted on HTTPS and robots.txt should allow the URL path to be accessible by UserAgent:Googlebot.",
+    ).optional(),
+  }).optional(),
+  contactInfo: z.object({
+    alertsEmails: z.array(z.string()).describe(
+      "Email addresses which will receive alerts.",
+    ).optional(),
+    email: z.string().describe("The primary contact email address.").optional(),
+    name: z.string().describe("The primary contact name.").optional(),
+    phone: z.string().describe("The primary contact phone number.").optional(),
+  }).optional(),
+  homepageUrl: z.string().describe("URL for the issuer's home page.")
+    .optional(),
+  issuerId: z.string().describe(
+    "The unique identifier for an issuer account. This is automatically generated when the issuer is inserted.",
+  ).optional(),
+  name: z.string().describe("The account name of the issuer.").optional(),
+  smartTapMerchantData: z.object({
+    authenticationKeys: z.array(z.object({
+      id: z.number().int().describe(
+        "Available only to Smart Tap enabled partners. Contact support for additional guidance.",
+      ).optional(),
+      publicKeyPem: z.string().describe(
+        "Available only to Smart Tap enabled partners. Contact support for additional guidance.",
+      ).optional(),
+    })).describe(
+      "Available only to Smart Tap enabled partners. Contact support for additional guidance.",
+    ).optional(),
+    smartTapMerchantId: z.string().describe(
+      "Available only to Smart Tap enabled partners. Contact support for additional guidance.",
+    ).optional(),
+  }).optional(),
+});
+
+const StateSchema = z.object({
+  callbackOptions: z.object({
+    updateRequestUrl: z.string(),
+    url: z.string(),
+  }).optional(),
+  contactInfo: z.object({
+    alertsEmails: z.array(z.string()),
+    email: z.string(),
+    name: z.string(),
+    phone: z.string(),
+  }).optional(),
+  homepageUrl: z.string().optional(),
+  issuerId: z.string().optional(),
+  name: z.string().optional(),
+  smartTapMerchantData: z.object({
+    authenticationKeys: z.array(z.object({
+      id: z.number(),
+      publicKeyPem: z.string(),
+    })),
+    smartTapMerchantId: z.string(),
+  }).optional(),
+}).passthrough();
+
+type StateData = z.infer<typeof StateSchema>;
+
+const InputsSchema = z.object({
+  callbackOptions: z.object({
+    updateRequestUrl: z.string().describe(
+      "URL for the merchant endpoint that would be called to request updates. The URL should be hosted on HTTPS and robots.txt should allow the URL path to be accessible by UserAgent:Googlebot. Deprecated.",
+    ).optional(),
+    url: z.string().describe(
+      "The HTTPS url configured by the merchant. The URL should be hosted on HTTPS and robots.txt should allow the URL path to be accessible by UserAgent:Googlebot.",
+    ).optional(),
+  }).optional(),
+  contactInfo: z.object({
+    alertsEmails: z.array(z.string()).describe(
+      "Email addresses which will receive alerts.",
+    ).optional(),
+    email: z.string().describe("The primary contact email address.").optional(),
+    name: z.string().describe("The primary contact name.").optional(),
+    phone: z.string().describe("The primary contact phone number.").optional(),
+  }).optional(),
+  homepageUrl: z.string().describe("URL for the issuer's home page.")
+    .optional(),
+  issuerId: z.string().describe(
+    "The unique identifier for an issuer account. This is automatically generated when the issuer is inserted.",
+  ).optional(),
+  name: z.string().describe("The account name of the issuer.").optional(),
+  smartTapMerchantData: z.object({
+    authenticationKeys: z.array(z.object({
+      id: z.number().int().describe(
+        "Available only to Smart Tap enabled partners. Contact support for additional guidance.",
+      ).optional(),
+      publicKeyPem: z.string().describe(
+        "Available only to Smart Tap enabled partners. Contact support for additional guidance.",
+      ).optional(),
+    })).describe(
+      "Available only to Smart Tap enabled partners. Contact support for additional guidance.",
+    ).optional(),
+    smartTapMerchantId: z.string().describe(
+      "Available only to Smart Tap enabled partners. Contact support for additional guidance.",
+    ).optional(),
+  }).optional(),
+});
+
+export const model = {
+  type: "@swamp/gcp/walletobjects/issuer",
+  version: "2026.03.27.1",
+  globalArguments: GlobalArgsSchema,
+  inputsSchema: InputsSchema,
+  resources: {
+    state: {
+      description: "Returns the issuer with the given issuer ID.",
+      schema: StateSchema,
+      lifetime: "infinite",
+      garbageCollection: 10,
+    },
+  },
+  methods: {
+    create: {
+      description: "Create a issuer",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const projectId = await getProjectId();
+        const params: Record<string, string> = { project: projectId };
+        const body: Record<string, unknown> = {};
+        if (g["callbackOptions"] !== undefined) {
+          body["callbackOptions"] = g["callbackOptions"];
+        }
+        if (g["contactInfo"] !== undefined) {
+          body["contactInfo"] = g["contactInfo"];
+        }
+        if (g["homepageUrl"] !== undefined) {
+          body["homepageUrl"] = g["homepageUrl"];
+        }
+        if (g["issuerId"] !== undefined) body["issuerId"] = g["issuerId"];
+        if (g["name"] !== undefined) body["name"] = g["name"];
+        if (g["smartTapMerchantData"] !== undefined) {
+          body["smartTapMerchantData"] = g["smartTapMerchantData"];
+        }
+        if (g["id"] !== undefined) params["resourceId"] = String(g["id"]);
+        const result = await createResource(
+          BASE_URL,
+          INSERT_CONFIG,
+          params,
+          body,
+          GET_CONFIG,
+        ) as StateData;
+        const instanceName = (result.name ?? g.name)?.toString() ?? "current";
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    get: {
+      description: "Get a issuer",
+      arguments: z.object({
+        identifier: z.string().describe("The id of the issuer"),
+      }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const projectId = await getProjectId();
+        const params: Record<string, string> = { project: projectId };
+        const g = context.globalArgs;
+        params["resourceId"] = args.identifier;
+        const result = await readResource(
+          BASE_URL,
+          GET_CONFIG,
+          params,
+        ) as StateData;
+        const instanceName = (result.name ?? g.name)?.toString() ??
+          args.identifier;
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    update: {
+      description: "Update issuer attributes",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const projectId = await getProjectId();
+        const instanceName = g.name?.toString() ?? "current";
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          instanceName,
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        const params: Record<string, string> = { project: projectId };
+        params["resourceId"] = existing["id"]?.toString() ?? "";
+        const body: Record<string, unknown> = {};
+        if (g["callbackOptions"] !== undefined) {
+          body["callbackOptions"] = g["callbackOptions"];
+        }
+        if (g["contactInfo"] !== undefined) {
+          body["contactInfo"] = g["contactInfo"];
+        }
+        if (g["homepageUrl"] !== undefined) {
+          body["homepageUrl"] = g["homepageUrl"];
+        }
+        if (g["issuerId"] !== undefined) body["issuerId"] = g["issuerId"];
+        if (g["name"] !== undefined) body["name"] = g["name"];
+        if (g["smartTapMerchantData"] !== undefined) {
+          body["smartTapMerchantData"] = g["smartTapMerchantData"];
+        }
+        for (const key of Object.keys(existing)) {
+          if (
+            key === "fingerprint" || key === "labelFingerprint" ||
+            key === "etag" || key.endsWith("Fingerprint")
+          ) {
+            body[key] = existing[key];
+          }
+        }
+        const result = await updateResource(
+          BASE_URL,
+          UPDATE_CONFIG,
+          params,
+          body,
+          GET_CONFIG,
+        ) as StateData;
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    sync: {
+      description: "Sync issuer state from GCP",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const projectId = await getProjectId();
+        const instanceName = g.name?.toString() ?? "current";
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          instanceName,
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        try {
+          const params: Record<string, string> = { project: projectId };
+          const identifier = existing.id?.toString() ?? g["id"]?.toString();
+          if (!identifier) {
+            throw new Error(
+              "No identifier found in existing state or globalArgs",
+            );
+          }
+          params["resourceId"] = identifier;
+          const result = await readResource(
+            BASE_URL,
+            GET_CONFIG,
+            params,
+          ) as StateData;
+          const handle = await context.writeResource(
+            "state",
+            instanceName,
+            result,
+          );
+          return { dataHandles: [handle] };
+        } catch (error: unknown) {
+          if (isResourceNotFoundError(error)) {
+            const handle = await context.writeResource("state", instanceName, {
+              status: "not_found",
+              syncedAt: new Date().toISOString(),
+            });
+            return { dataHandles: [handle] };
+          }
+          throw error;
+        }
+      },
+    },
+  },
+};

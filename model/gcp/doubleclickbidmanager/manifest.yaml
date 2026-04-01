@@ -1,0 +1,19 @@
+# Auto-generated manifest. Re-generate with the appropriate deno task.
+manifestVersion: 1
+name: "@swamp/gcp/doubleclickbidmanager"
+version: "2026.03.27.1"
+description: "Google Cloud doubleclickbidmanager infrastructure models"
+labels:
+  - gcp
+  - google-cloud
+  - doubleclickbidmanager
+  - cloud
+  - infrastructure
+releaseNotes: |
+  - Added: queries, queries_reports
+models:
+  - queries.ts
+  - queries_reports.ts
+additionalFiles:
+  - LICENSE.txt
+  - README.md

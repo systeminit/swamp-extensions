@@ -1,0 +1,20 @@
+# Auto-generated manifest. Re-generate with the appropriate deno task.
+manifestVersion: 1
+name: "@swamp/gcp/admob"
+version: "2026.03.27.1"
+description: "Google Cloud admob infrastructure models"
+labels:
+  - gcp
+  - google-cloud
+  - admob
+  - cloud
+  - infrastructure
+releaseNotes: |
+  - Added: accounts, accounts_adunits, accounts_apps
+models:
+  - accounts.ts
+  - accounts_adunits.ts
+  - accounts_apps.ts
+additionalFiles:
+  - LICENSE.txt
+  - README.md

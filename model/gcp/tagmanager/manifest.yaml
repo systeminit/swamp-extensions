@@ -1,0 +1,34 @@
+# Auto-generated manifest. Re-generate with the appropriate deno task.
+manifestVersion: 1
+name: "@swamp/gcp/tagmanager"
+version: "2026.03.27.1"
+description: "Google Cloud tagmanager infrastructure models"
+labels:
+  - gcp
+  - google-cloud
+  - tagmanager
+  - cloud
+  - infrastructure
+releaseNotes: |
+  - Added: accounts, accounts_containers, accounts_containers_destinations, accounts_containers_environments, accounts_containers_version_headers, accounts_containers_versions, accounts_containers_workspaces, accounts_containers_workspaces_built_in_variables, accounts_containers_workspaces_clients, accounts_containers_workspaces_folders, accounts_containers_workspaces_gtag_config, accounts_containers_workspaces_tags, accounts_containers_workspaces_templates, accounts_containers_workspaces_transformations, accounts_containers_workspaces_triggers, accounts_containers_workspaces_variables, accounts_user_permissions
+models:
+  - accounts.ts
+  - accounts_containers.ts
+  - accounts_containers_destinations.ts
+  - accounts_containers_environments.ts
+  - accounts_containers_version_headers.ts
+  - accounts_containers_versions.ts
+  - accounts_containers_workspaces.ts
+  - accounts_containers_workspaces_built_in_variables.ts
+  - accounts_containers_workspaces_clients.ts
+  - accounts_containers_workspaces_folders.ts
+  - accounts_containers_workspaces_gtag_config.ts
+  - accounts_containers_workspaces_tags.ts
+  - accounts_containers_workspaces_templates.ts
+  - accounts_containers_workspaces_transformations.ts
+  - accounts_containers_workspaces_triggers.ts
+  - accounts_containers_workspaces_variables.ts
+  - accounts_user_permissions.ts
+additionalFiles:
+  - LICENSE.txt
+  - README.md

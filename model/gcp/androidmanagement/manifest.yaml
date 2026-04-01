@@ -1,0 +1,25 @@
+# Auto-generated manifest. Re-generate with the appropriate deno task.
+manifestVersion: 1
+name: "@swamp/gcp/androidmanagement"
+version: "2026.03.27.1"
+description: "Google Cloud androidmanagement infrastructure models"
+labels:
+  - gcp
+  - google-cloud
+  - androidmanagement
+  - cloud
+  - infrastructure
+releaseNotes: |
+  - Added: enterprises, enterprises_applications, enterprises_devices, enterprises_enrollmenttokens, enterprises_migrationtokens, enterprises_policies, enterprises_webapps, provisioninginfo
+models:
+  - enterprises.ts
+  - enterprises_applications.ts
+  - enterprises_devices.ts
+  - enterprises_enrollmenttokens.ts
+  - enterprises_migrationtokens.ts
+  - enterprises_policies.ts
+  - enterprises_webapps.ts
+  - provisioninginfo.ts
+additionalFiles:
+  - LICENSE.txt
+  - README.md
