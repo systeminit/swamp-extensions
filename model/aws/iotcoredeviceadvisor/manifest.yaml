@@ -1,0 +1,17 @@
+# Auto-generated manifest. Re-generate with the appropriate deno task.
+manifestVersion: 1
+name: "@swamp/aws/iotcoredeviceadvisor"
+version: "2026.03.19.1"
+description: "AWS IOTCOREDEVICEADVISOR infrastructure models"
+labels:
+  - aws
+  - iotcoredeviceadvisor
+  - cloud
+  - infrastructure
+releaseNotes: |
+  - Updated: suite_definition
+models:
+  - suite_definition.ts
+additionalFiles:
+  - LICENSE.txt
+  - README.md

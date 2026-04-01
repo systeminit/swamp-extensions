@@ -1,0 +1,256 @@
+// Auto-generated extension model for @swamp/aws/iot/thing-type
+// Do not edit manually. Re-generate with: deno task generate:aws
+
+// deno-lint-ignore-file no-explicit-any
+
+import { z } from "zod";
+import {
+  createResource,
+  deleteResource,
+  isResourceNotFoundError,
+  readResource,
+  updateResource,
+} from "./_lib/aws.ts";
+
+export const PropagatingAttributeSchema = z.object({
+  UserPropertyKey: z.string().max(128).regex(new RegExp("[a-zA-Z0-9:$.]+")),
+  ThingAttribute: z.string().max(128).regex(new RegExp("[a-zA-Z0-9_.,@/:#-]+"))
+    .optional(),
+  ConnectionAttribute: z.enum(["iot:ClientId", "iot:Thing.ThingName"])
+    .optional(),
+});
+
+export const TagSchema = z.object({
+  Key: z.string().min(1).max(128).regex(
+    new RegExp("^([\\p{L}\\p{Z}\\p{N}_.:/=+\\-@]*)$", "u"),
+  ).describe(
+    "Tag key (1-128 chars). No 'aws:' prefix. Allows: [A-Za-z0-9 _.:/=+-]",
+  ),
+  Value: z.string().min(1).max(256).describe(
+    "Tag value (1-256 chars). No 'aws:' prefix. Allows: [A-Za-z0-9 _.:/=+-]",
+  ),
+});
+
+const GlobalArgsSchema = z.object({
+  ThingTypeName: z.string().min(1).max(128).regex(new RegExp("[a-zA-Z0-9:_-]+"))
+    .optional(),
+  DeprecateThingType: z.boolean().optional(),
+  ThingTypeProperties: z.object({
+    SearchableAttributes: z.array(
+      z.string().max(128).regex(new RegExp("[a-zA-Z0-9_.,@/:#-]+")),
+    ).optional(),
+    ThingTypeDescription: z.string().max(2028).optional(),
+    Mqtt5Configuration: z.object({
+      PropagatingAttributes: z.array(PropagatingAttributeSchema).optional(),
+    }).optional(),
+  }).optional(),
+  Tags: z.array(TagSchema).describe(
+    "An array of key-value pairs to apply to this resource.",
+  ).optional(),
+});
+
+const StateSchema = z.object({
+  Id: z.string().optional(),
+  Arn: z.string().optional(),
+  ThingTypeName: z.string(),
+  DeprecateThingType: z.boolean().optional(),
+  ThingTypeProperties: z.object({
+    SearchableAttributes: z.array(z.string()),
+    ThingTypeDescription: z.string(),
+    Mqtt5Configuration: z.object({
+      PropagatingAttributes: z.array(PropagatingAttributeSchema),
+    }),
+  }).optional(),
+  Tags: z.array(TagSchema).optional(),
+}).passthrough();
+
+type StateData = z.infer<typeof StateSchema>;
+
+const InputsSchema = z.object({
+  ThingTypeName: z.string().min(1).max(128).regex(new RegExp("[a-zA-Z0-9:_-]+"))
+    .optional(),
+  DeprecateThingType: z.boolean().optional(),
+  ThingTypeProperties: z.object({
+    SearchableAttributes: z.array(
+      z.string().max(128).regex(new RegExp("[a-zA-Z0-9_.,@/:#-]+")),
+    ).optional(),
+    ThingTypeDescription: z.string().max(2028).optional(),
+    Mqtt5Configuration: z.object({
+      PropagatingAttributes: z.array(PropagatingAttributeSchema).optional(),
+    }).optional(),
+  }).optional(),
+  Tags: z.array(TagSchema).describe(
+    "An array of key-value pairs to apply to this resource.",
+  ).optional(),
+});
+
+export const model = {
+  type: "@swamp/aws/iot/thing-type",
+  version: "2026.03.19.1",
+  globalArguments: GlobalArgsSchema,
+  inputsSchema: InputsSchema,
+  resources: {
+    state: {
+      description: "IoT ThingType resource state",
+      schema: StateSchema,
+      lifetime: "infinite",
+      garbageCollection: 10,
+    },
+  },
+  methods: {
+    create: {
+      description: "Create a IoT ThingType",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const desiredState: Record<string, unknown> = {};
+        for (const [key, value] of Object.entries(g)) {
+          if (value !== undefined) desiredState[key] = value;
+        }
+        const result = await createResource(
+          "AWS::IoT::ThingType",
+          desiredState,
+        ) as StateData;
+        const instanceName =
+          (result.ThingTypeName ?? g.ThingTypeName)?.toString() ?? "current";
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    get: {
+      description: "Get a IoT ThingType",
+      arguments: z.object({
+        identifier: z.string().describe(
+          "The primary identifier of the IoT ThingType",
+        ),
+      }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const result = await readResource(
+          "AWS::IoT::ThingType",
+          args.identifier,
+        ) as StateData;
+        const instanceName =
+          (result.ThingTypeName ?? context.globalArgs.ThingTypeName)
+            ?.toString() ?? args.identifier;
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    update: {
+      description: "Update a IoT ThingType",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const instanceName = g.ThingTypeName?.toString() ?? "current";
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          instanceName,
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        const identifier = existing.ThingTypeName?.toString();
+        if (!identifier) {
+          throw new Error("No identifier found in existing state");
+        }
+        const currentState = await readResource(
+          "AWS::IoT::ThingType",
+          identifier,
+        ) as StateData;
+        const desiredState: Record<string, unknown> = { ...currentState };
+        for (const [key, value] of Object.entries(g)) {
+          if (value !== undefined) desiredState[key] = value;
+        }
+        const result = await updateResource(
+          "AWS::IoT::ThingType",
+          identifier,
+          currentState,
+          desiredState,
+          ["ThingTypeName"],
+        );
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    delete: {
+      description: "Delete a IoT ThingType",
+      arguments: z.object({
+        identifier: z.string().describe(
+          "The primary identifier of the IoT ThingType",
+        ),
+      }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const { existed } = await deleteResource(
+          "AWS::IoT::ThingType",
+          args.identifier,
+        );
+        const instanceName = context.globalArgs.ThingTypeName?.toString() ??
+          args.identifier;
+        const handle = await context.writeResource("state", instanceName, {
+          identifier: args.identifier,
+          existed,
+          status: existed ? "deleted" : "not_found",
+          deletedAt: new Date().toISOString(),
+        });
+        return { dataHandles: [handle] };
+      },
+    },
+    sync: {
+      description: "Sync IoT ThingType state from AWS",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const instanceName = g.ThingTypeName?.toString() ?? "current";
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          instanceName,
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        const identifier = existing.ThingTypeName?.toString();
+        if (!identifier) {
+          throw new Error("No identifier found in existing state");
+        }
+        try {
+          const result = await readResource(
+            "AWS::IoT::ThingType",
+            identifier,
+          ) as StateData;
+          const handle = await context.writeResource(
+            "state",
+            instanceName,
+            result,
+          );
+          return { dataHandles: [handle] };
+        } catch (error: unknown) {
+          if (isResourceNotFoundError(error)) {
+            const handle = await context.writeResource("state", instanceName, {
+              identifier,
+              status: "not_found",
+              syncedAt: new Date().toISOString(),
+            });
+            return { dataHandles: [handle] };
+          }
+          throw error;
+        }
+      },
+    },
+  },
+};

@@ -1,0 +1,423 @@
+// Auto-generated extension model for @swamp/aws/datasync/location-hdfs
+// Do not edit manually. Re-generate with: deno task generate:aws
+
+// deno-lint-ignore-file no-explicit-any
+
+import { z } from "zod";
+import {
+  createResource,
+  deleteResource,
+  isResourceNotFoundError,
+  readResource,
+  updateResource,
+} from "./_lib/aws.ts";
+
+export const NameNodeSchema = z.object({
+  Hostname: z.string().max(255).regex(
+    new RegExp(
+      "^(([a-zA-Z0-9\\-]*[a-zA-Z0-9])\\.)*([A-Za-z0-9\\-]*[A-Za-z0-9])$",
+    ),
+  ).describe(
+    "The DNS name or IP address of the Name Node in the customer's on premises HDFS cluster.",
+  ),
+  Port: z.number().int().min(1).max(65536).describe(
+    "The port on which the Name Node is listening on for client requests.",
+  ),
+});
+
+export const TagSchema = z.object({
+  Key: z.string().min(1).max(128).describe(
+    "The key name of the tag. You can specify a value that is 1 to 128 Unicode characters in length and cannot be prefixed with aws:. You can use any of the following characters: the set of Unicode letters, digits, whitespace, _,., /, =, +, and -.",
+  ),
+  Value: z.string().min(0).max(256).describe(
+    "The value for the tag. You can specify a value that is 0 to 256 Unicode characters in length and cannot be prefixed with aws:. You can use any of the following characters: the set of Unicode letters, digits, whitespace, _,., /, =, +, and -.",
+  ),
+});
+
+const GlobalArgsSchema = z.object({
+  name: z.string().describe(
+    "Instance name for this resource (used as the unique identifier in the factory pattern)",
+  ),
+  NameNodes: z.array(NameNodeSchema).describe(
+    "An array of Name Node(s) of the HDFS location.",
+  ),
+  BlockSize: z.number().int().min(1048576).max(1073741824).describe(
+    "Size of chunks (blocks) in bytes that the data is divided into when stored in the HDFS cluster.",
+  ).optional(),
+  ReplicationFactor: z.number().int().min(1).max(512).describe(
+    "Number of copies of each block that exists inside the HDFS cluster.",
+  ).optional(),
+  KmsKeyProviderUri: z.string().min(1).max(255).regex(
+    new RegExp(
+      "^kms:\\/\\/http[s]?@(([a-zA-Z0-9\\-]*[a-zA-Z0-9])\\.)*([A-Za-z0-9\\-]*[A-Za-z0-9])(;(([a-zA-Z0-9\\-]*[a-zA-Z0-9])\\.)*([A-Za-z0-9\\-]*[A-Za-z0-9]))*:[0-9]{1,5}\\/kms$",
+    ),
+  ).describe(
+    "The identifier for the Key Management Server where the encryption keys that encrypt data inside HDFS clusters are stored.",
+  ).optional(),
+  QopConfiguration: z.object({
+    RpcProtection: z.enum([
+      "AUTHENTICATION",
+      "INTEGRITY",
+      "PRIVACY",
+      "DISABLED",
+    ]).describe("Configuration for RPC Protection.").optional(),
+    DataTransferProtection: z.enum([
+      "AUTHENTICATION",
+      "INTEGRITY",
+      "PRIVACY",
+      "DISABLED",
+    ]).describe("Configuration for Data Transfer Protection.").optional(),
+  }).describe(
+    "Configuration information for RPC Protection and Data Transfer Protection. These parameters can be set to AUTHENTICATION, INTEGRITY, or PRIVACY. The default value is PRIVACY.",
+  ).optional(),
+  AuthenticationType: z.enum(["SIMPLE", "KERBEROS"]).describe(
+    "The authentication mode used to determine identity of user.",
+  ),
+  SimpleUser: z.string().min(1).max(256).regex(
+    new RegExp("^[_.A-Za-z0-9][-_.A-Za-z0-9]*$"),
+  ).describe(
+    "The user name that has read and write permissions on the specified HDFS cluster.",
+  ).optional(),
+  KerberosPrincipal: z.string().min(1).max(256).regex(new RegExp("^.+$"))
+    .describe(
+      "The unique identity, or principal, to which Kerberos can assign tickets.",
+    ).optional(),
+  KerberosKeytab: z.string().max(87384).describe(
+    "The Base64 string representation of the Keytab file.",
+  ).optional(),
+  KerberosKrb5Conf: z.string().max(174764).describe(
+    "The string representation of the Krb5Conf file, or the presigned URL to access the Krb5.conf file within an S3 bucket.",
+  ).optional(),
+  Tags: z.array(TagSchema).describe(
+    "An array of key-value pairs to apply to this resource.",
+  ).optional(),
+  AgentArns: z.array(
+    z.string().max(128).regex(
+      new RegExp(
+        "^arn:(aws|aws-cn|aws-us-gov|aws-eusc|aws-iso|aws-iso-b):datasync:[a-z\\-0-9]+:[0-9]{12}:agent/agent-[0-9a-z]{17}$",
+      ),
+    ),
+  ).describe("ARN(s) of the agent(s) to use for an HDFS location."),
+  Subdirectory: z.string().max(4096).regex(
+    new RegExp("^[a-zA-Z0-9_\\-\\+\\./\\(\\)\\$\\p{Zs}]+$", "u"),
+  ).describe(
+    "The subdirectory in HDFS that is used to read data from the HDFS source location or write data to the HDFS destination.",
+  ).optional(),
+  CmkSecretConfig: z.object({
+    KmsKeyArn: z.string().max(2048).regex(
+      new RegExp(
+        "^(arn:(aws|aws-cn|aws-us-gov|aws-eusc|aws-iso|aws-iso-b):kms:[a-z-0-9]+:[0-9]{12}:key/.*|)$",
+      ),
+    ).describe(
+      "Specifies the ARN for the customer-managed AWS KMS key used to encrypt the secret specified for SecretArn. DataSync provides this key to AWS Secrets Manager.",
+    ).optional(),
+  }).describe(
+    "Specifies configuration information for a DataSync-managed secret, such as an authentication token or set of credentials that DataSync uses to access a specific transfer location, and a customer-managed AWS KMS key.",
+  ).optional(),
+  CustomSecretConfig: z.object({
+    SecretAccessRoleArn: z.string().max(2048).regex(
+      new RegExp(
+        "^(arn:(aws|aws-cn|aws-us-gov|aws-eusc|aws-iso|aws-iso-b):iam::[0-9]{12}:role/.*|)$",
+      ),
+    ).describe(
+      "Specifies the ARN for the AWS Identity and Access Management role that DataSync uses to access the secret specified for SecretArn.",
+    ),
+  }).describe(
+    "Specifies configuration information for a customer-managed secret, such as an authentication token or set of credentials that DataSync uses to access a specific transfer location, and an IAM role that DataSync can assume and access the customer-managed secret.",
+  ).optional(),
+});
+
+const StateSchema = z.object({
+  NameNodes: z.array(NameNodeSchema).optional(),
+  BlockSize: z.number().optional(),
+  ReplicationFactor: z.number().optional(),
+  KmsKeyProviderUri: z.string().optional(),
+  QopConfiguration: z.object({
+    RpcProtection: z.string(),
+    DataTransferProtection: z.string(),
+  }).optional(),
+  AuthenticationType: z.string().optional(),
+  SimpleUser: z.string().optional(),
+  KerberosPrincipal: z.string().optional(),
+  KerberosKeytab: z.string().optional(),
+  KerberosKrb5Conf: z.string().optional(),
+  Tags: z.array(TagSchema).optional(),
+  AgentArns: z.array(z.string()).optional(),
+  Subdirectory: z.string().optional(),
+  LocationArn: z.string(),
+  LocationUri: z.string().optional(),
+  CmkSecretConfig: z.object({
+    SecretArn: z.string(),
+    KmsKeyArn: z.string(),
+  }).optional(),
+  CustomSecretConfig: z.object({
+    SecretArn: z.string(),
+    SecretAccessRoleArn: z.string(),
+  }).optional(),
+  ManagedSecretConfig: z.object({
+    SecretArn: z.string(),
+  }).optional(),
+}).passthrough();
+
+type StateData = z.infer<typeof StateSchema>;
+
+const InputsSchema = z.object({
+  name: z.string().optional(),
+  NameNodes: z.array(NameNodeSchema).describe(
+    "An array of Name Node(s) of the HDFS location.",
+  ).optional(),
+  BlockSize: z.number().int().min(1048576).max(1073741824).describe(
+    "Size of chunks (blocks) in bytes that the data is divided into when stored in the HDFS cluster.",
+  ).optional(),
+  ReplicationFactor: z.number().int().min(1).max(512).describe(
+    "Number of copies of each block that exists inside the HDFS cluster.",
+  ).optional(),
+  KmsKeyProviderUri: z.string().min(1).max(255).regex(
+    new RegExp(
+      "^kms:\\/\\/http[s]?@(([a-zA-Z0-9\\-]*[a-zA-Z0-9])\\.)*([A-Za-z0-9\\-]*[A-Za-z0-9])(;(([a-zA-Z0-9\\-]*[a-zA-Z0-9])\\.)*([A-Za-z0-9\\-]*[A-Za-z0-9]))*:[0-9]{1,5}\\/kms$",
+    ),
+  ).describe(
+    "The identifier for the Key Management Server where the encryption keys that encrypt data inside HDFS clusters are stored.",
+  ).optional(),
+  QopConfiguration: z.object({
+    RpcProtection: z.enum([
+      "AUTHENTICATION",
+      "INTEGRITY",
+      "PRIVACY",
+      "DISABLED",
+    ]).describe("Configuration for RPC Protection.").optional(),
+    DataTransferProtection: z.enum([
+      "AUTHENTICATION",
+      "INTEGRITY",
+      "PRIVACY",
+      "DISABLED",
+    ]).describe("Configuration for Data Transfer Protection.").optional(),
+  }).describe(
+    "Configuration information for RPC Protection and Data Transfer Protection. These parameters can be set to AUTHENTICATION, INTEGRITY, or PRIVACY. The default value is PRIVACY.",
+  ).optional(),
+  AuthenticationType: z.enum(["SIMPLE", "KERBEROS"]).describe(
+    "The authentication mode used to determine identity of user.",
+  ).optional(),
+  SimpleUser: z.string().min(1).max(256).regex(
+    new RegExp("^[_.A-Za-z0-9][-_.A-Za-z0-9]*$"),
+  ).describe(
+    "The user name that has read and write permissions on the specified HDFS cluster.",
+  ).optional(),
+  KerberosPrincipal: z.string().min(1).max(256).regex(new RegExp("^.+$"))
+    .describe(
+      "The unique identity, or principal, to which Kerberos can assign tickets.",
+    ).optional(),
+  KerberosKeytab: z.string().max(87384).describe(
+    "The Base64 string representation of the Keytab file.",
+  ).optional(),
+  KerberosKrb5Conf: z.string().max(174764).describe(
+    "The string representation of the Krb5Conf file, or the presigned URL to access the Krb5.conf file within an S3 bucket.",
+  ).optional(),
+  Tags: z.array(TagSchema).describe(
+    "An array of key-value pairs to apply to this resource.",
+  ).optional(),
+  AgentArns: z.array(
+    z.string().max(128).regex(
+      new RegExp(
+        "^arn:(aws|aws-cn|aws-us-gov|aws-eusc|aws-iso|aws-iso-b):datasync:[a-z\\-0-9]+:[0-9]{12}:agent/agent-[0-9a-z]{17}$",
+      ),
+    ),
+  ).describe("ARN(s) of the agent(s) to use for an HDFS location.").optional(),
+  Subdirectory: z.string().max(4096).regex(
+    new RegExp("^[a-zA-Z0-9_\\-\\+\\./\\(\\)\\$\\p{Zs}]+$", "u"),
+  ).describe(
+    "The subdirectory in HDFS that is used to read data from the HDFS source location or write data to the HDFS destination.",
+  ).optional(),
+  CmkSecretConfig: z.object({
+    KmsKeyArn: z.string().max(2048).regex(
+      new RegExp(
+        "^(arn:(aws|aws-cn|aws-us-gov|aws-eusc|aws-iso|aws-iso-b):kms:[a-z-0-9]+:[0-9]{12}:key/.*|)$",
+      ),
+    ).describe(
+      "Specifies the ARN for the customer-managed AWS KMS key used to encrypt the secret specified for SecretArn. DataSync provides this key to AWS Secrets Manager.",
+    ).optional(),
+  }).describe(
+    "Specifies configuration information for a DataSync-managed secret, such as an authentication token or set of credentials that DataSync uses to access a specific transfer location, and a customer-managed AWS KMS key.",
+  ).optional(),
+  CustomSecretConfig: z.object({
+    SecretAccessRoleArn: z.string().max(2048).regex(
+      new RegExp(
+        "^(arn:(aws|aws-cn|aws-us-gov|aws-eusc|aws-iso|aws-iso-b):iam::[0-9]{12}:role/.*|)$",
+      ),
+    ).describe(
+      "Specifies the ARN for the AWS Identity and Access Management role that DataSync uses to access the secret specified for SecretArn.",
+    ).optional(),
+  }).describe(
+    "Specifies configuration information for a customer-managed secret, such as an authentication token or set of credentials that DataSync uses to access a specific transfer location, and an IAM role that DataSync can assume and access the customer-managed secret.",
+  ).optional(),
+});
+
+export const model = {
+  type: "@swamp/aws/datasync/location-hdfs",
+  version: "2026.03.19.1",
+  globalArguments: GlobalArgsSchema,
+  inputsSchema: InputsSchema,
+  resources: {
+    state: {
+      description: "DataSync LocationHDFS resource state",
+      schema: StateSchema,
+      lifetime: "infinite",
+      garbageCollection: 10,
+    },
+  },
+  methods: {
+    create: {
+      description: "Create a DataSync LocationHDFS",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const desiredState: Record<string, unknown> = {};
+        for (const [key, value] of Object.entries(g)) {
+          if (key === "name") continue;
+          if (value !== undefined) desiredState[key] = value;
+        }
+        const result = await createResource(
+          "AWS::DataSync::LocationHDFS",
+          desiredState,
+        ) as StateData;
+        const instanceName = g.name?.toString() ?? "current";
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    get: {
+      description: "Get a DataSync LocationHDFS",
+      arguments: z.object({
+        identifier: z.string().describe(
+          "The primary identifier of the DataSync LocationHDFS",
+        ),
+      }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const result = await readResource(
+          "AWS::DataSync::LocationHDFS",
+          args.identifier,
+        ) as StateData;
+        const instanceName = context.globalArgs.name?.toString() ??
+          args.identifier;
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    update: {
+      description: "Update a DataSync LocationHDFS",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const instanceName = g.name?.toString() ?? "current";
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          instanceName,
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        const identifier = existing.LocationArn?.toString();
+        if (!identifier) {
+          throw new Error("No identifier found in existing state");
+        }
+        const currentState = await readResource(
+          "AWS::DataSync::LocationHDFS",
+          identifier,
+        ) as StateData;
+        const desiredState: Record<string, unknown> = { ...currentState };
+        for (const [key, value] of Object.entries(g)) {
+          if (key === "name") continue;
+          if (value !== undefined) desiredState[key] = value;
+        }
+        const result = await updateResource(
+          "AWS::DataSync::LocationHDFS",
+          identifier,
+          currentState,
+          desiredState,
+        );
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    delete: {
+      description: "Delete a DataSync LocationHDFS",
+      arguments: z.object({
+        identifier: z.string().describe(
+          "The primary identifier of the DataSync LocationHDFS",
+        ),
+      }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const { existed } = await deleteResource(
+          "AWS::DataSync::LocationHDFS",
+          args.identifier,
+        );
+        const instanceName = context.globalArgs.name?.toString() ??
+          args.identifier;
+        const handle = await context.writeResource("state", instanceName, {
+          identifier: args.identifier,
+          existed,
+          status: existed ? "deleted" : "not_found",
+          deletedAt: new Date().toISOString(),
+        });
+        return { dataHandles: [handle] };
+      },
+    },
+    sync: {
+      description: "Sync DataSync LocationHDFS state from AWS",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const instanceName = g.name?.toString() ?? "current";
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          instanceName,
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        const identifier = existing.LocationArn?.toString();
+        if (!identifier) {
+          throw new Error("No identifier found in existing state");
+        }
+        try {
+          const result = await readResource(
+            "AWS::DataSync::LocationHDFS",
+            identifier,
+          ) as StateData;
+          const handle = await context.writeResource(
+            "state",
+            instanceName,
+            result,
+          );
+          return { dataHandles: [handle] };
+        } catch (error: unknown) {
+          if (isResourceNotFoundError(error)) {
+            const handle = await context.writeResource("state", instanceName, {
+              identifier,
+              status: "not_found",
+              syncedAt: new Date().toISOString(),
+            });
+            return { dataHandles: [handle] };
+          }
+          throw error;
+        }
+      },
+    },
+  },
+};

@@ -1,0 +1,17 @@
+# Auto-generated manifest. Re-generate with the appropriate deno task.
+manifestVersion: 1
+name: "@swamp/aws/apptest"
+version: "2026.03.19.1"
+description: "AWS APPTEST infrastructure models"
+labels:
+  - aws
+  - apptest
+  - cloud
+  - infrastructure
+releaseNotes: |
+  - Updated: test_case
+models:
+  - test_case.ts
+additionalFiles:
+  - LICENSE.txt
+  - README.md

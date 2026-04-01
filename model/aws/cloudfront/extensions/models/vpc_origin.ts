@@ -1,0 +1,262 @@
+// Auto-generated extension model for @swamp/aws/cloudfront/vpc-origin
+// Do not edit manually. Re-generate with: deno task generate:aws
+
+// deno-lint-ignore-file no-explicit-any
+
+import { z } from "zod";
+import {
+  createResource,
+  deleteResource,
+  isResourceNotFoundError,
+  readResource,
+  updateResource,
+} from "./_lib/aws.ts";
+
+export const TagSchema = z.object({
+  Key: z.string().describe(
+    "A string that contains Tag key. The string length should be between 1 and 128 characters. Valid characters include a-z, A-Z, 0-9, space, and the special characters _ -.: / = + @.",
+  ),
+  Value: z.string().describe(
+    "A string that contains an optional Tag value. The string length should be between 0 and 256 characters. Valid characters include a-z, A-Z, 0-9, space, and the special characters _ -.: / = + @.",
+  ),
+});
+
+const GlobalArgsSchema = z.object({
+  name: z.string().describe(
+    "Instance name for this resource (used as the unique identifier in the factory pattern)",
+  ),
+  Tags: z.array(TagSchema).describe(
+    "A complex type that contains zero or more Tag elements.",
+  ).optional(),
+  VpcOriginEndpointConfig: z.object({
+    HTTPPort: z.number().int().describe(
+      "The HTTP port for the CloudFront VPC origin endpoint configuration. The default value is 80.",
+    ).optional(),
+    HTTPSPort: z.number().int().describe(
+      "The HTTPS port of the CloudFront VPC origin endpoint configuration. The default value is 443.",
+    ).optional(),
+    Name: z.string().describe(
+      "The name of the CloudFront VPC origin endpoint configuration.",
+    ),
+    OriginProtocolPolicy: z.string().describe(
+      "The origin protocol policy for the CloudFront VPC origin endpoint configuration.",
+    ).optional(),
+    OriginSSLProtocols: z.array(z.string()).describe(
+      "Specifies the minimum SSL/TLS protocol that CloudFront uses when connecting to your origin over HTTPS. Valid values include SSLv3, TLSv1, TLSv1.1, and TLSv1.2. For more information, see [Minimum Origin SSL Protocol](https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/DownloadDistValuesOrigin.html#DownloadDistValuesOriginSSLProtocols) in the *Amazon CloudFront Developer Guide*.",
+    ).optional(),
+  }).describe("The VPC origin endpoint configuration."),
+});
+
+const StateSchema = z.object({
+  Arn: z.string().optional(),
+  AccountId: z.string().optional(),
+  CreatedTime: z.string().optional(),
+  Id: z.string(),
+  LastModifiedTime: z.string().optional(),
+  Status: z.string().optional(),
+  Tags: z.array(TagSchema).optional(),
+  VpcOriginEndpointConfig: z.object({
+    Arn: z.string(),
+    HTTPPort: z.number(),
+    HTTPSPort: z.number(),
+    Name: z.string(),
+    OriginProtocolPolicy: z.string(),
+    OriginSSLProtocols: z.array(z.string()),
+  }).optional(),
+}).passthrough();
+
+type StateData = z.infer<typeof StateSchema>;
+
+const InputsSchema = z.object({
+  name: z.string().optional(),
+  Tags: z.array(TagSchema).describe(
+    "A complex type that contains zero or more Tag elements.",
+  ).optional(),
+  VpcOriginEndpointConfig: z.object({
+    HTTPPort: z.number().int().describe(
+      "The HTTP port for the CloudFront VPC origin endpoint configuration. The default value is 80.",
+    ).optional(),
+    HTTPSPort: z.number().int().describe(
+      "The HTTPS port of the CloudFront VPC origin endpoint configuration. The default value is 443.",
+    ).optional(),
+    Name: z.string().describe(
+      "The name of the CloudFront VPC origin endpoint configuration.",
+    ).optional(),
+    OriginProtocolPolicy: z.string().describe(
+      "The origin protocol policy for the CloudFront VPC origin endpoint configuration.",
+    ).optional(),
+    OriginSSLProtocols: z.array(z.string()).describe(
+      "Specifies the minimum SSL/TLS protocol that CloudFront uses when connecting to your origin over HTTPS. Valid values include SSLv3, TLSv1, TLSv1.1, and TLSv1.2. For more information, see [Minimum Origin SSL Protocol](https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/DownloadDistValuesOrigin.html#DownloadDistValuesOriginSSLProtocols) in the *Amazon CloudFront Developer Guide*.",
+    ).optional(),
+  }).describe("The VPC origin endpoint configuration.").optional(),
+});
+
+export const model = {
+  type: "@swamp/aws/cloudfront/vpc-origin",
+  version: "2026.03.19.1",
+  globalArguments: GlobalArgsSchema,
+  inputsSchema: InputsSchema,
+  resources: {
+    state: {
+      description: "CloudFront VpcOrigin resource state",
+      schema: StateSchema,
+      lifetime: "infinite",
+      garbageCollection: 10,
+    },
+  },
+  methods: {
+    create: {
+      description: "Create a CloudFront VpcOrigin",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const desiredState: Record<string, unknown> = {};
+        for (const [key, value] of Object.entries(g)) {
+          if (key === "name") continue;
+          if (value !== undefined) desiredState[key] = value;
+        }
+        const result = await createResource(
+          "AWS::CloudFront::VpcOrigin",
+          desiredState,
+        ) as StateData;
+        const instanceName = g.name?.toString() ?? "current";
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    get: {
+      description: "Get a CloudFront VpcOrigin",
+      arguments: z.object({
+        identifier: z.string().describe(
+          "The primary identifier of the CloudFront VpcOrigin",
+        ),
+      }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const result = await readResource(
+          "AWS::CloudFront::VpcOrigin",
+          args.identifier,
+        ) as StateData;
+        const instanceName = context.globalArgs.name?.toString() ??
+          args.identifier;
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    update: {
+      description: "Update a CloudFront VpcOrigin",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const instanceName = g.name?.toString() ?? "current";
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          instanceName,
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        const identifier = existing.Id?.toString();
+        if (!identifier) {
+          throw new Error("No identifier found in existing state");
+        }
+        const currentState = await readResource(
+          "AWS::CloudFront::VpcOrigin",
+          identifier,
+        ) as StateData;
+        const desiredState: Record<string, unknown> = { ...currentState };
+        for (const [key, value] of Object.entries(g)) {
+          if (key === "name") continue;
+          if (value !== undefined) desiredState[key] = value;
+        }
+        const result = await updateResource(
+          "AWS::CloudFront::VpcOrigin",
+          identifier,
+          currentState,
+          desiredState,
+        );
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    delete: {
+      description: "Delete a CloudFront VpcOrigin",
+      arguments: z.object({
+        identifier: z.string().describe(
+          "The primary identifier of the CloudFront VpcOrigin",
+        ),
+      }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const { existed } = await deleteResource(
+          "AWS::CloudFront::VpcOrigin",
+          args.identifier,
+        );
+        const instanceName = context.globalArgs.name?.toString() ??
+          args.identifier;
+        const handle = await context.writeResource("state", instanceName, {
+          identifier: args.identifier,
+          existed,
+          status: existed ? "deleted" : "not_found",
+          deletedAt: new Date().toISOString(),
+        });
+        return { dataHandles: [handle] };
+      },
+    },
+    sync: {
+      description: "Sync CloudFront VpcOrigin state from AWS",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const instanceName = g.name?.toString() ?? "current";
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          instanceName,
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        const identifier = existing.Id?.toString();
+        if (!identifier) {
+          throw new Error("No identifier found in existing state");
+        }
+        try {
+          const result = await readResource(
+            "AWS::CloudFront::VpcOrigin",
+            identifier,
+          ) as StateData;
+          const handle = await context.writeResource(
+            "state",
+            instanceName,
+            result,
+          );
+          return { dataHandles: [handle] };
+        } catch (error: unknown) {
+          if (isResourceNotFoundError(error)) {
+            const handle = await context.writeResource("state", instanceName, {
+              identifier,
+              status: "not_found",
+              syncedAt: new Date().toISOString(),
+            });
+            return { dataHandles: [handle] };
+          }
+          throw error;
+        }
+      },
+    },
+  },
+};

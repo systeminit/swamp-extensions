@@ -1,0 +1,273 @@
+// Auto-generated extension model for @swamp/aws/connect/contact-flow-module
+// Do not edit manually. Re-generate with: deno task generate:aws
+
+// deno-lint-ignore-file no-explicit-any
+
+import { z } from "zod";
+import {
+  createResource,
+  deleteResource,
+  isResourceNotFoundError,
+  readResource,
+  updateResource,
+} from "./_lib/aws.ts";
+
+export const TagSchema = z.object({
+  Key: z.string().min(1).max(128).describe(
+    "The key name of the tag. You can specify a value that is 1 to 128 Unicode characters in length and cannot be prefixed with aws:. You can use any of the following characters: the set of Unicode letters, digits, whitespace, _,., /, =, +, and -.",
+  ),
+  Value: z.string().min(0).max(256).describe(
+    "The value for the tag. You can specify a value that is maximum of 256 Unicode characters in length and cannot be prefixed with aws:. You can use any of the following characters: the set of Unicode letters, digits, whitespace, _,., /, =, +, and -.",
+  ),
+});
+
+const GlobalArgsSchema = z.object({
+  name: z.string().describe(
+    "Instance name for this resource (used as the unique identifier in the factory pattern)",
+  ),
+  InstanceArn: z.string().min(1).max(256).regex(
+    new RegExp(
+      "^arn:aws[-a-z0-9]*:connect:[-a-z0-9]*:[0-9]{12}:instance/[-a-zA-Z0-9]*$",
+    ),
+  ).describe("The identifier of the Amazon Connect instance (ARN)."),
+  Name: z.string().min(1).max(127).regex(new RegExp(".*\\S.*")).describe(
+    "The name of the contact flow module.",
+  ),
+  Content: z.string().min(1).max(256000).describe(
+    "The content of the contact flow module in JSON format.",
+  ),
+  Description: z.string().max(500).regex(new RegExp(".*\\S.*")).describe(
+    "The description of the contact flow module.",
+  ).optional(),
+  State: z.string().max(500).describe("The state of the contact flow module.")
+    .optional(),
+  Tags: z.array(TagSchema).describe("One or more tags.").optional(),
+  Settings: z.string().max(256000).describe(
+    "The schema of the settings for contact flow module in JSON Schema V4 format.",
+  ).optional(),
+  ExternalInvocationConfiguration: z.object({
+    Enabled: z.boolean().describe(
+      "Specifies whether the flow module resource is enabled for external invocation",
+    ),
+  }).describe(
+    "Defines the external invocation configuration of the flow module resource",
+  ).optional(),
+});
+
+const StateSchema = z.object({
+  InstanceArn: z.string().optional(),
+  ContactFlowModuleArn: z.string(),
+  Name: z.string().optional(),
+  Content: z.string().optional(),
+  Description: z.string().optional(),
+  State: z.string().optional(),
+  Status: z.string().optional(),
+  Tags: z.array(TagSchema).optional(),
+  Settings: z.string().optional(),
+  ExternalInvocationConfiguration: z.object({
+    Enabled: z.boolean(),
+  }).optional(),
+}).passthrough();
+
+type StateData = z.infer<typeof StateSchema>;
+
+const InputsSchema = z.object({
+  name: z.string().optional(),
+  InstanceArn: z.string().min(1).max(256).regex(
+    new RegExp(
+      "^arn:aws[-a-z0-9]*:connect:[-a-z0-9]*:[0-9]{12}:instance/[-a-zA-Z0-9]*$",
+    ),
+  ).describe("The identifier of the Amazon Connect instance (ARN).").optional(),
+  Name: z.string().min(1).max(127).regex(new RegExp(".*\\S.*")).describe(
+    "The name of the contact flow module.",
+  ).optional(),
+  Content: z.string().min(1).max(256000).describe(
+    "The content of the contact flow module in JSON format.",
+  ).optional(),
+  Description: z.string().max(500).regex(new RegExp(".*\\S.*")).describe(
+    "The description of the contact flow module.",
+  ).optional(),
+  State: z.string().max(500).describe("The state of the contact flow module.")
+    .optional(),
+  Tags: z.array(TagSchema).describe("One or more tags.").optional(),
+  Settings: z.string().max(256000).describe(
+    "The schema of the settings for contact flow module in JSON Schema V4 format.",
+  ).optional(),
+  ExternalInvocationConfiguration: z.object({
+    Enabled: z.boolean().describe(
+      "Specifies whether the flow module resource is enabled for external invocation",
+    ).optional(),
+  }).describe(
+    "Defines the external invocation configuration of the flow module resource",
+  ).optional(),
+});
+
+export const model = {
+  type: "@swamp/aws/connect/contact-flow-module",
+  version: "2026.03.19.1",
+  globalArguments: GlobalArgsSchema,
+  inputsSchema: InputsSchema,
+  resources: {
+    state: {
+      description: "Connect ContactFlowModule resource state",
+      schema: StateSchema,
+      lifetime: "infinite",
+      garbageCollection: 10,
+    },
+  },
+  methods: {
+    create: {
+      description: "Create a Connect ContactFlowModule",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const desiredState: Record<string, unknown> = {};
+        for (const [key, value] of Object.entries(g)) {
+          if (key === "name") continue;
+          if (value !== undefined) desiredState[key] = value;
+        }
+        const result = await createResource(
+          "AWS::Connect::ContactFlowModule",
+          desiredState,
+        ) as StateData;
+        const instanceName = g.name?.toString() ?? "current";
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    get: {
+      description: "Get a Connect ContactFlowModule",
+      arguments: z.object({
+        identifier: z.string().describe(
+          "The primary identifier of the Connect ContactFlowModule",
+        ),
+      }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const result = await readResource(
+          "AWS::Connect::ContactFlowModule",
+          args.identifier,
+        ) as StateData;
+        const instanceName = context.globalArgs.name?.toString() ??
+          args.identifier;
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    update: {
+      description: "Update a Connect ContactFlowModule",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const instanceName = g.name?.toString() ?? "current";
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          instanceName,
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        const identifier = existing.ContactFlowModuleArn?.toString();
+        if (!identifier) {
+          throw new Error("No identifier found in existing state");
+        }
+        const currentState = await readResource(
+          "AWS::Connect::ContactFlowModule",
+          identifier,
+        ) as StateData;
+        const desiredState: Record<string, unknown> = { ...currentState };
+        for (const [key, value] of Object.entries(g)) {
+          if (key === "name") continue;
+          if (value !== undefined) desiredState[key] = value;
+        }
+        const result = await updateResource(
+          "AWS::Connect::ContactFlowModule",
+          identifier,
+          currentState,
+          desiredState,
+        );
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    delete: {
+      description: "Delete a Connect ContactFlowModule",
+      arguments: z.object({
+        identifier: z.string().describe(
+          "The primary identifier of the Connect ContactFlowModule",
+        ),
+      }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const { existed } = await deleteResource(
+          "AWS::Connect::ContactFlowModule",
+          args.identifier,
+        );
+        const instanceName = context.globalArgs.name?.toString() ??
+          args.identifier;
+        const handle = await context.writeResource("state", instanceName, {
+          identifier: args.identifier,
+          existed,
+          status: existed ? "deleted" : "not_found",
+          deletedAt: new Date().toISOString(),
+        });
+        return { dataHandles: [handle] };
+      },
+    },
+    sync: {
+      description: "Sync Connect ContactFlowModule state from AWS",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const instanceName = g.name?.toString() ?? "current";
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          instanceName,
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        const identifier = existing.ContactFlowModuleArn?.toString();
+        if (!identifier) {
+          throw new Error("No identifier found in existing state");
+        }
+        try {
+          const result = await readResource(
+            "AWS::Connect::ContactFlowModule",
+            identifier,
+          ) as StateData;
+          const handle = await context.writeResource(
+            "state",
+            instanceName,
+            result,
+          );
+          return { dataHandles: [handle] };
+        } catch (error: unknown) {
+          if (isResourceNotFoundError(error)) {
+            const handle = await context.writeResource("state", instanceName, {
+              identifier,
+              status: "not_found",
+              syncedAt: new Date().toISOString(),
+            });
+            return { dataHandles: [handle] };
+          }
+          throw error;
+        }
+      },
+    },
+  },
+};

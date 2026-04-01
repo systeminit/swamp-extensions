@@ -1,0 +1,29 @@
+# Auto-generated manifest. Re-generate with the appropriate deno task.
+manifestVersion: 1
+name: "@swamp/aws/glue"
+version: "2026.03.19.1"
+description: "AWS GLUE infrastructure models"
+labels:
+  - aws
+  - glue
+  - cloud
+  - infrastructure
+releaseNotes: |
+  - Updated: catalog, crawler, database, identity_center_configuration, integration, integration_resource_property, job, registry, schema, schema_version, schema_version_metadata, trigger, usage_profile
+models:
+  - catalog.ts
+  - crawler.ts
+  - database.ts
+  - identity_center_configuration.ts
+  - integration.ts
+  - integration_resource_property.ts
+  - job.ts
+  - registry.ts
+  - schema.ts
+  - schema_version.ts
+  - schema_version_metadata.ts
+  - trigger.ts
+  - usage_profile.ts
+additionalFiles:
+  - LICENSE.txt
+  - README.md

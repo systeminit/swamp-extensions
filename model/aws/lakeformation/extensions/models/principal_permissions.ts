@@ -1,0 +1,416 @@
+// Auto-generated extension model for @swamp/aws/lakeformation/principal-permissions
+// Do not edit manually. Re-generate with: deno task generate:aws
+
+// deno-lint-ignore-file no-explicit-any
+
+import { z } from "zod";
+import {
+  createResource,
+  deleteResource,
+  isResourceNotFoundError,
+  readResource,
+} from "./_lib/aws.ts";
+
+export const DatabaseResourceSchema = z.object({
+  CatalogId: z.string().min(12).max(12).describe(
+    "The identifier for the Data Catalog. By default, it is the account ID of the caller.",
+  ),
+  Name: z.string().min(1).max(255).describe(
+    "The name of the database resource. Unique to the Data Catalog.",
+  ),
+});
+
+export const TableResourceSchema = z.object({
+  CatalogId: z.string().min(12).max(12).describe(
+    "The identifier for the Data Catalog. By default, it is the account ID of the caller.",
+  ),
+  DatabaseName: z.string().min(1).max(255).describe(
+    "The name of the database for the table. Unique to a Data Catalog. A database is a set of associated table definitions organized into a logical group. You can Grant and Revoke database privileges to a principal.",
+  ),
+  Name: z.string().min(1).max(255).describe("The name of the table.")
+    .optional(),
+  TableWildcard: z.string().describe(
+    "A wildcard object representing every table under a database. At least one of TableResource$Name or TableResource$TableWildcard is required.",
+  ).optional(),
+});
+
+export const ColumnWildcardSchema = z.object({
+  ExcludedColumnNames: z.array(z.string().min(1).max(255)).describe(
+    "Excludes column names. Any column with this name will be excluded.",
+  ).optional(),
+});
+
+export const TableWithColumnsResourceSchema = z.object({
+  CatalogId: z.string().min(12).max(12).describe(
+    "The identifier for the GLUDC where the location is registered with LFlong.",
+  ),
+  DatabaseName: z.string().min(1).max(255).describe(
+    "The name of the database for the table with columns resource. Unique to the Data Catalog. A database is a set of associated table definitions organized into a logical group. You can Grant and Revoke database privileges to a principal.",
+  ),
+  Name: z.string().min(1).max(255).describe(
+    "The name of the table resource. A table is a metadata definition that represents your data. You can Grant and Revoke table privileges to a principal.",
+  ),
+  ColumnNames: z.array(z.string().min(1).max(255)).describe(
+    "The list of column names for the table. At least one of ColumnNames or ColumnWildcard is required.",
+  ).optional(),
+  ColumnWildcard: ColumnWildcardSchema.describe(
+    "A wildcard specified by a ColumnWildcard object. At least one of ColumnNames or ColumnWildcard is required.",
+  ).optional(),
+});
+
+export const DataLocationResourceSchema = z.object({
+  CatalogId: z.string().min(12).max(12).describe(
+    "The identifier for the GLUDC where the location is registered with LFlong.",
+  ),
+  ResourceArn: z.string().describe(
+    "The Amazon Resource Name (ARN) that uniquely identifies the data location resource.",
+  ),
+});
+
+export const DataCellsFilterResourceSchema = z.object({
+  TableCatalogId: z.string().min(12).max(12).describe(
+    "The ID of the catalog to which the table belongs.",
+  ),
+  DatabaseName: z.string().min(1).max(255).describe("A database in the GLUDC."),
+  TableName: z.string().min(1).max(255).describe("The name of the table."),
+  Name: z.string().min(1).max(255).describe(
+    "The name given by the user to the data filter cell.",
+  ),
+});
+
+export const LFTagKeyResourceSchema = z.object({
+  CatalogId: z.string().min(12).max(12).describe(
+    "The identifier for the GLUDC where the location is registered with GLUDC.",
+  ),
+  TagKey: z.string().min(1).max(255).describe("The key-name for the LF-tag."),
+  TagValues: z.array(z.string().min(0).max(256)).describe(
+    "A list of possible values for the corresponding TagKey of an LF-tag key-value pair.",
+  ),
+});
+
+export const LFTagSchema = z.object({
+  TagKey: z.string().min(1).max(128).describe("The key-name for the LF-tag.")
+    .optional(),
+  TagValues: z.array(z.string().min(0).max(256)).describe(
+    "A list of possible values of the corresponding TagKey of an LF-tag key-value pair.",
+  ).optional(),
+});
+
+export const LFTagPolicyResourceSchema = z.object({
+  CatalogId: z.string().min(12).max(12).describe(
+    "The identifier for the GLUDC. The GLUDC is the persistent metadata store. It contains database definitions, table definitions, and other control information to manage your LFlong environment.",
+  ),
+  ResourceType: z.enum(["DATABASE", "TABLE"]).describe(
+    "The resource type for which the LF-tag policy applies.",
+  ),
+  Expression: z.array(LFTagSchema).describe(
+    "A list of LF-tag conditions that apply to the resource's LF-tag policy.",
+  ),
+});
+
+const GlobalArgsSchema = z.object({
+  name: z.string().describe(
+    "Instance name for this resource (used as the unique identifier in the factory pattern)",
+  ),
+  Catalog: z.string().min(12).max(12).describe(
+    "The identifier for the GLUDC. By default, the account ID. The GLUDC is the persistent metadata store. It contains database definitions, table definitions, and other control information to manage your Lake Formation environment.",
+  ).optional(),
+  Principal: z.object({
+    DataLakePrincipalIdentifier: z.string().min(1).max(255).describe(
+      "An identifier for the LFlong principal.",
+    ).optional(),
+  }).describe("The principal to be granted a permission."),
+  Resource: z.object({
+    Catalog: z.string().describe(
+      "The identifier for the Data Catalog. By default, the account ID. The Data Catalog is the persistent metadata store. It contains database definitions, table definitions, and other control information to manage your LFlong environment.",
+    ).optional(),
+    Database: DatabaseResourceSchema.describe(
+      "The database for the resource. Unique to the Data Catalog. A database is a set of associated table definitions organized into a logical group. You can Grant and Revoke database permissions to a principal.",
+    ).optional(),
+    Table: TableResourceSchema.describe(
+      "The table for the resource. A table is a metadata definition that represents your data. You can Grant and Revoke table privileges to a principal.",
+    ).optional(),
+    TableWithColumns: TableWithColumnsResourceSchema.describe(
+      "The table with columns for the resource. A principal with permissions to this resource can select metadata from the columns of a table in the Data Catalog and the underlying data in Amazon S3.",
+    ).optional(),
+    DataLocation: DataLocationResourceSchema.describe(
+      "The location of an Amazon S3 path where permissions are granted or revoked.",
+    ).optional(),
+    DataCellsFilter: DataCellsFilterResourceSchema.describe(
+      "A data cell filter.",
+    ).optional(),
+    LFTag: LFTagKeyResourceSchema.describe(
+      "The LF-tag key and values attached to a resource.",
+    ).optional(),
+    LFTagPolicy: LFTagPolicyResourceSchema.describe(
+      "A list of LF-tag conditions that define a resource's LF-tag policy.",
+    ).optional(),
+  }).describe("The resource to be granted or revoked permissions."),
+  Permissions: z.array(
+    z.enum([
+      "ALL",
+      "SELECT",
+      "ALTER",
+      "DROP",
+      "DELETE",
+      "INSERT",
+      "DESCRIBE",
+      "CREATE_DATABASE",
+      "CREATE_TABLE",
+      "DATA_LOCATION_ACCESS",
+      "CREATE_LF_TAG",
+      "ASSOCIATE",
+      "GRANT_WITH_LF_TAG_EXPRESSION",
+    ]),
+  ).describe("The permissions granted or revoked."),
+  PermissionsWithGrantOption: z.array(
+    z.enum([
+      "ALL",
+      "SELECT",
+      "ALTER",
+      "DROP",
+      "DELETE",
+      "INSERT",
+      "DESCRIBE",
+      "CREATE_DATABASE",
+      "CREATE_TABLE",
+      "DATA_LOCATION_ACCESS",
+      "CREATE_LF_TAG",
+      "ASSOCIATE",
+      "GRANT_WITH_LF_TAG_EXPRESSION",
+    ]),
+  ).describe(
+    "Indicates the ability to grant permissions (as a subset of permissions granted).",
+  ),
+});
+
+const StateSchema = z.object({
+  Catalog: z.string().optional(),
+  Principal: z.object({
+    DataLakePrincipalIdentifier: z.string(),
+  }).optional(),
+  Resource: z.object({
+    Catalog: z.string(),
+    Database: DatabaseResourceSchema,
+    Table: TableResourceSchema,
+    TableWithColumns: TableWithColumnsResourceSchema,
+    DataLocation: DataLocationResourceSchema,
+    DataCellsFilter: DataCellsFilterResourceSchema,
+    LFTag: LFTagKeyResourceSchema,
+    LFTagPolicy: LFTagPolicyResourceSchema,
+  }).optional(),
+  Permissions: z.array(z.string()).optional(),
+  PermissionsWithGrantOption: z.array(z.string()).optional(),
+  PrincipalIdentifier: z.string(),
+  ResourceIdentifier: z.string(),
+}).passthrough();
+
+type StateData = z.infer<typeof StateSchema>;
+
+const InputsSchema = z.object({
+  name: z.string().optional(),
+  Catalog: z.string().min(12).max(12).describe(
+    "The identifier for the GLUDC. By default, the account ID. The GLUDC is the persistent metadata store. It contains database definitions, table definitions, and other control information to manage your Lake Formation environment.",
+  ).optional(),
+  Principal: z.object({
+    DataLakePrincipalIdentifier: z.string().min(1).max(255).describe(
+      "An identifier for the LFlong principal.",
+    ).optional(),
+  }).describe("The principal to be granted a permission.").optional(),
+  Resource: z.object({
+    Catalog: z.string().describe(
+      "The identifier for the Data Catalog. By default, the account ID. The Data Catalog is the persistent metadata store. It contains database definitions, table definitions, and other control information to manage your LFlong environment.",
+    ).optional(),
+    Database: DatabaseResourceSchema.describe(
+      "The database for the resource. Unique to the Data Catalog. A database is a set of associated table definitions organized into a logical group. You can Grant and Revoke database permissions to a principal.",
+    ).optional(),
+    Table: TableResourceSchema.describe(
+      "The table for the resource. A table is a metadata definition that represents your data. You can Grant and Revoke table privileges to a principal.",
+    ).optional(),
+    TableWithColumns: TableWithColumnsResourceSchema.describe(
+      "The table with columns for the resource. A principal with permissions to this resource can select metadata from the columns of a table in the Data Catalog and the underlying data in Amazon S3.",
+    ).optional(),
+    DataLocation: DataLocationResourceSchema.describe(
+      "The location of an Amazon S3 path where permissions are granted or revoked.",
+    ).optional(),
+    DataCellsFilter: DataCellsFilterResourceSchema.describe(
+      "A data cell filter.",
+    ).optional(),
+    LFTag: LFTagKeyResourceSchema.describe(
+      "The LF-tag key and values attached to a resource.",
+    ).optional(),
+    LFTagPolicy: LFTagPolicyResourceSchema.describe(
+      "A list of LF-tag conditions that define a resource's LF-tag policy.",
+    ).optional(),
+  }).describe("The resource to be granted or revoked permissions.").optional(),
+  Permissions: z.array(
+    z.enum([
+      "ALL",
+      "SELECT",
+      "ALTER",
+      "DROP",
+      "DELETE",
+      "INSERT",
+      "DESCRIBE",
+      "CREATE_DATABASE",
+      "CREATE_TABLE",
+      "DATA_LOCATION_ACCESS",
+      "CREATE_LF_TAG",
+      "ASSOCIATE",
+      "GRANT_WITH_LF_TAG_EXPRESSION",
+    ]),
+  ).describe("The permissions granted or revoked.").optional(),
+  PermissionsWithGrantOption: z.array(
+    z.enum([
+      "ALL",
+      "SELECT",
+      "ALTER",
+      "DROP",
+      "DELETE",
+      "INSERT",
+      "DESCRIBE",
+      "CREATE_DATABASE",
+      "CREATE_TABLE",
+      "DATA_LOCATION_ACCESS",
+      "CREATE_LF_TAG",
+      "ASSOCIATE",
+      "GRANT_WITH_LF_TAG_EXPRESSION",
+    ]),
+  ).describe(
+    "Indicates the ability to grant permissions (as a subset of permissions granted).",
+  ).optional(),
+});
+
+export const model = {
+  type: "@swamp/aws/lakeformation/principal-permissions",
+  version: "2026.03.19.1",
+  globalArguments: GlobalArgsSchema,
+  inputsSchema: InputsSchema,
+  resources: {
+    state: {
+      description: "LakeFormation PrincipalPermissions resource state",
+      schema: StateSchema,
+      lifetime: "infinite",
+      garbageCollection: 10,
+    },
+  },
+  methods: {
+    create: {
+      description: "Create a LakeFormation PrincipalPermissions",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const desiredState: Record<string, unknown> = {};
+        for (const [key, value] of Object.entries(g)) {
+          if (key === "name") continue;
+          if (value !== undefined) desiredState[key] = value;
+        }
+        const result = await createResource(
+          "AWS::LakeFormation::PrincipalPermissions",
+          desiredState,
+        ) as StateData;
+        const instanceName = g.name?.toString() ?? "current";
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    get: {
+      description: "Get a LakeFormation PrincipalPermissions",
+      arguments: z.object({
+        identifier: z.string().describe(
+          "The primary identifier of the LakeFormation PrincipalPermissions",
+        ),
+      }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const result = await readResource(
+          "AWS::LakeFormation::PrincipalPermissions",
+          args.identifier,
+        ) as StateData;
+        const instanceName = context.globalArgs.name?.toString() ??
+          args.identifier;
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    delete: {
+      description: "Delete a LakeFormation PrincipalPermissions",
+      arguments: z.object({
+        identifier: z.string().describe(
+          "The primary identifier of the LakeFormation PrincipalPermissions",
+        ),
+      }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const { existed } = await deleteResource(
+          "AWS::LakeFormation::PrincipalPermissions",
+          args.identifier,
+        );
+        const instanceName = context.globalArgs.name?.toString() ??
+          args.identifier;
+        const handle = await context.writeResource("state", instanceName, {
+          identifier: args.identifier,
+          existed,
+          status: existed ? "deleted" : "not_found",
+          deletedAt: new Date().toISOString(),
+        });
+        return { dataHandles: [handle] };
+      },
+    },
+    sync: {
+      description: "Sync LakeFormation PrincipalPermissions state from AWS",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const instanceName = g.name?.toString() ?? "current";
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          instanceName,
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        const idParts = [
+          existing.PrincipalIdentifier?.toString(),
+          existing.ResourceIdentifier?.toString(),
+        ];
+        if (idParts.some((p) => !p)) {
+          throw new Error(
+            "Missing primary identifier fields in existing state",
+          );
+        }
+        const identifier = idParts.join("|");
+        try {
+          const result = await readResource(
+            "AWS::LakeFormation::PrincipalPermissions",
+            identifier,
+          ) as StateData;
+          const handle = await context.writeResource(
+            "state",
+            instanceName,
+            result,
+          );
+          return { dataHandles: [handle] };
+        } catch (error: unknown) {
+          if (isResourceNotFoundError(error)) {
+            const handle = await context.writeResource("state", instanceName, {
+              identifier,
+              status: "not_found",
+              syncedAt: new Date().toISOString(),
+            });
+            return { dataHandles: [handle] };
+          }
+          throw error;
+        }
+      },
+    },
+  },
+};

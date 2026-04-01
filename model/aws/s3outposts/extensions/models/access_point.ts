@@ -1,0 +1,246 @@
+// Auto-generated extension model for @swamp/aws/s3outposts/access-point
+// Do not edit manually. Re-generate with: deno task generate:aws
+
+// deno-lint-ignore-file no-explicit-any
+
+import { z } from "zod";
+import {
+  createResource,
+  deleteResource,
+  isResourceNotFoundError,
+  readResource,
+  updateResource,
+} from "./_lib/aws.ts";
+
+const GlobalArgsSchema = z.object({
+  name: z.string().describe(
+    "Instance name for this resource (used as the unique identifier in the factory pattern)",
+  ),
+  Bucket: z.string().min(20).max(2048).regex(
+    new RegExp(
+      "^arn:[^:]+:s3-outposts:[a-zA-Z0-9\\-]+:\\d{12}:outpost\\/[^:]+\\/bucket\\/[^:]+$",
+    ),
+  ).describe(
+    "The Amazon Resource Name (ARN) of the bucket you want to associate this AccessPoint with.",
+  ),
+  Name: z.string().min(3).max(50).regex(
+    new RegExp("^[a-z0-9]([a-z0-9\\\\-]*[a-z0-9])?$"),
+  ).describe("A name for the AccessPoint."),
+  VpcConfiguration: z.object({
+    VpcId: z.string().min(1).max(1024).describe(
+      "Virtual Private Cloud (VPC) Id from which AccessPoint will allow requests.",
+    ).optional(),
+  }).describe(
+    "Virtual Private Cloud (VPC) from which requests can be made to the AccessPoint.",
+  ),
+  Policy: z.string().describe(
+    "The access point policy associated with this access point.",
+  ).optional(),
+});
+
+const StateSchema = z.object({
+  Arn: z.string(),
+  Bucket: z.string().optional(),
+  Name: z.string().optional(),
+  VpcConfiguration: z.object({
+    VpcId: z.string(),
+  }).optional(),
+  Policy: z.string().optional(),
+}).passthrough();
+
+type StateData = z.infer<typeof StateSchema>;
+
+const InputsSchema = z.object({
+  name: z.string().optional(),
+  Bucket: z.string().min(20).max(2048).regex(
+    new RegExp(
+      "^arn:[^:]+:s3-outposts:[a-zA-Z0-9\\-]+:\\d{12}:outpost\\/[^:]+\\/bucket\\/[^:]+$",
+    ),
+  ).describe(
+    "The Amazon Resource Name (ARN) of the bucket you want to associate this AccessPoint with.",
+  ).optional(),
+  Name: z.string().min(3).max(50).regex(
+    new RegExp("^[a-z0-9]([a-z0-9\\\\-]*[a-z0-9])?$"),
+  ).describe("A name for the AccessPoint.").optional(),
+  VpcConfiguration: z.object({
+    VpcId: z.string().min(1).max(1024).describe(
+      "Virtual Private Cloud (VPC) Id from which AccessPoint will allow requests.",
+    ).optional(),
+  }).describe(
+    "Virtual Private Cloud (VPC) from which requests can be made to the AccessPoint.",
+  ).optional(),
+  Policy: z.string().describe(
+    "The access point policy associated with this access point.",
+  ).optional(),
+});
+
+export const model = {
+  type: "@swamp/aws/s3outposts/access-point",
+  version: "2026.03.19.1",
+  globalArguments: GlobalArgsSchema,
+  inputsSchema: InputsSchema,
+  resources: {
+    state: {
+      description: "S3Outposts AccessPoint resource state",
+      schema: StateSchema,
+      lifetime: "infinite",
+      garbageCollection: 10,
+    },
+  },
+  methods: {
+    create: {
+      description: "Create a S3Outposts AccessPoint",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const desiredState: Record<string, unknown> = {};
+        for (const [key, value] of Object.entries(g)) {
+          if (key === "name") continue;
+          if (value !== undefined) desiredState[key] = value;
+        }
+        const result = await createResource(
+          "AWS::S3Outposts::AccessPoint",
+          desiredState,
+        ) as StateData;
+        const instanceName = g.name?.toString() ?? "current";
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    get: {
+      description: "Get a S3Outposts AccessPoint",
+      arguments: z.object({
+        identifier: z.string().describe(
+          "The primary identifier of the S3Outposts AccessPoint",
+        ),
+      }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const result = await readResource(
+          "AWS::S3Outposts::AccessPoint",
+          args.identifier,
+        ) as StateData;
+        const instanceName = context.globalArgs.name?.toString() ??
+          args.identifier;
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    update: {
+      description: "Update a S3Outposts AccessPoint",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const instanceName = g.name?.toString() ?? "current";
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          instanceName,
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        const identifier = existing.Arn?.toString();
+        if (!identifier) {
+          throw new Error("No identifier found in existing state");
+        }
+        const currentState = await readResource(
+          "AWS::S3Outposts::AccessPoint",
+          identifier,
+        ) as StateData;
+        const desiredState: Record<string, unknown> = { ...currentState };
+        for (const [key, value] of Object.entries(g)) {
+          if (key === "name") continue;
+          if (value !== undefined) desiredState[key] = value;
+        }
+        const result = await updateResource(
+          "AWS::S3Outposts::AccessPoint",
+          identifier,
+          currentState,
+          desiredState,
+          ["Bucket", "Name", "VpcConfiguration"],
+        );
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    delete: {
+      description: "Delete a S3Outposts AccessPoint",
+      arguments: z.object({
+        identifier: z.string().describe(
+          "The primary identifier of the S3Outposts AccessPoint",
+        ),
+      }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const { existed } = await deleteResource(
+          "AWS::S3Outposts::AccessPoint",
+          args.identifier,
+        );
+        const instanceName = context.globalArgs.name?.toString() ??
+          args.identifier;
+        const handle = await context.writeResource("state", instanceName, {
+          identifier: args.identifier,
+          existed,
+          status: existed ? "deleted" : "not_found",
+          deletedAt: new Date().toISOString(),
+        });
+        return { dataHandles: [handle] };
+      },
+    },
+    sync: {
+      description: "Sync S3Outposts AccessPoint state from AWS",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const instanceName = g.name?.toString() ?? "current";
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          instanceName,
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        const identifier = existing.Arn?.toString();
+        if (!identifier) {
+          throw new Error("No identifier found in existing state");
+        }
+        try {
+          const result = await readResource(
+            "AWS::S3Outposts::AccessPoint",
+            identifier,
+          ) as StateData;
+          const handle = await context.writeResource(
+            "state",
+            instanceName,
+            result,
+          );
+          return { dataHandles: [handle] };
+        } catch (error: unknown) {
+          if (isResourceNotFoundError(error)) {
+            const handle = await context.writeResource("state", instanceName, {
+              identifier,
+              status: "not_found",
+              syncedAt: new Date().toISOString(),
+            });
+            return { dataHandles: [handle] };
+          }
+          throw error;
+        }
+      },
+    },
+  },
+};

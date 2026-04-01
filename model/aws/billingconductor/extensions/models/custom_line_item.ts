@@ -1,0 +1,326 @@
+// Auto-generated extension model for @swamp/aws/billingconductor/custom-line-item
+// Do not edit manually. Re-generate with: deno task generate:aws
+
+// deno-lint-ignore-file no-explicit-any
+
+import { z } from "zod";
+import {
+  createResource,
+  deleteResource,
+  isResourceNotFoundError,
+  readResource,
+  updateResource,
+} from "./_lib/aws.ts";
+
+export const CustomLineItemFlatChargeDetailsSchema = z.object({
+  ChargeValue: z.number().min(0).max(1000000),
+});
+
+export const CustomLineItemPercentageChargeDetailsSchema = z.object({
+  ChildAssociatedResources: z.array(
+    z.string().regex(
+      new RegExp(
+        "(arn:aws(-cn)?:billingconductor::[0-9]{12}:(customlineitem|billinggroup)/)?[a-zA-Z0-9]{10,12}",
+      ),
+    ),
+  ).optional(),
+  PercentageValue: z.number().min(0).max(10000),
+});
+
+export const LineItemFilterSchema = z.object({
+  Attribute: z.enum(["LINE_ITEM_TYPE", "SERVICE"]),
+  MatchOption: z.enum(["NOT_EQUAL", "EQUAL"]),
+  Values: z.array(z.enum(["SAVINGS_PLAN_NEGATION"])).optional(),
+  AttributeValues: z.array(
+    z.string().min(1).max(256).regex(new RegExp("^[a-zA-Z0-9]+$")),
+  ).optional(),
+});
+
+export const TagSchema = z.object({
+  Key: z.string().min(1).max(128),
+  Value: z.string().min(1).max(256),
+});
+
+const GlobalArgsSchema = z.object({
+  name: z.string().describe(
+    "Instance name for this resource (used as the unique identifier in the factory pattern)",
+  ),
+  Name: z.string().min(1).max(128).regex(
+    new RegExp("[a-zA-Z0-9_\\+=\\.\\-@]+"),
+  ),
+  ComputationRule: z.enum(["CONSOLIDATED", "ITEMIZED"]).describe(
+    "The display settings of the Custom Line Item.",
+  ).optional(),
+  PresentationDetails: z.object({
+    Service: z.string().regex(new RegExp("^[a-zA-Z0-9]+$")),
+  }).optional(),
+  Description: z.string().max(255).optional(),
+  CustomLineItemChargeDetails: z.object({
+    Flat: CustomLineItemFlatChargeDetailsSchema.optional(),
+    Percentage: CustomLineItemPercentageChargeDetailsSchema.optional(),
+    Type: z.enum(["FEE", "CREDIT"]),
+    LineItemFilters: z.array(LineItemFilterSchema).optional(),
+  }).optional(),
+  BillingGroupArn: z.string().regex(
+    new RegExp(
+      "arn:aws(-cn)?:billingconductor::[0-9]{12}:billinggroup/?[a-zA-Z0-9]{10,12}",
+    ),
+  ).describe("Billing Group ARN"),
+  BillingPeriodRange: z.object({
+    InclusiveStartBillingPeriod: z.string().regex(
+      new RegExp("\\d{4}-(0?[1-9]|1[012])"),
+    ).optional(),
+    ExclusiveEndBillingPeriod: z.string().regex(
+      new RegExp("\\d{4}-(0?[1-9]|1[012])"),
+    ).optional(),
+  }).optional(),
+  AccountId: z.string().regex(new RegExp("[0-9]{12}")).describe(
+    "The account which this custom line item will be charged to",
+  ).optional(),
+  Tags: z.array(TagSchema).optional(),
+});
+
+const StateSchema = z.object({
+  Name: z.string().optional(),
+  ComputationRule: z.string().optional(),
+  PresentationDetails: z.object({
+    Service: z.string(),
+  }).optional(),
+  Description: z.string().optional(),
+  CustomLineItemChargeDetails: z.object({
+    Flat: CustomLineItemFlatChargeDetailsSchema,
+    Percentage: CustomLineItemPercentageChargeDetailsSchema,
+    Type: z.string(),
+    LineItemFilters: z.array(LineItemFilterSchema),
+  }).optional(),
+  BillingGroupArn: z.string().optional(),
+  BillingPeriodRange: z.object({
+    InclusiveStartBillingPeriod: z.string(),
+    ExclusiveEndBillingPeriod: z.string(),
+  }).optional(),
+  Arn: z.string(),
+  CreationTime: z.number().optional(),
+  LastModifiedTime: z.number().optional(),
+  AssociationSize: z.number().optional(),
+  ProductCode: z.string().optional(),
+  CurrencyCode: z.string().optional(),
+  AccountId: z.string().optional(),
+  Tags: z.array(TagSchema).optional(),
+}).passthrough();
+
+type StateData = z.infer<typeof StateSchema>;
+
+const InputsSchema = z.object({
+  name: z.string().optional(),
+  Name: z.string().min(1).max(128).regex(new RegExp("[a-zA-Z0-9_\\+=\\.\\-@]+"))
+    .optional(),
+  ComputationRule: z.enum(["CONSOLIDATED", "ITEMIZED"]).describe(
+    "The display settings of the Custom Line Item.",
+  ).optional(),
+  PresentationDetails: z.object({
+    Service: z.string().regex(new RegExp("^[a-zA-Z0-9]+$")).optional(),
+  }).optional(),
+  Description: z.string().max(255).optional(),
+  CustomLineItemChargeDetails: z.object({
+    Flat: CustomLineItemFlatChargeDetailsSchema.optional(),
+    Percentage: CustomLineItemPercentageChargeDetailsSchema.optional(),
+    Type: z.enum(["FEE", "CREDIT"]).optional(),
+    LineItemFilters: z.array(LineItemFilterSchema).optional(),
+  }).optional(),
+  BillingGroupArn: z.string().regex(
+    new RegExp(
+      "arn:aws(-cn)?:billingconductor::[0-9]{12}:billinggroup/?[a-zA-Z0-9]{10,12}",
+    ),
+  ).describe("Billing Group ARN").optional(),
+  BillingPeriodRange: z.object({
+    InclusiveStartBillingPeriod: z.string().regex(
+      new RegExp("\\d{4}-(0?[1-9]|1[012])"),
+    ).optional(),
+    ExclusiveEndBillingPeriod: z.string().regex(
+      new RegExp("\\d{4}-(0?[1-9]|1[012])"),
+    ).optional(),
+  }).optional(),
+  AccountId: z.string().regex(new RegExp("[0-9]{12}")).describe(
+    "The account which this custom line item will be charged to",
+  ).optional(),
+  Tags: z.array(TagSchema).optional(),
+});
+
+export const model = {
+  type: "@swamp/aws/billingconductor/custom-line-item",
+  version: "2026.03.19.1",
+  globalArguments: GlobalArgsSchema,
+  inputsSchema: InputsSchema,
+  resources: {
+    state: {
+      description: "BillingConductor CustomLineItem resource state",
+      schema: StateSchema,
+      lifetime: "infinite",
+      garbageCollection: 10,
+    },
+  },
+  methods: {
+    create: {
+      description: "Create a BillingConductor CustomLineItem",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const desiredState: Record<string, unknown> = {};
+        for (const [key, value] of Object.entries(g)) {
+          if (key === "name") continue;
+          if (value !== undefined) desiredState[key] = value;
+        }
+        const result = await createResource(
+          "AWS::BillingConductor::CustomLineItem",
+          desiredState,
+        ) as StateData;
+        const instanceName = g.name?.toString() ?? "current";
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    get: {
+      description: "Get a BillingConductor CustomLineItem",
+      arguments: z.object({
+        identifier: z.string().describe(
+          "The primary identifier of the BillingConductor CustomLineItem",
+        ),
+      }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const result = await readResource(
+          "AWS::BillingConductor::CustomLineItem",
+          args.identifier,
+        ) as StateData;
+        const instanceName = context.globalArgs.name?.toString() ??
+          args.identifier;
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    update: {
+      description: "Update a BillingConductor CustomLineItem",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const instanceName = g.name?.toString() ?? "current";
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          instanceName,
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        const identifier = existing.Arn?.toString();
+        if (!identifier) {
+          throw new Error("No identifier found in existing state");
+        }
+        const currentState = await readResource(
+          "AWS::BillingConductor::CustomLineItem",
+          identifier,
+        ) as StateData;
+        const desiredState: Record<string, unknown> = { ...currentState };
+        for (const [key, value] of Object.entries(g)) {
+          if (key === "name") continue;
+          if (value !== undefined) desiredState[key] = value;
+        }
+        const result = await updateResource(
+          "AWS::BillingConductor::CustomLineItem",
+          identifier,
+          currentState,
+          desiredState,
+          [
+            "BillingGroupArn",
+            "AccountId",
+            "ComputationRule",
+            "PresentationDetails",
+            "InclusiveStartBillingPeriod",
+            "ExclusiveEndBillingPeriod",
+            "Type",
+          ],
+        );
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    delete: {
+      description: "Delete a BillingConductor CustomLineItem",
+      arguments: z.object({
+        identifier: z.string().describe(
+          "The primary identifier of the BillingConductor CustomLineItem",
+        ),
+      }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const { existed } = await deleteResource(
+          "AWS::BillingConductor::CustomLineItem",
+          args.identifier,
+        );
+        const instanceName = context.globalArgs.name?.toString() ??
+          args.identifier;
+        const handle = await context.writeResource("state", instanceName, {
+          identifier: args.identifier,
+          existed,
+          status: existed ? "deleted" : "not_found",
+          deletedAt: new Date().toISOString(),
+        });
+        return { dataHandles: [handle] };
+      },
+    },
+    sync: {
+      description: "Sync BillingConductor CustomLineItem state from AWS",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const instanceName = g.name?.toString() ?? "current";
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          instanceName,
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        const identifier = existing.Arn?.toString();
+        if (!identifier) {
+          throw new Error("No identifier found in existing state");
+        }
+        try {
+          const result = await readResource(
+            "AWS::BillingConductor::CustomLineItem",
+            identifier,
+          ) as StateData;
+          const handle = await context.writeResource(
+            "state",
+            instanceName,
+            result,
+          );
+          return { dataHandles: [handle] };
+        } catch (error: unknown) {
+          if (isResourceNotFoundError(error)) {
+            const handle = await context.writeResource("state", instanceName, {
+              identifier,
+              status: "not_found",
+              syncedAt: new Date().toISOString(),
+            });
+            return { dataHandles: [handle] };
+          }
+          throw error;
+        }
+      },
+    },
+  },
+};

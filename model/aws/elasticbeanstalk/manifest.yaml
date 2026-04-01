@@ -1,0 +1,20 @@
+# Auto-generated manifest. Re-generate with the appropriate deno task.
+manifestVersion: 1
+name: "@swamp/aws/elasticbeanstalk"
+version: "2026.03.19.1"
+description: "AWS ELASTICBEANSTALK infrastructure models"
+labels:
+  - aws
+  - elasticbeanstalk
+  - cloud
+  - infrastructure
+releaseNotes: |
+  - Updated: application, application_version, configuration_template, environment
+models:
+  - application.ts
+  - application_version.ts
+  - configuration_template.ts
+  - environment.ts
+additionalFiles:
+  - LICENSE.txt
+  - README.md

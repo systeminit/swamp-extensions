@@ -1,0 +1,18 @@
+# Auto-generated manifest. Re-generate with the appropriate deno task.
+manifestVersion: 1
+name: "@swamp/aws/mpa"
+version: "2026.03.19.1"
+description: "AWS MPA infrastructure models"
+labels:
+  - aws
+  - mpa
+  - cloud
+  - infrastructure
+releaseNotes: |
+  - Updated: approval_team, identity_source
+models:
+  - approval_team.ts
+  - identity_source.ts
+additionalFiles:
+  - LICENSE.txt
+  - README.md

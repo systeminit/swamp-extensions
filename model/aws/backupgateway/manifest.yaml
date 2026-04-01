@@ -1,0 +1,17 @@
+# Auto-generated manifest. Re-generate with the appropriate deno task.
+manifestVersion: 1
+name: "@swamp/aws/backupgateway"
+version: "2026.03.19.1"
+description: "AWS BACKUPGATEWAY infrastructure models"
+labels:
+  - aws
+  - backupgateway
+  - cloud
+  - infrastructure
+releaseNotes: |
+  - Updated: hypervisor
+models:
+  - hypervisor.ts
+additionalFiles:
+  - LICENSE.txt
+  - README.md

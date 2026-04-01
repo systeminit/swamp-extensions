@@ -1,0 +1,18 @@
+# Auto-generated manifest. Re-generate with the appropriate deno task.
+manifestVersion: 1
+name: "@swamp/aws/scheduler"
+version: "2026.03.19.1"
+description: "AWS SCHEDULER infrastructure models"
+labels:
+  - aws
+  - scheduler
+  - cloud
+  - infrastructure
+releaseNotes: |
+  - Updated: schedule, schedule_group
+models:
+  - schedule.ts
+  - schedule_group.ts
+additionalFiles:
+  - LICENSE.txt
+  - README.md

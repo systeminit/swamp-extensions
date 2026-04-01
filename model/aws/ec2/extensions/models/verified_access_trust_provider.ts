@@ -1,0 +1,392 @@
+// Auto-generated extension model for @swamp/aws/ec2/verified-access-trust-provider
+// Do not edit manually. Re-generate with: deno task generate:aws
+
+// deno-lint-ignore-file no-explicit-any
+
+import { z } from "zod";
+import {
+  createResource,
+  deleteResource,
+  isResourceNotFoundError,
+  readResource,
+  updateResource,
+} from "./_lib/aws.ts";
+
+export const TagSchema = z.object({
+  Key: z.string().min(1).max(128).describe(
+    "The key name of the tag. You can specify a value that is 1 to 128 Unicode characters in length and cannot be prefixed with aws:. You can use any of the following characters: the set of Unicode letters, digits, whitespace, _,., /, =, +, and -.",
+  ),
+  Value: z.string().min(0).max(256).describe(
+    "The value for the tag. You can specify a value that is 0 to 256 Unicode characters in length and cannot be prefixed with aws:. You can use any of the following characters: the set of Unicode letters, digits, whitespace, _,., /, =, +, and -.",
+  ),
+});
+
+const GlobalArgsSchema = z.object({
+  name: z.string().describe(
+    "Instance name for this resource (used as the unique identifier in the factory pattern)",
+  ),
+  TrustProviderType: z.string().describe(
+    "Type of trust provider. Possible values: user|device",
+  ),
+  DeviceTrustProviderType: z.string().describe(
+    "The type of device-based trust provider. Possible values: jamf|crowdstrike",
+  ).optional(),
+  UserTrustProviderType: z.string().describe(
+    "The type of device-based trust provider. Possible values: oidc|iam-identity-center",
+  ).optional(),
+  OidcOptions: z.object({
+    Issuer: z.string().describe("The OIDC issuer.").optional(),
+    AuthorizationEndpoint: z.string().describe(
+      "The OIDC authorization endpoint.",
+    ).optional(),
+    TokenEndpoint: z.string().describe("The OIDC token endpoint.").optional(),
+    UserInfoEndpoint: z.string().describe("The OIDC user info endpoint.")
+      .optional(),
+    ClientId: z.string().describe("The client identifier.").optional(),
+    ClientSecret: z.string().describe("The client secret.").optional(),
+    Scope: z.string().describe(
+      "OpenID Connect (OIDC) scopes are used by an application during authentication to authorize access to details of a user. Each scope returns a specific set of user attributes.",
+    ).optional(),
+  }).describe(
+    "The OpenID Connect details for an oidc -type, user-identity based trust provider.",
+  ).optional(),
+  DeviceOptions: z.object({
+    TenantId: z.string().describe(
+      "The ID of the tenant application with the device-identity provider.",
+    ).optional(),
+    PublicSigningKeyUrl: z.string().describe(
+      "URL Verified Access will use to verify authenticity of the device tokens.",
+    ).optional(),
+  }).describe("The options for device identity based trust providers.")
+    .optional(),
+  PolicyReferenceName: z.string().describe(
+    "The identifier to be used when working with policy rules.",
+  ),
+  Description: z.string().describe(
+    "A description for the Amazon Web Services Verified Access trust provider.",
+  ).optional(),
+  Tags: z.array(TagSchema).describe(
+    "An array of key-value pairs to apply to this resource.",
+  ).optional(),
+  SseSpecification: z.object({
+    KmsKeyArn: z.string().describe(
+      "KMS Key Arn used to encrypt the group policy",
+    ).optional(),
+    CustomerManagedKeyEnabled: z.boolean().describe(
+      "Whether to encrypt the policy with the provided key or disable encryption",
+    ).optional(),
+  }).describe("The configuration options for customer provided KMS encryption.")
+    .optional(),
+  NativeApplicationOidcOptions: z.object({
+    Issuer: z.string().describe("The OIDC issuer.").optional(),
+    AuthorizationEndpoint: z.string().describe(
+      "The OIDC authorization endpoint.",
+    ).optional(),
+    TokenEndpoint: z.string().describe("The OIDC token endpoint.").optional(),
+    UserInfoEndpoint: z.string().describe("The OIDC user info endpoint.")
+      .optional(),
+    ClientId: z.string().describe("The client identifier.").optional(),
+    ClientSecret: z.string().describe("The client secret.").optional(),
+    Scope: z.string().describe(
+      "OpenID Connect (OIDC) scopes are used by an application during authentication to authorize access to details of a user. Each scope returns a specific set of user attributes.",
+    ).optional(),
+    PublicSigningKeyEndpoint: z.string().describe(
+      "The public signing key for endpoint",
+    ).optional(),
+  }).describe(
+    "The OpenID Connect details for an oidc -type, user-identity based trust provider for L4.",
+  ).optional(),
+});
+
+const StateSchema = z.object({
+  TrustProviderType: z.string().optional(),
+  DeviceTrustProviderType: z.string().optional(),
+  UserTrustProviderType: z.string().optional(),
+  OidcOptions: z.object({
+    Issuer: z.string(),
+    AuthorizationEndpoint: z.string(),
+    TokenEndpoint: z.string(),
+    UserInfoEndpoint: z.string(),
+    ClientId: z.string(),
+    ClientSecret: z.string(),
+    Scope: z.string(),
+  }).optional(),
+  DeviceOptions: z.object({
+    TenantId: z.string(),
+    PublicSigningKeyUrl: z.string(),
+  }).optional(),
+  PolicyReferenceName: z.string().optional(),
+  CreationTime: z.string().optional(),
+  LastUpdatedTime: z.string().optional(),
+  VerifiedAccessTrustProviderId: z.string(),
+  Description: z.string().optional(),
+  Tags: z.array(TagSchema).optional(),
+  SseSpecification: z.object({
+    KmsKeyArn: z.string(),
+    CustomerManagedKeyEnabled: z.boolean(),
+  }).optional(),
+  NativeApplicationOidcOptions: z.object({
+    Issuer: z.string(),
+    AuthorizationEndpoint: z.string(),
+    TokenEndpoint: z.string(),
+    UserInfoEndpoint: z.string(),
+    ClientId: z.string(),
+    ClientSecret: z.string(),
+    Scope: z.string(),
+    PublicSigningKeyEndpoint: z.string(),
+  }).optional(),
+}).passthrough();
+
+type StateData = z.infer<typeof StateSchema>;
+
+const InputsSchema = z.object({
+  name: z.string().optional(),
+  TrustProviderType: z.string().describe(
+    "Type of trust provider. Possible values: user|device",
+  ).optional(),
+  DeviceTrustProviderType: z.string().describe(
+    "The type of device-based trust provider. Possible values: jamf|crowdstrike",
+  ).optional(),
+  UserTrustProviderType: z.string().describe(
+    "The type of device-based trust provider. Possible values: oidc|iam-identity-center",
+  ).optional(),
+  OidcOptions: z.object({
+    Issuer: z.string().describe("The OIDC issuer.").optional(),
+    AuthorizationEndpoint: z.string().describe(
+      "The OIDC authorization endpoint.",
+    ).optional(),
+    TokenEndpoint: z.string().describe("The OIDC token endpoint.").optional(),
+    UserInfoEndpoint: z.string().describe("The OIDC user info endpoint.")
+      .optional(),
+    ClientId: z.string().describe("The client identifier.").optional(),
+    ClientSecret: z.string().describe("The client secret.").optional(),
+    Scope: z.string().describe(
+      "OpenID Connect (OIDC) scopes are used by an application during authentication to authorize access to details of a user. Each scope returns a specific set of user attributes.",
+    ).optional(),
+  }).describe(
+    "The OpenID Connect details for an oidc -type, user-identity based trust provider.",
+  ).optional(),
+  DeviceOptions: z.object({
+    TenantId: z.string().describe(
+      "The ID of the tenant application with the device-identity provider.",
+    ).optional(),
+    PublicSigningKeyUrl: z.string().describe(
+      "URL Verified Access will use to verify authenticity of the device tokens.",
+    ).optional(),
+  }).describe("The options for device identity based trust providers.")
+    .optional(),
+  PolicyReferenceName: z.string().describe(
+    "The identifier to be used when working with policy rules.",
+  ).optional(),
+  Description: z.string().describe(
+    "A description for the Amazon Web Services Verified Access trust provider.",
+  ).optional(),
+  Tags: z.array(TagSchema).describe(
+    "An array of key-value pairs to apply to this resource.",
+  ).optional(),
+  SseSpecification: z.object({
+    KmsKeyArn: z.string().describe(
+      "KMS Key Arn used to encrypt the group policy",
+    ).optional(),
+    CustomerManagedKeyEnabled: z.boolean().describe(
+      "Whether to encrypt the policy with the provided key or disable encryption",
+    ).optional(),
+  }).describe("The configuration options for customer provided KMS encryption.")
+    .optional(),
+  NativeApplicationOidcOptions: z.object({
+    Issuer: z.string().describe("The OIDC issuer.").optional(),
+    AuthorizationEndpoint: z.string().describe(
+      "The OIDC authorization endpoint.",
+    ).optional(),
+    TokenEndpoint: z.string().describe("The OIDC token endpoint.").optional(),
+    UserInfoEndpoint: z.string().describe("The OIDC user info endpoint.")
+      .optional(),
+    ClientId: z.string().describe("The client identifier.").optional(),
+    ClientSecret: z.string().describe("The client secret.").optional(),
+    Scope: z.string().describe(
+      "OpenID Connect (OIDC) scopes are used by an application during authentication to authorize access to details of a user. Each scope returns a specific set of user attributes.",
+    ).optional(),
+    PublicSigningKeyEndpoint: z.string().describe(
+      "The public signing key for endpoint",
+    ).optional(),
+  }).describe(
+    "The OpenID Connect details for an oidc -type, user-identity based trust provider for L4.",
+  ).optional(),
+});
+
+export const model = {
+  type: "@swamp/aws/ec2/verified-access-trust-provider",
+  version: "2026.03.19.1",
+  globalArguments: GlobalArgsSchema,
+  inputsSchema: InputsSchema,
+  resources: {
+    state: {
+      description: "EC2 VerifiedAccessTrustProvider resource state",
+      schema: StateSchema,
+      lifetime: "infinite",
+      garbageCollection: 10,
+    },
+  },
+  methods: {
+    create: {
+      description: "Create a EC2 VerifiedAccessTrustProvider",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const desiredState: Record<string, unknown> = {};
+        for (const [key, value] of Object.entries(g)) {
+          if (key === "name") continue;
+          if (value !== undefined) desiredState[key] = value;
+        }
+        const result = await createResource(
+          "AWS::EC2::VerifiedAccessTrustProvider",
+          desiredState,
+        ) as StateData;
+        const instanceName = g.name?.toString() ?? "current";
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    get: {
+      description: "Get a EC2 VerifiedAccessTrustProvider",
+      arguments: z.object({
+        identifier: z.string().describe(
+          "The primary identifier of the EC2 VerifiedAccessTrustProvider",
+        ),
+      }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const result = await readResource(
+          "AWS::EC2::VerifiedAccessTrustProvider",
+          args.identifier,
+        ) as StateData;
+        const instanceName = context.globalArgs.name?.toString() ??
+          args.identifier;
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    update: {
+      description: "Update a EC2 VerifiedAccessTrustProvider",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const instanceName = g.name?.toString() ?? "current";
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          instanceName,
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        const identifier = existing.VerifiedAccessTrustProviderId?.toString();
+        if (!identifier) {
+          throw new Error("No identifier found in existing state");
+        }
+        const currentState = await readResource(
+          "AWS::EC2::VerifiedAccessTrustProvider",
+          identifier,
+        ) as StateData;
+        const desiredState: Record<string, unknown> = { ...currentState };
+        for (const [key, value] of Object.entries(g)) {
+          if (key === "name") continue;
+          if (value !== undefined) desiredState[key] = value;
+        }
+        const result = await updateResource(
+          "AWS::EC2::VerifiedAccessTrustProvider",
+          identifier,
+          currentState,
+          desiredState,
+          [
+            "PolicyReferenceName",
+            "DeviceOptions",
+            "DeviceTrustProviderType",
+            "TrustProviderType",
+            "UserTrustProviderType",
+          ],
+        );
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    delete: {
+      description: "Delete a EC2 VerifiedAccessTrustProvider",
+      arguments: z.object({
+        identifier: z.string().describe(
+          "The primary identifier of the EC2 VerifiedAccessTrustProvider",
+        ),
+      }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const { existed } = await deleteResource(
+          "AWS::EC2::VerifiedAccessTrustProvider",
+          args.identifier,
+        );
+        const instanceName = context.globalArgs.name?.toString() ??
+          args.identifier;
+        const handle = await context.writeResource("state", instanceName, {
+          identifier: args.identifier,
+          existed,
+          status: existed ? "deleted" : "not_found",
+          deletedAt: new Date().toISOString(),
+        });
+        return { dataHandles: [handle] };
+      },
+    },
+    sync: {
+      description: "Sync EC2 VerifiedAccessTrustProvider state from AWS",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const instanceName = g.name?.toString() ?? "current";
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          instanceName,
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        const identifier = existing.VerifiedAccessTrustProviderId?.toString();
+        if (!identifier) {
+          throw new Error("No identifier found in existing state");
+        }
+        try {
+          const result = await readResource(
+            "AWS::EC2::VerifiedAccessTrustProvider",
+            identifier,
+          ) as StateData;
+          const handle = await context.writeResource(
+            "state",
+            instanceName,
+            result,
+          );
+          return { dataHandles: [handle] };
+        } catch (error: unknown) {
+          if (isResourceNotFoundError(error)) {
+            const handle = await context.writeResource("state", instanceName, {
+              identifier,
+              status: "not_found",
+              syncedAt: new Date().toISOString(),
+            });
+            return { dataHandles: [handle] };
+          }
+          throw error;
+        }
+      },
+    },
+  },
+};

@@ -1,0 +1,256 @@
+// Auto-generated extension model for @swamp/aws/batch/job-queue
+// Do not edit manually. Re-generate with: deno task generate:aws
+
+// deno-lint-ignore-file no-explicit-any
+
+import { z } from "zod";
+import {
+  createResource,
+  deleteResource,
+  isResourceNotFoundError,
+  readResource,
+  updateResource,
+} from "./_lib/aws.ts";
+
+export const ComputeEnvironmentOrderSchema = z.object({
+  ComputeEnvironment: z.string(),
+  Order: z.number().int(),
+});
+
+export const ServiceEnvironmentOrderSchema = z.object({
+  ServiceEnvironment: z.string(),
+  Order: z.number().int(),
+});
+
+export const JobStateTimeLimitActionSchema = z.object({
+  Action: z.enum(["CANCEL", "TERMINATE"]),
+  MaxTimeSeconds: z.number().int().min(600).max(86400),
+  Reason: z.string(),
+  State: z.enum(["RUNNABLE"]),
+});
+
+const GlobalArgsSchema = z.object({
+  name: z.string().describe(
+    "Instance name for this resource (used as the unique identifier in the factory pattern)",
+  ),
+  JobQueueName: z.string().min(1).max(128).optional(),
+  JobQueueType: z.string().optional(),
+  ComputeEnvironmentOrder: z.array(ComputeEnvironmentOrderSchema).optional(),
+  ServiceEnvironmentOrder: z.array(ServiceEnvironmentOrderSchema).optional(),
+  JobStateTimeLimitActions: z.array(JobStateTimeLimitActionSchema).optional(),
+  Priority: z.number().int().min(0).max(1000),
+  State: z.enum(["DISABLED", "ENABLED"]).optional(),
+  SchedulingPolicyArn: z.string().regex(
+    new RegExp(
+      "arn:[a-z0-9-\\.]{1,63}:[a-z0-9-\\.]{0,63}:[a-z0-9-\\.]{0,63}:[a-z0-9-\\.]{0,63}:[^/].{0,1023}",
+    ),
+  ).optional(),
+  Tags: z.record(z.string(), z.string()).describe(
+    "A key-value pair to associate with a resource.",
+  ).optional(),
+});
+
+const StateSchema = z.object({
+  JobQueueName: z.string().optional(),
+  JobQueueArn: z.string(),
+  JobQueueType: z.string().optional(),
+  ComputeEnvironmentOrder: z.array(ComputeEnvironmentOrderSchema).optional(),
+  ServiceEnvironmentOrder: z.array(ServiceEnvironmentOrderSchema).optional(),
+  JobStateTimeLimitActions: z.array(JobStateTimeLimitActionSchema).optional(),
+  Priority: z.number().optional(),
+  State: z.string().optional(),
+  SchedulingPolicyArn: z.string().optional(),
+  Tags: z.record(z.string(), z.unknown()).optional(),
+}).passthrough();
+
+type StateData = z.infer<typeof StateSchema>;
+
+const InputsSchema = z.object({
+  name: z.string().optional(),
+  JobQueueName: z.string().min(1).max(128).optional(),
+  JobQueueType: z.string().optional(),
+  ComputeEnvironmentOrder: z.array(ComputeEnvironmentOrderSchema).optional(),
+  ServiceEnvironmentOrder: z.array(ServiceEnvironmentOrderSchema).optional(),
+  JobStateTimeLimitActions: z.array(JobStateTimeLimitActionSchema).optional(),
+  Priority: z.number().int().min(0).max(1000).optional(),
+  State: z.enum(["DISABLED", "ENABLED"]).optional(),
+  SchedulingPolicyArn: z.string().regex(
+    new RegExp(
+      "arn:[a-z0-9-\\.]{1,63}:[a-z0-9-\\.]{0,63}:[a-z0-9-\\.]{0,63}:[a-z0-9-\\.]{0,63}:[^/].{0,1023}",
+    ),
+  ).optional(),
+  Tags: z.record(z.string(), z.string()).describe(
+    "A key-value pair to associate with a resource.",
+  ).optional(),
+});
+
+export const model = {
+  type: "@swamp/aws/batch/job-queue",
+  version: "2026.03.19.1",
+  globalArguments: GlobalArgsSchema,
+  inputsSchema: InputsSchema,
+  resources: {
+    state: {
+      description: "Batch JobQueue resource state",
+      schema: StateSchema,
+      lifetime: "infinite",
+      garbageCollection: 10,
+    },
+  },
+  methods: {
+    create: {
+      description: "Create a Batch JobQueue",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const desiredState: Record<string, unknown> = {};
+        for (const [key, value] of Object.entries(g)) {
+          if (key === "name") continue;
+          if (value !== undefined) desiredState[key] = value;
+        }
+        const result = await createResource(
+          "AWS::Batch::JobQueue",
+          desiredState,
+        ) as StateData;
+        const instanceName = g.name?.toString() ?? "current";
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    get: {
+      description: "Get a Batch JobQueue",
+      arguments: z.object({
+        identifier: z.string().describe(
+          "The primary identifier of the Batch JobQueue",
+        ),
+      }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const result = await readResource(
+          "AWS::Batch::JobQueue",
+          args.identifier,
+        ) as StateData;
+        const instanceName = context.globalArgs.name?.toString() ??
+          args.identifier;
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    update: {
+      description: "Update a Batch JobQueue",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const instanceName = g.name?.toString() ?? "current";
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          instanceName,
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        const identifier = existing.JobQueueArn?.toString();
+        if (!identifier) {
+          throw new Error("No identifier found in existing state");
+        }
+        const currentState = await readResource(
+          "AWS::Batch::JobQueue",
+          identifier,
+        ) as StateData;
+        const desiredState: Record<string, unknown> = { ...currentState };
+        for (const [key, value] of Object.entries(g)) {
+          if (key === "name") continue;
+          if (value !== undefined) desiredState[key] = value;
+        }
+        const result = await updateResource(
+          "AWS::Batch::JobQueue",
+          identifier,
+          currentState,
+          desiredState,
+          ["Tags", "JobQueueName", "JobQueueType"],
+        );
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    delete: {
+      description: "Delete a Batch JobQueue",
+      arguments: z.object({
+        identifier: z.string().describe(
+          "The primary identifier of the Batch JobQueue",
+        ),
+      }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const { existed } = await deleteResource(
+          "AWS::Batch::JobQueue",
+          args.identifier,
+        );
+        const instanceName = context.globalArgs.name?.toString() ??
+          args.identifier;
+        const handle = await context.writeResource("state", instanceName, {
+          identifier: args.identifier,
+          existed,
+          status: existed ? "deleted" : "not_found",
+          deletedAt: new Date().toISOString(),
+        });
+        return { dataHandles: [handle] };
+      },
+    },
+    sync: {
+      description: "Sync Batch JobQueue state from AWS",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const instanceName = g.name?.toString() ?? "current";
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          instanceName,
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        const identifier = existing.JobQueueArn?.toString();
+        if (!identifier) {
+          throw new Error("No identifier found in existing state");
+        }
+        try {
+          const result = await readResource(
+            "AWS::Batch::JobQueue",
+            identifier,
+          ) as StateData;
+          const handle = await context.writeResource(
+            "state",
+            instanceName,
+            result,
+          );
+          return { dataHandles: [handle] };
+        } catch (error: unknown) {
+          if (isResourceNotFoundError(error)) {
+            const handle = await context.writeResource("state", instanceName, {
+              identifier,
+              status: "not_found",
+              syncedAt: new Date().toISOString(),
+            });
+            return { dataHandles: [handle] };
+          }
+          throw error;
+        }
+      },
+    },
+  },
+};

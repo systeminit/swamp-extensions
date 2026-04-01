@@ -1,0 +1,303 @@
+// Auto-generated extension model for @swamp/aws/ivs/stage
+// Do not edit manually. Re-generate with: deno task generate:aws
+
+// deno-lint-ignore-file no-explicit-any
+
+import { z } from "zod";
+import {
+  createResource,
+  deleteResource,
+  isResourceNotFoundError,
+  readResource,
+  updateResource,
+} from "./_lib/aws.ts";
+
+export const ParticipantRecordingHlsConfigurationSchema = z.object({
+  TargetSegmentDurationSeconds: z.number().int().min(2).max(10).describe(
+    "Defines the target duration for recorded segments generated when recording a stage participant. Segments may have durations longer than the specified value when needed to ensure each segment begins with a keyframe. Default: 6.",
+  ).optional(),
+});
+
+export const HlsConfigurationSchema = z.object({
+  ParticipantRecordingHlsConfiguration:
+    ParticipantRecordingHlsConfigurationSchema.describe(
+      "An object representing a configuration of participant HLS recordings for individual participant recording.",
+    ).optional(),
+});
+
+export const ThumbnailConfigurationSchema = z.object({
+  ParticipantThumbnailConfiguration: z.object({
+    RecordingMode: z.enum(["INTERVAL", "DISABLED"]).describe(
+      "Thumbnail recording mode. Default: DISABLED.",
+    ).optional(),
+    Storage: z.array(z.enum(["SEQUENTIAL", "LATEST"])).describe(
+      "Indicates the format in which thumbnails are recorded. SEQUENTIAL records all generated thumbnails in a serial manner, to the media/thumbnails/high directory. LATEST saves the latest thumbnail in media/latest_thumbnail/high/thumb.jpg and overwrites it at the interval specified by targetIntervalSeconds. You can enable both SEQUENTIAL and LATEST. Default: SEQUENTIAL.",
+    ).optional(),
+    TargetIntervalSeconds: z.number().int().min(1).max(86400).describe(
+      "The targeted thumbnail-generation interval in seconds. This is configurable only if recordingMode is INTERVAL. Default: 60.",
+    ).optional(),
+  }).describe(
+    "An object representing a configuration of thumbnails for recorded video from an individual participant.",
+  ).optional(),
+});
+
+export const TagSchema = z.object({
+  Key: z.string().min(1).max(128).describe(
+    "The key name of the tag. You can specify a value that is 1 to 128 Unicode characters in length and cannot be prefixed with aws:. You can use any of the following characters: the set of Unicode letters, digits, whitespace, _,., /, =, +, and -.",
+  ),
+  Value: z.string().min(0).max(256).describe(
+    "The value for the tag. You can specify a value that is 0 to 256 Unicode characters in length and cannot be prefixed with aws:. You can use any of the following characters: the set of Unicode letters, digits, whitespace, _,., /, =, +, and -.",
+  ),
+});
+
+const GlobalArgsSchema = z.object({
+  name: z.string().describe(
+    "Instance name for this resource (used as the unique identifier in the factory pattern)",
+  ),
+  Name: z.string().min(0).max(128).regex(new RegExp("^[a-zA-Z0-9-_]*$"))
+    .describe("Stage name").optional(),
+  AutoParticipantRecordingConfiguration: z.object({
+    StorageConfigurationArn: z.string().min(0).max(128).regex(
+      new RegExp(
+        "^$|^arn:aws:ivs:[a-z0-9-]+:[0-9]+:storage-configuration/[a-zA-Z0-9-]+$",
+      ),
+    ).describe(
+      "ARN of the StorageConfiguration resource to use for individual participant recording.",
+    ),
+    MediaTypes: z.array(z.enum(["AUDIO_VIDEO", "AUDIO_ONLY"])).describe(
+      "Types of media to be recorded. Default: AUDIO_VIDEO.",
+    ).optional(),
+    HlsConfiguration: HlsConfigurationSchema.describe(
+      "HLS configuration object for individual participant recording.",
+    ).optional(),
+    RecordingReconnectWindowSeconds: z.number().int().min(0).max(300).describe(
+      "If a stage publisher disconnects and then reconnects within the specified interval, the multiple recordings will be considered a single recording and merged together. The default value is 0, which disables merging.",
+    ).optional(),
+    ThumbnailConfiguration: ThumbnailConfigurationSchema.describe(
+      "A complex type that allows you to enable/disable the recording of thumbnails for individual participant recording and modify the interval at which thumbnails are generated for the live session.",
+    ).optional(),
+  }).describe(
+    "Configuration object for individual participant recording, to attach to the new stage.",
+  ).optional(),
+  Tags: z.array(TagSchema).describe(
+    "An array of key-value pairs to apply to this resource.",
+  ).optional(),
+});
+
+const StateSchema = z.object({
+  Arn: z.string(),
+  Name: z.string().optional(),
+  AutoParticipantRecordingConfiguration: z.object({
+    StorageConfigurationArn: z.string(),
+    MediaTypes: z.array(z.string()),
+    HlsConfiguration: HlsConfigurationSchema,
+    RecordingReconnectWindowSeconds: z.number(),
+    ThumbnailConfiguration: ThumbnailConfigurationSchema,
+  }).optional(),
+  Tags: z.array(TagSchema).optional(),
+  ActiveSessionId: z.string().optional(),
+}).passthrough();
+
+type StateData = z.infer<typeof StateSchema>;
+
+const InputsSchema = z.object({
+  name: z.string().optional(),
+  Name: z.string().min(0).max(128).regex(new RegExp("^[a-zA-Z0-9-_]*$"))
+    .describe("Stage name").optional(),
+  AutoParticipantRecordingConfiguration: z.object({
+    StorageConfigurationArn: z.string().min(0).max(128).regex(
+      new RegExp(
+        "^$|^arn:aws:ivs:[a-z0-9-]+:[0-9]+:storage-configuration/[a-zA-Z0-9-]+$",
+      ),
+    ).describe(
+      "ARN of the StorageConfiguration resource to use for individual participant recording.",
+    ).optional(),
+    MediaTypes: z.array(z.enum(["AUDIO_VIDEO", "AUDIO_ONLY"])).describe(
+      "Types of media to be recorded. Default: AUDIO_VIDEO.",
+    ).optional(),
+    HlsConfiguration: HlsConfigurationSchema.describe(
+      "HLS configuration object for individual participant recording.",
+    ).optional(),
+    RecordingReconnectWindowSeconds: z.number().int().min(0).max(300).describe(
+      "If a stage publisher disconnects and then reconnects within the specified interval, the multiple recordings will be considered a single recording and merged together. The default value is 0, which disables merging.",
+    ).optional(),
+    ThumbnailConfiguration: ThumbnailConfigurationSchema.describe(
+      "A complex type that allows you to enable/disable the recording of thumbnails for individual participant recording and modify the interval at which thumbnails are generated for the live session.",
+    ).optional(),
+  }).describe(
+    "Configuration object for individual participant recording, to attach to the new stage.",
+  ).optional(),
+  Tags: z.array(TagSchema).describe(
+    "An array of key-value pairs to apply to this resource.",
+  ).optional(),
+});
+
+export const model = {
+  type: "@swamp/aws/ivs/stage",
+  version: "2026.03.19.1",
+  globalArguments: GlobalArgsSchema,
+  inputsSchema: InputsSchema,
+  resources: {
+    state: {
+      description: "IVS Stage resource state",
+      schema: StateSchema,
+      lifetime: "infinite",
+      garbageCollection: 10,
+    },
+  },
+  methods: {
+    create: {
+      description: "Create a IVS Stage",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const desiredState: Record<string, unknown> = {};
+        for (const [key, value] of Object.entries(g)) {
+          if (key === "name") continue;
+          if (value !== undefined) desiredState[key] = value;
+        }
+        const result = await createResource(
+          "AWS::IVS::Stage",
+          desiredState,
+        ) as StateData;
+        const instanceName = g.name?.toString() ?? "current";
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    get: {
+      description: "Get a IVS Stage",
+      arguments: z.object({
+        identifier: z.string().describe(
+          "The primary identifier of the IVS Stage",
+        ),
+      }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const result = await readResource(
+          "AWS::IVS::Stage",
+          args.identifier,
+        ) as StateData;
+        const instanceName = context.globalArgs.name?.toString() ??
+          args.identifier;
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    update: {
+      description: "Update a IVS Stage",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const instanceName = g.name?.toString() ?? "current";
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          instanceName,
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        const identifier = existing.Arn?.toString();
+        if (!identifier) {
+          throw new Error("No identifier found in existing state");
+        }
+        const currentState = await readResource(
+          "AWS::IVS::Stage",
+          identifier,
+        ) as StateData;
+        const desiredState: Record<string, unknown> = { ...currentState };
+        for (const [key, value] of Object.entries(g)) {
+          if (key === "name") continue;
+          if (value !== undefined) desiredState[key] = value;
+        }
+        const result = await updateResource(
+          "AWS::IVS::Stage",
+          identifier,
+          currentState,
+          desiredState,
+        );
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    delete: {
+      description: "Delete a IVS Stage",
+      arguments: z.object({
+        identifier: z.string().describe(
+          "The primary identifier of the IVS Stage",
+        ),
+      }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const { existed } = await deleteResource(
+          "AWS::IVS::Stage",
+          args.identifier,
+        );
+        const instanceName = context.globalArgs.name?.toString() ??
+          args.identifier;
+        const handle = await context.writeResource("state", instanceName, {
+          identifier: args.identifier,
+          existed,
+          status: existed ? "deleted" : "not_found",
+          deletedAt: new Date().toISOString(),
+        });
+        return { dataHandles: [handle] };
+      },
+    },
+    sync: {
+      description: "Sync IVS Stage state from AWS",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const instanceName = g.name?.toString() ?? "current";
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          instanceName,
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        const identifier = existing.Arn?.toString();
+        if (!identifier) {
+          throw new Error("No identifier found in existing state");
+        }
+        try {
+          const result = await readResource(
+            "AWS::IVS::Stage",
+            identifier,
+          ) as StateData;
+          const handle = await context.writeResource(
+            "state",
+            instanceName,
+            result,
+          );
+          return { dataHandles: [handle] };
+        } catch (error: unknown) {
+          if (isResourceNotFoundError(error)) {
+            const handle = await context.writeResource("state", instanceName, {
+              identifier,
+              status: "not_found",
+              syncedAt: new Date().toISOString(),
+            });
+            return { dataHandles: [handle] };
+          }
+          throw error;
+        }
+      },
+    },
+  },
+};

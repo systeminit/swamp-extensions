@@ -1,0 +1,333 @@
+// Auto-generated extension model for @swamp/aws/transfer/agreement
+// Do not edit manually. Re-generate with: deno task generate:aws
+
+// deno-lint-ignore-file no-explicit-any
+
+import { z } from "zod";
+import {
+  createResource,
+  deleteResource,
+  isResourceNotFoundError,
+  readResource,
+  updateResource,
+} from "./_lib/aws.ts";
+
+export const TagSchema = z.object({
+  Key: z.string().min(1).max(128).describe(
+    "The name assigned to the tag that you create.",
+  ),
+  Value: z.string().min(0).max(256).describe(
+    "Contains one or more values that you assigned to the key name you create.",
+  ),
+});
+
+const GlobalArgsSchema = z.object({
+  name: z.string().describe(
+    "Instance name for this resource (used as the unique identifier in the factory pattern)",
+  ),
+  Description: z.string().min(1).max(200).regex(
+    new RegExp("^[\\u0021-\\u007E]+$"),
+  ).describe("A textual description for the agreement.").optional(),
+  ServerId: z.string().min(19).max(19).regex(new RegExp("^s-([0-9a-f]{17})$"))
+    .describe("A unique identifier for the server."),
+  LocalProfileId: z.string().min(19).max(19).regex(
+    new RegExp("^p-([0-9a-f]{17})$"),
+  ).describe("A unique identifier for the local profile."),
+  PartnerProfileId: z.string().min(19).max(19).regex(
+    new RegExp("^p-([0-9a-f]{17})$"),
+  ).describe("A unique identifier for the partner profile."),
+  BaseDirectory: z.string().max(1024).regex(new RegExp("^(|/.*)$")).describe(
+    "Specifies the base directory for the agreement.",
+  ).optional(),
+  AccessRole: z.string().min(20).max(2048).regex(new RegExp("arn:.*role/.*"))
+    .describe("Specifies the access role for the agreement."),
+  Status: z.enum(["ACTIVE", "INACTIVE"]).describe(
+    "Specifies the status of the agreement.",
+  ).optional(),
+  Tags: z.array(TagSchema).describe(
+    "Key-value pairs that can be used to group and search for agreements. Tags are metadata attached to agreements for any purpose.",
+  ).optional(),
+  PreserveFilename: z.enum(["ENABLED", "DISABLED"]).describe(
+    "Specifies whether to preserve the filename received for this agreement.",
+  ).optional(),
+  EnforceMessageSigning: z.enum(["ENABLED", "DISABLED"]).describe(
+    "Specifies whether to enforce an AS2 message is signed for this agreement.",
+  ).optional(),
+  CustomDirectories: z.object({
+    FailedFilesDirectory: z.string().regex(new RegExp("(|/.*)")).describe(
+      "Specifies a location to store the failed files for an AS2 message.",
+    ),
+    MdnFilesDirectory: z.string().regex(new RegExp("(|/.*)")).describe(
+      "Specifies a location to store the MDN file for an AS2 message.",
+    ),
+    PayloadFilesDirectory: z.string().regex(new RegExp("(|/.*)")).describe(
+      "Specifies a location to store the payload file for an AS2 message.",
+    ),
+    StatusFilesDirectory: z.string().regex(new RegExp("(|/.*)")).describe(
+      "Specifies a location to store the status file for an AS2 message.",
+    ),
+    TemporaryFilesDirectory: z.string().regex(new RegExp("(|/.*)")).describe(
+      "Specifies a location to store the temporary processing file for an AS2 message.",
+    ),
+  }).describe(
+    "Specifies a separate directory for each type of file to store for an AS2 message.",
+  ).optional(),
+});
+
+const StateSchema = z.object({
+  Description: z.string().optional(),
+  ServerId: z.string(),
+  LocalProfileId: z.string().optional(),
+  PartnerProfileId: z.string().optional(),
+  BaseDirectory: z.string().optional(),
+  AccessRole: z.string().optional(),
+  Status: z.string().optional(),
+  Tags: z.array(TagSchema).optional(),
+  AgreementId: z.string(),
+  Arn: z.string().optional(),
+  PreserveFilename: z.string().optional(),
+  EnforceMessageSigning: z.string().optional(),
+  CustomDirectories: z.object({
+    FailedFilesDirectory: z.string(),
+    MdnFilesDirectory: z.string(),
+    PayloadFilesDirectory: z.string(),
+    StatusFilesDirectory: z.string(),
+    TemporaryFilesDirectory: z.string(),
+  }).optional(),
+}).passthrough();
+
+type StateData = z.infer<typeof StateSchema>;
+
+const InputsSchema = z.object({
+  name: z.string().optional(),
+  Description: z.string().min(1).max(200).regex(
+    new RegExp("^[\\u0021-\\u007E]+$"),
+  ).describe("A textual description for the agreement.").optional(),
+  ServerId: z.string().min(19).max(19).regex(new RegExp("^s-([0-9a-f]{17})$"))
+    .describe("A unique identifier for the server.").optional(),
+  LocalProfileId: z.string().min(19).max(19).regex(
+    new RegExp("^p-([0-9a-f]{17})$"),
+  ).describe("A unique identifier for the local profile.").optional(),
+  PartnerProfileId: z.string().min(19).max(19).regex(
+    new RegExp("^p-([0-9a-f]{17})$"),
+  ).describe("A unique identifier for the partner profile.").optional(),
+  BaseDirectory: z.string().max(1024).regex(new RegExp("^(|/.*)$")).describe(
+    "Specifies the base directory for the agreement.",
+  ).optional(),
+  AccessRole: z.string().min(20).max(2048).regex(new RegExp("arn:.*role/.*"))
+    .describe("Specifies the access role for the agreement.").optional(),
+  Status: z.enum(["ACTIVE", "INACTIVE"]).describe(
+    "Specifies the status of the agreement.",
+  ).optional(),
+  Tags: z.array(TagSchema).describe(
+    "Key-value pairs that can be used to group and search for agreements. Tags are metadata attached to agreements for any purpose.",
+  ).optional(),
+  PreserveFilename: z.enum(["ENABLED", "DISABLED"]).describe(
+    "Specifies whether to preserve the filename received for this agreement.",
+  ).optional(),
+  EnforceMessageSigning: z.enum(["ENABLED", "DISABLED"]).describe(
+    "Specifies whether to enforce an AS2 message is signed for this agreement.",
+  ).optional(),
+  CustomDirectories: z.object({
+    FailedFilesDirectory: z.string().regex(new RegExp("(|/.*)")).describe(
+      "Specifies a location to store the failed files for an AS2 message.",
+    ).optional(),
+    MdnFilesDirectory: z.string().regex(new RegExp("(|/.*)")).describe(
+      "Specifies a location to store the MDN file for an AS2 message.",
+    ).optional(),
+    PayloadFilesDirectory: z.string().regex(new RegExp("(|/.*)")).describe(
+      "Specifies a location to store the payload file for an AS2 message.",
+    ).optional(),
+    StatusFilesDirectory: z.string().regex(new RegExp("(|/.*)")).describe(
+      "Specifies a location to store the status file for an AS2 message.",
+    ).optional(),
+    TemporaryFilesDirectory: z.string().regex(new RegExp("(|/.*)")).describe(
+      "Specifies a location to store the temporary processing file for an AS2 message.",
+    ).optional(),
+  }).describe(
+    "Specifies a separate directory for each type of file to store for an AS2 message.",
+  ).optional(),
+});
+
+export const model = {
+  type: "@swamp/aws/transfer/agreement",
+  version: "2026.03.19.1",
+  globalArguments: GlobalArgsSchema,
+  inputsSchema: InputsSchema,
+  resources: {
+    state: {
+      description: "Transfer Agreement resource state",
+      schema: StateSchema,
+      lifetime: "infinite",
+      garbageCollection: 10,
+    },
+  },
+  methods: {
+    create: {
+      description: "Create a Transfer Agreement",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const desiredState: Record<string, unknown> = {};
+        for (const [key, value] of Object.entries(g)) {
+          if (key === "name") continue;
+          if (value !== undefined) desiredState[key] = value;
+        }
+        const result = await createResource(
+          "AWS::Transfer::Agreement",
+          desiredState,
+        ) as StateData;
+        const instanceName = g.name?.toString() ?? "current";
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    get: {
+      description: "Get a Transfer Agreement",
+      arguments: z.object({
+        identifier: z.string().describe(
+          "The primary identifier of the Transfer Agreement",
+        ),
+      }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const result = await readResource(
+          "AWS::Transfer::Agreement",
+          args.identifier,
+        ) as StateData;
+        const instanceName = context.globalArgs.name?.toString() ??
+          args.identifier;
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    update: {
+      description: "Update a Transfer Agreement",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const instanceName = g.name?.toString() ?? "current";
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          instanceName,
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        const idParts = [
+          existing.AgreementId?.toString(),
+          existing.ServerId?.toString(),
+        ];
+        if (idParts.some((p) => !p)) {
+          throw new Error(
+            "Missing primary identifier fields in existing state",
+          );
+        }
+        const identifier = idParts.join("|");
+        const currentState = await readResource(
+          "AWS::Transfer::Agreement",
+          identifier,
+        ) as StateData;
+        const desiredState: Record<string, unknown> = { ...currentState };
+        for (const [key, value] of Object.entries(g)) {
+          if (key === "name") continue;
+          if (value !== undefined) desiredState[key] = value;
+        }
+        const result = await updateResource(
+          "AWS::Transfer::Agreement",
+          identifier,
+          currentState,
+          desiredState,
+          ["ServerId"],
+        );
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    delete: {
+      description: "Delete a Transfer Agreement",
+      arguments: z.object({
+        identifier: z.string().describe(
+          "The primary identifier of the Transfer Agreement",
+        ),
+      }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const { existed } = await deleteResource(
+          "AWS::Transfer::Agreement",
+          args.identifier,
+        );
+        const instanceName = context.globalArgs.name?.toString() ??
+          args.identifier;
+        const handle = await context.writeResource("state", instanceName, {
+          identifier: args.identifier,
+          existed,
+          status: existed ? "deleted" : "not_found",
+          deletedAt: new Date().toISOString(),
+        });
+        return { dataHandles: [handle] };
+      },
+    },
+    sync: {
+      description: "Sync Transfer Agreement state from AWS",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const instanceName = g.name?.toString() ?? "current";
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          instanceName,
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        const idParts = [
+          existing.AgreementId?.toString(),
+          existing.ServerId?.toString(),
+        ];
+        if (idParts.some((p) => !p)) {
+          throw new Error(
+            "Missing primary identifier fields in existing state",
+          );
+        }
+        const identifier = idParts.join("|");
+        try {
+          const result = await readResource(
+            "AWS::Transfer::Agreement",
+            identifier,
+          ) as StateData;
+          const handle = await context.writeResource(
+            "state",
+            instanceName,
+            result,
+          );
+          return { dataHandles: [handle] };
+        } catch (error: unknown) {
+          if (isResourceNotFoundError(error)) {
+            const handle = await context.writeResource("state", instanceName, {
+              identifier,
+              status: "not_found",
+              syncedAt: new Date().toISOString(),
+            });
+            return { dataHandles: [handle] };
+          }
+          throw error;
+        }
+      },
+    },
+  },
+};

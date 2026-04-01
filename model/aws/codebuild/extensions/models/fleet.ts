@@ -1,0 +1,361 @@
+// Auto-generated extension model for @swamp/aws/codebuild/fleet
+// Do not edit manually. Re-generate with: deno task generate:aws
+
+// deno-lint-ignore-file no-explicit-any
+
+import { z } from "zod";
+import {
+  createResource,
+  deleteResource,
+  isResourceNotFoundError,
+  readResource,
+  updateResource,
+} from "./_lib/aws.ts";
+
+export const FleetProxyRuleSchema = z.object({
+  Type: z.enum(["DOMAIN", "IP"]).optional(),
+  Effect: z.enum(["ALLOW", "DENY"]).optional(),
+  Entities: z.array(z.string()).optional(),
+});
+
+export const TagSchema = z.object({
+  Key: z.string().min(1).max(128).regex(
+    new RegExp("^(?!aws:)[a-zA-Z+-=._:/]+$"),
+  ).describe(
+    "The key name of the tag. You can specify a value that is 1 to 127 Unicode characters in length and cannot be prefixed with aws:. You can use any of the following characters: the set of Unicode letters, digits, whitespace, _,., /, =, +, and -.",
+  ),
+  Value: z.string().min(0).max(256).regex(new RegExp("[a-zA-Z+-=._:/]+$"))
+    .describe(
+      "The value for the tag. You can specify a value that is 0 to 255 Unicode characters in length. You can use any of the following characters: the set of Unicode letters, digits, whitespace, _,., /, =, +, and -.",
+    ),
+});
+
+export const TargetTrackingScalingConfigurationSchema = z.object({
+  MetricType: z.enum(["FLEET_UTILIZATION_RATE"]).optional(),
+  TargetValue: z.number().optional(),
+});
+
+const GlobalArgsSchema = z.object({
+  name: z.string().describe(
+    "Instance name for this resource (used as the unique identifier in the factory pattern)",
+  ),
+  Name: z.string().min(2).max(128).optional(),
+  BaseCapacity: z.number().int().min(0).optional(),
+  EnvironmentType: z.enum([
+    "WINDOWS_SERVER_2019_CONTAINER",
+    "WINDOWS_SERVER_2022_CONTAINER",
+    "LINUX_CONTAINER",
+    "LINUX_GPU_CONTAINER",
+    "ARM_CONTAINER",
+    "MAC_ARM",
+    "LINUX_EC2",
+    "ARM_EC2",
+    "WINDOWS_EC2",
+  ]).optional(),
+  ComputeType: z.enum([
+    "BUILD_GENERAL1_SMALL",
+    "BUILD_GENERAL1_MEDIUM",
+    "BUILD_GENERAL1_LARGE",
+    "BUILD_GENERAL1_XLARGE",
+    "BUILD_GENERAL1_2XLARGE",
+    "ATTRIBUTE_BASED_COMPUTE",
+    "CUSTOM_INSTANCE_TYPE",
+  ]).optional(),
+  OverflowBehavior: z.enum(["QUEUE", "ON_DEMAND"]).optional(),
+  FleetServiceRole: z.string().regex(new RegExp("^(?:arn:)[a-zA-Z+-=,._:/@]+$"))
+    .optional(),
+  FleetVpcConfig: z.object({
+    VpcId: z.string().optional(),
+    Subnets: z.array(z.string()).optional(),
+    SecurityGroupIds: z.array(z.string()).optional(),
+  }).optional(),
+  FleetProxyConfiguration: z.object({
+    DefaultBehavior: z.enum(["ALLOW_ALL", "DENY_ALL"]).optional(),
+    OrderedProxyRules: z.array(FleetProxyRuleSchema).optional(),
+  }).optional(),
+  Tags: z.array(TagSchema).optional(),
+  ImageId: z.string().regex(
+    new RegExp(
+      "^((aws/codebuild/([A-Za-z0-9._-]+|ami/[A-Za-z0-9._-]+):[A-Za-z0-9._-]+)|ami-[a-z0-9]{1,1020})$",
+    ),
+  ).optional(),
+  ScalingConfiguration: z.object({
+    MaxCapacity: z.number().int().min(1).optional(),
+    ScalingType: z.enum(["TARGET_TRACKING_SCALING"]).optional(),
+    TargetTrackingScalingConfigs: z.array(
+      TargetTrackingScalingConfigurationSchema,
+    ).optional(),
+  }).optional(),
+  ComputeConfiguration: z.object({
+    vCpu: z.number().int().optional(),
+    memory: z.number().int().optional(),
+    disk: z.number().int().optional(),
+    machineType: z.enum(["GENERAL", "NVME"]).optional(),
+    instanceType: z.string().optional(),
+  }).optional(),
+});
+
+const StateSchema = z.object({
+  Name: z.string().optional(),
+  BaseCapacity: z.number().optional(),
+  EnvironmentType: z.string().optional(),
+  ComputeType: z.string().optional(),
+  OverflowBehavior: z.string().optional(),
+  FleetServiceRole: z.string().optional(),
+  FleetVpcConfig: z.object({
+    VpcId: z.string(),
+    Subnets: z.array(z.string()),
+    SecurityGroupIds: z.array(z.string()),
+  }).optional(),
+  FleetProxyConfiguration: z.object({
+    DefaultBehavior: z.string(),
+    OrderedProxyRules: z.array(FleetProxyRuleSchema),
+  }).optional(),
+  Tags: z.array(TagSchema).optional(),
+  Arn: z.string(),
+  ImageId: z.string().optional(),
+  ScalingConfiguration: z.object({
+    MaxCapacity: z.number(),
+    ScalingType: z.string(),
+    TargetTrackingScalingConfigs: z.array(
+      TargetTrackingScalingConfigurationSchema,
+    ),
+  }).optional(),
+  ComputeConfiguration: z.object({
+    vCpu: z.number(),
+    memory: z.number(),
+    disk: z.number(),
+    machineType: z.string(),
+    instanceType: z.string(),
+  }).optional(),
+}).passthrough();
+
+type StateData = z.infer<typeof StateSchema>;
+
+const InputsSchema = z.object({
+  name: z.string().optional(),
+  Name: z.string().min(2).max(128).optional(),
+  BaseCapacity: z.number().int().min(0).optional(),
+  EnvironmentType: z.enum([
+    "WINDOWS_SERVER_2019_CONTAINER",
+    "WINDOWS_SERVER_2022_CONTAINER",
+    "LINUX_CONTAINER",
+    "LINUX_GPU_CONTAINER",
+    "ARM_CONTAINER",
+    "MAC_ARM",
+    "LINUX_EC2",
+    "ARM_EC2",
+    "WINDOWS_EC2",
+  ]).optional(),
+  ComputeType: z.enum([
+    "BUILD_GENERAL1_SMALL",
+    "BUILD_GENERAL1_MEDIUM",
+    "BUILD_GENERAL1_LARGE",
+    "BUILD_GENERAL1_XLARGE",
+    "BUILD_GENERAL1_2XLARGE",
+    "ATTRIBUTE_BASED_COMPUTE",
+    "CUSTOM_INSTANCE_TYPE",
+  ]).optional(),
+  OverflowBehavior: z.enum(["QUEUE", "ON_DEMAND"]).optional(),
+  FleetServiceRole: z.string().regex(new RegExp("^(?:arn:)[a-zA-Z+-=,._:/@]+$"))
+    .optional(),
+  FleetVpcConfig: z.object({
+    VpcId: z.string().optional(),
+    Subnets: z.array(z.string()).optional(),
+    SecurityGroupIds: z.array(z.string()).optional(),
+  }).optional(),
+  FleetProxyConfiguration: z.object({
+    DefaultBehavior: z.enum(["ALLOW_ALL", "DENY_ALL"]).optional(),
+    OrderedProxyRules: z.array(FleetProxyRuleSchema).optional(),
+  }).optional(),
+  Tags: z.array(TagSchema).optional(),
+  ImageId: z.string().regex(
+    new RegExp(
+      "^((aws/codebuild/([A-Za-z0-9._-]+|ami/[A-Za-z0-9._-]+):[A-Za-z0-9._-]+)|ami-[a-z0-9]{1,1020})$",
+    ),
+  ).optional(),
+  ScalingConfiguration: z.object({
+    MaxCapacity: z.number().int().min(1).optional(),
+    ScalingType: z.enum(["TARGET_TRACKING_SCALING"]).optional(),
+    TargetTrackingScalingConfigs: z.array(
+      TargetTrackingScalingConfigurationSchema,
+    ).optional(),
+  }).optional(),
+  ComputeConfiguration: z.object({
+    vCpu: z.number().int().optional(),
+    memory: z.number().int().optional(),
+    disk: z.number().int().optional(),
+    machineType: z.enum(["GENERAL", "NVME"]).optional(),
+    instanceType: z.string().optional(),
+  }).optional(),
+});
+
+export const model = {
+  type: "@swamp/aws/codebuild/fleet",
+  version: "2026.03.19.1",
+  globalArguments: GlobalArgsSchema,
+  inputsSchema: InputsSchema,
+  resources: {
+    state: {
+      description: "CodeBuild Fleet resource state",
+      schema: StateSchema,
+      lifetime: "infinite",
+      garbageCollection: 10,
+    },
+  },
+  methods: {
+    create: {
+      description: "Create a CodeBuild Fleet",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const desiredState: Record<string, unknown> = {};
+        for (const [key, value] of Object.entries(g)) {
+          if (key === "name") continue;
+          if (value !== undefined) desiredState[key] = value;
+        }
+        const result = await createResource(
+          "AWS::CodeBuild::Fleet",
+          desiredState,
+        ) as StateData;
+        const instanceName = g.name?.toString() ?? "current";
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    get: {
+      description: "Get a CodeBuild Fleet",
+      arguments: z.object({
+        identifier: z.string().describe(
+          "The primary identifier of the CodeBuild Fleet",
+        ),
+      }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const result = await readResource(
+          "AWS::CodeBuild::Fleet",
+          args.identifier,
+        ) as StateData;
+        const instanceName = context.globalArgs.name?.toString() ??
+          args.identifier;
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    update: {
+      description: "Update a CodeBuild Fleet",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const instanceName = g.name?.toString() ?? "current";
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          instanceName,
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        const identifier = existing.Arn?.toString();
+        if (!identifier) {
+          throw new Error("No identifier found in existing state");
+        }
+        const currentState = await readResource(
+          "AWS::CodeBuild::Fleet",
+          identifier,
+        ) as StateData;
+        const desiredState: Record<string, unknown> = { ...currentState };
+        for (const [key, value] of Object.entries(g)) {
+          if (key === "name") continue;
+          if (value !== undefined) desiredState[key] = value;
+        }
+        const result = await updateResource(
+          "AWS::CodeBuild::Fleet",
+          identifier,
+          currentState,
+          desiredState,
+        );
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    delete: {
+      description: "Delete a CodeBuild Fleet",
+      arguments: z.object({
+        identifier: z.string().describe(
+          "The primary identifier of the CodeBuild Fleet",
+        ),
+      }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const { existed } = await deleteResource(
+          "AWS::CodeBuild::Fleet",
+          args.identifier,
+        );
+        const instanceName = context.globalArgs.name?.toString() ??
+          args.identifier;
+        const handle = await context.writeResource("state", instanceName, {
+          identifier: args.identifier,
+          existed,
+          status: existed ? "deleted" : "not_found",
+          deletedAt: new Date().toISOString(),
+        });
+        return { dataHandles: [handle] };
+      },
+    },
+    sync: {
+      description: "Sync CodeBuild Fleet state from AWS",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const instanceName = g.name?.toString() ?? "current";
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          instanceName,
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        const identifier = existing.Arn?.toString();
+        if (!identifier) {
+          throw new Error("No identifier found in existing state");
+        }
+        try {
+          const result = await readResource(
+            "AWS::CodeBuild::Fleet",
+            identifier,
+          ) as StateData;
+          const handle = await context.writeResource(
+            "state",
+            instanceName,
+            result,
+          );
+          return { dataHandles: [handle] };
+        } catch (error: unknown) {
+          if (isResourceNotFoundError(error)) {
+            const handle = await context.writeResource("state", instanceName, {
+              identifier,
+              status: "not_found",
+              syncedAt: new Date().toISOString(),
+            });
+            return { dataHandles: [handle] };
+          }
+          throw error;
+        }
+      },
+    },
+  },
+};

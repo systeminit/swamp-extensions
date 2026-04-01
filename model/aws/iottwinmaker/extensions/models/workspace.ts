@@ -1,0 +1,234 @@
+// Auto-generated extension model for @swamp/aws/iottwinmaker/workspace
+// Do not edit manually. Re-generate with: deno task generate:aws
+
+// deno-lint-ignore-file no-explicit-any
+
+import { z } from "zod";
+import {
+  createResource,
+  deleteResource,
+  isResourceNotFoundError,
+  readResource,
+  updateResource,
+} from "./_lib/aws.ts";
+
+const GlobalArgsSchema = z.object({
+  WorkspaceId: z.string().min(1).max(128).regex(
+    new RegExp("[a-zA-Z_0-9][a-zA-Z_\\-0-9]*[a-zA-Z0-9]+"),
+  ).describe("The ID of the workspace."),
+  Description: z.string().min(0).max(512).describe(
+    "The description of the workspace.",
+  ).optional(),
+  Role: z.string().min(20).max(2048).regex(
+    new RegExp("arn:((aws)|(aws-cn)|(aws-us-gov)):iam::[0-9]{12}:role/.*"),
+  ).describe("The ARN of the execution role associated with the workspace."),
+  S3Location: z.string().describe(
+    "The ARN of the S3 bucket where resources associated with the workspace are stored.",
+  ),
+  Tags: z.record(z.string(), z.string().min(1).max(256)).describe(
+    "A map of key-value pairs to associate with a resource.",
+  ).optional(),
+});
+
+const StateSchema = z.object({
+  WorkspaceId: z.string(),
+  Arn: z.string().optional(),
+  Description: z.string().optional(),
+  Role: z.string().optional(),
+  S3Location: z.string().optional(),
+  CreationDateTime: z.string().optional(),
+  UpdateDateTime: z.string().optional(),
+  Tags: z.record(z.string(), z.unknown()).optional(),
+}).passthrough();
+
+type StateData = z.infer<typeof StateSchema>;
+
+const InputsSchema = z.object({
+  WorkspaceId: z.string().min(1).max(128).regex(
+    new RegExp("[a-zA-Z_0-9][a-zA-Z_\\-0-9]*[a-zA-Z0-9]+"),
+  ).describe("The ID of the workspace.").optional(),
+  Description: z.string().min(0).max(512).describe(
+    "The description of the workspace.",
+  ).optional(),
+  Role: z.string().min(20).max(2048).regex(
+    new RegExp("arn:((aws)|(aws-cn)|(aws-us-gov)):iam::[0-9]{12}:role/.*"),
+  ).describe("The ARN of the execution role associated with the workspace.")
+    .optional(),
+  S3Location: z.string().describe(
+    "The ARN of the S3 bucket where resources associated with the workspace are stored.",
+  ).optional(),
+  Tags: z.record(z.string(), z.string().min(1).max(256)).describe(
+    "A map of key-value pairs to associate with a resource.",
+  ).optional(),
+});
+
+export const model = {
+  type: "@swamp/aws/iottwinmaker/workspace",
+  version: "2026.03.19.1",
+  globalArguments: GlobalArgsSchema,
+  inputsSchema: InputsSchema,
+  resources: {
+    state: {
+      description: "IoTTwinMaker Workspace resource state",
+      schema: StateSchema,
+      lifetime: "infinite",
+      garbageCollection: 10,
+    },
+  },
+  methods: {
+    create: {
+      description: "Create a IoTTwinMaker Workspace",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const desiredState: Record<string, unknown> = {};
+        for (const [key, value] of Object.entries(g)) {
+          if (value !== undefined) desiredState[key] = value;
+        }
+        const result = await createResource(
+          "AWS::IoTTwinMaker::Workspace",
+          desiredState,
+        ) as StateData;
+        const instanceName =
+          (result.WorkspaceId ?? g.WorkspaceId)?.toString() ?? "current";
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    get: {
+      description: "Get a IoTTwinMaker Workspace",
+      arguments: z.object({
+        identifier: z.string().describe(
+          "The primary identifier of the IoTTwinMaker Workspace",
+        ),
+      }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const result = await readResource(
+          "AWS::IoTTwinMaker::Workspace",
+          args.identifier,
+        ) as StateData;
+        const instanceName =
+          (result.WorkspaceId ?? context.globalArgs.WorkspaceId)?.toString() ??
+            args.identifier;
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    update: {
+      description: "Update a IoTTwinMaker Workspace",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const instanceName = g.WorkspaceId?.toString() ?? "current";
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          instanceName,
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        const identifier = existing.WorkspaceId?.toString();
+        if (!identifier) {
+          throw new Error("No identifier found in existing state");
+        }
+        const currentState = await readResource(
+          "AWS::IoTTwinMaker::Workspace",
+          identifier,
+        ) as StateData;
+        const desiredState: Record<string, unknown> = { ...currentState };
+        for (const [key, value] of Object.entries(g)) {
+          if (value !== undefined) desiredState[key] = value;
+        }
+        const result = await updateResource(
+          "AWS::IoTTwinMaker::Workspace",
+          identifier,
+          currentState,
+          desiredState,
+          ["WorkspaceId"],
+        );
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    delete: {
+      description: "Delete a IoTTwinMaker Workspace",
+      arguments: z.object({
+        identifier: z.string().describe(
+          "The primary identifier of the IoTTwinMaker Workspace",
+        ),
+      }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const { existed } = await deleteResource(
+          "AWS::IoTTwinMaker::Workspace",
+          args.identifier,
+        );
+        const instanceName = context.globalArgs.WorkspaceId?.toString() ??
+          args.identifier;
+        const handle = await context.writeResource("state", instanceName, {
+          identifier: args.identifier,
+          existed,
+          status: existed ? "deleted" : "not_found",
+          deletedAt: new Date().toISOString(),
+        });
+        return { dataHandles: [handle] };
+      },
+    },
+    sync: {
+      description: "Sync IoTTwinMaker Workspace state from AWS",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const instanceName = g.WorkspaceId?.toString() ?? "current";
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          instanceName,
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        const identifier = existing.WorkspaceId?.toString();
+        if (!identifier) {
+          throw new Error("No identifier found in existing state");
+        }
+        try {
+          const result = await readResource(
+            "AWS::IoTTwinMaker::Workspace",
+            identifier,
+          ) as StateData;
+          const handle = await context.writeResource(
+            "state",
+            instanceName,
+            result,
+          );
+          return { dataHandles: [handle] };
+        } catch (error: unknown) {
+          if (isResourceNotFoundError(error)) {
+            const handle = await context.writeResource("state", instanceName, {
+              identifier,
+              status: "not_found",
+              syncedAt: new Date().toISOString(),
+            });
+            return { dataHandles: [handle] };
+          }
+          throw error;
+        }
+      },
+    },
+  },
+};

@@ -1,0 +1,404 @@
+// Auto-generated extension model for @swamp/aws/appsync/data-source
+// Do not edit manually. Re-generate with: deno task generate:aws
+
+// deno-lint-ignore-file no-explicit-any
+
+import { z } from "zod";
+import {
+  createResource,
+  deleteResource,
+  isResourceNotFoundError,
+  readResource,
+  updateResource,
+} from "./_lib/aws.ts";
+
+export const DeltaSyncConfigSchema = z.object({
+  BaseTableTTL: z.string().describe(
+    "The number of minutes that an Item is stored in the data source.",
+  ),
+  DeltaSyncTableTTL: z.string().describe(
+    "The number of minutes that a Delta Sync log entry is stored in the Delta Sync table.",
+  ),
+  DeltaSyncTableName: z.string().describe("The Delta Sync table name."),
+});
+
+export const AwsIamConfigSchema = z.object({
+  SigningRegion: z.string().describe(
+    "The signing Region for AWS Identity and Access Management authorization.",
+  ).optional(),
+  SigningServiceName: z.string().describe(
+    "The signing service name for AWS Identity and Access Management authorization.",
+  ).optional(),
+});
+
+export const AuthorizationConfigSchema = z.object({
+  AuthorizationType: z.string().describe(
+    "The authorization type that the HTTP endpoint requires.",
+  ),
+  AwsIamConfig: AwsIamConfigSchema.describe(
+    "The AWS Identity and Access Management settings.",
+  ).optional(),
+});
+
+export const RdsHttpEndpointConfigSchema = z.object({
+  DatabaseName: z.string().describe("Logical database name.").optional(),
+  AwsRegion: z.string().describe("AWS Region for RDS HTTP endpoint."),
+  DbClusterIdentifier: z.string().describe(
+    "Amazon RDS cluster Amazon Resource Name (ARN).",
+  ),
+  AwsSecretStoreArn: z.string().describe(
+    "The ARN for database credentials stored in AWS Secrets Manager.",
+  ),
+  Schema: z.string().describe("Logical schema name.").optional(),
+});
+
+const GlobalArgsSchema = z.object({
+  name: z.string().describe(
+    "Instance name for this resource (used as the unique identifier in the factory pattern)",
+  ),
+  ApiId: z.string().describe(
+    "Unique AWS AppSync GraphQL API identifier where this data source will be created.",
+  ),
+  Description: z.string().describe("The description of the data source.")
+    .optional(),
+  DynamoDBConfig: z.object({
+    TableName: z.string().describe("The table name."),
+    DeltaSyncConfig: DeltaSyncConfigSchema.describe(
+      "The DeltaSyncConfig for a versioned datasource.",
+    ).optional(),
+    UseCallerCredentials: z.boolean().describe(
+      "Set to TRUE to use AWS Identity and Access Management with this data source.",
+    ).optional(),
+    AwsRegion: z.string().describe("The AWS Region."),
+    Versioned: z.boolean().describe(
+      "Set to TRUE to use Conflict Detection and Resolution with this data source.",
+    ).optional(),
+  }).describe(
+    "AWS Region and TableName for an Amazon DynamoDB table in your account.",
+  ).optional(),
+  ElasticsearchConfig: z.object({
+    AwsRegion: z.string().describe("The AWS Region."),
+    Endpoint: z.string().describe("The endpoint."),
+  }).describe(
+    "AWS Region and Endpoints for an Amazon OpenSearch Service domain in your account. As of September 2021, Amazon Elasticsearch Service is Amazon OpenSearch Service. This property is deprecated. For new data sources, use OpenSearchServiceConfig to specify an OpenSearch Service data source.",
+  ).optional(),
+  EventBridgeConfig: z.object({
+    EventBusArn: z.string().describe("ARN for the EventBridge bus."),
+  }).describe("ARN for the EventBridge bus.").optional(),
+  HttpConfig: z.object({
+    Endpoint: z.string().describe("The endpoint."),
+    AuthorizationConfig: AuthorizationConfigSchema.describe(
+      "The authorization configuration.",
+    ).optional(),
+  }).describe("Endpoints for an HTTP data source.").optional(),
+  LambdaConfig: z.object({
+    LambdaFunctionArn: z.string().describe("The ARN for the Lambda function."),
+  }).describe(
+    "An ARN of a Lambda function in valid ARN format. This can be the ARN of a Lambda function that exists in the current account or in another account.",
+  ).optional(),
+  Name: z.string().describe(
+    "Friendly name for you to identify your AppSync data source after creation.",
+  ),
+  OpenSearchServiceConfig: z.object({
+    AwsRegion: z.string().describe("The AWS Region."),
+    Endpoint: z.string().describe("The endpoint."),
+  }).describe(
+    "AWS Region and Endpoints for an Amazon OpenSearch Service domain in your account.",
+  ).optional(),
+  RelationalDatabaseConfig: z.object({
+    RdsHttpEndpointConfig: RdsHttpEndpointConfigSchema.describe(
+      "Information about the Amazon RDS resource.",
+    ).optional(),
+    RelationalDatabaseSourceType: z.string().describe(
+      "The type of relational data source.",
+    ),
+  }).describe(
+    "Relational Database configuration of the relational database data source.",
+  ).optional(),
+  ServiceRoleArn: z.string().describe(
+    "The AWS Identity and Access Management service role ARN for the data source. The system assumes this role when accessing the data source.",
+  ).optional(),
+  Type: z.string().describe("The type of the data source."),
+  MetricsConfig: z.enum(["DISABLED", "ENABLED"]).optional(),
+});
+
+const StateSchema = z.object({
+  ApiId: z.string().optional(),
+  Description: z.string().optional(),
+  DynamoDBConfig: z.object({
+    TableName: z.string(),
+    DeltaSyncConfig: DeltaSyncConfigSchema,
+    UseCallerCredentials: z.boolean(),
+    AwsRegion: z.string(),
+    Versioned: z.boolean(),
+  }).optional(),
+  ElasticsearchConfig: z.object({
+    AwsRegion: z.string(),
+    Endpoint: z.string(),
+  }).optional(),
+  EventBridgeConfig: z.object({
+    EventBusArn: z.string(),
+  }).optional(),
+  HttpConfig: z.object({
+    Endpoint: z.string(),
+    AuthorizationConfig: AuthorizationConfigSchema,
+  }).optional(),
+  LambdaConfig: z.object({
+    LambdaFunctionArn: z.string(),
+  }).optional(),
+  Name: z.string().optional(),
+  OpenSearchServiceConfig: z.object({
+    AwsRegion: z.string(),
+    Endpoint: z.string(),
+  }).optional(),
+  RelationalDatabaseConfig: z.object({
+    RdsHttpEndpointConfig: RdsHttpEndpointConfigSchema,
+    RelationalDatabaseSourceType: z.string(),
+  }).optional(),
+  ServiceRoleArn: z.string().optional(),
+  Type: z.string().optional(),
+  DataSourceArn: z.string(),
+  MetricsConfig: z.string().optional(),
+}).passthrough();
+
+type StateData = z.infer<typeof StateSchema>;
+
+const InputsSchema = z.object({
+  name: z.string().optional(),
+  ApiId: z.string().describe(
+    "Unique AWS AppSync GraphQL API identifier where this data source will be created.",
+  ).optional(),
+  Description: z.string().describe("The description of the data source.")
+    .optional(),
+  DynamoDBConfig: z.object({
+    TableName: z.string().describe("The table name.").optional(),
+    DeltaSyncConfig: DeltaSyncConfigSchema.describe(
+      "The DeltaSyncConfig for a versioned datasource.",
+    ).optional(),
+    UseCallerCredentials: z.boolean().describe(
+      "Set to TRUE to use AWS Identity and Access Management with this data source.",
+    ).optional(),
+    AwsRegion: z.string().describe("The AWS Region.").optional(),
+    Versioned: z.boolean().describe(
+      "Set to TRUE to use Conflict Detection and Resolution with this data source.",
+    ).optional(),
+  }).describe(
+    "AWS Region and TableName for an Amazon DynamoDB table in your account.",
+  ).optional(),
+  ElasticsearchConfig: z.object({
+    AwsRegion: z.string().describe("The AWS Region.").optional(),
+    Endpoint: z.string().describe("The endpoint.").optional(),
+  }).describe(
+    "AWS Region and Endpoints for an Amazon OpenSearch Service domain in your account. As of September 2021, Amazon Elasticsearch Service is Amazon OpenSearch Service. This property is deprecated. For new data sources, use OpenSearchServiceConfig to specify an OpenSearch Service data source.",
+  ).optional(),
+  EventBridgeConfig: z.object({
+    EventBusArn: z.string().describe("ARN for the EventBridge bus.").optional(),
+  }).describe("ARN for the EventBridge bus.").optional(),
+  HttpConfig: z.object({
+    Endpoint: z.string().describe("The endpoint.").optional(),
+    AuthorizationConfig: AuthorizationConfigSchema.describe(
+      "The authorization configuration.",
+    ).optional(),
+  }).describe("Endpoints for an HTTP data source.").optional(),
+  LambdaConfig: z.object({
+    LambdaFunctionArn: z.string().describe("The ARN for the Lambda function.")
+      .optional(),
+  }).describe(
+    "An ARN of a Lambda function in valid ARN format. This can be the ARN of a Lambda function that exists in the current account or in another account.",
+  ).optional(),
+  Name: z.string().describe(
+    "Friendly name for you to identify your AppSync data source after creation.",
+  ).optional(),
+  OpenSearchServiceConfig: z.object({
+    AwsRegion: z.string().describe("The AWS Region.").optional(),
+    Endpoint: z.string().describe("The endpoint.").optional(),
+  }).describe(
+    "AWS Region and Endpoints for an Amazon OpenSearch Service domain in your account.",
+  ).optional(),
+  RelationalDatabaseConfig: z.object({
+    RdsHttpEndpointConfig: RdsHttpEndpointConfigSchema.describe(
+      "Information about the Amazon RDS resource.",
+    ).optional(),
+    RelationalDatabaseSourceType: z.string().describe(
+      "The type of relational data source.",
+    ).optional(),
+  }).describe(
+    "Relational Database configuration of the relational database data source.",
+  ).optional(),
+  ServiceRoleArn: z.string().describe(
+    "The AWS Identity and Access Management service role ARN for the data source. The system assumes this role when accessing the data source.",
+  ).optional(),
+  Type: z.string().describe("The type of the data source.").optional(),
+  MetricsConfig: z.enum(["DISABLED", "ENABLED"]).optional(),
+});
+
+export const model = {
+  type: "@swamp/aws/appsync/data-source",
+  version: "2026.03.19.1",
+  globalArguments: GlobalArgsSchema,
+  inputsSchema: InputsSchema,
+  resources: {
+    state: {
+      description: "AppSync DataSource resource state",
+      schema: StateSchema,
+      lifetime: "infinite",
+      garbageCollection: 10,
+    },
+  },
+  methods: {
+    create: {
+      description: "Create a AppSync DataSource",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const desiredState: Record<string, unknown> = {};
+        for (const [key, value] of Object.entries(g)) {
+          if (key === "name") continue;
+          if (value !== undefined) desiredState[key] = value;
+        }
+        const result = await createResource(
+          "AWS::AppSync::DataSource",
+          desiredState,
+        ) as StateData;
+        const instanceName = g.name?.toString() ?? "current";
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    get: {
+      description: "Get a AppSync DataSource",
+      arguments: z.object({
+        identifier: z.string().describe(
+          "The primary identifier of the AppSync DataSource",
+        ),
+      }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const result = await readResource(
+          "AWS::AppSync::DataSource",
+          args.identifier,
+        ) as StateData;
+        const instanceName = context.globalArgs.name?.toString() ??
+          args.identifier;
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    update: {
+      description: "Update a AppSync DataSource",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const instanceName = g.name?.toString() ?? "current";
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          instanceName,
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        const identifier = existing.DataSourceArn?.toString();
+        if (!identifier) {
+          throw new Error("No identifier found in existing state");
+        }
+        const currentState = await readResource(
+          "AWS::AppSync::DataSource",
+          identifier,
+        ) as StateData;
+        const desiredState: Record<string, unknown> = { ...currentState };
+        for (const [key, value] of Object.entries(g)) {
+          if (key === "name") continue;
+          if (value !== undefined) desiredState[key] = value;
+        }
+        const result = await updateResource(
+          "AWS::AppSync::DataSource",
+          identifier,
+          currentState,
+          desiredState,
+          ["ApiId", "Name"],
+        );
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    delete: {
+      description: "Delete a AppSync DataSource",
+      arguments: z.object({
+        identifier: z.string().describe(
+          "The primary identifier of the AppSync DataSource",
+        ),
+      }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const { existed } = await deleteResource(
+          "AWS::AppSync::DataSource",
+          args.identifier,
+        );
+        const instanceName = context.globalArgs.name?.toString() ??
+          args.identifier;
+        const handle = await context.writeResource("state", instanceName, {
+          identifier: args.identifier,
+          existed,
+          status: existed ? "deleted" : "not_found",
+          deletedAt: new Date().toISOString(),
+        });
+        return { dataHandles: [handle] };
+      },
+    },
+    sync: {
+      description: "Sync AppSync DataSource state from AWS",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const instanceName = g.name?.toString() ?? "current";
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          instanceName,
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        const identifier = existing.DataSourceArn?.toString();
+        if (!identifier) {
+          throw new Error("No identifier found in existing state");
+        }
+        try {
+          const result = await readResource(
+            "AWS::AppSync::DataSource",
+            identifier,
+          ) as StateData;
+          const handle = await context.writeResource(
+            "state",
+            instanceName,
+            result,
+          );
+          return { dataHandles: [handle] };
+        } catch (error: unknown) {
+          if (isResourceNotFoundError(error)) {
+            const handle = await context.writeResource("state", instanceName, {
+              identifier,
+              status: "not_found",
+              syncedAt: new Date().toISOString(),
+            });
+            return { dataHandles: [handle] };
+          }
+          throw error;
+        }
+      },
+    },
+  },
+};

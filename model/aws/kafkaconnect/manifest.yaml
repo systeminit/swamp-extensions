@@ -1,0 +1,19 @@
+# Auto-generated manifest. Re-generate with the appropriate deno task.
+manifestVersion: 1
+name: "@swamp/aws/kafkaconnect"
+version: "2026.03.19.1"
+description: "AWS KAFKACONNECT infrastructure models"
+labels:
+  - aws
+  - kafkaconnect
+  - cloud
+  - infrastructure
+releaseNotes: |
+  - Updated: connector, custom_plugin, worker_configuration
+models:
+  - connector.ts
+  - custom_plugin.ts
+  - worker_configuration.ts
+additionalFiles:
+  - LICENSE.txt
+  - README.md

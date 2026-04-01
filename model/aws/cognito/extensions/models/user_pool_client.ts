@@ -1,0 +1,322 @@
+// Auto-generated extension model for @swamp/aws/cognito/user-pool-client
+// Do not edit manually. Re-generate with: deno task generate:aws
+
+// deno-lint-ignore-file no-explicit-any
+
+import { z } from "zod";
+import {
+  createResource,
+  deleteResource,
+  isResourceNotFoundError,
+  readResource,
+  updateResource,
+} from "./_lib/aws.ts";
+
+const GlobalArgsSchema = z.object({
+  name: z.string().describe(
+    "Instance name for this resource (used as the unique identifier in the factory pattern)",
+  ),
+  ClientName: z.string().min(1).max(128).optional(),
+  ExplicitAuthFlows: z.array(z.string()).optional(),
+  GenerateSecret: z.boolean().optional(),
+  ReadAttributes: z.array(z.string()).optional(),
+  AuthSessionValidity: z.number().int().min(3).max(15).optional(),
+  RefreshTokenValidity: z.number().int().min(1).max(315360000).optional(),
+  AccessTokenValidity: z.number().int().min(1).max(86400).optional(),
+  IdTokenValidity: z.number().int().min(1).max(86400).optional(),
+  TokenValidityUnits: z.object({
+    AccessToken: z.string().optional(),
+    IdToken: z.string().optional(),
+    RefreshToken: z.string().optional(),
+  }).optional(),
+  RefreshTokenRotation: z.object({
+    Feature: z.enum(["ENABLED", "DISABLED"]).optional(),
+    RetryGracePeriodSeconds: z.number().int().min(0).max(60).optional(),
+  }).optional(),
+  UserPoolId: z.string(),
+  WriteAttributes: z.array(z.string()).optional(),
+  AllowedOAuthFlows: z.array(z.string()).optional(),
+  AllowedOAuthFlowsUserPoolClient: z.boolean().optional(),
+  AllowedOAuthScopes: z.array(z.string()).optional(),
+  CallbackURLs: z.array(z.string()).optional(),
+  DefaultRedirectURI: z.string().optional(),
+  LogoutURLs: z.array(z.string()).optional(),
+  SupportedIdentityProviders: z.array(z.string()).optional(),
+  AnalyticsConfiguration: z.object({
+    ApplicationArn: z.string().optional(),
+    ApplicationId: z.string().optional(),
+    ExternalId: z.string().optional(),
+    RoleArn: z.string().optional(),
+    UserDataShared: z.boolean().optional(),
+  }).optional(),
+  PreventUserExistenceErrors: z.string().optional(),
+  EnableTokenRevocation: z.boolean().optional(),
+  EnablePropagateAdditionalUserContextData: z.boolean().optional(),
+});
+
+const StateSchema = z.object({
+  ClientName: z.string().optional(),
+  ExplicitAuthFlows: z.array(z.string()).optional(),
+  GenerateSecret: z.boolean().optional(),
+  ReadAttributes: z.array(z.string()).optional(),
+  AuthSessionValidity: z.number().optional(),
+  RefreshTokenValidity: z.number().optional(),
+  AccessTokenValidity: z.number().optional(),
+  IdTokenValidity: z.number().optional(),
+  TokenValidityUnits: z.object({
+    AccessToken: z.string(),
+    IdToken: z.string(),
+    RefreshToken: z.string(),
+  }).optional(),
+  RefreshTokenRotation: z.object({
+    Feature: z.string(),
+    RetryGracePeriodSeconds: z.number(),
+  }).optional(),
+  UserPoolId: z.string(),
+  WriteAttributes: z.array(z.string()).optional(),
+  AllowedOAuthFlows: z.array(z.string()).optional(),
+  AllowedOAuthFlowsUserPoolClient: z.boolean().optional(),
+  AllowedOAuthScopes: z.array(z.string()).optional(),
+  CallbackURLs: z.array(z.string()).optional(),
+  DefaultRedirectURI: z.string().optional(),
+  LogoutURLs: z.array(z.string()).optional(),
+  SupportedIdentityProviders: z.array(z.string()).optional(),
+  AnalyticsConfiguration: z.object({
+    ApplicationArn: z.string(),
+    ApplicationId: z.string(),
+    ExternalId: z.string(),
+    RoleArn: z.string(),
+    UserDataShared: z.boolean(),
+  }).optional(),
+  PreventUserExistenceErrors: z.string().optional(),
+  EnableTokenRevocation: z.boolean().optional(),
+  EnablePropagateAdditionalUserContextData: z.boolean().optional(),
+  Name: z.string().optional(),
+  ClientSecret: z.string().optional(),
+  ClientId: z.string(),
+}).passthrough();
+
+type StateData = z.infer<typeof StateSchema>;
+
+const InputsSchema = z.object({
+  name: z.string().optional(),
+  ClientName: z.string().min(1).max(128).optional(),
+  ExplicitAuthFlows: z.array(z.string()).optional(),
+  GenerateSecret: z.boolean().optional(),
+  ReadAttributes: z.array(z.string()).optional(),
+  AuthSessionValidity: z.number().int().min(3).max(15).optional(),
+  RefreshTokenValidity: z.number().int().min(1).max(315360000).optional(),
+  AccessTokenValidity: z.number().int().min(1).max(86400).optional(),
+  IdTokenValidity: z.number().int().min(1).max(86400).optional(),
+  TokenValidityUnits: z.object({
+    AccessToken: z.string().optional(),
+    IdToken: z.string().optional(),
+    RefreshToken: z.string().optional(),
+  }).optional(),
+  RefreshTokenRotation: z.object({
+    Feature: z.enum(["ENABLED", "DISABLED"]).optional(),
+    RetryGracePeriodSeconds: z.number().int().min(0).max(60).optional(),
+  }).optional(),
+  UserPoolId: z.string().optional(),
+  WriteAttributes: z.array(z.string()).optional(),
+  AllowedOAuthFlows: z.array(z.string()).optional(),
+  AllowedOAuthFlowsUserPoolClient: z.boolean().optional(),
+  AllowedOAuthScopes: z.array(z.string()).optional(),
+  CallbackURLs: z.array(z.string()).optional(),
+  DefaultRedirectURI: z.string().optional(),
+  LogoutURLs: z.array(z.string()).optional(),
+  SupportedIdentityProviders: z.array(z.string()).optional(),
+  AnalyticsConfiguration: z.object({
+    ApplicationArn: z.string().optional(),
+    ApplicationId: z.string().optional(),
+    ExternalId: z.string().optional(),
+    RoleArn: z.string().optional(),
+    UserDataShared: z.boolean().optional(),
+  }).optional(),
+  PreventUserExistenceErrors: z.string().optional(),
+  EnableTokenRevocation: z.boolean().optional(),
+  EnablePropagateAdditionalUserContextData: z.boolean().optional(),
+});
+
+export const model = {
+  type: "@swamp/aws/cognito/user-pool-client",
+  version: "2026.03.19.1",
+  globalArguments: GlobalArgsSchema,
+  inputsSchema: InputsSchema,
+  resources: {
+    state: {
+      description: "Cognito UserPoolClient resource state",
+      schema: StateSchema,
+      lifetime: "infinite",
+      garbageCollection: 10,
+    },
+  },
+  methods: {
+    create: {
+      description: "Create a Cognito UserPoolClient",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const desiredState: Record<string, unknown> = {};
+        for (const [key, value] of Object.entries(g)) {
+          if (key === "name") continue;
+          if (value !== undefined) desiredState[key] = value;
+        }
+        const result = await createResource(
+          "AWS::Cognito::UserPoolClient",
+          desiredState,
+        ) as StateData;
+        const instanceName = g.name?.toString() ?? "current";
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    get: {
+      description: "Get a Cognito UserPoolClient",
+      arguments: z.object({
+        identifier: z.string().describe(
+          "The primary identifier of the Cognito UserPoolClient",
+        ),
+      }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const result = await readResource(
+          "AWS::Cognito::UserPoolClient",
+          args.identifier,
+        ) as StateData;
+        const instanceName = context.globalArgs.name?.toString() ??
+          args.identifier;
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    update: {
+      description: "Update a Cognito UserPoolClient",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const instanceName = g.name?.toString() ?? "current";
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          instanceName,
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        const idParts = [
+          existing.UserPoolId?.toString(),
+          existing.ClientId?.toString(),
+        ];
+        if (idParts.some((p) => !p)) {
+          throw new Error(
+            "Missing primary identifier fields in existing state",
+          );
+        }
+        const identifier = idParts.join("|");
+        const currentState = await readResource(
+          "AWS::Cognito::UserPoolClient",
+          identifier,
+        ) as StateData;
+        const desiredState: Record<string, unknown> = { ...currentState };
+        for (const [key, value] of Object.entries(g)) {
+          if (key === "name") continue;
+          if (value !== undefined) desiredState[key] = value;
+        }
+        const result = await updateResource(
+          "AWS::Cognito::UserPoolClient",
+          identifier,
+          currentState,
+          desiredState,
+          ["GenerateSecret", "UserPoolId"],
+        );
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    delete: {
+      description: "Delete a Cognito UserPoolClient",
+      arguments: z.object({
+        identifier: z.string().describe(
+          "The primary identifier of the Cognito UserPoolClient",
+        ),
+      }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const { existed } = await deleteResource(
+          "AWS::Cognito::UserPoolClient",
+          args.identifier,
+        );
+        const instanceName = context.globalArgs.name?.toString() ??
+          args.identifier;
+        const handle = await context.writeResource("state", instanceName, {
+          identifier: args.identifier,
+          existed,
+          status: existed ? "deleted" : "not_found",
+          deletedAt: new Date().toISOString(),
+        });
+        return { dataHandles: [handle] };
+      },
+    },
+    sync: {
+      description: "Sync Cognito UserPoolClient state from AWS",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const instanceName = g.name?.toString() ?? "current";
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          instanceName,
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        const idParts = [
+          existing.UserPoolId?.toString(),
+          existing.ClientId?.toString(),
+        ];
+        if (idParts.some((p) => !p)) {
+          throw new Error(
+            "Missing primary identifier fields in existing state",
+          );
+        }
+        const identifier = idParts.join("|");
+        try {
+          const result = await readResource(
+            "AWS::Cognito::UserPoolClient",
+            identifier,
+          ) as StateData;
+          const handle = await context.writeResource(
+            "state",
+            instanceName,
+            result,
+          );
+          return { dataHandles: [handle] };
+        } catch (error: unknown) {
+          if (isResourceNotFoundError(error)) {
+            const handle = await context.writeResource("state", instanceName, {
+              identifier,
+              status: "not_found",
+              syncedAt: new Date().toISOString(),
+            });
+            return { dataHandles: [handle] };
+          }
+          throw error;
+        }
+      },
+    },
+  },
+};

@@ -1,0 +1,20 @@
+# Auto-generated manifest. Re-generate with the appropriate deno task.
+manifestVersion: 1
+name: "@swamp/aws/xray"
+version: "2026.03.19.1"
+description: "AWS XRAY infrastructure models"
+labels:
+  - aws
+  - xray
+  - cloud
+  - infrastructure
+releaseNotes: |
+  - Updated: group, resource_policy, sampling_rule, transaction_search_config
+models:
+  - group.ts
+  - resource_policy.ts
+  - sampling_rule.ts
+  - transaction_search_config.ts
+additionalFiles:
+  - LICENSE.txt
+  - README.md

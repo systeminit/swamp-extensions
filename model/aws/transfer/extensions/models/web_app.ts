@@ -1,0 +1,315 @@
+// Auto-generated extension model for @swamp/aws/transfer/web-app
+// Do not edit manually. Re-generate with: deno task generate:aws
+
+// deno-lint-ignore-file no-explicit-any
+
+import { z } from "zod";
+import {
+  createResource,
+  deleteResource,
+  isResourceNotFoundError,
+  readResource,
+  updateResource,
+} from "./_lib/aws.ts";
+
+export const VpcSchema = z.object({
+  SubnetIds: z.array(
+    z.string().min(15).max(24).regex(new RegExp("^subnet-[0-9a-f]{8,17}$")),
+  ).optional(),
+  VpcId: z.string().min(12).max(21).regex(new RegExp("^vpc-[0-9a-f]{8,17}$"))
+    .optional(),
+  SecurityGroupIds: z.array(
+    z.string().min(11).max(20).regex(new RegExp("^sg-[0-9a-f]{8,17}$")),
+  ).optional(),
+});
+
+export const TagSchema = z.object({
+  Key: z.string().min(0).max(128),
+  Value: z.string().min(0).max(256),
+});
+
+const GlobalArgsSchema = z.object({
+  name: z.string().describe(
+    "Instance name for this resource (used as the unique identifier in the factory pattern)",
+  ),
+  IdentityProviderDetails: z.object({
+    InstanceArn: z.string().min(10).max(1224).regex(
+      new RegExp("^arn:[\\w-]+:sso:::instance/(sso)?ins-[a-zA-Z0-9-.]{16}$"),
+    ).describe(
+      "The Amazon Resource Name (ARN) for the IAM Identity Center used for the web app.",
+    ).optional(),
+    Role: z.string().min(20).max(2048).regex(
+      new RegExp("^arn:[a-z-]+:iam::[0-9]{12}:role[:/]\\S+$"),
+    ).describe("The IAM role in IAM Identity Center used for the web app.")
+      .optional(),
+  }).describe(
+    "You can provide a structure that contains the details for the identity provider to use with your web app.",
+  ),
+  EndpointDetails: z.object({
+    Vpc: VpcSchema.describe(
+      "You can provide a structure that contains the details for the VPC endpoint to use with your web app.",
+    ).optional(),
+  }).optional(),
+  AccessEndpoint: z.string().min(1).max(1024).describe(
+    "The AccessEndpoint is the URL that you provide to your users for them to interact with the Transfer Family web app. You can specify a custom URL or use the default value.",
+  ).optional(),
+  WebAppUnits: z.object({
+    Provisioned: z.number().int().min(1).optional(),
+  }).optional(),
+  WebAppCustomization: z.object({
+    Title: z.string().min(0).max(100).describe(
+      "Specifies a title to display on the web app.",
+    ).optional(),
+    LogoFile: z.string().min(1).max(51200).describe(
+      "Specifies a logo to display on the web app.",
+    ).optional(),
+    FaviconFile: z.string().min(1).max(20960).describe(
+      "Specifies a favicon to display in the browser tab.",
+    ).optional(),
+  }).optional(),
+  WebAppEndpointPolicy: z.enum(["STANDARD", "FIPS"]).optional(),
+  Tags: z.array(TagSchema).describe(
+    "Key-value pairs that can be used to group and search for web apps.",
+  ).optional(),
+});
+
+const StateSchema = z.object({
+  Arn: z.string(),
+  WebAppId: z.string().optional(),
+  IdentityProviderDetails: z.object({
+    ApplicationArn: z.string(),
+    InstanceArn: z.string(),
+    Role: z.string(),
+  }).optional(),
+  EndpointDetails: z.object({
+    Vpc: VpcSchema,
+  }).optional(),
+  AccessEndpoint: z.string().optional(),
+  VpcEndpointId: z.string().optional(),
+  WebAppUnits: z.object({
+    Provisioned: z.number(),
+  }).optional(),
+  WebAppCustomization: z.object({
+    Title: z.string(),
+    LogoFile: z.string(),
+    FaviconFile: z.string(),
+  }).optional(),
+  WebAppEndpointPolicy: z.string().optional(),
+  Tags: z.array(TagSchema).optional(),
+}).passthrough();
+
+type StateData = z.infer<typeof StateSchema>;
+
+const InputsSchema = z.object({
+  name: z.string().optional(),
+  IdentityProviderDetails: z.object({
+    InstanceArn: z.string().min(10).max(1224).regex(
+      new RegExp("^arn:[\\w-]+:sso:::instance/(sso)?ins-[a-zA-Z0-9-.]{16}$"),
+    ).describe(
+      "The Amazon Resource Name (ARN) for the IAM Identity Center used for the web app.",
+    ).optional(),
+    Role: z.string().min(20).max(2048).regex(
+      new RegExp("^arn:[a-z-]+:iam::[0-9]{12}:role[:/]\\S+$"),
+    ).describe("The IAM role in IAM Identity Center used for the web app.")
+      .optional(),
+  }).describe(
+    "You can provide a structure that contains the details for the identity provider to use with your web app.",
+  ).optional(),
+  EndpointDetails: z.object({
+    Vpc: VpcSchema.describe(
+      "You can provide a structure that contains the details for the VPC endpoint to use with your web app.",
+    ).optional(),
+  }).optional(),
+  AccessEndpoint: z.string().min(1).max(1024).describe(
+    "The AccessEndpoint is the URL that you provide to your users for them to interact with the Transfer Family web app. You can specify a custom URL or use the default value.",
+  ).optional(),
+  WebAppUnits: z.object({
+    Provisioned: z.number().int().min(1).optional(),
+  }).optional(),
+  WebAppCustomization: z.object({
+    Title: z.string().min(0).max(100).describe(
+      "Specifies a title to display on the web app.",
+    ).optional(),
+    LogoFile: z.string().min(1).max(51200).describe(
+      "Specifies a logo to display on the web app.",
+    ).optional(),
+    FaviconFile: z.string().min(1).max(20960).describe(
+      "Specifies a favicon to display in the browser tab.",
+    ).optional(),
+  }).optional(),
+  WebAppEndpointPolicy: z.enum(["STANDARD", "FIPS"]).optional(),
+  Tags: z.array(TagSchema).describe(
+    "Key-value pairs that can be used to group and search for web apps.",
+  ).optional(),
+});
+
+export const model = {
+  type: "@swamp/aws/transfer/web-app",
+  version: "2026.03.19.1",
+  globalArguments: GlobalArgsSchema,
+  inputsSchema: InputsSchema,
+  resources: {
+    state: {
+      description: "Transfer WebApp resource state",
+      schema: StateSchema,
+      lifetime: "infinite",
+      garbageCollection: 10,
+    },
+  },
+  methods: {
+    create: {
+      description: "Create a Transfer WebApp",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const desiredState: Record<string, unknown> = {};
+        for (const [key, value] of Object.entries(g)) {
+          if (key === "name") continue;
+          if (value !== undefined) desiredState[key] = value;
+        }
+        const result = await createResource(
+          "AWS::Transfer::WebApp",
+          desiredState,
+        ) as StateData;
+        const instanceName = g.name?.toString() ?? "current";
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    get: {
+      description: "Get a Transfer WebApp",
+      arguments: z.object({
+        identifier: z.string().describe(
+          "The primary identifier of the Transfer WebApp",
+        ),
+      }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const result = await readResource(
+          "AWS::Transfer::WebApp",
+          args.identifier,
+        ) as StateData;
+        const instanceName = context.globalArgs.name?.toString() ??
+          args.identifier;
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    update: {
+      description: "Update a Transfer WebApp",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const instanceName = g.name?.toString() ?? "current";
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          instanceName,
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        const identifier = existing.Arn?.toString();
+        if (!identifier) {
+          throw new Error("No identifier found in existing state");
+        }
+        const currentState = await readResource(
+          "AWS::Transfer::WebApp",
+          identifier,
+        ) as StateData;
+        const desiredState: Record<string, unknown> = { ...currentState };
+        for (const [key, value] of Object.entries(g)) {
+          if (key === "name") continue;
+          if (value !== undefined) desiredState[key] = value;
+        }
+        const result = await updateResource(
+          "AWS::Transfer::WebApp",
+          identifier,
+          currentState,
+          desiredState,
+          ["WebAppEndpointPolicy", "InstanceArn", "VpcId", "SecurityGroupIds"],
+        );
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    delete: {
+      description: "Delete a Transfer WebApp",
+      arguments: z.object({
+        identifier: z.string().describe(
+          "The primary identifier of the Transfer WebApp",
+        ),
+      }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const { existed } = await deleteResource(
+          "AWS::Transfer::WebApp",
+          args.identifier,
+        );
+        const instanceName = context.globalArgs.name?.toString() ??
+          args.identifier;
+        const handle = await context.writeResource("state", instanceName, {
+          identifier: args.identifier,
+          existed,
+          status: existed ? "deleted" : "not_found",
+          deletedAt: new Date().toISOString(),
+        });
+        return { dataHandles: [handle] };
+      },
+    },
+    sync: {
+      description: "Sync Transfer WebApp state from AWS",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const instanceName = g.name?.toString() ?? "current";
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          instanceName,
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        const identifier = existing.Arn?.toString();
+        if (!identifier) {
+          throw new Error("No identifier found in existing state");
+        }
+        try {
+          const result = await readResource(
+            "AWS::Transfer::WebApp",
+            identifier,
+          ) as StateData;
+          const handle = await context.writeResource(
+            "state",
+            instanceName,
+            result,
+          );
+          return { dataHandles: [handle] };
+        } catch (error: unknown) {
+          if (isResourceNotFoundError(error)) {
+            const handle = await context.writeResource("state", instanceName, {
+              identifier,
+              status: "not_found",
+              syncedAt: new Date().toISOString(),
+            });
+            return { dataHandles: [handle] };
+          }
+          throw error;
+        }
+      },
+    },
+  },
+};

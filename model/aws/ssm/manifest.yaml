@@ -1,0 +1,25 @@
+# Auto-generated manifest. Re-generate with the appropriate deno task.
+manifestVersion: 1
+name: "@swamp/aws/ssm"
+version: "2026.03.19.1"
+description: "AWS SSM infrastructure models"
+labels:
+  - aws
+  - ssm
+  - cloud
+  - infrastructure
+releaseNotes: |
+  - Updated: association, document, maintenance_window, maintenance_window_target, maintenance_window_task, parameter, patch_baseline, resource_data_sync, resource_policy
+models:
+  - association.ts
+  - document.ts
+  - maintenance_window.ts
+  - maintenance_window_target.ts
+  - maintenance_window_task.ts
+  - parameter.ts
+  - patch_baseline.ts
+  - resource_data_sync.ts
+  - resource_policy.ts
+additionalFiles:
+  - LICENSE.txt
+  - README.md

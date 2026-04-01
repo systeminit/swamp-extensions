@@ -1,0 +1,338 @@
+// Auto-generated extension model for @swamp/aws/appsync/function-configuration
+// Do not edit manually. Re-generate with: deno task generate:aws
+
+// deno-lint-ignore-file no-explicit-any
+
+import { z } from "zod";
+import {
+  createResource,
+  deleteResource,
+  isResourceNotFoundError,
+  readResource,
+  updateResource,
+} from "./_lib/aws.ts";
+
+export const LambdaConflictHandlerConfigSchema = z.object({
+  LambdaConflictHandlerArn: z.string().describe(
+    "The Amazon Resource Name (ARN) for the Lambda function to use as the Conflict Handler.",
+  ).optional(),
+});
+
+const GlobalArgsSchema = z.object({
+  name: z.string().describe(
+    "Instance name for this resource (used as the unique identifier in the factory pattern)",
+  ),
+  ApiId: z.string().describe(
+    "The AWS AppSync GraphQL API that you want to attach using this function.",
+  ),
+  Code: z.string().describe(
+    "The resolver code that contains the request and response functions. When code is used, the runtime is required. The runtime value must be APPSYNC_JS.",
+  ).optional(),
+  CodeS3Location: z.string().describe(
+    "The Amazon S3 endpoint (where the code is located??).",
+  ).optional(),
+  DataSourceName: z.string().describe(
+    "The name of data source this function will attach.",
+  ),
+  Description: z.string().describe("The function description.").optional(),
+  FunctionVersion: z.string().describe(
+    "The version of the request mapping template. Currently, only the 2018-05-29 version of the template is supported.",
+  ).optional(),
+  MaxBatchSize: z.number().int().describe(
+    "The maximum number of resolver request inputs that will be sent to a single AWS Lambda function in a BatchInvoke operation.",
+  ).optional(),
+  Name: z.string().describe("The name of the function."),
+  RequestMappingTemplate: z.string().describe(
+    "The Function request mapping template. Functions support only the 2018-05-29 version of the request mapping template.",
+  ).optional(),
+  RequestMappingTemplateS3Location: z.string().describe(
+    "Describes a Sync configuration for a resolver. Contains information on which Conflict Detection, as well as Resolution strategy, should be performed when the resolver is invoked.",
+  ).optional(),
+  ResponseMappingTemplate: z.string().describe(
+    "The Function response mapping template.",
+  ).optional(),
+  ResponseMappingTemplateS3Location: z.string().describe(
+    "The location of a response mapping template in an Amazon S3 bucket. Use this if you want to provision with a template file in Amazon S3 rather than embedding it in your CloudFormation template.",
+  ).optional(),
+  Runtime: z.object({
+    Name: z.string().describe(
+      "The name of the runtime to use. Currently, the only allowed value is APPSYNC_JS.",
+    ),
+    RuntimeVersion: z.string().describe(
+      "The version of the runtime to use. Currently, the only allowed version is 1.0.0.",
+    ),
+  }).describe(
+    "Describes a runtime used by an AWS AppSync pipeline resolver or AWS AppSync function. Specifies the name and version of the runtime to use. Note that if a runtime is specified, code must also be specified.",
+  ).optional(),
+  SyncConfig: z.object({
+    ConflictDetection: z.string().describe(
+      "The Conflict Detection strategy to use.",
+    ),
+    ConflictHandler: z.string().describe(
+      "The Conflict Resolution strategy to perform in the event of a conflict.",
+    ).optional(),
+    LambdaConflictHandlerConfig: LambdaConflictHandlerConfigSchema.describe(
+      "The LambdaConflictHandlerConfig when configuring LAMBDA as the Conflict Handler.",
+    ).optional(),
+  }).describe(
+    "Describes a Sync configuration for a resolver. Specifies which Conflict Detection strategy and Resolution strategy to use when the resolver is invoked.",
+  ).optional(),
+});
+
+const StateSchema = z.object({
+  FunctionId: z.string().optional(),
+  FunctionArn: z.string(),
+  ApiId: z.string().optional(),
+  Code: z.string().optional(),
+  CodeS3Location: z.string().optional(),
+  DataSourceName: z.string().optional(),
+  Description: z.string().optional(),
+  FunctionVersion: z.string().optional(),
+  MaxBatchSize: z.number().optional(),
+  Name: z.string().optional(),
+  RequestMappingTemplate: z.string().optional(),
+  RequestMappingTemplateS3Location: z.string().optional(),
+  ResponseMappingTemplate: z.string().optional(),
+  ResponseMappingTemplateS3Location: z.string().optional(),
+  Runtime: z.object({
+    Name: z.string(),
+    RuntimeVersion: z.string(),
+  }).optional(),
+  SyncConfig: z.object({
+    ConflictDetection: z.string(),
+    ConflictHandler: z.string(),
+    LambdaConflictHandlerConfig: LambdaConflictHandlerConfigSchema,
+  }).optional(),
+}).passthrough();
+
+type StateData = z.infer<typeof StateSchema>;
+
+const InputsSchema = z.object({
+  name: z.string().optional(),
+  ApiId: z.string().describe(
+    "The AWS AppSync GraphQL API that you want to attach using this function.",
+  ).optional(),
+  Code: z.string().describe(
+    "The resolver code that contains the request and response functions. When code is used, the runtime is required. The runtime value must be APPSYNC_JS.",
+  ).optional(),
+  CodeS3Location: z.string().describe(
+    "The Amazon S3 endpoint (where the code is located??).",
+  ).optional(),
+  DataSourceName: z.string().describe(
+    "The name of data source this function will attach.",
+  ).optional(),
+  Description: z.string().describe("The function description.").optional(),
+  FunctionVersion: z.string().describe(
+    "The version of the request mapping template. Currently, only the 2018-05-29 version of the template is supported.",
+  ).optional(),
+  MaxBatchSize: z.number().int().describe(
+    "The maximum number of resolver request inputs that will be sent to a single AWS Lambda function in a BatchInvoke operation.",
+  ).optional(),
+  Name: z.string().describe("The name of the function.").optional(),
+  RequestMappingTemplate: z.string().describe(
+    "The Function request mapping template. Functions support only the 2018-05-29 version of the request mapping template.",
+  ).optional(),
+  RequestMappingTemplateS3Location: z.string().describe(
+    "Describes a Sync configuration for a resolver. Contains information on which Conflict Detection, as well as Resolution strategy, should be performed when the resolver is invoked.",
+  ).optional(),
+  ResponseMappingTemplate: z.string().describe(
+    "The Function response mapping template.",
+  ).optional(),
+  ResponseMappingTemplateS3Location: z.string().describe(
+    "The location of a response mapping template in an Amazon S3 bucket. Use this if you want to provision with a template file in Amazon S3 rather than embedding it in your CloudFormation template.",
+  ).optional(),
+  Runtime: z.object({
+    Name: z.string().describe(
+      "The name of the runtime to use. Currently, the only allowed value is APPSYNC_JS.",
+    ).optional(),
+    RuntimeVersion: z.string().describe(
+      "The version of the runtime to use. Currently, the only allowed version is 1.0.0.",
+    ).optional(),
+  }).describe(
+    "Describes a runtime used by an AWS AppSync pipeline resolver or AWS AppSync function. Specifies the name and version of the runtime to use. Note that if a runtime is specified, code must also be specified.",
+  ).optional(),
+  SyncConfig: z.object({
+    ConflictDetection: z.string().describe(
+      "The Conflict Detection strategy to use.",
+    ).optional(),
+    ConflictHandler: z.string().describe(
+      "The Conflict Resolution strategy to perform in the event of a conflict.",
+    ).optional(),
+    LambdaConflictHandlerConfig: LambdaConflictHandlerConfigSchema.describe(
+      "The LambdaConflictHandlerConfig when configuring LAMBDA as the Conflict Handler.",
+    ).optional(),
+  }).describe(
+    "Describes a Sync configuration for a resolver. Specifies which Conflict Detection strategy and Resolution strategy to use when the resolver is invoked.",
+  ).optional(),
+});
+
+export const model = {
+  type: "@swamp/aws/appsync/function-configuration",
+  version: "2026.03.19.1",
+  globalArguments: GlobalArgsSchema,
+  inputsSchema: InputsSchema,
+  resources: {
+    state: {
+      description: "AppSync FunctionConfiguration resource state",
+      schema: StateSchema,
+      lifetime: "infinite",
+      garbageCollection: 10,
+    },
+  },
+  methods: {
+    create: {
+      description: "Create a AppSync FunctionConfiguration",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const desiredState: Record<string, unknown> = {};
+        for (const [key, value] of Object.entries(g)) {
+          if (key === "name") continue;
+          if (value !== undefined) desiredState[key] = value;
+        }
+        const result = await createResource(
+          "AWS::AppSync::FunctionConfiguration",
+          desiredState,
+        ) as StateData;
+        const instanceName = g.name?.toString() ?? "current";
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    get: {
+      description: "Get a AppSync FunctionConfiguration",
+      arguments: z.object({
+        identifier: z.string().describe(
+          "The primary identifier of the AppSync FunctionConfiguration",
+        ),
+      }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const result = await readResource(
+          "AWS::AppSync::FunctionConfiguration",
+          args.identifier,
+        ) as StateData;
+        const instanceName = context.globalArgs.name?.toString() ??
+          args.identifier;
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    update: {
+      description: "Update a AppSync FunctionConfiguration",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const instanceName = g.name?.toString() ?? "current";
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          instanceName,
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        const identifier = existing.FunctionArn?.toString();
+        if (!identifier) {
+          throw new Error("No identifier found in existing state");
+        }
+        const currentState = await readResource(
+          "AWS::AppSync::FunctionConfiguration",
+          identifier,
+        ) as StateData;
+        const desiredState: Record<string, unknown> = { ...currentState };
+        for (const [key, value] of Object.entries(g)) {
+          if (key === "name") continue;
+          if (value !== undefined) desiredState[key] = value;
+        }
+        const result = await updateResource(
+          "AWS::AppSync::FunctionConfiguration",
+          identifier,
+          currentState,
+          desiredState,
+          ["ApiId"],
+        );
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    delete: {
+      description: "Delete a AppSync FunctionConfiguration",
+      arguments: z.object({
+        identifier: z.string().describe(
+          "The primary identifier of the AppSync FunctionConfiguration",
+        ),
+      }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const { existed } = await deleteResource(
+          "AWS::AppSync::FunctionConfiguration",
+          args.identifier,
+        );
+        const instanceName = context.globalArgs.name?.toString() ??
+          args.identifier;
+        const handle = await context.writeResource("state", instanceName, {
+          identifier: args.identifier,
+          existed,
+          status: existed ? "deleted" : "not_found",
+          deletedAt: new Date().toISOString(),
+        });
+        return { dataHandles: [handle] };
+      },
+    },
+    sync: {
+      description: "Sync AppSync FunctionConfiguration state from AWS",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const instanceName = g.name?.toString() ?? "current";
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          instanceName,
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        const identifier = existing.FunctionArn?.toString();
+        if (!identifier) {
+          throw new Error("No identifier found in existing state");
+        }
+        try {
+          const result = await readResource(
+            "AWS::AppSync::FunctionConfiguration",
+            identifier,
+          ) as StateData;
+          const handle = await context.writeResource(
+            "state",
+            instanceName,
+            result,
+          );
+          return { dataHandles: [handle] };
+        } catch (error: unknown) {
+          if (isResourceNotFoundError(error)) {
+            const handle = await context.writeResource("state", instanceName, {
+              identifier,
+              status: "not_found",
+              syncedAt: new Date().toISOString(),
+            });
+            return { dataHandles: [handle] };
+          }
+          throw error;
+        }
+      },
+    },
+  },
+};

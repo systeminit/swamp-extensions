@@ -1,0 +1,275 @@
+// Auto-generated extension model for @swamp/aws/route53resolver/resolver-rule
+// Do not edit manually. Re-generate with: deno task generate:aws
+
+// deno-lint-ignore-file no-explicit-any
+
+import { z } from "zod";
+import {
+  createResource,
+  deleteResource,
+  isResourceNotFoundError,
+  readResource,
+  updateResource,
+} from "./_lib/aws.ts";
+
+export const TagSchema = z.object({
+  Key: z.string().min(1).max(128).describe(
+    "The key name of the tag. You can specify a value that is 1 to 128 Unicode characters in length and cannot be prefixed with aws:. You can use any of the following characters: the set of Unicode letters, digits, whitespace, _,., /, =, +, and -.",
+  ),
+  Value: z.string().min(0).max(256).describe(
+    "The value for the tag. You can specify a value that is 0 to 256 Unicode characters in length and cannot be prefixed with aws:. You can use any of the following characters: the set of Unicode letters, digits, whitespace, _,., /, =, +, and -.",
+  ),
+});
+
+export const TargetAddressSchema = z.object({
+  Ip: z.string().describe(
+    "One IP address that you want to forward DNS queries to. You can specify only IPv4 addresses.",
+  ).optional(),
+  Ipv6: z.string().describe(
+    "One IPv6 address that you want to forward DNS queries to. You can specify only IPv6 addresses.",
+  ).optional(),
+  Port: z.string().min(0).max(65535).describe(
+    "The port at Ip that you want to forward DNS queries to.",
+  ).optional(),
+  Protocol: z.enum(["Do53", "DoH"]).describe(
+    "The protocol that you want to use to forward DNS queries.",
+  ).optional(),
+  ServerNameIndication: z.string().min(0).max(255).describe(
+    "The SNI of the target name servers for DoH/DoH-FIPS outbound endpoints",
+  ).optional(),
+});
+
+const GlobalArgsSchema = z.object({
+  name: z.string().describe(
+    "Instance name for this resource (used as the unique identifier in the factory pattern)",
+  ),
+  ResolverEndpointId: z.string().min(1).max(64).describe(
+    "The ID of the endpoint that the rule is associated with.",
+  ).optional(),
+  DomainName: z.string().min(1).max(256).describe(
+    "DNS queries for this domain name are forwarded to the IP addresses that are specified in TargetIps",
+  ).optional(),
+  Name: z.string().min(0).max(64).describe("The name for the Resolver rule")
+    .optional(),
+  RuleType: z.enum(["FORWARD", "SYSTEM", "RECURSIVE", "DELEGATE"]).describe(
+    "When you want to forward DNS queries for specified domain name to resolvers on your network, specify FORWARD. When you have a forwarding rule to forward DNS queries for a domain to your network and you want Resolver to process queries for a subdomain of that domain, specify SYSTEM.",
+  ),
+  DelegationRecord: z.string().min(1).max(256).describe(
+    "The name server domain for queries to be delegated to if a query matches the delegation record.",
+  ).optional(),
+  Tags: z.array(TagSchema).describe(
+    "An array of key-value pairs to apply to this resource.",
+  ).optional(),
+  TargetIps: z.array(TargetAddressSchema).describe(
+    "An array that contains the IP addresses and ports that an outbound endpoint forwards DNS queries to. Typically, these are the IP addresses of DNS resolvers on your network. Specify IPv4 addresses. IPv6 is not supported.",
+  ).optional(),
+});
+
+const StateSchema = z.object({
+  ResolverEndpointId: z.string().optional(),
+  DomainName: z.string().optional(),
+  Name: z.string().optional(),
+  RuleType: z.string().optional(),
+  DelegationRecord: z.string().optional(),
+  Tags: z.array(TagSchema).optional(),
+  TargetIps: z.array(TargetAddressSchema).optional(),
+  Arn: z.string().optional(),
+  ResolverRuleId: z.string(),
+}).passthrough();
+
+type StateData = z.infer<typeof StateSchema>;
+
+const InputsSchema = z.object({
+  name: z.string().optional(),
+  ResolverEndpointId: z.string().min(1).max(64).describe(
+    "The ID of the endpoint that the rule is associated with.",
+  ).optional(),
+  DomainName: z.string().min(1).max(256).describe(
+    "DNS queries for this domain name are forwarded to the IP addresses that are specified in TargetIps",
+  ).optional(),
+  Name: z.string().min(0).max(64).describe("The name for the Resolver rule")
+    .optional(),
+  RuleType: z.enum(["FORWARD", "SYSTEM", "RECURSIVE", "DELEGATE"]).describe(
+    "When you want to forward DNS queries for specified domain name to resolvers on your network, specify FORWARD. When you have a forwarding rule to forward DNS queries for a domain to your network and you want Resolver to process queries for a subdomain of that domain, specify SYSTEM.",
+  ).optional(),
+  DelegationRecord: z.string().min(1).max(256).describe(
+    "The name server domain for queries to be delegated to if a query matches the delegation record.",
+  ).optional(),
+  Tags: z.array(TagSchema).describe(
+    "An array of key-value pairs to apply to this resource.",
+  ).optional(),
+  TargetIps: z.array(TargetAddressSchema).describe(
+    "An array that contains the IP addresses and ports that an outbound endpoint forwards DNS queries to. Typically, these are the IP addresses of DNS resolvers on your network. Specify IPv4 addresses. IPv6 is not supported.",
+  ).optional(),
+});
+
+export const model = {
+  type: "@swamp/aws/route53resolver/resolver-rule",
+  version: "2026.03.19.1",
+  globalArguments: GlobalArgsSchema,
+  inputsSchema: InputsSchema,
+  resources: {
+    state: {
+      description: "Route53Resolver ResolverRule resource state",
+      schema: StateSchema,
+      lifetime: "infinite",
+      garbageCollection: 10,
+    },
+  },
+  methods: {
+    create: {
+      description: "Create a Route53Resolver ResolverRule",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const desiredState: Record<string, unknown> = {};
+        for (const [key, value] of Object.entries(g)) {
+          if (key === "name") continue;
+          if (value !== undefined) desiredState[key] = value;
+        }
+        const result = await createResource(
+          "AWS::Route53Resolver::ResolverRule",
+          desiredState,
+        ) as StateData;
+        const instanceName = g.name?.toString() ?? "current";
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    get: {
+      description: "Get a Route53Resolver ResolverRule",
+      arguments: z.object({
+        identifier: z.string().describe(
+          "The primary identifier of the Route53Resolver ResolverRule",
+        ),
+      }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const result = await readResource(
+          "AWS::Route53Resolver::ResolverRule",
+          args.identifier,
+        ) as StateData;
+        const instanceName = context.globalArgs.name?.toString() ??
+          args.identifier;
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    update: {
+      description: "Update a Route53Resolver ResolverRule",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const instanceName = g.name?.toString() ?? "current";
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          instanceName,
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        const identifier = existing.ResolverRuleId?.toString();
+        if (!identifier) {
+          throw new Error("No identifier found in existing state");
+        }
+        const currentState = await readResource(
+          "AWS::Route53Resolver::ResolverRule",
+          identifier,
+        ) as StateData;
+        const desiredState: Record<string, unknown> = { ...currentState };
+        for (const [key, value] of Object.entries(g)) {
+          if (key === "name") continue;
+          if (value !== undefined) desiredState[key] = value;
+        }
+        const result = await updateResource(
+          "AWS::Route53Resolver::ResolverRule",
+          identifier,
+          currentState,
+          desiredState,
+          ["RuleType"],
+        );
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    delete: {
+      description: "Delete a Route53Resolver ResolverRule",
+      arguments: z.object({
+        identifier: z.string().describe(
+          "The primary identifier of the Route53Resolver ResolverRule",
+        ),
+      }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const { existed } = await deleteResource(
+          "AWS::Route53Resolver::ResolverRule",
+          args.identifier,
+        );
+        const instanceName = context.globalArgs.name?.toString() ??
+          args.identifier;
+        const handle = await context.writeResource("state", instanceName, {
+          identifier: args.identifier,
+          existed,
+          status: existed ? "deleted" : "not_found",
+          deletedAt: new Date().toISOString(),
+        });
+        return { dataHandles: [handle] };
+      },
+    },
+    sync: {
+      description: "Sync Route53Resolver ResolverRule state from AWS",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const instanceName = g.name?.toString() ?? "current";
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          instanceName,
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        const identifier = existing.ResolverRuleId?.toString();
+        if (!identifier) {
+          throw new Error("No identifier found in existing state");
+        }
+        try {
+          const result = await readResource(
+            "AWS::Route53Resolver::ResolverRule",
+            identifier,
+          ) as StateData;
+          const handle = await context.writeResource(
+            "state",
+            instanceName,
+            result,
+          );
+          return { dataHandles: [handle] };
+        } catch (error: unknown) {
+          if (isResourceNotFoundError(error)) {
+            const handle = await context.writeResource("state", instanceName, {
+              identifier,
+              status: "not_found",
+              syncedAt: new Date().toISOString(),
+            });
+            return { dataHandles: [handle] };
+          }
+          throw error;
+        }
+      },
+    },
+  },
+};

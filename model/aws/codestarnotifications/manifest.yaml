@@ -1,0 +1,17 @@
+# Auto-generated manifest. Re-generate with the appropriate deno task.
+manifestVersion: 1
+name: "@swamp/aws/codestarnotifications"
+version: "2026.03.19.1"
+description: "AWS CODESTARNOTIFICATIONS infrastructure models"
+labels:
+  - aws
+  - codestarnotifications
+  - cloud
+  - infrastructure
+releaseNotes: |
+  - Updated: notification_rule
+models:
+  - notification_rule.ts
+additionalFiles:
+  - LICENSE.txt
+  - README.md

@@ -1,0 +1,17 @@
+# Auto-generated manifest. Re-generate with the appropriate deno task.
+manifestVersion: 1
+name: "@swamp/aws/arcregionswitch"
+version: "2026.03.19.1"
+description: "AWS ARCREGIONSWITCH infrastructure models"
+labels:
+  - aws
+  - arcregionswitch
+  - cloud
+  - infrastructure
+releaseNotes: |
+  - Updated: plan
+models:
+  - plan.ts
+additionalFiles:
+  - LICENSE.txt
+  - README.md

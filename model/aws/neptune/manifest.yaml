@@ -1,0 +1,22 @@
+# Auto-generated manifest. Re-generate with the appropriate deno task.
+manifestVersion: 1
+name: "@swamp/aws/neptune"
+version: "2026.03.19.1"
+description: "AWS NEPTUNE infrastructure models"
+labels:
+  - aws
+  - neptune
+  - cloud
+  - infrastructure
+releaseNotes: |
+  - Updated: dbcluster, dbcluster_parameter_group, dbinstance, dbparameter_group, dbsubnet_group, event_subscription
+models:
+  - dbcluster.ts
+  - dbcluster_parameter_group.ts
+  - dbinstance.ts
+  - dbparameter_group.ts
+  - dbsubnet_group.ts
+  - event_subscription.ts
+additionalFiles:
+  - LICENSE.txt
+  - README.md

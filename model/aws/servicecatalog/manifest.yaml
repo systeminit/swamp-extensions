@@ -1,0 +1,30 @@
+# Auto-generated manifest. Re-generate with the appropriate deno task.
+manifestVersion: 1
+name: "@swamp/aws/servicecatalog"
+version: "2026.03.19.1"
+description: "AWS SERVICECATALOG infrastructure models"
+labels:
+  - aws
+  - servicecatalog
+  - cloud
+  - infrastructure
+releaseNotes: |
+  - Updated: cloud_formation_provisioned_product, launch_notification_constraint, launch_role_constraint, launch_template_constraint, portfolio, portfolio_principal_association, portfolio_product_association, portfolio_share, resource_update_constraint, service_action, service_action_association, stack_set_constraint, tag_option, tag_option_association
+models:
+  - cloud_formation_provisioned_product.ts
+  - launch_notification_constraint.ts
+  - launch_role_constraint.ts
+  - launch_template_constraint.ts
+  - portfolio.ts
+  - portfolio_principal_association.ts
+  - portfolio_product_association.ts
+  - portfolio_share.ts
+  - resource_update_constraint.ts
+  - service_action.ts
+  - service_action_association.ts
+  - stack_set_constraint.ts
+  - tag_option.ts
+  - tag_option_association.ts
+additionalFiles:
+  - LICENSE.txt
+  - README.md

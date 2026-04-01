@@ -1,0 +1,389 @@
+// Auto-generated extension model for @swamp/aws/imagebuilder/image
+// Do not edit manually. Re-generate with: deno task generate:aws
+
+// deno-lint-ignore-file no-explicit-any
+
+import { z } from "zod";
+import {
+  createResource,
+  deleteResource,
+  isResourceNotFoundError,
+  readResource,
+  updateResource,
+} from "./_lib/aws.ts";
+
+export const EcrConfigurationSchema = z.object({
+  ContainerTags: z.array(z.string()).describe(
+    "Tags for Image Builder to apply the output container image that is scanned. Tags can help you identify and manage your scanned images.",
+  ).optional(),
+  RepositoryName: z.string().describe(
+    "The name of the container repository that Amazon Inspector scans to identify findings for your container images. The name includes the path for the repository location. If you don’t provide this information, Image Builder creates a repository in your account named image-builder-image-scanning-repository to use for vulnerability scans for your output container images.",
+  ).optional(),
+});
+
+export const WorkflowParameterSchema = z.object({
+  Value: z.array(z.string()).optional(),
+  Name: z.string().optional(),
+});
+
+export const WorkflowConfigurationSchema = z.object({
+  ParallelGroup: z.string().describe("The parallel group name").optional(),
+  Parameters: z.array(WorkflowParameterSchema).describe(
+    "The parameters associated with the workflow",
+  ).optional(),
+  WorkflowArn: z.string().describe(
+    "The Amazon Resource Name (ARN) of the workflow",
+  ).optional(),
+  OnFailure: z.enum(["CONTINUE", "ABORT"]).describe(
+    "Define execution decision in case of workflow failure",
+  ).optional(),
+});
+
+const GlobalArgsSchema = z.object({
+  name: z.string().describe(
+    "Instance name for this resource (used as the unique identifier in the factory pattern)",
+  ),
+  ImageScanningConfiguration: z.object({
+    EcrConfiguration: EcrConfigurationSchema.describe(
+      "Contains ECR settings for vulnerability scans.",
+    ).optional(),
+    ImageScanningEnabled: z.boolean().describe(
+      "This sets whether Image Builder keeps a snapshot of the vulnerability scans that Amazon Inspector runs against the build instance when you create a new image.",
+    ).optional(),
+  }).describe("Contains settings for vulnerability scans.").optional(),
+  ContainerRecipeArn: z.string().describe(
+    "The Amazon Resource Name (ARN) of the container recipe that defines how images are configured and tested.",
+  ).optional(),
+  Workflows: z.array(WorkflowConfigurationSchema).describe(
+    "Workflows to define the image build process",
+  ).optional(),
+  ImagePipelineExecutionSettings: z.object({
+    DeploymentId: z.string().describe(
+      "The deployment ID of the pipeline, used to trigger new image pipeline executions.",
+    ).optional(),
+    OnUpdate: z.boolean().describe(
+      "Whether to trigger the image pipeline when the pipeline is updated. False by default.",
+    ).optional(),
+  }).describe("The image pipeline execution settings of the image.").optional(),
+  DeletionSettings: z.object({
+    ExecutionRole: z.string().describe(
+      "The execution role to use for deleting the image, as well as underlying resources.",
+    ),
+  }).describe(
+    "The deletion settings of the image, indicating whether to delete the underlying resources in addition to the image.",
+  ).optional(),
+  InfrastructureConfigurationArn: z.string().describe(
+    "The Amazon Resource Name (ARN) of the infrastructure configuration.",
+  ).optional(),
+  ImageRecipeArn: z.string().describe(
+    "The Amazon Resource Name (ARN) of the image recipe that defines how images are configured, tested, and assessed.",
+  ).optional(),
+  DistributionConfigurationArn: z.string().describe(
+    "The Amazon Resource Name (ARN) of the distribution configuration.",
+  ).optional(),
+  LoggingConfiguration: z.object({
+    LogGroupName: z.string().describe(
+      "The name of the log group for image build logs.",
+    ).optional(),
+  }).describe("The logging configuration settings for the image.").optional(),
+  ImageTestsConfiguration: z.object({
+    TimeoutMinutes: z.number().int().min(60).max(1440).describe(
+      "TimeoutMinutes",
+    ).optional(),
+    ImageTestsEnabled: z.boolean().describe("ImageTestsEnabled").optional(),
+  }).describe("The image tests configuration used when creating this image.")
+    .optional(),
+  EnhancedImageMetadataEnabled: z.boolean().describe(
+    "Collects additional information about the image being created, including the operating system (OS) version and package list.",
+  ).optional(),
+  ExecutionRole: z.string().describe(
+    "The execution role name/ARN for the image build, if provided",
+  ).optional(),
+  Tags: z.record(z.string(), z.string()).describe(
+    "The tags associated with the image.",
+  ).optional(),
+});
+
+const StateSchema = z.object({
+  ImageScanningConfiguration: z.object({
+    EcrConfiguration: EcrConfigurationSchema,
+    ImageScanningEnabled: z.boolean(),
+  }).optional(),
+  ContainerRecipeArn: z.string().optional(),
+  Workflows: z.array(WorkflowConfigurationSchema).optional(),
+  ImagePipelineExecutionSettings: z.object({
+    DeploymentId: z.string(),
+    OnUpdate: z.boolean(),
+  }).optional(),
+  DeletionSettings: z.object({
+    ExecutionRole: z.string(),
+  }).optional(),
+  ImageUri: z.string().optional(),
+  Name: z.string().optional(),
+  InfrastructureConfigurationArn: z.string().optional(),
+  ImageRecipeArn: z.string().optional(),
+  DistributionConfigurationArn: z.string().optional(),
+  LatestVersion: z.object({
+    Major: z.string(),
+    Minor: z.string(),
+    Arn: z.string(),
+    Patch: z.string(),
+  }).optional(),
+  LoggingConfiguration: z.object({
+    LogGroupName: z.string(),
+  }).optional(),
+  ImageId: z.string().optional(),
+  ImageTestsConfiguration: z.object({
+    TimeoutMinutes: z.number(),
+    ImageTestsEnabled: z.boolean(),
+  }).optional(),
+  Arn: z.string(),
+  EnhancedImageMetadataEnabled: z.boolean().optional(),
+  ExecutionRole: z.string().optional(),
+  Tags: z.record(z.string(), z.unknown()).optional(),
+}).passthrough();
+
+type StateData = z.infer<typeof StateSchema>;
+
+const InputsSchema = z.object({
+  name: z.string().optional(),
+  ImageScanningConfiguration: z.object({
+    EcrConfiguration: EcrConfigurationSchema.describe(
+      "Contains ECR settings for vulnerability scans.",
+    ).optional(),
+    ImageScanningEnabled: z.boolean().describe(
+      "This sets whether Image Builder keeps a snapshot of the vulnerability scans that Amazon Inspector runs against the build instance when you create a new image.",
+    ).optional(),
+  }).describe("Contains settings for vulnerability scans.").optional(),
+  ContainerRecipeArn: z.string().describe(
+    "The Amazon Resource Name (ARN) of the container recipe that defines how images are configured and tested.",
+  ).optional(),
+  Workflows: z.array(WorkflowConfigurationSchema).describe(
+    "Workflows to define the image build process",
+  ).optional(),
+  ImagePipelineExecutionSettings: z.object({
+    DeploymentId: z.string().describe(
+      "The deployment ID of the pipeline, used to trigger new image pipeline executions.",
+    ).optional(),
+    OnUpdate: z.boolean().describe(
+      "Whether to trigger the image pipeline when the pipeline is updated. False by default.",
+    ).optional(),
+  }).describe("The image pipeline execution settings of the image.").optional(),
+  DeletionSettings: z.object({
+    ExecutionRole: z.string().describe(
+      "The execution role to use for deleting the image, as well as underlying resources.",
+    ).optional(),
+  }).describe(
+    "The deletion settings of the image, indicating whether to delete the underlying resources in addition to the image.",
+  ).optional(),
+  InfrastructureConfigurationArn: z.string().describe(
+    "The Amazon Resource Name (ARN) of the infrastructure configuration.",
+  ).optional(),
+  ImageRecipeArn: z.string().describe(
+    "The Amazon Resource Name (ARN) of the image recipe that defines how images are configured, tested, and assessed.",
+  ).optional(),
+  DistributionConfigurationArn: z.string().describe(
+    "The Amazon Resource Name (ARN) of the distribution configuration.",
+  ).optional(),
+  LoggingConfiguration: z.object({
+    LogGroupName: z.string().describe(
+      "The name of the log group for image build logs.",
+    ).optional(),
+  }).describe("The logging configuration settings for the image.").optional(),
+  ImageTestsConfiguration: z.object({
+    TimeoutMinutes: z.number().int().min(60).max(1440).describe(
+      "TimeoutMinutes",
+    ).optional(),
+    ImageTestsEnabled: z.boolean().describe("ImageTestsEnabled").optional(),
+  }).describe("The image tests configuration used when creating this image.")
+    .optional(),
+  EnhancedImageMetadataEnabled: z.boolean().describe(
+    "Collects additional information about the image being created, including the operating system (OS) version and package list.",
+  ).optional(),
+  ExecutionRole: z.string().describe(
+    "The execution role name/ARN for the image build, if provided",
+  ).optional(),
+  Tags: z.record(z.string(), z.string()).describe(
+    "The tags associated with the image.",
+  ).optional(),
+});
+
+export const model = {
+  type: "@swamp/aws/imagebuilder/image",
+  version: "2026.03.19.1",
+  globalArguments: GlobalArgsSchema,
+  inputsSchema: InputsSchema,
+  resources: {
+    state: {
+      description: "ImageBuilder Image resource state",
+      schema: StateSchema,
+      lifetime: "infinite",
+      garbageCollection: 10,
+    },
+  },
+  methods: {
+    create: {
+      description: "Create a ImageBuilder Image",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const desiredState: Record<string, unknown> = {};
+        for (const [key, value] of Object.entries(g)) {
+          if (key === "name") continue;
+          if (value !== undefined) desiredState[key] = value;
+        }
+        const result = await createResource(
+          "AWS::ImageBuilder::Image",
+          desiredState,
+        ) as StateData;
+        const instanceName = g.name?.toString() ?? "current";
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    get: {
+      description: "Get a ImageBuilder Image",
+      arguments: z.object({
+        identifier: z.string().describe(
+          "The primary identifier of the ImageBuilder Image",
+        ),
+      }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const result = await readResource(
+          "AWS::ImageBuilder::Image",
+          args.identifier,
+        ) as StateData;
+        const instanceName = context.globalArgs.name?.toString() ??
+          args.identifier;
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    update: {
+      description: "Update a ImageBuilder Image",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const instanceName = g.name?.toString() ?? "current";
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          instanceName,
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        const identifier = existing.Arn?.toString();
+        if (!identifier) {
+          throw new Error("No identifier found in existing state");
+        }
+        const currentState = await readResource(
+          "AWS::ImageBuilder::Image",
+          identifier,
+        ) as StateData;
+        const desiredState: Record<string, unknown> = { ...currentState };
+        for (const [key, value] of Object.entries(g)) {
+          if (key === "name") continue;
+          if (value !== undefined) desiredState[key] = value;
+        }
+        const result = await updateResource(
+          "AWS::ImageBuilder::Image",
+          identifier,
+          currentState,
+          desiredState,
+          [
+            "ImageRecipeArn",
+            "ContainerRecipeArn",
+            "InfrastructureConfigurationArn",
+            "Workflows",
+            "DistributionConfigurationArn",
+            "ImageTestsConfiguration",
+            "ImageScanningConfiguration",
+            "EnhancedImageMetadataEnabled",
+          ],
+        );
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    delete: {
+      description: "Delete a ImageBuilder Image",
+      arguments: z.object({
+        identifier: z.string().describe(
+          "The primary identifier of the ImageBuilder Image",
+        ),
+      }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const { existed } = await deleteResource(
+          "AWS::ImageBuilder::Image",
+          args.identifier,
+        );
+        const instanceName = context.globalArgs.name?.toString() ??
+          args.identifier;
+        const handle = await context.writeResource("state", instanceName, {
+          identifier: args.identifier,
+          existed,
+          status: existed ? "deleted" : "not_found",
+          deletedAt: new Date().toISOString(),
+        });
+        return { dataHandles: [handle] };
+      },
+    },
+    sync: {
+      description: "Sync ImageBuilder Image state from AWS",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const instanceName = g.name?.toString() ?? "current";
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          instanceName,
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        const identifier = existing.Arn?.toString();
+        if (!identifier) {
+          throw new Error("No identifier found in existing state");
+        }
+        try {
+          const result = await readResource(
+            "AWS::ImageBuilder::Image",
+            identifier,
+          ) as StateData;
+          const handle = await context.writeResource(
+            "state",
+            instanceName,
+            result,
+          );
+          return { dataHandles: [handle] };
+        } catch (error: unknown) {
+          if (isResourceNotFoundError(error)) {
+            const handle = await context.writeResource("state", instanceName, {
+              identifier,
+              status: "not_found",
+              syncedAt: new Date().toISOString(),
+            });
+            return { dataHandles: [handle] };
+          }
+          throw error;
+        }
+      },
+    },
+  },
+};

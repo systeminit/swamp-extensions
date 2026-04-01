@@ -1,0 +1,26 @@
+# Auto-generated manifest. Re-generate with the appropriate deno task.
+manifestVersion: 1
+name: "@swamp/aws/workspacesweb"
+version: "2026.03.19.1"
+description: "AWS WORKSPACESWEB infrastructure models"
+labels:
+  - aws
+  - workspacesweb
+  - cloud
+  - infrastructure
+releaseNotes: |
+  - Updated: browser_settings, data_protection_settings, identity_provider, ip_access_settings, network_settings, portal, session_logger, trust_store, user_access_logging_settings, user_settings
+models:
+  - browser_settings.ts
+  - data_protection_settings.ts
+  - identity_provider.ts
+  - ip_access_settings.ts
+  - network_settings.ts
+  - portal.ts
+  - session_logger.ts
+  - trust_store.ts
+  - user_access_logging_settings.ts
+  - user_settings.ts
+additionalFiles:
+  - LICENSE.txt
+  - README.md

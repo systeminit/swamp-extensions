@@ -1,0 +1,20 @@
+# Auto-generated manifest. Re-generate with the appropriate deno task.
+manifestVersion: 1
+name: "@swamp/aws/b2bi"
+version: "2026.03.19.1"
+description: "AWS B2BI infrastructure models"
+labels:
+  - aws
+  - b2bi
+  - cloud
+  - infrastructure
+releaseNotes: |
+  - Updated: capability, partnership, profile, transformer
+models:
+  - capability.ts
+  - partnership.ts
+  - profile.ts
+  - transformer.ts
+additionalFiles:
+  - LICENSE.txt
+  - README.md

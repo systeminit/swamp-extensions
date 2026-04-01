@@ -1,0 +1,19 @@
+# Auto-generated manifest. Re-generate with the appropriate deno task.
+manifestVersion: 1
+name: "@swamp/aws/devopsagent"
+version: "2026.03.27.1"
+description: "AWS DEVOPSAGENT infrastructure models"
+labels:
+  - aws
+  - devopsagent
+  - cloud
+  - infrastructure
+releaseNotes: |
+  - Updated: agent_space, service
+models:
+  - agent_space.ts
+  - association.ts
+  - service.ts
+additionalFiles:
+  - LICENSE.txt
+  - README.md

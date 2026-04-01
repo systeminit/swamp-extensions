@@ -1,0 +1,17 @@
+# Auto-generated manifest. Re-generate with the appropriate deno task.
+manifestVersion: 1
+name: "@swamp/aws/docdbelastic"
+version: "2026.03.19.1"
+description: "AWS DOCDBELASTIC infrastructure models"
+labels:
+  - aws
+  - docdbelastic
+  - cloud
+  - infrastructure
+releaseNotes: |
+  - Updated: cluster
+models:
+  - cluster.ts
+additionalFiles:
+  - LICENSE.txt
+  - README.md

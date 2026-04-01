@@ -1,0 +1,321 @@
+// Auto-generated extension model for @swamp/aws/datasync/location-efs
+// Do not edit manually. Re-generate with: deno task generate:aws
+
+// deno-lint-ignore-file no-explicit-any
+
+import { z } from "zod";
+import {
+  createResource,
+  deleteResource,
+  isResourceNotFoundError,
+  readResource,
+  updateResource,
+} from "./_lib/aws.ts";
+
+export const TagSchema = z.object({
+  Key: z.string().min(1).max(256).regex(new RegExp("^[a-zA-Z0-9\\s+=._:/-]+$"))
+    .describe("The key for an AWS resource tag."),
+  Value: z.string().min(1).max(256).regex(
+    new RegExp("^[a-zA-Z0-9\\s+=._:@/-]+$"),
+  ).describe("The value for an AWS resource tag."),
+});
+
+const GlobalArgsSchema = z.object({
+  name: z.string().describe(
+    "Instance name for this resource (used as the unique identifier in the factory pattern)",
+  ),
+  Ec2Config: z.object({
+    SecurityGroupArns: z.array(
+      z.string().max(128).regex(
+        new RegExp(
+          "^arn:(aws|aws-cn|aws-us-gov|aws-eusc|aws-iso|aws-iso-b):ec2:[a-z\\-0-9]*:[0-9]{12}:security-group/.*$",
+        ),
+      ),
+    ).describe(
+      "The Amazon Resource Names (ARNs) of the security groups that are configured for the Amazon EC2 resource.",
+    ),
+    SubnetArn: z.string().max(128).regex(
+      new RegExp(
+        "^arn:(aws|aws-cn|aws-us-gov|aws-eusc|aws-iso|aws-iso-b):ec2:[a-z\\-0-9]*:[0-9]{12}:subnet/.*$",
+      ),
+    ).describe(
+      "The ARN of the subnet that DataSync uses to access the target EFS file system.",
+    ),
+  }).describe(
+    "The subnet and security group that DataSync uses to access target EFS file system.",
+  ),
+  EfsFilesystemArn: z.string().max(128).regex(
+    new RegExp(
+      "^arn:(aws|aws-cn|aws-us-gov|aws-eusc|aws-iso|aws-iso-b):elasticfilesystem:[a-z\\-0-9]*:[0-9]{12}:file-system/fs-.*$",
+    ),
+  ).describe("The Amazon Resource Name (ARN) for the Amazon EFS file system.")
+    .optional(),
+  AccessPointArn: z.string().max(128).regex(
+    new RegExp(
+      "^arn:(aws|aws-cn|aws-us-gov|aws-eusc|aws-iso|aws-iso-b):elasticfilesystem:[a-z\\-0-9]+:[0-9]{12}:access-point/fsap-[0-9a-f]{8,40}$",
+    ),
+  ).describe(
+    "The Amazon Resource Name (ARN) for the Amazon EFS Access point that DataSync uses when accessing the EFS file system.",
+  ).optional(),
+  FileSystemAccessRoleArn: z.string().max(128).regex(
+    new RegExp(
+      "^arn:(aws|aws-cn|aws-us-gov|aws-eusc|aws-iso|aws-iso-b):iam::[0-9]{12}:role/.*$",
+    ),
+  ).describe(
+    "The Amazon Resource Name (ARN) of the AWS IAM role that the DataSync will assume when mounting the EFS file system.",
+  ).optional(),
+  InTransitEncryption: z.enum(["NONE", "TLS1_2"]).describe(
+    "Protocol that is used for encrypting the traffic exchanged between the DataSync Agent and the EFS file system.",
+  ).optional(),
+  Subdirectory: z.string().max(4096).regex(
+    new RegExp("^[a-zA-Z0-9_\\-\\+\\./\\(\\)\\$\\p{Zs}]+$", "u"),
+  ).describe(
+    "A subdirectory in the location's path. This subdirectory in the EFS file system is used to read data from the EFS source location or write data to the EFS destination.",
+  ).optional(),
+  Tags: z.array(TagSchema).describe(
+    "An array of key-value pairs to apply to this resource.",
+  ).optional(),
+});
+
+const StateSchema = z.object({
+  Ec2Config: z.object({
+    SecurityGroupArns: z.array(z.string()),
+    SubnetArn: z.string(),
+  }).optional(),
+  EfsFilesystemArn: z.string().optional(),
+  AccessPointArn: z.string().optional(),
+  FileSystemAccessRoleArn: z.string().optional(),
+  InTransitEncryption: z.string().optional(),
+  Subdirectory: z.string().optional(),
+  Tags: z.array(TagSchema).optional(),
+  LocationArn: z.string(),
+  LocationUri: z.string().optional(),
+}).passthrough();
+
+type StateData = z.infer<typeof StateSchema>;
+
+const InputsSchema = z.object({
+  name: z.string().optional(),
+  Ec2Config: z.object({
+    SecurityGroupArns: z.array(
+      z.string().max(128).regex(
+        new RegExp(
+          "^arn:(aws|aws-cn|aws-us-gov|aws-eusc|aws-iso|aws-iso-b):ec2:[a-z\\-0-9]*:[0-9]{12}:security-group/.*$",
+        ),
+      ),
+    ).describe(
+      "The Amazon Resource Names (ARNs) of the security groups that are configured for the Amazon EC2 resource.",
+    ).optional(),
+    SubnetArn: z.string().max(128).regex(
+      new RegExp(
+        "^arn:(aws|aws-cn|aws-us-gov|aws-eusc|aws-iso|aws-iso-b):ec2:[a-z\\-0-9]*:[0-9]{12}:subnet/.*$",
+      ),
+    ).describe(
+      "The ARN of the subnet that DataSync uses to access the target EFS file system.",
+    ).optional(),
+  }).describe(
+    "The subnet and security group that DataSync uses to access target EFS file system.",
+  ).optional(),
+  EfsFilesystemArn: z.string().max(128).regex(
+    new RegExp(
+      "^arn:(aws|aws-cn|aws-us-gov|aws-eusc|aws-iso|aws-iso-b):elasticfilesystem:[a-z\\-0-9]*:[0-9]{12}:file-system/fs-.*$",
+    ),
+  ).describe("The Amazon Resource Name (ARN) for the Amazon EFS file system.")
+    .optional(),
+  AccessPointArn: z.string().max(128).regex(
+    new RegExp(
+      "^arn:(aws|aws-cn|aws-us-gov|aws-eusc|aws-iso|aws-iso-b):elasticfilesystem:[a-z\\-0-9]+:[0-9]{12}:access-point/fsap-[0-9a-f]{8,40}$",
+    ),
+  ).describe(
+    "The Amazon Resource Name (ARN) for the Amazon EFS Access point that DataSync uses when accessing the EFS file system.",
+  ).optional(),
+  FileSystemAccessRoleArn: z.string().max(128).regex(
+    new RegExp(
+      "^arn:(aws|aws-cn|aws-us-gov|aws-eusc|aws-iso|aws-iso-b):iam::[0-9]{12}:role/.*$",
+    ),
+  ).describe(
+    "The Amazon Resource Name (ARN) of the AWS IAM role that the DataSync will assume when mounting the EFS file system.",
+  ).optional(),
+  InTransitEncryption: z.enum(["NONE", "TLS1_2"]).describe(
+    "Protocol that is used for encrypting the traffic exchanged between the DataSync Agent and the EFS file system.",
+  ).optional(),
+  Subdirectory: z.string().max(4096).regex(
+    new RegExp("^[a-zA-Z0-9_\\-\\+\\./\\(\\)\\$\\p{Zs}]+$", "u"),
+  ).describe(
+    "A subdirectory in the location's path. This subdirectory in the EFS file system is used to read data from the EFS source location or write data to the EFS destination.",
+  ).optional(),
+  Tags: z.array(TagSchema).describe(
+    "An array of key-value pairs to apply to this resource.",
+  ).optional(),
+});
+
+export const model = {
+  type: "@swamp/aws/datasync/location-efs",
+  version: "2026.03.19.1",
+  globalArguments: GlobalArgsSchema,
+  inputsSchema: InputsSchema,
+  resources: {
+    state: {
+      description: "DataSync LocationEFS resource state",
+      schema: StateSchema,
+      lifetime: "infinite",
+      garbageCollection: 10,
+    },
+  },
+  methods: {
+    create: {
+      description: "Create a DataSync LocationEFS",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const desiredState: Record<string, unknown> = {};
+        for (const [key, value] of Object.entries(g)) {
+          if (key === "name") continue;
+          if (value !== undefined) desiredState[key] = value;
+        }
+        const result = await createResource(
+          "AWS::DataSync::LocationEFS",
+          desiredState,
+        ) as StateData;
+        const instanceName = g.name?.toString() ?? "current";
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    get: {
+      description: "Get a DataSync LocationEFS",
+      arguments: z.object({
+        identifier: z.string().describe(
+          "The primary identifier of the DataSync LocationEFS",
+        ),
+      }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const result = await readResource(
+          "AWS::DataSync::LocationEFS",
+          args.identifier,
+        ) as StateData;
+        const instanceName = context.globalArgs.name?.toString() ??
+          args.identifier;
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    update: {
+      description: "Update a DataSync LocationEFS",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const instanceName = g.name?.toString() ?? "current";
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          instanceName,
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        const identifier = existing.LocationArn?.toString();
+        if (!identifier) {
+          throw new Error("No identifier found in existing state");
+        }
+        const currentState = await readResource(
+          "AWS::DataSync::LocationEFS",
+          identifier,
+        ) as StateData;
+        const desiredState: Record<string, unknown> = { ...currentState };
+        for (const [key, value] of Object.entries(g)) {
+          if (key === "name") continue;
+          if (value !== undefined) desiredState[key] = value;
+        }
+        const result = await updateResource(
+          "AWS::DataSync::LocationEFS",
+          identifier,
+          currentState,
+          desiredState,
+          ["Ec2Config", "EfsFilesystemArn"],
+        );
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    delete: {
+      description: "Delete a DataSync LocationEFS",
+      arguments: z.object({
+        identifier: z.string().describe(
+          "The primary identifier of the DataSync LocationEFS",
+        ),
+      }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const { existed } = await deleteResource(
+          "AWS::DataSync::LocationEFS",
+          args.identifier,
+        );
+        const instanceName = context.globalArgs.name?.toString() ??
+          args.identifier;
+        const handle = await context.writeResource("state", instanceName, {
+          identifier: args.identifier,
+          existed,
+          status: existed ? "deleted" : "not_found",
+          deletedAt: new Date().toISOString(),
+        });
+        return { dataHandles: [handle] };
+      },
+    },
+    sync: {
+      description: "Sync DataSync LocationEFS state from AWS",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const instanceName = g.name?.toString() ?? "current";
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          instanceName,
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        const identifier = existing.LocationArn?.toString();
+        if (!identifier) {
+          throw new Error("No identifier found in existing state");
+        }
+        try {
+          const result = await readResource(
+            "AWS::DataSync::LocationEFS",
+            identifier,
+          ) as StateData;
+          const handle = await context.writeResource(
+            "state",
+            instanceName,
+            result,
+          );
+          return { dataHandles: [handle] };
+        } catch (error: unknown) {
+          if (isResourceNotFoundError(error)) {
+            const handle = await context.writeResource("state", instanceName, {
+              identifier,
+              status: "not_found",
+              syncedAt: new Date().toISOString(),
+            });
+            return { dataHandles: [handle] };
+          }
+          throw error;
+        }
+      },
+    },
+  },
+};

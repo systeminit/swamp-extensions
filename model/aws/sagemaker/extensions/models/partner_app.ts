@@ -1,0 +1,325 @@
+// Auto-generated extension model for @swamp/aws/sagemaker/partner-app
+// Do not edit manually. Re-generate with: deno task generate:aws
+
+// deno-lint-ignore-file no-explicit-any
+
+import { z } from "zod";
+import {
+  createResource,
+  deleteResource,
+  isResourceNotFoundError,
+  readResource,
+  updateResource,
+} from "./_lib/aws.ts";
+
+export const TagSchema = z.object({
+  Value: z.string().min(1).max(128),
+  Key: z.string().min(1).max(128),
+});
+
+const GlobalArgsSchema = z.object({
+  name: z.string().describe(
+    "Instance name for this resource (used as the unique identifier in the factory pattern)",
+  ),
+  Name: z.string().min(1).max(256).regex(new RegExp("^[a-zA-Z0-9]+")).describe(
+    "A name for the PartnerApp.",
+  ),
+  Type: z.enum([
+    "lakera-guard",
+    "comet",
+    "deepchecks-llm-evaluation",
+    "fiddler",
+  ]).describe("The type of PartnerApp."),
+  ExecutionRoleArn: z.string().min(20).max(2048).regex(
+    new RegExp("^arn:aws[a-z\\-]*:iam::\\d{12}:role/?[a-zA-Z_0-9+=,.@\\-_/]+$"),
+  ).describe("The execution role for the user."),
+  KmsKeyId: z.string().max(2048).regex(new RegExp(".*")).describe(
+    "The AWS KMS customer managed key used to encrypt the data associated with the PartnerApp.",
+  ).optional(),
+  Tier: z.string().min(1).max(64).describe("The tier of the PartnerApp."),
+  EnableIamSessionBasedIdentity: z.boolean().describe(
+    "Enables IAM Session based Identity for PartnerApp.",
+  ).optional(),
+  EnableAutoMinorVersionUpgrade: z.boolean().describe(
+    "Enables automatic minor version upgrades for the PartnerApp.",
+  ).optional(),
+  AppVersion: z.string().min(1).max(64).describe(
+    "The version of the PartnerApp.",
+  ).optional(),
+  ApplicationConfig: z.object({
+    AdminUsers: z.array(z.string().min(1).max(256)).describe(
+      "A list of users with administrator privileges for the PartnerApp.",
+    ).optional(),
+    Arguments: z.record(
+      z.string(),
+      z.string().max(1024).regex(new RegExp("^.{0,1024}$")),
+    ).describe("A list of arguments to pass to the PartnerApp.").optional(),
+  }).describe(
+    "A collection of settings that specify the maintenance schedule for the PartnerApp.",
+  ).optional(),
+  AuthType: z.enum(["IAM"]).describe("The Auth type of PartnerApp."),
+  MaintenanceConfig: z.object({
+    MaintenanceWindowStart: z.string().max(9).regex(
+      new RegExp("(Mon|Tue|Wed|Thu|Fri|Sat|Sun):([01]\\d|2[0-3]):([0-5]\\d)"),
+    ).describe("The maintenance window start day and time for the PartnerApp."),
+  }).describe(
+    "A collection of settings that specify the maintenance schedule for the PartnerApp.",
+  ).optional(),
+  ClientToken: z.string().min(1).max(36).regex(new RegExp("^[a-zA-Z0-9-]+$"))
+    .describe("The client token for the PartnerApp.").optional(),
+  Tags: z.array(TagSchema).describe(
+    "A list of tags to apply to the PartnerApp.",
+  ).optional(),
+});
+
+const StateSchema = z.object({
+  Arn: z.string(),
+  Name: z.string().optional(),
+  Type: z.string().optional(),
+  ExecutionRoleArn: z.string().optional(),
+  KmsKeyId: z.string().optional(),
+  Tier: z.string().optional(),
+  EnableIamSessionBasedIdentity: z.boolean().optional(),
+  EnableAutoMinorVersionUpgrade: z.boolean().optional(),
+  AppVersion: z.string().optional(),
+  ApplicationConfig: z.object({
+    AdminUsers: z.array(z.string()),
+    Arguments: z.record(z.string(), z.unknown()),
+  }).optional(),
+  AuthType: z.string().optional(),
+  BaseUrl: z.string().optional(),
+  CurrentVersionEolDate: z.string().optional(),
+  MaintenanceConfig: z.object({
+    MaintenanceWindowStart: z.string(),
+  }).optional(),
+  ClientToken: z.string().optional(),
+  Tags: z.array(TagSchema).optional(),
+}).passthrough();
+
+type StateData = z.infer<typeof StateSchema>;
+
+const InputsSchema = z.object({
+  name: z.string().optional(),
+  Name: z.string().min(1).max(256).regex(new RegExp("^[a-zA-Z0-9]+")).describe(
+    "A name for the PartnerApp.",
+  ).optional(),
+  Type: z.enum([
+    "lakera-guard",
+    "comet",
+    "deepchecks-llm-evaluation",
+    "fiddler",
+  ]).describe("The type of PartnerApp.").optional(),
+  ExecutionRoleArn: z.string().min(20).max(2048).regex(
+    new RegExp("^arn:aws[a-z\\-]*:iam::\\d{12}:role/?[a-zA-Z_0-9+=,.@\\-_/]+$"),
+  ).describe("The execution role for the user.").optional(),
+  KmsKeyId: z.string().max(2048).regex(new RegExp(".*")).describe(
+    "The AWS KMS customer managed key used to encrypt the data associated with the PartnerApp.",
+  ).optional(),
+  Tier: z.string().min(1).max(64).describe("The tier of the PartnerApp.")
+    .optional(),
+  EnableIamSessionBasedIdentity: z.boolean().describe(
+    "Enables IAM Session based Identity for PartnerApp.",
+  ).optional(),
+  EnableAutoMinorVersionUpgrade: z.boolean().describe(
+    "Enables automatic minor version upgrades for the PartnerApp.",
+  ).optional(),
+  AppVersion: z.string().min(1).max(64).describe(
+    "The version of the PartnerApp.",
+  ).optional(),
+  ApplicationConfig: z.object({
+    AdminUsers: z.array(z.string().min(1).max(256)).describe(
+      "A list of users with administrator privileges for the PartnerApp.",
+    ).optional(),
+    Arguments: z.record(
+      z.string(),
+      z.string().max(1024).regex(new RegExp("^.{0,1024}$")),
+    ).describe("A list of arguments to pass to the PartnerApp.").optional(),
+  }).describe(
+    "A collection of settings that specify the maintenance schedule for the PartnerApp.",
+  ).optional(),
+  AuthType: z.enum(["IAM"]).describe("The Auth type of PartnerApp.").optional(),
+  MaintenanceConfig: z.object({
+    MaintenanceWindowStart: z.string().max(9).regex(
+      new RegExp("(Mon|Tue|Wed|Thu|Fri|Sat|Sun):([01]\\d|2[0-3]):([0-5]\\d)"),
+    ).describe("The maintenance window start day and time for the PartnerApp.")
+      .optional(),
+  }).describe(
+    "A collection of settings that specify the maintenance schedule for the PartnerApp.",
+  ).optional(),
+  ClientToken: z.string().min(1).max(36).regex(new RegExp("^[a-zA-Z0-9-]+$"))
+    .describe("The client token for the PartnerApp.").optional(),
+  Tags: z.array(TagSchema).describe(
+    "A list of tags to apply to the PartnerApp.",
+  ).optional(),
+});
+
+export const model = {
+  type: "@swamp/aws/sagemaker/partner-app",
+  version: "2026.03.19.1",
+  globalArguments: GlobalArgsSchema,
+  inputsSchema: InputsSchema,
+  resources: {
+    state: {
+      description: "SageMaker PartnerApp resource state",
+      schema: StateSchema,
+      lifetime: "infinite",
+      garbageCollection: 10,
+    },
+  },
+  methods: {
+    create: {
+      description: "Create a SageMaker PartnerApp",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const desiredState: Record<string, unknown> = {};
+        for (const [key, value] of Object.entries(g)) {
+          if (key === "name") continue;
+          if (value !== undefined) desiredState[key] = value;
+        }
+        const result = await createResource(
+          "AWS::SageMaker::PartnerApp",
+          desiredState,
+        ) as StateData;
+        const instanceName = g.name?.toString() ?? "current";
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    get: {
+      description: "Get a SageMaker PartnerApp",
+      arguments: z.object({
+        identifier: z.string().describe(
+          "The primary identifier of the SageMaker PartnerApp",
+        ),
+      }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const result = await readResource(
+          "AWS::SageMaker::PartnerApp",
+          args.identifier,
+        ) as StateData;
+        const instanceName = context.globalArgs.name?.toString() ??
+          args.identifier;
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    update: {
+      description: "Update a SageMaker PartnerApp",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const instanceName = g.name?.toString() ?? "current";
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          instanceName,
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        const identifier = existing.Arn?.toString();
+        if (!identifier) {
+          throw new Error("No identifier found in existing state");
+        }
+        const currentState = await readResource(
+          "AWS::SageMaker::PartnerApp",
+          identifier,
+        ) as StateData;
+        const desiredState: Record<string, unknown> = { ...currentState };
+        for (const [key, value] of Object.entries(g)) {
+          if (key === "name") continue;
+          if (value !== undefined) desiredState[key] = value;
+        }
+        const result = await updateResource(
+          "AWS::SageMaker::PartnerApp",
+          identifier,
+          currentState,
+          desiredState,
+          ["Name", "Type", "ExecutionRoleArn", "AuthType", "KmsKeyId"],
+        );
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    delete: {
+      description: "Delete a SageMaker PartnerApp",
+      arguments: z.object({
+        identifier: z.string().describe(
+          "The primary identifier of the SageMaker PartnerApp",
+        ),
+      }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const { existed } = await deleteResource(
+          "AWS::SageMaker::PartnerApp",
+          args.identifier,
+        );
+        const instanceName = context.globalArgs.name?.toString() ??
+          args.identifier;
+        const handle = await context.writeResource("state", instanceName, {
+          identifier: args.identifier,
+          existed,
+          status: existed ? "deleted" : "not_found",
+          deletedAt: new Date().toISOString(),
+        });
+        return { dataHandles: [handle] };
+      },
+    },
+    sync: {
+      description: "Sync SageMaker PartnerApp state from AWS",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const instanceName = g.name?.toString() ?? "current";
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          instanceName,
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        const identifier = existing.Arn?.toString();
+        if (!identifier) {
+          throw new Error("No identifier found in existing state");
+        }
+        try {
+          const result = await readResource(
+            "AWS::SageMaker::PartnerApp",
+            identifier,
+          ) as StateData;
+          const handle = await context.writeResource(
+            "state",
+            instanceName,
+            result,
+          );
+          return { dataHandles: [handle] };
+        } catch (error: unknown) {
+          if (isResourceNotFoundError(error)) {
+            const handle = await context.writeResource("state", instanceName, {
+              identifier,
+              status: "not_found",
+              syncedAt: new Date().toISOString(),
+            });
+            return { dataHandles: [handle] };
+          }
+          throw error;
+        }
+      },
+    },
+  },
+};

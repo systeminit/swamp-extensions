@@ -1,0 +1,304 @@
+// Auto-generated extension model for @swamp/aws/route53resolver/resolver-endpoint
+// Do not edit manually. Re-generate with: deno task generate:aws
+
+// deno-lint-ignore-file no-explicit-any
+
+import { z } from "zod";
+import {
+  createResource,
+  deleteResource,
+  isResourceNotFoundError,
+  readResource,
+  updateResource,
+} from "./_lib/aws.ts";
+
+export const IpAddressRequestSchema = z.object({
+  Ip: z.string().describe(
+    "The IPv4 address that you want to use for DNS queries.",
+  ).optional(),
+  Ipv6: z.string().describe(
+    "The IPv6 address that you want to use for DNS queries.",
+  ).optional(),
+  SubnetId: z.string().describe(
+    "The ID of the subnet that contains the IP address.",
+  ),
+});
+
+export const TagSchema = z.object({
+  Key: z.string().describe(
+    "The name for the tag. For example, if you want to associate Resolver resources with the account IDs of your customers for billing purposes, the value of Key might be account-id.",
+  ),
+  Value: z.string().describe(
+    "The value for the tag. For example, if Key is account-id, then Value might be the ID of the customer account that you're creating the resource for.",
+  ),
+});
+
+const GlobalArgsSchema = z.object({
+  name: z.string().describe(
+    "Instance name for this resource (used as the unique identifier in the factory pattern)",
+  ),
+  Direction: z.string().describe(
+    "Indicates whether the Resolver endpoint allows inbound or outbound DNS queries: - INBOUND: allows DNS queries to your VPC from your network - OUTBOUND: allows DNS queries from your VPC to your network - INBOUND_DELEGATION: allows DNS queries to your VPC from your network with authoritative answers from private hosted zones",
+  ),
+  IpAddresses: z.array(IpAddressRequestSchema).describe(
+    "The subnets and IP addresses in your VPC that DNS queries originate from (for outbound endpoints) or that you forward DNS queries to (for inbound endpoints). The subnet ID uniquely identifies a VPC.",
+  ),
+  Name: z.string().describe(
+    "A friendly name that lets you easily find a configuration in the Resolver dashboard in the Route 53 console.",
+  ).optional(),
+  OutpostArn: z.string().describe(
+    "The ARN (Amazon Resource Name) for the Outpost.",
+  ).optional(),
+  PreferredInstanceType: z.string().describe("The Amazon EC2 instance type.")
+    .optional(),
+  TargetNameServerMetricsEnabled: z.boolean().describe(
+    "Specifies whether target name server metrics are enabled for the Outbound Resolver Endpoint. When set to true, one-minute granular metrics are published in CloudWatch for each target name server associated with this endpoint. When set to false, metrics are not published. Default is false.",
+  ).optional(),
+  RniEnhancedMetricsEnabled: z.boolean().describe(
+    "Specifies whether RNI enhanced metrics are enabled for the Resolver Endpoints. When set to true, one-minute granular metrics are published in CloudWatch for each RNI associated with this endpoint. When set to false, metrics are not published. Default is false.",
+  ).optional(),
+  Protocols: z.array(z.string()).describe(
+    "Protocols used for the endpoint. DoH-FIPS is applicable for inbound endpoints only.",
+  ).optional(),
+  ResolverEndpointType: z.enum(["IPV6", "IPV4", "DUALSTACK"]).describe(
+    "The Resolver endpoint IP address type.",
+  ).optional(),
+  SecurityGroupIds: z.array(z.string()).describe(
+    "The ID of one or more security groups that control access to this VPC. The security group must include one or more inbound rules (for inbound endpoints) or outbound rules (for outbound endpoints). Inbound and outbound rules must allow TCP and UDP access. For inbound access, open port 53. For outbound access, open the port that you're using for DNS queries on your network.",
+  ),
+  Tags: z.array(TagSchema).describe(
+    "An array of key-value pairs to apply to this resource.",
+  ).optional(),
+});
+
+const StateSchema = z.object({
+  Arn: z.string().optional(),
+  Direction: z.string().optional(),
+  HostVPCId: z.string().optional(),
+  IpAddressCount: z.string().optional(),
+  IpAddresses: z.array(IpAddressRequestSchema).optional(),
+  Name: z.string().optional(),
+  OutpostArn: z.string().optional(),
+  PreferredInstanceType: z.string().optional(),
+  TargetNameServerMetricsEnabled: z.boolean().optional(),
+  RniEnhancedMetricsEnabled: z.boolean().optional(),
+  Protocols: z.array(z.string()).optional(),
+  ResolverEndpointId: z.string(),
+  ResolverEndpointType: z.string().optional(),
+  SecurityGroupIds: z.array(z.string()).optional(),
+  Tags: z.array(TagSchema).optional(),
+}).passthrough();
+
+type StateData = z.infer<typeof StateSchema>;
+
+const InputsSchema = z.object({
+  name: z.string().optional(),
+  Direction: z.string().describe(
+    "Indicates whether the Resolver endpoint allows inbound or outbound DNS queries: - INBOUND: allows DNS queries to your VPC from your network - OUTBOUND: allows DNS queries from your VPC to your network - INBOUND_DELEGATION: allows DNS queries to your VPC from your network with authoritative answers from private hosted zones",
+  ).optional(),
+  IpAddresses: z.array(IpAddressRequestSchema).describe(
+    "The subnets and IP addresses in your VPC that DNS queries originate from (for outbound endpoints) or that you forward DNS queries to (for inbound endpoints). The subnet ID uniquely identifies a VPC.",
+  ).optional(),
+  Name: z.string().describe(
+    "A friendly name that lets you easily find a configuration in the Resolver dashboard in the Route 53 console.",
+  ).optional(),
+  OutpostArn: z.string().describe(
+    "The ARN (Amazon Resource Name) for the Outpost.",
+  ).optional(),
+  PreferredInstanceType: z.string().describe("The Amazon EC2 instance type.")
+    .optional(),
+  TargetNameServerMetricsEnabled: z.boolean().describe(
+    "Specifies whether target name server metrics are enabled for the Outbound Resolver Endpoint. When set to true, one-minute granular metrics are published in CloudWatch for each target name server associated with this endpoint. When set to false, metrics are not published. Default is false.",
+  ).optional(),
+  RniEnhancedMetricsEnabled: z.boolean().describe(
+    "Specifies whether RNI enhanced metrics are enabled for the Resolver Endpoints. When set to true, one-minute granular metrics are published in CloudWatch for each RNI associated with this endpoint. When set to false, metrics are not published. Default is false.",
+  ).optional(),
+  Protocols: z.array(z.string()).describe(
+    "Protocols used for the endpoint. DoH-FIPS is applicable for inbound endpoints only.",
+  ).optional(),
+  ResolverEndpointType: z.enum(["IPV6", "IPV4", "DUALSTACK"]).describe(
+    "The Resolver endpoint IP address type.",
+  ).optional(),
+  SecurityGroupIds: z.array(z.string()).describe(
+    "The ID of one or more security groups that control access to this VPC. The security group must include one or more inbound rules (for inbound endpoints) or outbound rules (for outbound endpoints). Inbound and outbound rules must allow TCP and UDP access. For inbound access, open port 53. For outbound access, open the port that you're using for DNS queries on your network.",
+  ).optional(),
+  Tags: z.array(TagSchema).describe(
+    "An array of key-value pairs to apply to this resource.",
+  ).optional(),
+});
+
+export const model = {
+  type: "@swamp/aws/route53resolver/resolver-endpoint",
+  version: "2026.03.19.1",
+  globalArguments: GlobalArgsSchema,
+  inputsSchema: InputsSchema,
+  resources: {
+    state: {
+      description: "Route53Resolver ResolverEndpoint resource state",
+      schema: StateSchema,
+      lifetime: "infinite",
+      garbageCollection: 10,
+    },
+  },
+  methods: {
+    create: {
+      description: "Create a Route53Resolver ResolverEndpoint",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const desiredState: Record<string, unknown> = {};
+        for (const [key, value] of Object.entries(g)) {
+          if (key === "name") continue;
+          if (value !== undefined) desiredState[key] = value;
+        }
+        const result = await createResource(
+          "AWS::Route53Resolver::ResolverEndpoint",
+          desiredState,
+        ) as StateData;
+        const instanceName = g.name?.toString() ?? "current";
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    get: {
+      description: "Get a Route53Resolver ResolverEndpoint",
+      arguments: z.object({
+        identifier: z.string().describe(
+          "The primary identifier of the Route53Resolver ResolverEndpoint",
+        ),
+      }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const result = await readResource(
+          "AWS::Route53Resolver::ResolverEndpoint",
+          args.identifier,
+        ) as StateData;
+        const instanceName = context.globalArgs.name?.toString() ??
+          args.identifier;
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    update: {
+      description: "Update a Route53Resolver ResolverEndpoint",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const instanceName = g.name?.toString() ?? "current";
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          instanceName,
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        const identifier = existing.ResolverEndpointId?.toString();
+        if (!identifier) {
+          throw new Error("No identifier found in existing state");
+        }
+        const currentState = await readResource(
+          "AWS::Route53Resolver::ResolverEndpoint",
+          identifier,
+        ) as StateData;
+        const desiredState: Record<string, unknown> = { ...currentState };
+        for (const [key, value] of Object.entries(g)) {
+          if (key === "name") continue;
+          if (value !== undefined) desiredState[key] = value;
+        }
+        const result = await updateResource(
+          "AWS::Route53Resolver::ResolverEndpoint",
+          identifier,
+          currentState,
+          desiredState,
+          [
+            "Direction",
+            "OutpostArn",
+            "PreferredInstanceType",
+            "SecurityGroupIds",
+          ],
+        );
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    delete: {
+      description: "Delete a Route53Resolver ResolverEndpoint",
+      arguments: z.object({
+        identifier: z.string().describe(
+          "The primary identifier of the Route53Resolver ResolverEndpoint",
+        ),
+      }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const { existed } = await deleteResource(
+          "AWS::Route53Resolver::ResolverEndpoint",
+          args.identifier,
+        );
+        const instanceName = context.globalArgs.name?.toString() ??
+          args.identifier;
+        const handle = await context.writeResource("state", instanceName, {
+          identifier: args.identifier,
+          existed,
+          status: existed ? "deleted" : "not_found",
+          deletedAt: new Date().toISOString(),
+        });
+        return { dataHandles: [handle] };
+      },
+    },
+    sync: {
+      description: "Sync Route53Resolver ResolverEndpoint state from AWS",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const instanceName = g.name?.toString() ?? "current";
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          instanceName,
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        const identifier = existing.ResolverEndpointId?.toString();
+        if (!identifier) {
+          throw new Error("No identifier found in existing state");
+        }
+        try {
+          const result = await readResource(
+            "AWS::Route53Resolver::ResolverEndpoint",
+            identifier,
+          ) as StateData;
+          const handle = await context.writeResource(
+            "state",
+            instanceName,
+            result,
+          );
+          return { dataHandles: [handle] };
+        } catch (error: unknown) {
+          if (isResourceNotFoundError(error)) {
+            const handle = await context.writeResource("state", instanceName, {
+              identifier,
+              status: "not_found",
+              syncedAt: new Date().toISOString(),
+            });
+            return { dataHandles: [handle] };
+          }
+          throw error;
+        }
+      },
+    },
+  },
+};

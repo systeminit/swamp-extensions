@@ -1,0 +1,283 @@
+// Auto-generated extension model for @swamp/aws/lambda/event-invoke-config
+// Do not edit manually. Re-generate with: deno task generate:aws
+
+// deno-lint-ignore-file no-explicit-any
+
+import { z } from "zod";
+import {
+  createResource,
+  deleteResource,
+  isResourceNotFoundError,
+  readResource,
+  updateResource,
+} from "./_lib/aws.ts";
+
+export const OnFailureSchema = z.object({
+  Destination: z.string().min(0).max(350).regex(
+    new RegExp(
+      "^$|arn:(aws[a-zA-Z0-9-]*):([a-zA-Z0-9\\-])+:([a-z]+(-[a-z]+)+-\\d{1})?:(\\d{12})?:(.*)",
+    ),
+  ).describe("The Amazon Resource Name (ARN) of the destination resource."),
+});
+
+export const OnSuccessSchema = z.object({
+  Destination: z.string().min(0).max(350).regex(
+    new RegExp(
+      "^$|arn:(aws[a-zA-Z0-9-]*):([a-zA-Z0-9\\-])+:([a-z]+(-[a-z]+)+-\\d{1})?:(\\d{12})?:(.*)",
+    ),
+  ).describe("The Amazon Resource Name (ARN) of the destination resource."),
+});
+
+const GlobalArgsSchema = z.object({
+  name: z.string().describe(
+    "Instance name for this resource (used as the unique identifier in the factory pattern)",
+  ),
+  DestinationConfig: z.object({
+    OnFailure: OnFailureSchema.describe(
+      "The destination configuration for failed invocations.",
+    ).optional(),
+    OnSuccess: OnSuccessSchema.describe(
+      "The destination configuration for successful invocations.",
+    ).optional(),
+  }).describe(
+    "A destination for events after they have been sent to a function for processing.",
+  ).optional(),
+  FunctionName: z.string().regex(
+    new RegExp(
+      "^(arn:(aws[a-zA-Z-]*)?:lambda:)?([a-z]+(-[a-z]+)+-\\d{1}:)?(\\d{12}:)?(function:)?([a-zA-Z0-9-_]+)(:(\\$LATEST(\\.PUBLISHED)?|[a-zA-Z0-9-_]+))?$",
+    ),
+  ).describe("The name of the Lambda function."),
+  MaximumEventAgeInSeconds: z.number().int().min(60).max(21600).describe(
+    "The maximum age of a request that Lambda sends to a function for processing.",
+  ).optional(),
+  MaximumRetryAttempts: z.number().int().min(0).max(2).describe(
+    "The maximum number of times to retry when the function returns an error.",
+  ).optional(),
+  Qualifier: z.string().regex(
+    new RegExp("^\\$(LATEST(\\.PUBLISHED)?)|[a-zA-Z0-9$_-]{1,129}$"),
+  ).describe("The identifier of a version or alias."),
+});
+
+const StateSchema = z.object({
+  DestinationConfig: z.object({
+    OnFailure: OnFailureSchema,
+    OnSuccess: OnSuccessSchema,
+  }).optional(),
+  FunctionName: z.string(),
+  MaximumEventAgeInSeconds: z.number().optional(),
+  MaximumRetryAttempts: z.number().optional(),
+  Qualifier: z.string(),
+}).passthrough();
+
+type StateData = z.infer<typeof StateSchema>;
+
+const InputsSchema = z.object({
+  name: z.string().optional(),
+  DestinationConfig: z.object({
+    OnFailure: OnFailureSchema.describe(
+      "The destination configuration for failed invocations.",
+    ).optional(),
+    OnSuccess: OnSuccessSchema.describe(
+      "The destination configuration for successful invocations.",
+    ).optional(),
+  }).describe(
+    "A destination for events after they have been sent to a function for processing.",
+  ).optional(),
+  FunctionName: z.string().regex(
+    new RegExp(
+      "^(arn:(aws[a-zA-Z-]*)?:lambda:)?([a-z]+(-[a-z]+)+-\\d{1}:)?(\\d{12}:)?(function:)?([a-zA-Z0-9-_]+)(:(\\$LATEST(\\.PUBLISHED)?|[a-zA-Z0-9-_]+))?$",
+    ),
+  ).describe("The name of the Lambda function.").optional(),
+  MaximumEventAgeInSeconds: z.number().int().min(60).max(21600).describe(
+    "The maximum age of a request that Lambda sends to a function for processing.",
+  ).optional(),
+  MaximumRetryAttempts: z.number().int().min(0).max(2).describe(
+    "The maximum number of times to retry when the function returns an error.",
+  ).optional(),
+  Qualifier: z.string().regex(
+    new RegExp("^\\$(LATEST(\\.PUBLISHED)?)|[a-zA-Z0-9$_-]{1,129}$"),
+  ).describe("The identifier of a version or alias.").optional(),
+});
+
+export const model = {
+  type: "@swamp/aws/lambda/event-invoke-config",
+  version: "2026.03.19.1",
+  globalArguments: GlobalArgsSchema,
+  inputsSchema: InputsSchema,
+  resources: {
+    state: {
+      description: "Lambda EventInvokeConfig resource state",
+      schema: StateSchema,
+      lifetime: "infinite",
+      garbageCollection: 10,
+    },
+  },
+  methods: {
+    create: {
+      description: "Create a Lambda EventInvokeConfig",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const desiredState: Record<string, unknown> = {};
+        for (const [key, value] of Object.entries(g)) {
+          if (key === "name") continue;
+          if (value !== undefined) desiredState[key] = value;
+        }
+        const result = await createResource(
+          "AWS::Lambda::EventInvokeConfig",
+          desiredState,
+        ) as StateData;
+        const instanceName = g.name?.toString() ?? "current";
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    get: {
+      description: "Get a Lambda EventInvokeConfig",
+      arguments: z.object({
+        identifier: z.string().describe(
+          "The primary identifier of the Lambda EventInvokeConfig",
+        ),
+      }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const result = await readResource(
+          "AWS::Lambda::EventInvokeConfig",
+          args.identifier,
+        ) as StateData;
+        const instanceName = context.globalArgs.name?.toString() ??
+          args.identifier;
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    update: {
+      description: "Update a Lambda EventInvokeConfig",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const instanceName = g.name?.toString() ?? "current";
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          instanceName,
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        const idParts = [
+          existing.FunctionName?.toString(),
+          existing.Qualifier?.toString(),
+        ];
+        if (idParts.some((p) => !p)) {
+          throw new Error(
+            "Missing primary identifier fields in existing state",
+          );
+        }
+        const identifier = idParts.join("|");
+        const currentState = await readResource(
+          "AWS::Lambda::EventInvokeConfig",
+          identifier,
+        ) as StateData;
+        const desiredState: Record<string, unknown> = { ...currentState };
+        for (const [key, value] of Object.entries(g)) {
+          if (key === "name") continue;
+          if (value !== undefined) desiredState[key] = value;
+        }
+        const result = await updateResource(
+          "AWS::Lambda::EventInvokeConfig",
+          identifier,
+          currentState,
+          desiredState,
+          ["FunctionName", "Qualifier"],
+        );
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    delete: {
+      description: "Delete a Lambda EventInvokeConfig",
+      arguments: z.object({
+        identifier: z.string().describe(
+          "The primary identifier of the Lambda EventInvokeConfig",
+        ),
+      }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const { existed } = await deleteResource(
+          "AWS::Lambda::EventInvokeConfig",
+          args.identifier,
+        );
+        const instanceName = context.globalArgs.name?.toString() ??
+          args.identifier;
+        const handle = await context.writeResource("state", instanceName, {
+          identifier: args.identifier,
+          existed,
+          status: existed ? "deleted" : "not_found",
+          deletedAt: new Date().toISOString(),
+        });
+        return { dataHandles: [handle] };
+      },
+    },
+    sync: {
+      description: "Sync Lambda EventInvokeConfig state from AWS",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const instanceName = g.name?.toString() ?? "current";
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          instanceName,
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        const idParts = [
+          existing.FunctionName?.toString(),
+          existing.Qualifier?.toString(),
+        ];
+        if (idParts.some((p) => !p)) {
+          throw new Error(
+            "Missing primary identifier fields in existing state",
+          );
+        }
+        const identifier = idParts.join("|");
+        try {
+          const result = await readResource(
+            "AWS::Lambda::EventInvokeConfig",
+            identifier,
+          ) as StateData;
+          const handle = await context.writeResource(
+            "state",
+            instanceName,
+            result,
+          );
+          return { dataHandles: [handle] };
+        } catch (error: unknown) {
+          if (isResourceNotFoundError(error)) {
+            const handle = await context.writeResource("state", instanceName, {
+              identifier,
+              status: "not_found",
+              syncedAt: new Date().toISOString(),
+            });
+            return { dataHandles: [handle] };
+          }
+          throw error;
+        }
+      },
+    },
+  },
+};

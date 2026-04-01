@@ -1,0 +1,17 @@
+# Auto-generated manifest. Re-generate with the appropriate deno task.
+manifestVersion: 1
+name: "@swamp/aws/launchwizard"
+version: "2026.03.19.1"
+description: "AWS LAUNCHWIZARD infrastructure models"
+labels:
+  - aws
+  - launchwizard
+  - cloud
+  - infrastructure
+releaseNotes: |
+  - Updated: deployment
+models:
+  - deployment.ts
+additionalFiles:
+  - LICENSE.txt
+  - README.md

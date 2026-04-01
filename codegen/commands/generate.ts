@@ -1,14 +1,19 @@
 // generate-models command implementation
 
+import { generateAwsModels } from "../aws/pipeline.ts";
 import { generateDigitalOceanModels } from "../digitalocean/pipeline.ts";
 import { generateHetznerModels } from "../hetzner/pipeline.ts";
 
 export async function generateModels(options: {
   provider: string;
   outputDir: string;
+  services?: string[];
   schemaPath?: string;
 }): Promise<void> {
   switch (options.provider) {
+    case "aws":
+      await generateAwsProvider(options);
+      break;
     case "hetzner":
       await generateHetznerProvider(options);
       break;
@@ -17,7 +22,7 @@ export async function generateModels(options: {
       break;
     default:
       throw new Error(
-        `Unsupported provider: ${options.provider}. Supported: "hetzner", "digitalocean".`,
+        `Unsupported provider: ${options.provider}. Supported: "aws", "hetzner", "digitalocean".`,
       );
   }
 }
@@ -234,4 +239,130 @@ async function generateDigitalOceanProvider(options: {
   }
   console.log(`  Version: ${version}`);
   console.log(`  Output directory: ${doOutputDir}`);
+}
+
+async function generateAwsProvider(options: {
+  outputDir: string;
+  services?: string[];
+  schemaPath?: string;
+}): Promise<void> {
+  console.log(`Generating aws models...`);
+  console.log(`Output directory: ${options.outputDir}`);
+
+  if (options.services && options.services.length > 0) {
+    console.log(`Service filter: ${options.services.join(", ")}`);
+  }
+
+  const {
+    datePrefix,
+    services,
+    skipped,
+    errors,
+  } = await generateAwsModels({
+    services: options.services,
+    outputDir: options.outputDir,
+    schemaPath: options.schemaPath,
+  });
+
+  let totalModelsChanged = 0;
+  let totalModelsUnchanged = 0;
+
+  for (const [serviceName, serviceResult] of services) {
+    const serviceOutputDir = `${options.outputDir}/aws/${serviceName}`;
+
+    // Write the shared lib file
+    const libPath = `${serviceOutputDir}/${serviceResult.libFile.filePath}`;
+    const libDir = libPath.substring(0, libPath.lastIndexOf("/"));
+    await Deno.mkdir(libDir, { recursive: true });
+    await Deno.writeTextFile(libPath, serviceResult.libFile.sourceCode);
+
+    // Write each model file
+    for (const model of serviceResult.models) {
+      const modelPath = `${serviceOutputDir}/${model.filePath}`;
+      const modelDir = modelPath.substring(0, modelPath.lastIndexOf("/"));
+      await Deno.mkdir(modelDir, { recursive: true });
+      await Deno.writeTextFile(modelPath, model.sourceCode);
+    }
+
+    // Write README, LICENSE, and deno.json
+    await Deno.writeTextFile(
+      `${serviceOutputDir}/README.md`,
+      serviceResult.readmeFile.sourceCode,
+    );
+    await Deno.writeTextFile(
+      `${serviceOutputDir}/LICENSE.txt`,
+      serviceResult.licenseFile.sourceCode,
+    );
+    await Deno.writeTextFile(
+      `${serviceOutputDir}/deno.json`,
+      serviceResult.denoConfigFile.sourceCode,
+    );
+
+    // Report changes
+    const changedCount = serviceResult.modelChanges.filter(
+      (c) => c.status !== "unchanged",
+    ).length;
+    const unchangedCount = serviceResult.modelChanges.filter(
+      (c) => c.status === "unchanged",
+    ).length;
+    totalModelsChanged += changedCount;
+    totalModelsUnchanged += unchangedCount;
+
+    // Write manifest only when content actually differs from disk
+    if (serviceResult.hasChanges) {
+      const manifestPath =
+        `${serviceOutputDir}/${serviceResult.manifest.filePath}`;
+      let manifestChanged = true;
+      try {
+        const existingManifest = await Deno.readTextFile(manifestPath);
+        manifestChanged =
+          existingManifest !== serviceResult.manifest.sourceCode;
+      } catch {
+        // File doesn't exist — write it
+      }
+      if (manifestChanged) {
+        await Deno.writeTextFile(
+          manifestPath,
+          serviceResult.manifest.sourceCode,
+        );
+      }
+    }
+
+    // Format generated files with deno fmt
+    const fmtCmd = new Deno.Command("deno", {
+      args: ["fmt", "--no-config", serviceOutputDir],
+    });
+    const fmtResult = await fmtCmd.output();
+    if (!fmtResult.success) {
+      console.warn(
+        `  Warning: deno fmt failed for ${serviceName}: ${
+          new TextDecoder().decode(fmtResult.stderr)
+        }`,
+      );
+    }
+  }
+
+  // Summarize skipped schemas by reason
+  const skipsByReason = new Map<string, number>();
+  for (const s of skipped) {
+    skipsByReason.set(s.reason, (skipsByReason.get(s.reason) || 0) + 1);
+  }
+
+  console.log(`\nGeneration complete!`);
+  console.log(`  Services: ${services.size}`);
+  console.log(
+    `  Models: ${totalModelsChanged} changed, ${totalModelsUnchanged} unchanged`,
+  );
+  console.log(`  Schemas skipped: ${skipped.length}`);
+  for (const [reason, count] of [...skipsByReason.entries()].sort()) {
+    console.log(`    ${reason}: ${count}`);
+  }
+  if (errors.length > 0) {
+    console.log(`  Errors: ${errors.length}`);
+    for (const err of errors) {
+      console.log(`    ${err}`);
+    }
+  }
+  console.log(`  Date prefix: ${datePrefix}`);
+  console.log(`  Output directory: ${options.outputDir}`);
 }

@@ -1,0 +1,19 @@
+# Auto-generated manifest. Re-generate with the appropriate deno task.
+manifestVersion: 1
+name: "@swamp/aws/rolesanywhere"
+version: "2026.03.19.1"
+description: "AWS ROLESANYWHERE infrastructure models"
+labels:
+  - aws
+  - rolesanywhere
+  - cloud
+  - infrastructure
+releaseNotes: |
+  - Updated: crl, profile, trust_anchor
+models:
+  - crl.ts
+  - profile.ts
+  - trust_anchor.ts
+additionalFiles:
+  - LICENSE.txt
+  - README.md

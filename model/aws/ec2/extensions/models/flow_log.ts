@@ -1,0 +1,329 @@
+// Auto-generated extension model for @swamp/aws/ec2/flow-log
+// Do not edit manually. Re-generate with: deno task generate:aws
+
+// deno-lint-ignore-file no-explicit-any
+
+import { z } from "zod";
+import {
+  createResource,
+  deleteResource,
+  isResourceNotFoundError,
+  readResource,
+  updateResource,
+} from "./_lib/aws.ts";
+
+export const TagSchema = z.object({
+  Value: z.string(),
+  Key: z.string(),
+});
+
+const GlobalArgsSchema = z.object({
+  name: z.string().describe(
+    "Instance name for this resource (used as the unique identifier in the factory pattern)",
+  ),
+  DeliverCrossAccountRole: z.string().describe(
+    "The ARN of the IAM role that allows Amazon EC2 to publish flow logs across accounts.",
+  ).optional(),
+  DeliverLogsPermissionArn: z.string().describe(
+    "The ARN for the IAM role that permits Amazon EC2 to publish flow logs to a CloudWatch Logs log group in your account. If you specify LogDestinationType as s3 or kinesis-data-firehose, do not specify DeliverLogsPermissionArn or LogGroupName.",
+  ).optional(),
+  LogDestination: z.string().describe(
+    "Specifies the destination to which the flow log data is to be published. Flow log data can be published to a CloudWatch Logs log group, an Amazon S3 bucket, or a Kinesis Firehose stream. The value specified for this parameter depends on the value specified for LogDestinationType.",
+  ).optional(),
+  LogDestinationType: z.enum([
+    "cloud-watch-logs",
+    "s3",
+    "kinesis-data-firehose",
+  ]).describe(
+    "Specifies the type of destination to which the flow log data is to be published. Flow log data can be published to CloudWatch Logs or Amazon S3.",
+  ).optional(),
+  LogFormat: z.string().describe(
+    "The fields to include in the flow log record, in the order in which they should appear.",
+  ).optional(),
+  LogGroupName: z.string().describe(
+    "The name of a new or existing CloudWatch Logs log group where Amazon EC2 publishes your flow logs. If you specify LogDestinationType as s3 or kinesis-data-firehose, do not specify DeliverLogsPermissionArn or LogGroupName.",
+  ).optional(),
+  MaxAggregationInterval: z.number().int().describe(
+    "The maximum interval of time during which a flow of packets is captured and aggregated into a flow log record. You can specify 60 seconds (1 minute) or 600 seconds (10 minutes).",
+  ).optional(),
+  ResourceId: z.string().describe(
+    "The ID of the subnet, network interface, or VPC for which you want to create a flow log.",
+  ),
+  ResourceType: z.enum([
+    "NetworkInterface",
+    "Subnet",
+    "VPC",
+    "TransitGateway",
+    "TransitGatewayAttachment",
+    "RegionalNatGateway",
+  ]).describe(
+    "The type of resource for which to create the flow log. For example, if you specified a VPC ID for the ResourceId property, specify VPC for this property.",
+  ),
+  Tags: z.array(TagSchema).describe("The tags to apply to the flow logs.")
+    .optional(),
+  TrafficType: z.enum(["ACCEPT", "ALL", "REJECT"]).describe(
+    "The type of traffic to log. You can log traffic that the resource accepts or rejects, or all traffic.",
+  ).optional(),
+  DestinationOptions: z.object({
+    FileFormat: z.enum(["plain-text", "parquet"]),
+    HiveCompatiblePartitions: z.boolean(),
+    PerHourPartition: z.boolean(),
+  }).optional(),
+});
+
+const StateSchema = z.object({
+  Id: z.string(),
+  DeliverCrossAccountRole: z.string().optional(),
+  DeliverLogsPermissionArn: z.string().optional(),
+  LogDestination: z.string().optional(),
+  LogDestinationType: z.string().optional(),
+  LogFormat: z.string().optional(),
+  LogGroupName: z.string().optional(),
+  MaxAggregationInterval: z.number().optional(),
+  ResourceId: z.string().optional(),
+  ResourceType: z.string().optional(),
+  Tags: z.array(TagSchema).optional(),
+  TrafficType: z.string().optional(),
+  DestinationOptions: z.object({
+    FileFormat: z.string(),
+    HiveCompatiblePartitions: z.boolean(),
+    PerHourPartition: z.boolean(),
+  }).optional(),
+}).passthrough();
+
+type StateData = z.infer<typeof StateSchema>;
+
+const InputsSchema = z.object({
+  name: z.string().optional(),
+  DeliverCrossAccountRole: z.string().describe(
+    "The ARN of the IAM role that allows Amazon EC2 to publish flow logs across accounts.",
+  ).optional(),
+  DeliverLogsPermissionArn: z.string().describe(
+    "The ARN for the IAM role that permits Amazon EC2 to publish flow logs to a CloudWatch Logs log group in your account. If you specify LogDestinationType as s3 or kinesis-data-firehose, do not specify DeliverLogsPermissionArn or LogGroupName.",
+  ).optional(),
+  LogDestination: z.string().describe(
+    "Specifies the destination to which the flow log data is to be published. Flow log data can be published to a CloudWatch Logs log group, an Amazon S3 bucket, or a Kinesis Firehose stream. The value specified for this parameter depends on the value specified for LogDestinationType.",
+  ).optional(),
+  LogDestinationType: z.enum([
+    "cloud-watch-logs",
+    "s3",
+    "kinesis-data-firehose",
+  ]).describe(
+    "Specifies the type of destination to which the flow log data is to be published. Flow log data can be published to CloudWatch Logs or Amazon S3.",
+  ).optional(),
+  LogFormat: z.string().describe(
+    "The fields to include in the flow log record, in the order in which they should appear.",
+  ).optional(),
+  LogGroupName: z.string().describe(
+    "The name of a new or existing CloudWatch Logs log group where Amazon EC2 publishes your flow logs. If you specify LogDestinationType as s3 or kinesis-data-firehose, do not specify DeliverLogsPermissionArn or LogGroupName.",
+  ).optional(),
+  MaxAggregationInterval: z.number().int().describe(
+    "The maximum interval of time during which a flow of packets is captured and aggregated into a flow log record. You can specify 60 seconds (1 minute) or 600 seconds (10 minutes).",
+  ).optional(),
+  ResourceId: z.string().describe(
+    "The ID of the subnet, network interface, or VPC for which you want to create a flow log.",
+  ).optional(),
+  ResourceType: z.enum([
+    "NetworkInterface",
+    "Subnet",
+    "VPC",
+    "TransitGateway",
+    "TransitGatewayAttachment",
+    "RegionalNatGateway",
+  ]).describe(
+    "The type of resource for which to create the flow log. For example, if you specified a VPC ID for the ResourceId property, specify VPC for this property.",
+  ).optional(),
+  Tags: z.array(TagSchema).describe("The tags to apply to the flow logs.")
+    .optional(),
+  TrafficType: z.enum(["ACCEPT", "ALL", "REJECT"]).describe(
+    "The type of traffic to log. You can log traffic that the resource accepts or rejects, or all traffic.",
+  ).optional(),
+  DestinationOptions: z.object({
+    FileFormat: z.enum(["plain-text", "parquet"]).optional(),
+    HiveCompatiblePartitions: z.boolean().optional(),
+    PerHourPartition: z.boolean().optional(),
+  }).optional(),
+});
+
+export const model = {
+  type: "@swamp/aws/ec2/flow-log",
+  version: "2026.03.19.1",
+  globalArguments: GlobalArgsSchema,
+  inputsSchema: InputsSchema,
+  resources: {
+    state: {
+      description: "EC2 FlowLog resource state",
+      schema: StateSchema,
+      lifetime: "infinite",
+      garbageCollection: 10,
+    },
+  },
+  methods: {
+    create: {
+      description: "Create a EC2 FlowLog",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const desiredState: Record<string, unknown> = {};
+        for (const [key, value] of Object.entries(g)) {
+          if (key === "name") continue;
+          if (value !== undefined) desiredState[key] = value;
+        }
+        const result = await createResource(
+          "AWS::EC2::FlowLog",
+          desiredState,
+        ) as StateData;
+        const instanceName = g.name?.toString() ?? "current";
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    get: {
+      description: "Get a EC2 FlowLog",
+      arguments: z.object({
+        identifier: z.string().describe(
+          "The primary identifier of the EC2 FlowLog",
+        ),
+      }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const result = await readResource(
+          "AWS::EC2::FlowLog",
+          args.identifier,
+        ) as StateData;
+        const instanceName = context.globalArgs.name?.toString() ??
+          args.identifier;
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    update: {
+      description: "Update a EC2 FlowLog",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const instanceName = g.name?.toString() ?? "current";
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          instanceName,
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        const identifier = existing.Id?.toString();
+        if (!identifier) {
+          throw new Error("No identifier found in existing state");
+        }
+        const currentState = await readResource(
+          "AWS::EC2::FlowLog",
+          identifier,
+        ) as StateData;
+        const desiredState: Record<string, unknown> = { ...currentState };
+        for (const [key, value] of Object.entries(g)) {
+          if (key === "name") continue;
+          if (value !== undefined) desiredState[key] = value;
+        }
+        const result = await updateResource(
+          "AWS::EC2::FlowLog",
+          identifier,
+          currentState,
+          desiredState,
+          [
+            "DeliverCrossAccountRole",
+            "DeliverLogsPermissionArn",
+            "LogGroupName",
+            "LogDestination",
+            "ResourceId",
+            "TrafficType",
+            "LogDestinationType",
+            "ResourceType",
+            "LogFormat",
+            "MaxAggregationInterval",
+            "DestinationOptions",
+          ],
+        );
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    delete: {
+      description: "Delete a EC2 FlowLog",
+      arguments: z.object({
+        identifier: z.string().describe(
+          "The primary identifier of the EC2 FlowLog",
+        ),
+      }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const { existed } = await deleteResource(
+          "AWS::EC2::FlowLog",
+          args.identifier,
+        );
+        const instanceName = context.globalArgs.name?.toString() ??
+          args.identifier;
+        const handle = await context.writeResource("state", instanceName, {
+          identifier: args.identifier,
+          existed,
+          status: existed ? "deleted" : "not_found",
+          deletedAt: new Date().toISOString(),
+        });
+        return { dataHandles: [handle] };
+      },
+    },
+    sync: {
+      description: "Sync EC2 FlowLog state from AWS",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const instanceName = g.name?.toString() ?? "current";
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          instanceName,
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        const identifier = existing.Id?.toString();
+        if (!identifier) {
+          throw new Error("No identifier found in existing state");
+        }
+        try {
+          const result = await readResource(
+            "AWS::EC2::FlowLog",
+            identifier,
+          ) as StateData;
+          const handle = await context.writeResource(
+            "state",
+            instanceName,
+            result,
+          );
+          return { dataHandles: [handle] };
+        } catch (error: unknown) {
+          if (isResourceNotFoundError(error)) {
+            const handle = await context.writeResource("state", instanceName, {
+              identifier,
+              status: "not_found",
+              syncedAt: new Date().toISOString(),
+            });
+            return { dataHandles: [handle] };
+          }
+          throw error;
+        }
+      },
+    },
+  },
+};

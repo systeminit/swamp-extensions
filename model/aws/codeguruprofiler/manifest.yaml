@@ -1,0 +1,17 @@
+# Auto-generated manifest. Re-generate with the appropriate deno task.
+manifestVersion: 1
+name: "@swamp/aws/codeguruprofiler"
+version: "2026.03.19.1"
+description: "AWS CODEGURUPROFILER infrastructure models"
+labels:
+  - aws
+  - codeguruprofiler
+  - cloud
+  - infrastructure
+releaseNotes: |
+  - Updated: profiling_group
+models:
+  - profiling_group.ts
+additionalFiles:
+  - LICENSE.txt
+  - README.md

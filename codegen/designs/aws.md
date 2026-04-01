@@ -1,0 +1,744 @@
+# AWS Provider Design
+
+## 1. Purpose
+
+Clover's AWS provider reads the CloudFormation Resource Provider schemas and
+generates a set of swamp extension models — one per CloudFormation resource
+type. Each model is a self-contained TypeScript file that exports a `model`
+object with Zod schemas and CRUD methods. A shared `_lib/aws.ts` file provides
+the CloudControl API client, retry logic, polling, and CRUD helpers.
+
+Unlike the Hetzner and DigitalOcean providers (which use REST APIs with
+provider-specific HTTP clients), the AWS provider uses the
+[CloudControl API](https://docs.aws.amazon.com/cloudcontrolapi/latest/userguide/what-is-cloudcontrolapi.html)
+— a single unified API that provides CRUD operations for all CloudFormation
+resource types. This means one helper library works for all 1300+ resource
+types.
+
+**Output**: `outputs/aws/{service}/` — one directory per AWS service,
+containing:
+
+- `extensions/models/*.ts` — one file per resource type (e.g., `instance.ts`,
+  `vpc.ts`)
+- `extensions/models/_lib/aws.ts` — shared CloudControl helpers
+- `manifest.yaml` — extension package manifest
+
+**How to run**:
+
+```sh
+deno task fetch-schema:aws    # download CloudFormation schemas
+deno task generate:aws        # generate models from the local schemas
+```
+
+The pipeline is orchestrated by `src/commands/generateModels.ts`, which calls
+`generateAwsModels()` from the pipeline, writes all files per service, runs
+`deno fmt`, and reports changes.
+
+---
+
+## 2. Schema Source
+
+The schemas are fetched from the CloudFormation schema registry:
+
+```
+https://schema.cloudformation.us-east-1.amazonaws.com/CloudformationSchema.zip
+```
+
+The zip contains one JSON file per resource type (e.g.,
+`aws-ec2-instance.json`). The pipeline extracts all `aws-*` files, applies
+fixes, and consolidates them into `schemas/cf-schema.json`.
+
+### Schema pre-processing
+
+1. **Reference fix**: CloudFormation schemas use `resource-schema.json#` as a
+   base URI for `$ref` pointers. This is replaced with `#` to make pointers
+   self-referential within each schema.
+
+2. **Special-case patch**: The EC2 VerifiedAccessTrustProvider schema has a
+   problematic `SseSpecification` definition that causes dereferencing issues.
+   It is removed during extraction.
+
+3. **Sorting**: Schemas are sorted by `typeName` for deterministic output.
+
+### $ref dereferencing
+
+After loading `cf-schema.json`, each schema is dereferenced using
+`@apidevtools/json-schema-ref-parser`. During dereferencing, the `onDereference`
+callback stamps each resolved reference with a `title` derived from its
+definition name. This title is used later by the Zod generator to create named
+extracted schemas (e.g., `TagSchema`, `BlockDeviceMappingSchema`).
+
+Circular references are handled by the parser's `circular: "ignore"` option.
+
+### What gets skipped
+
+| Schema                                 | Reason                             |
+| -------------------------------------- | ---------------------------------- |
+| `AWS::DynamoDB::Table`                 | `oneOf` array without title        |
+| `AWS::KinesisAnalyticsV2::Application` | Unsupported string regexp pattern  |
+| `AWS::SMSVOICE::PhoneNumber`           | Unsupported string regexp pattern  |
+| `AWS::SMSVOICE::Pool`                  | Unsupported string regexp pattern  |
+| `AWS::MediaConnect::Flow`              | Unsupported number format: `int32` |
+| Non-`AWS::` / non-`Alexa::` schemas    | Not AWS resources                  |
+| Schemas without a `read` handler       | CF-only resources with no read API |
+
+The `read` handler requirement ensures every generated model can retrieve
+current state after creation. Without it, the CRUD pattern is incomplete.
+Approximately 201 schemas are skipped for lacking a read handler.
+
+---
+
+## 3. Resource Discovery
+
+### CloudFormation handler-based discovery
+
+Unlike the Hetzner and DigitalOcean providers (which discover resources from
+OpenAPI path analysis), the AWS provider discovers resources from the
+CloudFormation schema's `handlers` field. Each CF schema declares which CRUD
+handlers the resource supports:
+
+```json
+{
+  "handlers": {
+    "create": { "permissions": ["ec2:RunInstances", ...] },
+    "read": { "permissions": ["ec2:DescribeInstances", ...] },
+    "update": { "permissions": ["ec2:ModifyInstanceAttribute", ...] },
+    "delete": { "permissions": ["ec2:TerminateInstances", ...] }
+  }
+}
+```
+
+A resource is included if it has at least a `read` handler. The generated model
+includes only the methods for which handlers exist:
+
+| Handler  | Generated method |
+| -------- | ---------------- |
+| `create` | `create`         |
+| `read`   | `get`            |
+| `update` | `update`         |
+| `delete` | `delete`         |
+
+### Per-service grouping
+
+Resources are grouped by the second segment of the CloudFormation type name:
+
+| Type name                 | Service  | Resource file       | Model slug       |
+| ------------------------- | -------- | ------------------- | ---------------- |
+| `AWS::EC2::Instance`      | `ec2`    | `instance.ts`       | `instance`       |
+| `AWS::EC2::SecurityGroup` | `ec2`    | `security_group.ts` | `security-group` |
+| `AWS::S3::Bucket`         | `s3`     | `bucket.ts`         | `bucket`         |
+| `AWS::Lambda::Function`   | `lambda` | `function.ts`       | `function`       |
+
+Each service produces an independent publishable extension package:
+`@swamp/aws/ec2`, `@swamp/aws/s3`, `@swamp/aws/lambda`, etc.
+
+### Why per-service splitting
+
+A single `@swamp/aws` package with 1300+ models would be impractical:
+
+- Users typically work with a handful of services, not all of AWS
+- Individual service packages can be versioned independently
+- Smaller packages are faster to install and load
+- Aligns with how AWS itself organizes services
+
+### What AWS doesn't need
+
+Unlike the Hetzner and DigitalOcean providers, there is no:
+
+- **Path-based resource discovery** — resources come from CF schemas, not URLs
+- **Action methods** — CloudControl handles all operations uniformly
+- **Sub-resource methods** — each CF type is a standalone resource
+- **Discovery endpoints** — no equivalent concept
+- **Response envelope unwrapping** — CloudControl returns JSON properties
+  directly
+- **HTTP method precedence** — all operations go through CloudControl commands
+
+---
+
+## 4. Property Splitting
+
+### Domain vs resource properties
+
+The pipeline splits each CF schema's properties into two sets:
+
+**Domain properties** (writable): Properties the user provides when creating or
+updating a resource. Read-only properties are excluded. These become the
+`GlobalArgsSchema`.
+
+**Resource properties** (all): Every property the API returns, including
+read-only fields like `Arn`, `VpcId`, etc. These become the `StateSchema`.
+
+```typescript
+function splitAwsProperties(schema, onlyProperties) {
+  domainProperties = pruneProperties(schema.properties, readOnlySet);
+  resourceValueProperties = schema.properties; // ALL properties
+  return { domainProperties, resourceValueProperties };
+}
+```
+
+### Why resource schema includes everything
+
+AWS CloudControl's `GetResource` returns all properties — both writable inputs
+and read-only outputs. The resource schema must accept all of them. If it only
+included writable properties, read-only fields like `InstanceId` or `Arn` would
+be silently dropped during parsing.
+
+### Property classification from CF schema
+
+CloudFormation schemas declare property classifications using JSON Pointer
+arrays:
+
+| CF schema field        | Meaning                                       |
+| ---------------------- | --------------------------------------------- |
+| `readOnlyProperties`   | Set by AWS after creation (e.g., `Arn`, `Id`) |
+| `createOnlyProperties` | Can only be set at creation (e.g., `ImageId`) |
+| `writeOnlyProperties`  | Not returned in read (e.g., `Password`)       |
+| `primaryIdentifier`    | Fields that uniquely identify the resource    |
+
+These JSON Pointer paths (e.g., `/properties/InstanceId`) are normalized to
+simple field names (`InstanceId`) by `normalizeOnlyProperties()`.
+
+### Create-only property handling
+
+Properties in `createOnlyProperties` can be set during creation but not changed
+via update. The update method passes these to `updateResource()` which filters
+them from the JSON patch:
+
+```typescript
+const rawPatch = jsonpatch.compare(currentState, desiredState);
+const patch = rawPatch.filter((op) => {
+  const topLevelProp = op.path.split("/")[1];
+  return !createOnlySet.has(topLevelProp);
+});
+```
+
+This prevents CloudControl from rejecting update requests that attempt to modify
+immutable properties.
+
+---
+
+## 5. Identifying Field Resolution
+
+### Primary identifier from CF schema
+
+Every CloudFormation schema declares a `primaryIdentifier` — one or more JSON
+Pointer paths that uniquely identify the resource:
+
+```json
+{ "primaryIdentifier": ["/properties/BucketName"] }
+{ "primaryIdentifier": ["/properties/VpcId"] }
+{ "primaryIdentifier": ["/properties/RouteTableId", "/properties/CidrBlock"] }
+```
+
+### Single vs composite identifiers
+
+Most resources have a single primary identifier field. Some have composite
+identifiers — multiple fields that together form the unique key. The
+CloudControl API requires composite identifiers to be joined with `|`:
+
+```
+RouteTableId|CidrBlock → "rtb-123|0.0.0.0/0"
+PublicIp|AllocationId → "1.2.3.4|eipalloc-abc"
+```
+
+The update method handles this by extracting all identifier fields from existing
+state and joining them:
+
+```typescript
+const idParts = [
+  existing.RouteTableId?.toString(),
+  existing.CidrBlock?.toString(),
+];
+const identifier = idParts.join("|");
+```
+
+### Identifier types are always strings
+
+Unlike DigitalOcean (which uses numeric IDs, UUIDs, names, and IPs), the
+CloudControl API always accepts and returns identifiers as strings. The `get`
+and `delete` methods always take `identifier: z.string()`.
+
+### Why no identifier map is needed
+
+CloudFormation schemas explicitly declare primary identifiers — no guessing or
+mapping is required. This eliminates the need for DigitalOcean's
+`IDENTIFIER_MAP`, `ENDPOINT_IDENTIFIER_OVERRIDES`, and fallback logic.
+
+---
+
+## 6. Factory Pattern and Instance Naming
+
+Every model uses a **factory pattern**: a single model definition can manage
+multiple instances of the same resource type. Each instance is identified by a
+name, enabling CEL expressions like:
+
+```
+data.latest("prod-vpc", "prod-vpc").attributes.VpcId
+```
+
+### `resolveNamingField`: preference order
+
+1. **Writable primary identifier** — if the primary identifier field is writable
+   (not read-only) and exists in the schema properties, use it directly.
+   Example: `BucketName` for S3 Bucket, `KeyPairName` for EC2 KeyPair.
+2. **Synthetic `name`** — if the primary identifier is read-only (e.g.,
+   `InstanceId`, `VpcId`) or composite, inject a synthetic `name` field into
+   GlobalArgs.
+
+### Why most AWS resources use synthetic names
+
+Unlike Hetzner and DigitalOcean (where most resources have a `name` field), most
+AWS resources use read-only identifiers assigned by AWS (e.g., `i-0abc123`,
+`vpc-0def456`). The user doesn't choose these values — AWS generates them.
+Consequently, most AWS models use synthetic names.
+
+Examples:
+
+| Resource          | Primary ID    | Read-only? | Naming field |
+| ----------------- | ------------- | ---------- | ------------ |
+| EC2 Instance      | `InstanceId`  | Yes        | Synthetic    |
+| EC2 VPC           | `VpcId`       | Yes        | Synthetic    |
+| EC2 KeyPair       | `KeyPairName` | No         | Natural      |
+| S3 Bucket         | `BucketName`  | No         | Natural      |
+| EC2 SecurityGroup | `GroupId`     | Yes        | Synthetic    |
+| EC2 EIP           | Composite     | —          | Synthetic    |
+
+### How instance names flow through methods
+
+| Method   | Instance name source                                                                        |
+| -------- | ------------------------------------------------------------------------------------------- |
+| `create` | Natural: `result.{field} ?? g.{field}`, Synthetic: `g.name ?? "current"`                    |
+| `get`    | Natural: `result.{field} ?? globalArgs.{field}`, Synthetic: `globalArgs.name ?? identifier` |
+| `update` | Natural: `g.{field} ?? "current"`, Synthetic: `g.name ?? "current"`                         |
+| `delete` | `args.identifier` (uses the identifier as the instance name for the deletion record)        |
+
+### Synthetic name exclusion from API calls
+
+When a synthetic `name` field is used, it is excluded from the `desiredState`
+sent to the CloudControl API:
+
+```typescript
+for (const [key, value] of Object.entries(g)) {
+  if (key === "name") continue; // synthetic — not an AWS property
+  if (value !== undefined) desiredState[key] = value;
+}
+```
+
+This prevents sending an unknown `name` property that would cause the API to
+reject the request.
+
+---
+
+## 7. CloudControl API Interaction
+
+### Why CloudControl instead of service-specific APIs
+
+The CloudControl API is a single unified API that provides CRUD for all
+CloudFormation resource types. This means one helper library (`_lib/aws.ts`)
+works for all 1300+ resource types, instead of generating service-specific HTTP
+clients with custom request/response handling for each service.
+
+### Operation flow
+
+**Create**: `CreateResourceCommand` with serialized desired state → poll
+`GetResourceRequestStatus` until terminal → `GetResourceCommand` to read the
+created resource's properties.
+
+**Read**: `GetResourceCommand` with type name and identifier → parse the
+`Properties` JSON string from the response.
+
+**Update**: `GetResourceCommand` to read current state → compute JSON patch
+between current and desired state → filter create-only properties from the patch
+→ `UpdateResourceCommand` with the patch document → poll until terminal →
+`GetResourceCommand` to read the updated resource.
+
+**Delete**: `DeleteResourceCommand` with type name and identifier → poll until
+terminal → return `{ existed: true }`. If the resource is already gone, return
+`{ existed: false }`.
+
+### JSON patch for updates
+
+CloudControl updates use
+[RFC 6902 JSON Patch](https://datatracker.ietf.org/doc/html/rfc6902) rather than
+full state replacement. The pipeline uses `fast-json-patch` to compute the diff
+between current and desired state:
+
+```typescript
+const rawPatch = jsonpatch.compare(currentState, desiredState);
+```
+
+Create-only properties are filtered from the patch before sending. If no patch
+operations remain after filtering, the update is skipped and current state is
+returned.
+
+### Retry and polling
+
+**Retry**: All CloudControl commands are wrapped in `withRetry()` which retries
+on throttling errors with exponential backoff + jitter. Up to 20 attempts with
+delays from 1s to 90s.
+
+**Polling**: Async operations (create, update, delete) return a request token.
+`pollOperationStatus()` polls `GetResourceRequestStatus` up to 60 times with
+exponential backoff until the operation reaches a terminal state (`SUCCESS`,
+`FAILED`, or `CANCEL_COMPLETE`).
+
+### Error handling
+
+| Error type          | Detection                                  | Behavior                    |
+| ------------------- | ------------------------------------------ | --------------------------- |
+| Throttling          | `Throttling`, `TooManyRequests` in message | Retry with backoff          |
+| Not found (read)    | `was not found`, `does not exist`          | Throw error                 |
+| Not found (delete)  | Same patterns                              | Return `{ existed: false }` |
+| Operation failed    | `FAILED` status from poll                  | Throw with status message   |
+| Operation cancelled | `CANCEL_COMPLETE` from poll                | Throw with message          |
+
+### Client configuration
+
+The CloudControl client reads the AWS region from `AWS_REGION` environment
+variable, defaulting to `us-east-1`. AWS credentials are resolved by the SDK's
+default credential chain (environment variables, shared credentials file,
+instance profiles, etc.).
+
+---
+
+## 8. Sync Method
+
+Every generated model includes a `sync` method for drift detection. Unlike `get`
+(which requires the resource identifier as an argument), `sync` reads the
+identifier from stored state, making it zero-arg and suitable for automated
+workflows.
+
+### How sync works
+
+1. Read the instance name from `globalArgs` (same as `update`)
+2. Load existing state via `context.dataRepository.getContent()`
+3. Extract the identifier from existing state (handles composite IDs by joining
+   with `|`, same as `update`)
+4. Call `readResource(typeName, identifier)` in a try/catch
+5. On success: write refreshed state to `"state"` resource
+6. On `isResourceNotFoundError`: write a `not_found` marker instead of throwing
+
+### Not-found marker
+
+When the resource no longer exists in AWS, sync writes:
+
+```typescript
+{
+  identifier: "vpc-0abc123",
+  status: "not_found",
+  syncedAt: "2026-03-08T12:00:00.000Z",
+}
+```
+
+This allows workflows to detect drift without catching exceptions.
+
+### Exported `isResourceNotFoundError`
+
+The `_lib/aws.ts` helper exports `isResourceNotFoundError()` so that sync
+methods can catch 404-equivalent errors from CloudControl. The function detects
+`ResourceNotFoundException`, `"was not found"`, and `"does not exist"` patterns.
+
+### Composite identifier handling
+
+Sync handles composite identifiers the same way as `update` — extracting all
+primary identifier fields from existing state and joining with `|`:
+
+```typescript
+const idParts = [
+  existing.RouteTableId?.toString(),
+  existing.CidrBlock?.toString(),
+];
+const identifier = idParts.join("|");
+```
+
+---
+
+## 9. Zod Schema Generation
+
+Each generated model contains three Zod schemas. The Zod generation is shared
+with Hetzner and DigitalOcean via `src/codegen/zodGenerator.ts`.
+
+### GlobalArgsSchema — full fidelity input validation
+
+Used for create/update arguments. Preserves all CloudFormation constraints:
+
+- String enums → `z.enum(["a", "b"])`
+- `minLength`/`maxLength` → `z.string().min(n).max(n)`
+- `pattern` → `z.string().regex(new RegExp(...))`
+- Integer enums → `z.union([z.literal(1), z.literal(2)])`
+- `minimum`/`maximum` → `z.number().min(n).max(n)`
+- `integer` → `z.number().int()`
+- Nested objects with typed properties and per-field optionality
+
+Required fields (from `cfSchema.required`) are non-optional; everything else
+gets `.optional()`.
+
+### StateSchema — simplified response parsing
+
+Used to parse CloudControl API responses. **No constraints, `.passthrough()`**:
+
+- All types are bare: `z.string()`, `z.number()`, `z.boolean()`
+- No enums, no min/max, no patterns
+- Primary identifier fields are non-optional; everything else is `.optional()`
+- `.passthrough()` on the object to allow unknown fields
+
+### Why the distinction
+
+**Input schemas validate user-provided data** — strict constraints prevent bad
+API calls. **State schemas parse API responses** — the API may return data that
+doesn't match creation constraints (e.g., a deprecated enum value, a field
+widened server-side). Applying creation-time constraints to response parsing
+would cause false rejections.
+
+### InputsSchema
+
+Mirrors GlobalArgsSchema but with all fields `.optional()`. Used for the swamp
+inputs mechanism where partial overrides are provided separately from
+globalArgs.
+
+### Extracted schemas
+
+The Zod generator extracts nested object types into top-level named schemas when
+they have a `title` from the CF schema. This avoids deep inline nesting and
+allows reuse:
+
+```typescript
+export const TagSchema = z.object({
+  Key: z.string(),
+  Value: z.string(),
+});
+
+const GlobalArgsSchema = z.object({
+  Tags: z.array(TagSchema).optional(),
+});
+```
+
+### Schema name collision avoidance
+
+The internal state schema is named `StateSchema` rather than `ResourceSchema` to
+avoid collisions with extracted schemas. Some CloudFormation types have nested
+objects titled "Resource" which would produce an extracted `ResourceSchema`. If
+an extracted schema named `StateSchema` exists, the internal schema is renamed
+to `_StateSchema`.
+
+### PCRE to JavaScript regex conversion
+
+CloudFormation schemas use PCRE patterns. The `pcreToRegexp()` utility converts
+these to JavaScript-compatible `RegExp` patterns, handling PCRE flags (`(?i)`,
+`(?m)`, `(?s)`), non-capturing groups, and other PCRE-specific syntax.
+
+Some schemas produce regex patterns containing control character escapes (e.g.,
+`\x00`). The generator detects these and adds `no-control-regex` to the
+file-level lint ignore directive. Detection strips `.describe()` strings first
+to avoid false positives from documentation text that mentions control character
+ranges.
+
+### Property normalization: `oneOf`/`anyOf` handling
+
+CloudFormation schemas use `oneOf` and `anyOf` for polymorphic properties. The
+normalizer handles these by:
+
+1. **`oneOf` with objects**: Merge all branch properties into a single object
+   (union of fields)
+2. **`oneOf` with arrays**: Extract the array variant
+3. **`oneOf` with empty objects**: Fall back to `z.string()` (JSON type)
+4. **`anyOf` with titled objects**: Create named properties from each branch
+5. **`anyOf` with non-objects**: Fall back to `z.string()`
+
+---
+
+## 10. Versioning and Change Detection
+
+The AWS pipeline uses the same shared CalVer versioning system as Hetzner and
+DigitalOcean (see `src/pipeline/version.ts`).
+
+### CalVer format
+
+Versions use calendar versioning: `YYYY.MM.DD.micro` (e.g., `2026.03.08.2`).
+
+- The date prefix is computed from the current date
+- The micro version starts at 1 for new files
+- If the date matches the existing version's date, micro is incremented
+- If the date is different, micro resets to 1
+
+### Content normalization for comparison
+
+Before comparing, the pipeline:
+
+1. Formats the candidate code with `deno fmt` (ensures whitespace differences
+   don't cause false changes)
+2. Replaces the version string in both existing and candidate with a placeholder
+3. Compares the normalized strings
+
+### Per-service manifest versioning
+
+Each service's manifest versions independently. A manifest is only written when
+at least one model in that service has changed. Release notes list which models
+were added or updated.
+
+### Idempotency
+
+Running the pipeline twice with no spec changes produces identical output — no
+git diff. The version is content-based: same content → same version regardless
+of when the pipeline runs.
+
+---
+
+## 11. Generated Output Structure
+
+```
+outputs/aws/
+├── ec2/
+│   ├── manifest.yaml
+│   └── extensions/
+│       └── models/
+│           ├── _lib/
+│           │   └── aws.ts
+│           ├── instance.ts
+│           ├── vpc.ts
+│           ├── security_group.ts
+│           ├── subnet.ts
+│           └── ...
+├── s3/
+│   ├── manifest.yaml
+│   └── extensions/
+│       └── models/
+│           ├── _lib/
+│           │   └── aws.ts
+│           └── bucket.ts
+├── lambda/
+│   ├── manifest.yaml
+│   └── extensions/
+│       └── models/
+│           ├── _lib/
+│           │   └── aws.ts
+│           └── function.ts
+└── ...  (244 services total)
+```
+
+### Model export shape
+
+Every model file exports `const model = { ... }` with:
+
+```typescript
+export const model = {
+  type: "@swamp/aws/ec2/instance",       // unique type identifier
+  version: "2026.03.08.2",               // CalVer
+  globalArguments: GlobalArgsSchema,      // Zod: create/update args
+  inputsSchema: InputsSchema,            // Zod: optional overrides
+  resources: {
+    state: {
+      description: "EC2 Instance resource state",
+      schema: StateSchema,
+      lifetime: "infinite",
+      garbageCollection: 10,              // minutes
+    },
+  },
+  methods: {
+    create: { ... },                      // if create handler exists
+    get: { ... },                         // if read handler exists
+    update: { ... },                      // if update handler exists
+    delete: { ... },                      // if delete handler exists
+    sync: { ... },                        // always present
+  },
+};
+```
+
+### Shared lib (`_lib/aws.ts`)
+
+Exports: `createResource`, `readResource`, `updateResource`, `deleteResource`
+
+Key behaviors:
+
+- CloudControl client reads `AWS_REGION` env var (default: `us-east-1`)
+- All commands use exponential backoff + jitter retry on throttling
+- Async operations (create, update, delete) poll until terminal state
+- Update computes JSON patch internally, filtering create-only properties
+- Delete returns `{ existed: false }` for already-deleted resources
+- No response envelope unwrapping needed (CloudControl returns JSON properties)
+
+The same `_lib/aws.ts` file is written into every service directory. The content
+is identical across services — it's a static helper, not service-specific.
+
+### Naming conventions
+
+| Aspect      | Convention                           | Example                         |
+| ----------- | ------------------------------------ | ------------------------------- |
+| File name   | PascalCase → snake_case from CF type | `security_group.ts`             |
+| Model slug  | PascalCase → kebab-case from CF type | `security-group`                |
+| Type string | `@swamp/aws/{service}/{slug}`        | `@swamp/aws/ec2/security-group` |
+| Description | `{Service} {ResourceName}`           | `EC2 SecurityGroup`             |
+
+### Manifest
+
+```yaml
+manifestVersion: 1
+name: "@swamp/aws/ec2"
+version: "2026.03.08.2"
+description: "AWS EC2 infrastructure models"
+labels:
+  - aws
+  - ec2
+  - cloud
+  - infrastructure
+releaseNotes: |
+  - Added: instance, vpc, security_group, ...
+models:
+  - instance.ts
+  - vpc.ts
+  - security_group.ts
+  - ...
+```
+
+---
+
+## 12. Lint Handling
+
+### `no-explicit-any`
+
+All generated models use `any` for the execute function's context parameter (the
+swamp execution context type is not available as an import). Every file includes
+`// deno-lint-ignore-file no-explicit-any`.
+
+### `no-control-regex`
+
+Some CloudFormation schemas define regex patterns containing control character
+escapes (e.g., `\x00`, `\u0009`). The generator detects these by:
+
+1. Joining all generated schema body content
+2. Stripping `.describe("...")` strings (which may mention control characters in
+   documentation text without actually using them in regex)
+3. Checking for `\\x0N`, `\\x1N`, `\\u000N`, `\\u001N` patterns
+   (double-backslash escapes that the RegExp engine interprets as control
+   characters)
+
+Only files with actual control character regex patterns get the
+`no-control-regex` lint ignore. Files where these patterns appear only in
+description strings do not get the ignore.
+
+---
+
+## 13. Differences from Hetzner and DigitalOcean
+
+| Aspect                 | AWS                                               | Hetzner                            | DigitalOcean                                      |
+| ---------------------- | ------------------------------------------------- | ---------------------------------- | ------------------------------------------------- |
+| Schema source          | CloudFormation zip (JSON per resource type)       | Single OpenAPI JSON spec           | Single OpenAPI YAML spec (dereferenced)           |
+| API style              | CloudControl (unified CRUD for all types)         | REST (per-resource HTTP endpoints) | REST (per-resource HTTP endpoints)                |
+| Resource discovery     | CF schema `handlers` field                        | OpenAPI path noun grouping         | OpenAPI path grouping + multi-pass matching       |
+| Output structure       | Per-service directories (244 packages)            | Single package                     | Single package                                    |
+| Identifier type        | Always string                                     | Always numeric `id`                | `id`, `name`, `uuid`, `ip`                        |
+| Primary identifier     | Declared in CF schema                             | Always `id`                        | Mapped via `IDENTIFIER_MAP`                       |
+| Composite identifiers  | Supported (joined with `\|`)                      | Not applicable                     | Not applicable                                    |
+| Update mechanism       | JSON Patch (RFC 6902)                             | Full PUT                           | PATCH preferred, PUT fallback                     |
+| Create-only properties | Tracked and filtered from patches                 | Not tracked                        | Tracked and excluded from update body             |
+| Naming field           | Writable primary ID or synthetic                  | `name` or `label` or synthetic     | `name` or `label` or synthetic                    |
+| Action methods         | Not applicable                                    | Not applicable                     | Discriminator-based discovery                     |
+| Sub-resource methods   | Not applicable                                    | Not applicable                     | Heuristic-based detection                         |
+| Discovery methods      | Not applicable                                    | Not applicable                     | `/options` endpoint matching                      |
+| Response handling      | Parse JSON from `Properties` string               | HTTP response + envelope unwrap    | HTTP response + envelope unwrap                   |
+| Async operations       | Poll `GetResourceRequestStatus` until terminal    | Synchronous (API handles it)       | Synchronous (API handles it)                      |
+| Retry logic            | Exponential backoff + jitter on throttling        | Not needed                         | Not needed                                        |
+| Property normalization | `$ref` dereferencing + `oneOf`/`anyOf` merging    | Inline `$ref` + `allOf` merging    | `$ref` dereferencing + `oneOf`/`anyOf` flattening |
+| Manual overrides       | `IGNORE_SCHEMAS` (5 entries)                      | None                               | 5 override tables                                 |
+| Lint directives        | Conditional `no-control-regex`                    | Not needed                         | Not needed                                        |
+| State schema name      | `StateSchema` (avoids extracted schema collision) | `ResourceSchema`                   | `ResourceSchema`                                  |

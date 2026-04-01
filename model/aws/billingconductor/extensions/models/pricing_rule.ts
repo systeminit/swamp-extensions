@@ -1,0 +1,287 @@
+// Auto-generated extension model for @swamp/aws/billingconductor/pricing-rule
+// Do not edit manually. Re-generate with: deno task generate:aws
+
+// deno-lint-ignore-file no-explicit-any
+
+import { z } from "zod";
+import {
+  createResource,
+  deleteResource,
+  isResourceNotFoundError,
+  readResource,
+  updateResource,
+} from "./_lib/aws.ts";
+
+export const FreeTierSchema = z.object({
+  Activated: z.boolean(),
+});
+
+export const TagSchema = z.object({
+  Key: z.string().min(1).max(128),
+  Value: z.string().min(1).max(256),
+});
+
+const GlobalArgsSchema = z.object({
+  name: z.string().describe(
+    "Instance name for this resource (used as the unique identifier in the factory pattern)",
+  ),
+  Name: z.string().min(1).max(128).regex(new RegExp("[a-zA-Z0-9_\\+=\\.\\-@]+"))
+    .describe("Pricing rule name"),
+  Description: z.string().max(1024).describe("Pricing rule description")
+    .optional(),
+  Scope: z.enum(["GLOBAL", "SERVICE", "BILLING_ENTITY", "SKU"]).describe(
+    "A term used to categorize the granularity of a Pricing Rule.",
+  ),
+  Type: z.enum(["MARKUP", "DISCOUNT", "TIERING"]).describe(
+    "One of MARKUP, DISCOUNT or TIERING that describes the behaviour of the pricing rule.",
+  ),
+  ModifierPercentage: z.number().min(0).describe(
+    "Pricing rule modifier percentage",
+  ).optional(),
+  Service: z.string().min(1).max(128).regex(new RegExp("[a-zA-Z0-9\\.\\-]+"))
+    .describe("The service which a pricing rule is applied on").optional(),
+  BillingEntity: z.enum(["AWS", "AWS Marketplace", "AISPL"]).describe(
+    "The seller of services provided by AWS, their affiliates, or third-party providers selling services via AWS Marketplaces. Supported billing entities are AWS, AWS Marketplace, and AISPL.",
+  ).optional(),
+  Tiering: z.object({
+    FreeTier: FreeTierSchema.describe(
+      "The possible customizable free tier configurations.",
+    ).optional(),
+  }).describe("The set of tiering configurations for the pricing rule.")
+    .optional(),
+  UsageType: z.string().min(1).max(256).regex(new RegExp("^\\S+$")).describe(
+    "The UsageType which a SKU pricing rule is modifying",
+  ).optional(),
+  Operation: z.string().min(1).max(256).regex(new RegExp("^\\S+$")).describe(
+    "The Operation which a SKU pricing rule is modifying",
+  ).optional(),
+  Tags: z.array(TagSchema).optional(),
+});
+
+const StateSchema = z.object({
+  Arn: z.string(),
+  Name: z.string().optional(),
+  Description: z.string().optional(),
+  Scope: z.string().optional(),
+  Type: z.string().optional(),
+  ModifierPercentage: z.number().optional(),
+  Service: z.string().optional(),
+  BillingEntity: z.string().optional(),
+  Tiering: z.object({
+    FreeTier: FreeTierSchema,
+  }).optional(),
+  UsageType: z.string().optional(),
+  Operation: z.string().optional(),
+  AssociatedPricingPlanCount: z.number().optional(),
+  CreationTime: z.number().optional(),
+  LastModifiedTime: z.number().optional(),
+  Tags: z.array(TagSchema).optional(),
+}).passthrough();
+
+type StateData = z.infer<typeof StateSchema>;
+
+const InputsSchema = z.object({
+  name: z.string().optional(),
+  Name: z.string().min(1).max(128).regex(new RegExp("[a-zA-Z0-9_\\+=\\.\\-@]+"))
+    .describe("Pricing rule name").optional(),
+  Description: z.string().max(1024).describe("Pricing rule description")
+    .optional(),
+  Scope: z.enum(["GLOBAL", "SERVICE", "BILLING_ENTITY", "SKU"]).describe(
+    "A term used to categorize the granularity of a Pricing Rule.",
+  ).optional(),
+  Type: z.enum(["MARKUP", "DISCOUNT", "TIERING"]).describe(
+    "One of MARKUP, DISCOUNT or TIERING that describes the behaviour of the pricing rule.",
+  ).optional(),
+  ModifierPercentage: z.number().min(0).describe(
+    "Pricing rule modifier percentage",
+  ).optional(),
+  Service: z.string().min(1).max(128).regex(new RegExp("[a-zA-Z0-9\\.\\-]+"))
+    .describe("The service which a pricing rule is applied on").optional(),
+  BillingEntity: z.enum(["AWS", "AWS Marketplace", "AISPL"]).describe(
+    "The seller of services provided by AWS, their affiliates, or third-party providers selling services via AWS Marketplaces. Supported billing entities are AWS, AWS Marketplace, and AISPL.",
+  ).optional(),
+  Tiering: z.object({
+    FreeTier: FreeTierSchema.describe(
+      "The possible customizable free tier configurations.",
+    ).optional(),
+  }).describe("The set of tiering configurations for the pricing rule.")
+    .optional(),
+  UsageType: z.string().min(1).max(256).regex(new RegExp("^\\S+$")).describe(
+    "The UsageType which a SKU pricing rule is modifying",
+  ).optional(),
+  Operation: z.string().min(1).max(256).regex(new RegExp("^\\S+$")).describe(
+    "The Operation which a SKU pricing rule is modifying",
+  ).optional(),
+  Tags: z.array(TagSchema).optional(),
+});
+
+export const model = {
+  type: "@swamp/aws/billingconductor/pricing-rule",
+  version: "2026.03.19.1",
+  globalArguments: GlobalArgsSchema,
+  inputsSchema: InputsSchema,
+  resources: {
+    state: {
+      description: "BillingConductor PricingRule resource state",
+      schema: StateSchema,
+      lifetime: "infinite",
+      garbageCollection: 10,
+    },
+  },
+  methods: {
+    create: {
+      description: "Create a BillingConductor PricingRule",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const desiredState: Record<string, unknown> = {};
+        for (const [key, value] of Object.entries(g)) {
+          if (key === "name") continue;
+          if (value !== undefined) desiredState[key] = value;
+        }
+        const result = await createResource(
+          "AWS::BillingConductor::PricingRule",
+          desiredState,
+        ) as StateData;
+        const instanceName = g.name?.toString() ?? "current";
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    get: {
+      description: "Get a BillingConductor PricingRule",
+      arguments: z.object({
+        identifier: z.string().describe(
+          "The primary identifier of the BillingConductor PricingRule",
+        ),
+      }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const result = await readResource(
+          "AWS::BillingConductor::PricingRule",
+          args.identifier,
+        ) as StateData;
+        const instanceName = context.globalArgs.name?.toString() ??
+          args.identifier;
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    update: {
+      description: "Update a BillingConductor PricingRule",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const instanceName = g.name?.toString() ?? "current";
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          instanceName,
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        const identifier = existing.Arn?.toString();
+        if (!identifier) {
+          throw new Error("No identifier found in existing state");
+        }
+        const currentState = await readResource(
+          "AWS::BillingConductor::PricingRule",
+          identifier,
+        ) as StateData;
+        const desiredState: Record<string, unknown> = { ...currentState };
+        for (const [key, value] of Object.entries(g)) {
+          if (key === "name") continue;
+          if (value !== undefined) desiredState[key] = value;
+        }
+        const result = await updateResource(
+          "AWS::BillingConductor::PricingRule",
+          identifier,
+          currentState,
+          desiredState,
+          ["Scope", "Service", "BillingEntity", "UsageType", "Operation"],
+        );
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    delete: {
+      description: "Delete a BillingConductor PricingRule",
+      arguments: z.object({
+        identifier: z.string().describe(
+          "The primary identifier of the BillingConductor PricingRule",
+        ),
+      }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const { existed } = await deleteResource(
+          "AWS::BillingConductor::PricingRule",
+          args.identifier,
+        );
+        const instanceName = context.globalArgs.name?.toString() ??
+          args.identifier;
+        const handle = await context.writeResource("state", instanceName, {
+          identifier: args.identifier,
+          existed,
+          status: existed ? "deleted" : "not_found",
+          deletedAt: new Date().toISOString(),
+        });
+        return { dataHandles: [handle] };
+      },
+    },
+    sync: {
+      description: "Sync BillingConductor PricingRule state from AWS",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const instanceName = g.name?.toString() ?? "current";
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          instanceName,
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        const identifier = existing.Arn?.toString();
+        if (!identifier) {
+          throw new Error("No identifier found in existing state");
+        }
+        try {
+          const result = await readResource(
+            "AWS::BillingConductor::PricingRule",
+            identifier,
+          ) as StateData;
+          const handle = await context.writeResource(
+            "state",
+            instanceName,
+            result,
+          );
+          return { dataHandles: [handle] };
+        } catch (error: unknown) {
+          if (isResourceNotFoundError(error)) {
+            const handle = await context.writeResource("state", instanceName, {
+              identifier,
+              status: "not_found",
+              syncedAt: new Date().toISOString(),
+            });
+            return { dataHandles: [handle] };
+          }
+          throw error;
+        }
+      },
+    },
+  },
+};

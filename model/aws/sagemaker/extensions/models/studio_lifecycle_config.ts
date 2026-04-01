@@ -1,0 +1,203 @@
+// Auto-generated extension model for @swamp/aws/sagemaker/studio-lifecycle-config
+// Do not edit manually. Re-generate with: deno task generate:aws
+
+// deno-lint-ignore-file no-explicit-any
+
+import { z } from "zod";
+import {
+  createResource,
+  deleteResource,
+  isResourceNotFoundError,
+  readResource,
+} from "./_lib/aws.ts";
+
+export const TagSchema = z.object({
+  Value: z.string().min(1).max(128),
+  Key: z.string().min(1).max(128),
+});
+
+const GlobalArgsSchema = z.object({
+  StudioLifecycleConfigAppType: z.enum([
+    "JupyterServer",
+    "KernelGateway",
+    "CodeEditor",
+    "JupyterLab",
+  ]).describe("The App type that the Lifecycle Configuration is attached to."),
+  StudioLifecycleConfigContent: z.string().min(1).max(16384).regex(
+    new RegExp("[\\S\\s]+"),
+  ).describe(
+    "The content of your Amazon SageMaker Studio Lifecycle Configuration script. This content must be base64 encoded.",
+  ),
+  StudioLifecycleConfigName: z.string().min(1).max(63).regex(
+    new RegExp("^[a-zA-Z0-9](-*[a-zA-Z0-9]){0,62}"),
+  ).describe(
+    "The name of the Amazon SageMaker Studio Lifecycle Configuration.",
+  ),
+  Tags: z.array(TagSchema).describe(
+    "Tags to be associated with the Lifecycle Configuration. Each tag consists of a key and an optional value. Tag keys must be unique per resource. Tags are searchable using the Search API.",
+  ).optional(),
+});
+
+const StateSchema = z.object({
+  StudioLifecycleConfigArn: z.string().optional(),
+  StudioLifecycleConfigAppType: z.string().optional(),
+  StudioLifecycleConfigContent: z.string().optional(),
+  StudioLifecycleConfigName: z.string(),
+  Tags: z.array(TagSchema).optional(),
+}).passthrough();
+
+type StateData = z.infer<typeof StateSchema>;
+
+const InputsSchema = z.object({
+  StudioLifecycleConfigAppType: z.enum([
+    "JupyterServer",
+    "KernelGateway",
+    "CodeEditor",
+    "JupyterLab",
+  ]).describe("The App type that the Lifecycle Configuration is attached to.")
+    .optional(),
+  StudioLifecycleConfigContent: z.string().min(1).max(16384).regex(
+    new RegExp("[\\S\\s]+"),
+  ).describe(
+    "The content of your Amazon SageMaker Studio Lifecycle Configuration script. This content must be base64 encoded.",
+  ).optional(),
+  StudioLifecycleConfigName: z.string().min(1).max(63).regex(
+    new RegExp("^[a-zA-Z0-9](-*[a-zA-Z0-9]){0,62}"),
+  ).describe("The name of the Amazon SageMaker Studio Lifecycle Configuration.")
+    .optional(),
+  Tags: z.array(TagSchema).describe(
+    "Tags to be associated with the Lifecycle Configuration. Each tag consists of a key and an optional value. Tag keys must be unique per resource. Tags are searchable using the Search API.",
+  ).optional(),
+});
+
+export const model = {
+  type: "@swamp/aws/sagemaker/studio-lifecycle-config",
+  version: "2026.03.19.1",
+  globalArguments: GlobalArgsSchema,
+  inputsSchema: InputsSchema,
+  resources: {
+    state: {
+      description: "SageMaker StudioLifecycleConfig resource state",
+      schema: StateSchema,
+      lifetime: "infinite",
+      garbageCollection: 10,
+    },
+  },
+  methods: {
+    create: {
+      description: "Create a SageMaker StudioLifecycleConfig",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const desiredState: Record<string, unknown> = {};
+        for (const [key, value] of Object.entries(g)) {
+          if (value !== undefined) desiredState[key] = value;
+        }
+        const result = await createResource(
+          "AWS::SageMaker::StudioLifecycleConfig",
+          desiredState,
+        ) as StateData;
+        const instanceName =
+          (result.StudioLifecycleConfigName ?? g.StudioLifecycleConfigName)
+            ?.toString() ?? "current";
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    get: {
+      description: "Get a SageMaker StudioLifecycleConfig",
+      arguments: z.object({
+        identifier: z.string().describe(
+          "The primary identifier of the SageMaker StudioLifecycleConfig",
+        ),
+      }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const result = await readResource(
+          "AWS::SageMaker::StudioLifecycleConfig",
+          args.identifier,
+        ) as StateData;
+        const instanceName = (result.StudioLifecycleConfigName ??
+          context.globalArgs.StudioLifecycleConfigName)?.toString() ??
+          args.identifier;
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    delete: {
+      description: "Delete a SageMaker StudioLifecycleConfig",
+      arguments: z.object({
+        identifier: z.string().describe(
+          "The primary identifier of the SageMaker StudioLifecycleConfig",
+        ),
+      }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const { existed } = await deleteResource(
+          "AWS::SageMaker::StudioLifecycleConfig",
+          args.identifier,
+        );
+        const instanceName =
+          context.globalArgs.StudioLifecycleConfigName?.toString() ??
+            args.identifier;
+        const handle = await context.writeResource("state", instanceName, {
+          identifier: args.identifier,
+          existed,
+          status: existed ? "deleted" : "not_found",
+          deletedAt: new Date().toISOString(),
+        });
+        return { dataHandles: [handle] };
+      },
+    },
+    sync: {
+      description: "Sync SageMaker StudioLifecycleConfig state from AWS",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const instanceName = g.StudioLifecycleConfigName?.toString() ??
+          "current";
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          instanceName,
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        const identifier = existing.StudioLifecycleConfigName?.toString();
+        if (!identifier) {
+          throw new Error("No identifier found in existing state");
+        }
+        try {
+          const result = await readResource(
+            "AWS::SageMaker::StudioLifecycleConfig",
+            identifier,
+          ) as StateData;
+          const handle = await context.writeResource(
+            "state",
+            instanceName,
+            result,
+          );
+          return { dataHandles: [handle] };
+        } catch (error: unknown) {
+          if (isResourceNotFoundError(error)) {
+            const handle = await context.writeResource("state", instanceName, {
+              identifier,
+              status: "not_found",
+              syncedAt: new Date().toISOString(),
+            });
+            return { dataHandles: [handle] };
+          }
+          throw error;
+        }
+      },
+    },
+  },
+};

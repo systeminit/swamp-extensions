@@ -1,0 +1,305 @@
+// Auto-generated extension model for @swamp/aws/dms/replication-config
+// Do not edit manually. Re-generate with: deno task generate:aws
+
+// deno-lint-ignore-file no-explicit-any
+
+import { z } from "zod";
+import {
+  createResource,
+  deleteResource,
+  isResourceNotFoundError,
+  readResource,
+  updateResource,
+} from "./_lib/aws.ts";
+
+export const TagSchema = z.object({
+  Key: z.string().min(1).max(128).describe("Tag key."),
+  Value: z.string().min(1).max(256).describe("Tag value."),
+});
+
+const GlobalArgsSchema = z.object({
+  name: z.string().describe(
+    "Instance name for this resource (used as the unique identifier in the factory pattern)",
+  ),
+  ReplicationConfigIdentifier: z.string().describe(
+    "A unique identifier of replication configuration",
+  ),
+  SourceEndpointArn: z.string().describe(
+    "The Amazon Resource Name (ARN) of the source endpoint for this AWS DMS Serverless replication configuration",
+  ),
+  TargetEndpointArn: z.string().describe(
+    "The Amazon Resource Name (ARN) of the target endpoint for this AWS DMS Serverless replication configuration",
+  ),
+  ReplicationType: z.enum(["full-load", "full-load-and-cdc", "cdc"]).describe(
+    "The type of AWS DMS Serverless replication to provision using this replication configuration",
+  ),
+  ComputeConfig: z.object({
+    AvailabilityZone: z.string().optional(),
+    DnsNameServers: z.string().optional(),
+    KmsKeyId: z.string().optional(),
+    MaxCapacityUnits: z.number().int(),
+    MinCapacityUnits: z.number().int().optional(),
+    MultiAZ: z.boolean().optional(),
+    PreferredMaintenanceWindow: z.string().optional(),
+    ReplicationSubnetGroupId: z.string().optional(),
+    VpcSecurityGroupIds: z.array(z.string()).optional(),
+  }).describe(
+    "Configuration parameters for provisioning a AWS DMS Serverless replication",
+  ),
+  ReplicationSettings: z.string().describe(
+    "JSON settings for Servereless replications that are provisioned using this replication configuration",
+  ).optional(),
+  SupplementalSettings: z.string().describe(
+    "JSON settings for specifying supplemental data",
+  ).optional(),
+  ResourceIdentifier: z.string().describe(
+    "A unique value or name that you get set for a given resource that can be used to construct an Amazon Resource Name (ARN) for that resource",
+  ).optional(),
+  TableMappings: z.string().describe(
+    "JSON table mappings for AWS DMS Serverless replications that are provisioned using this replication configuration",
+  ),
+  Tags: z.array(TagSchema).describe(
+    "Contains a map of the key-value pairs for the resource tag or tags assigned to the dataset.",
+  ).optional(),
+});
+
+const StateSchema = z.object({
+  ReplicationConfigIdentifier: z.string().optional(),
+  ReplicationConfigArn: z.string(),
+  SourceEndpointArn: z.string().optional(),
+  TargetEndpointArn: z.string().optional(),
+  ReplicationType: z.string().optional(),
+  ComputeConfig: z.object({
+    AvailabilityZone: z.string(),
+    DnsNameServers: z.string(),
+    KmsKeyId: z.string(),
+    MaxCapacityUnits: z.number(),
+    MinCapacityUnits: z.number(),
+    MultiAZ: z.boolean(),
+    PreferredMaintenanceWindow: z.string(),
+    ReplicationSubnetGroupId: z.string(),
+    VpcSecurityGroupIds: z.array(z.string()),
+  }).optional(),
+  ReplicationSettings: z.string().optional(),
+  SupplementalSettings: z.string().optional(),
+  ResourceIdentifier: z.string().optional(),
+  TableMappings: z.string().optional(),
+  Tags: z.array(TagSchema).optional(),
+}).passthrough();
+
+type StateData = z.infer<typeof StateSchema>;
+
+const InputsSchema = z.object({
+  name: z.string().optional(),
+  ReplicationConfigIdentifier: z.string().describe(
+    "A unique identifier of replication configuration",
+  ).optional(),
+  SourceEndpointArn: z.string().describe(
+    "The Amazon Resource Name (ARN) of the source endpoint for this AWS DMS Serverless replication configuration",
+  ).optional(),
+  TargetEndpointArn: z.string().describe(
+    "The Amazon Resource Name (ARN) of the target endpoint for this AWS DMS Serverless replication configuration",
+  ).optional(),
+  ReplicationType: z.enum(["full-load", "full-load-and-cdc", "cdc"]).describe(
+    "The type of AWS DMS Serverless replication to provision using this replication configuration",
+  ).optional(),
+  ComputeConfig: z.object({
+    AvailabilityZone: z.string().optional(),
+    DnsNameServers: z.string().optional(),
+    KmsKeyId: z.string().optional(),
+    MaxCapacityUnits: z.number().int().optional(),
+    MinCapacityUnits: z.number().int().optional(),
+    MultiAZ: z.boolean().optional(),
+    PreferredMaintenanceWindow: z.string().optional(),
+    ReplicationSubnetGroupId: z.string().optional(),
+    VpcSecurityGroupIds: z.array(z.string()).optional(),
+  }).describe(
+    "Configuration parameters for provisioning a AWS DMS Serverless replication",
+  ).optional(),
+  ReplicationSettings: z.string().describe(
+    "JSON settings for Servereless replications that are provisioned using this replication configuration",
+  ).optional(),
+  SupplementalSettings: z.string().describe(
+    "JSON settings for specifying supplemental data",
+  ).optional(),
+  ResourceIdentifier: z.string().describe(
+    "A unique value or name that you get set for a given resource that can be used to construct an Amazon Resource Name (ARN) for that resource",
+  ).optional(),
+  TableMappings: z.string().describe(
+    "JSON table mappings for AWS DMS Serverless replications that are provisioned using this replication configuration",
+  ).optional(),
+  Tags: z.array(TagSchema).describe(
+    "Contains a map of the key-value pairs for the resource tag or tags assigned to the dataset.",
+  ).optional(),
+});
+
+export const model = {
+  type: "@swamp/aws/dms/replication-config",
+  version: "2026.03.19.1",
+  globalArguments: GlobalArgsSchema,
+  inputsSchema: InputsSchema,
+  resources: {
+    state: {
+      description: "DMS ReplicationConfig resource state",
+      schema: StateSchema,
+      lifetime: "infinite",
+      garbageCollection: 10,
+    },
+  },
+  methods: {
+    create: {
+      description: "Create a DMS ReplicationConfig",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const desiredState: Record<string, unknown> = {};
+        for (const [key, value] of Object.entries(g)) {
+          if (key === "name") continue;
+          if (value !== undefined) desiredState[key] = value;
+        }
+        const result = await createResource(
+          "AWS::DMS::ReplicationConfig",
+          desiredState,
+        ) as StateData;
+        const instanceName = g.name?.toString() ?? "current";
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    get: {
+      description: "Get a DMS ReplicationConfig",
+      arguments: z.object({
+        identifier: z.string().describe(
+          "The primary identifier of the DMS ReplicationConfig",
+        ),
+      }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const result = await readResource(
+          "AWS::DMS::ReplicationConfig",
+          args.identifier,
+        ) as StateData;
+        const instanceName = context.globalArgs.name?.toString() ??
+          args.identifier;
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    update: {
+      description: "Update a DMS ReplicationConfig",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const instanceName = g.name?.toString() ?? "current";
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          instanceName,
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        const identifier = existing.ReplicationConfigArn?.toString();
+        if (!identifier) {
+          throw new Error("No identifier found in existing state");
+        }
+        const currentState = await readResource(
+          "AWS::DMS::ReplicationConfig",
+          identifier,
+        ) as StateData;
+        const desiredState: Record<string, unknown> = { ...currentState };
+        for (const [key, value] of Object.entries(g)) {
+          if (key === "name") continue;
+          if (value !== undefined) desiredState[key] = value;
+        }
+        const result = await updateResource(
+          "AWS::DMS::ReplicationConfig",
+          identifier,
+          currentState,
+          desiredState,
+          ["ResourceIdentifier"],
+        );
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    delete: {
+      description: "Delete a DMS ReplicationConfig",
+      arguments: z.object({
+        identifier: z.string().describe(
+          "The primary identifier of the DMS ReplicationConfig",
+        ),
+      }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const { existed } = await deleteResource(
+          "AWS::DMS::ReplicationConfig",
+          args.identifier,
+        );
+        const instanceName = context.globalArgs.name?.toString() ??
+          args.identifier;
+        const handle = await context.writeResource("state", instanceName, {
+          identifier: args.identifier,
+          existed,
+          status: existed ? "deleted" : "not_found",
+          deletedAt: new Date().toISOString(),
+        });
+        return { dataHandles: [handle] };
+      },
+    },
+    sync: {
+      description: "Sync DMS ReplicationConfig state from AWS",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const instanceName = g.name?.toString() ?? "current";
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          instanceName,
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        const identifier = existing.ReplicationConfigArn?.toString();
+        if (!identifier) {
+          throw new Error("No identifier found in existing state");
+        }
+        try {
+          const result = await readResource(
+            "AWS::DMS::ReplicationConfig",
+            identifier,
+          ) as StateData;
+          const handle = await context.writeResource(
+            "state",
+            instanceName,
+            result,
+          );
+          return { dataHandles: [handle] };
+        } catch (error: unknown) {
+          if (isResourceNotFoundError(error)) {
+            const handle = await context.writeResource("state", instanceName, {
+              identifier,
+              status: "not_found",
+              syncedAt: new Date().toISOString(),
+            });
+            return { dataHandles: [handle] };
+          }
+          throw error;
+        }
+      },
+    },
+  },
+};

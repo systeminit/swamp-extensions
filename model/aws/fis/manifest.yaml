@@ -1,0 +1,18 @@
+# Auto-generated manifest. Re-generate with the appropriate deno task.
+manifestVersion: 1
+name: "@swamp/aws/fis"
+version: "2026.03.19.1"
+description: "AWS FIS infrastructure models"
+labels:
+  - aws
+  - fis
+  - cloud
+  - infrastructure
+releaseNotes: |
+  - Updated: experiment_template, target_account_configuration
+models:
+  - experiment_template.ts
+  - target_account_configuration.ts
+additionalFiles:
+  - LICENSE.txt
+  - README.md

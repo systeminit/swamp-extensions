@@ -1,0 +1,38 @@
+# Auto-generated manifest. Re-generate with the appropriate deno task.
+manifestVersion: 1
+name: "@swamp/aws/apigateway"
+version: "2026.03.19.1"
+description: "AWS APIGATEWAY infrastructure models"
+labels:
+  - aws
+  - apigateway
+  - cloud
+  - infrastructure
+releaseNotes: |
+  - Updated: account, api_key, authorizer, base_path_mapping, base_path_mapping_v2, client_certificate, deployment, documentation_part, documentation_version, domain_name, domain_name_access_association, domain_name_v2, gateway_response, method, model, request_validator, resource, rest_api, stage, usage_plan, usage_plan_key, vpc_link
+models:
+  - account.ts
+  - api_key.ts
+  - authorizer.ts
+  - base_path_mapping.ts
+  - base_path_mapping_v2.ts
+  - client_certificate.ts
+  - deployment.ts
+  - documentation_part.ts
+  - documentation_version.ts
+  - domain_name.ts
+  - domain_name_access_association.ts
+  - domain_name_v2.ts
+  - gateway_response.ts
+  - method.ts
+  - model.ts
+  - request_validator.ts
+  - resource.ts
+  - rest_api.ts
+  - stage.ts
+  - usage_plan.ts
+  - usage_plan_key.ts
+  - vpc_link.ts
+additionalFiles:
+  - LICENSE.txt
+  - README.md

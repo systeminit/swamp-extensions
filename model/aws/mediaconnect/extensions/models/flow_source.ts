@@ -1,0 +1,465 @@
+// Auto-generated extension model for @swamp/aws/mediaconnect/flow-source
+// Do not edit manually. Re-generate with: deno task generate:aws
+
+// deno-lint-ignore-file no-explicit-any
+
+import { z } from "zod";
+import {
+  createResource,
+  deleteResource,
+  isResourceNotFoundError,
+  readResource,
+  updateResource,
+} from "./_lib/aws.ts";
+
+export const VpcInterfaceAttachmentSchema = z.object({
+  VpcInterfaceName: z.string().describe(
+    "The name of the VPC interface to use for this resource.",
+  ).optional(),
+});
+
+export const TagSchema = z.object({
+  Key: z.string(),
+  Value: z.string(),
+});
+
+const GlobalArgsSchema = z.object({
+  name: z.string().describe(
+    "Instance name for this resource (used as the unique identifier in the factory pattern)",
+  ),
+  FlowArn: z.string().regex(
+    new RegExp(
+      "^arn:(aws[a-zA-Z-]*):mediaconnect:[a-z0-9-]+:[0-9]{12}:flow:[a-zA-Z0-9-]+:[a-zA-Z0-9_-]+$",
+    ),
+  ).describe("The ARN of the flow."),
+  Decryption: z.object({
+    Algorithm: z.enum(["aes128", "aes192", "aes256"]).describe(
+      "The type of algorithm that is used for the encryption (such as aes128, aes192, or aes256).",
+    ).optional(),
+    ConstantInitializationVector: z.string().describe(
+      "A 128-bit, 16-byte hex value represented by a 32-character string, to be used with the key for encrypting content. This parameter is not valid for static key encryption.",
+    ).optional(),
+    DeviceId: z.string().describe(
+      "The value of one of the devices that you configured with your digital rights management (DRM) platform key provider. This parameter is required for SPEKE encryption and is not valid for static key encryption.",
+    ).optional(),
+    KeyType: z.enum(["speke", "static-key", "srt-password"]).describe(
+      "The type of key that is used for the encryption. If no keyType is provided, the service will use the default setting (static-key).",
+    ).optional(),
+    Region: z.string().describe(
+      "The AWS Region that the API Gateway proxy endpoint was created in. This parameter is required for SPEKE encryption and is not valid for static key encryption.",
+    ).optional(),
+    ResourceId: z.string().describe(
+      "An identifier for the content. The service sends this value to the key server to identify the current endpoint. The resource ID is also known as the content ID. This parameter is required for SPEKE encryption and is not valid for static key encryption.",
+    ).optional(),
+    RoleArn: z.string().regex(
+      new RegExp(
+        "^arn:(aws[a-zA-Z-]*):iam::[0-9]{12}:role/[a-zA-Z0-9_+=,.@-]+$",
+      ),
+    ).describe(
+      "The ARN of the role that you created during setup (when you set up AWS Elemental MediaConnect as a trusted entity).",
+    ),
+    SecretArn: z.string().regex(
+      new RegExp(
+        "^arn:(aws[a-zA-Z-]*):secretsmanager:[a-z0-9-]+:[0-9]{12}:secret:[a-zA-Z0-9/_+=.@-]+$",
+      ),
+    ).describe(
+      "The ARN of the secret that you created in AWS Secrets Manager to store the encryption key. This parameter is required for static key encryption and is not valid for SPEKE encryption.",
+    ).optional(),
+    Url: z.string().describe(
+      "The URL from the API Gateway proxy that you set up to talk to your key server. This parameter is required for SPEKE encryption and is not valid for static key encryption.",
+    ).optional(),
+  }).describe(
+    "The type of encryption that is used on the content ingested from this source.",
+  ).optional(),
+  EntitlementArn: z.string().regex(
+    new RegExp(
+      "^arn:(aws[a-zA-Z-]*):mediaconnect:[a-z0-9-]+:[0-9]{12}:entitlement:[a-zA-Z0-9-]+:[a-zA-Z0-9_-]+$",
+    ),
+  ).describe(
+    "The ARN of the entitlement that allows you to subscribe to content that comes from another AWS account. The entitlement is set by the content originator and the ARN is generated as part of the originator's flow.",
+  ).optional(),
+  Description: z.string().describe(
+    "A description for the source. This value is not used or seen outside of the current AWS Elemental MediaConnect account.",
+  ),
+  GatewayBridgeSource: z.object({
+    BridgeArn: z.string().regex(
+      new RegExp(
+        "^arn:(aws[a-zA-Z-]*):mediaconnect:[a-z0-9-]+:[0-9]{12}:bridge:[a-zA-Z0-9-]+:[a-zA-Z0-9_-]+$",
+      ),
+    ).describe("The ARN of the bridge feeding this flow."),
+    VpcInterfaceAttachment: VpcInterfaceAttachmentSchema.describe(
+      "The name of the VPC interface attachment to use for this bridge source.",
+    ).optional(),
+  }).describe(
+    "The source configuration for cloud flows receiving a stream from a bridge.",
+  ).optional(),
+  IngestPort: z.number().int().describe(
+    "The port that the flow will be listening on for incoming content.",
+  ).optional(),
+  MaxBitrate: z.number().int().describe(
+    "The smoothing max bitrate for RIST, RTP, and RTP-FEC streams.",
+  ).optional(),
+  MaxLatency: z.number().int().describe(
+    "The maximum latency in milliseconds. This parameter applies only to RIST-based and Zixi-based streams.",
+  ).optional(),
+  MinLatency: z.number().int().describe("The minimum latency in milliseconds.")
+    .optional(),
+  Name: z.string().describe("The name of the source."),
+  Protocol: z.enum([
+    "zixi-push",
+    "rtp-fec",
+    "rtp",
+    "rist",
+    "srt-listener",
+    "srt-caller",
+  ]).describe("The protocol that is used by the source.").optional(),
+  SenderIpAddress: z.string().describe(
+    "The IP address that the flow communicates with to initiate connection with the sender for fujitsu-qos protocol.",
+  ).optional(),
+  SenderControlPort: z.number().int().describe(
+    "The port that the flow uses to send outbound requests to initiate connection with the sender for fujitsu-qos protocol.",
+  ).optional(),
+  StreamId: z.string().describe(
+    "The stream ID that you want to use for this transport. This parameter applies only to Zixi-based streams.",
+  ).optional(),
+  SourceListenerAddress: z.string().describe(
+    "Source IP or domain name for SRT-caller protocol.",
+  ).optional(),
+  SourceListenerPort: z.number().int().describe(
+    "Source port for SRT-caller protocol.",
+  ).optional(),
+  Tags: z.array(TagSchema).describe(
+    "Key-value pairs that can be used to tag and organize this flow source.",
+  ).optional(),
+  VpcInterfaceName: z.string().describe(
+    "The name of the VPC Interface this Source is configured with.",
+  ).optional(),
+  WhitelistCidr: z.string().describe(
+    "The range of IP addresses that should be allowed to contribute content to your source. These IP addresses should be in the form of a Classless Inter-Domain Routing (CIDR) block; for example, 10.0.0.0/16.",
+  ).optional(),
+});
+
+const StateSchema = z.object({
+  FlowArn: z.string().optional(),
+  SourceArn: z.string(),
+  Decryption: z.object({
+    Algorithm: z.string(),
+    ConstantInitializationVector: z.string(),
+    DeviceId: z.string(),
+    KeyType: z.string(),
+    Region: z.string(),
+    ResourceId: z.string(),
+    RoleArn: z.string(),
+    SecretArn: z.string(),
+    Url: z.string(),
+  }).optional(),
+  EntitlementArn: z.string().optional(),
+  Description: z.string().optional(),
+  GatewayBridgeSource: z.object({
+    BridgeArn: z.string(),
+    VpcInterfaceAttachment: VpcInterfaceAttachmentSchema,
+  }).optional(),
+  IngestIp: z.string().optional(),
+  IngestPort: z.number().optional(),
+  MaxBitrate: z.number().optional(),
+  MaxLatency: z.number().optional(),
+  MinLatency: z.number().optional(),
+  Name: z.string().optional(),
+  Protocol: z.string().optional(),
+  SenderIpAddress: z.string().optional(),
+  SenderControlPort: z.number().optional(),
+  StreamId: z.string().optional(),
+  SourceIngestPort: z.string().optional(),
+  SourceListenerAddress: z.string().optional(),
+  SourceListenerPort: z.number().optional(),
+  Tags: z.array(TagSchema).optional(),
+  VpcInterfaceName: z.string().optional(),
+  WhitelistCidr: z.string().optional(),
+}).passthrough();
+
+type StateData = z.infer<typeof StateSchema>;
+
+const InputsSchema = z.object({
+  name: z.string().optional(),
+  FlowArn: z.string().regex(
+    new RegExp(
+      "^arn:(aws[a-zA-Z-]*):mediaconnect:[a-z0-9-]+:[0-9]{12}:flow:[a-zA-Z0-9-]+:[a-zA-Z0-9_-]+$",
+    ),
+  ).describe("The ARN of the flow.").optional(),
+  Decryption: z.object({
+    Algorithm: z.enum(["aes128", "aes192", "aes256"]).describe(
+      "The type of algorithm that is used for the encryption (such as aes128, aes192, or aes256).",
+    ).optional(),
+    ConstantInitializationVector: z.string().describe(
+      "A 128-bit, 16-byte hex value represented by a 32-character string, to be used with the key for encrypting content. This parameter is not valid for static key encryption.",
+    ).optional(),
+    DeviceId: z.string().describe(
+      "The value of one of the devices that you configured with your digital rights management (DRM) platform key provider. This parameter is required for SPEKE encryption and is not valid for static key encryption.",
+    ).optional(),
+    KeyType: z.enum(["speke", "static-key", "srt-password"]).describe(
+      "The type of key that is used for the encryption. If no keyType is provided, the service will use the default setting (static-key).",
+    ).optional(),
+    Region: z.string().describe(
+      "The AWS Region that the API Gateway proxy endpoint was created in. This parameter is required for SPEKE encryption and is not valid for static key encryption.",
+    ).optional(),
+    ResourceId: z.string().describe(
+      "An identifier for the content. The service sends this value to the key server to identify the current endpoint. The resource ID is also known as the content ID. This parameter is required for SPEKE encryption and is not valid for static key encryption.",
+    ).optional(),
+    RoleArn: z.string().regex(
+      new RegExp(
+        "^arn:(aws[a-zA-Z-]*):iam::[0-9]{12}:role/[a-zA-Z0-9_+=,.@-]+$",
+      ),
+    ).describe(
+      "The ARN of the role that you created during setup (when you set up AWS Elemental MediaConnect as a trusted entity).",
+    ).optional(),
+    SecretArn: z.string().regex(
+      new RegExp(
+        "^arn:(aws[a-zA-Z-]*):secretsmanager:[a-z0-9-]+:[0-9]{12}:secret:[a-zA-Z0-9/_+=.@-]+$",
+      ),
+    ).describe(
+      "The ARN of the secret that you created in AWS Secrets Manager to store the encryption key. This parameter is required for static key encryption and is not valid for SPEKE encryption.",
+    ).optional(),
+    Url: z.string().describe(
+      "The URL from the API Gateway proxy that you set up to talk to your key server. This parameter is required for SPEKE encryption and is not valid for static key encryption.",
+    ).optional(),
+  }).describe(
+    "The type of encryption that is used on the content ingested from this source.",
+  ).optional(),
+  EntitlementArn: z.string().regex(
+    new RegExp(
+      "^arn:(aws[a-zA-Z-]*):mediaconnect:[a-z0-9-]+:[0-9]{12}:entitlement:[a-zA-Z0-9-]+:[a-zA-Z0-9_-]+$",
+    ),
+  ).describe(
+    "The ARN of the entitlement that allows you to subscribe to content that comes from another AWS account. The entitlement is set by the content originator and the ARN is generated as part of the originator's flow.",
+  ).optional(),
+  Description: z.string().describe(
+    "A description for the source. This value is not used or seen outside of the current AWS Elemental MediaConnect account.",
+  ).optional(),
+  GatewayBridgeSource: z.object({
+    BridgeArn: z.string().regex(
+      new RegExp(
+        "^arn:(aws[a-zA-Z-]*):mediaconnect:[a-z0-9-]+:[0-9]{12}:bridge:[a-zA-Z0-9-]+:[a-zA-Z0-9_-]+$",
+      ),
+    ).describe("The ARN of the bridge feeding this flow.").optional(),
+    VpcInterfaceAttachment: VpcInterfaceAttachmentSchema.describe(
+      "The name of the VPC interface attachment to use for this bridge source.",
+    ).optional(),
+  }).describe(
+    "The source configuration for cloud flows receiving a stream from a bridge.",
+  ).optional(),
+  IngestPort: z.number().int().describe(
+    "The port that the flow will be listening on for incoming content.",
+  ).optional(),
+  MaxBitrate: z.number().int().describe(
+    "The smoothing max bitrate for RIST, RTP, and RTP-FEC streams.",
+  ).optional(),
+  MaxLatency: z.number().int().describe(
+    "The maximum latency in milliseconds. This parameter applies only to RIST-based and Zixi-based streams.",
+  ).optional(),
+  MinLatency: z.number().int().describe("The minimum latency in milliseconds.")
+    .optional(),
+  Name: z.string().describe("The name of the source.").optional(),
+  Protocol: z.enum([
+    "zixi-push",
+    "rtp-fec",
+    "rtp",
+    "rist",
+    "srt-listener",
+    "srt-caller",
+  ]).describe("The protocol that is used by the source.").optional(),
+  SenderIpAddress: z.string().describe(
+    "The IP address that the flow communicates with to initiate connection with the sender for fujitsu-qos protocol.",
+  ).optional(),
+  SenderControlPort: z.number().int().describe(
+    "The port that the flow uses to send outbound requests to initiate connection with the sender for fujitsu-qos protocol.",
+  ).optional(),
+  StreamId: z.string().describe(
+    "The stream ID that you want to use for this transport. This parameter applies only to Zixi-based streams.",
+  ).optional(),
+  SourceListenerAddress: z.string().describe(
+    "Source IP or domain name for SRT-caller protocol.",
+  ).optional(),
+  SourceListenerPort: z.number().int().describe(
+    "Source port for SRT-caller protocol.",
+  ).optional(),
+  Tags: z.array(TagSchema).describe(
+    "Key-value pairs that can be used to tag and organize this flow source.",
+  ).optional(),
+  VpcInterfaceName: z.string().describe(
+    "The name of the VPC Interface this Source is configured with.",
+  ).optional(),
+  WhitelistCidr: z.string().describe(
+    "The range of IP addresses that should be allowed to contribute content to your source. These IP addresses should be in the form of a Classless Inter-Domain Routing (CIDR) block; for example, 10.0.0.0/16.",
+  ).optional(),
+});
+
+export const model = {
+  type: "@swamp/aws/mediaconnect/flow-source",
+  version: "2026.03.19.1",
+  globalArguments: GlobalArgsSchema,
+  inputsSchema: InputsSchema,
+  resources: {
+    state: {
+      description: "MediaConnect FlowSource resource state",
+      schema: StateSchema,
+      lifetime: "infinite",
+      garbageCollection: 10,
+    },
+  },
+  methods: {
+    create: {
+      description: "Create a MediaConnect FlowSource",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const desiredState: Record<string, unknown> = {};
+        for (const [key, value] of Object.entries(g)) {
+          if (key === "name") continue;
+          if (value !== undefined) desiredState[key] = value;
+        }
+        const result = await createResource(
+          "AWS::MediaConnect::FlowSource",
+          desiredState,
+        ) as StateData;
+        const instanceName = g.name?.toString() ?? "current";
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    get: {
+      description: "Get a MediaConnect FlowSource",
+      arguments: z.object({
+        identifier: z.string().describe(
+          "The primary identifier of the MediaConnect FlowSource",
+        ),
+      }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const result = await readResource(
+          "AWS::MediaConnect::FlowSource",
+          args.identifier,
+        ) as StateData;
+        const instanceName = context.globalArgs.name?.toString() ??
+          args.identifier;
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    update: {
+      description: "Update a MediaConnect FlowSource",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const instanceName = g.name?.toString() ?? "current";
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          instanceName,
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        const identifier = existing.SourceArn?.toString();
+        if (!identifier) {
+          throw new Error("No identifier found in existing state");
+        }
+        const currentState = await readResource(
+          "AWS::MediaConnect::FlowSource",
+          identifier,
+        ) as StateData;
+        const desiredState: Record<string, unknown> = { ...currentState };
+        for (const [key, value] of Object.entries(g)) {
+          if (key === "name") continue;
+          if (value !== undefined) desiredState[key] = value;
+        }
+        const result = await updateResource(
+          "AWS::MediaConnect::FlowSource",
+          identifier,
+          currentState,
+          desiredState,
+          ["FlowArn", "Name", "Protocol"],
+        );
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    delete: {
+      description: "Delete a MediaConnect FlowSource",
+      arguments: z.object({
+        identifier: z.string().describe(
+          "The primary identifier of the MediaConnect FlowSource",
+        ),
+      }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const { existed } = await deleteResource(
+          "AWS::MediaConnect::FlowSource",
+          args.identifier,
+        );
+        const instanceName = context.globalArgs.name?.toString() ??
+          args.identifier;
+        const handle = await context.writeResource("state", instanceName, {
+          identifier: args.identifier,
+          existed,
+          status: existed ? "deleted" : "not_found",
+          deletedAt: new Date().toISOString(),
+        });
+        return { dataHandles: [handle] };
+      },
+    },
+    sync: {
+      description: "Sync MediaConnect FlowSource state from AWS",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const instanceName = g.name?.toString() ?? "current";
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          instanceName,
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        const identifier = existing.SourceArn?.toString();
+        if (!identifier) {
+          throw new Error("No identifier found in existing state");
+        }
+        try {
+          const result = await readResource(
+            "AWS::MediaConnect::FlowSource",
+            identifier,
+          ) as StateData;
+          const handle = await context.writeResource(
+            "state",
+            instanceName,
+            result,
+          );
+          return { dataHandles: [handle] };
+        } catch (error: unknown) {
+          if (isResourceNotFoundError(error)) {
+            const handle = await context.writeResource("state", instanceName, {
+              identifier,
+              status: "not_found",
+              syncedAt: new Date().toISOString(),
+            });
+            return { dataHandles: [handle] };
+          }
+          throw error;
+        }
+      },
+    },
+  },
+};

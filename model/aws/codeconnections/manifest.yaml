@@ -1,0 +1,17 @@
+# Auto-generated manifest. Re-generate with the appropriate deno task.
+manifestVersion: 1
+name: "@swamp/aws/codeconnections"
+version: "2026.03.19.1"
+description: "AWS CODECONNECTIONS infrastructure models"
+labels:
+  - aws
+  - codeconnections
+  - cloud
+  - infrastructure
+releaseNotes: |
+  - Updated: connection
+models:
+  - connection.ts
+additionalFiles:
+  - LICENSE.txt
+  - README.md

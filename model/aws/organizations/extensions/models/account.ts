@@ -1,0 +1,260 @@
+// Auto-generated extension model for @swamp/aws/organizations/account
+// Do not edit manually. Re-generate with: deno task generate:aws
+
+// deno-lint-ignore-file no-explicit-any
+
+import { z } from "zod";
+import {
+  createResource,
+  deleteResource,
+  isResourceNotFoundError,
+  readResource,
+  updateResource,
+} from "./_lib/aws.ts";
+
+export const TagSchema = z.object({
+  Key: z.string().min(1).max(128).regex(new RegExp("[\\s\\S]*")).describe(
+    "The key identifier, or name, of the tag.",
+  ),
+  Value: z.string().min(0).max(256).regex(new RegExp("[\\s\\S]*")).describe(
+    "The string value that's associated with the key of the tag. You can set the value of a tag to an empty string, but you can't set the value of a tag to null.",
+  ),
+});
+
+const GlobalArgsSchema = z.object({
+  name: z.string().describe(
+    "Instance name for this resource (used as the unique identifier in the factory pattern)",
+  ),
+  AccountName: z.string().min(1).max(50).regex(new RegExp("[\\u0020-\\u007E]+"))
+    .describe("The friendly name of the member account."),
+  Email: z.string().min(6).max(64).regex(
+    new RegExp("[^\\s@]+@[^\\s@]+\\.[^\\s@]+"),
+  ).describe(
+    "The email address of the owner to assign to the new member account.",
+  ),
+  RoleName: z.string().min(1).max(64).regex(new RegExp("[\\w+=,.@-]{1,64}"))
+    .describe(
+      "The name of an IAM role that AWS Organizations automatically preconfigures in the new member account. Default name is OrganizationAccountAccessRole if not specified.",
+    ).optional(),
+  ParentIds: z.array(
+    z.string().regex(
+      new RegExp("^(r-[0-9a-z]{4,32})|(ou-[0-9a-z]{4,32}-[a-z0-9]{8,32})$"),
+    ),
+  ).describe(
+    "List of parent nodes for the member account. Currently only one parent at a time is supported. Default is root.",
+  ).optional(),
+  Tags: z.array(TagSchema).describe(
+    "A list of tags that you want to attach to the newly created account. For each tag in the list, you must specify both a tag key and a value.",
+  ).optional(),
+});
+
+const StateSchema = z.object({
+  AccountName: z.string().optional(),
+  Email: z.string().optional(),
+  RoleName: z.string().optional(),
+  ParentIds: z.array(z.string()).optional(),
+  Tags: z.array(TagSchema).optional(),
+  AccountId: z.string(),
+  Arn: z.string().optional(),
+  JoinedMethod: z.string().optional(),
+  JoinedTimestamp: z.string().optional(),
+  Status: z.string().optional(),
+  State: z.string().optional(),
+}).passthrough();
+
+type StateData = z.infer<typeof StateSchema>;
+
+const InputsSchema = z.object({
+  name: z.string().optional(),
+  AccountName: z.string().min(1).max(50).regex(new RegExp("[\\u0020-\\u007E]+"))
+    .describe("The friendly name of the member account.").optional(),
+  Email: z.string().min(6).max(64).regex(
+    new RegExp("[^\\s@]+@[^\\s@]+\\.[^\\s@]+"),
+  ).describe(
+    "The email address of the owner to assign to the new member account.",
+  ).optional(),
+  RoleName: z.string().min(1).max(64).regex(new RegExp("[\\w+=,.@-]{1,64}"))
+    .describe(
+      "The name of an IAM role that AWS Organizations automatically preconfigures in the new member account. Default name is OrganizationAccountAccessRole if not specified.",
+    ).optional(),
+  ParentIds: z.array(
+    z.string().regex(
+      new RegExp("^(r-[0-9a-z]{4,32})|(ou-[0-9a-z]{4,32}-[a-z0-9]{8,32})$"),
+    ),
+  ).describe(
+    "List of parent nodes for the member account. Currently only one parent at a time is supported. Default is root.",
+  ).optional(),
+  Tags: z.array(TagSchema).describe(
+    "A list of tags that you want to attach to the newly created account. For each tag in the list, you must specify both a tag key and a value.",
+  ).optional(),
+});
+
+export const model = {
+  type: "@swamp/aws/organizations/account",
+  version: "2026.03.19.1",
+  globalArguments: GlobalArgsSchema,
+  inputsSchema: InputsSchema,
+  resources: {
+    state: {
+      description: "Organizations Account resource state",
+      schema: StateSchema,
+      lifetime: "infinite",
+      garbageCollection: 10,
+    },
+  },
+  methods: {
+    create: {
+      description: "Create a Organizations Account",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const desiredState: Record<string, unknown> = {};
+        for (const [key, value] of Object.entries(g)) {
+          if (key === "name") continue;
+          if (value !== undefined) desiredState[key] = value;
+        }
+        const result = await createResource(
+          "AWS::Organizations::Account",
+          desiredState,
+        ) as StateData;
+        const instanceName = g.name?.toString() ?? "current";
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    get: {
+      description: "Get a Organizations Account",
+      arguments: z.object({
+        identifier: z.string().describe(
+          "The primary identifier of the Organizations Account",
+        ),
+      }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const result = await readResource(
+          "AWS::Organizations::Account",
+          args.identifier,
+        ) as StateData;
+        const instanceName = context.globalArgs.name?.toString() ??
+          args.identifier;
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    update: {
+      description: "Update a Organizations Account",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const instanceName = g.name?.toString() ?? "current";
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          instanceName,
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        const identifier = existing.AccountId?.toString();
+        if (!identifier) {
+          throw new Error("No identifier found in existing state");
+        }
+        const currentState = await readResource(
+          "AWS::Organizations::Account",
+          identifier,
+        ) as StateData;
+        const desiredState: Record<string, unknown> = { ...currentState };
+        for (const [key, value] of Object.entries(g)) {
+          if (key === "name") continue;
+          if (value !== undefined) desiredState[key] = value;
+        }
+        const result = await updateResource(
+          "AWS::Organizations::Account",
+          identifier,
+          currentState,
+          desiredState,
+        );
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    delete: {
+      description: "Delete a Organizations Account",
+      arguments: z.object({
+        identifier: z.string().describe(
+          "The primary identifier of the Organizations Account",
+        ),
+      }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const { existed } = await deleteResource(
+          "AWS::Organizations::Account",
+          args.identifier,
+        );
+        const instanceName = context.globalArgs.name?.toString() ??
+          args.identifier;
+        const handle = await context.writeResource("state", instanceName, {
+          identifier: args.identifier,
+          existed,
+          status: existed ? "deleted" : "not_found",
+          deletedAt: new Date().toISOString(),
+        });
+        return { dataHandles: [handle] };
+      },
+    },
+    sync: {
+      description: "Sync Organizations Account state from AWS",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const instanceName = g.name?.toString() ?? "current";
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          instanceName,
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        const identifier = existing.AccountId?.toString();
+        if (!identifier) {
+          throw new Error("No identifier found in existing state");
+        }
+        try {
+          const result = await readResource(
+            "AWS::Organizations::Account",
+            identifier,
+          ) as StateData;
+          const handle = await context.writeResource(
+            "state",
+            instanceName,
+            result,
+          );
+          return { dataHandles: [handle] };
+        } catch (error: unknown) {
+          if (isResourceNotFoundError(error)) {
+            const handle = await context.writeResource("state", instanceName, {
+              identifier,
+              status: "not_found",
+              syncedAt: new Date().toISOString(),
+            });
+            return { dataHandles: [handle] };
+          }
+          throw error;
+        }
+      },
+    },
+  },
+};

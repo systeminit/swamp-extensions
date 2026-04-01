@@ -1,0 +1,19 @@
+# Auto-generated manifest. Re-generate with the appropriate deno task.
+manifestVersion: 1
+name: "@swamp/aws/kendra"
+version: "2026.03.19.1"
+description: "AWS KENDRA infrastructure models"
+labels:
+  - aws
+  - kendra
+  - cloud
+  - infrastructure
+releaseNotes: |
+  - Updated: data_source, faq, index
+models:
+  - data_source.ts
+  - faq.ts
+  - index.ts
+additionalFiles:
+  - LICENSE.txt
+  - README.md

@@ -1,0 +1,224 @@
+// Auto-generated extension model for @swamp/aws/appconfig/deployment
+// Do not edit manually. Re-generate with: deno task generate:aws
+
+// deno-lint-ignore-file no-explicit-any
+
+import { z } from "zod";
+import {
+  createResource,
+  deleteResource,
+  isResourceNotFoundError,
+  readResource,
+} from "./_lib/aws.ts";
+
+export const DynamicExtensionParametersSchema = z.object({
+  ParameterValue: z.string().optional(),
+  ExtensionReference: z.string().optional(),
+  ParameterName: z.string().optional(),
+});
+
+export const TagSchema = z.object({
+  Value: z.string().describe("The tag value can be up to 256 characters.")
+    .optional(),
+  Key: z.string().describe(
+    "The key-value string map. The valid character set is [a-zA-Z1-9+-=._:/]. The tag key can be up to 128 characters and must not start with aws:.",
+  ).optional(),
+});
+
+const GlobalArgsSchema = z.object({
+  name: z.string().describe(
+    "Instance name for this resource (used as the unique identifier in the factory pattern)",
+  ),
+  DeploymentStrategyId: z.string().describe("The deployment strategy ID."),
+  ConfigurationProfileId: z.string().describe("The configuration profile ID."),
+  EnvironmentId: z.string().describe("The environment ID."),
+  KmsKeyIdentifier: z.string().describe(
+    "The AWS Key Management Service key identifier (key ID, key alias, or key ARN) provided when the resource was created or updated.",
+  ).optional(),
+  Description: z.string().describe("A description of the deployment.")
+    .optional(),
+  ConfigurationVersion: z.string().describe(
+    "The configuration version to deploy. If deploying an AWS AppConfig hosted configuration version, you can specify either the version number or version label. For all other configurations, you must specify the version number.",
+  ),
+  ApplicationId: z.string().describe("The application ID."),
+  DynamicExtensionParameters: z.array(DynamicExtensionParametersSchema)
+    .optional(),
+  Tags: z.array(TagSchema).describe(
+    "An array of key-value pairs to apply to this resource.",
+  ).optional(),
+});
+
+const StateSchema = z.object({
+  DeploymentStrategyId: z.string().optional(),
+  ConfigurationProfileId: z.string().optional(),
+  EnvironmentId: z.string(),
+  KmsKeyIdentifier: z.string().optional(),
+  Description: z.string().optional(),
+  ConfigurationVersion: z.string().optional(),
+  State: z.string().optional(),
+  DeploymentNumber: z.string(),
+  ApplicationId: z.string(),
+  DynamicExtensionParameters: z.array(DynamicExtensionParametersSchema)
+    .optional(),
+  Tags: z.array(TagSchema).optional(),
+}).passthrough();
+
+type StateData = z.infer<typeof StateSchema>;
+
+const InputsSchema = z.object({
+  name: z.string().optional(),
+  DeploymentStrategyId: z.string().describe("The deployment strategy ID.")
+    .optional(),
+  ConfigurationProfileId: z.string().describe("The configuration profile ID.")
+    .optional(),
+  EnvironmentId: z.string().describe("The environment ID.").optional(),
+  KmsKeyIdentifier: z.string().describe(
+    "The AWS Key Management Service key identifier (key ID, key alias, or key ARN) provided when the resource was created or updated.",
+  ).optional(),
+  Description: z.string().describe("A description of the deployment.")
+    .optional(),
+  ConfigurationVersion: z.string().describe(
+    "The configuration version to deploy. If deploying an AWS AppConfig hosted configuration version, you can specify either the version number or version label. For all other configurations, you must specify the version number.",
+  ).optional(),
+  ApplicationId: z.string().describe("The application ID.").optional(),
+  DynamicExtensionParameters: z.array(DynamicExtensionParametersSchema)
+    .optional(),
+  Tags: z.array(TagSchema).describe(
+    "An array of key-value pairs to apply to this resource.",
+  ).optional(),
+});
+
+export const model = {
+  type: "@swamp/aws/appconfig/deployment",
+  version: "2026.03.19.1",
+  globalArguments: GlobalArgsSchema,
+  inputsSchema: InputsSchema,
+  resources: {
+    state: {
+      description: "AppConfig Deployment resource state",
+      schema: StateSchema,
+      lifetime: "infinite",
+      garbageCollection: 10,
+    },
+  },
+  methods: {
+    create: {
+      description: "Create a AppConfig Deployment",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const desiredState: Record<string, unknown> = {};
+        for (const [key, value] of Object.entries(g)) {
+          if (key === "name") continue;
+          if (value !== undefined) desiredState[key] = value;
+        }
+        const result = await createResource(
+          "AWS::AppConfig::Deployment",
+          desiredState,
+        ) as StateData;
+        const instanceName = g.name?.toString() ?? "current";
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    get: {
+      description: "Get a AppConfig Deployment",
+      arguments: z.object({
+        identifier: z.string().describe(
+          "The primary identifier of the AppConfig Deployment",
+        ),
+      }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const result = await readResource(
+          "AWS::AppConfig::Deployment",
+          args.identifier,
+        ) as StateData;
+        const instanceName = context.globalArgs.name?.toString() ??
+          args.identifier;
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    delete: {
+      description: "Delete a AppConfig Deployment",
+      arguments: z.object({
+        identifier: z.string().describe(
+          "The primary identifier of the AppConfig Deployment",
+        ),
+      }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const { existed } = await deleteResource(
+          "AWS::AppConfig::Deployment",
+          args.identifier,
+        );
+        const instanceName = context.globalArgs.name?.toString() ??
+          args.identifier;
+        const handle = await context.writeResource("state", instanceName, {
+          identifier: args.identifier,
+          existed,
+          status: existed ? "deleted" : "not_found",
+          deletedAt: new Date().toISOString(),
+        });
+        return { dataHandles: [handle] };
+      },
+    },
+    sync: {
+      description: "Sync AppConfig Deployment state from AWS",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const instanceName = g.name?.toString() ?? "current";
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          instanceName,
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        const idParts = [
+          existing.ApplicationId?.toString(),
+          existing.EnvironmentId?.toString(),
+          existing.DeploymentNumber?.toString(),
+        ];
+        if (idParts.some((p) => !p)) {
+          throw new Error(
+            "Missing primary identifier fields in existing state",
+          );
+        }
+        const identifier = idParts.join("|");
+        try {
+          const result = await readResource(
+            "AWS::AppConfig::Deployment",
+            identifier,
+          ) as StateData;
+          const handle = await context.writeResource(
+            "state",
+            instanceName,
+            result,
+          );
+          return { dataHandles: [handle] };
+        } catch (error: unknown) {
+          if (isResourceNotFoundError(error)) {
+            const handle = await context.writeResource("state", instanceName, {
+              identifier,
+              status: "not_found",
+              syncedAt: new Date().toISOString(),
+            });
+            return { dataHandles: [handle] };
+          }
+          throw error;
+        }
+      },
+    },
+  },
+};

@@ -1,0 +1,373 @@
+// Auto-generated extension model for @swamp/aws/connect/hours-of-operation
+// Do not edit manually. Re-generate with: deno task generate:aws
+
+// deno-lint-ignore-file no-explicit-any
+
+import { z } from "zod";
+import {
+  createResource,
+  deleteResource,
+  isResourceNotFoundError,
+  readResource,
+  updateResource,
+} from "./_lib/aws.ts";
+
+export const HoursOfOperationTimeSliceSchema = z.object({
+  Hours: z.number().int().min(0).max(23).describe("The hours."),
+  Minutes: z.number().int().min(0).max(59).describe("The minutes."),
+});
+
+export const HoursOfOperationConfigSchema = z.object({
+  Day: z.enum([
+    "SUNDAY",
+    "MONDAY",
+    "TUESDAY",
+    "WEDNESDAY",
+    "THURSDAY",
+    "FRIDAY",
+    "SATURDAY",
+  ]).describe("The day that the hours of operation applies to."),
+  StartTime: HoursOfOperationTimeSliceSchema.describe(
+    "The start time that your contact center opens.",
+  ),
+  EndTime: HoursOfOperationTimeSliceSchema.describe(
+    "The end time that your contact center closes.",
+  ),
+});
+
+export const TagSchema = z.object({
+  Key: z.string().min(1).max(128).regex(
+    new RegExp("^(?!aws:)[a-zA-Z+-=._:/]+$"),
+  ).describe(
+    "The key name of the tag. You can specify a value that is 1 to 128 Unicode characters in length and cannot be prefixed with aws:. You can use any of the following characters: the set of Unicode letters, digits, whitespace, _,., /, =, +, and -.",
+  ),
+  Value: z.string().max(256).describe(
+    "The value for the tag. You can specify a value that is maximum of 256 Unicode characters in length and cannot be prefixed with aws:. You can use any of the following characters: the set of Unicode letters, digits, whitespace, _,., /, =, +, and -.",
+  ),
+});
+
+export const OverrideTimeSliceSchema = z.object({
+  Hours: z.number().int().min(0).max(23).describe("The hours."),
+  Minutes: z.number().int().min(0).max(59).describe("The minutes."),
+});
+
+export const HoursOfOperationOverrideConfigSchema = z.object({
+  Day: z.enum([
+    "SUNDAY",
+    "MONDAY",
+    "TUESDAY",
+    "WEDNESDAY",
+    "THURSDAY",
+    "FRIDAY",
+    "SATURDAY",
+  ]).describe("The day that the hours of operation override applies to."),
+  StartTime: OverrideTimeSliceSchema.describe(
+    "The new start time that your contact center opens for the overriden days.",
+  ),
+  EndTime: OverrideTimeSliceSchema.describe(
+    "The new end time that your contact center closes for the overriden days.",
+  ),
+});
+
+export const RecurrencePatternSchema = z.object({
+  Frequency: z.enum(["WEEKLY", "MONTHLY", "YEARLY"]).describe(
+    "The frequency of recurrence for hours of operation overrides.",
+  ).optional(),
+  Interval: z.number().int().min(1).max(6).optional(),
+  ByMonth: z.array(z.number().int().min(1).max(12)).describe(
+    "List of months (1-12) for recurrence pattern.",
+  ).optional(),
+  ByMonthDay: z.array(z.number().int().min(-1).max(31)).describe(
+    "List of month days (-1 to 31) for recurrence pattern.",
+  ).optional(),
+  ByWeekdayOccurrence: z.array(z.number().int().min(-1).max(4)).optional(),
+});
+
+export const RecurrenceConfigSchema = z.object({
+  RecurrencePattern: RecurrencePatternSchema.describe(
+    "Pattern for recurring hours of operation overrides.",
+  ),
+});
+
+export const HoursOfOperationOverrideSchema = z.object({
+  OverrideName: z.string().min(1).max(127).describe(
+    "The name of the hours of operation override.",
+  ),
+  OverrideDescription: z.string().min(1).max(250).describe(
+    "The description of the hours of operation override.",
+  ).optional(),
+  EffectiveFrom: z.string().regex(new RegExp("^\\d{4}-\\d{2}-\\d{2}$"))
+    .describe(
+      "The date from which the hours of operation override would be effective.",
+    ),
+  EffectiveTill: z.string().regex(new RegExp("^\\d{4}-\\d{2}-\\d{2}$"))
+    .describe(
+      "The date till which the hours of operation override would be effective.",
+    ),
+  OverrideConfig: z.array(HoursOfOperationOverrideConfigSchema).describe(
+    "Configuration information for the hours of operation override: day, start time, and end time.",
+  ),
+  HoursOfOperationOverrideId: z.string().regex(new RegExp("^[-a-zA-Z0-9]*$"))
+    .describe("The Resource Identifier for the hours of operation override.")
+    .optional(),
+  RecurrenceConfig: RecurrenceConfigSchema.describe(
+    "Configuration for recurring hours of operation overrides.",
+  ).optional(),
+  OverrideType: z.enum(["STANDARD", "OPEN", "CLOSED"]).describe(
+    "The type of hours of operation override.",
+  ).optional(),
+});
+
+export const HoursOfOperationsIdentifierSchema = z.object({
+  Name: z.string().min(1).max(127).describe(
+    "The name of the hours of operation.",
+  ).optional(),
+  Id: z.string().describe("The identifier for the hours of operation."),
+});
+
+const GlobalArgsSchema = z.object({
+  name: z.string().describe(
+    "Instance name for this resource (used as the unique identifier in the factory pattern)",
+  ),
+  InstanceArn: z.string().regex(
+    new RegExp(
+      "^arn:aws[-a-z0-9]*:connect:[-a-z0-9]*:[0-9]{12}:instance/[-a-zA-Z0-9]*$",
+    ),
+  ).describe("The identifier of the Amazon Connect instance."),
+  Name: z.string().min(1).max(127).describe(
+    "The name of the hours of operation.",
+  ),
+  Description: z.string().min(1).max(250).describe(
+    "The description of the hours of operation.",
+  ).optional(),
+  TimeZone: z.string().describe("The time zone of the hours of operation."),
+  Config: z.array(HoursOfOperationConfigSchema).describe(
+    "Configuration information for the hours of operation: day, start time, and end time.",
+  ),
+  Tags: z.array(TagSchema).describe("One or more tags.").optional(),
+  HoursOfOperationOverrides: z.array(HoursOfOperationOverrideSchema).describe(
+    "One or more hours of operation overrides assigned to an hour of operation.",
+  ).optional(),
+  ChildHoursOfOperations: z.array(HoursOfOperationsIdentifierSchema).describe(
+    "List of child hours of operations.",
+  ).optional(),
+  ParentHoursOfOperations: z.array(HoursOfOperationsIdentifierSchema).describe(
+    "List of parent hours of operations.",
+  ).optional(),
+});
+
+const StateSchema = z.object({
+  InstanceArn: z.string().optional(),
+  Name: z.string().optional(),
+  Description: z.string().optional(),
+  TimeZone: z.string().optional(),
+  Config: z.array(HoursOfOperationConfigSchema).optional(),
+  HoursOfOperationArn: z.string(),
+  Tags: z.array(TagSchema).optional(),
+  HoursOfOperationOverrides: z.array(HoursOfOperationOverrideSchema).optional(),
+  ChildHoursOfOperations: z.array(HoursOfOperationsIdentifierSchema).optional(),
+  ParentHoursOfOperations: z.array(HoursOfOperationsIdentifierSchema)
+    .optional(),
+}).passthrough();
+
+type StateData = z.infer<typeof StateSchema>;
+
+const InputsSchema = z.object({
+  name: z.string().optional(),
+  InstanceArn: z.string().regex(
+    new RegExp(
+      "^arn:aws[-a-z0-9]*:connect:[-a-z0-9]*:[0-9]{12}:instance/[-a-zA-Z0-9]*$",
+    ),
+  ).describe("The identifier of the Amazon Connect instance.").optional(),
+  Name: z.string().min(1).max(127).describe(
+    "The name of the hours of operation.",
+  ).optional(),
+  Description: z.string().min(1).max(250).describe(
+    "The description of the hours of operation.",
+  ).optional(),
+  TimeZone: z.string().describe("The time zone of the hours of operation.")
+    .optional(),
+  Config: z.array(HoursOfOperationConfigSchema).describe(
+    "Configuration information for the hours of operation: day, start time, and end time.",
+  ).optional(),
+  Tags: z.array(TagSchema).describe("One or more tags.").optional(),
+  HoursOfOperationOverrides: z.array(HoursOfOperationOverrideSchema).describe(
+    "One or more hours of operation overrides assigned to an hour of operation.",
+  ).optional(),
+  ChildHoursOfOperations: z.array(HoursOfOperationsIdentifierSchema).describe(
+    "List of child hours of operations.",
+  ).optional(),
+  ParentHoursOfOperations: z.array(HoursOfOperationsIdentifierSchema).describe(
+    "List of parent hours of operations.",
+  ).optional(),
+});
+
+export const model = {
+  type: "@swamp/aws/connect/hours-of-operation",
+  version: "2026.03.19.1",
+  globalArguments: GlobalArgsSchema,
+  inputsSchema: InputsSchema,
+  resources: {
+    state: {
+      description: "Connect HoursOfOperation resource state",
+      schema: StateSchema,
+      lifetime: "infinite",
+      garbageCollection: 10,
+    },
+  },
+  methods: {
+    create: {
+      description: "Create a Connect HoursOfOperation",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const desiredState: Record<string, unknown> = {};
+        for (const [key, value] of Object.entries(g)) {
+          if (key === "name") continue;
+          if (value !== undefined) desiredState[key] = value;
+        }
+        const result = await createResource(
+          "AWS::Connect::HoursOfOperation",
+          desiredState,
+        ) as StateData;
+        const instanceName = g.name?.toString() ?? "current";
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    get: {
+      description: "Get a Connect HoursOfOperation",
+      arguments: z.object({
+        identifier: z.string().describe(
+          "The primary identifier of the Connect HoursOfOperation",
+        ),
+      }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const result = await readResource(
+          "AWS::Connect::HoursOfOperation",
+          args.identifier,
+        ) as StateData;
+        const instanceName = context.globalArgs.name?.toString() ??
+          args.identifier;
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    update: {
+      description: "Update a Connect HoursOfOperation",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const instanceName = g.name?.toString() ?? "current";
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          instanceName,
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        const identifier = existing.HoursOfOperationArn?.toString();
+        if (!identifier) {
+          throw new Error("No identifier found in existing state");
+        }
+        const currentState = await readResource(
+          "AWS::Connect::HoursOfOperation",
+          identifier,
+        ) as StateData;
+        const desiredState: Record<string, unknown> = { ...currentState };
+        for (const [key, value] of Object.entries(g)) {
+          if (key === "name") continue;
+          if (value !== undefined) desiredState[key] = value;
+        }
+        const result = await updateResource(
+          "AWS::Connect::HoursOfOperation",
+          identifier,
+          currentState,
+          desiredState,
+        );
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    delete: {
+      description: "Delete a Connect HoursOfOperation",
+      arguments: z.object({
+        identifier: z.string().describe(
+          "The primary identifier of the Connect HoursOfOperation",
+        ),
+      }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const { existed } = await deleteResource(
+          "AWS::Connect::HoursOfOperation",
+          args.identifier,
+        );
+        const instanceName = context.globalArgs.name?.toString() ??
+          args.identifier;
+        const handle = await context.writeResource("state", instanceName, {
+          identifier: args.identifier,
+          existed,
+          status: existed ? "deleted" : "not_found",
+          deletedAt: new Date().toISOString(),
+        });
+        return { dataHandles: [handle] };
+      },
+    },
+    sync: {
+      description: "Sync Connect HoursOfOperation state from AWS",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const instanceName = g.name?.toString() ?? "current";
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          instanceName,
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        const identifier = existing.HoursOfOperationArn?.toString();
+        if (!identifier) {
+          throw new Error("No identifier found in existing state");
+        }
+        try {
+          const result = await readResource(
+            "AWS::Connect::HoursOfOperation",
+            identifier,
+          ) as StateData;
+          const handle = await context.writeResource(
+            "state",
+            instanceName,
+            result,
+          );
+          return { dataHandles: [handle] };
+        } catch (error: unknown) {
+          if (isResourceNotFoundError(error)) {
+            const handle = await context.writeResource("state", instanceName, {
+              identifier,
+              status: "not_found",
+              syncedAt: new Date().toISOString(),
+            });
+            return { dataHandles: [handle] };
+          }
+          throw error;
+        }
+      },
+    },
+  },
+};

@@ -1,0 +1,17 @@
+# Auto-generated manifest. Re-generate with the appropriate deno task.
+manifestVersion: 1
+name: "@swamp/aws/systemsmanagersap"
+version: "2026.03.19.1"
+description: "AWS SYSTEMSMANAGERSAP infrastructure models"
+labels:
+  - aws
+  - systemsmanagersap
+  - cloud
+  - infrastructure
+releaseNotes: |
+  - Updated: application
+models:
+  - application.ts
+additionalFiles:
+  - LICENSE.txt
+  - README.md

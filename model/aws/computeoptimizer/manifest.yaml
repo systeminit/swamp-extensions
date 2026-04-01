@@ -1,0 +1,17 @@
+# Auto-generated manifest. Re-generate with the appropriate deno task.
+manifestVersion: 1
+name: "@swamp/aws/computeoptimizer"
+version: "2026.03.19.1"
+description: "AWS COMPUTEOPTIMIZER infrastructure models"
+labels:
+  - aws
+  - computeoptimizer
+  - cloud
+  - infrastructure
+releaseNotes: |
+  - Updated: automation_rule
+models:
+  - automation_rule.ts
+additionalFiles:
+  - LICENSE.txt
+  - README.md

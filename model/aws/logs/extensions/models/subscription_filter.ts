@@ -1,0 +1,272 @@
+// Auto-generated extension model for @swamp/aws/logs/subscription-filter
+// Do not edit manually. Re-generate with: deno task generate:aws
+
+// deno-lint-ignore-file no-explicit-any
+
+import { z } from "zod";
+import {
+  createResource,
+  deleteResource,
+  isResourceNotFoundError,
+  readResource,
+  updateResource,
+} from "./_lib/aws.ts";
+
+const GlobalArgsSchema = z.object({
+  name: z.string().describe(
+    "Instance name for this resource (used as the unique identifier in the factory pattern)",
+  ),
+  FilterName: z.string().describe("The name of the subscription filter.")
+    .optional(),
+  DestinationArn: z.string().describe(
+    "The Amazon Resource Name (ARN) of the destination.",
+  ),
+  FilterPattern: z.string().describe(
+    "The filtering expressions that restrict what gets delivered to the destination AWS resource. For more information about the filter pattern syntax, see [Filter and Pattern Syntax](https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/FilterAndPatternSyntax.html).",
+  ),
+  LogGroupName: z.string().describe(
+    "The log group to associate with the subscription filter. All log events that are uploaded to this log group are filtered and delivered to the specified AWS resource if the filter pattern matches the log events.",
+  ),
+  RoleArn: z.string().describe(
+    "The ARN of an IAM role that grants CWL permissions to deliver ingested log events to the destination stream. You don't need to provide the ARN when you are working with a logical destination for cross-account delivery.",
+  ).optional(),
+  Distribution: z.enum(["Random", "ByLogStream"]).describe(
+    "The method used to distribute log data to the destination, which can be either random or grouped by log stream.",
+  ).optional(),
+  ApplyOnTransformedLogs: z.boolean().describe(
+    "This parameter is valid only for log groups that have an active log transformer. For more information about log transformers, see [PutTransformer](https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_PutTransformer.html). If this value is true, the subscription filter is applied on the transformed version of the log events instead of the original ingested log events.",
+  ).optional(),
+  FieldSelectionCriteria: z.string().min(0).max(2000).describe(
+    "The filter expression that specifies which log events are processed by this subscription filter based on system fields. Returns the fieldSelectionCriteria value if it was specified when the subscription filter was created.",
+  ).optional(),
+  EmitSystemFields: z.array(z.string()).describe(
+    "The list of system fields that are included in the log events sent to the subscription destination. Returns the emitSystemFields value if it was specified when the subscription filter was created.",
+  ).optional(),
+});
+
+const StateSchema = z.object({
+  FilterName: z.string(),
+  DestinationArn: z.string().optional(),
+  FilterPattern: z.string().optional(),
+  LogGroupName: z.string(),
+  RoleArn: z.string().optional(),
+  Distribution: z.string().optional(),
+  ApplyOnTransformedLogs: z.boolean().optional(),
+  FieldSelectionCriteria: z.string().optional(),
+  EmitSystemFields: z.array(z.string()).optional(),
+}).passthrough();
+
+type StateData = z.infer<typeof StateSchema>;
+
+const InputsSchema = z.object({
+  name: z.string().optional(),
+  FilterName: z.string().describe("The name of the subscription filter.")
+    .optional(),
+  DestinationArn: z.string().describe(
+    "The Amazon Resource Name (ARN) of the destination.",
+  ).optional(),
+  FilterPattern: z.string().describe(
+    "The filtering expressions that restrict what gets delivered to the destination AWS resource. For more information about the filter pattern syntax, see [Filter and Pattern Syntax](https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/FilterAndPatternSyntax.html).",
+  ).optional(),
+  LogGroupName: z.string().describe(
+    "The log group to associate with the subscription filter. All log events that are uploaded to this log group are filtered and delivered to the specified AWS resource if the filter pattern matches the log events.",
+  ).optional(),
+  RoleArn: z.string().describe(
+    "The ARN of an IAM role that grants CWL permissions to deliver ingested log events to the destination stream. You don't need to provide the ARN when you are working with a logical destination for cross-account delivery.",
+  ).optional(),
+  Distribution: z.enum(["Random", "ByLogStream"]).describe(
+    "The method used to distribute log data to the destination, which can be either random or grouped by log stream.",
+  ).optional(),
+  ApplyOnTransformedLogs: z.boolean().describe(
+    "This parameter is valid only for log groups that have an active log transformer. For more information about log transformers, see [PutTransformer](https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_PutTransformer.html). If this value is true, the subscription filter is applied on the transformed version of the log events instead of the original ingested log events.",
+  ).optional(),
+  FieldSelectionCriteria: z.string().min(0).max(2000).describe(
+    "The filter expression that specifies which log events are processed by this subscription filter based on system fields. Returns the fieldSelectionCriteria value if it was specified when the subscription filter was created.",
+  ).optional(),
+  EmitSystemFields: z.array(z.string()).describe(
+    "The list of system fields that are included in the log events sent to the subscription destination. Returns the emitSystemFields value if it was specified when the subscription filter was created.",
+  ).optional(),
+});
+
+export const model = {
+  type: "@swamp/aws/logs/subscription-filter",
+  version: "2026.03.19.1",
+  globalArguments: GlobalArgsSchema,
+  inputsSchema: InputsSchema,
+  resources: {
+    state: {
+      description: "Logs SubscriptionFilter resource state",
+      schema: StateSchema,
+      lifetime: "infinite",
+      garbageCollection: 10,
+    },
+  },
+  methods: {
+    create: {
+      description: "Create a Logs SubscriptionFilter",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const desiredState: Record<string, unknown> = {};
+        for (const [key, value] of Object.entries(g)) {
+          if (key === "name") continue;
+          if (value !== undefined) desiredState[key] = value;
+        }
+        const result = await createResource(
+          "AWS::Logs::SubscriptionFilter",
+          desiredState,
+        ) as StateData;
+        const instanceName = g.name?.toString() ?? "current";
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    get: {
+      description: "Get a Logs SubscriptionFilter",
+      arguments: z.object({
+        identifier: z.string().describe(
+          "The primary identifier of the Logs SubscriptionFilter",
+        ),
+      }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const result = await readResource(
+          "AWS::Logs::SubscriptionFilter",
+          args.identifier,
+        ) as StateData;
+        const instanceName = context.globalArgs.name?.toString() ??
+          args.identifier;
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    update: {
+      description: "Update a Logs SubscriptionFilter",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const instanceName = g.name?.toString() ?? "current";
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          instanceName,
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        const idParts = [
+          existing.FilterName?.toString(),
+          existing.LogGroupName?.toString(),
+        ];
+        if (idParts.some((p) => !p)) {
+          throw new Error(
+            "Missing primary identifier fields in existing state",
+          );
+        }
+        const identifier = idParts.join("|");
+        const currentState = await readResource(
+          "AWS::Logs::SubscriptionFilter",
+          identifier,
+        ) as StateData;
+        const desiredState: Record<string, unknown> = { ...currentState };
+        for (const [key, value] of Object.entries(g)) {
+          if (key === "name") continue;
+          if (value !== undefined) desiredState[key] = value;
+        }
+        const result = await updateResource(
+          "AWS::Logs::SubscriptionFilter",
+          identifier,
+          currentState,
+          desiredState,
+          ["FilterName", "LogGroupName"],
+        );
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    delete: {
+      description: "Delete a Logs SubscriptionFilter",
+      arguments: z.object({
+        identifier: z.string().describe(
+          "The primary identifier of the Logs SubscriptionFilter",
+        ),
+      }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const { existed } = await deleteResource(
+          "AWS::Logs::SubscriptionFilter",
+          args.identifier,
+        );
+        const instanceName = context.globalArgs.name?.toString() ??
+          args.identifier;
+        const handle = await context.writeResource("state", instanceName, {
+          identifier: args.identifier,
+          existed,
+          status: existed ? "deleted" : "not_found",
+          deletedAt: new Date().toISOString(),
+        });
+        return { dataHandles: [handle] };
+      },
+    },
+    sync: {
+      description: "Sync Logs SubscriptionFilter state from AWS",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const instanceName = g.name?.toString() ?? "current";
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          instanceName,
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        const idParts = [
+          existing.FilterName?.toString(),
+          existing.LogGroupName?.toString(),
+        ];
+        if (idParts.some((p) => !p)) {
+          throw new Error(
+            "Missing primary identifier fields in existing state",
+          );
+        }
+        const identifier = idParts.join("|");
+        try {
+          const result = await readResource(
+            "AWS::Logs::SubscriptionFilter",
+            identifier,
+          ) as StateData;
+          const handle = await context.writeResource(
+            "state",
+            instanceName,
+            result,
+          );
+          return { dataHandles: [handle] };
+        } catch (error: unknown) {
+          if (isResourceNotFoundError(error)) {
+            const handle = await context.writeResource("state", instanceName, {
+              identifier,
+              status: "not_found",
+              syncedAt: new Date().toISOString(),
+            });
+            return { dataHandles: [handle] };
+          }
+          throw error;
+        }
+      },
+    },
+  },
+};

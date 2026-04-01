@@ -1,0 +1,19 @@
+# Auto-generated manifest. Re-generate with the appropriate deno task.
+manifestVersion: 1
+name: "@swamp/aws/sns"
+version: "2026.03.19.1"
+description: "AWS SNS infrastructure models"
+labels:
+  - aws
+  - sns
+  - cloud
+  - infrastructure
+releaseNotes: |
+  - Updated: subscription, topic, topic_inline_policy
+models:
+  - subscription.ts
+  - topic.ts
+  - topic_inline_policy.ts
+additionalFiles:
+  - LICENSE.txt
+  - README.md

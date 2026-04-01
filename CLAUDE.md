@@ -37,11 +37,20 @@ deno install --frozen
 
 ```bash
 cd codegen
+deno task fetch-schema:aws
 deno task fetch-schema:hetzner
 deno task fetch-schema:digitalocean
+deno task generate:aws
 deno task generate:hetzner
 deno task generate:digitalocean
 ```
+
+AWS supports service filtering: `deno task generate:aws ec2 s3 lambda`
+
+**Note:** AWS models live under `model/aws/<service>/` (one directory per AWS
+service, ~249 services). Hetzner and DigitalOcean each have a single directory
+(`model/hetzner-cloud/`, `model/digitalocean/`). Each AWS service directory has
+its own `deno.json`, `deno.lock`, and `manifest.yaml`.
 
 ### Codegen verification (run from codegen/)
 

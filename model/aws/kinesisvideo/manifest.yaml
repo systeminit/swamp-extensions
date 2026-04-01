@@ -1,0 +1,18 @@
+# Auto-generated manifest. Re-generate with the appropriate deno task.
+manifestVersion: 1
+name: "@swamp/aws/kinesisvideo"
+version: "2026.03.19.1"
+description: "AWS KINESISVIDEO infrastructure models"
+labels:
+  - aws
+  - kinesisvideo
+  - cloud
+  - infrastructure
+releaseNotes: |
+  - Updated: signaling_channel, stream
+models:
+  - signaling_channel.ts
+  - stream.ts
+additionalFiles:
+  - LICENSE.txt
+  - README.md

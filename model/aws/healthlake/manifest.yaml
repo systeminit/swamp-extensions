@@ -1,0 +1,17 @@
+# Auto-generated manifest. Re-generate with the appropriate deno task.
+manifestVersion: 1
+name: "@swamp/aws/healthlake"
+version: "2026.03.19.1"
+description: "AWS HEALTHLAKE infrastructure models"
+labels:
+  - aws
+  - healthlake
+  - cloud
+  - infrastructure
+releaseNotes: |
+  - Updated: fhirdatastore
+models:
+  - fhirdatastore.ts
+additionalFiles:
+  - LICENSE.txt
+  - README.md

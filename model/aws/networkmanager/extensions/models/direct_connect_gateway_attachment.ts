@@ -1,0 +1,283 @@
+// Auto-generated extension model for @swamp/aws/networkmanager/direct-connect-gateway-attachment
+// Do not edit manually. Re-generate with: deno task generate:aws
+
+// deno-lint-ignore-file no-explicit-any
+
+import { z } from "zod";
+import {
+  createResource,
+  deleteResource,
+  isResourceNotFoundError,
+  readResource,
+  updateResource,
+} from "./_lib/aws.ts";
+
+export const TagSchema = z.object({
+  Key: z.string().describe(
+    "The key name of the tag. You can specify a value that is 1 to 128 Unicode characters in length and cannot be prefixed with aws:. You can use any of the following characters: the set of Unicode letters, digits, whitespace, _,., /, =, +, and -.",
+  ),
+  Value: z.string().describe(
+    "The value for the tag. You can specify a value that is 0 to 256 Unicode characters in length and cannot be prefixed with aws:. You can use any of the following characters: the set of Unicode letters, digits, whitespace, _,., /, =, +, and -.",
+  ),
+});
+
+const GlobalArgsSchema = z.object({
+  name: z.string().describe(
+    "Instance name for this resource (used as the unique identifier in the factory pattern)",
+  ),
+  CoreNetworkId: z.string().describe(
+    "The ID of a core network for the Direct Connect Gateway attachment.",
+  ),
+  EdgeLocations: z.array(z.string()).describe(
+    "The Regions where the edges are located.",
+  ),
+  DirectConnectGatewayArn: z.string().describe(
+    "The ARN of the Direct Connect Gateway.",
+  ),
+  ProposedSegmentChange: z.object({
+    Tags: z.array(TagSchema).describe(
+      "The key-value tags that changed for the segment.",
+    ).optional(),
+  }).describe("The attachment to move from one segment to another.").optional(),
+  ProposedNetworkFunctionGroupChange: z.object({
+    Tags: z.array(TagSchema).describe(
+      "The key-value tags that changed for the network function group.",
+    ).optional(),
+  }).describe(
+    "The attachment to move from one network function group to another.",
+  ).optional(),
+  RoutingPolicyLabel: z.string().describe("Routing policy label").optional(),
+  Tags: z.array(TagSchema).describe("Tags for the attachment.").optional(),
+});
+
+const StateSchema = z.object({
+  CoreNetworkId: z.string().optional(),
+  CoreNetworkArn: z.string().optional(),
+  AttachmentId: z.string(),
+  OwnerAccountId: z.string().optional(),
+  AttachmentType: z.string().optional(),
+  State: z.string().optional(),
+  EdgeLocations: z.array(z.string()).optional(),
+  DirectConnectGatewayArn: z.string().optional(),
+  ResourceArn: z.string().optional(),
+  AttachmentPolicyRuleNumber: z.number().optional(),
+  SegmentName: z.string().optional(),
+  ProposedSegmentChange: z.object({
+    Tags: z.array(TagSchema),
+    AttachmentPolicyRuleNumber: z.number(),
+    SegmentName: z.string(),
+  }).optional(),
+  NetworkFunctionGroupName: z.string().optional(),
+  ProposedNetworkFunctionGroupChange: z.object({
+    Tags: z.array(TagSchema),
+    AttachmentPolicyRuleNumber: z.number(),
+    NetworkFunctionGroupName: z.string(),
+  }).optional(),
+  RoutingPolicyLabel: z.string().optional(),
+  Tags: z.array(TagSchema).optional(),
+  CreatedAt: z.string().optional(),
+  UpdatedAt: z.string().optional(),
+  LastModificationErrors: z.array(z.string()).optional(),
+}).passthrough();
+
+type StateData = z.infer<typeof StateSchema>;
+
+const InputsSchema = z.object({
+  name: z.string().optional(),
+  CoreNetworkId: z.string().describe(
+    "The ID of a core network for the Direct Connect Gateway attachment.",
+  ).optional(),
+  EdgeLocations: z.array(z.string()).describe(
+    "The Regions where the edges are located.",
+  ).optional(),
+  DirectConnectGatewayArn: z.string().describe(
+    "The ARN of the Direct Connect Gateway.",
+  ).optional(),
+  ProposedSegmentChange: z.object({
+    Tags: z.array(TagSchema).describe(
+      "The key-value tags that changed for the segment.",
+    ).optional(),
+  }).describe("The attachment to move from one segment to another.").optional(),
+  ProposedNetworkFunctionGroupChange: z.object({
+    Tags: z.array(TagSchema).describe(
+      "The key-value tags that changed for the network function group.",
+    ).optional(),
+  }).describe(
+    "The attachment to move from one network function group to another.",
+  ).optional(),
+  RoutingPolicyLabel: z.string().describe("Routing policy label").optional(),
+  Tags: z.array(TagSchema).describe("Tags for the attachment.").optional(),
+});
+
+export const model = {
+  type: "@swamp/aws/networkmanager/direct-connect-gateway-attachment",
+  version: "2026.03.19.1",
+  globalArguments: GlobalArgsSchema,
+  inputsSchema: InputsSchema,
+  resources: {
+    state: {
+      description:
+        "NetworkManager DirectConnectGatewayAttachment resource state",
+      schema: StateSchema,
+      lifetime: "infinite",
+      garbageCollection: 10,
+    },
+  },
+  methods: {
+    create: {
+      description: "Create a NetworkManager DirectConnectGatewayAttachment",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const desiredState: Record<string, unknown> = {};
+        for (const [key, value] of Object.entries(g)) {
+          if (key === "name") continue;
+          if (value !== undefined) desiredState[key] = value;
+        }
+        const result = await createResource(
+          "AWS::NetworkManager::DirectConnectGatewayAttachment",
+          desiredState,
+        ) as StateData;
+        const instanceName = g.name?.toString() ?? "current";
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    get: {
+      description: "Get a NetworkManager DirectConnectGatewayAttachment",
+      arguments: z.object({
+        identifier: z.string().describe(
+          "The primary identifier of the NetworkManager DirectConnectGatewayAttachment",
+        ),
+      }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const result = await readResource(
+          "AWS::NetworkManager::DirectConnectGatewayAttachment",
+          args.identifier,
+        ) as StateData;
+        const instanceName = context.globalArgs.name?.toString() ??
+          args.identifier;
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    update: {
+      description: "Update a NetworkManager DirectConnectGatewayAttachment",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const instanceName = g.name?.toString() ?? "current";
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          instanceName,
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        const identifier = existing.AttachmentId?.toString();
+        if (!identifier) {
+          throw new Error("No identifier found in existing state");
+        }
+        const currentState = await readResource(
+          "AWS::NetworkManager::DirectConnectGatewayAttachment",
+          identifier,
+        ) as StateData;
+        const desiredState: Record<string, unknown> = { ...currentState };
+        for (const [key, value] of Object.entries(g)) {
+          if (key === "name") continue;
+          if (value !== undefined) desiredState[key] = value;
+        }
+        const result = await updateResource(
+          "AWS::NetworkManager::DirectConnectGatewayAttachment",
+          identifier,
+          currentState,
+          desiredState,
+          ["CoreNetworkId", "DirectConnectGatewayArn", "RoutingPolicyLabel"],
+        );
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    delete: {
+      description: "Delete a NetworkManager DirectConnectGatewayAttachment",
+      arguments: z.object({
+        identifier: z.string().describe(
+          "The primary identifier of the NetworkManager DirectConnectGatewayAttachment",
+        ),
+      }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const { existed } = await deleteResource(
+          "AWS::NetworkManager::DirectConnectGatewayAttachment",
+          args.identifier,
+        );
+        const instanceName = context.globalArgs.name?.toString() ??
+          args.identifier;
+        const handle = await context.writeResource("state", instanceName, {
+          identifier: args.identifier,
+          existed,
+          status: existed ? "deleted" : "not_found",
+          deletedAt: new Date().toISOString(),
+        });
+        return { dataHandles: [handle] };
+      },
+    },
+    sync: {
+      description:
+        "Sync NetworkManager DirectConnectGatewayAttachment state from AWS",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const instanceName = g.name?.toString() ?? "current";
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          instanceName,
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        const identifier = existing.AttachmentId?.toString();
+        if (!identifier) {
+          throw new Error("No identifier found in existing state");
+        }
+        try {
+          const result = await readResource(
+            "AWS::NetworkManager::DirectConnectGatewayAttachment",
+            identifier,
+          ) as StateData;
+          const handle = await context.writeResource(
+            "state",
+            instanceName,
+            result,
+          );
+          return { dataHandles: [handle] };
+        } catch (error: unknown) {
+          if (isResourceNotFoundError(error)) {
+            const handle = await context.writeResource("state", instanceName, {
+              identifier,
+              status: "not_found",
+              syncedAt: new Date().toISOString(),
+            });
+            return { dataHandles: [handle] };
+          }
+          throw error;
+        }
+      },
+    },
+  },
+};

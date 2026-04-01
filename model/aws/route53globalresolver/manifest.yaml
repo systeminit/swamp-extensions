@@ -1,0 +1,23 @@
+# Auto-generated manifest. Re-generate with the appropriate deno task.
+manifestVersion: 1
+name: "@swamp/aws/route53globalresolver"
+version: "2026.03.19.1"
+description: "AWS ROUTE53GLOBALRESOLVER infrastructure models"
+labels:
+  - aws
+  - route53globalresolver
+  - cloud
+  - infrastructure
+releaseNotes: |
+  - Updated: access_source, access_token, dns_view, firewall_domain_list, firewall_rule, global_resolver, hosted_zone_association
+models:
+  - access_source.ts
+  - access_token.ts
+  - dns_view.ts
+  - firewall_domain_list.ts
+  - firewall_rule.ts
+  - global_resolver.ts
+  - hosted_zone_association.ts
+additionalFiles:
+  - LICENSE.txt
+  - README.md

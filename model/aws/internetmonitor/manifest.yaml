@@ -1,0 +1,17 @@
+# Auto-generated manifest. Re-generate with the appropriate deno task.
+manifestVersion: 1
+name: "@swamp/aws/internetmonitor"
+version: "2026.03.19.1"
+description: "AWS INTERNETMONITOR infrastructure models"
+labels:
+  - aws
+  - internetmonitor
+  - cloud
+  - infrastructure
+releaseNotes: |
+  - Updated: monitor
+models:
+  - monitor.ts
+additionalFiles:
+  - LICENSE.txt
+  - README.md

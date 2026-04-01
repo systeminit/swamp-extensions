@@ -1,0 +1,17 @@
+# Auto-generated manifest. Re-generate with the appropriate deno task.
+manifestVersion: 1
+name: "@swamp/aws/accessanalyzer"
+version: "2026.03.19.1"
+description: "AWS ACCESSANALYZER infrastructure models"
+labels:
+  - aws
+  - accessanalyzer
+  - cloud
+  - infrastructure
+releaseNotes: |
+  - Updated: analyzer
+models:
+  - analyzer.ts
+additionalFiles:
+  - LICENSE.txt
+  - README.md

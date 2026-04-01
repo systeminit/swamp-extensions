@@ -1,0 +1,17 @@
+# Auto-generated manifest. Re-generate with the appropriate deno task.
+manifestVersion: 1
+name: "@swamp/aws/auditmanager"
+version: "2026.03.19.1"
+description: "AWS AUDITMANAGER infrastructure models"
+labels:
+  - aws
+  - auditmanager
+  - cloud
+  - infrastructure
+releaseNotes: |
+  - Updated: assessment
+models:
+  - assessment.ts
+additionalFiles:
+  - LICENSE.txt
+  - README.md

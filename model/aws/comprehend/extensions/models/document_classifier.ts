@@ -1,0 +1,368 @@
+// Auto-generated extension model for @swamp/aws/comprehend/document-classifier
+// Do not edit manually. Re-generate with: deno task generate:aws
+
+// deno-lint-ignore-file no-explicit-any no-control-regex
+
+import { z } from "zod";
+import {
+  createResource,
+  deleteResource,
+  isResourceNotFoundError,
+  readResource,
+  updateResource,
+} from "./_lib/aws.ts";
+
+export const AugmentedManifestsListItemSchema = z.object({
+  AttributeNames: z.array(
+    z.string().regex(new RegExp("^[a-zA-Z0-9](-*[a-zA-Z0-9])*")),
+  ),
+  S3Uri: z.string().max(1024).regex(
+    new RegExp("s3://[a-z0-9][\\.\\-a-z0-9]{1,61}[a-z0-9](/.*)?"),
+  ),
+  Split: z.enum(["TRAIN", "TEST"]).optional(),
+});
+
+export const DocumentClassifierDocumentsSchema = z.object({
+  S3Uri: z.string().max(1024).regex(
+    new RegExp("s3://[a-z0-9][\\.\\-a-z0-9]{1,61}[a-z0-9](/.*)?"),
+  ),
+  TestS3Uri: z.string().max(1024).regex(
+    new RegExp("s3://[a-z0-9][\\.\\-a-z0-9]{1,61}[a-z0-9](/.*)?"),
+  ).optional(),
+});
+
+export const DocumentReaderConfigSchema = z.object({
+  DocumentReadAction: z.enum([
+    "TEXTRACT_DETECT_DOCUMENT_TEXT",
+    "TEXTRACT_ANALYZE_DOCUMENT",
+  ]),
+  DocumentReadMode: z.enum(["SERVICE_DEFAULT", "FORCE_DOCUMENT_READ_ACTION"])
+    .optional(),
+  FeatureTypes: z.array(z.enum(["TABLES", "FORMS"])).optional(),
+});
+
+export const TagSchema = z.object({
+  Key: z.string().min(1).max(128),
+  Value: z.string().min(0).max(256),
+});
+
+const GlobalArgsSchema = z.object({
+  name: z.string().describe(
+    "Instance name for this resource (used as the unique identifier in the factory pattern)",
+  ),
+  DataAccessRoleArn: z.string().min(20).max(2048).regex(
+    new RegExp("arn:aws(-[^:]+)?:iam::[0-9]{12}:role/.+"),
+  ),
+  InputDataConfig: z.object({
+    AugmentedManifests: z.array(AugmentedManifestsListItemSchema).optional(),
+    DataFormat: z.enum(["COMPREHEND_CSV", "AUGMENTED_MANIFEST"]).optional(),
+    LabelDelimiter: z.string().min(1).max(1).regex(
+      new RegExp("^[ ~!@#$%^*\\-_+=|\\\\:;\\t>?/]$"),
+    ).optional(),
+    DocumentType: z.enum(["PLAIN_TEXT_DOCUMENT", "SEMI_STRUCTURED_DOCUMENT"])
+      .optional(),
+    Documents: DocumentClassifierDocumentsSchema.optional(),
+    DocumentReaderConfig: DocumentReaderConfigSchema.optional(),
+    S3Uri: z.string().max(1024).regex(
+      new RegExp("s3://[a-z0-9][\\.\\-a-z0-9]{1,61}[a-z0-9](/.*)?"),
+    ).optional(),
+    TestS3Uri: z.string().max(1024).regex(
+      new RegExp("s3://[a-z0-9][\\.\\-a-z0-9]{1,61}[a-z0-9](/.*)?"),
+    ).optional(),
+  }),
+  OutputDataConfig: z.object({
+    KmsKeyId: z.string().min(1).max(2048).optional(),
+    S3Uri: z.string().max(1024).regex(
+      new RegExp("s3://[a-z0-9][\\.\\-a-z0-9]{1,61}[a-z0-9](/.*)?"),
+    ).optional(),
+  }).optional(),
+  LanguageCode: z.enum(["en", "es", "fr", "it", "de", "pt"]),
+  ModelKmsKeyId: z.string().min(1).max(2048).optional(),
+  ModelPolicy: z.string().min(1).max(20000).regex(
+    new RegExp("[\\u0009\\u000A\\u000D\\u0020-\\u00FF]+"),
+  ).optional(),
+  DocumentClassifierName: z.string().min(1).max(63).regex(
+    new RegExp("^[a-zA-Z0-9](-*[a-zA-Z0-9])*$"),
+  ),
+  Mode: z.enum(["MULTI_CLASS", "MULTI_LABEL"]).optional(),
+  Tags: z.array(TagSchema).optional(),
+  VersionName: z.string().min(1).max(63).regex(
+    new RegExp("^[a-zA-Z0-9](-*[a-zA-Z0-9])*$"),
+  ).optional(),
+  VolumeKmsKeyId: z.string().min(1).max(2048).optional(),
+  VpcConfig: z.object({
+    SecurityGroupIds: z.array(
+      z.string().min(1).max(32).regex(new RegExp("[-0-9a-zA-Z]+")),
+    ),
+    Subnets: z.array(
+      z.string().min(1).max(32).regex(new RegExp("[-0-9a-zA-Z]+")),
+    ),
+  }).optional(),
+});
+
+const StateSchema = z.object({
+  DataAccessRoleArn: z.string().optional(),
+  InputDataConfig: z.object({
+    AugmentedManifests: z.array(AugmentedManifestsListItemSchema),
+    DataFormat: z.string(),
+    LabelDelimiter: z.string(),
+    DocumentType: z.string(),
+    Documents: DocumentClassifierDocumentsSchema,
+    DocumentReaderConfig: DocumentReaderConfigSchema,
+    S3Uri: z.string(),
+    TestS3Uri: z.string(),
+  }).optional(),
+  OutputDataConfig: z.object({
+    KmsKeyId: z.string(),
+    S3Uri: z.string(),
+  }).optional(),
+  LanguageCode: z.string().optional(),
+  ModelKmsKeyId: z.string().optional(),
+  ModelPolicy: z.string().optional(),
+  DocumentClassifierName: z.string().optional(),
+  Mode: z.string().optional(),
+  Tags: z.array(TagSchema).optional(),
+  VersionName: z.string().optional(),
+  VolumeKmsKeyId: z.string().optional(),
+  VpcConfig: z.object({
+    SecurityGroupIds: z.array(z.string()),
+    Subnets: z.array(z.string()),
+  }).optional(),
+  Arn: z.string(),
+}).passthrough();
+
+type StateData = z.infer<typeof StateSchema>;
+
+const InputsSchema = z.object({
+  name: z.string().optional(),
+  DataAccessRoleArn: z.string().min(20).max(2048).regex(
+    new RegExp("arn:aws(-[^:]+)?:iam::[0-9]{12}:role/.+"),
+  ).optional(),
+  InputDataConfig: z.object({
+    AugmentedManifests: z.array(AugmentedManifestsListItemSchema).optional(),
+    DataFormat: z.enum(["COMPREHEND_CSV", "AUGMENTED_MANIFEST"]).optional(),
+    LabelDelimiter: z.string().min(1).max(1).regex(
+      new RegExp("^[ ~!@#$%^*\\-_+=|\\\\:;\\t>?/]$"),
+    ).optional(),
+    DocumentType: z.enum(["PLAIN_TEXT_DOCUMENT", "SEMI_STRUCTURED_DOCUMENT"])
+      .optional(),
+    Documents: DocumentClassifierDocumentsSchema.optional(),
+    DocumentReaderConfig: DocumentReaderConfigSchema.optional(),
+    S3Uri: z.string().max(1024).regex(
+      new RegExp("s3://[a-z0-9][\\.\\-a-z0-9]{1,61}[a-z0-9](/.*)?"),
+    ).optional(),
+    TestS3Uri: z.string().max(1024).regex(
+      new RegExp("s3://[a-z0-9][\\.\\-a-z0-9]{1,61}[a-z0-9](/.*)?"),
+    ).optional(),
+  }).optional(),
+  OutputDataConfig: z.object({
+    KmsKeyId: z.string().min(1).max(2048).optional(),
+    S3Uri: z.string().max(1024).regex(
+      new RegExp("s3://[a-z0-9][\\.\\-a-z0-9]{1,61}[a-z0-9](/.*)?"),
+    ).optional(),
+  }).optional(),
+  LanguageCode: z.enum(["en", "es", "fr", "it", "de", "pt"]).optional(),
+  ModelKmsKeyId: z.string().min(1).max(2048).optional(),
+  ModelPolicy: z.string().min(1).max(20000).regex(
+    new RegExp("[\\u0009\\u000A\\u000D\\u0020-\\u00FF]+"),
+  ).optional(),
+  DocumentClassifierName: z.string().min(1).max(63).regex(
+    new RegExp("^[a-zA-Z0-9](-*[a-zA-Z0-9])*$"),
+  ).optional(),
+  Mode: z.enum(["MULTI_CLASS", "MULTI_LABEL"]).optional(),
+  Tags: z.array(TagSchema).optional(),
+  VersionName: z.string().min(1).max(63).regex(
+    new RegExp("^[a-zA-Z0-9](-*[a-zA-Z0-9])*$"),
+  ).optional(),
+  VolumeKmsKeyId: z.string().min(1).max(2048).optional(),
+  VpcConfig: z.object({
+    SecurityGroupIds: z.array(
+      z.string().min(1).max(32).regex(new RegExp("[-0-9a-zA-Z]+")),
+    ).optional(),
+    Subnets: z.array(
+      z.string().min(1).max(32).regex(new RegExp("[-0-9a-zA-Z]+")),
+    ).optional(),
+  }).optional(),
+});
+
+export const model = {
+  type: "@swamp/aws/comprehend/document-classifier",
+  version: "2026.03.19.1",
+  globalArguments: GlobalArgsSchema,
+  inputsSchema: InputsSchema,
+  resources: {
+    state: {
+      description: "Comprehend DocumentClassifier resource state",
+      schema: StateSchema,
+      lifetime: "infinite",
+      garbageCollection: 10,
+    },
+  },
+  methods: {
+    create: {
+      description: "Create a Comprehend DocumentClassifier",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const desiredState: Record<string, unknown> = {};
+        for (const [key, value] of Object.entries(g)) {
+          if (key === "name") continue;
+          if (value !== undefined) desiredState[key] = value;
+        }
+        const result = await createResource(
+          "AWS::Comprehend::DocumentClassifier",
+          desiredState,
+        ) as StateData;
+        const instanceName = g.name?.toString() ?? "current";
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    get: {
+      description: "Get a Comprehend DocumentClassifier",
+      arguments: z.object({
+        identifier: z.string().describe(
+          "The primary identifier of the Comprehend DocumentClassifier",
+        ),
+      }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const result = await readResource(
+          "AWS::Comprehend::DocumentClassifier",
+          args.identifier,
+        ) as StateData;
+        const instanceName = context.globalArgs.name?.toString() ??
+          args.identifier;
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    update: {
+      description: "Update a Comprehend DocumentClassifier",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const instanceName = g.name?.toString() ?? "current";
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          instanceName,
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        const identifier = existing.Arn?.toString();
+        if (!identifier) {
+          throw new Error("No identifier found in existing state");
+        }
+        const currentState = await readResource(
+          "AWS::Comprehend::DocumentClassifier",
+          identifier,
+        ) as StateData;
+        const desiredState: Record<string, unknown> = { ...currentState };
+        for (const [key, value] of Object.entries(g)) {
+          if (key === "name") continue;
+          if (value !== undefined) desiredState[key] = value;
+        }
+        const result = await updateResource(
+          "AWS::Comprehend::DocumentClassifier",
+          identifier,
+          currentState,
+          desiredState,
+          [
+            "DataAccessRoleArn",
+            "InputDataConfig",
+            "OutputDataConfig",
+            "LanguageCode",
+            "ModelKmsKeyId",
+            "DocumentClassifierName",
+            "VersionName",
+            "Mode",
+            "VolumeKmsKeyId",
+            "VpcConfig",
+          ],
+        );
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    delete: {
+      description: "Delete a Comprehend DocumentClassifier",
+      arguments: z.object({
+        identifier: z.string().describe(
+          "The primary identifier of the Comprehend DocumentClassifier",
+        ),
+      }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const { existed } = await deleteResource(
+          "AWS::Comprehend::DocumentClassifier",
+          args.identifier,
+        );
+        const instanceName = context.globalArgs.name?.toString() ??
+          args.identifier;
+        const handle = await context.writeResource("state", instanceName, {
+          identifier: args.identifier,
+          existed,
+          status: existed ? "deleted" : "not_found",
+          deletedAt: new Date().toISOString(),
+        });
+        return { dataHandles: [handle] };
+      },
+    },
+    sync: {
+      description: "Sync Comprehend DocumentClassifier state from AWS",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const instanceName = g.name?.toString() ?? "current";
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          instanceName,
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        const identifier = existing.Arn?.toString();
+        if (!identifier) {
+          throw new Error("No identifier found in existing state");
+        }
+        try {
+          const result = await readResource(
+            "AWS::Comprehend::DocumentClassifier",
+            identifier,
+          ) as StateData;
+          const handle = await context.writeResource(
+            "state",
+            instanceName,
+            result,
+          );
+          return { dataHandles: [handle] };
+        } catch (error: unknown) {
+          if (isResourceNotFoundError(error)) {
+            const handle = await context.writeResource("state", instanceName, {
+              identifier,
+              status: "not_found",
+              syncedAt: new Date().toISOString(),
+            });
+            return { dataHandles: [handle] };
+          }
+          throw error;
+        }
+      },
+    },
+  },
+};

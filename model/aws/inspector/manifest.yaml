@@ -1,0 +1,19 @@
+# Auto-generated manifest. Re-generate with the appropriate deno task.
+manifestVersion: 1
+name: "@swamp/aws/inspector"
+version: "2026.03.19.1"
+description: "AWS INSPECTOR infrastructure models"
+labels:
+  - aws
+  - inspector
+  - cloud
+  - infrastructure
+releaseNotes: |
+  - Updated: assessment_target, assessment_template, resource_group
+models:
+  - assessment_target.ts
+  - assessment_template.ts
+  - resource_group.ts
+additionalFiles:
+  - LICENSE.txt
+  - README.md

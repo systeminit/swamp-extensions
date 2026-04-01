@@ -1,0 +1,44 @@
+# Auto-generated manifest. Re-generate with the appropriate deno task.
+manifestVersion: 1
+name: "@swamp/aws/iot"
+version: "2026.03.19.1"
+description: "AWS IOT infrastructure models"
+labels:
+  - aws
+  - iot
+  - cloud
+  - infrastructure
+releaseNotes: |
+  - Updated: account_audit_configuration, authorizer, billing_group, cacertificate, certificate, certificate_provider, command, custom_metric, dimension, domain_configuration, encryption_configuration, fleet_metric, job_template, logging, mitigation_action, policy, provisioning_template, resource_specific_logging, role_alias, scheduled_audit, security_profile, software_package, software_package_version, thing, thing_group, thing_type, topic_rule, topic_rule_destination
+models:
+  - account_audit_configuration.ts
+  - authorizer.ts
+  - billing_group.ts
+  - cacertificate.ts
+  - certificate.ts
+  - certificate_provider.ts
+  - command.ts
+  - custom_metric.ts
+  - dimension.ts
+  - domain_configuration.ts
+  - encryption_configuration.ts
+  - fleet_metric.ts
+  - job_template.ts
+  - logging.ts
+  - mitigation_action.ts
+  - policy.ts
+  - provisioning_template.ts
+  - resource_specific_logging.ts
+  - role_alias.ts
+  - scheduled_audit.ts
+  - security_profile.ts
+  - software_package.ts
+  - software_package_version.ts
+  - thing.ts
+  - thing_group.ts
+  - thing_type.ts
+  - topic_rule.ts
+  - topic_rule_destination.ts
+additionalFiles:
+  - LICENSE.txt
+  - README.md

@@ -1,0 +1,269 @@
+// Auto-generated extension model for @swamp/aws/shield/protection-group
+// Do not edit manually. Re-generate with: deno task generate:aws
+
+// deno-lint-ignore-file no-explicit-any
+
+import { z } from "zod";
+import {
+  createResource,
+  deleteResource,
+  isResourceNotFoundError,
+  readResource,
+  updateResource,
+} from "./_lib/aws.ts";
+
+export const TagSchema = z.object({
+  Key: z.string().min(1).max(128).describe(
+    'Part of the key:value pair that defines a tag. You can use a tag key to describe a category of information, such as "customer." Tag keys are case-sensitive.',
+  ),
+  Value: z.string().min(0).max(256).describe(
+    'Part of the key:value pair that defines a tag. You can use a tag value to describe a specific value within a category, such as "companyA" or "companyB." Tag values are case-sensitive.',
+  ),
+});
+
+const GlobalArgsSchema = z.object({
+  name: z.string().describe(
+    "Instance name for this resource (used as the unique identifier in the factory pattern)",
+  ),
+  ProtectionGroupId: z.string().min(1).max(36).regex(
+    new RegExp("[a-zA-Z0-9\\-]*"),
+  ).describe(
+    "The name of the protection group. You use this to identify the protection group in lists and to manage the protection group, for example to update, delete, or describe it.",
+  ),
+  Aggregation: z.enum(["SUM", "MEAN", "MAX"]).describe(
+    "Defines how AWS Shield combines resource data for the group in order to detect, mitigate, and report events. * Sum - Use the total traffic across the group. This is a good choice for most cases. Examples include Elastic IP addresses for EC2 instances that scale manually or automatically. * Mean - Use the average of the traffic across the group. This is a good choice for resources that share traffic uniformly. Examples include accelerators and load balancers. * Max - Use the highest traffic from each resource. This is useful for resources that don't share traffic and for resources that share that traffic in a non-uniform way. Examples include Amazon CloudFront and origin resources for CloudFront distributions.",
+  ),
+  Pattern: z.enum(["ALL", "ARBITRARY", "BY_RESOURCE_TYPE"]).describe(
+    "The criteria to use to choose the protected resources for inclusion in the group. You can include all resources that have protections, provide a list of resource Amazon Resource Names (ARNs), or include all resources of a specified resource type.",
+  ),
+  Members: z.array(z.string().min(1).max(2048)).describe(
+    "The Amazon Resource Names (ARNs) of the resources to include in the protection group. You must set this when you set `Pattern` to `ARBITRARY` and you must not set it for any other `Pattern` setting.",
+  ).optional(),
+  ResourceType: z.enum([
+    "CLOUDFRONT_DISTRIBUTION",
+    "ROUTE_53_HOSTED_ZONE",
+    "ELASTIC_IP_ALLOCATION",
+    "CLASSIC_LOAD_BALANCER",
+    "APPLICATION_LOAD_BALANCER",
+    "GLOBAL_ACCELERATOR",
+  ]).describe(
+    "The resource type to include in the protection group. All protected resources of this type are included in the protection group. Newly protected resources of this type are automatically added to the group. You must set this when you set `Pattern` to `BY_RESOURCE_TYPE` and you must not set it for any other `Pattern` setting.",
+  ).optional(),
+  Tags: z.array(TagSchema).describe(
+    "One or more tag key-value pairs for the Protection object.",
+  ).optional(),
+});
+
+const StateSchema = z.object({
+  ProtectionGroupId: z.string().optional(),
+  ProtectionGroupArn: z.string(),
+  Aggregation: z.string().optional(),
+  Pattern: z.string().optional(),
+  Members: z.array(z.string()).optional(),
+  ResourceType: z.string().optional(),
+  Tags: z.array(TagSchema).optional(),
+}).passthrough();
+
+type StateData = z.infer<typeof StateSchema>;
+
+const InputsSchema = z.object({
+  name: z.string().optional(),
+  ProtectionGroupId: z.string().min(1).max(36).regex(
+    new RegExp("[a-zA-Z0-9\\-]*"),
+  ).describe(
+    "The name of the protection group. You use this to identify the protection group in lists and to manage the protection group, for example to update, delete, or describe it.",
+  ).optional(),
+  Aggregation: z.enum(["SUM", "MEAN", "MAX"]).describe(
+    "Defines how AWS Shield combines resource data for the group in order to detect, mitigate, and report events. * Sum - Use the total traffic across the group. This is a good choice for most cases. Examples include Elastic IP addresses for EC2 instances that scale manually or automatically. * Mean - Use the average of the traffic across the group. This is a good choice for resources that share traffic uniformly. Examples include accelerators and load balancers. * Max - Use the highest traffic from each resource. This is useful for resources that don't share traffic and for resources that share that traffic in a non-uniform way. Examples include Amazon CloudFront and origin resources for CloudFront distributions.",
+  ).optional(),
+  Pattern: z.enum(["ALL", "ARBITRARY", "BY_RESOURCE_TYPE"]).describe(
+    "The criteria to use to choose the protected resources for inclusion in the group. You can include all resources that have protections, provide a list of resource Amazon Resource Names (ARNs), or include all resources of a specified resource type.",
+  ).optional(),
+  Members: z.array(z.string().min(1).max(2048)).describe(
+    "The Amazon Resource Names (ARNs) of the resources to include in the protection group. You must set this when you set `Pattern` to `ARBITRARY` and you must not set it for any other `Pattern` setting.",
+  ).optional(),
+  ResourceType: z.enum([
+    "CLOUDFRONT_DISTRIBUTION",
+    "ROUTE_53_HOSTED_ZONE",
+    "ELASTIC_IP_ALLOCATION",
+    "CLASSIC_LOAD_BALANCER",
+    "APPLICATION_LOAD_BALANCER",
+    "GLOBAL_ACCELERATOR",
+  ]).describe(
+    "The resource type to include in the protection group. All protected resources of this type are included in the protection group. Newly protected resources of this type are automatically added to the group. You must set this when you set `Pattern` to `BY_RESOURCE_TYPE` and you must not set it for any other `Pattern` setting.",
+  ).optional(),
+  Tags: z.array(TagSchema).describe(
+    "One or more tag key-value pairs for the Protection object.",
+  ).optional(),
+});
+
+export const model = {
+  type: "@swamp/aws/shield/protection-group",
+  version: "2026.03.19.1",
+  globalArguments: GlobalArgsSchema,
+  inputsSchema: InputsSchema,
+  resources: {
+    state: {
+      description: "Shield ProtectionGroup resource state",
+      schema: StateSchema,
+      lifetime: "infinite",
+      garbageCollection: 10,
+    },
+  },
+  methods: {
+    create: {
+      description: "Create a Shield ProtectionGroup",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const desiredState: Record<string, unknown> = {};
+        for (const [key, value] of Object.entries(g)) {
+          if (key === "name") continue;
+          if (value !== undefined) desiredState[key] = value;
+        }
+        const result = await createResource(
+          "AWS::Shield::ProtectionGroup",
+          desiredState,
+        ) as StateData;
+        const instanceName = g.name?.toString() ?? "current";
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    get: {
+      description: "Get a Shield ProtectionGroup",
+      arguments: z.object({
+        identifier: z.string().describe(
+          "The primary identifier of the Shield ProtectionGroup",
+        ),
+      }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const result = await readResource(
+          "AWS::Shield::ProtectionGroup",
+          args.identifier,
+        ) as StateData;
+        const instanceName = context.globalArgs.name?.toString() ??
+          args.identifier;
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    update: {
+      description: "Update a Shield ProtectionGroup",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const instanceName = g.name?.toString() ?? "current";
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          instanceName,
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        const identifier = existing.ProtectionGroupArn?.toString();
+        if (!identifier) {
+          throw new Error("No identifier found in existing state");
+        }
+        const currentState = await readResource(
+          "AWS::Shield::ProtectionGroup",
+          identifier,
+        ) as StateData;
+        const desiredState: Record<string, unknown> = { ...currentState };
+        for (const [key, value] of Object.entries(g)) {
+          if (key === "name") continue;
+          if (value !== undefined) desiredState[key] = value;
+        }
+        const result = await updateResource(
+          "AWS::Shield::ProtectionGroup",
+          identifier,
+          currentState,
+          desiredState,
+          ["ProtectionGroupId"],
+        );
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    delete: {
+      description: "Delete a Shield ProtectionGroup",
+      arguments: z.object({
+        identifier: z.string().describe(
+          "The primary identifier of the Shield ProtectionGroup",
+        ),
+      }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const { existed } = await deleteResource(
+          "AWS::Shield::ProtectionGroup",
+          args.identifier,
+        );
+        const instanceName = context.globalArgs.name?.toString() ??
+          args.identifier;
+        const handle = await context.writeResource("state", instanceName, {
+          identifier: args.identifier,
+          existed,
+          status: existed ? "deleted" : "not_found",
+          deletedAt: new Date().toISOString(),
+        });
+        return { dataHandles: [handle] };
+      },
+    },
+    sync: {
+      description: "Sync Shield ProtectionGroup state from AWS",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const instanceName = g.name?.toString() ?? "current";
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          instanceName,
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        const identifier = existing.ProtectionGroupArn?.toString();
+        if (!identifier) {
+          throw new Error("No identifier found in existing state");
+        }
+        try {
+          const result = await readResource(
+            "AWS::Shield::ProtectionGroup",
+            identifier,
+          ) as StateData;
+          const handle = await context.writeResource(
+            "state",
+            instanceName,
+            result,
+          );
+          return { dataHandles: [handle] };
+        } catch (error: unknown) {
+          if (isResourceNotFoundError(error)) {
+            const handle = await context.writeResource("state", instanceName, {
+              identifier,
+              status: "not_found",
+              syncedAt: new Date().toISOString(),
+            });
+            return { dataHandles: [handle] };
+          }
+          throw error;
+        }
+      },
+    },
+  },
+};

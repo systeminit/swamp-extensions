@@ -1,0 +1,27 @@
+# Auto-generated manifest. Re-generate with the appropriate deno task.
+manifestVersion: 1
+name: "@swamp/aws/medialive"
+version: "2026.03.19.1"
+description: "AWS MEDIALIVE infrastructure models"
+labels:
+  - aws
+  - medialive
+  - cloud
+  - infrastructure
+releaseNotes: |
+  - Updated: channel_placement_group, cloud_watch_alarm_template, cloud_watch_alarm_template_group, cluster, event_bridge_rule_template, event_bridge_rule_template_group, multiplex, multiplexprogram, network, sdi_source, signal_map
+models:
+  - channel_placement_group.ts
+  - cloud_watch_alarm_template.ts
+  - cloud_watch_alarm_template_group.ts
+  - cluster.ts
+  - event_bridge_rule_template.ts
+  - event_bridge_rule_template_group.ts
+  - multiplex.ts
+  - multiplexprogram.ts
+  - network.ts
+  - sdi_source.ts
+  - signal_map.ts
+additionalFiles:
+  - LICENSE.txt
+  - README.md

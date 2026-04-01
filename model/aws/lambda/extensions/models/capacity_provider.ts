@@ -1,0 +1,366 @@
+// Auto-generated extension model for @swamp/aws/lambda/capacity-provider
+// Do not edit manually. Re-generate with: deno task generate:aws
+
+// deno-lint-ignore-file no-explicit-any
+
+import { z } from "zod";
+import {
+  createResource,
+  deleteResource,
+  isResourceNotFoundError,
+  readResource,
+  updateResource,
+} from "./_lib/aws.ts";
+
+export const TargetTrackingScalingPolicySchema = z.object({
+  PredefinedMetricType: z.enum(["LambdaCapacityProviderAverageCPUUtilization"])
+    .describe("The predefined metric type to track for scaling decisions."),
+  TargetValue: z.number().min(0).describe(
+    "The target value for the metric that the scaling policy attempts to maintain through scaling actions.",
+  ),
+});
+
+export const TagSchema = z.object({
+  Key: z.string().min(1).max(128).describe("The key name of the tag."),
+  Value: z.string().min(0).max(256).describe("The value for the tag.")
+    .optional(),
+});
+
+const GlobalArgsSchema = z.object({
+  CapacityProviderName: z.string().min(1).max(140).regex(
+    new RegExp(
+      "^(arn:aws[a-zA-Z-]*:lambda:(eusc-)?[a-z]{2}((-gov)|(-iso([a-z]?)))?-[a-z]+-\\d{1}:\\d{12}:capacity-provider:[a-zA-Z0-9-_]+)|[a-zA-Z0-9-_]+$",
+    ),
+  ).optional(),
+  CapacityProviderScalingConfig: z.object({
+    MaxVCpuCount: z.number().int().min(2).max(15000).describe(
+      "The maximum number of vCPUs that the capacity provider can provision across all compute instances.",
+    ).optional(),
+    ScalingMode: z.enum(["Auto", "Manual"]).describe(
+      "The scaling mode that determines how the capacity provider responds to changes in demand.",
+    ).optional(),
+    ScalingPolicies: z.array(TargetTrackingScalingPolicySchema).describe(
+      "A list of target tracking scaling policies for the capacity provider.",
+    ).optional(),
+  }).describe("The scaling configuration for the capacity provider.")
+    .optional(),
+  InstanceRequirements: z.object({
+    Architectures: z.array(z.enum(["x86_64", "arm64"])).describe(
+      "A list of supported CPU architectures for compute instances. Valid values include x86_64 and arm64.",
+    ).optional(),
+    AllowedInstanceTypes: z.array(
+      z.string().min(1).max(30).regex(new RegExp("^[a-zA-Z0-9\\.\\-]+$")),
+    ).describe(
+      "A list of EC2 instance types that the capacity provider is allowed to use. If not specified, all compatible instance types are allowed.",
+    ).optional(),
+    ExcludedInstanceTypes: z.array(
+      z.string().min(1).max(30).regex(new RegExp("^[a-zA-Z0-9\\.\\-]+$")),
+    ).describe(
+      "A list of EC2 instance types that the capacity provider should not use, even if they meet other requirements.",
+    ).optional(),
+  }).describe(
+    "The instance requirements for compute resources managed by the capacity provider.",
+  ).optional(),
+  KmsKeyArn: z.string().min(0).max(10000).regex(
+    new RegExp("^(arn:(aws[a-zA-Z-]*)?:[a-z0-9-.]+:.*)|()$"),
+  ).describe(
+    "The ARN of the KMS key used to encrypt the capacity provider's resources.",
+  ).optional(),
+  PermissionsConfig: z.object({
+    CapacityProviderOperatorRoleArn: z.string().min(0).max(10000).regex(
+      new RegExp(
+        "^arn:(aws[a-zA-Z-]*)?:iam::\\d{12}:role/?[a-zA-Z_0-9+=,.@\\-_/]+$",
+      ),
+    ).describe(
+      "The ARN of the IAM role that the capacity provider uses to manage compute instances and other AWS resources.",
+    ),
+  }).describe("The permissions configuration for the capacity provider."),
+  Tags: z.array(TagSchema).describe(
+    "A key-value pair that provides metadata for the capacity provider.",
+  ).optional(),
+  VpcConfig: z.object({
+    SubnetIds: z.array(
+      z.string().min(0).max(1024).regex(new RegExp("^subnet-[0-9a-z]*$")),
+    ).describe(
+      "A list of subnet IDs where the capacity provider launches compute instances.",
+    ),
+    SecurityGroupIds: z.array(
+      z.string().min(0).max(1024).regex(new RegExp("^sg-[0-9a-zA-Z]*$")),
+    ).describe(
+      "A list of security group IDs that control network access for compute instances managed by the capacity provider.",
+    ),
+  }).describe("The VPC configuration for the capacity provider."),
+});
+
+const StateSchema = z.object({
+  Arn: z.string().optional(),
+  CapacityProviderName: z.string(),
+  CapacityProviderScalingConfig: z.object({
+    MaxVCpuCount: z.number(),
+    ScalingMode: z.string(),
+    ScalingPolicies: z.array(TargetTrackingScalingPolicySchema),
+  }).optional(),
+  InstanceRequirements: z.object({
+    Architectures: z.array(z.string()),
+    AllowedInstanceTypes: z.array(z.string()),
+    ExcludedInstanceTypes: z.array(z.string()),
+  }).optional(),
+  KmsKeyArn: z.string().optional(),
+  PermissionsConfig: z.object({
+    CapacityProviderOperatorRoleArn: z.string(),
+  }).optional(),
+  State: z.string().optional(),
+  Tags: z.array(TagSchema).optional(),
+  VpcConfig: z.object({
+    SubnetIds: z.array(z.string()),
+    SecurityGroupIds: z.array(z.string()),
+  }).optional(),
+}).passthrough();
+
+type StateData = z.infer<typeof StateSchema>;
+
+const InputsSchema = z.object({
+  CapacityProviderName: z.string().min(1).max(140).regex(
+    new RegExp(
+      "^(arn:aws[a-zA-Z-]*:lambda:(eusc-)?[a-z]{2}((-gov)|(-iso([a-z]?)))?-[a-z]+-\\d{1}:\\d{12}:capacity-provider:[a-zA-Z0-9-_]+)|[a-zA-Z0-9-_]+$",
+    ),
+  ).optional(),
+  CapacityProviderScalingConfig: z.object({
+    MaxVCpuCount: z.number().int().min(2).max(15000).describe(
+      "The maximum number of vCPUs that the capacity provider can provision across all compute instances.",
+    ).optional(),
+    ScalingMode: z.enum(["Auto", "Manual"]).describe(
+      "The scaling mode that determines how the capacity provider responds to changes in demand.",
+    ).optional(),
+    ScalingPolicies: z.array(TargetTrackingScalingPolicySchema).describe(
+      "A list of target tracking scaling policies for the capacity provider.",
+    ).optional(),
+  }).describe("The scaling configuration for the capacity provider.")
+    .optional(),
+  InstanceRequirements: z.object({
+    Architectures: z.array(z.enum(["x86_64", "arm64"])).describe(
+      "A list of supported CPU architectures for compute instances. Valid values include x86_64 and arm64.",
+    ).optional(),
+    AllowedInstanceTypes: z.array(
+      z.string().min(1).max(30).regex(new RegExp("^[a-zA-Z0-9\\.\\-]+$")),
+    ).describe(
+      "A list of EC2 instance types that the capacity provider is allowed to use. If not specified, all compatible instance types are allowed.",
+    ).optional(),
+    ExcludedInstanceTypes: z.array(
+      z.string().min(1).max(30).regex(new RegExp("^[a-zA-Z0-9\\.\\-]+$")),
+    ).describe(
+      "A list of EC2 instance types that the capacity provider should not use, even if they meet other requirements.",
+    ).optional(),
+  }).describe(
+    "The instance requirements for compute resources managed by the capacity provider.",
+  ).optional(),
+  KmsKeyArn: z.string().min(0).max(10000).regex(
+    new RegExp("^(arn:(aws[a-zA-Z-]*)?:[a-z0-9-.]+:.*)|()$"),
+  ).describe(
+    "The ARN of the KMS key used to encrypt the capacity provider's resources.",
+  ).optional(),
+  PermissionsConfig: z.object({
+    CapacityProviderOperatorRoleArn: z.string().min(0).max(10000).regex(
+      new RegExp(
+        "^arn:(aws[a-zA-Z-]*)?:iam::\\d{12}:role/?[a-zA-Z_0-9+=,.@\\-_/]+$",
+      ),
+    ).describe(
+      "The ARN of the IAM role that the capacity provider uses to manage compute instances and other AWS resources.",
+    ).optional(),
+  }).describe("The permissions configuration for the capacity provider.")
+    .optional(),
+  Tags: z.array(TagSchema).describe(
+    "A key-value pair that provides metadata for the capacity provider.",
+  ).optional(),
+  VpcConfig: z.object({
+    SubnetIds: z.array(
+      z.string().min(0).max(1024).regex(new RegExp("^subnet-[0-9a-z]*$")),
+    ).describe(
+      "A list of subnet IDs where the capacity provider launches compute instances.",
+    ).optional(),
+    SecurityGroupIds: z.array(
+      z.string().min(0).max(1024).regex(new RegExp("^sg-[0-9a-zA-Z]*$")),
+    ).describe(
+      "A list of security group IDs that control network access for compute instances managed by the capacity provider.",
+    ).optional(),
+  }).describe("The VPC configuration for the capacity provider.").optional(),
+});
+
+export const model = {
+  type: "@swamp/aws/lambda/capacity-provider",
+  version: "2026.03.19.1",
+  globalArguments: GlobalArgsSchema,
+  inputsSchema: InputsSchema,
+  resources: {
+    state: {
+      description: "Lambda CapacityProvider resource state",
+      schema: StateSchema,
+      lifetime: "infinite",
+      garbageCollection: 10,
+    },
+  },
+  methods: {
+    create: {
+      description: "Create a Lambda CapacityProvider",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const desiredState: Record<string, unknown> = {};
+        for (const [key, value] of Object.entries(g)) {
+          if (value !== undefined) desiredState[key] = value;
+        }
+        const result = await createResource(
+          "AWS::Lambda::CapacityProvider",
+          desiredState,
+        ) as StateData;
+        const instanceName =
+          (result.CapacityProviderName ?? g.CapacityProviderName)?.toString() ??
+            "current";
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    get: {
+      description: "Get a Lambda CapacityProvider",
+      arguments: z.object({
+        identifier: z.string().describe(
+          "The primary identifier of the Lambda CapacityProvider",
+        ),
+      }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const result = await readResource(
+          "AWS::Lambda::CapacityProvider",
+          args.identifier,
+        ) as StateData;
+        const instanceName = (result.CapacityProviderName ??
+          context.globalArgs.CapacityProviderName)?.toString() ??
+          args.identifier;
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    update: {
+      description: "Update a Lambda CapacityProvider",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const instanceName = g.CapacityProviderName?.toString() ?? "current";
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          instanceName,
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        const identifier = existing.CapacityProviderName?.toString();
+        if (!identifier) {
+          throw new Error("No identifier found in existing state");
+        }
+        const currentState = await readResource(
+          "AWS::Lambda::CapacityProvider",
+          identifier,
+        ) as StateData;
+        const desiredState: Record<string, unknown> = { ...currentState };
+        for (const [key, value] of Object.entries(g)) {
+          if (value !== undefined) desiredState[key] = value;
+        }
+        const result = await updateResource(
+          "AWS::Lambda::CapacityProvider",
+          identifier,
+          currentState,
+          desiredState,
+          [
+            "CapacityProviderName",
+            "VpcConfig",
+            "InstanceRequirements",
+            "PermissionsConfig",
+            "KmsKeyArn",
+          ],
+        );
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    delete: {
+      description: "Delete a Lambda CapacityProvider",
+      arguments: z.object({
+        identifier: z.string().describe(
+          "The primary identifier of the Lambda CapacityProvider",
+        ),
+      }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const { existed } = await deleteResource(
+          "AWS::Lambda::CapacityProvider",
+          args.identifier,
+        );
+        const instanceName =
+          context.globalArgs.CapacityProviderName?.toString() ??
+            args.identifier;
+        const handle = await context.writeResource("state", instanceName, {
+          identifier: args.identifier,
+          existed,
+          status: existed ? "deleted" : "not_found",
+          deletedAt: new Date().toISOString(),
+        });
+        return { dataHandles: [handle] };
+      },
+    },
+    sync: {
+      description: "Sync Lambda CapacityProvider state from AWS",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const instanceName = g.CapacityProviderName?.toString() ?? "current";
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          instanceName,
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        const identifier = existing.CapacityProviderName?.toString();
+        if (!identifier) {
+          throw new Error("No identifier found in existing state");
+        }
+        try {
+          const result = await readResource(
+            "AWS::Lambda::CapacityProvider",
+            identifier,
+          ) as StateData;
+          const handle = await context.writeResource(
+            "state",
+            instanceName,
+            result,
+          );
+          return { dataHandles: [handle] };
+        } catch (error: unknown) {
+          if (isResourceNotFoundError(error)) {
+            const handle = await context.writeResource("state", instanceName, {
+              identifier,
+              status: "not_found",
+              syncedAt: new Date().toISOString(),
+            });
+            return { dataHandles: [handle] };
+          }
+          throw error;
+        }
+      },
+    },
+  },
+};

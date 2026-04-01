@@ -1,0 +1,20 @@
+# Auto-generated manifest. Re-generate with the appropriate deno task.
+manifestVersion: 1
+name: "@swamp/aws/billingconductor"
+version: "2026.03.19.1"
+description: "AWS BILLINGCONDUCTOR infrastructure models"
+labels:
+  - aws
+  - billingconductor
+  - cloud
+  - infrastructure
+releaseNotes: |
+  - Updated: billing_group, custom_line_item, pricing_plan, pricing_rule
+models:
+  - billing_group.ts
+  - custom_line_item.ts
+  - pricing_plan.ts
+  - pricing_rule.ts
+additionalFiles:
+  - LICENSE.txt
+  - README.md

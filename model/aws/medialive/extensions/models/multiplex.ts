@@ -1,0 +1,267 @@
+// Auto-generated extension model for @swamp/aws/medialive/multiplex
+// Do not edit manually. Re-generate with: deno task generate:aws
+
+// deno-lint-ignore-file no-explicit-any
+
+import { z } from "zod";
+import {
+  createResource,
+  deleteResource,
+  isResourceNotFoundError,
+  readResource,
+  updateResource,
+} from "./_lib/aws.ts";
+
+export const MultiplexOutputDestinationSchema = z.object({
+  MultiplexMediaConnectOutputDestinationSettings: z.object({
+    EntitlementArn: z.string().min(1).describe(
+      "The MediaConnect entitlement ARN available as a Flow source.",
+    ).optional(),
+  }).describe("Multiplex MediaConnect output destination settings.").optional(),
+});
+
+export const TagsSchema = z.object({
+  Key: z.string().optional(),
+  Value: z.string().optional(),
+});
+
+const GlobalArgsSchema = z.object({
+  name: z.string().describe(
+    "Instance name for this resource (used as the unique identifier in the factory pattern)",
+  ),
+  AvailabilityZones: z.array(z.string()).describe(
+    "A list of availability zones for the multiplex.",
+  ),
+  Destinations: z.array(MultiplexOutputDestinationSchema).describe(
+    "A list of the multiplex output destinations.",
+  ).optional(),
+  MultiplexSettings: z.object({
+    MaximumVideoBufferDelayMilliseconds: z.number().int().min(800).max(3000)
+      .describe("Maximum video buffer delay in milliseconds.").optional(),
+    TransportStreamBitrate: z.number().int().min(1000000).max(100000000)
+      .describe("Transport stream bit rate."),
+    TransportStreamId: z.number().int().min(0).max(65535).describe(
+      "Transport stream ID.",
+    ),
+    TransportStreamReservedBitrate: z.number().int().min(0).max(100000000)
+      .describe("Transport stream reserved bit rate.").optional(),
+  }).describe("Configuration for a multiplex event."),
+  Name: z.string().describe("Name of multiplex."),
+  Tags: z.array(TagsSchema).describe("A collection of key-value pairs.")
+    .optional(),
+});
+
+const StateSchema = z.object({
+  Arn: z.string().optional(),
+  AvailabilityZones: z.array(z.string()).optional(),
+  Destinations: z.array(MultiplexOutputDestinationSchema).optional(),
+  Id: z.string(),
+  MultiplexSettings: z.object({
+    MaximumVideoBufferDelayMilliseconds: z.number(),
+    TransportStreamBitrate: z.number(),
+    TransportStreamId: z.number(),
+    TransportStreamReservedBitrate: z.number(),
+  }).optional(),
+  Name: z.string().optional(),
+  PipelinesRunningCount: z.number().optional(),
+  ProgramCount: z.number().optional(),
+  State: z.string().optional(),
+  Tags: z.array(TagsSchema).optional(),
+}).passthrough();
+
+type StateData = z.infer<typeof StateSchema>;
+
+const InputsSchema = z.object({
+  name: z.string().optional(),
+  AvailabilityZones: z.array(z.string()).describe(
+    "A list of availability zones for the multiplex.",
+  ).optional(),
+  Destinations: z.array(MultiplexOutputDestinationSchema).describe(
+    "A list of the multiplex output destinations.",
+  ).optional(),
+  MultiplexSettings: z.object({
+    MaximumVideoBufferDelayMilliseconds: z.number().int().min(800).max(3000)
+      .describe("Maximum video buffer delay in milliseconds.").optional(),
+    TransportStreamBitrate: z.number().int().min(1000000).max(100000000)
+      .describe("Transport stream bit rate.").optional(),
+    TransportStreamId: z.number().int().min(0).max(65535).describe(
+      "Transport stream ID.",
+    ).optional(),
+    TransportStreamReservedBitrate: z.number().int().min(0).max(100000000)
+      .describe("Transport stream reserved bit rate.").optional(),
+  }).describe("Configuration for a multiplex event.").optional(),
+  Name: z.string().describe("Name of multiplex.").optional(),
+  Tags: z.array(TagsSchema).describe("A collection of key-value pairs.")
+    .optional(),
+});
+
+export const model = {
+  type: "@swamp/aws/medialive/multiplex",
+  version: "2026.03.19.1",
+  globalArguments: GlobalArgsSchema,
+  inputsSchema: InputsSchema,
+  resources: {
+    state: {
+      description: "MediaLive Multiplex resource state",
+      schema: StateSchema,
+      lifetime: "infinite",
+      garbageCollection: 10,
+    },
+  },
+  methods: {
+    create: {
+      description: "Create a MediaLive Multiplex",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const desiredState: Record<string, unknown> = {};
+        for (const [key, value] of Object.entries(g)) {
+          if (key === "name") continue;
+          if (value !== undefined) desiredState[key] = value;
+        }
+        const result = await createResource(
+          "AWS::MediaLive::Multiplex",
+          desiredState,
+        ) as StateData;
+        const instanceName = g.name?.toString() ?? "current";
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    get: {
+      description: "Get a MediaLive Multiplex",
+      arguments: z.object({
+        identifier: z.string().describe(
+          "The primary identifier of the MediaLive Multiplex",
+        ),
+      }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const result = await readResource(
+          "AWS::MediaLive::Multiplex",
+          args.identifier,
+        ) as StateData;
+        const instanceName = context.globalArgs.name?.toString() ??
+          args.identifier;
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    update: {
+      description: "Update a MediaLive Multiplex",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const instanceName = g.name?.toString() ?? "current";
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          instanceName,
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        const identifier = existing.Id?.toString();
+        if (!identifier) {
+          throw new Error("No identifier found in existing state");
+        }
+        const currentState = await readResource(
+          "AWS::MediaLive::Multiplex",
+          identifier,
+        ) as StateData;
+        const desiredState: Record<string, unknown> = { ...currentState };
+        for (const [key, value] of Object.entries(g)) {
+          if (key === "name") continue;
+          if (value !== undefined) desiredState[key] = value;
+        }
+        const result = await updateResource(
+          "AWS::MediaLive::Multiplex",
+          identifier,
+          currentState,
+          desiredState,
+          ["AvailabilityZones"],
+        );
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    delete: {
+      description: "Delete a MediaLive Multiplex",
+      arguments: z.object({
+        identifier: z.string().describe(
+          "The primary identifier of the MediaLive Multiplex",
+        ),
+      }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const { existed } = await deleteResource(
+          "AWS::MediaLive::Multiplex",
+          args.identifier,
+        );
+        const instanceName = context.globalArgs.name?.toString() ??
+          args.identifier;
+        const handle = await context.writeResource("state", instanceName, {
+          identifier: args.identifier,
+          existed,
+          status: existed ? "deleted" : "not_found",
+          deletedAt: new Date().toISOString(),
+        });
+        return { dataHandles: [handle] };
+      },
+    },
+    sync: {
+      description: "Sync MediaLive Multiplex state from AWS",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const instanceName = g.name?.toString() ?? "current";
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          instanceName,
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        const identifier = existing.Id?.toString();
+        if (!identifier) {
+          throw new Error("No identifier found in existing state");
+        }
+        try {
+          const result = await readResource(
+            "AWS::MediaLive::Multiplex",
+            identifier,
+          ) as StateData;
+          const handle = await context.writeResource(
+            "state",
+            instanceName,
+            result,
+          );
+          return { dataHandles: [handle] };
+        } catch (error: unknown) {
+          if (isResourceNotFoundError(error)) {
+            const handle = await context.writeResource("state", instanceName, {
+              identifier,
+              status: "not_found",
+              syncedAt: new Date().toISOString(),
+            });
+            return { dataHandles: [handle] };
+          }
+          throw error;
+        }
+      },
+    },
+  },
+};

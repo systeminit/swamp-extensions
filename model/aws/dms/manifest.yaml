@@ -1,0 +1,21 @@
+# Auto-generated manifest. Re-generate with the appropriate deno task.
+manifestVersion: 1
+name: "@swamp/aws/dms"
+version: "2026.03.19.1"
+description: "AWS DMS infrastructure models"
+labels:
+  - aws
+  - dms
+  - cloud
+  - infrastructure
+releaseNotes: |
+  - Updated: data_migration, data_provider, instance_profile, migration_project, replication_config
+models:
+  - data_migration.ts
+  - data_provider.ts
+  - instance_profile.ts
+  - migration_project.ts
+  - replication_config.ts
+additionalFiles:
+  - LICENSE.txt
+  - README.md

@@ -1,0 +1,19 @@
+# Auto-generated manifest. Re-generate with the appropriate deno task.
+manifestVersion: 1
+name: "@swamp/aws/redshiftserverless"
+version: "2026.03.19.1"
+description: "AWS REDSHIFTSERVERLESS infrastructure models"
+labels:
+  - aws
+  - redshiftserverless
+  - cloud
+  - infrastructure
+releaseNotes: |
+  - Updated: namespace, snapshot, workgroup
+models:
+  - namespace.ts
+  - snapshot.ts
+  - workgroup.ts
+additionalFiles:
+  - LICENSE.txt
+  - README.md

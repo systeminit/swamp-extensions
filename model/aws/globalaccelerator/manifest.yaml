@@ -1,0 +1,20 @@
+# Auto-generated manifest. Re-generate with the appropriate deno task.
+manifestVersion: 1
+name: "@swamp/aws/globalaccelerator"
+version: "2026.03.19.1"
+description: "AWS GLOBALACCELERATOR infrastructure models"
+labels:
+  - aws
+  - globalaccelerator
+  - cloud
+  - infrastructure
+releaseNotes: |
+  - Updated: accelerator, cross_account_attachment, endpoint_group, listener
+models:
+  - accelerator.ts
+  - cross_account_attachment.ts
+  - endpoint_group.ts
+  - listener.ts
+additionalFiles:
+  - LICENSE.txt
+  - README.md

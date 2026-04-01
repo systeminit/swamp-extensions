@@ -1,0 +1,22 @@
+# Auto-generated manifest. Re-generate with the appropriate deno task.
+manifestVersion: 1
+name: "@swamp/aws/databrew"
+version: "2026.03.19.1"
+description: "AWS DATABREW infrastructure models"
+labels:
+  - aws
+  - databrew
+  - cloud
+  - infrastructure
+releaseNotes: |
+  - Updated: dataset, job, project, recipe, ruleset, schedule
+models:
+  - dataset.ts
+  - job.ts
+  - project.ts
+  - recipe.ts
+  - ruleset.ts
+  - schedule.ts
+additionalFiles:
+  - LICENSE.txt
+  - README.md

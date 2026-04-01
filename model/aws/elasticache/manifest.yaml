@@ -1,0 +1,23 @@
+# Auto-generated manifest. Re-generate with the appropriate deno task.
+manifestVersion: 1
+name: "@swamp/aws/elasticache"
+version: "2026.03.19.1"
+description: "AWS ELASTICACHE infrastructure models"
+labels:
+  - aws
+  - elasticache
+  - cloud
+  - infrastructure
+releaseNotes: |
+  - Updated: global_replication_group, parameter_group, replication_group, serverless_cache, subnet_group, user, user_group
+models:
+  - global_replication_group.ts
+  - parameter_group.ts
+  - replication_group.ts
+  - serverless_cache.ts
+  - subnet_group.ts
+  - user.ts
+  - user_group.ts
+additionalFiles:
+  - LICENSE.txt
+  - README.md

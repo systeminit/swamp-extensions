@@ -1,0 +1,354 @@
+// Auto-generated extension model for @swamp/aws/ec2/subnet
+// Do not edit manually. Re-generate with: deno task generate:aws
+
+// deno-lint-ignore-file no-explicit-any
+
+import { z } from "zod";
+import {
+  createResource,
+  deleteResource,
+  isResourceNotFoundError,
+  readResource,
+  updateResource,
+} from "./_lib/aws.ts";
+
+export const TagSchema = z.object({
+  Value: z.string().describe("The tag value."),
+  Key: z.string().describe("The tag key."),
+});
+
+const GlobalArgsSchema = z.object({
+  name: z.string().describe(
+    "Instance name for this resource (used as the unique identifier in the factory pattern)",
+  ),
+  AssignIpv6AddressOnCreation: z.boolean().describe(
+    "Indicates whether a network interface created in this subnet receives an IPv6 address. The default value is false. If you specify AssignIpv6AddressOnCreation, you must also specify an IPv6 CIDR block.",
+  ).optional(),
+  VpcId: z.string().describe(
+    "The ID of the VPC the subnet is in. If you update this property, you must also update the CidrBlock property.",
+  ),
+  MapPublicIpOnLaunch: z.boolean().describe(
+    "Indicates whether instances launched in this subnet receive a public IPv4 address. The default value is false. AWS charges for all public IPv4 addresses, including public IPv4 addresses associated with running instances and Elastic IP addresses. For more information, see the *Public IPv4 Address* tab on the [VPC pricing page](https://docs.aws.amazon.com/vpc/pricing/).",
+  ).optional(),
+  EnableLniAtDeviceIndex: z.number().int().describe(
+    "Indicates the device position for local network interfaces in this subnet. For example, 1 indicates local network interfaces in this subnet are the secondary network interface (eth1).",
+  ).optional(),
+  AvailabilityZone: z.string().describe(
+    "The Availability Zone of the subnet. If you update this property, you must also update the CidrBlock property.",
+  ).optional(),
+  AvailabilityZoneId: z.string().describe("The AZ ID of the subnet.")
+    .optional(),
+  CidrBlock: z.string().describe(
+    "The IPv4 CIDR block assigned to the subnet. If you update this property, we create a new subnet, and then delete the existing one.",
+  ).optional(),
+  Ipv6CidrBlock: z.string().describe(
+    "The IPv6 CIDR block. If you specify AssignIpv6AddressOnCreation, you must also specify an IPv6 CIDR block.",
+  ).optional(),
+  OutpostArn: z.string().describe(
+    "The Amazon Resource Name (ARN) of the Outpost.",
+  ).optional(),
+  Ipv6Native: z.boolean().describe(
+    "Indicates whether this is an IPv6 only subnet. For more information, see [Subnet basics](https://docs.aws.amazon.com/vpc/latest/userguide/VPC_Subnets.html#subnet-basics) in the *User Guide*.",
+  ).optional(),
+  EnableDns64: z.boolean().describe(
+    "Indicates whether DNS queries made to the Amazon-provided DNS Resolver in this subnet should return synthetic IPv6 addresses for IPv4-only destinations. You must first configure a NAT gateway in a public subnet (separate from the subnet containing the IPv6-only workloads). For example, the subnet containing the NAT gateway should have a 0.0.0.0/0 route pointing to the internet gateway. For more information, see [Configure DNS64 and NAT64](https://docs.aws.amazon.com/vpc/latest/userguide/nat-gateway-nat64-dns64.html#nat-gateway-nat64-dns64-walkthrough) in the *User Guide*.",
+  ).optional(),
+  PrivateDnsNameOptionsOnLaunch: z.object({
+    HostnameType: z.string().optional(),
+    EnableResourceNameDnsARecord: z.boolean().optional(),
+    EnableResourceNameDnsAAAARecord: z.boolean().optional(),
+  }).describe(
+    "The hostname type for EC2 instances launched into this subnet and how DNS A and AAAA record queries to the instances should be handled. For more information, see [Amazon EC2 instance hostname types](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-instance-naming.html) in the *User Guide*. Available options: EnableResourceNameDnsAAAARecord (true | false) EnableResourceNameDnsARecord (true | false) HostnameType (ip-name | resource-name)",
+  ).optional(),
+  Tags: z.array(TagSchema).describe("Any tags assigned to the subnet.")
+    .optional(),
+  Ipv4IpamPoolId: z.string().describe("An IPv4 IPAM pool ID for the subnet.")
+    .optional(),
+  Ipv4NetmaskLength: z.number().int().describe(
+    "An IPv4 netmask length for the subnet.",
+  ).optional(),
+  Ipv6IpamPoolId: z.string().describe("An IPv6 IPAM pool ID for the subnet.")
+    .optional(),
+  Ipv6NetmaskLength: z.number().int().describe(
+    "An IPv6 netmask length for the subnet.",
+  ).optional(),
+  BlockPublicAccessStates: z.object({
+    InternetGatewayBlockMode: z.string().describe(
+      "The mode of VPC BPA. Options here are off, block-bidirectional, block-ingress",
+    ).optional(),
+  }).optional(),
+});
+
+const StateSchema = z.object({
+  AssignIpv6AddressOnCreation: z.boolean().optional(),
+  VpcId: z.string().optional(),
+  MapPublicIpOnLaunch: z.boolean().optional(),
+  EnableLniAtDeviceIndex: z.number().optional(),
+  NetworkAclAssociationId: z.string().optional(),
+  AvailabilityZone: z.string().optional(),
+  AvailabilityZoneId: z.string().optional(),
+  CidrBlock: z.string().optional(),
+  SubnetId: z.string(),
+  Ipv6CidrBlocks: z.array(z.string()).optional(),
+  Ipv6CidrBlock: z.string().optional(),
+  OutpostArn: z.string().optional(),
+  Ipv6Native: z.boolean().optional(),
+  EnableDns64: z.boolean().optional(),
+  PrivateDnsNameOptionsOnLaunch: z.object({
+    HostnameType: z.string(),
+    EnableResourceNameDnsARecord: z.boolean(),
+    EnableResourceNameDnsAAAARecord: z.boolean(),
+  }).optional(),
+  Tags: z.array(TagSchema).optional(),
+  Ipv4IpamPoolId: z.string().optional(),
+  Ipv4NetmaskLength: z.number().optional(),
+  Ipv6IpamPoolId: z.string().optional(),
+  Ipv6NetmaskLength: z.number().optional(),
+  BlockPublicAccessStates: z.object({
+    InternetGatewayBlockMode: z.string(),
+  }).optional(),
+}).passthrough();
+
+type StateData = z.infer<typeof StateSchema>;
+
+const InputsSchema = z.object({
+  name: z.string().optional(),
+  AssignIpv6AddressOnCreation: z.boolean().describe(
+    "Indicates whether a network interface created in this subnet receives an IPv6 address. The default value is false. If you specify AssignIpv6AddressOnCreation, you must also specify an IPv6 CIDR block.",
+  ).optional(),
+  VpcId: z.string().describe(
+    "The ID of the VPC the subnet is in. If you update this property, you must also update the CidrBlock property.",
+  ).optional(),
+  MapPublicIpOnLaunch: z.boolean().describe(
+    "Indicates whether instances launched in this subnet receive a public IPv4 address. The default value is false. AWS charges for all public IPv4 addresses, including public IPv4 addresses associated with running instances and Elastic IP addresses. For more information, see the *Public IPv4 Address* tab on the [VPC pricing page](https://docs.aws.amazon.com/vpc/pricing/).",
+  ).optional(),
+  EnableLniAtDeviceIndex: z.number().int().describe(
+    "Indicates the device position for local network interfaces in this subnet. For example, 1 indicates local network interfaces in this subnet are the secondary network interface (eth1).",
+  ).optional(),
+  AvailabilityZone: z.string().describe(
+    "The Availability Zone of the subnet. If you update this property, you must also update the CidrBlock property.",
+  ).optional(),
+  AvailabilityZoneId: z.string().describe("The AZ ID of the subnet.")
+    .optional(),
+  CidrBlock: z.string().describe(
+    "The IPv4 CIDR block assigned to the subnet. If you update this property, we create a new subnet, and then delete the existing one.",
+  ).optional(),
+  Ipv6CidrBlock: z.string().describe(
+    "The IPv6 CIDR block. If you specify AssignIpv6AddressOnCreation, you must also specify an IPv6 CIDR block.",
+  ).optional(),
+  OutpostArn: z.string().describe(
+    "The Amazon Resource Name (ARN) of the Outpost.",
+  ).optional(),
+  Ipv6Native: z.boolean().describe(
+    "Indicates whether this is an IPv6 only subnet. For more information, see [Subnet basics](https://docs.aws.amazon.com/vpc/latest/userguide/VPC_Subnets.html#subnet-basics) in the *User Guide*.",
+  ).optional(),
+  EnableDns64: z.boolean().describe(
+    "Indicates whether DNS queries made to the Amazon-provided DNS Resolver in this subnet should return synthetic IPv6 addresses for IPv4-only destinations. You must first configure a NAT gateway in a public subnet (separate from the subnet containing the IPv6-only workloads). For example, the subnet containing the NAT gateway should have a 0.0.0.0/0 route pointing to the internet gateway. For more information, see [Configure DNS64 and NAT64](https://docs.aws.amazon.com/vpc/latest/userguide/nat-gateway-nat64-dns64.html#nat-gateway-nat64-dns64-walkthrough) in the *User Guide*.",
+  ).optional(),
+  PrivateDnsNameOptionsOnLaunch: z.object({
+    HostnameType: z.string().optional(),
+    EnableResourceNameDnsARecord: z.boolean().optional(),
+    EnableResourceNameDnsAAAARecord: z.boolean().optional(),
+  }).describe(
+    "The hostname type for EC2 instances launched into this subnet and how DNS A and AAAA record queries to the instances should be handled. For more information, see [Amazon EC2 instance hostname types](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-instance-naming.html) in the *User Guide*. Available options: EnableResourceNameDnsAAAARecord (true | false) EnableResourceNameDnsARecord (true | false) HostnameType (ip-name | resource-name)",
+  ).optional(),
+  Tags: z.array(TagSchema).describe("Any tags assigned to the subnet.")
+    .optional(),
+  Ipv4IpamPoolId: z.string().describe("An IPv4 IPAM pool ID for the subnet.")
+    .optional(),
+  Ipv4NetmaskLength: z.number().int().describe(
+    "An IPv4 netmask length for the subnet.",
+  ).optional(),
+  Ipv6IpamPoolId: z.string().describe("An IPv6 IPAM pool ID for the subnet.")
+    .optional(),
+  Ipv6NetmaskLength: z.number().int().describe(
+    "An IPv6 netmask length for the subnet.",
+  ).optional(),
+  BlockPublicAccessStates: z.object({
+    InternetGatewayBlockMode: z.string().describe(
+      "The mode of VPC BPA. Options here are off, block-bidirectional, block-ingress",
+    ).optional(),
+  }).optional(),
+});
+
+export const model = {
+  type: "@swamp/aws/ec2/subnet",
+  version: "2026.03.19.1",
+  globalArguments: GlobalArgsSchema,
+  inputsSchema: InputsSchema,
+  resources: {
+    state: {
+      description: "EC2 Subnet resource state",
+      schema: StateSchema,
+      lifetime: "infinite",
+      garbageCollection: 10,
+    },
+  },
+  methods: {
+    create: {
+      description: "Create a EC2 Subnet",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const desiredState: Record<string, unknown> = {};
+        for (const [key, value] of Object.entries(g)) {
+          if (key === "name") continue;
+          if (value !== undefined) desiredState[key] = value;
+        }
+        const result = await createResource(
+          "AWS::EC2::Subnet",
+          desiredState,
+        ) as StateData;
+        const instanceName = g.name?.toString() ?? "current";
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    get: {
+      description: "Get a EC2 Subnet",
+      arguments: z.object({
+        identifier: z.string().describe(
+          "The primary identifier of the EC2 Subnet",
+        ),
+      }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const result = await readResource(
+          "AWS::EC2::Subnet",
+          args.identifier,
+        ) as StateData;
+        const instanceName = context.globalArgs.name?.toString() ??
+          args.identifier;
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    update: {
+      description: "Update a EC2 Subnet",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const instanceName = g.name?.toString() ?? "current";
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          instanceName,
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        const identifier = existing.SubnetId?.toString();
+        if (!identifier) {
+          throw new Error("No identifier found in existing state");
+        }
+        const currentState = await readResource(
+          "AWS::EC2::Subnet",
+          identifier,
+        ) as StateData;
+        const desiredState: Record<string, unknown> = { ...currentState };
+        for (const [key, value] of Object.entries(g)) {
+          if (key === "name") continue;
+          if (value !== undefined) desiredState[key] = value;
+        }
+        const result = await updateResource(
+          "AWS::EC2::Subnet",
+          identifier,
+          currentState,
+          desiredState,
+          [
+            "VpcId",
+            "AvailabilityZone",
+            "AvailabilityZoneId",
+            "CidrBlock",
+            "OutpostArn",
+            "Ipv6Native",
+            "Ipv4IpamPoolId",
+            "Ipv4NetmaskLength",
+            "Ipv6IpamPoolId",
+            "Ipv6NetmaskLength",
+          ],
+        );
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    delete: {
+      description: "Delete a EC2 Subnet",
+      arguments: z.object({
+        identifier: z.string().describe(
+          "The primary identifier of the EC2 Subnet",
+        ),
+      }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const { existed } = await deleteResource(
+          "AWS::EC2::Subnet",
+          args.identifier,
+        );
+        const instanceName = context.globalArgs.name?.toString() ??
+          args.identifier;
+        const handle = await context.writeResource("state", instanceName, {
+          identifier: args.identifier,
+          existed,
+          status: existed ? "deleted" : "not_found",
+          deletedAt: new Date().toISOString(),
+        });
+        return { dataHandles: [handle] };
+      },
+    },
+    sync: {
+      description: "Sync EC2 Subnet state from AWS",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const instanceName = g.name?.toString() ?? "current";
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          instanceName,
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        const identifier = existing.SubnetId?.toString();
+        if (!identifier) {
+          throw new Error("No identifier found in existing state");
+        }
+        try {
+          const result = await readResource(
+            "AWS::EC2::Subnet",
+            identifier,
+          ) as StateData;
+          const handle = await context.writeResource(
+            "state",
+            instanceName,
+            result,
+          );
+          return { dataHandles: [handle] };
+        } catch (error: unknown) {
+          if (isResourceNotFoundError(error)) {
+            const handle = await context.writeResource("state", instanceName, {
+              identifier,
+              status: "not_found",
+              syncedAt: new Date().toISOString(),
+            });
+            return { dataHandles: [handle] };
+          }
+          throw error;
+        }
+      },
+    },
+  },
+};

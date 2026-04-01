@@ -1,0 +1,21 @@
+# Auto-generated manifest. Re-generate with the appropriate deno task.
+manifestVersion: 1
+name: "@swamp/aws/iottwinmaker"
+version: "2026.03.19.1"
+description: "AWS IOTTWINMAKER infrastructure models"
+labels:
+  - aws
+  - iottwinmaker
+  - cloud
+  - infrastructure
+releaseNotes: |
+  - Updated: component_type, entity, scene, sync_job, workspace
+models:
+  - component_type.ts
+  - entity.ts
+  - scene.ts
+  - sync_job.ts
+  - workspace.ts
+additionalFiles:
+  - LICENSE.txt
+  - README.md

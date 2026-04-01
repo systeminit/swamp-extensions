@@ -1,0 +1,18 @@
+# Auto-generated manifest. Re-generate with the appropriate deno task.
+manifestVersion: 1
+name: "@swamp/aws/ram"
+version: "2026.03.19.1"
+description: "AWS RAM infrastructure models"
+labels:
+  - aws
+  - ram
+  - cloud
+  - infrastructure
+releaseNotes: |
+  - Updated: permission, resource_share
+models:
+  - permission.ts
+  - resource_share.ts
+additionalFiles:
+  - LICENSE.txt
+  - README.md

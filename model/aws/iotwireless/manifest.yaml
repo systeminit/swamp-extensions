@@ -1,0 +1,27 @@
+# Auto-generated manifest. Re-generate with the appropriate deno task.
+manifestVersion: 1
+name: "@swamp/aws/iotwireless"
+version: "2026.03.19.1"
+description: "AWS IOTWIRELESS infrastructure models"
+labels:
+  - aws
+  - iotwireless
+  - cloud
+  - infrastructure
+releaseNotes: |
+  - Updated: destination, device_profile, fuota_task, multicast_group, network_analyzer_configuration, partner_account, service_profile, task_definition, wireless_device, wireless_device_import_task, wireless_gateway
+models:
+  - destination.ts
+  - device_profile.ts
+  - fuota_task.ts
+  - multicast_group.ts
+  - network_analyzer_configuration.ts
+  - partner_account.ts
+  - service_profile.ts
+  - task_definition.ts
+  - wireless_device.ts
+  - wireless_device_import_task.ts
+  - wireless_gateway.ts
+additionalFiles:
+  - LICENSE.txt
+  - README.md

@@ -1,0 +1,226 @@
+// Auto-generated extension model for @swamp/aws/datazone/policy-grant
+// Do not edit manually. Re-generate with: deno task generate:aws
+
+// deno-lint-ignore-file no-explicit-any
+
+import { z } from "zod";
+import {
+  createResource,
+  deleteResource,
+  isResourceNotFoundError,
+  readResource,
+} from "./_lib/aws.ts";
+
+const GlobalArgsSchema = z.object({
+  name: z.string().describe(
+    "Instance name for this resource (used as the unique identifier in the factory pattern)",
+  ),
+  Detail: z.string().optional(),
+  DomainIdentifier: z.string().regex(
+    new RegExp("^dzd[-_][a-zA-Z0-9_-]{1,36}$"),
+  ),
+  EntityIdentifier: z.string(),
+  EntityType: z.enum([
+    "DOMAIN_UNIT",
+    "ENVIRONMENT_BLUEPRINT_CONFIGURATION",
+    "ENVIRONMENT_PROFILE",
+    "ASSET_TYPE",
+  ]),
+  PolicyType: z.enum([
+    "CREATE_DOMAIN_UNIT",
+    "OVERRIDE_DOMAIN_UNIT_OWNERS",
+    "ADD_TO_PROJECT_MEMBER_POOL",
+    "OVERRIDE_PROJECT_OWNERS",
+    "CREATE_GLOSSARY",
+    "CREATE_FORM_TYPE",
+    "CREATE_ASSET_TYPE",
+    "CREATE_PROJECT",
+    "CREATE_ENVIRONMENT_PROFILE",
+    "DELEGATE_CREATE_ENVIRONMENT_PROFILE",
+    "CREATE_ENVIRONMENT",
+    "CREATE_ENVIRONMENT_FROM_BLUEPRINT",
+    "CREATE_PROJECT_FROM_PROJECT_PROFILE",
+  ]),
+  Principal: z.string().optional(),
+});
+
+const StateSchema = z.object({
+  Detail: z.string().optional(),
+  DomainIdentifier: z.string(),
+  EntityIdentifier: z.string(),
+  EntityType: z.string(),
+  GrantId: z.string(),
+  CreatedAt: z.string().optional(),
+  CreatedBy: z.string().optional(),
+  PolicyType: z.string(),
+  Principal: z.string().optional(),
+}).passthrough();
+
+type StateData = z.infer<typeof StateSchema>;
+
+const InputsSchema = z.object({
+  name: z.string().optional(),
+  Detail: z.string().optional(),
+  DomainIdentifier: z.string().regex(new RegExp("^dzd[-_][a-zA-Z0-9_-]{1,36}$"))
+    .optional(),
+  EntityIdentifier: z.string().optional(),
+  EntityType: z.enum([
+    "DOMAIN_UNIT",
+    "ENVIRONMENT_BLUEPRINT_CONFIGURATION",
+    "ENVIRONMENT_PROFILE",
+    "ASSET_TYPE",
+  ]).optional(),
+  PolicyType: z.enum([
+    "CREATE_DOMAIN_UNIT",
+    "OVERRIDE_DOMAIN_UNIT_OWNERS",
+    "ADD_TO_PROJECT_MEMBER_POOL",
+    "OVERRIDE_PROJECT_OWNERS",
+    "CREATE_GLOSSARY",
+    "CREATE_FORM_TYPE",
+    "CREATE_ASSET_TYPE",
+    "CREATE_PROJECT",
+    "CREATE_ENVIRONMENT_PROFILE",
+    "DELEGATE_CREATE_ENVIRONMENT_PROFILE",
+    "CREATE_ENVIRONMENT",
+    "CREATE_ENVIRONMENT_FROM_BLUEPRINT",
+    "CREATE_PROJECT_FROM_PROJECT_PROFILE",
+  ]).optional(),
+  Principal: z.string().optional(),
+});
+
+export const model = {
+  type: "@swamp/aws/datazone/policy-grant",
+  version: "2026.03.19.1",
+  globalArguments: GlobalArgsSchema,
+  inputsSchema: InputsSchema,
+  resources: {
+    state: {
+      description: "DataZone PolicyGrant resource state",
+      schema: StateSchema,
+      lifetime: "infinite",
+      garbageCollection: 10,
+    },
+  },
+  methods: {
+    create: {
+      description: "Create a DataZone PolicyGrant",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const desiredState: Record<string, unknown> = {};
+        for (const [key, value] of Object.entries(g)) {
+          if (key === "name") continue;
+          if (value !== undefined) desiredState[key] = value;
+        }
+        const result = await createResource(
+          "AWS::DataZone::PolicyGrant",
+          desiredState,
+        ) as StateData;
+        const instanceName = g.name?.toString() ?? "current";
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    get: {
+      description: "Get a DataZone PolicyGrant",
+      arguments: z.object({
+        identifier: z.string().describe(
+          "The primary identifier of the DataZone PolicyGrant",
+        ),
+      }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const result = await readResource(
+          "AWS::DataZone::PolicyGrant",
+          args.identifier,
+        ) as StateData;
+        const instanceName = context.globalArgs.name?.toString() ??
+          args.identifier;
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    delete: {
+      description: "Delete a DataZone PolicyGrant",
+      arguments: z.object({
+        identifier: z.string().describe(
+          "The primary identifier of the DataZone PolicyGrant",
+        ),
+      }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const { existed } = await deleteResource(
+          "AWS::DataZone::PolicyGrant",
+          args.identifier,
+        );
+        const instanceName = context.globalArgs.name?.toString() ??
+          args.identifier;
+        const handle = await context.writeResource("state", instanceName, {
+          identifier: args.identifier,
+          existed,
+          status: existed ? "deleted" : "not_found",
+          deletedAt: new Date().toISOString(),
+        });
+        return { dataHandles: [handle] };
+      },
+    },
+    sync: {
+      description: "Sync DataZone PolicyGrant state from AWS",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const instanceName = g.name?.toString() ?? "current";
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          instanceName,
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        const idParts = [
+          existing.DomainIdentifier?.toString(),
+          existing.GrantId?.toString(),
+          existing.EntityIdentifier?.toString(),
+          existing.EntityType?.toString(),
+          existing.PolicyType?.toString(),
+        ];
+        if (idParts.some((p) => !p)) {
+          throw new Error(
+            "Missing primary identifier fields in existing state",
+          );
+        }
+        const identifier = idParts.join("|");
+        try {
+          const result = await readResource(
+            "AWS::DataZone::PolicyGrant",
+            identifier,
+          ) as StateData;
+          const handle = await context.writeResource(
+            "state",
+            instanceName,
+            result,
+          );
+          return { dataHandles: [handle] };
+        } catch (error: unknown) {
+          if (isResourceNotFoundError(error)) {
+            const handle = await context.writeResource("state", instanceName, {
+              identifier,
+              status: "not_found",
+              syncedAt: new Date().toISOString(),
+            });
+            return { dataHandles: [handle] };
+          }
+          throw error;
+        }
+      },
+    },
+  },
+};

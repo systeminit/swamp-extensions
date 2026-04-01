@@ -1,0 +1,343 @@
+// Auto-generated extension model for @swamp/aws/datazone/environment
+// Do not edit manually. Re-generate with: deno task generate:aws
+
+// deno-lint-ignore-file no-explicit-any
+
+import { z } from "zod";
+import {
+  createResource,
+  deleteResource,
+  isResourceNotFoundError,
+  readResource,
+  updateResource,
+} from "./_lib/aws.ts";
+
+export const EnvironmentParameterSchema = z.object({
+  Name: z.string().describe("The name of an environment parameter.").optional(),
+  Value: z.string().describe("The value of an environment parameter.")
+    .optional(),
+});
+
+const GlobalArgsSchema = z.object({
+  name: z.string().describe(
+    "Instance name for this resource (used as the unique identifier in the factory pattern)",
+  ),
+  EnvironmentAccountIdentifier: z.string().regex(new RegExp("^\\d{12}$"))
+    .describe(
+      "The AWS account in which the Amazon DataZone environment is created.",
+    ).optional(),
+  EnvironmentAccountRegion: z.string().regex(
+    new RegExp("^[a-z]{2}-[a-z]{4,10}-\\d$"),
+  ).describe(
+    "The AWS region in which the Amazon DataZone environment is created.",
+  ).optional(),
+  Description: z.string().max(2048).describe(
+    "The description of the Amazon DataZone environment.",
+  ).optional(),
+  DomainIdentifier: z.string().regex(new RegExp("^dzd[-_][a-zA-Z0-9_-]{1,36}$"))
+    .describe(
+      "The identifier of the Amazon DataZone domain in which the environment would be created.",
+    ),
+  EnvironmentBlueprintIdentifier: z.string().describe(
+    "The identifier of the environment blueprint.",
+  ).optional(),
+  DeploymentOrder: z.number().int().describe(
+    "The deployment order for the environment.",
+  ).optional(),
+  EnvironmentConfigurationId: z.string().describe(
+    "The identifier of the environment configuration.",
+  ).optional(),
+  EnvironmentProfileIdentifier: z.string().regex(
+    new RegExp("^[a-zA-Z0-9_-]{0,36}$"),
+  ).describe(
+    "The ID of the environment profile with which the Amazon DataZone environment would be created.",
+  ).optional(),
+  GlossaryTerms: z.array(z.string().regex(new RegExp("^[a-zA-Z0-9_-]{1,36}$")))
+    .describe(
+      "The glossary terms that can be used in the Amazon DataZone environment.",
+    ).optional(),
+  EnvironmentRoleArn: z.string().describe(
+    "Environment role arn for custom aws environment permissions",
+  ).optional(),
+  Name: z.string().min(1).max(64).describe("The name of the environment."),
+  ProjectIdentifier: z.string().regex(new RegExp("^[a-zA-Z0-9_-]{1,36}$"))
+    .describe(
+      "The ID of the Amazon DataZone project in which the environment would be created.",
+    ),
+  UserParameters: z.array(EnvironmentParameterSchema).describe(
+    "The user parameters of the Amazon DataZone environment.",
+  ).optional(),
+});
+
+const StateSchema = z.object({
+  AwsAccountId: z.string().optional(),
+  AwsAccountRegion: z.string().optional(),
+  EnvironmentAccountIdentifier: z.string().optional(),
+  EnvironmentAccountRegion: z.string().optional(),
+  CreatedAt: z.string().optional(),
+  CreatedBy: z.string().optional(),
+  Description: z.string().optional(),
+  DomainId: z.string(),
+  DomainIdentifier: z.string().optional(),
+  EnvironmentBlueprintIdentifier: z.string().optional(),
+  DeploymentOrder: z.number().optional(),
+  EnvironmentConfigurationId: z.string().optional(),
+  EnvironmentBlueprintId: z.string().optional(),
+  EnvironmentProfileId: z.string().optional(),
+  EnvironmentProfileIdentifier: z.string().optional(),
+  GlossaryTerms: z.array(z.string()).optional(),
+  EnvironmentRoleArn: z.string().optional(),
+  Id: z.string(),
+  Name: z.string().optional(),
+  ProjectId: z.string().optional(),
+  ProjectIdentifier: z.string().optional(),
+  Provider: z.string().optional(),
+  Status: z.string().optional(),
+  UpdatedAt: z.string().optional(),
+  UserParameters: z.array(EnvironmentParameterSchema).optional(),
+}).passthrough();
+
+type StateData = z.infer<typeof StateSchema>;
+
+const InputsSchema = z.object({
+  name: z.string().optional(),
+  EnvironmentAccountIdentifier: z.string().regex(new RegExp("^\\d{12}$"))
+    .describe(
+      "The AWS account in which the Amazon DataZone environment is created.",
+    ).optional(),
+  EnvironmentAccountRegion: z.string().regex(
+    new RegExp("^[a-z]{2}-[a-z]{4,10}-\\d$"),
+  ).describe(
+    "The AWS region in which the Amazon DataZone environment is created.",
+  ).optional(),
+  Description: z.string().max(2048).describe(
+    "The description of the Amazon DataZone environment.",
+  ).optional(),
+  DomainIdentifier: z.string().regex(new RegExp("^dzd[-_][a-zA-Z0-9_-]{1,36}$"))
+    .describe(
+      "The identifier of the Amazon DataZone domain in which the environment would be created.",
+    ).optional(),
+  EnvironmentBlueprintIdentifier: z.string().describe(
+    "The identifier of the environment blueprint.",
+  ).optional(),
+  DeploymentOrder: z.number().int().describe(
+    "The deployment order for the environment.",
+  ).optional(),
+  EnvironmentConfigurationId: z.string().describe(
+    "The identifier of the environment configuration.",
+  ).optional(),
+  EnvironmentProfileIdentifier: z.string().regex(
+    new RegExp("^[a-zA-Z0-9_-]{0,36}$"),
+  ).describe(
+    "The ID of the environment profile with which the Amazon DataZone environment would be created.",
+  ).optional(),
+  GlossaryTerms: z.array(z.string().regex(new RegExp("^[a-zA-Z0-9_-]{1,36}$")))
+    .describe(
+      "The glossary terms that can be used in the Amazon DataZone environment.",
+    ).optional(),
+  EnvironmentRoleArn: z.string().describe(
+    "Environment role arn for custom aws environment permissions",
+  ).optional(),
+  Name: z.string().min(1).max(64).describe("The name of the environment.")
+    .optional(),
+  ProjectIdentifier: z.string().regex(new RegExp("^[a-zA-Z0-9_-]{1,36}$"))
+    .describe(
+      "The ID of the Amazon DataZone project in which the environment would be created.",
+    ).optional(),
+  UserParameters: z.array(EnvironmentParameterSchema).describe(
+    "The user parameters of the Amazon DataZone environment.",
+  ).optional(),
+});
+
+export const model = {
+  type: "@swamp/aws/datazone/environment",
+  version: "2026.03.19.1",
+  globalArguments: GlobalArgsSchema,
+  inputsSchema: InputsSchema,
+  resources: {
+    state: {
+      description: "DataZone Environment resource state",
+      schema: StateSchema,
+      lifetime: "infinite",
+      garbageCollection: 10,
+    },
+  },
+  methods: {
+    create: {
+      description: "Create a DataZone Environment",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const desiredState: Record<string, unknown> = {};
+        for (const [key, value] of Object.entries(g)) {
+          if (key === "name") continue;
+          if (value !== undefined) desiredState[key] = value;
+        }
+        const result = await createResource(
+          "AWS::DataZone::Environment",
+          desiredState,
+        ) as StateData;
+        const instanceName = g.name?.toString() ?? "current";
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    get: {
+      description: "Get a DataZone Environment",
+      arguments: z.object({
+        identifier: z.string().describe(
+          "The primary identifier of the DataZone Environment",
+        ),
+      }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const result = await readResource(
+          "AWS::DataZone::Environment",
+          args.identifier,
+        ) as StateData;
+        const instanceName = context.globalArgs.name?.toString() ??
+          args.identifier;
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    update: {
+      description: "Update a DataZone Environment",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const instanceName = g.name?.toString() ?? "current";
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          instanceName,
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        const idParts = [
+          existing.DomainId?.toString(),
+          existing.Id?.toString(),
+        ];
+        if (idParts.some((p) => !p)) {
+          throw new Error(
+            "Missing primary identifier fields in existing state",
+          );
+        }
+        const identifier = idParts.join("|");
+        const currentState = await readResource(
+          "AWS::DataZone::Environment",
+          identifier,
+        ) as StateData;
+        const desiredState: Record<string, unknown> = { ...currentState };
+        for (const [key, value] of Object.entries(g)) {
+          if (key === "name") continue;
+          if (value !== undefined) desiredState[key] = value;
+        }
+        const result = await updateResource(
+          "AWS::DataZone::Environment",
+          identifier,
+          currentState,
+          desiredState,
+          [
+            "DomainIdentifier",
+            "EnvironmentProfileIdentifier",
+            "ProjectIdentifier",
+            "UserParameters",
+            "EnvironmentAccountIdentifier",
+            "EnvironmentAccountRegion",
+            "EnvironmentBlueprintIdentifier",
+            "DeploymentOrder",
+            "EnvironmentConfigurationId",
+          ],
+        );
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    delete: {
+      description: "Delete a DataZone Environment",
+      arguments: z.object({
+        identifier: z.string().describe(
+          "The primary identifier of the DataZone Environment",
+        ),
+      }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const { existed } = await deleteResource(
+          "AWS::DataZone::Environment",
+          args.identifier,
+        );
+        const instanceName = context.globalArgs.name?.toString() ??
+          args.identifier;
+        const handle = await context.writeResource("state", instanceName, {
+          identifier: args.identifier,
+          existed,
+          status: existed ? "deleted" : "not_found",
+          deletedAt: new Date().toISOString(),
+        });
+        return { dataHandles: [handle] };
+      },
+    },
+    sync: {
+      description: "Sync DataZone Environment state from AWS",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const instanceName = g.name?.toString() ?? "current";
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          instanceName,
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        const idParts = [
+          existing.DomainId?.toString(),
+          existing.Id?.toString(),
+        ];
+        if (idParts.some((p) => !p)) {
+          throw new Error(
+            "Missing primary identifier fields in existing state",
+          );
+        }
+        const identifier = idParts.join("|");
+        try {
+          const result = await readResource(
+            "AWS::DataZone::Environment",
+            identifier,
+          ) as StateData;
+          const handle = await context.writeResource(
+            "state",
+            instanceName,
+            result,
+          );
+          return { dataHandles: [handle] };
+        } catch (error: unknown) {
+          if (isResourceNotFoundError(error)) {
+            const handle = await context.writeResource("state", instanceName, {
+              identifier,
+              status: "not_found",
+              syncedAt: new Date().toISOString(),
+            });
+            return { dataHandles: [handle] };
+          }
+          throw error;
+        }
+      },
+    },
+  },
+};

@@ -1,0 +1,23 @@
+# Auto-generated manifest. Re-generate with the appropriate deno task.
+manifestVersion: 1
+name: "@swamp/aws/location"
+version: "2026.03.19.1"
+description: "AWS LOCATION infrastructure models"
+labels:
+  - aws
+  - location
+  - cloud
+  - infrastructure
+releaseNotes: |
+  - Updated: apikey, geofence_collection, map, place_index, route_calculator, tracker, tracker_consumer
+models:
+  - apikey.ts
+  - geofence_collection.ts
+  - map.ts
+  - place_index.ts
+  - route_calculator.ts
+  - tracker.ts
+  - tracker_consumer.ts
+additionalFiles:
+  - LICENSE.txt
+  - README.md

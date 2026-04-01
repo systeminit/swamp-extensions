@@ -1,0 +1,17 @@
+# Auto-generated manifest. Re-generate with the appropriate deno task.
+manifestVersion: 1
+name: "@swamp/aws/connectcampaigns"
+version: "2026.03.19.1"
+description: "AWS CONNECTCAMPAIGNS infrastructure models"
+labels:
+  - aws
+  - connectcampaigns
+  - cloud
+  - infrastructure
+releaseNotes: |
+  - Updated: campaign
+models:
+  - campaign.ts
+additionalFiles:
+  - LICENSE.txt
+  - README.md

@@ -1,0 +1,283 @@
+// Auto-generated extension model for @swamp/aws/proton/environment-account-connection
+// Do not edit manually. Re-generate with: deno task generate:aws
+
+// deno-lint-ignore-file no-explicit-any
+
+import { z } from "zod";
+import {
+  createResource,
+  deleteResource,
+  isResourceNotFoundError,
+  readResource,
+  updateResource,
+} from "./_lib/aws.ts";
+
+export const TagSchema = z.object({
+  Key: z.string().min(1).max(128).describe("The key of the resource tag."),
+  Value: z.string().min(0).max(256).describe("The value of the resource tag."),
+});
+
+const GlobalArgsSchema = z.object({
+  name: z.string().describe(
+    "Instance name for this resource (used as the unique identifier in the factory pattern)",
+  ),
+  CodebuildRoleArn: z.string().min(1).max(200).regex(
+    new RegExp(
+      "^arn:(aws|aws-cn|aws-us-gov):iam::\\d{12}:role/([\\w+=,.@-]{1,512}[/:])*([\\w+=,.@-]{1,64})$",
+    ),
+  ).describe(
+    "The Amazon Resource Name (ARN) of an IAM service role in the environment account. AWS Proton uses this role to provision infrastructure resources using CodeBuild-based provisioning in the associated environment account.",
+  ).optional(),
+  ComponentRoleArn: z.string().min(1).max(200).regex(
+    new RegExp(
+      "^arn:(aws|aws-cn|aws-us-gov):iam::\\d{12}:role/([\\w+=,.@-]{1,512}[/:])*([\\w+=,.@-]{1,64})$",
+    ),
+  ).describe(
+    "The Amazon Resource Name (ARN) of the IAM service role that AWS Proton uses when provisioning directly defined components in the associated environment account. It determines the scope of infrastructure that a component can provision in the account.",
+  ).optional(),
+  EnvironmentAccountId: z.string().regex(new RegExp("^\\d{12}$")).describe(
+    "The environment account that's connected to the environment account connection.",
+  ).optional(),
+  EnvironmentName: z.string().min(1).max(100).regex(
+    new RegExp("^[0-9A-Za-z]+[0-9A-Za-z_\\-]*$"),
+  ).describe(
+    "The name of the AWS Proton environment that's created in the associated management account.",
+  ).optional(),
+  ManagementAccountId: z.string().regex(new RegExp("^\\d{12}$")).describe(
+    "The ID of the management account that accepts or rejects the environment account connection. You create an manage the AWS Proton environment in this account. If the management account accepts the environment account connection, AWS Proton can use the associated IAM role to provision environment infrastructure resources in the associated environment account.",
+  ).optional(),
+  RoleArn: z.string().min(1).max(200).regex(
+    new RegExp(
+      "^arn:(aws|aws-cn|aws-us-gov):iam::\\d{12}:role/([\\w+=,.@-]{1,512}[/:])*([\\w+=,.@-]{1,64})$",
+    ),
+  ).describe(
+    "The Amazon Resource Name (ARN) of the IAM service role that's created in the environment account. AWS Proton uses this role to provision infrastructure resources in the associated environment account.",
+  ).optional(),
+  Tags: z.array(TagSchema).describe(
+    "An optional list of metadata items that you can associate with the Proton environment account connection. A tag is a key-value pair. For more information, see Proton resources and tagging in the Proton User Guide.",
+  ).optional(),
+});
+
+const StateSchema = z.object({
+  Arn: z.string(),
+  CodebuildRoleArn: z.string().optional(),
+  ComponentRoleArn: z.string().optional(),
+  EnvironmentAccountId: z.string().optional(),
+  EnvironmentName: z.string().optional(),
+  Id: z.string().optional(),
+  ManagementAccountId: z.string().optional(),
+  RoleArn: z.string().optional(),
+  Status: z.string().optional(),
+  Tags: z.array(TagSchema).optional(),
+}).passthrough();
+
+type StateData = z.infer<typeof StateSchema>;
+
+const InputsSchema = z.object({
+  name: z.string().optional(),
+  CodebuildRoleArn: z.string().min(1).max(200).regex(
+    new RegExp(
+      "^arn:(aws|aws-cn|aws-us-gov):iam::\\d{12}:role/([\\w+=,.@-]{1,512}[/:])*([\\w+=,.@-]{1,64})$",
+    ),
+  ).describe(
+    "The Amazon Resource Name (ARN) of an IAM service role in the environment account. AWS Proton uses this role to provision infrastructure resources using CodeBuild-based provisioning in the associated environment account.",
+  ).optional(),
+  ComponentRoleArn: z.string().min(1).max(200).regex(
+    new RegExp(
+      "^arn:(aws|aws-cn|aws-us-gov):iam::\\d{12}:role/([\\w+=,.@-]{1,512}[/:])*([\\w+=,.@-]{1,64})$",
+    ),
+  ).describe(
+    "The Amazon Resource Name (ARN) of the IAM service role that AWS Proton uses when provisioning directly defined components in the associated environment account. It determines the scope of infrastructure that a component can provision in the account.",
+  ).optional(),
+  EnvironmentAccountId: z.string().regex(new RegExp("^\\d{12}$")).describe(
+    "The environment account that's connected to the environment account connection.",
+  ).optional(),
+  EnvironmentName: z.string().min(1).max(100).regex(
+    new RegExp("^[0-9A-Za-z]+[0-9A-Za-z_\\-]*$"),
+  ).describe(
+    "The name of the AWS Proton environment that's created in the associated management account.",
+  ).optional(),
+  ManagementAccountId: z.string().regex(new RegExp("^\\d{12}$")).describe(
+    "The ID of the management account that accepts or rejects the environment account connection. You create an manage the AWS Proton environment in this account. If the management account accepts the environment account connection, AWS Proton can use the associated IAM role to provision environment infrastructure resources in the associated environment account.",
+  ).optional(),
+  RoleArn: z.string().min(1).max(200).regex(
+    new RegExp(
+      "^arn:(aws|aws-cn|aws-us-gov):iam::\\d{12}:role/([\\w+=,.@-]{1,512}[/:])*([\\w+=,.@-]{1,64})$",
+    ),
+  ).describe(
+    "The Amazon Resource Name (ARN) of the IAM service role that's created in the environment account. AWS Proton uses this role to provision infrastructure resources in the associated environment account.",
+  ).optional(),
+  Tags: z.array(TagSchema).describe(
+    "An optional list of metadata items that you can associate with the Proton environment account connection. A tag is a key-value pair. For more information, see Proton resources and tagging in the Proton User Guide.",
+  ).optional(),
+});
+
+export const model = {
+  type: "@swamp/aws/proton/environment-account-connection",
+  version: "2026.03.19.1",
+  globalArguments: GlobalArgsSchema,
+  inputsSchema: InputsSchema,
+  resources: {
+    state: {
+      description: "Proton EnvironmentAccountConnection resource state",
+      schema: StateSchema,
+      lifetime: "infinite",
+      garbageCollection: 10,
+    },
+  },
+  methods: {
+    create: {
+      description: "Create a Proton EnvironmentAccountConnection",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const desiredState: Record<string, unknown> = {};
+        for (const [key, value] of Object.entries(g)) {
+          if (key === "name") continue;
+          if (value !== undefined) desiredState[key] = value;
+        }
+        const result = await createResource(
+          "AWS::Proton::EnvironmentAccountConnection",
+          desiredState,
+        ) as StateData;
+        const instanceName = g.name?.toString() ?? "current";
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    get: {
+      description: "Get a Proton EnvironmentAccountConnection",
+      arguments: z.object({
+        identifier: z.string().describe(
+          "The primary identifier of the Proton EnvironmentAccountConnection",
+        ),
+      }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const result = await readResource(
+          "AWS::Proton::EnvironmentAccountConnection",
+          args.identifier,
+        ) as StateData;
+        const instanceName = context.globalArgs.name?.toString() ??
+          args.identifier;
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    update: {
+      description: "Update a Proton EnvironmentAccountConnection",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const instanceName = g.name?.toString() ?? "current";
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          instanceName,
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        const identifier = existing.Arn?.toString();
+        if (!identifier) {
+          throw new Error("No identifier found in existing state");
+        }
+        const currentState = await readResource(
+          "AWS::Proton::EnvironmentAccountConnection",
+          identifier,
+        ) as StateData;
+        const desiredState: Record<string, unknown> = { ...currentState };
+        for (const [key, value] of Object.entries(g)) {
+          if (key === "name") continue;
+          if (value !== undefined) desiredState[key] = value;
+        }
+        const result = await updateResource(
+          "AWS::Proton::EnvironmentAccountConnection",
+          identifier,
+          currentState,
+          desiredState,
+        );
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    delete: {
+      description: "Delete a Proton EnvironmentAccountConnection",
+      arguments: z.object({
+        identifier: z.string().describe(
+          "The primary identifier of the Proton EnvironmentAccountConnection",
+        ),
+      }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const { existed } = await deleteResource(
+          "AWS::Proton::EnvironmentAccountConnection",
+          args.identifier,
+        );
+        const instanceName = context.globalArgs.name?.toString() ??
+          args.identifier;
+        const handle = await context.writeResource("state", instanceName, {
+          identifier: args.identifier,
+          existed,
+          status: existed ? "deleted" : "not_found",
+          deletedAt: new Date().toISOString(),
+        });
+        return { dataHandles: [handle] };
+      },
+    },
+    sync: {
+      description: "Sync Proton EnvironmentAccountConnection state from AWS",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const instanceName = g.name?.toString() ?? "current";
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          instanceName,
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        const identifier = existing.Arn?.toString();
+        if (!identifier) {
+          throw new Error("No identifier found in existing state");
+        }
+        try {
+          const result = await readResource(
+            "AWS::Proton::EnvironmentAccountConnection",
+            identifier,
+          ) as StateData;
+          const handle = await context.writeResource(
+            "state",
+            instanceName,
+            result,
+          );
+          return { dataHandles: [handle] };
+        } catch (error: unknown) {
+          if (isResourceNotFoundError(error)) {
+            const handle = await context.writeResource("state", instanceName, {
+              identifier,
+              status: "not_found",
+              syncedAt: new Date().toISOString(),
+            });
+            return { dataHandles: [handle] };
+          }
+          throw error;
+        }
+      },
+    },
+  },
+};

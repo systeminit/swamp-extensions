@@ -1,0 +1,276 @@
+// Auto-generated extension model for @swamp/aws/directoryservice/simple-ad
+// Do not edit manually. Re-generate with: deno task generate:aws
+
+// deno-lint-ignore-file no-explicit-any
+
+import { z } from "zod";
+import {
+  createResource,
+  deleteResource,
+  isResourceNotFoundError,
+  readResource,
+  updateResource,
+} from "./_lib/aws.ts";
+
+export const TagSchema = z.object({
+  Key: z.string().min(1).max(128).describe("The key name of the tag"),
+  Value: z.string().min(0).max(256).describe("The value for the tag."),
+});
+
+const GlobalArgsSchema = z.object({
+  name: z.string().describe(
+    "Instance name for this resource (used as the unique identifier in the factory pattern)",
+  ),
+  CreateAlias: z.boolean().describe("The name of the configuration set.")
+    .optional(),
+  Description: z.string().describe("Description for the directory.").optional(),
+  EnableSso: z.boolean().describe(
+    "Whether to enable single sign-on for a Simple Active Directory in AWS.",
+  ).optional(),
+  Name: z.string().describe(
+    "The fully qualified domain name for the AWS Managed Simple AD directory.",
+  ),
+  Password: z.string().describe(
+    "The password for the default administrative user named Admin.",
+  ).optional(),
+  ShortName: z.string().describe("The NetBIOS name for your domain.")
+    .optional(),
+  Size: z.string().describe("The size of the directory."),
+  VpcSettings: z.object({
+    SubnetIds: z.array(z.string()).describe(
+      "The identifiers of the subnets for the directory servers. The two subnets must be in different Availability Zones. AWS Directory Service specifies a directory server and a DNS server in each of these subnets.",
+    ),
+    VpcId: z.string().describe(
+      "The identifier of the VPC in which to create the directory.",
+    ),
+  }).describe("VPC settings of the Simple AD directory server in AWS."),
+  Tags: z.array(TagSchema).optional(),
+});
+
+const StateSchema = z.object({
+  DirectoryId: z.string(),
+  Alias: z.string().optional(),
+  DnsIpAddresses: z.array(z.string()).optional(),
+  CreateAlias: z.boolean().optional(),
+  Description: z.string().optional(),
+  EnableSso: z.boolean().optional(),
+  Name: z.string().optional(),
+  Password: z.string().optional(),
+  ShortName: z.string().optional(),
+  Size: z.string().optional(),
+  VpcSettings: z.object({
+    SubnetIds: z.array(z.string()),
+    VpcId: z.string(),
+  }).optional(),
+  Tags: z.array(TagSchema).optional(),
+}).passthrough();
+
+type StateData = z.infer<typeof StateSchema>;
+
+const InputsSchema = z.object({
+  name: z.string().optional(),
+  CreateAlias: z.boolean().describe("The name of the configuration set.")
+    .optional(),
+  Description: z.string().describe("Description for the directory.").optional(),
+  EnableSso: z.boolean().describe(
+    "Whether to enable single sign-on for a Simple Active Directory in AWS.",
+  ).optional(),
+  Name: z.string().describe(
+    "The fully qualified domain name for the AWS Managed Simple AD directory.",
+  ).optional(),
+  Password: z.string().describe(
+    "The password for the default administrative user named Admin.",
+  ).optional(),
+  ShortName: z.string().describe("The NetBIOS name for your domain.")
+    .optional(),
+  Size: z.string().describe("The size of the directory.").optional(),
+  VpcSettings: z.object({
+    SubnetIds: z.array(z.string()).describe(
+      "The identifiers of the subnets for the directory servers. The two subnets must be in different Availability Zones. AWS Directory Service specifies a directory server and a DNS server in each of these subnets.",
+    ).optional(),
+    VpcId: z.string().describe(
+      "The identifier of the VPC in which to create the directory.",
+    ).optional(),
+  }).describe("VPC settings of the Simple AD directory server in AWS.")
+    .optional(),
+  Tags: z.array(TagSchema).optional(),
+});
+
+export const model = {
+  type: "@swamp/aws/directoryservice/simple-ad",
+  version: "2026.03.19.1",
+  globalArguments: GlobalArgsSchema,
+  inputsSchema: InputsSchema,
+  resources: {
+    state: {
+      description: "DirectoryService SimpleAD resource state",
+      schema: StateSchema,
+      lifetime: "infinite",
+      garbageCollection: 10,
+    },
+  },
+  methods: {
+    create: {
+      description: "Create a DirectoryService SimpleAD",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const desiredState: Record<string, unknown> = {};
+        for (const [key, value] of Object.entries(g)) {
+          if (key === "name") continue;
+          if (value !== undefined) desiredState[key] = value;
+        }
+        const result = await createResource(
+          "AWS::DirectoryService::SimpleAD",
+          desiredState,
+        ) as StateData;
+        const instanceName = g.name?.toString() ?? "current";
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    get: {
+      description: "Get a DirectoryService SimpleAD",
+      arguments: z.object({
+        identifier: z.string().describe(
+          "The primary identifier of the DirectoryService SimpleAD",
+        ),
+      }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const result = await readResource(
+          "AWS::DirectoryService::SimpleAD",
+          args.identifier,
+        ) as StateData;
+        const instanceName = context.globalArgs.name?.toString() ??
+          args.identifier;
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    update: {
+      description: "Update a DirectoryService SimpleAD",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const instanceName = g.name?.toString() ?? "current";
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          instanceName,
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        const identifier = existing.DirectoryId?.toString();
+        if (!identifier) {
+          throw new Error("No identifier found in existing state");
+        }
+        const currentState = await readResource(
+          "AWS::DirectoryService::SimpleAD",
+          identifier,
+        ) as StateData;
+        const desiredState: Record<string, unknown> = { ...currentState };
+        for (const [key, value] of Object.entries(g)) {
+          if (key === "name") continue;
+          if (value !== undefined) desiredState[key] = value;
+        }
+        const result = await updateResource(
+          "AWS::DirectoryService::SimpleAD",
+          identifier,
+          currentState,
+          desiredState,
+          [
+            "Size",
+            "VpcSettings",
+            "Name",
+            "Password",
+            "ShortName",
+            "Description",
+            "CreateAlias",
+          ],
+        );
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    delete: {
+      description: "Delete a DirectoryService SimpleAD",
+      arguments: z.object({
+        identifier: z.string().describe(
+          "The primary identifier of the DirectoryService SimpleAD",
+        ),
+      }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const { existed } = await deleteResource(
+          "AWS::DirectoryService::SimpleAD",
+          args.identifier,
+        );
+        const instanceName = context.globalArgs.name?.toString() ??
+          args.identifier;
+        const handle = await context.writeResource("state", instanceName, {
+          identifier: args.identifier,
+          existed,
+          status: existed ? "deleted" : "not_found",
+          deletedAt: new Date().toISOString(),
+        });
+        return { dataHandles: [handle] };
+      },
+    },
+    sync: {
+      description: "Sync DirectoryService SimpleAD state from AWS",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const instanceName = g.name?.toString() ?? "current";
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          instanceName,
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        const identifier = existing.DirectoryId?.toString();
+        if (!identifier) {
+          throw new Error("No identifier found in existing state");
+        }
+        try {
+          const result = await readResource(
+            "AWS::DirectoryService::SimpleAD",
+            identifier,
+          ) as StateData;
+          const handle = await context.writeResource(
+            "state",
+            instanceName,
+            result,
+          );
+          return { dataHandles: [handle] };
+        } catch (error: unknown) {
+          if (isResourceNotFoundError(error)) {
+            const handle = await context.writeResource("state", instanceName, {
+              identifier,
+              status: "not_found",
+              syncedAt: new Date().toISOString(),
+            });
+            return { dataHandles: [handle] };
+          }
+          throw error;
+        }
+      },
+    },
+  },
+};

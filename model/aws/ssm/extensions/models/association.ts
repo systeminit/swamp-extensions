@@ -1,0 +1,322 @@
+// Auto-generated extension model for @swamp/aws/ssm/association
+// Do not edit manually. Re-generate with: deno task generate:aws
+
+// deno-lint-ignore-file no-explicit-any
+
+import { z } from "zod";
+import {
+  createResource,
+  deleteResource,
+  isResourceNotFoundError,
+  readResource,
+  updateResource,
+} from "./_lib/aws.ts";
+
+export const TargetSchema = z.object({
+  Values: z.array(z.string()),
+  Key: z.string().regex(
+    new RegExp(
+      "^[\\p{L}\\p{Z}\\p{N}_.:/=+\\-@]{1,128}$|resource-groups:Name",
+      "u",
+    ),
+  ),
+});
+
+export const S3OutputLocationSchema = z.object({
+  OutputS3KeyPrefix: z.string().max(1024).optional(),
+  OutputS3Region: z.string().min(3).max(20).optional(),
+  OutputS3BucketName: z.string().min(3).max(63).optional(),
+});
+
+const GlobalArgsSchema = z.object({
+  name: z.string().describe(
+    "Instance name for this resource (used as the unique identifier in the factory pattern)",
+  ),
+  AssociationName: z.string().regex(new RegExp("^[a-zA-Z0-9_\\-.]{3,128}$"))
+    .describe("The name of the association.").optional(),
+  CalendarNames: z.array(z.string()).optional(),
+  ScheduleExpression: z.string().min(1).max(256).describe(
+    "A Cron or Rate expression that specifies when the association is applied to the target.",
+  ).optional(),
+  MaxErrors: z.string().regex(
+    new RegExp("^([1-9][0-9]{0,6}|[0]|[1-9][0-9]%|[0-9]%|100%)$"),
+  ).optional(),
+  Parameters: z.record(z.string(), z.array(z.string())).describe(
+    "Parameter values that the SSM document uses at runtime.",
+  ).optional(),
+  InstanceId: z.string().regex(
+    new RegExp("(^i-(\\w{8}|\\w{17})$)|(^mi-\\w{17}$)"),
+  ).describe("The ID of the instance that the SSM document is associated with.")
+    .optional(),
+  WaitForSuccessTimeoutSeconds: z.number().int().min(15).max(172800).optional(),
+  MaxConcurrency: z.string().regex(
+    new RegExp("^([1-9][0-9]{0,6}|[1-9][0-9]%|[1-9]%|100%)$"),
+  ).optional(),
+  ComplianceSeverity: z.enum([
+    "CRITICAL",
+    "HIGH",
+    "MEDIUM",
+    "LOW",
+    "UNSPECIFIED",
+  ]).optional(),
+  Targets: z.array(TargetSchema).describe(
+    "The targets that the SSM document sends commands to.",
+  ).optional(),
+  SyncCompliance: z.enum(["AUTO", "MANUAL"]).optional(),
+  OutputLocation: z.object({
+    S3Location: S3OutputLocationSchema.optional(),
+  }).optional(),
+  ScheduleOffset: z.number().int().min(1).max(6).optional(),
+  Name: z.string().regex(new RegExp("^[a-zA-Z0-9_\\-.:/]{3,200}$")).describe(
+    "The name of the SSM document.",
+  ),
+  ApplyOnlyAtCronInterval: z.boolean().optional(),
+  DocumentVersion: z.string().regex(
+    new RegExp("([$]LATEST|[$]DEFAULT|^[1-9][0-9]*$)"),
+  ).describe("The version of the SSM document to associate with the target.")
+    .optional(),
+  AutomationTargetParameterName: z.string().min(1).max(50).optional(),
+});
+
+const StateSchema = z.object({
+  AssociationName: z.string().optional(),
+  CalendarNames: z.array(z.string()).optional(),
+  ScheduleExpression: z.string().optional(),
+  MaxErrors: z.string().optional(),
+  Parameters: z.record(z.string(), z.unknown()).optional(),
+  InstanceId: z.string().optional(),
+  WaitForSuccessTimeoutSeconds: z.number().optional(),
+  MaxConcurrency: z.string().optional(),
+  ComplianceSeverity: z.string().optional(),
+  Targets: z.array(TargetSchema).optional(),
+  SyncCompliance: z.string().optional(),
+  OutputLocation: z.object({
+    S3Location: S3OutputLocationSchema,
+  }).optional(),
+  ScheduleOffset: z.number().optional(),
+  Name: z.string().optional(),
+  ApplyOnlyAtCronInterval: z.boolean().optional(),
+  DocumentVersion: z.string().optional(),
+  AssociationId: z.string(),
+  AutomationTargetParameterName: z.string().optional(),
+}).passthrough();
+
+type StateData = z.infer<typeof StateSchema>;
+
+const InputsSchema = z.object({
+  name: z.string().optional(),
+  AssociationName: z.string().regex(new RegExp("^[a-zA-Z0-9_\\-.]{3,128}$"))
+    .describe("The name of the association.").optional(),
+  CalendarNames: z.array(z.string()).optional(),
+  ScheduleExpression: z.string().min(1).max(256).describe(
+    "A Cron or Rate expression that specifies when the association is applied to the target.",
+  ).optional(),
+  MaxErrors: z.string().regex(
+    new RegExp("^([1-9][0-9]{0,6}|[0]|[1-9][0-9]%|[0-9]%|100%)$"),
+  ).optional(),
+  Parameters: z.record(z.string(), z.array(z.string())).describe(
+    "Parameter values that the SSM document uses at runtime.",
+  ).optional(),
+  InstanceId: z.string().regex(
+    new RegExp("(^i-(\\w{8}|\\w{17})$)|(^mi-\\w{17}$)"),
+  ).describe("The ID of the instance that the SSM document is associated with.")
+    .optional(),
+  WaitForSuccessTimeoutSeconds: z.number().int().min(15).max(172800).optional(),
+  MaxConcurrency: z.string().regex(
+    new RegExp("^([1-9][0-9]{0,6}|[1-9][0-9]%|[1-9]%|100%)$"),
+  ).optional(),
+  ComplianceSeverity: z.enum([
+    "CRITICAL",
+    "HIGH",
+    "MEDIUM",
+    "LOW",
+    "UNSPECIFIED",
+  ]).optional(),
+  Targets: z.array(TargetSchema).describe(
+    "The targets that the SSM document sends commands to.",
+  ).optional(),
+  SyncCompliance: z.enum(["AUTO", "MANUAL"]).optional(),
+  OutputLocation: z.object({
+    S3Location: S3OutputLocationSchema.optional(),
+  }).optional(),
+  ScheduleOffset: z.number().int().min(1).max(6).optional(),
+  Name: z.string().regex(new RegExp("^[a-zA-Z0-9_\\-.:/]{3,200}$")).describe(
+    "The name of the SSM document.",
+  ).optional(),
+  ApplyOnlyAtCronInterval: z.boolean().optional(),
+  DocumentVersion: z.string().regex(
+    new RegExp("([$]LATEST|[$]DEFAULT|^[1-9][0-9]*$)"),
+  ).describe("The version of the SSM document to associate with the target.")
+    .optional(),
+  AutomationTargetParameterName: z.string().min(1).max(50).optional(),
+});
+
+export const model = {
+  type: "@swamp/aws/ssm/association",
+  version: "2026.03.19.1",
+  globalArguments: GlobalArgsSchema,
+  inputsSchema: InputsSchema,
+  resources: {
+    state: {
+      description: "SSM Association resource state",
+      schema: StateSchema,
+      lifetime: "infinite",
+      garbageCollection: 10,
+    },
+  },
+  methods: {
+    create: {
+      description: "Create a SSM Association",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const desiredState: Record<string, unknown> = {};
+        for (const [key, value] of Object.entries(g)) {
+          if (key === "name") continue;
+          if (value !== undefined) desiredState[key] = value;
+        }
+        const result = await createResource(
+          "AWS::SSM::Association",
+          desiredState,
+        ) as StateData;
+        const instanceName = g.name?.toString() ?? "current";
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    get: {
+      description: "Get a SSM Association",
+      arguments: z.object({
+        identifier: z.string().describe(
+          "The primary identifier of the SSM Association",
+        ),
+      }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const result = await readResource(
+          "AWS::SSM::Association",
+          args.identifier,
+        ) as StateData;
+        const instanceName = context.globalArgs.name?.toString() ??
+          args.identifier;
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    update: {
+      description: "Update a SSM Association",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const instanceName = g.name?.toString() ?? "current";
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          instanceName,
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        const identifier = existing.AssociationId?.toString();
+        if (!identifier) {
+          throw new Error("No identifier found in existing state");
+        }
+        const currentState = await readResource(
+          "AWS::SSM::Association",
+          identifier,
+        ) as StateData;
+        const desiredState: Record<string, unknown> = { ...currentState };
+        for (const [key, value] of Object.entries(g)) {
+          if (key === "name") continue;
+          if (value !== undefined) desiredState[key] = value;
+        }
+        const result = await updateResource(
+          "AWS::SSM::Association",
+          identifier,
+          currentState,
+          desiredState,
+        );
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    delete: {
+      description: "Delete a SSM Association",
+      arguments: z.object({
+        identifier: z.string().describe(
+          "The primary identifier of the SSM Association",
+        ),
+      }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const { existed } = await deleteResource(
+          "AWS::SSM::Association",
+          args.identifier,
+        );
+        const instanceName = context.globalArgs.name?.toString() ??
+          args.identifier;
+        const handle = await context.writeResource("state", instanceName, {
+          identifier: args.identifier,
+          existed,
+          status: existed ? "deleted" : "not_found",
+          deletedAt: new Date().toISOString(),
+        });
+        return { dataHandles: [handle] };
+      },
+    },
+    sync: {
+      description: "Sync SSM Association state from AWS",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const instanceName = g.name?.toString() ?? "current";
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          instanceName,
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        const identifier = existing.AssociationId?.toString();
+        if (!identifier) {
+          throw new Error("No identifier found in existing state");
+        }
+        try {
+          const result = await readResource(
+            "AWS::SSM::Association",
+            identifier,
+          ) as StateData;
+          const handle = await context.writeResource(
+            "state",
+            instanceName,
+            result,
+          );
+          return { dataHandles: [handle] };
+        } catch (error: unknown) {
+          if (isResourceNotFoundError(error)) {
+            const handle = await context.writeResource("state", instanceName, {
+              identifier,
+              status: "not_found",
+              syncedAt: new Date().toISOString(),
+            });
+            return { dataHandles: [handle] };
+          }
+          throw error;
+        }
+      },
+    },
+  },
+};

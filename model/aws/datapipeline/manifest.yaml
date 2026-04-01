@@ -1,0 +1,17 @@
+# Auto-generated manifest. Re-generate with the appropriate deno task.
+manifestVersion: 1
+name: "@swamp/aws/datapipeline"
+version: "2026.03.19.1"
+description: "AWS DATAPIPELINE infrastructure models"
+labels:
+  - aws
+  - datapipeline
+  - cloud
+  - infrastructure
+releaseNotes: |
+  - Updated: pipeline
+models:
+  - pipeline.ts
+additionalFiles:
+  - LICENSE.txt
+  - README.md

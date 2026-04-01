@@ -1,0 +1,274 @@
+// Auto-generated extension model for @swamp/aws/vpclattice/resource-configuration
+// Do not edit manually. Re-generate with: deno task generate:aws
+
+// deno-lint-ignore-file no-explicit-any
+
+import { z } from "zod";
+import {
+  createResource,
+  deleteResource,
+  isResourceNotFoundError,
+  readResource,
+  updateResource,
+} from "./_lib/aws.ts";
+
+export const TagSchema = z.object({
+  Value: z.string().min(1).max(256).optional(),
+  Key: z.string().min(1).max(128),
+});
+
+const GlobalArgsSchema = z.object({
+  name: z.string().describe(
+    "Instance name for this resource (used as the unique identifier in the factory pattern)",
+  ),
+  CustomDomainName: z.string().min(3).max(255).optional(),
+  PortRanges: z.array(
+    z.string().min(1).max(11).regex(
+      new RegExp("^((\\d{1,5}\\-\\d{1,5})|(\\d+))$"),
+    ),
+  ).optional(),
+  ResourceConfigurationDefinition: z.string().optional(),
+  GroupDomain: z.string().min(3).max(255).optional(),
+  ResourceConfigurationAuthType: z.enum(["NONE", "AWS_IAM"]).optional(),
+  ResourceConfigurationGroupId: z.string().min(22).max(22).regex(
+    new RegExp("^rcfg-[0-9a-z]{17}$"),
+  ).optional(),
+  Name: z.string().min(3).max(40).regex(
+    new RegExp("^(?!rcfg-)(?![-])(?!.*[-]$)(?!.*[-]{2})[a-z0-9-]+$"),
+  ),
+  AllowAssociationToSharableServiceNetwork: z.boolean().optional(),
+  ProtocolType: z.enum(["TCP"]).optional(),
+  ResourceConfigurationType: z.enum(["GROUP", "CHILD", "SINGLE", "ARN"]),
+  DomainVerificationId: z.string().min(20).max(20).regex(
+    new RegExp("^dv-[a-fA-F0-9]{17}$"),
+  ).optional(),
+  ResourceGatewayId: z.string().optional(),
+  Tags: z.array(TagSchema).optional(),
+});
+
+const StateSchema = z.object({
+  CustomDomainName: z.string().optional(),
+  PortRanges: z.array(z.string()).optional(),
+  ResourceConfigurationDefinition: z.string().optional(),
+  GroupDomain: z.string().optional(),
+  ResourceConfigurationAuthType: z.string().optional(),
+  ResourceConfigurationGroupId: z.string().optional(),
+  Name: z.string().optional(),
+  AllowAssociationToSharableServiceNetwork: z.boolean().optional(),
+  ProtocolType: z.string().optional(),
+  ResourceConfigurationType: z.string().optional(),
+  DomainVerificationId: z.string().optional(),
+  Id: z.string().optional(),
+  ResourceGatewayId: z.string().optional(),
+  Arn: z.string(),
+  Tags: z.array(TagSchema).optional(),
+}).passthrough();
+
+type StateData = z.infer<typeof StateSchema>;
+
+const InputsSchema = z.object({
+  name: z.string().optional(),
+  CustomDomainName: z.string().min(3).max(255).optional(),
+  PortRanges: z.array(
+    z.string().min(1).max(11).regex(
+      new RegExp("^((\\d{1,5}\\-\\d{1,5})|(\\d+))$"),
+    ),
+  ).optional(),
+  ResourceConfigurationDefinition: z.string().optional(),
+  GroupDomain: z.string().min(3).max(255).optional(),
+  ResourceConfigurationAuthType: z.enum(["NONE", "AWS_IAM"]).optional(),
+  ResourceConfigurationGroupId: z.string().min(22).max(22).regex(
+    new RegExp("^rcfg-[0-9a-z]{17}$"),
+  ).optional(),
+  Name: z.string().min(3).max(40).regex(
+    new RegExp("^(?!rcfg-)(?![-])(?!.*[-]$)(?!.*[-]{2})[a-z0-9-]+$"),
+  ).optional(),
+  AllowAssociationToSharableServiceNetwork: z.boolean().optional(),
+  ProtocolType: z.enum(["TCP"]).optional(),
+  ResourceConfigurationType: z.enum(["GROUP", "CHILD", "SINGLE", "ARN"])
+    .optional(),
+  DomainVerificationId: z.string().min(20).max(20).regex(
+    new RegExp("^dv-[a-fA-F0-9]{17}$"),
+  ).optional(),
+  ResourceGatewayId: z.string().optional(),
+  Tags: z.array(TagSchema).optional(),
+});
+
+export const model = {
+  type: "@swamp/aws/vpclattice/resource-configuration",
+  version: "2026.03.19.1",
+  globalArguments: GlobalArgsSchema,
+  inputsSchema: InputsSchema,
+  resources: {
+    state: {
+      description: "VpcLattice ResourceConfiguration resource state",
+      schema: StateSchema,
+      lifetime: "infinite",
+      garbageCollection: 10,
+    },
+  },
+  methods: {
+    create: {
+      description: "Create a VpcLattice ResourceConfiguration",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const desiredState: Record<string, unknown> = {};
+        for (const [key, value] of Object.entries(g)) {
+          if (key === "name") continue;
+          if (value !== undefined) desiredState[key] = value;
+        }
+        const result = await createResource(
+          "AWS::VpcLattice::ResourceConfiguration",
+          desiredState,
+        ) as StateData;
+        const instanceName = g.name?.toString() ?? "current";
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    get: {
+      description: "Get a VpcLattice ResourceConfiguration",
+      arguments: z.object({
+        identifier: z.string().describe(
+          "The primary identifier of the VpcLattice ResourceConfiguration",
+        ),
+      }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const result = await readResource(
+          "AWS::VpcLattice::ResourceConfiguration",
+          args.identifier,
+        ) as StateData;
+        const instanceName = context.globalArgs.name?.toString() ??
+          args.identifier;
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    update: {
+      description: "Update a VpcLattice ResourceConfiguration",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const instanceName = g.name?.toString() ?? "current";
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          instanceName,
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        const identifier = existing.Arn?.toString();
+        if (!identifier) {
+          throw new Error("No identifier found in existing state");
+        }
+        const currentState = await readResource(
+          "AWS::VpcLattice::ResourceConfiguration",
+          identifier,
+        ) as StateData;
+        const desiredState: Record<string, unknown> = { ...currentState };
+        for (const [key, value] of Object.entries(g)) {
+          if (key === "name") continue;
+          if (value !== undefined) desiredState[key] = value;
+        }
+        const result = await updateResource(
+          "AWS::VpcLattice::ResourceConfiguration",
+          identifier,
+          currentState,
+          desiredState,
+          [
+            "ResourceGatewayId",
+            "ResourceConfigurationType",
+            "ProtocolType",
+            "ResourceConfigurationAuthType",
+            "CustomDomainName",
+            "GroupDomain",
+            "DomainVerificationId",
+          ],
+        );
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    delete: {
+      description: "Delete a VpcLattice ResourceConfiguration",
+      arguments: z.object({
+        identifier: z.string().describe(
+          "The primary identifier of the VpcLattice ResourceConfiguration",
+        ),
+      }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const { existed } = await deleteResource(
+          "AWS::VpcLattice::ResourceConfiguration",
+          args.identifier,
+        );
+        const instanceName = context.globalArgs.name?.toString() ??
+          args.identifier;
+        const handle = await context.writeResource("state", instanceName, {
+          identifier: args.identifier,
+          existed,
+          status: existed ? "deleted" : "not_found",
+          deletedAt: new Date().toISOString(),
+        });
+        return { dataHandles: [handle] };
+      },
+    },
+    sync: {
+      description: "Sync VpcLattice ResourceConfiguration state from AWS",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const instanceName = g.name?.toString() ?? "current";
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          instanceName,
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        const identifier = existing.Arn?.toString();
+        if (!identifier) {
+          throw new Error("No identifier found in existing state");
+        }
+        try {
+          const result = await readResource(
+            "AWS::VpcLattice::ResourceConfiguration",
+            identifier,
+          ) as StateData;
+          const handle = await context.writeResource(
+            "state",
+            instanceName,
+            result,
+          );
+          return { dataHandles: [handle] };
+        } catch (error: unknown) {
+          if (isResourceNotFoundError(error)) {
+            const handle = await context.writeResource("state", instanceName, {
+              identifier,
+              status: "not_found",
+              syncedAt: new Date().toISOString(),
+            });
+            return { dataHandles: [handle] };
+          }
+          throw error;
+        }
+      },
+    },
+  },
+};

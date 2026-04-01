@@ -1,0 +1,306 @@
+// Auto-generated extension model for @swamp/aws/rbin/rule
+// Do not edit manually. Re-generate with: deno task generate:aws
+
+// deno-lint-ignore-file no-explicit-any
+
+import { z } from "zod";
+import {
+  createResource,
+  deleteResource,
+  isResourceNotFoundError,
+  readResource,
+  updateResource,
+} from "./_lib/aws.ts";
+
+export const ResourceTagSchema = z.object({
+  ResourceTagKey: z.string().min(1).max(128).describe(
+    "The tag key of the resource.",
+  ),
+  ResourceTagValue: z.string().min(0).max(256).describe(
+    "The tag value of the resource",
+  ),
+});
+
+export const TagSchema = z.object({
+  Key: z.string().min(1).max(128).describe("A unique identifier for the tag."),
+  Value: z.string().min(0).max(256).describe(
+    "String which you can use to describe or define the tag.",
+  ),
+});
+
+const GlobalArgsSchema = z.object({
+  name: z.string().describe(
+    "Instance name for this resource (used as the unique identifier in the factory pattern)",
+  ),
+  Description: z.string().max(255).describe(
+    "The description of the retention rule.",
+  ).optional(),
+  ResourceTags: z.array(ResourceTagSchema).describe(
+    "Information about the resource tags used to identify resources that are retained by the retention rule.",
+  ).optional(),
+  ExcludeResourceTags: z.array(ResourceTagSchema).describe(
+    "Information about the exclude resource tags used to identify resources that are excluded by the retention rule.",
+  ).optional(),
+  ResourceType: z.enum(["EBS_SNAPSHOT", "EC2_IMAGE", "EBS_VOLUME"]).describe(
+    "The resource type retained by the retention rule.",
+  ),
+  Tags: z.array(TagSchema).describe(
+    "Information about the tags assigned to the retention rule.",
+  ).optional(),
+  RetentionPeriod: z.object({
+    RetentionPeriodValue: z.number().int().min(1).max(3650).describe(
+      "The retention period value of the rule.",
+    ),
+    RetentionPeriodUnit: z.enum(["DAYS"]).describe(
+      "The retention period unit of the rule",
+    ),
+  }).describe(
+    "Information about the retention period for which the retention rule is to retain resources.",
+  ),
+  Status: z.string().regex(new RegExp("pending|available")).describe(
+    "The state of the retention rule. Only retention rules that are in the available state retain resources.",
+  ).optional(),
+  LockConfiguration: z.object({
+    UnlockDelayValue: z.number().int().min(7).max(30).describe(
+      "The unlock delay period, measured in the unit specified for UnlockDelayUnit.",
+    ).optional(),
+    UnlockDelayUnit: z.enum(["DAYS"]).describe(
+      "The unit of time in which to measure the unlock delay. Currently, the unlock delay can be measure only in days.",
+    ).optional(),
+  }).describe("Information about the retention rule lock configuration.")
+    .optional(),
+});
+
+const StateSchema = z.object({
+  Arn: z.string(),
+  Identifier: z.string().optional(),
+  Description: z.string().optional(),
+  ResourceTags: z.array(ResourceTagSchema).optional(),
+  ExcludeResourceTags: z.array(ResourceTagSchema).optional(),
+  ResourceType: z.string().optional(),
+  Tags: z.array(TagSchema).optional(),
+  RetentionPeriod: z.object({
+    RetentionPeriodValue: z.number(),
+    RetentionPeriodUnit: z.string(),
+  }).optional(),
+  Status: z.string().optional(),
+  LockConfiguration: z.object({
+    UnlockDelayValue: z.number(),
+    UnlockDelayUnit: z.string(),
+  }).optional(),
+  LockState: z.string().optional(),
+}).passthrough();
+
+type StateData = z.infer<typeof StateSchema>;
+
+const InputsSchema = z.object({
+  name: z.string().optional(),
+  Description: z.string().max(255).describe(
+    "The description of the retention rule.",
+  ).optional(),
+  ResourceTags: z.array(ResourceTagSchema).describe(
+    "Information about the resource tags used to identify resources that are retained by the retention rule.",
+  ).optional(),
+  ExcludeResourceTags: z.array(ResourceTagSchema).describe(
+    "Information about the exclude resource tags used to identify resources that are excluded by the retention rule.",
+  ).optional(),
+  ResourceType: z.enum(["EBS_SNAPSHOT", "EC2_IMAGE", "EBS_VOLUME"]).describe(
+    "The resource type retained by the retention rule.",
+  ).optional(),
+  Tags: z.array(TagSchema).describe(
+    "Information about the tags assigned to the retention rule.",
+  ).optional(),
+  RetentionPeriod: z.object({
+    RetentionPeriodValue: z.number().int().min(1).max(3650).describe(
+      "The retention period value of the rule.",
+    ).optional(),
+    RetentionPeriodUnit: z.enum(["DAYS"]).describe(
+      "The retention period unit of the rule",
+    ).optional(),
+  }).describe(
+    "Information about the retention period for which the retention rule is to retain resources.",
+  ).optional(),
+  Status: z.string().regex(new RegExp("pending|available")).describe(
+    "The state of the retention rule. Only retention rules that are in the available state retain resources.",
+  ).optional(),
+  LockConfiguration: z.object({
+    UnlockDelayValue: z.number().int().min(7).max(30).describe(
+      "The unlock delay period, measured in the unit specified for UnlockDelayUnit.",
+    ).optional(),
+    UnlockDelayUnit: z.enum(["DAYS"]).describe(
+      "The unit of time in which to measure the unlock delay. Currently, the unlock delay can be measure only in days.",
+    ).optional(),
+  }).describe("Information about the retention rule lock configuration.")
+    .optional(),
+});
+
+export const model = {
+  type: "@swamp/aws/rbin/rule",
+  version: "2026.03.19.1",
+  globalArguments: GlobalArgsSchema,
+  inputsSchema: InputsSchema,
+  resources: {
+    state: {
+      description: "Rbin Rule resource state",
+      schema: StateSchema,
+      lifetime: "infinite",
+      garbageCollection: 10,
+    },
+  },
+  methods: {
+    create: {
+      description: "Create a Rbin Rule",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const desiredState: Record<string, unknown> = {};
+        for (const [key, value] of Object.entries(g)) {
+          if (key === "name") continue;
+          if (value !== undefined) desiredState[key] = value;
+        }
+        const result = await createResource(
+          "AWS::Rbin::Rule",
+          desiredState,
+        ) as StateData;
+        const instanceName = g.name?.toString() ?? "current";
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    get: {
+      description: "Get a Rbin Rule",
+      arguments: z.object({
+        identifier: z.string().describe(
+          "The primary identifier of the Rbin Rule",
+        ),
+      }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const result = await readResource(
+          "AWS::Rbin::Rule",
+          args.identifier,
+        ) as StateData;
+        const instanceName = context.globalArgs.name?.toString() ??
+          args.identifier;
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    update: {
+      description: "Update a Rbin Rule",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const instanceName = g.name?.toString() ?? "current";
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          instanceName,
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        const identifier = existing.Arn?.toString();
+        if (!identifier) {
+          throw new Error("No identifier found in existing state");
+        }
+        const currentState = await readResource(
+          "AWS::Rbin::Rule",
+          identifier,
+        ) as StateData;
+        const desiredState: Record<string, unknown> = { ...currentState };
+        for (const [key, value] of Object.entries(g)) {
+          if (key === "name") continue;
+          if (value !== undefined) desiredState[key] = value;
+        }
+        const result = await updateResource(
+          "AWS::Rbin::Rule",
+          identifier,
+          currentState,
+          desiredState,
+          ["ResourceType"],
+        );
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    delete: {
+      description: "Delete a Rbin Rule",
+      arguments: z.object({
+        identifier: z.string().describe(
+          "The primary identifier of the Rbin Rule",
+        ),
+      }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const { existed } = await deleteResource(
+          "AWS::Rbin::Rule",
+          args.identifier,
+        );
+        const instanceName = context.globalArgs.name?.toString() ??
+          args.identifier;
+        const handle = await context.writeResource("state", instanceName, {
+          identifier: args.identifier,
+          existed,
+          status: existed ? "deleted" : "not_found",
+          deletedAt: new Date().toISOString(),
+        });
+        return { dataHandles: [handle] };
+      },
+    },
+    sync: {
+      description: "Sync Rbin Rule state from AWS",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const instanceName = g.name?.toString() ?? "current";
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          instanceName,
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        const identifier = existing.Arn?.toString();
+        if (!identifier) {
+          throw new Error("No identifier found in existing state");
+        }
+        try {
+          const result = await readResource(
+            "AWS::Rbin::Rule",
+            identifier,
+          ) as StateData;
+          const handle = await context.writeResource(
+            "state",
+            instanceName,
+            result,
+          );
+          return { dataHandles: [handle] };
+        } catch (error: unknown) {
+          if (isResourceNotFoundError(error)) {
+            const handle = await context.writeResource("state", instanceName, {
+              identifier,
+              status: "not_found",
+              syncedAt: new Date().toISOString(),
+            });
+            return { dataHandles: [handle] };
+          }
+          throw error;
+        }
+      },
+    },
+  },
+};

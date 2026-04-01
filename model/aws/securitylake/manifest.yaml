@@ -1,0 +1,20 @@
+# Auto-generated manifest. Re-generate with the appropriate deno task.
+manifestVersion: 1
+name: "@swamp/aws/securitylake"
+version: "2026.03.19.1"
+description: "AWS SECURITYLAKE infrastructure models"
+labels:
+  - aws
+  - securitylake
+  - cloud
+  - infrastructure
+releaseNotes: |
+  - Updated: aws_log_source, data_lake, subscriber, subscriber_notification
+models:
+  - aws_log_source.ts
+  - data_lake.ts
+  - subscriber.ts
+  - subscriber_notification.ts
+additionalFiles:
+  - LICENSE.txt
+  - README.md
