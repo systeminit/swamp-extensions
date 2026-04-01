@@ -1,0 +1,19 @@
+# Auto-generated manifest. Re-generate with the appropriate deno task.
+manifestVersion: 1
+name: "@swamp/gcp/oauth2"
+version: "2026.03.27.1"
+description: "Google Cloud oauth2 infrastructure models"
+labels:
+  - gcp
+  - google-cloud
+  - oauth2
+  - cloud
+  - infrastructure
+releaseNotes: |
+  - Added: userinfo, userinfo_v2_me
+models:
+  - userinfo.ts
+  - userinfo_v2_me.ts
+additionalFiles:
+  - LICENSE.txt
+  - README.md

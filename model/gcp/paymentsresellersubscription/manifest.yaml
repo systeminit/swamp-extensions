@@ -1,0 +1,20 @@
+# Auto-generated manifest. Re-generate with the appropriate deno task.
+manifestVersion: 1
+name: "@swamp/gcp/paymentsresellersubscription"
+version: "2026.03.27.1"
+description: "Google Cloud paymentsresellersubscription infrastructure models"
+labels:
+  - gcp
+  - google-cloud
+  - paymentsresellersubscription
+  - cloud
+  - infrastructure
+releaseNotes: |
+  - Added: partners_products, partners_promotions, partners_subscriptions
+models:
+  - partners_products.ts
+  - partners_promotions.ts
+  - partners_subscriptions.ts
+additionalFiles:
+  - LICENSE.txt
+  - README.md

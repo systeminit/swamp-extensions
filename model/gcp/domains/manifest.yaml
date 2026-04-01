@@ -1,0 +1,19 @@
+# Auto-generated manifest. Re-generate with the appropriate deno task.
+manifestVersion: 1
+name: "@swamp/gcp/domains"
+version: "2026.03.27.1"
+description: "Google Cloud domains infrastructure models"
+labels:
+  - gcp
+  - google-cloud
+  - domains
+  - cloud
+  - infrastructure
+releaseNotes: |
+  - Added: locations, registrations
+models:
+  - locations.ts
+  - registrations.ts
+additionalFiles:
+  - LICENSE.txt
+  - README.md

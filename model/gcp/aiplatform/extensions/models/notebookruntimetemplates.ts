@@ -1,0 +1,814 @@
+// Auto-generated extension model for @swamp/gcp/aiplatform/notebookruntimetemplates
+// Do not edit manually. Re-generate with: deno task generate:gcp
+
+// deno-lint-ignore-file no-explicit-any
+
+import { z } from "zod";
+import {
+  createResource,
+  deleteResource,
+  getProjectId,
+  isResourceNotFoundError,
+  readResource,
+  updateResource,
+} from "./_lib/gcp.ts";
+
+/** Construct the fully-qualified resource name from parent and short name. */
+function buildResourceName(parent: string, shortName: string): string {
+  return `${parent}/notebookRuntimeTemplates/${shortName}`;
+}
+
+const BASE_URL = "https://aiplatform.googleapis.com/";
+
+const GET_CONFIG = {
+  "id": "aiplatform.projects.locations.notebookRuntimeTemplates.get",
+  "path": "v1/{+name}",
+  "httpMethod": "GET",
+  "parameterOrder": [
+    "name",
+  ],
+  "parameters": {
+    "name": {
+      "location": "path",
+      "required": true,
+    },
+  },
+} as const;
+
+const INSERT_CONFIG = {
+  "id": "aiplatform.projects.locations.notebookRuntimeTemplates.create",
+  "path": "v1/{+parent}/notebookRuntimeTemplates",
+  "httpMethod": "POST",
+  "parameterOrder": [
+    "parent",
+  ],
+  "parameters": {
+    "notebookRuntimeTemplateId": {
+      "location": "query",
+    },
+    "parent": {
+      "location": "path",
+      "required": true,
+    },
+  },
+} as const;
+
+const PATCH_CONFIG = {
+  "id": "aiplatform.projects.locations.notebookRuntimeTemplates.patch",
+  "path": "v1/{+name}",
+  "httpMethod": "PATCH",
+  "parameterOrder": [
+    "name",
+  ],
+  "parameters": {
+    "name": {
+      "location": "path",
+      "required": true,
+    },
+    "updateMask": {
+      "location": "query",
+    },
+  },
+} as const;
+
+const DELETE_CONFIG = {
+  "id": "aiplatform.projects.locations.notebookRuntimeTemplates.delete",
+  "path": "v1/{+name}",
+  "httpMethod": "DELETE",
+  "parameterOrder": [
+    "name",
+  ],
+  "parameters": {
+    "name": {
+      "location": "path",
+      "required": true,
+    },
+  },
+} as const;
+
+const GlobalArgsSchema = z.object({
+  dataPersistentDiskSpec: z.object({
+    diskSizeGb: z.string().describe(
+      "Size in GB of the disk (default is 100GB).",
+    ).optional(),
+    diskType: z.string().describe(
+      'Type of the disk (default is "pd-standard"). Valid values: "pd-ssd" (Persistent Disk Solid State Drive) "pd-standard" (Persistent Disk Hard Disk Drive) "pd-balanced" (Balanced Persistent Disk) "pd-extreme" (Extreme Persistent Disk)',
+    ).optional(),
+  }).describe("Represents the spec of persistent disk options.").optional(),
+  description: z.string().describe(
+    "The description of the NotebookRuntimeTemplate.",
+  ).optional(),
+  displayName: z.string().describe(
+    "Required. The display name of the NotebookRuntimeTemplate. The name can be up to 128 characters long and can consist of any UTF-8 characters.",
+  ).optional(),
+  encryptionSpec: z.object({
+    kmsKeyName: z.string().describe(
+      "Required. Resource name of the Cloud KMS key used to protect the resource. The Cloud KMS key must be in the same region as the resource. It must have the format `projects/{project}/locations/{location}/keyRings/{key_ring}/cryptoKeys/{crypto_key}`.",
+    ).optional(),
+  }).describe(
+    "Represents a customer-managed encryption key specification that can be applied to a Vertex AI resource.",
+  ).optional(),
+  eucConfig: z.object({
+    bypassActasCheck: z.boolean().describe(
+      "Output only. Whether ActAs check is bypassed for service account attached to the VM. If false, we need ActAs check for the default Compute Engine Service account. When a Runtime is created, a VM is allocated using Default Compute Engine Service Account. Any user requesting to use this Runtime requires Service Account User (ActAs) permission over this SA. If true, Runtime owner is using EUC and does not require the above permission as VM no longer use default Compute Engine SA, but a P4SA.",
+    ).optional(),
+    eucDisabled: z.boolean().describe(
+      "Input only. Whether EUC is disabled in this NotebookRuntimeTemplate. In proto3, the default value of a boolean is false. In this way, by default EUC will be enabled for NotebookRuntimeTemplate.",
+    ).optional(),
+  }).describe("The euc configuration of NotebookRuntimeTemplate.").optional(),
+  idleShutdownConfig: z.object({
+    idleShutdownDisabled: z.boolean().describe(
+      "Whether Idle Shutdown is disabled in this NotebookRuntimeTemplate.",
+    ).optional(),
+    idleTimeout: z.string().describe(
+      "Required. Duration is accurate to the second. In Notebook, Idle Timeout is accurate to minute so the range of idle_timeout (second) is: 10 * 60 ~ 1440 * 60.",
+    ).optional(),
+  }).describe(
+    "The idle shutdown configuration of NotebookRuntimeTemplate, which contains the idle_timeout as required field.",
+  ).optional(),
+  labels: z.record(z.string(), z.string()).describe(
+    "The labels with user-defined metadata to organize the NotebookRuntimeTemplates. Label keys and values can be no longer than 64 characters (Unicode codepoints), can only contain lowercase letters, numeric characters, underscores and dashes. International characters are allowed. See https://goo.gl/xmQnxf for more information and examples of labels.",
+  ).optional(),
+  machineSpec: z.object({
+    acceleratorCount: z.number().int().describe(
+      "The number of accelerators to attach to the machine. For accelerator optimized machine types (https://cloud.google.com/compute/docs/accelerator-optimized-machines), One may set the accelerator_count from 1 to N for machine with N GPUs. If accelerator_count is less than or equal to N / 2, Vertex will co-schedule the replicas of the model into the same VM to save cost. For example, if the machine type is a3-highgpu-8g, which has 8 H100 GPUs, one can set accelerator_count to 1 to 8. If accelerator_count is 1, 2, 3, or 4, Vertex will co-schedule 8, 4, 2, or 2 replicas of the model into the same VM to save cost. When co-scheduling, CPU, memory and storage on the VM will be distributed to replicas on the VM. For example, one can expect a co-scheduled replica requesting 2 GPUs out of a 8-GPU VM will receive 25% of the CPU, memory and storage of the VM. Note that the feature is not compatible with multihost_gpu_node_count. When multihost_gpu_node_count is set, the co-scheduling will not be enabled.",
+    ).optional(),
+    acceleratorType: z.enum([
+      "ACCELERATOR_TYPE_UNSPECIFIED",
+      "NVIDIA_TESLA_K80",
+      "NVIDIA_TESLA_P100",
+      "NVIDIA_TESLA_V100",
+      "NVIDIA_TESLA_P4",
+      "NVIDIA_TESLA_T4",
+      "NVIDIA_TESLA_A100",
+      "NVIDIA_A100_80GB",
+      "NVIDIA_L4",
+      "NVIDIA_H100_80GB",
+      "NVIDIA_H100_MEGA_80GB",
+      "NVIDIA_H200_141GB",
+      "NVIDIA_B200",
+      "NVIDIA_GB200",
+      "NVIDIA_RTX_PRO_6000",
+      "TPU_V2",
+      "TPU_V3",
+      "TPU_V4_POD",
+      "TPU_V5_LITEPOD",
+    ]).describe(
+      "Immutable. The type of accelerator(s) that may be attached to the machine as per accelerator_count.",
+    ).optional(),
+    gpuPartitionSize: z.string().describe(
+      'Optional. Immutable. The Nvidia GPU partition size. When specified, the requested accelerators will be partitioned into smaller GPU partitions. For example, if the request is for 8 units of NVIDIA A100 GPUs, and gpu_partition_size="1g.10gb", the service will create 8 * 7 = 56 partitioned MIG instances. The partition size must be a value supported by the requested accelerator. Refer to [Nvidia GPU Partitioning](https://cloud.google.com/kubernetes-engine/docs/how-to/gpus-multi#multi-instance_gpu_partitions) for the available partition sizes. If set, the accelerator_count should be set to 1.',
+    ).optional(),
+    machineType: z.string().describe(
+      "Immutable. The type of the machine. See the [list of machine types supported for prediction](https://cloud.google.com/vertex-ai/docs/predictions/configure-compute#machine-types) See the [list of machine types supported for custom training](https://cloud.google.com/vertex-ai/docs/training/configure-compute#machine-types). For DeployedModel this field is optional, and the default value is `n1-standard-2`. For BatchPredictionJob or as part of WorkerPoolSpec this field is required.",
+    ).optional(),
+    reservationAffinity: z.object({
+      key: z.string().describe(
+        "Optional. Corresponds to the label key of a reservation resource. To target a SPECIFIC_RESERVATION by name, use `compute.googleapis.com/reservation-name` as the key and specify the name of your reservation as its value.",
+      ).optional(),
+      reservationAffinityType: z.enum([
+        "TYPE_UNSPECIFIED",
+        "NO_RESERVATION",
+        "ANY_RESERVATION",
+        "SPECIFIC_RESERVATION",
+      ]).describe("Required. Specifies the reservation affinity type.")
+        .optional(),
+      values: z.array(z.string()).describe(
+        "Optional. Corresponds to the label values of a reservation resource. This must be the full resource name of the reservation or reservation block.",
+      ).optional(),
+    }).describe(
+      "A ReservationAffinity can be used to configure a Vertex AI resource (e.g., a DeployedModel) to draw its Compute Engine resources from a Shared Reservation, or exclusively from on-demand capacity.",
+    ).optional(),
+    tpuTopology: z.string().describe(
+      'Immutable. The topology of the TPUs. Corresponds to the TPU topologies available from GKE. (Example: tpu_topology: "2x2x1").',
+    ).optional(),
+  }).describe("Specification of a single machine.").optional(),
+  name: z.string().describe("The resource name of the NotebookRuntimeTemplate.")
+    .optional(),
+  networkSpec: z.object({
+    enableInternetAccess: z.boolean().describe(
+      "Whether to enable public internet access. Default false.",
+    ).optional(),
+    network: z.string().describe(
+      "The full name of the Google Compute Engine [network](https://cloud.google.com//compute/docs/networks-and-firewalls#networks)",
+    ).optional(),
+    subnetwork: z.string().describe(
+      "The name of the subnet that this instance is in. Format: `projects/{project_id_or_number}/regions/{region}/subnetworks/{subnetwork_id}`",
+    ).optional(),
+  }).describe("Network spec.").optional(),
+  networkTags: z.array(z.string()).describe(
+    "Optional. The Compute Engine tags to add to runtime (see [Tagging instances](https://cloud.google.com/vpc/docs/add-remove-network-tags)).",
+  ).optional(),
+  notebookRuntimeType: z.enum([
+    "NOTEBOOK_RUNTIME_TYPE_UNSPECIFIED",
+    "USER_DEFINED",
+    "ONE_CLICK",
+  ]).describe("Optional. Immutable. The type of the notebook runtime template.")
+    .optional(),
+  reservationAffinity: z.object({
+    consumeReservationType: z.enum([
+      "RESERVATION_AFFINITY_TYPE_UNSPECIFIED",
+      "RESERVATION_NONE",
+      "RESERVATION_ANY",
+      "RESERVATION_SPECIFIC",
+    ]).describe(
+      "Required. Specifies the type of reservation from which this instance can consume resources: RESERVATION_ANY (default), RESERVATION_SPECIFIC, or RESERVATION_NONE. See Consuming reserved instances for examples.",
+    ).optional(),
+    key: z.string().describe(
+      "Optional. Corresponds to the label key of a reservation resource. To target a RESERVATION_SPECIFIC by name, use compute.googleapis.com/reservation-name as the key and specify the name of your reservation as its value.",
+    ).optional(),
+    values: z.array(z.string()).describe(
+      "Optional. Corresponds to the label values of a reservation resource. This must be the full path name of Reservation.",
+    ).optional(),
+  }).describe("Notebook Reservation Affinity for consuming Zonal reservation.")
+    .optional(),
+  shieldedVmConfig: z.object({
+    enableSecureBoot: z.boolean().describe(
+      "Defines whether the instance has [Secure Boot](https://cloud.google.com/compute/shielded-vm/docs/shielded-vm#secure-boot) enabled. Secure Boot helps ensure that the system only runs authentic software by verifying the digital signature of all boot components, and halting the boot process if signature verification fails.",
+    ).optional(),
+  }).describe(
+    "A set of Shielded Instance options. See [Images using supported Shielded VM features](https://cloud.google.com/compute/docs/instances/modifying-shielded-vm).",
+  ).optional(),
+  softwareConfig: z.object({
+    colabImage: z.object({
+      description: z.string().describe(
+        'Output only. A human-readable description of the specified colab image release, populated by the system. Example: "Python 3.10", "Latest - current Python 3.11"',
+      ).optional(),
+      releaseName: z.string().describe(
+        'Optional. The release name of the NotebookRuntime Colab image, e.g. "py310". If not specified, detault to the latest release.',
+      ).optional(),
+    }).describe("Colab image of the runtime.").optional(),
+    env: z.array(z.object({
+      name: z.string().describe(
+        "Required. Name of the environment variable. Must be a valid C identifier.",
+      ).optional(),
+      value: z.string().describe(
+        "Required. Variables that reference a $(VAR_NAME) are expanded using the previous defined environment variables in the container and any service environment variables. If a variable cannot be resolved, the reference in the input string will be unchanged. The $(VAR_NAME) syntax can be escaped with a double $$, ie: $$(VAR_NAME). Escaped references will never be expanded, regardless of whether the variable exists or not.",
+      ).optional(),
+    })).describe(
+      "Optional. Environment variables to be passed to the container. Maximum limit is 100.",
+    ).optional(),
+    postStartupScriptConfig: z.object({
+      postStartupScript: z.string().describe(
+        "Optional. Post startup script to run after runtime is started.",
+      ).optional(),
+      postStartupScriptBehavior: z.enum([
+        "POST_STARTUP_SCRIPT_BEHAVIOR_UNSPECIFIED",
+        "RUN_ONCE",
+        "RUN_EVERY_START",
+        "DOWNLOAD_AND_RUN_EVERY_START",
+      ]).describe(
+        "Optional. Post startup script behavior that defines download and execution behavior.",
+      ).optional(),
+      postStartupScriptUrl: z.string().describe(
+        "Optional. Post startup script url to download. Example: `gs://bucket/script.sh`",
+      ).optional(),
+    }).describe("Post startup script config.").optional(),
+  }).describe(
+    "Notebook Software Config. This is passed to the backend when user makes software configurations in UI.",
+  ).optional(),
+  notebookRuntimeTemplateId: z.string().describe(
+    "Optional. User specified ID for the notebook runtime template.",
+  ).optional(),
+  location: z.string().describe(
+    "The location for this resource (e.g., 'us', 'us-central1', 'europe-west1')",
+  ).optional(),
+});
+
+const StateSchema = z.object({
+  createTime: z.string().optional(),
+  dataPersistentDiskSpec: z.object({
+    diskSizeGb: z.string(),
+    diskType: z.string(),
+  }).optional(),
+  description: z.string().optional(),
+  displayName: z.string().optional(),
+  encryptionSpec: z.object({
+    kmsKeyName: z.string(),
+  }).optional(),
+  etag: z.string().optional(),
+  eucConfig: z.object({
+    bypassActasCheck: z.boolean(),
+    eucDisabled: z.boolean(),
+  }).optional(),
+  idleShutdownConfig: z.object({
+    idleShutdownDisabled: z.boolean(),
+    idleTimeout: z.string(),
+  }).optional(),
+  isDefault: z.boolean().optional(),
+  labels: z.record(z.string(), z.unknown()).optional(),
+  machineSpec: z.object({
+    acceleratorCount: z.number(),
+    acceleratorType: z.string(),
+    gpuPartitionSize: z.string(),
+    machineType: z.string(),
+    reservationAffinity: z.object({
+      key: z.string(),
+      reservationAffinityType: z.string(),
+      values: z.array(z.string()),
+    }),
+    tpuTopology: z.string(),
+  }).optional(),
+  name: z.string(),
+  networkSpec: z.object({
+    enableInternetAccess: z.boolean(),
+    network: z.string(),
+    subnetwork: z.string(),
+  }).optional(),
+  networkTags: z.array(z.string()).optional(),
+  notebookRuntimeType: z.string().optional(),
+  reservationAffinity: z.object({
+    consumeReservationType: z.string(),
+    key: z.string(),
+    values: z.array(z.string()),
+  }).optional(),
+  serviceAccount: z.string().optional(),
+  shieldedVmConfig: z.object({
+    enableSecureBoot: z.boolean(),
+  }).optional(),
+  softwareConfig: z.object({
+    colabImage: z.object({
+      description: z.string(),
+      releaseName: z.string(),
+    }),
+    env: z.array(z.object({
+      name: z.string(),
+      value: z.string(),
+    })),
+    postStartupScriptConfig: z.object({
+      postStartupScript: z.string(),
+      postStartupScriptBehavior: z.string(),
+      postStartupScriptUrl: z.string(),
+    }),
+  }).optional(),
+  updateTime: z.string().optional(),
+}).passthrough();
+
+type StateData = z.infer<typeof StateSchema>;
+
+const InputsSchema = z.object({
+  dataPersistentDiskSpec: z.object({
+    diskSizeGb: z.string().describe(
+      "Size in GB of the disk (default is 100GB).",
+    ).optional(),
+    diskType: z.string().describe(
+      'Type of the disk (default is "pd-standard"). Valid values: "pd-ssd" (Persistent Disk Solid State Drive) "pd-standard" (Persistent Disk Hard Disk Drive) "pd-balanced" (Balanced Persistent Disk) "pd-extreme" (Extreme Persistent Disk)',
+    ).optional(),
+  }).describe("Represents the spec of persistent disk options.").optional(),
+  description: z.string().describe(
+    "The description of the NotebookRuntimeTemplate.",
+  ).optional(),
+  displayName: z.string().describe(
+    "Required. The display name of the NotebookRuntimeTemplate. The name can be up to 128 characters long and can consist of any UTF-8 characters.",
+  ).optional(),
+  encryptionSpec: z.object({
+    kmsKeyName: z.string().describe(
+      "Required. Resource name of the Cloud KMS key used to protect the resource. The Cloud KMS key must be in the same region as the resource. It must have the format `projects/{project}/locations/{location}/keyRings/{key_ring}/cryptoKeys/{crypto_key}`.",
+    ).optional(),
+  }).describe(
+    "Represents a customer-managed encryption key specification that can be applied to a Vertex AI resource.",
+  ).optional(),
+  eucConfig: z.object({
+    bypassActasCheck: z.boolean().describe(
+      "Output only. Whether ActAs check is bypassed for service account attached to the VM. If false, we need ActAs check for the default Compute Engine Service account. When a Runtime is created, a VM is allocated using Default Compute Engine Service Account. Any user requesting to use this Runtime requires Service Account User (ActAs) permission over this SA. If true, Runtime owner is using EUC and does not require the above permission as VM no longer use default Compute Engine SA, but a P4SA.",
+    ).optional(),
+    eucDisabled: z.boolean().describe(
+      "Input only. Whether EUC is disabled in this NotebookRuntimeTemplate. In proto3, the default value of a boolean is false. In this way, by default EUC will be enabled for NotebookRuntimeTemplate.",
+    ).optional(),
+  }).describe("The euc configuration of NotebookRuntimeTemplate.").optional(),
+  idleShutdownConfig: z.object({
+    idleShutdownDisabled: z.boolean().describe(
+      "Whether Idle Shutdown is disabled in this NotebookRuntimeTemplate.",
+    ).optional(),
+    idleTimeout: z.string().describe(
+      "Required. Duration is accurate to the second. In Notebook, Idle Timeout is accurate to minute so the range of idle_timeout (second) is: 10 * 60 ~ 1440 * 60.",
+    ).optional(),
+  }).describe(
+    "The idle shutdown configuration of NotebookRuntimeTemplate, which contains the idle_timeout as required field.",
+  ).optional(),
+  labels: z.record(z.string(), z.string()).describe(
+    "The labels with user-defined metadata to organize the NotebookRuntimeTemplates. Label keys and values can be no longer than 64 characters (Unicode codepoints), can only contain lowercase letters, numeric characters, underscores and dashes. International characters are allowed. See https://goo.gl/xmQnxf for more information and examples of labels.",
+  ).optional(),
+  machineSpec: z.object({
+    acceleratorCount: z.number().int().describe(
+      "The number of accelerators to attach to the machine. For accelerator optimized machine types (https://cloud.google.com/compute/docs/accelerator-optimized-machines), One may set the accelerator_count from 1 to N for machine with N GPUs. If accelerator_count is less than or equal to N / 2, Vertex will co-schedule the replicas of the model into the same VM to save cost. For example, if the machine type is a3-highgpu-8g, which has 8 H100 GPUs, one can set accelerator_count to 1 to 8. If accelerator_count is 1, 2, 3, or 4, Vertex will co-schedule 8, 4, 2, or 2 replicas of the model into the same VM to save cost. When co-scheduling, CPU, memory and storage on the VM will be distributed to replicas on the VM. For example, one can expect a co-scheduled replica requesting 2 GPUs out of a 8-GPU VM will receive 25% of the CPU, memory and storage of the VM. Note that the feature is not compatible with multihost_gpu_node_count. When multihost_gpu_node_count is set, the co-scheduling will not be enabled.",
+    ).optional(),
+    acceleratorType: z.enum([
+      "ACCELERATOR_TYPE_UNSPECIFIED",
+      "NVIDIA_TESLA_K80",
+      "NVIDIA_TESLA_P100",
+      "NVIDIA_TESLA_V100",
+      "NVIDIA_TESLA_P4",
+      "NVIDIA_TESLA_T4",
+      "NVIDIA_TESLA_A100",
+      "NVIDIA_A100_80GB",
+      "NVIDIA_L4",
+      "NVIDIA_H100_80GB",
+      "NVIDIA_H100_MEGA_80GB",
+      "NVIDIA_H200_141GB",
+      "NVIDIA_B200",
+      "NVIDIA_GB200",
+      "NVIDIA_RTX_PRO_6000",
+      "TPU_V2",
+      "TPU_V3",
+      "TPU_V4_POD",
+      "TPU_V5_LITEPOD",
+    ]).describe(
+      "Immutable. The type of accelerator(s) that may be attached to the machine as per accelerator_count.",
+    ).optional(),
+    gpuPartitionSize: z.string().describe(
+      'Optional. Immutable. The Nvidia GPU partition size. When specified, the requested accelerators will be partitioned into smaller GPU partitions. For example, if the request is for 8 units of NVIDIA A100 GPUs, and gpu_partition_size="1g.10gb", the service will create 8 * 7 = 56 partitioned MIG instances. The partition size must be a value supported by the requested accelerator. Refer to [Nvidia GPU Partitioning](https://cloud.google.com/kubernetes-engine/docs/how-to/gpus-multi#multi-instance_gpu_partitions) for the available partition sizes. If set, the accelerator_count should be set to 1.',
+    ).optional(),
+    machineType: z.string().describe(
+      "Immutable. The type of the machine. See the [list of machine types supported for prediction](https://cloud.google.com/vertex-ai/docs/predictions/configure-compute#machine-types) See the [list of machine types supported for custom training](https://cloud.google.com/vertex-ai/docs/training/configure-compute#machine-types). For DeployedModel this field is optional, and the default value is `n1-standard-2`. For BatchPredictionJob or as part of WorkerPoolSpec this field is required.",
+    ).optional(),
+    reservationAffinity: z.object({
+      key: z.string().describe(
+        "Optional. Corresponds to the label key of a reservation resource. To target a SPECIFIC_RESERVATION by name, use `compute.googleapis.com/reservation-name` as the key and specify the name of your reservation as its value.",
+      ).optional(),
+      reservationAffinityType: z.enum([
+        "TYPE_UNSPECIFIED",
+        "NO_RESERVATION",
+        "ANY_RESERVATION",
+        "SPECIFIC_RESERVATION",
+      ]).describe("Required. Specifies the reservation affinity type.")
+        .optional(),
+      values: z.array(z.string()).describe(
+        "Optional. Corresponds to the label values of a reservation resource. This must be the full resource name of the reservation or reservation block.",
+      ).optional(),
+    }).describe(
+      "A ReservationAffinity can be used to configure a Vertex AI resource (e.g., a DeployedModel) to draw its Compute Engine resources from a Shared Reservation, or exclusively from on-demand capacity.",
+    ).optional(),
+    tpuTopology: z.string().describe(
+      'Immutable. The topology of the TPUs. Corresponds to the TPU topologies available from GKE. (Example: tpu_topology: "2x2x1").',
+    ).optional(),
+  }).describe("Specification of a single machine.").optional(),
+  name: z.string().describe("The resource name of the NotebookRuntimeTemplate.")
+    .optional(),
+  networkSpec: z.object({
+    enableInternetAccess: z.boolean().describe(
+      "Whether to enable public internet access. Default false.",
+    ).optional(),
+    network: z.string().describe(
+      "The full name of the Google Compute Engine [network](https://cloud.google.com//compute/docs/networks-and-firewalls#networks)",
+    ).optional(),
+    subnetwork: z.string().describe(
+      "The name of the subnet that this instance is in. Format: `projects/{project_id_or_number}/regions/{region}/subnetworks/{subnetwork_id}`",
+    ).optional(),
+  }).describe("Network spec.").optional(),
+  networkTags: z.array(z.string()).describe(
+    "Optional. The Compute Engine tags to add to runtime (see [Tagging instances](https://cloud.google.com/vpc/docs/add-remove-network-tags)).",
+  ).optional(),
+  notebookRuntimeType: z.enum([
+    "NOTEBOOK_RUNTIME_TYPE_UNSPECIFIED",
+    "USER_DEFINED",
+    "ONE_CLICK",
+  ]).describe("Optional. Immutable. The type of the notebook runtime template.")
+    .optional(),
+  reservationAffinity: z.object({
+    consumeReservationType: z.enum([
+      "RESERVATION_AFFINITY_TYPE_UNSPECIFIED",
+      "RESERVATION_NONE",
+      "RESERVATION_ANY",
+      "RESERVATION_SPECIFIC",
+    ]).describe(
+      "Required. Specifies the type of reservation from which this instance can consume resources: RESERVATION_ANY (default), RESERVATION_SPECIFIC, or RESERVATION_NONE. See Consuming reserved instances for examples.",
+    ).optional(),
+    key: z.string().describe(
+      "Optional. Corresponds to the label key of a reservation resource. To target a RESERVATION_SPECIFIC by name, use compute.googleapis.com/reservation-name as the key and specify the name of your reservation as its value.",
+    ).optional(),
+    values: z.array(z.string()).describe(
+      "Optional. Corresponds to the label values of a reservation resource. This must be the full path name of Reservation.",
+    ).optional(),
+  }).describe("Notebook Reservation Affinity for consuming Zonal reservation.")
+    .optional(),
+  shieldedVmConfig: z.object({
+    enableSecureBoot: z.boolean().describe(
+      "Defines whether the instance has [Secure Boot](https://cloud.google.com/compute/shielded-vm/docs/shielded-vm#secure-boot) enabled. Secure Boot helps ensure that the system only runs authentic software by verifying the digital signature of all boot components, and halting the boot process if signature verification fails.",
+    ).optional(),
+  }).describe(
+    "A set of Shielded Instance options. See [Images using supported Shielded VM features](https://cloud.google.com/compute/docs/instances/modifying-shielded-vm).",
+  ).optional(),
+  softwareConfig: z.object({
+    colabImage: z.object({
+      description: z.string().describe(
+        'Output only. A human-readable description of the specified colab image release, populated by the system. Example: "Python 3.10", "Latest - current Python 3.11"',
+      ).optional(),
+      releaseName: z.string().describe(
+        'Optional. The release name of the NotebookRuntime Colab image, e.g. "py310". If not specified, detault to the latest release.',
+      ).optional(),
+    }).describe("Colab image of the runtime.").optional(),
+    env: z.array(z.object({
+      name: z.string().describe(
+        "Required. Name of the environment variable. Must be a valid C identifier.",
+      ).optional(),
+      value: z.string().describe(
+        "Required. Variables that reference a $(VAR_NAME) are expanded using the previous defined environment variables in the container and any service environment variables. If a variable cannot be resolved, the reference in the input string will be unchanged. The $(VAR_NAME) syntax can be escaped with a double $$, ie: $$(VAR_NAME). Escaped references will never be expanded, regardless of whether the variable exists or not.",
+      ).optional(),
+    })).describe(
+      "Optional. Environment variables to be passed to the container. Maximum limit is 100.",
+    ).optional(),
+    postStartupScriptConfig: z.object({
+      postStartupScript: z.string().describe(
+        "Optional. Post startup script to run after runtime is started.",
+      ).optional(),
+      postStartupScriptBehavior: z.enum([
+        "POST_STARTUP_SCRIPT_BEHAVIOR_UNSPECIFIED",
+        "RUN_ONCE",
+        "RUN_EVERY_START",
+        "DOWNLOAD_AND_RUN_EVERY_START",
+      ]).describe(
+        "Optional. Post startup script behavior that defines download and execution behavior.",
+      ).optional(),
+      postStartupScriptUrl: z.string().describe(
+        "Optional. Post startup script url to download. Example: `gs://bucket/script.sh`",
+      ).optional(),
+    }).describe("Post startup script config.").optional(),
+  }).describe(
+    "Notebook Software Config. This is passed to the backend when user makes software configurations in UI.",
+  ).optional(),
+  notebookRuntimeTemplateId: z.string().describe(
+    "Optional. User specified ID for the notebook runtime template.",
+  ).optional(),
+  location: z.string().describe(
+    "The location for this resource (e.g., 'us', 'us-central1', 'europe-west1')",
+  ).optional(),
+});
+
+export const model = {
+  type: "@swamp/gcp/aiplatform/notebookruntimetemplates",
+  version: "2026.03.27.1",
+  globalArguments: GlobalArgsSchema,
+  inputsSchema: InputsSchema,
+  resources: {
+    state: {
+      description:
+        "A template that specifies runtime configurations such as machine type, runtim...",
+      schema: StateSchema,
+      lifetime: "infinite",
+      garbageCollection: 10,
+    },
+  },
+  methods: {
+    create: {
+      description: "Create a notebookRuntimeTemplates",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const projectId = await getProjectId();
+        const params: Record<string, string> = { project: projectId };
+        if (g["parent"] !== undefined) params["parent"] = String(g["parent"]);
+        const body: Record<string, unknown> = {};
+        if (g["dataPersistentDiskSpec"] !== undefined) {
+          body["dataPersistentDiskSpec"] = g["dataPersistentDiskSpec"];
+        }
+        if (g["description"] !== undefined) {
+          body["description"] = g["description"];
+        }
+        if (g["displayName"] !== undefined) {
+          body["displayName"] = g["displayName"];
+        }
+        if (g["encryptionSpec"] !== undefined) {
+          body["encryptionSpec"] = g["encryptionSpec"];
+        }
+        if (g["eucConfig"] !== undefined) body["eucConfig"] = g["eucConfig"];
+        if (g["idleShutdownConfig"] !== undefined) {
+          body["idleShutdownConfig"] = g["idleShutdownConfig"];
+        }
+        if (g["labels"] !== undefined) body["labels"] = g["labels"];
+        if (g["machineSpec"] !== undefined) {
+          body["machineSpec"] = g["machineSpec"];
+        }
+        if (g["name"] !== undefined) body["name"] = g["name"];
+        if (g["networkSpec"] !== undefined) {
+          body["networkSpec"] = g["networkSpec"];
+        }
+        if (g["networkTags"] !== undefined) {
+          body["networkTags"] = g["networkTags"];
+        }
+        if (g["notebookRuntimeType"] !== undefined) {
+          body["notebookRuntimeType"] = g["notebookRuntimeType"];
+        }
+        if (g["reservationAffinity"] !== undefined) {
+          body["reservationAffinity"] = g["reservationAffinity"];
+        }
+        if (g["shieldedVmConfig"] !== undefined) {
+          body["shieldedVmConfig"] = g["shieldedVmConfig"];
+        }
+        if (g["softwareConfig"] !== undefined) {
+          body["softwareConfig"] = g["softwareConfig"];
+        }
+        if (g["notebookRuntimeTemplateId"] !== undefined) {
+          body["notebookRuntimeTemplateId"] = g["notebookRuntimeTemplateId"];
+        }
+        if (g["parent"] !== undefined && g["name"] !== undefined) {
+          params["name"] = buildResourceName(
+            String(g["parent"]),
+            String(g["name"]),
+          );
+        }
+        const result = await createResource(
+          BASE_URL,
+          INSERT_CONFIG,
+          params,
+          body,
+          GET_CONFIG,
+        ) as StateData;
+        const instanceName = (result.name ?? g.name)?.toString() ?? "current";
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    get: {
+      description: "Get a notebookRuntimeTemplates",
+      arguments: z.object({
+        identifier: z.string().describe(
+          "The name of the notebookRuntimeTemplates",
+        ),
+      }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const projectId = await getProjectId();
+        const params: Record<string, string> = { project: projectId };
+        const g = context.globalArgs;
+        params["name"] = buildResourceName(
+          String(g["parent"] ?? ""),
+          args.identifier,
+        );
+        const result = await readResource(
+          BASE_URL,
+          GET_CONFIG,
+          params,
+        ) as StateData;
+        const instanceName = (result.name ?? g.name)?.toString() ??
+          args.identifier;
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    update: {
+      description: "Update notebookRuntimeTemplates attributes",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const projectId = await getProjectId();
+        const instanceName = g.name?.toString() ?? "current";
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          instanceName,
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        const params: Record<string, string> = { project: projectId };
+        params["name"] = buildResourceName(
+          String(g["parent"] ?? ""),
+          existing["name"]?.toString() ?? g["name"]?.toString() ?? "",
+        );
+        const body: Record<string, unknown> = {};
+        if (g["dataPersistentDiskSpec"] !== undefined) {
+          body["dataPersistentDiskSpec"] = g["dataPersistentDiskSpec"];
+        }
+        if (g["description"] !== undefined) {
+          body["description"] = g["description"];
+        }
+        if (g["displayName"] !== undefined) {
+          body["displayName"] = g["displayName"];
+        }
+        if (g["encryptionSpec"] !== undefined) {
+          body["encryptionSpec"] = g["encryptionSpec"];
+        }
+        if (g["eucConfig"] !== undefined) body["eucConfig"] = g["eucConfig"];
+        if (g["idleShutdownConfig"] !== undefined) {
+          body["idleShutdownConfig"] = g["idleShutdownConfig"];
+        }
+        if (g["labels"] !== undefined) body["labels"] = g["labels"];
+        if (g["machineSpec"] !== undefined) {
+          body["machineSpec"] = g["machineSpec"];
+        }
+        if (g["networkSpec"] !== undefined) {
+          body["networkSpec"] = g["networkSpec"];
+        }
+        if (g["networkTags"] !== undefined) {
+          body["networkTags"] = g["networkTags"];
+        }
+        if (g["reservationAffinity"] !== undefined) {
+          body["reservationAffinity"] = g["reservationAffinity"];
+        }
+        if (g["shieldedVmConfig"] !== undefined) {
+          body["shieldedVmConfig"] = g["shieldedVmConfig"];
+        }
+        if (g["softwareConfig"] !== undefined) {
+          body["softwareConfig"] = g["softwareConfig"];
+        }
+        for (const key of Object.keys(existing)) {
+          if (
+            key === "fingerprint" || key === "labelFingerprint" ||
+            key === "etag" || key.endsWith("Fingerprint")
+          ) {
+            body[key] = existing[key];
+          }
+        }
+        const result = await updateResource(
+          BASE_URL,
+          PATCH_CONFIG,
+          params,
+          body,
+          GET_CONFIG,
+        ) as StateData;
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    delete: {
+      description: "Delete the notebookRuntimeTemplates",
+      arguments: z.object({
+        identifier: z.string().describe(
+          "The name of the notebookRuntimeTemplates",
+        ),
+      }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const g = context.globalArgs;
+        const projectId = await getProjectId();
+        const params: Record<string, string> = { project: projectId };
+        params["name"] = buildResourceName(
+          String(g["parent"] ?? ""),
+          args.identifier,
+        );
+        const { existed } = await deleteResource(
+          BASE_URL,
+          DELETE_CONFIG,
+          params,
+        );
+        const instanceName = g.name?.toString() ?? args.identifier;
+        const handle = await context.writeResource("state", instanceName, {
+          identifier: args.identifier,
+          existed,
+          status: existed ? "deleted" : "not_found",
+          deletedAt: new Date().toISOString(),
+        });
+        return { dataHandles: [handle] };
+      },
+    },
+    sync: {
+      description: "Sync notebookRuntimeTemplates state from GCP",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const projectId = await getProjectId();
+        const instanceName = g.name?.toString() ?? "current";
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          instanceName,
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        try {
+          const params: Record<string, string> = { project: projectId };
+          const shortName = existing.name?.toString() ?? g["name"]?.toString();
+          if (!shortName) throw new Error("No identifier found");
+          params["name"] = buildResourceName(
+            String(g["parent"] ?? ""),
+            shortName,
+          );
+          const result = await readResource(
+            BASE_URL,
+            GET_CONFIG,
+            params,
+          ) as StateData;
+          const handle = await context.writeResource(
+            "state",
+            instanceName,
+            result,
+          );
+          return { dataHandles: [handle] };
+        } catch (error: unknown) {
+          if (isResourceNotFoundError(error)) {
+            const handle = await context.writeResource("state", instanceName, {
+              status: "not_found",
+              syncedAt: new Date().toISOString(),
+            });
+            return { dataHandles: [handle] };
+          }
+          throw error;
+        }
+      },
+    },
+  },
+};

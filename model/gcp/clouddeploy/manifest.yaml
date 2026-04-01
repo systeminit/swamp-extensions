@@ -1,0 +1,27 @@
+# Auto-generated manifest. Re-generate with the appropriate deno task.
+manifestVersion: 1
+name: "@swamp/gcp/clouddeploy"
+version: "2026.03.27.1"
+description: "Google Cloud clouddeploy infrastructure models"
+labels:
+  - gcp
+  - google-cloud
+  - clouddeploy
+  - cloud
+  - infrastructure
+releaseNotes: |
+  - Added: locations, customtargettypes, deliverypipelines, deliverypipelines_automationruns, deliverypipelines_automations, deliverypipelines_releases, deliverypipelines_releases_rollouts, deliverypipelines_releases_rollouts_jobruns, deploypolicies, targets
+models:
+  - customtargettypes.ts
+  - deliverypipelines.ts
+  - deliverypipelines_automationruns.ts
+  - deliverypipelines_automations.ts
+  - deliverypipelines_releases.ts
+  - deliverypipelines_releases_rollouts.ts
+  - deliverypipelines_releases_rollouts_jobruns.ts
+  - deploypolicies.ts
+  - locations.ts
+  - targets.ts
+additionalFiles:
+  - LICENSE.txt
+  - README.md

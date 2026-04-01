@@ -1,0 +1,20 @@
+# Auto-generated manifest. Re-generate with the appropriate deno task.
+manifestVersion: 1
+name: "@swamp/gcp/orgpolicy"
+version: "2026.03.27.1"
+description: "Google Cloud orgpolicy infrastructure models"
+labels:
+  - gcp
+  - google-cloud
+  - orgpolicy
+  - cloud
+  - infrastructure
+releaseNotes: |
+  - Added: constraints, policies, customconstraints
+models:
+  - constraints.ts
+  - customconstraints.ts
+  - policies.ts
+additionalFiles:
+  - LICENSE.txt
+  - README.md

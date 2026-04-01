@@ -1,0 +1,20 @@
+# Auto-generated manifest. Re-generate with the appropriate deno task.
+manifestVersion: 1
+name: "@swamp/gcp/parametermanager"
+version: "2026.03.27.1"
+description: "Google Cloud parametermanager infrastructure models"
+labels:
+  - gcp
+  - google-cloud
+  - parametermanager
+  - cloud
+  - infrastructure
+releaseNotes: |
+  - Added: locations, parameters, parameters_versions
+models:
+  - locations.ts
+  - parameters.ts
+  - parameters_versions.ts
+additionalFiles:
+  - LICENSE.txt
+  - README.md

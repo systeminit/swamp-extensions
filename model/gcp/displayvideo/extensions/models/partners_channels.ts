@@ -1,0 +1,305 @@
+// Auto-generated extension model for @swamp/gcp/displayvideo/partners-channels
+// Do not edit manually. Re-generate with: deno task generate:gcp
+
+// deno-lint-ignore-file no-explicit-any
+
+import { z } from "zod";
+import {
+  createResource,
+  getProjectId,
+  isResourceNotFoundError,
+  readResource,
+  updateResource,
+} from "./_lib/gcp.ts";
+
+const BASE_URL = "https://displayvideo.googleapis.com/";
+
+const GET_CONFIG = {
+  "id": "displayvideo.partners.channels.get",
+  "path": "v4/partners/{+partnerId}/channels/{+channelId}",
+  "httpMethod": "GET",
+  "parameterOrder": [
+    "partnerId",
+    "channelId",
+  ],
+  "parameters": {
+    "advertiserId": {
+      "location": "query",
+    },
+    "channelId": {
+      "location": "path",
+      "required": true,
+    },
+    "partnerId": {
+      "location": "path",
+      "required": true,
+    },
+  },
+} as const;
+
+const INSERT_CONFIG = {
+  "id": "displayvideo.partners.channels.create",
+  "path": "v4/partners/{+partnerId}/channels",
+  "httpMethod": "POST",
+  "parameterOrder": [
+    "partnerId",
+  ],
+  "parameters": {
+    "advertiserId": {
+      "location": "query",
+    },
+    "partnerId": {
+      "location": "path",
+      "required": true,
+    },
+  },
+} as const;
+
+const PATCH_CONFIG = {
+  "id": "displayvideo.partners.channels.patch",
+  "path": "v4/partners/{+partnerId}/channels/{channelId}",
+  "httpMethod": "PATCH",
+  "parameterOrder": [
+    "partnerId",
+    "channelId",
+  ],
+  "parameters": {
+    "advertiserId": {
+      "location": "query",
+    },
+    "channelId": {
+      "location": "path",
+      "required": true,
+    },
+    "partnerId": {
+      "location": "path",
+      "required": true,
+    },
+    "updateMask": {
+      "location": "query",
+    },
+  },
+} as const;
+
+const GlobalArgsSchema = z.object({
+  name: z.string().describe(
+    "Instance name for this resource (used as the unique identifier in the factory pattern)",
+  ),
+  advertiserId: z.string().describe(
+    "The ID of the advertiser that owns the channel.",
+  ).optional(),
+  displayName: z.string().describe(
+    "Required. The display name of the channel. Must be UTF-8 encoded with a maximum length of 240 bytes.",
+  ).optional(),
+  partnerId: z.string().describe("The ID of the partner that owns the channel.")
+    .optional(),
+});
+
+const StateSchema = z.object({
+  advertiserId: z.string().optional(),
+  channelId: z.string().optional(),
+  displayName: z.string().optional(),
+  name: z.string(),
+  negativelyTargetedLineItemCount: z.string().optional(),
+  partnerId: z.string().optional(),
+  positivelyTargetedLineItemCount: z.string().optional(),
+}).passthrough();
+
+type StateData = z.infer<typeof StateSchema>;
+
+const InputsSchema = z.object({
+  name: z.string().optional(),
+  advertiserId: z.string().describe(
+    "The ID of the advertiser that owns the channel.",
+  ).optional(),
+  displayName: z.string().describe(
+    "Required. The display name of the channel. Must be UTF-8 encoded with a maximum length of 240 bytes.",
+  ).optional(),
+  partnerId: z.string().describe("The ID of the partner that owns the channel.")
+    .optional(),
+});
+
+export const model = {
+  type: "@swamp/gcp/displayvideo/partners-channels",
+  version: "2026.03.27.1",
+  globalArguments: GlobalArgsSchema,
+  inputsSchema: InputsSchema,
+  resources: {
+    state: {
+      description:
+        "A single channel. Channels are custom groups of related websites and apps.",
+      schema: StateSchema,
+      lifetime: "infinite",
+      garbageCollection: 10,
+    },
+  },
+  methods: {
+    create: {
+      description: "Create a channels",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const projectId = await getProjectId();
+        const params: Record<string, string> = { project: projectId };
+        if (g["partnerId"] !== undefined) {
+          params["partnerId"] = String(g["partnerId"]);
+        }
+        const body: Record<string, unknown> = {};
+        if (g["advertiserId"] !== undefined) {
+          body["advertiserId"] = g["advertiserId"];
+        }
+        if (g["displayName"] !== undefined) {
+          body["displayName"] = g["displayName"];
+        }
+        if (g["name"] !== undefined) params["channelId"] = String(g["name"]);
+        const result = await createResource(
+          BASE_URL,
+          INSERT_CONFIG,
+          params,
+          body,
+          GET_CONFIG,
+        ) as StateData;
+        const instanceName = g.name?.toString() ?? "current";
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    get: {
+      description: "Get a channels",
+      arguments: z.object({
+        identifier: z.string().describe("The name of the channels"),
+      }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const projectId = await getProjectId();
+        const params: Record<string, string> = { project: projectId };
+        const g = context.globalArgs;
+        if (g["partnerId"] !== undefined) {
+          params["partnerId"] = String(g["partnerId"]);
+        }
+        params["channelId"] = args.identifier;
+        const result = await readResource(
+          BASE_URL,
+          GET_CONFIG,
+          params,
+        ) as StateData;
+        const instanceName = g.name?.toString() ?? args.identifier;
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    update: {
+      description: "Update channels attributes",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const projectId = await getProjectId();
+        const instanceName = g.name?.toString() ?? "current";
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          instanceName,
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        const params: Record<string, string> = { project: projectId };
+        if (g["partnerId"] !== undefined) {
+          params["partnerId"] = String(g["partnerId"]);
+        } else if (existing["partnerId"]) {
+          params["partnerId"] = String(existing["partnerId"]);
+        }
+        params["channelId"] = existing["name"]?.toString() ?? "";
+        const body: Record<string, unknown> = {};
+        if (g["advertiserId"] !== undefined) {
+          body["advertiserId"] = g["advertiserId"];
+        }
+        if (g["displayName"] !== undefined) {
+          body["displayName"] = g["displayName"];
+        }
+        for (const key of Object.keys(existing)) {
+          if (
+            key === "fingerprint" || key === "labelFingerprint" ||
+            key === "etag" || key.endsWith("Fingerprint")
+          ) {
+            body[key] = existing[key];
+          }
+        }
+        const result = await updateResource(
+          BASE_URL,
+          PATCH_CONFIG,
+          params,
+          body,
+          GET_CONFIG,
+        ) as StateData;
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    sync: {
+      description: "Sync channels state from GCP",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const projectId = await getProjectId();
+        const instanceName = g.name?.toString() ?? "current";
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          instanceName,
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        try {
+          const params: Record<string, string> = { project: projectId };
+          if (g["partnerId"] !== undefined) {
+            params["partnerId"] = String(g["partnerId"]);
+          } else if (existing["partnerId"]) {
+            params["partnerId"] = String(existing["partnerId"]);
+          }
+          const identifier = existing.name?.toString() ?? g["name"]?.toString();
+          if (!identifier) {
+            throw new Error(
+              "No identifier found in existing state or globalArgs",
+            );
+          }
+          params["channelId"] = identifier;
+          const result = await readResource(
+            BASE_URL,
+            GET_CONFIG,
+            params,
+          ) as StateData;
+          const handle = await context.writeResource(
+            "state",
+            instanceName,
+            result,
+          );
+          return { dataHandles: [handle] };
+        } catch (error: unknown) {
+          if (isResourceNotFoundError(error)) {
+            const handle = await context.writeResource("state", instanceName, {
+              status: "not_found",
+              syncedAt: new Date().toISOString(),
+            });
+            return { dataHandles: [handle] };
+          }
+          throw error;
+        }
+      },
+    },
+  },
+};

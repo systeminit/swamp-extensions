@@ -1,0 +1,21 @@
+# Auto-generated manifest. Re-generate with the appropriate deno task.
+manifestVersion: 1
+name: "@swamp/gcp/cloudcontrolspartner"
+version: "2026.03.27.1"
+description: "Google Cloud cloudcontrolspartner infrastructure models"
+labels:
+  - gcp
+  - google-cloud
+  - cloudcontrolspartner
+  - cloud
+  - infrastructure
+releaseNotes: |
+  - Added: customers, customers_workloads, customers_workloads_accessapprovalrequests, customers_workloads_violations
+models:
+  - customers.ts
+  - customers_workloads.ts
+  - customers_workloads_accessapprovalrequests.ts
+  - customers_workloads_violations.ts
+additionalFiles:
+  - LICENSE.txt
+  - README.md

@@ -1,0 +1,25 @@
+# Auto-generated manifest. Re-generate with the appropriate deno task.
+manifestVersion: 1
+name: "@swamp/gcp/androiddeviceprovisioning"
+version: "2026.03.27.1"
+description: "Google Cloud androiddeviceprovisioning infrastructure models"
+labels:
+  - gcp
+  - google-cloud
+  - androiddeviceprovisioning
+  - cloud
+  - infrastructure
+releaseNotes: |
+  - Added: customers, customers_configurations, customers_devices, customers_dpcs, partners_customers, partners_devices, partners_vendors, partners_vendors_customers
+models:
+  - customers.ts
+  - customers_configurations.ts
+  - customers_devices.ts
+  - customers_dpcs.ts
+  - partners_customers.ts
+  - partners_devices.ts
+  - partners_vendors.ts
+  - partners_vendors_customers.ts
+additionalFiles:
+  - LICENSE.txt
+  - README.md

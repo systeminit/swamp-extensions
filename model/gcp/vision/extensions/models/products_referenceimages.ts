@@ -1,0 +1,299 @@
+// Auto-generated extension model for @swamp/gcp/vision/products-referenceimages
+// Do not edit manually. Re-generate with: deno task generate:gcp
+
+// deno-lint-ignore-file no-explicit-any
+
+import { z } from "zod";
+import {
+  createResource,
+  deleteResource,
+  getProjectId,
+  isResourceNotFoundError,
+  readResource,
+} from "./_lib/gcp.ts";
+
+/** Construct the fully-qualified resource name from parent and short name. */
+function buildResourceName(parent: string, shortName: string): string {
+  return `${parent}/referenceImages/${shortName}`;
+}
+
+const BASE_URL = "https://vision.googleapis.com/";
+
+const GET_CONFIG = {
+  "id": "vision.projects.locations.products.referenceImages.get",
+  "path": "v1/{+name}",
+  "httpMethod": "GET",
+  "parameterOrder": [
+    "name",
+  ],
+  "parameters": {
+    "name": {
+      "location": "path",
+      "required": true,
+    },
+  },
+} as const;
+
+const INSERT_CONFIG = {
+  "id": "vision.projects.locations.products.referenceImages.create",
+  "path": "v1/{+parent}/referenceImages",
+  "httpMethod": "POST",
+  "parameterOrder": [
+    "parent",
+  ],
+  "parameters": {
+    "parent": {
+      "location": "path",
+      "required": true,
+    },
+    "referenceImageId": {
+      "location": "query",
+    },
+  },
+} as const;
+
+const DELETE_CONFIG = {
+  "id": "vision.projects.locations.products.referenceImages.delete",
+  "path": "v1/{+name}",
+  "httpMethod": "DELETE",
+  "parameterOrder": [
+    "name",
+  ],
+  "parameters": {
+    "name": {
+      "location": "path",
+      "required": true,
+    },
+  },
+} as const;
+
+const GlobalArgsSchema = z.object({
+  boundingPolys: z.array(z.object({
+    normalizedVertices: z.array(z.object({
+      x: z.number().describe("X coordinate.").optional(),
+      y: z.number().describe("Y coordinate.").optional(),
+    })).describe("The bounding polygon normalized vertices.").optional(),
+    vertices: z.array(z.object({
+      x: z.number().int().describe("X coordinate.").optional(),
+      y: z.number().int().describe("Y coordinate.").optional(),
+    })).describe("The bounding polygon vertices.").optional(),
+  })).describe(
+    "Optional. Bounding polygons around the areas of interest in the reference image. If this field is empty, the system will try to detect regions of interest. At most 10 bounding polygons will be used. The provided shape is converted into a non-rotated rectangle. Once converted, the small edge of the rectangle must be greater than or equal to 300 pixels. The aspect ratio must be 1:4 or less (i.e. 1:3 is ok; 1:5 is not).",
+  ).optional(),
+  name: z.string().describe(
+    "The resource name of the reference image. Format is: `projects/PROJECT_ID/locations/LOC_ID/products/PRODUCT_ID/referenceImages/IMAGE_ID`. This field is ignored when creating a reference image.",
+  ).optional(),
+  uri: z.string().describe(
+    "Required. The Google Cloud Storage URI of the reference image. The URI must start with `gs://`.",
+  ).optional(),
+  referenceImageId: z.string().describe(
+    "A user-supplied resource id for the ReferenceImage to be added. If set, the server will attempt to use this value as the resource id. If it is already in use, an error is returned with code ALREADY_EXISTS. Must be at most 128 characters long. It cannot contain the character `/`.",
+  ).optional(),
+  location: z.string().describe(
+    "The location for this resource (e.g., 'us', 'us-central1', 'europe-west1')",
+  ).optional(),
+});
+
+const StateSchema = z.object({
+  boundingPolys: z.array(z.object({
+    normalizedVertices: z.array(z.object({
+      x: z.number(),
+      y: z.number(),
+    })),
+    vertices: z.array(z.object({
+      x: z.number(),
+      y: z.number(),
+    })),
+  })).optional(),
+  name: z.string(),
+  uri: z.string().optional(),
+}).passthrough();
+
+type StateData = z.infer<typeof StateSchema>;
+
+const InputsSchema = z.object({
+  boundingPolys: z.array(z.object({
+    normalizedVertices: z.array(z.object({
+      x: z.number().describe("X coordinate.").optional(),
+      y: z.number().describe("Y coordinate.").optional(),
+    })).describe("The bounding polygon normalized vertices.").optional(),
+    vertices: z.array(z.object({
+      x: z.number().int().describe("X coordinate.").optional(),
+      y: z.number().int().describe("Y coordinate.").optional(),
+    })).describe("The bounding polygon vertices.").optional(),
+  })).describe(
+    "Optional. Bounding polygons around the areas of interest in the reference image. If this field is empty, the system will try to detect regions of interest. At most 10 bounding polygons will be used. The provided shape is converted into a non-rotated rectangle. Once converted, the small edge of the rectangle must be greater than or equal to 300 pixels. The aspect ratio must be 1:4 or less (i.e. 1:3 is ok; 1:5 is not).",
+  ).optional(),
+  name: z.string().describe(
+    "The resource name of the reference image. Format is: `projects/PROJECT_ID/locations/LOC_ID/products/PRODUCT_ID/referenceImages/IMAGE_ID`. This field is ignored when creating a reference image.",
+  ).optional(),
+  uri: z.string().describe(
+    "Required. The Google Cloud Storage URI of the reference image. The URI must start with `gs://`.",
+  ).optional(),
+  referenceImageId: z.string().describe(
+    "A user-supplied resource id for the ReferenceImage to be added. If set, the server will attempt to use this value as the resource id. If it is already in use, an error is returned with code ALREADY_EXISTS. Must be at most 128 characters long. It cannot contain the character `/`.",
+  ).optional(),
+  location: z.string().describe(
+    "The location for this resource (e.g., 'us', 'us-central1', 'europe-west1')",
+  ).optional(),
+});
+
+export const model = {
+  type: "@swamp/gcp/vision/products-referenceimages",
+  version: "2026.03.27.1",
+  globalArguments: GlobalArgsSchema,
+  inputsSchema: InputsSchema,
+  resources: {
+    state: {
+      description:
+        "A `ReferenceImage` represents a product image and its associated metadata, su...",
+      schema: StateSchema,
+      lifetime: "infinite",
+      garbageCollection: 10,
+    },
+  },
+  methods: {
+    create: {
+      description: "Create a referenceImages",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const projectId = await getProjectId();
+        const params: Record<string, string> = { project: projectId };
+        if (g["parent"] !== undefined) params["parent"] = String(g["parent"]);
+        const body: Record<string, unknown> = {};
+        if (g["boundingPolys"] !== undefined) {
+          body["boundingPolys"] = g["boundingPolys"];
+        }
+        if (g["name"] !== undefined) body["name"] = g["name"];
+        if (g["uri"] !== undefined) body["uri"] = g["uri"];
+        if (g["referenceImageId"] !== undefined) {
+          body["referenceImageId"] = g["referenceImageId"];
+        }
+        if (g["parent"] !== undefined && g["name"] !== undefined) {
+          params["name"] = buildResourceName(
+            String(g["parent"]),
+            String(g["name"]),
+          );
+        }
+        const result = await createResource(
+          BASE_URL,
+          INSERT_CONFIG,
+          params,
+          body,
+          GET_CONFIG,
+        ) as StateData;
+        const instanceName = (result.name ?? g.name)?.toString() ?? "current";
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    get: {
+      description: "Get a referenceImages",
+      arguments: z.object({
+        identifier: z.string().describe("The name of the referenceImages"),
+      }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const projectId = await getProjectId();
+        const params: Record<string, string> = { project: projectId };
+        const g = context.globalArgs;
+        params["name"] = buildResourceName(
+          String(g["parent"] ?? ""),
+          args.identifier,
+        );
+        const result = await readResource(
+          BASE_URL,
+          GET_CONFIG,
+          params,
+        ) as StateData;
+        const instanceName = (result.name ?? g.name)?.toString() ??
+          args.identifier;
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    delete: {
+      description: "Delete the referenceImages",
+      arguments: z.object({
+        identifier: z.string().describe("The name of the referenceImages"),
+      }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const g = context.globalArgs;
+        const projectId = await getProjectId();
+        const params: Record<string, string> = { project: projectId };
+        params["name"] = buildResourceName(
+          String(g["parent"] ?? ""),
+          args.identifier,
+        );
+        const { existed } = await deleteResource(
+          BASE_URL,
+          DELETE_CONFIG,
+          params,
+        );
+        const instanceName = g.name?.toString() ?? args.identifier;
+        const handle = await context.writeResource("state", instanceName, {
+          identifier: args.identifier,
+          existed,
+          status: existed ? "deleted" : "not_found",
+          deletedAt: new Date().toISOString(),
+        });
+        return { dataHandles: [handle] };
+      },
+    },
+    sync: {
+      description: "Sync referenceImages state from GCP",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const projectId = await getProjectId();
+        const instanceName = g.name?.toString() ?? "current";
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          instanceName,
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        try {
+          const params: Record<string, string> = { project: projectId };
+          const shortName = existing.name?.toString() ?? g["name"]?.toString();
+          if (!shortName) throw new Error("No identifier found");
+          params["name"] = buildResourceName(
+            String(g["parent"] ?? ""),
+            shortName,
+          );
+          const result = await readResource(
+            BASE_URL,
+            GET_CONFIG,
+            params,
+          ) as StateData;
+          const handle = await context.writeResource(
+            "state",
+            instanceName,
+            result,
+          );
+          return { dataHandles: [handle] };
+        } catch (error: unknown) {
+          if (isResourceNotFoundError(error)) {
+            const handle = await context.writeResource("state", instanceName, {
+              status: "not_found",
+              syncedAt: new Date().toISOString(),
+            });
+            return { dataHandles: [handle] };
+          }
+          throw error;
+        }
+      },
+    },
+  },
+};

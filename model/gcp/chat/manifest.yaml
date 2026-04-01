@@ -1,0 +1,27 @@
+# Auto-generated manifest. Re-generate with the appropriate deno task.
+manifestVersion: 1
+name: "@swamp/gcp/chat"
+version: "2026.04.01.1"
+description: "Google Cloud chat infrastructure models"
+labels:
+  - gcp
+  - google-cloud
+  - chat
+  - cloud
+  - infrastructure
+releaseNotes: |
+  - Updated: spaces_messages
+models:
+  - customemojis.ts
+  - spaces.ts
+  - spaces_members.ts
+  - spaces_messages.ts
+  - spaces_messages_attachments.ts
+  - spaces_messages_reactions.ts
+  - spaces_spaceevents.ts
+  - users_sections.ts
+  - users_sections_items.ts
+  - users_spaces_spacenotificationsetting.ts
+additionalFiles:
+  - LICENSE.txt
+  - README.md

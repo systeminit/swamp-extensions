@@ -1,0 +1,24 @@
+# Auto-generated manifest. Re-generate with the appropriate deno task.
+manifestVersion: 1
+name: "@swamp/gcp/datacatalog"
+version: "2026.03.27.1"
+description: "Google Cloud datacatalog infrastructure models"
+labels:
+  - gcp
+  - google-cloud
+  - datacatalog
+  - cloud
+  - infrastructure
+releaseNotes: |
+  - Added: entrygroups, entrygroups_entries, entrygroups_entries_tags, entrygroups_tags, tagtemplates, taxonomies, taxonomies_policytags
+models:
+  - entrygroups.ts
+  - entrygroups_entries.ts
+  - entrygroups_entries_tags.ts
+  - entrygroups_tags.ts
+  - tagtemplates.ts
+  - taxonomies.ts
+  - taxonomies_policytags.ts
+additionalFiles:
+  - LICENSE.txt
+  - README.md

@@ -1,0 +1,174 @@
+// Auto-generated extension model for @swamp/gcp/adexchangebuyer2/bidders-filtersets-filteredbids-creatives
+// Do not edit manually. Re-generate with: deno task generate:gcp
+
+// deno-lint-ignore-file no-explicit-any
+
+import { z } from "zod";
+import {
+  getProjectId,
+  isResourceNotFoundError,
+  readViaList,
+} from "./_lib/gcp.ts";
+
+const BASE_URL = "https://adexchangebuyer.googleapis.com/";
+
+const LIST_CONFIG = {
+  "id": "adexchangebuyer2.bidders.filterSets.filteredBids.creatives.list",
+  "path": "v2beta1/{+filterSetName}/filteredBids/{creativeStatusId}/creatives",
+  "httpMethod": "GET",
+  "parameterOrder": [
+    "filterSetName",
+    "creativeStatusId",
+  ],
+  "parameters": {
+    "creativeStatusId": {
+      "location": "path",
+      "required": true,
+    },
+    "filterSetName": {
+      "location": "path",
+      "required": true,
+    },
+    "pageSize": {
+      "location": "query",
+    },
+    "pageToken": {
+      "location": "query",
+    },
+  },
+} as const;
+
+const GlobalArgsSchema = z.object({
+  name: z.string().describe(
+    "Instance name for this resource (used as the unique identifier in the factory pattern)",
+  ),
+});
+
+const StateSchema = z.object({
+  bidCount: z.object({
+    value: z.string(),
+    variance: z.string(),
+  }).optional(),
+  creativeId: z.string().optional(),
+  rowDimensions: z.object({
+    publisherIdentifier: z.string(),
+    timeInterval: z.object({
+      endTime: z.string(),
+      startTime: z.string(),
+    }),
+  }).optional(),
+}).passthrough();
+
+type StateData = z.infer<typeof StateSchema>;
+
+const InputsSchema = z.object({
+  name: z.string().optional(),
+});
+
+export const model = {
+  type: "@swamp/gcp/adexchangebuyer2/bidders-filtersets-filteredbids-creatives",
+  version: "2026.03.27.1",
+  globalArguments: GlobalArgsSchema,
+  inputsSchema: InputsSchema,
+  resources: {
+    state: {
+      description:
+        "The number of filtered bids with the specified dimension values that have the...",
+      schema: StateSchema,
+      lifetime: "infinite",
+      garbageCollection: 10,
+    },
+  },
+  methods: {
+    get: {
+      description: "Get a creatives",
+      arguments: z.object({
+        identifier: z.string().describe("The name of the creatives"),
+      }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const projectId = await getProjectId();
+        const params: Record<string, string> = { project: projectId };
+        const g = context.globalArgs;
+        if (g["filterSetName"] !== undefined) {
+          params["filterSetName"] = String(g["filterSetName"]);
+        }
+        if (g["creativeStatusId"] !== undefined) {
+          params["creativeStatusId"] = String(g["creativeStatusId"]);
+        }
+        const result = await readViaList(
+          BASE_URL,
+          LIST_CONFIG,
+          params,
+          "name",
+          args.identifier,
+        ) as StateData;
+        const instanceName = g.name?.toString() ?? args.identifier;
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    sync: {
+      description: "Sync creatives state from GCP",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const projectId = await getProjectId();
+        const instanceName = g.name?.toString() ?? "current";
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          instanceName,
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        try {
+          const params: Record<string, string> = { project: projectId };
+          if (g["filterSetName"] !== undefined) {
+            params["filterSetName"] = String(g["filterSetName"]);
+          } else if (existing["filterSetName"]) {
+            params["filterSetName"] = String(existing["filterSetName"]);
+          }
+          if (g["creativeStatusId"] !== undefined) {
+            params["creativeStatusId"] = String(g["creativeStatusId"]);
+          } else if (existing["creativeStatusId"]) {
+            params["creativeStatusId"] = String(existing["creativeStatusId"]);
+          }
+          const identifier = existing.name?.toString() ?? g["name"]?.toString();
+          if (!identifier) {
+            throw new Error(
+              "No identifier found in existing state or globalArgs",
+            );
+          }
+          const result = await readViaList(
+            BASE_URL,
+            LIST_CONFIG,
+            params,
+            "name",
+            identifier,
+          ) as StateData;
+          const handle = await context.writeResource(
+            "state",
+            instanceName,
+            result,
+          );
+          return { dataHandles: [handle] };
+        } catch (error: unknown) {
+          if (isResourceNotFoundError(error)) {
+            const handle = await context.writeResource("state", instanceName, {
+              status: "not_found",
+              syncedAt: new Date().toISOString(),
+            });
+            return { dataHandles: [handle] };
+          }
+          throw error;
+        }
+      },
+    },
+  },
+};

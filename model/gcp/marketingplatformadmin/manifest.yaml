@@ -1,0 +1,19 @@
+# Auto-generated manifest. Re-generate with the appropriate deno task.
+manifestVersion: 1
+name: "@swamp/gcp/marketingplatformadmin"
+version: "2026.03.27.1"
+description: "Google Cloud marketingplatformadmin infrastructure models"
+labels:
+  - gcp
+  - google-cloud
+  - marketingplatformadmin
+  - cloud
+  - infrastructure
+releaseNotes: |
+  - Added: organizations, analyticsaccountlinks
+models:
+  - analyticsaccountlinks.ts
+  - organizations.ts
+additionalFiles:
+  - LICENSE.txt
+  - README.md

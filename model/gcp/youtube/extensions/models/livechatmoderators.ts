@@ -1,0 +1,290 @@
+// Auto-generated extension model for @swamp/gcp/youtube/livechatmoderators
+// Do not edit manually. Re-generate with: deno task generate:gcp
+
+// deno-lint-ignore-file no-explicit-any
+
+import { z } from "zod";
+import {
+  createResource,
+  deleteResource,
+  getProjectId,
+  isResourceNotFoundError,
+  readViaList,
+} from "./_lib/gcp.ts";
+
+const BASE_URL = "https://youtube.googleapis.com/";
+
+const INSERT_CONFIG = {
+  "id": "youtube.liveChatModerators.insert",
+  "path": "youtube/v3/liveChat/moderators",
+  "httpMethod": "POST",
+  "parameterOrder": [
+    "part",
+  ],
+  "parameters": {
+    "part": {
+      "location": "query",
+      "required": true,
+    },
+  },
+} as const;
+
+const DELETE_CONFIG = {
+  "id": "youtube.liveChatModerators.delete",
+  "path": "youtube/v3/liveChat/moderators",
+  "httpMethod": "DELETE",
+  "parameterOrder": [
+    "id",
+  ],
+  "parameters": {
+    "id": {
+      "location": "query",
+      "required": true,
+    },
+  },
+} as const;
+
+const LIST_CONFIG = {
+  "id": "youtube.liveChatModerators.list",
+  "path": "youtube/v3/liveChat/moderators",
+  "httpMethod": "GET",
+  "parameterOrder": [
+    "liveChatId",
+    "part",
+  ],
+  "parameters": {
+    "liveChatId": {
+      "location": "query",
+      "required": true,
+    },
+    "maxResults": {
+      "location": "query",
+    },
+    "pageToken": {
+      "location": "query",
+    },
+    "part": {
+      "location": "query",
+      "required": true,
+    },
+  },
+} as const;
+
+const GlobalArgsSchema = z.object({
+  name: z.string().describe(
+    "Instance name for this resource (used as the unique identifier in the factory pattern)",
+  ),
+  id: z.string().describe(
+    "The ID that YouTube assigns to uniquely identify the moderator.",
+  ).optional(),
+  snippet: z.object({
+    liveChatId: z.string().describe(
+      "The ID of the live chat this moderator can act on.",
+    ).optional(),
+    moderatorDetails: z.object({
+      channelId: z.string().describe("The YouTube channel ID.").optional(),
+      channelUrl: z.string().describe("The channel's URL.").optional(),
+      displayName: z.string().describe("The channel's display name.")
+        .optional(),
+      profileImageUrl: z.string().describe("The channels's avatar URL.")
+        .optional(),
+    }).optional(),
+  }).optional(),
+  part: z.string().describe(
+    "The *part* parameter serves two purposes in this operation. It identifies the properties that the write operation will set as well as the properties that the API response returns. Set the parameter value to snippet.",
+  ),
+});
+
+const StateSchema = z.object({
+  etag: z.string().optional(),
+  id: z.string().optional(),
+  kind: z.string().optional(),
+  snippet: z.object({
+    liveChatId: z.string(),
+    moderatorDetails: z.object({
+      channelId: z.string(),
+      channelUrl: z.string(),
+      displayName: z.string(),
+      profileImageUrl: z.string(),
+    }),
+  }).optional(),
+}).passthrough();
+
+type StateData = z.infer<typeof StateSchema>;
+
+const InputsSchema = z.object({
+  name: z.string().optional(),
+  id: z.string().describe(
+    "The ID that YouTube assigns to uniquely identify the moderator.",
+  ).optional(),
+  snippet: z.object({
+    liveChatId: z.string().describe(
+      "The ID of the live chat this moderator can act on.",
+    ).optional(),
+    moderatorDetails: z.object({
+      channelId: z.string().describe("The YouTube channel ID.").optional(),
+      channelUrl: z.string().describe("The channel's URL.").optional(),
+      displayName: z.string().describe("The channel's display name.")
+        .optional(),
+      profileImageUrl: z.string().describe("The channels's avatar URL.")
+        .optional(),
+    }).optional(),
+  }).optional(),
+  part: z.string().describe(
+    "The *part* parameter serves two purposes in this operation. It identifies the properties that the write operation will set as well as the properties that the API response returns. Set the parameter value to snippet.",
+  ).optional(),
+});
+
+export const model = {
+  type: "@swamp/gcp/youtube/livechatmoderators",
+  version: "2026.03.27.1",
+  globalArguments: GlobalArgsSchema,
+  inputsSchema: InputsSchema,
+  resources: {
+    state: {
+      description:
+        "A *liveChatModerator* resource represents a moderator for a YouTube live chat...",
+      schema: StateSchema,
+      lifetime: "infinite",
+      garbageCollection: 10,
+    },
+  },
+  methods: {
+    create: {
+      description: "Create a liveChatModerators",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const projectId = await getProjectId();
+        const params: Record<string, string> = { project: projectId };
+        if (g["part"] !== undefined) params["part"] = String(g["part"]);
+        const body: Record<string, unknown> = {};
+        if (g["id"] !== undefined) body["id"] = g["id"];
+        if (g["snippet"] !== undefined) body["snippet"] = g["snippet"];
+        const result = await createResource(
+          BASE_URL,
+          INSERT_CONFIG,
+          params,
+          body,
+        ) as StateData;
+        const instanceName = g.name?.toString() ?? "current";
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    get: {
+      description: "Get a liveChatModerators",
+      arguments: z.object({
+        identifier: z.string().describe("The name of the liveChatModerators"),
+      }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const projectId = await getProjectId();
+        const params: Record<string, string> = { project: projectId };
+        const g = context.globalArgs;
+        if (g["liveChatId"] !== undefined) {
+          params["liveChatId"] = String(g["liveChatId"]);
+        }
+        if (g["part"] !== undefined) params["part"] = String(g["part"]);
+        const result = await readViaList(
+          BASE_URL,
+          LIST_CONFIG,
+          params,
+          "name",
+          args.identifier,
+        ) as StateData;
+        const instanceName = g.name?.toString() ?? args.identifier;
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    delete: {
+      description: "Delete the liveChatModerators",
+      arguments: z.object({
+        identifier: z.string().describe("The name of the liveChatModerators"),
+      }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const g = context.globalArgs;
+        const projectId = await getProjectId();
+        const params: Record<string, string> = { project: projectId };
+        params["id"] = args.identifier;
+        const { existed } = await deleteResource(
+          BASE_URL,
+          DELETE_CONFIG,
+          params,
+        );
+        const instanceName = g.name?.toString() ?? args.identifier;
+        const handle = await context.writeResource("state", instanceName, {
+          identifier: args.identifier,
+          existed,
+          status: existed ? "deleted" : "not_found",
+          deletedAt: new Date().toISOString(),
+        });
+        return { dataHandles: [handle] };
+      },
+    },
+    sync: {
+      description: "Sync liveChatModerators state from GCP",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const projectId = await getProjectId();
+        const instanceName = g.name?.toString() ?? "current";
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          instanceName,
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        try {
+          const params: Record<string, string> = { project: projectId };
+          if (g["liveChatId"] !== undefined) {
+            params["liveChatId"] = String(g["liveChatId"]);
+          } else if (existing["liveChatId"]) {
+            params["liveChatId"] = String(existing["liveChatId"]);
+          }
+          if (g["part"] !== undefined) params["part"] = String(g["part"]);
+          else if (existing["part"]) params["part"] = String(existing["part"]);
+          const identifier = existing.name?.toString() ?? g["name"]?.toString();
+          if (!identifier) {
+            throw new Error(
+              "No identifier found in existing state or globalArgs",
+            );
+          }
+          const result = await readViaList(
+            BASE_URL,
+            LIST_CONFIG,
+            params,
+            "name",
+            identifier,
+          ) as StateData;
+          const handle = await context.writeResource(
+            "state",
+            instanceName,
+            result,
+          );
+          return { dataHandles: [handle] };
+        } catch (error: unknown) {
+          if (isResourceNotFoundError(error)) {
+            const handle = await context.writeResource("state", instanceName, {
+              status: "not_found",
+              syncedAt: new Date().toISOString(),
+            });
+            return { dataHandles: [handle] };
+          }
+          throw error;
+        }
+      },
+    },
+  },
+};

@@ -1,0 +1,241 @@
+// Auto-generated extension model for @swamp/gcp/sqladmin/connect
+// Do not edit manually. Re-generate with: deno task generate:gcp
+
+// deno-lint-ignore-file no-explicit-any
+
+import { z } from "zod";
+import {
+  createResource,
+  getProjectId,
+  isResourceNotFoundError,
+  readResource,
+} from "./_lib/gcp.ts";
+
+const BASE_URL = "https://sqladmin.googleapis.com/";
+
+const GET_CONFIG = {
+  "id": "sql.connect.get",
+  "path": "v1/projects/{project}/instances/{instance}/connectSettings",
+  "httpMethod": "GET",
+  "parameterOrder": [
+    "project",
+    "instance",
+  ],
+  "parameters": {
+    "instance": {
+      "location": "path",
+      "required": true,
+    },
+    "project": {
+      "location": "path",
+      "required": true,
+    },
+    "readTime": {
+      "location": "query",
+    },
+  },
+} as const;
+
+const GlobalArgsSchema = z.object({
+  name: z.string().describe(
+    "Instance name for this resource (used as the unique identifier in the factory pattern)",
+  ),
+});
+
+const StateSchema = z.object({
+  backendType: z.string().optional(),
+  customSubjectAlternativeNames: z.array(z.string()).optional(),
+  databaseVersion: z.string().optional(),
+  dnsName: z.string().optional(),
+  dnsNames: z.array(z.object({
+    connectionType: z.string(),
+    dnsScope: z.string(),
+    name: z.string(),
+    recordManager: z.string(),
+  })).optional(),
+  ipAddresses: z.array(z.object({
+    ipAddress: z.string(),
+    timeToRetire: z.string(),
+    type: z.string(),
+  })).optional(),
+  kind: z.string().optional(),
+  mdxProtocolSupport: z.array(z.string()).optional(),
+  nodeCount: z.number().optional(),
+  nodes: z.array(z.object({
+    dnsName: z.string(),
+    dnsNames: z.array(z.object({
+      connectionType: z.string(),
+      dnsScope: z.string(),
+      name: z.string(),
+      recordManager: z.string(),
+    })),
+    ipAddresses: z.array(z.object({
+      ipAddress: z.string(),
+      timeToRetire: z.string(),
+      type: z.string(),
+    })),
+    name: z.string(),
+  })).optional(),
+  pscEnabled: z.boolean().optional(),
+  region: z.string().optional(),
+  serverCaCert: z.object({
+    cert: z.string(),
+    certSerialNumber: z.string(),
+    commonName: z.string(),
+    createTime: z.string(),
+    expirationTime: z.string(),
+    instance: z.string(),
+    kind: z.string(),
+    selfLink: z.string(),
+    sha1Fingerprint: z.string(),
+  }).optional(),
+  serverCaMode: z.string().optional(),
+}).passthrough();
+
+type StateData = z.infer<typeof StateSchema>;
+
+const InputsSchema = z.object({
+  name: z.string().optional(),
+});
+
+export const model = {
+  type: "@swamp/gcp/sqladmin/connect",
+  version: "2026.03.27.1",
+  globalArguments: GlobalArgsSchema,
+  inputsSchema: InputsSchema,
+  resources: {
+    state: {
+      description: "Connect settings retrieval response.",
+      schema: StateSchema,
+      lifetime: "infinite",
+      garbageCollection: 10,
+    },
+  },
+  methods: {
+    get: {
+      description: "Get a connect",
+      arguments: z.object({
+        identifier: z.string().describe("The name of the connect"),
+      }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const projectId = await getProjectId();
+        const params: Record<string, string> = { project: projectId };
+        const g = context.globalArgs;
+        params["instance"] = args.identifier;
+        const result = await readResource(
+          BASE_URL,
+          GET_CONFIG,
+          params,
+        ) as StateData;
+        const instanceName = g.name?.toString() ?? args.identifier;
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    sync: {
+      description: "Sync connect state from GCP",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const projectId = await getProjectId();
+        const instanceName = g.name?.toString() ?? "current";
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          instanceName,
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        try {
+          const params: Record<string, string> = { project: projectId };
+          const identifier = existing.name?.toString() ?? g["name"]?.toString();
+          if (!identifier) {
+            throw new Error(
+              "No identifier found in existing state or globalArgs",
+            );
+          }
+          params["instance"] = identifier;
+          const result = await readResource(
+            BASE_URL,
+            GET_CONFIG,
+            params,
+          ) as StateData;
+          const handle = await context.writeResource(
+            "state",
+            instanceName,
+            result,
+          );
+          return { dataHandles: [handle] };
+        } catch (error: unknown) {
+          if (isResourceNotFoundError(error)) {
+            const handle = await context.writeResource("state", instanceName, {
+              status: "not_found",
+              syncedAt: new Date().toISOString(),
+            });
+            return { dataHandles: [handle] };
+          }
+          throw error;
+        }
+      },
+    },
+    generate_ephemeral_cert: {
+      description: "generate ephemeral cert",
+      arguments: z.object({
+        access_token: z.any().optional(),
+        public_key: z.any().optional(),
+        readTime: z.any().optional(),
+        validDuration: z.any().optional(),
+      }),
+      execute: async (args: Record<string, unknown>, context: any) => {
+        const g = context.globalArgs;
+        const projectId = await getProjectId();
+        const params: Record<string, string> = { project: projectId };
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          g.name?.toString() ?? "current",
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        params["instance"] = existing["name"]?.toString() ??
+          g["name"]?.toString() ?? "";
+        const body: Record<string, unknown> = {};
+        if (args["access_token"] !== undefined) {
+          body["access_token"] = args["access_token"];
+        }
+        if (args["public_key"] !== undefined) {
+          body["public_key"] = args["public_key"];
+        }
+        if (args["readTime"] !== undefined) body["readTime"] = args["readTime"];
+        if (args["validDuration"] !== undefined) {
+          body["validDuration"] = args["validDuration"];
+        }
+        const result = await createResource(
+          BASE_URL,
+          {
+            "id": "sql.connect.generateEphemeral",
+            "path":
+              "v1/projects/{project}/instances/{instance}:generateEphemeralCert",
+            "httpMethod": "POST",
+            "parameterOrder": ["project", "instance"],
+            "parameters": {
+              "instance": { "location": "path", "required": true },
+              "project": { "location": "path", "required": true },
+            },
+          },
+          params,
+          body,
+        );
+        return { result };
+      },
+    },
+  },
+};

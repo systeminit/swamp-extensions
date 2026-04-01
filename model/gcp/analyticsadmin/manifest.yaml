@@ -1,0 +1,28 @@
+# Auto-generated manifest. Re-generate with the appropriate deno task.
+manifestVersion: 1
+name: "@swamp/gcp/analyticsadmin"
+version: "2026.03.27.1"
+description: "Google Cloud analyticsadmin infrastructure models"
+labels:
+  - gcp
+  - google-cloud
+  - analyticsadmin
+  - cloud
+  - infrastructure
+releaseNotes: |
+  - Added: accountsummaries, accounts, properties, properties_conversionevents, properties_customdimensions, properties_custommetrics, properties_datastreams, properties_datastreams_measurementprotocolsecrets, properties_firebaselinks, properties_googleadslinks, properties_keyevents
+models:
+  - accounts.ts
+  - accountsummaries.ts
+  - properties.ts
+  - properties_conversionevents.ts
+  - properties_customdimensions.ts
+  - properties_custommetrics.ts
+  - properties_datastreams.ts
+  - properties_datastreams_measurementprotocolsecrets.ts
+  - properties_firebaselinks.ts
+  - properties_googleadslinks.ts
+  - properties_keyevents.ts
+additionalFiles:
+  - LICENSE.txt
+  - README.md

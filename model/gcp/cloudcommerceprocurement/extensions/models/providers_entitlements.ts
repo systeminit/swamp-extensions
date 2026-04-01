@@ -1,0 +1,620 @@
+// Auto-generated extension model for @swamp/gcp/cloudcommerceprocurement/providers-entitlements
+// Do not edit manually. Re-generate with: deno task generate:gcp
+
+// deno-lint-ignore-file no-explicit-any
+
+import { z } from "zod";
+import {
+  createResource,
+  getProjectId,
+  isResourceNotFoundError,
+  readResource,
+  updateResource,
+} from "./_lib/gcp.ts";
+
+/** Construct the fully-qualified resource name from parent and short name. */
+function buildResourceName(parent: string, shortName: string): string {
+  return `${parent}/entitlements/${shortName}`;
+}
+
+const BASE_URL = "https://cloudcommerceprocurement.googleapis.com/";
+
+const GET_CONFIG = {
+  "id": "cloudcommerceprocurement.providers.entitlements.get",
+  "path": "v1/{+name}",
+  "httpMethod": "GET",
+  "parameterOrder": [
+    "name",
+  ],
+  "parameters": {
+    "name": {
+      "location": "path",
+      "required": true,
+    },
+  },
+} as const;
+
+const PATCH_CONFIG = {
+  "id": "cloudcommerceprocurement.providers.entitlements.patch",
+  "path": "v1/{+name}",
+  "httpMethod": "PATCH",
+  "parameterOrder": [
+    "name",
+  ],
+  "parameters": {
+    "name": {
+      "location": "path",
+      "required": true,
+    },
+    "updateMask": {
+      "location": "query",
+    },
+  },
+} as const;
+
+const GlobalArgsSchema = z.object({
+  account: z.string().describe(
+    "Output only. The resource name of the account that this entitlement is based on, if any.",
+  ).optional(),
+  cancellationReason: z.string().describe(
+    'Output only. The reason the entitlement was cancelled. If this entitlement wasn\'t cancelled, this field is empty. Possible values include "unknown", "expired", "user-cancelled", "account-closed", "billing-disabled" (if the customer has manually disabled billing to their resources), "user-aborted", and "migrated" (if the entitlement has migrated across products). Values of this field are subject to change, and we recommend that you don\'t build your technical integration to rely on these fields.',
+  ).optional(),
+  consumers: z.array(z.object({
+    project: z.string().describe("A project name with format `projects/`.")
+      .optional(),
+  })).describe(
+    "Output only. The resources using this entitlement, if applicable.",
+  ).optional(),
+  createTime: z.string().describe("Output only. The creation timestamp.")
+    .optional(),
+  entitlementBenefitIds: z.array(z.string()).describe(
+    "Output only. The entitlement benefit IDs associated with the purchase.",
+  ).optional(),
+  messageToUser: z.string().describe(
+    "Provider-supplied message that is displayed to the end user. Currently this is used to communicate progress and ETA for provisioning. This field can be updated only when a user is waiting for an action from the provider, i.e. entitlement state is EntitlementState.ENTITLEMENT_ACTIVATION_REQUESTED or EntitlementState.ENTITLEMENT_PENDING_PLAN_CHANGE_APPROVAL. This field is cleared automatically when the entitlement state changes.",
+  ).optional(),
+  name: z.string().describe(
+    "Output only. The resource name of the entitlement. Entitlement names have the form `providers/{provider_id}/entitlements/{entitlement_id}`.",
+  ).optional(),
+  newOfferEndTime: z.string().describe(
+    "Output only. The end time of the new offer, determined from the offer's specified end date. If the offer des not have a specified end date then this field is not set. This field is populated even if the entitlement isn't active yet. If there's no upcoming offer, the field is empty. * If the entitlement is in the state ENTITLEMENT_ACTIVATION_REQUESTED, ENTITLEMENT_ACTIVE, or ENTITLEMENT_PENDING_CANCELLATION, then this field is empty. * If the entitlement is in the state ENTITLEMENT_PENDING_PLAN_CHANGE_APPROVAL or ENTITLEMENT_PENDING_PLAN_CHANGE, and the upcoming offer has a specified end date, then this field is populated with the expected end time of the upcoming offer, in the future. Otherwise, this field is empty. * If the entitlement is in the state ENTITLEMENT_CANCELLED, then this field is empty.",
+  ).optional(),
+  newOfferStartTime: z.string().describe(
+    "Output only. The timestamp when the new offer becomes effective. This field is populated even if the entitlement isn't active yet. If there's no upcoming offer, the field is empty. * If the entitlement is in the state ENTITLEMENT_ACTIVATION_REQUESTED, this field isn't populated when the entitlement isn't yet approved. After the entitlement is approved, this field is populated with the effective time of the upcoming offer. * If the entitlement is in the state ENTITLEMENT_ACTIVE or ENTITLEMENT_PENDING_CANCELLATION, this field isn't populated. * If the entitlement is in the state ENTITLEMENT_PENDING_PLAN_CHANGE_APPROVAL, this field isn't populated, because the entitlement change is waiting on approval. * If the entitlement is in the state ENTITLEMENT_PENDING_PLAN_CHANGE, this field is populated with the expected effective time of the upcoming offer, which is in the future. * If the entitlement is in the state ENTITLEMENT_CANCELLED, then this field is empty.",
+  ).optional(),
+  newPendingOffer: z.string().describe(
+    "Output only. Upon a pending plan change, the name of the offer that the entitlement is switching to. Only exists if the pending plan change is moving to an offer. This field isn't populated for entitlements which aren't active yet. Format: 'projects/{project}/services/{service}/privateOffers/{offer}' OR 'projects/{project}/services/{service}/standardOffers/{offer}', depending on whether the offer is private or public. The {service} in the name is the listing service of the offer. It could be either the product service that the offer is referencing, or a generic private offer parent service. We recommend that you don't build your integration to rely on the meaning of this {service} part. * If the entitlement is in the state ENTITLEMENT_ACTIVATION_REQUESTED, ENTITLEMENT_ACTIVE or ENTITLEMENT_PENDING_CANCELLATION, then this field is empty. * If the entitlement is in the state ENTITLEMENT_PENDING_PLAN_CHANGE_APPROVAL or ENTITLEMENT_PENDING_PLAN_CHANGE, then this field is populated with the upcoming offer. * If the entitlement is in the state ENTITLEMENT_CANCELLED, then this is empty.",
+  ).optional(),
+  newPendingOfferDuration: z.string().describe(
+    "Output only. The duration of the new offer, in ISO 8601 duration format. This field is populated for pending offer changes. It isn't populated for entitlements which aren't active yet. If the offer has a specified end date instead of a duration, this field is empty. * If the entitlement is in the state ENTITLEMENT_ACTIVATION_REQUESTED, ENTITLEMENT_ACTIVE, or ENTITLEMENT_PENDING_CANCELLATION, this field is empty. * If the entitlement is in the state ENTITLEMENT_PENDING_PLAN_CHANGE_APPROVAL or ENTITLEMENT_PENDING_PLAN_CHANGE, and the upcoming offer doesn't have a specified end date, then this field is populated with the duration of the upcoming offer. Otherwise, this field is empty. * If the entitlement is in the state ENTITLEMENT_CANCELLED, then this field is empty.",
+  ).optional(),
+  newPendingPlan: z.string().describe(
+    "Output only. The identifier of the pending new plan. Required if the product has plans and the entitlement has a pending plan change.",
+  ).optional(),
+  offer: z.string().describe(
+    "Output only. The name of the offer that was procured. Field is empty if order wasn't made using an offer. Format: 'projects/{project}/services/{service}/privateOffers/{offer}' OR 'projects/{project}/services/{service}/standardOffers/{offer}', depending on whether the offer is private or public. The {service} in the name is the listing service of the offer. It could be either the product service that the offer is referencing, or a generic private offer parent service. We recommend that you don't build your integration to rely on the meaning of this {service} part. * If the entitlement is in the state ENTITLEMENT_ACTIVATION_REQUESTED, this field is populated with the upcoming offer. * If the entitlement is in the state ENTITLEMENT_ACTIVE, ENTITLEMENT_PENDING_CANCELLATION, ENTITLEMENT_PENDING_PLAN_CHANGE, or ENTITLEMENT_PENDING_PLAN_CHANGE_APPROVAL, this field is populated with the current offer. * If the entitlement is in the state ENTITLEMENT_CANCELLED, then this field is populated with the latest offer that the order was associated with.",
+  ).optional(),
+  offerDuration: z.string().describe(
+    "Output only. The offer duration of the current offer, in ISO 8601 duration format. This is empty if the entitlement wasn't made using an offer, or if the offer has a specified end date instead of a duration. * If the entitlement is in the state ENTITLEMENT_ACTIVATION_REQUESTED, and the upcoming offer doesn't have a specified end date, then this field is populated with the duration of the upcoming offer. Otherwise, this field is empty. * If the entitlement is in the state ENTITLEMENT_ACTIVE, ENTITLEMENT_PENDING_CANCELLATION, ENTITLEMENT_PENDING_PLAN_CHANGE, or ENTITLEMENT_PENDING_PLAN_CHANGE_APPROVAL, and the current offer doesn't have a specified end date, then this field contains the duration of the current offer. Otherwise, this field is empty. * If the entitlement is in the state ENTITLEMENT_CANCELLED, and the offer doesn't have a specified end date, then this field is populated with the duration of the latest offer that the order was associated with. Otherwise, this field is empty.",
+  ).optional(),
+  offerEndTime: z.string().describe(
+    "Output only. End time for the current term of the Offer associated with this entitlement. The value of this field can change naturally over time due to auto-renewal, even if the offer isn't changed. * If the entitlement is in the state ENTITLEMENT_ACTIVATION_REQUESTED, then: * If the entitlement isn't approved yet approved, and the offer has a specified end date, then this field is populated with the expected end time of the upcoming offer, in the future. Otherwise, this field is empty. * If the entitlement is approved, then this field is populated with the expected end time of the upcoming offer, in the future. This means that this field and the field offer_duration can both exist. * If the entitlement is in the state ENTITLEMENT_ACTIVE or ENTITLEMENT_PENDING_CANCELLATION, then this field is populated with the expected end time of the current offer, in the future. This field's value is set regardless of whether the offer has a specific end date or a duration. This means that this field and the field offer_duration can both exist. * If the entitlement is in the state ENTITLEMENT_PENDING_PLAN_CHANGE_APPROVAL or ENTITLEMENT_PENDING_PLAN_CHANGE: * If the entitlement's pricing model is usage based and the associated offer is a private offer whose term has ended, then this field reflects the ACTUAL end time of the entitlement's associated offer (in the past), even though the entitlement associated with this private offer does not terminate at the end of that private offer's term. * Otherwise, this is the expected end date of the current offer, in the future. * If the entitlement is in the state ENTITLEMENT_CANCELLED, then this field is populated with the end time, in the past, of the latest offer that the order was associated with. If the entitlement was cancelled before any offer started, then this field is empty.",
+  ).optional(),
+  orderId: z.string().describe(
+    "Output only. The order ID of this entitlement, without any `orders/` resource name prefix.",
+  ).optional(),
+  plan: z.string().describe(
+    "Output only. The identifier of the plan that was procured. Required if the product has plans.",
+  ).optional(),
+  productExternalName: z.string().describe(
+    "Output only. The identifier of the product that was procured.",
+  ).optional(),
+  provider: z.string().describe(
+    "Output only. The identifier of the service provider that this entitlement was created against. Each service provider is assigned a unique provider value when they onboard with Cloud Commerce platform.",
+  ).optional(),
+  quoteExternalName: z.string().describe(
+    "Output only. The identifier of the quote that was used to procure. Empty if the order is not purchased using a quote.",
+  ).optional(),
+  state: z.enum([
+    "ENTITLEMENT_STATE_UNSPECIFIED",
+    "ENTITLEMENT_ACTIVATION_REQUESTED",
+    "ENTITLEMENT_ACTIVE",
+    "ENTITLEMENT_PENDING_CANCELLATION",
+    "ENTITLEMENT_CANCELLED",
+    "ENTITLEMENT_PENDING_PLAN_CHANGE",
+    "ENTITLEMENT_PENDING_PLAN_CHANGE_APPROVAL",
+    "ENTITLEMENT_SUSPENDED",
+  ]).describe("Output only. The state of the entitlement.").optional(),
+  subscriptionEndTime: z.string().describe(
+    "Output only. End time for the subscription corresponding to this entitlement.",
+  ).optional(),
+  updateTime: z.string().describe("Output only. The last update timestamp.")
+    .optional(),
+  usageReportingId: z.string().describe(
+    "Output only. The consumerId to use when reporting usage through the Service Control API. See the consumerId field at [Reporting Metrics](https://cloud.google.com/service-control/reporting-metrics) for more details. This field is present only if the product has usage-based billing configured.",
+  ).optional(),
+  parent: z.string().describe(
+    "The parent resource name (e.g., projects/my-project/locations/us-central1, organizations/123, folders/456)",
+  ).optional(),
+});
+
+const StateSchema = z.object({
+  account: z.string().optional(),
+  cancellationReason: z.string().optional(),
+  consumers: z.array(z.object({
+    project: z.string(),
+  })).optional(),
+  createTime: z.string().optional(),
+  entitlementBenefitIds: z.array(z.string()).optional(),
+  inputProperties: z.record(z.string(), z.unknown()).optional(),
+  messageToUser: z.string().optional(),
+  name: z.string(),
+  newOfferEndTime: z.string().optional(),
+  newOfferStartTime: z.string().optional(),
+  newPendingOffer: z.string().optional(),
+  newPendingOfferDuration: z.string().optional(),
+  newPendingPlan: z.string().optional(),
+  offer: z.string().optional(),
+  offerDuration: z.string().optional(),
+  offerEndTime: z.string().optional(),
+  orderId: z.string().optional(),
+  plan: z.string().optional(),
+  product: z.string().optional(),
+  productExternalName: z.string().optional(),
+  provider: z.string().optional(),
+  quoteExternalName: z.string().optional(),
+  state: z.string().optional(),
+  subscriptionEndTime: z.string().optional(),
+  updateTime: z.string().optional(),
+  usageReportingId: z.string().optional(),
+}).passthrough();
+
+type StateData = z.infer<typeof StateSchema>;
+
+const InputsSchema = z.object({
+  account: z.string().describe(
+    "Output only. The resource name of the account that this entitlement is based on, if any.",
+  ).optional(),
+  cancellationReason: z.string().describe(
+    'Output only. The reason the entitlement was cancelled. If this entitlement wasn\'t cancelled, this field is empty. Possible values include "unknown", "expired", "user-cancelled", "account-closed", "billing-disabled" (if the customer has manually disabled billing to their resources), "user-aborted", and "migrated" (if the entitlement has migrated across products). Values of this field are subject to change, and we recommend that you don\'t build your technical integration to rely on these fields.',
+  ).optional(),
+  consumers: z.array(z.object({
+    project: z.string().describe("A project name with format `projects/`.")
+      .optional(),
+  })).describe(
+    "Output only. The resources using this entitlement, if applicable.",
+  ).optional(),
+  createTime: z.string().describe("Output only. The creation timestamp.")
+    .optional(),
+  entitlementBenefitIds: z.array(z.string()).describe(
+    "Output only. The entitlement benefit IDs associated with the purchase.",
+  ).optional(),
+  messageToUser: z.string().describe(
+    "Provider-supplied message that is displayed to the end user. Currently this is used to communicate progress and ETA for provisioning. This field can be updated only when a user is waiting for an action from the provider, i.e. entitlement state is EntitlementState.ENTITLEMENT_ACTIVATION_REQUESTED or EntitlementState.ENTITLEMENT_PENDING_PLAN_CHANGE_APPROVAL. This field is cleared automatically when the entitlement state changes.",
+  ).optional(),
+  name: z.string().describe(
+    "Output only. The resource name of the entitlement. Entitlement names have the form `providers/{provider_id}/entitlements/{entitlement_id}`.",
+  ).optional(),
+  newOfferEndTime: z.string().describe(
+    "Output only. The end time of the new offer, determined from the offer's specified end date. If the offer des not have a specified end date then this field is not set. This field is populated even if the entitlement isn't active yet. If there's no upcoming offer, the field is empty. * If the entitlement is in the state ENTITLEMENT_ACTIVATION_REQUESTED, ENTITLEMENT_ACTIVE, or ENTITLEMENT_PENDING_CANCELLATION, then this field is empty. * If the entitlement is in the state ENTITLEMENT_PENDING_PLAN_CHANGE_APPROVAL or ENTITLEMENT_PENDING_PLAN_CHANGE, and the upcoming offer has a specified end date, then this field is populated with the expected end time of the upcoming offer, in the future. Otherwise, this field is empty. * If the entitlement is in the state ENTITLEMENT_CANCELLED, then this field is empty.",
+  ).optional(),
+  newOfferStartTime: z.string().describe(
+    "Output only. The timestamp when the new offer becomes effective. This field is populated even if the entitlement isn't active yet. If there's no upcoming offer, the field is empty. * If the entitlement is in the state ENTITLEMENT_ACTIVATION_REQUESTED, this field isn't populated when the entitlement isn't yet approved. After the entitlement is approved, this field is populated with the effective time of the upcoming offer. * If the entitlement is in the state ENTITLEMENT_ACTIVE or ENTITLEMENT_PENDING_CANCELLATION, this field isn't populated. * If the entitlement is in the state ENTITLEMENT_PENDING_PLAN_CHANGE_APPROVAL, this field isn't populated, because the entitlement change is waiting on approval. * If the entitlement is in the state ENTITLEMENT_PENDING_PLAN_CHANGE, this field is populated with the expected effective time of the upcoming offer, which is in the future. * If the entitlement is in the state ENTITLEMENT_CANCELLED, then this field is empty.",
+  ).optional(),
+  newPendingOffer: z.string().describe(
+    "Output only. Upon a pending plan change, the name of the offer that the entitlement is switching to. Only exists if the pending plan change is moving to an offer. This field isn't populated for entitlements which aren't active yet. Format: 'projects/{project}/services/{service}/privateOffers/{offer}' OR 'projects/{project}/services/{service}/standardOffers/{offer}', depending on whether the offer is private or public. The {service} in the name is the listing service of the offer. It could be either the product service that the offer is referencing, or a generic private offer parent service. We recommend that you don't build your integration to rely on the meaning of this {service} part. * If the entitlement is in the state ENTITLEMENT_ACTIVATION_REQUESTED, ENTITLEMENT_ACTIVE or ENTITLEMENT_PENDING_CANCELLATION, then this field is empty. * If the entitlement is in the state ENTITLEMENT_PENDING_PLAN_CHANGE_APPROVAL or ENTITLEMENT_PENDING_PLAN_CHANGE, then this field is populated with the upcoming offer. * If the entitlement is in the state ENTITLEMENT_CANCELLED, then this is empty.",
+  ).optional(),
+  newPendingOfferDuration: z.string().describe(
+    "Output only. The duration of the new offer, in ISO 8601 duration format. This field is populated for pending offer changes. It isn't populated for entitlements which aren't active yet. If the offer has a specified end date instead of a duration, this field is empty. * If the entitlement is in the state ENTITLEMENT_ACTIVATION_REQUESTED, ENTITLEMENT_ACTIVE, or ENTITLEMENT_PENDING_CANCELLATION, this field is empty. * If the entitlement is in the state ENTITLEMENT_PENDING_PLAN_CHANGE_APPROVAL or ENTITLEMENT_PENDING_PLAN_CHANGE, and the upcoming offer doesn't have a specified end date, then this field is populated with the duration of the upcoming offer. Otherwise, this field is empty. * If the entitlement is in the state ENTITLEMENT_CANCELLED, then this field is empty.",
+  ).optional(),
+  newPendingPlan: z.string().describe(
+    "Output only. The identifier of the pending new plan. Required if the product has plans and the entitlement has a pending plan change.",
+  ).optional(),
+  offer: z.string().describe(
+    "Output only. The name of the offer that was procured. Field is empty if order wasn't made using an offer. Format: 'projects/{project}/services/{service}/privateOffers/{offer}' OR 'projects/{project}/services/{service}/standardOffers/{offer}', depending on whether the offer is private or public. The {service} in the name is the listing service of the offer. It could be either the product service that the offer is referencing, or a generic private offer parent service. We recommend that you don't build your integration to rely on the meaning of this {service} part. * If the entitlement is in the state ENTITLEMENT_ACTIVATION_REQUESTED, this field is populated with the upcoming offer. * If the entitlement is in the state ENTITLEMENT_ACTIVE, ENTITLEMENT_PENDING_CANCELLATION, ENTITLEMENT_PENDING_PLAN_CHANGE, or ENTITLEMENT_PENDING_PLAN_CHANGE_APPROVAL, this field is populated with the current offer. * If the entitlement is in the state ENTITLEMENT_CANCELLED, then this field is populated with the latest offer that the order was associated with.",
+  ).optional(),
+  offerDuration: z.string().describe(
+    "Output only. The offer duration of the current offer, in ISO 8601 duration format. This is empty if the entitlement wasn't made using an offer, or if the offer has a specified end date instead of a duration. * If the entitlement is in the state ENTITLEMENT_ACTIVATION_REQUESTED, and the upcoming offer doesn't have a specified end date, then this field is populated with the duration of the upcoming offer. Otherwise, this field is empty. * If the entitlement is in the state ENTITLEMENT_ACTIVE, ENTITLEMENT_PENDING_CANCELLATION, ENTITLEMENT_PENDING_PLAN_CHANGE, or ENTITLEMENT_PENDING_PLAN_CHANGE_APPROVAL, and the current offer doesn't have a specified end date, then this field contains the duration of the current offer. Otherwise, this field is empty. * If the entitlement is in the state ENTITLEMENT_CANCELLED, and the offer doesn't have a specified end date, then this field is populated with the duration of the latest offer that the order was associated with. Otherwise, this field is empty.",
+  ).optional(),
+  offerEndTime: z.string().describe(
+    "Output only. End time for the current term of the Offer associated with this entitlement. The value of this field can change naturally over time due to auto-renewal, even if the offer isn't changed. * If the entitlement is in the state ENTITLEMENT_ACTIVATION_REQUESTED, then: * If the entitlement isn't approved yet approved, and the offer has a specified end date, then this field is populated with the expected end time of the upcoming offer, in the future. Otherwise, this field is empty. * If the entitlement is approved, then this field is populated with the expected end time of the upcoming offer, in the future. This means that this field and the field offer_duration can both exist. * If the entitlement is in the state ENTITLEMENT_ACTIVE or ENTITLEMENT_PENDING_CANCELLATION, then this field is populated with the expected end time of the current offer, in the future. This field's value is set regardless of whether the offer has a specific end date or a duration. This means that this field and the field offer_duration can both exist. * If the entitlement is in the state ENTITLEMENT_PENDING_PLAN_CHANGE_APPROVAL or ENTITLEMENT_PENDING_PLAN_CHANGE: * If the entitlement's pricing model is usage based and the associated offer is a private offer whose term has ended, then this field reflects the ACTUAL end time of the entitlement's associated offer (in the past), even though the entitlement associated with this private offer does not terminate at the end of that private offer's term. * Otherwise, this is the expected end date of the current offer, in the future. * If the entitlement is in the state ENTITLEMENT_CANCELLED, then this field is populated with the end time, in the past, of the latest offer that the order was associated with. If the entitlement was cancelled before any offer started, then this field is empty.",
+  ).optional(),
+  orderId: z.string().describe(
+    "Output only. The order ID of this entitlement, without any `orders/` resource name prefix.",
+  ).optional(),
+  plan: z.string().describe(
+    "Output only. The identifier of the plan that was procured. Required if the product has plans.",
+  ).optional(),
+  productExternalName: z.string().describe(
+    "Output only. The identifier of the product that was procured.",
+  ).optional(),
+  provider: z.string().describe(
+    "Output only. The identifier of the service provider that this entitlement was created against. Each service provider is assigned a unique provider value when they onboard with Cloud Commerce platform.",
+  ).optional(),
+  quoteExternalName: z.string().describe(
+    "Output only. The identifier of the quote that was used to procure. Empty if the order is not purchased using a quote.",
+  ).optional(),
+  state: z.enum([
+    "ENTITLEMENT_STATE_UNSPECIFIED",
+    "ENTITLEMENT_ACTIVATION_REQUESTED",
+    "ENTITLEMENT_ACTIVE",
+    "ENTITLEMENT_PENDING_CANCELLATION",
+    "ENTITLEMENT_CANCELLED",
+    "ENTITLEMENT_PENDING_PLAN_CHANGE",
+    "ENTITLEMENT_PENDING_PLAN_CHANGE_APPROVAL",
+    "ENTITLEMENT_SUSPENDED",
+  ]).describe("Output only. The state of the entitlement.").optional(),
+  subscriptionEndTime: z.string().describe(
+    "Output only. End time for the subscription corresponding to this entitlement.",
+  ).optional(),
+  updateTime: z.string().describe("Output only. The last update timestamp.")
+    .optional(),
+  usageReportingId: z.string().describe(
+    "Output only. The consumerId to use when reporting usage through the Service Control API. See the consumerId field at [Reporting Metrics](https://cloud.google.com/service-control/reporting-metrics) for more details. This field is present only if the product has usage-based billing configured.",
+  ).optional(),
+  parent: z.string().describe(
+    "The parent resource name (e.g., projects/my-project/locations/us-central1, organizations/123, folders/456)",
+  ).optional(),
+});
+
+export const model = {
+  type: "@swamp/gcp/cloudcommerceprocurement/providers-entitlements",
+  version: "2026.03.27.1",
+  globalArguments: GlobalArgsSchema,
+  inputsSchema: InputsSchema,
+  resources: {
+    state: {
+      description: "Represents a procured product of a customer.",
+      schema: StateSchema,
+      lifetime: "infinite",
+      garbageCollection: 10,
+    },
+  },
+  methods: {
+    get: {
+      description: "Get a entitlements",
+      arguments: z.object({
+        identifier: z.string().describe("The name of the entitlements"),
+      }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const projectId = await getProjectId();
+        const params: Record<string, string> = { project: projectId };
+        const g = context.globalArgs;
+        params["name"] = buildResourceName(
+          String(g["parent"] ?? ""),
+          args.identifier,
+        );
+        const result = await readResource(
+          BASE_URL,
+          GET_CONFIG,
+          params,
+        ) as StateData;
+        const instanceName = (result.name ?? g.name)?.toString() ??
+          args.identifier;
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    update: {
+      description: "Update entitlements attributes",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const projectId = await getProjectId();
+        const instanceName = g.name?.toString() ?? "current";
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          instanceName,
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        const params: Record<string, string> = { project: projectId };
+        params["name"] = buildResourceName(
+          String(g["parent"] ?? ""),
+          existing["name"]?.toString() ?? g["name"]?.toString() ?? "",
+        );
+        const body: Record<string, unknown> = {};
+        if (g["account"] !== undefined) body["account"] = g["account"];
+        if (g["cancellationReason"] !== undefined) {
+          body["cancellationReason"] = g["cancellationReason"];
+        }
+        if (g["consumers"] !== undefined) body["consumers"] = g["consumers"];
+        if (g["createTime"] !== undefined) body["createTime"] = g["createTime"];
+        if (g["entitlementBenefitIds"] !== undefined) {
+          body["entitlementBenefitIds"] = g["entitlementBenefitIds"];
+        }
+        if (g["messageToUser"] !== undefined) {
+          body["messageToUser"] = g["messageToUser"];
+        }
+        if (g["newOfferEndTime"] !== undefined) {
+          body["newOfferEndTime"] = g["newOfferEndTime"];
+        }
+        if (g["newOfferStartTime"] !== undefined) {
+          body["newOfferStartTime"] = g["newOfferStartTime"];
+        }
+        if (g["newPendingOffer"] !== undefined) {
+          body["newPendingOffer"] = g["newPendingOffer"];
+        }
+        if (g["newPendingOfferDuration"] !== undefined) {
+          body["newPendingOfferDuration"] = g["newPendingOfferDuration"];
+        }
+        if (g["newPendingPlan"] !== undefined) {
+          body["newPendingPlan"] = g["newPendingPlan"];
+        }
+        if (g["offer"] !== undefined) body["offer"] = g["offer"];
+        if (g["offerDuration"] !== undefined) {
+          body["offerDuration"] = g["offerDuration"];
+        }
+        if (g["offerEndTime"] !== undefined) {
+          body["offerEndTime"] = g["offerEndTime"];
+        }
+        if (g["orderId"] !== undefined) body["orderId"] = g["orderId"];
+        if (g["plan"] !== undefined) body["plan"] = g["plan"];
+        if (g["productExternalName"] !== undefined) {
+          body["productExternalName"] = g["productExternalName"];
+        }
+        if (g["provider"] !== undefined) body["provider"] = g["provider"];
+        if (g["quoteExternalName"] !== undefined) {
+          body["quoteExternalName"] = g["quoteExternalName"];
+        }
+        if (g["state"] !== undefined) body["state"] = g["state"];
+        if (g["subscriptionEndTime"] !== undefined) {
+          body["subscriptionEndTime"] = g["subscriptionEndTime"];
+        }
+        if (g["updateTime"] !== undefined) body["updateTime"] = g["updateTime"];
+        if (g["usageReportingId"] !== undefined) {
+          body["usageReportingId"] = g["usageReportingId"];
+        }
+        for (const key of Object.keys(existing)) {
+          if (
+            key === "fingerprint" || key === "labelFingerprint" ||
+            key === "etag" || key.endsWith("Fingerprint")
+          ) {
+            body[key] = existing[key];
+          }
+        }
+        const result = await updateResource(
+          BASE_URL,
+          PATCH_CONFIG,
+          params,
+          body,
+          GET_CONFIG,
+        ) as StateData;
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    sync: {
+      description: "Sync entitlements state from GCP",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const projectId = await getProjectId();
+        const instanceName = g.name?.toString() ?? "current";
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          instanceName,
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        try {
+          const params: Record<string, string> = { project: projectId };
+          const shortName = existing.name?.toString() ?? g["name"]?.toString();
+          if (!shortName) throw new Error("No identifier found");
+          params["name"] = buildResourceName(
+            String(g["parent"] ?? ""),
+            shortName,
+          );
+          const result = await readResource(
+            BASE_URL,
+            GET_CONFIG,
+            params,
+          ) as StateData;
+          const handle = await context.writeResource(
+            "state",
+            instanceName,
+            result,
+          );
+          return { dataHandles: [handle] };
+        } catch (error: unknown) {
+          if (isResourceNotFoundError(error)) {
+            const handle = await context.writeResource("state", instanceName, {
+              status: "not_found",
+              syncedAt: new Date().toISOString(),
+            });
+            return { dataHandles: [handle] };
+          }
+          throw error;
+        }
+      },
+    },
+    approve: {
+      description: "approve",
+      arguments: z.object({
+        entitlementMigrated: z.any().optional(),
+        properties: z.any().optional(),
+      }),
+      execute: async (args: Record<string, unknown>, context: any) => {
+        const g = context.globalArgs;
+        const projectId = await getProjectId();
+        const params: Record<string, string> = { project: projectId };
+        if (g["parent"] !== undefined && g["name"] !== undefined) {
+          params["name"] = buildResourceName(
+            String(g["parent"]),
+            String(g["name"]),
+          );
+        }
+        const body: Record<string, unknown> = {};
+        if (args["entitlementMigrated"] !== undefined) {
+          body["entitlementMigrated"] = args["entitlementMigrated"];
+        }
+        if (args["properties"] !== undefined) {
+          body["properties"] = args["properties"];
+        }
+        const result = await createResource(
+          BASE_URL,
+          {
+            "id": "cloudcommerceprocurement.providers.entitlements.approve",
+            "path": "v1/{+name}:approve",
+            "httpMethod": "POST",
+            "parameterOrder": ["name"],
+            "parameters": { "name": { "location": "path", "required": true } },
+          },
+          params,
+          body,
+        );
+        return { result };
+      },
+    },
+    approve_plan_change: {
+      description: "approve plan change",
+      arguments: z.object({
+        pendingPlanName: z.any().optional(),
+      }),
+      execute: async (args: Record<string, unknown>, context: any) => {
+        const g = context.globalArgs;
+        const projectId = await getProjectId();
+        const params: Record<string, string> = { project: projectId };
+        if (g["parent"] !== undefined && g["name"] !== undefined) {
+          params["name"] = buildResourceName(
+            String(g["parent"]),
+            String(g["name"]),
+          );
+        }
+        const body: Record<string, unknown> = {};
+        if (args["pendingPlanName"] !== undefined) {
+          body["pendingPlanName"] = args["pendingPlanName"];
+        }
+        const result = await createResource(
+          BASE_URL,
+          {
+            "id":
+              "cloudcommerceprocurement.providers.entitlements.approvePlanChange",
+            "path": "v1/{+name}:approvePlanChange",
+            "httpMethod": "POST",
+            "parameterOrder": ["name"],
+            "parameters": { "name": { "location": "path", "required": true } },
+          },
+          params,
+          body,
+        );
+        return { result };
+      },
+    },
+    reject: {
+      description: "reject",
+      arguments: z.object({
+        reason: z.any().optional(),
+      }),
+      execute: async (args: Record<string, unknown>, context: any) => {
+        const g = context.globalArgs;
+        const projectId = await getProjectId();
+        const params: Record<string, string> = { project: projectId };
+        if (g["parent"] !== undefined && g["name"] !== undefined) {
+          params["name"] = buildResourceName(
+            String(g["parent"]),
+            String(g["name"]),
+          );
+        }
+        const body: Record<string, unknown> = {};
+        if (args["reason"] !== undefined) body["reason"] = args["reason"];
+        const result = await createResource(
+          BASE_URL,
+          {
+            "id": "cloudcommerceprocurement.providers.entitlements.reject",
+            "path": "v1/{+name}:reject",
+            "httpMethod": "POST",
+            "parameterOrder": ["name"],
+            "parameters": { "name": { "location": "path", "required": true } },
+          },
+          params,
+          body,
+        );
+        return { result };
+      },
+    },
+    reject_plan_change: {
+      description: "reject plan change",
+      arguments: z.object({
+        pendingPlanName: z.any().optional(),
+        reason: z.any().optional(),
+      }),
+      execute: async (args: Record<string, unknown>, context: any) => {
+        const g = context.globalArgs;
+        const projectId = await getProjectId();
+        const params: Record<string, string> = { project: projectId };
+        if (g["parent"] !== undefined && g["name"] !== undefined) {
+          params["name"] = buildResourceName(
+            String(g["parent"]),
+            String(g["name"]),
+          );
+        }
+        const body: Record<string, unknown> = {};
+        if (args["pendingPlanName"] !== undefined) {
+          body["pendingPlanName"] = args["pendingPlanName"];
+        }
+        if (args["reason"] !== undefined) body["reason"] = args["reason"];
+        const result = await createResource(
+          BASE_URL,
+          {
+            "id":
+              "cloudcommerceprocurement.providers.entitlements.rejectPlanChange",
+            "path": "v1/{+name}:rejectPlanChange",
+            "httpMethod": "POST",
+            "parameterOrder": ["name"],
+            "parameters": { "name": { "location": "path", "required": true } },
+          },
+          params,
+          body,
+        );
+        return { result };
+      },
+    },
+    suspend: {
+      description: "suspend",
+      arguments: z.object({
+        reason: z.any().optional(),
+      }),
+      execute: async (args: Record<string, unknown>, context: any) => {
+        const g = context.globalArgs;
+        const projectId = await getProjectId();
+        const params: Record<string, string> = { project: projectId };
+        if (g["parent"] !== undefined && g["name"] !== undefined) {
+          params["name"] = buildResourceName(
+            String(g["parent"]),
+            String(g["name"]),
+          );
+        }
+        const body: Record<string, unknown> = {};
+        if (args["reason"] !== undefined) body["reason"] = args["reason"];
+        const result = await createResource(
+          BASE_URL,
+          {
+            "id": "cloudcommerceprocurement.providers.entitlements.suspend",
+            "path": "v1/{+name}:suspend",
+            "httpMethod": "POST",
+            "parameterOrder": ["name"],
+            "parameters": { "name": { "location": "path", "required": true } },
+          },
+          params,
+          body,
+        );
+        return { result };
+      },
+    },
+  },
+};

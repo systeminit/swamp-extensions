@@ -1,0 +1,24 @@
+# Auto-generated manifest. Re-generate with the appropriate deno task.
+manifestVersion: 1
+name: "@swamp/gcp/documentai"
+version: "2026.03.27.1"
+description: "Google Cloud documentai infrastructure models"
+labels:
+  - gcp
+  - google-cloud
+  - documentai
+  - cloud
+  - infrastructure
+releaseNotes: |
+  - Added: locations, processortypes, processors, processors_processorversions, processors_processorversions_evaluations, schemas, schemas_schemaversions
+models:
+  - locations.ts
+  - processors.ts
+  - processors_processorversions.ts
+  - processors_processorversions_evaluations.ts
+  - processortypes.ts
+  - schemas.ts
+  - schemas_schemaversions.ts
+additionalFiles:
+  - LICENSE.txt
+  - README.md

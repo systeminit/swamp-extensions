@@ -1,0 +1,286 @@
+// Auto-generated extension model for @swamp/gcp/apigee/endpointattachments
+// Do not edit manually. Re-generate with: deno task generate:gcp
+
+// deno-lint-ignore-file no-explicit-any
+
+import { z } from "zod";
+import {
+  createResource,
+  deleteResource,
+  getProjectId,
+  isResourceNotFoundError,
+  readResource,
+} from "./_lib/gcp.ts";
+
+/** Construct the fully-qualified resource name from parent and short name. */
+function buildResourceName(parent: string, shortName: string): string {
+  return `${parent}/endpointAttachments/${shortName}`;
+}
+
+const BASE_URL = "https://apigee.googleapis.com/";
+
+const GET_CONFIG = {
+  "id": "apigee.organizations.endpointAttachments.get",
+  "path": "v1/{+name}",
+  "httpMethod": "GET",
+  "parameterOrder": [
+    "name",
+  ],
+  "parameters": {
+    "name": {
+      "location": "path",
+      "required": true,
+    },
+  },
+} as const;
+
+const INSERT_CONFIG = {
+  "id": "apigee.organizations.endpointAttachments.create",
+  "path": "v1/{+parent}/endpointAttachments",
+  "httpMethod": "POST",
+  "parameterOrder": [
+    "parent",
+  ],
+  "parameters": {
+    "endpointAttachmentId": {
+      "location": "query",
+    },
+    "parent": {
+      "location": "path",
+      "required": true,
+    },
+  },
+} as const;
+
+const DELETE_CONFIG = {
+  "id": "apigee.organizations.endpointAttachments.delete",
+  "path": "v1/{+name}",
+  "httpMethod": "DELETE",
+  "parameterOrder": [
+    "name",
+  ],
+  "parameters": {
+    "name": {
+      "location": "path",
+      "required": true,
+    },
+  },
+} as const;
+
+const GlobalArgsSchema = z.object({
+  location: z.string().describe(
+    "Required. Location of the endpoint attachment.",
+  ).optional(),
+  name: z.string().describe(
+    "Name of the endpoint attachment. Use the following structure in your request: `organizations/{org}/endpointAttachments/{endpoint_attachment}`",
+  ).optional(),
+  serviceAttachment: z.string().describe(
+    "Format: projects/*/regions/*/serviceAttachments/*",
+  ).optional(),
+  endpointAttachmentId: z.string().describe(
+    "ID to use for the endpoint attachment. ID must start with a lowercase letter followed by up to 31 lowercase letters, numbers, or hyphens, and cannot end with a hyphen. The minimum length is 2.",
+  ).optional(),
+  parent: z.string().describe(
+    "The parent resource name (e.g., projects/my-project/locations/us-central1, organizations/123, folders/456)",
+  ).optional(),
+});
+
+const StateSchema = z.object({
+  connectionState: z.string().optional(),
+  host: z.string().optional(),
+  location: z.string().optional(),
+  name: z.string(),
+  serviceAttachment: z.string().optional(),
+  state: z.string().optional(),
+}).passthrough();
+
+type StateData = z.infer<typeof StateSchema>;
+
+const InputsSchema = z.object({
+  location: z.string().describe(
+    "Required. Location of the endpoint attachment.",
+  ).optional(),
+  name: z.string().describe(
+    "Name of the endpoint attachment. Use the following structure in your request: `organizations/{org}/endpointAttachments/{endpoint_attachment}`",
+  ).optional(),
+  serviceAttachment: z.string().describe(
+    "Format: projects/*/regions/*/serviceAttachments/*",
+  ).optional(),
+  endpointAttachmentId: z.string().describe(
+    "ID to use for the endpoint attachment. ID must start with a lowercase letter followed by up to 31 lowercase letters, numbers, or hyphens, and cannot end with a hyphen. The minimum length is 2.",
+  ).optional(),
+  parent: z.string().describe(
+    "The parent resource name (e.g., projects/my-project/locations/us-central1, organizations/123, folders/456)",
+  ).optional(),
+});
+
+export const model = {
+  type: "@swamp/gcp/apigee/endpointattachments",
+  version: "2026.03.27.1",
+  globalArguments: GlobalArgsSchema,
+  inputsSchema: InputsSchema,
+  resources: {
+    state: {
+      description:
+        "Apigee endpoint attachment. For more information, see [Southbound networking ...",
+      schema: StateSchema,
+      lifetime: "infinite",
+      garbageCollection: 10,
+    },
+  },
+  methods: {
+    create: {
+      description: "Create a endpointAttachments",
+      arguments: z.object({
+        waitForReady: z.boolean().describe(
+          "Wait for the resource to reach a ready state after creation (default: true)",
+        ).optional(),
+      }),
+      execute: async (args: { waitForReady?: boolean }, context: any) => {
+        const g = context.globalArgs;
+        const projectId = await getProjectId();
+        const params: Record<string, string> = { project: projectId };
+        if (g["parent"] !== undefined) params["parent"] = String(g["parent"]);
+        const body: Record<string, unknown> = {};
+        if (g["location"] !== undefined) body["location"] = g["location"];
+        if (g["name"] !== undefined) body["name"] = g["name"];
+        if (g["serviceAttachment"] !== undefined) {
+          body["serviceAttachment"] = g["serviceAttachment"];
+        }
+        if (g["endpointAttachmentId"] !== undefined) {
+          body["endpointAttachmentId"] = g["endpointAttachmentId"];
+        }
+        if (g["parent"] !== undefined && g["name"] !== undefined) {
+          params["name"] = buildResourceName(
+            String(g["parent"]),
+            String(g["name"]),
+          );
+        }
+        const result = await createResource(
+          BASE_URL,
+          INSERT_CONFIG,
+          params,
+          body,
+          GET_CONFIG,
+          (args.waitForReady ?? true)
+            ? {
+              "statusField": "state",
+              "readyValues": ["ACTIVE"],
+              "failedValues": [],
+            }
+            : undefined,
+        ) as StateData;
+        const instanceName = (result.name ?? g.name)?.toString() ?? "current";
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    get: {
+      description: "Get a endpointAttachments",
+      arguments: z.object({
+        identifier: z.string().describe("The name of the endpointAttachments"),
+      }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const projectId = await getProjectId();
+        const params: Record<string, string> = { project: projectId };
+        const g = context.globalArgs;
+        params["name"] = buildResourceName(
+          String(g["parent"] ?? ""),
+          args.identifier,
+        );
+        const result = await readResource(
+          BASE_URL,
+          GET_CONFIG,
+          params,
+        ) as StateData;
+        const instanceName = (result.name ?? g.name)?.toString() ??
+          args.identifier;
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    delete: {
+      description: "Delete the endpointAttachments",
+      arguments: z.object({
+        identifier: z.string().describe("The name of the endpointAttachments"),
+      }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const g = context.globalArgs;
+        const projectId = await getProjectId();
+        const params: Record<string, string> = { project: projectId };
+        params["name"] = buildResourceName(
+          String(g["parent"] ?? ""),
+          args.identifier,
+        );
+        const { existed } = await deleteResource(
+          BASE_URL,
+          DELETE_CONFIG,
+          params,
+        );
+        const instanceName = g.name?.toString() ?? args.identifier;
+        const handle = await context.writeResource("state", instanceName, {
+          identifier: args.identifier,
+          existed,
+          status: existed ? "deleted" : "not_found",
+          deletedAt: new Date().toISOString(),
+        });
+        return { dataHandles: [handle] };
+      },
+    },
+    sync: {
+      description: "Sync endpointAttachments state from GCP",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const projectId = await getProjectId();
+        const instanceName = g.name?.toString() ?? "current";
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          instanceName,
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        try {
+          const params: Record<string, string> = { project: projectId };
+          const shortName = existing.name?.toString() ?? g["name"]?.toString();
+          if (!shortName) throw new Error("No identifier found");
+          params["name"] = buildResourceName(
+            String(g["parent"] ?? ""),
+            shortName,
+          );
+          const result = await readResource(
+            BASE_URL,
+            GET_CONFIG,
+            params,
+          ) as StateData;
+          const handle = await context.writeResource(
+            "state",
+            instanceName,
+            result,
+          );
+          return { dataHandles: [handle] };
+        } catch (error: unknown) {
+          if (isResourceNotFoundError(error)) {
+            const handle = await context.writeResource("state", instanceName, {
+              status: "not_found",
+              syncedAt: new Date().toISOString(),
+            });
+            return { dataHandles: [handle] };
+          }
+          throw error;
+        }
+      },
+    },
+  },
+};

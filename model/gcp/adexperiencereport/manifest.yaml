@@ -1,0 +1,19 @@
+# Auto-generated manifest. Re-generate with the appropriate deno task.
+manifestVersion: 1
+name: "@swamp/gcp/adexperiencereport"
+version: "2026.03.27.1"
+description: "Google Cloud adexperiencereport infrastructure models"
+labels:
+  - gcp
+  - google-cloud
+  - adexperiencereport
+  - cloud
+  - infrastructure
+releaseNotes: |
+  - Added: sites, violatingsites
+models:
+  - sites.ts
+  - violatingsites.ts
+additionalFiles:
+  - LICENSE.txt
+  - README.md

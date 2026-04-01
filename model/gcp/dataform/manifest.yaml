@@ -1,0 +1,26 @@
+# Auto-generated manifest. Re-generate with the appropriate deno task.
+manifestVersion: 1
+name: "@swamp/gcp/dataform"
+version: "2026.03.27.1"
+description: "Google Cloud dataform infrastructure models"
+labels:
+  - gcp
+  - google-cloud
+  - dataform
+  - cloud
+  - infrastructure
+releaseNotes: |
+  - Added: locations, folders, repositories, repositories_compilationresults, repositories_releaseconfigs, repositories_workflowconfigs, repositories_workflowinvocations, repositories_workspaces, teamfolders
+models:
+  - folders.ts
+  - locations.ts
+  - repositories.ts
+  - repositories_compilationresults.ts
+  - repositories_releaseconfigs.ts
+  - repositories_workflowconfigs.ts
+  - repositories_workflowinvocations.ts
+  - repositories_workspaces.ts
+  - teamfolders.ts
+additionalFiles:
+  - LICENSE.txt
+  - README.md

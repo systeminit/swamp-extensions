@@ -1,0 +1,54 @@
+# Auto-generated manifest. Re-generate with the appropriate deno task.
+manifestVersion: 1
+name: "@swamp/gcp/discoveryengine"
+version: "2026.03.27.1"
+description: "Google Cloud discoveryengine infrastructure models"
+labels:
+  - gcp
+  - google-cloud
+  - discoveryengine
+  - cloud
+  - infrastructure
+releaseNotes: |
+  - Added: cmekconfigs, collections_datastores, collections_datastores_branches_documents, collections_datastores_controls, collections_datastores_conversations, collections_datastores_custommodels, collections_datastores_schemas, collections_datastores_servingconfigs, collections_datastores_sessions, collections_datastores_sessions_answers, collections_datastores_sitesearchengine_targetsites, collections_datastores_widgetconfigs, collections_engines, collections_engines_assistants, collections_engines_assistants_agents_a2a_v1_tasks, collections_engines_assistants_agents_a2a_v1_tasks_pushnotificationconfigs, collections_engines_controls, collections_engines_conversations, collections_engines_servingconfigs, collections_engines_sessions, collections_engines_sessions_answers, collections_engines_widgetconfigs, datastores, datastores_branches_documents, datastores_controls, datastores_conversations, datastores_schemas, datastores_servingconfigs, datastores_sessions, datastores_sessions_answers, datastores_sitesearchengine_targetsites, datastores_widgetconfigs, identitymappingstores, licenseconfigs, userstores, userstores_licenseconfigsusagestats, userstores_userlicenses
+models:
+  - cmekconfigs.ts
+  - collections_datastores.ts
+  - collections_datastores_branches_documents.ts
+  - collections_datastores_controls.ts
+  - collections_datastores_conversations.ts
+  - collections_datastores_custommodels.ts
+  - collections_datastores_schemas.ts
+  - collections_datastores_servingconfigs.ts
+  - collections_datastores_sessions.ts
+  - collections_datastores_sessions_answers.ts
+  - collections_datastores_sitesearchengine_targetsites.ts
+  - collections_datastores_widgetconfigs.ts
+  - collections_engines.ts
+  - collections_engines_assistants.ts
+  - collections_engines_assistants_agents_a2a_v1_tasks.ts
+  - collections_engines_assistants_agents_a2a_v1_tasks_pushnotificationconfigs.ts
+  - collections_engines_controls.ts
+  - collections_engines_conversations.ts
+  - collections_engines_servingconfigs.ts
+  - collections_engines_sessions.ts
+  - collections_engines_sessions_answers.ts
+  - collections_engines_widgetconfigs.ts
+  - datastores.ts
+  - datastores_branches_documents.ts
+  - datastores_controls.ts
+  - datastores_conversations.ts
+  - datastores_schemas.ts
+  - datastores_servingconfigs.ts
+  - datastores_sessions.ts
+  - datastores_sessions_answers.ts
+  - datastores_sitesearchengine_targetsites.ts
+  - datastores_widgetconfigs.ts
+  - identitymappingstores.ts
+  - licenseconfigs.ts
+  - userstores.ts
+  - userstores_licenseconfigsusagestats.ts
+  - userstores_userlicenses.ts
+additionalFiles:
+  - LICENSE.txt
+  - README.md

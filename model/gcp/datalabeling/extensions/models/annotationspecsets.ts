@@ -1,0 +1,307 @@
+// Auto-generated extension model for @swamp/gcp/datalabeling/annotationspecsets
+// Do not edit manually. Re-generate with: deno task generate:gcp
+
+// deno-lint-ignore-file no-explicit-any
+
+import { z } from "zod";
+import {
+  createResource,
+  deleteResource,
+  getProjectId,
+  isResourceNotFoundError,
+  readResource,
+} from "./_lib/gcp.ts";
+
+/** Construct the fully-qualified resource name from parent and short name. */
+function buildResourceName(parent: string, shortName: string): string {
+  return `${parent}/annotationSpecSets/${shortName}`;
+}
+
+const BASE_URL = "https://datalabeling.googleapis.com/";
+
+const GET_CONFIG = {
+  "id": "datalabeling.projects.annotationSpecSets.get",
+  "path": "v1beta1/{+name}",
+  "httpMethod": "GET",
+  "parameterOrder": [
+    "name",
+  ],
+  "parameters": {
+    "name": {
+      "location": "path",
+      "required": true,
+    },
+  },
+} as const;
+
+const INSERT_CONFIG = {
+  "id": "datalabeling.projects.annotationSpecSets.create",
+  "path": "v1beta1/{+parent}/annotationSpecSets",
+  "httpMethod": "POST",
+  "parameterOrder": [
+    "parent",
+  ],
+  "parameters": {
+    "parent": {
+      "location": "path",
+      "required": true,
+    },
+  },
+} as const;
+
+const DELETE_CONFIG = {
+  "id": "datalabeling.projects.annotationSpecSets.delete",
+  "path": "v1beta1/{+name}",
+  "httpMethod": "DELETE",
+  "parameterOrder": [
+    "name",
+  ],
+  "parameters": {
+    "name": {
+      "location": "path",
+      "required": true,
+    },
+  },
+} as const;
+
+const GlobalArgsSchema = z.object({
+  name: z.string().describe(
+    "Instance name for this resource (used as the unique identifier in the factory pattern)",
+  ),
+  annotationSpecSet: z.object({
+    annotationSpecs: z.array(z.object({
+      description: z.string().describe(
+        "Optional. User-provided description of the annotation specification. The description can be up to 10,000 characters long.",
+      ).optional(),
+      displayName: z.string().describe(
+        "Required. The display name of the AnnotationSpec. Maximum of 64 characters.",
+      ).optional(),
+      index: z.number().int().describe(
+        'Output only. This is the integer index of the AnnotationSpec. The index for the whole AnnotationSpecSet is sequential starting from 0. For example, an AnnotationSpecSet with classes `dog` and `cat`, might contain one AnnotationSpec with `{ display_name: "dog", index: 0 }` and one AnnotationSpec with `{ display_name: "cat", index: 1 }`. This is especially useful for model training as it encodes the string labels into numeric values.',
+      ).optional(),
+    })).describe(
+      "Required. The array of AnnotationSpecs that you define when you create the AnnotationSpecSet. These are the possible labels for the labeling task.",
+    ).optional(),
+    blockingResources: z.array(z.string()).describe(
+      "Output only. The names of any related resources that are blocking changes to the annotation spec set.",
+    ).optional(),
+    description: z.string().describe(
+      "Optional. User-provided description of the annotation specification set. The description can be up to 10,000 characters long.",
+    ).optional(),
+    displayName: z.string().describe(
+      "Required. The display name for AnnotationSpecSet that you define when you create it. Maximum of 64 characters.",
+    ).optional(),
+    name: z.string().describe(
+      'Output only. The AnnotationSpecSet resource name in the following format: "projects/{project_id}/annotationSpecSets/{annotation_spec_set_id}"',
+    ).optional(),
+  }).describe(
+    "An AnnotationSpecSet is a collection of label definitions. For example, in image classification tasks, you define a set of possible labels for images as an AnnotationSpecSet. An AnnotationSpecSet is immutable upon creation.",
+  ).optional(),
+  location: z.string().describe(
+    "The location for this resource (e.g., 'us', 'us-central1', 'europe-west1')",
+  ).optional(),
+});
+
+const StateSchema = z.object({
+  annotationSpecs: z.array(z.object({
+    description: z.string(),
+    displayName: z.string(),
+    index: z.number(),
+  })).optional(),
+  blockingResources: z.array(z.string()).optional(),
+  description: z.string().optional(),
+  displayName: z.string().optional(),
+  name: z.string(),
+}).passthrough();
+
+type StateData = z.infer<typeof StateSchema>;
+
+const InputsSchema = z.object({
+  name: z.string().optional(),
+  annotationSpecSet: z.object({
+    annotationSpecs: z.array(z.object({
+      description: z.string().describe(
+        "Optional. User-provided description of the annotation specification. The description can be up to 10,000 characters long.",
+      ).optional(),
+      displayName: z.string().describe(
+        "Required. The display name of the AnnotationSpec. Maximum of 64 characters.",
+      ).optional(),
+      index: z.number().int().describe(
+        'Output only. This is the integer index of the AnnotationSpec. The index for the whole AnnotationSpecSet is sequential starting from 0. For example, an AnnotationSpecSet with classes `dog` and `cat`, might contain one AnnotationSpec with `{ display_name: "dog", index: 0 }` and one AnnotationSpec with `{ display_name: "cat", index: 1 }`. This is especially useful for model training as it encodes the string labels into numeric values.',
+      ).optional(),
+    })).describe(
+      "Required. The array of AnnotationSpecs that you define when you create the AnnotationSpecSet. These are the possible labels for the labeling task.",
+    ).optional(),
+    blockingResources: z.array(z.string()).describe(
+      "Output only. The names of any related resources that are blocking changes to the annotation spec set.",
+    ).optional(),
+    description: z.string().describe(
+      "Optional. User-provided description of the annotation specification set. The description can be up to 10,000 characters long.",
+    ).optional(),
+    displayName: z.string().describe(
+      "Required. The display name for AnnotationSpecSet that you define when you create it. Maximum of 64 characters.",
+    ).optional(),
+    name: z.string().describe(
+      'Output only. The AnnotationSpecSet resource name in the following format: "projects/{project_id}/annotationSpecSets/{annotation_spec_set_id}"',
+    ).optional(),
+  }).describe(
+    "An AnnotationSpecSet is a collection of label definitions. For example, in image classification tasks, you define a set of possible labels for images as an AnnotationSpecSet. An AnnotationSpecSet is immutable upon creation.",
+  ).optional(),
+  location: z.string().describe(
+    "The location for this resource (e.g., 'us', 'us-central1', 'europe-west1')",
+  ).optional(),
+});
+
+export const model = {
+  type: "@swamp/gcp/datalabeling/annotationspecsets",
+  version: "2026.03.27.1",
+  globalArguments: GlobalArgsSchema,
+  inputsSchema: InputsSchema,
+  resources: {
+    state: {
+      description:
+        "An AnnotationSpecSet is a collection of label definitions. For example, in im...",
+      schema: StateSchema,
+      lifetime: "infinite",
+      garbageCollection: 10,
+    },
+  },
+  methods: {
+    create: {
+      description: "Create a annotationSpecSets",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const projectId = await getProjectId();
+        const params: Record<string, string> = { project: projectId };
+        if (g["parent"] !== undefined) params["parent"] = String(g["parent"]);
+        const body: Record<string, unknown> = {};
+        if (g["annotationSpecSet"] !== undefined) {
+          body["annotationSpecSet"] = g["annotationSpecSet"];
+        }
+        if (g["parent"] !== undefined && g["name"] !== undefined) {
+          params["name"] = buildResourceName(
+            String(g["parent"]),
+            String(g["name"]),
+          );
+        }
+        const result = await createResource(
+          BASE_URL,
+          INSERT_CONFIG,
+          params,
+          body,
+          GET_CONFIG,
+        ) as StateData;
+        const instanceName = g.name?.toString() ?? "current";
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    get: {
+      description: "Get a annotationSpecSets",
+      arguments: z.object({
+        identifier: z.string().describe("The name of the annotationSpecSets"),
+      }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const projectId = await getProjectId();
+        const params: Record<string, string> = { project: projectId };
+        const g = context.globalArgs;
+        params["name"] = buildResourceName(
+          String(g["parent"] ?? ""),
+          args.identifier,
+        );
+        const result = await readResource(
+          BASE_URL,
+          GET_CONFIG,
+          params,
+        ) as StateData;
+        const instanceName = g.name?.toString() ?? args.identifier;
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    delete: {
+      description: "Delete the annotationSpecSets",
+      arguments: z.object({
+        identifier: z.string().describe("The name of the annotationSpecSets"),
+      }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const g = context.globalArgs;
+        const projectId = await getProjectId();
+        const params: Record<string, string> = { project: projectId };
+        params["name"] = buildResourceName(
+          String(g["parent"] ?? ""),
+          args.identifier,
+        );
+        const { existed } = await deleteResource(
+          BASE_URL,
+          DELETE_CONFIG,
+          params,
+        );
+        const instanceName = g.name?.toString() ?? args.identifier;
+        const handle = await context.writeResource("state", instanceName, {
+          identifier: args.identifier,
+          existed,
+          status: existed ? "deleted" : "not_found",
+          deletedAt: new Date().toISOString(),
+        });
+        return { dataHandles: [handle] };
+      },
+    },
+    sync: {
+      description: "Sync annotationSpecSets state from GCP",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const projectId = await getProjectId();
+        const instanceName = g.name?.toString() ?? "current";
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          instanceName,
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        try {
+          const params: Record<string, string> = { project: projectId };
+          const shortName = existing.name?.toString() ?? g["name"]?.toString();
+          if (!shortName) throw new Error("No identifier found");
+          params["name"] = buildResourceName(
+            String(g["parent"] ?? ""),
+            shortName,
+          );
+          const result = await readResource(
+            BASE_URL,
+            GET_CONFIG,
+            params,
+          ) as StateData;
+          const handle = await context.writeResource(
+            "state",
+            instanceName,
+            result,
+          );
+          return { dataHandles: [handle] };
+        } catch (error: unknown) {
+          if (isResourceNotFoundError(error)) {
+            const handle = await context.writeResource("state", instanceName, {
+              status: "not_found",
+              syncedAt: new Date().toISOString(),
+            });
+            return { dataHandles: [handle] };
+          }
+          throw error;
+        }
+      },
+    },
+  },
+};

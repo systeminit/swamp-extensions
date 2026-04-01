@@ -1,0 +1,468 @@
+// Auto-generated extension model for @swamp/gcp/dataplex/lakes
+// Do not edit manually. Re-generate with: deno task generate:gcp
+
+// deno-lint-ignore-file no-explicit-any
+
+import { z } from "zod";
+import {
+  createResource,
+  deleteResource,
+  getProjectId,
+  isResourceNotFoundError,
+  readResource,
+  updateResource,
+} from "./_lib/gcp.ts";
+
+/** Construct the fully-qualified resource name from parent and short name. */
+function buildResourceName(parent: string, shortName: string): string {
+  return `${parent}/lakes/${shortName}`;
+}
+
+const BASE_URL = "https://dataplex.googleapis.com/";
+
+const GET_CONFIG = {
+  "id": "dataplex.projects.locations.lakes.get",
+  "path": "v1/{+name}",
+  "httpMethod": "GET",
+  "parameterOrder": [
+    "name",
+  ],
+  "parameters": {
+    "name": {
+      "location": "path",
+      "required": true,
+    },
+  },
+} as const;
+
+const INSERT_CONFIG = {
+  "id": "dataplex.projects.locations.lakes.create",
+  "path": "v1/{+parent}/lakes",
+  "httpMethod": "POST",
+  "parameterOrder": [
+    "parent",
+  ],
+  "parameters": {
+    "lakeId": {
+      "location": "query",
+    },
+    "parent": {
+      "location": "path",
+      "required": true,
+    },
+    "validateOnly": {
+      "location": "query",
+    },
+  },
+} as const;
+
+const PATCH_CONFIG = {
+  "id": "dataplex.projects.locations.lakes.patch",
+  "path": "v1/{+name}",
+  "httpMethod": "PATCH",
+  "parameterOrder": [
+    "name",
+  ],
+  "parameters": {
+    "name": {
+      "location": "path",
+      "required": true,
+    },
+    "updateMask": {
+      "location": "query",
+    },
+    "validateOnly": {
+      "location": "query",
+    },
+  },
+} as const;
+
+const DELETE_CONFIG = {
+  "id": "dataplex.projects.locations.lakes.delete",
+  "path": "v1/{+name}",
+  "httpMethod": "DELETE",
+  "parameterOrder": [
+    "name",
+  ],
+  "parameters": {
+    "name": {
+      "location": "path",
+      "required": true,
+    },
+  },
+} as const;
+
+const GlobalArgsSchema = z.object({
+  name: z.string().describe(
+    "Instance name for this resource (used as the unique identifier in the factory pattern)",
+  ),
+  assetStatus: z.object({
+    activeAssets: z.number().int().describe("Number of active assets.")
+      .optional(),
+    securityPolicyApplyingAssets: z.number().int().describe(
+      "Number of assets that are in process of updating the security policy on attached resources.",
+    ).optional(),
+    updateTime: z.string().describe("Last update time of the status.")
+      .optional(),
+  }).describe("Aggregated status of the underlying assets of a lake or zone.")
+    .optional(),
+  description: z.string().describe("Optional. Description of the lake.")
+    .optional(),
+  displayName: z.string().describe("Optional. User friendly display name.")
+    .optional(),
+  labels: z.record(z.string(), z.string()).describe(
+    "Optional. User-defined labels for the lake.",
+  ).optional(),
+  metastore: z.object({
+    service: z.string().describe(
+      "Optional. A relative reference to the Dataproc Metastore (https://cloud.google.com/dataproc-metastore/docs) service associated with the lake: projects/{project_id}/locations/{location_id}/services/{service_id}",
+    ).optional(),
+  }).describe(
+    "Settings to manage association of Dataproc Metastore with a lake.",
+  ).optional(),
+  metastoreStatus: z.object({
+    endpoint: z.string().describe(
+      "The URI of the endpoint used to access the Metastore service.",
+    ).optional(),
+    message: z.string().describe(
+      "Additional information about the current status.",
+    ).optional(),
+    state: z.enum(["STATE_UNSPECIFIED", "NONE", "READY", "UPDATING", "ERROR"])
+      .describe("Current state of association.").optional(),
+    updateTime: z.string().describe(
+      "Last update time of the metastore status of the lake.",
+    ).optional(),
+  }).describe(
+    "Status of Lake and Dataproc Metastore service instance association.",
+  ).optional(),
+  lakeId: z.string().describe(
+    "Required. Lake identifier. This ID will be used to generate names such as database and dataset names when publishing metadata to Hive Metastore and BigQuery. * Must contain only lowercase letters, numbers and hyphens. * Must start with a letter. * Must end with a number or a letter. * Must be between 1-63 characters. * Must be unique within the customer project / location.",
+  ).optional(),
+  location: z.string().describe(
+    "The location for this resource (e.g., 'us', 'us-central1', 'europe-west1')",
+  ).optional(),
+});
+
+const StateSchema = z.object({
+  assetStatus: z.object({
+    activeAssets: z.number(),
+    securityPolicyApplyingAssets: z.number(),
+    updateTime: z.string(),
+  }).optional(),
+  createTime: z.string().optional(),
+  description: z.string().optional(),
+  displayName: z.string().optional(),
+  labels: z.record(z.string(), z.unknown()).optional(),
+  metastore: z.object({
+    service: z.string(),
+  }).optional(),
+  metastoreStatus: z.object({
+    endpoint: z.string(),
+    message: z.string(),
+    state: z.string(),
+    updateTime: z.string(),
+  }).optional(),
+  name: z.string(),
+  serviceAccount: z.string().optional(),
+  state: z.string().optional(),
+  uid: z.string().optional(),
+  updateTime: z.string().optional(),
+}).passthrough();
+
+type StateData = z.infer<typeof StateSchema>;
+
+const InputsSchema = z.object({
+  name: z.string().optional(),
+  assetStatus: z.object({
+    activeAssets: z.number().int().describe("Number of active assets.")
+      .optional(),
+    securityPolicyApplyingAssets: z.number().int().describe(
+      "Number of assets that are in process of updating the security policy on attached resources.",
+    ).optional(),
+    updateTime: z.string().describe("Last update time of the status.")
+      .optional(),
+  }).describe("Aggregated status of the underlying assets of a lake or zone.")
+    .optional(),
+  description: z.string().describe("Optional. Description of the lake.")
+    .optional(),
+  displayName: z.string().describe("Optional. User friendly display name.")
+    .optional(),
+  labels: z.record(z.string(), z.string()).describe(
+    "Optional. User-defined labels for the lake.",
+  ).optional(),
+  metastore: z.object({
+    service: z.string().describe(
+      "Optional. A relative reference to the Dataproc Metastore (https://cloud.google.com/dataproc-metastore/docs) service associated with the lake: projects/{project_id}/locations/{location_id}/services/{service_id}",
+    ).optional(),
+  }).describe(
+    "Settings to manage association of Dataproc Metastore with a lake.",
+  ).optional(),
+  metastoreStatus: z.object({
+    endpoint: z.string().describe(
+      "The URI of the endpoint used to access the Metastore service.",
+    ).optional(),
+    message: z.string().describe(
+      "Additional information about the current status.",
+    ).optional(),
+    state: z.enum(["STATE_UNSPECIFIED", "NONE", "READY", "UPDATING", "ERROR"])
+      .describe("Current state of association.").optional(),
+    updateTime: z.string().describe(
+      "Last update time of the metastore status of the lake.",
+    ).optional(),
+  }).describe(
+    "Status of Lake and Dataproc Metastore service instance association.",
+  ).optional(),
+  lakeId: z.string().describe(
+    "Required. Lake identifier. This ID will be used to generate names such as database and dataset names when publishing metadata to Hive Metastore and BigQuery. * Must contain only lowercase letters, numbers and hyphens. * Must start with a letter. * Must end with a number or a letter. * Must be between 1-63 characters. * Must be unique within the customer project / location.",
+  ).optional(),
+  location: z.string().describe(
+    "The location for this resource (e.g., 'us', 'us-central1', 'europe-west1')",
+  ).optional(),
+});
+
+export const model = {
+  type: "@swamp/gcp/dataplex/lakes",
+  version: "2026.03.27.1",
+  globalArguments: GlobalArgsSchema,
+  inputsSchema: InputsSchema,
+  resources: {
+    state: {
+      description:
+        "A lake is a centralized repository for managing enterprise data across the or...",
+      schema: StateSchema,
+      lifetime: "infinite",
+      garbageCollection: 10,
+    },
+  },
+  methods: {
+    create: {
+      description: "Create a lakes",
+      arguments: z.object({
+        waitForReady: z.boolean().describe(
+          "Wait for the resource to reach a ready state after creation (default: true)",
+        ).optional(),
+      }),
+      execute: async (args: { waitForReady?: boolean }, context: any) => {
+        const g = context.globalArgs;
+        const projectId = await getProjectId();
+        const params: Record<string, string> = { project: projectId };
+        if (g["parent"] !== undefined) params["parent"] = String(g["parent"]);
+        const body: Record<string, unknown> = {};
+        if (g["assetStatus"] !== undefined) {
+          body["assetStatus"] = g["assetStatus"];
+        }
+        if (g["description"] !== undefined) {
+          body["description"] = g["description"];
+        }
+        if (g["displayName"] !== undefined) {
+          body["displayName"] = g["displayName"];
+        }
+        if (g["labels"] !== undefined) body["labels"] = g["labels"];
+        if (g["metastore"] !== undefined) body["metastore"] = g["metastore"];
+        if (g["metastoreStatus"] !== undefined) {
+          body["metastoreStatus"] = g["metastoreStatus"];
+        }
+        if (g["lakeId"] !== undefined) body["lakeId"] = g["lakeId"];
+        if (g["parent"] !== undefined && g["name"] !== undefined) {
+          params["name"] = buildResourceName(
+            String(g["parent"]),
+            String(g["name"]),
+          );
+        }
+        const result = await createResource(
+          BASE_URL,
+          INSERT_CONFIG,
+          params,
+          body,
+          GET_CONFIG,
+          (args.waitForReady ?? true)
+            ? {
+              "statusField": "state",
+              "readyValues": ["ACTIVE"],
+              "failedValues": [],
+            }
+            : undefined,
+        ) as StateData;
+        const instanceName = g.name?.toString() ?? "current";
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    get: {
+      description: "Get a lakes",
+      arguments: z.object({
+        identifier: z.string().describe("The name of the lakes"),
+      }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const projectId = await getProjectId();
+        const params: Record<string, string> = { project: projectId };
+        const g = context.globalArgs;
+        params["name"] = buildResourceName(
+          String(g["parent"] ?? ""),
+          args.identifier,
+        );
+        const result = await readResource(
+          BASE_URL,
+          GET_CONFIG,
+          params,
+        ) as StateData;
+        const instanceName = g.name?.toString() ?? args.identifier;
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    update: {
+      description: "Update lakes attributes",
+      arguments: z.object({
+        waitForReady: z.boolean().describe(
+          "Wait for the resource to reach a ready state after update (default: true)",
+        ).optional(),
+      }),
+      execute: async (args: { waitForReady?: boolean }, context: any) => {
+        const g = context.globalArgs;
+        const projectId = await getProjectId();
+        const instanceName = g.name?.toString() ?? "current";
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          instanceName,
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        const params: Record<string, string> = { project: projectId };
+        params["name"] = buildResourceName(
+          String(g["parent"] ?? ""),
+          existing["name"]?.toString() ?? g["name"]?.toString() ?? "",
+        );
+        const body: Record<string, unknown> = {};
+        if (g["assetStatus"] !== undefined) {
+          body["assetStatus"] = g["assetStatus"];
+        }
+        if (g["description"] !== undefined) {
+          body["description"] = g["description"];
+        }
+        if (g["displayName"] !== undefined) {
+          body["displayName"] = g["displayName"];
+        }
+        if (g["labels"] !== undefined) body["labels"] = g["labels"];
+        if (g["metastore"] !== undefined) body["metastore"] = g["metastore"];
+        if (g["metastoreStatus"] !== undefined) {
+          body["metastoreStatus"] = g["metastoreStatus"];
+        }
+        for (const key of Object.keys(existing)) {
+          if (
+            key === "fingerprint" || key === "labelFingerprint" ||
+            key === "etag" || key.endsWith("Fingerprint")
+          ) {
+            body[key] = existing[key];
+          }
+        }
+        const result = await updateResource(
+          BASE_URL,
+          PATCH_CONFIG,
+          params,
+          body,
+          GET_CONFIG,
+          (args.waitForReady ?? true)
+            ? {
+              "statusField": "state",
+              "readyValues": ["ACTIVE"],
+              "failedValues": [],
+            }
+            : undefined,
+        ) as StateData;
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    delete: {
+      description: "Delete the lakes",
+      arguments: z.object({
+        identifier: z.string().describe("The name of the lakes"),
+      }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const g = context.globalArgs;
+        const projectId = await getProjectId();
+        const params: Record<string, string> = { project: projectId };
+        params["name"] = buildResourceName(
+          String(g["parent"] ?? ""),
+          args.identifier,
+        );
+        const { existed } = await deleteResource(
+          BASE_URL,
+          DELETE_CONFIG,
+          params,
+        );
+        const instanceName = g.name?.toString() ?? args.identifier;
+        const handle = await context.writeResource("state", instanceName, {
+          identifier: args.identifier,
+          existed,
+          status: existed ? "deleted" : "not_found",
+          deletedAt: new Date().toISOString(),
+        });
+        return { dataHandles: [handle] };
+      },
+    },
+    sync: {
+      description: "Sync lakes state from GCP",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const projectId = await getProjectId();
+        const instanceName = g.name?.toString() ?? "current";
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          instanceName,
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        try {
+          const params: Record<string, string> = { project: projectId };
+          const shortName = existing.name?.toString() ?? g["name"]?.toString();
+          if (!shortName) throw new Error("No identifier found");
+          params["name"] = buildResourceName(
+            String(g["parent"] ?? ""),
+            shortName,
+          );
+          const result = await readResource(
+            BASE_URL,
+            GET_CONFIG,
+            params,
+          ) as StateData;
+          const handle = await context.writeResource(
+            "state",
+            instanceName,
+            result,
+          );
+          return { dataHandles: [handle] };
+        } catch (error: unknown) {
+          if (isResourceNotFoundError(error)) {
+            const handle = await context.writeResource("state", instanceName, {
+              status: "not_found",
+              syncedAt: new Date().toISOString(),
+            });
+            return { dataHandles: [handle] };
+          }
+          throw error;
+        }
+      },
+    },
+  },
+};

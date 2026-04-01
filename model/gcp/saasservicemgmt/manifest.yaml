@@ -1,0 +1,25 @@
+# Auto-generated manifest. Re-generate with the appropriate deno task.
+manifestVersion: 1
+name: "@swamp/gcp/saasservicemgmt"
+version: "2026.03.27.1"
+description: "Google Cloud saasservicemgmt infrastructure models"
+labels:
+  - gcp
+  - google-cloud
+  - saasservicemgmt
+  - cloud
+  - infrastructure
+releaseNotes: |
+  - Added: locations, releases, rolloutkinds, rollouts, saas, tenants, unitkinds, units
+models:
+  - locations.ts
+  - releases.ts
+  - rolloutkinds.ts
+  - rollouts.ts
+  - saas.ts
+  - tenants.ts
+  - unitkinds.ts
+  - units.ts
+additionalFiles:
+  - LICENSE.txt
+  - README.md

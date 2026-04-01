@@ -1,0 +1,282 @@
+// Auto-generated extension model for @swamp/gcp/apigee/environments-apis-revisions-debugsessions
+// Do not edit manually. Re-generate with: deno task generate:gcp
+
+// deno-lint-ignore-file no-explicit-any
+
+import { z } from "zod";
+import {
+  createResource,
+  deleteResource,
+  getProjectId,
+  isResourceNotFoundError,
+  readResource,
+} from "./_lib/gcp.ts";
+
+/** Construct the fully-qualified resource name from parent and short name. */
+function buildResourceName(parent: string, shortName: string): string {
+  return `${parent}/debugsessions/${shortName}`;
+}
+
+const BASE_URL = "https://apigee.googleapis.com/";
+
+const GET_CONFIG = {
+  "id": "apigee.organizations.environments.apis.revisions.debugsessions.get",
+  "path": "v1/{+name}",
+  "httpMethod": "GET",
+  "parameterOrder": [
+    "name",
+  ],
+  "parameters": {
+    "name": {
+      "location": "path",
+      "required": true,
+    },
+  },
+} as const;
+
+const INSERT_CONFIG = {
+  "id": "apigee.organizations.environments.apis.revisions.debugsessions.create",
+  "path": "v1/{+parent}/debugsessions",
+  "httpMethod": "POST",
+  "parameterOrder": [
+    "parent",
+  ],
+  "parameters": {
+    "parent": {
+      "location": "path",
+      "required": true,
+    },
+    "timeout": {
+      "location": "query",
+    },
+  },
+} as const;
+
+const DELETE_CONFIG = {
+  "id":
+    "apigee.organizations.environments.apis.revisions.debugsessions.deleteData",
+  "path": "v1/{+name}/data",
+  "httpMethod": "DELETE",
+  "parameterOrder": [
+    "name",
+  ],
+  "parameters": {
+    "name": {
+      "location": "path",
+      "required": true,
+    },
+  },
+} as const;
+
+const GlobalArgsSchema = z.object({
+  count: z.number().int().describe(
+    "Optional. The number of request to be traced. Min = 1, Max = 15, Default = 10.",
+  ).optional(),
+  filter: z.string().describe(
+    "Optional. A conditional statement which is evaluated against the request message to determine if it should be traced. Syntax matches that of on API Proxy bundle flow Condition.",
+  ).optional(),
+  name: z.string().describe("A unique ID for this DebugSession.").optional(),
+  timeout: z.string().describe(
+    "Optional. The time in seconds after which this DebugSession should end. This value will override the value in query param, if both are provided.",
+  ).optional(),
+  tracesize: z.number().int().describe(
+    "Optional. The maximum number of bytes captured from the response payload. Min = 0, Max = 5120, Default = 5120.",
+  ).optional(),
+  validity: z.number().int().describe(
+    "Optional. The length of time, in seconds, that this debug session is valid, starting from when it's received in the control plane. Min = 1, Max = 15, Default = 10.",
+  ).optional(),
+  parent: z.string().describe(
+    "The parent resource name (e.g., projects/my-project/locations/us-central1, organizations/123, folders/456)",
+  ).optional(),
+});
+
+const StateSchema = z.object({
+  count: z.number().optional(),
+  createTime: z.string().optional(),
+  filter: z.string().optional(),
+  name: z.string(),
+  timeout: z.string().optional(),
+  tracesize: z.number().optional(),
+  validity: z.number().optional(),
+}).passthrough();
+
+type StateData = z.infer<typeof StateSchema>;
+
+const InputsSchema = z.object({
+  count: z.number().int().describe(
+    "Optional. The number of request to be traced. Min = 1, Max = 15, Default = 10.",
+  ).optional(),
+  filter: z.string().describe(
+    "Optional. A conditional statement which is evaluated against the request message to determine if it should be traced. Syntax matches that of on API Proxy bundle flow Condition.",
+  ).optional(),
+  name: z.string().describe("A unique ID for this DebugSession.").optional(),
+  timeout: z.string().describe(
+    "Optional. The time in seconds after which this DebugSession should end. This value will override the value in query param, if both are provided.",
+  ).optional(),
+  tracesize: z.number().int().describe(
+    "Optional. The maximum number of bytes captured from the response payload. Min = 0, Max = 5120, Default = 5120.",
+  ).optional(),
+  validity: z.number().int().describe(
+    "Optional. The length of time, in seconds, that this debug session is valid, starting from when it's received in the control plane. Min = 1, Max = 15, Default = 10.",
+  ).optional(),
+  parent: z.string().describe(
+    "The parent resource name (e.g., projects/my-project/locations/us-central1, organizations/123, folders/456)",
+  ).optional(),
+});
+
+export const model = {
+  type: "@swamp/gcp/apigee/environments-apis-revisions-debugsessions",
+  version: "2026.03.27.1",
+  globalArguments: GlobalArgsSchema,
+  inputsSchema: InputsSchema,
+  resources: {
+    state: {
+      description: "Retrieves a debug session.",
+      schema: StateSchema,
+      lifetime: "infinite",
+      garbageCollection: 10,
+    },
+  },
+  methods: {
+    create: {
+      description: "Create a debugsessions",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const projectId = await getProjectId();
+        const params: Record<string, string> = { project: projectId };
+        if (g["parent"] !== undefined) params["parent"] = String(g["parent"]);
+        const body: Record<string, unknown> = {};
+        if (g["count"] !== undefined) body["count"] = g["count"];
+        if (g["filter"] !== undefined) body["filter"] = g["filter"];
+        if (g["name"] !== undefined) body["name"] = g["name"];
+        if (g["timeout"] !== undefined) body["timeout"] = g["timeout"];
+        if (g["tracesize"] !== undefined) body["tracesize"] = g["tracesize"];
+        if (g["validity"] !== undefined) body["validity"] = g["validity"];
+        if (g["parent"] !== undefined && g["name"] !== undefined) {
+          params["name"] = buildResourceName(
+            String(g["parent"]),
+            String(g["name"]),
+          );
+        }
+        const result = await createResource(
+          BASE_URL,
+          INSERT_CONFIG,
+          params,
+          body,
+          GET_CONFIG,
+        ) as StateData;
+        const instanceName = (result.name ?? g.name)?.toString() ?? "current";
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    get: {
+      description: "Get a debugsessions",
+      arguments: z.object({
+        identifier: z.string().describe("The name of the debugsessions"),
+      }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const projectId = await getProjectId();
+        const params: Record<string, string> = { project: projectId };
+        const g = context.globalArgs;
+        params["name"] = buildResourceName(
+          String(g["parent"] ?? ""),
+          args.identifier,
+        );
+        const result = await readResource(
+          BASE_URL,
+          GET_CONFIG,
+          params,
+        ) as StateData;
+        const instanceName = (result.name ?? g.name)?.toString() ??
+          args.identifier;
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    delete: {
+      description: "Delete the debugsessions",
+      arguments: z.object({
+        identifier: z.string().describe("The name of the debugsessions"),
+      }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const g = context.globalArgs;
+        const projectId = await getProjectId();
+        const params: Record<string, string> = { project: projectId };
+        params["name"] = buildResourceName(
+          String(g["parent"] ?? ""),
+          args.identifier,
+        );
+        const { existed } = await deleteResource(
+          BASE_URL,
+          DELETE_CONFIG,
+          params,
+        );
+        const instanceName = g.name?.toString() ?? args.identifier;
+        const handle = await context.writeResource("state", instanceName, {
+          identifier: args.identifier,
+          existed,
+          status: existed ? "deleted" : "not_found",
+          deletedAt: new Date().toISOString(),
+        });
+        return { dataHandles: [handle] };
+      },
+    },
+    sync: {
+      description: "Sync debugsessions state from GCP",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const projectId = await getProjectId();
+        const instanceName = g.name?.toString() ?? "current";
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          instanceName,
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        try {
+          const params: Record<string, string> = { project: projectId };
+          const shortName = existing.name?.toString() ?? g["name"]?.toString();
+          if (!shortName) throw new Error("No identifier found");
+          params["name"] = buildResourceName(
+            String(g["parent"] ?? ""),
+            shortName,
+          );
+          const result = await readResource(
+            BASE_URL,
+            GET_CONFIG,
+            params,
+          ) as StateData;
+          const handle = await context.writeResource(
+            "state",
+            instanceName,
+            result,
+          );
+          return { dataHandles: [handle] };
+        } catch (error: unknown) {
+          if (isResourceNotFoundError(error)) {
+            const handle = await context.writeResource("state", instanceName, {
+              status: "not_found",
+              syncedAt: new Date().toISOString(),
+            });
+            return { dataHandles: [handle] };
+          }
+          throw error;
+        }
+      },
+    },
+  },
+};

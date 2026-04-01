@@ -1,0 +1,408 @@
+// Auto-generated extension model for @swamp/gcp/displayvideo/partners-channels-sites
+// Do not edit manually. Re-generate with: deno task generate:gcp
+
+// deno-lint-ignore-file no-explicit-any
+
+import { z } from "zod";
+import {
+  createResource,
+  deleteResource,
+  getProjectId,
+  isResourceNotFoundError,
+  readViaList,
+} from "./_lib/gcp.ts";
+
+const BASE_URL = "https://displayvideo.googleapis.com/";
+
+const INSERT_CONFIG = {
+  "id": "displayvideo.partners.channels.sites.create",
+  "path": "v4/partners/{partnerId}/channels/{+channelId}/sites",
+  "httpMethod": "POST",
+  "parameterOrder": [
+    "partnerId",
+    "channelId",
+  ],
+  "parameters": {
+    "advertiserId": {
+      "location": "query",
+    },
+    "channelId": {
+      "location": "path",
+      "required": true,
+    },
+    "partnerId": {
+      "location": "path",
+      "required": true,
+    },
+  },
+} as const;
+
+const DELETE_CONFIG = {
+  "id": "displayvideo.partners.channels.sites.delete",
+  "path": "v4/partners/{partnerId}/channels/{+channelId}/sites/{+urlOrAppId}",
+  "httpMethod": "DELETE",
+  "parameterOrder": [
+    "partnerId",
+    "channelId",
+    "urlOrAppId",
+  ],
+  "parameters": {
+    "advertiserId": {
+      "location": "query",
+    },
+    "channelId": {
+      "location": "path",
+      "required": true,
+    },
+    "partnerId": {
+      "location": "path",
+      "required": true,
+    },
+    "urlOrAppId": {
+      "location": "path",
+      "required": true,
+    },
+  },
+} as const;
+
+const LIST_CONFIG = {
+  "id": "displayvideo.partners.channels.sites.list",
+  "path": "v4/partners/{+partnerId}/channels/{+channelId}/sites",
+  "httpMethod": "GET",
+  "parameterOrder": [
+    "partnerId",
+    "channelId",
+  ],
+  "parameters": {
+    "advertiserId": {
+      "location": "query",
+    },
+    "channelId": {
+      "location": "path",
+      "required": true,
+    },
+    "filter": {
+      "location": "query",
+    },
+    "orderBy": {
+      "location": "query",
+    },
+    "pageSize": {
+      "location": "query",
+    },
+    "pageToken": {
+      "location": "query",
+    },
+    "partnerId": {
+      "location": "path",
+      "required": true,
+    },
+  },
+} as const;
+
+const GlobalArgsSchema = z.object({
+  name: z.string().describe(
+    "Instance name for this resource (used as the unique identifier in the factory pattern)",
+  ),
+  urlOrAppId: z.string().describe(
+    "Required. The app ID or URL of the site. Must be UTF-8 encoded with a maximum length of 240 bytes.",
+  ).optional(),
+  partnerId: z.string().describe(
+    "The ID of the partner that owns the parent channel.",
+  ),
+  channelId: z.string().describe(
+    "Required. The ID of the parent channel in which the site will be created.",
+  ),
+  advertiserId: z.string().describe(
+    "The ID of the advertiser that owns the parent channel.",
+  ).optional(),
+});
+
+const StateSchema = z.object({
+  name: z.string(),
+  urlOrAppId: z.string().optional(),
+}).passthrough();
+
+type StateData = z.infer<typeof StateSchema>;
+
+const InputsSchema = z.object({
+  name: z.string().optional(),
+  urlOrAppId: z.string().describe(
+    "Required. The app ID or URL of the site. Must be UTF-8 encoded with a maximum length of 240 bytes.",
+  ).optional(),
+  partnerId: z.string().describe(
+    "The ID of the partner that owns the parent channel.",
+  ).optional(),
+  channelId: z.string().describe(
+    "Required. The ID of the parent channel in which the site will be created.",
+  ).optional(),
+  advertiserId: z.string().describe(
+    "The ID of the advertiser that owns the parent channel.",
+  ).optional(),
+});
+
+export const model = {
+  type: "@swamp/gcp/displayvideo/partners-channels-sites",
+  version: "2026.03.27.1",
+  globalArguments: GlobalArgsSchema,
+  inputsSchema: InputsSchema,
+  resources: {
+    state: {
+      description:
+        "A single site. Sites are apps or websites belonging to a channel.",
+      schema: StateSchema,
+      lifetime: "infinite",
+      garbageCollection: 10,
+    },
+  },
+  methods: {
+    create: {
+      description: "Create a sites",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const projectId = await getProjectId();
+        const params: Record<string, string> = { project: projectId };
+        if (g["partnerId"] !== undefined) {
+          params["partnerId"] = String(g["partnerId"]);
+        }
+        if (g["channelId"] !== undefined) {
+          params["channelId"] = String(g["channelId"]);
+        }
+        const body: Record<string, unknown> = {};
+        if (g["urlOrAppId"] !== undefined) body["urlOrAppId"] = g["urlOrAppId"];
+        if (g["advertiserId"] !== undefined) {
+          body["advertiserId"] = g["advertiserId"];
+        }
+        const result = await createResource(
+          BASE_URL,
+          INSERT_CONFIG,
+          params,
+          body,
+        ) as StateData;
+        const instanceName = g.name?.toString() ?? "current";
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    get: {
+      description: "Get a sites",
+      arguments: z.object({
+        identifier: z.string().describe("The name of the sites"),
+      }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const projectId = await getProjectId();
+        const params: Record<string, string> = { project: projectId };
+        const g = context.globalArgs;
+        if (g["partnerId"] !== undefined) {
+          params["partnerId"] = String(g["partnerId"]);
+        }
+        if (g["channelId"] !== undefined) {
+          params["channelId"] = String(g["channelId"]);
+        }
+        const result = await readViaList(
+          BASE_URL,
+          LIST_CONFIG,
+          params,
+          "name",
+          args.identifier,
+        ) as StateData;
+        const instanceName = g.name?.toString() ?? args.identifier;
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    delete: {
+      description: "Delete the sites",
+      arguments: z.object({
+        identifier: z.string().describe("The name of the sites"),
+      }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const g = context.globalArgs;
+        const projectId = await getProjectId();
+        const params: Record<string, string> = { project: projectId };
+        if (g["partnerId"] !== undefined) {
+          params["partnerId"] = String(g["partnerId"]);
+        }
+        if (g["channelId"] !== undefined) {
+          params["channelId"] = String(g["channelId"]);
+        }
+        params["urlOrAppId"] = args.identifier;
+        const { existed } = await deleteResource(
+          BASE_URL,
+          DELETE_CONFIG,
+          params,
+        );
+        const instanceName = g.name?.toString() ?? args.identifier;
+        const handle = await context.writeResource("state", instanceName, {
+          identifier: args.identifier,
+          existed,
+          status: existed ? "deleted" : "not_found",
+          deletedAt: new Date().toISOString(),
+        });
+        return { dataHandles: [handle] };
+      },
+    },
+    sync: {
+      description: "Sync sites state from GCP",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const projectId = await getProjectId();
+        const instanceName = g.name?.toString() ?? "current";
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          instanceName,
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        try {
+          const params: Record<string, string> = { project: projectId };
+          if (g["partnerId"] !== undefined) {
+            params["partnerId"] = String(g["partnerId"]);
+          } else if (existing["partnerId"]) {
+            params["partnerId"] = String(existing["partnerId"]);
+          }
+          if (g["channelId"] !== undefined) {
+            params["channelId"] = String(g["channelId"]);
+          } else if (existing["channelId"]) {
+            params["channelId"] = String(existing["channelId"]);
+          }
+          const identifier = existing.name?.toString() ?? g["name"]?.toString();
+          if (!identifier) {
+            throw new Error(
+              "No identifier found in existing state or globalArgs",
+            );
+          }
+          const result = await readViaList(
+            BASE_URL,
+            LIST_CONFIG,
+            params,
+            "name",
+            identifier,
+          ) as StateData;
+          const handle = await context.writeResource(
+            "state",
+            instanceName,
+            result,
+          );
+          return { dataHandles: [handle] };
+        } catch (error: unknown) {
+          if (isResourceNotFoundError(error)) {
+            const handle = await context.writeResource("state", instanceName, {
+              status: "not_found",
+              syncedAt: new Date().toISOString(),
+            });
+            return { dataHandles: [handle] };
+          }
+          throw error;
+        }
+      },
+    },
+    bulk_edit: {
+      description: "bulk edit",
+      arguments: z.object({
+        advertiserId: z.any().optional(),
+        createdSites: z.any().optional(),
+        deletedSites: z.any().optional(),
+        partnerId: z.any().optional(),
+      }),
+      execute: async (args: Record<string, unknown>, context: any) => {
+        const g = context.globalArgs;
+        const projectId = await getProjectId();
+        const params: Record<string, string> = { project: projectId };
+        if (g["partnerId"] !== undefined) {
+          params["partnerId"] = String(g["partnerId"]);
+        }
+        if (g["channelId"] !== undefined) {
+          params["channelId"] = String(g["channelId"]);
+        }
+        const body: Record<string, unknown> = {};
+        if (args["advertiserId"] !== undefined) {
+          body["advertiserId"] = args["advertiserId"];
+        }
+        if (args["createdSites"] !== undefined) {
+          body["createdSites"] = args["createdSites"];
+        }
+        if (args["deletedSites"] !== undefined) {
+          body["deletedSites"] = args["deletedSites"];
+        }
+        if (args["partnerId"] !== undefined) {
+          body["partnerId"] = args["partnerId"];
+        }
+        const result = await createResource(
+          BASE_URL,
+          {
+            "id": "displayvideo.partners.channels.sites.bulkEdit",
+            "path":
+              "v4/partners/{partnerId}/channels/{+channelId}/sites:bulkEdit",
+            "httpMethod": "POST",
+            "parameterOrder": ["partnerId", "channelId"],
+            "parameters": {
+              "channelId": { "location": "path", "required": true },
+              "partnerId": { "location": "path", "required": true },
+            },
+          },
+          params,
+          body,
+        );
+        return { result };
+      },
+    },
+    replace: {
+      description: "replace",
+      arguments: z.object({
+        advertiserId: z.any().optional(),
+        newSites: z.any().optional(),
+        partnerId: z.any().optional(),
+      }),
+      execute: async (args: Record<string, unknown>, context: any) => {
+        const g = context.globalArgs;
+        const projectId = await getProjectId();
+        const params: Record<string, string> = { project: projectId };
+        if (g["partnerId"] !== undefined) {
+          params["partnerId"] = String(g["partnerId"]);
+        }
+        if (g["channelId"] !== undefined) {
+          params["channelId"] = String(g["channelId"]);
+        }
+        const body: Record<string, unknown> = {};
+        if (args["advertiserId"] !== undefined) {
+          body["advertiserId"] = args["advertiserId"];
+        }
+        if (args["newSites"] !== undefined) body["newSites"] = args["newSites"];
+        if (args["partnerId"] !== undefined) {
+          body["partnerId"] = args["partnerId"];
+        }
+        const result = await createResource(
+          BASE_URL,
+          {
+            "id": "displayvideo.partners.channels.sites.replace",
+            "path":
+              "v4/partners/{partnerId}/channels/{+channelId}/sites:replace",
+            "httpMethod": "POST",
+            "parameterOrder": ["partnerId", "channelId"],
+            "parameters": {
+              "channelId": { "location": "path", "required": true },
+              "partnerId": { "location": "path", "required": true },
+            },
+          },
+          params,
+          body,
+        );
+        return { result };
+      },
+    },
+  },
+};

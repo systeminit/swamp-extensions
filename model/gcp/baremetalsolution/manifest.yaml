@@ -1,0 +1,28 @@
+# Auto-generated manifest. Re-generate with the appropriate deno task.
+manifestVersion: 1
+name: "@swamp/gcp/baremetalsolution"
+version: "2026.03.27.1"
+description: "Google Cloud baremetalsolution infrastructure models"
+labels:
+  - gcp
+  - google-cloud
+  - baremetalsolution
+  - cloud
+  - infrastructure
+releaseNotes: |
+  - Added: locations, instances, networks, nfsshares, osimages, provisioningconfigs, provisioningquotas, sshkeys, volumes, volumes_luns, volumes_snapshots
+models:
+  - instances.ts
+  - locations.ts
+  - networks.ts
+  - nfsshares.ts
+  - osimages.ts
+  - provisioningconfigs.ts
+  - provisioningquotas.ts
+  - sshkeys.ts
+  - volumes.ts
+  - volumes_luns.ts
+  - volumes_snapshots.ts
+additionalFiles:
+  - LICENSE.txt
+  - README.md

@@ -1,0 +1,44 @@
+# Auto-generated manifest. Re-generate with the appropriate deno task.
+manifestVersion: 1
+name: "@swamp/gcp/androidpublisher"
+version: "2026.03.27.1"
+description: "Google Cloud androidpublisher infrastructure models"
+labels:
+  - gcp
+  - google-cloud
+  - androidpublisher
+  - cloud
+  - infrastructure
+releaseNotes: |
+  - Added: applications_devicetierconfigs, applications_tracks_releases, apprecovery, edits, edits_apks, edits_bundles, edits_countryavailability, edits_details, edits_expansionfiles, edits_images, edits_listings, edits_testers, edits_tracks, generatedapks, inappproducts, monetization_onetimeproducts, monetization_onetimeproducts_purchaseoptions_offers, monetization_subscriptions, monetization_subscriptions_baseplans_offers, orders, purchases_products, purchases_subscriptions, purchases_subscriptionsv2, purchases_voidedpurchases, reviews, systemapks_variants, users
+models:
+  - applications_devicetierconfigs.ts
+  - applications_tracks_releases.ts
+  - apprecovery.ts
+  - edits.ts
+  - edits_apks.ts
+  - edits_bundles.ts
+  - edits_countryavailability.ts
+  - edits_details.ts
+  - edits_expansionfiles.ts
+  - edits_images.ts
+  - edits_listings.ts
+  - edits_testers.ts
+  - edits_tracks.ts
+  - generatedapks.ts
+  - inappproducts.ts
+  - monetization_onetimeproducts.ts
+  - monetization_onetimeproducts_purchaseoptions_offers.ts
+  - monetization_subscriptions.ts
+  - monetization_subscriptions_baseplans_offers.ts
+  - orders.ts
+  - purchases_products.ts
+  - purchases_subscriptions.ts
+  - purchases_subscriptionsv2.ts
+  - purchases_voidedpurchases.ts
+  - reviews.ts
+  - systemapks_variants.ts
+  - users.ts
+additionalFiles:
+  - LICENSE.txt
+  - README.md

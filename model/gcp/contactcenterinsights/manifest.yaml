@@ -1,0 +1,44 @@
+# Auto-generated manifest. Re-generate with the appropriate deno task.
+manifestVersion: 1
+name: "@swamp/gcp/contactcenterinsights"
+version: "2026.03.27.1"
+description: "Google Cloud contactcenterinsights infrastructure models"
+labels:
+  - gcp
+  - google-cloud
+  - contactcenterinsights
+  - cloud
+  - infrastructure
+releaseNotes: |
+  - Added: analysisrules, assessmentrules, authorizedviewsets, authorizedviewsets_authorizedviews, authorizedviewsets_authorizedviews_conversations, authorizedviewsets_authorizedviews_conversations_assessments, authorizedviewsets_authorizedviews_conversations_assessments_notes, authorizedviewsets_authorizedviews_conversations_feedbacklabels, autolabelingrules, conversations, conversations_analyses, conversations_assessments, conversations_assessments_notes, conversations_feedbacklabels, dashboards, dashboards_charts, datasets, datasets_conversations, datasets_conversations_feedbacklabels, issuemodels, issuemodels_issues, phrasematchers, qaquestiontags, qascorecards, qascorecards_revisions, qascorecards_revisions_qaquestions, views
+models:
+  - analysisrules.ts
+  - assessmentrules.ts
+  - authorizedviewsets.ts
+  - authorizedviewsets_authorizedviews.ts
+  - authorizedviewsets_authorizedviews_conversations.ts
+  - authorizedviewsets_authorizedviews_conversations_assessments.ts
+  - authorizedviewsets_authorizedviews_conversations_assessments_notes.ts
+  - authorizedviewsets_authorizedviews_conversations_feedbacklabels.ts
+  - autolabelingrules.ts
+  - conversations.ts
+  - conversations_analyses.ts
+  - conversations_assessments.ts
+  - conversations_assessments_notes.ts
+  - conversations_feedbacklabels.ts
+  - dashboards.ts
+  - dashboards_charts.ts
+  - datasets.ts
+  - datasets_conversations.ts
+  - datasets_conversations_feedbacklabels.ts
+  - issuemodels.ts
+  - issuemodels_issues.ts
+  - phrasematchers.ts
+  - qaquestiontags.ts
+  - qascorecards.ts
+  - qascorecards_revisions.ts
+  - qascorecards_revisions_qaquestions.ts
+  - views.ts
+additionalFiles:
+  - LICENSE.txt
+  - README.md

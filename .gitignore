@@ -1,2 +1,3 @@
 # Fetched schemas (large files, regenerated on demand)
 codegen/schemas/*.json
+codegen/schemas/gcp/

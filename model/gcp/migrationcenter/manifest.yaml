@@ -1,0 +1,30 @@
+# Auto-generated manifest. Re-generate with the appropriate deno task.
+manifestVersion: 1
+name: "@swamp/gcp/migrationcenter"
+version: "2026.03.27.1"
+description: "Google Cloud migrationcenter infrastructure models"
+labels:
+  - gcp
+  - google-cloud
+  - migrationcenter
+  - cloud
+  - infrastructure
+releaseNotes: |
+  - Added: locations, assets, assetsexportjobs, discoveryclients, groups, importjobs, importjobs_importdatafiles, preferencesets, relations, reportconfigs, reportconfigs_reports, sources, sources_errorframes
+models:
+  - assets.ts
+  - assetsexportjobs.ts
+  - discoveryclients.ts
+  - groups.ts
+  - importjobs.ts
+  - importjobs_importdatafiles.ts
+  - locations.ts
+  - preferencesets.ts
+  - relations.ts
+  - reportconfigs.ts
+  - reportconfigs_reports.ts
+  - sources.ts
+  - sources_errorframes.ts
+additionalFiles:
+  - LICENSE.txt
+  - README.md

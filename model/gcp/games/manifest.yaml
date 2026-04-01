@@ -1,0 +1,25 @@
+# Auto-generated manifest. Re-generate with the appropriate deno task.
+manifestVersion: 1
+name: "@swamp/gcp/games"
+version: "2026.03.27.1"
+description: "Google Cloud games infrastructure models"
+labels:
+  - gcp
+  - google-cloud
+  - games
+  - cloud
+  - infrastructure
+releaseNotes: |
+  - Added: achievementdefinitions, achievements, applications, leaderboards, players, scores, snapshots, stats
+models:
+  - achievementdefinitions.ts
+  - achievements.ts
+  - applications.ts
+  - leaderboards.ts
+  - players.ts
+  - scores.ts
+  - snapshots.ts
+  - stats.ts
+additionalFiles:
+  - LICENSE.txt
+  - README.md

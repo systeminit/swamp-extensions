@@ -1,0 +1,417 @@
+// Auto-generated extension model for @swamp/gcp/analyticsadmin/properties-datastreams
+// Do not edit manually. Re-generate with: deno task generate:gcp
+
+// deno-lint-ignore-file no-explicit-any
+
+import { z } from "zod";
+import {
+  createResource,
+  deleteResource,
+  getProjectId,
+  isResourceNotFoundError,
+  readResource,
+  updateResource,
+} from "./_lib/gcp.ts";
+
+/** Construct the fully-qualified resource name from parent and short name. */
+function buildResourceName(parent: string, shortName: string): string {
+  return `${parent}/dataStreams/${shortName}`;
+}
+
+const BASE_URL = "https://analyticsadmin.googleapis.com/";
+
+const GET_CONFIG = {
+  "id": "analyticsadmin.properties.dataStreams.get",
+  "path": "v1beta/{+name}",
+  "httpMethod": "GET",
+  "parameterOrder": [
+    "name",
+  ],
+  "parameters": {
+    "name": {
+      "location": "path",
+      "required": true,
+    },
+  },
+} as const;
+
+const INSERT_CONFIG = {
+  "id": "analyticsadmin.properties.dataStreams.create",
+  "path": "v1beta/{+parent}/dataStreams",
+  "httpMethod": "POST",
+  "parameterOrder": [
+    "parent",
+  ],
+  "parameters": {
+    "parent": {
+      "location": "path",
+      "required": true,
+    },
+  },
+} as const;
+
+const PATCH_CONFIG = {
+  "id": "analyticsadmin.properties.dataStreams.patch",
+  "path": "v1beta/{+name}",
+  "httpMethod": "PATCH",
+  "parameterOrder": [
+    "name",
+  ],
+  "parameters": {
+    "name": {
+      "location": "path",
+      "required": true,
+    },
+    "updateMask": {
+      "location": "query",
+    },
+  },
+} as const;
+
+const DELETE_CONFIG = {
+  "id": "analyticsadmin.properties.dataStreams.delete",
+  "path": "v1beta/{+name}",
+  "httpMethod": "DELETE",
+  "parameterOrder": [
+    "name",
+  ],
+  "parameters": {
+    "name": {
+      "location": "path",
+      "required": true,
+    },
+  },
+} as const;
+
+const GlobalArgsSchema = z.object({
+  name: z.string().describe(
+    "Instance name for this resource (used as the unique identifier in the factory pattern)",
+  ),
+  androidAppStreamData: z.object({
+    firebaseAppId: z.string().describe(
+      "Output only. ID of the corresponding Android app in Firebase, if any. This ID can change if the Android app is deleted and recreated.",
+    ).optional(),
+    packageName: z.string().describe(
+      'Immutable. The package name for the app being measured. Example: "com.example.myandroidapp"',
+    ).optional(),
+  }).describe("Data specific to Android app streams.").optional(),
+  displayName: z.string().describe(
+    "Human-readable display name for the Data Stream. Required for web data streams. The max allowed display name length is 255 UTF-16 code units.",
+  ).optional(),
+  iosAppStreamData: z.object({
+    bundleId: z.string().describe(
+      'Required. Immutable. The Apple App Store Bundle ID for the app Example: "com.example.myiosapp"',
+    ).optional(),
+    firebaseAppId: z.string().describe(
+      "Output only. ID of the corresponding iOS app in Firebase, if any. This ID can change if the iOS app is deleted and recreated.",
+    ).optional(),
+  }).describe("Data specific to iOS app streams.").optional(),
+  type: z.enum([
+    "DATA_STREAM_TYPE_UNSPECIFIED",
+    "WEB_DATA_STREAM",
+    "ANDROID_APP_DATA_STREAM",
+    "IOS_APP_DATA_STREAM",
+  ]).describe("Required. Immutable. The type of this DataStream resource.")
+    .optional(),
+  webStreamData: z.object({
+    defaultUri: z.string().describe(
+      'Domain name of the web app being measured, or empty. Example: "http://www.google.com", "https://www.google.com"',
+    ).optional(),
+    firebaseAppId: z.string().describe(
+      "Output only. ID of the corresponding web app in Firebase, if any. This ID can change if the web app is deleted and recreated.",
+    ).optional(),
+    measurementId: z.string().describe(
+      'Output only. Analytics Measurement ID. Example: "G-1A2BCD345E"',
+    ).optional(),
+  }).describe("Data specific to web streams.").optional(),
+  parent: z.string().describe(
+    "The parent resource name (e.g., projects/my-project/locations/us-central1, organizations/123, folders/456)",
+  ).optional(),
+});
+
+const StateSchema = z.object({
+  androidAppStreamData: z.object({
+    firebaseAppId: z.string(),
+    packageName: z.string(),
+  }).optional(),
+  createTime: z.string().optional(),
+  displayName: z.string().optional(),
+  iosAppStreamData: z.object({
+    bundleId: z.string(),
+    firebaseAppId: z.string(),
+  }).optional(),
+  name: z.string(),
+  type: z.string().optional(),
+  updateTime: z.string().optional(),
+  webStreamData: z.object({
+    defaultUri: z.string(),
+    firebaseAppId: z.string(),
+    measurementId: z.string(),
+  }).optional(),
+}).passthrough();
+
+type StateData = z.infer<typeof StateSchema>;
+
+const InputsSchema = z.object({
+  name: z.string().optional(),
+  androidAppStreamData: z.object({
+    firebaseAppId: z.string().describe(
+      "Output only. ID of the corresponding Android app in Firebase, if any. This ID can change if the Android app is deleted and recreated.",
+    ).optional(),
+    packageName: z.string().describe(
+      'Immutable. The package name for the app being measured. Example: "com.example.myandroidapp"',
+    ).optional(),
+  }).describe("Data specific to Android app streams.").optional(),
+  displayName: z.string().describe(
+    "Human-readable display name for the Data Stream. Required for web data streams. The max allowed display name length is 255 UTF-16 code units.",
+  ).optional(),
+  iosAppStreamData: z.object({
+    bundleId: z.string().describe(
+      'Required. Immutable. The Apple App Store Bundle ID for the app Example: "com.example.myiosapp"',
+    ).optional(),
+    firebaseAppId: z.string().describe(
+      "Output only. ID of the corresponding iOS app in Firebase, if any. This ID can change if the iOS app is deleted and recreated.",
+    ).optional(),
+  }).describe("Data specific to iOS app streams.").optional(),
+  type: z.enum([
+    "DATA_STREAM_TYPE_UNSPECIFIED",
+    "WEB_DATA_STREAM",
+    "ANDROID_APP_DATA_STREAM",
+    "IOS_APP_DATA_STREAM",
+  ]).describe("Required. Immutable. The type of this DataStream resource.")
+    .optional(),
+  webStreamData: z.object({
+    defaultUri: z.string().describe(
+      'Domain name of the web app being measured, or empty. Example: "http://www.google.com", "https://www.google.com"',
+    ).optional(),
+    firebaseAppId: z.string().describe(
+      "Output only. ID of the corresponding web app in Firebase, if any. This ID can change if the web app is deleted and recreated.",
+    ).optional(),
+    measurementId: z.string().describe(
+      'Output only. Analytics Measurement ID. Example: "G-1A2BCD345E"',
+    ).optional(),
+  }).describe("Data specific to web streams.").optional(),
+  parent: z.string().describe(
+    "The parent resource name (e.g., projects/my-project/locations/us-central1, organizations/123, folders/456)",
+  ).optional(),
+});
+
+export const model = {
+  type: "@swamp/gcp/analyticsadmin/properties-datastreams",
+  version: "2026.03.27.1",
+  globalArguments: GlobalArgsSchema,
+  inputsSchema: InputsSchema,
+  resources: {
+    state: {
+      description: "A resource message representing a data stream.",
+      schema: StateSchema,
+      lifetime: "infinite",
+      garbageCollection: 10,
+    },
+  },
+  methods: {
+    create: {
+      description: "Create a dataStreams",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const projectId = await getProjectId();
+        const params: Record<string, string> = { project: projectId };
+        if (g["parent"] !== undefined) params["parent"] = String(g["parent"]);
+        const body: Record<string, unknown> = {};
+        if (g["androidAppStreamData"] !== undefined) {
+          body["androidAppStreamData"] = g["androidAppStreamData"];
+        }
+        if (g["displayName"] !== undefined) {
+          body["displayName"] = g["displayName"];
+        }
+        if (g["iosAppStreamData"] !== undefined) {
+          body["iosAppStreamData"] = g["iosAppStreamData"];
+        }
+        if (g["type"] !== undefined) body["type"] = g["type"];
+        if (g["webStreamData"] !== undefined) {
+          body["webStreamData"] = g["webStreamData"];
+        }
+        if (g["parent"] !== undefined && g["name"] !== undefined) {
+          params["name"] = buildResourceName(
+            String(g["parent"]),
+            String(g["name"]),
+          );
+        }
+        const result = await createResource(
+          BASE_URL,
+          INSERT_CONFIG,
+          params,
+          body,
+          GET_CONFIG,
+        ) as StateData;
+        const instanceName = g.name?.toString() ?? "current";
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    get: {
+      description: "Get a dataStreams",
+      arguments: z.object({
+        identifier: z.string().describe("The name of the dataStreams"),
+      }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const projectId = await getProjectId();
+        const params: Record<string, string> = { project: projectId };
+        const g = context.globalArgs;
+        params["name"] = buildResourceName(
+          String(g["parent"] ?? ""),
+          args.identifier,
+        );
+        const result = await readResource(
+          BASE_URL,
+          GET_CONFIG,
+          params,
+        ) as StateData;
+        const instanceName = g.name?.toString() ?? args.identifier;
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    update: {
+      description: "Update dataStreams attributes",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const projectId = await getProjectId();
+        const instanceName = g.name?.toString() ?? "current";
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          instanceName,
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        const params: Record<string, string> = { project: projectId };
+        params["name"] = buildResourceName(
+          String(g["parent"] ?? ""),
+          existing["name"]?.toString() ?? g["name"]?.toString() ?? "",
+        );
+        const body: Record<string, unknown> = {};
+        if (g["androidAppStreamData"] !== undefined) {
+          body["androidAppStreamData"] = g["androidAppStreamData"];
+        }
+        if (g["displayName"] !== undefined) {
+          body["displayName"] = g["displayName"];
+        }
+        if (g["iosAppStreamData"] !== undefined) {
+          body["iosAppStreamData"] = g["iosAppStreamData"];
+        }
+        if (g["webStreamData"] !== undefined) {
+          body["webStreamData"] = g["webStreamData"];
+        }
+        for (const key of Object.keys(existing)) {
+          if (
+            key === "fingerprint" || key === "labelFingerprint" ||
+            key === "etag" || key.endsWith("Fingerprint")
+          ) {
+            body[key] = existing[key];
+          }
+        }
+        const result = await updateResource(
+          BASE_URL,
+          PATCH_CONFIG,
+          params,
+          body,
+          GET_CONFIG,
+        ) as StateData;
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    delete: {
+      description: "Delete the dataStreams",
+      arguments: z.object({
+        identifier: z.string().describe("The name of the dataStreams"),
+      }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const g = context.globalArgs;
+        const projectId = await getProjectId();
+        const params: Record<string, string> = { project: projectId };
+        params["name"] = buildResourceName(
+          String(g["parent"] ?? ""),
+          args.identifier,
+        );
+        const { existed } = await deleteResource(
+          BASE_URL,
+          DELETE_CONFIG,
+          params,
+        );
+        const instanceName = g.name?.toString() ?? args.identifier;
+        const handle = await context.writeResource("state", instanceName, {
+          identifier: args.identifier,
+          existed,
+          status: existed ? "deleted" : "not_found",
+          deletedAt: new Date().toISOString(),
+        });
+        return { dataHandles: [handle] };
+      },
+    },
+    sync: {
+      description: "Sync dataStreams state from GCP",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const projectId = await getProjectId();
+        const instanceName = g.name?.toString() ?? "current";
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          instanceName,
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        try {
+          const params: Record<string, string> = { project: projectId };
+          const shortName = existing.name?.toString() ?? g["name"]?.toString();
+          if (!shortName) throw new Error("No identifier found");
+          params["name"] = buildResourceName(
+            String(g["parent"] ?? ""),
+            shortName,
+          );
+          const result = await readResource(
+            BASE_URL,
+            GET_CONFIG,
+            params,
+          ) as StateData;
+          const handle = await context.writeResource(
+            "state",
+            instanceName,
+            result,
+          );
+          return { dataHandles: [handle] };
+        } catch (error: unknown) {
+          if (isResourceNotFoundError(error)) {
+            const handle = await context.writeResource("state", instanceName, {
+              status: "not_found",
+              syncedAt: new Date().toISOString(),
+            });
+            return { dataHandles: [handle] };
+          }
+          throw error;
+        }
+      },
+    },
+  },
+};

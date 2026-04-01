@@ -1,0 +1,19 @@
+# Auto-generated manifest. Re-generate with the appropriate deno task.
+manifestVersion: 1
+name: "@swamp/gcp/parallelstore"
+version: "2026.03.27.1"
+description: "Google Cloud parallelstore infrastructure models"
+labels:
+  - gcp
+  - google-cloud
+  - parallelstore
+  - cloud
+  - infrastructure
+releaseNotes: |
+  - Added: locations, instances
+models:
+  - instances.ts
+  - locations.ts
+additionalFiles:
+  - LICENSE.txt
+  - README.md

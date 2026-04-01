@@ -1,0 +1,23 @@
+# Auto-generated manifest. Re-generate with the appropriate deno task.
+manifestVersion: 1
+name: "@swamp/gcp/pubsub"
+version: "2026.03.27.1"
+description: "Google Cloud pubsub infrastructure models"
+labels:
+  - gcp
+  - google-cloud
+  - pubsub
+  - cloud
+  - infrastructure
+releaseNotes: |
+  - Added: schemas, snapshots, subscriptions, topics, topics_snapshots, topics_subscriptions
+models:
+  - schemas.ts
+  - snapshots.ts
+  - subscriptions.ts
+  - topics.ts
+  - topics_snapshots.ts
+  - topics_subscriptions.ts
+additionalFiles:
+  - LICENSE.txt
+  - README.md

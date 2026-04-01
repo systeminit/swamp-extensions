@@ -1,0 +1,267 @@
+// Auto-generated extension model for @swamp/gcp/androidmanagement/enterprises-migrationtokens
+// Do not edit manually. Re-generate with: deno task generate:gcp
+
+// deno-lint-ignore-file no-explicit-any
+
+import { z } from "zod";
+import {
+  createResource,
+  getProjectId,
+  isResourceNotFoundError,
+  readResource,
+} from "./_lib/gcp.ts";
+
+/** Construct the fully-qualified resource name from parent and short name. */
+function buildResourceName(parent: string, shortName: string): string {
+  return `${parent}/migrationTokens/${shortName}`;
+}
+
+const BASE_URL = "https://androidmanagement.googleapis.com/";
+
+const GET_CONFIG = {
+  "id": "androidmanagement.enterprises.migrationTokens.get",
+  "path": "v1/{+name}",
+  "httpMethod": "GET",
+  "parameterOrder": [
+    "name",
+  ],
+  "parameters": {
+    "name": {
+      "location": "path",
+      "required": true,
+    },
+  },
+} as const;
+
+const INSERT_CONFIG = {
+  "id": "androidmanagement.enterprises.migrationTokens.create",
+  "path": "v1/{+parent}/migrationTokens",
+  "httpMethod": "POST",
+  "parameterOrder": [
+    "parent",
+  ],
+  "parameters": {
+    "parent": {
+      "location": "path",
+      "required": true,
+    },
+  },
+} as const;
+
+const GlobalArgsSchema = z.object({
+  name: z.string().describe(
+    "Instance name for this resource (used as the unique identifier in the factory pattern)",
+  ),
+  additionalData: z.string().describe(
+    "Immutable. Optional EMM-specified additional data. Once the device is migrated this will be populated in the migrationAdditionalData field of the Device resource. This must be at most 1024 characters.",
+  ).optional(),
+  deviceId: z.string().describe(
+    "Required. Immutable. The id of the device, as in the Play EMM API. This corresponds to the deviceId parameter in Play EMM API's Devices.get (https://developers.google.com/android/work/play/emm-api/v1/devices/get#parameters) call.",
+  ).optional(),
+  expireTime: z.string().describe(
+    "Immutable. The time when this migration token expires. This can be at most seven days from the time of creation. The migration token is deleted seven days after it expires.",
+  ).optional(),
+  managementMode: z.enum([
+    "MANAGEMENT_MODE_UNSPECIFIED",
+    "WORK_PROFILE_PERSONALLY_OWNED",
+    "WORK_PROFILE_COMPANY_OWNED",
+    "FULLY_MANAGED",
+  ]).describe(
+    "Required. Immutable. The management mode of the device or profile being migrated.",
+  ).optional(),
+  policy: z.string().describe(
+    "Required. Immutable. The name of the policy initially applied to the enrolled device, in the form enterprises/{enterprise}/policies/{policy}.",
+  ).optional(),
+  ttl: z.string().describe(
+    "Input only. The time that this migration token is valid for. This is input-only, and for returning a migration token the server will populate the expireTime field. This can be at most seven days. The default is seven days.",
+  ).optional(),
+  userId: z.string().describe(
+    "Required. Immutable. The user id of the Managed Google Play account on the device, as in the Play EMM API. This corresponds to the userId parameter in Play EMM API's Devices.get (https://developers.google.com/android/work/play/emm-api/v1/devices/get#parameters) call.",
+  ).optional(),
+  parent: z.string().describe(
+    "The parent resource name (e.g., projects/my-project/locations/us-central1, organizations/123, folders/456)",
+  ).optional(),
+});
+
+const StateSchema = z.object({
+  additionalData: z.string().optional(),
+  createTime: z.string().optional(),
+  device: z.string().optional(),
+  deviceId: z.string().optional(),
+  expireTime: z.string().optional(),
+  managementMode: z.string().optional(),
+  name: z.string(),
+  policy: z.string().optional(),
+  ttl: z.string().optional(),
+  userId: z.string().optional(),
+  value: z.string().optional(),
+}).passthrough();
+
+type StateData = z.infer<typeof StateSchema>;
+
+const InputsSchema = z.object({
+  name: z.string().optional(),
+  additionalData: z.string().describe(
+    "Immutable. Optional EMM-specified additional data. Once the device is migrated this will be populated in the migrationAdditionalData field of the Device resource. This must be at most 1024 characters.",
+  ).optional(),
+  deviceId: z.string().describe(
+    "Required. Immutable. The id of the device, as in the Play EMM API. This corresponds to the deviceId parameter in Play EMM API's Devices.get (https://developers.google.com/android/work/play/emm-api/v1/devices/get#parameters) call.",
+  ).optional(),
+  expireTime: z.string().describe(
+    "Immutable. The time when this migration token expires. This can be at most seven days from the time of creation. The migration token is deleted seven days after it expires.",
+  ).optional(),
+  managementMode: z.enum([
+    "MANAGEMENT_MODE_UNSPECIFIED",
+    "WORK_PROFILE_PERSONALLY_OWNED",
+    "WORK_PROFILE_COMPANY_OWNED",
+    "FULLY_MANAGED",
+  ]).describe(
+    "Required. Immutable. The management mode of the device or profile being migrated.",
+  ).optional(),
+  policy: z.string().describe(
+    "Required. Immutable. The name of the policy initially applied to the enrolled device, in the form enterprises/{enterprise}/policies/{policy}.",
+  ).optional(),
+  ttl: z.string().describe(
+    "Input only. The time that this migration token is valid for. This is input-only, and for returning a migration token the server will populate the expireTime field. This can be at most seven days. The default is seven days.",
+  ).optional(),
+  userId: z.string().describe(
+    "Required. Immutable. The user id of the Managed Google Play account on the device, as in the Play EMM API. This corresponds to the userId parameter in Play EMM API's Devices.get (https://developers.google.com/android/work/play/emm-api/v1/devices/get#parameters) call.",
+  ).optional(),
+  parent: z.string().describe(
+    "The parent resource name (e.g., projects/my-project/locations/us-central1, organizations/123, folders/456)",
+  ).optional(),
+});
+
+export const model = {
+  type: "@swamp/gcp/androidmanagement/enterprises-migrationtokens",
+  version: "2026.03.27.1",
+  globalArguments: GlobalArgsSchema,
+  inputsSchema: InputsSchema,
+  resources: {
+    state: {
+      description:
+        "A token to initiate the migration of a device from being managed by a third-p...",
+      schema: StateSchema,
+      lifetime: "infinite",
+      garbageCollection: 10,
+    },
+  },
+  methods: {
+    create: {
+      description: "Create a migrationTokens",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const projectId = await getProjectId();
+        const params: Record<string, string> = { project: projectId };
+        if (g["parent"] !== undefined) params["parent"] = String(g["parent"]);
+        const body: Record<string, unknown> = {};
+        if (g["additionalData"] !== undefined) {
+          body["additionalData"] = g["additionalData"];
+        }
+        if (g["deviceId"] !== undefined) body["deviceId"] = g["deviceId"];
+        if (g["expireTime"] !== undefined) body["expireTime"] = g["expireTime"];
+        if (g["managementMode"] !== undefined) {
+          body["managementMode"] = g["managementMode"];
+        }
+        if (g["policy"] !== undefined) body["policy"] = g["policy"];
+        if (g["ttl"] !== undefined) body["ttl"] = g["ttl"];
+        if (g["userId"] !== undefined) body["userId"] = g["userId"];
+        if (g["parent"] !== undefined && g["name"] !== undefined) {
+          params["name"] = buildResourceName(
+            String(g["parent"]),
+            String(g["name"]),
+          );
+        }
+        const result = await createResource(
+          BASE_URL,
+          INSERT_CONFIG,
+          params,
+          body,
+          GET_CONFIG,
+        ) as StateData;
+        const instanceName = g.name?.toString() ?? "current";
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    get: {
+      description: "Get a migrationTokens",
+      arguments: z.object({
+        identifier: z.string().describe("The name of the migrationTokens"),
+      }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const projectId = await getProjectId();
+        const params: Record<string, string> = { project: projectId };
+        const g = context.globalArgs;
+        params["name"] = buildResourceName(
+          String(g["parent"] ?? ""),
+          args.identifier,
+        );
+        const result = await readResource(
+          BASE_URL,
+          GET_CONFIG,
+          params,
+        ) as StateData;
+        const instanceName = g.name?.toString() ?? args.identifier;
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    sync: {
+      description: "Sync migrationTokens state from GCP",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const projectId = await getProjectId();
+        const instanceName = g.name?.toString() ?? "current";
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          instanceName,
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        try {
+          const params: Record<string, string> = { project: projectId };
+          const shortName = existing.name?.toString() ?? g["name"]?.toString();
+          if (!shortName) throw new Error("No identifier found");
+          params["name"] = buildResourceName(
+            String(g["parent"] ?? ""),
+            shortName,
+          );
+          const result = await readResource(
+            BASE_URL,
+            GET_CONFIG,
+            params,
+          ) as StateData;
+          const handle = await context.writeResource(
+            "state",
+            instanceName,
+            result,
+          );
+          return { dataHandles: [handle] };
+        } catch (error: unknown) {
+          if (isResourceNotFoundError(error)) {
+            const handle = await context.writeResource("state", instanceName, {
+              status: "not_found",
+              syncedAt: new Date().toISOString(),
+            });
+            return { dataHandles: [handle] };
+          }
+          throw error;
+        }
+      },
+    },
+  },
+};

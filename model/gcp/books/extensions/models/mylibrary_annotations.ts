@@ -1,0 +1,764 @@
+// Auto-generated extension model for @swamp/gcp/books/mylibrary-annotations
+// Do not edit manually. Re-generate with: deno task generate:gcp
+
+// deno-lint-ignore-file no-explicit-any
+
+import { z } from "zod";
+import {
+  createResource,
+  deleteResource,
+  getProjectId,
+  isResourceNotFoundError,
+  readViaList,
+  updateResource,
+} from "./_lib/gcp.ts";
+
+const BASE_URL = "https://books.googleapis.com/";
+
+const INSERT_CONFIG = {
+  "id": "books.mylibrary.annotations.insert",
+  "path": "books/v1/mylibrary/annotations",
+  "httpMethod": "POST",
+  "parameterOrder": [],
+  "parameters": {
+    "annotationId": {
+      "location": "query",
+    },
+    "country": {
+      "location": "query",
+    },
+    "showOnlySummaryInResponse": {
+      "location": "query",
+    },
+    "source": {
+      "location": "query",
+    },
+  },
+} as const;
+
+const UPDATE_CONFIG = {
+  "id": "books.mylibrary.annotations.update",
+  "path": "books/v1/mylibrary/annotations/{annotationId}",
+  "httpMethod": "PUT",
+  "parameterOrder": [
+    "annotationId",
+  ],
+  "parameters": {
+    "annotationId": {
+      "location": "path",
+      "required": true,
+    },
+    "source": {
+      "location": "query",
+    },
+  },
+} as const;
+
+const DELETE_CONFIG = {
+  "id": "books.mylibrary.annotations.delete",
+  "path": "books/v1/mylibrary/annotations/{annotationId}",
+  "httpMethod": "DELETE",
+  "parameterOrder": [
+    "annotationId",
+  ],
+  "parameters": {
+    "annotationId": {
+      "location": "path",
+      "required": true,
+    },
+    "source": {
+      "location": "query",
+    },
+  },
+} as const;
+
+const LIST_CONFIG = {
+  "id": "books.mylibrary.annotations.list",
+  "path": "books/v1/mylibrary/annotations",
+  "httpMethod": "GET",
+  "parameterOrder": [],
+  "parameters": {
+    "contentVersion": {
+      "location": "query",
+    },
+    "layerId": {
+      "location": "query",
+    },
+    "layerIds": {
+      "location": "query",
+    },
+    "maxResults": {
+      "location": "query",
+    },
+    "pageToken": {
+      "location": "query",
+    },
+    "showDeleted": {
+      "location": "query",
+    },
+    "source": {
+      "location": "query",
+    },
+    "updatedMax": {
+      "location": "query",
+    },
+    "updatedMin": {
+      "location": "query",
+    },
+    "volumeId": {
+      "location": "query",
+    },
+  },
+} as const;
+
+const GlobalArgsSchema = z.object({
+  name: z.string().describe(
+    "Instance name for this resource (used as the unique identifier in the factory pattern)",
+  ),
+  afterSelectedText: z.string().describe(
+    "Anchor text after excerpt. For requests, if the user bookmarked a screen that has no flowing text on it, then this field should be empty.",
+  ).optional(),
+  beforeSelectedText: z.string().describe(
+    "Anchor text before excerpt. For requests, if the user bookmarked a screen that has no flowing text on it, then this field should be empty.",
+  ).optional(),
+  clientVersionRanges: z.object({
+    cfiRange: z.object({
+      endOffset: z.string().describe("The offset from the ending position.")
+        .optional(),
+      endPosition: z.string().describe("The ending position for the range.")
+        .optional(),
+      startOffset: z.string().describe("The offset from the starting position.")
+        .optional(),
+      startPosition: z.string().describe("The starting position for the range.")
+        .optional(),
+    }).optional(),
+    contentVersion: z.string().describe("Content version the client sent in.")
+      .optional(),
+    gbImageRange: z.object({
+      endOffset: z.string().describe("The offset from the ending position.")
+        .optional(),
+      endPosition: z.string().describe("The ending position for the range.")
+        .optional(),
+      startOffset: z.string().describe("The offset from the starting position.")
+        .optional(),
+      startPosition: z.string().describe("The starting position for the range.")
+        .optional(),
+    }).optional(),
+    gbTextRange: z.object({
+      endOffset: z.string().describe("The offset from the ending position.")
+        .optional(),
+      endPosition: z.string().describe("The ending position for the range.")
+        .optional(),
+      startOffset: z.string().describe("The offset from the starting position.")
+        .optional(),
+      startPosition: z.string().describe("The starting position for the range.")
+        .optional(),
+    }).optional(),
+    imageCfiRange: z.object({
+      endOffset: z.string().describe("The offset from the ending position.")
+        .optional(),
+      endPosition: z.string().describe("The ending position for the range.")
+        .optional(),
+      startOffset: z.string().describe("The offset from the starting position.")
+        .optional(),
+      startPosition: z.string().describe("The starting position for the range.")
+        .optional(),
+    }).optional(),
+  }).describe("Selection ranges sent from the client.").optional(),
+  created: z.string().describe(
+    "Timestamp for the created time of this annotation.",
+  ).optional(),
+  currentVersionRanges: z.object({
+    cfiRange: z.object({
+      endOffset: z.string().describe("The offset from the ending position.")
+        .optional(),
+      endPosition: z.string().describe("The ending position for the range.")
+        .optional(),
+      startOffset: z.string().describe("The offset from the starting position.")
+        .optional(),
+      startPosition: z.string().describe("The starting position for the range.")
+        .optional(),
+    }).optional(),
+    contentVersion: z.string().describe(
+      "Content version applicable to ranges below.",
+    ).optional(),
+    gbImageRange: z.object({
+      endOffset: z.string().describe("The offset from the ending position.")
+        .optional(),
+      endPosition: z.string().describe("The ending position for the range.")
+        .optional(),
+      startOffset: z.string().describe("The offset from the starting position.")
+        .optional(),
+      startPosition: z.string().describe("The starting position for the range.")
+        .optional(),
+    }).optional(),
+    gbTextRange: z.object({
+      endOffset: z.string().describe("The offset from the ending position.")
+        .optional(),
+      endPosition: z.string().describe("The ending position for the range.")
+        .optional(),
+      startOffset: z.string().describe("The offset from the starting position.")
+        .optional(),
+      startPosition: z.string().describe("The starting position for the range.")
+        .optional(),
+    }).optional(),
+    imageCfiRange: z.object({
+      endOffset: z.string().describe("The offset from the ending position.")
+        .optional(),
+      endPosition: z.string().describe("The ending position for the range.")
+        .optional(),
+      startOffset: z.string().describe("The offset from the starting position.")
+        .optional(),
+      startPosition: z.string().describe("The starting position for the range.")
+        .optional(),
+    }).optional(),
+  }).describe("Selection ranges for the most recent content version.")
+    .optional(),
+  data: z.string().describe("User-created data for this annotation.")
+    .optional(),
+  deleted: z.boolean().describe("Indicates that this annotation is deleted.")
+    .optional(),
+  highlightStyle: z.string().describe(
+    "The highlight style for this annotation.",
+  ).optional(),
+  id: z.string().describe("Id of this annotation, in the form of a GUID.")
+    .optional(),
+  layerId: z.string().describe("The layer this annotation is for.").optional(),
+  layerSummary: z.object({
+    allowedCharacterCount: z.number().int().describe(
+      'Maximum allowed characters on this layer, especially for the "copy" layer.',
+    ).optional(),
+    limitType: z.string().describe(
+      'Type of limitation on this layer. "limited" or "unlimited" for the "copy" layer.',
+    ).optional(),
+    remainingCharacterCount: z.number().int().describe(
+      'Remaining allowed characters on this layer, especially for the "copy" layer.',
+    ).optional(),
+  }).optional(),
+  pageIds: z.array(z.string()).describe("Pages that this annotation spans.")
+    .optional(),
+  selectedText: z.string().describe("Excerpt from the volume.").optional(),
+  updated: z.string().describe(
+    "Timestamp for the last time this annotation was modified.",
+  ).optional(),
+  volumeId: z.string().describe("The volume that this annotation belongs to.")
+    .optional(),
+  annotationId: z.string().describe("The ID for the annotation to insert.")
+    .optional(),
+  country: z.string().describe(
+    "ISO-3166-1 code to override the IP-based location.",
+  ).optional(),
+  showOnlySummaryInResponse: z.string().describe(
+    "Requests that only the summary of the specified layer be provided in the response.",
+  ).optional(),
+  source: z.string().describe(
+    "String to identify the originator of this request.",
+  ).optional(),
+});
+
+const StateSchema = z.object({
+  afterSelectedText: z.string().optional(),
+  beforeSelectedText: z.string().optional(),
+  clientVersionRanges: z.object({
+    cfiRange: z.object({
+      endOffset: z.string(),
+      endPosition: z.string(),
+      startOffset: z.string(),
+      startPosition: z.string(),
+    }),
+    contentVersion: z.string(),
+    gbImageRange: z.object({
+      endOffset: z.string(),
+      endPosition: z.string(),
+      startOffset: z.string(),
+      startPosition: z.string(),
+    }),
+    gbTextRange: z.object({
+      endOffset: z.string(),
+      endPosition: z.string(),
+      startOffset: z.string(),
+      startPosition: z.string(),
+    }),
+    imageCfiRange: z.object({
+      endOffset: z.string(),
+      endPosition: z.string(),
+      startOffset: z.string(),
+      startPosition: z.string(),
+    }),
+  }).optional(),
+  created: z.string().optional(),
+  currentVersionRanges: z.object({
+    cfiRange: z.object({
+      endOffset: z.string(),
+      endPosition: z.string(),
+      startOffset: z.string(),
+      startPosition: z.string(),
+    }),
+    contentVersion: z.string(),
+    gbImageRange: z.object({
+      endOffset: z.string(),
+      endPosition: z.string(),
+      startOffset: z.string(),
+      startPosition: z.string(),
+    }),
+    gbTextRange: z.object({
+      endOffset: z.string(),
+      endPosition: z.string(),
+      startOffset: z.string(),
+      startPosition: z.string(),
+    }),
+    imageCfiRange: z.object({
+      endOffset: z.string(),
+      endPosition: z.string(),
+      startOffset: z.string(),
+      startPosition: z.string(),
+    }),
+  }).optional(),
+  data: z.string().optional(),
+  deleted: z.boolean().optional(),
+  highlightStyle: z.string().optional(),
+  id: z.string().optional(),
+  kind: z.string().optional(),
+  layerId: z.string().optional(),
+  layerSummary: z.object({
+    allowedCharacterCount: z.number(),
+    limitType: z.string(),
+    remainingCharacterCount: z.number(),
+  }).optional(),
+  pageIds: z.array(z.string()).optional(),
+  selectedText: z.string().optional(),
+  selfLink: z.string().optional(),
+  updated: z.string().optional(),
+  volumeId: z.string().optional(),
+}).passthrough();
+
+type StateData = z.infer<typeof StateSchema>;
+
+const InputsSchema = z.object({
+  name: z.string().optional(),
+  afterSelectedText: z.string().describe(
+    "Anchor text after excerpt. For requests, if the user bookmarked a screen that has no flowing text on it, then this field should be empty.",
+  ).optional(),
+  beforeSelectedText: z.string().describe(
+    "Anchor text before excerpt. For requests, if the user bookmarked a screen that has no flowing text on it, then this field should be empty.",
+  ).optional(),
+  clientVersionRanges: z.object({
+    cfiRange: z.object({
+      endOffset: z.string().describe("The offset from the ending position.")
+        .optional(),
+      endPosition: z.string().describe("The ending position for the range.")
+        .optional(),
+      startOffset: z.string().describe("The offset from the starting position.")
+        .optional(),
+      startPosition: z.string().describe("The starting position for the range.")
+        .optional(),
+    }).optional(),
+    contentVersion: z.string().describe("Content version the client sent in.")
+      .optional(),
+    gbImageRange: z.object({
+      endOffset: z.string().describe("The offset from the ending position.")
+        .optional(),
+      endPosition: z.string().describe("The ending position for the range.")
+        .optional(),
+      startOffset: z.string().describe("The offset from the starting position.")
+        .optional(),
+      startPosition: z.string().describe("The starting position for the range.")
+        .optional(),
+    }).optional(),
+    gbTextRange: z.object({
+      endOffset: z.string().describe("The offset from the ending position.")
+        .optional(),
+      endPosition: z.string().describe("The ending position for the range.")
+        .optional(),
+      startOffset: z.string().describe("The offset from the starting position.")
+        .optional(),
+      startPosition: z.string().describe("The starting position for the range.")
+        .optional(),
+    }).optional(),
+    imageCfiRange: z.object({
+      endOffset: z.string().describe("The offset from the ending position.")
+        .optional(),
+      endPosition: z.string().describe("The ending position for the range.")
+        .optional(),
+      startOffset: z.string().describe("The offset from the starting position.")
+        .optional(),
+      startPosition: z.string().describe("The starting position for the range.")
+        .optional(),
+    }).optional(),
+  }).describe("Selection ranges sent from the client.").optional(),
+  created: z.string().describe(
+    "Timestamp for the created time of this annotation.",
+  ).optional(),
+  currentVersionRanges: z.object({
+    cfiRange: z.object({
+      endOffset: z.string().describe("The offset from the ending position.")
+        .optional(),
+      endPosition: z.string().describe("The ending position for the range.")
+        .optional(),
+      startOffset: z.string().describe("The offset from the starting position.")
+        .optional(),
+      startPosition: z.string().describe("The starting position for the range.")
+        .optional(),
+    }).optional(),
+    contentVersion: z.string().describe(
+      "Content version applicable to ranges below.",
+    ).optional(),
+    gbImageRange: z.object({
+      endOffset: z.string().describe("The offset from the ending position.")
+        .optional(),
+      endPosition: z.string().describe("The ending position for the range.")
+        .optional(),
+      startOffset: z.string().describe("The offset from the starting position.")
+        .optional(),
+      startPosition: z.string().describe("The starting position for the range.")
+        .optional(),
+    }).optional(),
+    gbTextRange: z.object({
+      endOffset: z.string().describe("The offset from the ending position.")
+        .optional(),
+      endPosition: z.string().describe("The ending position for the range.")
+        .optional(),
+      startOffset: z.string().describe("The offset from the starting position.")
+        .optional(),
+      startPosition: z.string().describe("The starting position for the range.")
+        .optional(),
+    }).optional(),
+    imageCfiRange: z.object({
+      endOffset: z.string().describe("The offset from the ending position.")
+        .optional(),
+      endPosition: z.string().describe("The ending position for the range.")
+        .optional(),
+      startOffset: z.string().describe("The offset from the starting position.")
+        .optional(),
+      startPosition: z.string().describe("The starting position for the range.")
+        .optional(),
+    }).optional(),
+  }).describe("Selection ranges for the most recent content version.")
+    .optional(),
+  data: z.string().describe("User-created data for this annotation.")
+    .optional(),
+  deleted: z.boolean().describe("Indicates that this annotation is deleted.")
+    .optional(),
+  highlightStyle: z.string().describe(
+    "The highlight style for this annotation.",
+  ).optional(),
+  id: z.string().describe("Id of this annotation, in the form of a GUID.")
+    .optional(),
+  layerId: z.string().describe("The layer this annotation is for.").optional(),
+  layerSummary: z.object({
+    allowedCharacterCount: z.number().int().describe(
+      'Maximum allowed characters on this layer, especially for the "copy" layer.',
+    ).optional(),
+    limitType: z.string().describe(
+      'Type of limitation on this layer. "limited" or "unlimited" for the "copy" layer.',
+    ).optional(),
+    remainingCharacterCount: z.number().int().describe(
+      'Remaining allowed characters on this layer, especially for the "copy" layer.',
+    ).optional(),
+  }).optional(),
+  pageIds: z.array(z.string()).describe("Pages that this annotation spans.")
+    .optional(),
+  selectedText: z.string().describe("Excerpt from the volume.").optional(),
+  updated: z.string().describe(
+    "Timestamp for the last time this annotation was modified.",
+  ).optional(),
+  volumeId: z.string().describe("The volume that this annotation belongs to.")
+    .optional(),
+  annotationId: z.string().describe("The ID for the annotation to insert.")
+    .optional(),
+  country: z.string().describe(
+    "ISO-3166-1 code to override the IP-based location.",
+  ).optional(),
+  showOnlySummaryInResponse: z.string().describe(
+    "Requests that only the summary of the specified layer be provided in the response.",
+  ).optional(),
+  source: z.string().describe(
+    "String to identify the originator of this request.",
+  ).optional(),
+});
+
+export const model = {
+  type: "@swamp/gcp/books/mylibrary-annotations",
+  version: "2026.03.27.1",
+  globalArguments: GlobalArgsSchema,
+  inputsSchema: InputsSchema,
+  resources: {
+    state: {
+      description: "Retrieves a list of annotations, possibly filtered.",
+      schema: StateSchema,
+      lifetime: "infinite",
+      garbageCollection: 10,
+    },
+  },
+  methods: {
+    create: {
+      description: "Create a annotations",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const projectId = await getProjectId();
+        const params: Record<string, string> = { project: projectId };
+        const body: Record<string, unknown> = {};
+        if (g["afterSelectedText"] !== undefined) {
+          body["afterSelectedText"] = g["afterSelectedText"];
+        }
+        if (g["beforeSelectedText"] !== undefined) {
+          body["beforeSelectedText"] = g["beforeSelectedText"];
+        }
+        if (g["clientVersionRanges"] !== undefined) {
+          body["clientVersionRanges"] = g["clientVersionRanges"];
+        }
+        if (g["created"] !== undefined) body["created"] = g["created"];
+        if (g["currentVersionRanges"] !== undefined) {
+          body["currentVersionRanges"] = g["currentVersionRanges"];
+        }
+        if (g["data"] !== undefined) body["data"] = g["data"];
+        if (g["deleted"] !== undefined) body["deleted"] = g["deleted"];
+        if (g["highlightStyle"] !== undefined) {
+          body["highlightStyle"] = g["highlightStyle"];
+        }
+        if (g["id"] !== undefined) body["id"] = g["id"];
+        if (g["layerId"] !== undefined) body["layerId"] = g["layerId"];
+        if (g["layerSummary"] !== undefined) {
+          body["layerSummary"] = g["layerSummary"];
+        }
+        if (g["pageIds"] !== undefined) body["pageIds"] = g["pageIds"];
+        if (g["selectedText"] !== undefined) {
+          body["selectedText"] = g["selectedText"];
+        }
+        if (g["updated"] !== undefined) body["updated"] = g["updated"];
+        if (g["volumeId"] !== undefined) body["volumeId"] = g["volumeId"];
+        if (g["annotationId"] !== undefined) {
+          body["annotationId"] = g["annotationId"];
+        }
+        if (g["country"] !== undefined) body["country"] = g["country"];
+        if (g["showOnlySummaryInResponse"] !== undefined) {
+          body["showOnlySummaryInResponse"] = g["showOnlySummaryInResponse"];
+        }
+        if (g["source"] !== undefined) body["source"] = g["source"];
+        const result = await createResource(
+          BASE_URL,
+          INSERT_CONFIG,
+          params,
+          body,
+        ) as StateData;
+        const instanceName = g.name?.toString() ?? "current";
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    get: {
+      description: "Get a annotations",
+      arguments: z.object({
+        identifier: z.string().describe("The name of the annotations"),
+      }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const projectId = await getProjectId();
+        const params: Record<string, string> = { project: projectId };
+        const g = context.globalArgs;
+        const result = await readViaList(
+          BASE_URL,
+          LIST_CONFIG,
+          params,
+          "name",
+          args.identifier,
+        ) as StateData;
+        const instanceName = g.name?.toString() ?? args.identifier;
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    update: {
+      description: "Update annotations attributes",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const projectId = await getProjectId();
+        const instanceName = g.name?.toString() ?? "current";
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          instanceName,
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        const params: Record<string, string> = { project: projectId };
+        params["annotationId"] = existing["name"]?.toString() ?? "";
+        const body: Record<string, unknown> = {};
+        if (g["afterSelectedText"] !== undefined) {
+          body["afterSelectedText"] = g["afterSelectedText"];
+        }
+        if (g["beforeSelectedText"] !== undefined) {
+          body["beforeSelectedText"] = g["beforeSelectedText"];
+        }
+        if (g["clientVersionRanges"] !== undefined) {
+          body["clientVersionRanges"] = g["clientVersionRanges"];
+        }
+        if (g["created"] !== undefined) body["created"] = g["created"];
+        if (g["currentVersionRanges"] !== undefined) {
+          body["currentVersionRanges"] = g["currentVersionRanges"];
+        }
+        if (g["data"] !== undefined) body["data"] = g["data"];
+        if (g["deleted"] !== undefined) body["deleted"] = g["deleted"];
+        if (g["highlightStyle"] !== undefined) {
+          body["highlightStyle"] = g["highlightStyle"];
+        }
+        if (g["id"] !== undefined) body["id"] = g["id"];
+        if (g["layerId"] !== undefined) body["layerId"] = g["layerId"];
+        if (g["layerSummary"] !== undefined) {
+          body["layerSummary"] = g["layerSummary"];
+        }
+        if (g["pageIds"] !== undefined) body["pageIds"] = g["pageIds"];
+        if (g["selectedText"] !== undefined) {
+          body["selectedText"] = g["selectedText"];
+        }
+        if (g["updated"] !== undefined) body["updated"] = g["updated"];
+        if (g["volumeId"] !== undefined) body["volumeId"] = g["volumeId"];
+        for (const key of Object.keys(existing)) {
+          if (
+            key === "fingerprint" || key === "labelFingerprint" ||
+            key === "etag" || key.endsWith("Fingerprint")
+          ) {
+            body[key] = existing[key];
+          }
+        }
+        const result = await updateResource(
+          BASE_URL,
+          UPDATE_CONFIG,
+          params,
+          body,
+        ) as StateData;
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    delete: {
+      description: "Delete the annotations",
+      arguments: z.object({
+        identifier: z.string().describe("The name of the annotations"),
+      }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const g = context.globalArgs;
+        const projectId = await getProjectId();
+        const params: Record<string, string> = { project: projectId };
+        params["annotationId"] = args.identifier;
+        const { existed } = await deleteResource(
+          BASE_URL,
+          DELETE_CONFIG,
+          params,
+        );
+        const instanceName = g.name?.toString() ?? args.identifier;
+        const handle = await context.writeResource("state", instanceName, {
+          identifier: args.identifier,
+          existed,
+          status: existed ? "deleted" : "not_found",
+          deletedAt: new Date().toISOString(),
+        });
+        return { dataHandles: [handle] };
+      },
+    },
+    sync: {
+      description: "Sync annotations state from GCP",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const projectId = await getProjectId();
+        const instanceName = g.name?.toString() ?? "current";
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          instanceName,
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        try {
+          const params: Record<string, string> = { project: projectId };
+          const identifier = existing.name?.toString() ?? g["name"]?.toString();
+          if (!identifier) {
+            throw new Error(
+              "No identifier found in existing state or globalArgs",
+            );
+          }
+          const result = await readViaList(
+            BASE_URL,
+            LIST_CONFIG,
+            params,
+            "name",
+            identifier,
+          ) as StateData;
+          const handle = await context.writeResource(
+            "state",
+            instanceName,
+            result,
+          );
+          return { dataHandles: [handle] };
+        } catch (error: unknown) {
+          if (isResourceNotFoundError(error)) {
+            const handle = await context.writeResource("state", instanceName, {
+              status: "not_found",
+              syncedAt: new Date().toISOString(),
+            });
+            return { dataHandles: [handle] };
+          }
+          throw error;
+        }
+      },
+    },
+    summary: {
+      description: "summary",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, unknown>, context: any) => {
+        const g = context.globalArgs;
+        const projectId = await getProjectId();
+        const params: Record<string, string> = { project: projectId };
+        if (g["volumeId"] !== undefined) {
+          params["volumeId"] = String(g["volumeId"]);
+        }
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          g.name?.toString() ?? "current",
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        params["layerIds"] = existing["layerIds"]?.toString() ??
+          g["layerIds"]?.toString() ?? "";
+        const result = await createResource(
+          BASE_URL,
+          {
+            "id": "books.mylibrary.annotations.summary",
+            "path": "books/v1/mylibrary/annotations/summary",
+            "httpMethod": "POST",
+            "parameterOrder": ["layerIds", "volumeId"],
+            "parameters": {
+              "layerIds": { "location": "query", "required": true },
+              "source": { "location": "query" },
+              "volumeId": { "location": "query", "required": true },
+            },
+          },
+          params,
+          {},
+        );
+        return { result };
+      },
+    },
+  },
+};

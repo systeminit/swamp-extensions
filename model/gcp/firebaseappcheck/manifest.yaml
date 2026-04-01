@@ -1,0 +1,27 @@
+# Auto-generated manifest. Re-generate with the appropriate deno task.
+manifestVersion: 1
+name: "@swamp/gcp/firebaseappcheck"
+version: "2026.03.27.1"
+description: "Google Cloud firebaseappcheck infrastructure models"
+labels:
+  - gcp
+  - google-cloud
+  - firebaseappcheck
+  - cloud
+  - infrastructure
+releaseNotes: |
+  - Added: jwks, apps_appattestconfig, apps_debugtokens, apps_devicecheckconfig, apps_playintegrityconfig, apps_recaptchaenterpriseconfig, apps_recaptchav3config, apps_safetynetconfig, services, services_resourcepolicies
+models:
+  - apps_appattestconfig.ts
+  - apps_debugtokens.ts
+  - apps_devicecheckconfig.ts
+  - apps_playintegrityconfig.ts
+  - apps_recaptchaenterpriseconfig.ts
+  - apps_recaptchav3config.ts
+  - apps_safetynetconfig.ts
+  - jwks.ts
+  - services.ts
+  - services_resourcepolicies.ts
+additionalFiles:
+  - LICENSE.txt
+  - README.md

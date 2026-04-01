@@ -1,0 +1,25 @@
+# Auto-generated manifest. Re-generate with the appropriate deno task.
+manifestVersion: 1
+name: "@swamp/gcp/meet"
+version: "2026.04.01.1"
+description: "Google Cloud meet infrastructure models"
+labels:
+  - gcp
+  - google-cloud
+  - meet
+  - cloud
+  - infrastructure
+releaseNotes: |
+  - Updated: spaces
+models:
+  - conferencerecords.ts
+  - conferencerecords_participants.ts
+  - conferencerecords_participants_participantsessions.ts
+  - conferencerecords_recordings.ts
+  - conferencerecords_smartnotes.ts
+  - conferencerecords_transcripts.ts
+  - conferencerecords_transcripts_entries.ts
+  - spaces.ts
+additionalFiles:
+  - LICENSE.txt
+  - README.md

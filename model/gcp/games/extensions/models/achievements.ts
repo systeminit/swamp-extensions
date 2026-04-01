@@ -1,0 +1,336 @@
+// Auto-generated extension model for @swamp/gcp/games/achievements
+// Do not edit manually. Re-generate with: deno task generate:gcp
+
+// deno-lint-ignore-file no-explicit-any
+
+import { z } from "zod";
+import {
+  createResource,
+  getProjectId,
+  isResourceNotFoundError,
+  readViaList,
+} from "./_lib/gcp.ts";
+
+const BASE_URL = "https://games.googleapis.com/";
+
+const LIST_CONFIG = {
+  "id": "games.achievements.list",
+  "path": "games/v1/players/{playerId}/achievements",
+  "httpMethod": "GET",
+  "parameterOrder": [
+    "playerId",
+  ],
+  "parameters": {
+    "language": {
+      "location": "query",
+    },
+    "maxResults": {
+      "location": "query",
+    },
+    "pageToken": {
+      "location": "query",
+    },
+    "playerId": {
+      "location": "path",
+      "required": true,
+    },
+    "state": {
+      "location": "query",
+    },
+  },
+} as const;
+
+const GlobalArgsSchema = z.object({
+  name: z.string().describe(
+    "Instance name for this resource (used as the unique identifier in the factory pattern)",
+  ),
+});
+
+const StateSchema = z.object({
+  achievementState: z.string().optional(),
+  currentSteps: z.number().optional(),
+  experiencePoints: z.string().optional(),
+  formattedCurrentStepsString: z.string().optional(),
+  id: z.string().optional(),
+  kind: z.string().optional(),
+  lastUpdatedTimestamp: z.string().optional(),
+}).passthrough();
+
+type StateData = z.infer<typeof StateSchema>;
+
+const InputsSchema = z.object({
+  name: z.string().optional(),
+});
+
+export const model = {
+  type: "@swamp/gcp/games/achievements",
+  version: "2026.03.27.1",
+  globalArguments: GlobalArgsSchema,
+  inputsSchema: InputsSchema,
+  resources: {
+    state: {
+      description: "An achievement object.",
+      schema: StateSchema,
+      lifetime: "infinite",
+      garbageCollection: 10,
+    },
+  },
+  methods: {
+    get: {
+      description: "Get a achievements",
+      arguments: z.object({
+        identifier: z.string().describe("The name of the achievements"),
+      }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const projectId = await getProjectId();
+        const params: Record<string, string> = { project: projectId };
+        const g = context.globalArgs;
+        if (g["playerId"] !== undefined) {
+          params["playerId"] = String(g["playerId"]);
+        }
+        const result = await readViaList(
+          BASE_URL,
+          LIST_CONFIG,
+          params,
+          "name",
+          args.identifier,
+        ) as StateData;
+        const instanceName = g.name?.toString() ?? args.identifier;
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    sync: {
+      description: "Sync achievements state from GCP",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const projectId = await getProjectId();
+        const instanceName = g.name?.toString() ?? "current";
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          instanceName,
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        try {
+          const params: Record<string, string> = { project: projectId };
+          if (g["playerId"] !== undefined) {
+            params["playerId"] = String(g["playerId"]);
+          } else if (existing["playerId"]) {
+            params["playerId"] = String(existing["playerId"]);
+          }
+          const identifier = existing.name?.toString() ?? g["name"]?.toString();
+          if (!identifier) {
+            throw new Error(
+              "No identifier found in existing state or globalArgs",
+            );
+          }
+          const result = await readViaList(
+            BASE_URL,
+            LIST_CONFIG,
+            params,
+            "name",
+            identifier,
+          ) as StateData;
+          const handle = await context.writeResource(
+            "state",
+            instanceName,
+            result,
+          );
+          return { dataHandles: [handle] };
+        } catch (error: unknown) {
+          if (isResourceNotFoundError(error)) {
+            const handle = await context.writeResource("state", instanceName, {
+              status: "not_found",
+              syncedAt: new Date().toISOString(),
+            });
+            return { dataHandles: [handle] };
+          }
+          throw error;
+        }
+      },
+    },
+    increment: {
+      description: "increment",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, unknown>, context: any) => {
+        const g = context.globalArgs;
+        const projectId = await getProjectId();
+        const params: Record<string, string> = { project: projectId };
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          g.name?.toString() ?? "current",
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        params["achievementId"] = existing["achievementId"]?.toString() ??
+          g["achievementId"]?.toString() ?? "";
+        params["stepsToIncrement"] = existing["name"]?.toString() ??
+          g["name"]?.toString() ?? "";
+        const result = await createResource(
+          BASE_URL,
+          {
+            "id": "games.achievements.increment",
+            "path": "games/v1/achievements/{achievementId}/increment",
+            "httpMethod": "POST",
+            "parameterOrder": ["achievementId", "stepsToIncrement"],
+            "parameters": {
+              "achievementId": { "location": "path", "required": true },
+              "requestId": { "location": "query" },
+              "stepsToIncrement": { "location": "query", "required": true },
+            },
+          },
+          params,
+          {},
+        );
+        return { result };
+      },
+    },
+    reveal: {
+      description: "reveal",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, unknown>, context: any) => {
+        const g = context.globalArgs;
+        const projectId = await getProjectId();
+        const params: Record<string, string> = { project: projectId };
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          g.name?.toString() ?? "current",
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        params["achievementId"] = existing["name"]?.toString() ??
+          g["name"]?.toString() ?? "";
+        const result = await createResource(
+          BASE_URL,
+          {
+            "id": "games.achievements.reveal",
+            "path": "games/v1/achievements/{achievementId}/reveal",
+            "httpMethod": "POST",
+            "parameterOrder": ["achievementId"],
+            "parameters": {
+              "achievementId": { "location": "path", "required": true },
+            },
+          },
+          params,
+          {},
+        );
+        return { result };
+      },
+    },
+    set_steps_at_least: {
+      description: "set steps at least",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, unknown>, context: any) => {
+        const g = context.globalArgs;
+        const projectId = await getProjectId();
+        const params: Record<string, string> = { project: projectId };
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          g.name?.toString() ?? "current",
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        params["achievementId"] = existing["achievementId"]?.toString() ??
+          g["achievementId"]?.toString() ?? "";
+        params["steps"] = existing["name"]?.toString() ??
+          g["name"]?.toString() ?? "";
+        const result = await createResource(
+          BASE_URL,
+          {
+            "id": "games.achievements.setStepsAtLeast",
+            "path": "games/v1/achievements/{achievementId}/setStepsAtLeast",
+            "httpMethod": "POST",
+            "parameterOrder": ["achievementId", "steps"],
+            "parameters": {
+              "achievementId": { "location": "path", "required": true },
+              "steps": { "location": "query", "required": true },
+            },
+          },
+          params,
+          {},
+        );
+        return { result };
+      },
+    },
+    unlock: {
+      description: "unlock",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, unknown>, context: any) => {
+        const g = context.globalArgs;
+        const projectId = await getProjectId();
+        const params: Record<string, string> = { project: projectId };
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          g.name?.toString() ?? "current",
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        params["achievementId"] = existing["name"]?.toString() ??
+          g["name"]?.toString() ?? "";
+        const result = await createResource(
+          BASE_URL,
+          {
+            "id": "games.achievements.unlock",
+            "path": "games/v1/achievements/{achievementId}/unlock",
+            "httpMethod": "POST",
+            "parameterOrder": ["achievementId"],
+            "parameters": {
+              "achievementId": { "location": "path", "required": true },
+            },
+          },
+          params,
+          {},
+        );
+        return { result };
+      },
+    },
+    update_multiple: {
+      description: "update multiple",
+      arguments: z.object({
+        kind: z.any().optional(),
+        updates: z.any().optional(),
+      }),
+      execute: async (args: Record<string, unknown>, _context: any) => {
+        const projectId = await getProjectId();
+        const params: Record<string, string> = { project: projectId };
+        const body: Record<string, unknown> = {};
+        if (args["kind"] !== undefined) body["kind"] = args["kind"];
+        if (args["updates"] !== undefined) body["updates"] = args["updates"];
+        const result = await createResource(
+          BASE_URL,
+          {
+            "id": "games.achievements.updateMultiple",
+            "path": "games/v1/achievements/updateMultiple",
+            "httpMethod": "POST",
+            "parameterOrder": [],
+            "parameters": {},
+          },
+          params,
+          body,
+        );
+        return { result };
+      },
+    },
+  },
+};

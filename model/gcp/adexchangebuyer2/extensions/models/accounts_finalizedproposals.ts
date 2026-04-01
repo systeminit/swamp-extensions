@@ -1,0 +1,545 @@
+// Auto-generated extension model for @swamp/gcp/adexchangebuyer2/accounts-finalizedproposals
+// Do not edit manually. Re-generate with: deno task generate:gcp
+
+// deno-lint-ignore-file no-explicit-any
+
+import { z } from "zod";
+import {
+  createResource,
+  getProjectId,
+  isResourceNotFoundError,
+  readViaList,
+} from "./_lib/gcp.ts";
+
+const BASE_URL = "https://adexchangebuyer.googleapis.com/";
+
+const LIST_CONFIG = {
+  "id": "adexchangebuyer2.accounts.finalizedProposals.list",
+  "path": "v2beta1/accounts/{accountId}/finalizedProposals",
+  "httpMethod": "GET",
+  "parameterOrder": [
+    "accountId",
+  ],
+  "parameters": {
+    "accountId": {
+      "location": "path",
+      "required": true,
+    },
+    "filter": {
+      "location": "query",
+    },
+    "filterSyntax": {
+      "location": "query",
+    },
+    "pageSize": {
+      "location": "query",
+    },
+    "pageToken": {
+      "location": "query",
+    },
+  },
+} as const;
+
+const GlobalArgsSchema = z.object({
+  name: z.string().describe(
+    "Instance name for this resource (used as the unique identifier in the factory pattern)",
+  ),
+});
+
+const StateSchema = z.object({
+  billedBuyer: z.object({
+    accountId: z.string(),
+  }).optional(),
+  buyer: z.object({
+    accountId: z.string(),
+  }).optional(),
+  buyerContacts: z.array(z.object({
+    email: z.string(),
+    name: z.string(),
+  })).optional(),
+  buyerPrivateData: z.object({
+    referenceId: z.string(),
+  }).optional(),
+  deals: z.array(z.object({
+    availableEndTime: z.string(),
+    availableStartTime: z.string(),
+    buyerPrivateData: z.object({
+      referenceId: z.string(),
+    }),
+    createProductId: z.string(),
+    createProductRevision: z.string(),
+    createTime: z.string(),
+    creativePreApprovalPolicy: z.string(),
+    creativeRestrictions: z.object({
+      creativeFormat: z.string(),
+      creativeSpecifications: z.array(z.object({
+        creativeCompanionSizes: z.array(z.object({
+          height: z.string(),
+          sizeType: z.string(),
+          width: z.string(),
+        })),
+        creativeSize: z.object({
+          height: z.string(),
+          sizeType: z.string(),
+          width: z.string(),
+        }),
+      })),
+      skippableAdType: z.string(),
+    }),
+    creativeSafeFrameCompatibility: z.string(),
+    dealId: z.string(),
+    dealServingMetadata: z.object({
+      dealPauseStatus: z.object({
+        buyerPauseReason: z.string(),
+        firstPausedBy: z.string(),
+        hasBuyerPaused: z.boolean(),
+        hasSellerPaused: z.boolean(),
+        sellerPauseReason: z.string(),
+      }),
+    }),
+    dealTerms: z.object({
+      brandingType: z.string(),
+      description: z.string(),
+      estimatedGrossSpend: z.object({
+        amount: z.object({
+          currencyCode: z.string(),
+          nanos: z.number(),
+          units: z.string(),
+        }),
+        pricingType: z.string(),
+      }),
+      estimatedImpressionsPerDay: z.string(),
+      guaranteedFixedPriceTerms: z.object({
+        fixedPrices: z.array(z.object({
+          advertiserIds: z.array(z.string()),
+          buyer: z.object({
+            accountId: z.string(),
+          }),
+          price: z.object({
+            amount: z.object({
+              currencyCode: z.string(),
+              nanos: z.number(),
+              units: z.string(),
+            }),
+            pricingType: z.string(),
+          }),
+        })),
+        guaranteedImpressions: z.string(),
+        guaranteedLooks: z.string(),
+        impressionCap: z.string(),
+        minimumDailyLooks: z.string(),
+        percentShareOfVoice: z.string(),
+        reservationType: z.string(),
+      }),
+      nonGuaranteedAuctionTerms: z.object({
+        autoOptimizePrivateAuction: z.boolean(),
+        reservePricesPerBuyer: z.array(z.object({
+          advertiserIds: z.array(z.string()),
+          buyer: z.object({
+            accountId: z.string(),
+          }),
+          price: z.object({
+            amount: z.object({
+              currencyCode: z.string(),
+              nanos: z.number(),
+              units: z.string(),
+            }),
+            pricingType: z.string(),
+          }),
+        })),
+      }),
+      nonGuaranteedFixedPriceTerms: z.object({
+        fixedPrices: z.array(z.object({
+          advertiserIds: z.array(z.string()),
+          buyer: z.object({
+            accountId: z.string(),
+          }),
+          price: z.object({
+            amount: z.object({
+              currencyCode: z.string(),
+              nanos: z.number(),
+              units: z.string(),
+            }),
+            pricingType: z.string(),
+          }),
+        })),
+      }),
+      sellerTimeZone: z.string(),
+    }),
+    deliveryControl: z.object({
+      creativeBlockingLevel: z.string(),
+      deliveryRateType: z.string(),
+      frequencyCaps: z.array(z.object({
+        maxImpressions: z.number(),
+        numTimeUnits: z.number(),
+        timeUnitType: z.string(),
+      })),
+    }),
+    description: z.string(),
+    displayName: z.string(),
+    externalDealId: z.string(),
+    isSetupComplete: z.boolean(),
+    programmaticCreativeSource: z.string(),
+    proposalId: z.string(),
+    sellerContacts: z.array(z.object({
+      email: z.string(),
+      name: z.string(),
+    })),
+    syndicationProduct: z.string(),
+    targeting: z.object({
+      geoTargeting: z.object({
+        excludedCriteriaIds: z.array(z.string()),
+        targetedCriteriaIds: z.array(z.string()),
+      }),
+      inventorySizeTargeting: z.object({
+        excludedInventorySizes: z.array(z.object({
+          height: z.string(),
+          sizeType: z.string(),
+          width: z.string(),
+        })),
+        targetedInventorySizes: z.array(z.object({
+          height: z.string(),
+          sizeType: z.string(),
+          width: z.string(),
+        })),
+      }),
+      placementTargeting: z.object({
+        mobileApplicationTargeting: z.object({
+          firstPartyTargeting: z.object({
+            excludedAppIds: z.array(z.string()),
+            targetedAppIds: z.array(z.string()),
+          }),
+        }),
+        urlTargeting: z.object({
+          excludedUrls: z.array(z.string()),
+          targetedUrls: z.array(z.string()),
+        }),
+      }),
+      technologyTargeting: z.object({
+        deviceCapabilityTargeting: z.object({
+          excludedCriteriaIds: z.array(z.string()),
+          targetedCriteriaIds: z.array(z.string()),
+        }),
+        deviceCategoryTargeting: z.object({
+          excludedCriteriaIds: z.array(z.string()),
+          targetedCriteriaIds: z.array(z.string()),
+        }),
+        operatingSystemTargeting: z.object({
+          operatingSystemCriteria: z.object({
+            excludedCriteriaIds: z.array(z.string()),
+            targetedCriteriaIds: z.array(z.string()),
+          }),
+          operatingSystemVersionCriteria: z.object({
+            excludedCriteriaIds: z.array(z.string()),
+            targetedCriteriaIds: z.array(z.string()),
+          }),
+        }),
+      }),
+      videoTargeting: z.object({
+        excludedPositionTypes: z.array(z.string()),
+        targetedPositionTypes: z.array(z.string()),
+      }),
+    }),
+    targetingCriterion: z.array(z.object({
+      exclusions: z.array(z.object({
+        creativeSizeValue: z.object({
+          allowedFormats: z.array(z.string()),
+          companionSizes: z.array(z.object({
+            height: z.number(),
+            width: z.number(),
+          })),
+          creativeSizeType: z.string(),
+          nativeTemplate: z.string(),
+          size: z.object({
+            height: z.number(),
+            width: z.number(),
+          }),
+          skippableAdType: z.string(),
+        }),
+        dayPartTargetingValue: z.object({
+          dayParts: z.array(z.object({
+            dayOfWeek: z.string(),
+            endTime: z.object({
+              hours: z.number(),
+              minutes: z.number(),
+              nanos: z.number(),
+              seconds: z.number(),
+            }),
+            startTime: z.object({
+              hours: z.number(),
+              minutes: z.number(),
+              nanos: z.number(),
+              seconds: z.number(),
+            }),
+          })),
+          timeZoneType: z.string(),
+        }),
+        longValue: z.string(),
+        stringValue: z.string(),
+      })),
+      inclusions: z.array(z.object({
+        creativeSizeValue: z.object({
+          allowedFormats: z.array(z.string()),
+          companionSizes: z.array(z.object({
+            height: z.number(),
+            width: z.number(),
+          })),
+          creativeSizeType: z.string(),
+          nativeTemplate: z.string(),
+          size: z.object({
+            height: z.number(),
+            width: z.number(),
+          }),
+          skippableAdType: z.string(),
+        }),
+        dayPartTargetingValue: z.object({
+          dayParts: z.array(z.object({
+            dayOfWeek: z.string(),
+            endTime: z.object({
+              hours: z.number(),
+              minutes: z.number(),
+              nanos: z.number(),
+              seconds: z.number(),
+            }),
+            startTime: z.object({
+              hours: z.number(),
+              minutes: z.number(),
+              nanos: z.number(),
+              seconds: z.number(),
+            }),
+          })),
+          timeZoneType: z.string(),
+        }),
+        longValue: z.string(),
+        stringValue: z.string(),
+      })),
+      key: z.string(),
+    })),
+    updateTime: z.string(),
+    webPropertyCode: z.string(),
+  })).optional(),
+  displayName: z.string().optional(),
+  isRenegotiating: z.boolean().optional(),
+  isSetupComplete: z.boolean().optional(),
+  lastUpdaterOrCommentorRole: z.string().optional(),
+  notes: z.array(z.object({
+    createTime: z.string(),
+    creatorRole: z.string(),
+    note: z.string(),
+    noteId: z.string(),
+    proposalRevision: z.string(),
+  })).optional(),
+  originatorRole: z.string().optional(),
+  privateAuctionId: z.string().optional(),
+  proposalId: z.string().optional(),
+  proposalRevision: z.string().optional(),
+  proposalState: z.string().optional(),
+  seller: z.object({
+    accountId: z.string(),
+    subAccountId: z.string(),
+  }).optional(),
+  sellerContacts: z.array(z.object({
+    email: z.string(),
+    name: z.string(),
+  })).optional(),
+  termsAndConditions: z.string().optional(),
+  updateTime: z.string().optional(),
+}).passthrough();
+
+type StateData = z.infer<typeof StateSchema>;
+
+const InputsSchema = z.object({
+  name: z.string().optional(),
+});
+
+export const model = {
+  type: "@swamp/gcp/adexchangebuyer2/accounts-finalizedproposals",
+  version: "2026.03.27.1",
+  globalArguments: GlobalArgsSchema,
+  inputsSchema: InputsSchema,
+  resources: {
+    state: {
+      description:
+        "Represents a proposal in the Marketplace. A proposal is the unit of negotiati...",
+      schema: StateSchema,
+      lifetime: "infinite",
+      garbageCollection: 10,
+    },
+  },
+  methods: {
+    get: {
+      description: "Get a finalizedProposals",
+      arguments: z.object({
+        identifier: z.string().describe("The name of the finalizedProposals"),
+      }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const projectId = await getProjectId();
+        const params: Record<string, string> = { project: projectId };
+        const g = context.globalArgs;
+        if (g["accountId"] !== undefined) {
+          params["accountId"] = String(g["accountId"]);
+        }
+        const result = await readViaList(
+          BASE_URL,
+          LIST_CONFIG,
+          params,
+          "name",
+          args.identifier,
+        ) as StateData;
+        const instanceName = g.name?.toString() ?? args.identifier;
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    sync: {
+      description: "Sync finalizedProposals state from GCP",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const projectId = await getProjectId();
+        const instanceName = g.name?.toString() ?? "current";
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          instanceName,
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        try {
+          const params: Record<string, string> = { project: projectId };
+          if (g["accountId"] !== undefined) {
+            params["accountId"] = String(g["accountId"]);
+          } else if (existing["accountId"]) {
+            params["accountId"] = String(existing["accountId"]);
+          }
+          const identifier = existing.name?.toString() ?? g["name"]?.toString();
+          if (!identifier) {
+            throw new Error(
+              "No identifier found in existing state or globalArgs",
+            );
+          }
+          const result = await readViaList(
+            BASE_URL,
+            LIST_CONFIG,
+            params,
+            "name",
+            identifier,
+          ) as StateData;
+          const handle = await context.writeResource(
+            "state",
+            instanceName,
+            result,
+          );
+          return { dataHandles: [handle] };
+        } catch (error: unknown) {
+          if (isResourceNotFoundError(error)) {
+            const handle = await context.writeResource("state", instanceName, {
+              status: "not_found",
+              syncedAt: new Date().toISOString(),
+            });
+            return { dataHandles: [handle] };
+          }
+          throw error;
+        }
+      },
+    },
+    pause: {
+      description: "pause",
+      arguments: z.object({
+        externalDealIds: z.any().optional(),
+        reason: z.any().optional(),
+      }),
+      execute: async (args: Record<string, unknown>, context: any) => {
+        const g = context.globalArgs;
+        const projectId = await getProjectId();
+        const params: Record<string, string> = { project: projectId };
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          g.name?.toString() ?? "current",
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        params["accountId"] = existing["accountId"]?.toString() ??
+          g["accountId"]?.toString() ?? "";
+        params["proposalId"] = existing["name"]?.toString() ??
+          g["name"]?.toString() ?? "";
+        const body: Record<string, unknown> = {};
+        if (args["externalDealIds"] !== undefined) {
+          body["externalDealIds"] = args["externalDealIds"];
+        }
+        if (args["reason"] !== undefined) body["reason"] = args["reason"];
+        const result = await createResource(
+          BASE_URL,
+          {
+            "id": "adexchangebuyer2.accounts.finalizedProposals.pause",
+            "path":
+              "v2beta1/accounts/{accountId}/finalizedProposals/{proposalId}:pause",
+            "httpMethod": "POST",
+            "parameterOrder": ["accountId", "proposalId"],
+            "parameters": {
+              "accountId": { "location": "path", "required": true },
+              "proposalId": { "location": "path", "required": true },
+            },
+          },
+          params,
+          body,
+        );
+        return { result };
+      },
+    },
+    resume: {
+      description: "resume",
+      arguments: z.object({
+        externalDealIds: z.any().optional(),
+      }),
+      execute: async (args: Record<string, unknown>, context: any) => {
+        const g = context.globalArgs;
+        const projectId = await getProjectId();
+        const params: Record<string, string> = { project: projectId };
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          g.name?.toString() ?? "current",
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        params["accountId"] = existing["accountId"]?.toString() ??
+          g["accountId"]?.toString() ?? "";
+        params["proposalId"] = existing["name"]?.toString() ??
+          g["name"]?.toString() ?? "";
+        const body: Record<string, unknown> = {};
+        if (args["externalDealIds"] !== undefined) {
+          body["externalDealIds"] = args["externalDealIds"];
+        }
+        const result = await createResource(
+          BASE_URL,
+          {
+            "id": "adexchangebuyer2.accounts.finalizedProposals.resume",
+            "path":
+              "v2beta1/accounts/{accountId}/finalizedProposals/{proposalId}:resume",
+            "httpMethod": "POST",
+            "parameterOrder": ["accountId", "proposalId"],
+            "parameters": {
+              "accountId": { "location": "path", "required": true },
+              "proposalId": { "location": "path", "required": true },
+            },
+          },
+          params,
+          body,
+        );
+        return { result };
+      },
+    },
+  },
+};

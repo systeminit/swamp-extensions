@@ -1,0 +1,1399 @@
+// Auto-generated extension model for @swamp/gcp/displayvideo/advertisers-creatives
+// Do not edit manually. Re-generate with: deno task generate:gcp
+
+// deno-lint-ignore-file no-explicit-any
+
+import { z } from "zod";
+import {
+  createResource,
+  deleteResource,
+  getProjectId,
+  isResourceNotFoundError,
+  readResource,
+  updateResource,
+} from "./_lib/gcp.ts";
+
+const BASE_URL = "https://displayvideo.googleapis.com/";
+
+const GET_CONFIG = {
+  "id": "displayvideo.advertisers.creatives.get",
+  "path": "v4/advertisers/{+advertiserId}/creatives/{+creativeId}",
+  "httpMethod": "GET",
+  "parameterOrder": [
+    "advertiserId",
+    "creativeId",
+  ],
+  "parameters": {
+    "advertiserId": {
+      "location": "path",
+      "required": true,
+    },
+    "creativeId": {
+      "location": "path",
+      "required": true,
+    },
+  },
+} as const;
+
+const INSERT_CONFIG = {
+  "id": "displayvideo.advertisers.creatives.create",
+  "path": "v4/advertisers/{+advertiserId}/creatives",
+  "httpMethod": "POST",
+  "parameterOrder": [
+    "advertiserId",
+  ],
+  "parameters": {
+    "advertiserId": {
+      "location": "path",
+      "required": true,
+    },
+  },
+} as const;
+
+const PATCH_CONFIG = {
+  "id": "displayvideo.advertisers.creatives.patch",
+  "path": "v4/advertisers/{+advertiserId}/creatives/{+creativeId}",
+  "httpMethod": "PATCH",
+  "parameterOrder": [
+    "advertiserId",
+    "creativeId",
+  ],
+  "parameters": {
+    "advertiserId": {
+      "location": "path",
+      "required": true,
+    },
+    "creativeId": {
+      "location": "path",
+      "required": true,
+    },
+    "updateMask": {
+      "location": "query",
+    },
+  },
+} as const;
+
+const DELETE_CONFIG = {
+  "id": "displayvideo.advertisers.creatives.delete",
+  "path": "v4/advertisers/{+advertiserId}/creatives/{+creativeId}",
+  "httpMethod": "DELETE",
+  "parameterOrder": [
+    "advertiserId",
+    "creativeId",
+  ],
+  "parameters": {
+    "advertiserId": {
+      "location": "path",
+      "required": true,
+    },
+    "creativeId": {
+      "location": "path",
+      "required": true,
+    },
+  },
+} as const;
+
+const GlobalArgsSchema = z.object({
+  name: z.string().describe(
+    "Instance name for this resource (used as the unique identifier in the factory pattern)",
+  ),
+  additionalDimensions: z.array(z.object({
+    heightPixels: z.number().int().describe("The height in pixels.").optional(),
+    widthPixels: z.number().int().describe("The width in pixels.").optional(),
+  })).describe(
+    "Optional. Additional dimensions. Applicable when creative_type is one of: * `CREATIVE_TYPE_STANDARD` * `CREATIVE_TYPE_EXPANDABLE` * `CREATIVE_TYPE_NATIVE` * `CREATIVE_TYPE_NATIVE_SITE_SQUARE` * `CREATIVE_TYPE_LIGHTBOX` * `CREATIVE_TYPE_PUBLISHER_HOSTED` If this field is specified, width_pixels and height_pixels are both required and must be greater than or equal to 0.",
+  ).optional(),
+  advertiserId: z.string().describe(
+    "Output only. The unique ID of the advertiser the creative belongs to.",
+  ).optional(),
+  appendedTag: z.string().describe(
+    "Optional. Third-party HTML tracking tag to be appended to the creative tag.",
+  ).optional(),
+  assets: z.array(z.object({
+    asset: z.object({
+      content: z.string().describe(
+        "The asset content. For uploaded assets, the content is the serving path.",
+      ).optional(),
+      mediaId: z.string().describe(
+        "Media ID of the uploaded asset. This is a unique identifier for the asset. This ID can be passed to other API calls, e.g. CreateCreative to associate the asset with a creative. The Media ID space updated on **April 5, 2023**. Update media IDs cached before **April 5, 2023** by retrieving the new media ID from associated creative resources or re-uploading the asset.",
+      ).optional(),
+    }).describe("A single asset.").optional(),
+    role: z.enum([
+      "ASSET_ROLE_UNSPECIFIED",
+      "ASSET_ROLE_MAIN",
+      "ASSET_ROLE_BACKUP",
+      "ASSET_ROLE_POLITE_LOAD",
+      "ASSET_ROLE_HEADLINE",
+      "ASSET_ROLE_LONG_HEADLINE",
+      "ASSET_ROLE_BODY",
+      "ASSET_ROLE_LONG_BODY",
+      "ASSET_ROLE_CAPTION_URL",
+      "ASSET_ROLE_CALL_TO_ACTION",
+      "ASSET_ROLE_ADVERTISER_NAME",
+      "ASSET_ROLE_PRICE",
+      "ASSET_ROLE_ANDROID_APP_ID",
+      "ASSET_ROLE_IOS_APP_ID",
+      "ASSET_ROLE_RATING",
+      "ASSET_ROLE_ICON",
+      "ASSET_ROLE_COVER_IMAGE",
+      "ASSET_ROLE_BACKGROUND_COLOR",
+      "ASSET_ROLE_ACCENT_COLOR",
+      "ASSET_ROLE_REQUIRE_LOGO",
+      "ASSET_ROLE_REQUIRE_IMAGE",
+      "ASSET_ROLE_ENABLE_ASSET_ENHANCEMENTS",
+    ]).describe("Optional. The role of this asset for the creative.")
+      .optional(),
+  })).describe("Required. Assets associated to this creative.").optional(),
+  cmTrackingAd: z.object({
+    cmAdId: z.string().describe(
+      "Optional. The ad ID of the campaign manager 360 tracking Ad.",
+    ).optional(),
+    cmCreativeId: z.string().describe(
+      "Optional. The creative ID of the campaign manager 360 tracking Ad.",
+    ).optional(),
+    cmPlacementId: z.string().describe(
+      "Optional. The placement ID of the campaign manager 360 tracking Ad.",
+    ).optional(),
+  }).describe("A Campaign Manager 360 tracking ad.").optional(),
+  companionCreativeIds: z.array(z.string()).describe(
+    "Optional. The IDs of companion creatives for a video creative. You can assign existing display creatives (with image or HTML5 assets) to serve surrounding the publisher's video player. Companions display around the video player while the video is playing and remain after the video has completed. Creatives contain additional dimensions can not be companion creatives. This field is only supported for the following creative_type: * `CREATIVE_TYPE_AUDIO` * `CREATIVE_TYPE_VIDEO`",
+  ).optional(),
+  counterEvents: z.array(z.object({
+    name: z.string().describe("Required. The name of the counter event.")
+      .optional(),
+    reportingName: z.string().describe(
+      "Required. The name used to identify this counter event in reports.",
+    ).optional(),
+  })).describe(
+    "Optional. Counter events for a rich media creative. Counters track the number of times that a user interacts with any part of a rich media creative in a specified way (mouse-overs, mouse-outs, clicks, taps, data loading, keyboard entries, etc.). Any event that can be captured in the creative can be recorded as a counter. Leave it empty or unset for creatives containing image assets only.",
+  ).optional(),
+  creativeType: z.enum([
+    "CREATIVE_TYPE_UNSPECIFIED",
+    "CREATIVE_TYPE_STANDARD",
+    "CREATIVE_TYPE_EXPANDABLE",
+    "CREATIVE_TYPE_VIDEO",
+    "CREATIVE_TYPE_NATIVE",
+    "CREATIVE_TYPE_TEMPLATED_APP_INSTALL",
+    "CREATIVE_TYPE_NATIVE_SITE_SQUARE",
+    "CREATIVE_TYPE_TEMPLATED_APP_INSTALL_INTERSTITIAL",
+    "CREATIVE_TYPE_LIGHTBOX",
+    "CREATIVE_TYPE_NATIVE_APP_INSTALL",
+    "CREATIVE_TYPE_NATIVE_APP_INSTALL_SQUARE",
+    "CREATIVE_TYPE_AUDIO",
+    "CREATIVE_TYPE_PUBLISHER_HOSTED",
+    "CREATIVE_TYPE_NATIVE_VIDEO",
+    "CREATIVE_TYPE_TEMPLATED_APP_INSTALL_VIDEO",
+    "CREATIVE_TYPE_ASSET_BASED_CREATIVE",
+  ]).describe("Required. Immutable. The type of the creative.").optional(),
+  dimensions: z.object({
+    heightPixels: z.number().int().describe("The height in pixels.").optional(),
+    widthPixels: z.number().int().describe("The width in pixels.").optional(),
+  }).describe("Dimensions.").optional(),
+  displayName: z.string().describe(
+    "Required. The display name of the creative. Must be UTF-8 encoded with a maximum size of 240 bytes.",
+  ).optional(),
+  entityStatus: z.enum([
+    "ENTITY_STATUS_UNSPECIFIED",
+    "ENTITY_STATUS_ACTIVE",
+    "ENTITY_STATUS_ARCHIVED",
+    "ENTITY_STATUS_DRAFT",
+    "ENTITY_STATUS_PAUSED",
+    "ENTITY_STATUS_SCHEDULED_FOR_DELETION",
+  ]).describe(
+    "Required. Controls whether or not the creative can serve. Accepted values are: * `ENTITY_STATUS_ACTIVE` * `ENTITY_STATUS_ARCHIVED` * `ENTITY_STATUS_PAUSED`",
+  ).optional(),
+  exitEvents: z.array(z.object({
+    name: z.string().describe(
+      "Optional. The name of the click tag of the exit event. The name must be unique within one creative. Leave it empty or unset for creatives containing image assets only.",
+    ).optional(),
+    reportingName: z.string().describe(
+      "Optional. The name used to identify this event in reports. Leave it empty or unset for creatives containing image assets only.",
+    ).optional(),
+    type: z.enum([
+      "EXIT_EVENT_TYPE_UNSPECIFIED",
+      "EXIT_EVENT_TYPE_DEFAULT",
+      "EXIT_EVENT_TYPE_BACKUP",
+    ]).describe("Required. The type of the exit event.").optional(),
+    url: z.string().describe(
+      "Required. The click through URL of the exit event. This is required when type is: * `EXIT_EVENT_TYPE_DEFAULT` * `EXIT_EVENT_TYPE_BACKUP`",
+    ).optional(),
+  })).describe(
+    "Required. Exit events for this creative. An exit (also known as a click tag) is any area in your creative that someone can click or tap to open an advertiser's landing page. Every creative must include at least one exit. You can add an exit to your creative in any of the following ways: * Use Google Web Designer's tap area. * Define a JavaScript variable called \"clickTag\". * Use the Enabler (Enabler.exit()) to track exits in rich media formats.",
+  ).optional(),
+  expandOnHover: z.boolean().describe(
+    "Optional. Indicates the creative will automatically expand on hover. Optional and only valid for third-party expandable creatives. Third-party expandable creatives are creatives with following hosting source: * `HOSTING_SOURCE_THIRD_PARTY` combined with following creative_type: * `CREATIVE_TYPE_EXPANDABLE`",
+  ).optional(),
+  expandingDirection: z.enum([
+    "EXPANDING_DIRECTION_UNSPECIFIED",
+    "EXPANDING_DIRECTION_NONE",
+    "EXPANDING_DIRECTION_UP",
+    "EXPANDING_DIRECTION_DOWN",
+    "EXPANDING_DIRECTION_LEFT",
+    "EXPANDING_DIRECTION_RIGHT",
+    "EXPANDING_DIRECTION_UP_AND_LEFT",
+    "EXPANDING_DIRECTION_UP_AND_RIGHT",
+    "EXPANDING_DIRECTION_DOWN_AND_LEFT",
+    "EXPANDING_DIRECTION_DOWN_AND_RIGHT",
+    "EXPANDING_DIRECTION_UP_OR_DOWN",
+    "EXPANDING_DIRECTION_LEFT_OR_RIGHT",
+    "EXPANDING_DIRECTION_ANY_DIAGONAL",
+  ]).describe(
+    "Optional. Specifies the expanding direction of the creative. Required and only valid for third-party expandable creatives. Third-party expandable creatives are creatives with following hosting source: * `HOSTING_SOURCE_THIRD_PARTY` combined with following creative_type: * `CREATIVE_TYPE_EXPANDABLE`",
+  ).optional(),
+  hostingSource: z.enum([
+    "HOSTING_SOURCE_UNSPECIFIED",
+    "HOSTING_SOURCE_CM",
+    "HOSTING_SOURCE_THIRD_PARTY",
+    "HOSTING_SOURCE_HOSTED",
+    "HOSTING_SOURCE_RICH_MEDIA",
+  ]).describe("Required. Indicates where the creative is hosted.").optional(),
+  iasCampaignMonitoring: z.boolean().describe(
+    "Optional. Indicates whether Integral Ad Science (IAS) campaign monitoring is enabled. To enable this for the creative, make sure the Advertiser.creative_config.ias_client_id has been set to your IAS client ID.",
+  ).optional(),
+  integrationCode: z.string().describe(
+    "Optional. ID information used to link this creative to an external system. Must be UTF-8 encoded with a length of no more than 10,000 characters.",
+  ).optional(),
+  jsTrackerUrl: z.string().describe(
+    "Optional. JavaScript measurement URL from supported third-party verification providers (ComScore, DoubleVerify, IAS, Moat). HTML script tags are not supported. This field is only writeable in the following creative_type: * `CREATIVE_TYPE_NATIVE` * `CREATIVE_TYPE_NATIVE_SITE_SQUARE` * `CREATIVE_TYPE_NATIVE_VIDEO`",
+  ).optional(),
+  notes: z.string().describe(
+    "Optional. User notes for this creative. Must be UTF-8 encoded with a length of no more than 20,000 characters.",
+  ).optional(),
+  obaIcon: z.object({
+    clickTrackingUrl: z.string().describe(
+      "Required. The click tracking URL of the OBA icon. Only URLs of the following domains are allowed: * `https://info.evidon.com` * `https://l.betrad.com`",
+    ).optional(),
+    dimensions: z.object({
+      heightPixels: z.number().int().describe("The height in pixels.")
+        .optional(),
+      widthPixels: z.number().int().describe("The width in pixels.").optional(),
+    }).describe("Dimensions.").optional(),
+    landingPageUrl: z.string().describe(
+      "Required. The landing page URL of the OBA icon. Only URLs of the following domains are allowed: * `https://info.evidon.com` * `https://l.betrad.com`",
+    ).optional(),
+    position: z.enum([
+      "OBA_ICON_POSITION_UNSPECIFIED",
+      "OBA_ICON_POSITION_UPPER_RIGHT",
+      "OBA_ICON_POSITION_UPPER_LEFT",
+      "OBA_ICON_POSITION_LOWER_RIGHT",
+      "OBA_ICON_POSITION_LOWER_LEFT",
+    ]).describe("Optional. The position of the OBA icon on the creative.")
+      .optional(),
+    program: z.string().describe(
+      "Optional. The program of the OBA icon. For example: “AdChoices”.",
+    ).optional(),
+    resourceMimeType: z.string().describe(
+      "Optional. The MIME type of the OBA icon resource.",
+    ).optional(),
+    resourceUrl: z.string().describe(
+      "Optional. The URL of the OBA icon resource.",
+    ).optional(),
+    viewTrackingUrl: z.string().describe(
+      "Required. The view tracking URL of the OBA icon. Only URLs of the following domains are allowed: * `https://info.evidon.com` * `https://l.betrad.com`",
+    ).optional(),
+  }).describe("OBA Icon for a Creative").optional(),
+  progressOffset: z.object({
+    percentage: z.string().describe(
+      "Optional. The offset in percentage of the audio or video duration.",
+    ).optional(),
+    seconds: z.string().describe(
+      "Optional. The offset in seconds from the start of the audio or video.",
+    ).optional(),
+  }).describe("The length an audio or a video has been played.").optional(),
+  requireHtml5: z.boolean().describe(
+    "Optional. Indicates that the creative relies on HTML5 to render properly. Optional and only valid for third-party tag creatives. Third-party tag creatives are creatives with following hosting_source: * `HOSTING_SOURCE_THIRD_PARTY` combined with following creative_type: * `CREATIVE_TYPE_STANDARD` * `CREATIVE_TYPE_EXPANDABLE`",
+  ).optional(),
+  requireMraid: z.boolean().describe(
+    "Optional. Indicates that the creative requires MRAID (Mobile Rich Media Ad Interface Definitions system). Set this if the creative relies on mobile gestures for interactivity, such as swiping or tapping. Optional and only valid for third-party tag creatives. Third-party tag creatives are creatives with following hosting_source: * `HOSTING_SOURCE_THIRD_PARTY` combined with following creative_type: * `CREATIVE_TYPE_STANDARD` * `CREATIVE_TYPE_EXPANDABLE`",
+  ).optional(),
+  requirePingForAttribution: z.boolean().describe(
+    "Optional. Indicates that the creative will wait for a return ping for attribution. Only valid when using a Campaign Manager 360 tracking ad with a third-party ad server parameter and the ${DC_DBM_TOKEN} macro. Optional and only valid for third-party tag creatives or third-party VAST tag creatives. Third-party tag creatives are creatives with following hosting_source: * `HOSTING_SOURCE_THIRD_PARTY` combined with following creative_type: * `CREATIVE_TYPE_STANDARD` * `CREATIVE_TYPE_EXPANDABLE` Third-party VAST tag creatives are creatives with following hosting_source: * `HOSTING_SOURCE_THIRD_PARTY` combined with following creative_type: * `CREATIVE_TYPE_AUDIO` * `CREATIVE_TYPE_VIDEO`",
+  ).optional(),
+  reviewStatus: z.object({
+    approvalStatus: z.enum([
+      "APPROVAL_STATUS_UNSPECIFIED",
+      "APPROVAL_STATUS_PENDING_NOT_SERVABLE",
+      "APPROVAL_STATUS_PENDING_SERVABLE",
+      "APPROVAL_STATUS_APPROVED_SERVABLE",
+      "APPROVAL_STATUS_REJECTED_NOT_SERVABLE",
+    ]).describe(
+      "Represents the basic approval needed for a creative to begin serving. Summary of creative_and_landing_page_review_status and content_and_policy_review_status.",
+    ).optional(),
+    contentAndPolicyReviewStatus: z.enum([
+      "REVIEW_STATUS_UNSPECIFIED",
+      "REVIEW_STATUS_APPROVED",
+      "REVIEW_STATUS_REJECTED",
+      "REVIEW_STATUS_PENDING",
+    ]).describe("Content and policy review status for the creative.")
+      .optional(),
+    creativeAndLandingPageReviewStatus: z.enum([
+      "REVIEW_STATUS_UNSPECIFIED",
+      "REVIEW_STATUS_APPROVED",
+      "REVIEW_STATUS_REJECTED",
+      "REVIEW_STATUS_PENDING",
+    ]).describe("Creative and landing page review status for the creative.")
+      .optional(),
+    exchangeReviewStatuses: z.array(z.object({
+      exchange: z.enum([
+        "EXCHANGE_UNSPECIFIED",
+        "EXCHANGE_GOOGLE_AD_MANAGER",
+        "EXCHANGE_APPNEXUS",
+        "EXCHANGE_BRIGHTROLL",
+        "EXCHANGE_ADFORM",
+        "EXCHANGE_ADMETA",
+        "EXCHANGE_ADMIXER",
+        "EXCHANGE_ADSMOGO",
+        "EXCHANGE_ADSWIZZ",
+        "EXCHANGE_BIDSWITCH",
+        "EXCHANGE_BRIGHTROLL_DISPLAY",
+        "EXCHANGE_CADREON",
+        "EXCHANGE_DAILYMOTION",
+        "EXCHANGE_FIVE",
+        "EXCHANGE_FLUCT",
+        "EXCHANGE_FREEWHEEL",
+        "EXCHANGE_GENIEE",
+        "EXCHANGE_GUMGUM",
+        "EXCHANGE_IMOBILE",
+        "EXCHANGE_IBILLBOARD",
+        "EXCHANGE_IMPROVE_DIGITAL",
+        "EXCHANGE_INDEX",
+        "EXCHANGE_KARGO",
+        "EXCHANGE_MICROAD",
+        "EXCHANGE_MOPUB",
+        "EXCHANGE_NEND",
+        "EXCHANGE_ONE_BY_AOL_DISPLAY",
+        "EXCHANGE_ONE_BY_AOL_MOBILE",
+        "EXCHANGE_ONE_BY_AOL_VIDEO",
+        "EXCHANGE_OOYALA",
+        "EXCHANGE_OPENX",
+        "EXCHANGE_PERMODO",
+        "EXCHANGE_PLATFORMONE",
+        "EXCHANGE_PLATFORMID",
+        "EXCHANGE_PUBMATIC",
+        "EXCHANGE_PULSEPOINT",
+        "EXCHANGE_REVENUEMAX",
+        "EXCHANGE_RUBICON",
+        "EXCHANGE_SMARTCLIP",
+        "EXCHANGE_SMARTRTB",
+        "EXCHANGE_SMARTSTREAMTV",
+        "EXCHANGE_SOVRN",
+        "EXCHANGE_SPOTXCHANGE",
+        "EXCHANGE_STROER",
+        "EXCHANGE_TEADSTV",
+        "EXCHANGE_TELARIA",
+        "EXCHANGE_TVN",
+        "EXCHANGE_UNITED",
+        "EXCHANGE_YIELDLAB",
+        "EXCHANGE_YIELDMO",
+        "EXCHANGE_UNRULYX",
+        "EXCHANGE_OPEN8",
+        "EXCHANGE_TRITON",
+        "EXCHANGE_TRIPLELIFT",
+        "EXCHANGE_TABOOLA",
+        "EXCHANGE_INMOBI",
+        "EXCHANGE_SMAATO",
+        "EXCHANGE_AJA",
+        "EXCHANGE_SUPERSHIP",
+        "EXCHANGE_NEXSTAR_DIGITAL",
+        "EXCHANGE_WAZE",
+        "EXCHANGE_SOUNDCAST",
+        "EXCHANGE_SHARETHROUGH",
+        "EXCHANGE_FYBER",
+        "EXCHANGE_RED_FOR_PUBLISHERS",
+        "EXCHANGE_MEDIANET",
+        "EXCHANGE_TAPJOY",
+        "EXCHANGE_VISTAR",
+        "EXCHANGE_DAX",
+        "EXCHANGE_JCD",
+        "EXCHANGE_PLACE_EXCHANGE",
+        "EXCHANGE_APPLOVIN",
+        "EXCHANGE_CONNATIX",
+        "EXCHANGE_RESET_DIGITAL",
+        "EXCHANGE_HIVESTACK",
+        "EXCHANGE_DRAX",
+        "EXCHANGE_APPLOVIN_GBID",
+        "EXCHANGE_FYBER_GBID",
+        "EXCHANGE_UNITY_GBID",
+        "EXCHANGE_CHARTBOOST_GBID",
+        "EXCHANGE_ADMOST_GBID",
+        "EXCHANGE_TOPON_GBID",
+        "EXCHANGE_NETFLIX",
+        "EXCHANGE_CORE",
+        "EXCHANGE_COMMERCE_GRID",
+        "EXCHANGE_SPOTIFY",
+        "EXCHANGE_TUBI",
+        "EXCHANGE_SNAP",
+        "EXCHANGE_CADENT",
+      ]).describe("The exchange reviewing the creative.").optional(),
+      status: z.enum([
+        "REVIEW_STATUS_UNSPECIFIED",
+        "REVIEW_STATUS_APPROVED",
+        "REVIEW_STATUS_REJECTED",
+        "REVIEW_STATUS_PENDING",
+      ]).describe("Status of the exchange review.").optional(),
+    })).describe("Exchange review statuses for the creative.").optional(),
+  }).describe("Review statuses for the creative.").optional(),
+  skipOffset: z.object({
+    percentage: z.string().describe(
+      "Optional. The offset in percentage of the audio or video duration.",
+    ).optional(),
+    seconds: z.string().describe(
+      "Optional. The offset in seconds from the start of the audio or video.",
+    ).optional(),
+  }).describe("The length an audio or a video has been played.").optional(),
+  skippable: z.boolean().describe(
+    "Optional. Whether the user can choose to skip a video creative. This field is only supported for the following creative_type: * `CREATIVE_TYPE_VIDEO`",
+  ).optional(),
+  thirdPartyTag: z.string().describe(
+    "Optional. The original third-party tag used for the creative. Required and only valid for third-party tag creatives. Third-party tag creatives are creatives with following hosting_source: * `HOSTING_SOURCE_THIRD_PARTY` combined with following creative_type: * `CREATIVE_TYPE_STANDARD` * `CREATIVE_TYPE_EXPANDABLE`",
+  ).optional(),
+  thirdPartyUrls: z.array(z.object({
+    type: z.enum([
+      "THIRD_PARTY_URL_TYPE_UNSPECIFIED",
+      "THIRD_PARTY_URL_TYPE_IMPRESSION",
+      "THIRD_PARTY_URL_TYPE_CLICK_TRACKING",
+      "THIRD_PARTY_URL_TYPE_AUDIO_VIDEO_START",
+      "THIRD_PARTY_URL_TYPE_AUDIO_VIDEO_FIRST_QUARTILE",
+      "THIRD_PARTY_URL_TYPE_AUDIO_VIDEO_MIDPOINT",
+      "THIRD_PARTY_URL_TYPE_AUDIO_VIDEO_THIRD_QUARTILE",
+      "THIRD_PARTY_URL_TYPE_AUDIO_VIDEO_COMPLETE",
+      "THIRD_PARTY_URL_TYPE_AUDIO_VIDEO_MUTE",
+      "THIRD_PARTY_URL_TYPE_AUDIO_VIDEO_PAUSE",
+      "THIRD_PARTY_URL_TYPE_AUDIO_VIDEO_REWIND",
+      "THIRD_PARTY_URL_TYPE_AUDIO_VIDEO_FULLSCREEN",
+      "THIRD_PARTY_URL_TYPE_AUDIO_VIDEO_STOP",
+      "THIRD_PARTY_URL_TYPE_AUDIO_VIDEO_CUSTOM",
+      "THIRD_PARTY_URL_TYPE_AUDIO_VIDEO_SKIP",
+      "THIRD_PARTY_URL_TYPE_AUDIO_VIDEO_PROGRESS",
+    ]).describe(
+      "Optional. The type of interaction needs to be tracked by the tracking URL",
+    ).optional(),
+    url: z.string().describe(
+      "Optional. Tracking URL used to track the interaction. Provide a URL with optional path or query string, beginning with `https:`. For example, `https://www.example.com/path`",
+    ).optional(),
+  })).describe(
+    "Optional. Tracking URLs from third parties to track interactions with a video creative. This field is only supported for the following creative_type: * `CREATIVE_TYPE_AUDIO` * `CREATIVE_TYPE_VIDEO` * `CREATIVE_TYPE_NATIVE_VIDEO`",
+  ).optional(),
+  timerEvents: z.array(z.object({
+    name: z.string().describe("Required. The name of the timer event.")
+      .optional(),
+    reportingName: z.string().describe(
+      "Required. The name used to identify this timer event in reports.",
+    ).optional(),
+  })).describe(
+    "Optional. Timer custom events for a rich media creative. Timers track the time during which a user views and interacts with a specified part of a rich media creative. A creative can have multiple timer events, each timed independently. Leave it empty or unset for creatives containing image assets only.",
+  ).optional(),
+  trackerUrls: z.array(z.string()).describe(
+    "Optional. Tracking URLs for analytics providers or third-party ad technology vendors. The URLs must start with `https:` (except on inventory that doesn't require SSL compliance). If using macros in your URL, use only macros supported by Display & Video 360. Standard URLs only, no IMG or SCRIPT tags. This field is only writeable in the following creative_type: * `CREATIVE_TYPE_NATIVE` * `CREATIVE_TYPE_NATIVE_SITE_SQUARE` * `CREATIVE_TYPE_NATIVE_VIDEO`",
+  ).optional(),
+  universalAdId: z.object({
+    id: z.string().describe("Optional. The unique creative identifier.")
+      .optional(),
+    registry: z.enum([
+      "UNIVERSAL_AD_REGISTRY_UNSPECIFIED",
+      "UNIVERSAL_AD_REGISTRY_OTHER",
+      "UNIVERSAL_AD_REGISTRY_AD_ID",
+      "UNIVERSAL_AD_REGISTRY_CLEARCAST",
+      "UNIVERSAL_AD_REGISTRY_DV360",
+      "UNIVERSAL_AD_REGISTRY_CM",
+    ]).describe("Optional. The registry provides unique creative identifiers.")
+      .optional(),
+  }).describe(
+    "A creative identifier provided by a registry that is unique across all platforms. This is part of the VAST 4.0 standard.",
+  ).optional(),
+  vastTagUrl: z.string().describe(
+    "Optional. The URL of the VAST tag for a third-party VAST tag creative. Required and only valid for third-party VAST tag creatives. Third-party VAST tag creatives are creatives with following hosting_source: * `HOSTING_SOURCE_THIRD_PARTY` combined with following creative_type: * `CREATIVE_TYPE_AUDIO` * `CREATIVE_TYPE_VIDEO`",
+  ).optional(),
+});
+
+const StateSchema = z.object({
+  additionalDimensions: z.array(z.object({
+    heightPixels: z.number(),
+    widthPixels: z.number(),
+  })).optional(),
+  advertiserId: z.string().optional(),
+  appendedTag: z.string().optional(),
+  assets: z.array(z.object({
+    asset: z.object({
+      content: z.string(),
+      mediaId: z.string(),
+    }),
+    role: z.string(),
+  })).optional(),
+  cmPlacementId: z.string().optional(),
+  cmTrackingAd: z.object({
+    cmAdId: z.string(),
+    cmCreativeId: z.string(),
+    cmPlacementId: z.string(),
+  }).optional(),
+  companionCreativeIds: z.array(z.string()).optional(),
+  counterEvents: z.array(z.object({
+    name: z.string(),
+    reportingName: z.string(),
+  })).optional(),
+  createTime: z.string().optional(),
+  creativeAttributes: z.array(z.string()).optional(),
+  creativeId: z.string().optional(),
+  creativeType: z.string().optional(),
+  dimensions: z.object({
+    heightPixels: z.number(),
+    widthPixels: z.number(),
+  }).optional(),
+  displayName: z.string().optional(),
+  dynamic: z.boolean().optional(),
+  entityStatus: z.string().optional(),
+  exitEvents: z.array(z.object({
+    name: z.string(),
+    reportingName: z.string(),
+    type: z.string(),
+    url: z.string(),
+  })).optional(),
+  expandOnHover: z.boolean().optional(),
+  expandingDirection: z.string().optional(),
+  hostingSource: z.string().optional(),
+  html5Video: z.boolean().optional(),
+  iasCampaignMonitoring: z.boolean().optional(),
+  integrationCode: z.string().optional(),
+  jsTrackerUrl: z.string().optional(),
+  lineItemIds: z.array(z.string()).optional(),
+  mediaDuration: z.string().optional(),
+  mp3Audio: z.boolean().optional(),
+  name: z.string(),
+  notes: z.string().optional(),
+  obaIcon: z.object({
+    clickTrackingUrl: z.string(),
+    dimensions: z.object({
+      heightPixels: z.number(),
+      widthPixels: z.number(),
+    }),
+    landingPageUrl: z.string(),
+    position: z.string(),
+    program: z.string(),
+    resourceMimeType: z.string(),
+    resourceUrl: z.string(),
+    viewTrackingUrl: z.string(),
+  }).optional(),
+  oggAudio: z.boolean().optional(),
+  progressOffset: z.object({
+    percentage: z.string(),
+    seconds: z.string(),
+  }).optional(),
+  requireHtml5: z.boolean().optional(),
+  requireMraid: z.boolean().optional(),
+  requirePingForAttribution: z.boolean().optional(),
+  reviewStatus: z.object({
+    approvalStatus: z.string(),
+    contentAndPolicyReviewStatus: z.string(),
+    creativeAndLandingPageReviewStatus: z.string(),
+    exchangeReviewStatuses: z.array(z.object({
+      exchange: z.string(),
+      status: z.string(),
+    })),
+  }).optional(),
+  skipOffset: z.object({
+    percentage: z.string(),
+    seconds: z.string(),
+  }).optional(),
+  skippable: z.boolean().optional(),
+  thirdPartyTag: z.string().optional(),
+  thirdPartyUrls: z.array(z.object({
+    type: z.string(),
+    url: z.string(),
+  })).optional(),
+  timerEvents: z.array(z.object({
+    name: z.string(),
+    reportingName: z.string(),
+  })).optional(),
+  trackerUrls: z.array(z.string()).optional(),
+  transcodes: z.array(z.object({
+    audioBitRateKbps: z.string(),
+    audioSampleRateHz: z.string(),
+    bitRateKbps: z.string(),
+    dimensions: z.object({
+      heightPixels: z.number(),
+      widthPixels: z.number(),
+    }),
+    fileSizeBytes: z.string(),
+    frameRate: z.number(),
+    mimeType: z.string(),
+    name: z.string(),
+    transcoded: z.boolean(),
+  })).optional(),
+  universalAdId: z.object({
+    id: z.string(),
+    registry: z.string(),
+  }).optional(),
+  updateTime: z.string().optional(),
+  vastTagUrl: z.string().optional(),
+  vpaid: z.boolean().optional(),
+}).passthrough();
+
+type StateData = z.infer<typeof StateSchema>;
+
+const InputsSchema = z.object({
+  name: z.string().optional(),
+  additionalDimensions: z.array(z.object({
+    heightPixels: z.number().int().describe("The height in pixels.").optional(),
+    widthPixels: z.number().int().describe("The width in pixels.").optional(),
+  })).describe(
+    "Optional. Additional dimensions. Applicable when creative_type is one of: * `CREATIVE_TYPE_STANDARD` * `CREATIVE_TYPE_EXPANDABLE` * `CREATIVE_TYPE_NATIVE` * `CREATIVE_TYPE_NATIVE_SITE_SQUARE` * `CREATIVE_TYPE_LIGHTBOX` * `CREATIVE_TYPE_PUBLISHER_HOSTED` If this field is specified, width_pixels and height_pixels are both required and must be greater than or equal to 0.",
+  ).optional(),
+  advertiserId: z.string().describe(
+    "Output only. The unique ID of the advertiser the creative belongs to.",
+  ).optional(),
+  appendedTag: z.string().describe(
+    "Optional. Third-party HTML tracking tag to be appended to the creative tag.",
+  ).optional(),
+  assets: z.array(z.object({
+    asset: z.object({
+      content: z.string().describe(
+        "The asset content. For uploaded assets, the content is the serving path.",
+      ).optional(),
+      mediaId: z.string().describe(
+        "Media ID of the uploaded asset. This is a unique identifier for the asset. This ID can be passed to other API calls, e.g. CreateCreative to associate the asset with a creative. The Media ID space updated on **April 5, 2023**. Update media IDs cached before **April 5, 2023** by retrieving the new media ID from associated creative resources or re-uploading the asset.",
+      ).optional(),
+    }).describe("A single asset.").optional(),
+    role: z.enum([
+      "ASSET_ROLE_UNSPECIFIED",
+      "ASSET_ROLE_MAIN",
+      "ASSET_ROLE_BACKUP",
+      "ASSET_ROLE_POLITE_LOAD",
+      "ASSET_ROLE_HEADLINE",
+      "ASSET_ROLE_LONG_HEADLINE",
+      "ASSET_ROLE_BODY",
+      "ASSET_ROLE_LONG_BODY",
+      "ASSET_ROLE_CAPTION_URL",
+      "ASSET_ROLE_CALL_TO_ACTION",
+      "ASSET_ROLE_ADVERTISER_NAME",
+      "ASSET_ROLE_PRICE",
+      "ASSET_ROLE_ANDROID_APP_ID",
+      "ASSET_ROLE_IOS_APP_ID",
+      "ASSET_ROLE_RATING",
+      "ASSET_ROLE_ICON",
+      "ASSET_ROLE_COVER_IMAGE",
+      "ASSET_ROLE_BACKGROUND_COLOR",
+      "ASSET_ROLE_ACCENT_COLOR",
+      "ASSET_ROLE_REQUIRE_LOGO",
+      "ASSET_ROLE_REQUIRE_IMAGE",
+      "ASSET_ROLE_ENABLE_ASSET_ENHANCEMENTS",
+    ]).describe("Optional. The role of this asset for the creative.")
+      .optional(),
+  })).describe("Required. Assets associated to this creative.").optional(),
+  cmTrackingAd: z.object({
+    cmAdId: z.string().describe(
+      "Optional. The ad ID of the campaign manager 360 tracking Ad.",
+    ).optional(),
+    cmCreativeId: z.string().describe(
+      "Optional. The creative ID of the campaign manager 360 tracking Ad.",
+    ).optional(),
+    cmPlacementId: z.string().describe(
+      "Optional. The placement ID of the campaign manager 360 tracking Ad.",
+    ).optional(),
+  }).describe("A Campaign Manager 360 tracking ad.").optional(),
+  companionCreativeIds: z.array(z.string()).describe(
+    "Optional. The IDs of companion creatives for a video creative. You can assign existing display creatives (with image or HTML5 assets) to serve surrounding the publisher's video player. Companions display around the video player while the video is playing and remain after the video has completed. Creatives contain additional dimensions can not be companion creatives. This field is only supported for the following creative_type: * `CREATIVE_TYPE_AUDIO` * `CREATIVE_TYPE_VIDEO`",
+  ).optional(),
+  counterEvents: z.array(z.object({
+    name: z.string().describe("Required. The name of the counter event.")
+      .optional(),
+    reportingName: z.string().describe(
+      "Required. The name used to identify this counter event in reports.",
+    ).optional(),
+  })).describe(
+    "Optional. Counter events for a rich media creative. Counters track the number of times that a user interacts with any part of a rich media creative in a specified way (mouse-overs, mouse-outs, clicks, taps, data loading, keyboard entries, etc.). Any event that can be captured in the creative can be recorded as a counter. Leave it empty or unset for creatives containing image assets only.",
+  ).optional(),
+  creativeType: z.enum([
+    "CREATIVE_TYPE_UNSPECIFIED",
+    "CREATIVE_TYPE_STANDARD",
+    "CREATIVE_TYPE_EXPANDABLE",
+    "CREATIVE_TYPE_VIDEO",
+    "CREATIVE_TYPE_NATIVE",
+    "CREATIVE_TYPE_TEMPLATED_APP_INSTALL",
+    "CREATIVE_TYPE_NATIVE_SITE_SQUARE",
+    "CREATIVE_TYPE_TEMPLATED_APP_INSTALL_INTERSTITIAL",
+    "CREATIVE_TYPE_LIGHTBOX",
+    "CREATIVE_TYPE_NATIVE_APP_INSTALL",
+    "CREATIVE_TYPE_NATIVE_APP_INSTALL_SQUARE",
+    "CREATIVE_TYPE_AUDIO",
+    "CREATIVE_TYPE_PUBLISHER_HOSTED",
+    "CREATIVE_TYPE_NATIVE_VIDEO",
+    "CREATIVE_TYPE_TEMPLATED_APP_INSTALL_VIDEO",
+    "CREATIVE_TYPE_ASSET_BASED_CREATIVE",
+  ]).describe("Required. Immutable. The type of the creative.").optional(),
+  dimensions: z.object({
+    heightPixels: z.number().int().describe("The height in pixels.").optional(),
+    widthPixels: z.number().int().describe("The width in pixels.").optional(),
+  }).describe("Dimensions.").optional(),
+  displayName: z.string().describe(
+    "Required. The display name of the creative. Must be UTF-8 encoded with a maximum size of 240 bytes.",
+  ).optional(),
+  entityStatus: z.enum([
+    "ENTITY_STATUS_UNSPECIFIED",
+    "ENTITY_STATUS_ACTIVE",
+    "ENTITY_STATUS_ARCHIVED",
+    "ENTITY_STATUS_DRAFT",
+    "ENTITY_STATUS_PAUSED",
+    "ENTITY_STATUS_SCHEDULED_FOR_DELETION",
+  ]).describe(
+    "Required. Controls whether or not the creative can serve. Accepted values are: * `ENTITY_STATUS_ACTIVE` * `ENTITY_STATUS_ARCHIVED` * `ENTITY_STATUS_PAUSED`",
+  ).optional(),
+  exitEvents: z.array(z.object({
+    name: z.string().describe(
+      "Optional. The name of the click tag of the exit event. The name must be unique within one creative. Leave it empty or unset for creatives containing image assets only.",
+    ).optional(),
+    reportingName: z.string().describe(
+      "Optional. The name used to identify this event in reports. Leave it empty or unset for creatives containing image assets only.",
+    ).optional(),
+    type: z.enum([
+      "EXIT_EVENT_TYPE_UNSPECIFIED",
+      "EXIT_EVENT_TYPE_DEFAULT",
+      "EXIT_EVENT_TYPE_BACKUP",
+    ]).describe("Required. The type of the exit event.").optional(),
+    url: z.string().describe(
+      "Required. The click through URL of the exit event. This is required when type is: * `EXIT_EVENT_TYPE_DEFAULT` * `EXIT_EVENT_TYPE_BACKUP`",
+    ).optional(),
+  })).describe(
+    "Required. Exit events for this creative. An exit (also known as a click tag) is any area in your creative that someone can click or tap to open an advertiser's landing page. Every creative must include at least one exit. You can add an exit to your creative in any of the following ways: * Use Google Web Designer's tap area. * Define a JavaScript variable called \"clickTag\". * Use the Enabler (Enabler.exit()) to track exits in rich media formats.",
+  ).optional(),
+  expandOnHover: z.boolean().describe(
+    "Optional. Indicates the creative will automatically expand on hover. Optional and only valid for third-party expandable creatives. Third-party expandable creatives are creatives with following hosting source: * `HOSTING_SOURCE_THIRD_PARTY` combined with following creative_type: * `CREATIVE_TYPE_EXPANDABLE`",
+  ).optional(),
+  expandingDirection: z.enum([
+    "EXPANDING_DIRECTION_UNSPECIFIED",
+    "EXPANDING_DIRECTION_NONE",
+    "EXPANDING_DIRECTION_UP",
+    "EXPANDING_DIRECTION_DOWN",
+    "EXPANDING_DIRECTION_LEFT",
+    "EXPANDING_DIRECTION_RIGHT",
+    "EXPANDING_DIRECTION_UP_AND_LEFT",
+    "EXPANDING_DIRECTION_UP_AND_RIGHT",
+    "EXPANDING_DIRECTION_DOWN_AND_LEFT",
+    "EXPANDING_DIRECTION_DOWN_AND_RIGHT",
+    "EXPANDING_DIRECTION_UP_OR_DOWN",
+    "EXPANDING_DIRECTION_LEFT_OR_RIGHT",
+    "EXPANDING_DIRECTION_ANY_DIAGONAL",
+  ]).describe(
+    "Optional. Specifies the expanding direction of the creative. Required and only valid for third-party expandable creatives. Third-party expandable creatives are creatives with following hosting source: * `HOSTING_SOURCE_THIRD_PARTY` combined with following creative_type: * `CREATIVE_TYPE_EXPANDABLE`",
+  ).optional(),
+  hostingSource: z.enum([
+    "HOSTING_SOURCE_UNSPECIFIED",
+    "HOSTING_SOURCE_CM",
+    "HOSTING_SOURCE_THIRD_PARTY",
+    "HOSTING_SOURCE_HOSTED",
+    "HOSTING_SOURCE_RICH_MEDIA",
+  ]).describe("Required. Indicates where the creative is hosted.").optional(),
+  iasCampaignMonitoring: z.boolean().describe(
+    "Optional. Indicates whether Integral Ad Science (IAS) campaign monitoring is enabled. To enable this for the creative, make sure the Advertiser.creative_config.ias_client_id has been set to your IAS client ID.",
+  ).optional(),
+  integrationCode: z.string().describe(
+    "Optional. ID information used to link this creative to an external system. Must be UTF-8 encoded with a length of no more than 10,000 characters.",
+  ).optional(),
+  jsTrackerUrl: z.string().describe(
+    "Optional. JavaScript measurement URL from supported third-party verification providers (ComScore, DoubleVerify, IAS, Moat). HTML script tags are not supported. This field is only writeable in the following creative_type: * `CREATIVE_TYPE_NATIVE` * `CREATIVE_TYPE_NATIVE_SITE_SQUARE` * `CREATIVE_TYPE_NATIVE_VIDEO`",
+  ).optional(),
+  notes: z.string().describe(
+    "Optional. User notes for this creative. Must be UTF-8 encoded with a length of no more than 20,000 characters.",
+  ).optional(),
+  obaIcon: z.object({
+    clickTrackingUrl: z.string().describe(
+      "Required. The click tracking URL of the OBA icon. Only URLs of the following domains are allowed: * `https://info.evidon.com` * `https://l.betrad.com`",
+    ).optional(),
+    dimensions: z.object({
+      heightPixels: z.number().int().describe("The height in pixels.")
+        .optional(),
+      widthPixels: z.number().int().describe("The width in pixels.").optional(),
+    }).describe("Dimensions.").optional(),
+    landingPageUrl: z.string().describe(
+      "Required. The landing page URL of the OBA icon. Only URLs of the following domains are allowed: * `https://info.evidon.com` * `https://l.betrad.com`",
+    ).optional(),
+    position: z.enum([
+      "OBA_ICON_POSITION_UNSPECIFIED",
+      "OBA_ICON_POSITION_UPPER_RIGHT",
+      "OBA_ICON_POSITION_UPPER_LEFT",
+      "OBA_ICON_POSITION_LOWER_RIGHT",
+      "OBA_ICON_POSITION_LOWER_LEFT",
+    ]).describe("Optional. The position of the OBA icon on the creative.")
+      .optional(),
+    program: z.string().describe(
+      "Optional. The program of the OBA icon. For example: “AdChoices”.",
+    ).optional(),
+    resourceMimeType: z.string().describe(
+      "Optional. The MIME type of the OBA icon resource.",
+    ).optional(),
+    resourceUrl: z.string().describe(
+      "Optional. The URL of the OBA icon resource.",
+    ).optional(),
+    viewTrackingUrl: z.string().describe(
+      "Required. The view tracking URL of the OBA icon. Only URLs of the following domains are allowed: * `https://info.evidon.com` * `https://l.betrad.com`",
+    ).optional(),
+  }).describe("OBA Icon for a Creative").optional(),
+  progressOffset: z.object({
+    percentage: z.string().describe(
+      "Optional. The offset in percentage of the audio or video duration.",
+    ).optional(),
+    seconds: z.string().describe(
+      "Optional. The offset in seconds from the start of the audio or video.",
+    ).optional(),
+  }).describe("The length an audio or a video has been played.").optional(),
+  requireHtml5: z.boolean().describe(
+    "Optional. Indicates that the creative relies on HTML5 to render properly. Optional and only valid for third-party tag creatives. Third-party tag creatives are creatives with following hosting_source: * `HOSTING_SOURCE_THIRD_PARTY` combined with following creative_type: * `CREATIVE_TYPE_STANDARD` * `CREATIVE_TYPE_EXPANDABLE`",
+  ).optional(),
+  requireMraid: z.boolean().describe(
+    "Optional. Indicates that the creative requires MRAID (Mobile Rich Media Ad Interface Definitions system). Set this if the creative relies on mobile gestures for interactivity, such as swiping or tapping. Optional and only valid for third-party tag creatives. Third-party tag creatives are creatives with following hosting_source: * `HOSTING_SOURCE_THIRD_PARTY` combined with following creative_type: * `CREATIVE_TYPE_STANDARD` * `CREATIVE_TYPE_EXPANDABLE`",
+  ).optional(),
+  requirePingForAttribution: z.boolean().describe(
+    "Optional. Indicates that the creative will wait for a return ping for attribution. Only valid when using a Campaign Manager 360 tracking ad with a third-party ad server parameter and the ${DC_DBM_TOKEN} macro. Optional and only valid for third-party tag creatives or third-party VAST tag creatives. Third-party tag creatives are creatives with following hosting_source: * `HOSTING_SOURCE_THIRD_PARTY` combined with following creative_type: * `CREATIVE_TYPE_STANDARD` * `CREATIVE_TYPE_EXPANDABLE` Third-party VAST tag creatives are creatives with following hosting_source: * `HOSTING_SOURCE_THIRD_PARTY` combined with following creative_type: * `CREATIVE_TYPE_AUDIO` * `CREATIVE_TYPE_VIDEO`",
+  ).optional(),
+  reviewStatus: z.object({
+    approvalStatus: z.enum([
+      "APPROVAL_STATUS_UNSPECIFIED",
+      "APPROVAL_STATUS_PENDING_NOT_SERVABLE",
+      "APPROVAL_STATUS_PENDING_SERVABLE",
+      "APPROVAL_STATUS_APPROVED_SERVABLE",
+      "APPROVAL_STATUS_REJECTED_NOT_SERVABLE",
+    ]).describe(
+      "Represents the basic approval needed for a creative to begin serving. Summary of creative_and_landing_page_review_status and content_and_policy_review_status.",
+    ).optional(),
+    contentAndPolicyReviewStatus: z.enum([
+      "REVIEW_STATUS_UNSPECIFIED",
+      "REVIEW_STATUS_APPROVED",
+      "REVIEW_STATUS_REJECTED",
+      "REVIEW_STATUS_PENDING",
+    ]).describe("Content and policy review status for the creative.")
+      .optional(),
+    creativeAndLandingPageReviewStatus: z.enum([
+      "REVIEW_STATUS_UNSPECIFIED",
+      "REVIEW_STATUS_APPROVED",
+      "REVIEW_STATUS_REJECTED",
+      "REVIEW_STATUS_PENDING",
+    ]).describe("Creative and landing page review status for the creative.")
+      .optional(),
+    exchangeReviewStatuses: z.array(z.object({
+      exchange: z.enum([
+        "EXCHANGE_UNSPECIFIED",
+        "EXCHANGE_GOOGLE_AD_MANAGER",
+        "EXCHANGE_APPNEXUS",
+        "EXCHANGE_BRIGHTROLL",
+        "EXCHANGE_ADFORM",
+        "EXCHANGE_ADMETA",
+        "EXCHANGE_ADMIXER",
+        "EXCHANGE_ADSMOGO",
+        "EXCHANGE_ADSWIZZ",
+        "EXCHANGE_BIDSWITCH",
+        "EXCHANGE_BRIGHTROLL_DISPLAY",
+        "EXCHANGE_CADREON",
+        "EXCHANGE_DAILYMOTION",
+        "EXCHANGE_FIVE",
+        "EXCHANGE_FLUCT",
+        "EXCHANGE_FREEWHEEL",
+        "EXCHANGE_GENIEE",
+        "EXCHANGE_GUMGUM",
+        "EXCHANGE_IMOBILE",
+        "EXCHANGE_IBILLBOARD",
+        "EXCHANGE_IMPROVE_DIGITAL",
+        "EXCHANGE_INDEX",
+        "EXCHANGE_KARGO",
+        "EXCHANGE_MICROAD",
+        "EXCHANGE_MOPUB",
+        "EXCHANGE_NEND",
+        "EXCHANGE_ONE_BY_AOL_DISPLAY",
+        "EXCHANGE_ONE_BY_AOL_MOBILE",
+        "EXCHANGE_ONE_BY_AOL_VIDEO",
+        "EXCHANGE_OOYALA",
+        "EXCHANGE_OPENX",
+        "EXCHANGE_PERMODO",
+        "EXCHANGE_PLATFORMONE",
+        "EXCHANGE_PLATFORMID",
+        "EXCHANGE_PUBMATIC",
+        "EXCHANGE_PULSEPOINT",
+        "EXCHANGE_REVENUEMAX",
+        "EXCHANGE_RUBICON",
+        "EXCHANGE_SMARTCLIP",
+        "EXCHANGE_SMARTRTB",
+        "EXCHANGE_SMARTSTREAMTV",
+        "EXCHANGE_SOVRN",
+        "EXCHANGE_SPOTXCHANGE",
+        "EXCHANGE_STROER",
+        "EXCHANGE_TEADSTV",
+        "EXCHANGE_TELARIA",
+        "EXCHANGE_TVN",
+        "EXCHANGE_UNITED",
+        "EXCHANGE_YIELDLAB",
+        "EXCHANGE_YIELDMO",
+        "EXCHANGE_UNRULYX",
+        "EXCHANGE_OPEN8",
+        "EXCHANGE_TRITON",
+        "EXCHANGE_TRIPLELIFT",
+        "EXCHANGE_TABOOLA",
+        "EXCHANGE_INMOBI",
+        "EXCHANGE_SMAATO",
+        "EXCHANGE_AJA",
+        "EXCHANGE_SUPERSHIP",
+        "EXCHANGE_NEXSTAR_DIGITAL",
+        "EXCHANGE_WAZE",
+        "EXCHANGE_SOUNDCAST",
+        "EXCHANGE_SHARETHROUGH",
+        "EXCHANGE_FYBER",
+        "EXCHANGE_RED_FOR_PUBLISHERS",
+        "EXCHANGE_MEDIANET",
+        "EXCHANGE_TAPJOY",
+        "EXCHANGE_VISTAR",
+        "EXCHANGE_DAX",
+        "EXCHANGE_JCD",
+        "EXCHANGE_PLACE_EXCHANGE",
+        "EXCHANGE_APPLOVIN",
+        "EXCHANGE_CONNATIX",
+        "EXCHANGE_RESET_DIGITAL",
+        "EXCHANGE_HIVESTACK",
+        "EXCHANGE_DRAX",
+        "EXCHANGE_APPLOVIN_GBID",
+        "EXCHANGE_FYBER_GBID",
+        "EXCHANGE_UNITY_GBID",
+        "EXCHANGE_CHARTBOOST_GBID",
+        "EXCHANGE_ADMOST_GBID",
+        "EXCHANGE_TOPON_GBID",
+        "EXCHANGE_NETFLIX",
+        "EXCHANGE_CORE",
+        "EXCHANGE_COMMERCE_GRID",
+        "EXCHANGE_SPOTIFY",
+        "EXCHANGE_TUBI",
+        "EXCHANGE_SNAP",
+        "EXCHANGE_CADENT",
+      ]).describe("The exchange reviewing the creative.").optional(),
+      status: z.enum([
+        "REVIEW_STATUS_UNSPECIFIED",
+        "REVIEW_STATUS_APPROVED",
+        "REVIEW_STATUS_REJECTED",
+        "REVIEW_STATUS_PENDING",
+      ]).describe("Status of the exchange review.").optional(),
+    })).describe("Exchange review statuses for the creative.").optional(),
+  }).describe("Review statuses for the creative.").optional(),
+  skipOffset: z.object({
+    percentage: z.string().describe(
+      "Optional. The offset in percentage of the audio or video duration.",
+    ).optional(),
+    seconds: z.string().describe(
+      "Optional. The offset in seconds from the start of the audio or video.",
+    ).optional(),
+  }).describe("The length an audio or a video has been played.").optional(),
+  skippable: z.boolean().describe(
+    "Optional. Whether the user can choose to skip a video creative. This field is only supported for the following creative_type: * `CREATIVE_TYPE_VIDEO`",
+  ).optional(),
+  thirdPartyTag: z.string().describe(
+    "Optional. The original third-party tag used for the creative. Required and only valid for third-party tag creatives. Third-party tag creatives are creatives with following hosting_source: * `HOSTING_SOURCE_THIRD_PARTY` combined with following creative_type: * `CREATIVE_TYPE_STANDARD` * `CREATIVE_TYPE_EXPANDABLE`",
+  ).optional(),
+  thirdPartyUrls: z.array(z.object({
+    type: z.enum([
+      "THIRD_PARTY_URL_TYPE_UNSPECIFIED",
+      "THIRD_PARTY_URL_TYPE_IMPRESSION",
+      "THIRD_PARTY_URL_TYPE_CLICK_TRACKING",
+      "THIRD_PARTY_URL_TYPE_AUDIO_VIDEO_START",
+      "THIRD_PARTY_URL_TYPE_AUDIO_VIDEO_FIRST_QUARTILE",
+      "THIRD_PARTY_URL_TYPE_AUDIO_VIDEO_MIDPOINT",
+      "THIRD_PARTY_URL_TYPE_AUDIO_VIDEO_THIRD_QUARTILE",
+      "THIRD_PARTY_URL_TYPE_AUDIO_VIDEO_COMPLETE",
+      "THIRD_PARTY_URL_TYPE_AUDIO_VIDEO_MUTE",
+      "THIRD_PARTY_URL_TYPE_AUDIO_VIDEO_PAUSE",
+      "THIRD_PARTY_URL_TYPE_AUDIO_VIDEO_REWIND",
+      "THIRD_PARTY_URL_TYPE_AUDIO_VIDEO_FULLSCREEN",
+      "THIRD_PARTY_URL_TYPE_AUDIO_VIDEO_STOP",
+      "THIRD_PARTY_URL_TYPE_AUDIO_VIDEO_CUSTOM",
+      "THIRD_PARTY_URL_TYPE_AUDIO_VIDEO_SKIP",
+      "THIRD_PARTY_URL_TYPE_AUDIO_VIDEO_PROGRESS",
+    ]).describe(
+      "Optional. The type of interaction needs to be tracked by the tracking URL",
+    ).optional(),
+    url: z.string().describe(
+      "Optional. Tracking URL used to track the interaction. Provide a URL with optional path or query string, beginning with `https:`. For example, `https://www.example.com/path`",
+    ).optional(),
+  })).describe(
+    "Optional. Tracking URLs from third parties to track interactions with a video creative. This field is only supported for the following creative_type: * `CREATIVE_TYPE_AUDIO` * `CREATIVE_TYPE_VIDEO` * `CREATIVE_TYPE_NATIVE_VIDEO`",
+  ).optional(),
+  timerEvents: z.array(z.object({
+    name: z.string().describe("Required. The name of the timer event.")
+      .optional(),
+    reportingName: z.string().describe(
+      "Required. The name used to identify this timer event in reports.",
+    ).optional(),
+  })).describe(
+    "Optional. Timer custom events for a rich media creative. Timers track the time during which a user views and interacts with a specified part of a rich media creative. A creative can have multiple timer events, each timed independently. Leave it empty or unset for creatives containing image assets only.",
+  ).optional(),
+  trackerUrls: z.array(z.string()).describe(
+    "Optional. Tracking URLs for analytics providers or third-party ad technology vendors. The URLs must start with `https:` (except on inventory that doesn't require SSL compliance). If using macros in your URL, use only macros supported by Display & Video 360. Standard URLs only, no IMG or SCRIPT tags. This field is only writeable in the following creative_type: * `CREATIVE_TYPE_NATIVE` * `CREATIVE_TYPE_NATIVE_SITE_SQUARE` * `CREATIVE_TYPE_NATIVE_VIDEO`",
+  ).optional(),
+  universalAdId: z.object({
+    id: z.string().describe("Optional. The unique creative identifier.")
+      .optional(),
+    registry: z.enum([
+      "UNIVERSAL_AD_REGISTRY_UNSPECIFIED",
+      "UNIVERSAL_AD_REGISTRY_OTHER",
+      "UNIVERSAL_AD_REGISTRY_AD_ID",
+      "UNIVERSAL_AD_REGISTRY_CLEARCAST",
+      "UNIVERSAL_AD_REGISTRY_DV360",
+      "UNIVERSAL_AD_REGISTRY_CM",
+    ]).describe("Optional. The registry provides unique creative identifiers.")
+      .optional(),
+  }).describe(
+    "A creative identifier provided by a registry that is unique across all platforms. This is part of the VAST 4.0 standard.",
+  ).optional(),
+  vastTagUrl: z.string().describe(
+    "Optional. The URL of the VAST tag for a third-party VAST tag creative. Required and only valid for third-party VAST tag creatives. Third-party VAST tag creatives are creatives with following hosting_source: * `HOSTING_SOURCE_THIRD_PARTY` combined with following creative_type: * `CREATIVE_TYPE_AUDIO` * `CREATIVE_TYPE_VIDEO`",
+  ).optional(),
+});
+
+export const model = {
+  type: "@swamp/gcp/displayvideo/advertisers-creatives",
+  version: "2026.03.27.1",
+  globalArguments: GlobalArgsSchema,
+  inputsSchema: InputsSchema,
+  resources: {
+    state: {
+      description: "A single Creative.",
+      schema: StateSchema,
+      lifetime: "infinite",
+      garbageCollection: 10,
+    },
+  },
+  methods: {
+    create: {
+      description: "Create a creatives",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const projectId = await getProjectId();
+        const params: Record<string, string> = { project: projectId };
+        if (g["advertiserId"] !== undefined) {
+          params["advertiserId"] = String(g["advertiserId"]);
+        }
+        const body: Record<string, unknown> = {};
+        if (g["additionalDimensions"] !== undefined) {
+          body["additionalDimensions"] = g["additionalDimensions"];
+        }
+        if (g["appendedTag"] !== undefined) {
+          body["appendedTag"] = g["appendedTag"];
+        }
+        if (g["assets"] !== undefined) body["assets"] = g["assets"];
+        if (g["cmTrackingAd"] !== undefined) {
+          body["cmTrackingAd"] = g["cmTrackingAd"];
+        }
+        if (g["companionCreativeIds"] !== undefined) {
+          body["companionCreativeIds"] = g["companionCreativeIds"];
+        }
+        if (g["counterEvents"] !== undefined) {
+          body["counterEvents"] = g["counterEvents"];
+        }
+        if (g["creativeType"] !== undefined) {
+          body["creativeType"] = g["creativeType"];
+        }
+        if (g["dimensions"] !== undefined) body["dimensions"] = g["dimensions"];
+        if (g["displayName"] !== undefined) {
+          body["displayName"] = g["displayName"];
+        }
+        if (g["entityStatus"] !== undefined) {
+          body["entityStatus"] = g["entityStatus"];
+        }
+        if (g["exitEvents"] !== undefined) body["exitEvents"] = g["exitEvents"];
+        if (g["expandOnHover"] !== undefined) {
+          body["expandOnHover"] = g["expandOnHover"];
+        }
+        if (g["expandingDirection"] !== undefined) {
+          body["expandingDirection"] = g["expandingDirection"];
+        }
+        if (g["hostingSource"] !== undefined) {
+          body["hostingSource"] = g["hostingSource"];
+        }
+        if (g["iasCampaignMonitoring"] !== undefined) {
+          body["iasCampaignMonitoring"] = g["iasCampaignMonitoring"];
+        }
+        if (g["integrationCode"] !== undefined) {
+          body["integrationCode"] = g["integrationCode"];
+        }
+        if (g["jsTrackerUrl"] !== undefined) {
+          body["jsTrackerUrl"] = g["jsTrackerUrl"];
+        }
+        if (g["notes"] !== undefined) body["notes"] = g["notes"];
+        if (g["obaIcon"] !== undefined) body["obaIcon"] = g["obaIcon"];
+        if (g["progressOffset"] !== undefined) {
+          body["progressOffset"] = g["progressOffset"];
+        }
+        if (g["requireHtml5"] !== undefined) {
+          body["requireHtml5"] = g["requireHtml5"];
+        }
+        if (g["requireMraid"] !== undefined) {
+          body["requireMraid"] = g["requireMraid"];
+        }
+        if (g["requirePingForAttribution"] !== undefined) {
+          body["requirePingForAttribution"] = g["requirePingForAttribution"];
+        }
+        if (g["reviewStatus"] !== undefined) {
+          body["reviewStatus"] = g["reviewStatus"];
+        }
+        if (g["skipOffset"] !== undefined) body["skipOffset"] = g["skipOffset"];
+        if (g["skippable"] !== undefined) body["skippable"] = g["skippable"];
+        if (g["thirdPartyTag"] !== undefined) {
+          body["thirdPartyTag"] = g["thirdPartyTag"];
+        }
+        if (g["thirdPartyUrls"] !== undefined) {
+          body["thirdPartyUrls"] = g["thirdPartyUrls"];
+        }
+        if (g["timerEvents"] !== undefined) {
+          body["timerEvents"] = g["timerEvents"];
+        }
+        if (g["trackerUrls"] !== undefined) {
+          body["trackerUrls"] = g["trackerUrls"];
+        }
+        if (g["universalAdId"] !== undefined) {
+          body["universalAdId"] = g["universalAdId"];
+        }
+        if (g["vastTagUrl"] !== undefined) body["vastTagUrl"] = g["vastTagUrl"];
+        if (g["name"] !== undefined) params["creativeId"] = String(g["name"]);
+        const result = await createResource(
+          BASE_URL,
+          INSERT_CONFIG,
+          params,
+          body,
+          GET_CONFIG,
+        ) as StateData;
+        const instanceName = g.name?.toString() ?? "current";
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    get: {
+      description: "Get a creatives",
+      arguments: z.object({
+        identifier: z.string().describe("The name of the creatives"),
+      }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const projectId = await getProjectId();
+        const params: Record<string, string> = { project: projectId };
+        const g = context.globalArgs;
+        if (g["advertiserId"] !== undefined) {
+          params["advertiserId"] = String(g["advertiserId"]);
+        }
+        params["creativeId"] = args.identifier;
+        const result = await readResource(
+          BASE_URL,
+          GET_CONFIG,
+          params,
+        ) as StateData;
+        const instanceName = g.name?.toString() ?? args.identifier;
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    update: {
+      description: "Update creatives attributes",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const projectId = await getProjectId();
+        const instanceName = g.name?.toString() ?? "current";
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          instanceName,
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        const params: Record<string, string> = { project: projectId };
+        if (g["advertiserId"] !== undefined) {
+          params["advertiserId"] = String(g["advertiserId"]);
+        } else if (existing["advertiserId"]) {
+          params["advertiserId"] = String(existing["advertiserId"]);
+        }
+        params["creativeId"] = existing["name"]?.toString() ?? "";
+        const body: Record<string, unknown> = {};
+        if (g["additionalDimensions"] !== undefined) {
+          body["additionalDimensions"] = g["additionalDimensions"];
+        }
+        if (g["appendedTag"] !== undefined) {
+          body["appendedTag"] = g["appendedTag"];
+        }
+        if (g["assets"] !== undefined) body["assets"] = g["assets"];
+        if (g["cmTrackingAd"] !== undefined) {
+          body["cmTrackingAd"] = g["cmTrackingAd"];
+        }
+        if (g["companionCreativeIds"] !== undefined) {
+          body["companionCreativeIds"] = g["companionCreativeIds"];
+        }
+        if (g["counterEvents"] !== undefined) {
+          body["counterEvents"] = g["counterEvents"];
+        }
+        if (g["dimensions"] !== undefined) body["dimensions"] = g["dimensions"];
+        if (g["displayName"] !== undefined) {
+          body["displayName"] = g["displayName"];
+        }
+        if (g["entityStatus"] !== undefined) {
+          body["entityStatus"] = g["entityStatus"];
+        }
+        if (g["exitEvents"] !== undefined) body["exitEvents"] = g["exitEvents"];
+        if (g["expandOnHover"] !== undefined) {
+          body["expandOnHover"] = g["expandOnHover"];
+        }
+        if (g["expandingDirection"] !== undefined) {
+          body["expandingDirection"] = g["expandingDirection"];
+        }
+        if (g["hostingSource"] !== undefined) {
+          body["hostingSource"] = g["hostingSource"];
+        }
+        if (g["iasCampaignMonitoring"] !== undefined) {
+          body["iasCampaignMonitoring"] = g["iasCampaignMonitoring"];
+        }
+        if (g["integrationCode"] !== undefined) {
+          body["integrationCode"] = g["integrationCode"];
+        }
+        if (g["jsTrackerUrl"] !== undefined) {
+          body["jsTrackerUrl"] = g["jsTrackerUrl"];
+        }
+        if (g["notes"] !== undefined) body["notes"] = g["notes"];
+        if (g["obaIcon"] !== undefined) body["obaIcon"] = g["obaIcon"];
+        if (g["progressOffset"] !== undefined) {
+          body["progressOffset"] = g["progressOffset"];
+        }
+        if (g["requireHtml5"] !== undefined) {
+          body["requireHtml5"] = g["requireHtml5"];
+        }
+        if (g["requireMraid"] !== undefined) {
+          body["requireMraid"] = g["requireMraid"];
+        }
+        if (g["requirePingForAttribution"] !== undefined) {
+          body["requirePingForAttribution"] = g["requirePingForAttribution"];
+        }
+        if (g["reviewStatus"] !== undefined) {
+          body["reviewStatus"] = g["reviewStatus"];
+        }
+        if (g["skipOffset"] !== undefined) body["skipOffset"] = g["skipOffset"];
+        if (g["skippable"] !== undefined) body["skippable"] = g["skippable"];
+        if (g["thirdPartyTag"] !== undefined) {
+          body["thirdPartyTag"] = g["thirdPartyTag"];
+        }
+        if (g["thirdPartyUrls"] !== undefined) {
+          body["thirdPartyUrls"] = g["thirdPartyUrls"];
+        }
+        if (g["timerEvents"] !== undefined) {
+          body["timerEvents"] = g["timerEvents"];
+        }
+        if (g["trackerUrls"] !== undefined) {
+          body["trackerUrls"] = g["trackerUrls"];
+        }
+        if (g["universalAdId"] !== undefined) {
+          body["universalAdId"] = g["universalAdId"];
+        }
+        if (g["vastTagUrl"] !== undefined) body["vastTagUrl"] = g["vastTagUrl"];
+        for (const key of Object.keys(existing)) {
+          if (
+            key === "fingerprint" || key === "labelFingerprint" ||
+            key === "etag" || key.endsWith("Fingerprint")
+          ) {
+            body[key] = existing[key];
+          }
+        }
+        const result = await updateResource(
+          BASE_URL,
+          PATCH_CONFIG,
+          params,
+          body,
+          GET_CONFIG,
+        ) as StateData;
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    delete: {
+      description: "Delete the creatives",
+      arguments: z.object({
+        identifier: z.string().describe("The name of the creatives"),
+      }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const g = context.globalArgs;
+        const projectId = await getProjectId();
+        const params: Record<string, string> = { project: projectId };
+        if (g["advertiserId"] !== undefined) {
+          params["advertiserId"] = String(g["advertiserId"]);
+        }
+        params["creativeId"] = args.identifier;
+        const { existed } = await deleteResource(
+          BASE_URL,
+          DELETE_CONFIG,
+          params,
+        );
+        const instanceName = g.name?.toString() ?? args.identifier;
+        const handle = await context.writeResource("state", instanceName, {
+          identifier: args.identifier,
+          existed,
+          status: existed ? "deleted" : "not_found",
+          deletedAt: new Date().toISOString(),
+        });
+        return { dataHandles: [handle] };
+      },
+    },
+    sync: {
+      description: "Sync creatives state from GCP",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const projectId = await getProjectId();
+        const instanceName = g.name?.toString() ?? "current";
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          instanceName,
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        try {
+          const params: Record<string, string> = { project: projectId };
+          if (g["advertiserId"] !== undefined) {
+            params["advertiserId"] = String(g["advertiserId"]);
+          } else if (existing["advertiserId"]) {
+            params["advertiserId"] = String(existing["advertiserId"]);
+          }
+          const identifier = existing.name?.toString() ?? g["name"]?.toString();
+          if (!identifier) {
+            throw new Error(
+              "No identifier found in existing state or globalArgs",
+            );
+          }
+          params["creativeId"] = identifier;
+          const result = await readResource(
+            BASE_URL,
+            GET_CONFIG,
+            params,
+          ) as StateData;
+          const handle = await context.writeResource(
+            "state",
+            instanceName,
+            result,
+          );
+          return { dataHandles: [handle] };
+        } catch (error: unknown) {
+          if (isResourceNotFoundError(error)) {
+            const handle = await context.writeResource("state", instanceName, {
+              status: "not_found",
+              syncedAt: new Date().toISOString(),
+            });
+            return { dataHandles: [handle] };
+          }
+          throw error;
+        }
+      },
+    },
+  },
+};

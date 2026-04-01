@@ -1,0 +1,37 @@
+# Auto-generated manifest. Re-generate with the appropriate deno task.
+manifestVersion: 1
+name: "@swamp/gcp/vmwareengine"
+version: "2026.03.31.1"
+description: "Google Cloud vmwareengine infrastructure models"
+labels:
+  - gcp
+  - google-cloud
+  - vmwareengine
+  - cloud
+  - infrastructure
+releaseNotes: |
+  - Updated: networkpeerings, networkpolicies, networkpolicies_externalaccessrules, privateclouds, privateclouds_clusters, privateclouds_externaladdresses, privateconnections, vmwareenginenetworks
+models:
+  - announcements.ts
+  - datastores.ts
+  - locations.ts
+  - networkpeerings.ts
+  - networkpeerings_peeringroutes.ts
+  - networkpolicies.ts
+  - networkpolicies_externalaccessrules.ts
+  - nodetypes.ts
+  - privateclouds.ts
+  - privateclouds_clusters.ts
+  - privateclouds_clusters_nodes.ts
+  - privateclouds_externaladdresses.ts
+  - privateclouds_hcxactivationkeys.ts
+  - privateclouds_loggingservers.ts
+  - privateclouds_managementdnszonebindings.ts
+  - privateclouds_subnets.ts
+  - privateclouds_upgrades.ts
+  - privateconnections.ts
+  - privateconnections_peeringroutes.ts
+  - vmwareenginenetworks.ts
+additionalFiles:
+  - LICENSE.txt
+  - README.md

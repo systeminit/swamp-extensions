@@ -1,0 +1,18 @@
+# Auto-generated manifest. Re-generate with the appropriate deno task.
+manifestVersion: 1
+name: "@swamp/gcp/cloudshell"
+version: "2026.03.27.1"
+description: "Google Cloud cloudshell infrastructure models"
+labels:
+  - gcp
+  - google-cloud
+  - cloudshell
+  - cloud
+  - infrastructure
+releaseNotes: |
+  - Added: users_environments
+models:
+  - users_environments.ts
+additionalFiles:
+  - LICENSE.txt
+  - README.md

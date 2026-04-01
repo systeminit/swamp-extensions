@@ -1,0 +1,242 @@
+// Auto-generated extension model for @swamp/gcp/bigquery/tabledata
+// Do not edit manually. Re-generate with: deno task generate:gcp
+
+// deno-lint-ignore-file no-explicit-any
+
+import { z } from "zod";
+import {
+  createResource,
+  getProjectId,
+  isResourceNotFoundError,
+  readViaList,
+} from "./_lib/gcp.ts";
+
+const BASE_URL = "https://bigquery.googleapis.com/bigquery/v2/";
+
+const LIST_CONFIG = {
+  "id": "bigquery.tabledata.list",
+  "path": "projects/{+projectId}/datasets/{+datasetId}/tables/{+tableId}/data",
+  "httpMethod": "GET",
+  "parameterOrder": [
+    "projectId",
+    "datasetId",
+    "tableId",
+  ],
+  "parameters": {
+    "datasetId": {
+      "location": "path",
+      "required": true,
+    },
+    "formatOptions.timestampOutputFormat": {
+      "location": "query",
+    },
+    "formatOptions.useInt64Timestamp": {
+      "location": "query",
+    },
+    "maxResults": {
+      "location": "query",
+    },
+    "pageToken": {
+      "location": "query",
+    },
+    "projectId": {
+      "location": "path",
+      "required": true,
+    },
+    "selectedFields": {
+      "location": "query",
+    },
+    "startIndex": {
+      "location": "query",
+    },
+    "tableId": {
+      "location": "path",
+      "required": true,
+    },
+  },
+} as const;
+
+const GlobalArgsSchema = z.object({
+  name: z.string().describe(
+    "Instance name for this resource (used as the unique identifier in the factory pattern)",
+  ),
+});
+
+const StateSchema = z.object({
+  f: z.array(z.object({
+    v: z.string(),
+  })).optional(),
+}).passthrough();
+
+type StateData = z.infer<typeof StateSchema>;
+
+const InputsSchema = z.object({
+  name: z.string().optional(),
+});
+
+export const model = {
+  type: "@swamp/gcp/bigquery/tabledata",
+  version: "2026.03.27.1",
+  globalArguments: GlobalArgsSchema,
+  inputsSchema: InputsSchema,
+  resources: {
+    state: {
+      description: "List the content of a table in rows.",
+      schema: StateSchema,
+      lifetime: "infinite",
+      garbageCollection: 10,
+    },
+  },
+  methods: {
+    get: {
+      description: "Get a tabledata",
+      arguments: z.object({
+        identifier: z.string().describe("The name of the tabledata"),
+      }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const projectId = await getProjectId();
+        const params: Record<string, string> = { project: projectId };
+        const g = context.globalArgs;
+        if (g["datasetId"] !== undefined) {
+          params["datasetId"] = String(g["datasetId"]);
+        }
+        if (g["tableId"] !== undefined) {
+          params["tableId"] = String(g["tableId"]);
+        }
+        const result = await readViaList(
+          BASE_URL,
+          LIST_CONFIG,
+          params,
+          "name",
+          args.identifier,
+        ) as StateData;
+        const instanceName = g.name?.toString() ?? args.identifier;
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    sync: {
+      description: "Sync tabledata state from GCP",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const projectId = await getProjectId();
+        const instanceName = g.name?.toString() ?? "current";
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          instanceName,
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        try {
+          const params: Record<string, string> = { project: projectId };
+          if (g["datasetId"] !== undefined) {
+            params["datasetId"] = String(g["datasetId"]);
+          } else if (existing["datasetId"]) {
+            params["datasetId"] = String(existing["datasetId"]);
+          }
+          if (g["tableId"] !== undefined) {
+            params["tableId"] = String(g["tableId"]);
+          } else if (existing["tableId"]) {
+            params["tableId"] = String(existing["tableId"]);
+          }
+          const identifier = existing.name?.toString() ?? g["name"]?.toString();
+          if (!identifier) {
+            throw new Error(
+              "No identifier found in existing state or globalArgs",
+            );
+          }
+          const result = await readViaList(
+            BASE_URL,
+            LIST_CONFIG,
+            params,
+            "name",
+            identifier,
+          ) as StateData;
+          const handle = await context.writeResource(
+            "state",
+            instanceName,
+            result,
+          );
+          return { dataHandles: [handle] };
+        } catch (error: unknown) {
+          if (isResourceNotFoundError(error)) {
+            const handle = await context.writeResource("state", instanceName, {
+              status: "not_found",
+              syncedAt: new Date().toISOString(),
+            });
+            return { dataHandles: [handle] };
+          }
+          throw error;
+        }
+      },
+    },
+    insert_all: {
+      description: "insert all",
+      arguments: z.object({
+        ignoreUnknownValues: z.any().optional(),
+        kind: z.any().optional(),
+        rows: z.any().optional(),
+        skipInvalidRows: z.any().optional(),
+        templateSuffix: z.any().optional(),
+        traceId: z.any().optional(),
+      }),
+      execute: async (args: Record<string, unknown>, context: any) => {
+        const g = context.globalArgs;
+        const projectId = await getProjectId();
+        const params: Record<string, string> = { project: projectId };
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          g.name?.toString() ?? "current",
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        params["datasetId"] = existing["datasetId"]?.toString() ??
+          g["datasetId"]?.toString() ?? "";
+        params["tableId"] = existing["name"]?.toString() ??
+          g["name"]?.toString() ?? "";
+        const body: Record<string, unknown> = {};
+        if (args["ignoreUnknownValues"] !== undefined) {
+          body["ignoreUnknownValues"] = args["ignoreUnknownValues"];
+        }
+        if (args["kind"] !== undefined) body["kind"] = args["kind"];
+        if (args["rows"] !== undefined) body["rows"] = args["rows"];
+        if (args["skipInvalidRows"] !== undefined) {
+          body["skipInvalidRows"] = args["skipInvalidRows"];
+        }
+        if (args["templateSuffix"] !== undefined) {
+          body["templateSuffix"] = args["templateSuffix"];
+        }
+        if (args["traceId"] !== undefined) body["traceId"] = args["traceId"];
+        const result = await createResource(
+          BASE_URL,
+          {
+            "id": "bigquery.tabledata.insertAll",
+            "path":
+              "projects/{+projectId}/datasets/{+datasetId}/tables/{+tableId}/insertAll",
+            "httpMethod": "POST",
+            "parameterOrder": ["projectId", "datasetId", "tableId"],
+            "parameters": {
+              "datasetId": { "location": "path", "required": true },
+              "projectId": { "location": "path", "required": true },
+              "tableId": { "location": "path", "required": true },
+            },
+          },
+          params,
+          body,
+        );
+        return { result };
+      },
+    },
+  },
+};

@@ -1,0 +1,640 @@
+// Auto-generated extension model for @swamp/gcp/accesscontextmanager/gcpuseraccessbindings
+// Do not edit manually. Re-generate with: deno task generate:gcp
+
+// deno-lint-ignore-file no-explicit-any
+
+import { z } from "zod";
+import {
+  createResource,
+  deleteResource,
+  getProjectId,
+  isResourceNotFoundError,
+  readResource,
+  updateResource,
+} from "./_lib/gcp.ts";
+
+/** Construct the fully-qualified resource name from parent and short name. */
+function buildResourceName(parent: string, shortName: string): string {
+  return `${parent}/gcpUserAccessBindings/${shortName}`;
+}
+
+const BASE_URL = "https://accesscontextmanager.googleapis.com/";
+
+const GET_CONFIG = {
+  "id": "accesscontextmanager.organizations.gcpUserAccessBindings.get",
+  "path": "v1/{+name}",
+  "httpMethod": "GET",
+  "parameterOrder": [
+    "name",
+  ],
+  "parameters": {
+    "name": {
+      "location": "path",
+      "required": true,
+    },
+  },
+} as const;
+
+const INSERT_CONFIG = {
+  "id": "accesscontextmanager.organizations.gcpUserAccessBindings.create",
+  "path": "v1/{+parent}/gcpUserAccessBindings",
+  "httpMethod": "POST",
+  "parameterOrder": [
+    "parent",
+  ],
+  "parameters": {
+    "parent": {
+      "location": "path",
+      "required": true,
+    },
+  },
+} as const;
+
+const PATCH_CONFIG = {
+  "id": "accesscontextmanager.organizations.gcpUserAccessBindings.patch",
+  "path": "v1/{+name}",
+  "httpMethod": "PATCH",
+  "parameterOrder": [
+    "name",
+  ],
+  "parameters": {
+    "append": {
+      "location": "query",
+    },
+    "name": {
+      "location": "path",
+      "required": true,
+    },
+    "updateMask": {
+      "location": "query",
+    },
+  },
+} as const;
+
+const DELETE_CONFIG = {
+  "id": "accesscontextmanager.organizations.gcpUserAccessBindings.delete",
+  "path": "v1/{+name}",
+  "httpMethod": "DELETE",
+  "parameterOrder": [
+    "name",
+  ],
+  "parameters": {
+    "name": {
+      "location": "path",
+      "required": true,
+    },
+  },
+} as const;
+
+const GlobalArgsSchema = z.object({
+  accessLevels: z.array(z.string()).describe(
+    'Optional. Access level that a user must have to be granted access. Only one access level is supported, not multiple. This repeated field must have exactly one element. Example: "accessPolicies/9522/accessLevels/device_trusted"',
+  ).optional(),
+  dryRunAccessLevels: z.array(z.string()).describe(
+    'Optional. Dry run access level that will be evaluated but will not be enforced. The access denial based on dry run policy will be logged. Only one access level is supported, not multiple. This list must have exactly one element. Example: "accessPolicies/9522/accessLevels/device_trusted"',
+  ).optional(),
+  groupKey: z.string().describe(
+    'Optional. Immutable. Google Group id whose users are subject to this binding\'s restrictions. See "id" in the [Google Workspace Directory API\'s Group Resource] (https://developers.google.com/admin-sdk/directory/v1/reference/groups#resource). If a group\'s email address/alias is changed, this resource will continue to point at the changed group. This field does not accept group email addresses or aliases. Example: "01d520gv4vjcrht"',
+  ).optional(),
+  name: z.string().describe(
+    'Immutable. Assigned by the server during creation. The last segment has an arbitrary length and has only URI unreserved characters (as defined by [RFC 3986 Section 2.3](https://tools.ietf.org/html/rfc3986#section-2.3)). Should not be specified by the client during creation. Example: "organizations/256/gcpUserAccessBindings/b3-BhcX_Ud5N"',
+  ).optional(),
+  restrictedClientApplications: z.array(z.object({
+    clientId: z.string().describe("The OAuth client ID of the application.")
+      .optional(),
+    name: z.string().describe(
+      'The name of the application. Example: "Cloud Console"',
+    ).optional(),
+  })).describe(
+    "Optional. A list of applications that are subject to this binding's restrictions. If the list is empty, the binding restrictions will universally apply to all applications.",
+  ).optional(),
+  scopedAccessSettings: z.array(z.object({
+    activeSettings: z.object({
+      accessLevels: z.array(z.string()).describe(
+        'Optional. Access level that a user must have to be granted access. Only one access level is supported, not multiple. This repeated field must have exactly one element. Example: "accessPolicies/9522/accessLevels/device_trusted"',
+      ).optional(),
+      sessionSettings: z.object({
+        maxInactivity: z.string().describe(
+          "Optional. How long a user is allowed to take between actions before a new access token must be issued. Only set for Google Cloud apps.",
+        ).optional(),
+        sessionLength: z.string().describe(
+          "Optional. The session length. Setting this field to zero is equal to disabling session. Also can set infinite session by flipping the enabled bit to false below. If use_oidc_max_age is true, for OIDC apps, the session length will be the minimum of this field and OIDC max_age param.",
+        ).optional(),
+        sessionLengthEnabled: z.boolean().describe(
+          "Optional. This field enables or disables Google Cloud session length. When false, all fields set above will be disregarded and the session length is basically infinite.",
+        ).optional(),
+        sessionReauthMethod: z.enum([
+          "SESSION_REAUTH_METHOD_UNSPECIFIED",
+          "LOGIN",
+          "SECURITY_KEY",
+          "PASSWORD",
+        ]).describe(
+          "Optional. Session method when user's Google Cloud session is up.",
+        ).optional(),
+        useOidcMaxAge: z.boolean().describe(
+          "Optional. Only useful for OIDC apps. When false, the OIDC max_age param, if passed in the authentication request will be ignored. When true, the re-auth period will be the minimum of the session_length field and the max_age OIDC param.",
+        ).optional(),
+      }).describe(
+        "Stores settings related to Google Cloud Session Length including session duration, the type of challenge (i.e. method) they should face when their session expires, and other related settings.",
+      ).optional(),
+    }).describe(
+      "Access settings represent the set of conditions that must be met for access to be granted. At least one of the fields must be set.",
+    ).optional(),
+    dryRunSettings: z.object({
+      accessLevels: z.array(z.string()).describe(
+        'Optional. Access level that a user must have to be granted access. Only one access level is supported, not multiple. This repeated field must have exactly one element. Example: "accessPolicies/9522/accessLevels/device_trusted"',
+      ).optional(),
+      sessionSettings: z.object({
+        maxInactivity: z.string().describe(
+          "Optional. How long a user is allowed to take between actions before a new access token must be issued. Only set for Google Cloud apps.",
+        ).optional(),
+        sessionLength: z.string().describe(
+          "Optional. The session length. Setting this field to zero is equal to disabling session. Also can set infinite session by flipping the enabled bit to false below. If use_oidc_max_age is true, for OIDC apps, the session length will be the minimum of this field and OIDC max_age param.",
+        ).optional(),
+        sessionLengthEnabled: z.boolean().describe(
+          "Optional. This field enables or disables Google Cloud session length. When false, all fields set above will be disregarded and the session length is basically infinite.",
+        ).optional(),
+        sessionReauthMethod: z.enum([
+          "SESSION_REAUTH_METHOD_UNSPECIFIED",
+          "LOGIN",
+          "SECURITY_KEY",
+          "PASSWORD",
+        ]).describe(
+          "Optional. Session method when user's Google Cloud session is up.",
+        ).optional(),
+        useOidcMaxAge: z.boolean().describe(
+          "Optional. Only useful for OIDC apps. When false, the OIDC max_age param, if passed in the authentication request will be ignored. When true, the re-auth period will be the minimum of the session_length field and the max_age OIDC param.",
+        ).optional(),
+      }).describe(
+        "Stores settings related to Google Cloud Session Length including session duration, the type of challenge (i.e. method) they should face when their session expires, and other related settings.",
+      ).optional(),
+    }).describe(
+      "Access settings represent the set of conditions that must be met for access to be granted. At least one of the fields must be set.",
+    ).optional(),
+    scope: z.object({
+      clientScope: z.object({
+        restrictedClientApplication: z.object({
+          clientId: z.string().describe(
+            "The OAuth client ID of the application.",
+          ).optional(),
+          name: z.string().describe(
+            'The name of the application. Example: "Cloud Console"',
+          ).optional(),
+        }).describe("An application that accesses Google Cloud APIs.")
+          .optional(),
+      }).describe(
+        "Client scope represents the application, etc. subject to this binding's restrictions.",
+      ).optional(),
+    }).describe(
+      "Access scope represents the client scope, etc. to which the settings will be applied to.",
+    ).optional(),
+  })).describe(
+    "Optional. A list of scoped access settings that set this binding's restrictions on a subset of applications. This field cannot be set if restricted_client_applications is set.",
+  ).optional(),
+  sessionSettings: z.object({
+    maxInactivity: z.string().describe(
+      "Optional. How long a user is allowed to take between actions before a new access token must be issued. Only set for Google Cloud apps.",
+    ).optional(),
+    sessionLength: z.string().describe(
+      "Optional. The session length. Setting this field to zero is equal to disabling session. Also can set infinite session by flipping the enabled bit to false below. If use_oidc_max_age is true, for OIDC apps, the session length will be the minimum of this field and OIDC max_age param.",
+    ).optional(),
+    sessionLengthEnabled: z.boolean().describe(
+      "Optional. This field enables or disables Google Cloud session length. When false, all fields set above will be disregarded and the session length is basically infinite.",
+    ).optional(),
+    sessionReauthMethod: z.enum([
+      "SESSION_REAUTH_METHOD_UNSPECIFIED",
+      "LOGIN",
+      "SECURITY_KEY",
+      "PASSWORD",
+    ]).describe(
+      "Optional. Session method when user's Google Cloud session is up.",
+    ).optional(),
+    useOidcMaxAge: z.boolean().describe(
+      "Optional. Only useful for OIDC apps. When false, the OIDC max_age param, if passed in the authentication request will be ignored. When true, the re-auth period will be the minimum of the session_length field and the max_age OIDC param.",
+    ).optional(),
+  }).describe(
+    "Stores settings related to Google Cloud Session Length including session duration, the type of challenge (i.e. method) they should face when their session expires, and other related settings.",
+  ).optional(),
+  parent: z.string().describe(
+    "The parent resource name (e.g., projects/my-project/locations/us-central1, organizations/123, folders/456)",
+  ).optional(),
+});
+
+const StateSchema = z.object({
+  accessLevels: z.array(z.string()).optional(),
+  dryRunAccessLevels: z.array(z.string()).optional(),
+  groupKey: z.string().optional(),
+  name: z.string(),
+  restrictedClientApplications: z.array(z.object({
+    clientId: z.string(),
+    name: z.string(),
+  })).optional(),
+  scopedAccessSettings: z.array(z.object({
+    activeSettings: z.object({
+      accessLevels: z.array(z.string()),
+      sessionSettings: z.object({
+        maxInactivity: z.string(),
+        sessionLength: z.string(),
+        sessionLengthEnabled: z.boolean(),
+        sessionReauthMethod: z.string(),
+        useOidcMaxAge: z.boolean(),
+      }),
+    }),
+    dryRunSettings: z.object({
+      accessLevels: z.array(z.string()),
+      sessionSettings: z.object({
+        maxInactivity: z.string(),
+        sessionLength: z.string(),
+        sessionLengthEnabled: z.boolean(),
+        sessionReauthMethod: z.string(),
+        useOidcMaxAge: z.boolean(),
+      }),
+    }),
+    scope: z.object({
+      clientScope: z.object({
+        restrictedClientApplication: z.object({
+          clientId: z.string(),
+          name: z.string(),
+        }),
+      }),
+    }),
+  })).optional(),
+  sessionSettings: z.object({
+    maxInactivity: z.string(),
+    sessionLength: z.string(),
+    sessionLengthEnabled: z.boolean(),
+    sessionReauthMethod: z.string(),
+    useOidcMaxAge: z.boolean(),
+  }).optional(),
+}).passthrough();
+
+type StateData = z.infer<typeof StateSchema>;
+
+const InputsSchema = z.object({
+  accessLevels: z.array(z.string()).describe(
+    'Optional. Access level that a user must have to be granted access. Only one access level is supported, not multiple. This repeated field must have exactly one element. Example: "accessPolicies/9522/accessLevels/device_trusted"',
+  ).optional(),
+  dryRunAccessLevels: z.array(z.string()).describe(
+    'Optional. Dry run access level that will be evaluated but will not be enforced. The access denial based on dry run policy will be logged. Only one access level is supported, not multiple. This list must have exactly one element. Example: "accessPolicies/9522/accessLevels/device_trusted"',
+  ).optional(),
+  groupKey: z.string().describe(
+    'Optional. Immutable. Google Group id whose users are subject to this binding\'s restrictions. See "id" in the [Google Workspace Directory API\'s Group Resource] (https://developers.google.com/admin-sdk/directory/v1/reference/groups#resource). If a group\'s email address/alias is changed, this resource will continue to point at the changed group. This field does not accept group email addresses or aliases. Example: "01d520gv4vjcrht"',
+  ).optional(),
+  name: z.string().describe(
+    'Immutable. Assigned by the server during creation. The last segment has an arbitrary length and has only URI unreserved characters (as defined by [RFC 3986 Section 2.3](https://tools.ietf.org/html/rfc3986#section-2.3)). Should not be specified by the client during creation. Example: "organizations/256/gcpUserAccessBindings/b3-BhcX_Ud5N"',
+  ).optional(),
+  restrictedClientApplications: z.array(z.object({
+    clientId: z.string().describe("The OAuth client ID of the application.")
+      .optional(),
+    name: z.string().describe(
+      'The name of the application. Example: "Cloud Console"',
+    ).optional(),
+  })).describe(
+    "Optional. A list of applications that are subject to this binding's restrictions. If the list is empty, the binding restrictions will universally apply to all applications.",
+  ).optional(),
+  scopedAccessSettings: z.array(z.object({
+    activeSettings: z.object({
+      accessLevels: z.array(z.string()).describe(
+        'Optional. Access level that a user must have to be granted access. Only one access level is supported, not multiple. This repeated field must have exactly one element. Example: "accessPolicies/9522/accessLevels/device_trusted"',
+      ).optional(),
+      sessionSettings: z.object({
+        maxInactivity: z.string().describe(
+          "Optional. How long a user is allowed to take between actions before a new access token must be issued. Only set for Google Cloud apps.",
+        ).optional(),
+        sessionLength: z.string().describe(
+          "Optional. The session length. Setting this field to zero is equal to disabling session. Also can set infinite session by flipping the enabled bit to false below. If use_oidc_max_age is true, for OIDC apps, the session length will be the minimum of this field and OIDC max_age param.",
+        ).optional(),
+        sessionLengthEnabled: z.boolean().describe(
+          "Optional. This field enables or disables Google Cloud session length. When false, all fields set above will be disregarded and the session length is basically infinite.",
+        ).optional(),
+        sessionReauthMethod: z.enum([
+          "SESSION_REAUTH_METHOD_UNSPECIFIED",
+          "LOGIN",
+          "SECURITY_KEY",
+          "PASSWORD",
+        ]).describe(
+          "Optional. Session method when user's Google Cloud session is up.",
+        ).optional(),
+        useOidcMaxAge: z.boolean().describe(
+          "Optional. Only useful for OIDC apps. When false, the OIDC max_age param, if passed in the authentication request will be ignored. When true, the re-auth period will be the minimum of the session_length field and the max_age OIDC param.",
+        ).optional(),
+      }).describe(
+        "Stores settings related to Google Cloud Session Length including session duration, the type of challenge (i.e. method) they should face when their session expires, and other related settings.",
+      ).optional(),
+    }).describe(
+      "Access settings represent the set of conditions that must be met for access to be granted. At least one of the fields must be set.",
+    ).optional(),
+    dryRunSettings: z.object({
+      accessLevels: z.array(z.string()).describe(
+        'Optional. Access level that a user must have to be granted access. Only one access level is supported, not multiple. This repeated field must have exactly one element. Example: "accessPolicies/9522/accessLevels/device_trusted"',
+      ).optional(),
+      sessionSettings: z.object({
+        maxInactivity: z.string().describe(
+          "Optional. How long a user is allowed to take between actions before a new access token must be issued. Only set for Google Cloud apps.",
+        ).optional(),
+        sessionLength: z.string().describe(
+          "Optional. The session length. Setting this field to zero is equal to disabling session. Also can set infinite session by flipping the enabled bit to false below. If use_oidc_max_age is true, for OIDC apps, the session length will be the minimum of this field and OIDC max_age param.",
+        ).optional(),
+        sessionLengthEnabled: z.boolean().describe(
+          "Optional. This field enables or disables Google Cloud session length. When false, all fields set above will be disregarded and the session length is basically infinite.",
+        ).optional(),
+        sessionReauthMethod: z.enum([
+          "SESSION_REAUTH_METHOD_UNSPECIFIED",
+          "LOGIN",
+          "SECURITY_KEY",
+          "PASSWORD",
+        ]).describe(
+          "Optional. Session method when user's Google Cloud session is up.",
+        ).optional(),
+        useOidcMaxAge: z.boolean().describe(
+          "Optional. Only useful for OIDC apps. When false, the OIDC max_age param, if passed in the authentication request will be ignored. When true, the re-auth period will be the minimum of the session_length field and the max_age OIDC param.",
+        ).optional(),
+      }).describe(
+        "Stores settings related to Google Cloud Session Length including session duration, the type of challenge (i.e. method) they should face when their session expires, and other related settings.",
+      ).optional(),
+    }).describe(
+      "Access settings represent the set of conditions that must be met for access to be granted. At least one of the fields must be set.",
+    ).optional(),
+    scope: z.object({
+      clientScope: z.object({
+        restrictedClientApplication: z.object({
+          clientId: z.string().describe(
+            "The OAuth client ID of the application.",
+          ).optional(),
+          name: z.string().describe(
+            'The name of the application. Example: "Cloud Console"',
+          ).optional(),
+        }).describe("An application that accesses Google Cloud APIs.")
+          .optional(),
+      }).describe(
+        "Client scope represents the application, etc. subject to this binding's restrictions.",
+      ).optional(),
+    }).describe(
+      "Access scope represents the client scope, etc. to which the settings will be applied to.",
+    ).optional(),
+  })).describe(
+    "Optional. A list of scoped access settings that set this binding's restrictions on a subset of applications. This field cannot be set if restricted_client_applications is set.",
+  ).optional(),
+  sessionSettings: z.object({
+    maxInactivity: z.string().describe(
+      "Optional. How long a user is allowed to take between actions before a new access token must be issued. Only set for Google Cloud apps.",
+    ).optional(),
+    sessionLength: z.string().describe(
+      "Optional. The session length. Setting this field to zero is equal to disabling session. Also can set infinite session by flipping the enabled bit to false below. If use_oidc_max_age is true, for OIDC apps, the session length will be the minimum of this field and OIDC max_age param.",
+    ).optional(),
+    sessionLengthEnabled: z.boolean().describe(
+      "Optional. This field enables or disables Google Cloud session length. When false, all fields set above will be disregarded and the session length is basically infinite.",
+    ).optional(),
+    sessionReauthMethod: z.enum([
+      "SESSION_REAUTH_METHOD_UNSPECIFIED",
+      "LOGIN",
+      "SECURITY_KEY",
+      "PASSWORD",
+    ]).describe(
+      "Optional. Session method when user's Google Cloud session is up.",
+    ).optional(),
+    useOidcMaxAge: z.boolean().describe(
+      "Optional. Only useful for OIDC apps. When false, the OIDC max_age param, if passed in the authentication request will be ignored. When true, the re-auth period will be the minimum of the session_length field and the max_age OIDC param.",
+    ).optional(),
+  }).describe(
+    "Stores settings related to Google Cloud Session Length including session duration, the type of challenge (i.e. method) they should face when their session expires, and other related settings.",
+  ).optional(),
+  parent: z.string().describe(
+    "The parent resource name (e.g., projects/my-project/locations/us-central1, organizations/123, folders/456)",
+  ).optional(),
+});
+
+export const model = {
+  type: "@swamp/gcp/accesscontextmanager/gcpuseraccessbindings",
+  version: "2026.03.27.1",
+  globalArguments: GlobalArgsSchema,
+  inputsSchema: InputsSchema,
+  resources: {
+    state: {
+      description:
+        "Restricts access to Cloud Console and Google Cloud APIs for a set of users us...",
+      schema: StateSchema,
+      lifetime: "infinite",
+      garbageCollection: 10,
+    },
+  },
+  methods: {
+    create: {
+      description: "Create a gcpUserAccessBindings",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const projectId = await getProjectId();
+        const params: Record<string, string> = { project: projectId };
+        if (g["parent"] !== undefined) params["parent"] = String(g["parent"]);
+        const body: Record<string, unknown> = {};
+        if (g["accessLevels"] !== undefined) {
+          body["accessLevels"] = g["accessLevels"];
+        }
+        if (g["dryRunAccessLevels"] !== undefined) {
+          body["dryRunAccessLevels"] = g["dryRunAccessLevels"];
+        }
+        if (g["groupKey"] !== undefined) body["groupKey"] = g["groupKey"];
+        if (g["name"] !== undefined) body["name"] = g["name"];
+        if (g["restrictedClientApplications"] !== undefined) {
+          body["restrictedClientApplications"] =
+            g["restrictedClientApplications"];
+        }
+        if (g["scopedAccessSettings"] !== undefined) {
+          body["scopedAccessSettings"] = g["scopedAccessSettings"];
+        }
+        if (g["sessionSettings"] !== undefined) {
+          body["sessionSettings"] = g["sessionSettings"];
+        }
+        if (g["parent"] !== undefined && g["name"] !== undefined) {
+          params["name"] = buildResourceName(
+            String(g["parent"]),
+            String(g["name"]),
+          );
+        }
+        const result = await createResource(
+          BASE_URL,
+          INSERT_CONFIG,
+          params,
+          body,
+          GET_CONFIG,
+        ) as StateData;
+        const instanceName = (result.name ?? g.name)?.toString() ?? "current";
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    get: {
+      description: "Get a gcpUserAccessBindings",
+      arguments: z.object({
+        identifier: z.string().describe(
+          "The name of the gcpUserAccessBindings",
+        ),
+      }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const projectId = await getProjectId();
+        const params: Record<string, string> = { project: projectId };
+        const g = context.globalArgs;
+        params["name"] = buildResourceName(
+          String(g["parent"] ?? ""),
+          args.identifier,
+        );
+        const result = await readResource(
+          BASE_URL,
+          GET_CONFIG,
+          params,
+        ) as StateData;
+        const instanceName = (result.name ?? g.name)?.toString() ??
+          args.identifier;
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    update: {
+      description: "Update gcpUserAccessBindings attributes",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const projectId = await getProjectId();
+        const instanceName = g.name?.toString() ?? "current";
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          instanceName,
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        const params: Record<string, string> = { project: projectId };
+        params["name"] = buildResourceName(
+          String(g["parent"] ?? ""),
+          existing["name"]?.toString() ?? g["name"]?.toString() ?? "",
+        );
+        const body: Record<string, unknown> = {};
+        if (g["accessLevels"] !== undefined) {
+          body["accessLevels"] = g["accessLevels"];
+        }
+        if (g["dryRunAccessLevels"] !== undefined) {
+          body["dryRunAccessLevels"] = g["dryRunAccessLevels"];
+        }
+        if (g["restrictedClientApplications"] !== undefined) {
+          body["restrictedClientApplications"] =
+            g["restrictedClientApplications"];
+        }
+        if (g["scopedAccessSettings"] !== undefined) {
+          body["scopedAccessSettings"] = g["scopedAccessSettings"];
+        }
+        if (g["sessionSettings"] !== undefined) {
+          body["sessionSettings"] = g["sessionSettings"];
+        }
+        for (const key of Object.keys(existing)) {
+          if (
+            key === "fingerprint" || key === "labelFingerprint" ||
+            key === "etag" || key.endsWith("Fingerprint")
+          ) {
+            body[key] = existing[key];
+          }
+        }
+        const result = await updateResource(
+          BASE_URL,
+          PATCH_CONFIG,
+          params,
+          body,
+          GET_CONFIG,
+        ) as StateData;
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    delete: {
+      description: "Delete the gcpUserAccessBindings",
+      arguments: z.object({
+        identifier: z.string().describe(
+          "The name of the gcpUserAccessBindings",
+        ),
+      }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const g = context.globalArgs;
+        const projectId = await getProjectId();
+        const params: Record<string, string> = { project: projectId };
+        params["name"] = buildResourceName(
+          String(g["parent"] ?? ""),
+          args.identifier,
+        );
+        const { existed } = await deleteResource(
+          BASE_URL,
+          DELETE_CONFIG,
+          params,
+        );
+        const instanceName = g.name?.toString() ?? args.identifier;
+        const handle = await context.writeResource("state", instanceName, {
+          identifier: args.identifier,
+          existed,
+          status: existed ? "deleted" : "not_found",
+          deletedAt: new Date().toISOString(),
+        });
+        return { dataHandles: [handle] };
+      },
+    },
+    sync: {
+      description: "Sync gcpUserAccessBindings state from GCP",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const projectId = await getProjectId();
+        const instanceName = g.name?.toString() ?? "current";
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          instanceName,
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        try {
+          const params: Record<string, string> = { project: projectId };
+          const shortName = existing.name?.toString() ?? g["name"]?.toString();
+          if (!shortName) throw new Error("No identifier found");
+          params["name"] = buildResourceName(
+            String(g["parent"] ?? ""),
+            shortName,
+          );
+          const result = await readResource(
+            BASE_URL,
+            GET_CONFIG,
+            params,
+          ) as StateData;
+          const handle = await context.writeResource(
+            "state",
+            instanceName,
+            result,
+          );
+          return { dataHandles: [handle] };
+        } catch (error: unknown) {
+          if (isResourceNotFoundError(error)) {
+            const handle = await context.writeResource("state", instanceName, {
+              status: "not_found",
+              syncedAt: new Date().toISOString(),
+            });
+            return { dataHandles: [handle] };
+          }
+          throw error;
+        }
+      },
+    },
+  },
+};

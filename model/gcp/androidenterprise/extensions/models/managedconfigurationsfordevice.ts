@@ -1,0 +1,451 @@
+// Auto-generated extension model for @swamp/gcp/androidenterprise/managedconfigurationsfordevice
+// Do not edit manually. Re-generate with: deno task generate:gcp
+
+// deno-lint-ignore-file no-explicit-any
+
+import { z } from "zod";
+import {
+  deleteResource,
+  getProjectId,
+  isResourceNotFoundError,
+  readResource,
+  updateResource,
+} from "./_lib/gcp.ts";
+
+const BASE_URL = "https://androidenterprise.googleapis.com/";
+
+const GET_CONFIG = {
+  "id": "androidenterprise.managedconfigurationsfordevice.get",
+  "path":
+    "androidenterprise/v1/enterprises/{enterpriseId}/users/{userId}/devices/{deviceId}/managedConfigurationsForDevice/{managedConfigurationForDeviceId}",
+  "httpMethod": "GET",
+  "parameterOrder": [
+    "enterpriseId",
+    "userId",
+    "deviceId",
+    "managedConfigurationForDeviceId",
+  ],
+  "parameters": {
+    "deviceId": {
+      "location": "path",
+      "required": true,
+    },
+    "enterpriseId": {
+      "location": "path",
+      "required": true,
+    },
+    "managedConfigurationForDeviceId": {
+      "location": "path",
+      "required": true,
+    },
+    "userId": {
+      "location": "path",
+      "required": true,
+    },
+  },
+} as const;
+
+const UPDATE_CONFIG = {
+  "id": "androidenterprise.managedconfigurationsfordevice.update",
+  "path":
+    "androidenterprise/v1/enterprises/{enterpriseId}/users/{userId}/devices/{deviceId}/managedConfigurationsForDevice/{managedConfigurationForDeviceId}",
+  "httpMethod": "PUT",
+  "parameterOrder": [
+    "enterpriseId",
+    "userId",
+    "deviceId",
+    "managedConfigurationForDeviceId",
+  ],
+  "parameters": {
+    "deviceId": {
+      "location": "path",
+      "required": true,
+    },
+    "enterpriseId": {
+      "location": "path",
+      "required": true,
+    },
+    "managedConfigurationForDeviceId": {
+      "location": "path",
+      "required": true,
+    },
+    "userId": {
+      "location": "path",
+      "required": true,
+    },
+  },
+} as const;
+
+const DELETE_CONFIG = {
+  "id": "androidenterprise.managedconfigurationsfordevice.delete",
+  "path":
+    "androidenterprise/v1/enterprises/{enterpriseId}/users/{userId}/devices/{deviceId}/managedConfigurationsForDevice/{managedConfigurationForDeviceId}",
+  "httpMethod": "DELETE",
+  "parameterOrder": [
+    "enterpriseId",
+    "userId",
+    "deviceId",
+    "managedConfigurationForDeviceId",
+  ],
+  "parameters": {
+    "deviceId": {
+      "location": "path",
+      "required": true,
+    },
+    "enterpriseId": {
+      "location": "path",
+      "required": true,
+    },
+    "managedConfigurationForDeviceId": {
+      "location": "path",
+      "required": true,
+    },
+    "userId": {
+      "location": "path",
+      "required": true,
+    },
+  },
+} as const;
+
+const GlobalArgsSchema = z.object({
+  name: z.string().describe(
+    "Instance name for this resource (used as the unique identifier in the factory pattern)",
+  ),
+  configurationVariables: z.object({
+    mcmId: z.string().describe("The ID of the managed configurations settings.")
+      .optional(),
+    variableSet: z.array(z.object({
+      placeholder: z.string().describe(
+        "The placeholder string; defined by EMM.",
+      ).optional(),
+      userValue: z.string().describe(
+        "The value of the placeholder, specific to the user.",
+      ).optional(),
+    })).describe("The variable set that is attributed to the user.").optional(),
+  }).describe(
+    "A configuration variables resource contains the managed configuration settings ID to be applied to a single user, as well as the variable set that is attributed to the user. The variable set will be used to replace placeholders in the managed configuration settings.",
+  ).optional(),
+  kind: z.string().describe("Deprecated.").optional(),
+  managedProperty: z.array(z.object({
+    key: z.string().describe("The unique key that identifies the property.")
+      .optional(),
+    valueBool: z.boolean().describe(
+      "The boolean value - this will only be present if type of the property is bool.",
+    ).optional(),
+    valueBundle: z.object({
+      managedProperty: z.array(z.string()).describe(
+        "The list of managed properties.",
+      ).optional(),
+    }).describe("A bundle of managed properties.").optional(),
+    valueBundleArray: z.array(z.object({
+      managedProperty: z.array(z.string()).describe(
+        "The list of managed properties.",
+      ).optional(),
+    })).describe(
+      "The list of bundles of properties - this will only be present if type of the property is bundle_array.",
+    ).optional(),
+    valueInteger: z.number().int().describe(
+      "The integer value - this will only be present if type of the property is integer.",
+    ).optional(),
+    valueString: z.string().describe(
+      "The string value - this will only be present if type of the property is string, choice or hidden.",
+    ).optional(),
+    valueStringArray: z.array(z.string()).describe(
+      "The list of string values - this will only be present if type of the property is multiselect.",
+    ).optional(),
+  })).describe("The set of managed properties for this configuration.")
+    .optional(),
+  productId: z.string().describe(
+    'The ID of the product that the managed configuration is for, e.g. "app:com.google.android.gm".',
+  ).optional(),
+});
+
+const StateSchema = z.object({
+  configurationVariables: z.object({
+    mcmId: z.string(),
+    variableSet: z.array(z.object({
+      placeholder: z.string(),
+      userValue: z.string(),
+    })),
+  }).optional(),
+  kind: z.string().optional(),
+  managedProperty: z.array(z.object({
+    key: z.string(),
+    valueBool: z.boolean(),
+    valueBundle: z.object({
+      managedProperty: z.array(z.string()),
+    }),
+    valueBundleArray: z.array(z.object({
+      managedProperty: z.array(z.string()),
+    })),
+    valueInteger: z.number(),
+    valueString: z.string(),
+    valueStringArray: z.array(z.string()),
+  })).optional(),
+  productId: z.string().optional(),
+}).passthrough();
+
+type StateData = z.infer<typeof StateSchema>;
+
+const InputsSchema = z.object({
+  name: z.string().optional(),
+  configurationVariables: z.object({
+    mcmId: z.string().describe("The ID of the managed configurations settings.")
+      .optional(),
+    variableSet: z.array(z.object({
+      placeholder: z.string().describe(
+        "The placeholder string; defined by EMM.",
+      ).optional(),
+      userValue: z.string().describe(
+        "The value of the placeholder, specific to the user.",
+      ).optional(),
+    })).describe("The variable set that is attributed to the user.").optional(),
+  }).describe(
+    "A configuration variables resource contains the managed configuration settings ID to be applied to a single user, as well as the variable set that is attributed to the user. The variable set will be used to replace placeholders in the managed configuration settings.",
+  ).optional(),
+  kind: z.string().describe("Deprecated.").optional(),
+  managedProperty: z.array(z.object({
+    key: z.string().describe("The unique key that identifies the property.")
+      .optional(),
+    valueBool: z.boolean().describe(
+      "The boolean value - this will only be present if type of the property is bool.",
+    ).optional(),
+    valueBundle: z.object({
+      managedProperty: z.array(z.string()).describe(
+        "The list of managed properties.",
+      ).optional(),
+    }).describe("A bundle of managed properties.").optional(),
+    valueBundleArray: z.array(z.object({
+      managedProperty: z.array(z.string()).describe(
+        "The list of managed properties.",
+      ).optional(),
+    })).describe(
+      "The list of bundles of properties - this will only be present if type of the property is bundle_array.",
+    ).optional(),
+    valueInteger: z.number().int().describe(
+      "The integer value - this will only be present if type of the property is integer.",
+    ).optional(),
+    valueString: z.string().describe(
+      "The string value - this will only be present if type of the property is string, choice or hidden.",
+    ).optional(),
+    valueStringArray: z.array(z.string()).describe(
+      "The list of string values - this will only be present if type of the property is multiselect.",
+    ).optional(),
+  })).describe("The set of managed properties for this configuration.")
+    .optional(),
+  productId: z.string().describe(
+    'The ID of the product that the managed configuration is for, e.g. "app:com.google.android.gm".',
+  ).optional(),
+});
+
+export const model = {
+  type: "@swamp/gcp/androidenterprise/managedconfigurationsfordevice",
+  version: "2026.03.27.1",
+  globalArguments: GlobalArgsSchema,
+  inputsSchema: InputsSchema,
+  resources: {
+    state: {
+      description:
+        "*Deprecated:* New integrations cannot use this method and can refer to our ne...",
+      schema: StateSchema,
+      lifetime: "infinite",
+      garbageCollection: 10,
+    },
+  },
+  methods: {
+    get: {
+      description: "Get a managedconfigurationsfordevice",
+      arguments: z.object({
+        identifier: z.string().describe(
+          "The name of the managedconfigurationsfordevice",
+        ),
+      }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const projectId = await getProjectId();
+        const params: Record<string, string> = { project: projectId };
+        const g = context.globalArgs;
+        if (g["enterpriseId"] !== undefined) {
+          params["enterpriseId"] = String(g["enterpriseId"]);
+        }
+        if (g["userId"] !== undefined) params["userId"] = String(g["userId"]);
+        if (g["deviceId"] !== undefined) {
+          params["deviceId"] = String(g["deviceId"]);
+        }
+        params["managedConfigurationForDeviceId"] = args.identifier;
+        const result = await readResource(
+          BASE_URL,
+          GET_CONFIG,
+          params,
+        ) as StateData;
+        const instanceName = g.name?.toString() ?? args.identifier;
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    update: {
+      description: "Update managedconfigurationsfordevice attributes",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const projectId = await getProjectId();
+        const instanceName = g.name?.toString() ?? "current";
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          instanceName,
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        const params: Record<string, string> = { project: projectId };
+        if (g["enterpriseId"] !== undefined) {
+          params["enterpriseId"] = String(g["enterpriseId"]);
+        } else if (existing["enterpriseId"]) {
+          params["enterpriseId"] = String(existing["enterpriseId"]);
+        }
+        if (g["userId"] !== undefined) params["userId"] = String(g["userId"]);
+        else if (existing["userId"]) {
+          params["userId"] = String(existing["userId"]);
+        }
+        if (g["deviceId"] !== undefined) {
+          params["deviceId"] = String(g["deviceId"]);
+        } else if (existing["deviceId"]) {
+          params["deviceId"] = String(existing["deviceId"]);
+        }
+        params["managedConfigurationForDeviceId"] =
+          existing["name"]?.toString() ?? "";
+        const body: Record<string, unknown> = {};
+        if (g["configurationVariables"] !== undefined) {
+          body["configurationVariables"] = g["configurationVariables"];
+        }
+        if (g["kind"] !== undefined) body["kind"] = g["kind"];
+        if (g["managedProperty"] !== undefined) {
+          body["managedProperty"] = g["managedProperty"];
+        }
+        if (g["productId"] !== undefined) body["productId"] = g["productId"];
+        for (const key of Object.keys(existing)) {
+          if (
+            key === "fingerprint" || key === "labelFingerprint" ||
+            key === "etag" || key.endsWith("Fingerprint")
+          ) {
+            body[key] = existing[key];
+          }
+        }
+        const result = await updateResource(
+          BASE_URL,
+          UPDATE_CONFIG,
+          params,
+          body,
+          GET_CONFIG,
+        ) as StateData;
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    delete: {
+      description: "Delete the managedconfigurationsfordevice",
+      arguments: z.object({
+        identifier: z.string().describe(
+          "The name of the managedconfigurationsfordevice",
+        ),
+      }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const g = context.globalArgs;
+        const projectId = await getProjectId();
+        const params: Record<string, string> = { project: projectId };
+        if (g["enterpriseId"] !== undefined) {
+          params["enterpriseId"] = String(g["enterpriseId"]);
+        }
+        if (g["userId"] !== undefined) params["userId"] = String(g["userId"]);
+        if (g["deviceId"] !== undefined) {
+          params["deviceId"] = String(g["deviceId"]);
+        }
+        params["managedConfigurationForDeviceId"] = args.identifier;
+        const { existed } = await deleteResource(
+          BASE_URL,
+          DELETE_CONFIG,
+          params,
+        );
+        const instanceName = g.name?.toString() ?? args.identifier;
+        const handle = await context.writeResource("state", instanceName, {
+          identifier: args.identifier,
+          existed,
+          status: existed ? "deleted" : "not_found",
+          deletedAt: new Date().toISOString(),
+        });
+        return { dataHandles: [handle] };
+      },
+    },
+    sync: {
+      description: "Sync managedconfigurationsfordevice state from GCP",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const projectId = await getProjectId();
+        const instanceName = g.name?.toString() ?? "current";
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          instanceName,
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        try {
+          const params: Record<string, string> = { project: projectId };
+          if (g["enterpriseId"] !== undefined) {
+            params["enterpriseId"] = String(g["enterpriseId"]);
+          } else if (existing["enterpriseId"]) {
+            params["enterpriseId"] = String(existing["enterpriseId"]);
+          }
+          if (g["userId"] !== undefined) params["userId"] = String(g["userId"]);
+          else if (existing["userId"]) {
+            params["userId"] = String(existing["userId"]);
+          }
+          if (g["deviceId"] !== undefined) {
+            params["deviceId"] = String(g["deviceId"]);
+          } else if (existing["deviceId"]) {
+            params["deviceId"] = String(existing["deviceId"]);
+          }
+          const identifier = existing.name?.toString() ?? g["name"]?.toString();
+          if (!identifier) {
+            throw new Error(
+              "No identifier found in existing state or globalArgs",
+            );
+          }
+          params["managedConfigurationForDeviceId"] = identifier;
+          const result = await readResource(
+            BASE_URL,
+            GET_CONFIG,
+            params,
+          ) as StateData;
+          const handle = await context.writeResource(
+            "state",
+            instanceName,
+            result,
+          );
+          return { dataHandles: [handle] };
+        } catch (error: unknown) {
+          if (isResourceNotFoundError(error)) {
+            const handle = await context.writeResource("state", instanceName, {
+              status: "not_found",
+              syncedAt: new Date().toISOString(),
+            });
+            return { dataHandles: [handle] };
+          }
+          throw error;
+        }
+      },
+    },
+  },
+};

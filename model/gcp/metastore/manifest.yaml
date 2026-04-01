@@ -1,0 +1,23 @@
+# Auto-generated manifest. Re-generate with the appropriate deno task.
+manifestVersion: 1
+name: "@swamp/gcp/metastore"
+version: "2026.03.27.1"
+description: "Google Cloud metastore infrastructure models"
+labels:
+  - gcp
+  - google-cloud
+  - metastore
+  - cloud
+  - infrastructure
+releaseNotes: |
+  - Added: locations, federations, services, services_backups, services_metadataimports, services_migrationexecutions
+models:
+  - federations.ts
+  - locations.ts
+  - services.ts
+  - services_backups.ts
+  - services_metadataimports.ts
+  - services_migrationexecutions.ts
+additionalFiles:
+  - LICENSE.txt
+  - README.md

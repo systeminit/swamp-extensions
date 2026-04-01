@@ -1,0 +1,19 @@
+# Auto-generated manifest. Re-generate with the appropriate deno task.
+manifestVersion: 1
+name: "@swamp/gcp/customsearch"
+version: "2026.03.27.1"
+description: "Google Cloud customsearch infrastructure models"
+labels:
+  - gcp
+  - google-cloud
+  - customsearch
+  - cloud
+  - infrastructure
+releaseNotes: |
+  - Added: cse, cse_siterestrict
+models:
+  - cse.ts
+  - cse_siterestrict.ts
+additionalFiles:
+  - LICENSE.txt
+  - README.md

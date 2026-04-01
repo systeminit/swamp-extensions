@@ -1,0 +1,28 @@
+# Auto-generated manifest. Re-generate with the appropriate deno task.
+manifestVersion: 1
+name: "@swamp/gcp/gkebackup"
+version: "2026.03.27.1"
+description: "Google Cloud gkebackup infrastructure models"
+labels:
+  - gcp
+  - google-cloud
+  - gkebackup
+  - cloud
+  - infrastructure
+releaseNotes: |
+  - Added: locations, backupchannels, backupchannels_backupplanbindings, backupplans, backupplans_backups, backupplans_backups_volumebackups, restorechannels, restorechannels_restoreplanbindings, restoreplans, restoreplans_restores, restoreplans_restores_volumerestores
+models:
+  - backupchannels.ts
+  - backupchannels_backupplanbindings.ts
+  - backupplans.ts
+  - backupplans_backups.ts
+  - backupplans_backups_volumebackups.ts
+  - locations.ts
+  - restorechannels.ts
+  - restorechannels_restoreplanbindings.ts
+  - restoreplans.ts
+  - restoreplans_restores.ts
+  - restoreplans_restores_volumerestores.ts
+additionalFiles:
+  - LICENSE.txt
+  - README.md

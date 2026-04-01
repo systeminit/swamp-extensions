@@ -1,0 +1,20 @@
+# Auto-generated manifest. Re-generate with the appropriate deno task.
+manifestVersion: 1
+name: "@swamp/gcp/cloudfunctions"
+version: "2026.03.27.1"
+description: "Google Cloud cloudfunctions infrastructure models"
+labels:
+  - gcp
+  - google-cloud
+  - cloudfunctions
+  - cloud
+  - infrastructure
+releaseNotes: |
+  - Added: locations, functions, runtimes
+models:
+  - functions.ts
+  - locations.ts
+  - runtimes.ts
+additionalFiles:
+  - LICENSE.txt
+  - README.md

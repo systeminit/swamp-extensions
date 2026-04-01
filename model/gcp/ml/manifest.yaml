@@ -1,0 +1,23 @@
+# Auto-generated manifest. Re-generate with the appropriate deno task.
+manifestVersion: 1
+name: "@swamp/gcp/ml"
+version: "2026.03.27.1"
+description: "Google Cloud ml infrastructure models"
+labels:
+  - gcp
+  - google-cloud
+  - ml
+  - cloud
+  - infrastructure
+releaseNotes: |
+  - Added: jobs, locations, studies, studies_trials, models, models_versions
+models:
+  - jobs.ts
+  - locations.ts
+  - models.ts
+  - models_versions.ts
+  - studies.ts
+  - studies_trials.ts
+additionalFiles:
+  - LICENSE.txt
+  - README.md

@@ -1,0 +1,908 @@
+// Auto-generated extension model for @swamp/gcp/vmwareengine/privateclouds
+// Do not edit manually. Re-generate with: deno task generate:gcp
+
+// deno-lint-ignore-file no-explicit-any
+
+import { z } from "zod";
+import {
+  createResource,
+  deleteResource,
+  getProjectId,
+  isResourceNotFoundError,
+  readResource,
+  updateResource,
+} from "./_lib/gcp.ts";
+
+/** Construct the fully-qualified resource name from parent and short name. */
+function buildResourceName(parent: string, shortName: string): string {
+  return `${parent}/privateClouds/${shortName}`;
+}
+
+const BASE_URL = "https://vmwareengine.googleapis.com/";
+
+const GET_CONFIG = {
+  "id": "vmwareengine.projects.locations.privateClouds.get",
+  "path": "v1/{+name}",
+  "httpMethod": "GET",
+  "parameterOrder": [
+    "name",
+  ],
+  "parameters": {
+    "name": {
+      "location": "path",
+      "required": true,
+    },
+  },
+} as const;
+
+const INSERT_CONFIG = {
+  "id": "vmwareengine.projects.locations.privateClouds.create",
+  "path": "v1/{+parent}/privateClouds",
+  "httpMethod": "POST",
+  "parameterOrder": [
+    "parent",
+  ],
+  "parameters": {
+    "parent": {
+      "location": "path",
+      "required": true,
+    },
+    "privateCloudId": {
+      "location": "query",
+    },
+    "requestId": {
+      "location": "query",
+    },
+    "validateOnly": {
+      "location": "query",
+    },
+  },
+} as const;
+
+const PATCH_CONFIG = {
+  "id": "vmwareengine.projects.locations.privateClouds.patch",
+  "path": "v1/{+name}",
+  "httpMethod": "PATCH",
+  "parameterOrder": [
+    "name",
+  ],
+  "parameters": {
+    "name": {
+      "location": "path",
+      "required": true,
+    },
+    "requestId": {
+      "location": "query",
+    },
+    "updateMask": {
+      "location": "query",
+    },
+    "validateOnly": {
+      "location": "query",
+    },
+  },
+} as const;
+
+const DELETE_CONFIG = {
+  "id": "vmwareengine.projects.locations.privateClouds.delete",
+  "path": "v1/{+name}",
+  "httpMethod": "DELETE",
+  "parameterOrder": [
+    "name",
+  ],
+  "parameters": {
+    "delayHours": {
+      "location": "query",
+    },
+    "force": {
+      "location": "query",
+    },
+    "name": {
+      "location": "path",
+      "required": true,
+    },
+    "requestId": {
+      "location": "query",
+    },
+  },
+} as const;
+
+const GlobalArgsSchema = z.object({
+  name: z.string().describe(
+    "Instance name for this resource (used as the unique identifier in the factory pattern)",
+  ),
+  description: z.string().describe(
+    "User-provided description for this private cloud.",
+  ).optional(),
+  hcx: z.object({
+    fqdn: z.string().describe("Fully qualified domain name of the appliance.")
+      .optional(),
+    internalIp: z.string().describe("Internal IP address of the appliance.")
+      .optional(),
+    state: z.enum(["STATE_UNSPECIFIED", "ACTIVE", "CREATING", "ACTIVATING"])
+      .describe("Output only. The state of the appliance.").optional(),
+    version: z.string().describe("Version of the appliance.").optional(),
+  }).describe("Details about a HCX Cloud Manager appliance.").optional(),
+  managementCluster: z.object({
+    clusterId: z.string().describe(
+      "Required. The user-provided identifier of the new `Cluster`. The identifier must meet the following requirements: * Only contains 1-63 alphanumeric characters and hyphens * Begins with an alphabetical character * Ends with a non-hyphen character * Not formatted as a UUID * Complies with [RFC 1034](https://datatracker.ietf.org/doc/html/rfc1034) (section 3.5)",
+    ).optional(),
+    nodeTypeConfigs: z.record(
+      z.string(),
+      z.object({
+        customCoreCount: z.number().int().describe(
+          "Optional. Customized number of cores available to each node of the type. This number must always be one of `nodeType.availableCustomCoreCounts`. If zero is provided max value from `nodeType.availableCustomCoreCounts` will be used.",
+        ).optional(),
+        nodeCount: z.number().int().describe(
+          "Required. The number of nodes of this type in the cluster",
+        ).optional(),
+      }),
+    ).describe(
+      "Required. The map of cluster node types in this cluster, where the key is canonical identifier of the node type (corresponds to the `NodeType`).",
+    ).optional(),
+    stretchedClusterConfig: z.object({
+      preferredLocation: z.string().describe(
+        "Required. Zone that will remain operational when connection between the two zones is lost. Specify the resource name of a zone that belongs to the region of the private cloud. For example: `projects/{project}/locations/europe-west3-a` where `{project}` can either be a project number or a project ID.",
+      ).optional(),
+      secondaryLocation: z.string().describe(
+        "Required. Additional zone for a higher level of availability and load balancing. Specify the resource name of a zone that belongs to the region of the private cloud. For example: `projects/{project}/locations/europe-west3-b` where `{project}` can either be a project number or a project ID.",
+      ).optional(),
+    }).describe("Configuration of a stretched cluster.").optional(),
+  }).describe("Management cluster configuration.").optional(),
+  networkConfig: z.object({
+    dnsServerIp: z.string().describe(
+      "Output only. DNS Server IP of the Private Cloud. All DNS queries can be forwarded to this address for name resolution of Private Cloud's management entities like vCenter, NSX-T Manager and ESXi hosts.",
+    ).optional(),
+    managementCidr: z.string().describe(
+      "Required. Management CIDR used by VMware management appliances.",
+    ).optional(),
+    managementIpAddressLayoutVersion: z.number().int().describe(
+      "Output only. The IP address layout version of the management IP address range. Possible versions include: * `managementIpAddressLayoutVersion=1`: Indicates the legacy IP address layout used by some existing private clouds. This is no longer supported for new private clouds as it does not support all features. * `managementIpAddressLayoutVersion=2`: Indicates the latest IP address layout used by all newly created private clouds. This version supports all current features.",
+    ).optional(),
+    vmwareEngineNetwork: z.string().describe(
+      "Optional. The relative resource name of the VMware Engine network attached to the private cloud. Specify the name in the following form: `projects/{project}/locations/{location}/vmwareEngineNetworks/{vmware_engine_network_id}` where `{project}` can either be a project number or a project ID.",
+    ).optional(),
+    vmwareEngineNetworkCanonical: z.string().describe(
+      "Output only. The canonical name of the VMware Engine network in the form: `projects/{project_number}/locations/{location}/vmwareEngineNetworks/{vmware_engine_network_id}`",
+    ).optional(),
+  }).describe(
+    "Network configuration in the consumer project with which the peering has to be done.",
+  ).optional(),
+  nsx: z.object({
+    fqdn: z.string().describe("Fully qualified domain name of the appliance.")
+      .optional(),
+    internalIp: z.string().describe("Internal IP address of the appliance.")
+      .optional(),
+    state: z.enum(["STATE_UNSPECIFIED", "ACTIVE", "CREATING"]).describe(
+      "Output only. The state of the appliance.",
+    ).optional(),
+    version: z.string().describe("Version of the appliance.").optional(),
+  }).describe("Details about a NSX Manager appliance.").optional(),
+  type: z.enum(["STANDARD", "TIME_LIMITED", "STRETCHED"]).describe(
+    "Optional. Type of the private cloud. Defaults to STANDARD.",
+  ).optional(),
+  vcenter: z.object({
+    fqdn: z.string().describe("Fully qualified domain name of the appliance.")
+      .optional(),
+    internalIp: z.string().describe("Internal IP address of the appliance.")
+      .optional(),
+    state: z.enum(["STATE_UNSPECIFIED", "ACTIVE", "CREATING"]).describe(
+      "Output only. The state of the appliance.",
+    ).optional(),
+    version: z.string().describe("Version of the appliance.").optional(),
+  }).describe("Details about a vCenter Server management appliance.")
+    .optional(),
+  privateCloudId: z.string().describe(
+    "Required. The user-provided identifier of the private cloud to be created. This identifier must be unique among each `PrivateCloud` within the parent and becomes the final token in the name URI. The identifier must meet the following requirements: * Only contains 1-63 alphanumeric characters and hyphens * Begins with an alphabetical character * Ends with a non-hyphen character * Not formatted as a UUID * Complies with [RFC 1034](https://datatracker.ietf.org/doc/html/rfc1034) (section 3.5)",
+  ).optional(),
+  requestId: z.string().describe(
+    "Optional. The request ID must be a valid UUID with the exception that zero UUID is not supported (00000000-0000-0000-0000-000000000000).",
+  ).optional(),
+  location: z.string().describe(
+    "The location for this resource (e.g., 'us', 'us-central1', 'europe-west1')",
+  ).optional(),
+});
+
+const StateSchema = z.object({
+  createTime: z.string().optional(),
+  deleteTime: z.string().optional(),
+  description: z.string().optional(),
+  expireTime: z.string().optional(),
+  hcx: z.object({
+    fqdn: z.string(),
+    internalIp: z.string(),
+    state: z.string(),
+    version: z.string(),
+  }).optional(),
+  managementCluster: z.object({
+    clusterId: z.string(),
+    nodeTypeConfigs: z.record(z.string(), z.unknown()),
+    stretchedClusterConfig: z.object({
+      preferredLocation: z.string(),
+      secondaryLocation: z.string(),
+    }),
+  }).optional(),
+  name: z.string(),
+  networkConfig: z.object({
+    dnsServerIp: z.string(),
+    managementCidr: z.string(),
+    managementIpAddressLayoutVersion: z.number(),
+    vmwareEngineNetwork: z.string(),
+    vmwareEngineNetworkCanonical: z.string(),
+  }).optional(),
+  nsx: z.object({
+    fqdn: z.string(),
+    internalIp: z.string(),
+    state: z.string(),
+    version: z.string(),
+  }).optional(),
+  state: z.string().optional(),
+  type: z.string().optional(),
+  uid: z.string().optional(),
+  updateTime: z.string().optional(),
+  vcenter: z.object({
+    fqdn: z.string(),
+    internalIp: z.string(),
+    state: z.string(),
+    version: z.string(),
+  }).optional(),
+}).passthrough();
+
+type StateData = z.infer<typeof StateSchema>;
+
+const InputsSchema = z.object({
+  name: z.string().optional(),
+  description: z.string().describe(
+    "User-provided description for this private cloud.",
+  ).optional(),
+  hcx: z.object({
+    fqdn: z.string().describe("Fully qualified domain name of the appliance.")
+      .optional(),
+    internalIp: z.string().describe("Internal IP address of the appliance.")
+      .optional(),
+    state: z.enum(["STATE_UNSPECIFIED", "ACTIVE", "CREATING", "ACTIVATING"])
+      .describe("Output only. The state of the appliance.").optional(),
+    version: z.string().describe("Version of the appliance.").optional(),
+  }).describe("Details about a HCX Cloud Manager appliance.").optional(),
+  managementCluster: z.object({
+    clusterId: z.string().describe(
+      "Required. The user-provided identifier of the new `Cluster`. The identifier must meet the following requirements: * Only contains 1-63 alphanumeric characters and hyphens * Begins with an alphabetical character * Ends with a non-hyphen character * Not formatted as a UUID * Complies with [RFC 1034](https://datatracker.ietf.org/doc/html/rfc1034) (section 3.5)",
+    ).optional(),
+    nodeTypeConfigs: z.record(
+      z.string(),
+      z.object({
+        customCoreCount: z.number().int().describe(
+          "Optional. Customized number of cores available to each node of the type. This number must always be one of `nodeType.availableCustomCoreCounts`. If zero is provided max value from `nodeType.availableCustomCoreCounts` will be used.",
+        ).optional(),
+        nodeCount: z.number().int().describe(
+          "Required. The number of nodes of this type in the cluster",
+        ).optional(),
+      }),
+    ).describe(
+      "Required. The map of cluster node types in this cluster, where the key is canonical identifier of the node type (corresponds to the `NodeType`).",
+    ).optional(),
+    stretchedClusterConfig: z.object({
+      preferredLocation: z.string().describe(
+        "Required. Zone that will remain operational when connection between the two zones is lost. Specify the resource name of a zone that belongs to the region of the private cloud. For example: `projects/{project}/locations/europe-west3-a` where `{project}` can either be a project number or a project ID.",
+      ).optional(),
+      secondaryLocation: z.string().describe(
+        "Required. Additional zone for a higher level of availability and load balancing. Specify the resource name of a zone that belongs to the region of the private cloud. For example: `projects/{project}/locations/europe-west3-b` where `{project}` can either be a project number or a project ID.",
+      ).optional(),
+    }).describe("Configuration of a stretched cluster.").optional(),
+  }).describe("Management cluster configuration.").optional(),
+  networkConfig: z.object({
+    dnsServerIp: z.string().describe(
+      "Output only. DNS Server IP of the Private Cloud. All DNS queries can be forwarded to this address for name resolution of Private Cloud's management entities like vCenter, NSX-T Manager and ESXi hosts.",
+    ).optional(),
+    managementCidr: z.string().describe(
+      "Required. Management CIDR used by VMware management appliances.",
+    ).optional(),
+    managementIpAddressLayoutVersion: z.number().int().describe(
+      "Output only. The IP address layout version of the management IP address range. Possible versions include: * `managementIpAddressLayoutVersion=1`: Indicates the legacy IP address layout used by some existing private clouds. This is no longer supported for new private clouds as it does not support all features. * `managementIpAddressLayoutVersion=2`: Indicates the latest IP address layout used by all newly created private clouds. This version supports all current features.",
+    ).optional(),
+    vmwareEngineNetwork: z.string().describe(
+      "Optional. The relative resource name of the VMware Engine network attached to the private cloud. Specify the name in the following form: `projects/{project}/locations/{location}/vmwareEngineNetworks/{vmware_engine_network_id}` where `{project}` can either be a project number or a project ID.",
+    ).optional(),
+    vmwareEngineNetworkCanonical: z.string().describe(
+      "Output only. The canonical name of the VMware Engine network in the form: `projects/{project_number}/locations/{location}/vmwareEngineNetworks/{vmware_engine_network_id}`",
+    ).optional(),
+  }).describe(
+    "Network configuration in the consumer project with which the peering has to be done.",
+  ).optional(),
+  nsx: z.object({
+    fqdn: z.string().describe("Fully qualified domain name of the appliance.")
+      .optional(),
+    internalIp: z.string().describe("Internal IP address of the appliance.")
+      .optional(),
+    state: z.enum(["STATE_UNSPECIFIED", "ACTIVE", "CREATING"]).describe(
+      "Output only. The state of the appliance.",
+    ).optional(),
+    version: z.string().describe("Version of the appliance.").optional(),
+  }).describe("Details about a NSX Manager appliance.").optional(),
+  type: z.enum(["STANDARD", "TIME_LIMITED", "STRETCHED"]).describe(
+    "Optional. Type of the private cloud. Defaults to STANDARD.",
+  ).optional(),
+  vcenter: z.object({
+    fqdn: z.string().describe("Fully qualified domain name of the appliance.")
+      .optional(),
+    internalIp: z.string().describe("Internal IP address of the appliance.")
+      .optional(),
+    state: z.enum(["STATE_UNSPECIFIED", "ACTIVE", "CREATING"]).describe(
+      "Output only. The state of the appliance.",
+    ).optional(),
+    version: z.string().describe("Version of the appliance.").optional(),
+  }).describe("Details about a vCenter Server management appliance.")
+    .optional(),
+  privateCloudId: z.string().describe(
+    "Required. The user-provided identifier of the private cloud to be created. This identifier must be unique among each `PrivateCloud` within the parent and becomes the final token in the name URI. The identifier must meet the following requirements: * Only contains 1-63 alphanumeric characters and hyphens * Begins with an alphabetical character * Ends with a non-hyphen character * Not formatted as a UUID * Complies with [RFC 1034](https://datatracker.ietf.org/doc/html/rfc1034) (section 3.5)",
+  ).optional(),
+  requestId: z.string().describe(
+    "Optional. The request ID must be a valid UUID with the exception that zero UUID is not supported (00000000-0000-0000-0000-000000000000).",
+  ).optional(),
+  location: z.string().describe(
+    "The location for this resource (e.g., 'us', 'us-central1', 'europe-west1')",
+  ).optional(),
+});
+
+export const model = {
+  type: "@swamp/gcp/vmwareengine/privateclouds",
+  version: "2026.03.31.1",
+  upgrades: [
+    {
+      toVersion: "2026.03.31.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+  ],
+  globalArguments: GlobalArgsSchema,
+  inputsSchema: InputsSchema,
+  resources: {
+    state: {
+      description:
+        "Represents a private cloud resource. Private clouds of type `STANDARD` and `T...",
+      schema: StateSchema,
+      lifetime: "infinite",
+      garbageCollection: 10,
+    },
+  },
+  methods: {
+    create: {
+      description: "Create a privateClouds",
+      arguments: z.object({
+        waitForReady: z.boolean().describe(
+          "Wait for the resource to reach a ready state after creation (default: true)",
+        ).optional(),
+      }),
+      execute: async (args: { waitForReady?: boolean }, context: any) => {
+        const g = context.globalArgs;
+        const projectId = await getProjectId();
+        const params: Record<string, string> = { project: projectId };
+        if (g["parent"] !== undefined) params["parent"] = String(g["parent"]);
+        const body: Record<string, unknown> = {};
+        if (g["description"] !== undefined) {
+          body["description"] = g["description"];
+        }
+        if (g["hcx"] !== undefined) body["hcx"] = g["hcx"];
+        if (g["managementCluster"] !== undefined) {
+          body["managementCluster"] = g["managementCluster"];
+        }
+        if (g["networkConfig"] !== undefined) {
+          body["networkConfig"] = g["networkConfig"];
+        }
+        if (g["nsx"] !== undefined) body["nsx"] = g["nsx"];
+        if (g["type"] !== undefined) body["type"] = g["type"];
+        if (g["vcenter"] !== undefined) body["vcenter"] = g["vcenter"];
+        if (g["privateCloudId"] !== undefined) {
+          body["privateCloudId"] = g["privateCloudId"];
+        }
+        if (g["requestId"] !== undefined) body["requestId"] = g["requestId"];
+        if (g["parent"] !== undefined && g["name"] !== undefined) {
+          params["name"] = buildResourceName(
+            String(g["parent"]),
+            String(g["name"]),
+          );
+        }
+        const result = await createResource(
+          BASE_URL,
+          INSERT_CONFIG,
+          params,
+          body,
+          GET_CONFIG,
+          (args.waitForReady ?? true)
+            ? {
+              "statusField": "state",
+              "readyValues": ["ACTIVE"],
+              "failedValues": ["FAILED"],
+            }
+            : undefined,
+        ) as StateData;
+        const instanceName = g.name?.toString() ?? "current";
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    get: {
+      description: "Get a privateClouds",
+      arguments: z.object({
+        identifier: z.string().describe("The name of the privateClouds"),
+      }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const projectId = await getProjectId();
+        const params: Record<string, string> = { project: projectId };
+        const g = context.globalArgs;
+        params["name"] = buildResourceName(
+          String(g["parent"] ?? ""),
+          args.identifier,
+        );
+        const result = await readResource(
+          BASE_URL,
+          GET_CONFIG,
+          params,
+        ) as StateData;
+        const instanceName = g.name?.toString() ?? args.identifier;
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    update: {
+      description: "Update privateClouds attributes",
+      arguments: z.object({
+        waitForReady: z.boolean().describe(
+          "Wait for the resource to reach a ready state after update (default: true)",
+        ).optional(),
+      }),
+      execute: async (args: { waitForReady?: boolean }, context: any) => {
+        const g = context.globalArgs;
+        const projectId = await getProjectId();
+        const instanceName = g.name?.toString() ?? "current";
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          instanceName,
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        const params: Record<string, string> = { project: projectId };
+        params["name"] = buildResourceName(
+          String(g["parent"] ?? ""),
+          existing["name"]?.toString() ?? g["name"]?.toString() ?? "",
+        );
+        const body: Record<string, unknown> = {};
+        if (g["description"] !== undefined) {
+          body["description"] = g["description"];
+        }
+        if (g["hcx"] !== undefined) body["hcx"] = g["hcx"];
+        if (g["managementCluster"] !== undefined) {
+          body["managementCluster"] = g["managementCluster"];
+        }
+        if (g["networkConfig"] !== undefined) {
+          body["networkConfig"] = g["networkConfig"];
+        }
+        if (g["nsx"] !== undefined) body["nsx"] = g["nsx"];
+        if (g["type"] !== undefined) body["type"] = g["type"];
+        if (g["vcenter"] !== undefined) body["vcenter"] = g["vcenter"];
+        for (const key of Object.keys(existing)) {
+          if (
+            key === "fingerprint" || key === "labelFingerprint" ||
+            key === "etag" || key.endsWith("Fingerprint")
+          ) {
+            body[key] = existing[key];
+          }
+        }
+        const result = await updateResource(
+          BASE_URL,
+          PATCH_CONFIG,
+          params,
+          body,
+          GET_CONFIG,
+          (args.waitForReady ?? true)
+            ? {
+              "statusField": "state",
+              "readyValues": ["ACTIVE"],
+              "failedValues": ["FAILED"],
+            }
+            : undefined,
+        ) as StateData;
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    delete: {
+      description: "Delete the privateClouds",
+      arguments: z.object({
+        identifier: z.string().describe("The name of the privateClouds"),
+      }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const g = context.globalArgs;
+        const projectId = await getProjectId();
+        const params: Record<string, string> = { project: projectId };
+        params["name"] = buildResourceName(
+          String(g["parent"] ?? ""),
+          args.identifier,
+        );
+        const { existed } = await deleteResource(
+          BASE_URL,
+          DELETE_CONFIG,
+          params,
+        );
+        const instanceName = g.name?.toString() ?? args.identifier;
+        const handle = await context.writeResource("state", instanceName, {
+          identifier: args.identifier,
+          existed,
+          status: existed ? "deleted" : "not_found",
+          deletedAt: new Date().toISOString(),
+        });
+        return { dataHandles: [handle] };
+      },
+    },
+    sync: {
+      description: "Sync privateClouds state from GCP",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const projectId = await getProjectId();
+        const instanceName = g.name?.toString() ?? "current";
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          instanceName,
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        try {
+          const params: Record<string, string> = { project: projectId };
+          const shortName = existing.name?.toString() ?? g["name"]?.toString();
+          if (!shortName) throw new Error("No identifier found");
+          params["name"] = buildResourceName(
+            String(g["parent"] ?? ""),
+            shortName,
+          );
+          const result = await readResource(
+            BASE_URL,
+            GET_CONFIG,
+            params,
+          ) as StateData;
+          const handle = await context.writeResource(
+            "state",
+            instanceName,
+            result,
+          );
+          return { dataHandles: [handle] };
+        } catch (error: unknown) {
+          if (isResourceNotFoundError(error)) {
+            const handle = await context.writeResource("state", instanceName, {
+              status: "not_found",
+              syncedAt: new Date().toISOString(),
+            });
+            return { dataHandles: [handle] };
+          }
+          throw error;
+        }
+      },
+    },
+    get_dns_forwarding: {
+      description: "get dns forwarding",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, unknown>, context: any) => {
+        const g = context.globalArgs;
+        const projectId = await getProjectId();
+        const params: Record<string, string> = { project: projectId };
+        if (g["parent"] !== undefined && g["name"] !== undefined) {
+          params["name"] = buildResourceName(
+            String(g["parent"]),
+            String(g["name"]),
+          );
+        }
+        const result = await createResource(
+          BASE_URL,
+          {
+            "id":
+              "vmwareengine.projects.locations.privateClouds.getDnsForwarding",
+            "path": "v1/{+name}",
+            "httpMethod": "GET",
+            "parameterOrder": ["name"],
+            "parameters": { "name": { "location": "path", "required": true } },
+          },
+          params,
+          {},
+        );
+        return { result };
+      },
+    },
+    private_cloud_deletion_now: {
+      description: "private cloud deletion now",
+      arguments: z.object({
+        etag: z.any().optional(),
+        requestId: z.any().optional(),
+      }),
+      execute: async (args: Record<string, unknown>, context: any) => {
+        const g = context.globalArgs;
+        const projectId = await getProjectId();
+        const params: Record<string, string> = { project: projectId };
+        if (g["parent"] !== undefined && g["name"] !== undefined) {
+          params["name"] = buildResourceName(
+            String(g["parent"]),
+            String(g["name"]),
+          );
+        }
+        const body: Record<string, unknown> = {};
+        if (args["etag"] !== undefined) body["etag"] = args["etag"];
+        if (args["requestId"] !== undefined) {
+          body["requestId"] = args["requestId"];
+        }
+        const result = await createResource(
+          BASE_URL,
+          {
+            "id":
+              "vmwareengine.projects.locations.privateClouds.privateCloudDeletionNow",
+            "path": "v1/{+name}:privateCloudDeletionNow",
+            "httpMethod": "POST",
+            "parameterOrder": ["name"],
+            "parameters": { "name": { "location": "path", "required": true } },
+          },
+          params,
+          body,
+        );
+        return { result };
+      },
+    },
+    reset_nsx_credentials: {
+      description: "reset nsx credentials",
+      arguments: z.object({
+        requestId: z.any().optional(),
+      }),
+      execute: async (args: Record<string, unknown>, context: any) => {
+        const g = context.globalArgs;
+        const projectId = await getProjectId();
+        const params: Record<string, string> = { project: projectId };
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          g.name?.toString() ?? "current",
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        params["privateCloud"] = existing["name"]?.toString() ??
+          g["name"]?.toString() ?? "";
+        const body: Record<string, unknown> = {};
+        if (args["requestId"] !== undefined) {
+          body["requestId"] = args["requestId"];
+        }
+        const result = await createResource(
+          BASE_URL,
+          {
+            "id":
+              "vmwareengine.projects.locations.privateClouds.resetNsxCredentials",
+            "path": "v1/{+privateCloud}:resetNsxCredentials",
+            "httpMethod": "POST",
+            "parameterOrder": ["privateCloud"],
+            "parameters": {
+              "privateCloud": { "location": "path", "required": true },
+            },
+          },
+          params,
+          body,
+        );
+        return { result };
+      },
+    },
+    reset_vcenter_credentials: {
+      description: "reset vcenter credentials",
+      arguments: z.object({
+        requestId: z.any().optional(),
+        username: z.any().optional(),
+      }),
+      execute: async (args: Record<string, unknown>, context: any) => {
+        const g = context.globalArgs;
+        const projectId = await getProjectId();
+        const params: Record<string, string> = { project: projectId };
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          g.name?.toString() ?? "current",
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        params["privateCloud"] = existing["name"]?.toString() ??
+          g["name"]?.toString() ?? "";
+        const body: Record<string, unknown> = {};
+        if (args["requestId"] !== undefined) {
+          body["requestId"] = args["requestId"];
+        }
+        if (args["username"] !== undefined) body["username"] = args["username"];
+        const result = await createResource(
+          BASE_URL,
+          {
+            "id":
+              "vmwareengine.projects.locations.privateClouds.resetVcenterCredentials",
+            "path": "v1/{+privateCloud}:resetVcenterCredentials",
+            "httpMethod": "POST",
+            "parameterOrder": ["privateCloud"],
+            "parameters": {
+              "privateCloud": { "location": "path", "required": true },
+            },
+          },
+          params,
+          body,
+        );
+        return { result };
+      },
+    },
+    show_nsx_credentials: {
+      description: "show nsx credentials",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, unknown>, context: any) => {
+        const g = context.globalArgs;
+        const projectId = await getProjectId();
+        const params: Record<string, string> = { project: projectId };
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          g.name?.toString() ?? "current",
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        params["privateCloud"] = existing["name"]?.toString() ??
+          g["name"]?.toString() ?? "";
+        const result = await createResource(
+          BASE_URL,
+          {
+            "id":
+              "vmwareengine.projects.locations.privateClouds.showNsxCredentials",
+            "path": "v1/{+privateCloud}:showNsxCredentials",
+            "httpMethod": "GET",
+            "parameterOrder": ["privateCloud"],
+            "parameters": {
+              "privateCloud": { "location": "path", "required": true },
+            },
+          },
+          params,
+          {},
+        );
+        return { result };
+      },
+    },
+    show_vcenter_credentials: {
+      description: "show vcenter credentials",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, unknown>, context: any) => {
+        const g = context.globalArgs;
+        const projectId = await getProjectId();
+        const params: Record<string, string> = { project: projectId };
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          g.name?.toString() ?? "current",
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        params["privateCloud"] = existing["name"]?.toString() ??
+          g["name"]?.toString() ?? "";
+        const result = await createResource(
+          BASE_URL,
+          {
+            "id":
+              "vmwareengine.projects.locations.privateClouds.showVcenterCredentials",
+            "path": "v1/{+privateCloud}:showVcenterCredentials",
+            "httpMethod": "GET",
+            "parameterOrder": ["privateCloud"],
+            "parameters": {
+              "privateCloud": { "location": "path", "required": true },
+              "username": { "location": "query" },
+            },
+          },
+          params,
+          {},
+        );
+        return { result };
+      },
+    },
+    undelete: {
+      description: "undelete",
+      arguments: z.object({
+        requestId: z.any().optional(),
+      }),
+      execute: async (args: Record<string, unknown>, context: any) => {
+        const g = context.globalArgs;
+        const projectId = await getProjectId();
+        const params: Record<string, string> = { project: projectId };
+        if (g["parent"] !== undefined && g["name"] !== undefined) {
+          params["name"] = buildResourceName(
+            String(g["parent"]),
+            String(g["name"]),
+          );
+        }
+        const body: Record<string, unknown> = {};
+        if (args["requestId"] !== undefined) {
+          body["requestId"] = args["requestId"];
+        }
+        const result = await createResource(
+          BASE_URL,
+          {
+            "id": "vmwareengine.projects.locations.privateClouds.undelete",
+            "path": "v1/{+name}:undelete",
+            "httpMethod": "POST",
+            "parameterOrder": ["name"],
+            "parameters": { "name": { "location": "path", "required": true } },
+          },
+          params,
+          body,
+        );
+        return { result };
+      },
+    },
+    update_dns_forwarding: {
+      description: "update dns forwarding",
+      arguments: z.object({
+        createTime: z.any().optional(),
+        forwardingRules: z.any().optional(),
+        name: z.any().optional(),
+        updateTime: z.any().optional(),
+      }),
+      execute: async (args: Record<string, unknown>, context: any) => {
+        const g = context.globalArgs;
+        const projectId = await getProjectId();
+        const params: Record<string, string> = { project: projectId };
+        if (g["parent"] !== undefined && g["name"] !== undefined) {
+          params["name"] = buildResourceName(
+            String(g["parent"]),
+            String(g["name"]),
+          );
+        }
+        const body: Record<string, unknown> = {};
+        if (args["createTime"] !== undefined) {
+          body["createTime"] = args["createTime"];
+        }
+        if (args["forwardingRules"] !== undefined) {
+          body["forwardingRules"] = args["forwardingRules"];
+        }
+        if (args["name"] !== undefined) body["name"] = args["name"];
+        if (args["updateTime"] !== undefined) {
+          body["updateTime"] = args["updateTime"];
+        }
+        const result = await createResource(
+          BASE_URL,
+          {
+            "id":
+              "vmwareengine.projects.locations.privateClouds.updateDnsForwarding",
+            "path": "v1/{+name}",
+            "httpMethod": "PATCH",
+            "parameterOrder": ["name"],
+            "parameters": {
+              "name": { "location": "path", "required": true },
+              "requestId": { "location": "query" },
+              "updateMask": { "location": "query" },
+            },
+          },
+          params,
+          body,
+        );
+        return { result };
+      },
+    },
+  },
+};

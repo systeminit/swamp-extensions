@@ -1,0 +1,18 @@
+# Auto-generated manifest. Re-generate with the appropriate deno task.
+manifestVersion: 1
+name: "@swamp/gcp/kmsinventory"
+version: "2026.03.27.1"
+description: "Google Cloud kmsinventory infrastructure models"
+labels:
+  - gcp
+  - google-cloud
+  - kmsinventory
+  - cloud
+  - infrastructure
+releaseNotes: |
+  - Added: cryptokeys
+models:
+  - cryptokeys.ts
+additionalFiles:
+  - LICENSE.txt
+  - README.md

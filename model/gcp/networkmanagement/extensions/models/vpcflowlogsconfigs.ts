@@ -1,0 +1,517 @@
+// Auto-generated extension model for @swamp/gcp/networkmanagement/vpcflowlogsconfigs
+// Do not edit manually. Re-generate with: deno task generate:gcp
+
+// deno-lint-ignore-file no-explicit-any
+
+import { z } from "zod";
+import {
+  createResource,
+  deleteResource,
+  getProjectId,
+  isResourceNotFoundError,
+  readResource,
+  updateResource,
+} from "./_lib/gcp.ts";
+
+/** Construct the fully-qualified resource name from parent and short name. */
+function buildResourceName(parent: string, shortName: string): string {
+  return `${parent}/vpcFlowLogsConfigs/${shortName}`;
+}
+
+const BASE_URL = "https://networkmanagement.googleapis.com/";
+
+const GET_CONFIG = {
+  "id": "networkmanagement.organizations.locations.vpcFlowLogsConfigs.get",
+  "path": "v1/{+name}",
+  "httpMethod": "GET",
+  "parameterOrder": [
+    "name",
+  ],
+  "parameters": {
+    "name": {
+      "location": "path",
+      "required": true,
+    },
+  },
+} as const;
+
+const INSERT_CONFIG = {
+  "id": "networkmanagement.organizations.locations.vpcFlowLogsConfigs.create",
+  "path": "v1/{+parent}/vpcFlowLogsConfigs",
+  "httpMethod": "POST",
+  "parameterOrder": [
+    "parent",
+  ],
+  "parameters": {
+    "parent": {
+      "location": "path",
+      "required": true,
+    },
+    "vpcFlowLogsConfigId": {
+      "location": "query",
+    },
+  },
+} as const;
+
+const PATCH_CONFIG = {
+  "id": "networkmanagement.organizations.locations.vpcFlowLogsConfigs.patch",
+  "path": "v1/{+name}",
+  "httpMethod": "PATCH",
+  "parameterOrder": [
+    "name",
+  ],
+  "parameters": {
+    "name": {
+      "location": "path",
+      "required": true,
+    },
+    "updateMask": {
+      "location": "query",
+    },
+  },
+} as const;
+
+const DELETE_CONFIG = {
+  "id": "networkmanagement.organizations.locations.vpcFlowLogsConfigs.delete",
+  "path": "v1/{+name}",
+  "httpMethod": "DELETE",
+  "parameterOrder": [
+    "name",
+  ],
+  "parameters": {
+    "name": {
+      "location": "path",
+      "required": true,
+    },
+  },
+} as const;
+
+const GlobalArgsSchema = z.object({
+  aggregationInterval: z.enum([
+    "AGGREGATION_INTERVAL_UNSPECIFIED",
+    "INTERVAL_5_SEC",
+    "INTERVAL_30_SEC",
+    "INTERVAL_1_MIN",
+    "INTERVAL_5_MIN",
+    "INTERVAL_10_MIN",
+    "INTERVAL_15_MIN",
+  ]).describe(
+    "Optional. The aggregation interval for the logs. Default value is INTERVAL_5_SEC.",
+  ).optional(),
+  crossProjectMetadata: z.enum([
+    "CROSS_PROJECT_METADATA_UNSPECIFIED",
+    "CROSS_PROJECT_METADATA_ENABLED",
+    "CROSS_PROJECT_METADATA_DISABLED",
+  ]).describe(
+    "Optional. Determines whether to include cross project annotations in the logs. This field is available only for organization configurations. If not specified in org configs will be set to CROSS_PROJECT_METADATA_ENABLED.",
+  ).optional(),
+  description: z.string().describe(
+    "Optional. The user-supplied description of the VPC Flow Logs configuration. Maximum of 512 characters.",
+  ).optional(),
+  filterExpr: z.string().describe(
+    "Optional. Export filter used to define which VPC Flow Logs should be logged.",
+  ).optional(),
+  flowSampling: z.number().describe(
+    "Optional. The value of the field must be in (0, 1]. The sampling rate of VPC Flow Logs where 1.0 means all collected logs are reported. Setting the sampling rate to 0.0 is not allowed. If you want to disable VPC Flow Logs, use the state field instead. Default value is 1.0.",
+  ).optional(),
+  interconnectAttachment: z.string().describe(
+    "Traffic will be logged from the Interconnect Attachment. Format: projects/{project_id}/regions/{region}/interconnectAttachments/{name}",
+  ).optional(),
+  labels: z.record(z.string(), z.string()).describe(
+    "Optional. Resource labels to represent user-provided metadata.",
+  ).optional(),
+  metadata: z.enum([
+    "METADATA_UNSPECIFIED",
+    "INCLUDE_ALL_METADATA",
+    "EXCLUDE_ALL_METADATA",
+    "CUSTOM_METADATA",
+  ]).describe(
+    "Optional. Configures whether all, none or a subset of metadata fields should be added to the reported VPC flow logs. Default value is INCLUDE_ALL_METADATA.",
+  ).optional(),
+  metadataFields: z.array(z.string()).describe(
+    'Optional. Custom metadata fields to include in the reported VPC flow logs. Can only be specified if "metadata" was set to CUSTOM_METADATA.',
+  ).optional(),
+  name: z.string().describe(
+    "Identifier. Unique name of the configuration. The name can have one of the following forms: - For project-level configurations: `projects/{project_id}/locations/global/vpcFlowLogsConfigs/{vpc_flow_logs_config_id}` - For organization-level configurations: `organizations/{organization_id}/locations/global/vpcFlowLogsConfigs/{vpc_flow_logs_config_id}`",
+  ).optional(),
+  network: z.string().describe(
+    "Traffic will be logged from VMs, VPN tunnels and Interconnect Attachments within the network. Format: projects/{project_id}/global/networks/{name}",
+  ).optional(),
+  state: z.enum(["STATE_UNSPECIFIED", "ENABLED", "DISABLED"]).describe(
+    "Optional. The state of the VPC Flow Log configuration. Default value is ENABLED. When creating a new configuration, it must be enabled. Setting state=DISABLED will pause the log generation for this config.",
+  ).optional(),
+  subnet: z.string().describe(
+    "Traffic will be logged from VMs within the subnetwork. Format: projects/{project_id}/regions/{region}/subnetworks/{name}",
+  ).optional(),
+  vpnTunnel: z.string().describe(
+    "Traffic will be logged from the VPN Tunnel. Format: projects/{project_id}/regions/{region}/vpnTunnels/{name}",
+  ).optional(),
+  vpcFlowLogsConfigId: z.string().describe(
+    "Required. ID of the `VpcFlowLogsConfig`.",
+  ).optional(),
+  parent: z.string().describe(
+    "The parent resource name (e.g., projects/my-project/locations/us-central1, organizations/123, folders/456)",
+  ).optional(),
+});
+
+const StateSchema = z.object({
+  aggregationInterval: z.string().optional(),
+  createTime: z.string().optional(),
+  crossProjectMetadata: z.string().optional(),
+  description: z.string().optional(),
+  filterExpr: z.string().optional(),
+  flowSampling: z.number().optional(),
+  interconnectAttachment: z.string().optional(),
+  labels: z.record(z.string(), z.unknown()).optional(),
+  metadata: z.string().optional(),
+  metadataFields: z.array(z.string()).optional(),
+  name: z.string(),
+  network: z.string().optional(),
+  state: z.string().optional(),
+  subnet: z.string().optional(),
+  targetResourceState: z.string().optional(),
+  updateTime: z.string().optional(),
+  vpnTunnel: z.string().optional(),
+}).passthrough();
+
+type StateData = z.infer<typeof StateSchema>;
+
+const InputsSchema = z.object({
+  aggregationInterval: z.enum([
+    "AGGREGATION_INTERVAL_UNSPECIFIED",
+    "INTERVAL_5_SEC",
+    "INTERVAL_30_SEC",
+    "INTERVAL_1_MIN",
+    "INTERVAL_5_MIN",
+    "INTERVAL_10_MIN",
+    "INTERVAL_15_MIN",
+  ]).describe(
+    "Optional. The aggregation interval for the logs. Default value is INTERVAL_5_SEC.",
+  ).optional(),
+  crossProjectMetadata: z.enum([
+    "CROSS_PROJECT_METADATA_UNSPECIFIED",
+    "CROSS_PROJECT_METADATA_ENABLED",
+    "CROSS_PROJECT_METADATA_DISABLED",
+  ]).describe(
+    "Optional. Determines whether to include cross project annotations in the logs. This field is available only for organization configurations. If not specified in org configs will be set to CROSS_PROJECT_METADATA_ENABLED.",
+  ).optional(),
+  description: z.string().describe(
+    "Optional. The user-supplied description of the VPC Flow Logs configuration. Maximum of 512 characters.",
+  ).optional(),
+  filterExpr: z.string().describe(
+    "Optional. Export filter used to define which VPC Flow Logs should be logged.",
+  ).optional(),
+  flowSampling: z.number().describe(
+    "Optional. The value of the field must be in (0, 1]. The sampling rate of VPC Flow Logs where 1.0 means all collected logs are reported. Setting the sampling rate to 0.0 is not allowed. If you want to disable VPC Flow Logs, use the state field instead. Default value is 1.0.",
+  ).optional(),
+  interconnectAttachment: z.string().describe(
+    "Traffic will be logged from the Interconnect Attachment. Format: projects/{project_id}/regions/{region}/interconnectAttachments/{name}",
+  ).optional(),
+  labels: z.record(z.string(), z.string()).describe(
+    "Optional. Resource labels to represent user-provided metadata.",
+  ).optional(),
+  metadata: z.enum([
+    "METADATA_UNSPECIFIED",
+    "INCLUDE_ALL_METADATA",
+    "EXCLUDE_ALL_METADATA",
+    "CUSTOM_METADATA",
+  ]).describe(
+    "Optional. Configures whether all, none or a subset of metadata fields should be added to the reported VPC flow logs. Default value is INCLUDE_ALL_METADATA.",
+  ).optional(),
+  metadataFields: z.array(z.string()).describe(
+    'Optional. Custom metadata fields to include in the reported VPC flow logs. Can only be specified if "metadata" was set to CUSTOM_METADATA.',
+  ).optional(),
+  name: z.string().describe(
+    "Identifier. Unique name of the configuration. The name can have one of the following forms: - For project-level configurations: `projects/{project_id}/locations/global/vpcFlowLogsConfigs/{vpc_flow_logs_config_id}` - For organization-level configurations: `organizations/{organization_id}/locations/global/vpcFlowLogsConfigs/{vpc_flow_logs_config_id}`",
+  ).optional(),
+  network: z.string().describe(
+    "Traffic will be logged from VMs, VPN tunnels and Interconnect Attachments within the network. Format: projects/{project_id}/global/networks/{name}",
+  ).optional(),
+  state: z.enum(["STATE_UNSPECIFIED", "ENABLED", "DISABLED"]).describe(
+    "Optional. The state of the VPC Flow Log configuration. Default value is ENABLED. When creating a new configuration, it must be enabled. Setting state=DISABLED will pause the log generation for this config.",
+  ).optional(),
+  subnet: z.string().describe(
+    "Traffic will be logged from VMs within the subnetwork. Format: projects/{project_id}/regions/{region}/subnetworks/{name}",
+  ).optional(),
+  vpnTunnel: z.string().describe(
+    "Traffic will be logged from the VPN Tunnel. Format: projects/{project_id}/regions/{region}/vpnTunnels/{name}",
+  ).optional(),
+  vpcFlowLogsConfigId: z.string().describe(
+    "Required. ID of the `VpcFlowLogsConfig`.",
+  ).optional(),
+  parent: z.string().describe(
+    "The parent resource name (e.g., projects/my-project/locations/us-central1, organizations/123, folders/456)",
+  ).optional(),
+});
+
+export const model = {
+  type: "@swamp/gcp/networkmanagement/vpcflowlogsconfigs",
+  version: "2026.03.27.1",
+  globalArguments: GlobalArgsSchema,
+  inputsSchema: InputsSchema,
+  resources: {
+    state: {
+      description: "A configuration to generate VPC Flow Logs.",
+      schema: StateSchema,
+      lifetime: "infinite",
+      garbageCollection: 10,
+    },
+  },
+  methods: {
+    create: {
+      description: "Create a vpcFlowLogsConfigs",
+      arguments: z.object({
+        waitForReady: z.boolean().describe(
+          "Wait for the resource to reach a ready state after creation (default: true)",
+        ).optional(),
+      }),
+      execute: async (args: { waitForReady?: boolean }, context: any) => {
+        const g = context.globalArgs;
+        const projectId = await getProjectId();
+        const params: Record<string, string> = { project: projectId };
+        if (g["parent"] !== undefined) params["parent"] = String(g["parent"]);
+        const body: Record<string, unknown> = {};
+        if (g["aggregationInterval"] !== undefined) {
+          body["aggregationInterval"] = g["aggregationInterval"];
+        }
+        if (g["crossProjectMetadata"] !== undefined) {
+          body["crossProjectMetadata"] = g["crossProjectMetadata"];
+        }
+        if (g["description"] !== undefined) {
+          body["description"] = g["description"];
+        }
+        if (g["filterExpr"] !== undefined) body["filterExpr"] = g["filterExpr"];
+        if (g["flowSampling"] !== undefined) {
+          body["flowSampling"] = g["flowSampling"];
+        }
+        if (g["interconnectAttachment"] !== undefined) {
+          body["interconnectAttachment"] = g["interconnectAttachment"];
+        }
+        if (g["labels"] !== undefined) body["labels"] = g["labels"];
+        if (g["metadata"] !== undefined) body["metadata"] = g["metadata"];
+        if (g["metadataFields"] !== undefined) {
+          body["metadataFields"] = g["metadataFields"];
+        }
+        if (g["name"] !== undefined) body["name"] = g["name"];
+        if (g["network"] !== undefined) body["network"] = g["network"];
+        if (g["state"] !== undefined) body["state"] = g["state"];
+        if (g["subnet"] !== undefined) body["subnet"] = g["subnet"];
+        if (g["vpnTunnel"] !== undefined) body["vpnTunnel"] = g["vpnTunnel"];
+        if (g["vpcFlowLogsConfigId"] !== undefined) {
+          body["vpcFlowLogsConfigId"] = g["vpcFlowLogsConfigId"];
+        }
+        if (g["parent"] !== undefined && g["name"] !== undefined) {
+          params["name"] = buildResourceName(
+            String(g["parent"]),
+            String(g["name"]),
+          );
+        }
+        const result = await createResource(
+          BASE_URL,
+          INSERT_CONFIG,
+          params,
+          body,
+          GET_CONFIG,
+          (args.waitForReady ?? true)
+            ? {
+              "statusField": "state",
+              "readyValues": ["ENABLED"],
+              "failedValues": [],
+            }
+            : undefined,
+        ) as StateData;
+        const instanceName = (result.name ?? g.name)?.toString() ?? "current";
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    get: {
+      description: "Get a vpcFlowLogsConfigs",
+      arguments: z.object({
+        identifier: z.string().describe("The name of the vpcFlowLogsConfigs"),
+      }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const projectId = await getProjectId();
+        const params: Record<string, string> = { project: projectId };
+        const g = context.globalArgs;
+        params["name"] = buildResourceName(
+          String(g["parent"] ?? ""),
+          args.identifier,
+        );
+        const result = await readResource(
+          BASE_URL,
+          GET_CONFIG,
+          params,
+        ) as StateData;
+        const instanceName = (result.name ?? g.name)?.toString() ??
+          args.identifier;
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    update: {
+      description: "Update vpcFlowLogsConfigs attributes",
+      arguments: z.object({
+        waitForReady: z.boolean().describe(
+          "Wait for the resource to reach a ready state after update (default: true)",
+        ).optional(),
+      }),
+      execute: async (args: { waitForReady?: boolean }, context: any) => {
+        const g = context.globalArgs;
+        const projectId = await getProjectId();
+        const instanceName = g.name?.toString() ?? "current";
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          instanceName,
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        const params: Record<string, string> = { project: projectId };
+        params["name"] = buildResourceName(
+          String(g["parent"] ?? ""),
+          existing["name"]?.toString() ?? g["name"]?.toString() ?? "",
+        );
+        const body: Record<string, unknown> = {};
+        if (g["aggregationInterval"] !== undefined) {
+          body["aggregationInterval"] = g["aggregationInterval"];
+        }
+        if (g["crossProjectMetadata"] !== undefined) {
+          body["crossProjectMetadata"] = g["crossProjectMetadata"];
+        }
+        if (g["description"] !== undefined) {
+          body["description"] = g["description"];
+        }
+        if (g["filterExpr"] !== undefined) body["filterExpr"] = g["filterExpr"];
+        if (g["flowSampling"] !== undefined) {
+          body["flowSampling"] = g["flowSampling"];
+        }
+        if (g["interconnectAttachment"] !== undefined) {
+          body["interconnectAttachment"] = g["interconnectAttachment"];
+        }
+        if (g["labels"] !== undefined) body["labels"] = g["labels"];
+        if (g["metadata"] !== undefined) body["metadata"] = g["metadata"];
+        if (g["metadataFields"] !== undefined) {
+          body["metadataFields"] = g["metadataFields"];
+        }
+        if (g["network"] !== undefined) body["network"] = g["network"];
+        if (g["state"] !== undefined) body["state"] = g["state"];
+        if (g["subnet"] !== undefined) body["subnet"] = g["subnet"];
+        if (g["vpnTunnel"] !== undefined) body["vpnTunnel"] = g["vpnTunnel"];
+        for (const key of Object.keys(existing)) {
+          if (
+            key === "fingerprint" || key === "labelFingerprint" ||
+            key === "etag" || key.endsWith("Fingerprint")
+          ) {
+            body[key] = existing[key];
+          }
+        }
+        const result = await updateResource(
+          BASE_URL,
+          PATCH_CONFIG,
+          params,
+          body,
+          GET_CONFIG,
+          (args.waitForReady ?? true)
+            ? {
+              "statusField": "state",
+              "readyValues": ["ENABLED"],
+              "failedValues": [],
+            }
+            : undefined,
+        ) as StateData;
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    delete: {
+      description: "Delete the vpcFlowLogsConfigs",
+      arguments: z.object({
+        identifier: z.string().describe("The name of the vpcFlowLogsConfigs"),
+      }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const g = context.globalArgs;
+        const projectId = await getProjectId();
+        const params: Record<string, string> = { project: projectId };
+        params["name"] = buildResourceName(
+          String(g["parent"] ?? ""),
+          args.identifier,
+        );
+        const { existed } = await deleteResource(
+          BASE_URL,
+          DELETE_CONFIG,
+          params,
+        );
+        const instanceName = g.name?.toString() ?? args.identifier;
+        const handle = await context.writeResource("state", instanceName, {
+          identifier: args.identifier,
+          existed,
+          status: existed ? "deleted" : "not_found",
+          deletedAt: new Date().toISOString(),
+        });
+        return { dataHandles: [handle] };
+      },
+    },
+    sync: {
+      description: "Sync vpcFlowLogsConfigs state from GCP",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const projectId = await getProjectId();
+        const instanceName = g.name?.toString() ?? "current";
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          instanceName,
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        try {
+          const params: Record<string, string> = { project: projectId };
+          const shortName = existing.name?.toString() ?? g["name"]?.toString();
+          if (!shortName) throw new Error("No identifier found");
+          params["name"] = buildResourceName(
+            String(g["parent"] ?? ""),
+            shortName,
+          );
+          const result = await readResource(
+            BASE_URL,
+            GET_CONFIG,
+            params,
+          ) as StateData;
+          const handle = await context.writeResource(
+            "state",
+            instanceName,
+            result,
+          );
+          return { dataHandles: [handle] };
+        } catch (error: unknown) {
+          if (isResourceNotFoundError(error)) {
+            const handle = await context.writeResource("state", instanceName, {
+              status: "not_found",
+              syncedAt: new Date().toISOString(),
+            });
+            return { dataHandles: [handle] };
+          }
+          throw error;
+        }
+      },
+    },
+  },
+};

@@ -1,0 +1,33 @@
+# Auto-generated manifest. Re-generate with the appropriate deno task.
+manifestVersion: 1
+name: "@swamp/gcp/androidenterprise"
+version: "2026.03.27.1"
+description: "Google Cloud androidenterprise infrastructure models"
+labels:
+  - gcp
+  - google-cloud
+  - androidenterprise
+  - cloud
+  - infrastructure
+releaseNotes: |
+  - Added: devices, enterprises, entitlements, grouplicenses, grouplicenseusers, installs, managedconfigurationsfordevice, managedconfigurationsforuser, managedconfigurationssettings, permissions, products, serviceaccountkeys, storelayoutclusters, storelayoutpages, users, webapps
+models:
+  - devices.ts
+  - enterprises.ts
+  - entitlements.ts
+  - grouplicenses.ts
+  - grouplicenseusers.ts
+  - installs.ts
+  - managedconfigurationsfordevice.ts
+  - managedconfigurationsforuser.ts
+  - managedconfigurationssettings.ts
+  - permissions.ts
+  - products.ts
+  - serviceaccountkeys.ts
+  - storelayoutclusters.ts
+  - storelayoutpages.ts
+  - users.ts
+  - webapps.ts
+additionalFiles:
+  - LICENSE.txt
+  - README.md

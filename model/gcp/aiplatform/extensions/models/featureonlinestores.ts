@@ -1,0 +1,550 @@
+// Auto-generated extension model for @swamp/gcp/aiplatform/featureonlinestores
+// Do not edit manually. Re-generate with: deno task generate:gcp
+
+// deno-lint-ignore-file no-explicit-any
+
+import { z } from "zod";
+import {
+  createResource,
+  deleteResource,
+  getProjectId,
+  isResourceNotFoundError,
+  readResource,
+  updateResource,
+} from "./_lib/gcp.ts";
+
+/** Construct the fully-qualified resource name from parent and short name. */
+function buildResourceName(parent: string, shortName: string): string {
+  return `${parent}/featureOnlineStores/${shortName}`;
+}
+
+const BASE_URL = "https://aiplatform.googleapis.com/";
+
+const GET_CONFIG = {
+  "id": "aiplatform.projects.locations.featureOnlineStores.get",
+  "path": "v1/{+name}",
+  "httpMethod": "GET",
+  "parameterOrder": [
+    "name",
+  ],
+  "parameters": {
+    "name": {
+      "location": "path",
+      "required": true,
+    },
+  },
+} as const;
+
+const INSERT_CONFIG = {
+  "id": "aiplatform.projects.locations.featureOnlineStores.create",
+  "path": "v1/{+parent}/featureOnlineStores",
+  "httpMethod": "POST",
+  "parameterOrder": [
+    "parent",
+  ],
+  "parameters": {
+    "featureOnlineStoreId": {
+      "location": "query",
+    },
+    "parent": {
+      "location": "path",
+      "required": true,
+    },
+  },
+} as const;
+
+const PATCH_CONFIG = {
+  "id": "aiplatform.projects.locations.featureOnlineStores.patch",
+  "path": "v1/{+name}",
+  "httpMethod": "PATCH",
+  "parameterOrder": [
+    "name",
+  ],
+  "parameters": {
+    "name": {
+      "location": "path",
+      "required": true,
+    },
+    "updateMask": {
+      "location": "query",
+    },
+  },
+} as const;
+
+const DELETE_CONFIG = {
+  "id": "aiplatform.projects.locations.featureOnlineStores.delete",
+  "path": "v1/{+name}",
+  "httpMethod": "DELETE",
+  "parameterOrder": [
+    "name",
+  ],
+  "parameters": {
+    "force": {
+      "location": "query",
+    },
+    "name": {
+      "location": "path",
+      "required": true,
+    },
+  },
+} as const;
+
+const GlobalArgsSchema = z.object({
+  bigtable: z.object({
+    autoScaling: z.object({
+      cpuUtilizationTarget: z.number().int().describe(
+        "Optional. A percentage of the cluster's CPU capacity. Can be from 10% to 80%. When a cluster's CPU utilization exceeds the target that you have set, Bigtable immediately adds nodes to the cluster. When CPU utilization is substantially lower than the target, Bigtable removes nodes. If not set will default to 50%.",
+      ).optional(),
+      maxNodeCount: z.number().int().describe(
+        "Required. The maximum number of nodes to scale up to. Must be greater than or equal to min_node_count, and less than or equal to 10 times of 'min_node_count'.",
+      ).optional(),
+      minNodeCount: z.number().int().describe(
+        "Required. The minimum number of nodes to scale down to. Must be greater than or equal to 1.",
+      ).optional(),
+    }).optional(),
+    bigtableMetadata: z.object({
+      instanceId: z.string().describe("The Cloud Bigtable instance id.")
+        .optional(),
+      tableId: z.string().describe("The Cloud Bigtable table id.").optional(),
+      tenantProjectId: z.string().describe("Tenant project ID.").optional(),
+    }).describe(
+      "Metadata of the Bigtable instance. This is used by direct read access to the Bigtable in tenant project.",
+    ).optional(),
+    enableDirectBigtableAccess: z.boolean().describe(
+      "Optional. It true, enable direct access to the Bigtable instance.",
+    ).optional(),
+    zone: z.string().describe(
+      'Optional. The zone where the underlying Bigtable cluster for the primary Bigtable instance will be provisioned. Only the zone must be provided. For example, only "us-central1-a" should be provided.',
+    ).optional(),
+  }).optional(),
+  dedicatedServingEndpoint: z.object({
+    privateServiceConnectConfig: z.object({
+      enablePrivateServiceConnect: z.boolean().describe(
+        "Required. If true, expose the IndexEndpoint via private service connect.",
+      ).optional(),
+      projectAllowlist: z.array(z.string()).describe(
+        "A list of Projects from which the forwarding rule will target the service attachment.",
+      ).optional(),
+      pscAutomationConfigs: z.array(z.object({
+        errorMessage: z.string().describe(
+          "Output only. Error message if the PSC service automation failed.",
+        ).optional(),
+        forwardingRule: z.string().describe(
+          "Output only. Forwarding rule created by the PSC service automation.",
+        ).optional(),
+        ipAddress: z.string().describe(
+          "Output only. IP address rule created by the PSC service automation.",
+        ).optional(),
+        network: z.string().describe(
+          "Required. The full name of the Google Compute Engine [network](https://cloud.google.com/compute/docs/networks-and-firewalls#networks). [Format](https://cloud.google.com/compute/docs/reference/rest/v1/networks/get): `projects/{project}/global/networks/{network}`.",
+        ).optional(),
+        projectId: z.string().describe(
+          "Required. Project id used to create forwarding rule.",
+        ).optional(),
+        state: z.enum([
+          "PSC_AUTOMATION_STATE_UNSPECIFIED",
+          "PSC_AUTOMATION_STATE_SUCCESSFUL",
+          "PSC_AUTOMATION_STATE_FAILED",
+        ]).describe("Output only. The state of the PSC service automation.")
+          .optional(),
+      })).describe(
+        "Optional. List of projects and networks where the PSC endpoints will be created. This field is used by Online Inference(Prediction) only.",
+      ).optional(),
+      serviceAttachment: z.string().describe(
+        "Output only. The name of the generated service attachment resource. This is only populated if the endpoint is deployed with PrivateServiceConnect.",
+      ).optional(),
+    }).describe("Represents configuration for private service connect.")
+      .optional(),
+    publicEndpointDomainName: z.string().describe(
+      "Output only. This field will be populated with the domain name to use for this FeatureOnlineStore",
+    ).optional(),
+    serviceAttachment: z.string().describe(
+      "Output only. The name of the service attachment resource. Populated if private service connect is enabled and after FeatureViewSync is created.",
+    ).optional(),
+  }).describe(
+    "The dedicated serving endpoint for this FeatureOnlineStore. Only need to set when you choose Optimized storage type. Public endpoint is provisioned by default.",
+  ).optional(),
+  encryptionSpec: z.object({
+    kmsKeyName: z.string().describe(
+      "Required. Resource name of the Cloud KMS key used to protect the resource. The Cloud KMS key must be in the same region as the resource. It must have the format `projects/{project}/locations/{location}/keyRings/{key_ring}/cryptoKeys/{crypto_key}`.",
+    ).optional(),
+  }).describe(
+    "Represents a customer-managed encryption key specification that can be applied to a Vertex AI resource.",
+  ).optional(),
+  labels: z.record(z.string(), z.string()).describe(
+    'Optional. The labels with user-defined metadata to organize your FeatureOnlineStore. Label keys and values can be no longer than 64 characters (Unicode codepoints), can only contain lowercase letters, numeric characters, underscores and dashes. International characters are allowed. See https://goo.gl/xmQnxf for more information on and examples of labels. No more than 64 user labels can be associated with one FeatureOnlineStore(System labels are excluded)." System reserved label keys are prefixed with "aiplatform.googleapis.com/" and are immutable.',
+  ).optional(),
+  name: z.string().describe(
+    "Identifier. Name of the FeatureOnlineStore. Format: `projects/{project}/locations/{location}/featureOnlineStores/{featureOnlineStore}`",
+  ).optional(),
+  optimized: z.object({}).describe("Optimized storage type").optional(),
+  featureOnlineStoreId: z.string().describe(
+    "Required. The ID to use for this FeatureOnlineStore, which will become the final component of the FeatureOnlineStore's resource name. This value may be up to 60 characters, and valid characters are `[a-z0-9_]`. The first character cannot be a number. The value must be unique within the project and location.",
+  ).optional(),
+  location: z.string().describe(
+    "The location for this resource (e.g., 'us', 'us-central1', 'europe-west1')",
+  ).optional(),
+});
+
+const StateSchema = z.object({
+  bigtable: z.object({
+    autoScaling: z.object({
+      cpuUtilizationTarget: z.number(),
+      maxNodeCount: z.number(),
+      minNodeCount: z.number(),
+    }),
+    bigtableMetadata: z.object({
+      instanceId: z.string(),
+      tableId: z.string(),
+      tenantProjectId: z.string(),
+    }),
+    enableDirectBigtableAccess: z.boolean(),
+    zone: z.string(),
+  }).optional(),
+  createTime: z.string().optional(),
+  dedicatedServingEndpoint: z.object({
+    privateServiceConnectConfig: z.object({
+      enablePrivateServiceConnect: z.boolean(),
+      projectAllowlist: z.array(z.string()),
+      pscAutomationConfigs: z.array(z.object({
+        errorMessage: z.string(),
+        forwardingRule: z.string(),
+        ipAddress: z.string(),
+        network: z.string(),
+        projectId: z.string(),
+        state: z.string(),
+      })),
+      serviceAttachment: z.string(),
+    }),
+    publicEndpointDomainName: z.string(),
+    serviceAttachment: z.string(),
+  }).optional(),
+  encryptionSpec: z.object({
+    kmsKeyName: z.string(),
+  }).optional(),
+  etag: z.string().optional(),
+  labels: z.record(z.string(), z.unknown()).optional(),
+  name: z.string(),
+  optimized: z.object({}).optional(),
+  satisfiesPzi: z.boolean().optional(),
+  satisfiesPzs: z.boolean().optional(),
+  state: z.string().optional(),
+  updateTime: z.string().optional(),
+}).passthrough();
+
+type StateData = z.infer<typeof StateSchema>;
+
+const InputsSchema = z.object({
+  bigtable: z.object({
+    autoScaling: z.object({
+      cpuUtilizationTarget: z.number().int().describe(
+        "Optional. A percentage of the cluster's CPU capacity. Can be from 10% to 80%. When a cluster's CPU utilization exceeds the target that you have set, Bigtable immediately adds nodes to the cluster. When CPU utilization is substantially lower than the target, Bigtable removes nodes. If not set will default to 50%.",
+      ).optional(),
+      maxNodeCount: z.number().int().describe(
+        "Required. The maximum number of nodes to scale up to. Must be greater than or equal to min_node_count, and less than or equal to 10 times of 'min_node_count'.",
+      ).optional(),
+      minNodeCount: z.number().int().describe(
+        "Required. The minimum number of nodes to scale down to. Must be greater than or equal to 1.",
+      ).optional(),
+    }).optional(),
+    bigtableMetadata: z.object({
+      instanceId: z.string().describe("The Cloud Bigtable instance id.")
+        .optional(),
+      tableId: z.string().describe("The Cloud Bigtable table id.").optional(),
+      tenantProjectId: z.string().describe("Tenant project ID.").optional(),
+    }).describe(
+      "Metadata of the Bigtable instance. This is used by direct read access to the Bigtable in tenant project.",
+    ).optional(),
+    enableDirectBigtableAccess: z.boolean().describe(
+      "Optional. It true, enable direct access to the Bigtable instance.",
+    ).optional(),
+    zone: z.string().describe(
+      'Optional. The zone where the underlying Bigtable cluster for the primary Bigtable instance will be provisioned. Only the zone must be provided. For example, only "us-central1-a" should be provided.',
+    ).optional(),
+  }).optional(),
+  dedicatedServingEndpoint: z.object({
+    privateServiceConnectConfig: z.object({
+      enablePrivateServiceConnect: z.boolean().describe(
+        "Required. If true, expose the IndexEndpoint via private service connect.",
+      ).optional(),
+      projectAllowlist: z.array(z.string()).describe(
+        "A list of Projects from which the forwarding rule will target the service attachment.",
+      ).optional(),
+      pscAutomationConfigs: z.array(z.object({
+        errorMessage: z.string().describe(
+          "Output only. Error message if the PSC service automation failed.",
+        ).optional(),
+        forwardingRule: z.string().describe(
+          "Output only. Forwarding rule created by the PSC service automation.",
+        ).optional(),
+        ipAddress: z.string().describe(
+          "Output only. IP address rule created by the PSC service automation.",
+        ).optional(),
+        network: z.string().describe(
+          "Required. The full name of the Google Compute Engine [network](https://cloud.google.com/compute/docs/networks-and-firewalls#networks). [Format](https://cloud.google.com/compute/docs/reference/rest/v1/networks/get): `projects/{project}/global/networks/{network}`.",
+        ).optional(),
+        projectId: z.string().describe(
+          "Required. Project id used to create forwarding rule.",
+        ).optional(),
+        state: z.enum([
+          "PSC_AUTOMATION_STATE_UNSPECIFIED",
+          "PSC_AUTOMATION_STATE_SUCCESSFUL",
+          "PSC_AUTOMATION_STATE_FAILED",
+        ]).describe("Output only. The state of the PSC service automation.")
+          .optional(),
+      })).describe(
+        "Optional. List of projects and networks where the PSC endpoints will be created. This field is used by Online Inference(Prediction) only.",
+      ).optional(),
+      serviceAttachment: z.string().describe(
+        "Output only. The name of the generated service attachment resource. This is only populated if the endpoint is deployed with PrivateServiceConnect.",
+      ).optional(),
+    }).describe("Represents configuration for private service connect.")
+      .optional(),
+    publicEndpointDomainName: z.string().describe(
+      "Output only. This field will be populated with the domain name to use for this FeatureOnlineStore",
+    ).optional(),
+    serviceAttachment: z.string().describe(
+      "Output only. The name of the service attachment resource. Populated if private service connect is enabled and after FeatureViewSync is created.",
+    ).optional(),
+  }).describe(
+    "The dedicated serving endpoint for this FeatureOnlineStore. Only need to set when you choose Optimized storage type. Public endpoint is provisioned by default.",
+  ).optional(),
+  encryptionSpec: z.object({
+    kmsKeyName: z.string().describe(
+      "Required. Resource name of the Cloud KMS key used to protect the resource. The Cloud KMS key must be in the same region as the resource. It must have the format `projects/{project}/locations/{location}/keyRings/{key_ring}/cryptoKeys/{crypto_key}`.",
+    ).optional(),
+  }).describe(
+    "Represents a customer-managed encryption key specification that can be applied to a Vertex AI resource.",
+  ).optional(),
+  labels: z.record(z.string(), z.string()).describe(
+    'Optional. The labels with user-defined metadata to organize your FeatureOnlineStore. Label keys and values can be no longer than 64 characters (Unicode codepoints), can only contain lowercase letters, numeric characters, underscores and dashes. International characters are allowed. See https://goo.gl/xmQnxf for more information on and examples of labels. No more than 64 user labels can be associated with one FeatureOnlineStore(System labels are excluded)." System reserved label keys are prefixed with "aiplatform.googleapis.com/" and are immutable.',
+  ).optional(),
+  name: z.string().describe(
+    "Identifier. Name of the FeatureOnlineStore. Format: `projects/{project}/locations/{location}/featureOnlineStores/{featureOnlineStore}`",
+  ).optional(),
+  optimized: z.object({}).describe("Optimized storage type").optional(),
+  featureOnlineStoreId: z.string().describe(
+    "Required. The ID to use for this FeatureOnlineStore, which will become the final component of the FeatureOnlineStore's resource name. This value may be up to 60 characters, and valid characters are `[a-z0-9_]`. The first character cannot be a number. The value must be unique within the project and location.",
+  ).optional(),
+  location: z.string().describe(
+    "The location for this resource (e.g., 'us', 'us-central1', 'europe-west1')",
+  ).optional(),
+});
+
+export const model = {
+  type: "@swamp/gcp/aiplatform/featureonlinestores",
+  version: "2026.03.27.1",
+  globalArguments: GlobalArgsSchema,
+  inputsSchema: InputsSchema,
+  resources: {
+    state: {
+      description:
+        "Vertex AI Feature Online Store provides a centralized repository for serving ...",
+      schema: StateSchema,
+      lifetime: "infinite",
+      garbageCollection: 10,
+    },
+  },
+  methods: {
+    create: {
+      description: "Create a featureOnlineStores",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const projectId = await getProjectId();
+        const params: Record<string, string> = { project: projectId };
+        if (g["parent"] !== undefined) params["parent"] = String(g["parent"]);
+        const body: Record<string, unknown> = {};
+        if (g["bigtable"] !== undefined) body["bigtable"] = g["bigtable"];
+        if (g["dedicatedServingEndpoint"] !== undefined) {
+          body["dedicatedServingEndpoint"] = g["dedicatedServingEndpoint"];
+        }
+        if (g["encryptionSpec"] !== undefined) {
+          body["encryptionSpec"] = g["encryptionSpec"];
+        }
+        if (g["labels"] !== undefined) body["labels"] = g["labels"];
+        if (g["name"] !== undefined) body["name"] = g["name"];
+        if (g["optimized"] !== undefined) body["optimized"] = g["optimized"];
+        if (g["featureOnlineStoreId"] !== undefined) {
+          body["featureOnlineStoreId"] = g["featureOnlineStoreId"];
+        }
+        if (g["parent"] !== undefined && g["name"] !== undefined) {
+          params["name"] = buildResourceName(
+            String(g["parent"]),
+            String(g["name"]),
+          );
+        }
+        const result = await createResource(
+          BASE_URL,
+          INSERT_CONFIG,
+          params,
+          body,
+          GET_CONFIG,
+        ) as StateData;
+        const instanceName = (result.name ?? g.name)?.toString() ?? "current";
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    get: {
+      description: "Get a featureOnlineStores",
+      arguments: z.object({
+        identifier: z.string().describe("The name of the featureOnlineStores"),
+      }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const projectId = await getProjectId();
+        const params: Record<string, string> = { project: projectId };
+        const g = context.globalArgs;
+        params["name"] = buildResourceName(
+          String(g["parent"] ?? ""),
+          args.identifier,
+        );
+        const result = await readResource(
+          BASE_URL,
+          GET_CONFIG,
+          params,
+        ) as StateData;
+        const instanceName = (result.name ?? g.name)?.toString() ??
+          args.identifier;
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    update: {
+      description: "Update featureOnlineStores attributes",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const projectId = await getProjectId();
+        const instanceName = g.name?.toString() ?? "current";
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          instanceName,
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        const params: Record<string, string> = { project: projectId };
+        params["name"] = buildResourceName(
+          String(g["parent"] ?? ""),
+          existing["name"]?.toString() ?? g["name"]?.toString() ?? "",
+        );
+        const body: Record<string, unknown> = {};
+        if (g["bigtable"] !== undefined) body["bigtable"] = g["bigtable"];
+        if (g["dedicatedServingEndpoint"] !== undefined) {
+          body["dedicatedServingEndpoint"] = g["dedicatedServingEndpoint"];
+        }
+        if (g["encryptionSpec"] !== undefined) {
+          body["encryptionSpec"] = g["encryptionSpec"];
+        }
+        if (g["optimized"] !== undefined) body["optimized"] = g["optimized"];
+        for (const key of Object.keys(existing)) {
+          if (
+            key === "fingerprint" || key === "labelFingerprint" ||
+            key === "etag" || key.endsWith("Fingerprint")
+          ) {
+            body[key] = existing[key];
+          }
+        }
+        const result = await updateResource(
+          BASE_URL,
+          PATCH_CONFIG,
+          params,
+          body,
+          GET_CONFIG,
+        ) as StateData;
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    delete: {
+      description: "Delete the featureOnlineStores",
+      arguments: z.object({
+        identifier: z.string().describe("The name of the featureOnlineStores"),
+      }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const g = context.globalArgs;
+        const projectId = await getProjectId();
+        const params: Record<string, string> = { project: projectId };
+        params["name"] = buildResourceName(
+          String(g["parent"] ?? ""),
+          args.identifier,
+        );
+        const { existed } = await deleteResource(
+          BASE_URL,
+          DELETE_CONFIG,
+          params,
+        );
+        const instanceName = g.name?.toString() ?? args.identifier;
+        const handle = await context.writeResource("state", instanceName, {
+          identifier: args.identifier,
+          existed,
+          status: existed ? "deleted" : "not_found",
+          deletedAt: new Date().toISOString(),
+        });
+        return { dataHandles: [handle] };
+      },
+    },
+    sync: {
+      description: "Sync featureOnlineStores state from GCP",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const projectId = await getProjectId();
+        const instanceName = g.name?.toString() ?? "current";
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          instanceName,
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        try {
+          const params: Record<string, string> = { project: projectId };
+          const shortName = existing.name?.toString() ?? g["name"]?.toString();
+          if (!shortName) throw new Error("No identifier found");
+          params["name"] = buildResourceName(
+            String(g["parent"] ?? ""),
+            shortName,
+          );
+          const result = await readResource(
+            BASE_URL,
+            GET_CONFIG,
+            params,
+          ) as StateData;
+          const handle = await context.writeResource(
+            "state",
+            instanceName,
+            result,
+          );
+          return { dataHandles: [handle] };
+        } catch (error: unknown) {
+          if (isResourceNotFoundError(error)) {
+            const handle = await context.writeResource("state", instanceName, {
+              status: "not_found",
+              syncedAt: new Date().toISOString(),
+            });
+            return { dataHandles: [handle] };
+          }
+          throw error;
+        }
+      },
+    },
+  },
+};

@@ -1,0 +1,59 @@
+# Auto-generated manifest. Re-generate with the appropriate deno task.
+manifestVersion: 1
+name: "@swamp/gcp/adexchangebuyer2"
+version: "2026.03.27.1"
+description: "Google Cloud adexchangebuyer2 infrastructure models"
+labels:
+  - gcp
+  - google-cloud
+  - adexchangebuyer2
+  - cloud
+  - infrastructure
+releaseNotes: |
+  - Added: accounts_clients, accounts_clients_invitations, accounts_clients_users, accounts_creatives, accounts_creatives_dealassociations, accounts_finalizedproposals, accounts_products, accounts_proposals, accounts_publisherprofiles, bidders_accounts_filtersets, bidders_accounts_filtersets_bidmetrics, bidders_accounts_filtersets_bidresponseerrors, bidders_accounts_filtersets_bidresponseswithoutbids, bidders_accounts_filtersets_filteredbidrequests, bidders_accounts_filtersets_filteredbids, bidders_accounts_filtersets_filteredbids_creatives, bidders_accounts_filtersets_filteredbids_details, bidders_accounts_filtersets_impressionmetrics, bidders_accounts_filtersets_losingbids, bidders_accounts_filtersets_nonbillablewinningbids, bidders_filtersets, bidders_filtersets_bidmetrics, bidders_filtersets_bidresponseerrors, bidders_filtersets_bidresponseswithoutbids, bidders_filtersets_filteredbidrequests, bidders_filtersets_filteredbids, bidders_filtersets_filteredbids_creatives, bidders_filtersets_filteredbids_details, bidders_filtersets_impressionmetrics, bidders_filtersets_losingbids, bidders_filtersets_nonbillablewinningbids, buyers_filtersets, buyers_filtersets_bidmetrics, buyers_filtersets_bidresponseerrors, buyers_filtersets_bidresponseswithoutbids, buyers_filtersets_filteredbidrequests, buyers_filtersets_filteredbids, buyers_filtersets_filteredbids_creatives, buyers_filtersets_filteredbids_details, buyers_filtersets_impressionmetrics, buyers_filtersets_losingbids, buyers_filtersets_nonbillablewinningbids
+models:
+  - accounts_clients.ts
+  - accounts_clients_invitations.ts
+  - accounts_clients_users.ts
+  - accounts_creatives.ts
+  - accounts_creatives_dealassociations.ts
+  - accounts_finalizedproposals.ts
+  - accounts_products.ts
+  - accounts_proposals.ts
+  - accounts_publisherprofiles.ts
+  - bidders_accounts_filtersets.ts
+  - bidders_accounts_filtersets_bidmetrics.ts
+  - bidders_accounts_filtersets_bidresponseerrors.ts
+  - bidders_accounts_filtersets_bidresponseswithoutbids.ts
+  - bidders_accounts_filtersets_filteredbidrequests.ts
+  - bidders_accounts_filtersets_filteredbids.ts
+  - bidders_accounts_filtersets_filteredbids_creatives.ts
+  - bidders_accounts_filtersets_filteredbids_details.ts
+  - bidders_accounts_filtersets_impressionmetrics.ts
+  - bidders_accounts_filtersets_losingbids.ts
+  - bidders_accounts_filtersets_nonbillablewinningbids.ts
+  - bidders_filtersets.ts
+  - bidders_filtersets_bidmetrics.ts
+  - bidders_filtersets_bidresponseerrors.ts
+  - bidders_filtersets_bidresponseswithoutbids.ts
+  - bidders_filtersets_filteredbidrequests.ts
+  - bidders_filtersets_filteredbids.ts
+  - bidders_filtersets_filteredbids_creatives.ts
+  - bidders_filtersets_filteredbids_details.ts
+  - bidders_filtersets_impressionmetrics.ts
+  - bidders_filtersets_losingbids.ts
+  - bidders_filtersets_nonbillablewinningbids.ts
+  - buyers_filtersets.ts
+  - buyers_filtersets_bidmetrics.ts
+  - buyers_filtersets_bidresponseerrors.ts
+  - buyers_filtersets_bidresponseswithoutbids.ts
+  - buyers_filtersets_filteredbidrequests.ts
+  - buyers_filtersets_filteredbids.ts
+  - buyers_filtersets_filteredbids_creatives.ts
+  - buyers_filtersets_filteredbids_details.ts
+  - buyers_filtersets_impressionmetrics.ts
+  - buyers_filtersets_losingbids.ts
+  - buyers_filtersets_nonbillablewinningbids.ts
+additionalFiles:
+  - LICENSE.txt
+  - README.md

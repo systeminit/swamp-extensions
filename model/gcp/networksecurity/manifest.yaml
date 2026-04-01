@@ -1,0 +1,41 @@
+# Auto-generated manifest. Re-generate with the appropriate deno task.
+manifestVersion: 1
+name: "@swamp/gcp/networksecurity"
+version: "2026.04.01.1"
+description: "Google Cloud networksecurity infrastructure models"
+labels:
+  - gcp
+  - google-cloud
+  - networksecurity
+  - cloud
+  - infrastructure
+releaseNotes: |
+  - Updated: firewallendpoints, authzpolicies, interceptendpointgroupassociations
+models:
+  - addressgroups.ts
+  - authorizationpolicies.ts
+  - authzpolicies.ts
+  - backendauthenticationconfigs.ts
+  - clienttlspolicies.ts
+  - dnsthreatdetectors.ts
+  - firewallendpointassociations.ts
+  - firewallendpoints.ts
+  - gatewaysecuritypolicies.ts
+  - gatewaysecuritypolicies_rules.ts
+  - interceptdeploymentgroups.ts
+  - interceptdeployments.ts
+  - interceptendpointgroupassociations.ts
+  - interceptendpointgroups.ts
+  - locations.ts
+  - mirroringdeploymentgroups.ts
+  - mirroringdeployments.ts
+  - mirroringendpointgroupassociations.ts
+  - mirroringendpointgroups.ts
+  - securityprofilegroups.ts
+  - securityprofiles.ts
+  - servertlspolicies.ts
+  - tlsinspectionpolicies.ts
+  - urllists.ts
+additionalFiles:
+  - LICENSE.txt
+  - README.md

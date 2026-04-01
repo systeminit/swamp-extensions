@@ -1,0 +1,25 @@
+# Auto-generated manifest. Re-generate with the appropriate deno task.
+manifestVersion: 1
+name: "@swamp/gcp/dns"
+version: "2026.03.27.1"
+description: "Google Cloud dns infrastructure models"
+labels:
+  - gcp
+  - google-cloud
+  - dns
+  - cloud
+  - infrastructure
+releaseNotes: |
+  - Added: changes, dnskeys, managedzones, policies, projects, resourcerecordsets, responsepolicies, responsepolicyrules
+models:
+  - changes.ts
+  - dnskeys.ts
+  - managedzones.ts
+  - policies.ts
+  - projects.ts
+  - resourcerecordsets.ts
+  - responsepolicies.ts
+  - responsepolicyrules.ts
+additionalFiles:
+  - LICENSE.txt
+  - README.md

@@ -1,0 +1,241 @@
+// Auto-generated extension model for @swamp/gcp/displayvideo/advertisers-invoices
+// Do not edit manually. Re-generate with: deno task generate:gcp
+
+// deno-lint-ignore-file no-explicit-any
+
+import { z } from "zod";
+import {
+  createResource,
+  getProjectId,
+  isResourceNotFoundError,
+  readViaList,
+} from "./_lib/gcp.ts";
+
+const BASE_URL = "https://displayvideo.googleapis.com/";
+
+const LIST_CONFIG = {
+  "id": "displayvideo.advertisers.invoices.list",
+  "path": "v4/advertisers/{+advertiserId}/invoices",
+  "httpMethod": "GET",
+  "parameterOrder": [
+    "advertiserId",
+  ],
+  "parameters": {
+    "advertiserId": {
+      "location": "path",
+      "required": true,
+    },
+    "issueMonth": {
+      "location": "query",
+    },
+    "loiSapinInvoiceType": {
+      "location": "query",
+    },
+    "pageSize": {
+      "location": "query",
+    },
+    "pageToken": {
+      "location": "query",
+    },
+  },
+} as const;
+
+const GlobalArgsSchema = z.object({
+  name: z.string().describe(
+    "Instance name for this resource (used as the unique identifier in the factory pattern)",
+  ),
+});
+
+const StateSchema = z.object({
+  budgetInvoiceGroupingId: z.string().optional(),
+  budgetSummaries: z.array(z.object({
+    externalBudgetId: z.string(),
+    preTaxAmountMicros: z.string(),
+    prismaCpeCode: z.object({
+      prismaClientCode: z.string(),
+      prismaEstimateCode: z.string(),
+      prismaProductCode: z.string(),
+    }),
+    taxAmountMicros: z.string(),
+    totalAmountMicros: z.string(),
+  })).optional(),
+  correctedInvoiceId: z.string().optional(),
+  currencyCode: z.string().optional(),
+  displayName: z.string().optional(),
+  dueDate: z.object({
+    day: z.number(),
+    month: z.number(),
+    year: z.number(),
+  }).optional(),
+  invoiceId: z.string().optional(),
+  invoiceType: z.string().optional(),
+  issueDate: z.object({
+    day: z.number(),
+    month: z.number(),
+    year: z.number(),
+  }).optional(),
+  name: z.string(),
+  nonBudgetMicros: z.string().optional(),
+  paymentsAccountId: z.string().optional(),
+  paymentsProfileId: z.string().optional(),
+  pdfUrl: z.string().optional(),
+  purchaseOrderNumber: z.string().optional(),
+  replacedInvoiceIds: z.array(z.string()).optional(),
+  serviceDateRange: z.object({
+    endDate: z.object({
+      day: z.number(),
+      month: z.number(),
+      year: z.number(),
+    }),
+    startDate: z.object({
+      day: z.number(),
+      month: z.number(),
+      year: z.number(),
+    }),
+  }).optional(),
+  subtotalAmountMicros: z.string().optional(),
+  totalAmountMicros: z.string().optional(),
+  totalTaxAmountMicros: z.string().optional(),
+}).passthrough();
+
+type StateData = z.infer<typeof StateSchema>;
+
+const InputsSchema = z.object({
+  name: z.string().optional(),
+});
+
+export const model = {
+  type: "@swamp/gcp/displayvideo/advertisers-invoices",
+  version: "2026.03.27.1",
+  globalArguments: GlobalArgsSchema,
+  inputsSchema: InputsSchema,
+  resources: {
+    state: {
+      description: "A single invoice.",
+      schema: StateSchema,
+      lifetime: "infinite",
+      garbageCollection: 10,
+    },
+  },
+  methods: {
+    get: {
+      description: "Get a invoices",
+      arguments: z.object({
+        identifier: z.string().describe("The name of the invoices"),
+      }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const projectId = await getProjectId();
+        const params: Record<string, string> = { project: projectId };
+        const g = context.globalArgs;
+        if (g["advertiserId"] !== undefined) {
+          params["advertiserId"] = String(g["advertiserId"]);
+        }
+        const result = await readViaList(
+          BASE_URL,
+          LIST_CONFIG,
+          params,
+          "name",
+          args.identifier,
+        ) as StateData;
+        const instanceName = g.name?.toString() ?? args.identifier;
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    sync: {
+      description: "Sync invoices state from GCP",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const projectId = await getProjectId();
+        const instanceName = g.name?.toString() ?? "current";
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          instanceName,
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        try {
+          const params: Record<string, string> = { project: projectId };
+          if (g["advertiserId"] !== undefined) {
+            params["advertiserId"] = String(g["advertiserId"]);
+          } else if (existing["advertiserId"]) {
+            params["advertiserId"] = String(existing["advertiserId"]);
+          }
+          const identifier = existing.name?.toString() ?? g["name"]?.toString();
+          if (!identifier) {
+            throw new Error(
+              "No identifier found in existing state or globalArgs",
+            );
+          }
+          const result = await readViaList(
+            BASE_URL,
+            LIST_CONFIG,
+            params,
+            "name",
+            identifier,
+          ) as StateData;
+          const handle = await context.writeResource(
+            "state",
+            instanceName,
+            result,
+          );
+          return { dataHandles: [handle] };
+        } catch (error: unknown) {
+          if (isResourceNotFoundError(error)) {
+            const handle = await context.writeResource("state", instanceName, {
+              status: "not_found",
+              syncedAt: new Date().toISOString(),
+            });
+            return { dataHandles: [handle] };
+          }
+          throw error;
+        }
+      },
+    },
+    lookup_invoice_currency: {
+      description: "lookup invoice currency",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, unknown>, context: any) => {
+        const g = context.globalArgs;
+        const projectId = await getProjectId();
+        const params: Record<string, string> = { project: projectId };
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          g.name?.toString() ?? "current",
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        params["advertiserId"] = existing["name"]?.toString() ??
+          g["name"]?.toString() ?? "";
+        const result = await createResource(
+          BASE_URL,
+          {
+            "id": "displayvideo.advertisers.invoices.lookupInvoiceCurrency",
+            "path":
+              "v4/advertisers/{+advertiserId}/invoices:lookupInvoiceCurrency",
+            "httpMethod": "GET",
+            "parameterOrder": ["advertiserId"],
+            "parameters": {
+              "advertiserId": { "location": "path", "required": true },
+              "invoiceMonth": { "location": "query" },
+            },
+          },
+          params,
+          {},
+        );
+        return { result };
+      },
+    },
+  },
+};

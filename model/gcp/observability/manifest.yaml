@@ -1,0 +1,24 @@
+# Auto-generated manifest. Re-generate with the appropriate deno task.
+manifestVersion: 1
+name: "@swamp/gcp/observability"
+version: "2026.03.27.1"
+description: "Google Cloud observability infrastructure models"
+labels:
+  - gcp
+  - google-cloud
+  - observability
+  - cloud
+  - infrastructure
+releaseNotes: |
+  - Added: locations, buckets, buckets_datasets, buckets_datasets_links, buckets_datasets_views, scopes, tracescopes
+models:
+  - buckets.ts
+  - buckets_datasets.ts
+  - buckets_datasets_links.ts
+  - buckets_datasets_views.ts
+  - locations.ts
+  - scopes.ts
+  - tracescopes.ts
+additionalFiles:
+  - LICENSE.txt
+  - README.md

@@ -1,0 +1,22 @@
+# Auto-generated manifest. Re-generate with the appropriate deno task.
+manifestVersion: 1
+name: "@swamp/gcp/threatintelligence"
+version: "2026.03.27.1"
+description: "Google Cloud threatintelligence infrastructure models"
+labels:
+  - gcp
+  - google-cloud
+  - threatintelligence
+  - cloud
+  - infrastructure
+releaseNotes: |
+  - Added: alerts, alerts_documents, configurations, configurations_revisions, findings
+models:
+  - alerts.ts
+  - alerts_documents.ts
+  - configurations.ts
+  - configurations_revisions.ts
+  - findings.ts
+additionalFiles:
+  - LICENSE.txt
+  - README.md

@@ -1,0 +1,286 @@
+// Auto-generated extension model for @swamp/gcp/apihub/locations
+// Do not edit manually. Re-generate with: deno task generate:gcp
+
+// deno-lint-ignore-file no-explicit-any
+
+import { z } from "zod";
+import {
+  createResource,
+  getProjectId,
+  isResourceNotFoundError,
+  readResource,
+} from "./_lib/gcp.ts";
+
+const BASE_URL = "https://apihub.googleapis.com/";
+
+const GET_CONFIG = {
+  "id": "apihub.projects.locations.get",
+  "path": "v1/{+name}",
+  "httpMethod": "GET",
+  "parameterOrder": [
+    "name",
+  ],
+  "parameters": {
+    "name": {
+      "location": "path",
+      "required": true,
+    },
+  },
+} as const;
+
+const GlobalArgsSchema = z.object({
+  name: z.string().describe(
+    "Instance name for this resource (used as the unique identifier in the factory pattern)",
+  ),
+});
+
+const StateSchema = z.object({
+  displayName: z.string().optional(),
+  labels: z.record(z.string(), z.unknown()).optional(),
+  locationId: z.string().optional(),
+  metadata: z.record(z.string(), z.unknown()).optional(),
+  name: z.string(),
+}).passthrough();
+
+type StateData = z.infer<typeof StateSchema>;
+
+const InputsSchema = z.object({
+  name: z.string().optional(),
+});
+
+export const model = {
+  type: "@swamp/gcp/apihub/locations",
+  version: "2026.03.27.1",
+  globalArguments: GlobalArgsSchema,
+  inputsSchema: InputsSchema,
+  resources: {
+    state: {
+      description: "A resource that represents a Google Cloud location.",
+      schema: StateSchema,
+      lifetime: "infinite",
+      garbageCollection: 10,
+    },
+  },
+  methods: {
+    get: {
+      description: "Get a locations",
+      arguments: z.object({
+        identifier: z.string().describe("The name of the locations"),
+      }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const projectId = await getProjectId();
+        const params: Record<string, string> = { project: projectId };
+        const g = context.globalArgs;
+        params["name"] = args.identifier;
+        const result = await readResource(
+          BASE_URL,
+          GET_CONFIG,
+          params,
+        ) as StateData;
+        const instanceName = g.name?.toString() ?? args.identifier;
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    sync: {
+      description: "Sync locations state from GCP",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const projectId = await getProjectId();
+        const instanceName = g.name?.toString() ?? "current";
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          instanceName,
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        try {
+          const params: Record<string, string> = { project: projectId };
+          const identifier = existing.name?.toString() ?? g["name"]?.toString();
+          if (!identifier) {
+            throw new Error(
+              "No identifier found in existing state or globalArgs",
+            );
+          }
+          params["name"] = identifier;
+          const result = await readResource(
+            BASE_URL,
+            GET_CONFIG,
+            params,
+          ) as StateData;
+          const handle = await context.writeResource(
+            "state",
+            instanceName,
+            result,
+          );
+          return { dataHandles: [handle] };
+        } catch (error: unknown) {
+          if (isResourceNotFoundError(error)) {
+            const handle = await context.writeResource("state", instanceName, {
+              status: "not_found",
+              syncedAt: new Date().toISOString(),
+            });
+            return { dataHandles: [handle] };
+          }
+          throw error;
+        }
+      },
+    },
+    collect_api_data: {
+      description: "collect api data",
+      arguments: z.object({
+        actionId: z.any().optional(),
+        apiData: z.any().optional(),
+        collectionType: z.any().optional(),
+        pluginInstance: z.any().optional(),
+      }),
+      execute: async (args: Record<string, unknown>, context: any) => {
+        const g = context.globalArgs;
+        const projectId = await getProjectId();
+        const params: Record<string, string> = { project: projectId };
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          g.name?.toString() ?? "current",
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        params["location"] = existing["name"]?.toString() ??
+          g["name"]?.toString() ?? "";
+        const body: Record<string, unknown> = {};
+        if (args["actionId"] !== undefined) body["actionId"] = args["actionId"];
+        if (args["apiData"] !== undefined) body["apiData"] = args["apiData"];
+        if (args["collectionType"] !== undefined) {
+          body["collectionType"] = args["collectionType"];
+        }
+        if (args["pluginInstance"] !== undefined) {
+          body["pluginInstance"] = args["pluginInstance"];
+        }
+        const result = await createResource(
+          BASE_URL,
+          {
+            "id": "apihub.projects.locations.collectApiData",
+            "path": "v1/{+location}:collectApiData",
+            "httpMethod": "POST",
+            "parameterOrder": ["location"],
+            "parameters": {
+              "location": { "location": "path", "required": true },
+            },
+          },
+          params,
+          body,
+        );
+        return { result };
+      },
+    },
+    lookup_runtime_project_attachment: {
+      description: "lookup runtime project attachment",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, unknown>, context: any) => {
+        const g = context.globalArgs;
+        const projectId = await getProjectId();
+        const params: Record<string, string> = { project: projectId };
+        if (g["name"] !== undefined) params["name"] = String(g["name"]);
+        const result = await createResource(
+          BASE_URL,
+          {
+            "id": "apihub.projects.locations.lookupRuntimeProjectAttachment",
+            "path": "v1/{+name}:lookupRuntimeProjectAttachment",
+            "httpMethod": "GET",
+            "parameterOrder": ["name"],
+            "parameters": { "name": { "location": "path", "required": true } },
+          },
+          params,
+          {},
+        );
+        return { result };
+      },
+    },
+    retrieve_api_views: {
+      description: "retrieve api views",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, unknown>, context: any) => {
+        const g = context.globalArgs;
+        const projectId = await getProjectId();
+        const params: Record<string, string> = { project: projectId };
+        if (g["parent"] !== undefined) params["parent"] = String(g["parent"]);
+        const result = await createResource(
+          BASE_URL,
+          {
+            "id": "apihub.projects.locations.retrieveApiViews",
+            "path": "v1/{+parent}:retrieveApiViews",
+            "httpMethod": "GET",
+            "parameterOrder": ["parent"],
+            "parameters": {
+              "filter": { "location": "query" },
+              "pageSize": { "location": "query" },
+              "pageToken": { "location": "query" },
+              "parent": { "location": "path", "required": true },
+              "view": { "location": "query" },
+            },
+          },
+          params,
+          {},
+        );
+        return { result };
+      },
+    },
+    search_resources: {
+      description: "search resources",
+      arguments: z.object({
+        filter: z.any().optional(),
+        pageSize: z.any().optional(),
+        pageToken: z.any().optional(),
+        query: z.any().optional(),
+      }),
+      execute: async (args: Record<string, unknown>, context: any) => {
+        const g = context.globalArgs;
+        const projectId = await getProjectId();
+        const params: Record<string, string> = { project: projectId };
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          g.name?.toString() ?? "current",
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        params["location"] = existing["name"]?.toString() ??
+          g["name"]?.toString() ?? "";
+        const body: Record<string, unknown> = {};
+        if (args["filter"] !== undefined) body["filter"] = args["filter"];
+        if (args["pageSize"] !== undefined) body["pageSize"] = args["pageSize"];
+        if (args["pageToken"] !== undefined) {
+          body["pageToken"] = args["pageToken"];
+        }
+        if (args["query"] !== undefined) body["query"] = args["query"];
+        const result = await createResource(
+          BASE_URL,
+          {
+            "id": "apihub.projects.locations.searchResources",
+            "path": "v1/{+location}:searchResources",
+            "httpMethod": "POST",
+            "parameterOrder": ["location"],
+            "parameters": {
+              "location": { "location": "path", "required": true },
+            },
+          },
+          params,
+          body,
+        );
+        return { result };
+      },
+    },
+  },
+};

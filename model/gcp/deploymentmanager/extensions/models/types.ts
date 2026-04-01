@@ -1,0 +1,241 @@
+// Auto-generated extension model for @swamp/gcp/deploymentmanager/types
+// Do not edit manually. Re-generate with: deno task generate:gcp
+
+// deno-lint-ignore-file no-explicit-any
+
+import { z } from "zod";
+import {
+  getProjectId,
+  isResourceNotFoundError,
+  readViaList,
+} from "./_lib/gcp.ts";
+
+const BASE_URL = "https://deploymentmanager.googleapis.com/";
+
+const LIST_CONFIG = {
+  "id": "deploymentmanager.types.list",
+  "path": "deploymentmanager/v2/projects/{project}/global/types",
+  "httpMethod": "GET",
+  "parameterOrder": [
+    "project",
+  ],
+  "parameters": {
+    "filter": {
+      "location": "query",
+    },
+    "maxResults": {
+      "location": "query",
+    },
+    "orderBy": {
+      "location": "query",
+    },
+    "pageToken": {
+      "location": "query",
+    },
+    "project": {
+      "location": "path",
+      "required": true,
+    },
+  },
+} as const;
+
+const GlobalArgsSchema = z.object({
+  name: z.string().describe(
+    "Instance name for this resource (used as the unique identifier in the factory pattern)",
+  ),
+});
+
+const StateSchema = z.object({
+  id: z.string().optional(),
+  insertTime: z.string().optional(),
+  name: z.string(),
+  operation: z.object({
+    clientOperationId: z.string(),
+    creationTimestamp: z.string(),
+    description: z.string(),
+    endTime: z.string(),
+    error: z.object({
+      errors: z.array(z.object({
+        arguments: z.array(z.string()),
+        code: z.string(),
+        debugInfo: z.object({
+          detail: z.string(),
+          stackEntries: z.array(z.string()),
+        }),
+        errorDetails: z.array(z.object({
+          errorInfo: z.object({
+            domain: z.string(),
+            metadatas: z.record(z.string(), z.unknown()),
+            reason: z.string(),
+          }),
+          help: z.object({
+            links: z.array(z.object({
+              description: z.string(),
+              url: z.string(),
+            })),
+          }),
+          localizedMessage: z.object({
+            locale: z.string(),
+            message: z.string(),
+          }),
+          quotaInfo: z.object({
+            dimensions: z.record(z.string(), z.unknown()),
+            futureLimit: z.number(),
+            limit: z.number(),
+            limitName: z.string(),
+            metricName: z.string(),
+            rolloutStatus: z.string(),
+          }),
+        })),
+        location: z.string(),
+        message: z.string(),
+      })),
+    }),
+    firewallPolicyRuleOperationMetadata: z.object({
+      allocatedPriority: z.number(),
+    }),
+    getVersionOperationMetadata: z.object({
+      inlineSbomInfo: z.object({
+        currentComponentVersions: z.record(z.string(), z.unknown()),
+        targetComponentVersions: z.record(z.string(), z.unknown()),
+      }),
+    }),
+    httpErrorMessage: z.string(),
+    httpErrorStatusCode: z.number(),
+    id: z.string(),
+    insertTime: z.string(),
+    instancesBulkInsertOperationMetadata: z.object({
+      machineType: z.string(),
+      perLocationStatus: z.record(z.string(), z.unknown()),
+    }),
+    kind: z.string(),
+    name: z.string(),
+    operationGroupId: z.string(),
+    operationType: z.string(),
+    progress: z.number(),
+    region: z.string(),
+    selfLink: z.string(),
+    selfLinkWithId: z.string(),
+    setAutoscalerLinkOperationMetadata: z.object({
+      zonalIgmIds: z.array(z.string()),
+      zoneToIgmIds: z.record(z.string(), z.unknown()),
+    }),
+    setCommonInstanceMetadataOperationMetadata: z.object({
+      clientOperationId: z.string(),
+      perLocationOperations: z.record(z.string(), z.unknown()),
+    }),
+    startTime: z.string(),
+    status: z.string(),
+    statusMessage: z.string(),
+    targetId: z.string(),
+    targetLink: z.string(),
+    user: z.string(),
+    warnings: z.array(z.object({
+      code: z.string(),
+      data: z.array(z.object({
+        key: z.string(),
+        value: z.string(),
+      })),
+      message: z.string(),
+    })),
+    zone: z.string(),
+  }).optional(),
+  selfLink: z.string().optional(),
+}).passthrough();
+
+type StateData = z.infer<typeof StateSchema>;
+
+const InputsSchema = z.object({
+  name: z.string().optional(),
+});
+
+export const model = {
+  type: "@swamp/gcp/deploymentmanager/types",
+  version: "2026.03.27.1",
+  globalArguments: GlobalArgsSchema,
+  inputsSchema: InputsSchema,
+  resources: {
+    state: {
+      description: "A resource type supported by Deployment Manager.",
+      schema: StateSchema,
+      lifetime: "infinite",
+      garbageCollection: 10,
+    },
+  },
+  methods: {
+    get: {
+      description: "Get a types",
+      arguments: z.object({
+        identifier: z.string().describe("The name of the types"),
+      }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const projectId = await getProjectId();
+        const params: Record<string, string> = { project: projectId };
+        const g = context.globalArgs;
+        const result = await readViaList(
+          BASE_URL,
+          LIST_CONFIG,
+          params,
+          "name",
+          args.identifier,
+        ) as StateData;
+        const instanceName = g.name?.toString() ?? args.identifier;
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    sync: {
+      description: "Sync types state from GCP",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const projectId = await getProjectId();
+        const instanceName = g.name?.toString() ?? "current";
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          instanceName,
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        try {
+          const params: Record<string, string> = { project: projectId };
+          const identifier = existing.name?.toString() ?? g["name"]?.toString();
+          if (!identifier) {
+            throw new Error(
+              "No identifier found in existing state or globalArgs",
+            );
+          }
+          const result = await readViaList(
+            BASE_URL,
+            LIST_CONFIG,
+            params,
+            "name",
+            identifier,
+          ) as StateData;
+          const handle = await context.writeResource(
+            "state",
+            instanceName,
+            result,
+          );
+          return { dataHandles: [handle] };
+        } catch (error: unknown) {
+          if (isResourceNotFoundError(error)) {
+            const handle = await context.writeResource("state", instanceName, {
+              status: "not_found",
+              syncedAt: new Date().toISOString(),
+            });
+            return { dataHandles: [handle] };
+          }
+          throw error;
+        }
+      },
+    },
+  },
+};

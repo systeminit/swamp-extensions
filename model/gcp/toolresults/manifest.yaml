@@ -1,0 +1,26 @@
+# Auto-generated manifest. Re-generate with the appropriate deno task.
+manifestVersion: 1
+name: "@swamp/gcp/toolresults"
+version: "2026.03.27.1"
+description: "Google Cloud toolresults infrastructure models"
+labels:
+  - gcp
+  - google-cloud
+  - toolresults
+  - cloud
+  - infrastructure
+releaseNotes: |
+  - Added: histories, histories_executions, histories_executions_clusters, histories_executions_environments, histories_executions_steps, histories_executions_steps_perfsampleseries, histories_executions_steps_perfsampleseries_samples, histories_executions_steps_testcases, histories_executions_steps_thumbnails
+models:
+  - histories.ts
+  - histories_executions.ts
+  - histories_executions_clusters.ts
+  - histories_executions_environments.ts
+  - histories_executions_steps.ts
+  - histories_executions_steps_perfsampleseries.ts
+  - histories_executions_steps_perfsampleseries_samples.ts
+  - histories_executions_steps_testcases.ts
+  - histories_executions_steps_thumbnails.ts
+additionalFiles:
+  - LICENSE.txt
+  - README.md

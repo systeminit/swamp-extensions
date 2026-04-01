@@ -1,0 +1,20 @@
+# Auto-generated manifest. Re-generate with the appropriate deno task.
+manifestVersion: 1
+name: "@swamp/gcp/assuredworkloads"
+version: "2026.03.27.1"
+description: "Google Cloud assuredworkloads infrastructure models"
+labels:
+  - gcp
+  - google-cloud
+  - assuredworkloads
+  - cloud
+  - infrastructure
+releaseNotes: |
+  - Added: workloads, workloads_updates, workloads_violations
+models:
+  - workloads.ts
+  - workloads_updates.ts
+  - workloads_violations.ts
+additionalFiles:
+  - LICENSE.txt
+  - README.md

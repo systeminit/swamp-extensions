@@ -1,0 +1,93 @@
+# Auto-generated manifest. Re-generate with the appropriate deno task.
+manifestVersion: 1
+name: "@swamp/gcp/apigee"
+version: "2026.03.31.1"
+description: "Google Cloud apigee infrastructure models"
+labels:
+  - gcp
+  - google-cloud
+  - apigee
+  - cloud
+  - infrastructure
+releaseNotes: |
+  - Updated: environments
+models:
+  - analytics_datastores.ts
+  - apimserviceextensions.ts
+  - apiproducts.ts
+  - apiproducts_attributes.ts
+  - apiproducts_rateplans.ts
+  - apis.ts
+  - apis_debugsessions.ts
+  - apis_deployments.ts
+  - apis_keyvaluemaps.ts
+  - apis_keyvaluemaps_entries.ts
+  - apis_revisions.ts
+  - apis_revisions_deployments.ts
+  - appgroups.ts
+  - appgroups_apps.ts
+  - appgroups_apps_keys.ts
+  - appgroups_subscriptions.ts
+  - apps.ts
+  - datacollectors.ts
+  - deployments.ts
+  - developers.ts
+  - developers_apps.ts
+  - developers_apps_attributes.ts
+  - developers_apps_keys.ts
+  - developers_attributes.ts
+  - developers_subscriptions.ts
+  - dnszones.ts
+  - endpointattachments.ts
+  - envgroups.ts
+  - envgroups_attachments.ts
+  - environments.ts
+  - environments_analytics_exports.ts
+  - environments_apis_deployments.ts
+  - environments_apis_revisions_debugsessions.ts
+  - environments_apis_revisions_debugsessions_data.ts
+  - environments_archivedeployments.ts
+  - environments_deployments.ts
+  - environments_flowhooks.ts
+  - environments_keystores.ts
+  - environments_keystores_aliases.ts
+  - environments_keyvaluemaps.ts
+  - environments_keyvaluemaps_entries.ts
+  - environments_optimizedstats.ts
+  - environments_queries.ts
+  - environments_references.ts
+  - environments_resourcefiles.ts
+  - environments_securityactions.ts
+  - environments_securityincidents.ts
+  - environments_securityreports.ts
+  - environments_sharedflows_deployments.ts
+  - environments_stats.ts
+  - environments_targetservers.ts
+  - environments_traceconfig_overrides.ts
+  - hostqueries.ts
+  - hostsecurityreports.ts
+  - hoststats.ts
+  - hybrid_issuers.ts
+  - instances.ts
+  - instances_attachments.ts
+  - instances_canaryevaluations.ts
+  - instances_nataddresses.ts
+  - keyvaluemaps.ts
+  - keyvaluemaps_entries.ts
+  - optimizedhoststats.ts
+  - organizations.ts
+  - reports.ts
+  - securityfeedback.ts
+  - securitymonitoringconditions.ts
+  - securityprofiles.ts
+  - securityprofilesv2.ts
+  - sharedflows.ts
+  - sharedflows_deployments.ts
+  - sharedflows_revisions.ts
+  - sharedflows_revisions_deployments.ts
+  - sites_apicategories.ts
+  - sites_apidocs.ts
+  - spaces.ts
+additionalFiles:
+  - LICENSE.txt
+  - README.md

@@ -1,0 +1,36 @@
+# Auto-generated manifest. Re-generate with the appropriate deno task.
+manifestVersion: 1
+name: "@swamp/gcp/books"
+version: "2026.03.27.1"
+description: "Google Cloud books infrastructure models"
+labels:
+  - gcp
+  - google-cloud
+  - books
+  - cloud
+  - infrastructure
+releaseNotes: |
+  - Added: bookshelves, bookshelves_volumes, layers, layers_annotationdata, layers_volumeannotations, mylibrary_annotations, mylibrary_bookshelves, mylibrary_bookshelves_volumes, mylibrary_readingpositions, notification, personalizedstream, promooffer, series, series_membership, volumes, volumes_associated, volumes_mybooks, volumes_recommended, volumes_useruploaded
+models:
+  - bookshelves.ts
+  - bookshelves_volumes.ts
+  - layers.ts
+  - layers_annotationdata.ts
+  - layers_volumeannotations.ts
+  - mylibrary_annotations.ts
+  - mylibrary_bookshelves.ts
+  - mylibrary_bookshelves_volumes.ts
+  - mylibrary_readingpositions.ts
+  - notification.ts
+  - personalizedstream.ts
+  - promooffer.ts
+  - series.ts
+  - series_membership.ts
+  - volumes.ts
+  - volumes_associated.ts
+  - volumes_mybooks.ts
+  - volumes_recommended.ts
+  - volumes_useruploaded.ts
+additionalFiles:
+  - LICENSE.txt
+  - README.md

@@ -1,0 +1,532 @@
+// Auto-generated extension model for @swamp/gcp/spanner/instanceconfigs
+// Do not edit manually. Re-generate with: deno task generate:gcp
+
+// deno-lint-ignore-file no-explicit-any
+
+import { z } from "zod";
+import {
+  createResource,
+  deleteResource,
+  getProjectId,
+  isResourceNotFoundError,
+  readResource,
+  updateResource,
+} from "./_lib/gcp.ts";
+
+/** Construct the fully-qualified resource name from parent and short name. */
+function buildResourceName(parent: string, shortName: string): string {
+  return `${parent}/instanceConfigs/${shortName}`;
+}
+
+const BASE_URL = "https://spanner.googleapis.com/";
+
+const GET_CONFIG = {
+  "id": "spanner.projects.instanceConfigs.get",
+  "path": "v1/{+name}",
+  "httpMethod": "GET",
+  "parameterOrder": [
+    "name",
+  ],
+  "parameters": {
+    "name": {
+      "location": "path",
+      "required": true,
+    },
+  },
+} as const;
+
+const INSERT_CONFIG = {
+  "id": "spanner.projects.instanceConfigs.create",
+  "path": "v1/{+parent}/instanceConfigs",
+  "httpMethod": "POST",
+  "parameterOrder": [
+    "parent",
+  ],
+  "parameters": {
+    "parent": {
+      "location": "path",
+      "required": true,
+    },
+  },
+} as const;
+
+const PATCH_CONFIG = {
+  "id": "spanner.projects.instanceConfigs.patch",
+  "path": "v1/{+name}",
+  "httpMethod": "PATCH",
+  "parameterOrder": [
+    "name",
+  ],
+  "parameters": {
+    "name": {
+      "location": "path",
+      "required": true,
+    },
+  },
+} as const;
+
+const DELETE_CONFIG = {
+  "id": "spanner.projects.instanceConfigs.delete",
+  "path": "v1/{+name}",
+  "httpMethod": "DELETE",
+  "parameterOrder": [
+    "name",
+  ],
+  "parameters": {
+    "etag": {
+      "location": "query",
+    },
+    "name": {
+      "location": "path",
+      "required": true,
+    },
+    "validateOnly": {
+      "location": "query",
+    },
+  },
+} as const;
+
+const GlobalArgsSchema = z.object({
+  name: z.string().describe(
+    "Instance name for this resource (used as the unique identifier in the factory pattern)",
+  ),
+  instanceConfig: z.object({
+    baseConfig: z.string().describe(
+      "Base configuration name, e.g. projects//instanceConfigs/nam3, based on which this configuration is created. Only set for user-managed configurations. `base_config` must refer to a configuration of type `GOOGLE_MANAGED` in the same project as this configuration.",
+    ).optional(),
+    configType: z.enum(["TYPE_UNSPECIFIED", "GOOGLE_MANAGED", "USER_MANAGED"])
+      .describe(
+        "Output only. Whether this instance configuration is a Google-managed or user-managed configuration.",
+      ).optional(),
+    displayName: z.string().describe(
+      "The name of this instance configuration as it appears in UIs.",
+    ).optional(),
+    etag: z.string().describe(
+      "etag is used for optimistic concurrency control as a way to help prevent simultaneous updates of a instance configuration from overwriting each other. It is strongly suggested that systems make use of the etag in the read-modify-write cycle to perform instance configuration updates in order to avoid race conditions: An etag is returned in the response which contains instance configurations, and systems are expected to put that etag in the request to update instance configuration to ensure that their change is applied to the same version of the instance configuration. If no etag is provided in the call to update the instance configuration, then the existing instance configuration is overwritten blindly.",
+    ).optional(),
+    freeInstanceAvailability: z.enum([
+      "FREE_INSTANCE_AVAILABILITY_UNSPECIFIED",
+      "AVAILABLE",
+      "UNSUPPORTED",
+      "DISABLED",
+      "QUOTA_EXCEEDED",
+    ]).describe(
+      "Output only. Describes whether free instances are available to be created in this instance configuration.",
+    ).optional(),
+    labels: z.record(z.string(), z.string()).describe(
+      'Cloud Labels are a flexible and lightweight mechanism for organizing cloud resources into groups that reflect a customer\'s organizational needs and deployment strategies. Cloud Labels can be used to filter collections of resources. They can be used to control how resource metrics are aggregated. And they can be used as arguments to policy management rules (e.g. route, firewall, load balancing, etc.). * Label keys must be between 1 and 63 characters long and must conform to the following regular expression: `a-z{0,62}`. * Label values must be between 0 and 63 characters long and must conform to the regular expression `[a-z0-9_-]{0,63}`. * No more than 64 labels can be associated with a given resource. See https://goo.gl/xmQnxf for more information on and examples of labels. If you plan to use labels in your own code, please note that additional characters may be allowed in the future. Therefore, you are advised to use an internal label representation, such as JSON, which doesn\'t rely upon specific characters being disallowed. For example, representing labels as the string: name + "_" + value would prove problematic if we were to allow "_" in a future release.',
+    ).optional(),
+    leaderOptions: z.array(z.string()).describe(
+      'Allowed values of the "default_leader" schema option for databases in instances that use this instance configuration.',
+    ).optional(),
+    name: z.string().describe(
+      "A unique identifier for the instance configuration. Values are of the form `projects//instanceConfigs/a-z*`. User instance configuration must start with `custom-`.",
+    ).optional(),
+    optionalReplicas: z.array(z.object({
+      defaultLeaderLocation: z.boolean().describe(
+        "If true, this location is designated as the default leader location where leader replicas are placed. See the [region types documentation](https://cloud.google.com/spanner/docs/instances#region_types) for more details.",
+      ).optional(),
+      location: z.string().describe(
+        'The location of the serving resources, e.g., "us-central1".',
+      ).optional(),
+      type: z.enum(["TYPE_UNSPECIFIED", "READ_WRITE", "READ_ONLY", "WITNESS"])
+        .describe("The type of replica.").optional(),
+    })).describe(
+      "Output only. The available optional replicas to choose from for user-managed configurations. Populated for Google-managed configurations.",
+    ).optional(),
+    quorumType: z.enum([
+      "QUORUM_TYPE_UNSPECIFIED",
+      "REGION",
+      "DUAL_REGION",
+      "MULTI_REGION",
+    ]).describe("Output only. The `QuorumType` of the instance configuration.")
+      .optional(),
+    reconciling: z.boolean().describe(
+      "Output only. If true, the instance configuration is being created or updated. If false, there are no ongoing operations for the instance configuration.",
+    ).optional(),
+    replicas: z.array(z.object({
+      defaultLeaderLocation: z.boolean().describe(
+        "If true, this location is designated as the default leader location where leader replicas are placed. See the [region types documentation](https://cloud.google.com/spanner/docs/instances#region_types) for more details.",
+      ).optional(),
+      location: z.string().describe(
+        'The location of the serving resources, e.g., "us-central1".',
+      ).optional(),
+      type: z.enum(["TYPE_UNSPECIFIED", "READ_WRITE", "READ_ONLY", "WITNESS"])
+        .describe("The type of replica.").optional(),
+    })).describe(
+      "The geographic placement of nodes in this instance configuration and their replication properties. To create user-managed configurations, input `replicas` must include all replicas in `replicas` of the `base_config` and include one or more replicas in the `optional_replicas` of the `base_config`.",
+    ).optional(),
+    state: z.enum(["STATE_UNSPECIFIED", "CREATING", "READY"]).describe(
+      "Output only. The current instance configuration state. Applicable only for `USER_MANAGED` configurations.",
+    ).optional(),
+    storageLimitPerProcessingUnit: z.string().describe(
+      "Output only. The storage limit in bytes per processing unit.",
+    ).optional(),
+  }).describe(
+    "A possible configuration for a Cloud Spanner instance. Configurations define the geographic placement of nodes and their replication.",
+  ).optional(),
+  instanceConfigId: z.string().describe(
+    "Required. The ID of the instance configuration to create. Valid identifiers are of the form `custom-[-a-z0-9]*[a-z0-9]` and must be between 2 and 64 characters in length. The `custom-` prefix is required to avoid name conflicts with Google-managed configurations.",
+  ).optional(),
+  validateOnly: z.boolean().describe(
+    "An option to validate, but not actually execute, a request, and provide the same response.",
+  ).optional(),
+  updateMask: z.string().describe(
+    "Required. A mask specifying which fields in InstanceConfig should be updated. The field mask must always be specified; this prevents any future fields in InstanceConfig from being erased accidentally by clients that do not know about them. Only display_name and labels can be updated.",
+  ).optional(),
+  location: z.string().describe(
+    "The location for this resource (e.g., 'us', 'us-central1', 'europe-west1')",
+  ).optional(),
+});
+
+const StateSchema = z.object({
+  baseConfig: z.string().optional(),
+  configType: z.string().optional(),
+  displayName: z.string().optional(),
+  etag: z.string().optional(),
+  freeInstanceAvailability: z.string().optional(),
+  labels: z.record(z.string(), z.unknown()).optional(),
+  leaderOptions: z.array(z.string()).optional(),
+  name: z.string(),
+  optionalReplicas: z.array(z.object({
+    defaultLeaderLocation: z.boolean(),
+    location: z.string(),
+    type: z.string(),
+  })).optional(),
+  quorumType: z.string().optional(),
+  reconciling: z.boolean().optional(),
+  replicas: z.array(z.object({
+    defaultLeaderLocation: z.boolean(),
+    location: z.string(),
+    type: z.string(),
+  })).optional(),
+  state: z.string().optional(),
+  storageLimitPerProcessingUnit: z.string().optional(),
+}).passthrough();
+
+type StateData = z.infer<typeof StateSchema>;
+
+const InputsSchema = z.object({
+  name: z.string().optional(),
+  instanceConfig: z.object({
+    baseConfig: z.string().describe(
+      "Base configuration name, e.g. projects//instanceConfigs/nam3, based on which this configuration is created. Only set for user-managed configurations. `base_config` must refer to a configuration of type `GOOGLE_MANAGED` in the same project as this configuration.",
+    ).optional(),
+    configType: z.enum(["TYPE_UNSPECIFIED", "GOOGLE_MANAGED", "USER_MANAGED"])
+      .describe(
+        "Output only. Whether this instance configuration is a Google-managed or user-managed configuration.",
+      ).optional(),
+    displayName: z.string().describe(
+      "The name of this instance configuration as it appears in UIs.",
+    ).optional(),
+    etag: z.string().describe(
+      "etag is used for optimistic concurrency control as a way to help prevent simultaneous updates of a instance configuration from overwriting each other. It is strongly suggested that systems make use of the etag in the read-modify-write cycle to perform instance configuration updates in order to avoid race conditions: An etag is returned in the response which contains instance configurations, and systems are expected to put that etag in the request to update instance configuration to ensure that their change is applied to the same version of the instance configuration. If no etag is provided in the call to update the instance configuration, then the existing instance configuration is overwritten blindly.",
+    ).optional(),
+    freeInstanceAvailability: z.enum([
+      "FREE_INSTANCE_AVAILABILITY_UNSPECIFIED",
+      "AVAILABLE",
+      "UNSUPPORTED",
+      "DISABLED",
+      "QUOTA_EXCEEDED",
+    ]).describe(
+      "Output only. Describes whether free instances are available to be created in this instance configuration.",
+    ).optional(),
+    labels: z.record(z.string(), z.string()).describe(
+      'Cloud Labels are a flexible and lightweight mechanism for organizing cloud resources into groups that reflect a customer\'s organizational needs and deployment strategies. Cloud Labels can be used to filter collections of resources. They can be used to control how resource metrics are aggregated. And they can be used as arguments to policy management rules (e.g. route, firewall, load balancing, etc.). * Label keys must be between 1 and 63 characters long and must conform to the following regular expression: `a-z{0,62}`. * Label values must be between 0 and 63 characters long and must conform to the regular expression `[a-z0-9_-]{0,63}`. * No more than 64 labels can be associated with a given resource. See https://goo.gl/xmQnxf for more information on and examples of labels. If you plan to use labels in your own code, please note that additional characters may be allowed in the future. Therefore, you are advised to use an internal label representation, such as JSON, which doesn\'t rely upon specific characters being disallowed. For example, representing labels as the string: name + "_" + value would prove problematic if we were to allow "_" in a future release.',
+    ).optional(),
+    leaderOptions: z.array(z.string()).describe(
+      'Allowed values of the "default_leader" schema option for databases in instances that use this instance configuration.',
+    ).optional(),
+    name: z.string().describe(
+      "A unique identifier for the instance configuration. Values are of the form `projects//instanceConfigs/a-z*`. User instance configuration must start with `custom-`.",
+    ).optional(),
+    optionalReplicas: z.array(z.object({
+      defaultLeaderLocation: z.boolean().describe(
+        "If true, this location is designated as the default leader location where leader replicas are placed. See the [region types documentation](https://cloud.google.com/spanner/docs/instances#region_types) for more details.",
+      ).optional(),
+      location: z.string().describe(
+        'The location of the serving resources, e.g., "us-central1".',
+      ).optional(),
+      type: z.enum(["TYPE_UNSPECIFIED", "READ_WRITE", "READ_ONLY", "WITNESS"])
+        .describe("The type of replica.").optional(),
+    })).describe(
+      "Output only. The available optional replicas to choose from for user-managed configurations. Populated for Google-managed configurations.",
+    ).optional(),
+    quorumType: z.enum([
+      "QUORUM_TYPE_UNSPECIFIED",
+      "REGION",
+      "DUAL_REGION",
+      "MULTI_REGION",
+    ]).describe("Output only. The `QuorumType` of the instance configuration.")
+      .optional(),
+    reconciling: z.boolean().describe(
+      "Output only. If true, the instance configuration is being created or updated. If false, there are no ongoing operations for the instance configuration.",
+    ).optional(),
+    replicas: z.array(z.object({
+      defaultLeaderLocation: z.boolean().describe(
+        "If true, this location is designated as the default leader location where leader replicas are placed. See the [region types documentation](https://cloud.google.com/spanner/docs/instances#region_types) for more details.",
+      ).optional(),
+      location: z.string().describe(
+        'The location of the serving resources, e.g., "us-central1".',
+      ).optional(),
+      type: z.enum(["TYPE_UNSPECIFIED", "READ_WRITE", "READ_ONLY", "WITNESS"])
+        .describe("The type of replica.").optional(),
+    })).describe(
+      "The geographic placement of nodes in this instance configuration and their replication properties. To create user-managed configurations, input `replicas` must include all replicas in `replicas` of the `base_config` and include one or more replicas in the `optional_replicas` of the `base_config`.",
+    ).optional(),
+    state: z.enum(["STATE_UNSPECIFIED", "CREATING", "READY"]).describe(
+      "Output only. The current instance configuration state. Applicable only for `USER_MANAGED` configurations.",
+    ).optional(),
+    storageLimitPerProcessingUnit: z.string().describe(
+      "Output only. The storage limit in bytes per processing unit.",
+    ).optional(),
+  }).describe(
+    "A possible configuration for a Cloud Spanner instance. Configurations define the geographic placement of nodes and their replication.",
+  ).optional(),
+  instanceConfigId: z.string().describe(
+    "Required. The ID of the instance configuration to create. Valid identifiers are of the form `custom-[-a-z0-9]*[a-z0-9]` and must be between 2 and 64 characters in length. The `custom-` prefix is required to avoid name conflicts with Google-managed configurations.",
+  ).optional(),
+  validateOnly: z.boolean().describe(
+    "An option to validate, but not actually execute, a request, and provide the same response.",
+  ).optional(),
+  updateMask: z.string().describe(
+    "Required. A mask specifying which fields in InstanceConfig should be updated. The field mask must always be specified; this prevents any future fields in InstanceConfig from being erased accidentally by clients that do not know about them. Only display_name and labels can be updated.",
+  ).optional(),
+  location: z.string().describe(
+    "The location for this resource (e.g., 'us', 'us-central1', 'europe-west1')",
+  ).optional(),
+});
+
+export const model = {
+  type: "@swamp/gcp/spanner/instanceconfigs",
+  version: "2026.03.27.1",
+  globalArguments: GlobalArgsSchema,
+  inputsSchema: InputsSchema,
+  resources: {
+    state: {
+      description:
+        "A possible configuration for a Cloud Spanner instance. Configurations define ...",
+      schema: StateSchema,
+      lifetime: "infinite",
+      garbageCollection: 10,
+    },
+  },
+  methods: {
+    create: {
+      description: "Create a instanceConfigs",
+      arguments: z.object({
+        waitForReady: z.boolean().describe(
+          "Wait for the resource to reach a ready state after creation (default: true)",
+        ).optional(),
+      }),
+      execute: async (args: { waitForReady?: boolean }, context: any) => {
+        const g = context.globalArgs;
+        const projectId = await getProjectId();
+        const params: Record<string, string> = { project: projectId };
+        if (g["parent"] !== undefined) params["parent"] = String(g["parent"]);
+        const body: Record<string, unknown> = {};
+        if (g["instanceConfig"] !== undefined) {
+          body["instanceConfig"] = g["instanceConfig"];
+        }
+        if (g["instanceConfigId"] !== undefined) {
+          body["instanceConfigId"] = g["instanceConfigId"];
+        }
+        if (g["validateOnly"] !== undefined) {
+          body["validateOnly"] = g["validateOnly"];
+        }
+        if (g["parent"] !== undefined && g["name"] !== undefined) {
+          params["name"] = buildResourceName(
+            String(g["parent"]),
+            String(g["name"]),
+          );
+        }
+        const result = await createResource(
+          BASE_URL,
+          INSERT_CONFIG,
+          params,
+          body,
+          GET_CONFIG,
+          (args.waitForReady ?? true)
+            ? {
+              "statusField": "state",
+              "readyValues": ["READY"],
+              "failedValues": [],
+            }
+            : undefined,
+        ) as StateData;
+        const instanceName = g.name?.toString() ?? "current";
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    get: {
+      description: "Get a instanceConfigs",
+      arguments: z.object({
+        identifier: z.string().describe("The name of the instanceConfigs"),
+      }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const projectId = await getProjectId();
+        const params: Record<string, string> = { project: projectId };
+        const g = context.globalArgs;
+        params["name"] = buildResourceName(
+          String(g["parent"] ?? ""),
+          args.identifier,
+        );
+        const result = await readResource(
+          BASE_URL,
+          GET_CONFIG,
+          params,
+        ) as StateData;
+        const instanceName = g.name?.toString() ?? args.identifier;
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    update: {
+      description: "Update instanceConfigs attributes",
+      arguments: z.object({
+        waitForReady: z.boolean().describe(
+          "Wait for the resource to reach a ready state after update (default: true)",
+        ).optional(),
+      }),
+      execute: async (args: { waitForReady?: boolean }, context: any) => {
+        const g = context.globalArgs;
+        const projectId = await getProjectId();
+        const instanceName = g.name?.toString() ?? "current";
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          instanceName,
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        const params: Record<string, string> = { project: projectId };
+        params["name"] = buildResourceName(
+          String(g["parent"] ?? ""),
+          existing["name"]?.toString() ?? g["name"]?.toString() ?? "",
+        );
+        const body: Record<string, unknown> = {};
+        if (g["instanceConfig"] !== undefined) {
+          body["instanceConfig"] = g["instanceConfig"];
+        }
+        if (g["validateOnly"] !== undefined) {
+          body["validateOnly"] = g["validateOnly"];
+        }
+        if (g["updateMask"] !== undefined) body["updateMask"] = g["updateMask"];
+        for (const key of Object.keys(existing)) {
+          if (
+            key === "fingerprint" || key === "labelFingerprint" ||
+            key === "etag" || key.endsWith("Fingerprint")
+          ) {
+            body[key] = existing[key];
+          }
+        }
+        const result = await updateResource(
+          BASE_URL,
+          PATCH_CONFIG,
+          params,
+          body,
+          GET_CONFIG,
+          (args.waitForReady ?? true)
+            ? {
+              "statusField": "state",
+              "readyValues": ["READY"],
+              "failedValues": [],
+            }
+            : undefined,
+        ) as StateData;
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    delete: {
+      description: "Delete the instanceConfigs",
+      arguments: z.object({
+        identifier: z.string().describe("The name of the instanceConfigs"),
+      }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const g = context.globalArgs;
+        const projectId = await getProjectId();
+        const params: Record<string, string> = { project: projectId };
+        params["name"] = buildResourceName(
+          String(g["parent"] ?? ""),
+          args.identifier,
+        );
+        const { existed } = await deleteResource(
+          BASE_URL,
+          DELETE_CONFIG,
+          params,
+        );
+        const instanceName = g.name?.toString() ?? args.identifier;
+        const handle = await context.writeResource("state", instanceName, {
+          identifier: args.identifier,
+          existed,
+          status: existed ? "deleted" : "not_found",
+          deletedAt: new Date().toISOString(),
+        });
+        return { dataHandles: [handle] };
+      },
+    },
+    sync: {
+      description: "Sync instanceConfigs state from GCP",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const projectId = await getProjectId();
+        const instanceName = g.name?.toString() ?? "current";
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          instanceName,
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        try {
+          const params: Record<string, string> = { project: projectId };
+          const shortName = existing.name?.toString() ?? g["name"]?.toString();
+          if (!shortName) throw new Error("No identifier found");
+          params["name"] = buildResourceName(
+            String(g["parent"] ?? ""),
+            shortName,
+          );
+          const result = await readResource(
+            BASE_URL,
+            GET_CONFIG,
+            params,
+          ) as StateData;
+          const handle = await context.writeResource(
+            "state",
+            instanceName,
+            result,
+          );
+          return { dataHandles: [handle] };
+        } catch (error: unknown) {
+          if (isResourceNotFoundError(error)) {
+            const handle = await context.writeResource("state", instanceName, {
+              status: "not_found",
+              syncedAt: new Date().toISOString(),
+            });
+            return { dataHandles: [handle] };
+          }
+          throw error;
+        }
+      },
+    },
+  },
+};

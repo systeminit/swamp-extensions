@@ -1,0 +1,601 @@
+// Auto-generated extension model for @swamp/gcp/ces/apps-examples
+// Do not edit manually. Re-generate with: deno task generate:gcp
+
+// deno-lint-ignore-file no-explicit-any
+
+import { z } from "zod";
+import {
+  createResource,
+  deleteResource,
+  getProjectId,
+  isResourceNotFoundError,
+  readResource,
+  updateResource,
+} from "./_lib/gcp.ts";
+
+/** Construct the fully-qualified resource name from parent and short name. */
+function buildResourceName(parent: string, shortName: string): string {
+  return `${parent}/examples/${shortName}`;
+}
+
+const BASE_URL = "https://ces.googleapis.com/";
+
+const GET_CONFIG = {
+  "id": "ces.projects.locations.apps.examples.get",
+  "path": "v1/{+name}",
+  "httpMethod": "GET",
+  "parameterOrder": [
+    "name",
+  ],
+  "parameters": {
+    "name": {
+      "location": "path",
+      "required": true,
+    },
+  },
+} as const;
+
+const INSERT_CONFIG = {
+  "id": "ces.projects.locations.apps.examples.create",
+  "path": "v1/{+parent}/examples",
+  "httpMethod": "POST",
+  "parameterOrder": [
+    "parent",
+  ],
+  "parameters": {
+    "exampleId": {
+      "location": "query",
+    },
+    "parent": {
+      "location": "path",
+      "required": true,
+    },
+  },
+} as const;
+
+const PATCH_CONFIG = {
+  "id": "ces.projects.locations.apps.examples.patch",
+  "path": "v1/{+name}",
+  "httpMethod": "PATCH",
+  "parameterOrder": [
+    "name",
+  ],
+  "parameters": {
+    "name": {
+      "location": "path",
+      "required": true,
+    },
+    "updateMask": {
+      "location": "query",
+    },
+  },
+} as const;
+
+const DELETE_CONFIG = {
+  "id": "ces.projects.locations.apps.examples.delete",
+  "path": "v1/{+name}",
+  "httpMethod": "DELETE",
+  "parameterOrder": [
+    "name",
+  ],
+  "parameters": {
+    "etag": {
+      "location": "query",
+    },
+    "name": {
+      "location": "path",
+      "required": true,
+    },
+  },
+} as const;
+
+const GlobalArgsSchema = z.object({
+  description: z.string().describe(
+    "Optional. Human-readable description of the example.",
+  ).optional(),
+  displayName: z.string().describe("Required. Display name of the example.")
+    .optional(),
+  entryAgent: z.string().describe(
+    "Optional. The agent that initially handles the conversation. If not specified, the example represents a conversation that is handled by the root agent. Format: `projects/{project}/locations/{location}/apps/{app}/agents/{agent}`",
+  ).optional(),
+  messages: z.array(z.object({
+    chunks: z.array(z.object({
+      agentTransfer: z.object({
+        displayName: z.string().describe(
+          "Output only. Display name of the agent.",
+        ).optional(),
+        targetAgent: z.string().describe(
+          "Required. The agent to which the conversation is being transferred. The agent will handle the conversation from this point forward. Format: `projects/{project}/locations/{location}/apps/{app}/agents/{agent}`",
+        ).optional(),
+      }).describe(
+        "Represents an event indicating the transfer of a conversation to a different agent.",
+      ).optional(),
+      blob: z.object({
+        data: z.string().describe("Required. Raw bytes of the blob.")
+          .optional(),
+        mimeType: z.string().describe(
+          "Required. The IANA standard MIME type of the source data.",
+        ).optional(),
+      }).describe("Represents a blob input or output in the conversation.")
+        .optional(),
+      defaultVariables: z.record(z.string(), z.string()).describe(
+        "A struct represents default variables at the start of the conversation, keyed by variable names.",
+      ).optional(),
+      image: z.object({
+        data: z.string().describe("Required. Raw bytes of the image.")
+          .optional(),
+        mimeType: z.string().describe(
+          "Required. The IANA standard MIME type of the source data. Supported image types includes: * image/png * image/jpeg * image/webp",
+        ).optional(),
+      }).describe("Represents an image input or output in the conversation.")
+        .optional(),
+      payload: z.record(z.string(), z.string()).describe(
+        "Optional. Custom payload data.",
+      ).optional(),
+      text: z.string().describe("Optional. Text data.").optional(),
+      toolCall: z.object({
+        args: z.record(z.string(), z.string()).describe(
+          "Optional. The input parameters and values for the tool in JSON object format.",
+        ).optional(),
+        displayName: z.string().describe(
+          "Output only. Display name of the tool.",
+        ).optional(),
+        id: z.string().describe(
+          "Optional. The unique identifier of the tool call. If populated, the client should return the execution result with the matching ID in ToolResponse.",
+        ).optional(),
+        tool: z.string().describe(
+          "Optional. The name of the tool to execute. Format: `projects/{project}/locations/{location}/apps/{app}/tools/{tool}`",
+        ).optional(),
+        toolsetTool: z.object({
+          toolId: z.string().describe(
+            "Optional. The tool ID to filter the tools to retrieve the schema for.",
+          ).optional(),
+          toolset: z.string().describe(
+            "Required. The resource name of the Toolset from which this tool is derived. Format: `projects/{project}/locations/{location}/apps/{app}/toolsets/{toolset}`",
+          ).optional(),
+        }).describe("A tool that is created from a toolset.").optional(),
+      }).describe(
+        "Request for the client or the agent to execute the specified tool.",
+      ).optional(),
+      toolResponse: z.object({
+        displayName: z.string().describe(
+          "Output only. Display name of the tool.",
+        ).optional(),
+        id: z.string().describe(
+          "Optional. The matching ID of the tool call the response is for.",
+        ).optional(),
+        response: z.record(z.string(), z.string()).describe(
+          'Required. The tool execution result in JSON object format. Use "output" key to specify tool response and "error" key to specify error details (if any). If "output" and "error" keys are not specified, then whole "response" is treated as tool execution result.',
+        ).optional(),
+        tool: z.string().describe(
+          "Optional. The name of the tool to execute. Format: `projects/{project}/locations/{location}/apps/{app}/tools/{tool}`",
+        ).optional(),
+        toolsetTool: z.object({
+          toolId: z.string().describe(
+            "Optional. The tool ID to filter the tools to retrieve the schema for.",
+          ).optional(),
+          toolset: z.string().describe(
+            "Required. The resource name of the Toolset from which this tool is derived. Format: `projects/{project}/locations/{location}/apps/{app}/toolsets/{toolset}`",
+          ).optional(),
+        }).describe("A tool that is created from a toolset.").optional(),
+      }).describe(
+        "The execution result of a specific tool from the client or the agent.",
+      ).optional(),
+      transcript: z.string().describe(
+        "Optional. Transcript associated with the audio.",
+      ).optional(),
+      updatedVariables: z.record(z.string(), z.string()).describe(
+        "A struct represents variables that were updated in the conversation, keyed by variable names.",
+      ).optional(),
+    })).describe("Optional. Content of the message as a series of chunks.")
+      .optional(),
+    eventTime: z.string().describe(
+      "Optional. Timestamp when the message was sent or received. Should not be used if the message is part of an example.",
+    ).optional(),
+    role: z.string().describe(
+      "Optional. The role within the conversation, e.g., user, agent.",
+    ).optional(),
+  })).describe(
+    "Optional. The collection of messages that make up the conversation.",
+  ).optional(),
+  name: z.string().describe(
+    "Identifier. The unique identifier of the example. Format: `projects/{project}/locations/{location}/apps/{app}/examples/{example}`",
+  ).optional(),
+  exampleId: z.string().describe(
+    "Optional. The ID to use for the example, which will become the final component of the example's resource name. If not provided, a unique ID will be automatically assigned for the example.",
+  ).optional(),
+  location: z.string().describe(
+    "The location for this resource (e.g., 'us', 'us-central1', 'europe-west1')",
+  ).optional(),
+});
+
+const StateSchema = z.object({
+  createTime: z.string().optional(),
+  description: z.string().optional(),
+  displayName: z.string().optional(),
+  entryAgent: z.string().optional(),
+  etag: z.string().optional(),
+  invalid: z.boolean().optional(),
+  messages: z.array(z.object({
+    chunks: z.array(z.object({
+      agentTransfer: z.object({
+        displayName: z.string(),
+        targetAgent: z.string(),
+      }),
+      blob: z.object({
+        data: z.string(),
+        mimeType: z.string(),
+      }),
+      defaultVariables: z.record(z.string(), z.unknown()),
+      image: z.object({
+        data: z.string(),
+        mimeType: z.string(),
+      }),
+      payload: z.record(z.string(), z.unknown()),
+      text: z.string(),
+      toolCall: z.object({
+        args: z.record(z.string(), z.unknown()),
+        displayName: z.string(),
+        id: z.string(),
+        tool: z.string(),
+        toolsetTool: z.object({
+          toolId: z.string(),
+          toolset: z.string(),
+        }),
+      }),
+      toolResponse: z.object({
+        displayName: z.string(),
+        id: z.string(),
+        response: z.record(z.string(), z.unknown()),
+        tool: z.string(),
+        toolsetTool: z.object({
+          toolId: z.string(),
+          toolset: z.string(),
+        }),
+      }),
+      transcript: z.string(),
+      updatedVariables: z.record(z.string(), z.unknown()),
+    })),
+    eventTime: z.string(),
+    role: z.string(),
+  })).optional(),
+  name: z.string(),
+  updateTime: z.string().optional(),
+}).passthrough();
+
+type StateData = z.infer<typeof StateSchema>;
+
+const InputsSchema = z.object({
+  description: z.string().describe(
+    "Optional. Human-readable description of the example.",
+  ).optional(),
+  displayName: z.string().describe("Required. Display name of the example.")
+    .optional(),
+  entryAgent: z.string().describe(
+    "Optional. The agent that initially handles the conversation. If not specified, the example represents a conversation that is handled by the root agent. Format: `projects/{project}/locations/{location}/apps/{app}/agents/{agent}`",
+  ).optional(),
+  messages: z.array(z.object({
+    chunks: z.array(z.object({
+      agentTransfer: z.object({
+        displayName: z.string().describe(
+          "Output only. Display name of the agent.",
+        ).optional(),
+        targetAgent: z.string().describe(
+          "Required. The agent to which the conversation is being transferred. The agent will handle the conversation from this point forward. Format: `projects/{project}/locations/{location}/apps/{app}/agents/{agent}`",
+        ).optional(),
+      }).describe(
+        "Represents an event indicating the transfer of a conversation to a different agent.",
+      ).optional(),
+      blob: z.object({
+        data: z.string().describe("Required. Raw bytes of the blob.")
+          .optional(),
+        mimeType: z.string().describe(
+          "Required. The IANA standard MIME type of the source data.",
+        ).optional(),
+      }).describe("Represents a blob input or output in the conversation.")
+        .optional(),
+      defaultVariables: z.record(z.string(), z.string()).describe(
+        "A struct represents default variables at the start of the conversation, keyed by variable names.",
+      ).optional(),
+      image: z.object({
+        data: z.string().describe("Required. Raw bytes of the image.")
+          .optional(),
+        mimeType: z.string().describe(
+          "Required. The IANA standard MIME type of the source data. Supported image types includes: * image/png * image/jpeg * image/webp",
+        ).optional(),
+      }).describe("Represents an image input or output in the conversation.")
+        .optional(),
+      payload: z.record(z.string(), z.string()).describe(
+        "Optional. Custom payload data.",
+      ).optional(),
+      text: z.string().describe("Optional. Text data.").optional(),
+      toolCall: z.object({
+        args: z.record(z.string(), z.string()).describe(
+          "Optional. The input parameters and values for the tool in JSON object format.",
+        ).optional(),
+        displayName: z.string().describe(
+          "Output only. Display name of the tool.",
+        ).optional(),
+        id: z.string().describe(
+          "Optional. The unique identifier of the tool call. If populated, the client should return the execution result with the matching ID in ToolResponse.",
+        ).optional(),
+        tool: z.string().describe(
+          "Optional. The name of the tool to execute. Format: `projects/{project}/locations/{location}/apps/{app}/tools/{tool}`",
+        ).optional(),
+        toolsetTool: z.object({
+          toolId: z.string().describe(
+            "Optional. The tool ID to filter the tools to retrieve the schema for.",
+          ).optional(),
+          toolset: z.string().describe(
+            "Required. The resource name of the Toolset from which this tool is derived. Format: `projects/{project}/locations/{location}/apps/{app}/toolsets/{toolset}`",
+          ).optional(),
+        }).describe("A tool that is created from a toolset.").optional(),
+      }).describe(
+        "Request for the client or the agent to execute the specified tool.",
+      ).optional(),
+      toolResponse: z.object({
+        displayName: z.string().describe(
+          "Output only. Display name of the tool.",
+        ).optional(),
+        id: z.string().describe(
+          "Optional. The matching ID of the tool call the response is for.",
+        ).optional(),
+        response: z.record(z.string(), z.string()).describe(
+          'Required. The tool execution result in JSON object format. Use "output" key to specify tool response and "error" key to specify error details (if any). If "output" and "error" keys are not specified, then whole "response" is treated as tool execution result.',
+        ).optional(),
+        tool: z.string().describe(
+          "Optional. The name of the tool to execute. Format: `projects/{project}/locations/{location}/apps/{app}/tools/{tool}`",
+        ).optional(),
+        toolsetTool: z.object({
+          toolId: z.string().describe(
+            "Optional. The tool ID to filter the tools to retrieve the schema for.",
+          ).optional(),
+          toolset: z.string().describe(
+            "Required. The resource name of the Toolset from which this tool is derived. Format: `projects/{project}/locations/{location}/apps/{app}/toolsets/{toolset}`",
+          ).optional(),
+        }).describe("A tool that is created from a toolset.").optional(),
+      }).describe(
+        "The execution result of a specific tool from the client or the agent.",
+      ).optional(),
+      transcript: z.string().describe(
+        "Optional. Transcript associated with the audio.",
+      ).optional(),
+      updatedVariables: z.record(z.string(), z.string()).describe(
+        "A struct represents variables that were updated in the conversation, keyed by variable names.",
+      ).optional(),
+    })).describe("Optional. Content of the message as a series of chunks.")
+      .optional(),
+    eventTime: z.string().describe(
+      "Optional. Timestamp when the message was sent or received. Should not be used if the message is part of an example.",
+    ).optional(),
+    role: z.string().describe(
+      "Optional. The role within the conversation, e.g., user, agent.",
+    ).optional(),
+  })).describe(
+    "Optional. The collection of messages that make up the conversation.",
+  ).optional(),
+  name: z.string().describe(
+    "Identifier. The unique identifier of the example. Format: `projects/{project}/locations/{location}/apps/{app}/examples/{example}`",
+  ).optional(),
+  exampleId: z.string().describe(
+    "Optional. The ID to use for the example, which will become the final component of the example's resource name. If not provided, a unique ID will be automatically assigned for the example.",
+  ).optional(),
+  location: z.string().describe(
+    "The location for this resource (e.g., 'us', 'us-central1', 'europe-west1')",
+  ).optional(),
+});
+
+export const model = {
+  type: "@swamp/gcp/ces/apps-examples",
+  version: "2026.03.27.1",
+  globalArguments: GlobalArgsSchema,
+  inputsSchema: InputsSchema,
+  resources: {
+    state: {
+      description:
+        "An example represents a sample conversation between the user and the agent(s).",
+      schema: StateSchema,
+      lifetime: "infinite",
+      garbageCollection: 10,
+    },
+  },
+  methods: {
+    create: {
+      description: "Create a examples",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const projectId = await getProjectId();
+        const params: Record<string, string> = { project: projectId };
+        if (g["parent"] !== undefined) params["parent"] = String(g["parent"]);
+        const body: Record<string, unknown> = {};
+        if (g["description"] !== undefined) {
+          body["description"] = g["description"];
+        }
+        if (g["displayName"] !== undefined) {
+          body["displayName"] = g["displayName"];
+        }
+        if (g["entryAgent"] !== undefined) body["entryAgent"] = g["entryAgent"];
+        if (g["messages"] !== undefined) body["messages"] = g["messages"];
+        if (g["name"] !== undefined) body["name"] = g["name"];
+        if (g["exampleId"] !== undefined) body["exampleId"] = g["exampleId"];
+        if (g["parent"] !== undefined && g["name"] !== undefined) {
+          params["name"] = buildResourceName(
+            String(g["parent"]),
+            String(g["name"]),
+          );
+        }
+        const result = await createResource(
+          BASE_URL,
+          INSERT_CONFIG,
+          params,
+          body,
+          GET_CONFIG,
+        ) as StateData;
+        const instanceName = (result.name ?? g.name)?.toString() ?? "current";
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    get: {
+      description: "Get a examples",
+      arguments: z.object({
+        identifier: z.string().describe("The name of the examples"),
+      }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const projectId = await getProjectId();
+        const params: Record<string, string> = { project: projectId };
+        const g = context.globalArgs;
+        params["name"] = buildResourceName(
+          String(g["parent"] ?? ""),
+          args.identifier,
+        );
+        const result = await readResource(
+          BASE_URL,
+          GET_CONFIG,
+          params,
+        ) as StateData;
+        const instanceName = (result.name ?? g.name)?.toString() ??
+          args.identifier;
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    update: {
+      description: "Update examples attributes",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const projectId = await getProjectId();
+        const instanceName = g.name?.toString() ?? "current";
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          instanceName,
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        const params: Record<string, string> = { project: projectId };
+        params["name"] = buildResourceName(
+          String(g["parent"] ?? ""),
+          existing["name"]?.toString() ?? g["name"]?.toString() ?? "",
+        );
+        const body: Record<string, unknown> = {};
+        if (g["description"] !== undefined) {
+          body["description"] = g["description"];
+        }
+        if (g["displayName"] !== undefined) {
+          body["displayName"] = g["displayName"];
+        }
+        if (g["entryAgent"] !== undefined) body["entryAgent"] = g["entryAgent"];
+        if (g["messages"] !== undefined) body["messages"] = g["messages"];
+        for (const key of Object.keys(existing)) {
+          if (
+            key === "fingerprint" || key === "labelFingerprint" ||
+            key === "etag" || key.endsWith("Fingerprint")
+          ) {
+            body[key] = existing[key];
+          }
+        }
+        const result = await updateResource(
+          BASE_URL,
+          PATCH_CONFIG,
+          params,
+          body,
+          GET_CONFIG,
+        ) as StateData;
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    delete: {
+      description: "Delete the examples",
+      arguments: z.object({
+        identifier: z.string().describe("The name of the examples"),
+      }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const g = context.globalArgs;
+        const projectId = await getProjectId();
+        const params: Record<string, string> = { project: projectId };
+        params["name"] = buildResourceName(
+          String(g["parent"] ?? ""),
+          args.identifier,
+        );
+        const { existed } = await deleteResource(
+          BASE_URL,
+          DELETE_CONFIG,
+          params,
+        );
+        const instanceName = g.name?.toString() ?? args.identifier;
+        const handle = await context.writeResource("state", instanceName, {
+          identifier: args.identifier,
+          existed,
+          status: existed ? "deleted" : "not_found",
+          deletedAt: new Date().toISOString(),
+        });
+        return { dataHandles: [handle] };
+      },
+    },
+    sync: {
+      description: "Sync examples state from GCP",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const projectId = await getProjectId();
+        const instanceName = g.name?.toString() ?? "current";
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          instanceName,
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        try {
+          const params: Record<string, string> = { project: projectId };
+          const shortName = existing.name?.toString() ?? g["name"]?.toString();
+          if (!shortName) throw new Error("No identifier found");
+          params["name"] = buildResourceName(
+            String(g["parent"] ?? ""),
+            shortName,
+          );
+          const result = await readResource(
+            BASE_URL,
+            GET_CONFIG,
+            params,
+          ) as StateData;
+          const handle = await context.writeResource(
+            "state",
+            instanceName,
+            result,
+          );
+          return { dataHandles: [handle] };
+        } catch (error: unknown) {
+          if (isResourceNotFoundError(error)) {
+            const handle = await context.writeResource("state", instanceName, {
+              status: "not_found",
+              syncedAt: new Date().toISOString(),
+            });
+            return { dataHandles: [handle] };
+          }
+          throw error;
+        }
+      },
+    },
+  },
+};

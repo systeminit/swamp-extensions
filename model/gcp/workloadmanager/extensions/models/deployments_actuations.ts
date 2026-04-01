@@ -1,0 +1,373 @@
+// Auto-generated extension model for @swamp/gcp/workloadmanager/deployments-actuations
+// Do not edit manually. Re-generate with: deno task generate:gcp
+
+// deno-lint-ignore-file no-explicit-any
+
+import { z } from "zod";
+import {
+  createResource,
+  deleteResource,
+  getProjectId,
+  isResourceNotFoundError,
+  readResource,
+} from "./_lib/gcp.ts";
+
+/** Construct the fully-qualified resource name from parent and short name. */
+function buildResourceName(parent: string, shortName: string): string {
+  return `${parent}/actuations/${shortName}`;
+}
+
+const BASE_URL = "https://workloadmanager.googleapis.com/";
+
+const GET_CONFIG = {
+  "id": "workloadmanager.projects.locations.deployments.actuations.get",
+  "path": "v1/{+name}",
+  "httpMethod": "GET",
+  "parameterOrder": [
+    "name",
+  ],
+  "parameters": {
+    "name": {
+      "location": "path",
+      "required": true,
+    },
+  },
+} as const;
+
+const INSERT_CONFIG = {
+  "id": "workloadmanager.projects.locations.deployments.actuations.create",
+  "path": "v1/{+parent}/actuations",
+  "httpMethod": "POST",
+  "parameterOrder": [
+    "parent",
+  ],
+  "parameters": {
+    "parent": {
+      "location": "path",
+      "required": true,
+    },
+    "requestId": {
+      "location": "query",
+    },
+  },
+} as const;
+
+const DELETE_CONFIG = {
+  "id": "workloadmanager.projects.locations.deployments.actuations.delete",
+  "path": "v1/{+name}",
+  "httpMethod": "DELETE",
+  "parameterOrder": [
+    "name",
+  ],
+  "parameters": {
+    "name": {
+      "location": "path",
+      "required": true,
+    },
+  },
+} as const;
+
+const GlobalArgsSchema = z.object({
+  actuationOutput: z.object({
+    actuateLogs: z.string().describe("A link to gcs file that store build logs")
+      .optional(),
+    ansibleError: z.string().describe(
+      "Output only. error message return from ansible.",
+    ).optional(),
+    ansibleFailedTask: z.array(z.string()).describe(
+      "Output only. failed task name return from ansible.",
+    ).optional(),
+    blueprintId: z.string().describe(
+      "reference to Blueprint Controller deployment and revision resource",
+    ).optional(),
+    cloudbuildId: z.string().describe(
+      "Cloud Build instance UUID associated with this revision, without any suffix or prefix",
+    ).optional(),
+    errorCode: z.enum([
+      "ERROR_CODE_UNSPECIFIED",
+      "TERRAFORM_FAILED",
+      "PERMISSION_DENIED_IN_TERRAFORM",
+      "QUOTA_EXCEED_IN_TERRAFORM",
+      "ANSIBLE_FAILED",
+      "CONSTRAINT_VIOLATION_IN_TERRAFORM",
+      "RESOURCE_ALREADY_EXISTS_IN_TERRAFORM",
+      "RESOURCE_UNAVAILABLE_IN_TERRAFORM",
+      "PERMISSION_DENIED_IN_ANSIBLE",
+      "INVALID_SECRET_IN_ANSIBLE",
+      "TERRAFORM_DELETION_FAILED",
+      "RESOURCE_IN_USE_IN_TERRAFORM_DELETION",
+      "ANSIBLE_START_FAILED",
+    ]).describe(
+      "Output only. Code describing any errors that may have occurred. If not specified, there is no error in actuation.",
+    ).optional(),
+    errorLogs: z.string().describe("A link to actuation cloud build log.")
+      .optional(),
+    hasUserFacingErrorMsg: z.boolean().describe(
+      "Output only. whether the error message is user facing. If true, the error message will be shown in the UI.",
+    ).optional(),
+    terraformError: z.string().describe(
+      "Output only. error message return from terraform.",
+    ).optional(),
+    terraformTemplate: z.string().describe(
+      "reference to terraform template used",
+    ).optional(),
+  }).describe("Message for output of Actuation").optional(),
+  name: z.string().describe(
+    "The name of actuation resource. The format is projects/{project}/locations/{location}/deployments/{deployment}/actuations/{actuation}",
+  ).optional(),
+  requestId: z.string().describe(
+    "Optional. An optional request ID to identify requests. Specify a unique request ID so that if you must retry your request, the server will know to ignore the request if it has already been completed. The server will guarantee that for at least 60 minutes since the first request. For example, consider a situation where you make an initial request and the request times out. If you make the request again with the same request ID, the server can check if original operation with the same request ID was received, and if so, will ignore the second request. This prevents clients from accidentally creating duplicate commitments. The request ID must be a valid UUID with the exception that zero UUID is not supported (00000000-0000-0000-0000-000000000000).",
+  ).optional(),
+  location: z.string().describe(
+    "The location for this resource (e.g., 'us', 'us-central1', 'europe-west1')",
+  ).optional(),
+});
+
+const StateSchema = z.object({
+  actuationOutput: z.object({
+    actuateLogs: z.string(),
+    ansibleError: z.string(),
+    ansibleFailedTask: z.array(z.string()),
+    blueprintId: z.string(),
+    cloudbuildId: z.string(),
+    errorCode: z.string(),
+    errorLogs: z.string(),
+    hasUserFacingErrorMsg: z.boolean(),
+    terraformError: z.string(),
+    terraformTemplate: z.string(),
+  }).optional(),
+  deploymentOutput: z.array(z.object({
+    name: z.string(),
+    type: z.string(),
+  })).optional(),
+  endTime: z.string().optional(),
+  name: z.string(),
+  startTime: z.string().optional(),
+  state: z.string().optional(),
+}).passthrough();
+
+type StateData = z.infer<typeof StateSchema>;
+
+const InputsSchema = z.object({
+  actuationOutput: z.object({
+    actuateLogs: z.string().describe("A link to gcs file that store build logs")
+      .optional(),
+    ansibleError: z.string().describe(
+      "Output only. error message return from ansible.",
+    ).optional(),
+    ansibleFailedTask: z.array(z.string()).describe(
+      "Output only. failed task name return from ansible.",
+    ).optional(),
+    blueprintId: z.string().describe(
+      "reference to Blueprint Controller deployment and revision resource",
+    ).optional(),
+    cloudbuildId: z.string().describe(
+      "Cloud Build instance UUID associated with this revision, without any suffix or prefix",
+    ).optional(),
+    errorCode: z.enum([
+      "ERROR_CODE_UNSPECIFIED",
+      "TERRAFORM_FAILED",
+      "PERMISSION_DENIED_IN_TERRAFORM",
+      "QUOTA_EXCEED_IN_TERRAFORM",
+      "ANSIBLE_FAILED",
+      "CONSTRAINT_VIOLATION_IN_TERRAFORM",
+      "RESOURCE_ALREADY_EXISTS_IN_TERRAFORM",
+      "RESOURCE_UNAVAILABLE_IN_TERRAFORM",
+      "PERMISSION_DENIED_IN_ANSIBLE",
+      "INVALID_SECRET_IN_ANSIBLE",
+      "TERRAFORM_DELETION_FAILED",
+      "RESOURCE_IN_USE_IN_TERRAFORM_DELETION",
+      "ANSIBLE_START_FAILED",
+    ]).describe(
+      "Output only. Code describing any errors that may have occurred. If not specified, there is no error in actuation.",
+    ).optional(),
+    errorLogs: z.string().describe("A link to actuation cloud build log.")
+      .optional(),
+    hasUserFacingErrorMsg: z.boolean().describe(
+      "Output only. whether the error message is user facing. If true, the error message will be shown in the UI.",
+    ).optional(),
+    terraformError: z.string().describe(
+      "Output only. error message return from terraform.",
+    ).optional(),
+    terraformTemplate: z.string().describe(
+      "reference to terraform template used",
+    ).optional(),
+  }).describe("Message for output of Actuation").optional(),
+  name: z.string().describe(
+    "The name of actuation resource. The format is projects/{project}/locations/{location}/deployments/{deployment}/actuations/{actuation}",
+  ).optional(),
+  requestId: z.string().describe(
+    "Optional. An optional request ID to identify requests. Specify a unique request ID so that if you must retry your request, the server will know to ignore the request if it has already been completed. The server will guarantee that for at least 60 minutes since the first request. For example, consider a situation where you make an initial request and the request times out. If you make the request again with the same request ID, the server can check if original operation with the same request ID was received, and if so, will ignore the second request. This prevents clients from accidentally creating duplicate commitments. The request ID must be a valid UUID with the exception that zero UUID is not supported (00000000-0000-0000-0000-000000000000).",
+  ).optional(),
+  location: z.string().describe(
+    "The location for this resource (e.g., 'us', 'us-central1', 'europe-west1')",
+  ).optional(),
+});
+
+export const model = {
+  type: "@swamp/gcp/workloadmanager/deployments-actuations",
+  version: "2026.03.27.1",
+  globalArguments: GlobalArgsSchema,
+  inputsSchema: InputsSchema,
+  resources: {
+    state: {
+      description:
+        "The Actuation object represents the bootstrap state and output results of dep...",
+      schema: StateSchema,
+      lifetime: "infinite",
+      garbageCollection: 10,
+    },
+  },
+  methods: {
+    create: {
+      description: "Create a actuations",
+      arguments: z.object({
+        waitForReady: z.boolean().describe(
+          "Wait for the resource to reach a ready state after creation (default: true)",
+        ).optional(),
+      }),
+      execute: async (args: { waitForReady?: boolean }, context: any) => {
+        const g = context.globalArgs;
+        const projectId = await getProjectId();
+        const params: Record<string, string> = { project: projectId };
+        if (g["parent"] !== undefined) params["parent"] = String(g["parent"]);
+        const body: Record<string, unknown> = {};
+        if (g["actuationOutput"] !== undefined) {
+          body["actuationOutput"] = g["actuationOutput"];
+        }
+        if (g["name"] !== undefined) body["name"] = g["name"];
+        if (g["requestId"] !== undefined) body["requestId"] = g["requestId"];
+        if (g["parent"] !== undefined && g["name"] !== undefined) {
+          params["name"] = buildResourceName(
+            String(g["parent"]),
+            String(g["name"]),
+          );
+        }
+        const result = await createResource(
+          BASE_URL,
+          INSERT_CONFIG,
+          params,
+          body,
+          GET_CONFIG,
+          (args.waitForReady ?? true)
+            ? {
+              "statusField": "state",
+              "readyValues": ["SUCCEEDED"],
+              "failedValues": ["FAILED"],
+            }
+            : undefined,
+        ) as StateData;
+        const instanceName = (result.name ?? g.name)?.toString() ?? "current";
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    get: {
+      description: "Get a actuations",
+      arguments: z.object({
+        identifier: z.string().describe("The name of the actuations"),
+      }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const projectId = await getProjectId();
+        const params: Record<string, string> = { project: projectId };
+        const g = context.globalArgs;
+        params["name"] = buildResourceName(
+          String(g["parent"] ?? ""),
+          args.identifier,
+        );
+        const result = await readResource(
+          BASE_URL,
+          GET_CONFIG,
+          params,
+        ) as StateData;
+        const instanceName = (result.name ?? g.name)?.toString() ??
+          args.identifier;
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    delete: {
+      description: "Delete the actuations",
+      arguments: z.object({
+        identifier: z.string().describe("The name of the actuations"),
+      }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const g = context.globalArgs;
+        const projectId = await getProjectId();
+        const params: Record<string, string> = { project: projectId };
+        params["name"] = buildResourceName(
+          String(g["parent"] ?? ""),
+          args.identifier,
+        );
+        const { existed } = await deleteResource(
+          BASE_URL,
+          DELETE_CONFIG,
+          params,
+        );
+        const instanceName = g.name?.toString() ?? args.identifier;
+        const handle = await context.writeResource("state", instanceName, {
+          identifier: args.identifier,
+          existed,
+          status: existed ? "deleted" : "not_found",
+          deletedAt: new Date().toISOString(),
+        });
+        return { dataHandles: [handle] };
+      },
+    },
+    sync: {
+      description: "Sync actuations state from GCP",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const projectId = await getProjectId();
+        const instanceName = g.name?.toString() ?? "current";
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          instanceName,
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        try {
+          const params: Record<string, string> = { project: projectId };
+          const shortName = existing.name?.toString() ?? g["name"]?.toString();
+          if (!shortName) throw new Error("No identifier found");
+          params["name"] = buildResourceName(
+            String(g["parent"] ?? ""),
+            shortName,
+          );
+          const result = await readResource(
+            BASE_URL,
+            GET_CONFIG,
+            params,
+          ) as StateData;
+          const handle = await context.writeResource(
+            "state",
+            instanceName,
+            result,
+          );
+          return { dataHandles: [handle] };
+        } catch (error: unknown) {
+          if (isResourceNotFoundError(error)) {
+            const handle = await context.writeResource("state", instanceName, {
+              status: "not_found",
+              syncedAt: new Date().toISOString(),
+            });
+            return { dataHandles: [handle] };
+          }
+          throw error;
+        }
+      },
+    },
+  },
+};

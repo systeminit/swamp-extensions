@@ -1,0 +1,19 @@
+# Auto-generated manifest. Re-generate with the appropriate deno task.
+manifestVersion: 1
+name: "@swamp/gcp/speech"
+version: "2026.03.27.1"
+description: "Google Cloud speech infrastructure models"
+labels:
+  - gcp
+  - google-cloud
+  - speech
+  - cloud
+  - infrastructure
+releaseNotes: |
+  - Added: customclasses, phrasesets
+models:
+  - customclasses.ts
+  - phrasesets.ts
+additionalFiles:
+  - LICENSE.txt
+  - README.md

@@ -1,0 +1,27 @@
+# Auto-generated manifest. Re-generate with the appropriate deno task.
+manifestVersion: 1
+name: "@swamp/gcp/backupdr"
+version: "2026.04.01.1"
+description: "Google Cloud backupdr infrastructure models"
+labels:
+  - gcp
+  - google-cloud
+  - backupdr
+  - cloud
+  - infrastructure
+releaseNotes: |
+  - Updated: backupplans, backupplans_revisions, backupvaults_datasources_backups
+models:
+  - backupplanassociations.ts
+  - backupplans.ts
+  - backupplans_revisions.ts
+  - backupvaults.ts
+  - backupvaults_datasources.ts
+  - backupvaults_datasources_backups.ts
+  - datasourcereferences.ts
+  - locations.ts
+  - managementservers.ts
+  - resourcebackupconfigs.ts
+additionalFiles:
+  - LICENSE.txt
+  - README.md

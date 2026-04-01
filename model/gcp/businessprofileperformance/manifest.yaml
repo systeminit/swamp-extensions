@@ -1,0 +1,18 @@
+# Auto-generated manifest. Re-generate with the appropriate deno task.
+manifestVersion: 1
+name: "@swamp/gcp/businessprofileperformance"
+version: "2026.03.27.1"
+description: "Google Cloud businessprofileperformance infrastructure models"
+labels:
+  - gcp
+  - google-cloud
+  - businessprofileperformance
+  - cloud
+  - infrastructure
+releaseNotes: |
+  - Added: searchkeywords_impressions_monthly
+models:
+  - searchkeywords_impressions_monthly.ts
+additionalFiles:
+  - LICENSE.txt
+  - README.md
