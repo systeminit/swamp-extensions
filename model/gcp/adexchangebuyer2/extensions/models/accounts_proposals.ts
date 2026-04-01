@@ -1931,14 +1931,20 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/adexchangebuyer2/accounts-proposals",
-  version: "2026.04.01.1",
+  version: "2026.04.01.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },
+    {
+      toVersion: "2026.04.01.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
   ],
+
   globalArguments: GlobalArgsSchema,
   inputsSchema: InputsSchema,
   resources: {

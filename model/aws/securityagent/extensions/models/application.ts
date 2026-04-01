@@ -60,7 +60,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/aws/securityagent/application",
-  version: "2026.04.01.3",
+  version: "2026.04.01.4",
   upgrades: [
     {
       toVersion: "2026.04.01.2",
@@ -69,6 +69,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.01.3",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.01.4",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

@@ -400,7 +400,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/dataplex/datascans-jobs",
-  version: "2026.04.01.2",
+  version: "2026.04.01.3",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -409,6 +409,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.01.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.01.3",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },
