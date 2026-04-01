@@ -15,8 +15,8 @@
     "generate:digitalocean": "deno run --allow-read --allow-write --allow-env --allow-net --allow-run=deno main.ts generate-models --provider digitalocean",
     "update-lockfiles:aws": "bash -c 'for service in ../model/aws/*/; do echo \"Updating $service\" && (cd \"$service\" && deno outdated --update && deno install); done'",
     "update-lockfiles:gcp": "bash -c 'for service in ../model/gcp/*/; do echo \"Updating $service\" && (cd \"$service\" && deno outdated --update && deno install); done'",
-    "bump-versions:aws": "deno run --allow-read --allow-write scripts/bump-versions.ts ../model/aws",
-    "bump-versions:gcp": "deno run --allow-read --allow-write scripts/bump-versions.ts ../model/gcp"
+    "bump-versions:aws": "deno run --allow-read --allow-write --allow-run=deno scripts/bump-versions.ts ../model/aws",
+    "bump-versions:gcp": "deno run --allow-read --allow-write --allow-run=deno scripts/bump-versions.ts ../model/gcp"
   },
   "imports": {
     "@cliffy/command": "jsr:@cliffy/command@1.0.0",

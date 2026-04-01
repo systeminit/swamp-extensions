@@ -1130,7 +1130,14 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/discoveryengine/collections-datastores-sessions",
-  version: "2026.03.27.1",
+  version: "2026.04.01.1",
+  upgrades: [
+    {
+      toVersion: "2026.04.01.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+  ],
   globalArguments: GlobalArgsSchema,
   inputsSchema: InputsSchema,
   resources: {

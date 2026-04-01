@@ -76,7 +76,14 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/aws/cloudformation/public-type-version",
-  version: "2026.03.19.1",
+  version: "2026.04.01.1",
+  upgrades: [
+    {
+      toVersion: "2026.04.01.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+  ],
   globalArguments: GlobalArgsSchema,
   inputsSchema: InputsSchema,
   resources: {
