@@ -1,0 +1,19 @@
+# Auto-generated manifest. Re-generate with the appropriate deno task.
+manifestVersion: 1
+name: "@swamp/aws/devopsguru"
+version: "2026.03.19.1"
+description: "AWS DEVOPSGURU infrastructure models"
+labels:
+  - aws
+  - devopsguru
+  - cloud
+  - infrastructure
+releaseNotes: |
+  - Updated: log_anomaly_detection_integration, notification_channel, resource_collection
+models:
+  - log_anomaly_detection_integration.ts
+  - notification_channel.ts
+  - resource_collection.ts
+additionalFiles:
+  - LICENSE.txt
+  - README.md

@@ -1,0 +1,308 @@
+// Auto-generated extension model for @swamp/aws/ec2/traffic-mirror-filter-rule
+// Do not edit manually. Re-generate with: deno task generate:aws
+
+// deno-lint-ignore-file no-explicit-any
+
+import { z } from "zod";
+import {
+  createResource,
+  deleteResource,
+  isResourceNotFoundError,
+  readResource,
+  updateResource,
+} from "./_lib/aws.ts";
+
+export const TagSchema = z.object({
+  Key: z.string(),
+  Value: z.string(),
+});
+
+const GlobalArgsSchema = z.object({
+  name: z.string().describe(
+    "Instance name for this resource (used as the unique identifier in the factory pattern)",
+  ),
+  DestinationPortRange: z.object({
+    FromPort: z.number().int().describe(
+      "The first port in the Traffic Mirror port range.",
+    ),
+    ToPort: z.number().int().describe(
+      "The last port in the Traffic Mirror port range.",
+    ),
+  }).describe("The destination port range.").optional(),
+  Description: z.string().describe(
+    "The description of the Traffic Mirror Filter rule.",
+  ).optional(),
+  SourcePortRange: z.object({
+    FromPort: z.number().int().describe(
+      "The first port in the Traffic Mirror port range.",
+    ),
+    ToPort: z.number().int().describe(
+      "The last port in the Traffic Mirror port range.",
+    ),
+  }).describe("The source port range.").optional(),
+  RuleAction: z.string().describe(
+    "The action to take on the filtered traffic (accept/reject).",
+  ),
+  SourceCidrBlock: z.string().describe(
+    "The source CIDR block to assign to the Traffic Mirror Filter rule.",
+  ),
+  RuleNumber: z.number().int().describe(
+    "The number of the Traffic Mirror rule.",
+  ),
+  DestinationCidrBlock: z.string().describe(
+    "The destination CIDR block to assign to the Traffic Mirror rule.",
+  ),
+  TrafficMirrorFilterId: z.string().describe(
+    "The ID of the filter that this rule is associated with.",
+  ),
+  TrafficDirection: z.string().describe(
+    "The direction of traffic (ingress/egress).",
+  ),
+  Protocol: z.number().int().describe(
+    "The number of protocol, for example 17 (UDP), to assign to the Traffic Mirror rule.",
+  ).optional(),
+  Tags: z.array(TagSchema).describe(
+    "Any tags assigned to the Traffic Mirror Filter rule.",
+  ).optional(),
+});
+
+const StateSchema = z.object({
+  DestinationPortRange: z.object({
+    FromPort: z.number(),
+    ToPort: z.number(),
+  }).optional(),
+  Description: z.string().optional(),
+  SourcePortRange: z.object({
+    FromPort: z.number(),
+    ToPort: z.number(),
+  }).optional(),
+  RuleAction: z.string().optional(),
+  SourceCidrBlock: z.string().optional(),
+  RuleNumber: z.number().optional(),
+  DestinationCidrBlock: z.string().optional(),
+  TrafficMirrorFilterRuleId: z.string(),
+  TrafficMirrorFilterId: z.string().optional(),
+  TrafficDirection: z.string().optional(),
+  Protocol: z.number().optional(),
+  Tags: z.array(TagSchema).optional(),
+}).passthrough();
+
+type StateData = z.infer<typeof StateSchema>;
+
+const InputsSchema = z.object({
+  name: z.string().optional(),
+  DestinationPortRange: z.object({
+    FromPort: z.number().int().describe(
+      "The first port in the Traffic Mirror port range.",
+    ).optional(),
+    ToPort: z.number().int().describe(
+      "The last port in the Traffic Mirror port range.",
+    ).optional(),
+  }).describe("The destination port range.").optional(),
+  Description: z.string().describe(
+    "The description of the Traffic Mirror Filter rule.",
+  ).optional(),
+  SourcePortRange: z.object({
+    FromPort: z.number().int().describe(
+      "The first port in the Traffic Mirror port range.",
+    ).optional(),
+    ToPort: z.number().int().describe(
+      "The last port in the Traffic Mirror port range.",
+    ).optional(),
+  }).describe("The source port range.").optional(),
+  RuleAction: z.string().describe(
+    "The action to take on the filtered traffic (accept/reject).",
+  ).optional(),
+  SourceCidrBlock: z.string().describe(
+    "The source CIDR block to assign to the Traffic Mirror Filter rule.",
+  ).optional(),
+  RuleNumber: z.number().int().describe(
+    "The number of the Traffic Mirror rule.",
+  ).optional(),
+  DestinationCidrBlock: z.string().describe(
+    "The destination CIDR block to assign to the Traffic Mirror rule.",
+  ).optional(),
+  TrafficMirrorFilterId: z.string().describe(
+    "The ID of the filter that this rule is associated with.",
+  ).optional(),
+  TrafficDirection: z.string().describe(
+    "The direction of traffic (ingress/egress).",
+  ).optional(),
+  Protocol: z.number().int().describe(
+    "The number of protocol, for example 17 (UDP), to assign to the Traffic Mirror rule.",
+  ).optional(),
+  Tags: z.array(TagSchema).describe(
+    "Any tags assigned to the Traffic Mirror Filter rule.",
+  ).optional(),
+});
+
+export const model = {
+  type: "@swamp/aws/ec2/traffic-mirror-filter-rule",
+  version: "2026.03.19.1",
+  globalArguments: GlobalArgsSchema,
+  inputsSchema: InputsSchema,
+  resources: {
+    state: {
+      description: "EC2 TrafficMirrorFilterRule resource state",
+      schema: StateSchema,
+      lifetime: "infinite",
+      garbageCollection: 10,
+    },
+  },
+  methods: {
+    create: {
+      description: "Create a EC2 TrafficMirrorFilterRule",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const desiredState: Record<string, unknown> = {};
+        for (const [key, value] of Object.entries(g)) {
+          if (key === "name") continue;
+          if (value !== undefined) desiredState[key] = value;
+        }
+        const result = await createResource(
+          "AWS::EC2::TrafficMirrorFilterRule",
+          desiredState,
+        ) as StateData;
+        const instanceName = g.name?.toString() ?? "current";
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    get: {
+      description: "Get a EC2 TrafficMirrorFilterRule",
+      arguments: z.object({
+        identifier: z.string().describe(
+          "The primary identifier of the EC2 TrafficMirrorFilterRule",
+        ),
+      }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const result = await readResource(
+          "AWS::EC2::TrafficMirrorFilterRule",
+          args.identifier,
+        ) as StateData;
+        const instanceName = context.globalArgs.name?.toString() ??
+          args.identifier;
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    update: {
+      description: "Update a EC2 TrafficMirrorFilterRule",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const instanceName = g.name?.toString() ?? "current";
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          instanceName,
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        const identifier = existing.TrafficMirrorFilterRuleId?.toString();
+        if (!identifier) {
+          throw new Error("No identifier found in existing state");
+        }
+        const currentState = await readResource(
+          "AWS::EC2::TrafficMirrorFilterRule",
+          identifier,
+        ) as StateData;
+        const desiredState: Record<string, unknown> = { ...currentState };
+        for (const [key, value] of Object.entries(g)) {
+          if (key === "name") continue;
+          if (value !== undefined) desiredState[key] = value;
+        }
+        const result = await updateResource(
+          "AWS::EC2::TrafficMirrorFilterRule",
+          identifier,
+          currentState,
+          desiredState,
+          ["TrafficMirrorFilterId"],
+        );
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    delete: {
+      description: "Delete a EC2 TrafficMirrorFilterRule",
+      arguments: z.object({
+        identifier: z.string().describe(
+          "The primary identifier of the EC2 TrafficMirrorFilterRule",
+        ),
+      }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const { existed } = await deleteResource(
+          "AWS::EC2::TrafficMirrorFilterRule",
+          args.identifier,
+        );
+        const instanceName = context.globalArgs.name?.toString() ??
+          args.identifier;
+        const handle = await context.writeResource("state", instanceName, {
+          identifier: args.identifier,
+          existed,
+          status: existed ? "deleted" : "not_found",
+          deletedAt: new Date().toISOString(),
+        });
+        return { dataHandles: [handle] };
+      },
+    },
+    sync: {
+      description: "Sync EC2 TrafficMirrorFilterRule state from AWS",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const instanceName = g.name?.toString() ?? "current";
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          instanceName,
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        const identifier = existing.TrafficMirrorFilterRuleId?.toString();
+        if (!identifier) {
+          throw new Error("No identifier found in existing state");
+        }
+        try {
+          const result = await readResource(
+            "AWS::EC2::TrafficMirrorFilterRule",
+            identifier,
+          ) as StateData;
+          const handle = await context.writeResource(
+            "state",
+            instanceName,
+            result,
+          );
+          return { dataHandles: [handle] };
+        } catch (error: unknown) {
+          if (isResourceNotFoundError(error)) {
+            const handle = await context.writeResource("state", instanceName, {
+              identifier,
+              status: "not_found",
+              syncedAt: new Date().toISOString(),
+            });
+            return { dataHandles: [handle] };
+          }
+          throw error;
+        }
+      },
+    },
+  },
+};

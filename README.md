@@ -21,10 +21,12 @@ Official extensions for [swamp](https://github.com/systeminit/swamp).
 
 | Extension                                      | Description                         |
 | ---------------------------------------------- | ----------------------------------- |
+| [`@swamp/aws/*`](model/aws/)                   | AWS infrastructure models           |
 | [`@swamp/hetzner-cloud`](model/hetzner-cloud/) | Hetzner Cloud infrastructure models |
 | [`@swamp/digitalocean`](model/digitalocean/)   | DigitalOcean infrastructure models  |
 
-These are auto-generated from provider OpenAPI specs. See
+AWS models are published per-service (e.g., `@swamp/aws/ec2`, `@swamp/aws/s3`).
+All model extensions are auto-generated from provider schemas. See
 [Code Generation](#code-generation) for how to regenerate them.
 
 ## Installation
@@ -46,6 +48,10 @@ swamp extension pull @swamp/gcs-datastore
 # Model extensions
 swamp extension pull @swamp/hetzner-cloud
 swamp extension pull @swamp/digitalocean
+swamp extension pull @swamp/aws/ec2
+swamp extension pull @swamp/aws/s3
+swamp extension pull @swamp/aws/lambda
+# ... and ~249 other AWS services
 ```
 
 ## Usage
@@ -143,6 +149,8 @@ with shared library code in `_lib/`. They export a `datastore` object with
 service factories. See `datastore/s3/` for the canonical example.
 
 **Model extensions** under `model/` are auto-generated — never edit by hand.
+AWS models are structured as `model/aws/<service>/` (one directory per service,
+~249 services). Hetzner and DigitalOcean each have a single directory.
 
 ### Running Checks
 
@@ -158,18 +166,26 @@ deno install --frozen
 
 ### Code Generation
 
-Model extensions are regenerated from provider OpenAPI specs:
+Model extensions are regenerated from provider schemas:
 
 ```bash
 cd codegen
+deno task fetch-schema:aws
 deno task fetch-schema:hetzner
 deno task fetch-schema:digitalocean
+deno task generate:aws
 deno task generate:hetzner
 deno task generate:digitalocean
 ```
 
-Generation is idempotent — versions only bump when content changes. Design
-documents for each provider are in `codegen/designs/`.
+AWS supports service filtering: `deno task generate:aws ec2 s3 lambda`
+
+Generation is idempotent — versions only bump when content changes.
+
+Design documents explain how each provider's schema is mapped to swamp models:
+- [AWS](codegen/designs/aws.md)
+- [Hetzner Cloud](codegen/designs/hetzner.md)
+- [DigitalOcean](codegen/designs/digitalocean.md)
 
 ## Publishing
 

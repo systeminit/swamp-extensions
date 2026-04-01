@@ -1,0 +1,19 @@
+# Auto-generated manifest. Re-generate with the appropriate deno task.
+manifestVersion: 1
+name: "@swamp/aws/codestarconnections"
+version: "2026.03.19.1"
+description: "AWS CODESTARCONNECTIONS infrastructure models"
+labels:
+  - aws
+  - codestarconnections
+  - cloud
+  - infrastructure
+releaseNotes: |
+  - Updated: connection, repository_link, sync_configuration
+models:
+  - connection.ts
+  - repository_link.ts
+  - sync_configuration.ts
+additionalFiles:
+  - LICENSE.txt
+  - README.md

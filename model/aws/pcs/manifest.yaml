@@ -1,0 +1,19 @@
+# Auto-generated manifest. Re-generate with the appropriate deno task.
+manifestVersion: 1
+name: "@swamp/aws/pcs"
+version: "2026.03.25.1"
+description: "AWS PCS infrastructure models"
+labels:
+  - aws
+  - pcs
+  - cloud
+  - infrastructure
+releaseNotes: |
+  - Updated: cluster
+models:
+  - cluster.ts
+  - compute_node_group.ts
+  - queue.ts
+additionalFiles:
+  - LICENSE.txt
+  - README.md

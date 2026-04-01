@@ -1,0 +1,400 @@
+// Auto-generated extension model for @swamp/aws/imagebuilder/container-recipe
+// Do not edit manually. Re-generate with: deno task generate:aws
+
+// deno-lint-ignore-file no-explicit-any
+
+import { z } from "zod";
+import {
+  createResource,
+  deleteResource,
+  isResourceNotFoundError,
+  readResource,
+  updateResource,
+} from "./_lib/aws.ts";
+
+export const ComponentParameterSchema = z.object({
+  Name: z.string().describe("The name of the component parameter to set."),
+  Value: z.array(z.string()).describe(
+    "Sets the value for the named component parameter.",
+  ),
+});
+
+export const ComponentConfigurationSchema = z.object({
+  ComponentArn: z.string().describe(
+    "The Amazon Resource Name (ARN) of the component.",
+  ).optional(),
+  Parameters: z.array(ComponentParameterSchema).describe(
+    "A group of parameter settings that are used to configure the component for a specific recipe.",
+  ).optional(),
+});
+
+export const EbsInstanceBlockDeviceSpecificationSchema = z.object({
+  Encrypted: z.boolean().describe("Use to configure device encryption.")
+    .optional(),
+  DeleteOnTermination: z.boolean().describe(
+    "Use to configure delete on termination of the associated device.",
+  ).optional(),
+  Iops: z.number().int().describe("Use to configure device IOPS.").optional(),
+  KmsKeyId: z.string().describe(
+    "Use to configure the KMS key to use when encrypting the device.",
+  ).optional(),
+  SnapshotId: z.string().describe(
+    "The snapshot that defines the device contents.",
+  ).optional(),
+  Throughput: z.number().int().describe(
+    "For GP3 volumes only - The throughput in MiB/s that the volume supports.",
+  ).optional(),
+  VolumeSize: z.number().int().describe(
+    "Use to override the device's volume size.",
+  ).optional(),
+  VolumeType: z.enum(["standard", "io1", "io2", "gp2", "gp3", "sc1", "st1"])
+    .describe("Use to override the device's volume type.").optional(),
+});
+
+export const InstanceBlockDeviceMappingSchema = z.object({
+  DeviceName: z.string().describe("The device to which these mappings apply.")
+    .optional(),
+  VirtualName: z.string().describe("Use to manage instance ephemeral devices.")
+    .optional(),
+  NoDevice: z.string().describe(
+    "Use to remove a mapping from the parent image.",
+  ).optional(),
+  Ebs: EbsInstanceBlockDeviceSpecificationSchema.describe(
+    "Use to manage Amazon EBS-specific configuration for this mapping.",
+  ).optional(),
+});
+
+const GlobalArgsSchema = z.object({
+  name: z.string().describe(
+    "Instance name for this resource (used as the unique identifier in the factory pattern)",
+  ),
+  Name: z.string().describe("The name of the container recipe.").optional(),
+  Description: z.string().describe("The description of the container recipe.")
+    .optional(),
+  Version: z.string().describe(
+    "The semantic version of the container recipe (..).",
+  ).optional(),
+  Components: z.array(ComponentConfigurationSchema).describe(
+    "Components for build and test that are included in the container recipe.",
+  ).optional(),
+  InstanceConfiguration: z.object({
+    Image: z.string().describe(
+      "The AMI ID to use as the base image for a container build and test instance. If not specified, Image Builder will use the appropriate ECS-optimized AMI as a base image.",
+    ).optional(),
+    BlockDeviceMappings: z.array(InstanceBlockDeviceMappingSchema).describe(
+      "Defines the block devices to attach for building an instance from this Image Builder AMI.",
+    ).optional(),
+  }).describe(
+    "A group of options that can be used to configure an instance for building and testing container images.",
+  ).optional(),
+  DockerfileTemplateData: z.string().describe(
+    "Dockerfiles are text documents that are used to build Docker containers, and ensure that they contain all of the elements required by the application running inside. The template data consists of contextual variables where Image Builder places build information or scripts, based on your container image recipe.",
+  ).optional(),
+  DockerfileTemplateUri: z.string().describe(
+    "The S3 URI for the Dockerfile that will be used to build your container image.",
+  ).optional(),
+  PlatformOverride: z.enum(["Windows", "Linux"]).describe(
+    "Specifies the operating system platform when you use a custom source image.",
+  ).optional(),
+  ContainerType: z.enum(["DOCKER"]).describe(
+    "Specifies the type of container, such as Docker.",
+  ).optional(),
+  ImageOsVersionOverride: z.string().describe(
+    "Specifies the operating system version for the source image.",
+  ).optional(),
+  TargetRepository: z.object({
+    Service: z.enum(["ECR"]).describe(
+      "Specifies the service in which this image was registered.",
+    ).optional(),
+    RepositoryName: z.string().describe(
+      "The name of the container repository where the output container image is stored. This name is prefixed by the repository location.",
+    ).optional(),
+  }).describe("The destination repository for the container image.").optional(),
+  KmsKeyId: z.string().describe(
+    "Identifies which KMS key is used to encrypt the container image.",
+  ).optional(),
+  ParentImage: z.string().describe("The source image for the container recipe.")
+    .optional(),
+  WorkingDirectory: z.string().describe(
+    "The working directory to be used during build and test workflows.",
+  ).optional(),
+  Tags: z.record(z.string(), z.string()).describe(
+    "Tags that are attached to the container recipe.",
+  ).optional(),
+});
+
+const StateSchema = z.object({
+  Arn: z.string(),
+  Name: z.string().optional(),
+  Description: z.string().optional(),
+  Version: z.string().optional(),
+  Components: z.array(ComponentConfigurationSchema).optional(),
+  InstanceConfiguration: z.object({
+    Image: z.string(),
+    BlockDeviceMappings: z.array(InstanceBlockDeviceMappingSchema),
+  }).optional(),
+  DockerfileTemplateData: z.string().optional(),
+  DockerfileTemplateUri: z.string().optional(),
+  PlatformOverride: z.string().optional(),
+  ContainerType: z.string().optional(),
+  ImageOsVersionOverride: z.string().optional(),
+  TargetRepository: z.object({
+    Service: z.string(),
+    RepositoryName: z.string(),
+  }).optional(),
+  KmsKeyId: z.string().optional(),
+  ParentImage: z.string().optional(),
+  WorkingDirectory: z.string().optional(),
+  Tags: z.record(z.string(), z.unknown()).optional(),
+  LatestVersion: z.object({
+    Arn: z.string(),
+    Major: z.string(),
+    Minor: z.string(),
+    Patch: z.string(),
+  }).optional(),
+}).passthrough();
+
+type StateData = z.infer<typeof StateSchema>;
+
+const InputsSchema = z.object({
+  name: z.string().optional(),
+  Name: z.string().describe("The name of the container recipe.").optional(),
+  Description: z.string().describe("The description of the container recipe.")
+    .optional(),
+  Version: z.string().describe(
+    "The semantic version of the container recipe (..).",
+  ).optional(),
+  Components: z.array(ComponentConfigurationSchema).describe(
+    "Components for build and test that are included in the container recipe.",
+  ).optional(),
+  InstanceConfiguration: z.object({
+    Image: z.string().describe(
+      "The AMI ID to use as the base image for a container build and test instance. If not specified, Image Builder will use the appropriate ECS-optimized AMI as a base image.",
+    ).optional(),
+    BlockDeviceMappings: z.array(InstanceBlockDeviceMappingSchema).describe(
+      "Defines the block devices to attach for building an instance from this Image Builder AMI.",
+    ).optional(),
+  }).describe(
+    "A group of options that can be used to configure an instance for building and testing container images.",
+  ).optional(),
+  DockerfileTemplateData: z.string().describe(
+    "Dockerfiles are text documents that are used to build Docker containers, and ensure that they contain all of the elements required by the application running inside. The template data consists of contextual variables where Image Builder places build information or scripts, based on your container image recipe.",
+  ).optional(),
+  DockerfileTemplateUri: z.string().describe(
+    "The S3 URI for the Dockerfile that will be used to build your container image.",
+  ).optional(),
+  PlatformOverride: z.enum(["Windows", "Linux"]).describe(
+    "Specifies the operating system platform when you use a custom source image.",
+  ).optional(),
+  ContainerType: z.enum(["DOCKER"]).describe(
+    "Specifies the type of container, such as Docker.",
+  ).optional(),
+  ImageOsVersionOverride: z.string().describe(
+    "Specifies the operating system version for the source image.",
+  ).optional(),
+  TargetRepository: z.object({
+    Service: z.enum(["ECR"]).describe(
+      "Specifies the service in which this image was registered.",
+    ).optional(),
+    RepositoryName: z.string().describe(
+      "The name of the container repository where the output container image is stored. This name is prefixed by the repository location.",
+    ).optional(),
+  }).describe("The destination repository for the container image.").optional(),
+  KmsKeyId: z.string().describe(
+    "Identifies which KMS key is used to encrypt the container image.",
+  ).optional(),
+  ParentImage: z.string().describe("The source image for the container recipe.")
+    .optional(),
+  WorkingDirectory: z.string().describe(
+    "The working directory to be used during build and test workflows.",
+  ).optional(),
+  Tags: z.record(z.string(), z.string()).describe(
+    "Tags that are attached to the container recipe.",
+  ).optional(),
+});
+
+export const model = {
+  type: "@swamp/aws/imagebuilder/container-recipe",
+  version: "2026.03.19.1",
+  globalArguments: GlobalArgsSchema,
+  inputsSchema: InputsSchema,
+  resources: {
+    state: {
+      description: "ImageBuilder ContainerRecipe resource state",
+      schema: StateSchema,
+      lifetime: "infinite",
+      garbageCollection: 10,
+    },
+  },
+  methods: {
+    create: {
+      description: "Create a ImageBuilder ContainerRecipe",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const desiredState: Record<string, unknown> = {};
+        for (const [key, value] of Object.entries(g)) {
+          if (key === "name") continue;
+          if (value !== undefined) desiredState[key] = value;
+        }
+        const result = await createResource(
+          "AWS::ImageBuilder::ContainerRecipe",
+          desiredState,
+        ) as StateData;
+        const instanceName = g.name?.toString() ?? "current";
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    get: {
+      description: "Get a ImageBuilder ContainerRecipe",
+      arguments: z.object({
+        identifier: z.string().describe(
+          "The primary identifier of the ImageBuilder ContainerRecipe",
+        ),
+      }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const result = await readResource(
+          "AWS::ImageBuilder::ContainerRecipe",
+          args.identifier,
+        ) as StateData;
+        const instanceName = context.globalArgs.name?.toString() ??
+          args.identifier;
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    update: {
+      description: "Update a ImageBuilder ContainerRecipe",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const instanceName = g.name?.toString() ?? "current";
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          instanceName,
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        const identifier = existing.Arn?.toString();
+        if (!identifier) {
+          throw new Error("No identifier found in existing state");
+        }
+        const currentState = await readResource(
+          "AWS::ImageBuilder::ContainerRecipe",
+          identifier,
+        ) as StateData;
+        const desiredState: Record<string, unknown> = { ...currentState };
+        for (const [key, value] of Object.entries(g)) {
+          if (key === "name") continue;
+          if (value !== undefined) desiredState[key] = value;
+        }
+        const result = await updateResource(
+          "AWS::ImageBuilder::ContainerRecipe",
+          identifier,
+          currentState,
+          desiredState,
+          [
+            "Name",
+            "Version",
+            "ContainerType",
+            "TargetRepository",
+            "InstanceConfiguration",
+            "ParentImage",
+            "Description",
+            "DockerfileTemplateUri",
+            "DockerfileTemplateData",
+            "ImageOsVersionOverride",
+            "KmsKeyId",
+            "PlatformOverride",
+            "WorkingDirectory",
+            "Components",
+          ],
+        );
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    delete: {
+      description: "Delete a ImageBuilder ContainerRecipe",
+      arguments: z.object({
+        identifier: z.string().describe(
+          "The primary identifier of the ImageBuilder ContainerRecipe",
+        ),
+      }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const { existed } = await deleteResource(
+          "AWS::ImageBuilder::ContainerRecipe",
+          args.identifier,
+        );
+        const instanceName = context.globalArgs.name?.toString() ??
+          args.identifier;
+        const handle = await context.writeResource("state", instanceName, {
+          identifier: args.identifier,
+          existed,
+          status: existed ? "deleted" : "not_found",
+          deletedAt: new Date().toISOString(),
+        });
+        return { dataHandles: [handle] };
+      },
+    },
+    sync: {
+      description: "Sync ImageBuilder ContainerRecipe state from AWS",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const instanceName = g.name?.toString() ?? "current";
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          instanceName,
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        const identifier = existing.Arn?.toString();
+        if (!identifier) {
+          throw new Error("No identifier found in existing state");
+        }
+        try {
+          const result = await readResource(
+            "AWS::ImageBuilder::ContainerRecipe",
+            identifier,
+          ) as StateData;
+          const handle = await context.writeResource(
+            "state",
+            instanceName,
+            result,
+          );
+          return { dataHandles: [handle] };
+        } catch (error: unknown) {
+          if (isResourceNotFoundError(error)) {
+            const handle = await context.writeResource("state", instanceName, {
+              identifier,
+              status: "not_found",
+              syncedAt: new Date().toISOString(),
+            });
+            return { dataHandles: [handle] };
+          }
+          throw error;
+        }
+      },
+    },
+  },
+};

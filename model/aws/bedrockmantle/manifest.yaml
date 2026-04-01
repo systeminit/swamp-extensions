@@ -1,0 +1,17 @@
+# Auto-generated manifest. Re-generate with the appropriate deno task.
+manifestVersion: 1
+name: "@swamp/aws/bedrockmantle"
+version: "2026.03.19.1"
+description: "AWS BEDROCKMANTLE infrastructure models"
+labels:
+  - aws
+  - bedrockmantle
+  - cloud
+  - infrastructure
+releaseNotes: |
+  - Updated: project
+models:
+  - project.ts
+additionalFiles:
+  - LICENSE.txt
+  - README.md

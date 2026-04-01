@@ -1,7 +1,7 @@
 {
   "version": "5",
   "specifiers": {
-    "npm:zod@4": "4.3.6"
+    "npm:zod@4.3.6": "4.3.6"
   },
   "npm": {
     "zod@4.3.6": {
@@ -10,7 +10,7 @@
   },
   "workspace": {
     "dependencies": [
-      "npm:zod@4"
+      "npm:zod@4.3.6"
     ]
   }
 }

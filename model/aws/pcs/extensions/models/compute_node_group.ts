@@ -1,0 +1,362 @@
+// Auto-generated extension model for @swamp/aws/pcs/compute-node-group
+// Do not edit manually. Re-generate with: deno task generate:aws
+
+// deno-lint-ignore-file no-explicit-any
+
+import { z } from "zod";
+import {
+  createResource,
+  deleteResource,
+  isResourceNotFoundError,
+  readResource,
+  updateResource,
+} from "./_lib/aws.ts";
+
+export const SlurmCustomSettingSchema = z.object({
+  ParameterValue: z.string().describe(
+    "The value for the configured Slurm setting.",
+  ),
+  ParameterName: z.string().describe(
+    "AWS PCS supports configuration of the following Slurm parameters for compute node groups: Weight and RealMemory.",
+  ),
+});
+
+export const InstanceConfigSchema = z.object({
+  InstanceType: z.string().describe(
+    "The EC2 instance type that AWS PCS can provision in the compute node group.",
+  ).optional(),
+});
+
+const GlobalArgsSchema = z.object({
+  name: z.string().describe(
+    "Instance name for this resource (used as the unique identifier in the factory pattern)",
+  ),
+  ClusterId: z.string().describe(
+    "The ID of the cluster of the compute node group.",
+  ),
+  SpotOptions: z.object({
+    AllocationStrategy: z.enum([
+      "lowest-price",
+      "capacity-optimized",
+      "price-capacity-optimized",
+    ]).describe(
+      "The Amazon EC2 allocation strategy AWS PCS uses to provision EC2 instances. AWS PCS supports lowest price, capacity optimized, and price capacity optimized. If you don't provide this option, it defaults to price capacity optimized.",
+    ).optional(),
+  }).describe(
+    "Additional configuration when you specify SPOT as the purchase option.",
+  ).optional(),
+  SlurmConfiguration: z.object({
+    SlurmCustomSettings: z.array(SlurmCustomSettingSchema).describe(
+      "Additional Slurm-specific configuration that directly maps to Slurm settings.",
+    ).optional(),
+  }).describe("Additional options related to the Slurm scheduler.").optional(),
+  SubnetIds: z.array(z.string()).describe(
+    "The list of subnet IDs where instances are provisioned by the compute node group. The subnets must be in the same VPC as the cluster.",
+  ),
+  Name: z.string().describe("The name that identifies the compute node group.")
+    .optional(),
+  ScalingConfiguration: z.object({
+    MaxInstanceCount: z.number().int().min(0).describe(
+      "The upper bound of the number of instances allowed in the compute fleet.",
+    ),
+    MinInstanceCount: z.number().int().min(0).describe(
+      "The lower bound of the number of instances allowed in the compute fleet.",
+    ),
+  }).describe(
+    "Specifies the boundaries of the compute node group auto scaling.",
+  ),
+  InstanceConfigs: z.array(InstanceConfigSchema).describe(
+    "A list of EC2 instance configurations that AWS PCS can provision in the compute node group.",
+  ),
+  PurchaseOption: z.enum(["ONDEMAND", "SPOT", "CAPACITY_BLOCK"]).describe(
+    "Specifies how EC2 instances are purchased on your behalf. AWS PCS supports On-Demand, Spot and Capacity Block instances. For more information, see Instance purchasing options in the Amazon Elastic Compute Cloud User Guide. If you don't provide this option, it defaults to On-Demand.",
+  ).optional(),
+  CustomLaunchTemplate: z.object({
+    Version: z.string().describe(
+      "The version of the EC2 launch template to use to provision instances.",
+    ),
+    TemplateId: z.string().describe(
+      "The ID of the EC2 launch template to use to provision instances.",
+    ).optional(),
+  }).describe(
+    "An Amazon EC2 launch template AWS PCS uses to launch compute nodes.",
+  ),
+  AmiId: z.string().regex(new RegExp("^ami-[a-z0-9]+$")).describe(
+    "The ID of the Amazon Machine Image (AMI) that AWS PCS uses to launch instances. If not provided, AWS PCS uses the AMI ID specified in the custom launch template.",
+  ).optional(),
+  IamInstanceProfileArn: z.string().regex(
+    new RegExp(
+      "^arn:aws([a-zA-Z-]{0,10})?:iam::[0-9]{12}:instance-profile/.{1,128}$",
+    ),
+  ).describe(
+    "The Amazon Resource Name (ARN) of the IAM instance profile used to pass an IAM role when launching EC2 instances. The role contained in your instance profile must have pcs:RegisterComputeNodeGroupInstance permissions attached to provision instances correctly.",
+  ),
+});
+
+const StateSchema = z.object({
+  Status: z.string().optional(),
+  ClusterId: z.string().optional(),
+  ErrorInfo: z.array(z.object({
+    Message: z.string(),
+    Code: z.string(),
+  })).optional(),
+  SpotOptions: z.object({
+    AllocationStrategy: z.string(),
+  }).optional(),
+  SlurmConfiguration: z.object({
+    SlurmCustomSettings: z.array(SlurmCustomSettingSchema),
+  }).optional(),
+  SubnetIds: z.array(z.string()).optional(),
+  Name: z.string().optional(),
+  ScalingConfiguration: z.object({
+    MaxInstanceCount: z.number(),
+    MinInstanceCount: z.number(),
+  }).optional(),
+  InstanceConfigs: z.array(InstanceConfigSchema).optional(),
+  Id: z.string().optional(),
+  PurchaseOption: z.string().optional(),
+  Arn: z.string(),
+  CustomLaunchTemplate: z.object({
+    Version: z.string(),
+    TemplateId: z.string(),
+  }).optional(),
+  AmiId: z.string().optional(),
+  IamInstanceProfileArn: z.string().optional(),
+}).passthrough();
+
+type StateData = z.infer<typeof StateSchema>;
+
+const InputsSchema = z.object({
+  name: z.string().optional(),
+  ClusterId: z.string().describe(
+    "The ID of the cluster of the compute node group.",
+  ).optional(),
+  SpotOptions: z.object({
+    AllocationStrategy: z.enum([
+      "lowest-price",
+      "capacity-optimized",
+      "price-capacity-optimized",
+    ]).describe(
+      "The Amazon EC2 allocation strategy AWS PCS uses to provision EC2 instances. AWS PCS supports lowest price, capacity optimized, and price capacity optimized. If you don't provide this option, it defaults to price capacity optimized.",
+    ).optional(),
+  }).describe(
+    "Additional configuration when you specify SPOT as the purchase option.",
+  ).optional(),
+  SlurmConfiguration: z.object({
+    SlurmCustomSettings: z.array(SlurmCustomSettingSchema).describe(
+      "Additional Slurm-specific configuration that directly maps to Slurm settings.",
+    ).optional(),
+  }).describe("Additional options related to the Slurm scheduler.").optional(),
+  SubnetIds: z.array(z.string()).describe(
+    "The list of subnet IDs where instances are provisioned by the compute node group. The subnets must be in the same VPC as the cluster.",
+  ).optional(),
+  Name: z.string().describe("The name that identifies the compute node group.")
+    .optional(),
+  ScalingConfiguration: z.object({
+    MaxInstanceCount: z.number().int().min(0).describe(
+      "The upper bound of the number of instances allowed in the compute fleet.",
+    ).optional(),
+    MinInstanceCount: z.number().int().min(0).describe(
+      "The lower bound of the number of instances allowed in the compute fleet.",
+    ).optional(),
+  }).describe(
+    "Specifies the boundaries of the compute node group auto scaling.",
+  ).optional(),
+  InstanceConfigs: z.array(InstanceConfigSchema).describe(
+    "A list of EC2 instance configurations that AWS PCS can provision in the compute node group.",
+  ).optional(),
+  PurchaseOption: z.enum(["ONDEMAND", "SPOT", "CAPACITY_BLOCK"]).describe(
+    "Specifies how EC2 instances are purchased on your behalf. AWS PCS supports On-Demand, Spot and Capacity Block instances. For more information, see Instance purchasing options in the Amazon Elastic Compute Cloud User Guide. If you don't provide this option, it defaults to On-Demand.",
+  ).optional(),
+  CustomLaunchTemplate: z.object({
+    Version: z.string().describe(
+      "The version of the EC2 launch template to use to provision instances.",
+    ).optional(),
+    TemplateId: z.string().describe(
+      "The ID of the EC2 launch template to use to provision instances.",
+    ).optional(),
+  }).describe(
+    "An Amazon EC2 launch template AWS PCS uses to launch compute nodes.",
+  ).optional(),
+  AmiId: z.string().regex(new RegExp("^ami-[a-z0-9]+$")).describe(
+    "The ID of the Amazon Machine Image (AMI) that AWS PCS uses to launch instances. If not provided, AWS PCS uses the AMI ID specified in the custom launch template.",
+  ).optional(),
+  IamInstanceProfileArn: z.string().regex(
+    new RegExp(
+      "^arn:aws([a-zA-Z-]{0,10})?:iam::[0-9]{12}:instance-profile/.{1,128}$",
+    ),
+  ).describe(
+    "The Amazon Resource Name (ARN) of the IAM instance profile used to pass an IAM role when launching EC2 instances. The role contained in your instance profile must have pcs:RegisterComputeNodeGroupInstance permissions attached to provision instances correctly.",
+  ).optional(),
+});
+
+export const model = {
+  type: "@swamp/aws/pcs/compute-node-group",
+  version: "2026.03.19.1",
+  globalArguments: GlobalArgsSchema,
+  inputsSchema: InputsSchema,
+  resources: {
+    state: {
+      description: "PCS ComputeNodeGroup resource state",
+      schema: StateSchema,
+      lifetime: "infinite",
+      garbageCollection: 10,
+    },
+  },
+  methods: {
+    create: {
+      description: "Create a PCS ComputeNodeGroup",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const desiredState: Record<string, unknown> = {};
+        for (const [key, value] of Object.entries(g)) {
+          if (key === "name") continue;
+          if (value !== undefined) desiredState[key] = value;
+        }
+        const result = await createResource(
+          "AWS::PCS::ComputeNodeGroup",
+          desiredState,
+        ) as StateData;
+        const instanceName = g.name?.toString() ?? "current";
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    get: {
+      description: "Get a PCS ComputeNodeGroup",
+      arguments: z.object({
+        identifier: z.string().describe(
+          "The primary identifier of the PCS ComputeNodeGroup",
+        ),
+      }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const result = await readResource(
+          "AWS::PCS::ComputeNodeGroup",
+          args.identifier,
+        ) as StateData;
+        const instanceName = context.globalArgs.name?.toString() ??
+          args.identifier;
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    update: {
+      description: "Update a PCS ComputeNodeGroup",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const instanceName = g.name?.toString() ?? "current";
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          instanceName,
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        const identifier = existing.Arn?.toString();
+        if (!identifier) {
+          throw new Error("No identifier found in existing state");
+        }
+        const currentState = await readResource(
+          "AWS::PCS::ComputeNodeGroup",
+          identifier,
+        ) as StateData;
+        const desiredState: Record<string, unknown> = { ...currentState };
+        for (const [key, value] of Object.entries(g)) {
+          if (key === "name") continue;
+          if (value !== undefined) desiredState[key] = value;
+        }
+        const result = await updateResource(
+          "AWS::PCS::ComputeNodeGroup",
+          identifier,
+          currentState,
+          desiredState,
+          ["Name", "ClusterId", "InstanceConfigs"],
+        );
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    delete: {
+      description: "Delete a PCS ComputeNodeGroup",
+      arguments: z.object({
+        identifier: z.string().describe(
+          "The primary identifier of the PCS ComputeNodeGroup",
+        ),
+      }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const { existed } = await deleteResource(
+          "AWS::PCS::ComputeNodeGroup",
+          args.identifier,
+        );
+        const instanceName = context.globalArgs.name?.toString() ??
+          args.identifier;
+        const handle = await context.writeResource("state", instanceName, {
+          identifier: args.identifier,
+          existed,
+          status: existed ? "deleted" : "not_found",
+          deletedAt: new Date().toISOString(),
+        });
+        return { dataHandles: [handle] };
+      },
+    },
+    sync: {
+      description: "Sync PCS ComputeNodeGroup state from AWS",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const instanceName = g.name?.toString() ?? "current";
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          instanceName,
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        const identifier = existing.Arn?.toString();
+        if (!identifier) {
+          throw new Error("No identifier found in existing state");
+        }
+        try {
+          const result = await readResource(
+            "AWS::PCS::ComputeNodeGroup",
+            identifier,
+          ) as StateData;
+          const handle = await context.writeResource(
+            "state",
+            instanceName,
+            result,
+          );
+          return { dataHandles: [handle] };
+        } catch (error: unknown) {
+          if (isResourceNotFoundError(error)) {
+            const handle = await context.writeResource("state", instanceName, {
+              identifier,
+              status: "not_found",
+              syncedAt: new Date().toISOString(),
+            });
+            return { dataHandles: [handle] };
+          }
+          throw error;
+        }
+      },
+    },
+  },
+};

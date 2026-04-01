@@ -1,0 +1,286 @@
+// Auto-generated extension model for @swamp/aws/observabilityadmin/organization-centralization-rule
+// Do not edit manually. Re-generate with: deno task generate:aws
+
+// deno-lint-ignore-file no-explicit-any
+
+import { z } from "zod";
+import {
+  createResource,
+  deleteResource,
+  isResourceNotFoundError,
+  readResource,
+  updateResource,
+} from "./_lib/aws.ts";
+
+export const SourceLogsConfigurationSchema = z.object({
+  LogGroupSelectionCriteria: z.string().min(1).max(2000).optional(),
+  DataSourceSelectionCriteria: z.string().min(1).max(2000).optional(),
+  EncryptedLogGroupStrategy: z.enum(["ALLOW", "SKIP"]),
+});
+
+export const CentralizationRuleSourceSchema = z.object({
+  Regions: z.array(z.string().min(1)),
+  Scope: z.string().min(1).max(2000).optional(),
+  SourceLogsConfiguration: SourceLogsConfigurationSchema.optional(),
+});
+
+export const LogsEncryptionConfigurationSchema = z.object({
+  EncryptionStrategy: z.enum(["CUSTOMER_MANAGED", "AWS_OWNED"]),
+  KmsKeyArn: z.string().min(1).max(1011).regex(
+    new RegExp(
+      "^arn:aws([a-z0-9\\-]+)?:([a-zA-Z0-9\\-]+):([a-z0-9\\-]+)?:([0-9]{12})?:(.+)$",
+    ),
+  ).optional(),
+  EncryptionConflictResolutionStrategy: z.enum(["ALLOW", "SKIP"]).optional(),
+});
+
+export const LogsBackupConfigurationSchema = z.object({
+  Region: z.string().min(1),
+  KmsKeyArn: z.string().min(1).max(1011).regex(
+    new RegExp(
+      "^arn:aws([a-z0-9\\-]+)?:([a-zA-Z0-9\\-]+):([a-z0-9\\-]+)?:([0-9]{12})?:(.+)$",
+    ),
+  ).optional(),
+});
+
+export const LogGroupNameConfigurationSchema = z.object({
+  LogGroupNamePattern: z.string().min(1).max(512).regex(
+    new RegExp(
+      "^(?:[\\._\\-/#A-Za-z0-9]+|\\$\\{[A-Za-z]+(?:\\.[A-Za-z]+){1,2}\\})+$",
+    ),
+  ),
+});
+
+export const DestinationLogsConfigurationSchema = z.object({
+  LogsEncryptionConfiguration: LogsEncryptionConfigurationSchema.optional(),
+  BackupConfiguration: LogsBackupConfigurationSchema.optional(),
+  LogGroupNameConfiguration: LogGroupNameConfigurationSchema.optional(),
+});
+
+export const CentralizationRuleDestinationSchema = z.object({
+  Region: z.string().min(1),
+  Account: z.string().min(12).max(12).regex(new RegExp("^[0-9]{12}$"))
+    .optional(),
+  DestinationLogsConfiguration: DestinationLogsConfigurationSchema.optional(),
+});
+
+export const TagSchema = z.object({
+  Key: z.string().min(1).max(128).describe(
+    "The key name of the tag. You can specify a value that is 1 to 128 Unicode characters in length and cannot be prefixed with aws:. You can use any of the following characters: the set of Unicode letters, digits, whitespace, _,., /, =, +, and -.",
+  ),
+  Value: z.string().min(0).max(256).describe(
+    "The value for the tag. You can specify a value that is 0 to 256 Unicode characters in length and cannot be prefixed with aws:. You can use any of the following characters: the set of Unicode letters, digits, whitespace, _,., /, =, +, and -.",
+  ),
+});
+
+const GlobalArgsSchema = z.object({
+  name: z.string().describe(
+    "Instance name for this resource (used as the unique identifier in the factory pattern)",
+  ),
+  RuleName: z.string().min(1).max(100).regex(new RegExp("^[0-9A-Za-z-]+$")),
+  Rule: z.object({
+    Source: CentralizationRuleSourceSchema,
+    Destination: CentralizationRuleDestinationSchema,
+  }),
+  Tags: z.array(TagSchema).describe(
+    "An array of key-value pairs to apply to this resource.",
+  ).optional(),
+});
+
+const StateSchema = z.object({
+  RuleName: z.string().optional(),
+  Rule: z.object({
+    Source: CentralizationRuleSourceSchema,
+    Destination: CentralizationRuleDestinationSchema,
+  }).optional(),
+  RuleArn: z.string(),
+  Tags: z.array(TagSchema).optional(),
+}).passthrough();
+
+type StateData = z.infer<typeof StateSchema>;
+
+const InputsSchema = z.object({
+  name: z.string().optional(),
+  RuleName: z.string().min(1).max(100).regex(new RegExp("^[0-9A-Za-z-]+$"))
+    .optional(),
+  Rule: z.object({
+    Source: CentralizationRuleSourceSchema.optional(),
+    Destination: CentralizationRuleDestinationSchema.optional(),
+  }).optional(),
+  Tags: z.array(TagSchema).describe(
+    "An array of key-value pairs to apply to this resource.",
+  ).optional(),
+});
+
+export const model = {
+  type: "@swamp/aws/observabilityadmin/organization-centralization-rule",
+  version: "2026.03.25.1",
+  globalArguments: GlobalArgsSchema,
+  inputsSchema: InputsSchema,
+  resources: {
+    state: {
+      description:
+        "ObservabilityAdmin OrganizationCentralizationRule resource state",
+      schema: StateSchema,
+      lifetime: "infinite",
+      garbageCollection: 10,
+    },
+  },
+  methods: {
+    create: {
+      description: "Create a ObservabilityAdmin OrganizationCentralizationRule",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const desiredState: Record<string, unknown> = {};
+        for (const [key, value] of Object.entries(g)) {
+          if (key === "name") continue;
+          if (value !== undefined) desiredState[key] = value;
+        }
+        const result = await createResource(
+          "AWS::ObservabilityAdmin::OrganizationCentralizationRule",
+          desiredState,
+        ) as StateData;
+        const instanceName = g.name?.toString() ?? "current";
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    get: {
+      description: "Get a ObservabilityAdmin OrganizationCentralizationRule",
+      arguments: z.object({
+        identifier: z.string().describe(
+          "The primary identifier of the ObservabilityAdmin OrganizationCentralizationRule",
+        ),
+      }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const result = await readResource(
+          "AWS::ObservabilityAdmin::OrganizationCentralizationRule",
+          args.identifier,
+        ) as StateData;
+        const instanceName = context.globalArgs.name?.toString() ??
+          args.identifier;
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    update: {
+      description: "Update a ObservabilityAdmin OrganizationCentralizationRule",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const instanceName = g.name?.toString() ?? "current";
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          instanceName,
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        const identifier = existing.RuleArn?.toString();
+        if (!identifier) {
+          throw new Error("No identifier found in existing state");
+        }
+        const currentState = await readResource(
+          "AWS::ObservabilityAdmin::OrganizationCentralizationRule",
+          identifier,
+        ) as StateData;
+        const desiredState: Record<string, unknown> = { ...currentState };
+        for (const [key, value] of Object.entries(g)) {
+          if (key === "name") continue;
+          if (value !== undefined) desiredState[key] = value;
+        }
+        const result = await updateResource(
+          "AWS::ObservabilityAdmin::OrganizationCentralizationRule",
+          identifier,
+          currentState,
+          desiredState,
+          ["RuleName"],
+        );
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    delete: {
+      description: "Delete a ObservabilityAdmin OrganizationCentralizationRule",
+      arguments: z.object({
+        identifier: z.string().describe(
+          "The primary identifier of the ObservabilityAdmin OrganizationCentralizationRule",
+        ),
+      }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const { existed } = await deleteResource(
+          "AWS::ObservabilityAdmin::OrganizationCentralizationRule",
+          args.identifier,
+        );
+        const instanceName = context.globalArgs.name?.toString() ??
+          args.identifier;
+        const handle = await context.writeResource("state", instanceName, {
+          identifier: args.identifier,
+          existed,
+          status: existed ? "deleted" : "not_found",
+          deletedAt: new Date().toISOString(),
+        });
+        return { dataHandles: [handle] };
+      },
+    },
+    sync: {
+      description:
+        "Sync ObservabilityAdmin OrganizationCentralizationRule state from AWS",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const instanceName = g.name?.toString() ?? "current";
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          instanceName,
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        const identifier = existing.RuleArn?.toString();
+        if (!identifier) {
+          throw new Error("No identifier found in existing state");
+        }
+        try {
+          const result = await readResource(
+            "AWS::ObservabilityAdmin::OrganizationCentralizationRule",
+            identifier,
+          ) as StateData;
+          const handle = await context.writeResource(
+            "state",
+            instanceName,
+            result,
+          );
+          return { dataHandles: [handle] };
+        } catch (error: unknown) {
+          if (isResourceNotFoundError(error)) {
+            const handle = await context.writeResource("state", instanceName, {
+              identifier,
+              status: "not_found",
+              syncedAt: new Date().toISOString(),
+            });
+            return { dataHandles: [handle] };
+          }
+          throw error;
+        }
+      },
+    },
+  },
+};

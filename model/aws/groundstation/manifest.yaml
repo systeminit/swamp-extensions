@@ -1,0 +1,20 @@
+# Auto-generated manifest. Re-generate with the appropriate deno task.
+manifestVersion: 1
+name: "@swamp/aws/groundstation"
+version: "2026.03.19.1"
+description: "AWS GROUNDSTATION infrastructure models"
+labels:
+  - aws
+  - groundstation
+  - cloud
+  - infrastructure
+releaseNotes: |
+  - Updated: config, dataflow_endpoint_group, dataflow_endpoint_group_v2, mission_profile
+models:
+  - config.ts
+  - dataflow_endpoint_group.ts
+  - dataflow_endpoint_group_v2.ts
+  - mission_profile.ts
+additionalFiles:
+  - LICENSE.txt
+  - README.md

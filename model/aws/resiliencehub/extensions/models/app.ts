@@ -1,0 +1,341 @@
+// Auto-generated extension model for @swamp/aws/resiliencehub/app
+// Do not edit manually. Re-generate with: deno task generate:aws
+
+// deno-lint-ignore-file no-explicit-any
+
+import { z } from "zod";
+import {
+  createResource,
+  deleteResource,
+  isResourceNotFoundError,
+  readResource,
+  updateResource,
+} from "./_lib/aws.ts";
+
+export const PhysicalResourceIdSchema = z.object({
+  AwsAccountId: z.string().regex(new RegExp("^[0-9]{12}$")).optional(),
+  AwsRegion: z.string().regex(
+    new RegExp("^[a-z]{2}-((iso[a-z]{0,1}-)|(gov-)){0,1}[a-z]+-[0-9]$"),
+  ).optional(),
+  Identifier: z.string().min(1).max(255),
+  Type: z.string().regex(new RegExp("Arn|Native")),
+});
+
+export const ResourceMappingSchema = z.object({
+  LogicalStackName: z.string().optional(),
+  MappingType: z.string().regex(new RegExp("CfnStack|Resource|Terraform|EKS")),
+  ResourceName: z.string().regex(
+    new RegExp("^[A-Za-z0-9][A-Za-z0-9_\\-]{1,59}$"),
+  ).optional(),
+  TerraformSourceName: z.string().optional(),
+  EksSourceName: z.string().optional(),
+  PhysicalResourceId: PhysicalResourceIdSchema,
+});
+
+export const EventSubscriptionSchema = z.object({
+  Name: z.string().max(256).describe(
+    "Unique name to identify an event subscription.",
+  ),
+  EventType: z.enum(["ScheduledAssessmentFailure", "DriftDetected"]).describe(
+    "The type of event you would like to subscribe and get notification for.",
+  ),
+  SnsTopicArn: z.string().regex(
+    new RegExp(
+      "^arn:(aws|aws-cn|aws-iso|aws-iso-[a-z]{1}|aws-us-gov):[A-Za-z0-9][A-Za-z0-9_/.-]{0,62}:([a-z]{2}-((iso[a-z]{0,1}-)|(gov-)){0,1}[a-z]+-[0-9]):[0-9]{12}:[A-Za-z0-9/][A-Za-z0-9:_/+.-]{0,1023}$",
+    ),
+  ).describe(
+    "Amazon Resource Name (ARN) of the Amazon Simple Notification Service topic.",
+  ).optional(),
+});
+
+const GlobalArgsSchema = z.object({
+  name: z.string().describe(
+    "Instance name for this resource (used as the unique identifier in the factory pattern)",
+  ),
+  Name: z.string().regex(new RegExp("^[A-Za-z0-9][A-Za-z0-9_\\-]{1,59}$"))
+    .describe("Name of the app."),
+  Description: z.string().min(0).max(500).describe("App description.")
+    .optional(),
+  ResiliencyPolicyArn: z.string().regex(
+    new RegExp(
+      "^arn:(aws|aws-cn|aws-iso|aws-iso-[a-z]{1}|aws-us-gov):[A-Za-z0-9][A-Za-z0-9_/.-]{0,62}:([a-z]{2}-((iso[a-z]{0,1}-)|(gov-)){0,1}[a-z]+-[0-9]):[0-9]{12}:[A-Za-z0-9][A-Za-z0-9:_/+=,@.-]{0,1023}$",
+    ),
+  ).describe("Amazon Resource Name (ARN) of the Resiliency Policy.").optional(),
+  Tags: z.record(z.string(), z.string().max(256)).optional(),
+  AppTemplateBody: z.string().min(0).max(409600).regex(
+    new RegExp("^[\\w\\s:,-\\.'\\/{}\\[\\]:\"]+$"),
+  ).describe("A string containing full ResilienceHub app template body."),
+  ResourceMappings: z.array(ResourceMappingSchema).describe(
+    "An array of ResourceMapping objects.",
+  ),
+  AppAssessmentSchedule: z.enum(["Disabled", "Daily"]).describe(
+    "Assessment execution schedule.",
+  ).optional(),
+  PermissionModel: z.object({
+    Type: z.enum(["LegacyIAMUser", "RoleBased"]).describe(
+      "Defines how AWS Resilience Hub scans your resources. It can scan for the resources by using a pre-existing role in your AWS account, or by using the credentials of the current IAM user.",
+    ),
+    InvokerRoleName: z.string().regex(
+      new RegExp(
+        "((\\u002F[\\u0021-\\u007E]+\\u002F){1,511})?[A-Za-z0-9+=,.@_/-]{1,64}",
+      ),
+    ).describe(
+      "Existing AWS IAM role name in the primary AWS account that will be assumed by AWS Resilience Hub Service Principle to obtain a read-only access to your application resources while running an assessment.",
+    ).optional(),
+    CrossAccountRoleArns: z.array(
+      z.string().regex(
+        new RegExp(
+          "arn:(aws|aws-cn|aws-iso|aws-iso-[a-z]{1}|aws-us-gov):iam::[0-9]{12}:role\\/(([\\u0021-\\u007E]+\\u002F){1,511})?[A-Za-z0-9+=,.@_/-]{1,64}$",
+        ),
+      ),
+    ).describe(
+      "Defines a list of role Amazon Resource Names (ARNs) to be used in other accounts. These ARNs are used for querying purposes while importing resources and assessing your application.",
+    ).optional(),
+  }).describe(
+    "Defines the roles and credentials that AWS Resilience Hub would use while creating the application, importing its resources, and running an assessment.",
+  ).optional(),
+  EventSubscriptions: z.array(EventSubscriptionSchema).describe(
+    "The list of events you would like to subscribe and get notification for.",
+  ).optional(),
+});
+
+const StateSchema = z.object({
+  Name: z.string().optional(),
+  Description: z.string().optional(),
+  AppArn: z.string(),
+  ResiliencyPolicyArn: z.string().optional(),
+  Tags: z.record(z.string(), z.unknown()).optional(),
+  AppTemplateBody: z.string().optional(),
+  ResourceMappings: z.array(ResourceMappingSchema).optional(),
+  AppAssessmentSchedule: z.string().optional(),
+  PermissionModel: z.object({
+    Type: z.string(),
+    InvokerRoleName: z.string(),
+    CrossAccountRoleArns: z.array(z.string()),
+  }).optional(),
+  EventSubscriptions: z.array(EventSubscriptionSchema).optional(),
+  DriftStatus: z.string().optional(),
+}).passthrough();
+
+type StateData = z.infer<typeof StateSchema>;
+
+const InputsSchema = z.object({
+  name: z.string().optional(),
+  Name: z.string().regex(new RegExp("^[A-Za-z0-9][A-Za-z0-9_\\-]{1,59}$"))
+    .describe("Name of the app.").optional(),
+  Description: z.string().min(0).max(500).describe("App description.")
+    .optional(),
+  ResiliencyPolicyArn: z.string().regex(
+    new RegExp(
+      "^arn:(aws|aws-cn|aws-iso|aws-iso-[a-z]{1}|aws-us-gov):[A-Za-z0-9][A-Za-z0-9_/.-]{0,62}:([a-z]{2}-((iso[a-z]{0,1}-)|(gov-)){0,1}[a-z]+-[0-9]):[0-9]{12}:[A-Za-z0-9][A-Za-z0-9:_/+=,@.-]{0,1023}$",
+    ),
+  ).describe("Amazon Resource Name (ARN) of the Resiliency Policy.").optional(),
+  Tags: z.record(z.string(), z.string().max(256)).optional(),
+  AppTemplateBody: z.string().min(0).max(409600).regex(
+    new RegExp("^[\\w\\s:,-\\.'\\/{}\\[\\]:\"]+$"),
+  ).describe("A string containing full ResilienceHub app template body.")
+    .optional(),
+  ResourceMappings: z.array(ResourceMappingSchema).describe(
+    "An array of ResourceMapping objects.",
+  ).optional(),
+  AppAssessmentSchedule: z.enum(["Disabled", "Daily"]).describe(
+    "Assessment execution schedule.",
+  ).optional(),
+  PermissionModel: z.object({
+    Type: z.enum(["LegacyIAMUser", "RoleBased"]).describe(
+      "Defines how AWS Resilience Hub scans your resources. It can scan for the resources by using a pre-existing role in your AWS account, or by using the credentials of the current IAM user.",
+    ).optional(),
+    InvokerRoleName: z.string().regex(
+      new RegExp(
+        "((\\u002F[\\u0021-\\u007E]+\\u002F){1,511})?[A-Za-z0-9+=,.@_/-]{1,64}",
+      ),
+    ).describe(
+      "Existing AWS IAM role name in the primary AWS account that will be assumed by AWS Resilience Hub Service Principle to obtain a read-only access to your application resources while running an assessment.",
+    ).optional(),
+    CrossAccountRoleArns: z.array(
+      z.string().regex(
+        new RegExp(
+          "arn:(aws|aws-cn|aws-iso|aws-iso-[a-z]{1}|aws-us-gov):iam::[0-9]{12}:role\\/(([\\u0021-\\u007E]+\\u002F){1,511})?[A-Za-z0-9+=,.@_/-]{1,64}$",
+        ),
+      ),
+    ).describe(
+      "Defines a list of role Amazon Resource Names (ARNs) to be used in other accounts. These ARNs are used for querying purposes while importing resources and assessing your application.",
+    ).optional(),
+  }).describe(
+    "Defines the roles and credentials that AWS Resilience Hub would use while creating the application, importing its resources, and running an assessment.",
+  ).optional(),
+  EventSubscriptions: z.array(EventSubscriptionSchema).describe(
+    "The list of events you would like to subscribe and get notification for.",
+  ).optional(),
+});
+
+export const model = {
+  type: "@swamp/aws/resiliencehub/app",
+  version: "2026.03.19.1",
+  globalArguments: GlobalArgsSchema,
+  inputsSchema: InputsSchema,
+  resources: {
+    state: {
+      description: "ResilienceHub App resource state",
+      schema: StateSchema,
+      lifetime: "infinite",
+      garbageCollection: 10,
+    },
+  },
+  methods: {
+    create: {
+      description: "Create a ResilienceHub App",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const desiredState: Record<string, unknown> = {};
+        for (const [key, value] of Object.entries(g)) {
+          if (key === "name") continue;
+          if (value !== undefined) desiredState[key] = value;
+        }
+        const result = await createResource(
+          "AWS::ResilienceHub::App",
+          desiredState,
+        ) as StateData;
+        const instanceName = g.name?.toString() ?? "current";
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    get: {
+      description: "Get a ResilienceHub App",
+      arguments: z.object({
+        identifier: z.string().describe(
+          "The primary identifier of the ResilienceHub App",
+        ),
+      }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const result = await readResource(
+          "AWS::ResilienceHub::App",
+          args.identifier,
+        ) as StateData;
+        const instanceName = context.globalArgs.name?.toString() ??
+          args.identifier;
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    update: {
+      description: "Update a ResilienceHub App",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const instanceName = g.name?.toString() ?? "current";
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          instanceName,
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        const identifier = existing.AppArn?.toString();
+        if (!identifier) {
+          throw new Error("No identifier found in existing state");
+        }
+        const currentState = await readResource(
+          "AWS::ResilienceHub::App",
+          identifier,
+        ) as StateData;
+        const desiredState: Record<string, unknown> = { ...currentState };
+        for (const [key, value] of Object.entries(g)) {
+          if (key === "name") continue;
+          if (value !== undefined) desiredState[key] = value;
+        }
+        const result = await updateResource(
+          "AWS::ResilienceHub::App",
+          identifier,
+          currentState,
+          desiredState,
+          ["Name"],
+        );
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    delete: {
+      description: "Delete a ResilienceHub App",
+      arguments: z.object({
+        identifier: z.string().describe(
+          "The primary identifier of the ResilienceHub App",
+        ),
+      }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const { existed } = await deleteResource(
+          "AWS::ResilienceHub::App",
+          args.identifier,
+        );
+        const instanceName = context.globalArgs.name?.toString() ??
+          args.identifier;
+        const handle = await context.writeResource("state", instanceName, {
+          identifier: args.identifier,
+          existed,
+          status: existed ? "deleted" : "not_found",
+          deletedAt: new Date().toISOString(),
+        });
+        return { dataHandles: [handle] };
+      },
+    },
+    sync: {
+      description: "Sync ResilienceHub App state from AWS",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const instanceName = g.name?.toString() ?? "current";
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          instanceName,
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        const identifier = existing.AppArn?.toString();
+        if (!identifier) {
+          throw new Error("No identifier found in existing state");
+        }
+        try {
+          const result = await readResource(
+            "AWS::ResilienceHub::App",
+            identifier,
+          ) as StateData;
+          const handle = await context.writeResource(
+            "state",
+            instanceName,
+            result,
+          );
+          return { dataHandles: [handle] };
+        } catch (error: unknown) {
+          if (isResourceNotFoundError(error)) {
+            const handle = await context.writeResource("state", instanceName, {
+              identifier,
+              status: "not_found",
+              syncedAt: new Date().toISOString(),
+            });
+            return { dataHandles: [handle] };
+          }
+          throw error;
+        }
+      },
+    },
+  },
+};

@@ -1,0 +1,385 @@
+// Auto-generated extension model for @swamp/aws/bedrockagentcore/gateway
+// Do not edit manually. Re-generate with: deno task generate:aws
+
+// deno-lint-ignore-file no-explicit-any
+
+import { z } from "zod";
+import {
+  createResource,
+  deleteResource,
+  isResourceNotFoundError,
+  readResource,
+  updateResource,
+} from "./_lib/aws.ts";
+
+export const ClaimMatchValueTypeSchema = z.object({
+  MatchValueString: z.string().regex(new RegExp("[A-Za-z0-9_.-]+")).describe(
+    "The string value to match for",
+  ).optional(),
+  MatchValueStringList: z.array(z.string().regex(new RegExp("[A-Za-z0-9_.-]+")))
+    .describe("The list of strings to check for a match").optional(),
+});
+
+export const AuthorizingClaimMatchValueTypeSchema = z.object({
+  ClaimMatchOperator: z.enum(["EQUALS", "CONTAINS", "CONTAINS_ANY"]).describe(
+    "The relationship between the claim field value and the value or values being matched",
+  ),
+  ClaimMatchValue: ClaimMatchValueTypeSchema.describe(
+    "The value or values in the custom claim to match for",
+  ),
+});
+
+export const CustomClaimValidationTypeSchema = z.object({
+  AuthorizingClaimMatchValue: AuthorizingClaimMatchValueTypeSchema.describe(
+    "The value or values in the custom claim to match and relationship of match",
+  ),
+  InboundTokenClaimName: z.string().regex(new RegExp("[A-Za-z0-9_.-:]+"))
+    .describe("The name of the custom claim to validate"),
+  InboundTokenClaimValueType: z.enum(["STRING", "STRING_ARRAY"]).describe(
+    "Token claim data type",
+  ),
+});
+
+export const CustomJWTAuthorizerConfigurationSchema = z.object({
+  DiscoveryUrl: z.string().regex(
+    new RegExp("^.+/\\.well-known/openid-configuration$"),
+  ),
+  AllowedAudience: z.array(z.string()).optional(),
+  AllowedClients: z.array(z.string()).optional(),
+  AllowedScopes: z.array(
+    z.string().regex(new RegExp("[\\x21\\x23-\\x5B\\x5D-\\x7E]+")),
+  ).optional(),
+  CustomClaims: z.array(CustomClaimValidationTypeSchema).optional(),
+});
+
+export const LambdaInterceptorConfigurationSchema = z.object({
+  Arn: z.string().min(1).max(170).regex(
+    new RegExp(
+      "^arn:[a-z0-9-]{1,20}:lambda:([a-z]{2}(-gov)?-[a-z]+-\\d{1}):(\\d{12}):function:([a-zA-Z0-9-_.]+)(:(\\$LATEST|[a-zA-Z0-9-_]+))?$",
+    ),
+  ),
+});
+
+export const InterceptorInputConfigurationSchema = z.object({
+  PassRequestHeaders: z.boolean(),
+});
+
+export const GatewayInterceptorConfigurationSchema = z.object({
+  Interceptor: z.object({
+    Lambda: LambdaInterceptorConfigurationSchema.optional(),
+  }),
+  InterceptionPoints: z.array(z.enum(["REQUEST", "RESPONSE"])),
+  InputConfiguration: InterceptorInputConfigurationSchema.optional(),
+});
+
+export const MCPGatewayConfigurationSchema = z.object({
+  SupportedVersions: z.array(z.string()).optional(),
+  Instructions: z.string().min(1).max(2048).optional(),
+  SearchType: z.enum(["SEMANTIC"]).optional(),
+});
+
+const GlobalArgsSchema = z.object({
+  name: z.string().describe(
+    "Instance name for this resource (used as the unique identifier in the factory pattern)",
+  ),
+  AuthorizerConfiguration: z.object({
+    CustomJWTAuthorizer: CustomJWTAuthorizerConfigurationSchema.optional(),
+  }).optional(),
+  AuthorizerType: z.enum(["CUSTOM_JWT", "AWS_IAM", "NONE"]),
+  Description: z.string().min(1).max(200).optional(),
+  ExceptionLevel: z.enum(["DEBUG"]).optional(),
+  InterceptorConfigurations: z.array(GatewayInterceptorConfigurationSchema)
+    .optional(),
+  PolicyEngineConfiguration: z.object({
+    Arn: z.string().min(1).max(170).regex(
+      new RegExp(
+        "^arn:[a-z0-9-]{1,20}:bedrock-agentcore:[a-z0-9-]+:[0-9]{12}:policy-engine/[a-zA-Z][a-zA-Z0-9-_]{0,99}-[a-zA-Z0-9_]{10}$",
+      ),
+    ).describe(
+      "The ARN of the policy engine. The policy engine contains Cedar policies that define fine-grained authorization rules specifying who can perform what actions on which resources as agents interact through the gateway.",
+    ),
+    Mode: z.enum(["LOG_ONLY", "ENFORCE"]).describe(
+      "The enforcement mode for the policy engine. LOG_ONLY - The policy engine evaluates each action against your policies and adds traces on whether tool calls would be allowed or denied, but does not enforce the decision. Use this mode to test and validate policies before enabling enforcement. ENFORCE - The policy engine evaluates actions against your policies and enforces decisions by allowing or denying agent operations. Test and validate policies in LOG_ONLY mode before enabling enforcement to avoid unintended denials or adversely affecting production traffic.",
+    ),
+  }).describe(
+    "The configuration for a policy engine associated with a gateway. A policy engine is a collection of policies that evaluates and authorizes agent tool calls. When associated with a gateway, the policy engine intercepts all agent requests and determines whether to allow or deny each action based on the defined policies.",
+  ).optional(),
+  KmsKeyArn: z.string().min(1).max(2048).regex(
+    new RegExp(
+      "^arn:[a-z0-9-]{1,20}:kms:[a-zA-Z0-9-]*:[0-9]{12}:key/[a-zA-Z0-9-]{36}$",
+    ),
+  ).optional(),
+  Name: z.string().regex(new RegExp("^([0-9a-zA-Z][-]?){1,100}$")),
+  ProtocolConfiguration: z.object({
+    Mcp: MCPGatewayConfigurationSchema.optional(),
+  }).optional(),
+  ProtocolType: z.enum(["MCP"]),
+  RoleArn: z.string().min(1).max(2048).regex(
+    new RegExp("^arn:[a-z0-9-]{1,20}:iam::([0-9]{12})?:role/.+$"),
+  ),
+  Tags: z.record(
+    z.string(),
+    z.string().min(0).max(256).regex(new RegExp("^[a-zA-Z0-9\\s._:/=+@-]*$")),
+  ).optional(),
+  WorkloadIdentityDetails: z.object({
+    WorkloadIdentityArn: z.string().min(1).max(1024),
+  }).optional(),
+});
+
+const StateSchema = z.object({
+  AuthorizerConfiguration: z.object({
+    CustomJWTAuthorizer: CustomJWTAuthorizerConfigurationSchema,
+  }).optional(),
+  AuthorizerType: z.string().optional(),
+  CreatedAt: z.string().optional(),
+  Description: z.string().optional(),
+  ExceptionLevel: z.string().optional(),
+  InterceptorConfigurations: z.array(GatewayInterceptorConfigurationSchema)
+    .optional(),
+  PolicyEngineConfiguration: z.object({
+    Arn: z.string(),
+    Mode: z.string(),
+  }).optional(),
+  GatewayArn: z.string().optional(),
+  GatewayIdentifier: z.string(),
+  GatewayUrl: z.string().optional(),
+  KmsKeyArn: z.string().optional(),
+  Name: z.string().optional(),
+  ProtocolConfiguration: z.object({
+    Mcp: MCPGatewayConfigurationSchema,
+  }).optional(),
+  ProtocolType: z.string().optional(),
+  RoleArn: z.string().optional(),
+  Status: z.string().optional(),
+  StatusReasons: z.array(z.string()).optional(),
+  Tags: z.record(z.string(), z.unknown()).optional(),
+  UpdatedAt: z.string().optional(),
+  WorkloadIdentityDetails: z.object({
+    WorkloadIdentityArn: z.string(),
+  }).optional(),
+}).passthrough();
+
+type StateData = z.infer<typeof StateSchema>;
+
+const InputsSchema = z.object({
+  name: z.string().optional(),
+  AuthorizerConfiguration: z.object({
+    CustomJWTAuthorizer: CustomJWTAuthorizerConfigurationSchema.optional(),
+  }).optional(),
+  AuthorizerType: z.enum(["CUSTOM_JWT", "AWS_IAM", "NONE"]).optional(),
+  Description: z.string().min(1).max(200).optional(),
+  ExceptionLevel: z.enum(["DEBUG"]).optional(),
+  InterceptorConfigurations: z.array(GatewayInterceptorConfigurationSchema)
+    .optional(),
+  PolicyEngineConfiguration: z.object({
+    Arn: z.string().min(1).max(170).regex(
+      new RegExp(
+        "^arn:[a-z0-9-]{1,20}:bedrock-agentcore:[a-z0-9-]+:[0-9]{12}:policy-engine/[a-zA-Z][a-zA-Z0-9-_]{0,99}-[a-zA-Z0-9_]{10}$",
+      ),
+    ).describe(
+      "The ARN of the policy engine. The policy engine contains Cedar policies that define fine-grained authorization rules specifying who can perform what actions on which resources as agents interact through the gateway.",
+    ).optional(),
+    Mode: z.enum(["LOG_ONLY", "ENFORCE"]).describe(
+      "The enforcement mode for the policy engine. LOG_ONLY - The policy engine evaluates each action against your policies and adds traces on whether tool calls would be allowed or denied, but does not enforce the decision. Use this mode to test and validate policies before enabling enforcement. ENFORCE - The policy engine evaluates actions against your policies and enforces decisions by allowing or denying agent operations. Test and validate policies in LOG_ONLY mode before enabling enforcement to avoid unintended denials or adversely affecting production traffic.",
+    ).optional(),
+  }).describe(
+    "The configuration for a policy engine associated with a gateway. A policy engine is a collection of policies that evaluates and authorizes agent tool calls. When associated with a gateway, the policy engine intercepts all agent requests and determines whether to allow or deny each action based on the defined policies.",
+  ).optional(),
+  KmsKeyArn: z.string().min(1).max(2048).regex(
+    new RegExp(
+      "^arn:[a-z0-9-]{1,20}:kms:[a-zA-Z0-9-]*:[0-9]{12}:key/[a-zA-Z0-9-]{36}$",
+    ),
+  ).optional(),
+  Name: z.string().regex(new RegExp("^([0-9a-zA-Z][-]?){1,100}$")).optional(),
+  ProtocolConfiguration: z.object({
+    Mcp: MCPGatewayConfigurationSchema.optional(),
+  }).optional(),
+  ProtocolType: z.enum(["MCP"]).optional(),
+  RoleArn: z.string().min(1).max(2048).regex(
+    new RegExp("^arn:[a-z0-9-]{1,20}:iam::([0-9]{12})?:role/.+$"),
+  ).optional(),
+  Tags: z.record(
+    z.string(),
+    z.string().min(0).max(256).regex(new RegExp("^[a-zA-Z0-9\\s._:/=+@-]*$")),
+  ).optional(),
+  WorkloadIdentityDetails: z.object({
+    WorkloadIdentityArn: z.string().min(1).max(1024).optional(),
+  }).optional(),
+});
+
+export const model = {
+  type: "@swamp/aws/bedrockagentcore/gateway",
+  version: "2026.03.31.1",
+  upgrades: [
+    {
+      toVersion: "2026.03.31.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+  ],
+  globalArguments: GlobalArgsSchema,
+  inputsSchema: InputsSchema,
+  resources: {
+    state: {
+      description: "BedrockAgentCore Gateway resource state",
+      schema: StateSchema,
+      lifetime: "infinite",
+      garbageCollection: 10,
+    },
+  },
+  methods: {
+    create: {
+      description: "Create a BedrockAgentCore Gateway",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const desiredState: Record<string, unknown> = {};
+        for (const [key, value] of Object.entries(g)) {
+          if (key === "name") continue;
+          if (value !== undefined) desiredState[key] = value;
+        }
+        const result = await createResource(
+          "AWS::BedrockAgentCore::Gateway",
+          desiredState,
+        ) as StateData;
+        const instanceName = g.name?.toString() ?? "current";
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    get: {
+      description: "Get a BedrockAgentCore Gateway",
+      arguments: z.object({
+        identifier: z.string().describe(
+          "The primary identifier of the BedrockAgentCore Gateway",
+        ),
+      }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const result = await readResource(
+          "AWS::BedrockAgentCore::Gateway",
+          args.identifier,
+        ) as StateData;
+        const instanceName = context.globalArgs.name?.toString() ??
+          args.identifier;
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    update: {
+      description: "Update a BedrockAgentCore Gateway",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const instanceName = g.name?.toString() ?? "current";
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          instanceName,
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        const identifier = existing.GatewayIdentifier?.toString();
+        if (!identifier) {
+          throw new Error("No identifier found in existing state");
+        }
+        const currentState = await readResource(
+          "AWS::BedrockAgentCore::Gateway",
+          identifier,
+        ) as StateData;
+        const desiredState: Record<string, unknown> = { ...currentState };
+        for (const [key, value] of Object.entries(g)) {
+          if (key === "name") continue;
+          if (value !== undefined) desiredState[key] = value;
+        }
+        const result = await updateResource(
+          "AWS::BedrockAgentCore::Gateway",
+          identifier,
+          currentState,
+          desiredState,
+        );
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    delete: {
+      description: "Delete a BedrockAgentCore Gateway",
+      arguments: z.object({
+        identifier: z.string().describe(
+          "The primary identifier of the BedrockAgentCore Gateway",
+        ),
+      }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const { existed } = await deleteResource(
+          "AWS::BedrockAgentCore::Gateway",
+          args.identifier,
+        );
+        const instanceName = context.globalArgs.name?.toString() ??
+          args.identifier;
+        const handle = await context.writeResource("state", instanceName, {
+          identifier: args.identifier,
+          existed,
+          status: existed ? "deleted" : "not_found",
+          deletedAt: new Date().toISOString(),
+        });
+        return { dataHandles: [handle] };
+      },
+    },
+    sync: {
+      description: "Sync BedrockAgentCore Gateway state from AWS",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const instanceName = g.name?.toString() ?? "current";
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          instanceName,
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        const identifier = existing.GatewayIdentifier?.toString();
+        if (!identifier) {
+          throw new Error("No identifier found in existing state");
+        }
+        try {
+          const result = await readResource(
+            "AWS::BedrockAgentCore::Gateway",
+            identifier,
+          ) as StateData;
+          const handle = await context.writeResource(
+            "state",
+            instanceName,
+            result,
+          );
+          return { dataHandles: [handle] };
+        } catch (error: unknown) {
+          if (isResourceNotFoundError(error)) {
+            const handle = await context.writeResource("state", instanceName, {
+              identifier,
+              status: "not_found",
+              syncedAt: new Date().toISOString(),
+            });
+            return { dataHandles: [handle] };
+          }
+          throw error;
+        }
+      },
+    },
+  },
+};

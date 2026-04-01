@@ -1,0 +1,256 @@
+// Auto-generated extension model for @swamp/aws/lightsail/domain
+// Do not edit manually. Re-generate with: deno task generate:aws
+
+// deno-lint-ignore-file no-explicit-any
+
+import { z } from "zod";
+import {
+  createResource,
+  deleteResource,
+  isResourceNotFoundError,
+  readResource,
+  updateResource,
+} from "./_lib/aws.ts";
+
+export const DomainEntrySchema = z.object({
+  Id: z.string().describe("The ID of the domain recordset entry.").optional(),
+  Name: z.string().describe("The name of the domain entry."),
+  Target: z.string().describe(
+    "The target AWS name server (e.g., ns-111.awsdns-11.com).",
+  ),
+  IsAlias: z.boolean().describe(
+    "When true, specifies whether the domain entry is an alias used by the Lightsail load balancer, Lightsail container service, Lightsail content delivery network (CDN) distribution, or another AWS resource. You can include an alias (A type) record in your request, which points to the DNS name of a load balancer, container service, CDN distribution, or other AWS resource and routes traffic to that resource.",
+  ).optional(),
+  Type: z.enum(["A", "AAAA", "CNAME", "MX", "NS", "SOA", "SRV", "TXT"])
+    .describe(
+      "The type of domain entry (e.g., A, CNAME, MX, NS, SOA, SRV, TXT).",
+    ),
+});
+
+export const TagSchema = z.object({
+  Key: z.string().describe("The key name of the tag."),
+  Value: z.string().describe("The value for the tag.").optional(),
+});
+
+const GlobalArgsSchema = z.object({
+  DomainName: z.string().describe(
+    "The name of the domain to manage in Lightsail.",
+  ),
+  DomainEntries: z.array(DomainEntrySchema).describe(
+    "An array of key-value pairs containing information about the domain entries.",
+  ).optional(),
+  Location: z.object({
+    AvailabilityZone: z.string().describe("The Availability Zone.").optional(),
+    RegionName: z.string().describe("The AWS Region name.").optional(),
+  }).describe(
+    "The AWS Region and Availability Zone where the domain was created (read-only).",
+  ).optional(),
+  Tags: z.array(TagSchema).describe(
+    "An array of key-value pairs to apply to this resource.",
+  ).optional(),
+});
+
+const StateSchema = z.object({
+  DomainName: z.string(),
+  DomainEntries: z.array(DomainEntrySchema).optional(),
+  Arn: z.string().optional(),
+  SupportCode: z.string().optional(),
+  CreatedAt: z.string().optional(),
+  Location: z.object({
+    AvailabilityZone: z.string(),
+    RegionName: z.string(),
+  }).optional(),
+  ResourceType: z.string().optional(),
+  Tags: z.array(TagSchema).optional(),
+}).passthrough();
+
+type StateData = z.infer<typeof StateSchema>;
+
+const InputsSchema = z.object({
+  DomainName: z.string().describe(
+    "The name of the domain to manage in Lightsail.",
+  ).optional(),
+  DomainEntries: z.array(DomainEntrySchema).describe(
+    "An array of key-value pairs containing information about the domain entries.",
+  ).optional(),
+  Location: z.object({
+    AvailabilityZone: z.string().describe("The Availability Zone.").optional(),
+    RegionName: z.string().describe("The AWS Region name.").optional(),
+  }).describe(
+    "The AWS Region and Availability Zone where the domain was created (read-only).",
+  ).optional(),
+  Tags: z.array(TagSchema).describe(
+    "An array of key-value pairs to apply to this resource.",
+  ).optional(),
+});
+
+export const model = {
+  type: "@swamp/aws/lightsail/domain",
+  version: "2026.03.19.1",
+  globalArguments: GlobalArgsSchema,
+  inputsSchema: InputsSchema,
+  resources: {
+    state: {
+      description: "Lightsail Domain resource state",
+      schema: StateSchema,
+      lifetime: "infinite",
+      garbageCollection: 10,
+    },
+  },
+  methods: {
+    create: {
+      description: "Create a Lightsail Domain",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const desiredState: Record<string, unknown> = {};
+        for (const [key, value] of Object.entries(g)) {
+          if (value !== undefined) desiredState[key] = value;
+        }
+        const result = await createResource(
+          "AWS::Lightsail::Domain",
+          desiredState,
+        ) as StateData;
+        const instanceName = (result.DomainName ?? g.DomainName)?.toString() ??
+          "current";
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    get: {
+      description: "Get a Lightsail Domain",
+      arguments: z.object({
+        identifier: z.string().describe(
+          "The primary identifier of the Lightsail Domain",
+        ),
+      }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const result = await readResource(
+          "AWS::Lightsail::Domain",
+          args.identifier,
+        ) as StateData;
+        const instanceName =
+          (result.DomainName ?? context.globalArgs.DomainName)?.toString() ??
+            args.identifier;
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    update: {
+      description: "Update a Lightsail Domain",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const instanceName = g.DomainName?.toString() ?? "current";
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          instanceName,
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        const identifier = existing.DomainName?.toString();
+        if (!identifier) {
+          throw new Error("No identifier found in existing state");
+        }
+        const currentState = await readResource(
+          "AWS::Lightsail::Domain",
+          identifier,
+        ) as StateData;
+        const desiredState: Record<string, unknown> = { ...currentState };
+        for (const [key, value] of Object.entries(g)) {
+          if (value !== undefined) desiredState[key] = value;
+        }
+        const result = await updateResource(
+          "AWS::Lightsail::Domain",
+          identifier,
+          currentState,
+          desiredState,
+          ["DomainName"],
+        );
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    delete: {
+      description: "Delete a Lightsail Domain",
+      arguments: z.object({
+        identifier: z.string().describe(
+          "The primary identifier of the Lightsail Domain",
+        ),
+      }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const { existed } = await deleteResource(
+          "AWS::Lightsail::Domain",
+          args.identifier,
+        );
+        const instanceName = context.globalArgs.DomainName?.toString() ??
+          args.identifier;
+        const handle = await context.writeResource("state", instanceName, {
+          identifier: args.identifier,
+          existed,
+          status: existed ? "deleted" : "not_found",
+          deletedAt: new Date().toISOString(),
+        });
+        return { dataHandles: [handle] };
+      },
+    },
+    sync: {
+      description: "Sync Lightsail Domain state from AWS",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const instanceName = g.DomainName?.toString() ?? "current";
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          instanceName,
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        const identifier = existing.DomainName?.toString();
+        if (!identifier) {
+          throw new Error("No identifier found in existing state");
+        }
+        try {
+          const result = await readResource(
+            "AWS::Lightsail::Domain",
+            identifier,
+          ) as StateData;
+          const handle = await context.writeResource(
+            "state",
+            instanceName,
+            result,
+          );
+          return { dataHandles: [handle] };
+        } catch (error: unknown) {
+          if (isResourceNotFoundError(error)) {
+            const handle = await context.writeResource("state", instanceName, {
+              identifier,
+              status: "not_found",
+              syncedAt: new Date().toISOString(),
+            });
+            return { dataHandles: [handle] };
+          }
+          throw error;
+        }
+      },
+    },
+  },
+};

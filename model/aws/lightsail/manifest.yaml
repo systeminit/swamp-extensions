@@ -1,0 +1,31 @@
+# Auto-generated manifest. Re-generate with the appropriate deno task.
+manifestVersion: 1
+name: "@swamp/aws/lightsail"
+version: "2026.03.19.1"
+description: "AWS LIGHTSAIL infrastructure models"
+labels:
+  - aws
+  - lightsail
+  - cloud
+  - infrastructure
+releaseNotes: |
+  - Updated: alarm, bucket, certificate, container, database, database_snapshot, disk, disk_snapshot, distribution, domain, instance, instance_snapshot, load_balancer, load_balancer_tls_certificate, static_ip
+models:
+  - alarm.ts
+  - bucket.ts
+  - certificate.ts
+  - container.ts
+  - database.ts
+  - database_snapshot.ts
+  - disk.ts
+  - disk_snapshot.ts
+  - distribution.ts
+  - domain.ts
+  - instance.ts
+  - instance_snapshot.ts
+  - load_balancer.ts
+  - load_balancer_tls_certificate.ts
+  - static_ip.ts
+additionalFiles:
+  - LICENSE.txt
+  - README.md

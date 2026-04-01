@@ -1,0 +1,19 @@
+# Auto-generated manifest. Re-generate with the appropriate deno task.
+manifestVersion: 1
+name: "@swamp/aws/emrcontainers"
+version: "2026.03.19.1"
+description: "AWS EMRCONTAINERS infrastructure models"
+labels:
+  - aws
+  - emrcontainers
+  - cloud
+  - infrastructure
+releaseNotes: |
+  - Updated: endpoint, security_configuration, virtual_cluster
+models:
+  - endpoint.ts
+  - security_configuration.ts
+  - virtual_cluster.ts
+additionalFiles:
+  - LICENSE.txt
+  - README.md

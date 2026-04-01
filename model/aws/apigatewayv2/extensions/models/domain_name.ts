@@ -1,0 +1,271 @@
+// Auto-generated extension model for @swamp/aws/apigatewayv2/domain-name
+// Do not edit manually. Re-generate with: deno task generate:aws
+
+// deno-lint-ignore-file no-explicit-any
+
+import { z } from "zod";
+import {
+  createResource,
+  deleteResource,
+  isResourceNotFoundError,
+  readResource,
+  updateResource,
+} from "./_lib/aws.ts";
+
+export const DomainNameConfigurationSchema = z.object({
+  OwnershipVerificationCertificateArn: z.string().describe(
+    "The Amazon resource name (ARN) for the public certificate issued by ACMlong. This ARN is used to validate custom domain ownership. It's required only if you configure mutual TLS and use either an ACM-imported or a private CA certificate ARN as the regionalCertificateArn.",
+  ).optional(),
+  EndpointType: z.string().describe("The endpoint type.").optional(),
+  CertificateName: z.string().describe(
+    "The user-friendly name of the certificate that will be used by the edge-optimized endpoint for this domain name.",
+  ).optional(),
+  SecurityPolicy: z.string().describe(
+    "The Transport Layer Security (TLS) version of the security policy for this domain name. The valid values are TLS_1_0 and TLS_1_2.",
+  ).optional(),
+  CertificateArn: z.string().describe(
+    "An AWS-managed certificate that will be used by the edge-optimized endpoint for this domain name. AWS Certificate Manager is the only supported source.",
+  ).optional(),
+  IpAddressType: z.string().optional(),
+});
+
+const GlobalArgsSchema = z.object({
+  MutualTlsAuthentication: z.object({
+    TruststoreVersion: z.string().describe(
+      "The version of the S3 object that contains your truststore. To specify a version, you must have versioning enabled for the S3 bucket.",
+    ).optional(),
+    TruststoreUri: z.string().describe(
+      "An Amazon S3 URL that specifies the truststore for mutual TLS authentication, for example, s3://bucket-name/key-name. The truststore can contain certificates from public or private certificate authorities. To update the truststore, upload a new version to S3, and then update your custom domain name to use the new version. To update the truststore, you must have permissions to access the S3 object.",
+    ).optional(),
+  }).describe(
+    "The mutual TLS authentication configuration for a custom domain name.",
+  ).optional(),
+  DomainName: z.string().describe(
+    "The custom domain name for your API in Amazon API Gateway. Uppercase letters and the underscore ( _) character are not supported.",
+  ),
+  DomainNameConfigurations: z.array(DomainNameConfigurationSchema).describe(
+    "The domain name configurations.",
+  ).optional(),
+  RoutingMode: z.enum([
+    "API_MAPPING_ONLY",
+    "ROUTING_RULE_THEN_API_MAPPING",
+    "ROUTING_RULE_ONLY",
+  ]).optional(),
+  Tags: z.record(z.string(), z.string()).describe(
+    "The collection of tags associated with a domain name.",
+  ).optional(),
+});
+
+const StateSchema = z.object({
+  MutualTlsAuthentication: z.object({
+    TruststoreVersion: z.string(),
+    TruststoreUri: z.string(),
+  }).optional(),
+  RegionalHostedZoneId: z.string().optional(),
+  RegionalDomainName: z.string().optional(),
+  DomainNameArn: z.string().optional(),
+  DomainName: z.string(),
+  DomainNameConfigurations: z.array(DomainNameConfigurationSchema).optional(),
+  RoutingMode: z.string().optional(),
+  Tags: z.record(z.string(), z.unknown()).optional(),
+}).passthrough();
+
+type StateData = z.infer<typeof StateSchema>;
+
+const InputsSchema = z.object({
+  MutualTlsAuthentication: z.object({
+    TruststoreVersion: z.string().describe(
+      "The version of the S3 object that contains your truststore. To specify a version, you must have versioning enabled for the S3 bucket.",
+    ).optional(),
+    TruststoreUri: z.string().describe(
+      "An Amazon S3 URL that specifies the truststore for mutual TLS authentication, for example, s3://bucket-name/key-name. The truststore can contain certificates from public or private certificate authorities. To update the truststore, upload a new version to S3, and then update your custom domain name to use the new version. To update the truststore, you must have permissions to access the S3 object.",
+    ).optional(),
+  }).describe(
+    "The mutual TLS authentication configuration for a custom domain name.",
+  ).optional(),
+  DomainName: z.string().describe(
+    "The custom domain name for your API in Amazon API Gateway. Uppercase letters and the underscore ( _) character are not supported.",
+  ).optional(),
+  DomainNameConfigurations: z.array(DomainNameConfigurationSchema).describe(
+    "The domain name configurations.",
+  ).optional(),
+  RoutingMode: z.enum([
+    "API_MAPPING_ONLY",
+    "ROUTING_RULE_THEN_API_MAPPING",
+    "ROUTING_RULE_ONLY",
+  ]).optional(),
+  Tags: z.record(z.string(), z.string()).describe(
+    "The collection of tags associated with a domain name.",
+  ).optional(),
+});
+
+export const model = {
+  type: "@swamp/aws/apigatewayv2/domain-name",
+  version: "2026.03.19.1",
+  globalArguments: GlobalArgsSchema,
+  inputsSchema: InputsSchema,
+  resources: {
+    state: {
+      description: "ApiGatewayV2 DomainName resource state",
+      schema: StateSchema,
+      lifetime: "infinite",
+      garbageCollection: 10,
+    },
+  },
+  methods: {
+    create: {
+      description: "Create a ApiGatewayV2 DomainName",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const desiredState: Record<string, unknown> = {};
+        for (const [key, value] of Object.entries(g)) {
+          if (value !== undefined) desiredState[key] = value;
+        }
+        const result = await createResource(
+          "AWS::ApiGatewayV2::DomainName",
+          desiredState,
+        ) as StateData;
+        const instanceName = (result.DomainName ?? g.DomainName)?.toString() ??
+          "current";
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    get: {
+      description: "Get a ApiGatewayV2 DomainName",
+      arguments: z.object({
+        identifier: z.string().describe(
+          "The primary identifier of the ApiGatewayV2 DomainName",
+        ),
+      }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const result = await readResource(
+          "AWS::ApiGatewayV2::DomainName",
+          args.identifier,
+        ) as StateData;
+        const instanceName =
+          (result.DomainName ?? context.globalArgs.DomainName)?.toString() ??
+            args.identifier;
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    update: {
+      description: "Update a ApiGatewayV2 DomainName",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const instanceName = g.DomainName?.toString() ?? "current";
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          instanceName,
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        const identifier = existing.DomainName?.toString();
+        if (!identifier) {
+          throw new Error("No identifier found in existing state");
+        }
+        const currentState = await readResource(
+          "AWS::ApiGatewayV2::DomainName",
+          identifier,
+        ) as StateData;
+        const desiredState: Record<string, unknown> = { ...currentState };
+        for (const [key, value] of Object.entries(g)) {
+          if (value !== undefined) desiredState[key] = value;
+        }
+        const result = await updateResource(
+          "AWS::ApiGatewayV2::DomainName",
+          identifier,
+          currentState,
+          desiredState,
+          ["DomainName"],
+        );
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    delete: {
+      description: "Delete a ApiGatewayV2 DomainName",
+      arguments: z.object({
+        identifier: z.string().describe(
+          "The primary identifier of the ApiGatewayV2 DomainName",
+        ),
+      }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const { existed } = await deleteResource(
+          "AWS::ApiGatewayV2::DomainName",
+          args.identifier,
+        );
+        const instanceName = context.globalArgs.DomainName?.toString() ??
+          args.identifier;
+        const handle = await context.writeResource("state", instanceName, {
+          identifier: args.identifier,
+          existed,
+          status: existed ? "deleted" : "not_found",
+          deletedAt: new Date().toISOString(),
+        });
+        return { dataHandles: [handle] };
+      },
+    },
+    sync: {
+      description: "Sync ApiGatewayV2 DomainName state from AWS",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const instanceName = g.DomainName?.toString() ?? "current";
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          instanceName,
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        const identifier = existing.DomainName?.toString();
+        if (!identifier) {
+          throw new Error("No identifier found in existing state");
+        }
+        try {
+          const result = await readResource(
+            "AWS::ApiGatewayV2::DomainName",
+            identifier,
+          ) as StateData;
+          const handle = await context.writeResource(
+            "state",
+            instanceName,
+            result,
+          );
+          return { dataHandles: [handle] };
+        } catch (error: unknown) {
+          if (isResourceNotFoundError(error)) {
+            const handle = await context.writeResource("state", instanceName, {
+              identifier,
+              status: "not_found",
+              syncedAt: new Date().toISOString(),
+            });
+            return { dataHandles: [handle] };
+          }
+          throw error;
+        }
+      },
+    },
+  },
+};

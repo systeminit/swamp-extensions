@@ -1,0 +1,452 @@
+// Auto-generated extension model for @swamp/aws/observabilityadmin/organization-telemetry-rule
+// Do not edit manually. Re-generate with: deno task generate:aws
+
+// deno-lint-ignore-file no-explicit-any
+
+import { z } from "zod";
+import {
+  createResource,
+  deleteResource,
+  isResourceNotFoundError,
+  readResource,
+  updateResource,
+} from "./_lib/aws.ts";
+
+export const VPCFlowLogParametersSchema = z.object({
+  LogFormat: z.string().describe(
+    "The fields to include in the flow log record. If you omit this parameter, the flow log is created using the default format.",
+  ).optional(),
+  TrafficType: z.string().describe(
+    "The type of traffic captured for the flow log. Default is ALL",
+  ).optional(),
+  MaxAggregationInterval: z.number().int().describe(
+    "The maximum interval of time, in seconds, during which a flow of packets is captured and aggregated into a flow log record. Default is 600s.",
+  ).optional(),
+});
+
+export const AdvancedFieldSelectorSchema = z.object({
+  Field: z.string().min(1).max(1000).describe(
+    "A field in a CloudTrail event record on which to filter events to be logged",
+  ).optional(),
+  EndsWith: z.array(z.string()).describe(
+    "An operator that includes events that match the last few characters of the event record field specified as the value of Field.",
+  ).optional(),
+  Equals: z.array(z.string()).describe(
+    "An operator that includes events that match the exact value of the event record field specified as the value of Field.",
+  ).optional(),
+  NotEndsWith: z.array(z.string()).describe(
+    "An operator that excludes events that match the last few characters of the event record field specified as the value of Field.",
+  ).optional(),
+  NotEquals: z.array(z.string()).describe(
+    "An operator that excludes events that match the exact value of the event record field specified as the value of Field.",
+  ).optional(),
+  NotStartsWith: z.array(z.string()).describe(
+    "An operator that excludes events that match the first few characters of the event record field specified as the value of Field.",
+  ).optional(),
+  StartsWith: z.array(z.string()).describe(
+    "An operator that includes events that match the first few characters of the event record field specified as the value of Field.",
+  ).optional(),
+});
+
+export const AdvancedEventSelectorSchema = z.object({
+  Name: z.string().describe(
+    "An optional descriptive name for the advanced event selector",
+  ).optional(),
+  FieldSelectors: z.array(AdvancedFieldSelectorSchema).describe(
+    "Contains all selector statements in an advanced event selector.",
+  ),
+});
+
+export const CloudtrailParametersSchema = z.object({
+  AdvancedEventSelectors: z.array(AdvancedEventSelectorSchema).describe(
+    "Create fine-grained selectors for AWS CloudTrail management and data.",
+  ),
+});
+
+export const ELBLoadBalancerLoggingParametersSchema = z.object({
+  OutputFormat: z.enum(["plain", "json"]).optional(),
+  FieldDelimiter: z.string().describe("A delimiter to delineate log fields")
+    .optional(),
+});
+
+export const SingleHeaderSchema = z.object({
+  Name: z.string().min(1).max(64).describe("The name of the header"),
+});
+
+export const FieldToMatchSchema = z.object({
+  SingleHeader: SingleHeaderSchema.describe("Header for the field to match.")
+    .optional(),
+  UriPath: z.string().describe("This is the URI path to match this rule to.")
+    .optional(),
+  QueryString: z.string().describe(
+    "The query string to find the resource to match this field to.",
+  ).optional(),
+  Method: z.string().describe("The method with which to match this rule.")
+    .optional(),
+});
+
+export const ActionConditionSchema = z.object({
+  Action: z.enum([
+    "ALLOW",
+    "BLOCK",
+    "COUNT",
+    "CAPTCHA",
+    "CHALLENGE",
+    "EXCLUDED_AS_COUNT",
+  ]).describe("The enumerated action to take.").optional(),
+});
+
+export const LabelNameConditionSchema = z.object({
+  LabelName: z.string().min(1).max(1024).regex(
+    new RegExp("^[0-9A-Za-z_\\-:]+$"),
+  ).describe("The label name of the condition.").optional(),
+});
+
+export const ConditionSchema = z.object({
+  ActionCondition: ActionConditionSchema.describe(
+    "The condition of the action desired in the filter.",
+  ).optional(),
+  LabelNameCondition: LabelNameConditionSchema.describe(
+    "The label name of the condition.",
+  ).optional(),
+});
+
+export const FilterSchema = z.object({
+  Behavior: z.enum(["KEEP", "DROP"]).describe(
+    "The behavior required of the filter.",
+  ).optional(),
+  Requirement: z.enum(["MEETS_ALL", "MEETS_ANY"]).describe(
+    "The requirement portion of the filter.",
+  ).optional(),
+  Conditions: z.array(ConditionSchema).describe(
+    "A list of conditions for a filter.",
+  ).optional(),
+});
+
+export const LoggingFilterSchema = z.object({
+  Filters: z.array(FilterSchema).describe("A list of filters to be applied.")
+    .optional(),
+  DefaultBehavior: z.enum(["KEEP", "DROP"]).describe(
+    "The behavior required of the filter.",
+  ).optional(),
+});
+
+export const WAFLoggingParametersSchema = z.object({
+  RedactedFields: z.array(FieldToMatchSchema).describe(
+    "Fields not to be included in the logs.",
+  ).optional(),
+  LoggingFilter: LoggingFilterSchema.describe(
+    "Default handling for logs that don't match any of the specified filtering conditions.",
+  ).optional(),
+  LogType: z.enum(["WAF_LOGS"]).describe(
+    "The type of logs to generate for WAF.",
+  ).optional(),
+});
+
+export const TelemetryDestinationConfigurationSchema = z.object({
+  DestinationType: z.enum(["cloud-watch-logs"]).describe(
+    "Type of telemetry destination",
+  ).optional(),
+  DestinationPattern: z.string().describe(
+    "Pattern for telemetry data destination",
+  ).optional(),
+  RetentionInDays: z.number().int().describe(
+    "Number of days to retain the telemetry data in the specified destination",
+  ).optional(),
+  VPCFlowLogParameters: VPCFlowLogParametersSchema.describe(
+    "Telemetry parameters for VPC Flow logs",
+  ).optional(),
+  CloudtrailParameters: CloudtrailParametersSchema.describe(
+    "Telemetry parameters for Cloudtrail",
+  ).optional(),
+  ELBLoadBalancerLoggingParameters: ELBLoadBalancerLoggingParametersSchema
+    .describe("Telemetry parameters for ELB/NLB Load Balancer Logs").optional(),
+  WAFLoggingParameters: WAFLoggingParametersSchema.describe(
+    "Telemetry parameters for WAF v2 Web ACL",
+  ).optional(),
+});
+
+export const TagSchema = z.object({
+  Key: z.string().min(1).max(128).describe(
+    "The key name of the tag. You can specify a value that is 1 to 128 Unicode characters in length and cannot be prefixed with aws:. You can use any of the following characters: the set of Unicode letters, digits, whitespace, _,., /, =, +, and -.",
+  ),
+  Value: z.string().min(0).max(256).describe(
+    "The value for the tag. You can specify a value that is 0 to 256 Unicode characters in length and cannot be prefixed with aws:. You can use any of the following characters: the set of Unicode letters, digits, whitespace, _,., /, =, +, and -.",
+  ),
+});
+
+const GlobalArgsSchema = z.object({
+  name: z.string().describe(
+    "Instance name for this resource (used as the unique identifier in the factory pattern)",
+  ),
+  RuleName: z.string().min(1).max(100).regex(new RegExp("^[0-9A-Za-z-]+$"))
+    .describe("The name of the organization telemetry rule"),
+  Rule: z.object({
+    ResourceType: z.enum([
+      "AWS::EC2::VPC",
+      "AWS::WAFv2::WebACL",
+      "AWS::CloudTrail",
+      "AWS::EKS::Cluster",
+      "AWS::ElasticLoadBalancingV2::LoadBalancer",
+    ]).describe(
+      "Resource Type associated with the Organization Telemetry Rule",
+    ),
+    TelemetryType: z.enum(["Logs"]).describe(
+      "Telemetry Type associated with the Organization Telemetry Rule",
+    ),
+    TelemetrySourceTypes: z.array(
+      z.enum([
+        "VPC_FLOW_LOGS",
+        "ROUTE53_RESOLVER_QUERY_LOGS",
+        "EKS_AUDIT_LOGS",
+        "EKS_AUTHENTICATOR_LOGS",
+        "EKS_CONTROLLER_MANAGER_LOGS",
+        "EKS_SCHEDULER_LOGS",
+        "EKS_API_LOGS",
+      ]),
+    ).describe("The telemetry source types for a telemetry rule.").optional(),
+    DestinationConfiguration: TelemetryDestinationConfigurationSchema.describe(
+      "The destination configuration for telemetry data",
+    ).optional(),
+    Scope: z.string().describe(
+      "Selection Criteria on scope level for rule application",
+    ).optional(),
+    SelectionCriteria: z.string().describe(
+      "Selection Criteria on resource level for rule application",
+    ).optional(),
+  }).describe("The telemetry rule"),
+  Tags: z.array(TagSchema).describe(
+    "An array of key-value pairs to apply to this resource",
+  ).optional(),
+});
+
+const StateSchema = z.object({
+  RuleName: z.string().optional(),
+  Rule: z.object({
+    ResourceType: z.string(),
+    TelemetryType: z.string(),
+    TelemetrySourceTypes: z.array(z.string()),
+    DestinationConfiguration: TelemetryDestinationConfigurationSchema,
+    Scope: z.string(),
+    SelectionCriteria: z.string(),
+  }).optional(),
+  RuleArn: z.string(),
+  Tags: z.array(TagSchema).optional(),
+}).passthrough();
+
+type StateData = z.infer<typeof StateSchema>;
+
+const InputsSchema = z.object({
+  name: z.string().optional(),
+  RuleName: z.string().min(1).max(100).regex(new RegExp("^[0-9A-Za-z-]+$"))
+    .describe("The name of the organization telemetry rule").optional(),
+  Rule: z.object({
+    ResourceType: z.enum([
+      "AWS::EC2::VPC",
+      "AWS::WAFv2::WebACL",
+      "AWS::CloudTrail",
+      "AWS::EKS::Cluster",
+      "AWS::ElasticLoadBalancingV2::LoadBalancer",
+    ]).describe("Resource Type associated with the Organization Telemetry Rule")
+      .optional(),
+    TelemetryType: z.enum(["Logs"]).describe(
+      "Telemetry Type associated with the Organization Telemetry Rule",
+    ).optional(),
+    TelemetrySourceTypes: z.array(
+      z.enum([
+        "VPC_FLOW_LOGS",
+        "ROUTE53_RESOLVER_QUERY_LOGS",
+        "EKS_AUDIT_LOGS",
+        "EKS_AUTHENTICATOR_LOGS",
+        "EKS_CONTROLLER_MANAGER_LOGS",
+        "EKS_SCHEDULER_LOGS",
+        "EKS_API_LOGS",
+      ]),
+    ).describe("The telemetry source types for a telemetry rule.").optional(),
+    DestinationConfiguration: TelemetryDestinationConfigurationSchema.describe(
+      "The destination configuration for telemetry data",
+    ).optional(),
+    Scope: z.string().describe(
+      "Selection Criteria on scope level for rule application",
+    ).optional(),
+    SelectionCriteria: z.string().describe(
+      "Selection Criteria on resource level for rule application",
+    ).optional(),
+  }).describe("The telemetry rule").optional(),
+  Tags: z.array(TagSchema).describe(
+    "An array of key-value pairs to apply to this resource",
+  ).optional(),
+});
+
+export const model = {
+  type: "@swamp/aws/observabilityadmin/organization-telemetry-rule",
+  version: "2026.03.19.1",
+  globalArguments: GlobalArgsSchema,
+  inputsSchema: InputsSchema,
+  resources: {
+    state: {
+      description:
+        "ObservabilityAdmin OrganizationTelemetryRule resource state",
+      schema: StateSchema,
+      lifetime: "infinite",
+      garbageCollection: 10,
+    },
+  },
+  methods: {
+    create: {
+      description: "Create a ObservabilityAdmin OrganizationTelemetryRule",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const desiredState: Record<string, unknown> = {};
+        for (const [key, value] of Object.entries(g)) {
+          if (key === "name") continue;
+          if (value !== undefined) desiredState[key] = value;
+        }
+        const result = await createResource(
+          "AWS::ObservabilityAdmin::OrganizationTelemetryRule",
+          desiredState,
+        ) as StateData;
+        const instanceName = g.name?.toString() ?? "current";
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    get: {
+      description: "Get a ObservabilityAdmin OrganizationTelemetryRule",
+      arguments: z.object({
+        identifier: z.string().describe(
+          "The primary identifier of the ObservabilityAdmin OrganizationTelemetryRule",
+        ),
+      }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const result = await readResource(
+          "AWS::ObservabilityAdmin::OrganizationTelemetryRule",
+          args.identifier,
+        ) as StateData;
+        const instanceName = context.globalArgs.name?.toString() ??
+          args.identifier;
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    update: {
+      description: "Update a ObservabilityAdmin OrganizationTelemetryRule",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const instanceName = g.name?.toString() ?? "current";
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          instanceName,
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        const identifier = existing.RuleArn?.toString();
+        if (!identifier) {
+          throw new Error("No identifier found in existing state");
+        }
+        const currentState = await readResource(
+          "AWS::ObservabilityAdmin::OrganizationTelemetryRule",
+          identifier,
+        ) as StateData;
+        const desiredState: Record<string, unknown> = { ...currentState };
+        for (const [key, value] of Object.entries(g)) {
+          if (key === "name") continue;
+          if (value !== undefined) desiredState[key] = value;
+        }
+        const result = await updateResource(
+          "AWS::ObservabilityAdmin::OrganizationTelemetryRule",
+          identifier,
+          currentState,
+          desiredState,
+          ["RuleName"],
+        );
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    delete: {
+      description: "Delete a ObservabilityAdmin OrganizationTelemetryRule",
+      arguments: z.object({
+        identifier: z.string().describe(
+          "The primary identifier of the ObservabilityAdmin OrganizationTelemetryRule",
+        ),
+      }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const { existed } = await deleteResource(
+          "AWS::ObservabilityAdmin::OrganizationTelemetryRule",
+          args.identifier,
+        );
+        const instanceName = context.globalArgs.name?.toString() ??
+          args.identifier;
+        const handle = await context.writeResource("state", instanceName, {
+          identifier: args.identifier,
+          existed,
+          status: existed ? "deleted" : "not_found",
+          deletedAt: new Date().toISOString(),
+        });
+        return { dataHandles: [handle] };
+      },
+    },
+    sync: {
+      description:
+        "Sync ObservabilityAdmin OrganizationTelemetryRule state from AWS",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const instanceName = g.name?.toString() ?? "current";
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          instanceName,
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        const identifier = existing.RuleArn?.toString();
+        if (!identifier) {
+          throw new Error("No identifier found in existing state");
+        }
+        try {
+          const result = await readResource(
+            "AWS::ObservabilityAdmin::OrganizationTelemetryRule",
+            identifier,
+          ) as StateData;
+          const handle = await context.writeResource(
+            "state",
+            instanceName,
+            result,
+          );
+          return { dataHandles: [handle] };
+        } catch (error: unknown) {
+          if (isResourceNotFoundError(error)) {
+            const handle = await context.writeResource("state", instanceName, {
+              identifier,
+              status: "not_found",
+              syncedAt: new Date().toISOString(),
+            });
+            return { dataHandles: [handle] };
+          }
+          throw error;
+        }
+      },
+    },
+  },
+};

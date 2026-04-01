@@ -1,0 +1,21 @@
+# Auto-generated manifest. Re-generate with the appropriate deno task.
+manifestVersion: 1
+name: "@swamp/aws/smsvoice"
+version: "2026.03.19.1"
+description: "AWS SMSVOICE infrastructure models"
+labels:
+  - aws
+  - smsvoice
+  - cloud
+  - infrastructure
+releaseNotes: |
+  - Updated: configuration_set, opt_out_list, protect_configuration, resource_policy, sender_id
+models:
+  - configuration_set.ts
+  - opt_out_list.ts
+  - protect_configuration.ts
+  - resource_policy.ts
+  - sender_id.ts
+additionalFiles:
+  - LICENSE.txt
+  - README.md

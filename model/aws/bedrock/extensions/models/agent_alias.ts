@@ -1,0 +1,261 @@
+// Auto-generated extension model for @swamp/aws/bedrock/agent-alias
+// Do not edit manually. Re-generate with: deno task generate:aws
+
+// deno-lint-ignore-file no-explicit-any
+
+import { z } from "zod";
+import {
+  createResource,
+  deleteResource,
+  isResourceNotFoundError,
+  readResource,
+  updateResource,
+} from "./_lib/aws.ts";
+
+export const AgentAliasRoutingConfigurationListItemSchema = z.object({
+  AgentVersion: z.string().min(1).max(5).regex(
+    new RegExp("^(DRAFT|[0-9]{0,4}[1-9][0-9]{0,4})$"),
+  ).describe("Agent Version."),
+});
+
+const GlobalArgsSchema = z.object({
+  name: z.string().describe(
+    "Instance name for this resource (used as the unique identifier in the factory pattern)",
+  ),
+  AgentAliasName: z.string().regex(new RegExp("^([0-9a-zA-Z][_-]?){1,100}$"))
+    .describe("Name for a resource."),
+  AgentId: z.string().regex(new RegExp("^[0-9a-zA-Z]{10}$")).describe(
+    "Identifier for a resource.",
+  ),
+  Description: z.string().min(1).max(200).describe(
+    "Description of the Resource.",
+  ).optional(),
+  RoutingConfiguration: z.array(AgentAliasRoutingConfigurationListItemSchema)
+    .describe("Routing configuration for an Agent alias.").optional(),
+  Tags: z.record(
+    z.string(),
+    z.string().min(0).max(256).regex(new RegExp("^[a-zA-Z0-9\\s._:/=+@-]*$")),
+  ).describe("A map of tag keys and values").optional(),
+});
+
+const StateSchema = z.object({
+  AgentAliasArn: z.string().optional(),
+  AgentAliasHistoryEvents: z.array(z.object({
+    RoutingConfiguration: z.array(AgentAliasRoutingConfigurationListItemSchema),
+    EndDate: z.string(),
+    StartDate: z.string(),
+  })).optional(),
+  AgentAliasId: z.string(),
+  AgentAliasName: z.string().optional(),
+  AgentAliasStatus: z.string().optional(),
+  AgentId: z.string(),
+  CreatedAt: z.string().optional(),
+  Description: z.string().optional(),
+  RoutingConfiguration: z.array(AgentAliasRoutingConfigurationListItemSchema)
+    .optional(),
+  Tags: z.record(z.string(), z.unknown()).optional(),
+  UpdatedAt: z.string().optional(),
+}).passthrough();
+
+type StateData = z.infer<typeof StateSchema>;
+
+const InputsSchema = z.object({
+  name: z.string().optional(),
+  AgentAliasName: z.string().regex(new RegExp("^([0-9a-zA-Z][_-]?){1,100}$"))
+    .describe("Name for a resource.").optional(),
+  AgentId: z.string().regex(new RegExp("^[0-9a-zA-Z]{10}$")).describe(
+    "Identifier for a resource.",
+  ).optional(),
+  Description: z.string().min(1).max(200).describe(
+    "Description of the Resource.",
+  ).optional(),
+  RoutingConfiguration: z.array(AgentAliasRoutingConfigurationListItemSchema)
+    .describe("Routing configuration for an Agent alias.").optional(),
+  Tags: z.record(
+    z.string(),
+    z.string().min(0).max(256).regex(new RegExp("^[a-zA-Z0-9\\s._:/=+@-]*$")),
+  ).describe("A map of tag keys and values").optional(),
+});
+
+export const model = {
+  type: "@swamp/aws/bedrock/agent-alias",
+  version: "2026.03.19.1",
+  globalArguments: GlobalArgsSchema,
+  inputsSchema: InputsSchema,
+  resources: {
+    state: {
+      description: "Bedrock AgentAlias resource state",
+      schema: StateSchema,
+      lifetime: "infinite",
+      garbageCollection: 10,
+    },
+  },
+  methods: {
+    create: {
+      description: "Create a Bedrock AgentAlias",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const desiredState: Record<string, unknown> = {};
+        for (const [key, value] of Object.entries(g)) {
+          if (key === "name") continue;
+          if (value !== undefined) desiredState[key] = value;
+        }
+        const result = await createResource(
+          "AWS::Bedrock::AgentAlias",
+          desiredState,
+        ) as StateData;
+        const instanceName = g.name?.toString() ?? "current";
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    get: {
+      description: "Get a Bedrock AgentAlias",
+      arguments: z.object({
+        identifier: z.string().describe(
+          "The primary identifier of the Bedrock AgentAlias",
+        ),
+      }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const result = await readResource(
+          "AWS::Bedrock::AgentAlias",
+          args.identifier,
+        ) as StateData;
+        const instanceName = context.globalArgs.name?.toString() ??
+          args.identifier;
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    update: {
+      description: "Update a Bedrock AgentAlias",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const instanceName = g.name?.toString() ?? "current";
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          instanceName,
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        const idParts = [
+          existing.AgentId?.toString(),
+          existing.AgentAliasId?.toString(),
+        ];
+        if (idParts.some((p) => !p)) {
+          throw new Error(
+            "Missing primary identifier fields in existing state",
+          );
+        }
+        const identifier = idParts.join("|");
+        const currentState = await readResource(
+          "AWS::Bedrock::AgentAlias",
+          identifier,
+        ) as StateData;
+        const desiredState: Record<string, unknown> = { ...currentState };
+        for (const [key, value] of Object.entries(g)) {
+          if (key === "name") continue;
+          if (value !== undefined) desiredState[key] = value;
+        }
+        const result = await updateResource(
+          "AWS::Bedrock::AgentAlias",
+          identifier,
+          currentState,
+          desiredState,
+          ["AgentId"],
+        );
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    delete: {
+      description: "Delete a Bedrock AgentAlias",
+      arguments: z.object({
+        identifier: z.string().describe(
+          "The primary identifier of the Bedrock AgentAlias",
+        ),
+      }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const { existed } = await deleteResource(
+          "AWS::Bedrock::AgentAlias",
+          args.identifier,
+        );
+        const instanceName = context.globalArgs.name?.toString() ??
+          args.identifier;
+        const handle = await context.writeResource("state", instanceName, {
+          identifier: args.identifier,
+          existed,
+          status: existed ? "deleted" : "not_found",
+          deletedAt: new Date().toISOString(),
+        });
+        return { dataHandles: [handle] };
+      },
+    },
+    sync: {
+      description: "Sync Bedrock AgentAlias state from AWS",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const instanceName = g.name?.toString() ?? "current";
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          instanceName,
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        const idParts = [
+          existing.AgentId?.toString(),
+          existing.AgentAliasId?.toString(),
+        ];
+        if (idParts.some((p) => !p)) {
+          throw new Error(
+            "Missing primary identifier fields in existing state",
+          );
+        }
+        const identifier = idParts.join("|");
+        try {
+          const result = await readResource(
+            "AWS::Bedrock::AgentAlias",
+            identifier,
+          ) as StateData;
+          const handle = await context.writeResource(
+            "state",
+            instanceName,
+            result,
+          );
+          return { dataHandles: [handle] };
+        } catch (error: unknown) {
+          if (isResourceNotFoundError(error)) {
+            const handle = await context.writeResource("state", instanceName, {
+              identifier,
+              status: "not_found",
+              syncedAt: new Date().toISOString(),
+            });
+            return { dataHandles: [handle] };
+          }
+          throw error;
+        }
+      },
+    },
+  },
+};

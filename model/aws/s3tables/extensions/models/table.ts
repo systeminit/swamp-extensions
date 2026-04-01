@@ -1,0 +1,405 @@
+// Auto-generated extension model for @swamp/aws/s3tables/table
+// Do not edit manually. Re-generate with: deno task generate:aws
+
+// deno-lint-ignore-file no-explicit-any
+
+import { z } from "zod";
+import {
+  createResource,
+  deleteResource,
+  isResourceNotFoundError,
+  readResource,
+  updateResource,
+} from "./_lib/aws.ts";
+
+export const SchemaFieldSchema = z.object({
+  Type: z.string().describe("The field type"),
+  Required: z.boolean().describe(
+    "A Boolean value that specifies whether values are required for each row in this field",
+  ).optional(),
+  Id: z.number().int().describe("The unique identifier for the field")
+    .optional(),
+  Name: z.string().describe("The name of the field"),
+});
+
+export const IcebergSchemaSchema = z.object({
+  SchemaFieldList: z.array(SchemaFieldSchema).describe(
+    "Contains details about the schema for an Iceberg table",
+  ),
+});
+
+export const IcebergSortFieldSchema = z.object({
+  SourceId: z.number().int().describe("The source column ID to sort on"),
+  NullOrder: z.enum(["nulls-first", "nulls-last"]).describe(
+    "Null value ordering (nulls-first or nulls-last)",
+  ),
+  Transform: z.string().describe("The sort transform function"),
+  Direction: z.enum(["asc", "desc"]).describe("Sort direction (asc or desc)"),
+});
+
+export const IcebergSortOrderSchema = z.object({
+  Fields: z.array(IcebergSortFieldSchema).describe("List of sort fields"),
+  OrderId: z.number().int().describe(
+    "The sort order ID (defaults to 1 if not specified, 0 is reserved for unsorted)",
+  ).optional(),
+});
+
+export const IcebergPartitionFieldSchema = z.object({
+  SourceId: z.number().int().describe("The source column ID to partition on"),
+  FieldId: z.number().int().describe(
+    "The partition field ID (auto-assigned starting from 1000 if not specified)",
+  ).optional(),
+  Transform: z.string().describe(
+    "The partition transform function (identity, bucket[N], truncate[N], year, month, day, hour)",
+  ),
+  Name: z.string().describe("The name of the partition field"),
+});
+
+export const IcebergPartitionSpecSchema = z.object({
+  Fields: z.array(IcebergPartitionFieldSchema).describe(
+    "List of partition fields",
+  ),
+  SpecId: z.number().int().describe(
+    "The partition spec ID (defaults to 0 if not specified)",
+  ).optional(),
+});
+
+export const TagSchema = z.object({
+  Value: z.string().max(256).describe(
+    "Tag value must be between 0 to 256 characters in length. Tag value can only contain alphanumeric characters, spaces, _,., /, =, +, -, and @.",
+  ),
+  Key: z.string().min(1).max(128).describe(
+    "Tag key must be between 1 to 128 characters in length. Tag key cannot start with 'aws:' and can only contain alphanumeric characters, spaces, _,., /, =, +, -, and @.",
+  ),
+});
+
+const GlobalArgsSchema = z.object({
+  name: z.string().describe(
+    "Instance name for this resource (used as the unique identifier in the factory pattern)",
+  ),
+  WithoutMetadata: z.enum(["Yes"]).describe(
+    "Indicates that you don't want to specify a schema for the table. This property is mutually exclusive to 'IcebergMetadata', and its only possible value is 'Yes'.",
+  ).optional(),
+  StorageClassConfiguration: z.object({
+    StorageClass: z.enum(["STANDARD", "INTELLIGENT_TIERING"]).describe(
+      "The storage class for the table",
+    ).optional(),
+  }).describe("Specifies storage class settings for the table").optional(),
+  Compaction: z.object({
+    Status: z.enum(["enabled", "disabled"]).describe(
+      "Indicates whether the Compaction maintenance action is enabled.",
+    ).optional(),
+    TargetFileSizeMB: z.number().int().min(64).describe(
+      "The target file size for the table in MB.",
+    ).optional(),
+  }).describe(
+    "Settings governing the Compaction maintenance action. Contains details about the compaction settings for an Iceberg table.",
+  ).optional(),
+  Namespace: z.string().describe("The namespace that the table belongs to."),
+  TableName: z.string().describe("The name for the table."),
+  TableBucketARN: z.string().describe(
+    "The Amazon Resource Name (ARN) of the specified table bucket.",
+  ),
+  OpenTableFormat: z.enum(["ICEBERG"]).describe("Format of the table."),
+  IcebergMetadata: z.object({
+    IcebergSchema: IcebergSchemaSchema.describe(
+      "Contains details about the schema for an Iceberg table",
+    ),
+    IcebergSortOrder: IcebergSortOrderSchema.describe(
+      "Sort order specification for an Iceberg table",
+    ).optional(),
+    IcebergPartitionSpec: IcebergPartitionSpecSchema.describe(
+      "Partition specification for an Iceberg table",
+    ).optional(),
+    TableProperties: z.record(z.string(), z.string()).describe(
+      "Iceberg table properties (e.g., format-version, write.parquet.compression-codec)",
+    ).optional(),
+  }).describe("Contains details about the metadata for an Iceberg table.")
+    .optional(),
+  SnapshotManagement: z.object({
+    Status: z.enum(["enabled", "disabled"]).describe(
+      "Indicates whether the SnapshotManagement maintenance action is enabled.",
+    ).optional(),
+    MinSnapshotsToKeep: z.number().int().min(1).describe(
+      "The minimum number of snapshots to keep.",
+    ).optional(),
+    MaxSnapshotAgeHours: z.number().int().min(1).describe(
+      "The maximum age of a snapshot before it can be expired.",
+    ).optional(),
+  }).describe(
+    "Contains details about the snapshot management settings for an Iceberg table. A snapshot is expired when it exceeds MinSnapshotsToKeep and MaxSnapshotAgeHours.",
+  ).optional(),
+  Tags: z.array(TagSchema).describe(
+    "User tags (key-value pairs) to associate with the table.",
+  ).optional(),
+});
+
+const StateSchema = z.object({
+  WithoutMetadata: z.string().optional(),
+  StorageClassConfiguration: z.object({
+    StorageClass: z.string(),
+  }).optional(),
+  Compaction: z.object({
+    Status: z.string(),
+    TargetFileSizeMB: z.number(),
+  }).optional(),
+  Namespace: z.string().optional(),
+  TableName: z.string().optional(),
+  TableBucketARN: z.string().optional(),
+  VersionToken: z.string().optional(),
+  TableARN: z.string(),
+  OpenTableFormat: z.string().optional(),
+  IcebergMetadata: z.object({
+    IcebergSchema: IcebergSchemaSchema,
+    IcebergSortOrder: IcebergSortOrderSchema,
+    IcebergPartitionSpec: IcebergPartitionSpecSchema,
+    TableProperties: z.record(z.string(), z.unknown()),
+  }).optional(),
+  WarehouseLocation: z.string().optional(),
+  SnapshotManagement: z.object({
+    Status: z.string(),
+    MinSnapshotsToKeep: z.number(),
+    MaxSnapshotAgeHours: z.number(),
+  }).optional(),
+  Tags: z.array(TagSchema).optional(),
+}).passthrough();
+
+type StateData = z.infer<typeof StateSchema>;
+
+const InputsSchema = z.object({
+  name: z.string().optional(),
+  WithoutMetadata: z.enum(["Yes"]).describe(
+    "Indicates that you don't want to specify a schema for the table. This property is mutually exclusive to 'IcebergMetadata', and its only possible value is 'Yes'.",
+  ).optional(),
+  StorageClassConfiguration: z.object({
+    StorageClass: z.enum(["STANDARD", "INTELLIGENT_TIERING"]).describe(
+      "The storage class for the table",
+    ).optional(),
+  }).describe("Specifies storage class settings for the table").optional(),
+  Compaction: z.object({
+    Status: z.enum(["enabled", "disabled"]).describe(
+      "Indicates whether the Compaction maintenance action is enabled.",
+    ).optional(),
+    TargetFileSizeMB: z.number().int().min(64).describe(
+      "The target file size for the table in MB.",
+    ).optional(),
+  }).describe(
+    "Settings governing the Compaction maintenance action. Contains details about the compaction settings for an Iceberg table.",
+  ).optional(),
+  Namespace: z.string().describe("The namespace that the table belongs to.")
+    .optional(),
+  TableName: z.string().describe("The name for the table.").optional(),
+  TableBucketARN: z.string().describe(
+    "The Amazon Resource Name (ARN) of the specified table bucket.",
+  ).optional(),
+  OpenTableFormat: z.enum(["ICEBERG"]).describe("Format of the table.")
+    .optional(),
+  IcebergMetadata: z.object({
+    IcebergSchema: IcebergSchemaSchema.describe(
+      "Contains details about the schema for an Iceberg table",
+    ).optional(),
+    IcebergSortOrder: IcebergSortOrderSchema.describe(
+      "Sort order specification for an Iceberg table",
+    ).optional(),
+    IcebergPartitionSpec: IcebergPartitionSpecSchema.describe(
+      "Partition specification for an Iceberg table",
+    ).optional(),
+    TableProperties: z.record(z.string(), z.string()).describe(
+      "Iceberg table properties (e.g., format-version, write.parquet.compression-codec)",
+    ).optional(),
+  }).describe("Contains details about the metadata for an Iceberg table.")
+    .optional(),
+  SnapshotManagement: z.object({
+    Status: z.enum(["enabled", "disabled"]).describe(
+      "Indicates whether the SnapshotManagement maintenance action is enabled.",
+    ).optional(),
+    MinSnapshotsToKeep: z.number().int().min(1).describe(
+      "The minimum number of snapshots to keep.",
+    ).optional(),
+    MaxSnapshotAgeHours: z.number().int().min(1).describe(
+      "The maximum age of a snapshot before it can be expired.",
+    ).optional(),
+  }).describe(
+    "Contains details about the snapshot management settings for an Iceberg table. A snapshot is expired when it exceeds MinSnapshotsToKeep and MaxSnapshotAgeHours.",
+  ).optional(),
+  Tags: z.array(TagSchema).describe(
+    "User tags (key-value pairs) to associate with the table.",
+  ).optional(),
+});
+
+export const model = {
+  type: "@swamp/aws/s3tables/table",
+  version: "2026.03.19.1",
+  globalArguments: GlobalArgsSchema,
+  inputsSchema: InputsSchema,
+  resources: {
+    state: {
+      description: "S3Tables Table resource state",
+      schema: StateSchema,
+      lifetime: "infinite",
+      garbageCollection: 10,
+    },
+  },
+  methods: {
+    create: {
+      description: "Create a S3Tables Table",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const desiredState: Record<string, unknown> = {};
+        for (const [key, value] of Object.entries(g)) {
+          if (key === "name") continue;
+          if (value !== undefined) desiredState[key] = value;
+        }
+        const result = await createResource(
+          "AWS::S3Tables::Table",
+          desiredState,
+        ) as StateData;
+        const instanceName = g.name?.toString() ?? "current";
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    get: {
+      description: "Get a S3Tables Table",
+      arguments: z.object({
+        identifier: z.string().describe(
+          "The primary identifier of the S3Tables Table",
+        ),
+      }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const result = await readResource(
+          "AWS::S3Tables::Table",
+          args.identifier,
+        ) as StateData;
+        const instanceName = context.globalArgs.name?.toString() ??
+          args.identifier;
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    update: {
+      description: "Update a S3Tables Table",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const instanceName = g.name?.toString() ?? "current";
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          instanceName,
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        const identifier = existing.TableARN?.toString();
+        if (!identifier) {
+          throw new Error("No identifier found in existing state");
+        }
+        const currentState = await readResource(
+          "AWS::S3Tables::Table",
+          identifier,
+        ) as StateData;
+        const desiredState: Record<string, unknown> = { ...currentState };
+        for (const [key, value] of Object.entries(g)) {
+          if (key === "name") continue;
+          if (value !== undefined) desiredState[key] = value;
+        }
+        const result = await updateResource(
+          "AWS::S3Tables::Table",
+          identifier,
+          currentState,
+          desiredState,
+          [
+            "TableBucketARN",
+            "OpenTableFormat",
+            "IcebergMetadata",
+            "WithoutMetadata",
+            "StorageClassConfiguration",
+          ],
+        );
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    delete: {
+      description: "Delete a S3Tables Table",
+      arguments: z.object({
+        identifier: z.string().describe(
+          "The primary identifier of the S3Tables Table",
+        ),
+      }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const { existed } = await deleteResource(
+          "AWS::S3Tables::Table",
+          args.identifier,
+        );
+        const instanceName = context.globalArgs.name?.toString() ??
+          args.identifier;
+        const handle = await context.writeResource("state", instanceName, {
+          identifier: args.identifier,
+          existed,
+          status: existed ? "deleted" : "not_found",
+          deletedAt: new Date().toISOString(),
+        });
+        return { dataHandles: [handle] };
+      },
+    },
+    sync: {
+      description: "Sync S3Tables Table state from AWS",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const instanceName = g.name?.toString() ?? "current";
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          instanceName,
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        const identifier = existing.TableARN?.toString();
+        if (!identifier) {
+          throw new Error("No identifier found in existing state");
+        }
+        try {
+          const result = await readResource(
+            "AWS::S3Tables::Table",
+            identifier,
+          ) as StateData;
+          const handle = await context.writeResource(
+            "state",
+            instanceName,
+            result,
+          );
+          return { dataHandles: [handle] };
+        } catch (error: unknown) {
+          if (isResourceNotFoundError(error)) {
+            const handle = await context.writeResource("state", instanceName, {
+              identifier,
+              status: "not_found",
+              syncedAt: new Date().toISOString(),
+            });
+            return { dataHandles: [handle] };
+          }
+          throw error;
+        }
+      },
+    },
+  },
+};

@@ -1,0 +1,19 @@
+# Auto-generated manifest. Re-generate with the appropriate deno task.
+manifestVersion: 1
+name: "@swamp/aws/amplify"
+version: "2026.03.19.1"
+description: "AWS AMPLIFY infrastructure models"
+labels:
+  - aws
+  - amplify
+  - cloud
+  - infrastructure
+releaseNotes: |
+  - Updated: app, branch, domain
+models:
+  - app.ts
+  - branch.ts
+  - domain.ts
+additionalFiles:
+  - LICENSE.txt
+  - README.md

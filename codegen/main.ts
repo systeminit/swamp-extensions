@@ -1,4 +1,4 @@
-// CLI entry point for Hetzner and DigitalOcean model generation
+// CLI entry point for cloud provider model generation
 
 import { Command } from "@cliffy/command";
 import { fetchSchema } from "./commands/fetchSchema.ts";
@@ -10,7 +10,7 @@ await new Command()
   .name("codegen")
   .version("0.1.0")
   .description(
-    "Generate swamp extension models for Hetzner Cloud and DigitalOcean",
+    "Generate swamp extension models for AWS, Hetzner Cloud, and DigitalOcean",
   )
   .command(
     "generate-models",
@@ -30,10 +30,13 @@ await new Command()
         "--schema-path <path:string>",
         "Path to the schema JSON file",
       )
-      .action(async (options) => {
+      .arguments("[...services:string]")
+      .action(async (options, ...services) => {
+        const serviceFilter = services.length > 0 ? services : undefined;
         await generateModels({
           provider: options.provider,
           outputDir: options.outputDir,
+          services: serviceFilter,
           schemaPath: options.schemaPath,
         });
       }),

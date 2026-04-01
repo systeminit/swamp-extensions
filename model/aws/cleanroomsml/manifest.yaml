@@ -1,0 +1,19 @@
+# Auto-generated manifest. Re-generate with the appropriate deno task.
+manifestVersion: 1
+name: "@swamp/aws/cleanroomsml"
+version: "2026.03.19.1"
+description: "AWS CLEANROOMSML infrastructure models"
+labels:
+  - aws
+  - cleanroomsml
+  - cloud
+  - infrastructure
+releaseNotes: |
+  - Updated: configured_model_algorithm, configured_model_algorithm_association, training_dataset
+models:
+  - configured_model_algorithm.ts
+  - configured_model_algorithm_association.ts
+  - training_dataset.ts
+additionalFiles:
+  - LICENSE.txt
+  - README.md

@@ -1,0 +1,19 @@
+# Auto-generated manifest. Re-generate with the appropriate deno task.
+manifestVersion: 1
+name: "@swamp/aws/appflow"
+version: "2026.03.19.1"
+description: "AWS APPFLOW infrastructure models"
+labels:
+  - aws
+  - appflow
+  - cloud
+  - infrastructure
+releaseNotes: |
+  - Updated: connector, connector_profile, flow
+models:
+  - connector.ts
+  - connector_profile.ts
+  - flow.ts
+additionalFiles:
+  - LICENSE.txt
+  - README.md

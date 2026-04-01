@@ -1,0 +1,19 @@
+# Auto-generated manifest. Re-generate with the appropriate deno task.
+manifestVersion: 1
+name: "@swamp/aws/kms"
+version: "2026.03.19.1"
+description: "AWS KMS infrastructure models"
+labels:
+  - aws
+  - kms
+  - cloud
+  - infrastructure
+releaseNotes: |
+  - Updated: alias, key, replica_key
+models:
+  - alias.ts
+  - key.ts
+  - replica_key.ts
+additionalFiles:
+  - LICENSE.txt
+  - README.md

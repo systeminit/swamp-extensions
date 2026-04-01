@@ -1,0 +1,19 @@
+# Auto-generated manifest. Re-generate with the appropriate deno task.
+manifestVersion: 1
+name: "@swamp/aws/supportapp"
+version: "2026.03.19.1"
+description: "AWS SUPPORTAPP infrastructure models"
+labels:
+  - aws
+  - supportapp
+  - cloud
+  - infrastructure
+releaseNotes: |
+  - Updated: account_alias, slack_channel_configuration, slack_workspace_configuration
+models:
+  - account_alias.ts
+  - slack_channel_configuration.ts
+  - slack_workspace_configuration.ts
+additionalFiles:
+  - LICENSE.txt
+  - README.md

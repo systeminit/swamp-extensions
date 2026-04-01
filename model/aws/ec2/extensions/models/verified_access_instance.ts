@@ -1,0 +1,345 @@
+// Auto-generated extension model for @swamp/aws/ec2/verified-access-instance
+// Do not edit manually. Re-generate with: deno task generate:aws
+
+// deno-lint-ignore-file no-explicit-any
+
+import { z } from "zod";
+import {
+  createResource,
+  deleteResource,
+  isResourceNotFoundError,
+  readResource,
+  updateResource,
+} from "./_lib/aws.ts";
+
+export const VerifiedAccessTrustProviderSchema = z.object({
+  VerifiedAccessTrustProviderId: z.string().describe(
+    "The ID of the trust provider.",
+  ).optional(),
+  Description: z.string().describe("The description of trust provider.")
+    .optional(),
+  TrustProviderType: z.string().describe(
+    "The type of trust provider (user- or device-based).",
+  ).optional(),
+  UserTrustProviderType: z.string().describe(
+    "The type of user-based trust provider.",
+  ).optional(),
+  DeviceTrustProviderType: z.string().describe(
+    "The type of device-based trust provider.",
+  ).optional(),
+});
+
+export const TagSchema = z.object({
+  Key: z.string().min(1).max(128).describe(
+    "The key name of the tag. You can specify a value that is 1 to 128 Unicode characters in length and cannot be prefixed with aws:. You can use any of the following characters: the set of Unicode letters, digits, whitespace, _,., /, =, +, and -.",
+  ),
+  Value: z.string().min(0).max(256).describe(
+    "The value for the tag. You can specify a value that is 0 to 256 Unicode characters in length and cannot be prefixed with aws:. You can use any of the following characters: the set of Unicode letters, digits, whitespace, _,., /, =, +, and -.",
+  ),
+});
+
+const GlobalArgsSchema = z.object({
+  name: z.string().describe(
+    "Instance name for this resource (used as the unique identifier in the factory pattern)",
+  ),
+  VerifiedAccessTrustProviders: z.array(VerifiedAccessTrustProviderSchema)
+    .describe("AWS Verified Access trust providers.").optional(),
+  VerifiedAccessTrustProviderIds: z.array(z.string()).describe(
+    "The IDs of the AWS Verified Access trust providers.",
+  ).optional(),
+  Description: z.string().describe(
+    "A description for the AWS Verified Access instance.",
+  ).optional(),
+  LoggingConfigurations: z.object({
+    LogVersion: z.string().describe(
+      "Select log version for Verified Access logs.",
+    ).optional(),
+    IncludeTrustContext: z.boolean().describe(
+      "Include claims from trust providers in Verified Access logs.",
+    ).optional(),
+    CloudWatchLogs: z.object({
+      Enabled: z.boolean().describe("Indicates whether logging is enabled.")
+        .optional(),
+      LogGroup: z.string().describe("The ID of the CloudWatch Logs log group.")
+        .optional(),
+    }).describe("Sends Verified Access logs to CloudWatch Logs.").optional(),
+    KinesisDataFirehose: z.object({
+      Enabled: z.boolean().describe("Indicates whether logging is enabled.")
+        .optional(),
+      DeliveryStream: z.string().describe("The ID of the delivery stream.")
+        .optional(),
+    }).describe("Sends Verified Access logs to Kinesis.").optional(),
+    S3: z.object({
+      Enabled: z.boolean().describe("Indicates whether logging is enabled.")
+        .optional(),
+      BucketName: z.string().describe("The bucket name.").optional(),
+      BucketOwner: z.string().describe(
+        "The ID of the AWS account that owns the Amazon S3 bucket.",
+      ).optional(),
+      Prefix: z.string().describe("The bucket prefix.").optional(),
+    }).describe("Sends Verified Access logs to Amazon S3.").optional(),
+  }).describe("The configuration options for AWS Verified Access instances.")
+    .optional(),
+  Tags: z.array(TagSchema).describe(
+    "An array of key-value pairs to apply to this resource.",
+  ).optional(),
+  FipsEnabled: z.boolean().describe("Indicates whether FIPS is enabled")
+    .optional(),
+  CidrEndpointsCustomSubDomain: z.string().describe(
+    "Introduce CidrEndpointsCustomSubDomain property to represent the domain (say, ava.my-company.com)",
+  ).optional(),
+});
+
+const StateSchema = z.object({
+  VerifiedAccessInstanceId: z.string(),
+  VerifiedAccessTrustProviders: z.array(VerifiedAccessTrustProviderSchema)
+    .optional(),
+  VerifiedAccessTrustProviderIds: z.array(z.string()).optional(),
+  CreationTime: z.string().optional(),
+  LastUpdatedTime: z.string().optional(),
+  Description: z.string().optional(),
+  LoggingConfigurations: z.object({
+    LogVersion: z.string(),
+    IncludeTrustContext: z.boolean(),
+    CloudWatchLogs: z.object({
+      Enabled: z.boolean(),
+      LogGroup: z.string(),
+    }),
+    KinesisDataFirehose: z.object({
+      Enabled: z.boolean(),
+      DeliveryStream: z.string(),
+    }),
+    S3: z.object({
+      Enabled: z.boolean(),
+      BucketName: z.string(),
+      BucketOwner: z.string(),
+      Prefix: z.string(),
+    }),
+  }).optional(),
+  Tags: z.array(TagSchema).optional(),
+  FipsEnabled: z.boolean().optional(),
+  CidrEndpointsCustomSubDomain: z.string().optional(),
+  CidrEndpointsCustomSubDomainNameServers: z.array(z.string()).optional(),
+}).passthrough();
+
+type StateData = z.infer<typeof StateSchema>;
+
+const InputsSchema = z.object({
+  name: z.string().optional(),
+  VerifiedAccessTrustProviders: z.array(VerifiedAccessTrustProviderSchema)
+    .describe("AWS Verified Access trust providers.").optional(),
+  VerifiedAccessTrustProviderIds: z.array(z.string()).describe(
+    "The IDs of the AWS Verified Access trust providers.",
+  ).optional(),
+  Description: z.string().describe(
+    "A description for the AWS Verified Access instance.",
+  ).optional(),
+  LoggingConfigurations: z.object({
+    LogVersion: z.string().describe(
+      "Select log version for Verified Access logs.",
+    ).optional(),
+    IncludeTrustContext: z.boolean().describe(
+      "Include claims from trust providers in Verified Access logs.",
+    ).optional(),
+    CloudWatchLogs: z.object({
+      Enabled: z.boolean().describe("Indicates whether logging is enabled.")
+        .optional(),
+      LogGroup: z.string().describe("The ID of the CloudWatch Logs log group.")
+        .optional(),
+    }).describe("Sends Verified Access logs to CloudWatch Logs.").optional(),
+    KinesisDataFirehose: z.object({
+      Enabled: z.boolean().describe("Indicates whether logging is enabled.")
+        .optional(),
+      DeliveryStream: z.string().describe("The ID of the delivery stream.")
+        .optional(),
+    }).describe("Sends Verified Access logs to Kinesis.").optional(),
+    S3: z.object({
+      Enabled: z.boolean().describe("Indicates whether logging is enabled.")
+        .optional(),
+      BucketName: z.string().describe("The bucket name.").optional(),
+      BucketOwner: z.string().describe(
+        "The ID of the AWS account that owns the Amazon S3 bucket.",
+      ).optional(),
+      Prefix: z.string().describe("The bucket prefix.").optional(),
+    }).describe("Sends Verified Access logs to Amazon S3.").optional(),
+  }).describe("The configuration options for AWS Verified Access instances.")
+    .optional(),
+  Tags: z.array(TagSchema).describe(
+    "An array of key-value pairs to apply to this resource.",
+  ).optional(),
+  FipsEnabled: z.boolean().describe("Indicates whether FIPS is enabled")
+    .optional(),
+  CidrEndpointsCustomSubDomain: z.string().describe(
+    "Introduce CidrEndpointsCustomSubDomain property to represent the domain (say, ava.my-company.com)",
+  ).optional(),
+});
+
+export const model = {
+  type: "@swamp/aws/ec2/verified-access-instance",
+  version: "2026.03.19.1",
+  globalArguments: GlobalArgsSchema,
+  inputsSchema: InputsSchema,
+  resources: {
+    state: {
+      description: "EC2 VerifiedAccessInstance resource state",
+      schema: StateSchema,
+      lifetime: "infinite",
+      garbageCollection: 10,
+    },
+  },
+  methods: {
+    create: {
+      description: "Create a EC2 VerifiedAccessInstance",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const desiredState: Record<string, unknown> = {};
+        for (const [key, value] of Object.entries(g)) {
+          if (key === "name") continue;
+          if (value !== undefined) desiredState[key] = value;
+        }
+        const result = await createResource(
+          "AWS::EC2::VerifiedAccessInstance",
+          desiredState,
+        ) as StateData;
+        const instanceName = g.name?.toString() ?? "current";
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    get: {
+      description: "Get a EC2 VerifiedAccessInstance",
+      arguments: z.object({
+        identifier: z.string().describe(
+          "The primary identifier of the EC2 VerifiedAccessInstance",
+        ),
+      }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const result = await readResource(
+          "AWS::EC2::VerifiedAccessInstance",
+          args.identifier,
+        ) as StateData;
+        const instanceName = context.globalArgs.name?.toString() ??
+          args.identifier;
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    update: {
+      description: "Update a EC2 VerifiedAccessInstance",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const instanceName = g.name?.toString() ?? "current";
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          instanceName,
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        const identifier = existing.VerifiedAccessInstanceId?.toString();
+        if (!identifier) {
+          throw new Error("No identifier found in existing state");
+        }
+        const currentState = await readResource(
+          "AWS::EC2::VerifiedAccessInstance",
+          identifier,
+        ) as StateData;
+        const desiredState: Record<string, unknown> = { ...currentState };
+        for (const [key, value] of Object.entries(g)) {
+          if (key === "name") continue;
+          if (value !== undefined) desiredState[key] = value;
+        }
+        const result = await updateResource(
+          "AWS::EC2::VerifiedAccessInstance",
+          identifier,
+          currentState,
+          desiredState,
+        );
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    delete: {
+      description: "Delete a EC2 VerifiedAccessInstance",
+      arguments: z.object({
+        identifier: z.string().describe(
+          "The primary identifier of the EC2 VerifiedAccessInstance",
+        ),
+      }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const { existed } = await deleteResource(
+          "AWS::EC2::VerifiedAccessInstance",
+          args.identifier,
+        );
+        const instanceName = context.globalArgs.name?.toString() ??
+          args.identifier;
+        const handle = await context.writeResource("state", instanceName, {
+          identifier: args.identifier,
+          existed,
+          status: existed ? "deleted" : "not_found",
+          deletedAt: new Date().toISOString(),
+        });
+        return { dataHandles: [handle] };
+      },
+    },
+    sync: {
+      description: "Sync EC2 VerifiedAccessInstance state from AWS",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const instanceName = g.name?.toString() ?? "current";
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          instanceName,
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        const identifier = existing.VerifiedAccessInstanceId?.toString();
+        if (!identifier) {
+          throw new Error("No identifier found in existing state");
+        }
+        try {
+          const result = await readResource(
+            "AWS::EC2::VerifiedAccessInstance",
+            identifier,
+          ) as StateData;
+          const handle = await context.writeResource(
+            "state",
+            instanceName,
+            result,
+          );
+          return { dataHandles: [handle] };
+        } catch (error: unknown) {
+          if (isResourceNotFoundError(error)) {
+            const handle = await context.writeResource("state", instanceName, {
+              identifier,
+              status: "not_found",
+              syncedAt: new Date().toISOString(),
+            });
+            return { dataHandles: [handle] };
+          }
+          throw error;
+        }
+      },
+    },
+  },
+};

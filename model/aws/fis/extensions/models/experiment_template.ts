@@ -1,0 +1,373 @@
+// Auto-generated extension model for @swamp/aws/fis/experiment-template
+// Do not edit manually. Re-generate with: deno task generate:aws
+
+// deno-lint-ignore-file no-explicit-any
+
+import { z } from "zod";
+import {
+  createResource,
+  deleteResource,
+  isResourceNotFoundError,
+  readResource,
+  updateResource,
+} from "./_lib/aws.ts";
+
+export const ExperimentTemplateTargetFilterSchema = z.object({
+  Path: z.string().max(256).describe("The attribute path for the filter."),
+  Values: z.array(z.string().max(128)).describe(
+    "The attribute values for the filter.",
+  ),
+});
+
+export const ExperimentTemplateTargetSchema = z.object({
+  ResourceType: z.string().max(64).describe(
+    "The AWS resource type. The resource type must be supported for the specified action.",
+  ),
+  ResourceArns: z.array(z.string().min(20).max(2048)).describe(
+    "The Amazon Resource Names (ARNs) of the target resources.",
+  ).optional(),
+  ResourceTags: z.record(z.string(), z.string().max(256)).optional(),
+  Parameters: z.record(z.string(), z.string().max(1024)).optional(),
+  Filters: z.array(ExperimentTemplateTargetFilterSchema).optional(),
+  SelectionMode: z.string().max(64).describe(
+    "Scopes the identified resources to a specific number of the resources at random, or a percentage of the resources.",
+  ),
+});
+
+export const ExperimentTemplateActionSchema = z.object({
+  ActionId: z.string().max(64).describe("The ID of the action."),
+  Description: z.string().max(512).describe("A description for the action.")
+    .optional(),
+  Parameters: z.record(z.string(), z.string().max(1024)).describe(
+    "The parameters for the action, if applicable.",
+  ).optional(),
+  Targets: z.record(z.string(), z.string().max(64)).describe(
+    "One or more targets for the action.",
+  ).optional(),
+  StartAfter: z.array(z.string().max(64)).describe(
+    "The names of the actions that must be completed before the current action starts.",
+  ).optional(),
+});
+
+export const ExperimentTemplateStopConditionSchema = z.object({
+  Source: z.string().max(64),
+  Value: z.string().min(20).max(2048).optional(),
+});
+
+export const CloudWatchDashboardSchema = z.object({
+  DashboardIdentifier: z.string().min(1).max(512),
+});
+
+const GlobalArgsSchema = z.object({
+  name: z.string().describe(
+    "Instance name for this resource (used as the unique identifier in the factory pattern)",
+  ),
+  Description: z.string().max(512).describe(
+    "A description for the experiment template.",
+  ),
+  Targets: z.record(z.string(), ExperimentTemplateTargetSchema).describe(
+    "The targets for the experiment.",
+  ),
+  Actions: z.record(z.string(), ExperimentTemplateActionSchema).describe(
+    "The actions for the experiment.",
+  ).optional(),
+  StopConditions: z.array(ExperimentTemplateStopConditionSchema).describe(
+    "One or more stop conditions.",
+  ),
+  LogConfiguration: z.object({
+    CloudWatchLogsConfiguration: z.object({
+      LogGroupArn: z.string().min(20).max(2048),
+    }).optional(),
+    S3Configuration: z.object({
+      BucketName: z.string().min(3).max(63),
+      Prefix: z.string().min(1).max(700).optional(),
+    }).optional(),
+    LogSchemaVersion: z.number().int().min(1),
+  }).optional(),
+  RoleArn: z.string().max(1224).describe(
+    "The Amazon Resource Name (ARN) of an IAM role that grants the AWS FIS service permission to perform service actions on your behalf.",
+  ),
+  Tags: z.record(z.string(), z.string().max(256)).optional(),
+  ExperimentOptions: z.object({
+    AccountTargeting: z.enum(["multi-account", "single-account"]).describe(
+      "The account targeting setting for the experiment template.",
+    ).optional(),
+    EmptyTargetResolutionMode: z.enum(["fail", "skip"]).describe(
+      "The target resolution failure mode for the experiment template.",
+    ).optional(),
+  }).optional(),
+  ExperimentReportConfiguration: z.object({
+    Outputs: z.object({
+      ExperimentReportS3Configuration: z.object({
+        BucketName: z.string().min(3).max(63),
+        Prefix: z.string().min(1).max(256).optional(),
+      }),
+    }),
+    DataSources: z.object({
+      CloudWatchDashboards: z.array(CloudWatchDashboardSchema).optional(),
+    }).optional(),
+    PreExperimentDuration: z.string().optional(),
+    PostExperimentDuration: z.string().optional(),
+  }).optional(),
+});
+
+const StateSchema = z.object({
+  Id: z.string(),
+  Description: z.string().optional(),
+  Targets: z.record(z.string(), z.unknown()).optional(),
+  Actions: z.record(z.string(), z.unknown()).optional(),
+  StopConditions: z.array(ExperimentTemplateStopConditionSchema).optional(),
+  LogConfiguration: z.object({
+    CloudWatchLogsConfiguration: z.object({
+      LogGroupArn: z.string(),
+    }),
+    S3Configuration: z.object({
+      BucketName: z.string(),
+      Prefix: z.string(),
+    }),
+    LogSchemaVersion: z.number(),
+  }).optional(),
+  RoleArn: z.string().optional(),
+  Tags: z.record(z.string(), z.unknown()).optional(),
+  ExperimentOptions: z.object({
+    AccountTargeting: z.string(),
+    EmptyTargetResolutionMode: z.string(),
+  }).optional(),
+  ExperimentReportConfiguration: z.object({
+    Outputs: z.object({
+      ExperimentReportS3Configuration: z.object({
+        BucketName: z.string(),
+        Prefix: z.string(),
+      }),
+    }),
+    DataSources: z.object({
+      CloudWatchDashboards: z.array(CloudWatchDashboardSchema),
+    }),
+    PreExperimentDuration: z.string(),
+    PostExperimentDuration: z.string(),
+  }).optional(),
+}).passthrough();
+
+type StateData = z.infer<typeof StateSchema>;
+
+const InputsSchema = z.object({
+  name: z.string().optional(),
+  Description: z.string().max(512).describe(
+    "A description for the experiment template.",
+  ).optional(),
+  Targets: z.record(z.string(), ExperimentTemplateTargetSchema).describe(
+    "The targets for the experiment.",
+  ).optional(),
+  Actions: z.record(z.string(), ExperimentTemplateActionSchema).describe(
+    "The actions for the experiment.",
+  ).optional(),
+  StopConditions: z.array(ExperimentTemplateStopConditionSchema).describe(
+    "One or more stop conditions.",
+  ).optional(),
+  LogConfiguration: z.object({
+    CloudWatchLogsConfiguration: z.object({
+      LogGroupArn: z.string().min(20).max(2048).optional(),
+    }).optional(),
+    S3Configuration: z.object({
+      BucketName: z.string().min(3).max(63).optional(),
+      Prefix: z.string().min(1).max(700).optional(),
+    }).optional(),
+    LogSchemaVersion: z.number().int().min(1).optional(),
+  }).optional(),
+  RoleArn: z.string().max(1224).describe(
+    "The Amazon Resource Name (ARN) of an IAM role that grants the AWS FIS service permission to perform service actions on your behalf.",
+  ).optional(),
+  Tags: z.record(z.string(), z.string().max(256)).optional(),
+  ExperimentOptions: z.object({
+    AccountTargeting: z.enum(["multi-account", "single-account"]).describe(
+      "The account targeting setting for the experiment template.",
+    ).optional(),
+    EmptyTargetResolutionMode: z.enum(["fail", "skip"]).describe(
+      "The target resolution failure mode for the experiment template.",
+    ).optional(),
+  }).optional(),
+  ExperimentReportConfiguration: z.object({
+    Outputs: z.object({
+      ExperimentReportS3Configuration: z.object({
+        BucketName: z.string().min(3).max(63).optional(),
+        Prefix: z.string().min(1).max(256).optional(),
+      }).optional(),
+    }).optional(),
+    DataSources: z.object({
+      CloudWatchDashboards: z.array(CloudWatchDashboardSchema).optional(),
+    }).optional(),
+    PreExperimentDuration: z.string().optional(),
+    PostExperimentDuration: z.string().optional(),
+  }).optional(),
+});
+
+export const model = {
+  type: "@swamp/aws/fis/experiment-template",
+  version: "2026.03.19.1",
+  globalArguments: GlobalArgsSchema,
+  inputsSchema: InputsSchema,
+  resources: {
+    state: {
+      description: "FIS ExperimentTemplate resource state",
+      schema: StateSchema,
+      lifetime: "infinite",
+      garbageCollection: 10,
+    },
+  },
+  methods: {
+    create: {
+      description: "Create a FIS ExperimentTemplate",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const desiredState: Record<string, unknown> = {};
+        for (const [key, value] of Object.entries(g)) {
+          if (key === "name") continue;
+          if (value !== undefined) desiredState[key] = value;
+        }
+        const result = await createResource(
+          "AWS::FIS::ExperimentTemplate",
+          desiredState,
+        ) as StateData;
+        const instanceName = g.name?.toString() ?? "current";
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    get: {
+      description: "Get a FIS ExperimentTemplate",
+      arguments: z.object({
+        identifier: z.string().describe(
+          "The primary identifier of the FIS ExperimentTemplate",
+        ),
+      }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const result = await readResource(
+          "AWS::FIS::ExperimentTemplate",
+          args.identifier,
+        ) as StateData;
+        const instanceName = context.globalArgs.name?.toString() ??
+          args.identifier;
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    update: {
+      description: "Update a FIS ExperimentTemplate",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const instanceName = g.name?.toString() ?? "current";
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          instanceName,
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        const identifier = existing.Id?.toString();
+        if (!identifier) {
+          throw new Error("No identifier found in existing state");
+        }
+        const currentState = await readResource(
+          "AWS::FIS::ExperimentTemplate",
+          identifier,
+        ) as StateData;
+        const desiredState: Record<string, unknown> = { ...currentState };
+        for (const [key, value] of Object.entries(g)) {
+          if (key === "name") continue;
+          if (value !== undefined) desiredState[key] = value;
+        }
+        const result = await updateResource(
+          "AWS::FIS::ExperimentTemplate",
+          identifier,
+          currentState,
+          desiredState,
+          ["AccountTargeting"],
+        );
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    delete: {
+      description: "Delete a FIS ExperimentTemplate",
+      arguments: z.object({
+        identifier: z.string().describe(
+          "The primary identifier of the FIS ExperimentTemplate",
+        ),
+      }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const { existed } = await deleteResource(
+          "AWS::FIS::ExperimentTemplate",
+          args.identifier,
+        );
+        const instanceName = context.globalArgs.name?.toString() ??
+          args.identifier;
+        const handle = await context.writeResource("state", instanceName, {
+          identifier: args.identifier,
+          existed,
+          status: existed ? "deleted" : "not_found",
+          deletedAt: new Date().toISOString(),
+        });
+        return { dataHandles: [handle] };
+      },
+    },
+    sync: {
+      description: "Sync FIS ExperimentTemplate state from AWS",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const instanceName = g.name?.toString() ?? "current";
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          instanceName,
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        const identifier = existing.Id?.toString();
+        if (!identifier) {
+          throw new Error("No identifier found in existing state");
+        }
+        try {
+          const result = await readResource(
+            "AWS::FIS::ExperimentTemplate",
+            identifier,
+          ) as StateData;
+          const handle = await context.writeResource(
+            "state",
+            instanceName,
+            result,
+          );
+          return { dataHandles: [handle] };
+        } catch (error: unknown) {
+          if (isResourceNotFoundError(error)) {
+            const handle = await context.writeResource("state", instanceName, {
+              identifier,
+              status: "not_found",
+              syncedAt: new Date().toISOString(),
+            });
+            return { dataHandles: [handle] };
+          }
+          throw error;
+        }
+      },
+    },
+  },
+};

@@ -1,0 +1,22 @@
+# Auto-generated manifest. Re-generate with the appropriate deno task.
+manifestVersion: 1
+name: "@swamp/aws/mediatailor"
+version: "2026.03.19.1"
+description: "AWS MEDIATAILOR infrastructure models"
+labels:
+  - aws
+  - mediatailor
+  - cloud
+  - infrastructure
+releaseNotes: |
+  - Updated: channel, channel_policy, live_source, playback_configuration, source_location, vod_source
+models:
+  - channel.ts
+  - channel_policy.ts
+  - live_source.ts
+  - playback_configuration.ts
+  - source_location.ts
+  - vod_source.ts
+additionalFiles:
+  - LICENSE.txt
+  - README.md

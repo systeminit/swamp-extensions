@@ -1,0 +1,17 @@
+# Auto-generated manifest. Re-generate with the appropriate deno task.
+manifestVersion: 1
+name: "@swamp/aws/budgets"
+version: "2026.03.19.1"
+description: "AWS BUDGETS infrastructure models"
+labels:
+  - aws
+  - budgets
+  - cloud
+  - infrastructure
+releaseNotes: |
+  - Updated: budgets_action
+models:
+  - budgets_action.ts
+additionalFiles:
+  - LICENSE.txt
+  - README.md

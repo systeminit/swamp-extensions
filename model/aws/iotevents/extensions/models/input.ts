@@ -1,0 +1,244 @@
+// Auto-generated extension model for @swamp/aws/iotevents/input
+// Do not edit manually. Re-generate with: deno task generate:aws
+
+// deno-lint-ignore-file no-explicit-any
+
+import { z } from "zod";
+import {
+  createResource,
+  deleteResource,
+  isResourceNotFoundError,
+  readResource,
+  updateResource,
+} from "./_lib/aws.ts";
+
+export const AttributeSchema = z.object({
+  JsonPath: z.string().min(1).max(128).regex(
+    new RegExp(
+      "^((`[a-zA-Z0-9_\\- ]+`)|([a-zA-Z0-9_\\-]+))(\\.((`[a-zA-Z0-9_\\- ]+`)|([a-zA-Z0-9_\\-]+)))*$",
+    ),
+  ).describe(
+    "An expression that specifies an attribute-value pair in a JSON structure. Use this to specify an attribute from the JSON payload that is made available by the input. Inputs are derived from messages sent to ITE ( BatchPutMessage). Each such message contains a JSON payload. The attribute (and its paired value) specified here are available for use in the condition expressions used by detectors. Syntax: ....",
+  ),
+});
+
+export const TagSchema = z.object({
+  Key: z.string().describe("The tag's key."),
+  Value: z.string().describe("The tag's value."),
+});
+
+const GlobalArgsSchema = z.object({
+  InputDefinition: z.object({
+    Attributes: z.array(AttributeSchema).describe(
+      "The attributes from the JSON payload that are made available by the input. Inputs are derived from messages sent to the ITE system using BatchPutMessage. Each such message contains a JSON payload, and those attributes (and their paired values) specified here are available for use in the condition expressions used by detectors that monitor this input.",
+    ),
+  }).describe("The definition of the input."),
+  InputDescription: z.string().min(1).max(1024).describe(
+    "A brief description of the input.",
+  ).optional(),
+  InputName: z.string().min(1).max(128).regex(
+    new RegExp("^[a-zA-Z][a-zA-Z0-9_]*$"),
+  ).describe("The name of the input.").optional(),
+  Tags: z.array(TagSchema).describe(
+    "An array of key-value pairs to apply to this resource. For more information, see [Tag](https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-resource-tags.html).",
+  ).optional(),
+});
+
+const StateSchema = z.object({
+  InputDefinition: z.object({
+    Attributes: z.array(AttributeSchema),
+  }).optional(),
+  InputDescription: z.string().optional(),
+  InputName: z.string(),
+  Tags: z.array(TagSchema).optional(),
+}).passthrough();
+
+type StateData = z.infer<typeof StateSchema>;
+
+const InputsSchema = z.object({
+  InputDefinition: z.object({
+    Attributes: z.array(AttributeSchema).describe(
+      "The attributes from the JSON payload that are made available by the input. Inputs are derived from messages sent to the ITE system using BatchPutMessage. Each such message contains a JSON payload, and those attributes (and their paired values) specified here are available for use in the condition expressions used by detectors that monitor this input.",
+    ).optional(),
+  }).describe("The definition of the input.").optional(),
+  InputDescription: z.string().min(1).max(1024).describe(
+    "A brief description of the input.",
+  ).optional(),
+  InputName: z.string().min(1).max(128).regex(
+    new RegExp("^[a-zA-Z][a-zA-Z0-9_]*$"),
+  ).describe("The name of the input.").optional(),
+  Tags: z.array(TagSchema).describe(
+    "An array of key-value pairs to apply to this resource. For more information, see [Tag](https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-resource-tags.html).",
+  ).optional(),
+});
+
+export const model = {
+  type: "@swamp/aws/iotevents/input",
+  version: "2026.03.19.1",
+  globalArguments: GlobalArgsSchema,
+  inputsSchema: InputsSchema,
+  resources: {
+    state: {
+      description: "IoTEvents Input resource state",
+      schema: StateSchema,
+      lifetime: "infinite",
+      garbageCollection: 10,
+    },
+  },
+  methods: {
+    create: {
+      description: "Create a IoTEvents Input",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const desiredState: Record<string, unknown> = {};
+        for (const [key, value] of Object.entries(g)) {
+          if (value !== undefined) desiredState[key] = value;
+        }
+        const result = await createResource(
+          "AWS::IoTEvents::Input",
+          desiredState,
+        ) as StateData;
+        const instanceName = (result.InputName ?? g.InputName)?.toString() ??
+          "current";
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    get: {
+      description: "Get a IoTEvents Input",
+      arguments: z.object({
+        identifier: z.string().describe(
+          "The primary identifier of the IoTEvents Input",
+        ),
+      }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const result = await readResource(
+          "AWS::IoTEvents::Input",
+          args.identifier,
+        ) as StateData;
+        const instanceName =
+          (result.InputName ?? context.globalArgs.InputName)?.toString() ??
+            args.identifier;
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    update: {
+      description: "Update a IoTEvents Input",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const instanceName = g.InputName?.toString() ?? "current";
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          instanceName,
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        const identifier = existing.InputName?.toString();
+        if (!identifier) {
+          throw new Error("No identifier found in existing state");
+        }
+        const currentState = await readResource(
+          "AWS::IoTEvents::Input",
+          identifier,
+        ) as StateData;
+        const desiredState: Record<string, unknown> = { ...currentState };
+        for (const [key, value] of Object.entries(g)) {
+          if (value !== undefined) desiredState[key] = value;
+        }
+        const result = await updateResource(
+          "AWS::IoTEvents::Input",
+          identifier,
+          currentState,
+          desiredState,
+          ["InputName"],
+        );
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    delete: {
+      description: "Delete a IoTEvents Input",
+      arguments: z.object({
+        identifier: z.string().describe(
+          "The primary identifier of the IoTEvents Input",
+        ),
+      }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const { existed } = await deleteResource(
+          "AWS::IoTEvents::Input",
+          args.identifier,
+        );
+        const instanceName = context.globalArgs.InputName?.toString() ??
+          args.identifier;
+        const handle = await context.writeResource("state", instanceName, {
+          identifier: args.identifier,
+          existed,
+          status: existed ? "deleted" : "not_found",
+          deletedAt: new Date().toISOString(),
+        });
+        return { dataHandles: [handle] };
+      },
+    },
+    sync: {
+      description: "Sync IoTEvents Input state from AWS",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const instanceName = g.InputName?.toString() ?? "current";
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          instanceName,
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        const identifier = existing.InputName?.toString();
+        if (!identifier) {
+          throw new Error("No identifier found in existing state");
+        }
+        try {
+          const result = await readResource(
+            "AWS::IoTEvents::Input",
+            identifier,
+          ) as StateData;
+          const handle = await context.writeResource(
+            "state",
+            instanceName,
+            result,
+          );
+          return { dataHandles: [handle] };
+        } catch (error: unknown) {
+          if (isResourceNotFoundError(error)) {
+            const handle = await context.writeResource("state", instanceName, {
+              identifier,
+              status: "not_found",
+              syncedAt: new Date().toISOString(),
+            });
+            return { dataHandles: [handle] };
+          }
+          throw error;
+        }
+      },
+    },
+  },
+};

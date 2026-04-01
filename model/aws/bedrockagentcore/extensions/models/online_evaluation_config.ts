@@ -1,0 +1,402 @@
+// Auto-generated extension model for @swamp/aws/bedrockagentcore/online-evaluation-config
+// Do not edit manually. Re-generate with: deno task generate:aws
+
+// deno-lint-ignore-file no-explicit-any
+
+import { z } from "zod";
+import {
+  createResource,
+  deleteResource,
+  isResourceNotFoundError,
+  readResource,
+  updateResource,
+} from "./_lib/aws.ts";
+
+export const CloudWatchLogsInputConfigSchema = z.object({
+  LogGroupNames: z.array(
+    z.string().min(1).max(512).regex(new RegExp("^[.\\-_/#A-Za-z0-9]+$")),
+  ).describe(
+    "The list of CloudWatch log group names to monitor for agent traces.",
+  ),
+  ServiceNames: z.array(
+    z.string().min(1).max(256).regex(new RegExp("^[a-zA-Z0-9._-]+$")),
+  ).describe(
+    "The list of service names to filter traces within the specified log groups.",
+  ),
+});
+
+export const EvaluatorReferenceSchema = z.object({
+  EvaluatorId: z.string().regex(
+    new RegExp(
+      "^(Builtin\\.[a-zA-Z0-9_-]+|[a-zA-Z][a-zA-Z0-9-_]{0,99}-[a-zA-Z0-9]{10})$",
+    ),
+  ).describe("The unique identifier of the evaluator."),
+});
+
+export const SamplingConfigSchema = z.object({
+  SamplingPercentage: z.number().min(0.01).max(100).describe(
+    "The percentage of agent traces to sample for evaluation.",
+  ),
+});
+
+export const FilterValueSchema = z.object({
+  StringValue: z.string().min(1).max(1024).describe(
+    "The string value for text-based filtering.",
+  ).optional(),
+  DoubleValue: z.number().describe("The numeric value for numerical filtering.")
+    .optional(),
+  BooleanValue: z.boolean().describe(
+    "The boolean value for true/false filtering conditions.",
+  ).optional(),
+});
+
+export const FilterSchema = z.object({
+  Key: z.string().min(1).max(256).regex(new RegExp("^[a-zA-Z0-9._-]+$"))
+    .describe(
+      "The key or field name to filter on within the agent trace data.",
+    ),
+  Operator: z.enum([
+    "Equals",
+    "NotEquals",
+    "GreaterThan",
+    "LessThan",
+    "GreaterThanOrEqual",
+    "LessThanOrEqual",
+    "Contains",
+    "NotContains",
+  ]).describe("The comparison operator to use for filtering."),
+  Value: FilterValueSchema.describe("The value used in filter comparisons."),
+});
+
+export const SessionConfigSchema = z.object({
+  SessionTimeoutMinutes: z.number().int().min(1).max(1440).describe(
+    "The number of minutes of inactivity after which an agent session is considered complete.",
+  ),
+});
+
+export const CloudWatchOutputConfigSchema = z.object({
+  LogGroupName: z.string().describe(
+    "The CloudWatch log group name for evaluation results.",
+  ).optional(),
+});
+
+export const TagSchema = z.object({
+  Key: z.string().min(1).max(128).regex(
+    new RegExp("^(?!aws:)[a-zA-Z+-=._:/]+$"),
+  ),
+  Value: z.string().min(0).max(256),
+});
+
+const GlobalArgsSchema = z.object({
+  name: z.string().describe(
+    "Instance name for this resource (used as the unique identifier in the factory pattern)",
+  ),
+  OnlineEvaluationConfigName: z.string().regex(
+    new RegExp("^[a-zA-Z][a-zA-Z0-9_]{0,47}$"),
+  ).describe(
+    "The name of the online evaluation configuration. Must be unique within your account.",
+  ),
+  Description: z.string().min(1).max(200).describe(
+    "The description of the online evaluation configuration.",
+  ).optional(),
+  DataSourceConfig: z.object({
+    CloudWatchLogs: CloudWatchLogsInputConfigSchema.describe(
+      "The configuration for reading agent traces from CloudWatch logs.",
+    ),
+  }).describe(
+    "The data source configuration that specifies CloudWatch log groups and service names to monitor.",
+  ),
+  EvaluationExecutionRoleArn: z.string().min(1).max(2048).regex(
+    new RegExp("^arn:aws(-[^:]+)?:iam::([0-9]{12})?:role/.+$"),
+  ).describe(
+    "The Amazon Resource Name (ARN) of the IAM role that grants permissions for evaluation.",
+  ),
+  Evaluators: z.array(EvaluatorReferenceSchema).describe(
+    "The list of evaluators to apply during online evaluation.",
+  ),
+  Rule: z.object({
+    SamplingConfig: SamplingConfigSchema.describe(
+      "The configuration that controls what percentage of agent traces are sampled for evaluation.",
+    ),
+    Filters: z.array(FilterSchema).describe(
+      "The list of filters that determine which agent traces should be included in the evaluation.",
+    ).optional(),
+    SessionConfig: SessionConfigSchema.describe(
+      "The configuration that defines how agent sessions are detected.",
+    ).optional(),
+  }).describe(
+    "The evaluation rule that defines sampling configuration, filters, and session detection settings.",
+  ),
+  ExecutionStatus: z.enum(["ENABLED", "DISABLED"]).describe(
+    "The execution status indicating whether the online evaluation is currently running.",
+  ).optional(),
+  OutputConfig: z.object({
+    CloudWatchConfig: CloudWatchOutputConfigSchema.describe(
+      "The CloudWatch configuration for writing evaluation results.",
+    ).optional(),
+  }).describe(
+    "The configuration that specifies where evaluation results should be written.",
+  ).optional(),
+  Tags: z.array(TagSchema).describe(
+    "A list of tags to assign to the online evaluation configuration.",
+  ).optional(),
+});
+
+const StateSchema = z.object({
+  OnlineEvaluationConfigId: z.string().optional(),
+  OnlineEvaluationConfigArn: z.string(),
+  OnlineEvaluationConfigName: z.string().optional(),
+  Description: z.string().optional(),
+  DataSourceConfig: z.object({
+    CloudWatchLogs: CloudWatchLogsInputConfigSchema,
+  }).optional(),
+  EvaluationExecutionRoleArn: z.string().optional(),
+  Evaluators: z.array(EvaluatorReferenceSchema).optional(),
+  Rule: z.object({
+    SamplingConfig: SamplingConfigSchema,
+    Filters: z.array(FilterSchema),
+    SessionConfig: SessionConfigSchema,
+  }).optional(),
+  Status: z.string().optional(),
+  ExecutionStatus: z.string().optional(),
+  OutputConfig: z.object({
+    CloudWatchConfig: CloudWatchOutputConfigSchema,
+  }).optional(),
+  CreatedAt: z.string().optional(),
+  UpdatedAt: z.string().optional(),
+  Tags: z.array(TagSchema).optional(),
+}).passthrough();
+
+type StateData = z.infer<typeof StateSchema>;
+
+const InputsSchema = z.object({
+  name: z.string().optional(),
+  OnlineEvaluationConfigName: z.string().regex(
+    new RegExp("^[a-zA-Z][a-zA-Z0-9_]{0,47}$"),
+  ).describe(
+    "The name of the online evaluation configuration. Must be unique within your account.",
+  ).optional(),
+  Description: z.string().min(1).max(200).describe(
+    "The description of the online evaluation configuration.",
+  ).optional(),
+  DataSourceConfig: z.object({
+    CloudWatchLogs: CloudWatchLogsInputConfigSchema.describe(
+      "The configuration for reading agent traces from CloudWatch logs.",
+    ).optional(),
+  }).describe(
+    "The data source configuration that specifies CloudWatch log groups and service names to monitor.",
+  ).optional(),
+  EvaluationExecutionRoleArn: z.string().min(1).max(2048).regex(
+    new RegExp("^arn:aws(-[^:]+)?:iam::([0-9]{12})?:role/.+$"),
+  ).describe(
+    "The Amazon Resource Name (ARN) of the IAM role that grants permissions for evaluation.",
+  ).optional(),
+  Evaluators: z.array(EvaluatorReferenceSchema).describe(
+    "The list of evaluators to apply during online evaluation.",
+  ).optional(),
+  Rule: z.object({
+    SamplingConfig: SamplingConfigSchema.describe(
+      "The configuration that controls what percentage of agent traces are sampled for evaluation.",
+    ).optional(),
+    Filters: z.array(FilterSchema).describe(
+      "The list of filters that determine which agent traces should be included in the evaluation.",
+    ).optional(),
+    SessionConfig: SessionConfigSchema.describe(
+      "The configuration that defines how agent sessions are detected.",
+    ).optional(),
+  }).describe(
+    "The evaluation rule that defines sampling configuration, filters, and session detection settings.",
+  ).optional(),
+  ExecutionStatus: z.enum(["ENABLED", "DISABLED"]).describe(
+    "The execution status indicating whether the online evaluation is currently running.",
+  ).optional(),
+  OutputConfig: z.object({
+    CloudWatchConfig: CloudWatchOutputConfigSchema.describe(
+      "The CloudWatch configuration for writing evaluation results.",
+    ).optional(),
+  }).describe(
+    "The configuration that specifies where evaluation results should be written.",
+  ).optional(),
+  Tags: z.array(TagSchema).describe(
+    "A list of tags to assign to the online evaluation configuration.",
+  ).optional(),
+});
+
+export const model = {
+  type: "@swamp/aws/bedrockagentcore/online-evaluation-config",
+  version: "2026.03.27.1",
+  upgrades: [
+    {
+      toVersion: "2026.03.27.1",
+      description: "Added: ExecutionStatus",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+  ],
+  globalArguments: GlobalArgsSchema,
+  inputsSchema: InputsSchema,
+  resources: {
+    state: {
+      description: "BedrockAgentCore OnlineEvaluationConfig resource state",
+      schema: StateSchema,
+      lifetime: "infinite",
+      garbageCollection: 10,
+    },
+  },
+  methods: {
+    create: {
+      description: "Create a BedrockAgentCore OnlineEvaluationConfig",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const desiredState: Record<string, unknown> = {};
+        for (const [key, value] of Object.entries(g)) {
+          if (key === "name") continue;
+          if (value !== undefined) desiredState[key] = value;
+        }
+        const result = await createResource(
+          "AWS::BedrockAgentCore::OnlineEvaluationConfig",
+          desiredState,
+        ) as StateData;
+        const instanceName = g.name?.toString() ?? "current";
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    get: {
+      description: "Get a BedrockAgentCore OnlineEvaluationConfig",
+      arguments: z.object({
+        identifier: z.string().describe(
+          "The primary identifier of the BedrockAgentCore OnlineEvaluationConfig",
+        ),
+      }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const result = await readResource(
+          "AWS::BedrockAgentCore::OnlineEvaluationConfig",
+          args.identifier,
+        ) as StateData;
+        const instanceName = context.globalArgs.name?.toString() ??
+          args.identifier;
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    update: {
+      description: "Update a BedrockAgentCore OnlineEvaluationConfig",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const instanceName = g.name?.toString() ?? "current";
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          instanceName,
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        const identifier = existing.OnlineEvaluationConfigArn?.toString();
+        if (!identifier) {
+          throw new Error("No identifier found in existing state");
+        }
+        const currentState = await readResource(
+          "AWS::BedrockAgentCore::OnlineEvaluationConfig",
+          identifier,
+        ) as StateData;
+        const desiredState: Record<string, unknown> = { ...currentState };
+        for (const [key, value] of Object.entries(g)) {
+          if (key === "name") continue;
+          if (value !== undefined) desiredState[key] = value;
+        }
+        const result = await updateResource(
+          "AWS::BedrockAgentCore::OnlineEvaluationConfig",
+          identifier,
+          currentState,
+          desiredState,
+          ["OnlineEvaluationConfigName"],
+        );
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    delete: {
+      description: "Delete a BedrockAgentCore OnlineEvaluationConfig",
+      arguments: z.object({
+        identifier: z.string().describe(
+          "The primary identifier of the BedrockAgentCore OnlineEvaluationConfig",
+        ),
+      }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const { existed } = await deleteResource(
+          "AWS::BedrockAgentCore::OnlineEvaluationConfig",
+          args.identifier,
+        );
+        const instanceName = context.globalArgs.name?.toString() ??
+          args.identifier;
+        const handle = await context.writeResource("state", instanceName, {
+          identifier: args.identifier,
+          existed,
+          status: existed ? "deleted" : "not_found",
+          deletedAt: new Date().toISOString(),
+        });
+        return { dataHandles: [handle] };
+      },
+    },
+    sync: {
+      description:
+        "Sync BedrockAgentCore OnlineEvaluationConfig state from AWS",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const instanceName = g.name?.toString() ?? "current";
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          instanceName,
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        const identifier = existing.OnlineEvaluationConfigArn?.toString();
+        if (!identifier) {
+          throw new Error("No identifier found in existing state");
+        }
+        try {
+          const result = await readResource(
+            "AWS::BedrockAgentCore::OnlineEvaluationConfig",
+            identifier,
+          ) as StateData;
+          const handle = await context.writeResource(
+            "state",
+            instanceName,
+            result,
+          );
+          return { dataHandles: [handle] };
+        } catch (error: unknown) {
+          if (isResourceNotFoundError(error)) {
+            const handle = await context.writeResource("state", instanceName, {
+              identifier,
+              status: "not_found",
+              syncedAt: new Date().toISOString(),
+            });
+            return { dataHandles: [handle] };
+          }
+          throw error;
+        }
+      },
+    },
+  },
+};

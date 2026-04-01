@@ -1,0 +1,269 @@
+// Auto-generated extension model for @swamp/aws/ecr/pull-through-cache-rule
+// Do not edit manually. Re-generate with: deno task generate:aws
+
+// deno-lint-ignore-file no-explicit-any
+
+import { z } from "zod";
+import {
+  createResource,
+  deleteResource,
+  isResourceNotFoundError,
+  readResource,
+  updateResource,
+} from "./_lib/aws.ts";
+
+const GlobalArgsSchema = z.object({
+  EcrRepositoryPrefix: z.string().min(2).max(30).regex(
+    new RegExp(
+      "^([a-z0-9]+((\\.|_|__|-+)[a-z0-9]+)*(\\/[a-z0-9]+((\\.|_|__|-+)[a-z0-9]+)*)*\\/?|ROOT)$",
+    ),
+  ).describe(
+    "The Amazon ECR repository prefix associated with the pull through cache rule.",
+  ).optional(),
+  UpstreamRegistryUrl: z.string().describe(
+    "The upstream registry URL associated with the pull through cache rule.",
+  ).optional(),
+  CredentialArn: z.string().min(50).max(612).regex(
+    new RegExp(
+      "^arn:aws:secretsmanager:[a-zA-Z0-9-:]+:secret:ecr\\-pullthroughcache\\/[a-zA-Z0-9\\/_+=.@-]+$",
+    ),
+  ).describe(
+    "The ARN of the Secrets Manager secret associated with the pull through cache rule.",
+  ).optional(),
+  UpstreamRegistry: z.string().describe(
+    "The name of the upstream source registry associated with the pull through cache rule.",
+  ).optional(),
+  CustomRoleArn: z.string().max(2048).describe(
+    "The ARN of the IAM role associated with the pull through cache rule.",
+  ).optional(),
+  UpstreamRepositoryPrefix: z.string().min(2).max(30).regex(
+    new RegExp(
+      "^([a-z0-9]+((\\.|_|__|-+)[a-z0-9]+)*(\\/[a-z0-9]+((\\.|_|__|-+)[a-z0-9]+)*)*\\/?|ROOT)$",
+    ),
+  ).describe(
+    "The upstream repository prefix associated with the pull through cache rule.",
+  ).optional(),
+});
+
+const StateSchema = z.object({
+  EcrRepositoryPrefix: z.string(),
+  UpstreamRegistryUrl: z.string().optional(),
+  CredentialArn: z.string().optional(),
+  UpstreamRegistry: z.string().optional(),
+  CustomRoleArn: z.string().optional(),
+  UpstreamRepositoryPrefix: z.string().optional(),
+}).passthrough();
+
+type StateData = z.infer<typeof StateSchema>;
+
+const InputsSchema = z.object({
+  EcrRepositoryPrefix: z.string().min(2).max(30).regex(
+    new RegExp(
+      "^([a-z0-9]+((\\.|_|__|-+)[a-z0-9]+)*(\\/[a-z0-9]+((\\.|_|__|-+)[a-z0-9]+)*)*\\/?|ROOT)$",
+    ),
+  ).describe(
+    "The Amazon ECR repository prefix associated with the pull through cache rule.",
+  ).optional(),
+  UpstreamRegistryUrl: z.string().describe(
+    "The upstream registry URL associated with the pull through cache rule.",
+  ).optional(),
+  CredentialArn: z.string().min(50).max(612).regex(
+    new RegExp(
+      "^arn:aws:secretsmanager:[a-zA-Z0-9-:]+:secret:ecr\\-pullthroughcache\\/[a-zA-Z0-9\\/_+=.@-]+$",
+    ),
+  ).describe(
+    "The ARN of the Secrets Manager secret associated with the pull through cache rule.",
+  ).optional(),
+  UpstreamRegistry: z.string().describe(
+    "The name of the upstream source registry associated with the pull through cache rule.",
+  ).optional(),
+  CustomRoleArn: z.string().max(2048).describe(
+    "The ARN of the IAM role associated with the pull through cache rule.",
+  ).optional(),
+  UpstreamRepositoryPrefix: z.string().min(2).max(30).regex(
+    new RegExp(
+      "^([a-z0-9]+((\\.|_|__|-+)[a-z0-9]+)*(\\/[a-z0-9]+((\\.|_|__|-+)[a-z0-9]+)*)*\\/?|ROOT)$",
+    ),
+  ).describe(
+    "The upstream repository prefix associated with the pull through cache rule.",
+  ).optional(),
+});
+
+export const model = {
+  type: "@swamp/aws/ecr/pull-through-cache-rule",
+  version: "2026.03.19.1",
+  globalArguments: GlobalArgsSchema,
+  inputsSchema: InputsSchema,
+  resources: {
+    state: {
+      description: "ECR PullThroughCacheRule resource state",
+      schema: StateSchema,
+      lifetime: "infinite",
+      garbageCollection: 10,
+    },
+  },
+  methods: {
+    create: {
+      description: "Create a ECR PullThroughCacheRule",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const desiredState: Record<string, unknown> = {};
+        for (const [key, value] of Object.entries(g)) {
+          if (value !== undefined) desiredState[key] = value;
+        }
+        const result = await createResource(
+          "AWS::ECR::PullThroughCacheRule",
+          desiredState,
+        ) as StateData;
+        const instanceName =
+          (result.EcrRepositoryPrefix ?? g.EcrRepositoryPrefix)?.toString() ??
+            "current";
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    get: {
+      description: "Get a ECR PullThroughCacheRule",
+      arguments: z.object({
+        identifier: z.string().describe(
+          "The primary identifier of the ECR PullThroughCacheRule",
+        ),
+      }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const result = await readResource(
+          "AWS::ECR::PullThroughCacheRule",
+          args.identifier,
+        ) as StateData;
+        const instanceName =
+          (result.EcrRepositoryPrefix ?? context.globalArgs.EcrRepositoryPrefix)
+            ?.toString() ?? args.identifier;
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    update: {
+      description: "Update a ECR PullThroughCacheRule",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const instanceName = g.EcrRepositoryPrefix?.toString() ?? "current";
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          instanceName,
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        const identifier = existing.EcrRepositoryPrefix?.toString();
+        if (!identifier) {
+          throw new Error("No identifier found in existing state");
+        }
+        const currentState = await readResource(
+          "AWS::ECR::PullThroughCacheRule",
+          identifier,
+        ) as StateData;
+        const desiredState: Record<string, unknown> = { ...currentState };
+        for (const [key, value] of Object.entries(g)) {
+          if (value !== undefined) desiredState[key] = value;
+        }
+        const result = await updateResource(
+          "AWS::ECR::PullThroughCacheRule",
+          identifier,
+          currentState,
+          desiredState,
+          [
+            "EcrRepositoryPrefix",
+            "UpstreamRegistryUrl",
+            "CredentialArn",
+            "UpstreamRegistry",
+            "CustomRoleArn",
+            "UpstreamRepositoryPrefix",
+          ],
+        );
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    delete: {
+      description: "Delete a ECR PullThroughCacheRule",
+      arguments: z.object({
+        identifier: z.string().describe(
+          "The primary identifier of the ECR PullThroughCacheRule",
+        ),
+      }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const { existed } = await deleteResource(
+          "AWS::ECR::PullThroughCacheRule",
+          args.identifier,
+        );
+        const instanceName =
+          context.globalArgs.EcrRepositoryPrefix?.toString() ?? args.identifier;
+        const handle = await context.writeResource("state", instanceName, {
+          identifier: args.identifier,
+          existed,
+          status: existed ? "deleted" : "not_found",
+          deletedAt: new Date().toISOString(),
+        });
+        return { dataHandles: [handle] };
+      },
+    },
+    sync: {
+      description: "Sync ECR PullThroughCacheRule state from AWS",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const instanceName = g.EcrRepositoryPrefix?.toString() ?? "current";
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          instanceName,
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        const identifier = existing.EcrRepositoryPrefix?.toString();
+        if (!identifier) {
+          throw new Error("No identifier found in existing state");
+        }
+        try {
+          const result = await readResource(
+            "AWS::ECR::PullThroughCacheRule",
+            identifier,
+          ) as StateData;
+          const handle = await context.writeResource(
+            "state",
+            instanceName,
+            result,
+          );
+          return { dataHandles: [handle] };
+        } catch (error: unknown) {
+          if (isResourceNotFoundError(error)) {
+            const handle = await context.writeResource("state", instanceName, {
+              identifier,
+              status: "not_found",
+              syncedAt: new Date().toISOString(),
+            });
+            return { dataHandles: [handle] };
+          }
+          throw error;
+        }
+      },
+    },
+  },
+};

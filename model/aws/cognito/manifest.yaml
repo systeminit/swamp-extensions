@@ -1,0 +1,32 @@
+# Auto-generated manifest. Re-generate with the appropriate deno task.
+manifestVersion: 1
+name: "@swamp/aws/cognito"
+version: "2026.03.19.1"
+description: "AWS COGNITO infrastructure models"
+labels:
+  - aws
+  - cognito
+  - cloud
+  - infrastructure
+releaseNotes: |
+  - Updated: identity_pool, identity_pool_principal_tag, identity_pool_role_attachment, log_delivery_configuration, managed_login_branding, terms, user_pool, user_pool_client, user_pool_domain, user_pool_group, user_pool_identity_provider, user_pool_resource_server, user_pool_risk_configuration_attachment, user_pool_uicustomization_attachment, user_pool_user, user_pool_user_to_group_attachment
+models:
+  - identity_pool.ts
+  - identity_pool_principal_tag.ts
+  - identity_pool_role_attachment.ts
+  - log_delivery_configuration.ts
+  - managed_login_branding.ts
+  - terms.ts
+  - user_pool.ts
+  - user_pool_client.ts
+  - user_pool_domain.ts
+  - user_pool_group.ts
+  - user_pool_identity_provider.ts
+  - user_pool_resource_server.ts
+  - user_pool_risk_configuration_attachment.ts
+  - user_pool_uicustomization_attachment.ts
+  - user_pool_user.ts
+  - user_pool_user_to_group_attachment.ts
+additionalFiles:
+  - LICENSE.txt
+  - README.md

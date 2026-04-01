@@ -1,0 +1,28 @@
+# Auto-generated manifest. Re-generate with the appropriate deno task.
+manifestVersion: 1
+name: "@swamp/aws/quicksight"
+version: "2026.04.01.1"
+description: "AWS QUICKSIGHT infrastructure models"
+labels:
+  - aws
+  - quicksight
+  - cloud
+  - infrastructure
+releaseNotes: |
+  - Updated: data_set, data_source
+models:
+  - action_connector.ts
+  - analysis.ts
+  - custom_permissions.ts
+  - dashboard.ts
+  - data_set.ts
+  - data_source.ts
+  - folder.ts
+  - refresh_schedule.ts
+  - template.ts
+  - theme.ts
+  - topic.ts
+  - vpcconnection.ts
+additionalFiles:
+  - LICENSE.txt
+  - README.md

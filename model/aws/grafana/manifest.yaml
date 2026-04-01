@@ -1,0 +1,17 @@
+# Auto-generated manifest. Re-generate with the appropriate deno task.
+manifestVersion: 1
+name: "@swamp/aws/grafana"
+version: "2026.03.19.1"
+description: "AWS GRAFANA infrastructure models"
+labels:
+  - aws
+  - grafana
+  - cloud
+  - infrastructure
+releaseNotes: |
+  - Updated: workspace
+models:
+  - workspace.ts
+additionalFiles:
+  - LICENSE.txt
+  - README.md

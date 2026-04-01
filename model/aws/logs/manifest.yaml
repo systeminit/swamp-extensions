@@ -1,0 +1,31 @@
+# Auto-generated manifest. Re-generate with the appropriate deno task.
+manifestVersion: 1
+name: "@swamp/aws/logs"
+version: "2026.03.23.1"
+description: "AWS LOGS infrastructure models"
+labels:
+  - aws
+  - logs
+  - cloud
+  - infrastructure
+releaseNotes: |
+  - Updated: log_group
+models:
+  - account_policy.ts
+  - delivery.ts
+  - delivery_destination.ts
+  - delivery_source.ts
+  - destination.ts
+  - integration.ts
+  - log_anomaly_detector.ts
+  - log_group.ts
+  - log_stream.ts
+  - metric_filter.ts
+  - query_definition.ts
+  - resource_policy.ts
+  - scheduled_query.ts
+  - subscription_filter.ts
+  - transformer.ts
+additionalFiles:
+  - LICENSE.txt
+  - README.md

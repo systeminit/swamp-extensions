@@ -1,0 +1,281 @@
+// Auto-generated extension model for @swamp/aws/cloudtrail/dashboard
+// Do not edit manually. Re-generate with: deno task generate:aws
+
+// deno-lint-ignore-file no-explicit-any
+
+import { z } from "zod";
+import {
+  createResource,
+  deleteResource,
+  isResourceNotFoundError,
+  readResource,
+  updateResource,
+} from "./_lib/aws.ts";
+
+export const WidgetSchema = z.object({
+  QueryStatement: z.string().min(1).max(10000).regex(new RegExp(".*", "s"))
+    .describe("The SQL query statement on one or more event data stores."),
+  QueryParameters: z.array(z.string().min(1).max(1024).regex(new RegExp(".*")))
+    .describe(
+      "The placeholder keys in the QueryStatement. For example: $StartTime$, $EndTime$, $Period$.",
+    ).optional(),
+  ViewProperties: z.record(
+    z.string(),
+    z.string().min(1).max(128).regex(new RegExp("^[a-zA-Z0-9._\\- ]+$")),
+  ).describe("The view properties of the widget.").optional(),
+});
+
+export const TagSchema = z.object({
+  Key: z.string().describe(
+    "The key name of the tag. You can specify a value that is 1 to 127 Unicode characters in length and cannot be prefixed with aws:. You can use any of the following characters: the set of Unicode letters, digits, whitespace, _,., /, =, +, and -.",
+  ),
+  Value: z.string().describe(
+    "The value for the tag. You can specify a value that is 1 to 255 Unicode characters in length and cannot be prefixed with aws:. You can use any of the following characters: the set of Unicode letters, digits, whitespace, _,., /, =, +, and -.",
+  ),
+});
+
+const GlobalArgsSchema = z.object({
+  name: z.string().describe(
+    "Instance name for this resource (used as the unique identifier in the factory pattern)",
+  ),
+  Widgets: z.array(WidgetSchema).describe("List of widgets on the dashboard")
+    .optional(),
+  RefreshSchedule: z.object({
+    Frequency: z.object({
+      Unit: z.enum(["HOURS", "DAYS"]).describe(
+        "The frequency unit. Supported values are HOURS and DAYS.",
+      ),
+      Value: z.number().int().describe("The frequency value."),
+    }).optional(),
+    TimeOfDay: z.string().regex(new RegExp("^[0-9]{2}:[0-9]{2}")).describe(
+      "StartTime of the automatic schedule refresh.",
+    ).optional(),
+  }).describe(
+    "Configures the automatic refresh schedule for the dashboard. Includes the frequency unit (DAYS or HOURS) and value, as well as the status (ENABLED or DISABLED) of the refresh schedule.",
+  ).optional(),
+  Name: z.string().regex(new RegExp("^[a-zA-Z0-9_\\-]+$")).describe(
+    "The name of the dashboard.",
+  ).optional(),
+  TerminationProtectionEnabled: z.boolean().describe(
+    "Indicates whether the dashboard is protected from termination.",
+  ).optional(),
+  Tags: z.array(TagSchema).optional(),
+});
+
+const StateSchema = z.object({
+  Widgets: z.array(WidgetSchema).optional(),
+  CreatedTimestamp: z.string().optional(),
+  DashboardArn: z.string(),
+  RefreshSchedule: z.object({
+    Frequency: z.object({
+      Unit: z.string(),
+      Value: z.number(),
+    }),
+    TimeOfDay: z.string(),
+    Status: z.string(),
+  }).optional(),
+  Name: z.string().optional(),
+  Status: z.string().optional(),
+  TerminationProtectionEnabled: z.boolean().optional(),
+  Type: z.string().optional(),
+  UpdatedTimestamp: z.string().optional(),
+  Tags: z.array(TagSchema).optional(),
+}).passthrough();
+
+type StateData = z.infer<typeof StateSchema>;
+
+const InputsSchema = z.object({
+  name: z.string().optional(),
+  Widgets: z.array(WidgetSchema).describe("List of widgets on the dashboard")
+    .optional(),
+  RefreshSchedule: z.object({
+    Frequency: z.object({
+      Unit: z.enum(["HOURS", "DAYS"]).describe(
+        "The frequency unit. Supported values are HOURS and DAYS.",
+      ).optional(),
+      Value: z.number().int().describe("The frequency value.").optional(),
+    }).optional(),
+    TimeOfDay: z.string().regex(new RegExp("^[0-9]{2}:[0-9]{2}")).describe(
+      "StartTime of the automatic schedule refresh.",
+    ).optional(),
+  }).describe(
+    "Configures the automatic refresh schedule for the dashboard. Includes the frequency unit (DAYS or HOURS) and value, as well as the status (ENABLED or DISABLED) of the refresh schedule.",
+  ).optional(),
+  Name: z.string().regex(new RegExp("^[a-zA-Z0-9_\\-]+$")).describe(
+    "The name of the dashboard.",
+  ).optional(),
+  TerminationProtectionEnabled: z.boolean().describe(
+    "Indicates whether the dashboard is protected from termination.",
+  ).optional(),
+  Tags: z.array(TagSchema).optional(),
+});
+
+export const model = {
+  type: "@swamp/aws/cloudtrail/dashboard",
+  version: "2026.03.19.1",
+  globalArguments: GlobalArgsSchema,
+  inputsSchema: InputsSchema,
+  resources: {
+    state: {
+      description: "CloudTrail Dashboard resource state",
+      schema: StateSchema,
+      lifetime: "infinite",
+      garbageCollection: 10,
+    },
+  },
+  methods: {
+    create: {
+      description: "Create a CloudTrail Dashboard",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const desiredState: Record<string, unknown> = {};
+        for (const [key, value] of Object.entries(g)) {
+          if (key === "name") continue;
+          if (value !== undefined) desiredState[key] = value;
+        }
+        const result = await createResource(
+          "AWS::CloudTrail::Dashboard",
+          desiredState,
+        ) as StateData;
+        const instanceName = g.name?.toString() ?? "current";
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    get: {
+      description: "Get a CloudTrail Dashboard",
+      arguments: z.object({
+        identifier: z.string().describe(
+          "The primary identifier of the CloudTrail Dashboard",
+        ),
+      }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const result = await readResource(
+          "AWS::CloudTrail::Dashboard",
+          args.identifier,
+        ) as StateData;
+        const instanceName = context.globalArgs.name?.toString() ??
+          args.identifier;
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    update: {
+      description: "Update a CloudTrail Dashboard",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const instanceName = g.name?.toString() ?? "current";
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          instanceName,
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        const identifier = existing.DashboardArn?.toString();
+        if (!identifier) {
+          throw new Error("No identifier found in existing state");
+        }
+        const currentState = await readResource(
+          "AWS::CloudTrail::Dashboard",
+          identifier,
+        ) as StateData;
+        const desiredState: Record<string, unknown> = { ...currentState };
+        for (const [key, value] of Object.entries(g)) {
+          if (key === "name") continue;
+          if (value !== undefined) desiredState[key] = value;
+        }
+        const result = await updateResource(
+          "AWS::CloudTrail::Dashboard",
+          identifier,
+          currentState,
+          desiredState,
+        );
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    delete: {
+      description: "Delete a CloudTrail Dashboard",
+      arguments: z.object({
+        identifier: z.string().describe(
+          "The primary identifier of the CloudTrail Dashboard",
+        ),
+      }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const { existed } = await deleteResource(
+          "AWS::CloudTrail::Dashboard",
+          args.identifier,
+        );
+        const instanceName = context.globalArgs.name?.toString() ??
+          args.identifier;
+        const handle = await context.writeResource("state", instanceName, {
+          identifier: args.identifier,
+          existed,
+          status: existed ? "deleted" : "not_found",
+          deletedAt: new Date().toISOString(),
+        });
+        return { dataHandles: [handle] };
+      },
+    },
+    sync: {
+      description: "Sync CloudTrail Dashboard state from AWS",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const instanceName = g.name?.toString() ?? "current";
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          instanceName,
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        const identifier = existing.DashboardArn?.toString();
+        if (!identifier) {
+          throw new Error("No identifier found in existing state");
+        }
+        try {
+          const result = await readResource(
+            "AWS::CloudTrail::Dashboard",
+            identifier,
+          ) as StateData;
+          const handle = await context.writeResource(
+            "state",
+            instanceName,
+            result,
+          );
+          return { dataHandles: [handle] };
+        } catch (error: unknown) {
+          if (isResourceNotFoundError(error)) {
+            const handle = await context.writeResource("state", instanceName, {
+              identifier,
+              status: "not_found",
+              syncedAt: new Date().toISOString(),
+            });
+            return { dataHandles: [handle] };
+          }
+          throw error;
+        }
+      },
+    },
+  },
+};

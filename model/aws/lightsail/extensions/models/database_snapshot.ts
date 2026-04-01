@@ -1,0 +1,264 @@
+// Auto-generated extension model for @swamp/aws/lightsail/database-snapshot
+// Do not edit manually. Re-generate with: deno task generate:aws
+
+// deno-lint-ignore-file no-explicit-any
+
+import { z } from "zod";
+import {
+  createResource,
+  deleteResource,
+  isResourceNotFoundError,
+  readResource,
+  updateResource,
+} from "./_lib/aws.ts";
+
+export const TagSchema = z.object({
+  Key: z.string().min(1).max(128).describe(
+    "The key name of the tag. You can specify a value that is 1 to 128 Unicode characters in length and cannot be prefixed with aws:. You can use any of the following characters: the set of Unicode letters, digits, whitespace, _,., /, =, +, and -.",
+  ),
+  Value: z.string().min(0).max(256).describe(
+    "The value for the tag. You can specify a value that is 0 to 256 Unicode characters in length and cannot be prefixed with aws:. You can use any of the following characters: the set of Unicode letters, digits, whitespace, _,., /, =, +, and -.",
+  ).optional(),
+});
+
+const GlobalArgsSchema = z.object({
+  RelationalDatabaseName: z.string().regex(new RegExp("^\\w[\\w\\-]*\\w$"))
+    .describe("The name of the database on which to base your new snapshot."),
+  RelationalDatabaseSnapshotName: z.string().min(2).max(255).regex(
+    new RegExp("^\\w[\\w\\-]*\\w$"),
+  ).describe("The name for your new database snapshot."),
+  Tags: z.array(TagSchema).describe(
+    "An array of key-value pairs to apply to this resource.",
+  ).optional(),
+  Location: z.object({
+    AvailabilityZone: z.string().describe(
+      "The Availability Zone where the database snapshot was created.",
+    ).optional(),
+    RegionName: z.string().describe(
+      "The AWS Region where the database snapshot was created.",
+    ).optional(),
+  }).describe(
+    "The Region name and Availability Zone where the database snapshot is located.",
+  ).optional(),
+});
+
+const StateSchema = z.object({
+  RelationalDatabaseName: z.string().optional(),
+  RelationalDatabaseSnapshotName: z.string(),
+  Tags: z.array(TagSchema).optional(),
+  Arn: z.string().optional(),
+  CreatedAt: z.string().optional(),
+  Engine: z.string().optional(),
+  EngineVersion: z.string().optional(),
+  FromRelationalDatabaseArn: z.string().optional(),
+  FromRelationalDatabaseBlueprintId: z.string().optional(),
+  FromRelationalDatabaseBundleId: z.string().optional(),
+  FromRelationalDatabaseName: z.string().optional(),
+  Location: z.object({
+    AvailabilityZone: z.string(),
+    RegionName: z.string(),
+  }).optional(),
+  Name: z.string().optional(),
+  ResourceType: z.string().optional(),
+  SizeInGb: z.number().optional(),
+  State: z.string().optional(),
+  SupportCode: z.string().optional(),
+}).passthrough();
+
+type StateData = z.infer<typeof StateSchema>;
+
+const InputsSchema = z.object({
+  RelationalDatabaseName: z.string().regex(new RegExp("^\\w[\\w\\-]*\\w$"))
+    .describe("The name of the database on which to base your new snapshot.")
+    .optional(),
+  RelationalDatabaseSnapshotName: z.string().min(2).max(255).regex(
+    new RegExp("^\\w[\\w\\-]*\\w$"),
+  ).describe("The name for your new database snapshot.").optional(),
+  Tags: z.array(TagSchema).describe(
+    "An array of key-value pairs to apply to this resource.",
+  ).optional(),
+  Location: z.object({
+    AvailabilityZone: z.string().describe(
+      "The Availability Zone where the database snapshot was created.",
+    ).optional(),
+    RegionName: z.string().describe(
+      "The AWS Region where the database snapshot was created.",
+    ).optional(),
+  }).describe(
+    "The Region name and Availability Zone where the database snapshot is located.",
+  ).optional(),
+});
+
+export const model = {
+  type: "@swamp/aws/lightsail/database-snapshot",
+  version: "2026.03.19.1",
+  globalArguments: GlobalArgsSchema,
+  inputsSchema: InputsSchema,
+  resources: {
+    state: {
+      description: "Lightsail DatabaseSnapshot resource state",
+      schema: StateSchema,
+      lifetime: "infinite",
+      garbageCollection: 10,
+    },
+  },
+  methods: {
+    create: {
+      description: "Create a Lightsail DatabaseSnapshot",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const desiredState: Record<string, unknown> = {};
+        for (const [key, value] of Object.entries(g)) {
+          if (value !== undefined) desiredState[key] = value;
+        }
+        const result = await createResource(
+          "AWS::Lightsail::DatabaseSnapshot",
+          desiredState,
+        ) as StateData;
+        const instanceName = (result.RelationalDatabaseSnapshotName ??
+          g.RelationalDatabaseSnapshotName)?.toString() ?? "current";
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    get: {
+      description: "Get a Lightsail DatabaseSnapshot",
+      arguments: z.object({
+        identifier: z.string().describe(
+          "The primary identifier of the Lightsail DatabaseSnapshot",
+        ),
+      }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const result = await readResource(
+          "AWS::Lightsail::DatabaseSnapshot",
+          args.identifier,
+        ) as StateData;
+        const instanceName = (result.RelationalDatabaseSnapshotName ??
+          context.globalArgs.RelationalDatabaseSnapshotName)?.toString() ??
+          args.identifier;
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    update: {
+      description: "Update a Lightsail DatabaseSnapshot",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const instanceName = g.RelationalDatabaseSnapshotName?.toString() ??
+          "current";
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          instanceName,
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        const identifier = existing.RelationalDatabaseSnapshotName?.toString();
+        if (!identifier) {
+          throw new Error("No identifier found in existing state");
+        }
+        const currentState = await readResource(
+          "AWS::Lightsail::DatabaseSnapshot",
+          identifier,
+        ) as StateData;
+        const desiredState: Record<string, unknown> = { ...currentState };
+        for (const [key, value] of Object.entries(g)) {
+          if (value !== undefined) desiredState[key] = value;
+        }
+        const result = await updateResource(
+          "AWS::Lightsail::DatabaseSnapshot",
+          identifier,
+          currentState,
+          desiredState,
+          ["RelationalDatabaseSnapshotName", "RelationalDatabaseName"],
+        );
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    delete: {
+      description: "Delete a Lightsail DatabaseSnapshot",
+      arguments: z.object({
+        identifier: z.string().describe(
+          "The primary identifier of the Lightsail DatabaseSnapshot",
+        ),
+      }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const { existed } = await deleteResource(
+          "AWS::Lightsail::DatabaseSnapshot",
+          args.identifier,
+        );
+        const instanceName =
+          context.globalArgs.RelationalDatabaseSnapshotName?.toString() ??
+            args.identifier;
+        const handle = await context.writeResource("state", instanceName, {
+          identifier: args.identifier,
+          existed,
+          status: existed ? "deleted" : "not_found",
+          deletedAt: new Date().toISOString(),
+        });
+        return { dataHandles: [handle] };
+      },
+    },
+    sync: {
+      description: "Sync Lightsail DatabaseSnapshot state from AWS",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const instanceName = g.RelationalDatabaseSnapshotName?.toString() ??
+          "current";
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          instanceName,
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        const identifier = existing.RelationalDatabaseSnapshotName?.toString();
+        if (!identifier) {
+          throw new Error("No identifier found in existing state");
+        }
+        try {
+          const result = await readResource(
+            "AWS::Lightsail::DatabaseSnapshot",
+            identifier,
+          ) as StateData;
+          const handle = await context.writeResource(
+            "state",
+            instanceName,
+            result,
+          );
+          return { dataHandles: [handle] };
+        } catch (error: unknown) {
+          if (isResourceNotFoundError(error)) {
+            const handle = await context.writeResource("state", instanceName, {
+              identifier,
+              status: "not_found",
+              syncedAt: new Date().toISOString(),
+            });
+            return { dataHandles: [handle] };
+          }
+          throw error;
+        }
+      },
+    },
+  },
+};

@@ -1,0 +1,247 @@
+// Auto-generated extension model for @swamp/aws/config/configuration-aggregator
+// Do not edit manually. Re-generate with: deno task generate:aws
+
+// deno-lint-ignore-file no-explicit-any
+
+import { z } from "zod";
+import {
+  createResource,
+  deleteResource,
+  isResourceNotFoundError,
+  readResource,
+  updateResource,
+} from "./_lib/aws.ts";
+
+export const AccountAggregationSourceSchema = z.object({
+  AllAwsRegions: z.boolean().optional(),
+  AwsRegions: z.array(z.string()).optional(),
+  AccountIds: z.array(z.string()),
+});
+
+export const TagSchema = z.object({
+  Key: z.string().min(1).max(128).describe(
+    "The key name of the tag. You can specify a value that is 1 to 127 Unicode characters in length and cannot be prefixed with aws:. You can use any of the following characters: the set of Unicode letters, digits, whitespace, _,., /, =, +, and -.",
+  ),
+  Value: z.string().min(0).max(256).describe(
+    "The value for the tag. You can specify a value that is 1 to 255 Unicode characters in length and cannot be prefixed with aws:. You can use any of the following characters: the set of Unicode letters, digits, whitespace, _,., /, =, +, and -.",
+  ),
+});
+
+const GlobalArgsSchema = z.object({
+  AccountAggregationSources: z.array(AccountAggregationSourceSchema).optional(),
+  ConfigurationAggregatorName: z.string().min(1).max(256).regex(
+    new RegExp("[\\w\\-]+"),
+  ).describe("The name of the aggregator.").optional(),
+  OrganizationAggregationSource: z.object({
+    AllAwsRegions: z.boolean().optional(),
+    AwsRegions: z.array(z.string()).optional(),
+    RoleArn: z.string(),
+  }).optional(),
+  Tags: z.array(TagSchema).describe(
+    "The tags for the configuration aggregator.",
+  ).optional(),
+});
+
+const StateSchema = z.object({
+  AccountAggregationSources: z.array(AccountAggregationSourceSchema).optional(),
+  ConfigurationAggregatorName: z.string(),
+  ConfigurationAggregatorArn: z.string().optional(),
+  OrganizationAggregationSource: z.object({
+    AllAwsRegions: z.boolean(),
+    AwsRegions: z.array(z.string()),
+    RoleArn: z.string(),
+  }).optional(),
+  Tags: z.array(TagSchema).optional(),
+}).passthrough();
+
+type StateData = z.infer<typeof StateSchema>;
+
+const InputsSchema = z.object({
+  AccountAggregationSources: z.array(AccountAggregationSourceSchema).optional(),
+  ConfigurationAggregatorName: z.string().min(1).max(256).regex(
+    new RegExp("[\\w\\-]+"),
+  ).describe("The name of the aggregator.").optional(),
+  OrganizationAggregationSource: z.object({
+    AllAwsRegions: z.boolean().optional(),
+    AwsRegions: z.array(z.string()).optional(),
+    RoleArn: z.string().optional(),
+  }).optional(),
+  Tags: z.array(TagSchema).describe(
+    "The tags for the configuration aggregator.",
+  ).optional(),
+});
+
+export const model = {
+  type: "@swamp/aws/config/configuration-aggregator",
+  version: "2026.03.19.1",
+  globalArguments: GlobalArgsSchema,
+  inputsSchema: InputsSchema,
+  resources: {
+    state: {
+      description: "Config ConfigurationAggregator resource state",
+      schema: StateSchema,
+      lifetime: "infinite",
+      garbageCollection: 10,
+    },
+  },
+  methods: {
+    create: {
+      description: "Create a Config ConfigurationAggregator",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const desiredState: Record<string, unknown> = {};
+        for (const [key, value] of Object.entries(g)) {
+          if (value !== undefined) desiredState[key] = value;
+        }
+        const result = await createResource(
+          "AWS::Config::ConfigurationAggregator",
+          desiredState,
+        ) as StateData;
+        const instanceName =
+          (result.ConfigurationAggregatorName ?? g.ConfigurationAggregatorName)
+            ?.toString() ?? "current";
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    get: {
+      description: "Get a Config ConfigurationAggregator",
+      arguments: z.object({
+        identifier: z.string().describe(
+          "The primary identifier of the Config ConfigurationAggregator",
+        ),
+      }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const result = await readResource(
+          "AWS::Config::ConfigurationAggregator",
+          args.identifier,
+        ) as StateData;
+        const instanceName = (result.ConfigurationAggregatorName ??
+          context.globalArgs.ConfigurationAggregatorName)?.toString() ??
+          args.identifier;
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    update: {
+      description: "Update a Config ConfigurationAggregator",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const instanceName = g.ConfigurationAggregatorName?.toString() ??
+          "current";
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          instanceName,
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        const identifier = existing.ConfigurationAggregatorName?.toString();
+        if (!identifier) {
+          throw new Error("No identifier found in existing state");
+        }
+        const currentState = await readResource(
+          "AWS::Config::ConfigurationAggregator",
+          identifier,
+        ) as StateData;
+        const desiredState: Record<string, unknown> = { ...currentState };
+        for (const [key, value] of Object.entries(g)) {
+          if (value !== undefined) desiredState[key] = value;
+        }
+        const result = await updateResource(
+          "AWS::Config::ConfigurationAggregator",
+          identifier,
+          currentState,
+          desiredState,
+          ["ConfigurationAggregatorName"],
+        );
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    delete: {
+      description: "Delete a Config ConfigurationAggregator",
+      arguments: z.object({
+        identifier: z.string().describe(
+          "The primary identifier of the Config ConfigurationAggregator",
+        ),
+      }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const { existed } = await deleteResource(
+          "AWS::Config::ConfigurationAggregator",
+          args.identifier,
+        );
+        const instanceName =
+          context.globalArgs.ConfigurationAggregatorName?.toString() ??
+            args.identifier;
+        const handle = await context.writeResource("state", instanceName, {
+          identifier: args.identifier,
+          existed,
+          status: existed ? "deleted" : "not_found",
+          deletedAt: new Date().toISOString(),
+        });
+        return { dataHandles: [handle] };
+      },
+    },
+    sync: {
+      description: "Sync Config ConfigurationAggregator state from AWS",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const instanceName = g.ConfigurationAggregatorName?.toString() ??
+          "current";
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          instanceName,
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        const identifier = existing.ConfigurationAggregatorName?.toString();
+        if (!identifier) {
+          throw new Error("No identifier found in existing state");
+        }
+        try {
+          const result = await readResource(
+            "AWS::Config::ConfigurationAggregator",
+            identifier,
+          ) as StateData;
+          const handle = await context.writeResource(
+            "state",
+            instanceName,
+            result,
+          );
+          return { dataHandles: [handle] };
+        } catch (error: unknown) {
+          if (isResourceNotFoundError(error)) {
+            const handle = await context.writeResource("state", instanceName, {
+              identifier,
+              status: "not_found",
+              syncedAt: new Date().toISOString(),
+            });
+            return { dataHandles: [handle] };
+          }
+          throw error;
+        }
+      },
+    },
+  },
+};

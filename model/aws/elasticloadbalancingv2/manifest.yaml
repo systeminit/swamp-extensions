@@ -1,0 +1,22 @@
+# Auto-generated manifest. Re-generate with the appropriate deno task.
+manifestVersion: 1
+name: "@swamp/aws/elasticloadbalancingv2"
+version: "2026.03.19.1"
+description: "AWS ELASTICLOADBALANCINGV2 infrastructure models"
+labels:
+  - aws
+  - elasticloadbalancingv2
+  - cloud
+  - infrastructure
+releaseNotes: |
+  - Updated: listener, listener_rule, load_balancer, target_group, trust_store, trust_store_revocation
+models:
+  - listener.ts
+  - listener_rule.ts
+  - load_balancer.ts
+  - target_group.ts
+  - trust_store.ts
+  - trust_store_revocation.ts
+additionalFiles:
+  - LICENSE.txt
+  - README.md

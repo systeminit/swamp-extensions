@@ -1,0 +1,17 @@
+# Auto-generated manifest. Re-generate with the appropriate deno task.
+manifestVersion: 1
+name: "@swamp/aws/healthimaging"
+version: "2026.03.19.1"
+description: "AWS HEALTHIMAGING infrastructure models"
+labels:
+  - aws
+  - healthimaging
+  - cloud
+  - infrastructure
+releaseNotes: |
+  - Updated: datastore
+models:
+  - datastore.ts
+additionalFiles:
+  - LICENSE.txt
+  - README.md

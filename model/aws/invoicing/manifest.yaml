@@ -1,0 +1,17 @@
+# Auto-generated manifest. Re-generate with the appropriate deno task.
+manifestVersion: 1
+name: "@swamp/aws/invoicing"
+version: "2026.03.19.1"
+description: "AWS INVOICING infrastructure models"
+labels:
+  - aws
+  - invoicing
+  - cloud
+  - infrastructure
+releaseNotes: |
+  - Updated: invoice_unit
+models:
+  - invoice_unit.ts
+additionalFiles:
+  - LICENSE.txt
+  - README.md

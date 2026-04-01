@@ -1,0 +1,18 @@
+# Auto-generated manifest. Re-generate with the appropriate deno task.
+manifestVersion: 1
+name: "@swamp/aws/ssmincidents"
+version: "2026.03.19.1"
+description: "AWS SSMINCIDENTS infrastructure models"
+labels:
+  - aws
+  - ssmincidents
+  - cloud
+  - infrastructure
+releaseNotes: |
+  - Updated: replication_set, response_plan
+models:
+  - replication_set.ts
+  - response_plan.ts
+additionalFiles:
+  - LICENSE.txt
+  - README.md

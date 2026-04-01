@@ -1,0 +1,353 @@
+// Auto-generated extension model for @swamp/aws/connect/queue
+// Do not edit manually. Re-generate with: deno task generate:aws
+
+// deno-lint-ignore-file no-explicit-any
+
+import { z } from "zod";
+import {
+  createResource,
+  deleteResource,
+  isResourceNotFoundError,
+  readResource,
+  updateResource,
+} from "./_lib/aws.ts";
+
+export const TagSchema = z.object({
+  Key: z.string().min(1).max(128).regex(
+    new RegExp("^(?!aws:)[a-zA-Z+-=._:/]+$"),
+  ).describe(
+    "The key name of the tag. You can specify a value that is 1 to 128 Unicode characters in length and cannot be prefixed with aws:. You can use any of the following characters: the set of Unicode letters, digits, whitespace, _,., /, =, +, and -.",
+  ),
+  Value: z.string().min(0).max(256).describe(
+    "The value for the tag. You can specify a value that is 0 to 256 Unicode characters in length and cannot be prefixed with aws:. You can use any of the following characters: the set of Unicode letters, digits, whitespace, _,., /, =, +, and -.",
+  ),
+});
+
+export const EmailAddressSchema = z.object({
+  EmailAddressArn: z.string().regex(
+    new RegExp(
+      "^arn:aws[-a-z0-9]*:connect:[-a-z0-9]*:[0-9]{12}:instance/[-a-f0-9]{8}-[-a-f0-9]{4}-[-a-f0-9]{4}-[-a-f0-9]{4}-[-a-f0-9]{12}/email-address/[-a-f0-9]{8}-[-a-f0-9]{4}-[-a-f0-9]{4}-[-a-f0-9]{4}-[-a-f0-9]{12}$",
+    ),
+  ).describe("The Amazon Resource Name (ARN) of the email address"),
+});
+
+const GlobalArgsSchema = z.object({
+  name: z.string().describe(
+    "Instance name for this resource (used as the unique identifier in the factory pattern)",
+  ),
+  InstanceArn: z.string().regex(
+    new RegExp(
+      "^arn:aws[-a-z0-9]*:connect:[-a-z0-9]*:[0-9]{12}:instance/[-a-zA-Z0-9]*$",
+    ),
+  ).describe("The identifier of the Amazon Connect instance."),
+  Description: z.string().min(1).max(250).describe(
+    "The description of the queue.",
+  ).optional(),
+  HoursOfOperationArn: z.string().regex(
+    new RegExp(
+      "^arn:aws[-a-z0-9]*:connect:[-a-z0-9]*:[0-9]{12}:instance/[-a-zA-Z0-9]*/operating-hours/[-a-zA-Z0-9]*$",
+    ),
+  ).describe("The identifier for the hours of operation."),
+  MaxContacts: z.number().int().min(0).describe(
+    "The maximum number of contacts that can be in the queue before it is considered full.",
+  ).optional(),
+  Name: z.string().min(1).max(127).describe("The name of the queue."),
+  OutboundCallerConfig: z.object({
+    OutboundCallerIdName: z.string().min(1).max(255).describe(
+      "The caller ID name.",
+    ).optional(),
+    OutboundCallerIdNumberArn: z.string().regex(
+      new RegExp(
+        "^arn:aws[-a-z0-9]*:connect:[-a-z0-9]*:[0-9]{12}:phone-number/[-a-zA-Z0-9]*$",
+      ),
+    ).describe("The caller ID number.").optional(),
+    OutboundFlowArn: z.string().min(1).max(500).regex(
+      new RegExp(
+        "^arn:aws[-a-z0-9]*:connect:[-a-z0-9]*:[0-9]{12}:instance/[-a-zA-Z0-9]*/contact-flow/[-a-zA-Z0-9]*$",
+      ),
+    ).describe("The outbound whisper flow to be used during an outbound call.")
+      .optional(),
+  }).describe("The outbound caller ID name, number, and outbound whisper flow.")
+    .optional(),
+  OutboundEmailConfig: z.object({
+    OutboundEmailAddressId: z.string().regex(
+      new RegExp(
+        "^arn:aws[-a-z0-9]*:connect:[-a-z0-9]*:[0-9]{12}:instance/[-a-zA-Z0-9]*/email-address/[-a-zA-Z0-9]*$",
+      ),
+    ).describe("The email address connect resource ID.").optional(),
+  }).describe("The outbound email address ID.").optional(),
+  Status: z.enum(["ENABLED", "DISABLED"]).describe("The status of the queue.")
+    .optional(),
+  QuickConnectArns: z.array(
+    z.string().regex(
+      new RegExp(
+        "^arn:aws[-a-z0-9]*:connect:[-a-z0-9]*:[0-9]{12}:instance/[-a-zA-Z0-9]*/transfer-destination/[-a-zA-Z0-9]*$",
+      ),
+    ),
+  ).describe(
+    "The quick connects available to agents who are working the queue.",
+  ).optional(),
+  Tags: z.array(TagSchema).describe(
+    "An array of key-value pairs to apply to this resource.",
+  ).optional(),
+  AdditionalEmailAddresses: z.array(EmailAddressSchema).describe(
+    "The email addresses that agents can use when replying to or initiating email contacts",
+  ).optional(),
+});
+
+const StateSchema = z.object({
+  InstanceArn: z.string().optional(),
+  Description: z.string().optional(),
+  HoursOfOperationArn: z.string().optional(),
+  MaxContacts: z.number().optional(),
+  Name: z.string().optional(),
+  OutboundCallerConfig: z.object({
+    OutboundCallerIdName: z.string(),
+    OutboundCallerIdNumberArn: z.string(),
+    OutboundFlowArn: z.string(),
+  }).optional(),
+  OutboundEmailConfig: z.object({
+    OutboundEmailAddressId: z.string(),
+  }).optional(),
+  QueueArn: z.string(),
+  Status: z.string().optional(),
+  QuickConnectArns: z.array(z.string()).optional(),
+  Tags: z.array(TagSchema).optional(),
+  Type: z.string().optional(),
+  AdditionalEmailAddresses: z.array(EmailAddressSchema).optional(),
+}).passthrough();
+
+type StateData = z.infer<typeof StateSchema>;
+
+const InputsSchema = z.object({
+  name: z.string().optional(),
+  InstanceArn: z.string().regex(
+    new RegExp(
+      "^arn:aws[-a-z0-9]*:connect:[-a-z0-9]*:[0-9]{12}:instance/[-a-zA-Z0-9]*$",
+    ),
+  ).describe("The identifier of the Amazon Connect instance.").optional(),
+  Description: z.string().min(1).max(250).describe(
+    "The description of the queue.",
+  ).optional(),
+  HoursOfOperationArn: z.string().regex(
+    new RegExp(
+      "^arn:aws[-a-z0-9]*:connect:[-a-z0-9]*:[0-9]{12}:instance/[-a-zA-Z0-9]*/operating-hours/[-a-zA-Z0-9]*$",
+    ),
+  ).describe("The identifier for the hours of operation.").optional(),
+  MaxContacts: z.number().int().min(0).describe(
+    "The maximum number of contacts that can be in the queue before it is considered full.",
+  ).optional(),
+  Name: z.string().min(1).max(127).describe("The name of the queue.")
+    .optional(),
+  OutboundCallerConfig: z.object({
+    OutboundCallerIdName: z.string().min(1).max(255).describe(
+      "The caller ID name.",
+    ).optional(),
+    OutboundCallerIdNumberArn: z.string().regex(
+      new RegExp(
+        "^arn:aws[-a-z0-9]*:connect:[-a-z0-9]*:[0-9]{12}:phone-number/[-a-zA-Z0-9]*$",
+      ),
+    ).describe("The caller ID number.").optional(),
+    OutboundFlowArn: z.string().min(1).max(500).regex(
+      new RegExp(
+        "^arn:aws[-a-z0-9]*:connect:[-a-z0-9]*:[0-9]{12}:instance/[-a-zA-Z0-9]*/contact-flow/[-a-zA-Z0-9]*$",
+      ),
+    ).describe("The outbound whisper flow to be used during an outbound call.")
+      .optional(),
+  }).describe("The outbound caller ID name, number, and outbound whisper flow.")
+    .optional(),
+  OutboundEmailConfig: z.object({
+    OutboundEmailAddressId: z.string().regex(
+      new RegExp(
+        "^arn:aws[-a-z0-9]*:connect:[-a-z0-9]*:[0-9]{12}:instance/[-a-zA-Z0-9]*/email-address/[-a-zA-Z0-9]*$",
+      ),
+    ).describe("The email address connect resource ID.").optional(),
+  }).describe("The outbound email address ID.").optional(),
+  Status: z.enum(["ENABLED", "DISABLED"]).describe("The status of the queue.")
+    .optional(),
+  QuickConnectArns: z.array(
+    z.string().regex(
+      new RegExp(
+        "^arn:aws[-a-z0-9]*:connect:[-a-z0-9]*:[0-9]{12}:instance/[-a-zA-Z0-9]*/transfer-destination/[-a-zA-Z0-9]*$",
+      ),
+    ),
+  ).describe(
+    "The quick connects available to agents who are working the queue.",
+  ).optional(),
+  Tags: z.array(TagSchema).describe(
+    "An array of key-value pairs to apply to this resource.",
+  ).optional(),
+  AdditionalEmailAddresses: z.array(EmailAddressSchema).describe(
+    "The email addresses that agents can use when replying to or initiating email contacts",
+  ).optional(),
+});
+
+export const model = {
+  type: "@swamp/aws/connect/queue",
+  version: "2026.03.19.1",
+  globalArguments: GlobalArgsSchema,
+  inputsSchema: InputsSchema,
+  resources: {
+    state: {
+      description: "Connect Queue resource state",
+      schema: StateSchema,
+      lifetime: "infinite",
+      garbageCollection: 10,
+    },
+  },
+  methods: {
+    create: {
+      description: "Create a Connect Queue",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const desiredState: Record<string, unknown> = {};
+        for (const [key, value] of Object.entries(g)) {
+          if (key === "name") continue;
+          if (value !== undefined) desiredState[key] = value;
+        }
+        const result = await createResource(
+          "AWS::Connect::Queue",
+          desiredState,
+        ) as StateData;
+        const instanceName = g.name?.toString() ?? "current";
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    get: {
+      description: "Get a Connect Queue",
+      arguments: z.object({
+        identifier: z.string().describe(
+          "The primary identifier of the Connect Queue",
+        ),
+      }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const result = await readResource(
+          "AWS::Connect::Queue",
+          args.identifier,
+        ) as StateData;
+        const instanceName = context.globalArgs.name?.toString() ??
+          args.identifier;
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    update: {
+      description: "Update a Connect Queue",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const instanceName = g.name?.toString() ?? "current";
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          instanceName,
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        const identifier = existing.QueueArn?.toString();
+        if (!identifier) {
+          throw new Error("No identifier found in existing state");
+        }
+        const currentState = await readResource(
+          "AWS::Connect::Queue",
+          identifier,
+        ) as StateData;
+        const desiredState: Record<string, unknown> = { ...currentState };
+        for (const [key, value] of Object.entries(g)) {
+          if (key === "name") continue;
+          if (value !== undefined) desiredState[key] = value;
+        }
+        const result = await updateResource(
+          "AWS::Connect::Queue",
+          identifier,
+          currentState,
+          desiredState,
+        );
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    delete: {
+      description: "Delete a Connect Queue",
+      arguments: z.object({
+        identifier: z.string().describe(
+          "The primary identifier of the Connect Queue",
+        ),
+      }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const { existed } = await deleteResource(
+          "AWS::Connect::Queue",
+          args.identifier,
+        );
+        const instanceName = context.globalArgs.name?.toString() ??
+          args.identifier;
+        const handle = await context.writeResource("state", instanceName, {
+          identifier: args.identifier,
+          existed,
+          status: existed ? "deleted" : "not_found",
+          deletedAt: new Date().toISOString(),
+        });
+        return { dataHandles: [handle] };
+      },
+    },
+    sync: {
+      description: "Sync Connect Queue state from AWS",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const instanceName = g.name?.toString() ?? "current";
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          instanceName,
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        const identifier = existing.QueueArn?.toString();
+        if (!identifier) {
+          throw new Error("No identifier found in existing state");
+        }
+        try {
+          const result = await readResource(
+            "AWS::Connect::Queue",
+            identifier,
+          ) as StateData;
+          const handle = await context.writeResource(
+            "state",
+            instanceName,
+            result,
+          );
+          return { dataHandles: [handle] };
+        } catch (error: unknown) {
+          if (isResourceNotFoundError(error)) {
+            const handle = await context.writeResource("state", instanceName, {
+              identifier,
+              status: "not_found",
+              syncedAt: new Date().toISOString(),
+            });
+            return { dataHandles: [handle] };
+          }
+          throw error;
+        }
+      },
+    },
+  },
+};

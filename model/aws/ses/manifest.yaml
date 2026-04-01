@@ -1,0 +1,34 @@
+# Auto-generated manifest. Re-generate with the appropriate deno task.
+manifestVersion: 1
+name: "@swamp/aws/ses"
+version: "2026.03.19.1"
+description: "AWS SES infrastructure models"
+labels:
+  - aws
+  - ses
+  - cloud
+  - infrastructure
+releaseNotes: |
+  - Updated: configuration_set, configuration_set_event_destination, contact_list, custom_verification_email_template, dedicated_ip_pool, email_identity, mail_manager_addon_instance, mail_manager_addon_subscription, mail_manager_address_list, mail_manager_archive, mail_manager_ingress_point, mail_manager_relay, mail_manager_rule_set, mail_manager_traffic_policy, multi_region_endpoint, template, tenant, vdm_attributes
+models:
+  - configuration_set.ts
+  - configuration_set_event_destination.ts
+  - contact_list.ts
+  - custom_verification_email_template.ts
+  - dedicated_ip_pool.ts
+  - email_identity.ts
+  - mail_manager_addon_instance.ts
+  - mail_manager_addon_subscription.ts
+  - mail_manager_address_list.ts
+  - mail_manager_archive.ts
+  - mail_manager_ingress_point.ts
+  - mail_manager_relay.ts
+  - mail_manager_rule_set.ts
+  - mail_manager_traffic_policy.ts
+  - multi_region_endpoint.ts
+  - template.ts
+  - tenant.ts
+  - vdm_attributes.ts
+additionalFiles:
+  - LICENSE.txt
+  - README.md

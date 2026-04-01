@@ -1,0 +1,30 @@
+# Auto-generated manifest. Re-generate with the appropriate deno task.
+manifestVersion: 1
+name: "@swamp/aws/cloudformation"
+version: "2026.03.19.1"
+description: "AWS CLOUDFORMATION infrastructure models"
+labels:
+  - aws
+  - cloudformation
+  - cloud
+  - infrastructure
+releaseNotes: |
+  - Updated: guard_hook, hook_default_version, hook_type_config, hook_version, lambda_hook, module_default_version, module_version, public_type_version, publisher, resource_default_version, resource_version, stack, stack_set, type_activation
+models:
+  - guard_hook.ts
+  - hook_default_version.ts
+  - hook_type_config.ts
+  - hook_version.ts
+  - lambda_hook.ts
+  - module_default_version.ts
+  - module_version.ts
+  - public_type_version.ts
+  - publisher.ts
+  - resource_default_version.ts
+  - resource_version.ts
+  - stack.ts
+  - stack_set.ts
+  - type_activation.ts
+additionalFiles:
+  - LICENSE.txt
+  - README.md

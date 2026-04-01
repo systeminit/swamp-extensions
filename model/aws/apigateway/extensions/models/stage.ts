@@ -1,0 +1,315 @@
+// Auto-generated extension model for @swamp/aws/apigateway/stage
+// Do not edit manually. Re-generate with: deno task generate:aws
+
+// deno-lint-ignore-file no-explicit-any
+
+import { z } from "zod";
+import {
+  createResource,
+  deleteResource,
+  isResourceNotFoundError,
+  readResource,
+  updateResource,
+} from "./_lib/aws.ts";
+
+export const MethodSettingSchema = z.object({
+  CacheDataEncrypted: z.boolean().optional(),
+  CacheTtlInSeconds: z.number().int().optional(),
+  CachingEnabled: z.boolean().optional(),
+  DataTraceEnabled: z.boolean().optional(),
+  HttpMethod: z.string().describe(
+    "The HTTP method. To apply settings to multiple resources and methods, specify an asterisk ( *) for the HttpMethod and /* for the ResourcePath. This parameter is required when you specify a MethodSetting.",
+  ).optional(),
+  LoggingLevel: z.string().optional(),
+  MetricsEnabled: z.boolean().optional(),
+  ResourcePath: z.string().describe(
+    "The resource path for this method. Forward slashes ( /) are encoded as ~1 and the initial slash must include a forward slash. For example, the path value /resource/subresource must be encoded as /~1resource~1subresource. To specify the root path, use only a slash ( /). To apply settings to multiple resources and methods, specify an asterisk ( *) for the HttpMethod and /* for the ResourcePath. This parameter is required when you specify a MethodSetting.",
+  ).optional(),
+  ThrottlingBurstLimit: z.number().int().min(0).optional(),
+  ThrottlingRateLimit: z.number().min(0).optional(),
+});
+
+export const TagSchema = z.object({
+  Key: z.string().min(1).max(128).describe(
+    "A string you can use to assign a value. The combination of tag keys and values can help you organize and categorize your resources.",
+  ),
+  Value: z.string().min(0).max(256).describe(
+    "The value for the specified tag key.",
+  ),
+});
+
+const GlobalArgsSchema = z.object({
+  name: z.string().describe(
+    "Instance name for this resource (used as the unique identifier in the factory pattern)",
+  ),
+  AccessLogSetting: z.object({
+    DestinationArn: z.string().describe(
+      "The Amazon Resource Name (ARN) of the CloudWatch Logs log group or Kinesis Data Firehose delivery stream to receive access logs. If you specify a Kinesis Data Firehose delivery stream, the stream name must begin with amazon-apigateway-. This parameter is required to enable access logging.",
+    ).optional(),
+    Format: z.string().describe(
+      "A single line format of the access logs of data, as specified by selected [$context variables](https://docs.aws.amazon.com/apigateway/latest/developerguide/api-gateway-mapping-template-reference.html#context-variable-reference). The format must include at least $context.requestId. This parameter is required to enable access logging.",
+    ).optional(),
+  }).optional(),
+  CacheClusterEnabled: z.boolean().optional(),
+  CacheClusterSize: z.string().optional(),
+  CanarySetting: z.object({
+    DeploymentId: z.string().optional(),
+    PercentTraffic: z.number().min(0).max(100).optional(),
+    StageVariableOverrides: z.record(z.string(), z.string()).optional(),
+    UseStageCache: z.boolean().optional(),
+  }).optional(),
+  ClientCertificateId: z.string().optional(),
+  DeploymentId: z.string().optional(),
+  Description: z.string().optional(),
+  DocumentationVersion: z.string().optional(),
+  MethodSettings: z.array(MethodSettingSchema).optional(),
+  RestApiId: z.string(),
+  StageName: z.string().optional(),
+  Tags: z.array(TagSchema).optional(),
+  TracingEnabled: z.boolean().optional(),
+  Variables: z.record(z.string(), z.string()).describe(
+    "A map (string-to-string map) that defines the stage variables, where the variable name is the key and the variable value is the value. Variable names are limited to alphanumeric characters. Values must match the following regular expression: [A-Za-z0-9-._~:/?#&=,]+.",
+  ).optional(),
+});
+
+const StateSchema = z.object({
+  AccessLogSetting: z.object({
+    DestinationArn: z.string(),
+    Format: z.string(),
+  }).optional(),
+  CacheClusterEnabled: z.boolean().optional(),
+  CacheClusterSize: z.string().optional(),
+  CanarySetting: z.object({
+    DeploymentId: z.string(),
+    PercentTraffic: z.number(),
+    StageVariableOverrides: z.record(z.string(), z.unknown()),
+    UseStageCache: z.boolean(),
+  }).optional(),
+  ClientCertificateId: z.string().optional(),
+  DeploymentId: z.string().optional(),
+  Description: z.string().optional(),
+  DocumentationVersion: z.string().optional(),
+  MethodSettings: z.array(MethodSettingSchema).optional(),
+  RestApiId: z.string(),
+  StageName: z.string(),
+  Tags: z.array(TagSchema).optional(),
+  TracingEnabled: z.boolean().optional(),
+  Variables: z.record(z.string(), z.unknown()).optional(),
+}).passthrough();
+
+type StateData = z.infer<typeof StateSchema>;
+
+const InputsSchema = z.object({
+  name: z.string().optional(),
+  AccessLogSetting: z.object({
+    DestinationArn: z.string().describe(
+      "The Amazon Resource Name (ARN) of the CloudWatch Logs log group or Kinesis Data Firehose delivery stream to receive access logs. If you specify a Kinesis Data Firehose delivery stream, the stream name must begin with amazon-apigateway-. This parameter is required to enable access logging.",
+    ).optional(),
+    Format: z.string().describe(
+      "A single line format of the access logs of data, as specified by selected [$context variables](https://docs.aws.amazon.com/apigateway/latest/developerguide/api-gateway-mapping-template-reference.html#context-variable-reference). The format must include at least $context.requestId. This parameter is required to enable access logging.",
+    ).optional(),
+  }).optional(),
+  CacheClusterEnabled: z.boolean().optional(),
+  CacheClusterSize: z.string().optional(),
+  CanarySetting: z.object({
+    DeploymentId: z.string().optional(),
+    PercentTraffic: z.number().min(0).max(100).optional(),
+    StageVariableOverrides: z.record(z.string(), z.string()).optional(),
+    UseStageCache: z.boolean().optional(),
+  }).optional(),
+  ClientCertificateId: z.string().optional(),
+  DeploymentId: z.string().optional(),
+  Description: z.string().optional(),
+  DocumentationVersion: z.string().optional(),
+  MethodSettings: z.array(MethodSettingSchema).optional(),
+  RestApiId: z.string().optional(),
+  StageName: z.string().optional(),
+  Tags: z.array(TagSchema).optional(),
+  TracingEnabled: z.boolean().optional(),
+  Variables: z.record(z.string(), z.string()).describe(
+    "A map (string-to-string map) that defines the stage variables, where the variable name is the key and the variable value is the value. Variable names are limited to alphanumeric characters. Values must match the following regular expression: [A-Za-z0-9-._~:/?#&=,]+.",
+  ).optional(),
+});
+
+export const model = {
+  type: "@swamp/aws/apigateway/stage",
+  version: "2026.03.19.1",
+  globalArguments: GlobalArgsSchema,
+  inputsSchema: InputsSchema,
+  resources: {
+    state: {
+      description: "ApiGateway Stage resource state",
+      schema: StateSchema,
+      lifetime: "infinite",
+      garbageCollection: 10,
+    },
+  },
+  methods: {
+    create: {
+      description: "Create a ApiGateway Stage",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const desiredState: Record<string, unknown> = {};
+        for (const [key, value] of Object.entries(g)) {
+          if (key === "name") continue;
+          if (value !== undefined) desiredState[key] = value;
+        }
+        const result = await createResource(
+          "AWS::ApiGateway::Stage",
+          desiredState,
+        ) as StateData;
+        const instanceName = g.name?.toString() ?? "current";
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    get: {
+      description: "Get a ApiGateway Stage",
+      arguments: z.object({
+        identifier: z.string().describe(
+          "The primary identifier of the ApiGateway Stage",
+        ),
+      }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const result = await readResource(
+          "AWS::ApiGateway::Stage",
+          args.identifier,
+        ) as StateData;
+        const instanceName = context.globalArgs.name?.toString() ??
+          args.identifier;
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    update: {
+      description: "Update a ApiGateway Stage",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const instanceName = g.name?.toString() ?? "current";
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          instanceName,
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        const idParts = [
+          existing.RestApiId?.toString(),
+          existing.StageName?.toString(),
+        ];
+        if (idParts.some((p) => !p)) {
+          throw new Error(
+            "Missing primary identifier fields in existing state",
+          );
+        }
+        const identifier = idParts.join("|");
+        const currentState = await readResource(
+          "AWS::ApiGateway::Stage",
+          identifier,
+        ) as StateData;
+        const desiredState: Record<string, unknown> = { ...currentState };
+        for (const [key, value] of Object.entries(g)) {
+          if (key === "name") continue;
+          if (value !== undefined) desiredState[key] = value;
+        }
+        const result = await updateResource(
+          "AWS::ApiGateway::Stage",
+          identifier,
+          currentState,
+          desiredState,
+          ["RestApiId", "StageName"],
+        );
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    delete: {
+      description: "Delete a ApiGateway Stage",
+      arguments: z.object({
+        identifier: z.string().describe(
+          "The primary identifier of the ApiGateway Stage",
+        ),
+      }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const { existed } = await deleteResource(
+          "AWS::ApiGateway::Stage",
+          args.identifier,
+        );
+        const instanceName = context.globalArgs.name?.toString() ??
+          args.identifier;
+        const handle = await context.writeResource("state", instanceName, {
+          identifier: args.identifier,
+          existed,
+          status: existed ? "deleted" : "not_found",
+          deletedAt: new Date().toISOString(),
+        });
+        return { dataHandles: [handle] };
+      },
+    },
+    sync: {
+      description: "Sync ApiGateway Stage state from AWS",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const instanceName = g.name?.toString() ?? "current";
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          instanceName,
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        const idParts = [
+          existing.RestApiId?.toString(),
+          existing.StageName?.toString(),
+        ];
+        if (idParts.some((p) => !p)) {
+          throw new Error(
+            "Missing primary identifier fields in existing state",
+          );
+        }
+        const identifier = idParts.join("|");
+        try {
+          const result = await readResource(
+            "AWS::ApiGateway::Stage",
+            identifier,
+          ) as StateData;
+          const handle = await context.writeResource(
+            "state",
+            instanceName,
+            result,
+          );
+          return { dataHandles: [handle] };
+        } catch (error: unknown) {
+          if (isResourceNotFoundError(error)) {
+            const handle = await context.writeResource("state", instanceName, {
+              identifier,
+              status: "not_found",
+              syncedAt: new Date().toISOString(),
+            });
+            return { dataHandles: [handle] };
+          }
+          throw error;
+        }
+      },
+    },
+  },
+};

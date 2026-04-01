@@ -1,0 +1,22 @@
+# Auto-generated manifest. Re-generate with the appropriate deno task.
+manifestVersion: 1
+name: "@swamp/aws/memorydb"
+version: "2026.03.19.1"
+description: "AWS MEMORYDB infrastructure models"
+labels:
+  - aws
+  - memorydb
+  - cloud
+  - infrastructure
+releaseNotes: |
+  - Updated: acl, cluster, multi_region_cluster, parameter_group, subnet_group, user
+models:
+  - acl.ts
+  - cluster.ts
+  - multi_region_cluster.ts
+  - parameter_group.ts
+  - subnet_group.ts
+  - user.ts
+additionalFiles:
+  - LICENSE.txt
+  - README.md

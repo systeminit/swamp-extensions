@@ -1,0 +1,711 @@
+// Auto-generated extension model for @swamp/aws/b2bi/transformer
+// Do not edit manually. Re-generate with: deno task generate:aws
+
+// deno-lint-ignore-file no-explicit-any
+
+import { z } from "zod";
+import {
+  createResource,
+  deleteResource,
+  isResourceNotFoundError,
+  readResource,
+  updateResource,
+} from "./_lib/aws.ts";
+
+export const X12DetailsSchema = z.object({
+  TransactionSet: z.enum([
+    "X12_100",
+    "X12_101",
+    "X12_102",
+    "X12_103",
+    "X12_104",
+    "X12_105",
+    "X12_106",
+    "X12_107",
+    "X12_108",
+    "X12_109",
+    "X12_110",
+    "X12_111",
+    "X12_112",
+    "X12_113",
+    "X12_120",
+    "X12_121",
+    "X12_124",
+    "X12_125",
+    "X12_126",
+    "X12_127",
+    "X12_128",
+    "X12_129",
+    "X12_130",
+    "X12_131",
+    "X12_132",
+    "X12_133",
+    "X12_135",
+    "X12_138",
+    "X12_139",
+    "X12_140",
+    "X12_141",
+    "X12_142",
+    "X12_143",
+    "X12_144",
+    "X12_146",
+    "X12_147",
+    "X12_148",
+    "X12_149",
+    "X12_150",
+    "X12_151",
+    "X12_152",
+    "X12_153",
+    "X12_154",
+    "X12_155",
+    "X12_157",
+    "X12_158",
+    "X12_159",
+    "X12_160",
+    "X12_161",
+    "X12_163",
+    "X12_170",
+    "X12_175",
+    "X12_176",
+    "X12_179",
+    "X12_180",
+    "X12_185",
+    "X12_186",
+    "X12_187",
+    "X12_188",
+    "X12_189",
+    "X12_190",
+    "X12_191",
+    "X12_194",
+    "X12_195",
+    "X12_196",
+    "X12_197",
+    "X12_198",
+    "X12_199",
+    "X12_200",
+    "X12_201",
+    "X12_202",
+    "X12_203",
+    "X12_204",
+    "X12_205",
+    "X12_206",
+    "X12_210",
+    "X12_211",
+    "X12_212",
+    "X12_213",
+    "X12_214",
+    "X12_215",
+    "X12_216",
+    "X12_217",
+    "X12_218",
+    "X12_219",
+    "X12_220",
+    "X12_222",
+    "X12_223",
+    "X12_224",
+    "X12_225",
+    "X12_227",
+    "X12_228",
+    "X12_240",
+    "X12_242",
+    "X12_244",
+    "X12_245",
+    "X12_248",
+    "X12_249",
+    "X12_250",
+    "X12_251",
+    "X12_252",
+    "X12_255",
+    "X12_256",
+    "X12_259",
+    "X12_260",
+    "X12_261",
+    "X12_262",
+    "X12_263",
+    "X12_264",
+    "X12_265",
+    "X12_266",
+    "X12_267",
+    "X12_268",
+    "X12_269",
+    "X12_270",
+    "X12_271",
+    "X12_272",
+    "X12_273",
+    "X12_274",
+    "X12_275",
+    "X12_276",
+    "X12_277",
+    "X12_278",
+    "X12_280",
+    "X12_283",
+    "X12_284",
+    "X12_285",
+    "X12_286",
+    "X12_288",
+    "X12_290",
+    "X12_300",
+    "X12_301",
+    "X12_303",
+    "X12_304",
+    "X12_309",
+    "X12_310",
+    "X12_311",
+    "X12_312",
+    "X12_313",
+    "X12_315",
+    "X12_317",
+    "X12_319",
+    "X12_322",
+    "X12_323",
+    "X12_324",
+    "X12_325",
+    "X12_326",
+    "X12_350",
+    "X12_352",
+    "X12_353",
+    "X12_354",
+    "X12_355",
+    "X12_356",
+    "X12_357",
+    "X12_358",
+    "X12_361",
+    "X12_362",
+    "X12_404",
+    "X12_410",
+    "X12_412",
+    "X12_414",
+    "X12_417",
+    "X12_418",
+    "X12_419",
+    "X12_420",
+    "X12_421",
+    "X12_422",
+    "X12_423",
+    "X12_424",
+    "X12_425",
+    "X12_426",
+    "X12_429",
+    "X12_431",
+    "X12_432",
+    "X12_433",
+    "X12_434",
+    "X12_435",
+    "X12_436",
+    "X12_437",
+    "X12_440",
+    "X12_451",
+    "X12_452",
+    "X12_453",
+    "X12_455",
+    "X12_456",
+    "X12_460",
+    "X12_463",
+    "X12_466",
+    "X12_468",
+    "X12_470",
+    "X12_475",
+    "X12_485",
+    "X12_486",
+    "X12_490",
+    "X12_492",
+    "X12_494",
+    "X12_500",
+    "X12_501",
+    "X12_503",
+    "X12_504",
+    "X12_511",
+    "X12_517",
+    "X12_521",
+    "X12_527",
+    "X12_536",
+    "X12_540",
+    "X12_561",
+    "X12_567",
+    "X12_568",
+    "X12_601",
+    "X12_602",
+    "X12_620",
+    "X12_625",
+    "X12_650",
+    "X12_715",
+    "X12_753",
+    "X12_754",
+    "X12_805",
+    "X12_806",
+    "X12_810",
+    "X12_811",
+    "X12_812",
+    "X12_813",
+    "X12_814",
+    "X12_815",
+    "X12_816",
+    "X12_818",
+    "X12_819",
+    "X12_820",
+    "X12_821",
+    "X12_822",
+    "X12_823",
+    "X12_824",
+    "X12_826",
+    "X12_827",
+    "X12_828",
+    "X12_829",
+    "X12_830",
+    "X12_831",
+    "X12_832",
+    "X12_833",
+    "X12_834",
+    "X12_835",
+    "X12_836",
+    "X12_837",
+    "X12_838",
+    "X12_839",
+    "X12_840",
+    "X12_841",
+    "X12_842",
+    "X12_843",
+    "X12_844",
+    "X12_845",
+    "X12_846",
+    "X12_847",
+    "X12_848",
+    "X12_849",
+    "X12_850",
+    "X12_851",
+    "X12_852",
+    "X12_853",
+    "X12_854",
+    "X12_855",
+    "X12_856",
+    "X12_857",
+    "X12_858",
+    "X12_859",
+    "X12_860",
+    "X12_861",
+    "X12_862",
+    "X12_863",
+    "X12_864",
+    "X12_865",
+    "X12_866",
+    "X12_867",
+    "X12_868",
+    "X12_869",
+    "X12_870",
+    "X12_871",
+    "X12_872",
+    "X12_873",
+    "X12_874",
+    "X12_875",
+    "X12_876",
+    "X12_877",
+    "X12_878",
+    "X12_879",
+    "X12_880",
+    "X12_881",
+    "X12_882",
+    "X12_883",
+    "X12_884",
+    "X12_885",
+    "X12_886",
+    "X12_887",
+    "X12_888",
+    "X12_889",
+    "X12_891",
+    "X12_893",
+    "X12_894",
+    "X12_895",
+    "X12_896",
+    "X12_920",
+    "X12_924",
+    "X12_925",
+    "X12_926",
+    "X12_928",
+    "X12_940",
+    "X12_943",
+    "X12_944",
+    "X12_945",
+    "X12_947",
+    "X12_980",
+    "X12_990",
+    "X12_993",
+    "X12_996",
+    "X12_997",
+    "X12_998",
+    "X12_999",
+    "X12_270_X279",
+    "X12_271_X279",
+    "X12_275_X210",
+    "X12_275_X211",
+    "X12_276_X212",
+    "X12_277_X212",
+    "X12_277_X214",
+    "X12_277_X364",
+    "X12_278_X217",
+    "X12_820_X218",
+    "X12_820_X306",
+    "X12_824_X186",
+    "X12_834_X220",
+    "X12_834_X307",
+    "X12_834_X318",
+    "X12_835_X221",
+    "X12_837_X222",
+    "X12_837_X223",
+    "X12_837_X224",
+    "X12_837_X291",
+    "X12_837_X292",
+    "X12_837_X298",
+    "X12_999_X231",
+  ]).optional(),
+  Version: z.enum([
+    "VERSION_4010",
+    "VERSION_4030",
+    "VERSION_4050",
+    "VERSION_4060",
+    "VERSION_5010",
+    "VERSION_5010_HIPAA",
+  ]).optional(),
+});
+
+export const X12SplitOptionsSchema = z.object({
+  SplitBy: z.enum(["NONE", "TRANSACTION"]).optional(),
+});
+
+export const X12CodeListValidationRuleSchema = z.object({
+  ElementId: z.string().min(4).max(4).regex(new RegExp("^[0-9]{4}$")),
+  CodesToAdd: z.array(z.string()).optional(),
+  CodesToRemove: z.array(z.string()).optional(),
+});
+
+export const X12ElementLengthValidationRuleSchema = z.object({
+  ElementId: z.string().min(4).max(4).regex(new RegExp("^[0-9]{4}$")),
+  MaxLength: z.number().min(1).max(1000000),
+  MinLength: z.number().min(1).max(1000000),
+});
+
+export const X12ElementRequirementValidationRuleSchema = z.object({
+  ElementPosition: z.string().regex(
+    new RegExp("^[a-zA-Z0-9]+(?:-\\d{2})(?:-\\d{2})?$"),
+  ),
+  Requirement: z.enum(["OPTIONAL", "MANDATORY"]),
+});
+
+export const X12ValidationOptionsSchema = z.object({
+  ValidationRules: z.array(z.object({
+    CodeListValidationRule: X12CodeListValidationRuleSchema.optional(),
+    ElementLengthValidationRule: X12ElementLengthValidationRuleSchema
+      .optional(),
+    ElementRequirementValidationRule: X12ElementRequirementValidationRuleSchema
+      .optional(),
+  })).optional(),
+});
+
+export const X12AdvancedOptionsSchema = z.object({
+  SplitOptions: X12SplitOptionsSchema.optional(),
+  ValidationOptions: X12ValidationOptionsSchema.optional(),
+});
+
+export const AdvancedOptionsSchema = z.object({
+  X12: X12AdvancedOptionsSchema.optional(),
+});
+
+export const SampleDocumentKeysSchema = z.object({
+  Input: z.string().min(0).max(1024).optional(),
+  Output: z.string().min(0).max(1024).optional(),
+});
+
+export const TagSchema = z.object({
+  Key: z.string().min(1).max(128),
+  Value: z.string().min(0).max(256),
+});
+
+const GlobalArgsSchema = z.object({
+  name: z.string().describe(
+    "Instance name for this resource (used as the unique identifier in the factory pattern)",
+  ),
+  EdiType: z.object({
+    X12Details: X12DetailsSchema.optional(),
+  }).optional(),
+  FileFormat: z.enum(["XML", "JSON", "NOT_USED"]).optional(),
+  InputConversion: z.object({
+    FromFormat: z.enum(["X12"]),
+    FormatOptions: z.object({
+      X12: X12DetailsSchema.optional(),
+    }).optional(),
+    AdvancedOptions: AdvancedOptionsSchema.optional(),
+  }).optional(),
+  Mapping: z.object({
+    TemplateLanguage: z.enum(["XSLT", "JSONATA"]),
+    Template: z.string().min(0).max(350000).optional(),
+  }).optional(),
+  MappingTemplate: z.string().min(0).max(350000).describe(
+    "This shape is deprecated: This is a legacy trait. Please use input-conversion or output-conversion.",
+  ).optional(),
+  Name: z.string().min(1).max(254).regex(new RegExp("^[a-zA-Z0-9_-]{1,512}$")),
+  OutputConversion: z.object({
+    ToFormat: z.enum(["X12"]),
+    FormatOptions: z.object({
+      X12: X12DetailsSchema.optional(),
+    }).optional(),
+    AdvancedOptions: AdvancedOptionsSchema.optional(),
+  }).optional(),
+  SampleDocument: z.string().min(0).max(1024).describe(
+    "This shape is deprecated: This is a legacy trait. Please use input-conversion or output-conversion.",
+  ).optional(),
+  SampleDocuments: z.object({
+    BucketName: z.string().min(3).max(63),
+    Keys: z.array(SampleDocumentKeysSchema),
+  }).optional(),
+  Status: z.enum(["active", "inactive"]),
+  Tags: z.array(TagSchema).optional(),
+});
+
+const StateSchema = z.object({
+  CreatedAt: z.string().optional(),
+  EdiType: z.object({
+    X12Details: X12DetailsSchema,
+  }).optional(),
+  FileFormat: z.string().optional(),
+  InputConversion: z.object({
+    FromFormat: z.string(),
+    FormatOptions: z.object({
+      X12: X12DetailsSchema,
+    }),
+    AdvancedOptions: AdvancedOptionsSchema,
+  }).optional(),
+  Mapping: z.object({
+    TemplateLanguage: z.string(),
+    Template: z.string(),
+  }).optional(),
+  MappingTemplate: z.string().optional(),
+  ModifiedAt: z.string().optional(),
+  Name: z.string().optional(),
+  OutputConversion: z.object({
+    ToFormat: z.string(),
+    FormatOptions: z.object({
+      X12: X12DetailsSchema,
+    }),
+    AdvancedOptions: AdvancedOptionsSchema,
+  }).optional(),
+  SampleDocument: z.string().optional(),
+  SampleDocuments: z.object({
+    BucketName: z.string(),
+    Keys: z.array(SampleDocumentKeysSchema),
+  }).optional(),
+  Status: z.string().optional(),
+  Tags: z.array(TagSchema).optional(),
+  TransformerArn: z.string().optional(),
+  TransformerId: z.string(),
+}).passthrough();
+
+type StateData = z.infer<typeof StateSchema>;
+
+const InputsSchema = z.object({
+  name: z.string().optional(),
+  EdiType: z.object({
+    X12Details: X12DetailsSchema.optional(),
+  }).optional(),
+  FileFormat: z.enum(["XML", "JSON", "NOT_USED"]).optional(),
+  InputConversion: z.object({
+    FromFormat: z.enum(["X12"]).optional(),
+    FormatOptions: z.object({
+      X12: X12DetailsSchema.optional(),
+    }).optional(),
+    AdvancedOptions: AdvancedOptionsSchema.optional(),
+  }).optional(),
+  Mapping: z.object({
+    TemplateLanguage: z.enum(["XSLT", "JSONATA"]).optional(),
+    Template: z.string().min(0).max(350000).optional(),
+  }).optional(),
+  MappingTemplate: z.string().min(0).max(350000).describe(
+    "This shape is deprecated: This is a legacy trait. Please use input-conversion or output-conversion.",
+  ).optional(),
+  Name: z.string().min(1).max(254).regex(new RegExp("^[a-zA-Z0-9_-]{1,512}$"))
+    .optional(),
+  OutputConversion: z.object({
+    ToFormat: z.enum(["X12"]).optional(),
+    FormatOptions: z.object({
+      X12: X12DetailsSchema.optional(),
+    }).optional(),
+    AdvancedOptions: AdvancedOptionsSchema.optional(),
+  }).optional(),
+  SampleDocument: z.string().min(0).max(1024).describe(
+    "This shape is deprecated: This is a legacy trait. Please use input-conversion or output-conversion.",
+  ).optional(),
+  SampleDocuments: z.object({
+    BucketName: z.string().min(3).max(63).optional(),
+    Keys: z.array(SampleDocumentKeysSchema).optional(),
+  }).optional(),
+  Status: z.enum(["active", "inactive"]).optional(),
+  Tags: z.array(TagSchema).optional(),
+});
+
+export const model = {
+  type: "@swamp/aws/b2bi/transformer",
+  version: "2026.03.19.1",
+  globalArguments: GlobalArgsSchema,
+  inputsSchema: InputsSchema,
+  resources: {
+    state: {
+      description: "B2BI Transformer resource state",
+      schema: StateSchema,
+      lifetime: "infinite",
+      garbageCollection: 10,
+    },
+  },
+  methods: {
+    create: {
+      description: "Create a B2BI Transformer",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const desiredState: Record<string, unknown> = {};
+        for (const [key, value] of Object.entries(g)) {
+          if (key === "name") continue;
+          if (value !== undefined) desiredState[key] = value;
+        }
+        const result = await createResource(
+          "AWS::B2BI::Transformer",
+          desiredState,
+        ) as StateData;
+        const instanceName = g.name?.toString() ?? "current";
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    get: {
+      description: "Get a B2BI Transformer",
+      arguments: z.object({
+        identifier: z.string().describe(
+          "The primary identifier of the B2BI Transformer",
+        ),
+      }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const result = await readResource(
+          "AWS::B2BI::Transformer",
+          args.identifier,
+        ) as StateData;
+        const instanceName = context.globalArgs.name?.toString() ??
+          args.identifier;
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    update: {
+      description: "Update a B2BI Transformer",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const instanceName = g.name?.toString() ?? "current";
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          instanceName,
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        const identifier = existing.TransformerId?.toString();
+        if (!identifier) {
+          throw new Error("No identifier found in existing state");
+        }
+        const currentState = await readResource(
+          "AWS::B2BI::Transformer",
+          identifier,
+        ) as StateData;
+        const desiredState: Record<string, unknown> = { ...currentState };
+        for (const [key, value] of Object.entries(g)) {
+          if (key === "name") continue;
+          if (value !== undefined) desiredState[key] = value;
+        }
+        const result = await updateResource(
+          "AWS::B2BI::Transformer",
+          identifier,
+          currentState,
+          desiredState,
+        );
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    delete: {
+      description: "Delete a B2BI Transformer",
+      arguments: z.object({
+        identifier: z.string().describe(
+          "The primary identifier of the B2BI Transformer",
+        ),
+      }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const { existed } = await deleteResource(
+          "AWS::B2BI::Transformer",
+          args.identifier,
+        );
+        const instanceName = context.globalArgs.name?.toString() ??
+          args.identifier;
+        const handle = await context.writeResource("state", instanceName, {
+          identifier: args.identifier,
+          existed,
+          status: existed ? "deleted" : "not_found",
+          deletedAt: new Date().toISOString(),
+        });
+        return { dataHandles: [handle] };
+      },
+    },
+    sync: {
+      description: "Sync B2BI Transformer state from AWS",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const instanceName = g.name?.toString() ?? "current";
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          instanceName,
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        const identifier = existing.TransformerId?.toString();
+        if (!identifier) {
+          throw new Error("No identifier found in existing state");
+        }
+        try {
+          const result = await readResource(
+            "AWS::B2BI::Transformer",
+            identifier,
+          ) as StateData;
+          const handle = await context.writeResource(
+            "state",
+            instanceName,
+            result,
+          );
+          return { dataHandles: [handle] };
+        } catch (error: unknown) {
+          if (isResourceNotFoundError(error)) {
+            const handle = await context.writeResource("state", instanceName, {
+              identifier,
+              status: "not_found",
+              syncedAt: new Date().toISOString(),
+            });
+            return { dataHandles: [handle] };
+          }
+          throw error;
+        }
+      },
+    },
+  },
+};

@@ -1,0 +1,334 @@
+// Auto-generated extension model for @swamp/aws/appstream/stack
+// Do not edit manually. Re-generate with: deno task generate:aws
+
+// deno-lint-ignore-file no-explicit-any
+
+import { z } from "zod";
+import {
+  createResource,
+  deleteResource,
+  isResourceNotFoundError,
+  readResource,
+  updateResource,
+} from "./_lib/aws.ts";
+
+export const StorageConnectorSchema = z.object({
+  Domains: z.array(z.string()).describe(
+    "The names of the domains for the account.",
+  ).optional(),
+  ResourceIdentifier: z.string().describe("The ARN of the storage connector.")
+    .optional(),
+  ConnectorType: z.string().describe("The type of storage connector."),
+});
+
+export const UserSettingSchema = z.object({
+  Permission: z.string().describe(
+    "Indicates whether the action is enabled or disabled.",
+  ),
+  Action: z.string().describe("The action that is enabled or disabled."),
+  MaximumLength: z.number().int().describe(
+    "Specifies the number of characters that can be copied by end users from the local device to the remote session, and to the local device from the remote session. This can be specified only for the CLIPBOARD_COPY_FROM_LOCAL_DEVICE and CLIPBOARD_COPY_TO_LOCAL_DEVICE actions. This defaults to 20,971,520 (20 MB) when unspecified and the permission is ENABLED. This can't be specified when the permission is DISABLED. The value can be between 1 and 20,971,520 (20 MB).",
+  ).optional(),
+});
+
+export const TagSchema = z.object({
+  Value: z.string().describe("The value of the tag."),
+  Key: z.string().describe("The key of the tag."),
+});
+
+export const AccessEndpointSchema = z.object({
+  EndpointType: z.string().describe("The type of interface endpoint."),
+  VpceId: z.string().describe(
+    "The identifier (ID) of the VPC in which the interface endpoint is used.",
+  ),
+});
+
+const GlobalArgsSchema = z.object({
+  Description: z.string().describe("The description to display.").optional(),
+  StorageConnectors: z.array(StorageConnectorSchema).describe(
+    "The storage connectors to enable.",
+  ).optional(),
+  DeleteStorageConnectors: z.boolean().describe(
+    "This parameter has been deprecated. Deletes the storage connectors currently enabled for the stack.",
+  ).optional(),
+  EmbedHostDomains: z.array(z.string()).describe(
+    "The domains where AppStream 2.0 streaming sessions can be embedded in an iframe. You must approve the domains that you want to host embedded AppStream 2.0 streaming sessions.",
+  ).optional(),
+  UserSettings: z.array(UserSettingSchema).describe(
+    "The actions that are enabled or disabled for users during their streaming sessions. By default, these actions are enabled.",
+  ).optional(),
+  AttributesToDelete: z.array(z.string()).describe(
+    "The stack attributes to delete.",
+  ).optional(),
+  RedirectURL: z.string().describe(
+    "The URL that users are redirected to after their streaming session ends.",
+  ).optional(),
+  StreamingExperienceSettings: z.object({
+    PreferredProtocol: z.string().describe(
+      "The preferred protocol that you want to use while streaming your application.",
+    ).optional(),
+  }).describe(
+    "The streaming protocol that you want your stack to prefer. This can be UDP or TCP. Currently, UDP is only supported in the Windows native client.",
+  ).optional(),
+  Name: z.string().describe("The name of the stack.").optional(),
+  FeedbackURL: z.string().describe(
+    "The URL that users are redirected to after they click the Send Feedback link. If no URL is specified, no Send Feedback link is displayed.",
+  ).optional(),
+  ApplicationSettings: z.object({
+    SettingsGroup: z.string().describe(
+      "The path prefix for the S3 bucket where users’ persistent application settings are stored. You can allow the same persistent application settings to be used across multiple stacks by specifying the same settings group for each stack.",
+    ).optional(),
+    Enabled: z.boolean().describe(
+      "Enables or disables persistent application settings for users during their streaming sessions.",
+    ),
+  }).describe(
+    "The persistent application settings for users of the stack. When these settings are enabled, changes that users make to applications and Windows settings are automatically saved after each session and applied to the next session.",
+  ).optional(),
+  DisplayName: z.string().describe("The stack name to display.").optional(),
+  Tags: z.array(TagSchema).describe("An array of key-value pairs.").optional(),
+  AccessEndpoints: z.array(AccessEndpointSchema).describe(
+    "The list of virtual private cloud (VPC) interface endpoint objects. Users of the stack can connect to AppStream 2.0 only through the specified endpoints.",
+  ).optional(),
+});
+
+const StateSchema = z.object({
+  Description: z.string().optional(),
+  StorageConnectors: z.array(StorageConnectorSchema).optional(),
+  DeleteStorageConnectors: z.boolean().optional(),
+  EmbedHostDomains: z.array(z.string()).optional(),
+  UserSettings: z.array(UserSettingSchema).optional(),
+  AttributesToDelete: z.array(z.string()).optional(),
+  RedirectURL: z.string().optional(),
+  StreamingExperienceSettings: z.object({
+    PreferredProtocol: z.string(),
+  }).optional(),
+  Name: z.string(),
+  FeedbackURL: z.string().optional(),
+  ApplicationSettings: z.object({
+    SettingsGroup: z.string(),
+    Enabled: z.boolean(),
+  }).optional(),
+  DisplayName: z.string().optional(),
+  Tags: z.array(TagSchema).optional(),
+  AccessEndpoints: z.array(AccessEndpointSchema).optional(),
+}).passthrough();
+
+type StateData = z.infer<typeof StateSchema>;
+
+const InputsSchema = z.object({
+  Description: z.string().describe("The description to display.").optional(),
+  StorageConnectors: z.array(StorageConnectorSchema).describe(
+    "The storage connectors to enable.",
+  ).optional(),
+  DeleteStorageConnectors: z.boolean().describe(
+    "This parameter has been deprecated. Deletes the storage connectors currently enabled for the stack.",
+  ).optional(),
+  EmbedHostDomains: z.array(z.string()).describe(
+    "The domains where AppStream 2.0 streaming sessions can be embedded in an iframe. You must approve the domains that you want to host embedded AppStream 2.0 streaming sessions.",
+  ).optional(),
+  UserSettings: z.array(UserSettingSchema).describe(
+    "The actions that are enabled or disabled for users during their streaming sessions. By default, these actions are enabled.",
+  ).optional(),
+  AttributesToDelete: z.array(z.string()).describe(
+    "The stack attributes to delete.",
+  ).optional(),
+  RedirectURL: z.string().describe(
+    "The URL that users are redirected to after their streaming session ends.",
+  ).optional(),
+  StreamingExperienceSettings: z.object({
+    PreferredProtocol: z.string().describe(
+      "The preferred protocol that you want to use while streaming your application.",
+    ).optional(),
+  }).describe(
+    "The streaming protocol that you want your stack to prefer. This can be UDP or TCP. Currently, UDP is only supported in the Windows native client.",
+  ).optional(),
+  Name: z.string().describe("The name of the stack.").optional(),
+  FeedbackURL: z.string().describe(
+    "The URL that users are redirected to after they click the Send Feedback link. If no URL is specified, no Send Feedback link is displayed.",
+  ).optional(),
+  ApplicationSettings: z.object({
+    SettingsGroup: z.string().describe(
+      "The path prefix for the S3 bucket where users’ persistent application settings are stored. You can allow the same persistent application settings to be used across multiple stacks by specifying the same settings group for each stack.",
+    ).optional(),
+    Enabled: z.boolean().describe(
+      "Enables or disables persistent application settings for users during their streaming sessions.",
+    ).optional(),
+  }).describe(
+    "The persistent application settings for users of the stack. When these settings are enabled, changes that users make to applications and Windows settings are automatically saved after each session and applied to the next session.",
+  ).optional(),
+  DisplayName: z.string().describe("The stack name to display.").optional(),
+  Tags: z.array(TagSchema).describe("An array of key-value pairs.").optional(),
+  AccessEndpoints: z.array(AccessEndpointSchema).describe(
+    "The list of virtual private cloud (VPC) interface endpoint objects. Users of the stack can connect to AppStream 2.0 only through the specified endpoints.",
+  ).optional(),
+});
+
+export const model = {
+  type: "@swamp/aws/appstream/stack",
+  version: "2026.03.31.1",
+  globalArguments: GlobalArgsSchema,
+  inputsSchema: InputsSchema,
+  resources: {
+    state: {
+      description: "AppStream Stack resource state",
+      schema: StateSchema,
+      lifetime: "infinite",
+      garbageCollection: 10,
+    },
+  },
+  methods: {
+    create: {
+      description: "Create a AppStream Stack",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const desiredState: Record<string, unknown> = {};
+        for (const [key, value] of Object.entries(g)) {
+          if (value !== undefined) desiredState[key] = value;
+        }
+        const result = await createResource(
+          "AWS::AppStream::Stack",
+          desiredState,
+        ) as StateData;
+        const instanceName = (result.Name ?? g.Name)?.toString() ?? "current";
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    get: {
+      description: "Get a AppStream Stack",
+      arguments: z.object({
+        identifier: z.string().describe(
+          "The primary identifier of the AppStream Stack",
+        ),
+      }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const result = await readResource(
+          "AWS::AppStream::Stack",
+          args.identifier,
+        ) as StateData;
+        const instanceName =
+          (result.Name ?? context.globalArgs.Name)?.toString() ??
+            args.identifier;
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    update: {
+      description: "Update a AppStream Stack",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const instanceName = g.Name?.toString() ?? "current";
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          instanceName,
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        const identifier = existing.Name?.toString();
+        if (!identifier) {
+          throw new Error("No identifier found in existing state");
+        }
+        const currentState = await readResource(
+          "AWS::AppStream::Stack",
+          identifier,
+        ) as StateData;
+        const desiredState: Record<string, unknown> = { ...currentState };
+        for (const [key, value] of Object.entries(g)) {
+          if (value !== undefined) desiredState[key] = value;
+        }
+        const result = await updateResource(
+          "AWS::AppStream::Stack",
+          identifier,
+          currentState,
+          desiredState,
+          ["Name"],
+        );
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    delete: {
+      description: "Delete a AppStream Stack",
+      arguments: z.object({
+        identifier: z.string().describe(
+          "The primary identifier of the AppStream Stack",
+        ),
+      }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const { existed } = await deleteResource(
+          "AWS::AppStream::Stack",
+          args.identifier,
+        );
+        const instanceName = context.globalArgs.Name?.toString() ??
+          args.identifier;
+        const handle = await context.writeResource("state", instanceName, {
+          identifier: args.identifier,
+          existed,
+          status: existed ? "deleted" : "not_found",
+          deletedAt: new Date().toISOString(),
+        });
+        return { dataHandles: [handle] };
+      },
+    },
+    sync: {
+      description: "Sync AppStream Stack state from AWS",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const instanceName = g.Name?.toString() ?? "current";
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          instanceName,
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        const identifier = existing.Name?.toString();
+        if (!identifier) {
+          throw new Error("No identifier found in existing state");
+        }
+        try {
+          const result = await readResource(
+            "AWS::AppStream::Stack",
+            identifier,
+          ) as StateData;
+          const handle = await context.writeResource(
+            "state",
+            instanceName,
+            result,
+          );
+          return { dataHandles: [handle] };
+        } catch (error: unknown) {
+          if (isResourceNotFoundError(error)) {
+            const handle = await context.writeResource("state", instanceName, {
+              identifier,
+              status: "not_found",
+              syncedAt: new Date().toISOString(),
+            });
+            return { dataHandles: [handle] };
+          }
+          throw error;
+        }
+      },
+    },
+  },
+};

@@ -1,0 +1,292 @@
+// Auto-generated extension model for @swamp/aws/wisdom/aiprompt
+// Do not edit manually. Re-generate with: deno task generate:aws
+
+// deno-lint-ignore-file no-explicit-any
+
+import { z } from "zod";
+import {
+  createResource,
+  deleteResource,
+  isResourceNotFoundError,
+  readResource,
+  updateResource,
+} from "./_lib/aws.ts";
+
+const GlobalArgsSchema = z.object({
+  name: z.string().describe(
+    "Instance name for this resource (used as the unique identifier in the factory pattern)",
+  ),
+  ApiFormat: z.enum([
+    "ANTHROPIC_CLAUDE_MESSAGES",
+    "ANTHROPIC_CLAUDE_TEXT_COMPLETIONS",
+    "MESSAGES",
+    "TEXT_COMPLETIONS",
+  ]),
+  AssistantId: z.string().regex(
+    new RegExp(
+      "^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$|^arn:[a-z-]*?:wisdom:[a-z0-9-]*?:[0-9]{12}:[a-z-]*?/[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}(?:/[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}){0,2}$",
+    ),
+  ).optional(),
+  Description: z.string().min(1).max(255).regex(
+    new RegExp("^[a-zA-Z0-9\\s_.,-]+"),
+  ).optional(),
+  ModelId: z.string().min(1).max(2048),
+  Name: z.string().min(1).max(255).regex(new RegExp("^[a-zA-Z0-9\\s_.,-]+"))
+    .optional(),
+  Tags: z.record(z.string(), z.string().min(1).max(256)).optional(),
+  TemplateConfiguration: z.string(),
+  TemplateType: z.enum(["TEXT"]),
+  Type: z.enum([
+    "ANSWER_GENERATION",
+    "INTENT_LABELING_GENERATION",
+    "QUERY_REFORMULATION",
+    "SELF_SERVICE_PRE_PROCESSING",
+    "SELF_SERVICE_ANSWER_GENERATION",
+    "EMAIL_RESPONSE",
+    "EMAIL_OVERVIEW",
+    "EMAIL_GENERATIVE_ANSWER",
+    "EMAIL_QUERY_REFORMULATION",
+    "ORCHESTRATION",
+    "NOTE_TAKING",
+    "CASE_SUMMARIZATION",
+  ]),
+});
+
+const StateSchema = z.object({
+  AIPromptId: z.string(),
+  AIPromptArn: z.string().optional(),
+  ApiFormat: z.string().optional(),
+  AssistantId: z.string(),
+  AssistantArn: z.string().optional(),
+  Description: z.string().optional(),
+  ModelId: z.string().optional(),
+  Name: z.string().optional(),
+  Tags: z.record(z.string(), z.unknown()).optional(),
+  TemplateConfiguration: z.string().optional(),
+  TemplateType: z.string().optional(),
+  Type: z.string().optional(),
+  ModifiedTimeSeconds: z.number().optional(),
+}).passthrough();
+
+type StateData = z.infer<typeof StateSchema>;
+
+const InputsSchema = z.object({
+  name: z.string().optional(),
+  ApiFormat: z.enum([
+    "ANTHROPIC_CLAUDE_MESSAGES",
+    "ANTHROPIC_CLAUDE_TEXT_COMPLETIONS",
+    "MESSAGES",
+    "TEXT_COMPLETIONS",
+  ]).optional(),
+  AssistantId: z.string().regex(
+    new RegExp(
+      "^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$|^arn:[a-z-]*?:wisdom:[a-z0-9-]*?:[0-9]{12}:[a-z-]*?/[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}(?:/[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}){0,2}$",
+    ),
+  ).optional(),
+  Description: z.string().min(1).max(255).regex(
+    new RegExp("^[a-zA-Z0-9\\s_.,-]+"),
+  ).optional(),
+  ModelId: z.string().min(1).max(2048).optional(),
+  Name: z.string().min(1).max(255).regex(new RegExp("^[a-zA-Z0-9\\s_.,-]+"))
+    .optional(),
+  Tags: z.record(z.string(), z.string().min(1).max(256)).optional(),
+  TemplateConfiguration: z.string().optional(),
+  TemplateType: z.enum(["TEXT"]).optional(),
+  Type: z.enum([
+    "ANSWER_GENERATION",
+    "INTENT_LABELING_GENERATION",
+    "QUERY_REFORMULATION",
+    "SELF_SERVICE_PRE_PROCESSING",
+    "SELF_SERVICE_ANSWER_GENERATION",
+    "EMAIL_RESPONSE",
+    "EMAIL_OVERVIEW",
+    "EMAIL_GENERATIVE_ANSWER",
+    "EMAIL_QUERY_REFORMULATION",
+    "ORCHESTRATION",
+    "NOTE_TAKING",
+    "CASE_SUMMARIZATION",
+  ]).optional(),
+});
+
+export const model = {
+  type: "@swamp/aws/wisdom/aiprompt",
+  version: "2026.03.19.1",
+  globalArguments: GlobalArgsSchema,
+  inputsSchema: InputsSchema,
+  resources: {
+    state: {
+      description: "Wisdom AIPrompt resource state",
+      schema: StateSchema,
+      lifetime: "infinite",
+      garbageCollection: 10,
+    },
+  },
+  methods: {
+    create: {
+      description: "Create a Wisdom AIPrompt",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const desiredState: Record<string, unknown> = {};
+        for (const [key, value] of Object.entries(g)) {
+          if (key === "name") continue;
+          if (value !== undefined) desiredState[key] = value;
+        }
+        const result = await createResource(
+          "AWS::Wisdom::AIPrompt",
+          desiredState,
+        ) as StateData;
+        const instanceName = g.name?.toString() ?? "current";
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    get: {
+      description: "Get a Wisdom AIPrompt",
+      arguments: z.object({
+        identifier: z.string().describe(
+          "The primary identifier of the Wisdom AIPrompt",
+        ),
+      }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const result = await readResource(
+          "AWS::Wisdom::AIPrompt",
+          args.identifier,
+        ) as StateData;
+        const instanceName = context.globalArgs.name?.toString() ??
+          args.identifier;
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    update: {
+      description: "Update a Wisdom AIPrompt",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const instanceName = g.name?.toString() ?? "current";
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          instanceName,
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        const idParts = [
+          existing.AIPromptId?.toString(),
+          existing.AssistantId?.toString(),
+        ];
+        if (idParts.some((p) => !p)) {
+          throw new Error(
+            "Missing primary identifier fields in existing state",
+          );
+        }
+        const identifier = idParts.join("|");
+        const currentState = await readResource(
+          "AWS::Wisdom::AIPrompt",
+          identifier,
+        ) as StateData;
+        const desiredState: Record<string, unknown> = { ...currentState };
+        for (const [key, value] of Object.entries(g)) {
+          if (key === "name") continue;
+          if (value !== undefined) desiredState[key] = value;
+        }
+        const result = await updateResource(
+          "AWS::Wisdom::AIPrompt",
+          identifier,
+          currentState,
+          desiredState,
+          ["ApiFormat", "AssistantId", "Name", "Tags", "TemplateType", "Type"],
+        );
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    delete: {
+      description: "Delete a Wisdom AIPrompt",
+      arguments: z.object({
+        identifier: z.string().describe(
+          "The primary identifier of the Wisdom AIPrompt",
+        ),
+      }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const { existed } = await deleteResource(
+          "AWS::Wisdom::AIPrompt",
+          args.identifier,
+        );
+        const instanceName = context.globalArgs.name?.toString() ??
+          args.identifier;
+        const handle = await context.writeResource("state", instanceName, {
+          identifier: args.identifier,
+          existed,
+          status: existed ? "deleted" : "not_found",
+          deletedAt: new Date().toISOString(),
+        });
+        return { dataHandles: [handle] };
+      },
+    },
+    sync: {
+      description: "Sync Wisdom AIPrompt state from AWS",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const instanceName = g.name?.toString() ?? "current";
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          instanceName,
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        const idParts = [
+          existing.AIPromptId?.toString(),
+          existing.AssistantId?.toString(),
+        ];
+        if (idParts.some((p) => !p)) {
+          throw new Error(
+            "Missing primary identifier fields in existing state",
+          );
+        }
+        const identifier = idParts.join("|");
+        try {
+          const result = await readResource(
+            "AWS::Wisdom::AIPrompt",
+            identifier,
+          ) as StateData;
+          const handle = await context.writeResource(
+            "state",
+            instanceName,
+            result,
+          );
+          return { dataHandles: [handle] };
+        } catch (error: unknown) {
+          if (isResourceNotFoundError(error)) {
+            const handle = await context.writeResource("state", instanceName, {
+              identifier,
+              status: "not_found",
+              syncedAt: new Date().toISOString(),
+            });
+            return { dataHandles: [handle] };
+          }
+          throw error;
+        }
+      },
+    },
+  },
+};

@@ -1,0 +1,19 @@
+# Auto-generated manifest. Re-generate with the appropriate deno task.
+manifestVersion: 1
+name: "@swamp/aws/s3vectors"
+version: "2026.03.19.1"
+description: "AWS S3VECTORS infrastructure models"
+labels:
+  - aws
+  - s3vectors
+  - cloud
+  - infrastructure
+releaseNotes: |
+  - Updated: index, vector_bucket, vector_bucket_policy
+models:
+  - index.ts
+  - vector_bucket.ts
+  - vector_bucket_policy.ts
+additionalFiles:
+  - LICENSE.txt
+  - README.md

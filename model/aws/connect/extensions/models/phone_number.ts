@@ -1,0 +1,264 @@
+// Auto-generated extension model for @swamp/aws/connect/phone-number
+// Do not edit manually. Re-generate with: deno task generate:aws
+
+// deno-lint-ignore-file no-explicit-any
+
+import { z } from "zod";
+import {
+  createResource,
+  deleteResource,
+  isResourceNotFoundError,
+  readResource,
+  updateResource,
+} from "./_lib/aws.ts";
+
+export const TagSchema = z.object({
+  Key: z.string().min(1).max(128).regex(
+    new RegExp("^(?!aws:)[a-zA-Z+-=._:/]+$"),
+  ).describe(
+    "The key name of the tag. You can specify a value that is 1 to 128 Unicode characters in length and cannot be prefixed with aws:. You can use any of the following characters: the set of Unicode letters, digits, whitespace, _,., /, =, +, and -.",
+  ),
+  Value: z.string().max(256).describe(
+    "The value for the tag. You can specify a value that is 1 to 256 Unicode characters in length and cannot be prefixed with aws:. You can use any of the following characters: the set of Unicode letters, digits, whitespace, _,., /, =, +, and -.",
+  ),
+});
+
+const GlobalArgsSchema = z.object({
+  name: z.string().describe(
+    "Instance name for this resource (used as the unique identifier in the factory pattern)",
+  ),
+  TargetArn: z.string().regex(
+    new RegExp(
+      "^arn:aws[-a-z0-9]*:connect:[-a-z0-9]*:[0-9]{12}:(instance|traffic-distribution-group)/[-a-zA-Z0-9]*$",
+    ),
+  ).describe("The ARN of the target the phone number is claimed to."),
+  Description: z.string().min(1).max(500).describe(
+    "The description of the phone number.",
+  ).optional(),
+  Type: z.string().regex(
+    new RegExp(
+      "TOLL_FREE|DID|UIFN|SHARED|THIRD_PARTY_DID|THIRD_PARTY_TF|SHORT_CODE",
+    ),
+  ).describe("The phone number type").optional(),
+  CountryCode: z.string().regex(new RegExp("^[A-Z]{2}")).describe(
+    "The phone number country code.",
+  ).optional(),
+  Prefix: z.string().regex(new RegExp("^\\+[0-9]{1,15}")).describe(
+    "The phone number prefix.",
+  ).optional(),
+  Tags: z.array(TagSchema).describe("One or more tags.").optional(),
+  SourcePhoneNumberArn: z.string().describe("The source phone number arn.")
+    .optional(),
+});
+
+const StateSchema = z.object({
+  TargetArn: z.string().optional(),
+  PhoneNumberArn: z.string(),
+  Description: z.string().optional(),
+  Type: z.string().optional(),
+  CountryCode: z.string().optional(),
+  Prefix: z.string().optional(),
+  Address: z.string().optional(),
+  Tags: z.array(TagSchema).optional(),
+  SourcePhoneNumberArn: z.string().optional(),
+}).passthrough();
+
+type StateData = z.infer<typeof StateSchema>;
+
+const InputsSchema = z.object({
+  name: z.string().optional(),
+  TargetArn: z.string().regex(
+    new RegExp(
+      "^arn:aws[-a-z0-9]*:connect:[-a-z0-9]*:[0-9]{12}:(instance|traffic-distribution-group)/[-a-zA-Z0-9]*$",
+    ),
+  ).describe("The ARN of the target the phone number is claimed to.")
+    .optional(),
+  Description: z.string().min(1).max(500).describe(
+    "The description of the phone number.",
+  ).optional(),
+  Type: z.string().regex(
+    new RegExp(
+      "TOLL_FREE|DID|UIFN|SHARED|THIRD_PARTY_DID|THIRD_PARTY_TF|SHORT_CODE",
+    ),
+  ).describe("The phone number type").optional(),
+  CountryCode: z.string().regex(new RegExp("^[A-Z]{2}")).describe(
+    "The phone number country code.",
+  ).optional(),
+  Prefix: z.string().regex(new RegExp("^\\+[0-9]{1,15}")).describe(
+    "The phone number prefix.",
+  ).optional(),
+  Tags: z.array(TagSchema).describe("One or more tags.").optional(),
+  SourcePhoneNumberArn: z.string().describe("The source phone number arn.")
+    .optional(),
+});
+
+export const model = {
+  type: "@swamp/aws/connect/phone-number",
+  version: "2026.03.19.1",
+  globalArguments: GlobalArgsSchema,
+  inputsSchema: InputsSchema,
+  resources: {
+    state: {
+      description: "Connect PhoneNumber resource state",
+      schema: StateSchema,
+      lifetime: "infinite",
+      garbageCollection: 10,
+    },
+  },
+  methods: {
+    create: {
+      description: "Create a Connect PhoneNumber",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const desiredState: Record<string, unknown> = {};
+        for (const [key, value] of Object.entries(g)) {
+          if (key === "name") continue;
+          if (value !== undefined) desiredState[key] = value;
+        }
+        const result = await createResource(
+          "AWS::Connect::PhoneNumber",
+          desiredState,
+        ) as StateData;
+        const instanceName = g.name?.toString() ?? "current";
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    get: {
+      description: "Get a Connect PhoneNumber",
+      arguments: z.object({
+        identifier: z.string().describe(
+          "The primary identifier of the Connect PhoneNumber",
+        ),
+      }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const result = await readResource(
+          "AWS::Connect::PhoneNumber",
+          args.identifier,
+        ) as StateData;
+        const instanceName = context.globalArgs.name?.toString() ??
+          args.identifier;
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    update: {
+      description: "Update a Connect PhoneNumber",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const instanceName = g.name?.toString() ?? "current";
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          instanceName,
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        const identifier = existing.PhoneNumberArn?.toString();
+        if (!identifier) {
+          throw new Error("No identifier found in existing state");
+        }
+        const currentState = await readResource(
+          "AWS::Connect::PhoneNumber",
+          identifier,
+        ) as StateData;
+        const desiredState: Record<string, unknown> = { ...currentState };
+        for (const [key, value] of Object.entries(g)) {
+          if (key === "name") continue;
+          if (value !== undefined) desiredState[key] = value;
+        }
+        const result = await updateResource(
+          "AWS::Connect::PhoneNumber",
+          identifier,
+          currentState,
+          desiredState,
+          ["Type", "CountryCode", "Prefix", "SourcePhoneNumberArn"],
+        );
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    delete: {
+      description: "Delete a Connect PhoneNumber",
+      arguments: z.object({
+        identifier: z.string().describe(
+          "The primary identifier of the Connect PhoneNumber",
+        ),
+      }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const { existed } = await deleteResource(
+          "AWS::Connect::PhoneNumber",
+          args.identifier,
+        );
+        const instanceName = context.globalArgs.name?.toString() ??
+          args.identifier;
+        const handle = await context.writeResource("state", instanceName, {
+          identifier: args.identifier,
+          existed,
+          status: existed ? "deleted" : "not_found",
+          deletedAt: new Date().toISOString(),
+        });
+        return { dataHandles: [handle] };
+      },
+    },
+    sync: {
+      description: "Sync Connect PhoneNumber state from AWS",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const instanceName = g.name?.toString() ?? "current";
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          instanceName,
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        const identifier = existing.PhoneNumberArn?.toString();
+        if (!identifier) {
+          throw new Error("No identifier found in existing state");
+        }
+        try {
+          const result = await readResource(
+            "AWS::Connect::PhoneNumber",
+            identifier,
+          ) as StateData;
+          const handle = await context.writeResource(
+            "state",
+            instanceName,
+            result,
+          );
+          return { dataHandles: [handle] };
+        } catch (error: unknown) {
+          if (isResourceNotFoundError(error)) {
+            const handle = await context.writeResource("state", instanceName, {
+              identifier,
+              status: "not_found",
+              syncedAt: new Date().toISOString(),
+            });
+            return { dataHandles: [handle] };
+          }
+          throw error;
+        }
+      },
+    },
+  },
+};

@@ -1,0 +1,275 @@
+// Auto-generated extension model for @swamp/aws/bedrock/intelligent-prompt-router
+// Do not edit manually. Re-generate with: deno task generate:aws
+
+// deno-lint-ignore-file no-explicit-any
+
+import { z } from "zod";
+import {
+  createResource,
+  deleteResource,
+  isResourceNotFoundError,
+  readResource,
+  updateResource,
+} from "./_lib/aws.ts";
+
+export const PromptRouterTargetModelSchema = z.object({
+  ModelArn: z.string().min(1).max(2048).regex(
+    new RegExp(
+      "(^arn:aws(-[^:]+)?:bedrock:[a-z0-9-]{1,20}::foundation-model/[a-z0-9-]{1,63}[.]{1}([a-z0-9-]{1,63}[.]){0,2}[a-z0-9-]{1,63}([:][a-z0-9-]{1,63}){0,2})|(^arn:aws(|-us-gov|-cn|-iso|-iso-b):bedrock:(|[0-9a-z-]{0,20}):(|[0-9]{12}):(inference-profile|application-inference-profile)/[a-zA-Z0-9-:.]+)$",
+    ),
+  ).describe("Arn of underlying model which are added in the Prompt Router."),
+});
+
+export const TagSchema = z.object({
+  Key: z.string().min(1).max(128).regex(new RegExp("^[a-zA-Z0-9\\s._:/=+@-]*$"))
+    .describe("Tag Key"),
+  Value: z.string().min(0).max(256).regex(
+    new RegExp("^[a-zA-Z0-9\\s._:/=+@-]*$"),
+  ).describe("Tag Value"),
+});
+
+const GlobalArgsSchema = z.object({
+  name: z.string().describe(
+    "Instance name for this resource (used as the unique identifier in the factory pattern)",
+  ),
+  Description: z.string().min(1).max(200).regex(
+    new RegExp("^([0-9a-zA-Z:.][ _-]?)+$"),
+  ).describe("Description of the Prompt Router.").optional(),
+  FallbackModel: z.object({
+    ModelArn: z.string().min(1).max(2048).regex(
+      new RegExp(
+        "(^arn:aws(-[^:]+)?:bedrock:[a-z0-9-]{1,20}::foundation-model/[a-z0-9-]{1,63}[.]{1}([a-z0-9-]{1,63}[.]){0,2}[a-z0-9-]{1,63}([:][a-z0-9-]{1,63}){0,2})|(^arn:aws(|-us-gov|-cn|-iso|-iso-b):bedrock:(|[0-9a-z-]{0,20}):(|[0-9]{12}):(inference-profile|application-inference-profile)/[a-zA-Z0-9-:.]+)$",
+      ),
+    ).describe("Arn of underlying model which are added in the Prompt Router."),
+  }).describe("Model configuration"),
+  Models: z.array(PromptRouterTargetModelSchema).describe(
+    "List of model configuration",
+  ),
+  PromptRouterName: z.string().min(1).max(64).regex(
+    new RegExp("^([0-9a-zA-Z][ _-]?)+$"),
+  ).describe("Name of the Prompt Router."),
+  RoutingCriteria: z.object({
+    ResponseQualityDifference: z.number().min(0).max(100),
+  }).describe("Represents the criteria used for routing requests."),
+  Tags: z.array(TagSchema).describe("List of Tags").optional(),
+});
+
+const StateSchema = z.object({
+  CreatedAt: z.string().optional(),
+  Description: z.string().optional(),
+  FallbackModel: PromptRouterTargetModelSchema.optional(),
+  Models: z.array(PromptRouterTargetModelSchema).optional(),
+  PromptRouterArn: z.string(),
+  PromptRouterName: z.string().optional(),
+  RoutingCriteria: z.object({
+    ResponseQualityDifference: z.number(),
+  }).optional(),
+  Status: z.string().optional(),
+  Tags: z.array(TagSchema).optional(),
+  Type: z.string().optional(),
+  UpdatedAt: z.string().optional(),
+}).passthrough();
+
+type StateData = z.infer<typeof StateSchema>;
+
+const InputsSchema = z.object({
+  name: z.string().optional(),
+  Description: z.string().min(1).max(200).regex(
+    new RegExp("^([0-9a-zA-Z:.][ _-]?)+$"),
+  ).describe("Description of the Prompt Router.").optional(),
+  FallbackModel: z.object({
+    ModelArn: z.string().min(1).max(2048).regex(
+      new RegExp(
+        "(^arn:aws(-[^:]+)?:bedrock:[a-z0-9-]{1,20}::foundation-model/[a-z0-9-]{1,63}[.]{1}([a-z0-9-]{1,63}[.]){0,2}[a-z0-9-]{1,63}([:][a-z0-9-]{1,63}){0,2})|(^arn:aws(|-us-gov|-cn|-iso|-iso-b):bedrock:(|[0-9a-z-]{0,20}):(|[0-9]{12}):(inference-profile|application-inference-profile)/[a-zA-Z0-9-:.]+)$",
+      ),
+    ).describe("Arn of underlying model which are added in the Prompt Router.")
+      .optional(),
+  }).describe("Model configuration").optional(),
+  Models: z.array(PromptRouterTargetModelSchema).describe(
+    "List of model configuration",
+  ).optional(),
+  PromptRouterName: z.string().min(1).max(64).regex(
+    new RegExp("^([0-9a-zA-Z][ _-]?)+$"),
+  ).describe("Name of the Prompt Router.").optional(),
+  RoutingCriteria: z.object({
+    ResponseQualityDifference: z.number().min(0).max(100).optional(),
+  }).describe("Represents the criteria used for routing requests.").optional(),
+  Tags: z.array(TagSchema).describe("List of Tags").optional(),
+});
+
+export const model = {
+  type: "@swamp/aws/bedrock/intelligent-prompt-router",
+  version: "2026.03.19.1",
+  globalArguments: GlobalArgsSchema,
+  inputsSchema: InputsSchema,
+  resources: {
+    state: {
+      description: "Bedrock IntelligentPromptRouter resource state",
+      schema: StateSchema,
+      lifetime: "infinite",
+      garbageCollection: 10,
+    },
+  },
+  methods: {
+    create: {
+      description: "Create a Bedrock IntelligentPromptRouter",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const desiredState: Record<string, unknown> = {};
+        for (const [key, value] of Object.entries(g)) {
+          if (key === "name") continue;
+          if (value !== undefined) desiredState[key] = value;
+        }
+        const result = await createResource(
+          "AWS::Bedrock::IntelligentPromptRouter",
+          desiredState,
+        ) as StateData;
+        const instanceName = g.name?.toString() ?? "current";
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    get: {
+      description: "Get a Bedrock IntelligentPromptRouter",
+      arguments: z.object({
+        identifier: z.string().describe(
+          "The primary identifier of the Bedrock IntelligentPromptRouter",
+        ),
+      }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const result = await readResource(
+          "AWS::Bedrock::IntelligentPromptRouter",
+          args.identifier,
+        ) as StateData;
+        const instanceName = context.globalArgs.name?.toString() ??
+          args.identifier;
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    update: {
+      description: "Update a Bedrock IntelligentPromptRouter",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const instanceName = g.name?.toString() ?? "current";
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          instanceName,
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        const identifier = existing.PromptRouterArn?.toString();
+        if (!identifier) {
+          throw new Error("No identifier found in existing state");
+        }
+        const currentState = await readResource(
+          "AWS::Bedrock::IntelligentPromptRouter",
+          identifier,
+        ) as StateData;
+        const desiredState: Record<string, unknown> = { ...currentState };
+        for (const [key, value] of Object.entries(g)) {
+          if (key === "name") continue;
+          if (value !== undefined) desiredState[key] = value;
+        }
+        const result = await updateResource(
+          "AWS::Bedrock::IntelligentPromptRouter",
+          identifier,
+          currentState,
+          desiredState,
+          [
+            "FallbackModel",
+            "Models",
+            "PromptRouterName",
+            "RoutingCriteria",
+            "Description",
+          ],
+        );
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    delete: {
+      description: "Delete a Bedrock IntelligentPromptRouter",
+      arguments: z.object({
+        identifier: z.string().describe(
+          "The primary identifier of the Bedrock IntelligentPromptRouter",
+        ),
+      }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const { existed } = await deleteResource(
+          "AWS::Bedrock::IntelligentPromptRouter",
+          args.identifier,
+        );
+        const instanceName = context.globalArgs.name?.toString() ??
+          args.identifier;
+        const handle = await context.writeResource("state", instanceName, {
+          identifier: args.identifier,
+          existed,
+          status: existed ? "deleted" : "not_found",
+          deletedAt: new Date().toISOString(),
+        });
+        return { dataHandles: [handle] };
+      },
+    },
+    sync: {
+      description: "Sync Bedrock IntelligentPromptRouter state from AWS",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const instanceName = g.name?.toString() ?? "current";
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          instanceName,
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        const identifier = existing.PromptRouterArn?.toString();
+        if (!identifier) {
+          throw new Error("No identifier found in existing state");
+        }
+        try {
+          const result = await readResource(
+            "AWS::Bedrock::IntelligentPromptRouter",
+            identifier,
+          ) as StateData;
+          const handle = await context.writeResource(
+            "state",
+            instanceName,
+            result,
+          );
+          return { dataHandles: [handle] };
+        } catch (error: unknown) {
+          if (isResourceNotFoundError(error)) {
+            const handle = await context.writeResource("state", instanceName, {
+              identifier,
+              status: "not_found",
+              syncedAt: new Date().toISOString(),
+            });
+            return { dataHandles: [handle] };
+          }
+          throw error;
+        }
+      },
+    },
+  },
+};

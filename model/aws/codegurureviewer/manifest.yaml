@@ -1,0 +1,17 @@
+# Auto-generated manifest. Re-generate with the appropriate deno task.
+manifestVersion: 1
+name: "@swamp/aws/codegurureviewer"
+version: "2026.03.19.1"
+description: "AWS CODEGURUREVIEWER infrastructure models"
+labels:
+  - aws
+  - codegurureviewer
+  - cloud
+  - infrastructure
+releaseNotes: |
+  - Updated: repository_association
+models:
+  - repository_association.ts
+additionalFiles:
+  - LICENSE.txt
+  - README.md

@@ -1,0 +1,202 @@
+// Auto-generated extension model for @swamp/aws/apprunner/auto-scaling-configuration
+// Do not edit manually. Re-generate with: deno task generate:aws
+
+// deno-lint-ignore-file no-explicit-any
+
+import { z } from "zod";
+import {
+  createResource,
+  deleteResource,
+  isResourceNotFoundError,
+  readResource,
+} from "./_lib/aws.ts";
+
+export const TagSchema = z.object({
+  Key: z.string().optional(),
+  Value: z.string().optional(),
+});
+
+const GlobalArgsSchema = z.object({
+  name: z.string().describe(
+    "Instance name for this resource (used as the unique identifier in the factory pattern)",
+  ),
+  AutoScalingConfigurationName: z.string().min(4).max(32).regex(
+    new RegExp("[A-Za-z0-9][A-Za-z0-9\\-_]{3,31}"),
+  ).describe(
+    "The customer-provided auto scaling configuration name. When you use it for the first time in an AWS Region, App Runner creates revision number 1 of this name. When you use the same name in subsequent calls, App Runner creates incremental revisions of the configuration. The auto scaling configuration name can be used in multiple revisions of a configuration.",
+  ).optional(),
+  MaxConcurrency: z.number().int().describe(
+    "The maximum number of concurrent requests that an instance processes. If the number of concurrent requests exceeds this limit, App Runner scales the service up to use more instances to process the requests.",
+  ).optional(),
+  MaxSize: z.number().int().describe(
+    "The maximum number of instances that an App Runner service scales up to. At most MaxSize instances actively serve traffic for your service.",
+  ).optional(),
+  MinSize: z.number().int().describe(
+    "The minimum number of instances that App Runner provisions for a service. The service always has at least MinSize provisioned instances. Some of them actively serve traffic. The rest of them (provisioned and inactive instances) are a cost-effective compute capacity reserve and are ready to be quickly activated. You pay for memory usage of all the provisioned instances. You pay for CPU usage of only the active subset.",
+  ).optional(),
+  Tags: z.array(TagSchema).describe(
+    "A list of metadata items that you can associate with your auto scaling configuration resource. A tag is a key-value pair.",
+  ).optional(),
+});
+
+const StateSchema = z.object({
+  AutoScalingConfigurationArn: z.string(),
+  AutoScalingConfigurationName: z.string().optional(),
+  AutoScalingConfigurationRevision: z.number().optional(),
+  MaxConcurrency: z.number().optional(),
+  MaxSize: z.number().optional(),
+  MinSize: z.number().optional(),
+  Latest: z.boolean().optional(),
+  Tags: z.array(TagSchema).optional(),
+}).passthrough();
+
+type StateData = z.infer<typeof StateSchema>;
+
+const InputsSchema = z.object({
+  name: z.string().optional(),
+  AutoScalingConfigurationName: z.string().min(4).max(32).regex(
+    new RegExp("[A-Za-z0-9][A-Za-z0-9\\-_]{3,31}"),
+  ).describe(
+    "The customer-provided auto scaling configuration name. When you use it for the first time in an AWS Region, App Runner creates revision number 1 of this name. When you use the same name in subsequent calls, App Runner creates incremental revisions of the configuration. The auto scaling configuration name can be used in multiple revisions of a configuration.",
+  ).optional(),
+  MaxConcurrency: z.number().int().describe(
+    "The maximum number of concurrent requests that an instance processes. If the number of concurrent requests exceeds this limit, App Runner scales the service up to use more instances to process the requests.",
+  ).optional(),
+  MaxSize: z.number().int().describe(
+    "The maximum number of instances that an App Runner service scales up to. At most MaxSize instances actively serve traffic for your service.",
+  ).optional(),
+  MinSize: z.number().int().describe(
+    "The minimum number of instances that App Runner provisions for a service. The service always has at least MinSize provisioned instances. Some of them actively serve traffic. The rest of them (provisioned and inactive instances) are a cost-effective compute capacity reserve and are ready to be quickly activated. You pay for memory usage of all the provisioned instances. You pay for CPU usage of only the active subset.",
+  ).optional(),
+  Tags: z.array(TagSchema).describe(
+    "A list of metadata items that you can associate with your auto scaling configuration resource. A tag is a key-value pair.",
+  ).optional(),
+});
+
+export const model = {
+  type: "@swamp/aws/apprunner/auto-scaling-configuration",
+  version: "2026.03.19.1",
+  globalArguments: GlobalArgsSchema,
+  inputsSchema: InputsSchema,
+  resources: {
+    state: {
+      description: "AppRunner AutoScalingConfiguration resource state",
+      schema: StateSchema,
+      lifetime: "infinite",
+      garbageCollection: 10,
+    },
+  },
+  methods: {
+    create: {
+      description: "Create a AppRunner AutoScalingConfiguration",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const desiredState: Record<string, unknown> = {};
+        for (const [key, value] of Object.entries(g)) {
+          if (key === "name") continue;
+          if (value !== undefined) desiredState[key] = value;
+        }
+        const result = await createResource(
+          "AWS::AppRunner::AutoScalingConfiguration",
+          desiredState,
+        ) as StateData;
+        const instanceName = g.name?.toString() ?? "current";
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    get: {
+      description: "Get a AppRunner AutoScalingConfiguration",
+      arguments: z.object({
+        identifier: z.string().describe(
+          "The primary identifier of the AppRunner AutoScalingConfiguration",
+        ),
+      }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const result = await readResource(
+          "AWS::AppRunner::AutoScalingConfiguration",
+          args.identifier,
+        ) as StateData;
+        const instanceName = context.globalArgs.name?.toString() ??
+          args.identifier;
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    delete: {
+      description: "Delete a AppRunner AutoScalingConfiguration",
+      arguments: z.object({
+        identifier: z.string().describe(
+          "The primary identifier of the AppRunner AutoScalingConfiguration",
+        ),
+      }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const { existed } = await deleteResource(
+          "AWS::AppRunner::AutoScalingConfiguration",
+          args.identifier,
+        );
+        const instanceName = context.globalArgs.name?.toString() ??
+          args.identifier;
+        const handle = await context.writeResource("state", instanceName, {
+          identifier: args.identifier,
+          existed,
+          status: existed ? "deleted" : "not_found",
+          deletedAt: new Date().toISOString(),
+        });
+        return { dataHandles: [handle] };
+      },
+    },
+    sync: {
+      description: "Sync AppRunner AutoScalingConfiguration state from AWS",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const instanceName = g.name?.toString() ?? "current";
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          instanceName,
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        const identifier = existing.AutoScalingConfigurationArn?.toString();
+        if (!identifier) {
+          throw new Error("No identifier found in existing state");
+        }
+        try {
+          const result = await readResource(
+            "AWS::AppRunner::AutoScalingConfiguration",
+            identifier,
+          ) as StateData;
+          const handle = await context.writeResource(
+            "state",
+            instanceName,
+            result,
+          );
+          return { dataHandles: [handle] };
+        } catch (error: unknown) {
+          if (isResourceNotFoundError(error)) {
+            const handle = await context.writeResource("state", instanceName, {
+              identifier,
+              status: "not_found",
+              syncedAt: new Date().toISOString(),
+            });
+            return { dataHandles: [handle] };
+          }
+          throw error;
+        }
+      },
+    },
+  },
+};

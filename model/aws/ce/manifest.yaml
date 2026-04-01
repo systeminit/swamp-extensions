@@ -1,0 +1,19 @@
+# Auto-generated manifest. Re-generate with the appropriate deno task.
+manifestVersion: 1
+name: "@swamp/aws/ce"
+version: "2026.03.19.1"
+description: "AWS CE infrastructure models"
+labels:
+  - aws
+  - ce
+  - cloud
+  - infrastructure
+releaseNotes: |
+  - Updated: anomaly_monitor, anomaly_subscription, cost_category
+models:
+  - anomaly_monitor.ts
+  - anomaly_subscription.ts
+  - cost_category.ts
+additionalFiles:
+  - LICENSE.txt
+  - README.md

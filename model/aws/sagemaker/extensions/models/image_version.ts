@@ -1,0 +1,292 @@
+// Auto-generated extension model for @swamp/aws/sagemaker/image-version
+// Do not edit manually. Re-generate with: deno task generate:aws
+
+// deno-lint-ignore-file no-explicit-any
+
+import { z } from "zod";
+import {
+  createResource,
+  deleteResource,
+  isResourceNotFoundError,
+  readResource,
+  updateResource,
+} from "./_lib/aws.ts";
+
+const GlobalArgsSchema = z.object({
+  name: z.string().describe(
+    "Instance name for this resource (used as the unique identifier in the factory pattern)",
+  ),
+  ImageName: z.string().min(1).max(63).regex(
+    new RegExp("^[A-Za-z0-9]([-.]?[A-Za-z0-9])*$"),
+  ).describe("The name of the image this version belongs to."),
+  BaseImage: z.string().min(1).max(255).regex(new RegExp(".+")).describe(
+    "The registry path of the container image on which this image version is based.",
+  ),
+  Alias: z.string().min(1).max(128).regex(
+    new RegExp("(?!^[.-])^([a-zA-Z0-9-_.]+)$"),
+  ).describe("The alias of the image version.").optional(),
+  Aliases: z.array(
+    z.string().min(1).max(128).regex(
+      new RegExp("(?!^[.-])^([a-zA-Z0-9-_.]+)$"),
+    ),
+  ).describe("List of aliases for the image version.").optional(),
+  VendorGuidance: z.enum([
+    "NOT_PROVIDED",
+    "STABLE",
+    "TO_BE_ARCHIVED",
+    "ARCHIVED",
+  ]).describe(
+    "The availability of the image version specified by the maintainer.",
+  ).optional(),
+  JobType: z.enum(["TRAINING", "INFERENCE", "NOTEBOOK_KERNEL"]).describe(
+    "Indicates SageMaker job type compatibility.",
+  ).optional(),
+  MLFramework: z.string().min(1).max(128).regex(
+    new RegExp("^[a-zA-Z]+ ?\\d+\\.\\d+(\\.\\d+)?$"),
+  ).describe("The machine learning framework vended in the image version.")
+    .optional(),
+  ProgrammingLang: z.string().min(1).max(128).regex(
+    new RegExp("^[a-zA-Z]+ ?\\d+\\.\\d+(\\.\\d+)?$"),
+  ).describe("The supported programming language and its version.").optional(),
+  Processor: z.enum(["CPU", "GPU"]).describe(
+    "Indicates CPU or GPU compatibility.",
+  ).optional(),
+  Horovod: z.boolean().describe("Indicates Horovod compatibility.").optional(),
+  ReleaseNotes: z.string().min(1).max(255).regex(new RegExp(".*")).describe(
+    "The maintainer description of the image version.",
+  ).optional(),
+});
+
+const StateSchema = z.object({
+  ImageName: z.string().optional(),
+  ImageArn: z.string().optional(),
+  ImageVersionArn: z.string(),
+  BaseImage: z.string().optional(),
+  ContainerImage: z.string().optional(),
+  Version: z.number().optional(),
+  Alias: z.string().optional(),
+  Aliases: z.array(z.string()).optional(),
+  VendorGuidance: z.string().optional(),
+  JobType: z.string().optional(),
+  MLFramework: z.string().optional(),
+  ProgrammingLang: z.string().optional(),
+  Processor: z.string().optional(),
+  Horovod: z.boolean().optional(),
+  ReleaseNotes: z.string().optional(),
+}).passthrough();
+
+type StateData = z.infer<typeof StateSchema>;
+
+const InputsSchema = z.object({
+  name: z.string().optional(),
+  ImageName: z.string().min(1).max(63).regex(
+    new RegExp("^[A-Za-z0-9]([-.]?[A-Za-z0-9])*$"),
+  ).describe("The name of the image this version belongs to.").optional(),
+  BaseImage: z.string().min(1).max(255).regex(new RegExp(".+")).describe(
+    "The registry path of the container image on which this image version is based.",
+  ).optional(),
+  Alias: z.string().min(1).max(128).regex(
+    new RegExp("(?!^[.-])^([a-zA-Z0-9-_.]+)$"),
+  ).describe("The alias of the image version.").optional(),
+  Aliases: z.array(
+    z.string().min(1).max(128).regex(
+      new RegExp("(?!^[.-])^([a-zA-Z0-9-_.]+)$"),
+    ),
+  ).describe("List of aliases for the image version.").optional(),
+  VendorGuidance: z.enum([
+    "NOT_PROVIDED",
+    "STABLE",
+    "TO_BE_ARCHIVED",
+    "ARCHIVED",
+  ]).describe(
+    "The availability of the image version specified by the maintainer.",
+  ).optional(),
+  JobType: z.enum(["TRAINING", "INFERENCE", "NOTEBOOK_KERNEL"]).describe(
+    "Indicates SageMaker job type compatibility.",
+  ).optional(),
+  MLFramework: z.string().min(1).max(128).regex(
+    new RegExp("^[a-zA-Z]+ ?\\d+\\.\\d+(\\.\\d+)?$"),
+  ).describe("The machine learning framework vended in the image version.")
+    .optional(),
+  ProgrammingLang: z.string().min(1).max(128).regex(
+    new RegExp("^[a-zA-Z]+ ?\\d+\\.\\d+(\\.\\d+)?$"),
+  ).describe("The supported programming language and its version.").optional(),
+  Processor: z.enum(["CPU", "GPU"]).describe(
+    "Indicates CPU or GPU compatibility.",
+  ).optional(),
+  Horovod: z.boolean().describe("Indicates Horovod compatibility.").optional(),
+  ReleaseNotes: z.string().min(1).max(255).regex(new RegExp(".*")).describe(
+    "The maintainer description of the image version.",
+  ).optional(),
+});
+
+export const model = {
+  type: "@swamp/aws/sagemaker/image-version",
+  version: "2026.03.19.1",
+  globalArguments: GlobalArgsSchema,
+  inputsSchema: InputsSchema,
+  resources: {
+    state: {
+      description: "SageMaker ImageVersion resource state",
+      schema: StateSchema,
+      lifetime: "infinite",
+      garbageCollection: 10,
+    },
+  },
+  methods: {
+    create: {
+      description: "Create a SageMaker ImageVersion",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const desiredState: Record<string, unknown> = {};
+        for (const [key, value] of Object.entries(g)) {
+          if (key === "name") continue;
+          if (value !== undefined) desiredState[key] = value;
+        }
+        const result = await createResource(
+          "AWS::SageMaker::ImageVersion",
+          desiredState,
+        ) as StateData;
+        const instanceName = g.name?.toString() ?? "current";
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    get: {
+      description: "Get a SageMaker ImageVersion",
+      arguments: z.object({
+        identifier: z.string().describe(
+          "The primary identifier of the SageMaker ImageVersion",
+        ),
+      }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const result = await readResource(
+          "AWS::SageMaker::ImageVersion",
+          args.identifier,
+        ) as StateData;
+        const instanceName = context.globalArgs.name?.toString() ??
+          args.identifier;
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    update: {
+      description: "Update a SageMaker ImageVersion",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const instanceName = g.name?.toString() ?? "current";
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          instanceName,
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        const identifier = existing.ImageVersionArn?.toString();
+        if (!identifier) {
+          throw new Error("No identifier found in existing state");
+        }
+        const currentState = await readResource(
+          "AWS::SageMaker::ImageVersion",
+          identifier,
+        ) as StateData;
+        const desiredState: Record<string, unknown> = { ...currentState };
+        for (const [key, value] of Object.entries(g)) {
+          if (key === "name") continue;
+          if (value !== undefined) desiredState[key] = value;
+        }
+        const result = await updateResource(
+          "AWS::SageMaker::ImageVersion",
+          identifier,
+          currentState,
+          desiredState,
+          ["ImageName", "BaseImage"],
+        );
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    delete: {
+      description: "Delete a SageMaker ImageVersion",
+      arguments: z.object({
+        identifier: z.string().describe(
+          "The primary identifier of the SageMaker ImageVersion",
+        ),
+      }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const { existed } = await deleteResource(
+          "AWS::SageMaker::ImageVersion",
+          args.identifier,
+        );
+        const instanceName = context.globalArgs.name?.toString() ??
+          args.identifier;
+        const handle = await context.writeResource("state", instanceName, {
+          identifier: args.identifier,
+          existed,
+          status: existed ? "deleted" : "not_found",
+          deletedAt: new Date().toISOString(),
+        });
+        return { dataHandles: [handle] };
+      },
+    },
+    sync: {
+      description: "Sync SageMaker ImageVersion state from AWS",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const instanceName = g.name?.toString() ?? "current";
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          instanceName,
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        const identifier = existing.ImageVersionArn?.toString();
+        if (!identifier) {
+          throw new Error("No identifier found in existing state");
+        }
+        try {
+          const result = await readResource(
+            "AWS::SageMaker::ImageVersion",
+            identifier,
+          ) as StateData;
+          const handle = await context.writeResource(
+            "state",
+            instanceName,
+            result,
+          );
+          return { dataHandles: [handle] };
+        } catch (error: unknown) {
+          if (isResourceNotFoundError(error)) {
+            const handle = await context.writeResource("state", instanceName, {
+              identifier,
+              status: "not_found",
+              syncedAt: new Date().toISOString(),
+            });
+            return { dataHandles: [handle] };
+          }
+          throw error;
+        }
+      },
+    },
+  },
+};

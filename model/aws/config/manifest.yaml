@@ -1,0 +1,22 @@
+# Auto-generated manifest. Re-generate with the appropriate deno task.
+manifestVersion: 1
+name: "@swamp/aws/config"
+version: "2026.03.19.1"
+description: "AWS CONFIG infrastructure models"
+labels:
+  - aws
+  - config
+  - cloud
+  - infrastructure
+releaseNotes: |
+  - Updated: aggregation_authorization, config_rule, configuration_aggregator, conformance_pack, organization_conformance_pack, stored_query
+models:
+  - aggregation_authorization.ts
+  - config_rule.ts
+  - configuration_aggregator.ts
+  - conformance_pack.ts
+  - organization_conformance_pack.ts
+  - stored_query.ts
+additionalFiles:
+  - LICENSE.txt
+  - README.md

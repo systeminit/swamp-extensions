@@ -1,0 +1,414 @@
+// Auto-generated extension model for @swamp/aws/ses/configuration-set
+// Do not edit manually. Re-generate with: deno task generate:aws
+
+// deno-lint-ignore-file no-explicit-any
+
+import { z } from "zod";
+import {
+  createResource,
+  deleteResource,
+  isResourceNotFoundError,
+  readResource,
+  updateResource,
+} from "./_lib/aws.ts";
+
+export const DashboardOptionsSchema = z.object({
+  EngagementMetrics: z.string().regex(new RegExp("ENABLED|DISABLED")).describe(
+    "Whether emails sent with this configuration set have engagement tracking enabled.",
+  ),
+});
+
+export const GuardianOptionsSchema = z.object({
+  OptimizedSharedDelivery: z.string().regex(new RegExp("ENABLED|DISABLED"))
+    .describe(
+      "Whether emails sent with this configuration set have optimized delivery algorithm enabled.",
+    ),
+});
+
+export const TagSchema = z.object({
+  Key: z.string().min(1).max(128),
+  Value: z.string().min(0).max(256),
+});
+
+const GlobalArgsSchema = z.object({
+  Name: z.string().regex(new RegExp("^[a-zA-Z0-9_-]{1,64}$")).describe(
+    "The name of the configuration set.",
+  ).optional(),
+  TrackingOptions: z.object({
+    CustomRedirectDomain: z.string().describe(
+      "The domain to use for tracking open and click events.",
+    ).optional(),
+    HttpsPolicy: z.string().regex(
+      new RegExp("REQUIRE|REQUIRE_OPEN_ONLY|OPTIONAL"),
+    ).describe("The https policy to use for tracking open and click events.")
+      .optional(),
+  }).describe(
+    "An object that defines the open and click tracking options for emails that you send using the configuration set.",
+  ).optional(),
+  DeliveryOptions: z.object({
+    TlsPolicy: z.string().regex(new RegExp("REQUIRE|OPTIONAL")).describe(
+      "Specifies whether messages that use the configuration set are required to use Transport Layer Security (TLS). If the value is Require, messages are only delivered if a TLS connection can be established. If the value is Optional, messages can be delivered in plain text if a TLS connection can't be established.",
+    ).optional(),
+    SendingPoolName: z.string().describe(
+      "The name of the dedicated IP pool to associate with the configuration set.",
+    ).optional(),
+    MaxDeliverySeconds: z.number().min(300).max(50400).describe(
+      "Specifies the maximum time until which SES will retry sending emails",
+    ).optional(),
+  }).describe(
+    "An object that defines the dedicated IP pool that is used to send emails that you send using the configuration set.",
+  ).optional(),
+  ReputationOptions: z.object({
+    ReputationMetricsEnabled: z.boolean().describe(
+      "If true, tracking of reputation metrics is enabled for the configuration set. If false, tracking of reputation metrics is disabled for the configuration set.",
+    ).optional(),
+  }).describe(
+    "An object that defines whether or not Amazon SES collects reputation metrics for the emails that you send that use the configuration set.",
+  ).optional(),
+  SendingOptions: z.object({
+    SendingEnabled: z.boolean().optional(),
+  }).describe(
+    "An object that defines whether or not Amazon SES can send email that you send using the configuration set.",
+  ).optional(),
+  SuppressionOptions: z.object({
+    SuppressedReasons: z.array(z.string().regex(new RegExp("BOUNCE|COMPLAINT")))
+      .describe(
+        "A list that contains the reasons that email addresses are automatically added to the suppression list for your account.",
+      ).optional(),
+    ValidationOptions: z.object({
+      ConditionThreshold: z.object({
+        ConditionThresholdEnabled: z.string().regex(
+          new RegExp("ENABLED|DISABLED"),
+        ).describe("Whether the condition threshold is enabled or disabled."),
+        OverallConfidenceThreshold: z.object({
+          ConfidenceVerdictThreshold: z.string().regex(
+            new RegExp("MEDIUM|HIGH|MANAGED"),
+          ).describe("The confidence verdict threshold level."),
+        }).describe("The overall confidence threshold settings.").optional(),
+      }).describe(
+        "The condition threshold settings for suppression validation.",
+      ),
+    }).describe(
+      "An object that contains information about the validation options for your account.",
+    ).optional(),
+  }).describe(
+    "An object that contains information about the suppression list preferences for your account.",
+  ).optional(),
+  VdmOptions: z.object({
+    DashboardOptions: DashboardOptionsSchema.describe(
+      "Preferences regarding the Dashboard feature.",
+    ).optional(),
+    GuardianOptions: GuardianOptionsSchema.describe(
+      "Preferences regarding the Guardian feature.",
+    ).optional(),
+  }).describe(
+    "An object that contains Virtual Deliverability Manager (VDM) settings for this configuration set.",
+  ).optional(),
+  ArchivingOptions: z.object({
+    ArchiveArn: z.string().describe(
+      "The ARN of the MailManager archive to associate with the configuration set.",
+    ).optional(),
+  }).describe(
+    "An object that defines a MailManager archive that is used to preserve emails that you send using the configuration set.",
+  ).optional(),
+  Tags: z.array(TagSchema).describe(
+    "The tags (keys and values) associated with the contact list.",
+  ).optional(),
+});
+
+const StateSchema = z.object({
+  Name: z.string(),
+  TrackingOptions: z.object({
+    CustomRedirectDomain: z.string(),
+    HttpsPolicy: z.string(),
+  }).optional(),
+  DeliveryOptions: z.object({
+    TlsPolicy: z.string(),
+    SendingPoolName: z.string(),
+    MaxDeliverySeconds: z.number(),
+  }).optional(),
+  ReputationOptions: z.object({
+    ReputationMetricsEnabled: z.boolean(),
+  }).optional(),
+  SendingOptions: z.object({
+    SendingEnabled: z.boolean(),
+  }).optional(),
+  SuppressionOptions: z.object({
+    SuppressedReasons: z.array(z.string()),
+    ValidationOptions: z.object({
+      ConditionThreshold: z.object({
+        ConditionThresholdEnabled: z.string(),
+        OverallConfidenceThreshold: z.object({
+          ConfidenceVerdictThreshold: z.string(),
+        }),
+      }),
+    }),
+  }).optional(),
+  VdmOptions: z.object({
+    DashboardOptions: DashboardOptionsSchema,
+    GuardianOptions: GuardianOptionsSchema,
+  }).optional(),
+  ArchivingOptions: z.object({
+    ArchiveArn: z.string(),
+  }).optional(),
+  Tags: z.array(TagSchema).optional(),
+}).passthrough();
+
+type StateData = z.infer<typeof StateSchema>;
+
+const InputsSchema = z.object({
+  Name: z.string().regex(new RegExp("^[a-zA-Z0-9_-]{1,64}$")).describe(
+    "The name of the configuration set.",
+  ).optional(),
+  TrackingOptions: z.object({
+    CustomRedirectDomain: z.string().describe(
+      "The domain to use for tracking open and click events.",
+    ).optional(),
+    HttpsPolicy: z.string().regex(
+      new RegExp("REQUIRE|REQUIRE_OPEN_ONLY|OPTIONAL"),
+    ).describe("The https policy to use for tracking open and click events.")
+      .optional(),
+  }).describe(
+    "An object that defines the open and click tracking options for emails that you send using the configuration set.",
+  ).optional(),
+  DeliveryOptions: z.object({
+    TlsPolicy: z.string().regex(new RegExp("REQUIRE|OPTIONAL")).describe(
+      "Specifies whether messages that use the configuration set are required to use Transport Layer Security (TLS). If the value is Require, messages are only delivered if a TLS connection can be established. If the value is Optional, messages can be delivered in plain text if a TLS connection can't be established.",
+    ).optional(),
+    SendingPoolName: z.string().describe(
+      "The name of the dedicated IP pool to associate with the configuration set.",
+    ).optional(),
+    MaxDeliverySeconds: z.number().min(300).max(50400).describe(
+      "Specifies the maximum time until which SES will retry sending emails",
+    ).optional(),
+  }).describe(
+    "An object that defines the dedicated IP pool that is used to send emails that you send using the configuration set.",
+  ).optional(),
+  ReputationOptions: z.object({
+    ReputationMetricsEnabled: z.boolean().describe(
+      "If true, tracking of reputation metrics is enabled for the configuration set. If false, tracking of reputation metrics is disabled for the configuration set.",
+    ).optional(),
+  }).describe(
+    "An object that defines whether or not Amazon SES collects reputation metrics for the emails that you send that use the configuration set.",
+  ).optional(),
+  SendingOptions: z.object({
+    SendingEnabled: z.boolean().optional(),
+  }).describe(
+    "An object that defines whether or not Amazon SES can send email that you send using the configuration set.",
+  ).optional(),
+  SuppressionOptions: z.object({
+    SuppressedReasons: z.array(z.string().regex(new RegExp("BOUNCE|COMPLAINT")))
+      .describe(
+        "A list that contains the reasons that email addresses are automatically added to the suppression list for your account.",
+      ).optional(),
+    ValidationOptions: z.object({
+      ConditionThreshold: z.object({
+        ConditionThresholdEnabled: z.string().regex(
+          new RegExp("ENABLED|DISABLED"),
+        ).describe("Whether the condition threshold is enabled or disabled.")
+          .optional(),
+        OverallConfidenceThreshold: z.object({
+          ConfidenceVerdictThreshold: z.string().regex(
+            new RegExp("MEDIUM|HIGH|MANAGED"),
+          ).describe("The confidence verdict threshold level.").optional(),
+        }).describe("The overall confidence threshold settings.").optional(),
+      }).describe(
+        "The condition threshold settings for suppression validation.",
+      ).optional(),
+    }).describe(
+      "An object that contains information about the validation options for your account.",
+    ).optional(),
+  }).describe(
+    "An object that contains information about the suppression list preferences for your account.",
+  ).optional(),
+  VdmOptions: z.object({
+    DashboardOptions: DashboardOptionsSchema.describe(
+      "Preferences regarding the Dashboard feature.",
+    ).optional(),
+    GuardianOptions: GuardianOptionsSchema.describe(
+      "Preferences regarding the Guardian feature.",
+    ).optional(),
+  }).describe(
+    "An object that contains Virtual Deliverability Manager (VDM) settings for this configuration set.",
+  ).optional(),
+  ArchivingOptions: z.object({
+    ArchiveArn: z.string().describe(
+      "The ARN of the MailManager archive to associate with the configuration set.",
+    ).optional(),
+  }).describe(
+    "An object that defines a MailManager archive that is used to preserve emails that you send using the configuration set.",
+  ).optional(),
+  Tags: z.array(TagSchema).describe(
+    "The tags (keys and values) associated with the contact list.",
+  ).optional(),
+});
+
+export const model = {
+  type: "@swamp/aws/ses/configuration-set",
+  version: "2026.03.19.1",
+  globalArguments: GlobalArgsSchema,
+  inputsSchema: InputsSchema,
+  resources: {
+    state: {
+      description: "SES ConfigurationSet resource state",
+      schema: StateSchema,
+      lifetime: "infinite",
+      garbageCollection: 10,
+    },
+  },
+  methods: {
+    create: {
+      description: "Create a SES ConfigurationSet",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const desiredState: Record<string, unknown> = {};
+        for (const [key, value] of Object.entries(g)) {
+          if (value !== undefined) desiredState[key] = value;
+        }
+        const result = await createResource(
+          "AWS::SES::ConfigurationSet",
+          desiredState,
+        ) as StateData;
+        const instanceName = (result.Name ?? g.Name)?.toString() ?? "current";
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    get: {
+      description: "Get a SES ConfigurationSet",
+      arguments: z.object({
+        identifier: z.string().describe(
+          "The primary identifier of the SES ConfigurationSet",
+        ),
+      }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const result = await readResource(
+          "AWS::SES::ConfigurationSet",
+          args.identifier,
+        ) as StateData;
+        const instanceName =
+          (result.Name ?? context.globalArgs.Name)?.toString() ??
+            args.identifier;
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    update: {
+      description: "Update a SES ConfigurationSet",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const instanceName = g.Name?.toString() ?? "current";
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          instanceName,
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        const identifier = existing.Name?.toString();
+        if (!identifier) {
+          throw new Error("No identifier found in existing state");
+        }
+        const currentState = await readResource(
+          "AWS::SES::ConfigurationSet",
+          identifier,
+        ) as StateData;
+        const desiredState: Record<string, unknown> = { ...currentState };
+        for (const [key, value] of Object.entries(g)) {
+          if (value !== undefined) desiredState[key] = value;
+        }
+        const result = await updateResource(
+          "AWS::SES::ConfigurationSet",
+          identifier,
+          currentState,
+          desiredState,
+          ["Name"],
+        );
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    delete: {
+      description: "Delete a SES ConfigurationSet",
+      arguments: z.object({
+        identifier: z.string().describe(
+          "The primary identifier of the SES ConfigurationSet",
+        ),
+      }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const { existed } = await deleteResource(
+          "AWS::SES::ConfigurationSet",
+          args.identifier,
+        );
+        const instanceName = context.globalArgs.Name?.toString() ??
+          args.identifier;
+        const handle = await context.writeResource("state", instanceName, {
+          identifier: args.identifier,
+          existed,
+          status: existed ? "deleted" : "not_found",
+          deletedAt: new Date().toISOString(),
+        });
+        return { dataHandles: [handle] };
+      },
+    },
+    sync: {
+      description: "Sync SES ConfigurationSet state from AWS",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const instanceName = g.Name?.toString() ?? "current";
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          instanceName,
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        const identifier = existing.Name?.toString();
+        if (!identifier) {
+          throw new Error("No identifier found in existing state");
+        }
+        try {
+          const result = await readResource(
+            "AWS::SES::ConfigurationSet",
+            identifier,
+          ) as StateData;
+          const handle = await context.writeResource(
+            "state",
+            instanceName,
+            result,
+          );
+          return { dataHandles: [handle] };
+        } catch (error: unknown) {
+          if (isResourceNotFoundError(error)) {
+            const handle = await context.writeResource("state", instanceName, {
+              identifier,
+              status: "not_found",
+              syncedAt: new Date().toISOString(),
+            });
+            return { dataHandles: [handle] };
+          }
+          throw error;
+        }
+      },
+    },
+  },
+};

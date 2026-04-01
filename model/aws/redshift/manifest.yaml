@@ -1,0 +1,24 @@
+# Auto-generated manifest. Re-generate with the appropriate deno task.
+manifestVersion: 1
+name: "@swamp/aws/redshift"
+version: "2026.03.19.1"
+description: "AWS REDSHIFT infrastructure models"
+labels:
+  - aws
+  - redshift
+  - cloud
+  - infrastructure
+releaseNotes: |
+  - Updated: cluster, cluster_parameter_group, cluster_subnet_group, endpoint_access, endpoint_authorization, event_subscription, integration, scheduled_action
+models:
+  - cluster.ts
+  - cluster_parameter_group.ts
+  - cluster_subnet_group.ts
+  - endpoint_access.ts
+  - endpoint_authorization.ts
+  - event_subscription.ts
+  - integration.ts
+  - scheduled_action.ts
+additionalFiles:
+  - LICENSE.txt
+  - README.md

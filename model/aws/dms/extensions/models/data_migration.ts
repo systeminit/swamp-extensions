@@ -1,0 +1,302 @@
+// Auto-generated extension model for @swamp/aws/dms/data-migration
+// Do not edit manually. Re-generate with: deno task generate:aws
+
+// deno-lint-ignore-file no-explicit-any
+
+import { z } from "zod";
+import {
+  createResource,
+  deleteResource,
+  isResourceNotFoundError,
+  readResource,
+  updateResource,
+} from "./_lib/aws.ts";
+
+export const SourceDataSettingsSchema = z.object({
+  CDCStartPosition: z.string().max(40).describe(
+    "The property is a point in the database engine's log that defines a time where you can begin CDC.",
+  ).optional(),
+  CDCStartTime: z.string().max(40).describe(
+    "The property indicates the start time for a change data capture (CDC) operation. The value is server time in UTC format.",
+  ).optional(),
+  CDCStopTime: z.string().max(40).describe(
+    "The property indicates the stop time for a change data capture (CDC) operation. The value is server time in UTC format.",
+  ).optional(),
+  SlotName: z.string().max(255).describe(
+    "The property sets the name of a previously created logical replication slot for a change data capture (CDC) load of the source instance.",
+  ).optional(),
+});
+
+export const TagSchema = z.object({
+  Key: z.string().min(1).max(128).describe(
+    "The key name of the tag. You can specify a value that is 1 to 128 Unicode characters in length and cannot be prefixed with aws:. You can use any of the following characters: the set of Unicode letters, digits, whitespace, _,., /, =, +, and -.",
+  ),
+  Value: z.string().min(0).max(256).describe(
+    "The value for the tag. You can specify a value that is 0 to 256 Unicode characters in length and cannot be prefixed with aws:. You can use any of the following characters: the set of Unicode letters, digits, whitespace, _,., /, =, +, and -.",
+  ),
+});
+
+const GlobalArgsSchema = z.object({
+  name: z.string().describe(
+    "Instance name for this resource (used as the unique identifier in the factory pattern)",
+  ),
+  DataMigrationName: z.string().min(1).max(300).describe(
+    "The property describes a name to identify the data migration.",
+  ).optional(),
+  DataMigrationIdentifier: z.string().min(1).max(300).describe(
+    "The property describes an ARN of the data migration.",
+  ).optional(),
+  ServiceAccessRoleArn: z.string().min(1).max(300).describe(
+    "The property describes Amazon Resource Name (ARN) of the service access role.",
+  ),
+  MigrationProjectIdentifier: z.string().min(1).max(255).describe(
+    "The property describes an identifier for the migration project. It is used for describing/deleting/modifying can be name/arn",
+  ),
+  DataMigrationType: z.enum(["full-load", "cdc", "full-load-and-cdc"]).describe(
+    "The property describes the type of migration.",
+  ),
+  DataMigrationSettings: z.object({
+    CloudwatchLogsEnabled: z.boolean().describe(
+      "The property specifies whether to enable the CloudWatch log.",
+    ).optional(),
+    NumberOfJobs: z.number().int().min(1).max(50).describe(
+      "The number of parallel jobs that trigger parallel threads to unload the tables from the source, and then load them to the target.",
+    ).optional(),
+    SelectionRules: z.string().describe(
+      "The property specifies the rules of selecting objects for data migration.",
+    ).optional(),
+  }).describe("The property describes the settings for the data migration.")
+    .optional(),
+  SourceDataSettings: z.array(SourceDataSettingsSchema).describe(
+    "The property describes the settings for the data migration.",
+  ).optional(),
+  Tags: z.array(TagSchema).describe(
+    "An array of key-value pairs to apply to this resource.",
+  ).optional(),
+});
+
+const StateSchema = z.object({
+  DataMigrationName: z.string().optional(),
+  DataMigrationArn: z.string(),
+  DataMigrationIdentifier: z.string().optional(),
+  DataMigrationCreateTime: z.string().optional(),
+  ServiceAccessRoleArn: z.string().optional(),
+  MigrationProjectIdentifier: z.string().optional(),
+  DataMigrationType: z.string().optional(),
+  DataMigrationSettings: z.object({
+    CloudwatchLogsEnabled: z.boolean(),
+    NumberOfJobs: z.number(),
+    SelectionRules: z.string(),
+  }).optional(),
+  SourceDataSettings: z.array(SourceDataSettingsSchema).optional(),
+  Tags: z.array(TagSchema).optional(),
+}).passthrough();
+
+type StateData = z.infer<typeof StateSchema>;
+
+const InputsSchema = z.object({
+  name: z.string().optional(),
+  DataMigrationName: z.string().min(1).max(300).describe(
+    "The property describes a name to identify the data migration.",
+  ).optional(),
+  DataMigrationIdentifier: z.string().min(1).max(300).describe(
+    "The property describes an ARN of the data migration.",
+  ).optional(),
+  ServiceAccessRoleArn: z.string().min(1).max(300).describe(
+    "The property describes Amazon Resource Name (ARN) of the service access role.",
+  ).optional(),
+  MigrationProjectIdentifier: z.string().min(1).max(255).describe(
+    "The property describes an identifier for the migration project. It is used for describing/deleting/modifying can be name/arn",
+  ).optional(),
+  DataMigrationType: z.enum(["full-load", "cdc", "full-load-and-cdc"]).describe(
+    "The property describes the type of migration.",
+  ).optional(),
+  DataMigrationSettings: z.object({
+    CloudwatchLogsEnabled: z.boolean().describe(
+      "The property specifies whether to enable the CloudWatch log.",
+    ).optional(),
+    NumberOfJobs: z.number().int().min(1).max(50).describe(
+      "The number of parallel jobs that trigger parallel threads to unload the tables from the source, and then load them to the target.",
+    ).optional(),
+    SelectionRules: z.string().describe(
+      "The property specifies the rules of selecting objects for data migration.",
+    ).optional(),
+  }).describe("The property describes the settings for the data migration.")
+    .optional(),
+  SourceDataSettings: z.array(SourceDataSettingsSchema).describe(
+    "The property describes the settings for the data migration.",
+  ).optional(),
+  Tags: z.array(TagSchema).describe(
+    "An array of key-value pairs to apply to this resource.",
+  ).optional(),
+});
+
+export const model = {
+  type: "@swamp/aws/dms/data-migration",
+  version: "2026.03.19.1",
+  globalArguments: GlobalArgsSchema,
+  inputsSchema: InputsSchema,
+  resources: {
+    state: {
+      description: "DMS DataMigration resource state",
+      schema: StateSchema,
+      lifetime: "infinite",
+      garbageCollection: 10,
+    },
+  },
+  methods: {
+    create: {
+      description: "Create a DMS DataMigration",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const desiredState: Record<string, unknown> = {};
+        for (const [key, value] of Object.entries(g)) {
+          if (key === "name") continue;
+          if (value !== undefined) desiredState[key] = value;
+        }
+        const result = await createResource(
+          "AWS::DMS::DataMigration",
+          desiredState,
+        ) as StateData;
+        const instanceName = g.name?.toString() ?? "current";
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    get: {
+      description: "Get a DMS DataMigration",
+      arguments: z.object({
+        identifier: z.string().describe(
+          "The primary identifier of the DMS DataMigration",
+        ),
+      }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const result = await readResource(
+          "AWS::DMS::DataMigration",
+          args.identifier,
+        ) as StateData;
+        const instanceName = context.globalArgs.name?.toString() ??
+          args.identifier;
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    update: {
+      description: "Update a DMS DataMigration",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const instanceName = g.name?.toString() ?? "current";
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          instanceName,
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        const identifier = existing.DataMigrationArn?.toString();
+        if (!identifier) {
+          throw new Error("No identifier found in existing state");
+        }
+        const currentState = await readResource(
+          "AWS::DMS::DataMigration",
+          identifier,
+        ) as StateData;
+        const desiredState: Record<string, unknown> = { ...currentState };
+        for (const [key, value] of Object.entries(g)) {
+          if (key === "name") continue;
+          if (value !== undefined) desiredState[key] = value;
+        }
+        const result = await updateResource(
+          "AWS::DMS::DataMigration",
+          identifier,
+          currentState,
+          desiredState,
+        );
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    delete: {
+      description: "Delete a DMS DataMigration",
+      arguments: z.object({
+        identifier: z.string().describe(
+          "The primary identifier of the DMS DataMigration",
+        ),
+      }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const { existed } = await deleteResource(
+          "AWS::DMS::DataMigration",
+          args.identifier,
+        );
+        const instanceName = context.globalArgs.name?.toString() ??
+          args.identifier;
+        const handle = await context.writeResource("state", instanceName, {
+          identifier: args.identifier,
+          existed,
+          status: existed ? "deleted" : "not_found",
+          deletedAt: new Date().toISOString(),
+        });
+        return { dataHandles: [handle] };
+      },
+    },
+    sync: {
+      description: "Sync DMS DataMigration state from AWS",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const instanceName = g.name?.toString() ?? "current";
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          instanceName,
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        const identifier = existing.DataMigrationArn?.toString();
+        if (!identifier) {
+          throw new Error("No identifier found in existing state");
+        }
+        try {
+          const result = await readResource(
+            "AWS::DMS::DataMigration",
+            identifier,
+          ) as StateData;
+          const handle = await context.writeResource(
+            "state",
+            instanceName,
+            result,
+          );
+          return { dataHandles: [handle] };
+        } catch (error: unknown) {
+          if (isResourceNotFoundError(error)) {
+            const handle = await context.writeResource("state", instanceName, {
+              identifier,
+              status: "not_found",
+              syncedAt: new Date().toISOString(),
+            });
+            return { dataHandles: [handle] };
+          }
+          throw error;
+        }
+      },
+    },
+  },
+};

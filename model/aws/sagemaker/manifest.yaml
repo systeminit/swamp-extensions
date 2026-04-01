@@ -1,0 +1,45 @@
+# Auto-generated manifest. Re-generate with the appropriate deno task.
+manifestVersion: 1
+name: "@swamp/aws/sagemaker"
+version: "2026.04.01.1"
+description: "AWS SAGEMAKER infrastructure models"
+labels:
+  - aws
+  - sagemaker
+  - cloud
+  - infrastructure
+releaseNotes: |
+  - Added: model
+models:
+  - app.ts
+  - app_image_config.ts
+  - cluster.ts
+  - data_quality_job_definition.ts
+  - device.ts
+  - device_fleet.ts
+  - domain.ts
+  - endpoint.ts
+  - feature_group.ts
+  - image.ts
+  - image_version.ts
+  - inference_component.ts
+  - inference_experiment.ts
+  - mlflow_tracking_server.ts
+  - model.ts
+  - model_bias_job_definition.ts
+  - model_card.ts
+  - model_explainability_job_definition.ts
+  - model_package.ts
+  - model_package_group.ts
+  - model_quality_job_definition.ts
+  - monitoring_schedule.ts
+  - partner_app.ts
+  - pipeline.ts
+  - processing_job.ts
+  - project.ts
+  - space.ts
+  - studio_lifecycle_config.ts
+  - user_profile.ts
+additionalFiles:
+  - LICENSE.txt
+  - README.md

@@ -1,0 +1,25 @@
+# Auto-generated manifest. Re-generate with the appropriate deno task.
+manifestVersion: 1
+name: "@swamp/aws/backup"
+version: "2026.03.19.1"
+description: "AWS BACKUP infrastructure models"
+labels:
+  - aws
+  - backup
+  - cloud
+  - infrastructure
+releaseNotes: |
+  - Updated: backup_plan, backup_selection, backup_vault, framework, logically_air_gapped_backup_vault, report_plan, restore_testing_plan, restore_testing_selection, tiering_configuration
+models:
+  - backup_plan.ts
+  - backup_selection.ts
+  - backup_vault.ts
+  - framework.ts
+  - logically_air_gapped_backup_vault.ts
+  - report_plan.ts
+  - restore_testing_plan.ts
+  - restore_testing_selection.ts
+  - tiering_configuration.ts
+additionalFiles:
+  - LICENSE.txt
+  - README.md

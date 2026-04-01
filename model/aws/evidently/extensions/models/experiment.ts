@@ -1,0 +1,347 @@
+// Auto-generated extension model for @swamp/aws/evidently/experiment
+// Do not edit manually. Re-generate with: deno task generate:aws
+
+// deno-lint-ignore-file no-explicit-any
+
+import { z } from "zod";
+import {
+  createResource,
+  deleteResource,
+  isResourceNotFoundError,
+  readResource,
+  updateResource,
+} from "./_lib/aws.ts";
+
+export const TreatmentObjectSchema = z.object({
+  TreatmentName: z.string().min(1).max(127).regex(
+    new RegExp("[-a-zA-Z0-9._]*"),
+  ),
+  Description: z.string().optional(),
+  Feature: z.string().regex(
+    new RegExp("([-a-zA-Z0-9._]*)|(arn:[^:]*:[^:]*:[^:]*:[^:]*:.*)"),
+  ),
+  Variation: z.string().min(1).max(255).regex(new RegExp("[-a-zA-Z0-9._]*")),
+});
+
+export const MetricGoalObjectSchema = z.object({
+  MetricName: z.string().min(1).max(255).regex(new RegExp("^[\\S]+$")),
+  EntityIdKey: z.string().describe(
+    "The JSON path to reference the entity id in the event.",
+  ),
+  ValueKey: z.string().describe(
+    "The JSON path to reference the numerical metric value in the event.",
+  ),
+  EventPattern: z.string().describe(
+    "Event patterns have the same structure as the events they match. Rules use event patterns to select events. An event pattern either matches an event or it doesn't.",
+  ).optional(),
+  UnitLabel: z.string().min(1).max(256).regex(new RegExp(".*")).optional(),
+  DesiredChange: z.enum(["INCREASE", "DECREASE"]),
+});
+
+export const TreatmentToWeightSchema = z.object({
+  Treatment: z.string().min(1).max(127).regex(new RegExp("[-a-zA-Z0-9._]*")),
+  SplitWeight: z.number().int().min(0).max(100000),
+});
+
+export const TagSchema = z.object({
+  Key: z.string().min(1).max(128).regex(
+    new RegExp("^(?!aws:)[a-zA-Z+-=._:/]+$"),
+  ).describe(
+    "The key name of the tag. You can specify a value that is 1 to 128 Unicode characters in length and cannot be prefixed with aws:. You can use any of the following characters: the set of Unicode letters, digits, whitespace, _,., /, =, +, and -.",
+  ),
+  Value: z.string().min(0).max(256).describe(
+    "The value for the tag. You can specify a value that is 0 to 256 Unicode characters in length and cannot be prefixed with aws:. You can use any of the following characters: the set of Unicode letters, digits, whitespace, _,., /, =, +, and -.",
+  ),
+});
+
+const GlobalArgsSchema = z.object({
+  name: z.string().describe(
+    "Instance name for this resource (used as the unique identifier in the factory pattern)",
+  ),
+  Name: z.string().min(1).max(127).regex(new RegExp("[-a-zA-Z0-9._]*")),
+  Project: z.string().min(0).max(2048).regex(
+    new RegExp(
+      "([-a-zA-Z0-9._]*)|(arn:[^:]*:[^:]*:[^:]*:[^:]*:project/[-a-zA-Z0-9._]*)",
+    ),
+  ),
+  Description: z.string().min(0).max(160).optional(),
+  RunningStatus: z.object({
+    Status: z.string().describe(
+      "Provide START or STOP action to apply on an experiment",
+    ).optional(),
+    AnalysisCompleteTime: z.string().describe(
+      "Provide the analysis Completion time for an experiment",
+    ).optional(),
+    Reason: z.string().describe(
+      "Reason is a required input for stopping the experiment",
+    ).optional(),
+    DesiredState: z.string().regex(new RegExp("^(CANCELLED|COMPLETED)"))
+      .describe(
+        "Provide CANCELLED or COMPLETED desired state when stopping an experiment",
+      ).optional(),
+  }).describe("Start Experiment. Default is False").optional(),
+  RandomizationSalt: z.string().min(0).max(127).regex(new RegExp(".*"))
+    .optional(),
+  Treatments: z.array(TreatmentObjectSchema),
+  MetricGoals: z.array(MetricGoalObjectSchema),
+  SamplingRate: z.number().int().min(0).max(100000).optional(),
+  OnlineAbConfig: z.object({
+    ControlTreatmentName: z.string().min(1).max(127).regex(
+      new RegExp("[-a-zA-Z0-9._]*"),
+    ).optional(),
+    TreatmentWeights: z.array(TreatmentToWeightSchema).optional(),
+  }),
+  Segment: z.string().min(0).max(2048).regex(
+    new RegExp(
+      "([-a-zA-Z0-9._]*)|(arn:[^:]*:[^:]*:[^:]*:[^:]*:segment/[-a-zA-Z0-9._]*)",
+    ),
+  ).optional(),
+  RemoveSegment: z.boolean().optional(),
+  Tags: z.array(TagSchema).describe(
+    "An array of key-value pairs to apply to this resource.",
+  ).optional(),
+});
+
+const StateSchema = z.object({
+  Arn: z.string(),
+  Name: z.string().optional(),
+  Project: z.string().optional(),
+  Description: z.string().optional(),
+  RunningStatus: z.object({
+    Status: z.string(),
+    AnalysisCompleteTime: z.string(),
+    Reason: z.string(),
+    DesiredState: z.string(),
+  }).optional(),
+  RandomizationSalt: z.string().optional(),
+  Treatments: z.array(TreatmentObjectSchema).optional(),
+  MetricGoals: z.array(MetricGoalObjectSchema).optional(),
+  SamplingRate: z.number().optional(),
+  OnlineAbConfig: z.object({
+    ControlTreatmentName: z.string(),
+    TreatmentWeights: z.array(TreatmentToWeightSchema),
+  }).optional(),
+  Segment: z.string().optional(),
+  RemoveSegment: z.boolean().optional(),
+  Tags: z.array(TagSchema).optional(),
+}).passthrough();
+
+type StateData = z.infer<typeof StateSchema>;
+
+const InputsSchema = z.object({
+  name: z.string().optional(),
+  Name: z.string().min(1).max(127).regex(new RegExp("[-a-zA-Z0-9._]*"))
+    .optional(),
+  Project: z.string().min(0).max(2048).regex(
+    new RegExp(
+      "([-a-zA-Z0-9._]*)|(arn:[^:]*:[^:]*:[^:]*:[^:]*:project/[-a-zA-Z0-9._]*)",
+    ),
+  ).optional(),
+  Description: z.string().min(0).max(160).optional(),
+  RunningStatus: z.object({
+    Status: z.string().describe(
+      "Provide START or STOP action to apply on an experiment",
+    ).optional(),
+    AnalysisCompleteTime: z.string().describe(
+      "Provide the analysis Completion time for an experiment",
+    ).optional(),
+    Reason: z.string().describe(
+      "Reason is a required input for stopping the experiment",
+    ).optional(),
+    DesiredState: z.string().regex(new RegExp("^(CANCELLED|COMPLETED)"))
+      .describe(
+        "Provide CANCELLED or COMPLETED desired state when stopping an experiment",
+      ).optional(),
+  }).describe("Start Experiment. Default is False").optional(),
+  RandomizationSalt: z.string().min(0).max(127).regex(new RegExp(".*"))
+    .optional(),
+  Treatments: z.array(TreatmentObjectSchema).optional(),
+  MetricGoals: z.array(MetricGoalObjectSchema).optional(),
+  SamplingRate: z.number().int().min(0).max(100000).optional(),
+  OnlineAbConfig: z.object({
+    ControlTreatmentName: z.string().min(1).max(127).regex(
+      new RegExp("[-a-zA-Z0-9._]*"),
+    ).optional(),
+    TreatmentWeights: z.array(TreatmentToWeightSchema).optional(),
+  }).optional(),
+  Segment: z.string().min(0).max(2048).regex(
+    new RegExp(
+      "([-a-zA-Z0-9._]*)|(arn:[^:]*:[^:]*:[^:]*:[^:]*:segment/[-a-zA-Z0-9._]*)",
+    ),
+  ).optional(),
+  RemoveSegment: z.boolean().optional(),
+  Tags: z.array(TagSchema).describe(
+    "An array of key-value pairs to apply to this resource.",
+  ).optional(),
+});
+
+export const model = {
+  type: "@swamp/aws/evidently/experiment",
+  version: "2026.03.19.1",
+  globalArguments: GlobalArgsSchema,
+  inputsSchema: InputsSchema,
+  resources: {
+    state: {
+      description: "Evidently Experiment resource state",
+      schema: StateSchema,
+      lifetime: "infinite",
+      garbageCollection: 10,
+    },
+  },
+  methods: {
+    create: {
+      description: "Create a Evidently Experiment",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const desiredState: Record<string, unknown> = {};
+        for (const [key, value] of Object.entries(g)) {
+          if (key === "name") continue;
+          if (value !== undefined) desiredState[key] = value;
+        }
+        const result = await createResource(
+          "AWS::Evidently::Experiment",
+          desiredState,
+        ) as StateData;
+        const instanceName = g.name?.toString() ?? "current";
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    get: {
+      description: "Get a Evidently Experiment",
+      arguments: z.object({
+        identifier: z.string().describe(
+          "The primary identifier of the Evidently Experiment",
+        ),
+      }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const result = await readResource(
+          "AWS::Evidently::Experiment",
+          args.identifier,
+        ) as StateData;
+        const instanceName = context.globalArgs.name?.toString() ??
+          args.identifier;
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    update: {
+      description: "Update a Evidently Experiment",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const instanceName = g.name?.toString() ?? "current";
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          instanceName,
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        const identifier = existing.Arn?.toString();
+        if (!identifier) {
+          throw new Error("No identifier found in existing state");
+        }
+        const currentState = await readResource(
+          "AWS::Evidently::Experiment",
+          identifier,
+        ) as StateData;
+        const desiredState: Record<string, unknown> = { ...currentState };
+        for (const [key, value] of Object.entries(g)) {
+          if (key === "name") continue;
+          if (value !== undefined) desiredState[key] = value;
+        }
+        const result = await updateResource(
+          "AWS::Evidently::Experiment",
+          identifier,
+          currentState,
+          desiredState,
+          ["Name", "Project"],
+        );
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    delete: {
+      description: "Delete a Evidently Experiment",
+      arguments: z.object({
+        identifier: z.string().describe(
+          "The primary identifier of the Evidently Experiment",
+        ),
+      }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const { existed } = await deleteResource(
+          "AWS::Evidently::Experiment",
+          args.identifier,
+        );
+        const instanceName = context.globalArgs.name?.toString() ??
+          args.identifier;
+        const handle = await context.writeResource("state", instanceName, {
+          identifier: args.identifier,
+          existed,
+          status: existed ? "deleted" : "not_found",
+          deletedAt: new Date().toISOString(),
+        });
+        return { dataHandles: [handle] };
+      },
+    },
+    sync: {
+      description: "Sync Evidently Experiment state from AWS",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const instanceName = g.name?.toString() ?? "current";
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          instanceName,
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        const identifier = existing.Arn?.toString();
+        if (!identifier) {
+          throw new Error("No identifier found in existing state");
+        }
+        try {
+          const result = await readResource(
+            "AWS::Evidently::Experiment",
+            identifier,
+          ) as StateData;
+          const handle = await context.writeResource(
+            "state",
+            instanceName,
+            result,
+          );
+          return { dataHandles: [handle] };
+        } catch (error: unknown) {
+          if (isResourceNotFoundError(error)) {
+            const handle = await context.writeResource("state", instanceName, {
+              identifier,
+              status: "not_found",
+              syncedAt: new Date().toISOString(),
+            });
+            return { dataHandles: [handle] };
+          }
+          throw error;
+        }
+      },
+    },
+  },
+};

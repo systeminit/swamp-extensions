@@ -1,0 +1,31 @@
+# Auto-generated manifest. Re-generate with the appropriate deno task.
+manifestVersion: 1
+name: "@swamp/aws/securityhub"
+version: "2026.03.19.1"
+description: "AWS SECURITYHUB infrastructure models"
+labels:
+  - aws
+  - securityhub
+  - cloud
+  - infrastructure
+releaseNotes: |
+  - Updated: aggregator_v2, automation_rule, automation_rule_v2, configuration_policy, connector_v2, delegated_admin, finding_aggregator, hub, hub_v2, insight, organization_configuration, policy_association, product_subscription, security_control, standard
+models:
+  - aggregator_v2.ts
+  - automation_rule.ts
+  - automation_rule_v2.ts
+  - configuration_policy.ts
+  - connector_v2.ts
+  - delegated_admin.ts
+  - finding_aggregator.ts
+  - hub.ts
+  - hub_v2.ts
+  - insight.ts
+  - organization_configuration.ts
+  - policy_association.ts
+  - product_subscription.ts
+  - security_control.ts
+  - standard.ts
+additionalFiles:
+  - LICENSE.txt
+  - README.md

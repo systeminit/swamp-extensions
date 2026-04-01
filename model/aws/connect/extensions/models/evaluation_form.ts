@@ -1,0 +1,357 @@
+// Auto-generated extension model for @swamp/aws/connect/evaluation-form
+// Do not edit manually. Re-generate with: deno task generate:aws
+
+// deno-lint-ignore-file no-explicit-any
+
+import { z } from "zod";
+import {
+  createResource,
+  deleteResource,
+  isResourceNotFoundError,
+  readResource,
+  updateResource,
+} from "./_lib/aws.ts";
+
+export const EvaluationReviewNotificationRecipientValueSchema = z.object({
+  UserId: z.string().describe(
+    "The user identifier for the notification recipient.",
+  ).optional(),
+});
+
+export const EvaluationReviewNotificationRecipientSchema = z.object({
+  Type: z.enum(["USER_ID"]).describe("The type of notification recipient."),
+  Value: EvaluationReviewNotificationRecipientValueSchema.describe(
+    "The value associated with the notification recipient type.",
+  ),
+});
+
+export const TagSchema = z.object({
+  Key: z.string().min(1).max(128).regex(
+    new RegExp("^(?!aws:)[a-zA-Z+-=._:/]+$"),
+  ).describe(
+    "The key name of the tag. You can specify a value that is 1 to 128 Unicode characters in length and cannot be prefixed with aws:. You can use any of the following characters: the set of Unicode letters, digits, whitespace, _,., /, =, +, and -",
+  ),
+  Value: z.string().max(256).describe(
+    "The value for the tag. You can specify a value that is 0 to 256 Unicode characters in length and cannot be prefixed with aws:. You can use any of the following characters: the set of Unicode letters, digits, whitespace, _,., /, =, +, and -",
+  ),
+});
+
+const GlobalArgsSchema = z.object({
+  name: z.string().describe(
+    "Instance name for this resource (used as the unique identifier in the factory pattern)",
+  ),
+  Title: z.string().min(1).max(128).describe("A title of the evaluation form."),
+  Description: z.string().max(1024).describe(
+    "The description of the evaluation form. *Length Constraints*: Minimum length of 0. Maximum length of 1024.",
+  ).optional(),
+  InstanceArn: z.string().regex(
+    new RegExp(
+      "^arn:aws[-a-z0-9]*:connect:[-a-z0-9]*:[0-9]{12}:instance/[-a-zA-Z0-9]*$",
+    ),
+  ).describe("The identifier of the Amazon Connect instance."),
+  Items: z.array(z.string()).describe(
+    "Items that are part of the evaluation form. The total number of sections and questions must not exceed 100 each. Questions must be contained in a section. *Minimum size*: 1 *Maximum size*: 100",
+  ),
+  ScoringStrategy: z.object({
+    Mode: z.enum(["QUESTION_ONLY", "SECTION_ONLY"]).describe(
+      "The scoring mode of the evaluation form. *Allowed values*: QUESTION_ONLY | SECTION_ONLY",
+    ),
+    Status: z.enum(["ENABLED", "DISABLED"]).describe(
+      "The scoring status of the evaluation form. *Allowed values*: ENABLED | DISABLED",
+    ),
+  }).describe("A scoring strategy of the evaluation form.").optional(),
+  AutoEvaluationConfiguration: z.object({
+    Enabled: z.boolean().optional(),
+  }).describe("The automatic evaluation configuration of an evaluation form.")
+    .optional(),
+  Status: z.enum(["DRAFT", "ACTIVE"]).describe(
+    "The status of the evaluation form. *Allowed values*: DRAFT | ACTIVE",
+  ),
+  TargetConfiguration: z.object({
+    ContactInteractionType: z.enum(["AGENT", "AUTOMATED"]).describe(
+      "The contact interaction type for this evaluation form.",
+    ),
+  }).describe(
+    "Configuration that specifies the target for this evaluation form.",
+  ).optional(),
+  LanguageConfiguration: z.object({
+    FormLanguage: z.enum(["de-DE", "en-US", "es-ES", "fr-FR", "it-IT", "pt-BR"])
+      .describe("The language for the evaluation form.").optional(),
+  }).describe("Configuration for language settings of this evaluation form.")
+    .optional(),
+  ReviewConfiguration: z.object({
+    ReviewNotificationRecipients: z.array(
+      EvaluationReviewNotificationRecipientSchema,
+    ).describe(
+      "List of recipients who should be notified when a review is requested.",
+    ),
+    EligibilityDays: z.number().int().min(1).max(90).describe(
+      "Number of days during which a request for review can be submitted for evaluations created from this form.",
+    ).optional(),
+  }).describe(
+    "Configuration for evaluation review settings of this evaluation form.",
+  ).optional(),
+  Tags: z.array(TagSchema).describe(
+    'The tags used to organize, track, or control access for this resource. For example, { "tags": {"key1":"value1", "key2":"value2"} }.',
+  ).optional(),
+});
+
+const StateSchema = z.object({
+  Title: z.string().optional(),
+  Description: z.string().optional(),
+  EvaluationFormArn: z.string(),
+  InstanceArn: z.string().optional(),
+  Items: z.array(z.string()).optional(),
+  ScoringStrategy: z.object({
+    Mode: z.string(),
+    Status: z.string(),
+  }).optional(),
+  AutoEvaluationConfiguration: z.object({
+    Enabled: z.boolean(),
+  }).optional(),
+  Status: z.string().optional(),
+  TargetConfiguration: z.object({
+    ContactInteractionType: z.string(),
+  }).optional(),
+  LanguageConfiguration: z.object({
+    FormLanguage: z.string(),
+  }).optional(),
+  ReviewConfiguration: z.object({
+    ReviewNotificationRecipients: z.array(
+      EvaluationReviewNotificationRecipientSchema,
+    ),
+    EligibilityDays: z.number(),
+  }).optional(),
+  Tags: z.array(TagSchema).optional(),
+}).passthrough();
+
+type StateData = z.infer<typeof StateSchema>;
+
+const InputsSchema = z.object({
+  name: z.string().optional(),
+  Title: z.string().min(1).max(128).describe("A title of the evaluation form.")
+    .optional(),
+  Description: z.string().max(1024).describe(
+    "The description of the evaluation form. *Length Constraints*: Minimum length of 0. Maximum length of 1024.",
+  ).optional(),
+  InstanceArn: z.string().regex(
+    new RegExp(
+      "^arn:aws[-a-z0-9]*:connect:[-a-z0-9]*:[0-9]{12}:instance/[-a-zA-Z0-9]*$",
+    ),
+  ).describe("The identifier of the Amazon Connect instance.").optional(),
+  Items: z.array(z.string()).describe(
+    "Items that are part of the evaluation form. The total number of sections and questions must not exceed 100 each. Questions must be contained in a section. *Minimum size*: 1 *Maximum size*: 100",
+  ).optional(),
+  ScoringStrategy: z.object({
+    Mode: z.enum(["QUESTION_ONLY", "SECTION_ONLY"]).describe(
+      "The scoring mode of the evaluation form. *Allowed values*: QUESTION_ONLY | SECTION_ONLY",
+    ).optional(),
+    Status: z.enum(["ENABLED", "DISABLED"]).describe(
+      "The scoring status of the evaluation form. *Allowed values*: ENABLED | DISABLED",
+    ).optional(),
+  }).describe("A scoring strategy of the evaluation form.").optional(),
+  AutoEvaluationConfiguration: z.object({
+    Enabled: z.boolean().optional(),
+  }).describe("The automatic evaluation configuration of an evaluation form.")
+    .optional(),
+  Status: z.enum(["DRAFT", "ACTIVE"]).describe(
+    "The status of the evaluation form. *Allowed values*: DRAFT | ACTIVE",
+  ).optional(),
+  TargetConfiguration: z.object({
+    ContactInteractionType: z.enum(["AGENT", "AUTOMATED"]).describe(
+      "The contact interaction type for this evaluation form.",
+    ).optional(),
+  }).describe(
+    "Configuration that specifies the target for this evaluation form.",
+  ).optional(),
+  LanguageConfiguration: z.object({
+    FormLanguage: z.enum(["de-DE", "en-US", "es-ES", "fr-FR", "it-IT", "pt-BR"])
+      .describe("The language for the evaluation form.").optional(),
+  }).describe("Configuration for language settings of this evaluation form.")
+    .optional(),
+  ReviewConfiguration: z.object({
+    ReviewNotificationRecipients: z.array(
+      EvaluationReviewNotificationRecipientSchema,
+    ).describe(
+      "List of recipients who should be notified when a review is requested.",
+    ).optional(),
+    EligibilityDays: z.number().int().min(1).max(90).describe(
+      "Number of days during which a request for review can be submitted for evaluations created from this form.",
+    ).optional(),
+  }).describe(
+    "Configuration for evaluation review settings of this evaluation form.",
+  ).optional(),
+  Tags: z.array(TagSchema).describe(
+    'The tags used to organize, track, or control access for this resource. For example, { "tags": {"key1":"value1", "key2":"value2"} }.',
+  ).optional(),
+});
+
+export const model = {
+  type: "@swamp/aws/connect/evaluation-form",
+  version: "2026.03.19.1",
+  globalArguments: GlobalArgsSchema,
+  inputsSchema: InputsSchema,
+  resources: {
+    state: {
+      description: "Connect EvaluationForm resource state",
+      schema: StateSchema,
+      lifetime: "infinite",
+      garbageCollection: 10,
+    },
+  },
+  methods: {
+    create: {
+      description: "Create a Connect EvaluationForm",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const desiredState: Record<string, unknown> = {};
+        for (const [key, value] of Object.entries(g)) {
+          if (key === "name") continue;
+          if (value !== undefined) desiredState[key] = value;
+        }
+        const result = await createResource(
+          "AWS::Connect::EvaluationForm",
+          desiredState,
+        ) as StateData;
+        const instanceName = g.name?.toString() ?? "current";
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    get: {
+      description: "Get a Connect EvaluationForm",
+      arguments: z.object({
+        identifier: z.string().describe(
+          "The primary identifier of the Connect EvaluationForm",
+        ),
+      }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const result = await readResource(
+          "AWS::Connect::EvaluationForm",
+          args.identifier,
+        ) as StateData;
+        const instanceName = context.globalArgs.name?.toString() ??
+          args.identifier;
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    update: {
+      description: "Update a Connect EvaluationForm",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const instanceName = g.name?.toString() ?? "current";
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          instanceName,
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        const identifier = existing.EvaluationFormArn?.toString();
+        if (!identifier) {
+          throw new Error("No identifier found in existing state");
+        }
+        const currentState = await readResource(
+          "AWS::Connect::EvaluationForm",
+          identifier,
+        ) as StateData;
+        const desiredState: Record<string, unknown> = { ...currentState };
+        for (const [key, value] of Object.entries(g)) {
+          if (key === "name") continue;
+          if (value !== undefined) desiredState[key] = value;
+        }
+        const result = await updateResource(
+          "AWS::Connect::EvaluationForm",
+          identifier,
+          currentState,
+          desiredState,
+        );
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    delete: {
+      description: "Delete a Connect EvaluationForm",
+      arguments: z.object({
+        identifier: z.string().describe(
+          "The primary identifier of the Connect EvaluationForm",
+        ),
+      }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const { existed } = await deleteResource(
+          "AWS::Connect::EvaluationForm",
+          args.identifier,
+        );
+        const instanceName = context.globalArgs.name?.toString() ??
+          args.identifier;
+        const handle = await context.writeResource("state", instanceName, {
+          identifier: args.identifier,
+          existed,
+          status: existed ? "deleted" : "not_found",
+          deletedAt: new Date().toISOString(),
+        });
+        return { dataHandles: [handle] };
+      },
+    },
+    sync: {
+      description: "Sync Connect EvaluationForm state from AWS",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const instanceName = g.name?.toString() ?? "current";
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          instanceName,
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        const identifier = existing.EvaluationFormArn?.toString();
+        if (!identifier) {
+          throw new Error("No identifier found in existing state");
+        }
+        try {
+          const result = await readResource(
+            "AWS::Connect::EvaluationForm",
+            identifier,
+          ) as StateData;
+          const handle = await context.writeResource(
+            "state",
+            instanceName,
+            result,
+          );
+          return { dataHandles: [handle] };
+        } catch (error: unknown) {
+          if (isResourceNotFoundError(error)) {
+            const handle = await context.writeResource("state", instanceName, {
+              identifier,
+              status: "not_found",
+              syncedAt: new Date().toISOString(),
+            });
+            return { dataHandles: [handle] };
+          }
+          throw error;
+        }
+      },
+    },
+  },
+};

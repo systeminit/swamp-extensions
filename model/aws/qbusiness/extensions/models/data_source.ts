@@ -1,0 +1,392 @@
+// Auto-generated extension model for @swamp/aws/qbusiness/data-source
+// Do not edit manually. Re-generate with: deno task generate:aws
+
+// deno-lint-ignore-file no-explicit-any
+
+import { z } from "zod";
+import {
+  createResource,
+  deleteResource,
+  isResourceNotFoundError,
+  readResource,
+  updateResource,
+} from "./_lib/aws.ts";
+
+export const DocumentAttributeConditionSchema = z.object({
+  Key: z.string().min(1).max(200).regex(
+    new RegExp("^[a-zA-Z0-9_][a-zA-Z0-9_-]*$"),
+  ),
+  Operator: z.enum([
+    "GREATER_THAN",
+    "GREATER_THAN_OR_EQUALS",
+    "LESS_THAN",
+    "LESS_THAN_OR_EQUALS",
+    "EQUALS",
+    "NOT_EQUALS",
+    "CONTAINS",
+    "NOT_CONTAINS",
+    "EXISTS",
+    "NOT_EXISTS",
+    "BEGINS_WITH",
+  ]),
+  Value: z.object({
+    StringValue: z.string().max(2048).optional(),
+    StringListValue: z.array(z.string().min(1).max(2048)).optional(),
+    LongValue: z.number().optional(),
+    DateValue: z.string().optional(),
+  }).optional(),
+});
+
+export const DocumentAttributeTargetSchema = z.object({
+  Key: z.string().min(1).max(200).regex(
+    new RegExp("^[a-zA-Z0-9_][a-zA-Z0-9_-]*$"),
+  ),
+  Value: z.object({
+    StringValue: z.string().max(2048).optional(),
+    StringListValue: z.array(z.string().min(1).max(2048)).optional(),
+    LongValue: z.number().optional(),
+    DateValue: z.string().optional(),
+  }).optional(),
+  AttributeValueOperator: z.enum(["DELETE"]).optional(),
+});
+
+export const InlineDocumentEnrichmentConfigurationSchema = z.object({
+  Condition: DocumentAttributeConditionSchema.optional(),
+  Target: DocumentAttributeTargetSchema.optional(),
+  DocumentContentOperator: z.enum(["DELETE"]).optional(),
+});
+
+export const HookConfigurationSchema = z.object({
+  InvocationCondition: DocumentAttributeConditionSchema.optional(),
+  LambdaArn: z.string().min(1).max(2048).regex(
+    new RegExp(
+      "^arn:aws[a-zA-Z-]*:lambda:[a-z-]*-[0-9]:[0-9]{12}:function:[a-zA-Z0-9-_]+(/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})?(:[a-zA-Z0-9-_]+)?$",
+    ),
+  ).optional(),
+  S3BucketName: z.string().min(1).max(63).regex(
+    new RegExp("^[a-z0-9][\\.\\-a-z0-9]{1,61}[a-z0-9]$"),
+  ).optional(),
+  RoleArn: z.string().min(0).max(1284).regex(
+    new RegExp(
+      "^arn:[a-z0-9-\\.]{1,63}:[a-z0-9-\\.]{0,63}:[a-z0-9-\\.]{0,63}:[a-z0-9-\\.]{0,63}:[^/].{0,1023}$",
+    ),
+  ).optional(),
+});
+
+export const ImageExtractionConfigurationSchema = z.object({
+  ImageExtractionStatus: z.enum(["ENABLED", "DISABLED"]),
+});
+
+export const AudioExtractionConfigurationSchema = z.object({
+  AudioExtractionStatus: z.enum(["ENABLED", "DISABLED"]),
+});
+
+export const VideoExtractionConfigurationSchema = z.object({
+  VideoExtractionStatus: z.enum(["ENABLED", "DISABLED"]),
+});
+
+export const TagSchema = z.object({
+  Key: z.string().min(1).max(128),
+  Value: z.string().min(0).max(256),
+});
+
+const GlobalArgsSchema = z.object({
+  name: z.string().describe(
+    "Instance name for this resource (used as the unique identifier in the factory pattern)",
+  ),
+  ApplicationId: z.string().min(36).max(36).regex(
+    new RegExp("^[a-zA-Z0-9][a-zA-Z0-9-]{35}$"),
+  ),
+  Description: z.string().min(0).max(1000).regex(new RegExp("^[\\s\\S]*$"))
+    .optional(),
+  DisplayName: z.string().min(1).max(1000).regex(
+    new RegExp("^[a-zA-Z0-9][a-zA-Z0-9_-]*$"),
+  ),
+  DocumentEnrichmentConfiguration: z.object({
+    InlineConfigurations: z.array(InlineDocumentEnrichmentConfigurationSchema)
+      .optional(),
+    PreExtractionHookConfiguration: HookConfigurationSchema.optional(),
+    PostExtractionHookConfiguration: HookConfigurationSchema.optional(),
+  }).optional(),
+  MediaExtractionConfiguration: z.object({
+    ImageExtractionConfiguration: ImageExtractionConfigurationSchema.optional(),
+    AudioExtractionConfiguration: AudioExtractionConfigurationSchema.optional(),
+    VideoExtractionConfiguration: VideoExtractionConfigurationSchema.optional(),
+  }).optional(),
+  IndexId: z.string().min(36).max(36).regex(
+    new RegExp("^[a-zA-Z0-9][a-zA-Z0-9-]{35}$"),
+  ),
+  RoleArn: z.string().min(0).max(1284).regex(
+    new RegExp(
+      "^arn:[a-z0-9-\\.]{1,63}:[a-z0-9-\\.]{0,63}:[a-z0-9-\\.]{0,63}:[a-z0-9-\\.]{0,63}:[^/].{0,1023}$",
+    ),
+  ).optional(),
+  SyncSchedule: z.string().max(998).regex(new RegExp("^[\\s\\S]*$")).optional(),
+  Tags: z.array(TagSchema).optional(),
+  VpcConfiguration: z.object({
+    SubnetIds: z.array(
+      z.string().min(1).max(200).regex(new RegExp("^[-0-9a-zA-Z]+$")),
+    ),
+    SecurityGroupIds: z.array(
+      z.string().min(1).max(200).regex(new RegExp("^[-0-9a-zA-Z]+$")),
+    ),
+  }).optional(),
+});
+
+const StateSchema = z.object({
+  ApplicationId: z.string(),
+  CreatedAt: z.string().optional(),
+  DataSourceArn: z.string().optional(),
+  DataSourceId: z.string(),
+  Description: z.string().optional(),
+  DisplayName: z.string().optional(),
+  DocumentEnrichmentConfiguration: z.object({
+    InlineConfigurations: z.array(InlineDocumentEnrichmentConfigurationSchema),
+    PreExtractionHookConfiguration: HookConfigurationSchema,
+    PostExtractionHookConfiguration: HookConfigurationSchema,
+  }).optional(),
+  MediaExtractionConfiguration: z.object({
+    ImageExtractionConfiguration: ImageExtractionConfigurationSchema,
+    AudioExtractionConfiguration: AudioExtractionConfigurationSchema,
+    VideoExtractionConfiguration: VideoExtractionConfigurationSchema,
+  }).optional(),
+  IndexId: z.string(),
+  RoleArn: z.string().optional(),
+  Status: z.string().optional(),
+  SyncSchedule: z.string().optional(),
+  Tags: z.array(TagSchema).optional(),
+  Type: z.string().optional(),
+  UpdatedAt: z.string().optional(),
+  VpcConfiguration: z.object({
+    SubnetIds: z.array(z.string()),
+    SecurityGroupIds: z.array(z.string()),
+  }).optional(),
+}).passthrough();
+
+type StateData = z.infer<typeof StateSchema>;
+
+const InputsSchema = z.object({
+  name: z.string().optional(),
+  ApplicationId: z.string().min(36).max(36).regex(
+    new RegExp("^[a-zA-Z0-9][a-zA-Z0-9-]{35}$"),
+  ).optional(),
+  Description: z.string().min(0).max(1000).regex(new RegExp("^[\\s\\S]*$"))
+    .optional(),
+  DisplayName: z.string().min(1).max(1000).regex(
+    new RegExp("^[a-zA-Z0-9][a-zA-Z0-9_-]*$"),
+  ).optional(),
+  DocumentEnrichmentConfiguration: z.object({
+    InlineConfigurations: z.array(InlineDocumentEnrichmentConfigurationSchema)
+      .optional(),
+    PreExtractionHookConfiguration: HookConfigurationSchema.optional(),
+    PostExtractionHookConfiguration: HookConfigurationSchema.optional(),
+  }).optional(),
+  MediaExtractionConfiguration: z.object({
+    ImageExtractionConfiguration: ImageExtractionConfigurationSchema.optional(),
+    AudioExtractionConfiguration: AudioExtractionConfigurationSchema.optional(),
+    VideoExtractionConfiguration: VideoExtractionConfigurationSchema.optional(),
+  }).optional(),
+  IndexId: z.string().min(36).max(36).regex(
+    new RegExp("^[a-zA-Z0-9][a-zA-Z0-9-]{35}$"),
+  ).optional(),
+  RoleArn: z.string().min(0).max(1284).regex(
+    new RegExp(
+      "^arn:[a-z0-9-\\.]{1,63}:[a-z0-9-\\.]{0,63}:[a-z0-9-\\.]{0,63}:[a-z0-9-\\.]{0,63}:[^/].{0,1023}$",
+    ),
+  ).optional(),
+  SyncSchedule: z.string().max(998).regex(new RegExp("^[\\s\\S]*$")).optional(),
+  Tags: z.array(TagSchema).optional(),
+  VpcConfiguration: z.object({
+    SubnetIds: z.array(
+      z.string().min(1).max(200).regex(new RegExp("^[-0-9a-zA-Z]+$")),
+    ).optional(),
+    SecurityGroupIds: z.array(
+      z.string().min(1).max(200).regex(new RegExp("^[-0-9a-zA-Z]+$")),
+    ).optional(),
+  }).optional(),
+});
+
+export const model = {
+  type: "@swamp/aws/qbusiness/data-source",
+  version: "2026.03.19.1",
+  globalArguments: GlobalArgsSchema,
+  inputsSchema: InputsSchema,
+  resources: {
+    state: {
+      description: "QBusiness DataSource resource state",
+      schema: StateSchema,
+      lifetime: "infinite",
+      garbageCollection: 10,
+    },
+  },
+  methods: {
+    create: {
+      description: "Create a QBusiness DataSource",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const desiredState: Record<string, unknown> = {};
+        for (const [key, value] of Object.entries(g)) {
+          if (key === "name") continue;
+          if (value !== undefined) desiredState[key] = value;
+        }
+        const result = await createResource(
+          "AWS::QBusiness::DataSource",
+          desiredState,
+        ) as StateData;
+        const instanceName = g.name?.toString() ?? "current";
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    get: {
+      description: "Get a QBusiness DataSource",
+      arguments: z.object({
+        identifier: z.string().describe(
+          "The primary identifier of the QBusiness DataSource",
+        ),
+      }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const result = await readResource(
+          "AWS::QBusiness::DataSource",
+          args.identifier,
+        ) as StateData;
+        const instanceName = context.globalArgs.name?.toString() ??
+          args.identifier;
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    update: {
+      description: "Update a QBusiness DataSource",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const instanceName = g.name?.toString() ?? "current";
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          instanceName,
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        const idParts = [
+          existing.ApplicationId?.toString(),
+          existing.DataSourceId?.toString(),
+          existing.IndexId?.toString(),
+        ];
+        if (idParts.some((p) => !p)) {
+          throw new Error(
+            "Missing primary identifier fields in existing state",
+          );
+        }
+        const identifier = idParts.join("|");
+        const currentState = await readResource(
+          "AWS::QBusiness::DataSource",
+          identifier,
+        ) as StateData;
+        const desiredState: Record<string, unknown> = { ...currentState };
+        for (const [key, value] of Object.entries(g)) {
+          if (key === "name") continue;
+          if (value !== undefined) desiredState[key] = value;
+        }
+        const result = await updateResource(
+          "AWS::QBusiness::DataSource",
+          identifier,
+          currentState,
+          desiredState,
+          ["ApplicationId", "IndexId"],
+        );
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    delete: {
+      description: "Delete a QBusiness DataSource",
+      arguments: z.object({
+        identifier: z.string().describe(
+          "The primary identifier of the QBusiness DataSource",
+        ),
+      }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const { existed } = await deleteResource(
+          "AWS::QBusiness::DataSource",
+          args.identifier,
+        );
+        const instanceName = context.globalArgs.name?.toString() ??
+          args.identifier;
+        const handle = await context.writeResource("state", instanceName, {
+          identifier: args.identifier,
+          existed,
+          status: existed ? "deleted" : "not_found",
+          deletedAt: new Date().toISOString(),
+        });
+        return { dataHandles: [handle] };
+      },
+    },
+    sync: {
+      description: "Sync QBusiness DataSource state from AWS",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const instanceName = g.name?.toString() ?? "current";
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          instanceName,
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        const idParts = [
+          existing.ApplicationId?.toString(),
+          existing.DataSourceId?.toString(),
+          existing.IndexId?.toString(),
+        ];
+        if (idParts.some((p) => !p)) {
+          throw new Error(
+            "Missing primary identifier fields in existing state",
+          );
+        }
+        const identifier = idParts.join("|");
+        try {
+          const result = await readResource(
+            "AWS::QBusiness::DataSource",
+            identifier,
+          ) as StateData;
+          const handle = await context.writeResource(
+            "state",
+            instanceName,
+            result,
+          );
+          return { dataHandles: [handle] };
+        } catch (error: unknown) {
+          if (isResourceNotFoundError(error)) {
+            const handle = await context.writeResource("state", instanceName, {
+              identifier,
+              status: "not_found",
+              syncedAt: new Date().toISOString(),
+            });
+            return { dataHandles: [handle] };
+          }
+          throw error;
+        }
+      },
+    },
+  },
+};

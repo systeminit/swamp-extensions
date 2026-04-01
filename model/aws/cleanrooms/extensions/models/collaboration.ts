@@ -1,0 +1,462 @@
+// Auto-generated extension model for @swamp/aws/cleanrooms/collaboration
+// Do not edit manually. Re-generate with: deno task generate:aws
+
+// deno-lint-ignore-file no-explicit-any
+
+import { z } from "zod";
+import {
+  createResource,
+  deleteResource,
+  isResourceNotFoundError,
+  readResource,
+  updateResource,
+} from "./_lib/aws.ts";
+
+export const TagSchema = z.object({
+  Key: z.string().min(1).max(128),
+  Value: z.string().min(1).max(256),
+});
+
+export const MLMemberAbilitiesSchema = z.object({
+  CustomMLMemberAbilities: z.array(
+    z.enum(["CAN_RECEIVE_MODEL_OUTPUT", "CAN_RECEIVE_INFERENCE_OUTPUT"]),
+  ),
+});
+
+export const JobComputePaymentConfigSchema = z.object({
+  IsResponsible: z.boolean(),
+});
+
+export const QueryComputePaymentConfigSchema = z.object({
+  IsResponsible: z.boolean(),
+});
+
+export const ModelTrainingPaymentConfigSchema = z.object({
+  IsResponsible: z.boolean(),
+});
+
+export const ModelInferencePaymentConfigSchema = z.object({
+  IsResponsible: z.boolean(),
+});
+
+export const SyntheticDataGenerationPaymentConfigSchema = z.object({
+  IsResponsible: z.boolean(),
+});
+
+export const MLPaymentConfigSchema = z.object({
+  ModelTraining: ModelTrainingPaymentConfigSchema.optional(),
+  ModelInference: ModelInferencePaymentConfigSchema.optional(),
+  SyntheticDataGeneration: SyntheticDataGenerationPaymentConfigSchema
+    .optional(),
+});
+
+export const PaymentConfigurationSchema = z.object({
+  JobCompute: JobComputePaymentConfigSchema.optional(),
+  QueryCompute: QueryComputePaymentConfigSchema,
+  MachineLearning: MLPaymentConfigSchema.optional(),
+});
+
+export const MemberSpecificationSchema = z.object({
+  AccountId: z.string().min(12).max(12).regex(new RegExp("^\\d+$")),
+  MemberAbilities: z.array(
+    z.enum(["CAN_QUERY", "CAN_RUN_JOB", "CAN_RECEIVE_RESULTS"]),
+  ).optional(),
+  MLMemberAbilities: MLMemberAbilitiesSchema.optional(),
+  DisplayName: z.string().min(1).max(100).regex(
+    new RegExp(
+      "^(?!\\s*$)[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDBFF-\\uDC00\\uDFFF\\t]*$",
+    ),
+  ),
+  PaymentConfiguration: PaymentConfigurationSchema.optional(),
+});
+
+const GlobalArgsSchema = z.object({
+  name: z.string().describe(
+    "Instance name for this resource (used as the unique identifier in the factory pattern)",
+  ),
+  Tags: z.array(TagSchema).describe(
+    "An arbitrary set of tags (key-value pairs) for this cleanrooms collaboration.",
+  ).optional(),
+  CreatorDisplayName: z.string().min(1).max(100).regex(
+    new RegExp(
+      "^(?!\\s*$)[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDBFF-\\uDC00\\uDFFF\\t]*$",
+    ),
+  ),
+  CreatorMemberAbilities: z.array(
+    z.enum(["CAN_QUERY", "CAN_RUN_JOB", "CAN_RECEIVE_RESULTS"]),
+  ).optional(),
+  CreatorMLMemberAbilities: z.object({
+    CustomMLMemberAbilities: z.array(
+      z.enum(["CAN_RECEIVE_MODEL_OUTPUT", "CAN_RECEIVE_INFERENCE_OUTPUT"]),
+    ),
+  }).optional(),
+  DataEncryptionMetadata: z.object({
+    AllowCleartext: z.boolean(),
+    AllowDuplicates: z.boolean(),
+    AllowJoinsOnColumnsWithDifferentNames: z.boolean(),
+    PreserveNulls: z.boolean(),
+  }).optional(),
+  Description: z.string().min(1).max(255).regex(
+    new RegExp(
+      "^(?!\\s*$)[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDBFF-\\uDC00\\uDFFF\\t\\r\\n]*$",
+    ),
+  ),
+  Members: z.array(MemberSpecificationSchema).optional(),
+  Name: z.string().min(1).max(100).regex(
+    new RegExp(
+      "^(?!\\s*$)[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDBFF-\\uDC00\\uDFFF\\t]*$",
+    ),
+  ),
+  JobLogStatus: z.enum(["ENABLED", "DISABLED"]).optional(),
+  QueryLogStatus: z.enum(["ENABLED", "DISABLED"]),
+  AnalyticsEngine: z.enum(["CLEAN_ROOMS_SQL", "SPARK"]).optional(),
+  CreatorPaymentConfiguration: z.object({
+    JobCompute: JobComputePaymentConfigSchema.optional(),
+    QueryCompute: QueryComputePaymentConfigSchema,
+    MachineLearning: MLPaymentConfigSchema.optional(),
+  }).optional(),
+  AutoApprovedChangeTypes: z.array(
+    z.enum([
+      "ADD_MEMBER",
+      "GRANT_RECEIVE_RESULTS_ABILITY",
+      "REVOKE_RECEIVE_RESULTS_ABILITY",
+    ]),
+  ).optional(),
+  AllowedResultRegions: z.array(
+    z.enum([
+      "us-west-1",
+      "us-west-2",
+      "us-east-1",
+      "us-east-2",
+      "af-south-1",
+      "ap-east-1",
+      "ap-east-2",
+      "ap-south-2",
+      "ap-southeast-1",
+      "ap-southeast-2",
+      "ap-southeast-3",
+      "ap-southeast-5",
+      "ap-southeast-4",
+      "ap-southeast-7",
+      "ap-south-1",
+      "ap-northeast-3",
+      "ap-northeast-1",
+      "ap-northeast-2",
+      "ca-central-1",
+      "ca-west-1",
+      "eu-south-1",
+      "eu-west-3",
+      "eu-south-2",
+      "eu-central-2",
+      "eu-central-1",
+      "eu-north-1",
+      "eu-west-1",
+      "eu-west-2",
+      "me-south-1",
+      "me-central-1",
+      "il-central-1",
+      "sa-east-1",
+      "mx-central-1",
+    ]),
+  ).optional(),
+  IsMetricsEnabled: z.boolean().optional(),
+});
+
+const StateSchema = z.object({
+  Arn: z.string().optional(),
+  Tags: z.array(TagSchema).optional(),
+  CollaborationIdentifier: z.string(),
+  CreatorDisplayName: z.string().optional(),
+  CreatorMemberAbilities: z.array(z.string()).optional(),
+  CreatorMLMemberAbilities: MLMemberAbilitiesSchema.optional(),
+  DataEncryptionMetadata: z.object({
+    AllowCleartext: z.boolean(),
+    AllowDuplicates: z.boolean(),
+    AllowJoinsOnColumnsWithDifferentNames: z.boolean(),
+    PreserveNulls: z.boolean(),
+  }).optional(),
+  Description: z.string().optional(),
+  Members: z.array(MemberSpecificationSchema).optional(),
+  Name: z.string().optional(),
+  JobLogStatus: z.string().optional(),
+  QueryLogStatus: z.string().optional(),
+  AnalyticsEngine: z.string().optional(),
+  CreatorPaymentConfiguration: PaymentConfigurationSchema.optional(),
+  AutoApprovedChangeTypes: z.array(z.string()).optional(),
+  AllowedResultRegions: z.array(z.string()).optional(),
+  IsMetricsEnabled: z.boolean().optional(),
+}).passthrough();
+
+type StateData = z.infer<typeof StateSchema>;
+
+const InputsSchema = z.object({
+  name: z.string().optional(),
+  Tags: z.array(TagSchema).describe(
+    "An arbitrary set of tags (key-value pairs) for this cleanrooms collaboration.",
+  ).optional(),
+  CreatorDisplayName: z.string().min(1).max(100).regex(
+    new RegExp(
+      "^(?!\\s*$)[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDBFF-\\uDC00\\uDFFF\\t]*$",
+    ),
+  ).optional(),
+  CreatorMemberAbilities: z.array(
+    z.enum(["CAN_QUERY", "CAN_RUN_JOB", "CAN_RECEIVE_RESULTS"]),
+  ).optional(),
+  CreatorMLMemberAbilities: z.object({
+    CustomMLMemberAbilities: z.array(
+      z.enum(["CAN_RECEIVE_MODEL_OUTPUT", "CAN_RECEIVE_INFERENCE_OUTPUT"]),
+    ).optional(),
+  }).optional(),
+  DataEncryptionMetadata: z.object({
+    AllowCleartext: z.boolean().optional(),
+    AllowDuplicates: z.boolean().optional(),
+    AllowJoinsOnColumnsWithDifferentNames: z.boolean().optional(),
+    PreserveNulls: z.boolean().optional(),
+  }).optional(),
+  Description: z.string().min(1).max(255).regex(
+    new RegExp(
+      "^(?!\\s*$)[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDBFF-\\uDC00\\uDFFF\\t\\r\\n]*$",
+    ),
+  ).optional(),
+  Members: z.array(MemberSpecificationSchema).optional(),
+  Name: z.string().min(1).max(100).regex(
+    new RegExp(
+      "^(?!\\s*$)[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDBFF-\\uDC00\\uDFFF\\t]*$",
+    ),
+  ).optional(),
+  JobLogStatus: z.enum(["ENABLED", "DISABLED"]).optional(),
+  QueryLogStatus: z.enum(["ENABLED", "DISABLED"]).optional(),
+  AnalyticsEngine: z.enum(["CLEAN_ROOMS_SQL", "SPARK"]).optional(),
+  CreatorPaymentConfiguration: z.object({
+    JobCompute: JobComputePaymentConfigSchema.optional(),
+    QueryCompute: QueryComputePaymentConfigSchema.optional(),
+    MachineLearning: MLPaymentConfigSchema.optional(),
+  }).optional(),
+  AutoApprovedChangeTypes: z.array(
+    z.enum([
+      "ADD_MEMBER",
+      "GRANT_RECEIVE_RESULTS_ABILITY",
+      "REVOKE_RECEIVE_RESULTS_ABILITY",
+    ]),
+  ).optional(),
+  AllowedResultRegions: z.array(
+    z.enum([
+      "us-west-1",
+      "us-west-2",
+      "us-east-1",
+      "us-east-2",
+      "af-south-1",
+      "ap-east-1",
+      "ap-east-2",
+      "ap-south-2",
+      "ap-southeast-1",
+      "ap-southeast-2",
+      "ap-southeast-3",
+      "ap-southeast-5",
+      "ap-southeast-4",
+      "ap-southeast-7",
+      "ap-south-1",
+      "ap-northeast-3",
+      "ap-northeast-1",
+      "ap-northeast-2",
+      "ca-central-1",
+      "ca-west-1",
+      "eu-south-1",
+      "eu-west-3",
+      "eu-south-2",
+      "eu-central-2",
+      "eu-central-1",
+      "eu-north-1",
+      "eu-west-1",
+      "eu-west-2",
+      "me-south-1",
+      "me-central-1",
+      "il-central-1",
+      "sa-east-1",
+      "mx-central-1",
+    ]),
+  ).optional(),
+  IsMetricsEnabled: z.boolean().optional(),
+});
+
+export const model = {
+  type: "@swamp/aws/cleanrooms/collaboration",
+  version: "2026.03.19.1",
+  globalArguments: GlobalArgsSchema,
+  inputsSchema: InputsSchema,
+  resources: {
+    state: {
+      description: "CleanRooms Collaboration resource state",
+      schema: StateSchema,
+      lifetime: "infinite",
+      garbageCollection: 10,
+    },
+  },
+  methods: {
+    create: {
+      description: "Create a CleanRooms Collaboration",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const desiredState: Record<string, unknown> = {};
+        for (const [key, value] of Object.entries(g)) {
+          if (key === "name") continue;
+          if (value !== undefined) desiredState[key] = value;
+        }
+        const result = await createResource(
+          "AWS::CleanRooms::Collaboration",
+          desiredState,
+        ) as StateData;
+        const instanceName = g.name?.toString() ?? "current";
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    get: {
+      description: "Get a CleanRooms Collaboration",
+      arguments: z.object({
+        identifier: z.string().describe(
+          "The primary identifier of the CleanRooms Collaboration",
+        ),
+      }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const result = await readResource(
+          "AWS::CleanRooms::Collaboration",
+          args.identifier,
+        ) as StateData;
+        const instanceName = context.globalArgs.name?.toString() ??
+          args.identifier;
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    update: {
+      description: "Update a CleanRooms Collaboration",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const instanceName = g.name?.toString() ?? "current";
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          instanceName,
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        const identifier = existing.CollaborationIdentifier?.toString();
+        if (!identifier) {
+          throw new Error("No identifier found in existing state");
+        }
+        const currentState = await readResource(
+          "AWS::CleanRooms::Collaboration",
+          identifier,
+        ) as StateData;
+        const desiredState: Record<string, unknown> = { ...currentState };
+        for (const [key, value] of Object.entries(g)) {
+          if (key === "name") continue;
+          if (value !== undefined) desiredState[key] = value;
+        }
+        const result = await updateResource(
+          "AWS::CleanRooms::Collaboration",
+          identifier,
+          currentState,
+          desiredState,
+          [
+            "CreatorDisplayName",
+            "CreatorMemberAbilities",
+            "CreatorMLMemberAbilities",
+            "DataEncryptionMetadata",
+            "JobLogStatus",
+            "QueryLogStatus",
+            "Members",
+            "CreatorPaymentConfiguration",
+            "AutoApprovedChangeTypes",
+            "AllowedResultRegions",
+          ],
+        );
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    delete: {
+      description: "Delete a CleanRooms Collaboration",
+      arguments: z.object({
+        identifier: z.string().describe(
+          "The primary identifier of the CleanRooms Collaboration",
+        ),
+      }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const { existed } = await deleteResource(
+          "AWS::CleanRooms::Collaboration",
+          args.identifier,
+        );
+        const instanceName = context.globalArgs.name?.toString() ??
+          args.identifier;
+        const handle = await context.writeResource("state", instanceName, {
+          identifier: args.identifier,
+          existed,
+          status: existed ? "deleted" : "not_found",
+          deletedAt: new Date().toISOString(),
+        });
+        return { dataHandles: [handle] };
+      },
+    },
+    sync: {
+      description: "Sync CleanRooms Collaboration state from AWS",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const instanceName = g.name?.toString() ?? "current";
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          instanceName,
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        const identifier = existing.CollaborationIdentifier?.toString();
+        if (!identifier) {
+          throw new Error("No identifier found in existing state");
+        }
+        try {
+          const result = await readResource(
+            "AWS::CleanRooms::Collaboration",
+            identifier,
+          ) as StateData;
+          const handle = await context.writeResource(
+            "state",
+            instanceName,
+            result,
+          );
+          return { dataHandles: [handle] };
+        } catch (error: unknown) {
+          if (isResourceNotFoundError(error)) {
+            const handle = await context.writeResource("state", instanceName, {
+              identifier,
+              status: "not_found",
+              syncedAt: new Date().toISOString(),
+            });
+            return { dataHandles: [handle] };
+          }
+          throw error;
+        }
+      },
+    },
+  },
+};

@@ -1,0 +1,283 @@
+// Auto-generated extension model for @swamp/aws/route53recoveryreadiness/resource-set
+// Do not edit manually. Re-generate with: deno task generate:aws
+
+// deno-lint-ignore-file no-explicit-any
+
+import { z } from "zod";
+import {
+  createResource,
+  deleteResource,
+  isResourceNotFoundError,
+  readResource,
+  updateResource,
+} from "./_lib/aws.ts";
+
+export const NLBResourceSchema = z.object({
+  Arn: z.string().describe(
+    "A Network Load Balancer resource Amazon Resource Name (ARN).",
+  ).optional(),
+});
+
+export const R53ResourceRecordSchema = z.object({
+  DomainName: z.string().describe("The DNS target domain name.").optional(),
+  RecordSetId: z.string().describe("The Resource Record set id.").optional(),
+});
+
+export const TargetResourceSchema = z.object({
+  NLBResource: NLBResourceSchema.describe(
+    "The Network Load Balancer resource that a DNS target resource points to.",
+  ).optional(),
+  R53Resource: R53ResourceRecordSchema.describe(
+    "The Route 53 resource that a DNS target resource record points to.",
+  ).optional(),
+});
+
+export const DNSTargetResourceSchema = z.object({
+  DomainName: z.string().describe(
+    "The domain name that acts as an ingress point to a portion of the customer application.",
+  ).optional(),
+  RecordSetId: z.string().describe(
+    "The Route 53 record set ID that will uniquely identify a DNS record, given a name and a type.",
+  ).optional(),
+  HostedZoneArn: z.string().describe(
+    "The hosted zone Amazon Resource Name (ARN) that contains the DNS record with the provided name of the target resource.",
+  ).optional(),
+  RecordType: z.string().describe(
+    "The type of DNS record of the target resource.",
+  ).optional(),
+  TargetResource: TargetResourceSchema.describe(
+    "The target resource that the Route 53 record points to.",
+  ).optional(),
+});
+
+export const ResourceSchema = z.object({
+  ResourceArn: z.string().describe(
+    "The Amazon Resource Name (ARN) of the AWS resource.",
+  ).optional(),
+  ComponentId: z.string().describe(
+    "The component identifier of the resource, generated when DNS target resource is used.",
+  ).optional(),
+  DnsTargetResource: DNSTargetResourceSchema.describe(
+    "A component for DNS/routing control readiness checks.",
+  ).optional(),
+  ReadinessScopes: z.array(z.string()).describe(
+    "A list of recovery group Amazon Resource Names (ARNs) and cell ARNs that this resource is contained within.",
+  ).optional(),
+});
+
+export const TagSchema = z.object({
+  Key: z.string(),
+  Value: z.string(),
+});
+
+const GlobalArgsSchema = z.object({
+  ResourceSetName: z.string().describe(
+    "The name of the resource set to create.",
+  ).optional(),
+  Resources: z.array(ResourceSchema).describe(
+    "A list of resource objects in the resource set.",
+  ),
+  ResourceSetType: z.string().describe(
+    "The resource type of the resources in the resource set. Enter one of the following values for resource type: AWS::AutoScaling::AutoScalingGroup, AWS::CloudWatch::Alarm, AWS::EC2::CustomerGateway, AWS::DynamoDB::Table, AWS::EC2::Volume, AWS::ElasticLoadBalancing::LoadBalancer, AWS::ElasticLoadBalancingV2::LoadBalancer, AWS::MSK::Cluster, AWS::RDS::DBCluster, AWS::Route53::HealthCheck, AWS::SQS::Queue, AWS::SNS::Topic, AWS::SNS::Subscription, AWS::EC2::VPC, AWS::EC2::VPNConnection, AWS::EC2::VPNGateway, AWS::Route53RecoveryReadiness::DNSTargetResource",
+  ),
+  Tags: z.array(TagSchema).describe(
+    "A tag to associate with the parameters for a resource set.",
+  ).optional(),
+});
+
+const StateSchema = z.object({
+  ResourceSetName: z.string(),
+  Resources: z.array(ResourceSchema).optional(),
+  ResourceSetArn: z.string().optional(),
+  ResourceSetType: z.string().optional(),
+  Tags: z.array(TagSchema).optional(),
+}).passthrough();
+
+type StateData = z.infer<typeof StateSchema>;
+
+const InputsSchema = z.object({
+  ResourceSetName: z.string().describe(
+    "The name of the resource set to create.",
+  ).optional(),
+  Resources: z.array(ResourceSchema).describe(
+    "A list of resource objects in the resource set.",
+  ).optional(),
+  ResourceSetType: z.string().describe(
+    "The resource type of the resources in the resource set. Enter one of the following values for resource type: AWS::AutoScaling::AutoScalingGroup, AWS::CloudWatch::Alarm, AWS::EC2::CustomerGateway, AWS::DynamoDB::Table, AWS::EC2::Volume, AWS::ElasticLoadBalancing::LoadBalancer, AWS::ElasticLoadBalancingV2::LoadBalancer, AWS::MSK::Cluster, AWS::RDS::DBCluster, AWS::Route53::HealthCheck, AWS::SQS::Queue, AWS::SNS::Topic, AWS::SNS::Subscription, AWS::EC2::VPC, AWS::EC2::VPNConnection, AWS::EC2::VPNGateway, AWS::Route53RecoveryReadiness::DNSTargetResource",
+  ).optional(),
+  Tags: z.array(TagSchema).describe(
+    "A tag to associate with the parameters for a resource set.",
+  ).optional(),
+});
+
+export const model = {
+  type: "@swamp/aws/route53recoveryreadiness/resource-set",
+  version: "2026.03.19.1",
+  globalArguments: GlobalArgsSchema,
+  inputsSchema: InputsSchema,
+  resources: {
+    state: {
+      description: "Route53RecoveryReadiness ResourceSet resource state",
+      schema: StateSchema,
+      lifetime: "infinite",
+      garbageCollection: 10,
+    },
+  },
+  methods: {
+    create: {
+      description: "Create a Route53RecoveryReadiness ResourceSet",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const desiredState: Record<string, unknown> = {};
+        for (const [key, value] of Object.entries(g)) {
+          if (value !== undefined) desiredState[key] = value;
+        }
+        const result = await createResource(
+          "AWS::Route53RecoveryReadiness::ResourceSet",
+          desiredState,
+        ) as StateData;
+        const instanceName =
+          (result.ResourceSetName ?? g.ResourceSetName)?.toString() ??
+            "current";
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    get: {
+      description: "Get a Route53RecoveryReadiness ResourceSet",
+      arguments: z.object({
+        identifier: z.string().describe(
+          "The primary identifier of the Route53RecoveryReadiness ResourceSet",
+        ),
+      }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const result = await readResource(
+          "AWS::Route53RecoveryReadiness::ResourceSet",
+          args.identifier,
+        ) as StateData;
+        const instanceName =
+          (result.ResourceSetName ?? context.globalArgs.ResourceSetName)
+            ?.toString() ?? args.identifier;
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    update: {
+      description: "Update a Route53RecoveryReadiness ResourceSet",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const instanceName = g.ResourceSetName?.toString() ?? "current";
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          instanceName,
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        const identifier = existing.ResourceSetName?.toString();
+        if (!identifier) {
+          throw new Error("No identifier found in existing state");
+        }
+        const currentState = await readResource(
+          "AWS::Route53RecoveryReadiness::ResourceSet",
+          identifier,
+        ) as StateData;
+        const desiredState: Record<string, unknown> = { ...currentState };
+        for (const [key, value] of Object.entries(g)) {
+          if (value !== undefined) desiredState[key] = value;
+        }
+        const result = await updateResource(
+          "AWS::Route53RecoveryReadiness::ResourceSet",
+          identifier,
+          currentState,
+          desiredState,
+          ["ResourceSetName", "ResourceSetType"],
+        );
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    delete: {
+      description: "Delete a Route53RecoveryReadiness ResourceSet",
+      arguments: z.object({
+        identifier: z.string().describe(
+          "The primary identifier of the Route53RecoveryReadiness ResourceSet",
+        ),
+      }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const { existed } = await deleteResource(
+          "AWS::Route53RecoveryReadiness::ResourceSet",
+          args.identifier,
+        );
+        const instanceName = context.globalArgs.ResourceSetName?.toString() ??
+          args.identifier;
+        const handle = await context.writeResource("state", instanceName, {
+          identifier: args.identifier,
+          existed,
+          status: existed ? "deleted" : "not_found",
+          deletedAt: new Date().toISOString(),
+        });
+        return { dataHandles: [handle] };
+      },
+    },
+    sync: {
+      description: "Sync Route53RecoveryReadiness ResourceSet state from AWS",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const instanceName = g.ResourceSetName?.toString() ?? "current";
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          instanceName,
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        const identifier = existing.ResourceSetName?.toString();
+        if (!identifier) {
+          throw new Error("No identifier found in existing state");
+        }
+        try {
+          const result = await readResource(
+            "AWS::Route53RecoveryReadiness::ResourceSet",
+            identifier,
+          ) as StateData;
+          const handle = await context.writeResource(
+            "state",
+            instanceName,
+            result,
+          );
+          return { dataHandles: [handle] };
+        } catch (error: unknown) {
+          if (isResourceNotFoundError(error)) {
+            const handle = await context.writeResource("state", instanceName, {
+              identifier,
+              status: "not_found",
+              syncedAt: new Date().toISOString(),
+            });
+            return { dataHandles: [handle] };
+          }
+          throw error;
+        }
+      },
+    },
+  },
+};

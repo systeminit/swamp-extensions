@@ -1,0 +1,19 @@
+# Auto-generated manifest. Re-generate with the appropriate deno task.
+manifestVersion: 1
+name: "@swamp/aws/kinesis"
+version: "2026.03.19.1"
+description: "AWS KINESIS infrastructure models"
+labels:
+  - aws
+  - kinesis
+  - cloud
+  - infrastructure
+releaseNotes: |
+  - Updated: resource_policy, stream, stream_consumer
+models:
+  - resource_policy.ts
+  - stream.ts
+  - stream_consumer.ts
+additionalFiles:
+  - LICENSE.txt
+  - README.md

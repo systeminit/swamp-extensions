@@ -1,0 +1,20 @@
+# Auto-generated manifest. Re-generate with the appropriate deno task.
+manifestVersion: 1
+name: "@swamp/aws/macie"
+version: "2026.03.19.1"
+description: "AWS MACIE infrastructure models"
+labels:
+  - aws
+  - macie
+  - cloud
+  - infrastructure
+releaseNotes: |
+  - Updated: allow_list, custom_data_identifier, findings_filter, session
+models:
+  - allow_list.ts
+  - custom_data_identifier.ts
+  - findings_filter.ts
+  - session.ts
+additionalFiles:
+  - LICENSE.txt
+  - README.md

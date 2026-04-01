@@ -1,0 +1,18 @@
+# Auto-generated manifest. Re-generate with the appropriate deno task.
+manifestVersion: 1
+name: "@swamp/aws/oam"
+version: "2026.03.19.1"
+description: "AWS OAM infrastructure models"
+labels:
+  - aws
+  - oam
+  - cloud
+  - infrastructure
+releaseNotes: |
+  - Updated: link, sink
+models:
+  - link.ts
+  - sink.ts
+additionalFiles:
+  - LICENSE.txt
+  - README.md

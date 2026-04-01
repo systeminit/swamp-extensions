@@ -1,0 +1,250 @@
+// Auto-generated extension model for @swamp/aws/iam/server-certificate
+// Do not edit manually. Re-generate with: deno task generate:aws
+
+// deno-lint-ignore-file no-explicit-any no-control-regex
+
+import { z } from "zod";
+import {
+  createResource,
+  deleteResource,
+  isResourceNotFoundError,
+  readResource,
+  updateResource,
+} from "./_lib/aws.ts";
+
+export const TagSchema = z.object({
+  Value: z.string().min(1).max(256).describe(
+    "The value for the tag. You can specify a value that is 0 to 256 Unicode characters in length and cannot be prefixed with aws:. You can use any of the following characters: the set of Unicode letters, digits, whitespace, _,., /, =, +, and -.",
+  ),
+  Key: z.string().min(1).max(128).describe(
+    "The key name of the tag. You can specify a value that is 1 to 128 Unicode characters in length and cannot be prefixed with aws:. You can use any of the following characters: the set of Unicode letters, digits, whitespace, _,., /, =, +, and -.",
+  ),
+});
+
+const GlobalArgsSchema = z.object({
+  CertificateBody: z.string().min(1).max(16384).regex(
+    new RegExp("[\\u0009\\u000A\\u000D\\u0020-\\u00FF]+"),
+  ).optional(),
+  CertificateChain: z.string().min(1).max(2097152).regex(
+    new RegExp("[\\u0009\\u000A\\u000D\\u0020-\\u00FF]+"),
+  ).optional(),
+  ServerCertificateName: z.string().min(1).max(128).regex(
+    new RegExp("[\\w+=,.@-]+"),
+  ).optional(),
+  Path: z.string().min(1).max(512).regex(
+    new RegExp("(\\u002F)|(\\u002F[\\u0021-\\u007F]+\\u002F)"),
+  ).optional(),
+  PrivateKey: z.string().min(1).max(16384).regex(
+    new RegExp("[\\u0009\\u000A\\u000D\\u0020-\\u00FF]+"),
+  ).optional(),
+  Tags: z.array(TagSchema).optional(),
+});
+
+const StateSchema = z.object({
+  CertificateBody: z.string().optional(),
+  CertificateChain: z.string().optional(),
+  ServerCertificateName: z.string(),
+  Path: z.string().optional(),
+  PrivateKey: z.string().optional(),
+  Arn: z.string().optional(),
+  Tags: z.array(TagSchema).optional(),
+}).passthrough();
+
+type StateData = z.infer<typeof StateSchema>;
+
+const InputsSchema = z.object({
+  CertificateBody: z.string().min(1).max(16384).regex(
+    new RegExp("[\\u0009\\u000A\\u000D\\u0020-\\u00FF]+"),
+  ).optional(),
+  CertificateChain: z.string().min(1).max(2097152).regex(
+    new RegExp("[\\u0009\\u000A\\u000D\\u0020-\\u00FF]+"),
+  ).optional(),
+  ServerCertificateName: z.string().min(1).max(128).regex(
+    new RegExp("[\\w+=,.@-]+"),
+  ).optional(),
+  Path: z.string().min(1).max(512).regex(
+    new RegExp("(\\u002F)|(\\u002F[\\u0021-\\u007F]+\\u002F)"),
+  ).optional(),
+  PrivateKey: z.string().min(1).max(16384).regex(
+    new RegExp("[\\u0009\\u000A\\u000D\\u0020-\\u00FF]+"),
+  ).optional(),
+  Tags: z.array(TagSchema).optional(),
+});
+
+export const model = {
+  type: "@swamp/aws/iam/server-certificate",
+  version: "2026.03.19.1",
+  globalArguments: GlobalArgsSchema,
+  inputsSchema: InputsSchema,
+  resources: {
+    state: {
+      description: "IAM ServerCertificate resource state",
+      schema: StateSchema,
+      lifetime: "infinite",
+      garbageCollection: 10,
+    },
+  },
+  methods: {
+    create: {
+      description: "Create a IAM ServerCertificate",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const desiredState: Record<string, unknown> = {};
+        for (const [key, value] of Object.entries(g)) {
+          if (value !== undefined) desiredState[key] = value;
+        }
+        const result = await createResource(
+          "AWS::IAM::ServerCertificate",
+          desiredState,
+        ) as StateData;
+        const instanceName =
+          (result.ServerCertificateName ?? g.ServerCertificateName)
+            ?.toString() ?? "current";
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    get: {
+      description: "Get a IAM ServerCertificate",
+      arguments: z.object({
+        identifier: z.string().describe(
+          "The primary identifier of the IAM ServerCertificate",
+        ),
+      }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const result = await readResource(
+          "AWS::IAM::ServerCertificate",
+          args.identifier,
+        ) as StateData;
+        const instanceName = (result.ServerCertificateName ??
+          context.globalArgs.ServerCertificateName)?.toString() ??
+          args.identifier;
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    update: {
+      description: "Update a IAM ServerCertificate",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const instanceName = g.ServerCertificateName?.toString() ?? "current";
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          instanceName,
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        const identifier = existing.ServerCertificateName?.toString();
+        if (!identifier) {
+          throw new Error("No identifier found in existing state");
+        }
+        const currentState = await readResource(
+          "AWS::IAM::ServerCertificate",
+          identifier,
+        ) as StateData;
+        const desiredState: Record<string, unknown> = { ...currentState };
+        for (const [key, value] of Object.entries(g)) {
+          if (value !== undefined) desiredState[key] = value;
+        }
+        const result = await updateResource(
+          "AWS::IAM::ServerCertificate",
+          identifier,
+          currentState,
+          desiredState,
+          [
+            "ServerCertificateName",
+            "PrivateKey",
+            "CertificateBody",
+            "CertificateChain",
+          ],
+        );
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    delete: {
+      description: "Delete a IAM ServerCertificate",
+      arguments: z.object({
+        identifier: z.string().describe(
+          "The primary identifier of the IAM ServerCertificate",
+        ),
+      }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const { existed } = await deleteResource(
+          "AWS::IAM::ServerCertificate",
+          args.identifier,
+        );
+        const instanceName =
+          context.globalArgs.ServerCertificateName?.toString() ??
+            args.identifier;
+        const handle = await context.writeResource("state", instanceName, {
+          identifier: args.identifier,
+          existed,
+          status: existed ? "deleted" : "not_found",
+          deletedAt: new Date().toISOString(),
+        });
+        return { dataHandles: [handle] };
+      },
+    },
+    sync: {
+      description: "Sync IAM ServerCertificate state from AWS",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const instanceName = g.ServerCertificateName?.toString() ?? "current";
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          instanceName,
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        const identifier = existing.ServerCertificateName?.toString();
+        if (!identifier) {
+          throw new Error("No identifier found in existing state");
+        }
+        try {
+          const result = await readResource(
+            "AWS::IAM::ServerCertificate",
+            identifier,
+          ) as StateData;
+          const handle = await context.writeResource(
+            "state",
+            instanceName,
+            result,
+          );
+          return { dataHandles: [handle] };
+        } catch (error: unknown) {
+          if (isResourceNotFoundError(error)) {
+            const handle = await context.writeResource("state", instanceName, {
+              identifier,
+              status: "not_found",
+              syncedAt: new Date().toISOString(),
+            });
+            return { dataHandles: [handle] };
+          }
+          throw error;
+        }
+      },
+    },
+  },
+};

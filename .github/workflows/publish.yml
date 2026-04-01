@@ -8,35 +8,23 @@ jobs:
   detect-changes:
     name: Detect changed extensions
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     outputs:
       extensions: ${{ steps.changes.outputs.extensions }}
     steps:
       - uses: actions/checkout@v6
         with:
-          fetch-depth: 0
+          fetch-depth: 2
       - id: changes
-        name: Find extensions with changes
+        name: Find changed manifests
         run: |
-          # Compare against the previous commit on main
-          if [ "${{ github.event.before }}" = "0000000000000000000000000000000000000000" ]; then
-            # First push to branch — compare against parent
-            CHANGED_FILES=$(git diff --name-only HEAD~1 HEAD)
-          else
-            CHANGED_FILES=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }})
-          fi
-
-          echo "Changed files:"
-          echo "$CHANGED_FILES"
-
           EXTENSIONS="[]"
 
-          # Find all extension directories (those containing a manifest.yaml)
-          for manifest in $(find . -name "manifest.yaml" -not -path "./.git/*"); do
-            dir=$(dirname "$manifest" | sed 's|^\./||')
-            if echo "$CHANGED_FILES" | grep -q "^${dir}/"; then
-              EXTENSIONS=$(echo "$EXTENSIONS" | jq -c ". + [\"${dir}\"]")
-              echo "Extension changed: ${dir}"
-            fi
+          for manifest in $(git diff --name-only HEAD~1 HEAD -- '*/manifest.yaml'); do
+            dir=$(dirname "$manifest")
+            EXTENSIONS=$(echo "$EXTENSIONS" | jq -c --arg d "$dir" '. + [$d]')
+            echo "Changed: ${dir}"
           done
 
           echo "extensions=$EXTENSIONS" >> "$GITHUB_OUTPUT"
@@ -47,6 +35,8 @@ jobs:
     needs: detect-changes
     if: needs.detect-changes.outputs.extensions != '[]'
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     strategy:
       fail-fast: false
       matrix:
@@ -56,29 +46,23 @@ jobs:
       - uses: systeminit/setup-swamp@v0.1.0
         with:
           api-key: ${{ secrets.SWAMP_API_KEY }}
-      - name: Check if version already published
-        id: version-check
+      - name: Publish extension
         working-directory: ${{ matrix.extension }}
         run: |
-          # Extract local version and extension name from manifest
-          LOCAL_VERSION=$(grep '^version:' manifest.yaml | sed 's/version: *"\{0,1\}\([^"]*\)"\{0,1\}/\1/')
-          EXTENSION_NAME=$(grep '^name:' manifest.yaml | sed 's/name: *"\{0,1\}\([^"]*\)"\{0,1\}/\1/')
+          NAME=$(grep '^name:' manifest.yaml | sed 's/name: *"\(.*\)"/\1/')
+          LOCAL=$(grep '^version:' manifest.yaml | sed 's/version: *"\(.*\)"/\1/')
+          UPSTREAM=$(swamp extension version "$NAME" --json 2>/dev/null | jq -r '.currentPublished // empty' || true)
 
-          # Query the registry for the latest published version
-          VERSION_JSON=$(swamp extension version "$EXTENSION_NAME" --json 2>&1) || true
-          UPSTREAM_VERSION=$(echo "$VERSION_JSON" | jq -r '.currentPublished // empty' 2>/dev/null || true)
-
-          echo "Extension: $EXTENSION_NAME"
-          echo "Local version: $LOCAL_VERSION"
-          echo "Upstream version: $UPSTREAM_VERSION"
-
-          if [ "$LOCAL_VERSION" = "$UPSTREAM_VERSION" ]; then
-            echo "Version $LOCAL_VERSION already published — skipping"
-            echo "skip=true" >> "$GITHUB_OUTPUT"
-          else
-            echo "skip=false" >> "$GITHUB_OUTPUT"
+          if [ "$LOCAL" = "$UPSTREAM" ]; then
+            echo "Version $LOCAL already published — skipping"
+            exit 0
           fi
-      - name: Publish extension
-        if: steps.version-check.outputs.skip != 'true'
-        working-directory: ${{ matrix.extension }}
-        run: swamp extension push manifest.yaml
+
+          echo "Publishing $NAME ($LOCAL)"
+          swamp extension push manifest.yaml
+
+          # Rate limit when many extensions change at once (e.g. AWS regeneration)
+          TOTAL=${{ strategy.job-total }}
+          if [ "$TOTAL" -gt 10 ]; then
+            sleep 1
+          fi

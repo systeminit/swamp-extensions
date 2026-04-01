@@ -1,0 +1,29 @@
+# Auto-generated manifest. Re-generate with the appropriate deno task.
+manifestVersion: 1
+name: "@swamp/aws/iam"
+version: "2026.03.19.1"
+description: "AWS IAM infrastructure models"
+labels:
+  - aws
+  - iam
+  - cloud
+  - infrastructure
+releaseNotes: |
+  - Updated: group, group_policy, instance_profile, managed_policy, oidcprovider, role, role_policy, samlprovider, server_certificate, service_linked_role, user, user_policy, virtual_mfadevice
+models:
+  - group.ts
+  - group_policy.ts
+  - instance_profile.ts
+  - managed_policy.ts
+  - oidcprovider.ts
+  - role.ts
+  - role_policy.ts
+  - samlprovider.ts
+  - server_certificate.ts
+  - service_linked_role.ts
+  - user.ts
+  - user_policy.ts
+  - virtual_mfadevice.ts
+additionalFiles:
+  - LICENSE.txt
+  - README.md

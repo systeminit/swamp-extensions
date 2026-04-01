@@ -1,0 +1,21 @@
+# Auto-generated manifest. Re-generate with the appropriate deno task.
+manifestVersion: 1
+name: "@swamp/aws/route53"
+version: "2026.03.19.1"
+description: "AWS ROUTE53 infrastructure models"
+labels:
+  - aws
+  - route53
+  - cloud
+  - infrastructure
+releaseNotes: |
+  - Updated: cidr_collection, dnssec, health_check, hosted_zone, key_signing_key
+models:
+  - cidr_collection.ts
+  - dnssec.ts
+  - health_check.ts
+  - hosted_zone.ts
+  - key_signing_key.ts
+additionalFiles:
+  - LICENSE.txt
+  - README.md

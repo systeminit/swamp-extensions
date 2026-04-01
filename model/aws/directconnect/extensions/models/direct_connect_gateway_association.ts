@@ -1,0 +1,253 @@
+// Auto-generated extension model for @swamp/aws/directconnect/direct-connect-gateway-association
+// Do not edit manually. Re-generate with: deno task generate:aws
+
+// deno-lint-ignore-file no-explicit-any
+
+import { z } from "zod";
+import {
+  createResource,
+  deleteResource,
+  isResourceNotFoundError,
+  readResource,
+  updateResource,
+} from "./_lib/aws.ts";
+
+const GlobalArgsSchema = z.object({
+  name: z.string().describe(
+    "Instance name for this resource (used as the unique identifier in the factory pattern)",
+  ),
+  AcceptDirectConnectGatewayAssociationProposalRoleArn: z.string().regex(
+    new RegExp("^arn:aws[a-z-]*:iam::[0-9]{12}:role/.+$"),
+  ).describe(
+    "The Amazon Resource Name (ARN) of the role to accept the Direct Connect Gateway association proposal. Needs directconnect:AcceptDirectConnectGatewayAssociationProposal permissions.",
+  ).optional(),
+  DirectConnectGatewayId: z.string().regex(
+    new RegExp(
+      "^(arn:aws[a-z-]*:directconnect::[0-9]{12}:dx-gateway/)?[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+    ),
+  ).describe("The ID or ARN of the Direct Connect gateway."),
+  AssociatedGatewayId: z.string().regex(
+    new RegExp(
+      "^((arn:aws[a-z-]*:ec2:[a-z0-9-]+:[0-9]{12}:(vpn-gateway/vgw|transit-gateway/tgw))|(vgw|tgw))-[a-zA-Z0-9]{8,32}$",
+    ),
+  ).describe(
+    "The ID or ARN of the virtual private gateway or transit gateway.",
+  ),
+  AllowedPrefixesToDirectConnectGateway: z.array(
+    z.string().regex(new RegExp("^[0-9a-fA-F:.]+/[0-9]+$")),
+  ).describe(
+    "The Amazon VPC prefixes to advertise to the Direct Connect gateway. This parameter is required when you create an association to a transit gateway.",
+  ).optional(),
+});
+
+const StateSchema = z.object({
+  AcceptDirectConnectGatewayAssociationProposalRoleArn: z.string().optional(),
+  DirectConnectGatewayId: z.string().optional(),
+  AssociatedGatewayId: z.string().optional(),
+  AllowedPrefixesToDirectConnectGateway: z.array(z.string()).optional(),
+  AssociationId: z.string(),
+}).passthrough();
+
+type StateData = z.infer<typeof StateSchema>;
+
+const InputsSchema = z.object({
+  name: z.string().optional(),
+  AcceptDirectConnectGatewayAssociationProposalRoleArn: z.string().regex(
+    new RegExp("^arn:aws[a-z-]*:iam::[0-9]{12}:role/.+$"),
+  ).describe(
+    "The Amazon Resource Name (ARN) of the role to accept the Direct Connect Gateway association proposal. Needs directconnect:AcceptDirectConnectGatewayAssociationProposal permissions.",
+  ).optional(),
+  DirectConnectGatewayId: z.string().regex(
+    new RegExp(
+      "^(arn:aws[a-z-]*:directconnect::[0-9]{12}:dx-gateway/)?[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+    ),
+  ).describe("The ID or ARN of the Direct Connect gateway.").optional(),
+  AssociatedGatewayId: z.string().regex(
+    new RegExp(
+      "^((arn:aws[a-z-]*:ec2:[a-z0-9-]+:[0-9]{12}:(vpn-gateway/vgw|transit-gateway/tgw))|(vgw|tgw))-[a-zA-Z0-9]{8,32}$",
+    ),
+  ).describe("The ID or ARN of the virtual private gateway or transit gateway.")
+    .optional(),
+  AllowedPrefixesToDirectConnectGateway: z.array(
+    z.string().regex(new RegExp("^[0-9a-fA-F:.]+/[0-9]+$")),
+  ).describe(
+    "The Amazon VPC prefixes to advertise to the Direct Connect gateway. This parameter is required when you create an association to a transit gateway.",
+  ).optional(),
+});
+
+export const model = {
+  type: "@swamp/aws/directconnect/direct-connect-gateway-association",
+  version: "2026.03.19.1",
+  globalArguments: GlobalArgsSchema,
+  inputsSchema: InputsSchema,
+  resources: {
+    state: {
+      description:
+        "DirectConnect DirectConnectGatewayAssociation resource state",
+      schema: StateSchema,
+      lifetime: "infinite",
+      garbageCollection: 10,
+    },
+  },
+  methods: {
+    create: {
+      description: "Create a DirectConnect DirectConnectGatewayAssociation",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const desiredState: Record<string, unknown> = {};
+        for (const [key, value] of Object.entries(g)) {
+          if (key === "name") continue;
+          if (value !== undefined) desiredState[key] = value;
+        }
+        const result = await createResource(
+          "AWS::DirectConnect::DirectConnectGatewayAssociation",
+          desiredState,
+        ) as StateData;
+        const instanceName = g.name?.toString() ?? "current";
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    get: {
+      description: "Get a DirectConnect DirectConnectGatewayAssociation",
+      arguments: z.object({
+        identifier: z.string().describe(
+          "The primary identifier of the DirectConnect DirectConnectGatewayAssociation",
+        ),
+      }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const result = await readResource(
+          "AWS::DirectConnect::DirectConnectGatewayAssociation",
+          args.identifier,
+        ) as StateData;
+        const instanceName = context.globalArgs.name?.toString() ??
+          args.identifier;
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    update: {
+      description: "Update a DirectConnect DirectConnectGatewayAssociation",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const instanceName = g.name?.toString() ?? "current";
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          instanceName,
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        const identifier = existing.AssociationId?.toString();
+        if (!identifier) {
+          throw new Error("No identifier found in existing state");
+        }
+        const currentState = await readResource(
+          "AWS::DirectConnect::DirectConnectGatewayAssociation",
+          identifier,
+        ) as StateData;
+        const desiredState: Record<string, unknown> = { ...currentState };
+        for (const [key, value] of Object.entries(g)) {
+          if (key === "name") continue;
+          if (value !== undefined) desiredState[key] = value;
+        }
+        const result = await updateResource(
+          "AWS::DirectConnect::DirectConnectGatewayAssociation",
+          identifier,
+          currentState,
+          desiredState,
+          [
+            "AcceptDirectConnectGatewayAssociationProposalRoleArn",
+            "AssociatedGatewayId",
+            "DirectConnectGatewayId",
+          ],
+        );
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    delete: {
+      description: "Delete a DirectConnect DirectConnectGatewayAssociation",
+      arguments: z.object({
+        identifier: z.string().describe(
+          "The primary identifier of the DirectConnect DirectConnectGatewayAssociation",
+        ),
+      }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const { existed } = await deleteResource(
+          "AWS::DirectConnect::DirectConnectGatewayAssociation",
+          args.identifier,
+        );
+        const instanceName = context.globalArgs.name?.toString() ??
+          args.identifier;
+        const handle = await context.writeResource("state", instanceName, {
+          identifier: args.identifier,
+          existed,
+          status: existed ? "deleted" : "not_found",
+          deletedAt: new Date().toISOString(),
+        });
+        return { dataHandles: [handle] };
+      },
+    },
+    sync: {
+      description:
+        "Sync DirectConnect DirectConnectGatewayAssociation state from AWS",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const instanceName = g.name?.toString() ?? "current";
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          instanceName,
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        const identifier = existing.AssociationId?.toString();
+        if (!identifier) {
+          throw new Error("No identifier found in existing state");
+        }
+        try {
+          const result = await readResource(
+            "AWS::DirectConnect::DirectConnectGatewayAssociation",
+            identifier,
+          ) as StateData;
+          const handle = await context.writeResource(
+            "state",
+            instanceName,
+            result,
+          );
+          return { dataHandles: [handle] };
+        } catch (error: unknown) {
+          if (isResourceNotFoundError(error)) {
+            const handle = await context.writeResource("state", instanceName, {
+              identifier,
+              status: "not_found",
+              syncedAt: new Date().toISOString(),
+            });
+            return { dataHandles: [handle] };
+          }
+          throw error;
+        }
+      },
+    },
+  },
+};

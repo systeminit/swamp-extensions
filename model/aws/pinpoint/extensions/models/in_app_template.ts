@@ -1,0 +1,270 @@
+// Auto-generated extension model for @swamp/aws/pinpoint/in-app-template
+// Do not edit manually. Re-generate with: deno task generate:aws
+
+// deno-lint-ignore-file no-explicit-any
+
+import { z } from "zod";
+import {
+  createResource,
+  deleteResource,
+  isResourceNotFoundError,
+  readResource,
+  updateResource,
+} from "./_lib/aws.ts";
+
+export const BodyConfigSchema = z.object({
+  Alignment: z.enum(["LEFT", "CENTER", "RIGHT"]).optional(),
+  Body: z.string().optional(),
+  TextColor: z.string().optional(),
+});
+
+export const HeaderConfigSchema = z.object({
+  Alignment: z.enum(["LEFT", "CENTER", "RIGHT"]).optional(),
+  Header: z.string().optional(),
+  TextColor: z.string().optional(),
+});
+
+export const OverrideButtonConfigurationSchema = z.object({
+  ButtonAction: z.enum(["LINK", "DEEP_LINK", "CLOSE"]).optional(),
+  Link: z.string().optional(),
+});
+
+export const DefaultButtonConfigurationSchema = z.object({
+  BackgroundColor: z.string().optional(),
+  BorderRadius: z.number().int().optional(),
+  ButtonAction: z.enum(["LINK", "DEEP_LINK", "CLOSE"]).optional(),
+  Link: z.string().optional(),
+  Text: z.string().optional(),
+  TextColor: z.string().optional(),
+});
+
+export const ButtonConfigSchema = z.object({
+  Android: OverrideButtonConfigurationSchema.optional(),
+  DefaultConfig: DefaultButtonConfigurationSchema.optional(),
+  IOS: OverrideButtonConfigurationSchema.optional(),
+  Web: OverrideButtonConfigurationSchema.optional(),
+});
+
+export const InAppMessageContentSchema = z.object({
+  BackgroundColor: z.string().optional(),
+  BodyConfig: BodyConfigSchema.optional(),
+  HeaderConfig: HeaderConfigSchema.optional(),
+  ImageUrl: z.string().optional(),
+  PrimaryBtn: ButtonConfigSchema.optional(),
+  SecondaryBtn: ButtonConfigSchema.optional(),
+});
+
+const GlobalArgsSchema = z.object({
+  Content: z.array(InAppMessageContentSchema).optional(),
+  CustomConfig: z.string().optional(),
+  Layout: z.enum([
+    "BOTTOM_BANNER",
+    "TOP_BANNER",
+    "OVERLAYS",
+    "MOBILE_FEED",
+    "MIDDLE_BANNER",
+    "CAROUSEL",
+  ]).optional(),
+  Tags: z.string().optional(),
+  TemplateDescription: z.string().optional(),
+  TemplateName: z.string(),
+});
+
+const StateSchema = z.object({
+  Arn: z.string().optional(),
+  Content: z.array(InAppMessageContentSchema).optional(),
+  CustomConfig: z.string().optional(),
+  Layout: z.string().optional(),
+  Tags: z.string().optional(),
+  TemplateDescription: z.string().optional(),
+  TemplateName: z.string(),
+}).passthrough();
+
+type StateData = z.infer<typeof StateSchema>;
+
+const InputsSchema = z.object({
+  Content: z.array(InAppMessageContentSchema).optional(),
+  CustomConfig: z.string().optional(),
+  Layout: z.enum([
+    "BOTTOM_BANNER",
+    "TOP_BANNER",
+    "OVERLAYS",
+    "MOBILE_FEED",
+    "MIDDLE_BANNER",
+    "CAROUSEL",
+  ]).optional(),
+  Tags: z.string().optional(),
+  TemplateDescription: z.string().optional(),
+  TemplateName: z.string().optional(),
+});
+
+export const model = {
+  type: "@swamp/aws/pinpoint/in-app-template",
+  version: "2026.03.19.1",
+  globalArguments: GlobalArgsSchema,
+  inputsSchema: InputsSchema,
+  resources: {
+    state: {
+      description: "Pinpoint InAppTemplate resource state",
+      schema: StateSchema,
+      lifetime: "infinite",
+      garbageCollection: 10,
+    },
+  },
+  methods: {
+    create: {
+      description: "Create a Pinpoint InAppTemplate",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const desiredState: Record<string, unknown> = {};
+        for (const [key, value] of Object.entries(g)) {
+          if (value !== undefined) desiredState[key] = value;
+        }
+        const result = await createResource(
+          "AWS::Pinpoint::InAppTemplate",
+          desiredState,
+        ) as StateData;
+        const instanceName =
+          (result.TemplateName ?? g.TemplateName)?.toString() ?? "current";
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    get: {
+      description: "Get a Pinpoint InAppTemplate",
+      arguments: z.object({
+        identifier: z.string().describe(
+          "The primary identifier of the Pinpoint InAppTemplate",
+        ),
+      }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const result = await readResource(
+          "AWS::Pinpoint::InAppTemplate",
+          args.identifier,
+        ) as StateData;
+        const instanceName =
+          (result.TemplateName ?? context.globalArgs.TemplateName)
+            ?.toString() ?? args.identifier;
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    update: {
+      description: "Update a Pinpoint InAppTemplate",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const instanceName = g.TemplateName?.toString() ?? "current";
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          instanceName,
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        const identifier = existing.TemplateName?.toString();
+        if (!identifier) {
+          throw new Error("No identifier found in existing state");
+        }
+        const currentState = await readResource(
+          "AWS::Pinpoint::InAppTemplate",
+          identifier,
+        ) as StateData;
+        const desiredState: Record<string, unknown> = { ...currentState };
+        for (const [key, value] of Object.entries(g)) {
+          if (value !== undefined) desiredState[key] = value;
+        }
+        const result = await updateResource(
+          "AWS::Pinpoint::InAppTemplate",
+          identifier,
+          currentState,
+          desiredState,
+          ["TemplateName"],
+        );
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    delete: {
+      description: "Delete a Pinpoint InAppTemplate",
+      arguments: z.object({
+        identifier: z.string().describe(
+          "The primary identifier of the Pinpoint InAppTemplate",
+        ),
+      }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const { existed } = await deleteResource(
+          "AWS::Pinpoint::InAppTemplate",
+          args.identifier,
+        );
+        const instanceName = context.globalArgs.TemplateName?.toString() ??
+          args.identifier;
+        const handle = await context.writeResource("state", instanceName, {
+          identifier: args.identifier,
+          existed,
+          status: existed ? "deleted" : "not_found",
+          deletedAt: new Date().toISOString(),
+        });
+        return { dataHandles: [handle] };
+      },
+    },
+    sync: {
+      description: "Sync Pinpoint InAppTemplate state from AWS",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const instanceName = g.TemplateName?.toString() ?? "current";
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          instanceName,
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        const identifier = existing.TemplateName?.toString();
+        if (!identifier) {
+          throw new Error("No identifier found in existing state");
+        }
+        try {
+          const result = await readResource(
+            "AWS::Pinpoint::InAppTemplate",
+            identifier,
+          ) as StateData;
+          const handle = await context.writeResource(
+            "state",
+            instanceName,
+            result,
+          );
+          return { dataHandles: [handle] };
+        } catch (error: unknown) {
+          if (isResourceNotFoundError(error)) {
+            const handle = await context.writeResource("state", instanceName, {
+              identifier,
+              status: "not_found",
+              syncedAt: new Date().toISOString(),
+            });
+            return { dataHandles: [handle] };
+          }
+          throw error;
+        }
+      },
+    },
+  },
+};

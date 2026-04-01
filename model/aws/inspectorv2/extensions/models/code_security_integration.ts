@@ -1,0 +1,260 @@
+// Auto-generated extension model for @swamp/aws/inspectorv2/code-security-integration
+// Do not edit manually. Re-generate with: deno task generate:aws
+
+// deno-lint-ignore-file no-explicit-any
+
+import { z } from "zod";
+import {
+  createResource,
+  deleteResource,
+  isResourceNotFoundError,
+  readResource,
+  updateResource,
+} from "./_lib/aws.ts";
+
+export const CreateGitLabSelfManagedIntegrationDetailSchema = z.object({
+  instanceUrl: z.string().regex(
+    new RegExp("^https://[-a-zA-Z0-9()@:%_+.~#?&//=]{1,1024}$"),
+  ),
+  accessToken: z.string(),
+});
+
+export const UpdateGitLabSelfManagedIntegrationDetailSchema = z.object({
+  authCode: z.string().min(1).max(1024),
+});
+
+export const UpdateGitHubIntegrationDetailSchema = z.object({
+  code: z.string().min(1).max(1024),
+  installationId: z.string().min(1).max(1024),
+});
+
+const GlobalArgsSchema = z.object({
+  name: z.string().describe(
+    "Instance name for this resource (used as the unique identifier in the factory pattern)",
+  ),
+  Name: z.string().min(1).max(60).regex(new RegExp("^[a-zA-Z0-9-_$:.]*$"))
+    .describe("Code Security Integration name").optional(),
+  Type: z.enum(["GITLAB_SELF_MANAGED", "GITHUB"]).describe("Integration Type")
+    .optional(),
+  CreateIntegrationDetails: z.object({
+    gitlabSelfManaged: CreateGitLabSelfManagedIntegrationDetailSchema,
+  }).describe("Create Integration Details").optional(),
+  UpdateIntegrationDetails: z.object({
+    gitlabSelfManaged: UpdateGitLabSelfManagedIntegrationDetailSchema
+      .optional(),
+    github: UpdateGitHubIntegrationDetailSchema.optional(),
+  }).describe("Update Integration Details").optional(),
+  Tags: z.record(z.string(), z.string().regex(new RegExp("^.{1,255}$")))
+    .optional(),
+});
+
+const StateSchema = z.object({
+  Name: z.string().optional(),
+  Type: z.string().optional(),
+  CreateIntegrationDetails: z.object({
+    gitlabSelfManaged: CreateGitLabSelfManagedIntegrationDetailSchema,
+  }).optional(),
+  UpdateIntegrationDetails: z.object({
+    gitlabSelfManaged: UpdateGitLabSelfManagedIntegrationDetailSchema,
+    github: UpdateGitHubIntegrationDetailSchema,
+  }).optional(),
+  Status: z.string().optional(),
+  StatusReason: z.string().optional(),
+  Arn: z.string(),
+  AuthorizationUrl: z.string().optional(),
+  CreatedAt: z.string().optional(),
+  LastUpdatedAt: z.string().optional(),
+  Tags: z.record(z.string(), z.unknown()).optional(),
+}).passthrough();
+
+type StateData = z.infer<typeof StateSchema>;
+
+const InputsSchema = z.object({
+  name: z.string().optional(),
+  Name: z.string().min(1).max(60).regex(new RegExp("^[a-zA-Z0-9-_$:.]*$"))
+    .describe("Code Security Integration name").optional(),
+  Type: z.enum(["GITLAB_SELF_MANAGED", "GITHUB"]).describe("Integration Type")
+    .optional(),
+  CreateIntegrationDetails: z.object({
+    gitlabSelfManaged: CreateGitLabSelfManagedIntegrationDetailSchema
+      .optional(),
+  }).describe("Create Integration Details").optional(),
+  UpdateIntegrationDetails: z.object({
+    gitlabSelfManaged: UpdateGitLabSelfManagedIntegrationDetailSchema
+      .optional(),
+    github: UpdateGitHubIntegrationDetailSchema.optional(),
+  }).describe("Update Integration Details").optional(),
+  Tags: z.record(z.string(), z.string().regex(new RegExp("^.{1,255}$")))
+    .optional(),
+});
+
+export const model = {
+  type: "@swamp/aws/inspectorv2/code-security-integration",
+  version: "2026.03.19.1",
+  globalArguments: GlobalArgsSchema,
+  inputsSchema: InputsSchema,
+  resources: {
+    state: {
+      description: "InspectorV2 CodeSecurityIntegration resource state",
+      schema: StateSchema,
+      lifetime: "infinite",
+      garbageCollection: 10,
+    },
+  },
+  methods: {
+    create: {
+      description: "Create a InspectorV2 CodeSecurityIntegration",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const desiredState: Record<string, unknown> = {};
+        for (const [key, value] of Object.entries(g)) {
+          if (key === "name") continue;
+          if (value !== undefined) desiredState[key] = value;
+        }
+        const result = await createResource(
+          "AWS::InspectorV2::CodeSecurityIntegration",
+          desiredState,
+        ) as StateData;
+        const instanceName = g.name?.toString() ?? "current";
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    get: {
+      description: "Get a InspectorV2 CodeSecurityIntegration",
+      arguments: z.object({
+        identifier: z.string().describe(
+          "The primary identifier of the InspectorV2 CodeSecurityIntegration",
+        ),
+      }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const result = await readResource(
+          "AWS::InspectorV2::CodeSecurityIntegration",
+          args.identifier,
+        ) as StateData;
+        const instanceName = context.globalArgs.name?.toString() ??
+          args.identifier;
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    update: {
+      description: "Update a InspectorV2 CodeSecurityIntegration",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const instanceName = g.name?.toString() ?? "current";
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          instanceName,
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        const identifier = existing.Arn?.toString();
+        if (!identifier) {
+          throw new Error("No identifier found in existing state");
+        }
+        const currentState = await readResource(
+          "AWS::InspectorV2::CodeSecurityIntegration",
+          identifier,
+        ) as StateData;
+        const desiredState: Record<string, unknown> = { ...currentState };
+        for (const [key, value] of Object.entries(g)) {
+          if (key === "name") continue;
+          if (value !== undefined) desiredState[key] = value;
+        }
+        const result = await updateResource(
+          "AWS::InspectorV2::CodeSecurityIntegration",
+          identifier,
+          currentState,
+          desiredState,
+          ["CreateIntegrationDetails", "Tags"],
+        );
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    delete: {
+      description: "Delete a InspectorV2 CodeSecurityIntegration",
+      arguments: z.object({
+        identifier: z.string().describe(
+          "The primary identifier of the InspectorV2 CodeSecurityIntegration",
+        ),
+      }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const { existed } = await deleteResource(
+          "AWS::InspectorV2::CodeSecurityIntegration",
+          args.identifier,
+        );
+        const instanceName = context.globalArgs.name?.toString() ??
+          args.identifier;
+        const handle = await context.writeResource("state", instanceName, {
+          identifier: args.identifier,
+          existed,
+          status: existed ? "deleted" : "not_found",
+          deletedAt: new Date().toISOString(),
+        });
+        return { dataHandles: [handle] };
+      },
+    },
+    sync: {
+      description: "Sync InspectorV2 CodeSecurityIntegration state from AWS",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const instanceName = g.name?.toString() ?? "current";
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          instanceName,
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        const identifier = existing.Arn?.toString();
+        if (!identifier) {
+          throw new Error("No identifier found in existing state");
+        }
+        try {
+          const result = await readResource(
+            "AWS::InspectorV2::CodeSecurityIntegration",
+            identifier,
+          ) as StateData;
+          const handle = await context.writeResource(
+            "state",
+            instanceName,
+            result,
+          );
+          return { dataHandles: [handle] };
+        } catch (error: unknown) {
+          if (isResourceNotFoundError(error)) {
+            const handle = await context.writeResource("state", instanceName, {
+              identifier,
+              status: "not_found",
+              syncedAt: new Date().toISOString(),
+            });
+            return { dataHandles: [handle] };
+          }
+          throw error;
+        }
+      },
+    },
+  },
+};

@@ -1,0 +1,20 @@
+# Auto-generated manifest. Re-generate with the appropriate deno task.
+manifestVersion: 1
+name: "@swamp/aws/acmpca"
+version: "2026.03.19.1"
+description: "AWS ACMPCA infrastructure models"
+labels:
+  - aws
+  - acmpca
+  - cloud
+  - infrastructure
+releaseNotes: |
+  - Updated: certificate, certificate_authority, certificate_authority_activation, permission
+models:
+  - certificate.ts
+  - certificate_authority.ts
+  - certificate_authority_activation.ts
+  - permission.ts
+additionalFiles:
+  - LICENSE.txt
+  - README.md

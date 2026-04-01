@@ -1,0 +1,329 @@
+// Auto-generated extension model for @swamp/aws/ssmcontacts/rotation
+// Do not edit manually. Re-generate with: deno task generate:aws
+
+// deno-lint-ignore-file no-explicit-any
+
+import { z } from "zod";
+import {
+  createResource,
+  deleteResource,
+  isResourceNotFoundError,
+  readResource,
+  updateResource,
+} from "./_lib/aws.ts";
+
+export const MonthlySettingSchema = z.object({
+  DayOfMonth: z.number().int().min(1).max(31).describe(
+    "The day of the month when monthly recurring on-call rotations begin.",
+  ),
+  HandOffTime: z.string().regex(
+    new RegExp("^([0-9]|0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$"),
+  ).describe(
+    "Details about when an on-call rotation shift begins or ends. Time of the day in format HH:MM",
+  ),
+});
+
+export const WeeklySettingSchema = z.object({
+  DayOfWeek: z.enum(["MON", "TUE", "WED", "THU", "FRI", "SAT", "SUN"]).describe(
+    "The day of the week when weekly recurring on-call shift rotations begin.",
+  ),
+  HandOffTime: z.string().regex(
+    new RegExp("^([0-9]|0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$"),
+  ).describe(
+    "Details about when an on-call rotation shift begins or ends. Time of the day in format HH:MM",
+  ),
+});
+
+export const CoverageTimeSchema = z.object({
+  StartTime: z.string().regex(
+    new RegExp("^([0-9]|0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$"),
+  ).describe(
+    "Details about when an on-call rotation shift begins or ends. Time of the day in format HH:MM",
+  ),
+  EndTime: z.string().regex(
+    new RegExp("^([0-9]|0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$"),
+  ).describe(
+    "Details about when an on-call rotation shift begins or ends. Time of the day in format HH:MM",
+  ),
+});
+
+export const ShiftCoverageSchema = z.object({
+  DayOfWeek: z.enum(["MON", "TUE", "WED", "THU", "FRI", "SAT", "SUN"]).describe(
+    "The day of the week when weekly recurring on-call shift rotations begin.",
+  ),
+  CoverageTimes: z.array(CoverageTimeSchema).describe(
+    "Information about when an on-call shift begins and ends.",
+  ),
+});
+
+export const TagSchema = z.object({
+  Key: z.string().min(1).max(128).describe("The key name of the tag"),
+  Value: z.string().min(0).max(256).describe("The value for the tag."),
+});
+
+const GlobalArgsSchema = z.object({
+  name: z.string().describe(
+    "Instance name for this resource (used as the unique identifier in the factory pattern)",
+  ),
+  Name: z.string().regex(new RegExp("^[a-zA-Z0-9_]*$")).describe(
+    "Name of the Rotation",
+  ),
+  ContactIds: z.array(z.string()).describe("Members of the rotation"),
+  StartTime: z.string().regex(
+    new RegExp("^(\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2})$"),
+  ).describe("Start time of the first shift of Oncall Schedule"),
+  TimeZoneId: z.string().describe(
+    "TimeZone Identifier for the Oncall Schedule",
+  ),
+  Recurrence: z.object({
+    MonthlySettings: z.array(MonthlySettingSchema).describe(
+      "Information about on-call rotations that recur monthly.",
+    ).optional(),
+    WeeklySettings: z.array(WeeklySettingSchema).describe(
+      "Information about on-call rotations that recur weekly.",
+    ).optional(),
+    DailySettings: z.array(
+      z.string().regex(new RegExp("^([0-9]|0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$")),
+    ).describe("Information about on-call rotations that recur daily.")
+      .optional(),
+    NumberOfOnCalls: z.number().int().min(1).describe(
+      "Number of Oncalls per shift.",
+    ).optional(),
+    RecurrenceMultiplier: z.number().int().min(1).max(100).describe(
+      "The number of days, weeks, or months a single rotation lasts.",
+    ).optional(),
+    ShiftCoverages: z.array(ShiftCoverageSchema).describe(
+      "Information about the days of the week included in on-call rotation coverage.",
+    ).optional(),
+  }).describe(
+    "Information about when an on-call rotation is in effect and how long the rotation period lasts.",
+  ),
+  Tags: z.array(TagSchema).optional(),
+});
+
+const StateSchema = z.object({
+  Name: z.string().optional(),
+  ContactIds: z.array(z.string()).optional(),
+  StartTime: z.string().optional(),
+  TimeZoneId: z.string().optional(),
+  Recurrence: z.object({
+    MonthlySettings: z.array(MonthlySettingSchema),
+    WeeklySettings: z.array(WeeklySettingSchema),
+    DailySettings: z.array(z.string()),
+    NumberOfOnCalls: z.number(),
+    RecurrenceMultiplier: z.number(),
+    ShiftCoverages: z.array(ShiftCoverageSchema),
+  }).optional(),
+  Tags: z.array(TagSchema).optional(),
+  Arn: z.string(),
+}).passthrough();
+
+type StateData = z.infer<typeof StateSchema>;
+
+const InputsSchema = z.object({
+  name: z.string().optional(),
+  Name: z.string().regex(new RegExp("^[a-zA-Z0-9_]*$")).describe(
+    "Name of the Rotation",
+  ).optional(),
+  ContactIds: z.array(z.string()).describe("Members of the rotation")
+    .optional(),
+  StartTime: z.string().regex(
+    new RegExp("^(\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2})$"),
+  ).describe("Start time of the first shift of Oncall Schedule").optional(),
+  TimeZoneId: z.string().describe("TimeZone Identifier for the Oncall Schedule")
+    .optional(),
+  Recurrence: z.object({
+    MonthlySettings: z.array(MonthlySettingSchema).describe(
+      "Information about on-call rotations that recur monthly.",
+    ).optional(),
+    WeeklySettings: z.array(WeeklySettingSchema).describe(
+      "Information about on-call rotations that recur weekly.",
+    ).optional(),
+    DailySettings: z.array(
+      z.string().regex(new RegExp("^([0-9]|0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$")),
+    ).describe("Information about on-call rotations that recur daily.")
+      .optional(),
+    NumberOfOnCalls: z.number().int().min(1).describe(
+      "Number of Oncalls per shift.",
+    ).optional(),
+    RecurrenceMultiplier: z.number().int().min(1).max(100).describe(
+      "The number of days, weeks, or months a single rotation lasts.",
+    ).optional(),
+    ShiftCoverages: z.array(ShiftCoverageSchema).describe(
+      "Information about the days of the week included in on-call rotation coverage.",
+    ).optional(),
+  }).describe(
+    "Information about when an on-call rotation is in effect and how long the rotation period lasts.",
+  ).optional(),
+  Tags: z.array(TagSchema).optional(),
+});
+
+export const model = {
+  type: "@swamp/aws/ssmcontacts/rotation",
+  version: "2026.03.19.1",
+  globalArguments: GlobalArgsSchema,
+  inputsSchema: InputsSchema,
+  resources: {
+    state: {
+      description: "SSMContacts Rotation resource state",
+      schema: StateSchema,
+      lifetime: "infinite",
+      garbageCollection: 10,
+    },
+  },
+  methods: {
+    create: {
+      description: "Create a SSMContacts Rotation",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const desiredState: Record<string, unknown> = {};
+        for (const [key, value] of Object.entries(g)) {
+          if (key === "name") continue;
+          if (value !== undefined) desiredState[key] = value;
+        }
+        const result = await createResource(
+          "AWS::SSMContacts::Rotation",
+          desiredState,
+        ) as StateData;
+        const instanceName = g.name?.toString() ?? "current";
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    get: {
+      description: "Get a SSMContacts Rotation",
+      arguments: z.object({
+        identifier: z.string().describe(
+          "The primary identifier of the SSMContacts Rotation",
+        ),
+      }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const result = await readResource(
+          "AWS::SSMContacts::Rotation",
+          args.identifier,
+        ) as StateData;
+        const instanceName = context.globalArgs.name?.toString() ??
+          args.identifier;
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    update: {
+      description: "Update a SSMContacts Rotation",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const instanceName = g.name?.toString() ?? "current";
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          instanceName,
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        const identifier = existing.Arn?.toString();
+        if (!identifier) {
+          throw new Error("No identifier found in existing state");
+        }
+        const currentState = await readResource(
+          "AWS::SSMContacts::Rotation",
+          identifier,
+        ) as StateData;
+        const desiredState: Record<string, unknown> = { ...currentState };
+        for (const [key, value] of Object.entries(g)) {
+          if (key === "name") continue;
+          if (value !== undefined) desiredState[key] = value;
+        }
+        const result = await updateResource(
+          "AWS::SSMContacts::Rotation",
+          identifier,
+          currentState,
+          desiredState,
+        );
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    delete: {
+      description: "Delete a SSMContacts Rotation",
+      arguments: z.object({
+        identifier: z.string().describe(
+          "The primary identifier of the SSMContacts Rotation",
+        ),
+      }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const { existed } = await deleteResource(
+          "AWS::SSMContacts::Rotation",
+          args.identifier,
+        );
+        const instanceName = context.globalArgs.name?.toString() ??
+          args.identifier;
+        const handle = await context.writeResource("state", instanceName, {
+          identifier: args.identifier,
+          existed,
+          status: existed ? "deleted" : "not_found",
+          deletedAt: new Date().toISOString(),
+        });
+        return { dataHandles: [handle] };
+      },
+    },
+    sync: {
+      description: "Sync SSMContacts Rotation state from AWS",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const instanceName = g.name?.toString() ?? "current";
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          instanceName,
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        const identifier = existing.Arn?.toString();
+        if (!identifier) {
+          throw new Error("No identifier found in existing state");
+        }
+        try {
+          const result = await readResource(
+            "AWS::SSMContacts::Rotation",
+            identifier,
+          ) as StateData;
+          const handle = await context.writeResource(
+            "state",
+            instanceName,
+            result,
+          );
+          return { dataHandles: [handle] };
+        } catch (error: unknown) {
+          if (isResourceNotFoundError(error)) {
+            const handle = await context.writeResource("state", instanceName, {
+              identifier,
+              status: "not_found",
+              syncedAt: new Date().toISOString(),
+            });
+            return { dataHandles: [handle] };
+          }
+          throw error;
+        }
+      },
+    },
+  },
+};

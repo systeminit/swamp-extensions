@@ -1,0 +1,261 @@
+// Auto-generated extension model for @swamp/aws/bedrockagentcore/policy
+// Do not edit manually. Re-generate with: deno task generate:aws
+
+// deno-lint-ignore-file no-explicit-any
+
+import { z } from "zod";
+import {
+  createResource,
+  deleteResource,
+  isResourceNotFoundError,
+  readResource,
+  updateResource,
+} from "./_lib/aws.ts";
+
+export const CedarPolicySchema = z.object({
+  Statement: z.string().min(35).max(153600).describe(
+    "The Cedar policy statement that defines the authorization logic.",
+  ),
+});
+
+const GlobalArgsSchema = z.object({
+  name: z.string().describe(
+    "Instance name for this resource (used as the unique identifier in the factory pattern)",
+  ),
+  PolicyEngineId: z.string().min(12).max(59).regex(
+    new RegExp("^[A-Za-z][A-Za-z0-9_]*-[a-z0-9_]{10}$"),
+  ).describe("The identifier of the policy engine which contains this policy."),
+  Name: z.string().min(1).max(48).regex(new RegExp("^[A-Za-z][A-Za-z0-9_]*$"))
+    .describe(
+      "The customer-assigned immutable name for the policy. Must be unique within the policy engine.",
+    ),
+  Definition: z.object({
+    Cedar: CedarPolicySchema.describe(
+      "A Cedar policy statement within the AgentCore Policy system.",
+    ),
+  }).describe(
+    "The definition structure for policies. Encapsulates different policy formats.",
+  ),
+  Description: z.string().min(1).max(4096).describe(
+    "A human-readable description of the policy's purpose and functionality.",
+  ).optional(),
+  ValidationMode: z.enum(["FAIL_ON_ANY_FINDINGS", "IGNORE_ALL_FINDINGS"])
+    .describe(
+      "The validation mode for the policy. Determines how Cedar analyzer validation results are handled.",
+    ).optional(),
+});
+
+const StateSchema = z.object({
+  PolicyEngineId: z.string().optional(),
+  Name: z.string().optional(),
+  Definition: z.object({
+    Cedar: CedarPolicySchema,
+  }).optional(),
+  Description: z.string().optional(),
+  ValidationMode: z.string().optional(),
+  PolicyId: z.string().optional(),
+  PolicyArn: z.string(),
+  CreatedAt: z.string().optional(),
+  UpdatedAt: z.string().optional(),
+  Status: z.string().optional(),
+  StatusReasons: z.array(z.string()).optional(),
+}).passthrough();
+
+type StateData = z.infer<typeof StateSchema>;
+
+const InputsSchema = z.object({
+  name: z.string().optional(),
+  PolicyEngineId: z.string().min(12).max(59).regex(
+    new RegExp("^[A-Za-z][A-Za-z0-9_]*-[a-z0-9_]{10}$"),
+  ).describe("The identifier of the policy engine which contains this policy.")
+    .optional(),
+  Name: z.string().min(1).max(48).regex(new RegExp("^[A-Za-z][A-Za-z0-9_]*$"))
+    .describe(
+      "The customer-assigned immutable name for the policy. Must be unique within the policy engine.",
+    ).optional(),
+  Definition: z.object({
+    Cedar: CedarPolicySchema.describe(
+      "A Cedar policy statement within the AgentCore Policy system.",
+    ).optional(),
+  }).describe(
+    "The definition structure for policies. Encapsulates different policy formats.",
+  ).optional(),
+  Description: z.string().min(1).max(4096).describe(
+    "A human-readable description of the policy's purpose and functionality.",
+  ).optional(),
+  ValidationMode: z.enum(["FAIL_ON_ANY_FINDINGS", "IGNORE_ALL_FINDINGS"])
+    .describe(
+      "The validation mode for the policy. Determines how Cedar analyzer validation results are handled.",
+    ).optional(),
+});
+
+export const model = {
+  type: "@swamp/aws/bedrockagentcore/policy",
+  version: "2026.03.19.1",
+  globalArguments: GlobalArgsSchema,
+  inputsSchema: InputsSchema,
+  resources: {
+    state: {
+      description: "BedrockAgentCore Policy resource state",
+      schema: StateSchema,
+      lifetime: "infinite",
+      garbageCollection: 10,
+    },
+  },
+  methods: {
+    create: {
+      description: "Create a BedrockAgentCore Policy",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const desiredState: Record<string, unknown> = {};
+        for (const [key, value] of Object.entries(g)) {
+          if (key === "name") continue;
+          if (value !== undefined) desiredState[key] = value;
+        }
+        const result = await createResource(
+          "AWS::BedrockAgentCore::Policy",
+          desiredState,
+        ) as StateData;
+        const instanceName = g.name?.toString() ?? "current";
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    get: {
+      description: "Get a BedrockAgentCore Policy",
+      arguments: z.object({
+        identifier: z.string().describe(
+          "The primary identifier of the BedrockAgentCore Policy",
+        ),
+      }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const result = await readResource(
+          "AWS::BedrockAgentCore::Policy",
+          args.identifier,
+        ) as StateData;
+        const instanceName = context.globalArgs.name?.toString() ??
+          args.identifier;
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    update: {
+      description: "Update a BedrockAgentCore Policy",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const instanceName = g.name?.toString() ?? "current";
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          instanceName,
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        const identifier = existing.PolicyArn?.toString();
+        if (!identifier) {
+          throw new Error("No identifier found in existing state");
+        }
+        const currentState = await readResource(
+          "AWS::BedrockAgentCore::Policy",
+          identifier,
+        ) as StateData;
+        const desiredState: Record<string, unknown> = { ...currentState };
+        for (const [key, value] of Object.entries(g)) {
+          if (key === "name") continue;
+          if (value !== undefined) desiredState[key] = value;
+        }
+        const result = await updateResource(
+          "AWS::BedrockAgentCore::Policy",
+          identifier,
+          currentState,
+          desiredState,
+          ["PolicyEngineId", "Name"],
+        );
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    delete: {
+      description: "Delete a BedrockAgentCore Policy",
+      arguments: z.object({
+        identifier: z.string().describe(
+          "The primary identifier of the BedrockAgentCore Policy",
+        ),
+      }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const { existed } = await deleteResource(
+          "AWS::BedrockAgentCore::Policy",
+          args.identifier,
+        );
+        const instanceName = context.globalArgs.name?.toString() ??
+          args.identifier;
+        const handle = await context.writeResource("state", instanceName, {
+          identifier: args.identifier,
+          existed,
+          status: existed ? "deleted" : "not_found",
+          deletedAt: new Date().toISOString(),
+        });
+        return { dataHandles: [handle] };
+      },
+    },
+    sync: {
+      description: "Sync BedrockAgentCore Policy state from AWS",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const instanceName = g.name?.toString() ?? "current";
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          instanceName,
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        const identifier = existing.PolicyArn?.toString();
+        if (!identifier) {
+          throw new Error("No identifier found in existing state");
+        }
+        try {
+          const result = await readResource(
+            "AWS::BedrockAgentCore::Policy",
+            identifier,
+          ) as StateData;
+          const handle = await context.writeResource(
+            "state",
+            instanceName,
+            result,
+          );
+          return { dataHandles: [handle] };
+        } catch (error: unknown) {
+          if (isResourceNotFoundError(error)) {
+            const handle = await context.writeResource("state", instanceName, {
+              identifier,
+              status: "not_found",
+              syncedAt: new Date().toISOString(),
+            });
+            return { dataHandles: [handle] };
+          }
+          throw error;
+        }
+      },
+    },
+  },
+};

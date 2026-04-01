@@ -1,0 +1,17 @@
+# Auto-generated manifest. Re-generate with the appropriate deno task.
+manifestVersion: 1
+name: "@swamp/aws/lookoutequipment"
+version: "2026.03.19.1"
+description: "AWS LOOKOUTEQUIPMENT infrastructure models"
+labels:
+  - aws
+  - lookoutequipment
+  - cloud
+  - infrastructure
+releaseNotes: |
+  - Updated: inference_scheduler
+models:
+  - inference_scheduler.ts
+additionalFiles:
+  - LICENSE.txt
+  - README.md

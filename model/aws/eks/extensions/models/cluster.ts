@@ -1,0 +1,581 @@
+// Auto-generated extension model for @swamp/aws/eks/cluster
+// Do not edit manually. Re-generate with: deno task generate:aws
+
+// deno-lint-ignore-file no-explicit-any
+
+import { z } from "zod";
+import {
+  createResource,
+  deleteResource,
+  isResourceNotFoundError,
+  readResource,
+  updateResource,
+} from "./_lib/aws.ts";
+
+export const ProviderSchema = z.object({
+  KeyArn: z.string().describe(
+    "Amazon Resource Name (ARN) or alias of the KMS key. The KMS key must be symmetric, created in the same region as the cluster, and if the KMS key was created in a different account, the user must have access to the KMS key.",
+  ).optional(),
+});
+
+export const EncryptionConfigSchema = z.object({
+  Resources: z.array(z.string()).describe(
+    'Specifies the resources to be encrypted. The only supported value is "secrets".',
+  ).optional(),
+  Provider: ProviderSchema.describe("The encryption provider for the cluster.")
+    .optional(),
+});
+
+export const ElasticLoadBalancingSchema = z.object({
+  Enabled: z.boolean().describe("Todo: add description").optional(),
+});
+
+export const ControlPlanePlacementSchema = z.object({
+  GroupName: z.string().describe(
+    "Specify the placement group name of the control place machines for your cluster.",
+  ).optional(),
+});
+
+export const TagSchema = z.object({
+  Value: z.string().min(0).max(256).describe(
+    "The value for the tag. You can specify a value that is 0 to 256 Unicode characters in length and cannot be prefixed with aws:. You can use any of the following characters: the set of Unicode letters, digits, whitespace, _,., /, =, +, and -.",
+  ),
+  Key: z.string().min(1).max(128).describe(
+    "The key name of the tag. You can specify a value that is 1 to 128 Unicode characters in length and cannot be prefixed with aws:. You can use any of the following characters: the set of Unicode letters, digits, whitespace, _,., /, =, +, and -.",
+  ),
+});
+
+export const LoggingTypeConfigSchema = z.object({
+  Type: z.enum([
+    "api",
+    "audit",
+    "authenticator",
+    "controllerManager",
+    "scheduler",
+  ]).describe("name of the log type").optional(),
+});
+
+export const ClusterLoggingSchema = z.object({
+  EnabledTypes: z.array(LoggingTypeConfigSchema).describe(
+    "Enable control plane logs for your cluster, all log types will be disabled if the array is empty",
+  ).optional(),
+});
+
+export const BlockStorageSchema = z.object({
+  Enabled: z.boolean().describe("Todo: add description").optional(),
+});
+
+export const RemoteNodeNetworkSchema = z.object({
+  Cidrs: z.array(z.string()).describe(
+    "Specifies the list of remote node CIDRs.",
+  ),
+});
+
+export const RemotePodNetworkSchema = z.object({
+  Cidrs: z.array(z.string()).describe(
+    "Specifies the list of remote pod CIDRs.",
+  ),
+});
+
+const GlobalArgsSchema = z.object({
+  Force: z.boolean().describe("Force cluster version update").optional(),
+  AccessConfig: z.object({
+    AuthenticationMode: z.enum(["CONFIG_MAP", "API_AND_CONFIG_MAP", "API"])
+      .describe(
+        "Specify the authentication mode that should be used to create your cluster.",
+      ).optional(),
+    BootstrapClusterCreatorAdminPermissions: z.boolean().describe(
+      "Set this value to false to avoid creating a default cluster admin Access Entry using the IAM principal used to create the cluster.",
+    ).optional(),
+  }).describe(
+    "An object representing the Access Config to use for the cluster.",
+  ).optional(),
+  EncryptionConfig: z.array(EncryptionConfigSchema).optional(),
+  KubernetesNetworkConfig: z.object({
+    ServiceIpv4Cidr: z.string().describe(
+      "The CIDR block to assign Kubernetes service IP addresses from. If you don't specify a block, Kubernetes assigns addresses from either the 10.100.0.0/16 or 172.20.0.0/16 CIDR blocks. We recommend that you specify a block that does not overlap with resources in other networks that are peered or connected to your VPC.",
+    ).optional(),
+    IpFamily: z.enum(["ipv4", "ipv6"]).describe(
+      "Ipv4 or Ipv6. You can only specify ipv6 for 1.21 and later clusters that use version 1.10.1 or later of the Amazon VPC CNI add-on",
+    ).optional(),
+    ElasticLoadBalancing: ElasticLoadBalancingSchema.describe(
+      "Todo: add description",
+    ).optional(),
+  }).describe("The Kubernetes network configuration for the cluster.")
+    .optional(),
+  Name: z.string().min(1).max(100).regex(
+    new RegExp("^[0-9A-Za-z][A-Za-z0-9\\-_]*"),
+  ).describe("The unique name to give to your cluster.").optional(),
+  Version: z.string().regex(new RegExp("1\\.\\d\\d")).describe(
+    "The desired Kubernetes version for your cluster. If you don't specify a value here, the latest version available in Amazon EKS is used.",
+  ).optional(),
+  ControlPlaneScalingConfig: z.object({
+    Tier: z.enum([
+      "standard",
+      "tier-xl",
+      "tier-2xl",
+      "tier-4xl",
+      "tier-8xl",
+      "tier-ultra",
+    ]).describe("The scaling tier for the provisioned control plane.")
+      .optional(),
+  }).describe("Configuration for provisioned control plane scaling.")
+    .optional(),
+  OutpostConfig: z.object({
+    OutpostArns: z.array(z.string()).describe(
+      "Specify one or more Arn(s) of Outpost(s) on which you would like to create your cluster.",
+    ),
+    ControlPlanePlacement: ControlPlanePlacementSchema.describe(
+      "Specify the placement group of the control plane machines for your cluster.",
+    ).optional(),
+    ControlPlaneInstanceType: z.string().describe(
+      "Specify the Instance type of the machines that should be used to create your cluster.",
+    ),
+  }).describe(
+    "An object representing the Outpost configuration to use for AWS EKS outpost cluster.",
+  ).optional(),
+  Tags: z.array(TagSchema).describe(
+    "An array of key-value pairs to apply to this resource.",
+  ).optional(),
+  Logging: z.object({
+    ClusterLogging: ClusterLoggingSchema.describe(
+      "The cluster control plane logging configuration for your cluster.",
+    ).optional(),
+  }).describe(
+    "Enable exporting the Kubernetes control plane logs for your cluster to CloudWatch Logs based on log types. By default, cluster control plane logs aren't exported to CloudWatch Logs.",
+  ).optional(),
+  ComputeConfig: z.object({
+    NodePools: z.array(z.string()).describe("Todo: add description").optional(),
+    NodeRoleArn: z.string().describe("Todo: add description").optional(),
+    Enabled: z.boolean().describe("Todo: add description").optional(),
+  }).describe("Todo: add description").optional(),
+  StorageConfig: z.object({
+    BlockStorage: BlockStorageSchema.describe("Todo: add description")
+      .optional(),
+  }).describe("Todo: add description").optional(),
+  BootstrapSelfManagedAddons: z.boolean().describe(
+    "Set this value to false to avoid creating the default networking add-ons when the cluster is created.",
+  ).optional(),
+  DeletionProtection: z.boolean().describe(
+    "Set this value to true to enable deletion protection for the cluster.",
+  ).optional(),
+  ZonalShiftConfig: z.object({
+    Enabled: z.boolean().describe(
+      "Set this value to true to enable zonal shift for the cluster.",
+    ).optional(),
+  }).describe("The current zonal shift configuration to use for the cluster.")
+    .optional(),
+  RoleArn: z.string().describe(
+    "The Amazon Resource Name (ARN) of the IAM role that provides permissions for the Kubernetes control plane to make calls to AWS API operations on your behalf.",
+  ),
+  UpgradePolicy: z.object({
+    SupportType: z.enum(["STANDARD", "EXTENDED"]).describe(
+      "Specify the support type for your cluster.",
+    ).optional(),
+  }).describe(
+    "An object representing the Upgrade Policy to use for the cluster.",
+  ).optional(),
+  RemoteNetworkConfig: z.object({
+    RemoteNodeNetworks: z.array(RemoteNodeNetworkSchema).describe(
+      "Network configuration of nodes run on-premises with EKS Hybrid Nodes.",
+    ).optional(),
+    RemotePodNetworks: z.array(RemotePodNetworkSchema).describe(
+      "Network configuration of pods run on-premises with EKS Hybrid Nodes.",
+    ).optional(),
+  }).describe(
+    "Configuration fields for specifying on-premises node and pod CIDRs that are external to the VPC passed during cluster creation.",
+  ).optional(),
+  ResourcesVpcConfig: z.object({
+    EndpointPublicAccess: z.boolean().describe(
+      "Set this value to false to disable public access to your cluster's Kubernetes API server endpoint. If you disable public access, your cluster's Kubernetes API server can only receive requests from within the cluster VPC. The default value for this parameter is true, which enables public access for your Kubernetes API server.",
+    ).optional(),
+    PublicAccessCidrs: z.array(z.string()).describe(
+      "The CIDR blocks that are allowed access to your cluster's public Kubernetes API server endpoint. Communication to the endpoint from addresses outside of the CIDR blocks that you specify is denied. The default value is 0.0.0.0/0. If you've disabled private endpoint access and you have nodes or AWS Fargate pods in the cluster, then ensure that you specify the necessary CIDR blocks.",
+    ).optional(),
+    EndpointPrivateAccess: z.boolean().describe(
+      "Set this value to true to enable private access for your cluster's Kubernetes API server endpoint. If you enable private access, Kubernetes API requests from within your cluster's VPC use the private VPC endpoint. The default value for this parameter is false, which disables private access for your Kubernetes API server. If you disable private access and you have nodes or AWS Fargate pods in the cluster, then ensure that publicAccessCidrs includes the necessary CIDR blocks for communication with the nodes or Fargate pods.",
+    ).optional(),
+    SecurityGroupIds: z.array(z.string()).describe(
+      "Specify one or more security groups for the cross-account elastic network interfaces that Amazon EKS creates to use to allow communication between your worker nodes and the Kubernetes control plane. If you don't specify a security group, the default security group for your VPC is used.",
+    ).optional(),
+    SubnetIds: z.array(z.string()).describe(
+      "Specify subnets for your Amazon EKS nodes. Amazon EKS creates cross-account elastic network interfaces in these subnets to allow communication between your nodes and the Kubernetes control plane.",
+    ),
+  }).describe(
+    "An object representing the VPC configuration to use for an Amazon EKS cluster.",
+  ),
+});
+
+const StateSchema = z.object({
+  Force: z.boolean().optional(),
+  AccessConfig: z.object({
+    AuthenticationMode: z.string(),
+    BootstrapClusterCreatorAdminPermissions: z.boolean(),
+  }).optional(),
+  CertificateAuthorityData: z.string().optional(),
+  EncryptionConfig: z.array(EncryptionConfigSchema).optional(),
+  KubernetesNetworkConfig: z.object({
+    ServiceIpv4Cidr: z.string(),
+    ServiceIpv6Cidr: z.string(),
+    IpFamily: z.string(),
+    ElasticLoadBalancing: ElasticLoadBalancingSchema,
+  }).optional(),
+  Name: z.string(),
+  Endpoint: z.string().optional(),
+  Version: z.string().optional(),
+  ControlPlaneScalingConfig: z.object({
+    Tier: z.string(),
+  }).optional(),
+  ClusterSecurityGroupId: z.string().optional(),
+  OutpostConfig: z.object({
+    OutpostArns: z.array(z.string()),
+    ControlPlanePlacement: ControlPlanePlacementSchema,
+    ControlPlaneInstanceType: z.string(),
+  }).optional(),
+  Tags: z.array(TagSchema).optional(),
+  OpenIdConnectIssuerUrl: z.string().optional(),
+  Logging: z.object({
+    ClusterLogging: ClusterLoggingSchema,
+  }).optional(),
+  ComputeConfig: z.object({
+    NodePools: z.array(z.string()),
+    NodeRoleArn: z.string(),
+    Enabled: z.boolean(),
+  }).optional(),
+  StorageConfig: z.object({
+    BlockStorage: BlockStorageSchema,
+  }).optional(),
+  BootstrapSelfManagedAddons: z.boolean().optional(),
+  EncryptionConfigKeyArn: z.string().optional(),
+  DeletionProtection: z.boolean().optional(),
+  ZonalShiftConfig: z.object({
+    Enabled: z.boolean(),
+  }).optional(),
+  RoleArn: z.string().optional(),
+  UpgradePolicy: z.object({
+    SupportType: z.string(),
+  }).optional(),
+  RemoteNetworkConfig: z.object({
+    RemoteNodeNetworks: z.array(RemoteNodeNetworkSchema),
+    RemotePodNetworks: z.array(RemotePodNetworkSchema),
+  }).optional(),
+  Id: z.string().optional(),
+  Arn: z.string().optional(),
+  ResourcesVpcConfig: z.object({
+    EndpointPublicAccess: z.boolean(),
+    PublicAccessCidrs: z.array(z.string()),
+    EndpointPrivateAccess: z.boolean(),
+    SecurityGroupIds: z.array(z.string()),
+    SubnetIds: z.array(z.string()),
+  }).optional(),
+}).passthrough();
+
+type StateData = z.infer<typeof StateSchema>;
+
+const InputsSchema = z.object({
+  Force: z.boolean().describe("Force cluster version update").optional(),
+  AccessConfig: z.object({
+    AuthenticationMode: z.enum(["CONFIG_MAP", "API_AND_CONFIG_MAP", "API"])
+      .describe(
+        "Specify the authentication mode that should be used to create your cluster.",
+      ).optional(),
+    BootstrapClusterCreatorAdminPermissions: z.boolean().describe(
+      "Set this value to false to avoid creating a default cluster admin Access Entry using the IAM principal used to create the cluster.",
+    ).optional(),
+  }).describe(
+    "An object representing the Access Config to use for the cluster.",
+  ).optional(),
+  EncryptionConfig: z.array(EncryptionConfigSchema).optional(),
+  KubernetesNetworkConfig: z.object({
+    ServiceIpv4Cidr: z.string().describe(
+      "The CIDR block to assign Kubernetes service IP addresses from. If you don't specify a block, Kubernetes assigns addresses from either the 10.100.0.0/16 or 172.20.0.0/16 CIDR blocks. We recommend that you specify a block that does not overlap with resources in other networks that are peered or connected to your VPC.",
+    ).optional(),
+    IpFamily: z.enum(["ipv4", "ipv6"]).describe(
+      "Ipv4 or Ipv6. You can only specify ipv6 for 1.21 and later clusters that use version 1.10.1 or later of the Amazon VPC CNI add-on",
+    ).optional(),
+    ElasticLoadBalancing: ElasticLoadBalancingSchema.describe(
+      "Todo: add description",
+    ).optional(),
+  }).describe("The Kubernetes network configuration for the cluster.")
+    .optional(),
+  Name: z.string().min(1).max(100).regex(
+    new RegExp("^[0-9A-Za-z][A-Za-z0-9\\-_]*"),
+  ).describe("The unique name to give to your cluster.").optional(),
+  Version: z.string().regex(new RegExp("1\\.\\d\\d")).describe(
+    "The desired Kubernetes version for your cluster. If you don't specify a value here, the latest version available in Amazon EKS is used.",
+  ).optional(),
+  ControlPlaneScalingConfig: z.object({
+    Tier: z.enum([
+      "standard",
+      "tier-xl",
+      "tier-2xl",
+      "tier-4xl",
+      "tier-8xl",
+      "tier-ultra",
+    ]).describe("The scaling tier for the provisioned control plane.")
+      .optional(),
+  }).describe("Configuration for provisioned control plane scaling.")
+    .optional(),
+  OutpostConfig: z.object({
+    OutpostArns: z.array(z.string()).describe(
+      "Specify one or more Arn(s) of Outpost(s) on which you would like to create your cluster.",
+    ).optional(),
+    ControlPlanePlacement: ControlPlanePlacementSchema.describe(
+      "Specify the placement group of the control plane machines for your cluster.",
+    ).optional(),
+    ControlPlaneInstanceType: z.string().describe(
+      "Specify the Instance type of the machines that should be used to create your cluster.",
+    ).optional(),
+  }).describe(
+    "An object representing the Outpost configuration to use for AWS EKS outpost cluster.",
+  ).optional(),
+  Tags: z.array(TagSchema).describe(
+    "An array of key-value pairs to apply to this resource.",
+  ).optional(),
+  Logging: z.object({
+    ClusterLogging: ClusterLoggingSchema.describe(
+      "The cluster control plane logging configuration for your cluster.",
+    ).optional(),
+  }).describe(
+    "Enable exporting the Kubernetes control plane logs for your cluster to CloudWatch Logs based on log types. By default, cluster control plane logs aren't exported to CloudWatch Logs.",
+  ).optional(),
+  ComputeConfig: z.object({
+    NodePools: z.array(z.string()).describe("Todo: add description").optional(),
+    NodeRoleArn: z.string().describe("Todo: add description").optional(),
+    Enabled: z.boolean().describe("Todo: add description").optional(),
+  }).describe("Todo: add description").optional(),
+  StorageConfig: z.object({
+    BlockStorage: BlockStorageSchema.describe("Todo: add description")
+      .optional(),
+  }).describe("Todo: add description").optional(),
+  BootstrapSelfManagedAddons: z.boolean().describe(
+    "Set this value to false to avoid creating the default networking add-ons when the cluster is created.",
+  ).optional(),
+  DeletionProtection: z.boolean().describe(
+    "Set this value to true to enable deletion protection for the cluster.",
+  ).optional(),
+  ZonalShiftConfig: z.object({
+    Enabled: z.boolean().describe(
+      "Set this value to true to enable zonal shift for the cluster.",
+    ).optional(),
+  }).describe("The current zonal shift configuration to use for the cluster.")
+    .optional(),
+  RoleArn: z.string().describe(
+    "The Amazon Resource Name (ARN) of the IAM role that provides permissions for the Kubernetes control plane to make calls to AWS API operations on your behalf.",
+  ).optional(),
+  UpgradePolicy: z.object({
+    SupportType: z.enum(["STANDARD", "EXTENDED"]).describe(
+      "Specify the support type for your cluster.",
+    ).optional(),
+  }).describe(
+    "An object representing the Upgrade Policy to use for the cluster.",
+  ).optional(),
+  RemoteNetworkConfig: z.object({
+    RemoteNodeNetworks: z.array(RemoteNodeNetworkSchema).describe(
+      "Network configuration of nodes run on-premises with EKS Hybrid Nodes.",
+    ).optional(),
+    RemotePodNetworks: z.array(RemotePodNetworkSchema).describe(
+      "Network configuration of pods run on-premises with EKS Hybrid Nodes.",
+    ).optional(),
+  }).describe(
+    "Configuration fields for specifying on-premises node and pod CIDRs that are external to the VPC passed during cluster creation.",
+  ).optional(),
+  ResourcesVpcConfig: z.object({
+    EndpointPublicAccess: z.boolean().describe(
+      "Set this value to false to disable public access to your cluster's Kubernetes API server endpoint. If you disable public access, your cluster's Kubernetes API server can only receive requests from within the cluster VPC. The default value for this parameter is true, which enables public access for your Kubernetes API server.",
+    ).optional(),
+    PublicAccessCidrs: z.array(z.string()).describe(
+      "The CIDR blocks that are allowed access to your cluster's public Kubernetes API server endpoint. Communication to the endpoint from addresses outside of the CIDR blocks that you specify is denied. The default value is 0.0.0.0/0. If you've disabled private endpoint access and you have nodes or AWS Fargate pods in the cluster, then ensure that you specify the necessary CIDR blocks.",
+    ).optional(),
+    EndpointPrivateAccess: z.boolean().describe(
+      "Set this value to true to enable private access for your cluster's Kubernetes API server endpoint. If you enable private access, Kubernetes API requests from within your cluster's VPC use the private VPC endpoint. The default value for this parameter is false, which disables private access for your Kubernetes API server. If you disable private access and you have nodes or AWS Fargate pods in the cluster, then ensure that publicAccessCidrs includes the necessary CIDR blocks for communication with the nodes or Fargate pods.",
+    ).optional(),
+    SecurityGroupIds: z.array(z.string()).describe(
+      "Specify one or more security groups for the cross-account elastic network interfaces that Amazon EKS creates to use to allow communication between your worker nodes and the Kubernetes control plane. If you don't specify a security group, the default security group for your VPC is used.",
+    ).optional(),
+    SubnetIds: z.array(z.string()).describe(
+      "Specify subnets for your Amazon EKS nodes. Amazon EKS creates cross-account elastic network interfaces in these subnets to allow communication between your nodes and the Kubernetes control plane.",
+    ).optional(),
+  }).describe(
+    "An object representing the VPC configuration to use for an Amazon EKS cluster.",
+  ).optional(),
+});
+
+export const model = {
+  type: "@swamp/aws/eks/cluster",
+  version: "2026.03.19.1",
+  globalArguments: GlobalArgsSchema,
+  inputsSchema: InputsSchema,
+  resources: {
+    state: {
+      description: "EKS Cluster resource state",
+      schema: StateSchema,
+      lifetime: "infinite",
+      garbageCollection: 10,
+    },
+  },
+  methods: {
+    create: {
+      description: "Create a EKS Cluster",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const desiredState: Record<string, unknown> = {};
+        for (const [key, value] of Object.entries(g)) {
+          if (value !== undefined) desiredState[key] = value;
+        }
+        const result = await createResource(
+          "AWS::EKS::Cluster",
+          desiredState,
+        ) as StateData;
+        const instanceName = (result.Name ?? g.Name)?.toString() ?? "current";
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    get: {
+      description: "Get a EKS Cluster",
+      arguments: z.object({
+        identifier: z.string().describe(
+          "The primary identifier of the EKS Cluster",
+        ),
+      }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const result = await readResource(
+          "AWS::EKS::Cluster",
+          args.identifier,
+        ) as StateData;
+        const instanceName =
+          (result.Name ?? context.globalArgs.Name)?.toString() ??
+            args.identifier;
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    update: {
+      description: "Update a EKS Cluster",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const instanceName = g.Name?.toString() ?? "current";
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          instanceName,
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        const identifier = existing.Name?.toString();
+        if (!identifier) {
+          throw new Error("No identifier found in existing state");
+        }
+        const currentState = await readResource(
+          "AWS::EKS::Cluster",
+          identifier,
+        ) as StateData;
+        const desiredState: Record<string, unknown> = { ...currentState };
+        for (const [key, value] of Object.entries(g)) {
+          if (value !== undefined) desiredState[key] = value;
+        }
+        const result = await updateResource(
+          "AWS::EKS::Cluster",
+          identifier,
+          currentState,
+          desiredState,
+          [
+            "OutpostConfig",
+            "EncryptionConfig",
+            "IpFamily",
+            "ServiceIpv4Cidr",
+            "BootstrapClusterCreatorAdminPermissions",
+            "Name",
+            "RoleArn",
+            "BootstrapSelfManagedAddons",
+          ],
+        );
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    delete: {
+      description: "Delete a EKS Cluster",
+      arguments: z.object({
+        identifier: z.string().describe(
+          "The primary identifier of the EKS Cluster",
+        ),
+      }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const { existed } = await deleteResource(
+          "AWS::EKS::Cluster",
+          args.identifier,
+        );
+        const instanceName = context.globalArgs.Name?.toString() ??
+          args.identifier;
+        const handle = await context.writeResource("state", instanceName, {
+          identifier: args.identifier,
+          existed,
+          status: existed ? "deleted" : "not_found",
+          deletedAt: new Date().toISOString(),
+        });
+        return { dataHandles: [handle] };
+      },
+    },
+    sync: {
+      description: "Sync EKS Cluster state from AWS",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const instanceName = g.Name?.toString() ?? "current";
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          instanceName,
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        const identifier = existing.Name?.toString();
+        if (!identifier) {
+          throw new Error("No identifier found in existing state");
+        }
+        try {
+          const result = await readResource(
+            "AWS::EKS::Cluster",
+            identifier,
+          ) as StateData;
+          const handle = await context.writeResource(
+            "state",
+            instanceName,
+            result,
+          );
+          return { dataHandles: [handle] };
+        } catch (error: unknown) {
+          if (isResourceNotFoundError(error)) {
+            const handle = await context.writeResource("state", instanceName, {
+              identifier,
+              status: "not_found",
+              syncedAt: new Date().toISOString(),
+            });
+            return { dataHandles: [handle] };
+          }
+          throw error;
+        }
+      },
+    },
+  },
+};

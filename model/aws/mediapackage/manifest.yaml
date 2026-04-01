@@ -1,0 +1,21 @@
+# Auto-generated manifest. Re-generate with the appropriate deno task.
+manifestVersion: 1
+name: "@swamp/aws/mediapackage"
+version: "2026.03.19.1"
+description: "AWS MEDIAPACKAGE infrastructure models"
+labels:
+  - aws
+  - mediapackage
+  - cloud
+  - infrastructure
+releaseNotes: |
+  - Updated: asset, channel, origin_endpoint, packaging_configuration, packaging_group
+models:
+  - asset.ts
+  - channel.ts
+  - origin_endpoint.ts
+  - packaging_configuration.ts
+  - packaging_group.ts
+additionalFiles:
+  - LICENSE.txt
+  - README.md

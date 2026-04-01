@@ -1,0 +1,504 @@
+// Auto-generated extension model for @swamp/aws/customerprofiles/segment-definition
+// Do not edit manually. Re-generate with: deno task generate:aws
+
+// deno-lint-ignore-file no-explicit-any
+
+import { z } from "zod";
+import {
+  createResource,
+  deleteResource,
+  isResourceNotFoundError,
+  readResource,
+  updateResource,
+} from "./_lib/aws.ts";
+
+export const ProfileDimensionSchema = z.object({
+  DimensionType: z.enum([
+    "INCLUSIVE",
+    "EXCLUSIVE",
+    "CONTAINS",
+    "BEGINS_WITH",
+    "ENDS_WITH",
+  ]).describe("The type of segment dimension to use for a string dimension."),
+  Values: z.array(z.string().min(1).max(255)),
+});
+
+export const ExtraLengthValueProfileDimensionSchema = z.object({
+  DimensionType: z.enum([
+    "INCLUSIVE",
+    "EXCLUSIVE",
+    "CONTAINS",
+    "BEGINS_WITH",
+    "ENDS_WITH",
+  ]).describe("The type of segment dimension to use for a string dimension."),
+  Values: z.array(z.string().min(1).max(1000)),
+});
+
+export const DateDimensionSchema = z.object({
+  DimensionType: z.enum(["BEFORE", "AFTER", "BETWEEN", "NOT_BETWEEN", "ON"])
+    .describe("The type of segment dimension to use for a date dimension."),
+  Values: z.array(z.string()),
+});
+
+export const AddressDimensionSchema = z.object({
+  City: ProfileDimensionSchema.describe(
+    "Specifies profile based criteria for a segment.",
+  ).optional(),
+  Country: ProfileDimensionSchema.describe(
+    "Specifies profile based criteria for a segment.",
+  ).optional(),
+  County: ProfileDimensionSchema.describe(
+    "Specifies profile based criteria for a segment.",
+  ).optional(),
+  PostalCode: ProfileDimensionSchema.describe(
+    "Specifies profile based criteria for a segment.",
+  ).optional(),
+  Province: ProfileDimensionSchema.describe(
+    "Specifies profile based criteria for a segment.",
+  ).optional(),
+  State: ProfileDimensionSchema.describe(
+    "Specifies profile based criteria for a segment.",
+  ).optional(),
+});
+
+export const AttributeDimensionSchema = z.object({
+  DimensionType: z.enum([
+    "INCLUSIVE",
+    "EXCLUSIVE",
+    "CONTAINS",
+    "BEGINS_WITH",
+    "ENDS_WITH",
+    "BEFORE",
+    "AFTER",
+    "BETWEEN",
+    "NOT_BETWEEN",
+    "ON",
+    "GREATER_THAN",
+    "LESS_THAN",
+    "GREATER_THAN_OR_EQUAL",
+    "LESS_THAN_OR_EQUAL",
+    "EQUAL",
+  ]).describe("The type of segment dimension to use."),
+  Values: z.array(z.string().min(1).max(255)),
+});
+
+export const ProfileTypeDimensionSchema = z.object({
+  DimensionType: z.enum(["INCLUSIVE", "EXCLUSIVE"]).describe(
+    "The type of segment dimension to use for a profile type dimension.",
+  ),
+  Values: z.array(z.enum(["ACCOUNT_PROFILE", "PROFILE"])),
+});
+
+export const ProfileAttributesSchema = z.object({
+  AccountNumber: ProfileDimensionSchema.describe(
+    "Specifies profile based criteria for a segment.",
+  ).optional(),
+  AdditionalInformation: ExtraLengthValueProfileDimensionSchema.describe(
+    "Specifies criteria for a segment using extended-length string values.",
+  ).optional(),
+  FirstName: ProfileDimensionSchema.describe(
+    "Specifies profile based criteria for a segment.",
+  ).optional(),
+  LastName: ProfileDimensionSchema.describe(
+    "Specifies profile based criteria for a segment.",
+  ).optional(),
+  MiddleName: ProfileDimensionSchema.describe(
+    "Specifies profile based criteria for a segment.",
+  ).optional(),
+  GenderString: ProfileDimensionSchema.describe(
+    "Specifies profile based criteria for a segment.",
+  ).optional(),
+  PartyTypeString: ProfileDimensionSchema.describe(
+    "Specifies profile based criteria for a segment.",
+  ).optional(),
+  BirthDate: DateDimensionSchema.describe(
+    "Specifies date based criteria for a segment.",
+  ).optional(),
+  PhoneNumber: ProfileDimensionSchema.describe(
+    "Specifies profile based criteria for a segment.",
+  ).optional(),
+  BusinessName: ProfileDimensionSchema.describe(
+    "Specifies profile based criteria for a segment.",
+  ).optional(),
+  BusinessPhoneNumber: ProfileDimensionSchema.describe(
+    "Specifies profile based criteria for a segment.",
+  ).optional(),
+  HomePhoneNumber: ProfileDimensionSchema.describe(
+    "Specifies profile based criteria for a segment.",
+  ).optional(),
+  MobilePhoneNumber: ProfileDimensionSchema.describe(
+    "Specifies profile based criteria for a segment.",
+  ).optional(),
+  EmailAddress: ProfileDimensionSchema.describe(
+    "Specifies profile based criteria for a segment.",
+  ).optional(),
+  PersonalEmailAddress: ProfileDimensionSchema.describe(
+    "Specifies profile based criteria for a segment.",
+  ).optional(),
+  BusinessEmailAddress: ProfileDimensionSchema.describe(
+    "Specifies profile based criteria for a segment.",
+  ).optional(),
+  Address: AddressDimensionSchema.describe(
+    "The address based criteria for the segment.",
+  ).optional(),
+  ShippingAddress: AddressDimensionSchema.describe(
+    "The address based criteria for the segment.",
+  ).optional(),
+  MailingAddress: AddressDimensionSchema.describe(
+    "The address based criteria for the segment.",
+  ).optional(),
+  BillingAddress: AddressDimensionSchema.describe(
+    "The address based criteria for the segment.",
+  ).optional(),
+  Attributes: z.record(z.string(), AttributeDimensionSchema).describe(
+    "One or more custom attributes to use as criteria for the segment.",
+  ).optional(),
+  ProfileType: ProfileTypeDimensionSchema.describe(
+    "Specifies profile type based criteria for a segment.",
+  ).optional(),
+});
+
+export const RangeOverrideSchema = z.object({
+  Start: z.number().int().min(-2147483648).max(2147483647).describe(
+    "The starting point for this overridden range. Positive numbers indicate how many days in the past data should be included, and negative numbers indicate how many days in the future.",
+  ),
+  End: z.number().int().min(-2147483648).max(2147483647).describe(
+    "The ending point for this overridden range. Positive numbers indicate how many days in the past data should be included, and negative numbers indicate how many days in the future.",
+  ).optional(),
+  Unit: z.enum(["DAYS"]).describe("The unit to be applied to the range."),
+});
+
+export const ConditionOverridesSchema = z.object({
+  Range: RangeOverrideSchema.describe(
+    "Defines the range to be applied to the calculated attribute definition.",
+  ).optional(),
+});
+
+export const CalculatedAttributeDimensionSchema = z.object({
+  DimensionType: z.enum([
+    "INCLUSIVE",
+    "EXCLUSIVE",
+    "CONTAINS",
+    "BEGINS_WITH",
+    "ENDS_WITH",
+    "BEFORE",
+    "AFTER",
+    "BETWEEN",
+    "NOT_BETWEEN",
+    "ON",
+    "GREATER_THAN",
+    "LESS_THAN",
+    "GREATER_THAN_OR_EQUAL",
+    "LESS_THAN_OR_EQUAL",
+    "EQUAL",
+  ]).describe("The type of segment dimension to use."),
+  Values: z.array(z.string().min(1).max(255)),
+  ConditionOverrides: ConditionOverridesSchema.describe(
+    "Overrides the condition block within the original calculated attribute definition.",
+  ).optional(),
+});
+
+export const SourceSegmentSchema = z.object({
+  SegmentDefinitionName: z.string().min(1).max(64).regex(
+    new RegExp("^[a-zA-Z0-9_-]+$"),
+  ).optional(),
+});
+
+export const GroupSchema = z.object({
+  Dimensions: z.array(z.object({
+    ProfileAttributes: ProfileAttributesSchema.describe(
+      "Specifies the dimension settings within profile attributes for a segment.",
+    ).optional(),
+    CalculatedAttributes: z.record(
+      z.string(),
+      CalculatedAttributeDimensionSchema,
+    ).describe(
+      "One or more calculated attributes to use as criteria for the segment.",
+    ).optional(),
+  })).optional(),
+  SourceSegments: z.array(SourceSegmentSchema).optional(),
+  SourceType: z.enum(["ALL", "ANY", "NONE"]).describe(
+    "Specifies the operator on how to handle multiple groups within the same segment.",
+  ).optional(),
+  Type: z.enum(["ALL", "ANY", "NONE"]).describe(
+    "Specifies the operator on how to handle multiple groups within the same segment.",
+  ).optional(),
+});
+
+export const TagSchema = z.object({
+  Key: z.string().min(1).max(128).regex(
+    new RegExp("^(?!aws:)[a-zA-Z+-=._:/]+$"),
+  ).describe(
+    "The key name of the tag. You can specify a value that is 1 to 128 Unicode characters in length and cannot be prefixed with aws:. You can use any of the following characters: the set of Unicode letters, digits, whitespace, _,., /, =, +, and -.",
+  ),
+  Value: z.string().min(0).max(256).describe(
+    "The value for the tag. You can specify a value that is 0 to 256 Unicode characters in length and cannot be prefixed with aws:. You can use any of the following characters: the set of Unicode letters, digits, whitespace, _,., /, =, +, and -.",
+  ),
+});
+
+const GlobalArgsSchema = z.object({
+  name: z.string().describe(
+    "Instance name for this resource (used as the unique identifier in the factory pattern)",
+  ),
+  Description: z.string().min(1).max(4000).describe(
+    "The description of the segment definition.",
+  ).optional(),
+  DisplayName: z.string().min(1).max(255).describe(
+    "The display name of the segment definition.",
+  ),
+  DomainName: z.string().min(1).max(64).regex(new RegExp("^[a-zA-Z0-9_-]+$"))
+    .describe("The unique name of the domain."),
+  SegmentDefinitionName: z.string().min(1).max(64).regex(
+    new RegExp("^[a-zA-Z0-9_-]+$"),
+  ).describe("The unique name of the segment definition."),
+  SegmentGroups: z.object({
+    Groups: z.array(GroupSchema).optional(),
+    Include: z.enum(["ALL", "ANY", "NONE"]).describe(
+      "Specifies the operator on how to handle multiple groups within the same segment.",
+    ).optional(),
+  }).describe(
+    "An array that defines the set of segment criteria to evaluate when handling segment groups for the segment.",
+  ).optional(),
+  SegmentSqlQuery: z.string().min(1).max(50000).describe(
+    "The SQL query that defines the segment criteria.",
+  ).optional(),
+  Tags: z.array(TagSchema).describe(
+    "The tags used to organize, track, or control access for this resource.",
+  ).optional(),
+});
+
+const StateSchema = z.object({
+  CreatedAt: z.string().optional(),
+  Description: z.string().optional(),
+  DisplayName: z.string().optional(),
+  DomainName: z.string(),
+  SegmentDefinitionName: z.string(),
+  SegmentGroups: z.object({
+    Groups: z.array(GroupSchema),
+    Include: z.string(),
+  }).optional(),
+  SegmentSqlQuery: z.string().optional(),
+  SegmentDefinitionArn: z.string().optional(),
+  SegmentType: z.string().optional(),
+  Tags: z.array(TagSchema).optional(),
+}).passthrough();
+
+type StateData = z.infer<typeof StateSchema>;
+
+const InputsSchema = z.object({
+  name: z.string().optional(),
+  Description: z.string().min(1).max(4000).describe(
+    "The description of the segment definition.",
+  ).optional(),
+  DisplayName: z.string().min(1).max(255).describe(
+    "The display name of the segment definition.",
+  ).optional(),
+  DomainName: z.string().min(1).max(64).regex(new RegExp("^[a-zA-Z0-9_-]+$"))
+    .describe("The unique name of the domain.").optional(),
+  SegmentDefinitionName: z.string().min(1).max(64).regex(
+    new RegExp("^[a-zA-Z0-9_-]+$"),
+  ).describe("The unique name of the segment definition.").optional(),
+  SegmentGroups: z.object({
+    Groups: z.array(GroupSchema).optional(),
+    Include: z.enum(["ALL", "ANY", "NONE"]).describe(
+      "Specifies the operator on how to handle multiple groups within the same segment.",
+    ).optional(),
+  }).describe(
+    "An array that defines the set of segment criteria to evaluate when handling segment groups for the segment.",
+  ).optional(),
+  SegmentSqlQuery: z.string().min(1).max(50000).describe(
+    "The SQL query that defines the segment criteria.",
+  ).optional(),
+  Tags: z.array(TagSchema).describe(
+    "The tags used to organize, track, or control access for this resource.",
+  ).optional(),
+});
+
+export const model = {
+  type: "@swamp/aws/customerprofiles/segment-definition",
+  version: "2026.03.19.1",
+  globalArguments: GlobalArgsSchema,
+  inputsSchema: InputsSchema,
+  resources: {
+    state: {
+      description: "CustomerProfiles SegmentDefinition resource state",
+      schema: StateSchema,
+      lifetime: "infinite",
+      garbageCollection: 10,
+    },
+  },
+  methods: {
+    create: {
+      description: "Create a CustomerProfiles SegmentDefinition",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const desiredState: Record<string, unknown> = {};
+        for (const [key, value] of Object.entries(g)) {
+          if (key === "name") continue;
+          if (value !== undefined) desiredState[key] = value;
+        }
+        const result = await createResource(
+          "AWS::CustomerProfiles::SegmentDefinition",
+          desiredState,
+        ) as StateData;
+        const instanceName = g.name?.toString() ?? "current";
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    get: {
+      description: "Get a CustomerProfiles SegmentDefinition",
+      arguments: z.object({
+        identifier: z.string().describe(
+          "The primary identifier of the CustomerProfiles SegmentDefinition",
+        ),
+      }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const result = await readResource(
+          "AWS::CustomerProfiles::SegmentDefinition",
+          args.identifier,
+        ) as StateData;
+        const instanceName = context.globalArgs.name?.toString() ??
+          args.identifier;
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    update: {
+      description: "Update a CustomerProfiles SegmentDefinition",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const instanceName = g.name?.toString() ?? "current";
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          instanceName,
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        const idParts = [
+          existing.DomainName?.toString(),
+          existing.SegmentDefinitionName?.toString(),
+        ];
+        if (idParts.some((p) => !p)) {
+          throw new Error(
+            "Missing primary identifier fields in existing state",
+          );
+        }
+        const identifier = idParts.join("|");
+        const currentState = await readResource(
+          "AWS::CustomerProfiles::SegmentDefinition",
+          identifier,
+        ) as StateData;
+        const desiredState: Record<string, unknown> = { ...currentState };
+        for (const [key, value] of Object.entries(g)) {
+          if (key === "name") continue;
+          if (value !== undefined) desiredState[key] = value;
+        }
+        const result = await updateResource(
+          "AWS::CustomerProfiles::SegmentDefinition",
+          identifier,
+          currentState,
+          desiredState,
+          [
+            "DomainName",
+            "SegmentDefinitionName",
+            "DisplayName",
+            "SegmentGroups",
+            "SegmentSqlQuery",
+          ],
+        );
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    delete: {
+      description: "Delete a CustomerProfiles SegmentDefinition",
+      arguments: z.object({
+        identifier: z.string().describe(
+          "The primary identifier of the CustomerProfiles SegmentDefinition",
+        ),
+      }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const { existed } = await deleteResource(
+          "AWS::CustomerProfiles::SegmentDefinition",
+          args.identifier,
+        );
+        const instanceName = context.globalArgs.name?.toString() ??
+          args.identifier;
+        const handle = await context.writeResource("state", instanceName, {
+          identifier: args.identifier,
+          existed,
+          status: existed ? "deleted" : "not_found",
+          deletedAt: new Date().toISOString(),
+        });
+        return { dataHandles: [handle] };
+      },
+    },
+    sync: {
+      description: "Sync CustomerProfiles SegmentDefinition state from AWS",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const instanceName = g.name?.toString() ?? "current";
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          instanceName,
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        const idParts = [
+          existing.DomainName?.toString(),
+          existing.SegmentDefinitionName?.toString(),
+        ];
+        if (idParts.some((p) => !p)) {
+          throw new Error(
+            "Missing primary identifier fields in existing state",
+          );
+        }
+        const identifier = idParts.join("|");
+        try {
+          const result = await readResource(
+            "AWS::CustomerProfiles::SegmentDefinition",
+            identifier,
+          ) as StateData;
+          const handle = await context.writeResource(
+            "state",
+            instanceName,
+            result,
+          );
+          return { dataHandles: [handle] };
+        } catch (error: unknown) {
+          if (isResourceNotFoundError(error)) {
+            const handle = await context.writeResource("state", instanceName, {
+              identifier,
+              status: "not_found",
+              syncedAt: new Date().toISOString(),
+            });
+            return { dataHandles: [handle] };
+          }
+          throw error;
+        }
+      },
+    },
+  },
+};

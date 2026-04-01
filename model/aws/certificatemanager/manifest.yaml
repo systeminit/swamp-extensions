@@ -1,0 +1,17 @@
+# Auto-generated manifest. Re-generate with the appropriate deno task.
+manifestVersion: 1
+name: "@swamp/aws/certificatemanager"
+version: "2026.03.19.1"
+description: "AWS CERTIFICATEMANAGER infrastructure models"
+labels:
+  - aws
+  - certificatemanager
+  - cloud
+  - infrastructure
+releaseNotes: |
+  - Updated: account
+models:
+  - account.ts
+additionalFiles:
+  - LICENSE.txt
+  - README.md

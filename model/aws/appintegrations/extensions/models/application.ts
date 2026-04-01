@@ -1,0 +1,305 @@
+// Auto-generated extension model for @swamp/aws/appintegrations/application
+// Do not edit manually. Re-generate with: deno task generate:aws
+
+// deno-lint-ignore-file no-explicit-any
+
+import { z } from "zod";
+import {
+  createResource,
+  deleteResource,
+  isResourceNotFoundError,
+  readResource,
+  updateResource,
+} from "./_lib/aws.ts";
+
+export const ExternalUrlConfigSchema = z.object({
+  AccessUrl: z.string().min(1).max(1000).regex(new RegExp("^\\w+\\:\\/\\/.*$")),
+  ApprovedOrigins: z.array(
+    z.string().min(1).max(1000).regex(new RegExp("^\\w+\\:\\/\\/.*$")),
+  ).optional(),
+});
+
+export const TagSchema = z.object({
+  Key: z.string().min(1).max(128).regex(
+    new RegExp("^(?!aws:)[a-zA-Z+-=._:/]+$"),
+  ).describe("A key to identify the tag."),
+  Value: z.string().min(0).max(256).describe(
+    "Corresponding tag value for the key.",
+  ),
+});
+
+export const ContactHandlingSchema = z.object({
+  Scope: z.enum(["CROSS_CONTACTS", "PER_CONTACT"]),
+});
+
+const GlobalArgsSchema = z.object({
+  name: z.string().describe(
+    "Instance name for this resource (used as the unique identifier in the factory pattern)",
+  ),
+  Name: z.string().min(1).max(255).regex(
+    new RegExp("^[a-zA-Z0-9\\/\\._ \\-]+$"),
+  ).describe("The name of the application."),
+  Namespace: z.string().min(1).max(255).regex(
+    new RegExp("^[a-zA-Z0-9/\\._\\-]+$"),
+  ).describe("The namespace of the application."),
+  Description: z.string().min(1).max(1000).describe(
+    "The application description.",
+  ),
+  ApplicationSourceConfig: z.object({
+    ExternalUrlConfig: ExternalUrlConfigSchema,
+  }).describe("Application source config"),
+  Permissions: z.array(
+    z.string().min(1).max(255).regex(new RegExp("^[a-zA-Z0-9\\/\\._\\-\\*]+$")),
+  ).describe(
+    "The configuration of events or requests that the application has access to.",
+  ).optional(),
+  Tags: z.array(TagSchema).describe(
+    "The tags (keys and values) associated with the application.",
+  ).optional(),
+  IsService: z.boolean().describe("Indicates if the application is a service")
+    .optional(),
+  InitializationTimeout: z.number().int().describe(
+    "The initialization timeout in milliseconds. Required when IsService is true.",
+  ).optional(),
+  ApplicationConfig: z.object({
+    ContactHandling: ContactHandlingSchema.optional(),
+  }).describe(
+    "The application configuration. Cannot be used when IsService is true.",
+  ).optional(),
+  IframeConfig: z.object({
+    Allow: z.array(z.string()).optional(),
+    Sandbox: z.array(z.string()).optional(),
+  }).describe("The iframe configuration").optional(),
+});
+
+const StateSchema = z.object({
+  Name: z.string().optional(),
+  Id: z.string().optional(),
+  Namespace: z.string().optional(),
+  Description: z.string().optional(),
+  ApplicationArn: z.string(),
+  ApplicationSourceConfig: z.object({
+    ExternalUrlConfig: ExternalUrlConfigSchema,
+  }).optional(),
+  Permissions: z.array(z.string()).optional(),
+  Tags: z.array(TagSchema).optional(),
+  IsService: z.boolean().optional(),
+  InitializationTimeout: z.number().optional(),
+  ApplicationConfig: z.object({
+    ContactHandling: ContactHandlingSchema,
+  }).optional(),
+  IframeConfig: z.object({
+    Allow: z.array(z.string()),
+    Sandbox: z.array(z.string()),
+  }).optional(),
+}).passthrough();
+
+type StateData = z.infer<typeof StateSchema>;
+
+const InputsSchema = z.object({
+  name: z.string().optional(),
+  Name: z.string().min(1).max(255).regex(
+    new RegExp("^[a-zA-Z0-9\\/\\._ \\-]+$"),
+  ).describe("The name of the application.").optional(),
+  Namespace: z.string().min(1).max(255).regex(
+    new RegExp("^[a-zA-Z0-9/\\._\\-]+$"),
+  ).describe("The namespace of the application.").optional(),
+  Description: z.string().min(1).max(1000).describe(
+    "The application description.",
+  ).optional(),
+  ApplicationSourceConfig: z.object({
+    ExternalUrlConfig: ExternalUrlConfigSchema.optional(),
+  }).describe("Application source config").optional(),
+  Permissions: z.array(
+    z.string().min(1).max(255).regex(new RegExp("^[a-zA-Z0-9\\/\\._\\-\\*]+$")),
+  ).describe(
+    "The configuration of events or requests that the application has access to.",
+  ).optional(),
+  Tags: z.array(TagSchema).describe(
+    "The tags (keys and values) associated with the application.",
+  ).optional(),
+  IsService: z.boolean().describe("Indicates if the application is a service")
+    .optional(),
+  InitializationTimeout: z.number().int().describe(
+    "The initialization timeout in milliseconds. Required when IsService is true.",
+  ).optional(),
+  ApplicationConfig: z.object({
+    ContactHandling: ContactHandlingSchema.optional(),
+  }).describe(
+    "The application configuration. Cannot be used when IsService is true.",
+  ).optional(),
+  IframeConfig: z.object({
+    Allow: z.array(z.string()).optional(),
+    Sandbox: z.array(z.string()).optional(),
+  }).describe("The iframe configuration").optional(),
+});
+
+export const model = {
+  type: "@swamp/aws/appintegrations/application",
+  version: "2026.03.19.1",
+  globalArguments: GlobalArgsSchema,
+  inputsSchema: InputsSchema,
+  resources: {
+    state: {
+      description: "AppIntegrations Application resource state",
+      schema: StateSchema,
+      lifetime: "infinite",
+      garbageCollection: 10,
+    },
+  },
+  methods: {
+    create: {
+      description: "Create a AppIntegrations Application",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const desiredState: Record<string, unknown> = {};
+        for (const [key, value] of Object.entries(g)) {
+          if (key === "name") continue;
+          if (value !== undefined) desiredState[key] = value;
+        }
+        const result = await createResource(
+          "AWS::AppIntegrations::Application",
+          desiredState,
+        ) as StateData;
+        const instanceName = g.name?.toString() ?? "current";
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    get: {
+      description: "Get a AppIntegrations Application",
+      arguments: z.object({
+        identifier: z.string().describe(
+          "The primary identifier of the AppIntegrations Application",
+        ),
+      }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const result = await readResource(
+          "AWS::AppIntegrations::Application",
+          args.identifier,
+        ) as StateData;
+        const instanceName = context.globalArgs.name?.toString() ??
+          args.identifier;
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    update: {
+      description: "Update a AppIntegrations Application",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const instanceName = g.name?.toString() ?? "current";
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          instanceName,
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        const identifier = existing.ApplicationArn?.toString();
+        if (!identifier) {
+          throw new Error("No identifier found in existing state");
+        }
+        const currentState = await readResource(
+          "AWS::AppIntegrations::Application",
+          identifier,
+        ) as StateData;
+        const desiredState: Record<string, unknown> = { ...currentState };
+        for (const [key, value] of Object.entries(g)) {
+          if (key === "name") continue;
+          if (value !== undefined) desiredState[key] = value;
+        }
+        const result = await updateResource(
+          "AWS::AppIntegrations::Application",
+          identifier,
+          currentState,
+          desiredState,
+        );
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    delete: {
+      description: "Delete a AppIntegrations Application",
+      arguments: z.object({
+        identifier: z.string().describe(
+          "The primary identifier of the AppIntegrations Application",
+        ),
+      }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const { existed } = await deleteResource(
+          "AWS::AppIntegrations::Application",
+          args.identifier,
+        );
+        const instanceName = context.globalArgs.name?.toString() ??
+          args.identifier;
+        const handle = await context.writeResource("state", instanceName, {
+          identifier: args.identifier,
+          existed,
+          status: existed ? "deleted" : "not_found",
+          deletedAt: new Date().toISOString(),
+        });
+        return { dataHandles: [handle] };
+      },
+    },
+    sync: {
+      description: "Sync AppIntegrations Application state from AWS",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const instanceName = g.name?.toString() ?? "current";
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          instanceName,
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        const identifier = existing.ApplicationArn?.toString();
+        if (!identifier) {
+          throw new Error("No identifier found in existing state");
+        }
+        try {
+          const result = await readResource(
+            "AWS::AppIntegrations::Application",
+            identifier,
+          ) as StateData;
+          const handle = await context.writeResource(
+            "state",
+            instanceName,
+            result,
+          );
+          return { dataHandles: [handle] };
+        } catch (error: unknown) {
+          if (isResourceNotFoundError(error)) {
+            const handle = await context.writeResource("state", instanceName, {
+              identifier,
+              status: "not_found",
+              syncedAt: new Date().toISOString(),
+            });
+            return { dataHandles: [handle] };
+          }
+          throw error;
+        }
+      },
+    },
+  },
+};

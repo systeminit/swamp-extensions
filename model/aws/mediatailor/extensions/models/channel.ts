@@ -1,0 +1,310 @@
+// Auto-generated extension model for @swamp/aws/mediatailor/channel
+// Do not edit manually. Re-generate with: deno task generate:aws
+
+// deno-lint-ignore-file no-explicit-any
+
+import { z } from "zod";
+import {
+  createResource,
+  deleteResource,
+  isResourceNotFoundError,
+  readResource,
+  updateResource,
+} from "./_lib/aws.ts";
+
+export const DashPlaylistSettingsSchema = z.object({
+  ManifestWindowSeconds: z.number().describe(
+    "The total duration (in seconds) of each manifest. Minimum value: 30 seconds. Maximum value: 3600 seconds.",
+  ).optional(),
+  MinBufferTimeSeconds: z.number().describe(
+    "Minimum amount of content (measured in seconds) that a player must keep available in the buffer. Minimum value: 2 seconds. Maximum value: 60 seconds.",
+  ).optional(),
+  MinUpdatePeriodSeconds: z.number().describe(
+    "Minimum amount of time (in seconds) that the player should wait before requesting updates to the manifest. Minimum value: 2 seconds. Maximum value: 60 seconds.",
+  ).optional(),
+  SuggestedPresentationDelaySeconds: z.number().describe(
+    "Amount of time (in seconds) that the player should be from the live point at the end of the manifest. Minimum value: 2 seconds. Maximum value: 60 seconds.",
+  ).optional(),
+});
+
+export const HlsPlaylistSettingsSchema = z.object({
+  ManifestWindowSeconds: z.number().describe(
+    "The total duration (in seconds) of each manifest. Minimum value: 30 seconds. Maximum value: 3600 seconds.",
+  ).optional(),
+  AdMarkupType: z.array(z.enum(["DATERANGE", "SCTE35_ENHANCED"])).describe(
+    "Determines the type of SCTE 35 tags to use in ad markup. Specify DATERANGE to use DATERANGE tags (for live or VOD content). Specify SCTE35_ENHANCED to use EXT-X-CUE-OUT and EXT-X-CUE-IN tags (for VOD content only).",
+  ).optional(),
+});
+
+export const RequestOutputItemSchema = z.object({
+  DashPlaylistSettings: DashPlaylistSettingsSchema.describe(
+    "Dash manifest configuration parameters.",
+  ).optional(),
+  HlsPlaylistSettings: HlsPlaylistSettingsSchema.describe(
+    "HLS playlist configuration parameters.",
+  ).optional(),
+  ManifestName: z.string().describe(
+    "The name of the manifest for the channel. The name appears in the PlaybackUrl.",
+  ),
+  SourceGroup: z.string().describe(
+    "A string used to match which HttpPackageConfiguration is used for each VodSource.",
+  ),
+});
+
+export const TagSchema = z.object({
+  Key: z.string(),
+  Value: z.string(),
+});
+
+const GlobalArgsSchema = z.object({
+  Audiences: z.array(z.string()).describe(
+    "The list of audiences defined in channel.",
+  ).optional(),
+  ChannelName: z.string(),
+  FillerSlate: z.object({
+    SourceLocationName: z.string().describe(
+      "The name of the source location where the slate VOD source is stored.",
+    ).optional(),
+    VodSourceName: z.string().describe(
+      "The slate VOD source name. The VOD source must already exist in a source location before it can be used for slate.",
+    ).optional(),
+  }).describe("Slate VOD source configuration.").optional(),
+  LogConfiguration: z.object({
+    LogTypes: z.array(z.enum(["AS_RUN"])).describe("The log types.").optional(),
+  }).describe("The log configuration for the channel.").optional(),
+  Outputs: z.array(RequestOutputItemSchema).describe(
+    "The channel's output properties.",
+  ),
+  PlaybackMode: z.enum(["LOOP", "LINEAR"]),
+  Tags: z.array(TagSchema).describe("The tags to assign to the channel.")
+    .optional(),
+  Tier: z.enum(["BASIC", "STANDARD"]).optional(),
+  TimeShiftConfiguration: z.object({
+    MaxTimeDelaySeconds: z.number().describe(
+      "The maximum time delay for time-shifted viewing. The minimum allowed maximum time delay is 0 seconds, and the maximum allowed maximum time delay is 21600 seconds (6 hours).",
+    ),
+  }).describe("The configuration for time-shifted viewing.").optional(),
+});
+
+const StateSchema = z.object({
+  Arn: z.string().optional(),
+  Audiences: z.array(z.string()).optional(),
+  ChannelName: z.string(),
+  FillerSlate: z.object({
+    SourceLocationName: z.string(),
+    VodSourceName: z.string(),
+  }).optional(),
+  LogConfiguration: z.object({
+    LogTypes: z.array(z.string()),
+  }).optional(),
+  Outputs: z.array(RequestOutputItemSchema).optional(),
+  PlaybackMode: z.string().optional(),
+  Tags: z.array(TagSchema).optional(),
+  Tier: z.string().optional(),
+  TimeShiftConfiguration: z.object({
+    MaxTimeDelaySeconds: z.number(),
+  }).optional(),
+}).passthrough();
+
+type StateData = z.infer<typeof StateSchema>;
+
+const InputsSchema = z.object({
+  Audiences: z.array(z.string()).describe(
+    "The list of audiences defined in channel.",
+  ).optional(),
+  ChannelName: z.string().optional(),
+  FillerSlate: z.object({
+    SourceLocationName: z.string().describe(
+      "The name of the source location where the slate VOD source is stored.",
+    ).optional(),
+    VodSourceName: z.string().describe(
+      "The slate VOD source name. The VOD source must already exist in a source location before it can be used for slate.",
+    ).optional(),
+  }).describe("Slate VOD source configuration.").optional(),
+  LogConfiguration: z.object({
+    LogTypes: z.array(z.enum(["AS_RUN"])).describe("The log types.").optional(),
+  }).describe("The log configuration for the channel.").optional(),
+  Outputs: z.array(RequestOutputItemSchema).describe(
+    "The channel's output properties.",
+  ).optional(),
+  PlaybackMode: z.enum(["LOOP", "LINEAR"]).optional(),
+  Tags: z.array(TagSchema).describe("The tags to assign to the channel.")
+    .optional(),
+  Tier: z.enum(["BASIC", "STANDARD"]).optional(),
+  TimeShiftConfiguration: z.object({
+    MaxTimeDelaySeconds: z.number().describe(
+      "The maximum time delay for time-shifted viewing. The minimum allowed maximum time delay is 0 seconds, and the maximum allowed maximum time delay is 21600 seconds (6 hours).",
+    ).optional(),
+  }).describe("The configuration for time-shifted viewing.").optional(),
+});
+
+export const model = {
+  type: "@swamp/aws/mediatailor/channel",
+  version: "2026.03.19.1",
+  globalArguments: GlobalArgsSchema,
+  inputsSchema: InputsSchema,
+  resources: {
+    state: {
+      description: "MediaTailor Channel resource state",
+      schema: StateSchema,
+      lifetime: "infinite",
+      garbageCollection: 10,
+    },
+  },
+  methods: {
+    create: {
+      description: "Create a MediaTailor Channel",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const desiredState: Record<string, unknown> = {};
+        for (const [key, value] of Object.entries(g)) {
+          if (value !== undefined) desiredState[key] = value;
+        }
+        const result = await createResource(
+          "AWS::MediaTailor::Channel",
+          desiredState,
+        ) as StateData;
+        const instanceName =
+          (result.ChannelName ?? g.ChannelName)?.toString() ?? "current";
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    get: {
+      description: "Get a MediaTailor Channel",
+      arguments: z.object({
+        identifier: z.string().describe(
+          "The primary identifier of the MediaTailor Channel",
+        ),
+      }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const result = await readResource(
+          "AWS::MediaTailor::Channel",
+          args.identifier,
+        ) as StateData;
+        const instanceName =
+          (result.ChannelName ?? context.globalArgs.ChannelName)?.toString() ??
+            args.identifier;
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    update: {
+      description: "Update a MediaTailor Channel",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const instanceName = g.ChannelName?.toString() ?? "current";
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          instanceName,
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        const identifier = existing.ChannelName?.toString();
+        if (!identifier) {
+          throw new Error("No identifier found in existing state");
+        }
+        const currentState = await readResource(
+          "AWS::MediaTailor::Channel",
+          identifier,
+        ) as StateData;
+        const desiredState: Record<string, unknown> = { ...currentState };
+        for (const [key, value] of Object.entries(g)) {
+          if (value !== undefined) desiredState[key] = value;
+        }
+        const result = await updateResource(
+          "AWS::MediaTailor::Channel",
+          identifier,
+          currentState,
+          desiredState,
+          ["ChannelName", "Tier"],
+        );
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    delete: {
+      description: "Delete a MediaTailor Channel",
+      arguments: z.object({
+        identifier: z.string().describe(
+          "The primary identifier of the MediaTailor Channel",
+        ),
+      }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const { existed } = await deleteResource(
+          "AWS::MediaTailor::Channel",
+          args.identifier,
+        );
+        const instanceName = context.globalArgs.ChannelName?.toString() ??
+          args.identifier;
+        const handle = await context.writeResource("state", instanceName, {
+          identifier: args.identifier,
+          existed,
+          status: existed ? "deleted" : "not_found",
+          deletedAt: new Date().toISOString(),
+        });
+        return { dataHandles: [handle] };
+      },
+    },
+    sync: {
+      description: "Sync MediaTailor Channel state from AWS",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const instanceName = g.ChannelName?.toString() ?? "current";
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          instanceName,
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        const identifier = existing.ChannelName?.toString();
+        if (!identifier) {
+          throw new Error("No identifier found in existing state");
+        }
+        try {
+          const result = await readResource(
+            "AWS::MediaTailor::Channel",
+            identifier,
+          ) as StateData;
+          const handle = await context.writeResource(
+            "state",
+            instanceName,
+            result,
+          );
+          return { dataHandles: [handle] };
+        } catch (error: unknown) {
+          if (isResourceNotFoundError(error)) {
+            const handle = await context.writeResource("state", instanceName, {
+              identifier,
+              status: "not_found",
+              syncedAt: new Date().toISOString(),
+            });
+            return { dataHandles: [handle] };
+          }
+          throw error;
+        }
+      },
+    },
+  },
+};

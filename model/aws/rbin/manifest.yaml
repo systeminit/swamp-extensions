@@ -1,0 +1,17 @@
+# Auto-generated manifest. Re-generate with the appropriate deno task.
+manifestVersion: 1
+name: "@swamp/aws/rbin"
+version: "2026.03.19.1"
+description: "AWS RBIN infrastructure models"
+labels:
+  - aws
+  - rbin
+  - cloud
+  - infrastructure
+releaseNotes: |
+  - Updated: rule
+models:
+  - rule.ts
+additionalFiles:
+  - LICENSE.txt
+  - README.md

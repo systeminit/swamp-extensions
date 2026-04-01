@@ -1,0 +1,318 @@
+// Auto-generated extension model for @swamp/aws/frauddetector/event-type
+// Do not edit manually. Re-generate with: deno task generate:aws
+
+// deno-lint-ignore-file no-explicit-any
+
+import { z } from "zod";
+import {
+  createResource,
+  deleteResource,
+  isResourceNotFoundError,
+  readResource,
+  updateResource,
+} from "./_lib/aws.ts";
+
+export const TagSchema = z.object({
+  Key: z.string().min(1).max(128),
+  Value: z.string().min(0).max(256),
+});
+
+export const EventVariableSchema = z.object({
+  Arn: z.string().optional(),
+  Inline: z.boolean().optional(),
+  Name: z.string().optional(),
+  DataSource: z.enum(["EVENT"]).optional(),
+  DataType: z.enum(["STRING", "INTEGER", "FLOAT", "BOOLEAN"]).optional(),
+  DefaultValue: z.string().optional(),
+  VariableType: z.enum([
+    "AUTH_CODE",
+    "AVS",
+    "BILLING_ADDRESS_L1",
+    "BILLING_ADDRESS_L2",
+    "BILLING_CITY",
+    "BILLING_COUNTRY",
+    "BILLING_NAME",
+    "BILLING_PHONE",
+    "BILLING_STATE",
+    "BILLING_ZIP",
+    "CARD_BIN",
+    "CATEGORICAL",
+    "CURRENCY_CODE",
+    "EMAIL_ADDRESS",
+    "FINGERPRINT",
+    "FRAUD_LABEL",
+    "FREE_FORM_TEXT",
+    "IP_ADDRESS",
+    "NUMERIC",
+    "ORDER_ID",
+    "PAYMENT_TYPE",
+    "PHONE_NUMBER",
+    "PRICE",
+    "PRODUCT_CATEGORY",
+    "SHIPPING_ADDRESS_L1",
+    "SHIPPING_ADDRESS_L2",
+    "SHIPPING_CITY",
+    "SHIPPING_COUNTRY",
+    "SHIPPING_NAME",
+    "SHIPPING_PHONE",
+    "SHIPPING_STATE",
+    "SHIPPING_ZIP",
+    "USERAGENT",
+  ]).optional(),
+  Description: z.string().min(1).max(256).describe("The description.")
+    .optional(),
+  Tags: z.array(TagSchema).describe("Tags associated with this event type.")
+    .optional(),
+  CreatedTime: z.string().describe("The time when the event type was created.")
+    .optional(),
+  LastUpdatedTime: z.string().describe(
+    "The time when the event type was last updated.",
+  ).optional(),
+});
+
+export const LabelSchema = z.object({
+  Arn: z.string().optional(),
+  Inline: z.boolean().optional(),
+  Name: z.string().optional(),
+  Description: z.string().min(1).max(256).describe("The description.")
+    .optional(),
+  Tags: z.array(TagSchema).describe("Tags associated with this event type.")
+    .optional(),
+  CreatedTime: z.string().describe("The time when the event type was created.")
+    .optional(),
+  LastUpdatedTime: z.string().describe(
+    "The time when the event type was last updated.",
+  ).optional(),
+});
+
+export const EntityTypeSchema = z.object({
+  Arn: z.string().optional(),
+  Inline: z.boolean().optional(),
+  Name: z.string().optional(),
+  Description: z.string().min(1).max(256).describe("The description.")
+    .optional(),
+  Tags: z.array(TagSchema).describe("Tags associated with this event type.")
+    .optional(),
+  CreatedTime: z.string().describe("The time when the event type was created.")
+    .optional(),
+  LastUpdatedTime: z.string().describe(
+    "The time when the event type was last updated.",
+  ).optional(),
+});
+
+const GlobalArgsSchema = z.object({
+  name: z.string().describe(
+    "Instance name for this resource (used as the unique identifier in the factory pattern)",
+  ),
+  Name: z.string().min(1).max(64).regex(new RegExp("^[0-9a-z_-]+$")).describe(
+    "The name for the event type",
+  ),
+  Tags: z.array(TagSchema).describe("Tags associated with this event type.")
+    .optional(),
+  Description: z.string().min(1).max(128).describe(
+    "The description of the event type.",
+  ).optional(),
+  EventVariables: z.array(EventVariableSchema),
+  Labels: z.array(LabelSchema),
+  EntityTypes: z.array(EntityTypeSchema),
+});
+
+const StateSchema = z.object({
+  Name: z.string().optional(),
+  Tags: z.array(TagSchema).optional(),
+  Description: z.string().optional(),
+  EventVariables: z.array(EventVariableSchema).optional(),
+  Labels: z.array(LabelSchema).optional(),
+  EntityTypes: z.array(EntityTypeSchema).optional(),
+  Arn: z.string(),
+  CreatedTime: z.string().optional(),
+  LastUpdatedTime: z.string().optional(),
+}).passthrough();
+
+type StateData = z.infer<typeof StateSchema>;
+
+const InputsSchema = z.object({
+  name: z.string().optional(),
+  Name: z.string().min(1).max(64).regex(new RegExp("^[0-9a-z_-]+$")).describe(
+    "The name for the event type",
+  ).optional(),
+  Tags: z.array(TagSchema).describe("Tags associated with this event type.")
+    .optional(),
+  Description: z.string().min(1).max(128).describe(
+    "The description of the event type.",
+  ).optional(),
+  EventVariables: z.array(EventVariableSchema).optional(),
+  Labels: z.array(LabelSchema).optional(),
+  EntityTypes: z.array(EntityTypeSchema).optional(),
+});
+
+export const model = {
+  type: "@swamp/aws/frauddetector/event-type",
+  version: "2026.03.19.1",
+  globalArguments: GlobalArgsSchema,
+  inputsSchema: InputsSchema,
+  resources: {
+    state: {
+      description: "FraudDetector EventType resource state",
+      schema: StateSchema,
+      lifetime: "infinite",
+      garbageCollection: 10,
+    },
+  },
+  methods: {
+    create: {
+      description: "Create a FraudDetector EventType",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const desiredState: Record<string, unknown> = {};
+        for (const [key, value] of Object.entries(g)) {
+          if (key === "name") continue;
+          if (value !== undefined) desiredState[key] = value;
+        }
+        const result = await createResource(
+          "AWS::FraudDetector::EventType",
+          desiredState,
+        ) as StateData;
+        const instanceName = g.name?.toString() ?? "current";
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    get: {
+      description: "Get a FraudDetector EventType",
+      arguments: z.object({
+        identifier: z.string().describe(
+          "The primary identifier of the FraudDetector EventType",
+        ),
+      }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const result = await readResource(
+          "AWS::FraudDetector::EventType",
+          args.identifier,
+        ) as StateData;
+        const instanceName = context.globalArgs.name?.toString() ??
+          args.identifier;
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    update: {
+      description: "Update a FraudDetector EventType",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const instanceName = g.name?.toString() ?? "current";
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          instanceName,
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        const identifier = existing.Arn?.toString();
+        if (!identifier) {
+          throw new Error("No identifier found in existing state");
+        }
+        const currentState = await readResource(
+          "AWS::FraudDetector::EventType",
+          identifier,
+        ) as StateData;
+        const desiredState: Record<string, unknown> = { ...currentState };
+        for (const [key, value] of Object.entries(g)) {
+          if (key === "name") continue;
+          if (value !== undefined) desiredState[key] = value;
+        }
+        const result = await updateResource(
+          "AWS::FraudDetector::EventType",
+          identifier,
+          currentState,
+          desiredState,
+          ["Name"],
+        );
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    delete: {
+      description: "Delete a FraudDetector EventType",
+      arguments: z.object({
+        identifier: z.string().describe(
+          "The primary identifier of the FraudDetector EventType",
+        ),
+      }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const { existed } = await deleteResource(
+          "AWS::FraudDetector::EventType",
+          args.identifier,
+        );
+        const instanceName = context.globalArgs.name?.toString() ??
+          args.identifier;
+        const handle = await context.writeResource("state", instanceName, {
+          identifier: args.identifier,
+          existed,
+          status: existed ? "deleted" : "not_found",
+          deletedAt: new Date().toISOString(),
+        });
+        return { dataHandles: [handle] };
+      },
+    },
+    sync: {
+      description: "Sync FraudDetector EventType state from AWS",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const instanceName = g.name?.toString() ?? "current";
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          instanceName,
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        const identifier = existing.Arn?.toString();
+        if (!identifier) {
+          throw new Error("No identifier found in existing state");
+        }
+        try {
+          const result = await readResource(
+            "AWS::FraudDetector::EventType",
+            identifier,
+          ) as StateData;
+          const handle = await context.writeResource(
+            "state",
+            instanceName,
+            result,
+          );
+          return { dataHandles: [handle] };
+        } catch (error: unknown) {
+          if (isResourceNotFoundError(error)) {
+            const handle = await context.writeResource("state", instanceName, {
+              identifier,
+              status: "not_found",
+              syncedAt: new Date().toISOString(),
+            });
+            return { dataHandles: [handle] };
+          }
+          throw error;
+        }
+      },
+    },
+  },
+};

@@ -1,0 +1,35 @@
+# Auto-generated manifest. Re-generate with the appropriate deno task.
+manifestVersion: 1
+name: "@swamp/aws/cloudfront"
+version: "2026.03.25.1"
+description: "AWS CLOUDFRONT infrastructure models"
+labels:
+  - aws
+  - cloudfront
+  - cloud
+  - infrastructure
+releaseNotes: |
+  - Updated: anycast_ip_list, connection_function, distribution, trust_store
+models:
+  - anycast_ip_list.ts
+  - cache_policy.ts
+  - cloud_front_origin_access_identity.ts
+  - connection_function.ts
+  - connection_group.ts
+  - continuous_deployment_policy.ts
+  - distribution.ts
+  - distribution_tenant.ts
+  - function.ts
+  - key_group.ts
+  - key_value_store.ts
+  - monitoring_subscription.ts
+  - origin_access_control.ts
+  - origin_request_policy.ts
+  - public_key.ts
+  - realtime_log_config.ts
+  - response_headers_policy.ts
+  - trust_store.ts
+  - vpc_origin.ts
+additionalFiles:
+  - LICENSE.txt
+  - README.md

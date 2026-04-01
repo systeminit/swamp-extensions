@@ -1,5 +1,6 @@
 // fetch-schema command — delegates to the appropriate provider pipeline
 
+import { fetchAwsSchema } from "../aws/pipeline.ts";
 import { fetchDigitalOceanSchema } from "../digitalocean/pipeline.ts";
 import { fetchHetznerSchema } from "../hetzner/pipeline.ts";
 
@@ -12,6 +13,9 @@ export async function fetchSchema(options: {
   outputPath?: string;
 }): Promise<void> {
   switch (options.provider) {
+    case "aws":
+      await fetchAwsSchema({ outputPath: options.outputPath });
+      break;
     case "hetzner":
       await fetchHetznerSchema({ outputPath: options.outputPath });
       break;
@@ -20,7 +24,7 @@ export async function fetchSchema(options: {
       break;
     default:
       throw new Error(
-        `Unsupported provider: ${options.provider}. Supported: "hetzner", "digitalocean".`,
+        `Unsupported provider: ${options.provider}. Supported: "aws", "hetzner", "digitalocean".`,
       );
   }
 }

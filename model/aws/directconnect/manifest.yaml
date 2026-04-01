@@ -1,0 +1,23 @@
+# Auto-generated manifest. Re-generate with the appropriate deno task.
+manifestVersion: 1
+name: "@swamp/aws/directconnect"
+version: "2026.03.19.1"
+description: "AWS DIRECTCONNECT infrastructure models"
+labels:
+  - aws
+  - directconnect
+  - cloud
+  - infrastructure
+releaseNotes: |
+  - Updated: connection, direct_connect_gateway, direct_connect_gateway_association, lag, private_virtual_interface, public_virtual_interface, transit_virtual_interface
+models:
+  - connection.ts
+  - direct_connect_gateway.ts
+  - direct_connect_gateway_association.ts
+  - lag.ts
+  - private_virtual_interface.ts
+  - public_virtual_interface.ts
+  - transit_virtual_interface.ts
+additionalFiles:
+  - LICENSE.txt
+  - README.md

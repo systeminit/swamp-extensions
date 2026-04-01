@@ -1,0 +1,33 @@
+# Auto-generated manifest. Re-generate with the appropriate deno task.
+manifestVersion: 1
+name: "@swamp/aws/datazone"
+version: "2026.04.01.1"
+description: "AWS DATAZONE infrastructure models"
+labels:
+  - aws
+  - datazone
+  - cloud
+  - infrastructure
+releaseNotes: |
+  - Updated: connection, project, project_profile
+models:
+  - connection.ts
+  - data_source.ts
+  - domain.ts
+  - domain_unit.ts
+  - environment.ts
+  - environment_actions.ts
+  - environment_blueprint_configuration.ts
+  - environment_profile.ts
+  - form_type.ts
+  - group_profile.ts
+  - owner.ts
+  - policy_grant.ts
+  - project.ts
+  - project_membership.ts
+  - project_profile.ts
+  - subscription_target.ts
+  - user_profile.ts
+additionalFiles:
+  - LICENSE.txt
+  - README.md

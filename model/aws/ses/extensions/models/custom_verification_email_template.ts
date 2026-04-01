@@ -1,0 +1,249 @@
+// Auto-generated extension model for @swamp/aws/ses/custom-verification-email-template
+// Do not edit manually. Re-generate with: deno task generate:aws
+
+// deno-lint-ignore-file no-explicit-any
+
+import { z } from "zod";
+import {
+  createResource,
+  deleteResource,
+  isResourceNotFoundError,
+  readResource,
+  updateResource,
+} from "./_lib/aws.ts";
+
+export const TagSchema = z.object({
+  Key: z.string().min(1).max(128).describe("The key of the key-value tag."),
+  Value: z.string().min(0).max(256).describe("The value of the key-value tag."),
+});
+
+const GlobalArgsSchema = z.object({
+  TemplateName: z.string().min(1).max(64).describe(
+    "The name of the custom verification email template.",
+  ),
+  FromEmailAddress: z.string().describe(
+    "The email address that the custom verification email is sent from.",
+  ),
+  TemplateSubject: z.string().describe(
+    "The subject line of the custom verification email.",
+  ),
+  TemplateContent: z.string().describe(
+    "The content of the custom verification email. The total size of the email must be less than 10 MB. The message body may contain HTML, with some limitations.",
+  ),
+  SuccessRedirectionURL: z.string().describe(
+    "The URL that the recipient of the verification email is sent to if his or her address is successfully verified.",
+  ),
+  FailureRedirectionURL: z.string().describe(
+    "The URL that the recipient of the verification email is sent to if his or her address is not successfully verified.",
+  ),
+  Tags: z.array(TagSchema).describe(
+    "The tags (keys and values) associated with the tenant.",
+  ).optional(),
+});
+
+const StateSchema = z.object({
+  TemplateName: z.string(),
+  FromEmailAddress: z.string().optional(),
+  TemplateSubject: z.string().optional(),
+  TemplateContent: z.string().optional(),
+  SuccessRedirectionURL: z.string().optional(),
+  FailureRedirectionURL: z.string().optional(),
+  Tags: z.array(TagSchema).optional(),
+}).passthrough();
+
+type StateData = z.infer<typeof StateSchema>;
+
+const InputsSchema = z.object({
+  TemplateName: z.string().min(1).max(64).describe(
+    "The name of the custom verification email template.",
+  ).optional(),
+  FromEmailAddress: z.string().describe(
+    "The email address that the custom verification email is sent from.",
+  ).optional(),
+  TemplateSubject: z.string().describe(
+    "The subject line of the custom verification email.",
+  ).optional(),
+  TemplateContent: z.string().describe(
+    "The content of the custom verification email. The total size of the email must be less than 10 MB. The message body may contain HTML, with some limitations.",
+  ).optional(),
+  SuccessRedirectionURL: z.string().describe(
+    "The URL that the recipient of the verification email is sent to if his or her address is successfully verified.",
+  ).optional(),
+  FailureRedirectionURL: z.string().describe(
+    "The URL that the recipient of the verification email is sent to if his or her address is not successfully verified.",
+  ).optional(),
+  Tags: z.array(TagSchema).describe(
+    "The tags (keys and values) associated with the tenant.",
+  ).optional(),
+});
+
+export const model = {
+  type: "@swamp/aws/ses/custom-verification-email-template",
+  version: "2026.03.19.1",
+  globalArguments: GlobalArgsSchema,
+  inputsSchema: InputsSchema,
+  resources: {
+    state: {
+      description: "SES CustomVerificationEmailTemplate resource state",
+      schema: StateSchema,
+      lifetime: "infinite",
+      garbageCollection: 10,
+    },
+  },
+  methods: {
+    create: {
+      description: "Create a SES CustomVerificationEmailTemplate",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const desiredState: Record<string, unknown> = {};
+        for (const [key, value] of Object.entries(g)) {
+          if (value !== undefined) desiredState[key] = value;
+        }
+        const result = await createResource(
+          "AWS::SES::CustomVerificationEmailTemplate",
+          desiredState,
+        ) as StateData;
+        const instanceName =
+          (result.TemplateName ?? g.TemplateName)?.toString() ?? "current";
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    get: {
+      description: "Get a SES CustomVerificationEmailTemplate",
+      arguments: z.object({
+        identifier: z.string().describe(
+          "The primary identifier of the SES CustomVerificationEmailTemplate",
+        ),
+      }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const result = await readResource(
+          "AWS::SES::CustomVerificationEmailTemplate",
+          args.identifier,
+        ) as StateData;
+        const instanceName =
+          (result.TemplateName ?? context.globalArgs.TemplateName)
+            ?.toString() ?? args.identifier;
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    update: {
+      description: "Update a SES CustomVerificationEmailTemplate",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const instanceName = g.TemplateName?.toString() ?? "current";
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          instanceName,
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        const identifier = existing.TemplateName?.toString();
+        if (!identifier) {
+          throw new Error("No identifier found in existing state");
+        }
+        const currentState = await readResource(
+          "AWS::SES::CustomVerificationEmailTemplate",
+          identifier,
+        ) as StateData;
+        const desiredState: Record<string, unknown> = { ...currentState };
+        for (const [key, value] of Object.entries(g)) {
+          if (value !== undefined) desiredState[key] = value;
+        }
+        const result = await updateResource(
+          "AWS::SES::CustomVerificationEmailTemplate",
+          identifier,
+          currentState,
+          desiredState,
+          ["TemplateName"],
+        );
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    delete: {
+      description: "Delete a SES CustomVerificationEmailTemplate",
+      arguments: z.object({
+        identifier: z.string().describe(
+          "The primary identifier of the SES CustomVerificationEmailTemplate",
+        ),
+      }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const { existed } = await deleteResource(
+          "AWS::SES::CustomVerificationEmailTemplate",
+          args.identifier,
+        );
+        const instanceName = context.globalArgs.TemplateName?.toString() ??
+          args.identifier;
+        const handle = await context.writeResource("state", instanceName, {
+          identifier: args.identifier,
+          existed,
+          status: existed ? "deleted" : "not_found",
+          deletedAt: new Date().toISOString(),
+        });
+        return { dataHandles: [handle] };
+      },
+    },
+    sync: {
+      description: "Sync SES CustomVerificationEmailTemplate state from AWS",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const instanceName = g.TemplateName?.toString() ?? "current";
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          instanceName,
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        const identifier = existing.TemplateName?.toString();
+        if (!identifier) {
+          throw new Error("No identifier found in existing state");
+        }
+        try {
+          const result = await readResource(
+            "AWS::SES::CustomVerificationEmailTemplate",
+            identifier,
+          ) as StateData;
+          const handle = await context.writeResource(
+            "state",
+            instanceName,
+            result,
+          );
+          return { dataHandles: [handle] };
+        } catch (error: unknown) {
+          if (isResourceNotFoundError(error)) {
+            const handle = await context.writeResource("state", instanceName, {
+              identifier,
+              status: "not_found",
+              syncedAt: new Date().toISOString(),
+            });
+            return { dataHandles: [handle] };
+          }
+          throw error;
+        }
+      },
+    },
+  },
+};

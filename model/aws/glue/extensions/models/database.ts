@@ -1,0 +1,295 @@
+// Auto-generated extension model for @swamp/aws/glue/database
+// Do not edit manually. Re-generate with: deno task generate:aws
+
+// deno-lint-ignore-file no-explicit-any
+
+import { z } from "zod";
+import {
+  createResource,
+  deleteResource,
+  isResourceNotFoundError,
+  readResource,
+  updateResource,
+} from "./_lib/aws.ts";
+
+export const DataLakePrincipalSchema = z.object({
+  DataLakePrincipalIdentifier: z.string().describe(
+    "An identifier for the AWS Lake Formation principal.",
+  ).optional(),
+});
+
+export const PrincipalPrivilegesSchema = z.object({
+  Permissions: z.array(z.string()).describe(
+    "The permissions that are granted to the principal.",
+  ).optional(),
+  Principal: DataLakePrincipalSchema.describe(
+    "The principal who is granted permissions.",
+  ).optional(),
+});
+
+export const DatabaseIdentifierSchema = z.object({
+  DatabaseName: z.string().describe("The name of the catalog database.")
+    .optional(),
+  Region: z.string().describe("Region of the target database.").optional(),
+  CatalogId: z.string().describe(
+    "The ID of the Data Catalog in which the database resides.",
+  ).optional(),
+});
+
+export const FederatedDatabaseSchema = z.object({
+  ConnectionName: z.string().describe(
+    "The name of the connection to the external metastore.",
+  ).optional(),
+  Identifier: z.string().describe(
+    "A unique identifier for the federated database.",
+  ).optional(),
+});
+
+const GlobalArgsSchema = z.object({
+  CatalogId: z.string().describe(
+    "The AWS account ID for the account in which to create the catalog object.",
+  ),
+  DatabaseInput: z.object({
+    LocationUri: z.string().describe(
+      "The location of the database (for example, an HDFS path).",
+    ).optional(),
+    CreateTableDefaultPermissions: z.array(PrincipalPrivilegesSchema).describe(
+      "Creates a set of default permissions on the table for principals. Used by AWS Lake Formation. Not used in the normal course of AWS Glue operations.",
+    ).optional(),
+    Description: z.string().describe("A description of the database.")
+      .optional(),
+    Parameters: z.string().describe(
+      "These key-value pairs define parameters and properties of the database.",
+    ).optional(),
+    TargetDatabase: DatabaseIdentifierSchema.describe(
+      "A DatabaseIdentifier structure that describes a target database for resource linking.",
+    ).optional(),
+    FederatedDatabase: FederatedDatabaseSchema.describe(
+      "A FederatedDatabase structure that references an entity outside the AWS Glue Data Catalog.",
+    ).optional(),
+    Name: z.string().describe(
+      "The name of the database. For hive compatibility, this is folded to lowercase when it is stored.",
+    ).optional(),
+  }).describe("The metadata for the database."),
+  DatabaseName: z.string().describe(
+    "The name of the database. For hive compatibility, this is folded to lowercase when it is store.",
+  ).optional(),
+});
+
+const StateSchema = z.object({
+  CatalogId: z.string().optional(),
+  DatabaseInput: z.object({
+    LocationUri: z.string(),
+    CreateTableDefaultPermissions: z.array(PrincipalPrivilegesSchema),
+    Description: z.string(),
+    Parameters: z.string(),
+    TargetDatabase: DatabaseIdentifierSchema,
+    FederatedDatabase: FederatedDatabaseSchema,
+    Name: z.string(),
+  }).optional(),
+  DatabaseName: z.string(),
+}).passthrough();
+
+type StateData = z.infer<typeof StateSchema>;
+
+const InputsSchema = z.object({
+  CatalogId: z.string().describe(
+    "The AWS account ID for the account in which to create the catalog object.",
+  ).optional(),
+  DatabaseInput: z.object({
+    LocationUri: z.string().describe(
+      "The location of the database (for example, an HDFS path).",
+    ).optional(),
+    CreateTableDefaultPermissions: z.array(PrincipalPrivilegesSchema).describe(
+      "Creates a set of default permissions on the table for principals. Used by AWS Lake Formation. Not used in the normal course of AWS Glue operations.",
+    ).optional(),
+    Description: z.string().describe("A description of the database.")
+      .optional(),
+    Parameters: z.string().describe(
+      "These key-value pairs define parameters and properties of the database.",
+    ).optional(),
+    TargetDatabase: DatabaseIdentifierSchema.describe(
+      "A DatabaseIdentifier structure that describes a target database for resource linking.",
+    ).optional(),
+    FederatedDatabase: FederatedDatabaseSchema.describe(
+      "A FederatedDatabase structure that references an entity outside the AWS Glue Data Catalog.",
+    ).optional(),
+    Name: z.string().describe(
+      "The name of the database. For hive compatibility, this is folded to lowercase when it is stored.",
+    ).optional(),
+  }).describe("The metadata for the database.").optional(),
+  DatabaseName: z.string().describe(
+    "The name of the database. For hive compatibility, this is folded to lowercase when it is store.",
+  ).optional(),
+});
+
+export const model = {
+  type: "@swamp/aws/glue/database",
+  version: "2026.03.19.1",
+  globalArguments: GlobalArgsSchema,
+  inputsSchema: InputsSchema,
+  resources: {
+    state: {
+      description: "Glue Database resource state",
+      schema: StateSchema,
+      lifetime: "infinite",
+      garbageCollection: 10,
+    },
+  },
+  methods: {
+    create: {
+      description: "Create a Glue Database",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const desiredState: Record<string, unknown> = {};
+        for (const [key, value] of Object.entries(g)) {
+          if (value !== undefined) desiredState[key] = value;
+        }
+        const result = await createResource(
+          "AWS::Glue::Database",
+          desiredState,
+        ) as StateData;
+        const instanceName =
+          (result.DatabaseName ?? g.DatabaseName)?.toString() ?? "current";
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    get: {
+      description: "Get a Glue Database",
+      arguments: z.object({
+        identifier: z.string().describe(
+          "The primary identifier of the Glue Database",
+        ),
+      }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const result = await readResource(
+          "AWS::Glue::Database",
+          args.identifier,
+        ) as StateData;
+        const instanceName =
+          (result.DatabaseName ?? context.globalArgs.DatabaseName)
+            ?.toString() ?? args.identifier;
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    update: {
+      description: "Update a Glue Database",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const instanceName = g.DatabaseName?.toString() ?? "current";
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          instanceName,
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        const identifier = existing.DatabaseName?.toString();
+        if (!identifier) {
+          throw new Error("No identifier found in existing state");
+        }
+        const currentState = await readResource(
+          "AWS::Glue::Database",
+          identifier,
+        ) as StateData;
+        const desiredState: Record<string, unknown> = { ...currentState };
+        for (const [key, value] of Object.entries(g)) {
+          if (value !== undefined) desiredState[key] = value;
+        }
+        const result = await updateResource(
+          "AWS::Glue::Database",
+          identifier,
+          currentState,
+          desiredState,
+          ["DatabaseName"],
+        );
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    delete: {
+      description: "Delete a Glue Database",
+      arguments: z.object({
+        identifier: z.string().describe(
+          "The primary identifier of the Glue Database",
+        ),
+      }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const { existed } = await deleteResource(
+          "AWS::Glue::Database",
+          args.identifier,
+        );
+        const instanceName = context.globalArgs.DatabaseName?.toString() ??
+          args.identifier;
+        const handle = await context.writeResource("state", instanceName, {
+          identifier: args.identifier,
+          existed,
+          status: existed ? "deleted" : "not_found",
+          deletedAt: new Date().toISOString(),
+        });
+        return { dataHandles: [handle] };
+      },
+    },
+    sync: {
+      description: "Sync Glue Database state from AWS",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const instanceName = g.DatabaseName?.toString() ?? "current";
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          instanceName,
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        const identifier = existing.DatabaseName?.toString();
+        if (!identifier) {
+          throw new Error("No identifier found in existing state");
+        }
+        try {
+          const result = await readResource(
+            "AWS::Glue::Database",
+            identifier,
+          ) as StateData;
+          const handle = await context.writeResource(
+            "state",
+            instanceName,
+            result,
+          );
+          return { dataHandles: [handle] };
+        } catch (error: unknown) {
+          if (isResourceNotFoundError(error)) {
+            const handle = await context.writeResource("state", instanceName, {
+              identifier,
+              status: "not_found",
+              syncedAt: new Date().toISOString(),
+            });
+            return { dataHandles: [handle] };
+          }
+          throw error;
+        }
+      },
+    },
+  },
+};
