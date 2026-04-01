@@ -11,13 +11,13 @@ jobs:
     permissions:
       contents: read
     outputs:
-      extensions: ${{ steps.changes.outputs.extensions }}
+      chunks: ${{ steps.changes.outputs.chunks }}
     steps:
       - uses: actions/checkout@v6
         with:
           fetch-depth: 2
       - id: changes
-        name: Find changed manifests
+        name: Find changed manifests and chunk for publishing
         run: |
           EXTENSIONS="[]"
 
@@ -27,47 +27,78 @@ jobs:
             echo "Changed: ${dir}"
           done
 
-          echo "extensions=$EXTENSIONS" >> "$GITHUB_OUTPUT"
-          echo "Extensions to publish: $EXTENSIONS"
+          COUNT=$(echo "$EXTENSIONS" | jq 'length')
+          echo "Total changed extensions: $COUNT"
+
+          if [ "$COUNT" -eq 0 ]; then
+            echo "chunks=[]" >> "$GITHUB_OUTPUT"
+          else
+            # Split into chunks of 50 to stay under GitHub's 256 matrix limit
+            CHUNKS=$(echo "$EXTENSIONS" | jq -c '[range(0; length; 50) as $i | .[$i:$i+50]]')
+            CHUNK_COUNT=$(echo "$CHUNKS" | jq 'length')
+            echo "Chunks: $CHUNK_COUNT (up to 50 extensions each)"
+            echo "chunks=$CHUNKS" >> "$GITHUB_OUTPUT"
+          fi
 
   publish:
-    name: Publish ${{ matrix.extension }}
+    name: Publish chunk ${{ strategy.job-index }}
     needs: detect-changes
-    if: needs.detect-changes.outputs.extensions != '[]'
+    if: needs.detect-changes.outputs.chunks != '[]'
     runs-on: ubuntu-latest
     permissions:
       contents: read
     strategy:
       fail-fast: false
       matrix:
-        extension: ${{ fromJson(needs.detect-changes.outputs.extensions) }}
+        chunk: ${{ fromJson(needs.detect-changes.outputs.chunks) }}
     steps:
       - uses: actions/checkout@v6
       - uses: systeminit/setup-swamp@v0.1.0
         with:
           api-key: ${{ secrets.SWAMP_API_KEY }}
-      - name: Publish extension
-        working-directory: ${{ matrix.extension }}
+      - name: Publish extensions
+        env:
+          CHUNK: ${{ toJson(matrix.chunk) }}
         run: |
-          NAME=$(grep '^name:' manifest.yaml | sed 's/name: *"\(.*\)"/\1/')
-          LOCAL=$(grep '^version:' manifest.yaml | sed 's/version: *"\(.*\)"/\1/')
-          UPSTREAM=$(swamp extension version "$NAME" --json 2>/dev/null | jq -r '.currentPublished // empty' || true)
+          TOTAL=$(echo "$CHUNK" | jq 'length')
+          PUBLISHED=0
+          SKIPPED=0
+          FAILED=0
 
-          if [ "$LOCAL" = "$UPSTREAM" ]; then
-            echo "Version $LOCAL already published — skipping"
-            exit 0
-          fi
+          for dir in $(echo "$CHUNK" | jq -r '.[]'); do
+            cd "$GITHUB_WORKSPACE/$dir"
 
-          # Ensure a swamp repo exists (model extensions don't have .swamp/)
-          if [ ! -d .swamp ]; then
-            swamp repo init --quiet --tool none
-          fi
+            NAME=$(grep '^name:' manifest.yaml | sed 's/name: *"\(.*\)"/\1/')
+            LOCAL=$(grep '^version:' manifest.yaml | sed 's/version: *"\(.*\)"/\1/')
+            UPSTREAM=$(swamp extension version "$NAME" --json 2>/dev/null | jq -r '.currentPublished // empty' || true)
 
-          echo "Publishing $NAME ($LOCAL)"
-          swamp extension push manifest.yaml
+            if [ "$LOCAL" = "$UPSTREAM" ]; then
+              echo "skip: $NAME ($LOCAL) already published"
+              SKIPPED=$((SKIPPED + 1))
+              continue
+            fi
 
-          # Rate limit when many extensions change at once (e.g. AWS regeneration)
-          TOTAL=${{ strategy.job-total }}
-          if [ "$TOTAL" -gt 10 ]; then
-            sleep 1
+            if [ ! -d .swamp ]; then
+              swamp repo init --quiet --tool none
+            fi
+
+            echo "Publishing $NAME ($LOCAL)..."
+            if swamp extension push manifest.yaml; then
+              PUBLISHED=$((PUBLISHED + 1))
+            else
+              echo "::error::Failed to publish $NAME ($LOCAL)"
+              FAILED=$((FAILED + 1))
+            fi
+
+            # Rate limit when publishing multiple extensions
+            if [ "$TOTAL" -gt 1 ]; then
+              sleep 1
+            fi
+          done
+
+          echo ""
+          echo "Results: $PUBLISHED published, $SKIPPED skipped, $FAILED failed (of $TOTAL total)"
+
+          if [ "$FAILED" -gt 0 ]; then
+            exit 1
           fi
