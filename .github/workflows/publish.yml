@@ -58,6 +58,11 @@ jobs:
             exit 0
           fi
 
+          # Ensure a swamp repo exists (model extensions don't have .swamp/)
+          if [ ! -d .swamp ]; then
+            swamp repo init --quiet --tool none
+          fi
+
           echo "Publishing $NAME ($LOCAL)"
           swamp extension push manifest.yaml
 
