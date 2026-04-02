@@ -1,7 +1,7 @@
 # Auto-generated manifest. Re-generate with the appropriate deno task.
 manifestVersion: 1
 name: "@swamp/gcp/iam"
-version: "2026.04.01.1"
+version: "2026.04.02.1"
 description: "Google Cloud iam infrastructure models"
 labels:
   - gcp
@@ -9,8 +9,6 @@ labels:
   - iam
   - cloud
   - infrastructure
-releaseNotes: |
-  - Added: policies
 models:
   - policies.ts
 additionalFiles:

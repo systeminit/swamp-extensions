@@ -304,7 +304,7 @@ const GlobalArgsSchema = z.object({
     "Optional. Labels as key value pairs",
   ).optional(),
   largeCapacity: z.boolean().describe(
-    "Optional. Flag indicating if the volume will be a large capacity volume or a regular volume.",
+    "Optional. Flag indicating if the volume will be a large capacity volume or a regular volume. This field is used for legacy FILE pools. For Unified pools, use the `large_capacity_config` field instead. This field and `large_capacity_config` are mutually exclusive.",
   ).optional(),
   largeCapacityConfig: z.object({
     constituentCount: z.number().int().describe(
@@ -810,7 +810,7 @@ const InputsSchema = z.object({
     "Optional. Labels as key value pairs",
   ).optional(),
   largeCapacity: z.boolean().describe(
-    "Optional. Flag indicating if the volume will be a large capacity volume or a regular volume.",
+    "Optional. Flag indicating if the volume will be a large capacity volume or a regular volume. This field is used for legacy FILE pools. For Unified pools, use the `large_capacity_config` field instead. This field and `large_capacity_config` are mutually exclusive.",
   ).optional(),
   largeCapacityConfig: z.object({
     constituentCount: z.number().int().describe(
@@ -952,7 +952,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/netapp/volumes",
-  version: "2026.04.01.2",
+  version: "2026.04.02.1",
   upgrades: [
     {
       toVersion: "2026.03.31.1",
@@ -972,8 +972,12 @@ export const model = {
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },
+    {
+      toVersion: "2026.04.02.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
   ],
-
   globalArguments: GlobalArgsSchema,
   inputsSchema: InputsSchema,
   resources: {

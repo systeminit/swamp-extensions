@@ -1,7 +1,7 @@
 # Auto-generated manifest. Re-generate with the appropriate deno task.
 manifestVersion: 1
 name: "@swamp/gcp/policysimulator"
-version: "2026.04.01.1"
+version: "2026.04.02.1"
 description: "Google Cloud policysimulator infrastructure models"
 labels:
   - gcp
@@ -9,8 +9,6 @@ labels:
   - policysimulator
   - cloud
   - infrastructure
-releaseNotes: |
-  - Added: replays, replays_results, orgpolicyviolationspreviews, orgpolicyviolationspreviews_orgpolicyviolations
 models:
   - orgpolicyviolationspreviews.ts
   - orgpolicyviolationspreviews_orgpolicyviolations.ts

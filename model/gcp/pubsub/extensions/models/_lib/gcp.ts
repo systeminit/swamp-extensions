@@ -49,28 +49,47 @@ async function ensureGcloudInstalled(): Promise<void> {
 /**
  * Gets GCP credentials using the standard credential chain:
  *
- * 1. GOOGLE_APPLICATION_CREDENTIALS_JSON — inline service account JSON
+ * 1. GCP_ACCESS_TOKEN — pre-obtained OAuth2 access token
+ *    (convenient for vault-stored tokens; does not require gcloud CLI)
+ * 2. GOOGLE_APPLICATION_CREDENTIALS_JSON — inline service account JSON
  *    (convenient for swamp vaults)
- * 2. GOOGLE_APPLICATION_CREDENTIALS — path to a service account JSON file
+ * 3. GOOGLE_APPLICATION_CREDENTIALS — path to a service account JSON file
  *    (standard Google SDK env var)
- * 3. Application Default Credentials — gcloud auth application-default login
+ * 4. Application Default Credentials — gcloud auth application-default login
  *    or metadata server (developer / CI workflow)
  *
- * For service account credentials (options 1 & 2), the account is activated
- * via gcloud CLI and an access token is obtained. For ADC (option 3), gcloud
+ * For option 1, the token is used directly as a Bearer token.
+ * For service account credentials (options 2 & 3), the account is activated
+ * via gcloud CLI and an access token is obtained. For ADC (option 4), gcloud
  * prints the token from the currently authenticated user or service account.
  *
  * The GCP_PROJECT environment variable overrides the project ID from
  * credentials when set.
  */
 async function getCredentials(): Promise<GcpCredentials> {
+  // Direct access token is always read fresh from the env (no caching).
+  // Env reads are free, and we don't know when the token was minted so
+  // a TTL-based cache would be wrong.
+  const directToken = Deno.env.get("GCP_ACCESS_TOKEN");
+  if (directToken) {
+    const projectId = Deno.env.get("GCP_PROJECT") ||
+      Deno.env.get("GOOGLE_CLOUD_PROJECT");
+    if (!projectId) {
+      throw new Error(
+        "GCP_PROJECT or GOOGLE_CLOUD_PROJECT must be set when using GCP_ACCESS_TOKEN",
+      );
+    }
+    return { projectId, accessToken: directToken };
+  }
+
   if (cachedCredentials && (Date.now() - cachedAt) < TOKEN_TTL_MS) {
     return cachedCredentials;
   }
   cachedCredentials = undefined;
+
   await ensureGcloudInstalled();
 
-  // Try inline service account JSON first
+  // Try inline service account JSON
   const credJson = Deno.env.get("GOOGLE_APPLICATION_CREDENTIALS_JSON");
   if (credJson) {
     cachedCredentials = await activateServiceAccountFromJson(credJson);
@@ -191,6 +210,7 @@ async function getApplicationDefaultCredentials(): Promise<GcpCredentials> {
     const stderr = new TextDecoder().decode(tokenResult.stderr);
     throw new Error(
       "No GCP credentials found. Set one of:\n" +
+        "  - GCP_ACCESS_TOKEN (pre-obtained OAuth2 access token; also set GCP_PROJECT)\n" +
         "  - GOOGLE_APPLICATION_CREDENTIALS_JSON (inline service account JSON)\n" +
         "  - GOOGLE_APPLICATION_CREDENTIALS (path to service account JSON file)\n" +
         "  - Run: gcloud auth application-default login\n" +

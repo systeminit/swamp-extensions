@@ -1,7 +1,7 @@
 # Auto-generated manifest. Re-generate with the appropriate deno task.
 manifestVersion: 1
 name: "@swamp/gcp/manufacturers"
-version: "2026.04.01.1"
+version: "2026.04.02.1"
 description: "Google Cloud manufacturers infrastructure models"
 labels:
   - gcp
@@ -9,8 +9,6 @@ labels:
   - manufacturers
   - cloud
   - infrastructure
-releaseNotes: |
-  - Added: accounts_languages_productcertifications, accounts_products
 models:
   - accounts_languages_productcertifications.ts
   - accounts_products.ts

@@ -1,7 +1,7 @@
 # Auto-generated manifest. Re-generate with the appropriate deno task.
 manifestVersion: 1
 name: "@swamp/gcp/workloadmanager"
-version: "2026.04.01.1"
+version: "2026.04.02.1"
 description: "Google Cloud workloadmanager infrastructure models"
 labels:
   - gcp
@@ -9,8 +9,6 @@ labels:
   - workloadmanager
   - cloud
   - infrastructure
-releaseNotes: |
-  - Added: locations, deployments, deployments_actuations, discoveredprofiles, discoveredprofiles_health, evaluations, evaluations_executions, evaluations_executions_results, evaluations_executions_scannedresources, rules
 models:
   - deployments.ts
   - deployments_actuations.ts

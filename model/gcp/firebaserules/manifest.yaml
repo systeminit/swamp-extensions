@@ -1,7 +1,7 @@
 # Auto-generated manifest. Re-generate with the appropriate deno task.
 manifestVersion: 1
 name: "@swamp/gcp/firebaserules"
-version: "2026.04.01.1"
+version: "2026.04.02.1"
 description: "Google Cloud firebaserules infrastructure models"
 labels:
   - gcp
@@ -9,8 +9,6 @@ labels:
   - firebaserules
   - cloud
   - infrastructure
-releaseNotes: |
-  - Added: releases, rulesets
 models:
   - releases.ts
   - rulesets.ts

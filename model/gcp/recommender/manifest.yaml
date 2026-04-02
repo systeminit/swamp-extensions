@@ -1,7 +1,7 @@
 # Auto-generated manifest. Re-generate with the appropriate deno task.
 manifestVersion: 1
 name: "@swamp/gcp/recommender"
-version: "2026.04.01.1"
+version: "2026.04.02.1"
 description: "Google Cloud recommender infrastructure models"
 labels:
   - gcp
@@ -9,8 +9,6 @@ labels:
   - recommender
   - cloud
   - infrastructure
-releaseNotes: |
-  - Added: insighttypes_insights, recommenders_recommendations
 models:
   - insighttypes_insights.ts
   - recommenders_recommendations.ts
