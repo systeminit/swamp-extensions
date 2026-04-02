@@ -85,7 +85,7 @@ jobs:
             fi
 
             echo "Publishing $NAME ($LOCAL)..."
-            if swamp extension push manifest.yaml; then
+            if swamp extension push manifest.yaml --yes; then
               PUBLISHED=$((PUBLISHED + 1))
             else
               echo "::error::Failed to publish $NAME ($LOCAL)"

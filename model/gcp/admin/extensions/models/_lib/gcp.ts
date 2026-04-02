@@ -72,8 +72,8 @@ async function getCredentials(): Promise<GcpCredentials> {
   // a TTL-based cache would be wrong.
   const directToken = Deno.env.get("GCP_ACCESS_TOKEN")?.trim();
   if (directToken) {
-    const projectId = Deno.env.get("GCP_PROJECT") ||
-      Deno.env.get("GOOGLE_CLOUD_PROJECT");
+    const projectId = Deno.env.get("GCP_PROJECT")?.trim() ||
+      Deno.env.get("GOOGLE_CLOUD_PROJECT")?.trim();
     if (!projectId) {
       throw new Error(
         "GCP_PROJECT or GOOGLE_CLOUD_PROJECT must be set when using GCP_ACCESS_TOKEN",
@@ -140,8 +140,8 @@ async function activateServiceAccountFromJson(
     );
   }
 
-  const projectOverride = Deno.env.get("GCP_PROJECT") ||
-    Deno.env.get("GOOGLE_CLOUD_PROJECT");
+  const projectOverride = Deno.env.get("GCP_PROJECT")?.trim() ||
+    Deno.env.get("GOOGLE_CLOUD_PROJECT")?.trim();
   const projectId = projectOverride || creds.project_id;
 
   // Write credentials to a temp file for gcloud
@@ -224,8 +224,8 @@ async function getApplicationDefaultCredentials(): Promise<GcpCredentials> {
   }
 
   // Get project ID
-  const projectOverride = Deno.env.get("GCP_PROJECT") ||
-    Deno.env.get("GOOGLE_CLOUD_PROJECT");
+  const projectOverride = Deno.env.get("GCP_PROJECT")?.trim() ||
+    Deno.env.get("GOOGLE_CLOUD_PROJECT")?.trim();
   if (projectOverride) {
     return { projectId: projectOverride, accessToken };
   }
