@@ -444,15 +444,21 @@ jobs:
             Then read every changed file in this PR thoroughly.
 
             IMPORTANT: Files under `model/` are auto-generated — do NOT review their content.
-            Skip reading files in `model/`. Instead, if a PR modifies files in `model/` without
-            also modifying `codegen/`, flag that as a blocking issue (it means someone hand-edited
-            generated code). Focus your review on `vault/`, `datastore/`, `codegen/`, and `scripts/`.
+            Skip reading files in `model/`. Focus your review on `vault/`, `datastore/`, `codegen/`,
+            and `scripts/`.
+
+            Model files may change without codegen changes in two legitimate cases:
+            1. Codegen regeneration (codegen/ also changes)
+            2. Version bumps via `bump-versions` script (only version, upgrades, and manifest change)
+            If model files have changes beyond version/upgrade entries and no codegen/ changes exist,
+            flag that as a blocking issue (hand-edited generated code).
 
             Review this PR for:
 
             ## 1. CLAUDE.md Compliance
             - Files under `model/` must NEVER be hand-edited. If this PR modifies files in `model/`
-              without corresponding changes in `codegen/`, that is a blocking issue.
+              with changes beyond version/upgrade entries and no corresponding `codegen/` changes,
+              that is a blocking issue.
             - No `any` types in hand-written code (generated code may use `any`).
             - Named exports only, no default exports.
             - All npm dependencies must be pinned to exact versions (no semver ranges like ^ or ~).

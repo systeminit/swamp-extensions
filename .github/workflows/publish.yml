@@ -78,7 +78,9 @@ jobs:
               continue
             fi
 
-            if [ ! -d .swamp ]; then
+            # Ensure a swamp repo marker exists (auto-generated model
+            # directories don't have .swamp.yaml committed)
+            if [ ! -f .swamp.yaml ]; then
               swamp repo init --quiet --tool none
             fi
 
