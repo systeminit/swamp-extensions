@@ -81,7 +81,7 @@ async function getCredentials(): Promise<GcpCredentials> {
   // Direct access token is always read fresh from the env (no caching).
   // Env reads are free, and we don't know when the token was minted so
   // a TTL-based cache would be wrong.
-  const directToken = Deno.env.get("GCP_ACCESS_TOKEN");
+  const directToken = Deno.env.get("GCP_ACCESS_TOKEN")?.trim();
   if (directToken) {
     const projectId = Deno.env.get("GCP_PROJECT") || Deno.env.get("GOOGLE_CLOUD_PROJECT");
     if (!projectId) {
