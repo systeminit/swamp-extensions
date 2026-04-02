@@ -1320,7 +1320,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/oracledatabase/autonomousdatabases",
-  version: "2026.04.02.1",
+  version: "2026.04.02.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -1337,7 +1337,13 @@ export const model = {
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },
+    {
+      toVersion: "2026.04.02.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
   ],
+
   globalArguments: GlobalArgsSchema,
   inputsSchema: InputsSchema,
   resources: {

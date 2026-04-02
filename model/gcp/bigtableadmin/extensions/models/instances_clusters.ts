@@ -221,14 +221,25 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/bigtableadmin/instances-clusters",
-  version: "2026.04.01.1",
+  version: "2026.04.02.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },
+    {
+      toVersion: "2026.04.02.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.02.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
   ],
+
   globalArguments: GlobalArgsSchema,
   inputsSchema: InputsSchema,
   resources: {
@@ -465,6 +476,34 @@ export const model = {
         }
       },
     },
+    get_memory_layer: {
+      description: "get memory layer",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, unknown>, context: any) => {
+        const g = context.globalArgs;
+        const projectId = await getProjectId();
+        const params: Record<string, string> = { project: projectId };
+        if (g["parent"] !== undefined && g["name"] !== undefined) {
+          params["name"] = buildResourceName(
+            String(g["parent"]),
+            String(g["name"]),
+          );
+        }
+        const result = await createResource(
+          BASE_URL,
+          {
+            "id": "bigtableadmin.projects.instances.clusters.getMemoryLayer",
+            "path": "v2/{+name}",
+            "httpMethod": "GET",
+            "parameterOrder": ["name"],
+            "parameters": { "name": { "location": "path", "required": true } },
+          },
+          params,
+          {},
+        );
+        return { result };
+      },
+    },
     partial_update_cluster: {
       description: "partial update cluster",
       arguments: z.object({
@@ -511,6 +550,49 @@ export const model = {
           {
             "id":
               "bigtableadmin.projects.instances.clusters.partialUpdateCluster",
+            "path": "v2/{+name}",
+            "httpMethod": "PATCH",
+            "parameterOrder": ["name"],
+            "parameters": {
+              "name": { "location": "path", "required": true },
+              "updateMask": { "location": "query" },
+            },
+          },
+          params,
+          body,
+        );
+        return { result };
+      },
+    },
+    update_memory_layer: {
+      description: "update memory layer",
+      arguments: z.object({
+        etag: z.any().optional(),
+        memoryConfig: z.any().optional(),
+        name: z.any().optional(),
+        state: z.any().optional(),
+      }),
+      execute: async (args: Record<string, unknown>, context: any) => {
+        const g = context.globalArgs;
+        const projectId = await getProjectId();
+        const params: Record<string, string> = { project: projectId };
+        if (g["parent"] !== undefined && g["name"] !== undefined) {
+          params["name"] = buildResourceName(
+            String(g["parent"]),
+            String(g["name"]),
+          );
+        }
+        const body: Record<string, unknown> = {};
+        if (args["etag"] !== undefined) body["etag"] = args["etag"];
+        if (args["memoryConfig"] !== undefined) {
+          body["memoryConfig"] = args["memoryConfig"];
+        }
+        if (args["name"] !== undefined) body["name"] = args["name"];
+        if (args["state"] !== undefined) body["state"] = args["state"];
+        const result = await createResource(
+          BASE_URL,
+          {
+            "id": "bigtableadmin.projects.instances.clusters.updateMemoryLayer",
             "path": "v2/{+name}",
             "httpMethod": "PATCH",
             "parameterOrder": ["name"],
