@@ -64,6 +64,7 @@ jobs:
           PUBLISHED=0
           SKIPPED=0
           FAILED=0
+          SUMMARY=""
 
           for dir in $(echo "$CHUNK" | jq -r '.[]'); do
             cd "$GITHUB_WORKSPACE/$dir"
@@ -75,6 +76,7 @@ jobs:
             if [ "$LOCAL" = "$UPSTREAM" ]; then
               echo "skip: $NAME ($LOCAL) already published"
               SKIPPED=$((SKIPPED + 1))
+              SUMMARY="${SUMMARY}| ${NAME} | ${LOCAL} | Skipped (already published) | - |\n"
               continue
             fi
 
@@ -85,11 +87,17 @@ jobs:
             fi
 
             echo "Publishing $NAME ($LOCAL)..."
-            if swamp extension push manifest.yaml --yes; then
+            PUSH_OUTPUT=$(swamp extension push manifest.yaml --yes 2>&1) && PUSH_EXIT=0 || PUSH_EXIT=$?
+            if [ "$PUSH_EXIT" -eq 0 ]; then
               PUBLISHED=$((PUBLISHED + 1))
+              SUMMARY="${SUMMARY}| ${NAME} | ${LOCAL} | Published | - |\n"
             else
-              echo "::error::Failed to publish $NAME ($LOCAL)"
+              # Extract the actual error reason from swamp output
+              ERROR_REASON=$(echo "$PUSH_OUTPUT" | grep -E '(ERR|FTL|Error:)' | head -3 | sed 's/.*ERR [^ ]* *//' | sed 's/.*FTL [^ ]* *//' | tr '\n' ' ')
+              echo "$PUSH_OUTPUT"
+              echo "::error::Failed to publish $NAME ($LOCAL): $ERROR_REASON"
               FAILED=$((FAILED + 1))
+              SUMMARY="${SUMMARY}| ${NAME} | ${LOCAL} | **Failed** | ${ERROR_REASON} |\n"
             fi
 
             # Rate limit when publishing multiple extensions
@@ -100,6 +108,17 @@ jobs:
 
           echo ""
           echo "Results: $PUBLISHED published, $SKIPPED skipped, $FAILED failed (of $TOTAL total)"
+
+          # Write job summary
+          {
+            echo "## Publish Results"
+            echo ""
+            echo "| Extension | Version | Status | Error |"
+            echo "|-----------|---------|--------|-------|"
+            echo -e "$SUMMARY"
+            echo ""
+            echo "**Total:** $PUBLISHED published, $SKIPPED skipped, $FAILED failed (of $TOTAL)"
+          } >> "$GITHUB_STEP_SUMMARY"
 
           if [ "$FAILED" -gt 0 ]; then
             exit 1
