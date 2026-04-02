@@ -1,7 +1,7 @@
 # Auto-generated manifest. Re-generate with the appropriate deno task.
 manifestVersion: 1
 name: "@swamp/gcp/doubleclicksearch"
-version: "2026.04.01.1"
+version: "2026.04.02.1"
 description: "Google Cloud doubleclicksearch infrastructure models"
 labels:
   - gcp
@@ -9,8 +9,6 @@ labels:
   - doubleclicksearch
   - cloud
   - infrastructure
-releaseNotes: |
-  - Added: conversion, reports, savedcolumns
 models:
   - conversion.ts
   - reports.ts

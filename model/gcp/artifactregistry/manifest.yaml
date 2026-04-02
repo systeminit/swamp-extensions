@@ -1,7 +1,7 @@
 # Auto-generated manifest. Re-generate with the appropriate deno task.
 manifestVersion: 1
 name: "@swamp/gcp/artifactregistry"
-version: "2026.04.01.1"
+version: "2026.04.02.1"
 description: "Google Cloud artifactregistry infrastructure models"
 labels:
   - gcp
@@ -9,8 +9,6 @@ labels:
   - artifactregistry
   - cloud
   - infrastructure
-releaseNotes: |
-  - Added: locations, repositories, repositories_attachments, repositories_dockerimages, repositories_files, repositories_mavenartifacts, repositories_npmpackages, repositories_packages, repositories_packages_tags, repositories_packages_versions, repositories_pythonpackages, repositories_rules
 models:
   - locations.ts
   - repositories.ts

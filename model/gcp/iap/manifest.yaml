@@ -1,7 +1,7 @@
 # Auto-generated manifest. Re-generate with the appropriate deno task.
 manifestVersion: 1
 name: "@swamp/gcp/iap"
-version: "2026.04.01.1"
+version: "2026.04.02.1"
 description: "Google Cloud iap infrastructure models"
 labels:
   - gcp
@@ -9,8 +9,6 @@ labels:
   - iap
   - cloud
   - infrastructure
-releaseNotes: |
-  - Added: brands, brands_identityawareproxyclients, iap_tunnel_destgroups
 models:
   - brands.ts
   - brands_identityawareproxyclients.ts

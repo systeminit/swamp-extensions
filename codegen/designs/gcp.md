@@ -390,21 +390,25 @@ bodies. It is only used for:
 
 ## 8. Authentication
 
-The `_lib/gcp.ts` helper supports the full GCP credential chain. The `gcloud`
-CLI must be installed.
+The `_lib/gcp.ts` helper supports the full GCP credential chain.
 
 ### Credential resolution order
 
-1. **`GOOGLE_APPLICATION_CREDENTIALS_JSON`** — inline service account JSON
+1. **`GCP_ACCESS_TOKEN`** — pre-obtained OAuth2 access token (convenient for
+   vault-stored tokens; does **not** require `gcloud` CLI). Requires
+   `GCP_PROJECT` or `GOOGLE_CLOUD_PROJECT` to be set.
+2. **`GOOGLE_APPLICATION_CREDENTIALS_JSON`** — inline service account JSON
    (convenient for swamp vaults)
-2. **`GOOGLE_APPLICATION_CREDENTIALS`** — file path to a service account JSON
+3. **`GOOGLE_APPLICATION_CREDENTIALS`** — file path to a service account JSON
    file (standard Google SDK env var)
-3. **Application Default Credentials** — `gcloud auth application-default login`
+4. **Application Default Credentials** — `gcloud auth application-default login`
    or GCE/Cloud Run metadata server
+
+Options 2–4 require the `gcloud` CLI to be installed.
 
 ### Service account activation
 
-For options 1 and 2, the service account is activated via:
+For options 2 and 3, the service account is activated via:
 
 ```sh
 gcloud auth activate-service-account {email} --key-file {tmpfile}
@@ -417,12 +421,15 @@ The access token is cached for the duration of the process.
 
 The project ID is read from the service account JSON's `project_id` field.
 Overridden by `GCP_PROJECT` or `GOOGLE_CLOUD_PROJECT` env vars. For ADC without
-a service account, falls back to `gcloud config get-value project`.
+a service account, falls back to `gcloud config get-value project`. When using
+`GCP_ACCESS_TOKEN`, the project ID must be provided via `GCP_PROJECT` or
+`GOOGLE_CLOUD_PROJECT`.
 
 ### gcloud CLI check
 
-On first credential request, the helper verifies `gcloud --version` succeeds. If
-not installed, a clear error with the install link is thrown.
+On first credential request (for options 2–4), the helper verifies
+`gcloud --version` succeeds. If not installed, a clear error with the install
+link is thrown.
 
 ---
 

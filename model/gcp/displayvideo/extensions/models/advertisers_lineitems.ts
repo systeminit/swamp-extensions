@@ -122,7 +122,7 @@ const GlobalArgsSchema = z.object({
         "Optional. The type of the bidding strategy. This can only be set at the line item level.",
       ).optional(),
       value: z.string().describe(
-        "Optional. The value used by the bidding strategy. This can be set at the line item and ad group level. This field is only applicable for the following strategy types: * `DEMAND_GEN_BIDDING_STRATEGY_TYPE_TARGET_CPA` * `DEMAND_GEN_BIDDING_STRATEGY_TYPE_TARGET_ROAS` Value of this field is in micros of the advertiser's currency or ROAS value. For example, 1000000 represents 1.0 standard units of the currency or 100% ROAS value. If not using an applicable strategy, the value of this field will be 0.",
+        "Optional. The value used by the bidding strategy. This can be set at the line item and ad group level. This field is only applicable for the following strategy types: * `DEMAND_GEN_BIDDING_STRATEGY_TYPE_TARGET_CPA` * `DEMAND_GEN_BIDDING_STRATEGY_TYPE_TARGET_CPC` * `DEMAND_GEN_BIDDING_STRATEGY_TYPE_TARGET_ROAS` Value of this field is in micros of the advertiser's currency or ROAS value. For example, 1000000 represents 1.0 standard units of the currency or 100% ROAS value. If not using an applicable strategy, the value of this field will be 0.",
       ).optional(),
     }).describe(
       "Settings that control the bid strategy for Demand Gen resources.",
@@ -1120,7 +1120,7 @@ const InputsSchema = z.object({
         "Optional. The type of the bidding strategy. This can only be set at the line item level.",
       ).optional(),
       value: z.string().describe(
-        "Optional. The value used by the bidding strategy. This can be set at the line item and ad group level. This field is only applicable for the following strategy types: * `DEMAND_GEN_BIDDING_STRATEGY_TYPE_TARGET_CPA` * `DEMAND_GEN_BIDDING_STRATEGY_TYPE_TARGET_ROAS` Value of this field is in micros of the advertiser's currency or ROAS value. For example, 1000000 represents 1.0 standard units of the currency or 100% ROAS value. If not using an applicable strategy, the value of this field will be 0.",
+        "Optional. The value used by the bidding strategy. This can be set at the line item and ad group level. This field is only applicable for the following strategy types: * `DEMAND_GEN_BIDDING_STRATEGY_TYPE_TARGET_CPA` * `DEMAND_GEN_BIDDING_STRATEGY_TYPE_TARGET_CPC` * `DEMAND_GEN_BIDDING_STRATEGY_TYPE_TARGET_ROAS` Value of this field is in micros of the advertiser's currency or ROAS value. For example, 1000000 represents 1.0 standard units of the currency or 100% ROAS value. If not using an applicable strategy, the value of this field will be 0.",
       ).optional(),
     }).describe(
       "Settings that control the bid strategy for Demand Gen resources.",
@@ -1898,10 +1898,15 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/displayvideo/advertisers-lineitems",
-  version: "2026.04.01.1",
+  version: "2026.04.02.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.02.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

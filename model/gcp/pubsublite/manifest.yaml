@@ -1,7 +1,7 @@
 # Auto-generated manifest. Re-generate with the appropriate deno task.
 manifestVersion: 1
 name: "@swamp/gcp/pubsublite"
-version: "2026.04.01.1"
+version: "2026.04.02.1"
 description: "Google Cloud pubsublite infrastructure models"
 labels:
   - gcp
@@ -9,8 +9,6 @@ labels:
   - pubsublite
   - cloud
   - infrastructure
-releaseNotes: |
-  - Added: admin_projects_reservations, admin_projects_reservations_topics, admin_projects_subscriptions, admin_projects_topics, admin_projects_topics_subscriptions, cursor_projects_subscriptions_cursors
 models:
   - admin_projects_reservations.ts
   - admin_projects_reservations_topics.ts

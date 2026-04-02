@@ -428,6 +428,14 @@ const GlobalArgsSchema = z.object({
       "Common attributes for in-stream, non-skippable and bumper ads.",
     ).optional(),
   }).describe("Details for a bumper ad.").optional(),
+  dcmTrackingInfo: z.object({
+    creativeId: z.string().describe("Required. The DCM creative id.")
+      .optional(),
+    placementId: z.string().describe("Required. The DCM placement id.")
+      .optional(),
+    trackingAdId: z.string().describe("Required. The DCM tracking ad id.")
+      .optional(),
+  }).describe("Details on the DCM tracking.").optional(),
   demandGenCarouselAd: z.object({
     businessName: z.string().describe(
       "Required. The business name shown on the ad.",
@@ -1210,6 +1218,11 @@ const StateSchema = z.object({
       }),
     }),
   }).optional(),
+  dcmTrackingInfo: z.object({
+    creativeId: z.string(),
+    placementId: z.string(),
+    trackingAdId: z.string(),
+  }).optional(),
   demandGenCarouselAd: z.object({
     businessName: z.string(),
     cards: z.array(z.object({
@@ -1819,6 +1832,14 @@ const InputsSchema = z.object({
       "Common attributes for in-stream, non-skippable and bumper ads.",
     ).optional(),
   }).describe("Details for a bumper ad.").optional(),
+  dcmTrackingInfo: z.object({
+    creativeId: z.string().describe("Required. The DCM creative id.")
+      .optional(),
+    placementId: z.string().describe("Required. The DCM placement id.")
+      .optional(),
+    trackingAdId: z.string().describe("Required. The DCM tracking ad id.")
+      .optional(),
+  }).describe("Details on the DCM tracking.").optional(),
   demandGenCarouselAd: z.object({
     businessName: z.string().describe(
       "Required. The business name shown on the ad.",
@@ -2464,11 +2485,16 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/displayvideo/advertisers-adgroupads",
-  version: "2026.04.01.1",
+  version: "2026.04.02.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
       description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.02.1",
+      description: "Added: dcmTrackingInfo",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },
   ],
@@ -2498,6 +2524,9 @@ export const model = {
         if (g["adPolicy"] !== undefined) body["adPolicy"] = g["adPolicy"];
         if (g["audioAd"] !== undefined) body["audioAd"] = g["audioAd"];
         if (g["bumperAd"] !== undefined) body["bumperAd"] = g["bumperAd"];
+        if (g["dcmTrackingInfo"] !== undefined) {
+          body["dcmTrackingInfo"] = g["dcmTrackingInfo"];
+        }
         if (g["demandGenCarouselAd"] !== undefined) {
           body["demandGenCarouselAd"] = g["demandGenCarouselAd"];
         }
@@ -2601,6 +2630,9 @@ export const model = {
         if (g["adPolicy"] !== undefined) body["adPolicy"] = g["adPolicy"];
         if (g["audioAd"] !== undefined) body["audioAd"] = g["audioAd"];
         if (g["bumperAd"] !== undefined) body["bumperAd"] = g["bumperAd"];
+        if (g["dcmTrackingInfo"] !== undefined) {
+          body["dcmTrackingInfo"] = g["dcmTrackingInfo"];
+        }
         if (g["demandGenCarouselAd"] !== undefined) {
           body["demandGenCarouselAd"] = g["demandGenCarouselAd"];
         }

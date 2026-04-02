@@ -1,7 +1,7 @@
 # Auto-generated manifest. Re-generate with the appropriate deno task.
 manifestVersion: 1
 name: "@swamp/gcp/drivelabels"
-version: "2026.04.01.1"
+version: "2026.04.02.1"
 description: "Google Cloud drivelabels infrastructure models"
 labels:
   - gcp
@@ -9,8 +9,6 @@ labels:
   - drivelabels
   - cloud
   - infrastructure
-releaseNotes: |
-  - Added: labels, labels_locks, labels_permissions, labels_revisions_locks, labels_revisions_permissions
 models:
   - labels.ts
   - labels_locks.ts

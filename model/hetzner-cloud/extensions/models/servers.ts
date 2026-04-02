@@ -130,6 +130,8 @@ const ResourceSchema = z.object({
         unavailable_after: z.string().optional(),
         announced: z.string().optional(),
       }).optional(),
+      recommended: z.boolean().optional(),
+      available: z.boolean().optional(),
     })).optional(),
   }).optional(),
   datacenter: z.object({
@@ -251,7 +253,14 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/hetzner-cloud/servers",
-  version: "2026.03.23.1",
+  version: "2026.04.02.1",
+  upgrades: [
+    {
+      toVersion: "2026.04.02.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+  ],
   globalArguments: GlobalArgsSchema,
   inputsSchema: InputsSchema,
   resources: {

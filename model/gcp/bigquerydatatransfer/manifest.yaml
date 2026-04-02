@@ -1,7 +1,7 @@
 # Auto-generated manifest. Re-generate with the appropriate deno task.
 manifestVersion: 1
 name: "@swamp/gcp/bigquerydatatransfer"
-version: "2026.04.01.1"
+version: "2026.04.02.1"
 description: "Google Cloud bigquerydatatransfer infrastructure models"
 labels:
   - gcp
@@ -9,8 +9,6 @@ labels:
   - bigquerydatatransfer
   - cloud
   - infrastructure
-releaseNotes: |
-  - Added: datasources, locations, transferconfigs, transferconfigs_runs, transferconfigs_runs_transferlogs, transferconfigs_transferresources
 models:
   - datasources.ts
   - locations.ts

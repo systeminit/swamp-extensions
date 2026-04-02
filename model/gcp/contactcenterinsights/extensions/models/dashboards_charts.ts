@@ -87,6 +87,13 @@ const DELETE_CONFIG = {
 } as const;
 
 const GlobalArgsSchema = z.object({
+  action: z.object({
+    redirectAction: z.object({
+      relativePath: z.string().describe("The relative path to redirect to.")
+        .optional(),
+    }).describe("The redirect action to be taken when the chart is clicked.")
+      .optional(),
+  }).describe("The action to be taken when the chart is clicked.").optional(),
   chartVisualizationType: z.enum([
     "CHART_VISUALIZATION_TYPE_UNSPECIFIED",
     "BAR",
@@ -213,6 +220,11 @@ const GlobalArgsSchema = z.object({
 });
 
 const StateSchema = z.object({
+  action: z.object({
+    redirectAction: z.object({
+      relativePath: z.string(),
+    }),
+  }).optional(),
   chartType: z.string().optional(),
   chartVisualizationType: z.string().optional(),
   createTime: z.string().optional(),
@@ -273,6 +285,13 @@ const StateSchema = z.object({
 type StateData = z.infer<typeof StateSchema>;
 
 const InputsSchema = z.object({
+  action: z.object({
+    redirectAction: z.object({
+      relativePath: z.string().describe("The relative path to redirect to.")
+        .optional(),
+    }).describe("The redirect action to be taken when the chart is clicked.")
+      .optional(),
+  }).describe("The action to be taken when the chart is clicked.").optional(),
   chartVisualizationType: z.enum([
     "CHART_VISUALIZATION_TYPE_UNSPECIFIED",
     "BAR",
@@ -400,11 +419,16 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/contactcenterinsights/dashboards-charts",
-  version: "2026.04.01.1",
+  version: "2026.04.02.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
       description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.02.1",
+      description: "Added: action",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },
   ],
@@ -429,6 +453,7 @@ export const model = {
         const params: Record<string, string> = { project: projectId };
         if (g["parent"] !== undefined) params["parent"] = String(g["parent"]);
         const body: Record<string, unknown> = {};
+        if (g["action"] !== undefined) body["action"] = g["action"];
         if (g["chartVisualizationType"] !== undefined) {
           body["chartVisualizationType"] = g["chartVisualizationType"];
         }
@@ -519,6 +544,7 @@ export const model = {
           existing["name"]?.toString() ?? g["name"]?.toString() ?? "",
         );
         const body: Record<string, unknown> = {};
+        if (g["action"] !== undefined) body["action"] = g["action"];
         if (g["chartVisualizationType"] !== undefined) {
           body["chartVisualizationType"] = g["chartVisualizationType"];
         }

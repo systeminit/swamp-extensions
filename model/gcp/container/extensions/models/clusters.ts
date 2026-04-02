@@ -3137,6 +3137,9 @@ const GlobalArgsSchema = z.object({
       }).describe("Constraints applied to pods.").optional(),
       name: z.string().describe("The name of the node pool.").optional(),
       networkConfig: z.object({
+        acceleratorNetworkProfile: z.string().describe(
+          'Immutable. The accelerator network profile for the node pool. For now the only valid value is "auto". If specified, the network configuration of the nodes in this node pool will be managed by this profile for the supported machine types, zone, etc.',
+        ).optional(),
         additionalNodeNetworkConfigs: z.array(z.object({
           network: z.string().describe(
             "Name of the VPC where the additional interface belongs",
@@ -6245,6 +6248,7 @@ const StateSchema = z.object({
     }),
     name: z.string(),
     networkConfig: z.object({
+      acceleratorNetworkProfile: z.string(),
       additionalNodeNetworkConfigs: z.array(z.object({
         network: z.string(),
         subnetwork: z.string(),
@@ -9453,6 +9457,9 @@ const InputsSchema = z.object({
       }).describe("Constraints applied to pods.").optional(),
       name: z.string().describe("The name of the node pool.").optional(),
       networkConfig: z.object({
+        acceleratorNetworkProfile: z.string().describe(
+          'Immutable. The accelerator network profile for the node pool. For now the only valid value is "auto". If specified, the network configuration of the nodes in this node pool will be managed by this profile for the supported machine types, zone, etc.',
+        ).optional(),
         additionalNodeNetworkConfigs: z.array(z.object({
           network: z.string().describe(
             "Name of the VPC where the additional interface belongs",
@@ -11442,7 +11449,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/container/clusters",
-  version: "2026.04.01.1",
+  version: "2026.04.02.1",
   upgrades: [
     {
       toVersion: "2026.03.31.1",
@@ -11454,8 +11461,12 @@ export const model = {
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },
+    {
+      toVersion: "2026.04.02.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
   ],
-
   globalArguments: GlobalArgsSchema,
   inputsSchema: InputsSchema,
   resources: {

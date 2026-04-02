@@ -1,7 +1,7 @@
 # Auto-generated manifest. Re-generate with the appropriate deno task.
 manifestVersion: 1
 name: "@swamp/gcp/calendar"
-version: "2026.04.01.1"
+version: "2026.04.02.1"
 description: "Google Cloud calendar infrastructure models"
 labels:
   - gcp
@@ -9,8 +9,6 @@ labels:
   - calendar
   - cloud
   - infrastructure
-releaseNotes: |
-  - Added: acl, calendarlist, calendars, colors, events, settings
 models:
   - acl.ts
   - calendarlist.ts

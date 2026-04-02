@@ -1,7 +1,7 @@
 # Auto-generated manifest. Re-generate with the appropriate deno task.
 manifestVersion: 1
 name: "@swamp/gcp/datastream"
-version: "2026.04.01.1"
+version: "2026.04.02.1"
 description: "Google Cloud datastream infrastructure models"
 labels:
   - gcp
@@ -9,8 +9,6 @@ labels:
   - datastream
   - cloud
   - infrastructure
-releaseNotes: |
-  - Added: locations, connectionprofiles, privateconnections, privateconnections_routes, streams, streams_objects
 models:
   - connectionprofiles.ts
   - locations.ts

@@ -1,7 +1,7 @@
 # Auto-generated manifest. Re-generate with the appropriate deno task.
 manifestVersion: 1
 name: "@swamp/gcp/logging"
-version: "2026.04.01.1"
+version: "2026.04.02.1"
 description: "Google Cloud logging infrastructure models"
 labels:
   - gcp
@@ -9,8 +9,6 @@ labels:
   - logging
   - cloud
   - infrastructure
-releaseNotes: |
-  - Added: exclusions, locations, buckets, buckets_links, buckets_views, buckets_views_logs, recentqueries, savedqueries, logs, sinks, entries, logscopes, monitoredresourcedescriptors, metrics
 models:
   - buckets.ts
   - buckets_links.ts

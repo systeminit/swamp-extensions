@@ -1,7 +1,7 @@
 # Auto-generated manifest. Re-generate with the appropriate deno task.
 manifestVersion: 1
 name: "@swamp/gcp/recommendationengine"
-version: "2026.04.01.1"
+version: "2026.04.02.1"
 description: "Google Cloud recommendationengine infrastructure models"
 labels:
   - gcp
@@ -9,8 +9,6 @@ labels:
   - recommendationengine
   - cloud
   - infrastructure
-releaseNotes: |
-  - Added: catalogs, catalogs_catalogitems, catalogs_eventstores_predictionapikeyregistrations, catalogs_eventstores_userevents
 models:
   - catalogs.ts
   - catalogs_catalogitems.ts
