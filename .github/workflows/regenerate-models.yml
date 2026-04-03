@@ -136,21 +136,34 @@ jobs:
             echo "SUMMARY_EOF"
           } >> "$GITHUB_OUTPUT"
 
+      - name: Determine provider label
+        id: label
+        run: |
+          PROVIDER="${{ inputs.provider || 'all' }}"
+          if [ "${{ github.event_name }}" = "schedule" ] || [ "$PROVIDER" = "all" ]; then
+            echo "suffix=" >> "$GITHUB_OUTPUT"
+            echo "title=chore: regenerate models from upstream schemas" >> "$GITHUB_OUTPUT"
+          else
+            echo "suffix=-${PROVIDER}" >> "$GITHUB_OUTPUT"
+            echo "title=chore: regenerate ${PROVIDER} models from upstream schemas" >> "$GITHUB_OUTPUT"
+          fi
+
       - name: Create or update pull request
         if: steps.changes.outputs.has_changes == 'true'
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           CHANGE_SUMMARY: ${{ steps.changes.outputs.summary }}
         run: |
-          BRANCH="automated/regenerate-models"
+          BRANCH="automated/regenerate-models${{ steps.label.outputs.suffix }}"
           DATE=$(date +%Y-%m-%d)
+          TITLE="${{ steps.label.outputs.title }}"
 
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
 
           git checkout -b "$BRANCH"
           git add -A
-          git commit -m "chore: regenerate models from upstream schemas ($DATE)"
+          git commit -m "${TITLE} ($DATE)"
           git push --force origin "$BRANCH"
 
           # Check for an existing open PR from this branch
@@ -189,6 +202,6 @@ jobs:
           EOF
 
             gh pr create \
-              --title "chore: regenerate models from upstream schemas" \
+              --title "$TITLE" \
               --body-file /tmp/pr-body.md
           fi
