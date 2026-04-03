@@ -42,14 +42,14 @@ const GlobalArgsSchema = z.object({
   ).optional(),
   InstanceArn: z.string().min(10).max(1224).regex(
     new RegExp(
-      "^arn:(aws|aws-us-gov|aws-cn|aws-iso|aws-iso-b):sso:::instance/(sso)?ins-[a-zA-Z0-9-.]{16}$",
+      "^arn:aws(-[a-z]{1,5}){0,3}:sso:::instance/(sso)?ins-[a-zA-Z0-9-.]{16}$",
     ),
   ).describe(
     "The ARN of the instance of IAM Identity Center under which the operation will run",
   ),
   ApplicationProviderArn: z.string().min(10).max(1224).regex(
     new RegExp(
-      "^arn:(aws|aws-us-gov|aws-cn|aws-iso|aws-iso-b):sso::aws:applicationProvider/[a-zA-Z0-9-/]+$",
+      "^arn:aws(-[a-z]{1,5}){0,3}:sso::aws:applicationProvider/[a-zA-Z0-9-/]+$",
     ),
   ).describe(
     "The ARN of the application provider under which the operation will run",
@@ -96,14 +96,14 @@ const InputsSchema = z.object({
   ).optional(),
   InstanceArn: z.string().min(10).max(1224).regex(
     new RegExp(
-      "^arn:(aws|aws-us-gov|aws-cn|aws-iso|aws-iso-b):sso:::instance/(sso)?ins-[a-zA-Z0-9-.]{16}$",
+      "^arn:aws(-[a-z]{1,5}){0,3}:sso:::instance/(sso)?ins-[a-zA-Z0-9-.]{16}$",
     ),
   ).describe(
     "The ARN of the instance of IAM Identity Center under which the operation will run",
   ).optional(),
   ApplicationProviderArn: z.string().min(10).max(1224).regex(
     new RegExp(
-      "^arn:(aws|aws-us-gov|aws-cn|aws-iso|aws-iso-b):sso::aws:applicationProvider/[a-zA-Z0-9-/]+$",
+      "^arn:aws(-[a-z]{1,5}){0,3}:sso::aws:applicationProvider/[a-zA-Z0-9-/]+$",
     ),
   ).describe(
     "The ARN of the application provider under which the operation will run",
@@ -126,10 +126,15 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/aws/sso/application",
-  version: "2026.04.01.1",
+  version: "2026.04.03.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.03.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

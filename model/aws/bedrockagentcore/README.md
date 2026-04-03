@@ -14,8 +14,9 @@ methods:
 - **delete** — remove the resource from AWS
 - **sync** — refresh all resource properties from AWS
 
-Use `swamp model type describe @swamp/aws/bedrockagentcore/browser_custom` to
-see the full list of configurable properties and available methods for this
+Use
+`swamp model type describe @swamp/aws/bedrockagentcore/api_key_credential_provider`
+to see the full list of configurable properties and available methods for this
 model.
 
 ## Authentication
@@ -48,17 +49,17 @@ export AWS_SECRET_ACCESS_KEY=wJal...
 ## Usage
 
 ```bash
-# Create a new browser_custom model
-swamp model create @swamp/aws/bedrockagentcore/browser_custom my-browser_custom
+# Create a new api_key_credential_provider model
+swamp model create @swamp/aws/bedrockagentcore/api_key_credential_provider my-api_key_credential_provider
 
 # Edit the model to configure its properties
-swamp model edit my-browser_custom
+swamp model edit my-api_key_credential_provider
 
 # Create the resource in AWS
-swamp model method run my-browser_custom create
+swamp model method run my-api_key_credential_provider create
 
 # Sync current state from AWS
-swamp model method run my-browser_custom sync
+swamp model method run my-api_key_credential_provider sync
 ```
 
 ## License
