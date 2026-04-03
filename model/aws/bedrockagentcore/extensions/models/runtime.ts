@@ -96,6 +96,18 @@ export const CustomJWTAuthorizerConfigurationSchema = z.object({
   ).optional(),
 });
 
+export const SessionStorageConfigurationSchema = z.object({
+  MountPath: z.string().min(6).max(200).regex(
+    new RegExp("^/mnt/[a-zA-Z0-9._-]+/?$"),
+  ).describe("Mount path for session storage"),
+});
+
+export const FilesystemConfigurationSchema = z.object({
+  SessionStorage: SessionStorageConfigurationSchema.describe(
+    "Configuration for session storage",
+  ).optional(),
+});
+
 const GlobalArgsSchema = z.object({
   name: z.string().describe(
     "Instance name for this resource (used as the unique identifier in the factory pattern)",
@@ -152,6 +164,9 @@ const GlobalArgsSchema = z.object({
     ).describe("List of allowed HTTP headers for agent runtime requests")
       .optional(),
   }).describe("Configuration for HTTP request headers").optional(),
+  FilesystemConfigurations: z.array(FilesystemConfigurationSchema).describe(
+    "Filesystem configurations for the agent runtime",
+  ).optional(),
   WorkloadIdentityDetails: z.object({
     WorkloadIdentityArn: z.string().min(1).max(1024).describe(
       "ARN of the workload identity",
@@ -189,6 +204,7 @@ const StateSchema = z.object({
   RequestHeaderConfiguration: z.object({
     RequestHeaderAllowlist: z.array(z.string()),
   }).optional(),
+  FilesystemConfigurations: z.array(FilesystemConfigurationSchema).optional(),
   AgentRuntimeVersion: z.string().optional(),
   WorkloadIdentityDetails: z.object({
     WorkloadIdentityArn: z.string(),
@@ -256,6 +272,9 @@ const InputsSchema = z.object({
     ).describe("List of allowed HTTP headers for agent runtime requests")
       .optional(),
   }).describe("Configuration for HTTP request headers").optional(),
+  FilesystemConfigurations: z.array(FilesystemConfigurationSchema).describe(
+    "Filesystem configurations for the agent runtime",
+  ).optional(),
   WorkloadIdentityDetails: z.object({
     WorkloadIdentityArn: z.string().min(1).max(1024).describe(
       "ARN of the workload identity",
@@ -269,7 +288,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/aws/bedrockagentcore/runtime",
-  version: "2026.04.03.1",
+  version: "2026.04.03.3",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -278,6 +297,16 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.03.2",
+      description: "Added: FilesystemConfigurations",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.03.3",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },
@@ -307,7 +336,10 @@ export const model = {
           "AWS::BedrockAgentCore::Runtime",
           desiredState,
         ) as StateData;
-        const instanceName = g.name?.toString() ?? "current";
+        const instanceName = (g.name?.toString() ?? "current").replace(
+          /[\/\\]/g,
+          "_",
+        ).replace(/\.\./g, "_").replace(/\0/g, "");
         const handle = await context.writeResource(
           "state",
           instanceName,
@@ -328,8 +360,11 @@ export const model = {
           "AWS::BedrockAgentCore::Runtime",
           args.identifier,
         ) as StateData;
-        const instanceName = context.globalArgs.name?.toString() ??
-          args.identifier;
+        const instanceName =
+          (context.globalArgs.name?.toString() ?? args.identifier).replace(
+            /[\/\\]/g,
+            "_",
+          ).replace(/\.\./g, "_").replace(/\0/g, "");
         const handle = await context.writeResource(
           "state",
           instanceName,
@@ -343,7 +378,10 @@ export const model = {
       arguments: z.object({}),
       execute: async (_args: Record<string, never>, context: any) => {
         const g = context.globalArgs;
-        const instanceName = g.name?.toString() ?? "current";
+        const instanceName = (g.name?.toString() ?? "current").replace(
+          /[\/\\]/g,
+          "_",
+        ).replace(/\.\./g, "_").replace(/\0/g, "");
         const content = await context.dataRepository.getContent(
           context.modelType,
           context.modelId,
@@ -393,8 +431,11 @@ export const model = {
           "AWS::BedrockAgentCore::Runtime",
           args.identifier,
         );
-        const instanceName = context.globalArgs.name?.toString() ??
-          args.identifier;
+        const instanceName =
+          (context.globalArgs.name?.toString() ?? args.identifier).replace(
+            /[\/\\]/g,
+            "_",
+          ).replace(/\.\./g, "_").replace(/\0/g, "");
         const handle = await context.writeResource("state", instanceName, {
           identifier: args.identifier,
           existed,
@@ -409,7 +450,10 @@ export const model = {
       arguments: z.object({}),
       execute: async (_args: Record<string, never>, context: any) => {
         const g = context.globalArgs;
-        const instanceName = g.name?.toString() ?? "current";
+        const instanceName = (g.name?.toString() ?? "current").replace(
+          /[\/\\]/g,
+          "_",
+        ).replace(/\.\./g, "_").replace(/\0/g, "");
         const content = await context.dataRepository.getContent(
           context.modelType,
           context.modelId,

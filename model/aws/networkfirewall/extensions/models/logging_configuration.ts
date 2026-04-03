@@ -55,10 +55,20 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/aws/networkfirewall/logging-configuration",
-  version: "2026.04.01.1",
+  version: "2026.04.03.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.03.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.03.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },
@@ -88,7 +98,8 @@ export const model = {
           desiredState,
         ) as StateData;
         const instanceName =
-          (result.FirewallArn ?? g.FirewallArn)?.toString() ?? "current";
+          ((result.FirewallArn ?? g.FirewallArn)?.toString() ?? "current")
+            .replace(/[\/\\]/g, "_").replace(/\.\./g, "_").replace(/\0/g, "");
         const handle = await context.writeResource(
           "state",
           instanceName,
@@ -110,8 +121,9 @@ export const model = {
           args.identifier,
         ) as StateData;
         const instanceName =
-          (result.FirewallArn ?? context.globalArgs.FirewallArn)?.toString() ??
-            args.identifier;
+          ((result.FirewallArn ?? context.globalArgs.FirewallArn)?.toString() ??
+            args.identifier).replace(/[\/\\]/g, "_").replace(/\.\./g, "_")
+            .replace(/\0/g, "");
         const handle = await context.writeResource(
           "state",
           instanceName,
@@ -125,7 +137,10 @@ export const model = {
       arguments: z.object({}),
       execute: async (_args: Record<string, never>, context: any) => {
         const g = context.globalArgs;
-        const instanceName = g.FirewallArn?.toString() ?? "current";
+        const instanceName = (g.FirewallArn?.toString() ?? "current").replace(
+          /[\/\\]/g,
+          "_",
+        ).replace(/\.\./g, "_").replace(/\0/g, "");
         const content = await context.dataRepository.getContent(
           context.modelType,
           context.modelId,
@@ -174,8 +189,9 @@ export const model = {
           "AWS::NetworkFirewall::LoggingConfiguration",
           args.identifier,
         );
-        const instanceName = context.globalArgs.FirewallArn?.toString() ??
-          args.identifier;
+        const instanceName =
+          (context.globalArgs.FirewallArn?.toString() ?? args.identifier)
+            .replace(/[\/\\]/g, "_").replace(/\.\./g, "_").replace(/\0/g, "");
         const handle = await context.writeResource("state", instanceName, {
           identifier: args.identifier,
           existed,
@@ -190,7 +206,10 @@ export const model = {
       arguments: z.object({}),
       execute: async (_args: Record<string, never>, context: any) => {
         const g = context.globalArgs;
-        const instanceName = g.FirewallArn?.toString() ?? "current";
+        const instanceName = (g.FirewallArn?.toString() ?? "current").replace(
+          /[\/\\]/g,
+          "_",
+        ).replace(/\.\./g, "_").replace(/\0/g, "");
         const content = await context.dataRepository.getContent(
           context.modelType,
           context.modelId,

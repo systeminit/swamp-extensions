@@ -4,6 +4,7 @@
 import type { ZodGeneratorResult } from "../shared/zodGenerator.ts";
 import type { OnlyProperties } from "../shared/schema/types.ts";
 import type { GcpParsedResource } from "./pipeline.ts";
+import { wrapWithSanitize } from "../shared/instanceName.ts";
 
 /**
  * Sanitize a name to be a valid JS identifier.
@@ -379,11 +380,17 @@ export function generateGcpExtensionModel(
 
     if (isSyntheticName) {
       lines.push(
-        `        const instanceName = g.name?.toString() ?? "current";`,
+        `        const instanceName = ${
+          wrapWithSanitize(`g.name?.toString() ?? "current"`)
+        };`,
       );
     } else {
       lines.push(
-        `        const instanceName = (result.${namingField} ?? g.${namingField})?.toString() ?? "current";`,
+        `        const instanceName = ${
+          wrapWithSanitize(
+            `(result.${namingField} ?? g.${namingField})?.toString() ?? "current"`,
+          )
+        };`,
       );
     }
     lines.push(
@@ -468,11 +475,17 @@ export function generateGcpExtensionModel(
 
     if (isSyntheticName) {
       lines.push(
-        `        const instanceName = g.name?.toString() ?? args.identifier;`,
+        `        const instanceName = ${
+          wrapWithSanitize(`g.name?.toString() ?? args.identifier`)
+        };`,
       );
     } else {
       lines.push(
-        `        const instanceName = (result.${namingField} ?? g.${namingField})?.toString() ?? args.identifier;`,
+        `        const instanceName = ${
+          wrapWithSanitize(
+            `(result.${namingField} ?? g.${namingField})?.toString() ?? args.identifier`,
+          )
+        };`,
       );
     }
     lines.push(
@@ -511,11 +524,15 @@ export function generateGcpExtensionModel(
 
     if (isSyntheticName) {
       lines.push(
-        `        const instanceName = g.name?.toString() ?? "current";`,
+        `        const instanceName = ${
+          wrapWithSanitize(`g.name?.toString() ?? "current"`)
+        };`,
       );
     } else {
       lines.push(
-        `        const instanceName = g.${namingField}?.toString() ?? "current";`,
+        `        const instanceName = ${
+          wrapWithSanitize(`g.${namingField}?.toString() ?? "current"`)
+        };`,
       );
     }
 
@@ -703,11 +720,15 @@ export function generateGcpExtensionModel(
 
     if (isSyntheticName) {
       lines.push(
-        `        const instanceName = g.name?.toString() ?? args.identifier;`,
+        `        const instanceName = ${
+          wrapWithSanitize(`g.name?.toString() ?? args.identifier`)
+        };`,
       );
     } else {
       lines.push(
-        `        const instanceName = g.${namingField}?.toString() ?? args.identifier;`,
+        `        const instanceName = ${
+          wrapWithSanitize(`g.${namingField}?.toString() ?? args.identifier`)
+        };`,
       );
     }
     lines.push(
@@ -742,11 +763,15 @@ export function generateGcpExtensionModel(
 
     if (isSyntheticName) {
       lines.push(
-        `        const instanceName = g.name?.toString() ?? "current";`,
+        `        const instanceName = ${
+          wrapWithSanitize(`g.name?.toString() ?? "current"`)
+        };`,
       );
     } else {
       lines.push(
-        `        const instanceName = g.${namingField}?.toString() ?? "current";`,
+        `        const instanceName = ${
+          wrapWithSanitize(`g.${namingField}?.toString() ?? "current"`)
+        };`,
       );
     }
 
@@ -1011,7 +1036,9 @@ export function generateGcpExtensionModel(
         `        const content = await ${contextPrefix}.dataRepository.getContent(`,
       );
       lines.push(
-        `          ${contextPrefix}.modelType, ${contextPrefix}.modelId, g.${instanceNameRef}?.toString() ?? "current",`,
+        `          ${contextPrefix}.modelType, ${contextPrefix}.modelId, ${
+          wrapWithSanitize(`g.${instanceNameRef}?.toString() ?? "current"`)
+        },`,
       );
       lines.push(`        );`);
       lines.push(

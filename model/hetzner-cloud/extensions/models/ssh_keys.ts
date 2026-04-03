@@ -33,7 +33,19 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/hetzner-cloud/ssh-keys",
-  version: "2026.03.23.1",
+  version: "2026.04.03.2",
+  upgrades: [
+    {
+      toVersion: "2026.04.03.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.03.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+  ],
   globalArguments: GlobalArgsSchema,
   inputsSchema: InputsSchema,
   resources: {
@@ -55,7 +67,10 @@ export const model = {
         if (g.public_key !== undefined) body.public_key = g.public_key;
         if (g.labels !== undefined) body.labels = g.labels;
         const result = await create("/ssh_keys", body) as ResourceData;
-        const instanceName = g.name?.toString() ?? "current";
+        const instanceName = (g.name?.toString() ?? "current").replace(
+          /[\/\\]/g,
+          "_",
+        ).replace(/\.\./g, "_").replace(/\0/g, "");
         const handle = await context.writeResource(
           "state",
           instanceName,
@@ -71,7 +86,8 @@ export const model = {
       }),
       execute: async (args: { id: number }, context: any) => {
         const result = await read("/ssh_keys", args.id) as ResourceData;
-        const instanceName = result.name?.toString() ?? args.id.toString();
+        const instanceName = (result.name?.toString() ?? args.id.toString())
+          .replace(/[\/\\]/g, "_").replace(/\.\./g, "_").replace(/\0/g, "");
         const handle = await context.writeResource(
           "state",
           instanceName,
@@ -85,7 +101,10 @@ export const model = {
       arguments: z.object({}),
       execute: async (_args: Record<string, never>, context: any) => {
         const g = context.globalArgs;
-        const instanceName = g.name?.toString() ?? "current";
+        const instanceName = (g.name?.toString() ?? "current").replace(
+          /[\/\\]/g,
+          "_",
+        ).replace(/\.\./g, "_").replace(/\0/g, "");
         const content = await context.dataRepository.getContent(
           context.modelType,
           context.modelId,
@@ -116,8 +135,11 @@ export const model = {
       }),
       execute: async (args: { id: number }, context: any) => {
         const { existed } = await remove("/ssh_keys", args.id);
-        const instanceName = context.globalArgs.name?.toString() ??
-          args.id.toString();
+        const instanceName =
+          (context.globalArgs.name?.toString() ?? args.id.toString()).replace(
+            /[\/\\]/g,
+            "_",
+          ).replace(/\.\./g, "_").replace(/\0/g, "");
         const handle = await context.writeResource("state", instanceName, {
           id: args.id,
           existed,
@@ -132,7 +154,10 @@ export const model = {
       arguments: z.object({}),
       execute: async (_args: Record<string, never>, context: any) => {
         const g = context.globalArgs;
-        const instanceName = g.name?.toString() ?? "current";
+        const instanceName = (g.name?.toString() ?? "current").replace(
+          /[\/\\]/g,
+          "_",
+        ).replace(/\.\./g, "_").replace(/\0/g, "");
         const content = await context.dataRepository.getContent(
           context.modelType,
           context.modelId,

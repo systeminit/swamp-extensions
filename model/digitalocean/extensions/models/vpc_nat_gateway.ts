@@ -106,7 +106,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/digitalocean/vpc-nat-gateway",
-  version: "2026.03.27.2",
+  version: "2026.04.03.2",
   upgrades: [
     {
       toVersion: "2026.03.27.1",
@@ -115,6 +115,16 @@ export const model = {
     },
     {
       toVersion: "2026.03.27.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.03.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.03.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },
@@ -139,7 +149,10 @@ export const model = {
       }),
       execute: async (args: { checkExists?: boolean }, context: any) => {
         const g = context.globalArgs;
-        const instanceName = g.name?.toString() ?? "current";
+        const instanceName = (g.name?.toString() ?? "current").replace(
+          /[\/\\]/g,
+          "_",
+        ).replace(/\.\./g, "_").replace(/\0/g, "");
         if (args.checkExists) {
           const existing = await tryFindByField(
             "/v2/vpc_nat_gateways",
@@ -189,7 +202,8 @@ export const model = {
           "/v2/vpc_nat_gateways",
           args.id,
         ) as ResourceData;
-        const instanceName = result.name?.toString() ?? args.id.toString();
+        const instanceName = (result.name?.toString() ?? args.id.toString())
+          .replace(/[\/\\]/g, "_").replace(/\.\./g, "_").replace(/\0/g, "");
         const handle = await context.writeResource(
           "state",
           instanceName,
@@ -203,7 +217,10 @@ export const model = {
       arguments: z.object({}),
       execute: async (_args: Record<string, never>, context: any) => {
         const g = context.globalArgs;
-        const instanceName = g.name?.toString() ?? "current";
+        const instanceName = (g.name?.toString() ?? "current").replace(
+          /[\/\\]/g,
+          "_",
+        ).replace(/\.\./g, "_").replace(/\0/g, "");
         const content = await context.dataRepository.getContent(
           context.modelType,
           context.modelId,
@@ -247,8 +264,11 @@ export const model = {
       }),
       execute: async (args: { id: string | number }, context: any) => {
         const { existed } = await remove("/v2/vpc_nat_gateways", args.id);
-        const instanceName = context.globalArgs.name?.toString() ??
-          args.id.toString();
+        const instanceName =
+          (context.globalArgs.name?.toString() ?? args.id.toString()).replace(
+            /[\/\\]/g,
+            "_",
+          ).replace(/\.\./g, "_").replace(/\0/g, "");
         const handle = await context.writeResource("state", instanceName, {
           id: args.id,
           existed,
@@ -263,7 +283,10 @@ export const model = {
       arguments: z.object({}),
       execute: async (_args: Record<string, never>, context: any) => {
         const g = context.globalArgs;
-        const instanceName = g.name?.toString() ?? "current";
+        const instanceName = (g.name?.toString() ?? "current").replace(
+          /[\/\\]/g,
+          "_",
+        ).replace(/\.\./g, "_").replace(/\0/g, "");
         const content = await context.dataRepository.getContent(
           context.modelType,
           context.modelId,

@@ -375,7 +375,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/classroom/courses-announcements",
-  version: "2026.04.03.1",
+  version: "2026.04.03.3",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -389,6 +389,16 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.03.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.03.3",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },
@@ -447,7 +457,8 @@ export const model = {
           body,
           GET_CONFIG,
         ) as StateData;
-        const instanceName = (result.id ?? g.id)?.toString() ?? "current";
+        const instanceName = ((result.id ?? g.id)?.toString() ?? "current")
+          .replace(/[\/\\]/g, "_").replace(/\.\./g, "_").replace(/\0/g, "");
         const handle = await context.writeResource(
           "state",
           instanceName,
@@ -474,7 +485,11 @@ export const model = {
           GET_CONFIG,
           params,
         ) as StateData;
-        const instanceName = (result.id ?? g.id)?.toString() ?? args.identifier;
+        const instanceName =
+          ((result.id ?? g.id)?.toString() ?? args.identifier).replace(
+            /[\/\\]/g,
+            "_",
+          ).replace(/\.\./g, "_").replace(/\0/g, "");
         const handle = await context.writeResource(
           "state",
           instanceName,
@@ -489,7 +504,10 @@ export const model = {
       execute: async (_args: Record<string, never>, context: any) => {
         const g = context.globalArgs;
         const projectId = await getProjectId();
-        const instanceName = g.id?.toString() ?? "current";
+        const instanceName = (g.id?.toString() ?? "current").replace(
+          /[\/\\]/g,
+          "_",
+        ).replace(/\.\./g, "_").replace(/\0/g, "");
         const content = await context.dataRepository.getContent(
           context.modelType,
           context.modelId,
@@ -570,7 +588,10 @@ export const model = {
           DELETE_CONFIG,
           params,
         );
-        const instanceName = g.id?.toString() ?? args.identifier;
+        const instanceName = (g.id?.toString() ?? args.identifier).replace(
+          /[\/\\]/g,
+          "_",
+        ).replace(/\.\./g, "_").replace(/\0/g, "");
         const handle = await context.writeResource("state", instanceName, {
           identifier: args.identifier,
           existed,
@@ -586,7 +607,10 @@ export const model = {
       execute: async (_args: Record<string, never>, context: any) => {
         const g = context.globalArgs;
         const projectId = await getProjectId();
-        const instanceName = g.id?.toString() ?? "current";
+        const instanceName = (g.id?.toString() ?? "current").replace(
+          /[\/\\]/g,
+          "_",
+        ).replace(/\.\./g, "_").replace(/\0/g, "");
         const content = await context.dataRepository.getContent(
           context.modelType,
           context.modelId,
@@ -646,7 +670,10 @@ export const model = {
         const content = await context.dataRepository.getContent(
           context.modelType,
           context.modelId,
-          g.id?.toString() ?? "current",
+          (g.id?.toString() ?? "current").replace(/[\/\\]/g, "_").replace(
+            /\.\./g,
+            "_",
+          ).replace(/\0/g, ""),
         );
         if (!content) {
           throw new Error("No existing state found - run create or get first");

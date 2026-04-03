@@ -1,7 +1,7 @@
 # Auto-generated manifest. Re-generate with the appropriate deno task.
 manifestVersion: 1
 name: "@swamp/aws/dms"
-version: "2026.04.01.1"
+version: "2026.04.03.2"
 description: "AWS DMS infrastructure models"
 labels:
   - aws

@@ -3,6 +3,7 @@
 
 import type { ZodGeneratorResult } from "../shared/zodGenerator.ts";
 import type { CfSchema, OnlyProperties } from "../shared/schema/types.ts";
+import { wrapWithSanitize } from "../shared/instanceName.ts";
 
 /**
  * Handler availability for a resource, derived from cfSchema.handlers.
@@ -214,11 +215,17 @@ export function generateAwsExtensionModel(
     );
     if (isSyntheticName) {
       lines.push(
-        `        const instanceName = g.name?.toString() ?? "current";`,
+        `        const instanceName = ${
+          wrapWithSanitize(`g.name?.toString() ?? "current"`)
+        };`,
       );
     } else {
       lines.push(
-        `        const instanceName = (result.${namingField} ?? g.${namingField})?.toString() ?? "current";`,
+        `        const instanceName = ${
+          wrapWithSanitize(
+            `(result.${namingField} ?? g.${namingField})?.toString() ?? "current"`,
+          )
+        };`,
       );
     }
     lines.push(
@@ -244,11 +251,19 @@ export function generateAwsExtensionModel(
     );
     if (isSyntheticName) {
       lines.push(
-        `        const instanceName = context.globalArgs.name?.toString() ?? args.identifier;`,
+        `        const instanceName = ${
+          wrapWithSanitize(
+            `context.globalArgs.name?.toString() ?? args.identifier`,
+          )
+        };`,
       );
     } else {
       lines.push(
-        `        const instanceName = (result.${namingField} ?? context.globalArgs.${namingField})?.toString() ?? args.identifier;`,
+        `        const instanceName = ${
+          wrapWithSanitize(
+            `(result.${namingField} ?? context.globalArgs.${namingField})?.toString() ?? args.identifier`,
+          )
+        };`,
       );
     }
     lines.push(
@@ -272,11 +287,15 @@ export function generateAwsExtensionModel(
     lines.push(`        const g = context.globalArgs;`);
     if (isSyntheticName) {
       lines.push(
-        `        const instanceName = g.name?.toString() ?? "current";`,
+        `        const instanceName = ${
+          wrapWithSanitize(`g.name?.toString() ?? "current"`)
+        };`,
       );
     } else {
       lines.push(
-        `        const instanceName = g.${namingField}?.toString() ?? "current";`,
+        `        const instanceName = ${
+          wrapWithSanitize(`g.${namingField}?.toString() ?? "current"`)
+        };`,
       );
     }
     lines.push(
@@ -364,11 +383,19 @@ export function generateAwsExtensionModel(
     );
     if (isSyntheticName) {
       lines.push(
-        `        const instanceName = context.globalArgs.name?.toString() ?? args.identifier;`,
+        `        const instanceName = ${
+          wrapWithSanitize(
+            `context.globalArgs.name?.toString() ?? args.identifier`,
+          )
+        };`,
       );
     } else {
       lines.push(
-        `        const instanceName = context.globalArgs.${namingField}?.toString() ?? args.identifier;`,
+        `        const instanceName = ${
+          wrapWithSanitize(
+            `context.globalArgs.${namingField}?.toString() ?? args.identifier`,
+          )
+        };`,
       );
     }
     lines.push(
@@ -401,11 +428,15 @@ export function generateAwsExtensionModel(
     lines.push(`        const g = context.globalArgs;`);
     if (isSyntheticName) {
       lines.push(
-        `        const instanceName = g.name?.toString() ?? "current";`,
+        `        const instanceName = ${
+          wrapWithSanitize(`g.name?.toString() ?? "current"`)
+        };`,
       );
     } else {
       lines.push(
-        `        const instanceName = g.${namingField}?.toString() ?? "current";`,
+        `        const instanceName = ${
+          wrapWithSanitize(`g.${namingField}?.toString() ?? "current"`)
+        };`,
       );
     }
     lines.push(

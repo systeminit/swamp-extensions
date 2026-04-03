@@ -1,7 +1,7 @@
 # Auto-generated manifest. Re-generate with the appropriate deno task.
 manifestVersion: 1
 name: "@swamp/aws/appsync"
-version: "2026.04.03.1"
+version: "2026.04.03.3"
 description: "AWS APPSYNC infrastructure models"
 labels:
   - aws
@@ -9,7 +9,7 @@ labels:
   - cloud
   - infrastructure
 releaseNotes: |
-  - Updated: graph_qlapi
+  - Updated: api, channel_namespace, data_source, domain_name, domain_name_api_association, function_configuration, graph_qlapi, resolver, source_api_association
 models:
   - api.ts
   - channel_namespace.ts

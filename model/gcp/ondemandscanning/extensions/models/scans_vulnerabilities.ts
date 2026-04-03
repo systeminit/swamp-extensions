@@ -44,6 +44,18 @@ const GlobalArgsSchema = z.object({
 
 const StateSchema = z.object({
   advisoryPublishTime: z.string().optional(),
+  aiSkillAnalysis: z.object({
+    findings: z.array(z.object({
+      category: z.string(),
+      description: z.string(),
+      filePath: z.string(),
+      ruleId: z.string(),
+      severity: z.string(),
+      snippet: z.string(),
+      title: z.string(),
+    })),
+    skillName: z.string(),
+  }).optional(),
   attestation: z.object({
     jwts: z.array(z.object({
       compactJwt: z.string(),
@@ -730,7 +742,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/ondemandscanning/scans-vulnerabilities",
-  version: "2026.04.03.1",
+  version: "2026.04.03.3",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -749,6 +761,16 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.03.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.03.3",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },
@@ -782,7 +804,10 @@ export const model = {
           "name",
           args.identifier,
         ) as StateData;
-        const instanceName = g.name?.toString() ?? args.identifier;
+        const instanceName = (g.name?.toString() ?? args.identifier).replace(
+          /[\/\\]/g,
+          "_",
+        ).replace(/\.\./g, "_").replace(/\0/g, "");
         const handle = await context.writeResource(
           "state",
           instanceName,
@@ -797,7 +822,10 @@ export const model = {
       execute: async (_args: Record<string, never>, context: any) => {
         const g = context.globalArgs;
         const projectId = await getProjectId();
-        const instanceName = g.name?.toString() ?? "current";
+        const instanceName = (g.name?.toString() ?? "current").replace(
+          /[\/\\]/g,
+          "_",
+        ).replace(/\.\./g, "_").replace(/\0/g, "");
         const content = await context.dataRepository.getContent(
           context.modelType,
           context.modelId,

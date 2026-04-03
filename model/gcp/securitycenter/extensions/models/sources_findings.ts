@@ -559,6 +559,28 @@ const GlobalArgsSchema = z.object({
   ).optional(),
   description: z.string().describe("Contains more details about the finding.")
     .optional(),
+  discoveredWorkload: z.object({
+    confidence: z.enum(["CONFIDENCE_UNSPECIFIED", "CONFIDENCE_HIGH"]).describe(
+      "The confidence in detection of this workload.",
+    ).optional(),
+    detectedRelevantHardware: z.boolean().describe(
+      "A boolean flag set to true if associated hardware strongly predicts the workload type.",
+    ).optional(),
+    detectedRelevantKeywords: z.boolean().describe(
+      "A boolean flag set to true if associated keywords strongly predict the workload type.",
+    ).optional(),
+    detectedRelevantPackages: z.boolean().describe(
+      "A boolean flag set to true if installed packages strongly predict the workload type.",
+    ).optional(),
+    workloadType: z.enum([
+      "WORKLOAD_TYPE_UNSPECIFIED",
+      "MCP_SERVER",
+      "AI_INFERENCE",
+      "AGENT",
+    ]).describe("The type of workload.").optional(),
+  }).describe(
+    "Represents discovered, customer managed workload that is not registered with the respective GCP service.",
+  ).optional(),
   disk: z.object({
     name: z.string().describe(
       'The name of the disk, for example, "https://www.googleapis.com/compute/v1/projects/{project-id}/zones/{zone-id}/disks/{disk-id}".',
@@ -2151,6 +2173,13 @@ const StateSchema = z.object({
       version: z.string(),
     }),
     description: z.string(),
+    discoveredWorkload: z.object({
+      confidence: z.string(),
+      detectedRelevantHardware: z.boolean(),
+      detectedRelevantKeywords: z.boolean(),
+      detectedRelevantPackages: z.boolean(),
+      workloadType: z.string(),
+    }),
     disk: z.object({
       name: z.string(),
     }),
@@ -3158,6 +3187,28 @@ const InputsSchema = z.object({
   ).optional(),
   description: z.string().describe("Contains more details about the finding.")
     .optional(),
+  discoveredWorkload: z.object({
+    confidence: z.enum(["CONFIDENCE_UNSPECIFIED", "CONFIDENCE_HIGH"]).describe(
+      "The confidence in detection of this workload.",
+    ).optional(),
+    detectedRelevantHardware: z.boolean().describe(
+      "A boolean flag set to true if associated hardware strongly predicts the workload type.",
+    ).optional(),
+    detectedRelevantKeywords: z.boolean().describe(
+      "A boolean flag set to true if associated keywords strongly predict the workload type.",
+    ).optional(),
+    detectedRelevantPackages: z.boolean().describe(
+      "A boolean flag set to true if installed packages strongly predict the workload type.",
+    ).optional(),
+    workloadType: z.enum([
+      "WORKLOAD_TYPE_UNSPECIFIED",
+      "MCP_SERVER",
+      "AI_INFERENCE",
+      "AGENT",
+    ]).describe("The type of workload.").optional(),
+  }).describe(
+    "Represents discovered, customer managed workload that is not registered with the respective GCP service.",
+  ).optional(),
   disk: z.object({
     name: z.string().describe(
       'The name of the disk, for example, "https://www.googleapis.com/compute/v1/projects/{project-id}/zones/{zone-id}/disks/{disk-id}".',
@@ -4561,7 +4612,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/securitycenter/sources-findings",
-  version: "2026.04.03.1",
+  version: "2026.04.03.3",
   upgrades: [
     {
       toVersion: "2026.03.31.1",
@@ -4596,6 +4647,16 @@ export const model = {
         return rest;
       },
     },
+    {
+      toVersion: "2026.04.03.2",
+      description: "Added: discoveredWorkload",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.03.3",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
   ],
   globalArguments: GlobalArgsSchema,
   inputsSchema: InputsSchema,
@@ -4625,8 +4686,11 @@ export const model = {
           "name",
           args.identifier,
         ) as StateData;
-        const instanceName = (result.name ?? g.name)?.toString() ??
-          args.identifier;
+        const instanceName =
+          ((result.name ?? g.name)?.toString() ?? args.identifier).replace(
+            /[\/\\]/g,
+            "_",
+          ).replace(/\.\./g, "_").replace(/\0/g, "");
         const handle = await context.writeResource(
           "state",
           instanceName,
@@ -4641,7 +4705,10 @@ export const model = {
       execute: async (_args: Record<string, never>, context: any) => {
         const g = context.globalArgs;
         const projectId = await getProjectId();
-        const instanceName = g.name?.toString() ?? "current";
+        const instanceName = (g.name?.toString() ?? "current").replace(
+          /[\/\\]/g,
+          "_",
+        ).replace(/\.\./g, "_").replace(/\0/g, "");
         const content = await context.dataRepository.getContent(
           context.modelType,
           context.modelId,
@@ -4711,6 +4778,9 @@ export const model = {
         if (g["database"] !== undefined) body["database"] = g["database"];
         if (g["description"] !== undefined) {
           body["description"] = g["description"];
+        }
+        if (g["discoveredWorkload"] !== undefined) {
+          body["discoveredWorkload"] = g["discoveredWorkload"];
         }
         if (g["disk"] !== undefined) body["disk"] = g["disk"];
         if (g["eventTime"] !== undefined) body["eventTime"] = g["eventTime"];
@@ -4822,7 +4892,10 @@ export const model = {
       execute: async (_args: Record<string, never>, context: any) => {
         const g = context.globalArgs;
         const projectId = await getProjectId();
-        const instanceName = g.name?.toString() ?? "current";
+        const instanceName = (g.name?.toString() ?? "current").replace(
+          /[\/\\]/g,
+          "_",
+        ).replace(/\.\./g, "_").replace(/\0/g, "");
         const content = await context.dataRepository.getContent(
           context.modelType,
           context.modelId,

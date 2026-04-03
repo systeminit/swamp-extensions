@@ -78,10 +78,20 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/aws/iot/thing-group",
-  version: "2026.04.01.1",
+  version: "2026.04.03.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.03.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.03.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },
@@ -111,7 +121,8 @@ export const model = {
           desiredState,
         ) as StateData;
         const instanceName =
-          (result.ThingGroupName ?? g.ThingGroupName)?.toString() ?? "current";
+          ((result.ThingGroupName ?? g.ThingGroupName)?.toString() ?? "current")
+            .replace(/[\/\\]/g, "_").replace(/\.\./g, "_").replace(/\0/g, "");
         const handle = await context.writeResource(
           "state",
           instanceName,
@@ -133,8 +144,11 @@ export const model = {
           args.identifier,
         ) as StateData;
         const instanceName =
-          (result.ThingGroupName ?? context.globalArgs.ThingGroupName)
-            ?.toString() ?? args.identifier;
+          ((result.ThingGroupName ?? context.globalArgs.ThingGroupName)
+            ?.toString() ?? args.identifier).replace(/[\/\\]/g, "_").replace(
+              /\.\./g,
+              "_",
+            ).replace(/\0/g, "");
         const handle = await context.writeResource(
           "state",
           instanceName,
@@ -148,7 +162,8 @@ export const model = {
       arguments: z.object({}),
       execute: async (_args: Record<string, never>, context: any) => {
         const g = context.globalArgs;
-        const instanceName = g.ThingGroupName?.toString() ?? "current";
+        const instanceName = (g.ThingGroupName?.toString() ?? "current")
+          .replace(/[\/\\]/g, "_").replace(/\.\./g, "_").replace(/\0/g, "");
         const content = await context.dataRepository.getContent(
           context.modelType,
           context.modelId,
@@ -197,8 +212,9 @@ export const model = {
           "AWS::IoT::ThingGroup",
           args.identifier,
         );
-        const instanceName = context.globalArgs.ThingGroupName?.toString() ??
-          args.identifier;
+        const instanceName =
+          (context.globalArgs.ThingGroupName?.toString() ?? args.identifier)
+            .replace(/[\/\\]/g, "_").replace(/\.\./g, "_").replace(/\0/g, "");
         const handle = await context.writeResource("state", instanceName, {
           identifier: args.identifier,
           existed,
@@ -213,7 +229,8 @@ export const model = {
       arguments: z.object({}),
       execute: async (_args: Record<string, never>, context: any) => {
         const g = context.globalArgs;
-        const instanceName = g.ThingGroupName?.toString() ?? "current";
+        const instanceName = (g.ThingGroupName?.toString() ?? "current")
+          .replace(/[\/\\]/g, "_").replace(/\.\./g, "_").replace(/\0/g, "");
         const content = await context.dataRepository.getContent(
           context.modelType,
           context.modelId,
