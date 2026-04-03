@@ -97,7 +97,10 @@ const DELETE_CONFIG = {
 
 const GlobalArgsSchema = z.object({
   adminPassword: z.string().describe(
-    "Optional. Immutable. The password for the default ADMIN user.",
+    "Optional. Immutable. The password for the default ADMIN user. Note: Only one of `admin_password_secret_version` or `admin_password` can be populated.",
+  ).optional(),
+  adminPasswordSecretVersion: z.string().describe(
+    "Optional. Immutable. The resource name of a secret version in Secret Manager which contains the database admin user's password. Format: projects/{project}/secrets/{secret}/versions/{version}. Note: Only one of `admin_password_secret_version` or `admin_password` can be populated.",
   ).optional(),
   cidr: z.string().describe(
     "Optional. Immutable. The subnet CIDR range for the Autonomous Database.",
@@ -383,6 +386,7 @@ const GlobalArgsSchema = z.object({
       "LOCAL_DISASTER_RECOVERY_TYPE_UNSPECIFIED",
       "ADG",
       "BACKUP_BASED",
+      "NOT_AVAILABLE",
     ]).describe(
       "Output only. This field indicates the local disaster recovery (DR) type of an Autonomous Database.",
     ).optional(),
@@ -632,6 +636,7 @@ const GlobalArgsSchema = z.object({
 
 const StateSchema = z.object({
   adminPassword: z.string().optional(),
+  adminPasswordSecretVersion: z.string().optional(),
   cidr: z.string().optional(),
   createTime: z.string().optional(),
   database: z.string().optional(),
@@ -785,7 +790,10 @@ type StateData = z.infer<typeof StateSchema>;
 
 const InputsSchema = z.object({
   adminPassword: z.string().describe(
-    "Optional. Immutable. The password for the default ADMIN user.",
+    "Optional. Immutable. The password for the default ADMIN user. Note: Only one of `admin_password_secret_version` or `admin_password` can be populated.",
+  ).optional(),
+  adminPasswordSecretVersion: z.string().describe(
+    "Optional. Immutable. The resource name of a secret version in Secret Manager which contains the database admin user's password. Format: projects/{project}/secrets/{secret}/versions/{version}. Note: Only one of `admin_password_secret_version` or `admin_password` can be populated.",
   ).optional(),
   cidr: z.string().describe(
     "Optional. Immutable. The subnet CIDR range for the Autonomous Database.",
@@ -1071,6 +1079,7 @@ const InputsSchema = z.object({
       "LOCAL_DISASTER_RECOVERY_TYPE_UNSPECIFIED",
       "ADG",
       "BACKUP_BASED",
+      "NOT_AVAILABLE",
     ]).describe(
       "Output only. This field indicates the local disaster recovery (DR) type of an Autonomous Database.",
     ).optional(),
@@ -1320,7 +1329,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/oracledatabase/autonomousdatabases",
-  version: "2026.04.02.2",
+  version: "2026.04.03.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -1342,8 +1351,12 @@ export const model = {
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },
+    {
+      toVersion: "2026.04.03.1",
+      description: "Added: adminPasswordSecretVersion",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
   ],
-
   globalArguments: GlobalArgsSchema,
   inputsSchema: InputsSchema,
   resources: {
@@ -1367,6 +1380,9 @@ export const model = {
         const body: Record<string, unknown> = {};
         if (g["adminPassword"] !== undefined) {
           body["adminPassword"] = g["adminPassword"];
+        }
+        if (g["adminPasswordSecretVersion"] !== undefined) {
+          body["adminPasswordSecretVersion"] = g["adminPasswordSecretVersion"];
         }
         if (g["cidr"] !== undefined) body["cidr"] = g["cidr"];
         if (g["database"] !== undefined) body["database"] = g["database"];

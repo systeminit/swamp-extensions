@@ -85,14 +85,14 @@ const LIST_CONFIG = {
 } as const;
 
 const GlobalArgsSchema = z.object({
-  name: z.string().describe(
-    "Instance name for this resource (used as the unique identifier in the factory pattern)",
-  ),
   adsPersonalizationEnabled: z.boolean().describe(
     "Enable personalized advertising features with this integration. Automatically publish my Google Analytics audience lists and Google Analytics remarketing events/parameters to the linked Google Ads account. If this field is not set on create/update, it will be defaulted to true.",
   ).optional(),
   customerId: z.string().describe("Immutable. Google Ads customer ID.")
     .optional(),
+  name: z.string().describe(
+    "Identifier. Format: properties/{propertyId}/googleAdsLinks/{googleAdsLinkId} Note: googleAdsLinkId is not the Google Ads customer ID.",
+  ).optional(),
   parent: z.string().describe(
     "The parent resource name (e.g., projects/my-project/locations/us-central1, organizations/123, folders/456)",
   ).optional(),
@@ -111,12 +111,14 @@ const StateSchema = z.object({
 type StateData = z.infer<typeof StateSchema>;
 
 const InputsSchema = z.object({
-  name: z.string().optional(),
   adsPersonalizationEnabled: z.boolean().describe(
     "Enable personalized advertising features with this integration. Automatically publish my Google Analytics audience lists and Google Analytics remarketing events/parameters to the linked Google Ads account. If this field is not set on create/update, it will be defaulted to true.",
   ).optional(),
   customerId: z.string().describe("Immutable. Google Ads customer ID.")
     .optional(),
+  name: z.string().describe(
+    "Identifier. Format: properties/{propertyId}/googleAdsLinks/{googleAdsLinkId} Note: googleAdsLinkId is not the Google Ads customer ID.",
+  ).optional(),
   parent: z.string().describe(
     "The parent resource name (e.g., projects/my-project/locations/us-central1, organizations/123, folders/456)",
   ).optional(),
@@ -124,7 +126,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/analyticsadmin/properties-googleadslinks",
-  version: "2026.04.02.2",
+  version: "2026.04.03.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -136,8 +138,12 @@ export const model = {
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },
+    {
+      toVersion: "2026.04.03.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
   ],
-
   globalArguments: GlobalArgsSchema,
   inputsSchema: InputsSchema,
   resources: {
@@ -163,13 +169,14 @@ export const model = {
           body["adsPersonalizationEnabled"] = g["adsPersonalizationEnabled"];
         }
         if (g["customerId"] !== undefined) body["customerId"] = g["customerId"];
+        if (g["name"] !== undefined) body["name"] = g["name"];
         const result = await createResource(
           BASE_URL,
           INSERT_CONFIG,
           params,
           body,
         ) as StateData;
-        const instanceName = g.name?.toString() ?? "current";
+        const instanceName = (result.name ?? g.name)?.toString() ?? "current";
         const handle = await context.writeResource(
           "state",
           instanceName,
@@ -195,7 +202,8 @@ export const model = {
           "name",
           args.identifier,
         ) as StateData;
-        const instanceName = g.name?.toString() ?? args.identifier;
+        const instanceName = (result.name ?? g.name)?.toString() ??
+          args.identifier;
         const handle = await context.writeResource(
           "state",
           instanceName,

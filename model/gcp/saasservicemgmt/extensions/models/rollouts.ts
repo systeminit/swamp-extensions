@@ -140,7 +140,7 @@ const GlobalArgsSchema = z.object({
     "Optional. Immutable. Name of the Release that gets rolled out to target Units. Required if no other type of release is specified.",
   ).optional(),
   rolloutKind: z.string().describe(
-    "Optional. Immutable. Name of the RolloutKind this rollout is stemming from and adhering to.",
+    "Required. Immutable. Name of the RolloutKind this rollout is stemming from and adhering to.",
   ).optional(),
   rolloutOrchestrationStrategy: z.string().describe(
     'Optional. The strategy used for executing this Rollout. This strategy will override whatever strategy is specified in the RolloutKind. If not specified on creation, the strategy from RolloutKind will be used. There are two supported values strategies which are used to control - "Google.Cloud.Simple.AllAtOnce" - "Google.Cloud.Simple.OneLocationAtATime" A rollout with one of these simple strategies will rollout across all locations defined in the targeted UnitKind\'s Saas Locations.',
@@ -245,7 +245,7 @@ const InputsSchema = z.object({
     "Optional. Immutable. Name of the Release that gets rolled out to target Units. Required if no other type of release is specified.",
   ).optional(),
   rolloutKind: z.string().describe(
-    "Optional. Immutable. Name of the RolloutKind this rollout is stemming from and adhering to.",
+    "Required. Immutable. Name of the RolloutKind this rollout is stemming from and adhering to.",
   ).optional(),
   rolloutOrchestrationStrategy: z.string().describe(
     'Optional. The strategy used for executing this Rollout. This strategy will override whatever strategy is specified in the RolloutKind. If not specified on creation, the strategy from RolloutKind will be used. There are two supported values strategies which are used to control - "Google.Cloud.Simple.AllAtOnce" - "Google.Cloud.Simple.OneLocationAtATime" A rollout with one of these simple strategies will rollout across all locations defined in the targeted UnitKind\'s Saas Locations.',
@@ -281,7 +281,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/saasservicemgmt/rollouts",
-  version: "2026.04.02.2",
+  version: "2026.04.03.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -293,8 +293,12 @@ export const model = {
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },
+    {
+      toVersion: "2026.04.03.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
   ],
-
   globalArguments: GlobalArgsSchema,
   inputsSchema: InputsSchema,
   resources: {

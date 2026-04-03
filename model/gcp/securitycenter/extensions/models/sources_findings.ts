@@ -559,28 +559,6 @@ const GlobalArgsSchema = z.object({
   ).optional(),
   description: z.string().describe("Contains more details about the finding.")
     .optional(),
-  discoveredWorkload: z.object({
-    confidence: z.enum(["CONFIDENCE_UNSPECIFIED", "CONFIDENCE_HIGH"]).describe(
-      "The confidence in detection of this workload.",
-    ).optional(),
-    detectedRelevantHardware: z.boolean().describe(
-      "A boolean flag set to true if associated hardware strongly predicts the workload type.",
-    ).optional(),
-    detectedRelevantKeywords: z.boolean().describe(
-      "A boolean flag set to true if associated keywords strongly predict the workload type.",
-    ).optional(),
-    detectedRelevantPackages: z.boolean().describe(
-      "A boolean flag set to true if installed packages strongly predict the workload type.",
-    ).optional(),
-    workloadType: z.enum([
-      "WORKLOAD_TYPE_UNSPECIFIED",
-      "MCP_SERVER",
-      "AI_INFERENCE",
-      "AGENT",
-    ]).describe("The type of workload.").optional(),
-  }).describe(
-    "Represents discovered, customer managed workload that is not registered with the respective GCP service.",
-  ).optional(),
   disk: z.object({
     name: z.string().describe(
       'The name of the disk, for example, "https://www.googleapis.com/compute/v1/projects/{project-id}/zones/{zone-id}/disks/{disk-id}".',
@@ -2173,13 +2151,6 @@ const StateSchema = z.object({
       version: z.string(),
     }),
     description: z.string(),
-    discoveredWorkload: z.object({
-      confidence: z.string(),
-      detectedRelevantHardware: z.boolean(),
-      detectedRelevantKeywords: z.boolean(),
-      detectedRelevantPackages: z.boolean(),
-      workloadType: z.string(),
-    }),
     disk: z.object({
       name: z.string(),
     }),
@@ -3187,28 +3158,6 @@ const InputsSchema = z.object({
   ).optional(),
   description: z.string().describe("Contains more details about the finding.")
     .optional(),
-  discoveredWorkload: z.object({
-    confidence: z.enum(["CONFIDENCE_UNSPECIFIED", "CONFIDENCE_HIGH"]).describe(
-      "The confidence in detection of this workload.",
-    ).optional(),
-    detectedRelevantHardware: z.boolean().describe(
-      "A boolean flag set to true if associated hardware strongly predicts the workload type.",
-    ).optional(),
-    detectedRelevantKeywords: z.boolean().describe(
-      "A boolean flag set to true if associated keywords strongly predict the workload type.",
-    ).optional(),
-    detectedRelevantPackages: z.boolean().describe(
-      "A boolean flag set to true if installed packages strongly predict the workload type.",
-    ).optional(),
-    workloadType: z.enum([
-      "WORKLOAD_TYPE_UNSPECIFIED",
-      "MCP_SERVER",
-      "AI_INFERENCE",
-      "AGENT",
-    ]).describe("The type of workload.").optional(),
-  }).describe(
-    "Represents discovered, customer managed workload that is not registered with the respective GCP service.",
-  ).optional(),
   disk: z.object({
     name: z.string().describe(
       'The name of the disk, for example, "https://www.googleapis.com/compute/v1/projects/{project-id}/zones/{zone-id}/disks/{disk-id}".',
@@ -4612,7 +4561,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/securitycenter/sources-findings",
-  version: "2026.04.02.2",
+  version: "2026.04.03.1",
   upgrades: [
     {
       toVersion: "2026.03.31.1",
@@ -4639,8 +4588,15 @@ export const model = {
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },
+    {
+      toVersion: "2026.04.03.1",
+      description: "Removed: discoveredWorkload",
+      upgradeAttributes: (old: Record<string, unknown>) => {
+        const { discoveredWorkload: _discoveredWorkload, ...rest } = old;
+        return rest;
+      },
+    },
   ],
-
   globalArguments: GlobalArgsSchema,
   inputsSchema: InputsSchema,
   resources: {
@@ -4755,9 +4711,6 @@ export const model = {
         if (g["database"] !== undefined) body["database"] = g["database"];
         if (g["description"] !== undefined) {
           body["description"] = g["description"];
-        }
-        if (g["discoveredWorkload"] !== undefined) {
-          body["discoveredWorkload"] = g["discoveredWorkload"];
         }
         if (g["disk"] !== undefined) body["disk"] = g["disk"];
         if (g["eventTime"] !== undefined) body["eventTime"] = g["eventTime"];

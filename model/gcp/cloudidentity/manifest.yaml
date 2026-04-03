@@ -1,7 +1,7 @@
 # Auto-generated manifest. Re-generate with the appropriate deno task.
 manifestVersion: 1
 name: "@swamp/gcp/cloudidentity"
-version: "2026.04.02.2"
+version: "2026.04.03.1"
 description: "Google Cloud cloudidentity infrastructure models"
 labels:
   - gcp
@@ -9,6 +9,8 @@ labels:
   - cloudidentity
   - cloud
   - infrastructure
+releaseNotes: |
+  - Updated: customers_userinvitations, devices, devices_deviceusers, devices_deviceusers_clientstates, groups, groups_memberships, inboundoidcssoprofiles, inboundsamlssoprofiles, inboundsamlssoprofiles_idpcredentials, inboundssoassignments, policies
 models:
   - customers_userinvitations.ts
   - devices.ts

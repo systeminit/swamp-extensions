@@ -1,7 +1,7 @@
 # Auto-generated manifest. Re-generate with the appropriate deno task.
 manifestVersion: 1
 name: "@swamp/gcp/composer"
-version: "2026.04.02.2"
+version: "2026.04.03.1"
 description: "Google Cloud composer infrastructure models"
 labels:
   - gcp
@@ -9,6 +9,8 @@ labels:
   - composer
   - cloud
   - infrastructure
+releaseNotes: |
+  - Updated: environments, environments_userworkloadsconfigmaps, environments_userworkloadssecrets, environments_workloads, imageversions
 models:
   - environments.ts
   - environments_userworkloadsconfigmaps.ts

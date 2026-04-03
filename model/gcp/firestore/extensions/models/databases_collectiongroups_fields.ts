@@ -80,6 +80,50 @@ const GlobalArgsSchema = z.object({
           .describe(
             "Indicates that this field supports ordering by the specified order or comparing using =,!=, , >=.",
           ).optional(),
+        searchConfig: z.object({
+          geoSpec: z.object({
+            geoJsonIndexingDisabled: z.boolean().describe(
+              "Optional. Disables geoJSON indexing for the field. By default, geoJSON points are indexed.",
+            ).optional(),
+          }).describe(
+            "The specification for how to build a geo search index for a field.",
+          ).optional(),
+          numberSpec: z.object({
+            indexType: z.enum([
+              "NUMBER_INDEX_TYPE_UNSPECIFIED",
+              "FLOAT64",
+              "INT32_LOG_TREE",
+              "INT64_LOG_TREE",
+              "INT32_PREFIX_TREE",
+              "INT64_PREFIX_TREE",
+            ]).describe("Required. How to index the number field value.")
+              .optional(),
+          }).describe(
+            "The specification for how to build a number search index for a field.",
+          ).optional(),
+          textSpec: z.object({
+            indexSpecs: z.array(z.object({
+              indexType: z.enum([
+                "TEXT_INDEX_TYPE_UNSPECIFIED",
+                "TOKENIZED",
+                "NGRAMS",
+                "EXACT_MATCH",
+              ]).describe("Required. How to index the text field value.")
+                .optional(),
+              matchType: z.enum([
+                "TEXT_MATCH_TYPE_UNSPECIFIED",
+                "MATCH_GLOBALLY",
+                "MATCH_FIELD",
+              ]).describe("Required. How to match the text field value.")
+                .optional(),
+            })).describe(
+              "Required. Specifications for how the field should be indexed. Repeated so that the field can be indexed in multiple ways.",
+            ).optional(),
+          }).describe(
+            "The specification for how to build a text search index for a field.",
+          ).optional(),
+        }).describe("The configuration for how to index a field for search.")
+          .optional(),
         vectorConfig: z.object({
           dimension: z.number().int().describe(
             "Required. The vector dimension this configuration applies to. The resulting index will only include vectors of this dimension, and can be used for vector search with the same dimension.",
@@ -107,6 +151,18 @@ const GlobalArgsSchema = z.object({
       ]).describe(
         "Indexes with a collection query scope specified allow queries against a collection that is the child of a specific document, specified at query time, and that has the same collection ID. Indexes with a collection group query scope specified allow queries against all collections descended from a specific document, specified at query time, and that have the same collection ID as this index.",
       ).optional(),
+      searchIndexOptions: z.object({
+        customPartitionFieldPaths: z.array(z.string()).describe(
+          "Optional. Custom partition fields to use for the search index. If unspecified, all indexed fields will be in the same default partition. If a search index is created specifying custom partition fields, all search queries using that index will be required to filter on the partition. For indexes with MONGODB_COMPATIBLE_API ApiScope: This must refer to a top level field name.",
+        ).optional(),
+        textLanguage: z.string().describe(
+          "Optional. The language to use for text search indexes. Used as the default language if not overridden at the document level by specifying the `text_language_override_field`. The language is specified as a BCP 47 language code. For indexes with MONGODB_COMPATIBLE_API ApiScope: If unspecified, the default language is English. For indexes with `ANY_API` ApiScope: If unspecified, the default behavior is autodetect.",
+        ).optional(),
+        textLanguageOverrideFieldPath: z.string().describe(
+          'Optional. The field in the document that specifies which language to use for that specific document. For indexes with MONGODB_COMPATIBLE_API ApiScope: if unspecified, the language is taken from the "language" field if it exists or from `text_language` if it does not.',
+        ).optional(),
+      }).describe("Options for search indexes at the definition level.")
+        .optional(),
       shardCount: z.number().int().describe(
         "Optional. The number of shards for the index.",
       ).optional(),
@@ -127,10 +183,13 @@ const GlobalArgsSchema = z.object({
     "Required. A field name of the form: `projects/{project_id}/databases/{database_id}/collectionGroups/{collection_id}/fields/{field_path}` A field path can be a simple field name, e.g. `address` or a path to fields within `map_value`, e.g. `address.city`, or a special field path. The only valid special field is `*`, which represents any field. Field paths can be quoted using `` ` `` (backtick). The only character that must be escaped within a quoted field path is the backtick character itself, escaped using a backslash. Special characters in field paths that must be quoted include: `*`, `.`, `` ` `` (backtick), `[`, `]`, as well as any ascii symbolic characters. Examples: `` `address.city` `` represents a field named `address.city`, not the map key `city` in the field `address`. `` `*` `` represents a field named `*`, not any field. A special `Field` contains the default indexing settings for all fields. This field's resource name is: `projects/{project_id}/databases/{database_id}/collectionGroups/__default__/fields/*` Indexes defined on this `Field` will be applied to all fields which do not have their own `Field` index configuration.",
   ).optional(),
   ttlConfig: z.object({
+    expirationOffset: z.string().describe(
+      "Optional. The offset, relative to the timestamp value from the TTL-enabled field, used to determine the document's expiration time. `expiration_offset.seconds` must be between 0 and 2,147,483,647 inclusive. Values more precise than seconds are rejected. If unset, defaults to 0, in which case the expiration time is the same as the timestamp value from the TTL-enabled field.",
+    ).optional(),
     state: z.enum(["STATE_UNSPECIFIED", "CREATING", "ACTIVE", "NEEDS_REPAIR"])
       .describe("Output only. The state of the TTL configuration.").optional(),
   }).describe(
-    "The TTL (time-to-live) configuration for documents that have this `Field` set. Storing a timestamp value into a TTL-enabled field will be treated as the document's absolute expiration time. For Enterprise edition databases, the timestamp value may also be stored in an array value in the TTL-enabled field. Timestamp values in the past indicate that the document is eligible for immediate expiration. Using any other data type or leaving the field absent will disable expiration for the individual document.",
+    "The TTL (time-to-live) configuration for documents that have this `Field` set. A timestamp stored in a TTL-enabled field will be used to determine the expiration time of the document. The expiration time is the sum of the timestamp value and the `expiration_offset`. For Enterprise edition databases, the timestamp value may alternatively be stored in an array value in the TTL-enabled field. An expiration time in the past indicates that the document is eligible for immediate expiration. Using any other data type or leaving the field absent will disable expiration for the individual document.",
   ).optional(),
   location: z.string().describe(
     "The location for this resource (e.g., 'us', 'us-central1', 'europe-west1')",
@@ -147,6 +206,20 @@ const StateSchema = z.object({
         arrayConfig: z.string(),
         fieldPath: z.string(),
         order: z.string(),
+        searchConfig: z.object({
+          geoSpec: z.object({
+            geoJsonIndexingDisabled: z.boolean(),
+          }),
+          numberSpec: z.object({
+            indexType: z.string(),
+          }),
+          textSpec: z.object({
+            indexSpecs: z.array(z.object({
+              indexType: z.string(),
+              matchType: z.string(),
+            })),
+          }),
+        }),
         vectorConfig: z.object({
           dimension: z.number(),
           flat: z.object({}),
@@ -155,6 +228,11 @@ const StateSchema = z.object({
       multikey: z.boolean(),
       name: z.string(),
       queryScope: z.string(),
+      searchIndexOptions: z.object({
+        customPartitionFieldPaths: z.array(z.string()),
+        textLanguage: z.string(),
+        textLanguageOverrideFieldPath: z.string(),
+      }),
       shardCount: z.number(),
       state: z.string(),
       unique: z.boolean(),
@@ -164,6 +242,7 @@ const StateSchema = z.object({
   }).optional(),
   name: z.string(),
   ttlConfig: z.object({
+    expirationOffset: z.string(),
     state: z.string(),
   }).optional(),
 }).passthrough();
@@ -199,6 +278,50 @@ const InputsSchema = z.object({
           .describe(
             "Indicates that this field supports ordering by the specified order or comparing using =,!=, , >=.",
           ).optional(),
+        searchConfig: z.object({
+          geoSpec: z.object({
+            geoJsonIndexingDisabled: z.boolean().describe(
+              "Optional. Disables geoJSON indexing for the field. By default, geoJSON points are indexed.",
+            ).optional(),
+          }).describe(
+            "The specification for how to build a geo search index for a field.",
+          ).optional(),
+          numberSpec: z.object({
+            indexType: z.enum([
+              "NUMBER_INDEX_TYPE_UNSPECIFIED",
+              "FLOAT64",
+              "INT32_LOG_TREE",
+              "INT64_LOG_TREE",
+              "INT32_PREFIX_TREE",
+              "INT64_PREFIX_TREE",
+            ]).describe("Required. How to index the number field value.")
+              .optional(),
+          }).describe(
+            "The specification for how to build a number search index for a field.",
+          ).optional(),
+          textSpec: z.object({
+            indexSpecs: z.array(z.object({
+              indexType: z.enum([
+                "TEXT_INDEX_TYPE_UNSPECIFIED",
+                "TOKENIZED",
+                "NGRAMS",
+                "EXACT_MATCH",
+              ]).describe("Required. How to index the text field value.")
+                .optional(),
+              matchType: z.enum([
+                "TEXT_MATCH_TYPE_UNSPECIFIED",
+                "MATCH_GLOBALLY",
+                "MATCH_FIELD",
+              ]).describe("Required. How to match the text field value.")
+                .optional(),
+            })).describe(
+              "Required. Specifications for how the field should be indexed. Repeated so that the field can be indexed in multiple ways.",
+            ).optional(),
+          }).describe(
+            "The specification for how to build a text search index for a field.",
+          ).optional(),
+        }).describe("The configuration for how to index a field for search.")
+          .optional(),
         vectorConfig: z.object({
           dimension: z.number().int().describe(
             "Required. The vector dimension this configuration applies to. The resulting index will only include vectors of this dimension, and can be used for vector search with the same dimension.",
@@ -226,6 +349,18 @@ const InputsSchema = z.object({
       ]).describe(
         "Indexes with a collection query scope specified allow queries against a collection that is the child of a specific document, specified at query time, and that has the same collection ID. Indexes with a collection group query scope specified allow queries against all collections descended from a specific document, specified at query time, and that have the same collection ID as this index.",
       ).optional(),
+      searchIndexOptions: z.object({
+        customPartitionFieldPaths: z.array(z.string()).describe(
+          "Optional. Custom partition fields to use for the search index. If unspecified, all indexed fields will be in the same default partition. If a search index is created specifying custom partition fields, all search queries using that index will be required to filter on the partition. For indexes with MONGODB_COMPATIBLE_API ApiScope: This must refer to a top level field name.",
+        ).optional(),
+        textLanguage: z.string().describe(
+          "Optional. The language to use for text search indexes. Used as the default language if not overridden at the document level by specifying the `text_language_override_field`. The language is specified as a BCP 47 language code. For indexes with MONGODB_COMPATIBLE_API ApiScope: If unspecified, the default language is English. For indexes with `ANY_API` ApiScope: If unspecified, the default behavior is autodetect.",
+        ).optional(),
+        textLanguageOverrideFieldPath: z.string().describe(
+          'Optional. The field in the document that specifies which language to use for that specific document. For indexes with MONGODB_COMPATIBLE_API ApiScope: if unspecified, the language is taken from the "language" field if it exists or from `text_language` if it does not.',
+        ).optional(),
+      }).describe("Options for search indexes at the definition level.")
+        .optional(),
       shardCount: z.number().int().describe(
         "Optional. The number of shards for the index.",
       ).optional(),
@@ -246,10 +381,13 @@ const InputsSchema = z.object({
     "Required. A field name of the form: `projects/{project_id}/databases/{database_id}/collectionGroups/{collection_id}/fields/{field_path}` A field path can be a simple field name, e.g. `address` or a path to fields within `map_value`, e.g. `address.city`, or a special field path. The only valid special field is `*`, which represents any field. Field paths can be quoted using `` ` `` (backtick). The only character that must be escaped within a quoted field path is the backtick character itself, escaped using a backslash. Special characters in field paths that must be quoted include: `*`, `.`, `` ` `` (backtick), `[`, `]`, as well as any ascii symbolic characters. Examples: `` `address.city` `` represents a field named `address.city`, not the map key `city` in the field `address`. `` `*` `` represents a field named `*`, not any field. A special `Field` contains the default indexing settings for all fields. This field's resource name is: `projects/{project_id}/databases/{database_id}/collectionGroups/__default__/fields/*` Indexes defined on this `Field` will be applied to all fields which do not have their own `Field` index configuration.",
   ).optional(),
   ttlConfig: z.object({
+    expirationOffset: z.string().describe(
+      "Optional. The offset, relative to the timestamp value from the TTL-enabled field, used to determine the document's expiration time. `expiration_offset.seconds` must be between 0 and 2,147,483,647 inclusive. Values more precise than seconds are rejected. If unset, defaults to 0, in which case the expiration time is the same as the timestamp value from the TTL-enabled field.",
+    ).optional(),
     state: z.enum(["STATE_UNSPECIFIED", "CREATING", "ACTIVE", "NEEDS_REPAIR"])
       .describe("Output only. The state of the TTL configuration.").optional(),
   }).describe(
-    "The TTL (time-to-live) configuration for documents that have this `Field` set. Storing a timestamp value into a TTL-enabled field will be treated as the document's absolute expiration time. For Enterprise edition databases, the timestamp value may also be stored in an array value in the TTL-enabled field. Timestamp values in the past indicate that the document is eligible for immediate expiration. Using any other data type or leaving the field absent will disable expiration for the individual document.",
+    "The TTL (time-to-live) configuration for documents that have this `Field` set. A timestamp stored in a TTL-enabled field will be used to determine the expiration time of the document. The expiration time is the sum of the timestamp value and the `expiration_offset`. For Enterprise edition databases, the timestamp value may alternatively be stored in an array value in the TTL-enabled field. An expiration time in the past indicates that the document is eligible for immediate expiration. Using any other data type or leaving the field absent will disable expiration for the individual document.",
   ).optional(),
   location: z.string().describe(
     "The location for this resource (e.g., 'us', 'us-central1', 'europe-west1')",
@@ -258,7 +396,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/firestore/databases-collectiongroups-fields",
-  version: "2026.04.02.2",
+  version: "2026.04.03.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -270,8 +408,12 @@ export const model = {
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },
+    {
+      toVersion: "2026.04.03.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
   ],
-
   globalArguments: GlobalArgsSchema,
   inputsSchema: InputsSchema,
   resources: {

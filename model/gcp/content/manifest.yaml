@@ -1,7 +1,7 @@
 # Auto-generated manifest. Re-generate with the appropriate deno task.
 manifestVersion: 1
 name: "@swamp/gcp/content"
-version: "2026.04.02.2"
+version: "2026.04.03.1"
 description: "Google Cloud content infrastructure models"
 labels:
   - gcp
@@ -9,6 +9,8 @@ labels:
   - content
   - cloud
   - infrastructure
+releaseNotes: |
+  - Updated: accounts, accounts_labels, accounts_returncarrier, accountstatuses, accounttax, collections, collectionstatuses, conversionsources, csses, datafeeds, datafeedstatuses, freelistingsprogram, freelistingsprogram_checkoutsettings, liasettings, pos, productdeliverytime, products, productstatuses, promotions, pubsubnotificationsettings, quotas, regions, returnpolicyonline, shippingsettings, shoppingadsprogram
 models:
   - accounts.ts
   - accounts_labels.ts

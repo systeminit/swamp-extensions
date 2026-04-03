@@ -72,9 +72,6 @@ const DELETE_CONFIG = {
 } as const;
 
 const GlobalArgsSchema = z.object({
-  name: z.string().describe(
-    "Instance name for this resource (used as the unique identifier in the factory pattern)",
-  ),
   account: z.string().describe(
     'Immutable. The resource name of the parent account Format: accounts/{account_id} Example: "accounts/123"',
   ).optional(),
@@ -114,6 +111,9 @@ const GlobalArgsSchema = z.object({
     "SHOPPING",
   ]).describe(
     "Industry associated with this property Example: AUTOMOTIVE, FOOD_AND_DRINK",
+  ).optional(),
+  name: z.string().describe(
+    'Identifier. Resource name of this property. Format: properties/{property_id} Example: "properties/1000"',
   ).optional(),
   parent: z.string().describe(
     'Immutable. Resource name of this property\'s logical parent. Note: The Property-Moving UI can be used to change the parent. Format: accounts/{account}, properties/{property} Example: "accounts/100", "properties/101"',
@@ -150,7 +150,6 @@ const StateSchema = z.object({
 type StateData = z.infer<typeof StateSchema>;
 
 const InputsSchema = z.object({
-  name: z.string().optional(),
   account: z.string().describe(
     'Immutable. The resource name of the parent account Format: accounts/{account_id} Example: "accounts/123"',
   ).optional(),
@@ -191,6 +190,9 @@ const InputsSchema = z.object({
   ]).describe(
     "Industry associated with this property Example: AUTOMOTIVE, FOOD_AND_DRINK",
   ).optional(),
+  name: z.string().describe(
+    'Identifier. Resource name of this property. Format: properties/{property_id} Example: "properties/1000"',
+  ).optional(),
   parent: z.string().describe(
     'Immutable. Resource name of this property\'s logical parent. Note: The Property-Moving UI can be used to change the parent. Format: accounts/{account}, properties/{property} Example: "accounts/100", "properties/101"',
   ).optional(),
@@ -209,7 +211,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/analyticsadmin/properties",
-  version: "2026.04.02.2",
+  version: "2026.04.03.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -221,8 +223,12 @@ export const model = {
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },
+    {
+      toVersion: "2026.04.03.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
   ],
-
   globalArguments: GlobalArgsSchema,
   inputsSchema: InputsSchema,
   resources: {
@@ -253,6 +259,7 @@ export const model = {
         if (g["industryCategory"] !== undefined) {
           body["industryCategory"] = g["industryCategory"];
         }
+        if (g["name"] !== undefined) body["name"] = g["name"];
         if (g["propertyType"] !== undefined) {
           body["propertyType"] = g["propertyType"];
         }
@@ -265,7 +272,7 @@ export const model = {
           body,
           GET_CONFIG,
         ) as StateData;
-        const instanceName = g.name?.toString() ?? "current";
+        const instanceName = (result.name ?? g.name)?.toString() ?? "current";
         const handle = await context.writeResource(
           "state",
           instanceName,
@@ -289,7 +296,8 @@ export const model = {
           GET_CONFIG,
           params,
         ) as StateData;
-        const instanceName = g.name?.toString() ?? args.identifier;
+        const instanceName = (result.name ?? g.name)?.toString() ??
+          args.identifier;
         const handle = await context.writeResource(
           "state",
           instanceName,

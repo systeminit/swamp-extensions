@@ -1,7 +1,7 @@
 # Auto-generated manifest. Re-generate with the appropriate deno task.
 manifestVersion: 1
 name: "@swamp/gcp/datalabeling"
-version: "2026.04.02.2"
+version: "2026.04.03.1"
 description: "Google Cloud datalabeling infrastructure models"
 labels:
   - gcp
@@ -9,6 +9,8 @@ labels:
   - datalabeling
   - cloud
   - infrastructure
+releaseNotes: |
+  - Updated: annotationspecsets, datasets, datasets_annotateddatasets, datasets_annotateddatasets_dataitems, datasets_annotateddatasets_examples, datasets_annotateddatasets_feedbackthreads, datasets_annotateddatasets_feedbackthreads_feedbackmessages, datasets_dataitems, datasets_evaluations, evaluationjobs, instructions
 models:
   - annotationspecsets.ts
   - datasets.ts

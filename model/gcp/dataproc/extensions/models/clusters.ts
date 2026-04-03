@@ -377,6 +377,9 @@ const GlobalArgsSchema = z.object({
         "Output only. The map of port descriptions to URLs. Will only be populated if enable_http_port_access is true.",
       ).optional(),
     }).describe("Endpoint config for this cluster").optional(),
+    engine: z.enum(["ENGINE_UNSPECIFIED", "DEFAULT", "LIGHTNING"]).describe(
+      "Optional. The cluster engine.",
+    ).optional(),
     gceClusterConfig: z.object({
       autoZoneExcludeZoneUris: z.array(z.string()).describe(
         "Optional. An optional list of Compute Engine zones where the Dataproc cluster will not be located when Auto Zone is enabled. Only one of zone_uri or auto_zone_exclude_zone_uris can be set. If both are omitted, the service will pick a zone in the cluster Compute Engine region. If auto_zone_exclude_zone_uris is set and there is more than one non-excluded zone, the service will pick one of the non-excluded zones. Otherwise, cluster creation will fail with INVALID_ARGUMENT error.A full URL, partial URI, or short name are valid. Examples: https://www.googleapis.com/compute/v1/projects/[project_id]/zones/[zone] projects/[project_id]/zones/[zone] [zone]",
@@ -1407,6 +1410,7 @@ const StateSchema = z.object({
       enableHttpPortAccess: z.boolean(),
       httpPorts: z.record(z.string(), z.unknown()),
     }),
+    engine: z.string(),
     gceClusterConfig: z.object({
       autoZoneExcludeZoneUris: z.array(z.string()),
       confidentialInstanceConfig: z.object({
@@ -1995,6 +1999,9 @@ const InputsSchema = z.object({
         "Output only. The map of port descriptions to URLs. Will only be populated if enable_http_port_access is true.",
       ).optional(),
     }).describe("Endpoint config for this cluster").optional(),
+    engine: z.enum(["ENGINE_UNSPECIFIED", "DEFAULT", "LIGHTNING"]).describe(
+      "Optional. The cluster engine.",
+    ).optional(),
     gceClusterConfig: z.object({
       autoZoneExcludeZoneUris: z.array(z.string()).describe(
         "Optional. An optional list of Compute Engine zones where the Dataproc cluster will not be located when Auto Zone is enabled. Only one of zone_uri or auto_zone_exclude_zone_uris can be set. If both are omitted, the service will pick a zone in the cluster Compute Engine region. If auto_zone_exclude_zone_uris is set and there is more than one non-excluded zone, the service will pick one of the non-excluded zones. Otherwise, cluster creation will fail with INVALID_ARGUMENT error.A full URL, partial URI, or short name are valid. Examples: https://www.googleapis.com/compute/v1/projects/[project_id]/zones/[zone] projects/[project_id]/zones/[zone] [zone]",
@@ -2937,7 +2944,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/dataproc/clusters",
-  version: "2026.04.02.2",
+  version: "2026.04.03.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -2959,8 +2966,12 @@ export const model = {
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },
+    {
+      toVersion: "2026.04.03.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
   ],
-
   globalArguments: GlobalArgsSchema,
   inputsSchema: InputsSchema,
   resources: {

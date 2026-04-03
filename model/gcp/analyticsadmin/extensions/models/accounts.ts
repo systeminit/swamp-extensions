@@ -77,7 +77,7 @@ const GlobalArgsSchema = z.object({
     "Output only. The URI for a Google Marketing Platform organization resource. Only set when this account is connected to a GMP organization. Format: marketingplatformadmin.googleapis.com/organizations/{org_id}",
   ).optional(),
   name: z.string().describe(
-    'Output only. Resource name of this account. Format: accounts/{account} Example: "accounts/100"',
+    'Identifier. Resource name of this account. Format: accounts/{account} Example: "accounts/100"',
   ).optional(),
   regionCode: z.string().describe(
     "Country of business. Must be a Unicode CLDR region code.",
@@ -113,7 +113,7 @@ const InputsSchema = z.object({
     "Output only. The URI for a Google Marketing Platform organization resource. Only set when this account is connected to a GMP organization. Format: marketingplatformadmin.googleapis.com/organizations/{org_id}",
   ).optional(),
   name: z.string().describe(
-    'Output only. Resource name of this account. Format: accounts/{account} Example: "accounts/100"',
+    'Identifier. Resource name of this account. Format: accounts/{account} Example: "accounts/100"',
   ).optional(),
   regionCode: z.string().describe(
     "Country of business. Must be a Unicode CLDR region code.",
@@ -125,7 +125,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/analyticsadmin/accounts",
-  version: "2026.04.02.2",
+  version: "2026.04.03.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -137,8 +137,12 @@ export const model = {
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },
+    {
+      toVersion: "2026.04.03.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
   ],
-
   globalArguments: GlobalArgsSchema,
   inputsSchema: InputsSchema,
   resources: {
