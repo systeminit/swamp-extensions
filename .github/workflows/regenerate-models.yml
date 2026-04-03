@@ -32,6 +32,8 @@ jobs:
       pull-requests: write
     steps:
       - uses: actions/checkout@v6
+        with:
+          token: ${{ secrets.GH_TOKEN }}
 
       - uses: denoland/setup-deno@v2
         with:
@@ -139,7 +141,7 @@ jobs:
       - name: Create or update pull request
         if: steps.changes.outputs.has_changes == 'true'
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
           CHANGE_SUMMARY: ${{ steps.changes.outputs.summary }}
         run: |
           BRANCH="automated/regenerate-models"
@@ -182,10 +184,6 @@ jobs:
           - CalVer versioning with content-based change detection ensures versions only bump when content changes
           - Publishing happens automatically when this PR is merged (via the publish workflow)
 
-          > [!NOTE]
-          > If CI does not trigger on this PR, close and reopen it, or configure a
-          > GitHub App token for the workflow. PRs created by \`GITHUB_TOKEN\` do not
-          > trigger other workflow runs.
           EOF
 
             gh pr create \
