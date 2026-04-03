@@ -470,7 +470,7 @@ export async function generateGcpModels(options: {
   const services = new Map<string, GcpServiceGenerationResult>();
 
   for (const [serviceName, resources] of serviceResources) {
-    const extensionName = `@swamp/gcp/${serviceName}`;
+    const extensionName = `@swamp/gcp/${serviceName.toLowerCase()}`;
     const placeholderVersion = "VERSION_PLACEHOLDER";
     const serviceOutputDir = `${options.outputDir}/gcp/${serviceName}`;
 
@@ -516,6 +516,7 @@ export async function generateGcpModels(options: {
           resource.resourceValueProperties,
           cfSchema,
           onlyProperties,
+          { maxDepth: 5 },
         );
 
         const modelSlug = resourcePathToModelSlug(resource.resourcePath);
@@ -657,7 +658,13 @@ export async function generateGcpModels(options: {
       name: extensionName,
       version: placeholderVersion,
       description: `Google Cloud ${serviceName} infrastructure models`,
-      labels: ["gcp", "google-cloud", serviceName, "cloud", "infrastructure"],
+      labels: [
+        "gcp",
+        "google-cloud",
+        serviceName.toLowerCase(),
+        "cloud",
+        "infrastructure",
+      ],
       modelFiles: modelFileNames,
       additionalFiles,
       releaseNotes,
@@ -678,7 +685,13 @@ export async function generateGcpModels(options: {
       name: extensionName,
       version: manifestVersion,
       description: `Google Cloud ${serviceName} infrastructure models`,
-      labels: ["gcp", "google-cloud", serviceName, "cloud", "infrastructure"],
+      labels: [
+        "gcp",
+        "google-cloud",
+        serviceName.toLowerCase(),
+        "cloud",
+        "infrastructure",
+      ],
       modelFiles: modelFileNames,
       additionalFiles,
       releaseNotes,

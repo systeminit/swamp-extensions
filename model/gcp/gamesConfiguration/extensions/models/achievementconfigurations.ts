@@ -1,4 +1,4 @@
-// Auto-generated extension model for @swamp/gcp/gamesConfiguration/achievementconfigurations
+// Auto-generated extension model for @swamp/gcp/gamesconfiguration/achievementconfigurations
 // Do not edit manually. Re-generate with: deno task generate:gcp
 
 // deno-lint-ignore-file no-explicit-any
@@ -319,8 +319,8 @@ const InputsSchema = z.object({
 });
 
 export const model = {
-  type: "@swamp/gcp/gamesConfiguration/achievementconfigurations",
-  version: "2026.04.03.3",
+  type: "@swamp/gcp/gamesconfiguration/achievementconfigurations",
+  version: "2026.04.04.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -344,6 +344,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.3",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.04.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

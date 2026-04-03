@@ -1,4 +1,4 @@
-// Auto-generated extension model for @swamp/gcp/gamesConfiguration/leaderboardconfigurations
+// Auto-generated extension model for @swamp/gcp/gamesconfiguration/leaderboardconfigurations
 // Do not edit manually. Re-generate with: deno task generate:gcp
 
 // deno-lint-ignore-file no-explicit-any
@@ -116,73 +116,43 @@ const GlobalArgsSchema = z.object({
           kind: z.string().describe(
             "Uniquely identifies the type of this resource. Value is always the fixed string `gamesConfiguration#localizedStringBundle`.",
           ).optional(),
-          translations: z.array(z.object({
-            kind: z.string().describe(
-              "Uniquely identifies the type of this resource. Value is always the fixed string `gamesConfiguration#localizedString`.",
-            ).optional(),
-            locale: z.string().describe("The locale string.").optional(),
-            value: z.string().describe("The string value.").optional(),
-          })).describe("The locale strings.").optional(),
+          translations: z.array(z.unknown()).describe("The locale strings.")
+            .optional(),
         }).describe("A localized string bundle resource.").optional(),
         many: z.object({
           kind: z.string().describe(
             "Uniquely identifies the type of this resource. Value is always the fixed string `gamesConfiguration#localizedStringBundle`.",
           ).optional(),
-          translations: z.array(z.object({
-            kind: z.string().describe(
-              "Uniquely identifies the type of this resource. Value is always the fixed string `gamesConfiguration#localizedString`.",
-            ).optional(),
-            locale: z.string().describe("The locale string.").optional(),
-            value: z.string().describe("The string value.").optional(),
-          })).describe("The locale strings.").optional(),
+          translations: z.array(z.unknown()).describe("The locale strings.")
+            .optional(),
         }).describe("A localized string bundle resource.").optional(),
         one: z.object({
           kind: z.string().describe(
             "Uniquely identifies the type of this resource. Value is always the fixed string `gamesConfiguration#localizedStringBundle`.",
           ).optional(),
-          translations: z.array(z.object({
-            kind: z.string().describe(
-              "Uniquely identifies the type of this resource. Value is always the fixed string `gamesConfiguration#localizedString`.",
-            ).optional(),
-            locale: z.string().describe("The locale string.").optional(),
-            value: z.string().describe("The string value.").optional(),
-          })).describe("The locale strings.").optional(),
+          translations: z.array(z.unknown()).describe("The locale strings.")
+            .optional(),
         }).describe("A localized string bundle resource.").optional(),
         other: z.object({
           kind: z.string().describe(
             "Uniquely identifies the type of this resource. Value is always the fixed string `gamesConfiguration#localizedStringBundle`.",
           ).optional(),
-          translations: z.array(z.object({
-            kind: z.string().describe(
-              "Uniquely identifies the type of this resource. Value is always the fixed string `gamesConfiguration#localizedString`.",
-            ).optional(),
-            locale: z.string().describe("The locale string.").optional(),
-            value: z.string().describe("The string value.").optional(),
-          })).describe("The locale strings.").optional(),
+          translations: z.array(z.unknown()).describe("The locale strings.")
+            .optional(),
         }).describe("A localized string bundle resource.").optional(),
         two: z.object({
           kind: z.string().describe(
             "Uniquely identifies the type of this resource. Value is always the fixed string `gamesConfiguration#localizedStringBundle`.",
           ).optional(),
-          translations: z.array(z.object({
-            kind: z.string().describe(
-              "Uniquely identifies the type of this resource. Value is always the fixed string `gamesConfiguration#localizedString`.",
-            ).optional(),
-            locale: z.string().describe("The locale string.").optional(),
-            value: z.string().describe("The string value.").optional(),
-          })).describe("The locale strings.").optional(),
+          translations: z.array(z.unknown()).describe("The locale strings.")
+            .optional(),
         }).describe("A localized string bundle resource.").optional(),
         zero: z.object({
           kind: z.string().describe(
             "Uniquely identifies the type of this resource. Value is always the fixed string `gamesConfiguration#localizedStringBundle`.",
           ).optional(),
-          translations: z.array(z.object({
-            kind: z.string().describe(
-              "Uniquely identifies the type of this resource. Value is always the fixed string `gamesConfiguration#localizedString`.",
-            ).optional(),
-            locale: z.string().describe("The locale string.").optional(),
-            value: z.string().describe("The string value.").optional(),
-          })).describe("The locale strings.").optional(),
+          translations: z.array(z.unknown()).describe("The locale strings.")
+            .optional(),
         }).describe("A localized string bundle resource.").optional(),
       }).describe("A number affix resource.").optional(),
     }).describe("A number format resource.").optional(),
@@ -228,73 +198,43 @@ const GlobalArgsSchema = z.object({
           kind: z.string().describe(
             "Uniquely identifies the type of this resource. Value is always the fixed string `gamesConfiguration#localizedStringBundle`.",
           ).optional(),
-          translations: z.array(z.object({
-            kind: z.string().describe(
-              "Uniquely identifies the type of this resource. Value is always the fixed string `gamesConfiguration#localizedString`.",
-            ).optional(),
-            locale: z.string().describe("The locale string.").optional(),
-            value: z.string().describe("The string value.").optional(),
-          })).describe("The locale strings.").optional(),
+          translations: z.array(z.unknown()).describe("The locale strings.")
+            .optional(),
         }).describe("A localized string bundle resource.").optional(),
         many: z.object({
           kind: z.string().describe(
             "Uniquely identifies the type of this resource. Value is always the fixed string `gamesConfiguration#localizedStringBundle`.",
           ).optional(),
-          translations: z.array(z.object({
-            kind: z.string().describe(
-              "Uniquely identifies the type of this resource. Value is always the fixed string `gamesConfiguration#localizedString`.",
-            ).optional(),
-            locale: z.string().describe("The locale string.").optional(),
-            value: z.string().describe("The string value.").optional(),
-          })).describe("The locale strings.").optional(),
+          translations: z.array(z.unknown()).describe("The locale strings.")
+            .optional(),
         }).describe("A localized string bundle resource.").optional(),
         one: z.object({
           kind: z.string().describe(
             "Uniquely identifies the type of this resource. Value is always the fixed string `gamesConfiguration#localizedStringBundle`.",
           ).optional(),
-          translations: z.array(z.object({
-            kind: z.string().describe(
-              "Uniquely identifies the type of this resource. Value is always the fixed string `gamesConfiguration#localizedString`.",
-            ).optional(),
-            locale: z.string().describe("The locale string.").optional(),
-            value: z.string().describe("The string value.").optional(),
-          })).describe("The locale strings.").optional(),
+          translations: z.array(z.unknown()).describe("The locale strings.")
+            .optional(),
         }).describe("A localized string bundle resource.").optional(),
         other: z.object({
           kind: z.string().describe(
             "Uniquely identifies the type of this resource. Value is always the fixed string `gamesConfiguration#localizedStringBundle`.",
           ).optional(),
-          translations: z.array(z.object({
-            kind: z.string().describe(
-              "Uniquely identifies the type of this resource. Value is always the fixed string `gamesConfiguration#localizedString`.",
-            ).optional(),
-            locale: z.string().describe("The locale string.").optional(),
-            value: z.string().describe("The string value.").optional(),
-          })).describe("The locale strings.").optional(),
+          translations: z.array(z.unknown()).describe("The locale strings.")
+            .optional(),
         }).describe("A localized string bundle resource.").optional(),
         two: z.object({
           kind: z.string().describe(
             "Uniquely identifies the type of this resource. Value is always the fixed string `gamesConfiguration#localizedStringBundle`.",
           ).optional(),
-          translations: z.array(z.object({
-            kind: z.string().describe(
-              "Uniquely identifies the type of this resource. Value is always the fixed string `gamesConfiguration#localizedString`.",
-            ).optional(),
-            locale: z.string().describe("The locale string.").optional(),
-            value: z.string().describe("The string value.").optional(),
-          })).describe("The locale strings.").optional(),
+          translations: z.array(z.unknown()).describe("The locale strings.")
+            .optional(),
         }).describe("A localized string bundle resource.").optional(),
         zero: z.object({
           kind: z.string().describe(
             "Uniquely identifies the type of this resource. Value is always the fixed string `gamesConfiguration#localizedStringBundle`.",
           ).optional(),
-          translations: z.array(z.object({
-            kind: z.string().describe(
-              "Uniquely identifies the type of this resource. Value is always the fixed string `gamesConfiguration#localizedString`.",
-            ).optional(),
-            locale: z.string().describe("The locale string.").optional(),
-            value: z.string().describe("The string value.").optional(),
-          })).describe("The locale strings.").optional(),
+          translations: z.array(z.unknown()).describe("The locale strings.")
+            .optional(),
         }).describe("A localized string bundle resource.").optional(),
       }).describe("A number affix resource.").optional(),
     }).describe("A number format resource.").optional(),
@@ -338,51 +278,27 @@ const StateSchema = z.object({
       suffix: z.object({
         few: z.object({
           kind: z.string(),
-          translations: z.array(z.object({
-            kind: z.string(),
-            locale: z.string(),
-            value: z.string(),
-          })),
+          translations: z.array(z.unknown()),
         }),
         many: z.object({
           kind: z.string(),
-          translations: z.array(z.object({
-            kind: z.string(),
-            locale: z.string(),
-            value: z.string(),
-          })),
+          translations: z.array(z.unknown()),
         }),
         one: z.object({
           kind: z.string(),
-          translations: z.array(z.object({
-            kind: z.string(),
-            locale: z.string(),
-            value: z.string(),
-          })),
+          translations: z.array(z.unknown()),
         }),
         other: z.object({
           kind: z.string(),
-          translations: z.array(z.object({
-            kind: z.string(),
-            locale: z.string(),
-            value: z.string(),
-          })),
+          translations: z.array(z.unknown()),
         }),
         two: z.object({
           kind: z.string(),
-          translations: z.array(z.object({
-            kind: z.string(),
-            locale: z.string(),
-            value: z.string(),
-          })),
+          translations: z.array(z.unknown()),
         }),
         zero: z.object({
           kind: z.string(),
-          translations: z.array(z.object({
-            kind: z.string(),
-            locale: z.string(),
-            value: z.string(),
-          })),
+          translations: z.array(z.unknown()),
         }),
       }),
     }),
@@ -408,51 +324,27 @@ const StateSchema = z.object({
       suffix: z.object({
         few: z.object({
           kind: z.string(),
-          translations: z.array(z.object({
-            kind: z.string(),
-            locale: z.string(),
-            value: z.string(),
-          })),
+          translations: z.array(z.unknown()),
         }),
         many: z.object({
           kind: z.string(),
-          translations: z.array(z.object({
-            kind: z.string(),
-            locale: z.string(),
-            value: z.string(),
-          })),
+          translations: z.array(z.unknown()),
         }),
         one: z.object({
           kind: z.string(),
-          translations: z.array(z.object({
-            kind: z.string(),
-            locale: z.string(),
-            value: z.string(),
-          })),
+          translations: z.array(z.unknown()),
         }),
         other: z.object({
           kind: z.string(),
-          translations: z.array(z.object({
-            kind: z.string(),
-            locale: z.string(),
-            value: z.string(),
-          })),
+          translations: z.array(z.unknown()),
         }),
         two: z.object({
           kind: z.string(),
-          translations: z.array(z.object({
-            kind: z.string(),
-            locale: z.string(),
-            value: z.string(),
-          })),
+          translations: z.array(z.unknown()),
         }),
         zero: z.object({
           kind: z.string(),
-          translations: z.array(z.object({
-            kind: z.string(),
-            locale: z.string(),
-            value: z.string(),
-          })),
+          translations: z.array(z.unknown()),
         }),
       }),
     }),
@@ -505,73 +397,43 @@ const InputsSchema = z.object({
           kind: z.string().describe(
             "Uniquely identifies the type of this resource. Value is always the fixed string `gamesConfiguration#localizedStringBundle`.",
           ).optional(),
-          translations: z.array(z.object({
-            kind: z.string().describe(
-              "Uniquely identifies the type of this resource. Value is always the fixed string `gamesConfiguration#localizedString`.",
-            ).optional(),
-            locale: z.string().describe("The locale string.").optional(),
-            value: z.string().describe("The string value.").optional(),
-          })).describe("The locale strings.").optional(),
+          translations: z.array(z.unknown()).describe("The locale strings.")
+            .optional(),
         }).describe("A localized string bundle resource.").optional(),
         many: z.object({
           kind: z.string().describe(
             "Uniquely identifies the type of this resource. Value is always the fixed string `gamesConfiguration#localizedStringBundle`.",
           ).optional(),
-          translations: z.array(z.object({
-            kind: z.string().describe(
-              "Uniquely identifies the type of this resource. Value is always the fixed string `gamesConfiguration#localizedString`.",
-            ).optional(),
-            locale: z.string().describe("The locale string.").optional(),
-            value: z.string().describe("The string value.").optional(),
-          })).describe("The locale strings.").optional(),
+          translations: z.array(z.unknown()).describe("The locale strings.")
+            .optional(),
         }).describe("A localized string bundle resource.").optional(),
         one: z.object({
           kind: z.string().describe(
             "Uniquely identifies the type of this resource. Value is always the fixed string `gamesConfiguration#localizedStringBundle`.",
           ).optional(),
-          translations: z.array(z.object({
-            kind: z.string().describe(
-              "Uniquely identifies the type of this resource. Value is always the fixed string `gamesConfiguration#localizedString`.",
-            ).optional(),
-            locale: z.string().describe("The locale string.").optional(),
-            value: z.string().describe("The string value.").optional(),
-          })).describe("The locale strings.").optional(),
+          translations: z.array(z.unknown()).describe("The locale strings.")
+            .optional(),
         }).describe("A localized string bundle resource.").optional(),
         other: z.object({
           kind: z.string().describe(
             "Uniquely identifies the type of this resource. Value is always the fixed string `gamesConfiguration#localizedStringBundle`.",
           ).optional(),
-          translations: z.array(z.object({
-            kind: z.string().describe(
-              "Uniquely identifies the type of this resource. Value is always the fixed string `gamesConfiguration#localizedString`.",
-            ).optional(),
-            locale: z.string().describe("The locale string.").optional(),
-            value: z.string().describe("The string value.").optional(),
-          })).describe("The locale strings.").optional(),
+          translations: z.array(z.unknown()).describe("The locale strings.")
+            .optional(),
         }).describe("A localized string bundle resource.").optional(),
         two: z.object({
           kind: z.string().describe(
             "Uniquely identifies the type of this resource. Value is always the fixed string `gamesConfiguration#localizedStringBundle`.",
           ).optional(),
-          translations: z.array(z.object({
-            kind: z.string().describe(
-              "Uniquely identifies the type of this resource. Value is always the fixed string `gamesConfiguration#localizedString`.",
-            ).optional(),
-            locale: z.string().describe("The locale string.").optional(),
-            value: z.string().describe("The string value.").optional(),
-          })).describe("The locale strings.").optional(),
+          translations: z.array(z.unknown()).describe("The locale strings.")
+            .optional(),
         }).describe("A localized string bundle resource.").optional(),
         zero: z.object({
           kind: z.string().describe(
             "Uniquely identifies the type of this resource. Value is always the fixed string `gamesConfiguration#localizedStringBundle`.",
           ).optional(),
-          translations: z.array(z.object({
-            kind: z.string().describe(
-              "Uniquely identifies the type of this resource. Value is always the fixed string `gamesConfiguration#localizedString`.",
-            ).optional(),
-            locale: z.string().describe("The locale string.").optional(),
-            value: z.string().describe("The string value.").optional(),
-          })).describe("The locale strings.").optional(),
+          translations: z.array(z.unknown()).describe("The locale strings.")
+            .optional(),
         }).describe("A localized string bundle resource.").optional(),
       }).describe("A number affix resource.").optional(),
     }).describe("A number format resource.").optional(),
@@ -617,73 +479,43 @@ const InputsSchema = z.object({
           kind: z.string().describe(
             "Uniquely identifies the type of this resource. Value is always the fixed string `gamesConfiguration#localizedStringBundle`.",
           ).optional(),
-          translations: z.array(z.object({
-            kind: z.string().describe(
-              "Uniquely identifies the type of this resource. Value is always the fixed string `gamesConfiguration#localizedString`.",
-            ).optional(),
-            locale: z.string().describe("The locale string.").optional(),
-            value: z.string().describe("The string value.").optional(),
-          })).describe("The locale strings.").optional(),
+          translations: z.array(z.unknown()).describe("The locale strings.")
+            .optional(),
         }).describe("A localized string bundle resource.").optional(),
         many: z.object({
           kind: z.string().describe(
             "Uniquely identifies the type of this resource. Value is always the fixed string `gamesConfiguration#localizedStringBundle`.",
           ).optional(),
-          translations: z.array(z.object({
-            kind: z.string().describe(
-              "Uniquely identifies the type of this resource. Value is always the fixed string `gamesConfiguration#localizedString`.",
-            ).optional(),
-            locale: z.string().describe("The locale string.").optional(),
-            value: z.string().describe("The string value.").optional(),
-          })).describe("The locale strings.").optional(),
+          translations: z.array(z.unknown()).describe("The locale strings.")
+            .optional(),
         }).describe("A localized string bundle resource.").optional(),
         one: z.object({
           kind: z.string().describe(
             "Uniquely identifies the type of this resource. Value is always the fixed string `gamesConfiguration#localizedStringBundle`.",
           ).optional(),
-          translations: z.array(z.object({
-            kind: z.string().describe(
-              "Uniquely identifies the type of this resource. Value is always the fixed string `gamesConfiguration#localizedString`.",
-            ).optional(),
-            locale: z.string().describe("The locale string.").optional(),
-            value: z.string().describe("The string value.").optional(),
-          })).describe("The locale strings.").optional(),
+          translations: z.array(z.unknown()).describe("The locale strings.")
+            .optional(),
         }).describe("A localized string bundle resource.").optional(),
         other: z.object({
           kind: z.string().describe(
             "Uniquely identifies the type of this resource. Value is always the fixed string `gamesConfiguration#localizedStringBundle`.",
           ).optional(),
-          translations: z.array(z.object({
-            kind: z.string().describe(
-              "Uniquely identifies the type of this resource. Value is always the fixed string `gamesConfiguration#localizedString`.",
-            ).optional(),
-            locale: z.string().describe("The locale string.").optional(),
-            value: z.string().describe("The string value.").optional(),
-          })).describe("The locale strings.").optional(),
+          translations: z.array(z.unknown()).describe("The locale strings.")
+            .optional(),
         }).describe("A localized string bundle resource.").optional(),
         two: z.object({
           kind: z.string().describe(
             "Uniquely identifies the type of this resource. Value is always the fixed string `gamesConfiguration#localizedStringBundle`.",
           ).optional(),
-          translations: z.array(z.object({
-            kind: z.string().describe(
-              "Uniquely identifies the type of this resource. Value is always the fixed string `gamesConfiguration#localizedString`.",
-            ).optional(),
-            locale: z.string().describe("The locale string.").optional(),
-            value: z.string().describe("The string value.").optional(),
-          })).describe("The locale strings.").optional(),
+          translations: z.array(z.unknown()).describe("The locale strings.")
+            .optional(),
         }).describe("A localized string bundle resource.").optional(),
         zero: z.object({
           kind: z.string().describe(
             "Uniquely identifies the type of this resource. Value is always the fixed string `gamesConfiguration#localizedStringBundle`.",
           ).optional(),
-          translations: z.array(z.object({
-            kind: z.string().describe(
-              "Uniquely identifies the type of this resource. Value is always the fixed string `gamesConfiguration#localizedString`.",
-            ).optional(),
-            locale: z.string().describe("The locale string.").optional(),
-            value: z.string().describe("The string value.").optional(),
-          })).describe("The locale strings.").optional(),
+          translations: z.array(z.unknown()).describe("The locale strings.")
+            .optional(),
         }).describe("A localized string bundle resource.").optional(),
       }).describe("A number affix resource.").optional(),
     }).describe("A number format resource.").optional(),
@@ -709,8 +541,8 @@ const InputsSchema = z.object({
 });
 
 export const model = {
-  type: "@swamp/gcp/gamesConfiguration/leaderboardconfigurations",
-  version: "2026.04.03.3",
+  type: "@swamp/gcp/gamesconfiguration/leaderboardconfigurations",
+  version: "2026.04.04.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -734,6 +566,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.3",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.04.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

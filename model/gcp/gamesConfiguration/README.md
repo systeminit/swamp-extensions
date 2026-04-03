@@ -1,4 +1,4 @@
-# @swamp/gcp/gamesConfiguration
+# @swamp/gcp/gamesconfiguration
 
 Auto-generated [swamp](https://github.com/systeminit/swamp) extension models for
 Google Cloud gamesConfiguration resources.
@@ -14,7 +14,7 @@ the live state in GCP. Available methods:
 - **sync** — refresh all resource properties from the API
 
 Use
-`swamp model type describe @swamp/gcp/gamesConfiguration/achievementconfigurations`
+`swamp model type describe @swamp/gcp/gamesconfiguration/achievementconfigurations`
 to see the full list of configurable properties and available methods for this
 model.
 
@@ -62,7 +62,7 @@ gcloud config set project my-project
 
 ```bash
 # Create a new achievementconfigurations model
-swamp model create @swamp/gcp/gamesConfiguration/achievementconfigurations my-achievementconfigurations
+swamp model create @swamp/gcp/gamesconfiguration/achievementconfigurations my-achievementconfigurations
 
 # Edit the model to configure its properties
 swamp model edit my-achievementconfigurations
