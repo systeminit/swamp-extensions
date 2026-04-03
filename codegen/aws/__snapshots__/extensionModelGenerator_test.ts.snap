@@ -1,0 +1,936 @@
+export const snapshot = {};
+
+snapshot[`generateAwsExtensionModel - all handlers, natural name 1`] = `
+'// Auto-generated extension model for @swamp/aws/s3/bucket
+// Do not edit manually. Re-generate with: deno task generate:aws
+
+// deno-lint-ignore-file no-explicit-any
+
+import { z } from "zod";
+import { createResource, isResourceNotFoundError, readResource, updateResource, deleteResource } from "./_lib/aws.ts";
+
+const GlobalArgsSchema = z.object({
+  BucketName: z.string().describe("The name of the S3 bucket"),
+});
+
+const StateSchema = z.object({
+  BucketName: z.string().optional(),
+  Arn: z.string().optional(),
+}).passthrough();
+
+type StateData = z.infer<typeof StateSchema>;
+
+const InputsSchema = z.object({
+  BucketName: z.string().describe("The name of the S3 bucket").optional(),
+});
+
+export const model = {
+  type: "@swamp/aws/s3/bucket",
+  version: "2026.01.01.1",
+  globalArguments: GlobalArgsSchema,
+  inputsSchema: InputsSchema,
+  resources: {
+    state: {
+      description: "S3 Bucket resource state",
+      schema: StateSchema,
+      lifetime: "infinite",
+      garbageCollection: 10,
+    },
+  },
+  methods: {
+    create: {
+      description: "Create a S3 Bucket",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const desiredState: Record<string, unknown> = {};
+        for (const [key, value] of Object.entries(g)) {
+          if (value !== undefined) desiredState[key] = value;
+        }
+        const result = await createResource("AWS::S3::Bucket", desiredState) as StateData;
+        const instanceName = ((result.BucketName ?? g.BucketName)?.toString() ?? "current").replace(/[\\\\/\\\\\\\\]/g, "_").replace(/\\\\.\\\\./g, "_").replace(/\\\\0/g, "");
+        const handle = await context.writeResource("state", instanceName, result);
+        return { dataHandles: [handle] };
+      },
+    },
+    get: {
+      description: "Get a S3 Bucket",
+      arguments: z.object({ identifier: z.string().describe("The primary identifier of the S3 Bucket") }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const result = await readResource("AWS::S3::Bucket", args.identifier) as StateData;
+        const instanceName = ((result.BucketName ?? context.globalArgs.BucketName)?.toString() ?? args.identifier).replace(/[\\\\/\\\\\\\\]/g, "_").replace(/\\\\.\\\\./g, "_").replace(/\\\\0/g, "");
+        const handle = await context.writeResource("state", instanceName, result);
+        return { dataHandles: [handle] };
+      },
+    },
+    update: {
+      description: "Update a S3 Bucket",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const instanceName = (g.BucketName?.toString() ?? "current").replace(/[\\\\/\\\\\\\\]/g, "_").replace(/\\\\.\\\\./g, "_").replace(/\\\\0/g, "");
+        const content = await context.dataRepository.getContent(
+          context.modelType, context.modelId, instanceName,
+        );
+        if (!content) throw new Error("No existing state found - run create or get first");
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        const identifier = existing.BucketName?.toString();
+        if (!identifier) throw new Error("No identifier found in existing state");
+        const currentState = await readResource("AWS::S3::Bucket", identifier) as StateData;
+        const desiredState: Record<string, unknown> = { ...currentState };
+        for (const [key, value] of Object.entries(g)) {
+          if (value !== undefined) desiredState[key] = value;
+        }
+        const result = await updateResource("AWS::S3::Bucket", identifier, currentState, desiredState);
+        const handle = await context.writeResource("state", instanceName, result);
+        return { dataHandles: [handle] };
+      },
+    },
+    delete: {
+      description: "Delete a S3 Bucket",
+      arguments: z.object({ identifier: z.string().describe("The primary identifier of the S3 Bucket") }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const { existed } = await deleteResource("AWS::S3::Bucket", args.identifier);
+        const instanceName = (context.globalArgs.BucketName?.toString() ?? args.identifier).replace(/[\\\\/\\\\\\\\]/g, "_").replace(/\\\\.\\\\./g, "_").replace(/\\\\0/g, "");
+        const handle = await context.writeResource("state", instanceName, {
+          identifier: args.identifier,
+          existed,
+          status: existed ? "deleted" : "not_found",
+          deletedAt: new Date().toISOString(),
+        });
+        return { dataHandles: [handle] };
+      },
+    },
+    sync: {
+      description: "Sync S3 Bucket state from AWS",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const instanceName = (g.BucketName?.toString() ?? "current").replace(/[\\\\/\\\\\\\\]/g, "_").replace(/\\\\.\\\\./g, "_").replace(/\\\\0/g, "");
+        const content = await context.dataRepository.getContent(
+          context.modelType, context.modelId, instanceName,
+        );
+        if (!content) throw new Error("No existing state found - run create or get first");
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        const identifier = existing.BucketName?.toString();
+        if (!identifier) throw new Error("No identifier found in existing state");
+        try {
+          const result = await readResource("AWS::S3::Bucket", identifier) as StateData;
+          const handle = await context.writeResource("state", instanceName, result);
+          return { dataHandles: [handle] };
+        } catch (error: unknown) {
+          if (isResourceNotFoundError(error)) {
+            const handle = await context.writeResource("state", instanceName, {
+              identifier,
+              status: "not_found",
+              syncedAt: new Date().toISOString(),
+            });
+            return { dataHandles: [handle] };
+          }
+          throw error;
+        }
+      },
+    },
+  },
+};
+'
+`;
+
+snapshot[`generateAwsExtensionModel - synthetic name 1`] = `
+'// Auto-generated extension model for @swamp/aws/iam/role
+// Do not edit manually. Re-generate with: deno task generate:aws
+
+// deno-lint-ignore-file no-explicit-any
+
+import { z } from "zod";
+import { createResource, isResourceNotFoundError, readResource, updateResource, deleteResource } from "./_lib/aws.ts";
+
+const GlobalArgsSchema = z.object({
+  name: z.string().describe("Instance name for this resource (used as the unique identifier in the factory pattern)"),
+  RoleName: z.string().describe("The name of the IAM role"),
+  AssumeRolePolicyDocument: z.record(z.string(), z.unknown()).describe("The trust policy"),
+});
+
+const StateSchema = z.object({
+  RoleName: z.string().optional(),
+  Arn: z.string().optional(),
+  RoleId: z.string().optional(),
+}).passthrough();
+
+type StateData = z.infer<typeof StateSchema>;
+
+const InputsSchema = z.object({
+  name: z.string().optional(),
+  RoleName: z.string().describe("The name of the IAM role").optional(),
+  AssumeRolePolicyDocument: z.record(z.string(), z.unknown()).describe("The trust policy").optional(),
+});
+
+export const model = {
+  type: "@swamp/aws/iam/role",
+  version: "2026.01.01.1",
+  globalArguments: GlobalArgsSchema,
+  inputsSchema: InputsSchema,
+  resources: {
+    state: {
+      description: "IAM Role resource state",
+      schema: StateSchema,
+      lifetime: "infinite",
+      garbageCollection: 10,
+    },
+  },
+  methods: {
+    create: {
+      description: "Create a IAM Role",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const desiredState: Record<string, unknown> = {};
+        for (const [key, value] of Object.entries(g)) {
+          if (key === "name") continue;
+          if (value !== undefined) desiredState[key] = value;
+        }
+        const result = await createResource("AWS::IAM::Role", desiredState) as StateData;
+        const instanceName = (g.name?.toString() ?? "current").replace(/[\\\\/\\\\\\\\]/g, "_").replace(/\\\\.\\\\./g, "_").replace(/\\\\0/g, "");
+        const handle = await context.writeResource("state", instanceName, result);
+        return { dataHandles: [handle] };
+      },
+    },
+    get: {
+      description: "Get a IAM Role",
+      arguments: z.object({ identifier: z.string().describe("The primary identifier of the IAM Role") }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const result = await readResource("AWS::IAM::Role", args.identifier) as StateData;
+        const instanceName = (context.globalArgs.name?.toString() ?? args.identifier).replace(/[\\\\/\\\\\\\\]/g, "_").replace(/\\\\.\\\\./g, "_").replace(/\\\\0/g, "");
+        const handle = await context.writeResource("state", instanceName, result);
+        return { dataHandles: [handle] };
+      },
+    },
+    update: {
+      description: "Update a IAM Role",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const instanceName = (g.name?.toString() ?? "current").replace(/[\\\\/\\\\\\\\]/g, "_").replace(/\\\\.\\\\./g, "_").replace(/\\\\0/g, "");
+        const content = await context.dataRepository.getContent(
+          context.modelType, context.modelId, instanceName,
+        );
+        if (!content) throw new Error("No existing state found - run create or get first");
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        const identifier = existing.Arn?.toString();
+        if (!identifier) throw new Error("No identifier found in existing state");
+        const currentState = await readResource("AWS::IAM::Role", identifier) as StateData;
+        const desiredState: Record<string, unknown> = { ...currentState };
+        for (const [key, value] of Object.entries(g)) {
+          if (key === "name") continue;
+          if (value !== undefined) desiredState[key] = value;
+        }
+        const result = await updateResource("AWS::IAM::Role", identifier, currentState, desiredState);
+        const handle = await context.writeResource("state", instanceName, result);
+        return { dataHandles: [handle] };
+      },
+    },
+    delete: {
+      description: "Delete a IAM Role",
+      arguments: z.object({ identifier: z.string().describe("The primary identifier of the IAM Role") }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const { existed } = await deleteResource("AWS::IAM::Role", args.identifier);
+        const instanceName = (context.globalArgs.name?.toString() ?? args.identifier).replace(/[\\\\/\\\\\\\\]/g, "_").replace(/\\\\.\\\\./g, "_").replace(/\\\\0/g, "");
+        const handle = await context.writeResource("state", instanceName, {
+          identifier: args.identifier,
+          existed,
+          status: existed ? "deleted" : "not_found",
+          deletedAt: new Date().toISOString(),
+        });
+        return { dataHandles: [handle] };
+      },
+    },
+    sync: {
+      description: "Sync IAM Role state from AWS",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const instanceName = (g.name?.toString() ?? "current").replace(/[\\\\/\\\\\\\\]/g, "_").replace(/\\\\.\\\\./g, "_").replace(/\\\\0/g, "");
+        const content = await context.dataRepository.getContent(
+          context.modelType, context.modelId, instanceName,
+        );
+        if (!content) throw new Error("No existing state found - run create or get first");
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        const identifier = existing.Arn?.toString();
+        if (!identifier) throw new Error("No identifier found in existing state");
+        try {
+          const result = await readResource("AWS::IAM::Role", identifier) as StateData;
+          const handle = await context.writeResource("state", instanceName, result);
+          return { dataHandles: [handle] };
+        } catch (error: unknown) {
+          if (isResourceNotFoundError(error)) {
+            const handle = await context.writeResource("state", instanceName, {
+              identifier,
+              status: "not_found",
+              syncedAt: new Date().toISOString(),
+            });
+            return { dataHandles: [handle] };
+          }
+          throw error;
+        }
+      },
+    },
+  },
+};
+'
+`;
+
+snapshot[`generateAwsExtensionModel - composite primary identifier 1`] = `
+'// Auto-generated extension model for @swamp/aws/ec2/subnet_route_table_association
+// Do not edit manually. Re-generate with: deno task generate:aws
+
+// deno-lint-ignore-file no-explicit-any
+
+import { z } from "zod";
+import { createResource, isResourceNotFoundError, readResource, updateResource, deleteResource } from "./_lib/aws.ts";
+
+const GlobalArgsSchema = z.object({
+  name: z.string().describe("Instance name for this resource (used as the unique identifier in the factory pattern)"),
+  SubnetId: z.string().describe("The subnet ID"),
+  RouteTableId: z.string().describe("The route table ID"),
+});
+
+const StateSchema = z.object({
+  SubnetId: z.string().optional(),
+  RouteTableId: z.string().optional(),
+  Id: z.string().optional(),
+}).passthrough();
+
+type StateData = z.infer<typeof StateSchema>;
+
+const InputsSchema = z.object({
+  name: z.string().optional(),
+  SubnetId: z.string().describe("The subnet ID").optional(),
+  RouteTableId: z.string().describe("The route table ID").optional(),
+});
+
+export const model = {
+  type: "@swamp/aws/ec2/subnet_route_table_association",
+  version: "2026.01.01.1",
+  globalArguments: GlobalArgsSchema,
+  inputsSchema: InputsSchema,
+  resources: {
+    state: {
+      description: "EC2 SubnetRouteTableAssociation resource state",
+      schema: StateSchema,
+      lifetime: "infinite",
+      garbageCollection: 10,
+    },
+  },
+  methods: {
+    create: {
+      description: "Create a EC2 SubnetRouteTableAssociation",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const desiredState: Record<string, unknown> = {};
+        for (const [key, value] of Object.entries(g)) {
+          if (key === "name") continue;
+          if (value !== undefined) desiredState[key] = value;
+        }
+        const result = await createResource("AWS::EC2::SubnetRouteTableAssociation", desiredState) as StateData;
+        const instanceName = (g.name?.toString() ?? "current").replace(/[\\\\/\\\\\\\\]/g, "_").replace(/\\\\.\\\\./g, "_").replace(/\\\\0/g, "");
+        const handle = await context.writeResource("state", instanceName, result);
+        return { dataHandles: [handle] };
+      },
+    },
+    get: {
+      description: "Get a EC2 SubnetRouteTableAssociation",
+      arguments: z.object({ identifier: z.string().describe("The primary identifier of the EC2 SubnetRouteTableAssociation") }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const result = await readResource("AWS::EC2::SubnetRouteTableAssociation", args.identifier) as StateData;
+        const instanceName = (context.globalArgs.name?.toString() ?? args.identifier).replace(/[\\\\/\\\\\\\\]/g, "_").replace(/\\\\.\\\\./g, "_").replace(/\\\\0/g, "");
+        const handle = await context.writeResource("state", instanceName, result);
+        return { dataHandles: [handle] };
+      },
+    },
+    update: {
+      description: "Update a EC2 SubnetRouteTableAssociation",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const instanceName = (g.name?.toString() ?? "current").replace(/[\\\\/\\\\\\\\]/g, "_").replace(/\\\\.\\\\./g, "_").replace(/\\\\0/g, "");
+        const content = await context.dataRepository.getContent(
+          context.modelType, context.modelId, instanceName,
+        );
+        if (!content) throw new Error("No existing state found - run create or get first");
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        const idParts = [existing.SubnetId?.toString(), existing.RouteTableId?.toString()];
+        if (idParts.some((p) => !p)) throw new Error("Missing primary identifier fields in existing state");
+        const identifier = idParts.join("|");
+        const currentState = await readResource("AWS::EC2::SubnetRouteTableAssociation", identifier) as StateData;
+        const desiredState: Record<string, unknown> = { ...currentState };
+        for (const [key, value] of Object.entries(g)) {
+          if (key === "name") continue;
+          if (value !== undefined) desiredState[key] = value;
+        }
+        const result = await updateResource("AWS::EC2::SubnetRouteTableAssociation", identifier, currentState, desiredState, ["SubnetId"]);
+        const handle = await context.writeResource("state", instanceName, result);
+        return { dataHandles: [handle] };
+      },
+    },
+    delete: {
+      description: "Delete a EC2 SubnetRouteTableAssociation",
+      arguments: z.object({ identifier: z.string().describe("The primary identifier of the EC2 SubnetRouteTableAssociation") }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const { existed } = await deleteResource("AWS::EC2::SubnetRouteTableAssociation", args.identifier);
+        const instanceName = (context.globalArgs.name?.toString() ?? args.identifier).replace(/[\\\\/\\\\\\\\]/g, "_").replace(/\\\\.\\\\./g, "_").replace(/\\\\0/g, "");
+        const handle = await context.writeResource("state", instanceName, {
+          identifier: args.identifier,
+          existed,
+          status: existed ? "deleted" : "not_found",
+          deletedAt: new Date().toISOString(),
+        });
+        return { dataHandles: [handle] };
+      },
+    },
+    sync: {
+      description: "Sync EC2 SubnetRouteTableAssociation state from AWS",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const instanceName = (g.name?.toString() ?? "current").replace(/[\\\\/\\\\\\\\]/g, "_").replace(/\\\\.\\\\./g, "_").replace(/\\\\0/g, "");
+        const content = await context.dataRepository.getContent(
+          context.modelType, context.modelId, instanceName,
+        );
+        if (!content) throw new Error("No existing state found - run create or get first");
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        const idParts = [existing.SubnetId?.toString(), existing.RouteTableId?.toString()];
+        if (idParts.some((p) => !p)) throw new Error("Missing primary identifier fields in existing state");
+        const identifier = idParts.join("|");
+        try {
+          const result = await readResource("AWS::EC2::SubnetRouteTableAssociation", identifier) as StateData;
+          const handle = await context.writeResource("state", instanceName, result);
+          return { dataHandles: [handle] };
+        } catch (error: unknown) {
+          if (isResourceNotFoundError(error)) {
+            const handle = await context.writeResource("state", instanceName, {
+              identifier,
+              status: "not_found",
+              syncedAt: new Date().toISOString(),
+            });
+            return { dataHandles: [handle] };
+          }
+          throw error;
+        }
+      },
+    },
+  },
+};
+'
+`;
+
+snapshot[`generateAwsExtensionModel - createOnly properties filtered in update 1`] = `
+'// Auto-generated extension model for @swamp/aws/ec2/instance
+// Do not edit manually. Re-generate with: deno task generate:aws
+
+// deno-lint-ignore-file no-explicit-any
+
+import { z } from "zod";
+import { createResource, isResourceNotFoundError, readResource, updateResource, deleteResource } from "./_lib/aws.ts";
+
+const GlobalArgsSchema = z.object({
+  name: z.string().describe("Instance name for this resource (used as the unique identifier in the factory pattern)"),
+  InstanceType: z.string().describe("The instance type"),
+  ImageId: z.string().describe("The AMI ID"),
+});
+
+const StateSchema = z.object({
+  InstanceId: z.string().optional(),
+  InstanceType: z.string().optional(),
+  ImageId: z.string().optional(),
+}).passthrough();
+
+type StateData = z.infer<typeof StateSchema>;
+
+const InputsSchema = z.object({
+  name: z.string().optional(),
+  InstanceType: z.string().describe("The instance type").optional(),
+  ImageId: z.string().describe("The AMI ID").optional(),
+});
+
+export const model = {
+  type: "@swamp/aws/ec2/instance",
+  version: "2026.01.01.1",
+  globalArguments: GlobalArgsSchema,
+  inputsSchema: InputsSchema,
+  resources: {
+    state: {
+      description: "EC2 Instance resource state",
+      schema: StateSchema,
+      lifetime: "infinite",
+      garbageCollection: 10,
+    },
+  },
+  methods: {
+    create: {
+      description: "Create a EC2 Instance",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const desiredState: Record<string, unknown> = {};
+        for (const [key, value] of Object.entries(g)) {
+          if (key === "name") continue;
+          if (value !== undefined) desiredState[key] = value;
+        }
+        const result = await createResource("AWS::EC2::Instance", desiredState) as StateData;
+        const instanceName = (g.name?.toString() ?? "current").replace(/[\\\\/\\\\\\\\]/g, "_").replace(/\\\\.\\\\./g, "_").replace(/\\\\0/g, "");
+        const handle = await context.writeResource("state", instanceName, result);
+        return { dataHandles: [handle] };
+      },
+    },
+    get: {
+      description: "Get a EC2 Instance",
+      arguments: z.object({ identifier: z.string().describe("The primary identifier of the EC2 Instance") }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const result = await readResource("AWS::EC2::Instance", args.identifier) as StateData;
+        const instanceName = (context.globalArgs.name?.toString() ?? args.identifier).replace(/[\\\\/\\\\\\\\]/g, "_").replace(/\\\\.\\\\./g, "_").replace(/\\\\0/g, "");
+        const handle = await context.writeResource("state", instanceName, result);
+        return { dataHandles: [handle] };
+      },
+    },
+    update: {
+      description: "Update a EC2 Instance",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const instanceName = (g.name?.toString() ?? "current").replace(/[\\\\/\\\\\\\\]/g, "_").replace(/\\\\.\\\\./g, "_").replace(/\\\\0/g, "");
+        const content = await context.dataRepository.getContent(
+          context.modelType, context.modelId, instanceName,
+        );
+        if (!content) throw new Error("No existing state found - run create or get first");
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        const identifier = existing.InstanceId?.toString();
+        if (!identifier) throw new Error("No identifier found in existing state");
+        const currentState = await readResource("AWS::EC2::Instance", identifier) as StateData;
+        const desiredState: Record<string, unknown> = { ...currentState };
+        for (const [key, value] of Object.entries(g)) {
+          if (key === "name") continue;
+          if (value !== undefined) desiredState[key] = value;
+        }
+        const result = await updateResource("AWS::EC2::Instance", identifier, currentState, desiredState, ["ImageId"]);
+        const handle = await context.writeResource("state", instanceName, result);
+        return { dataHandles: [handle] };
+      },
+    },
+    delete: {
+      description: "Delete a EC2 Instance",
+      arguments: z.object({ identifier: z.string().describe("The primary identifier of the EC2 Instance") }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const { existed } = await deleteResource("AWS::EC2::Instance", args.identifier);
+        const instanceName = (context.globalArgs.name?.toString() ?? args.identifier).replace(/[\\\\/\\\\\\\\]/g, "_").replace(/\\\\.\\\\./g, "_").replace(/\\\\0/g, "");
+        const handle = await context.writeResource("state", instanceName, {
+          identifier: args.identifier,
+          existed,
+          status: existed ? "deleted" : "not_found",
+          deletedAt: new Date().toISOString(),
+        });
+        return { dataHandles: [handle] };
+      },
+    },
+    sync: {
+      description: "Sync EC2 Instance state from AWS",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const instanceName = (g.name?.toString() ?? "current").replace(/[\\\\/\\\\\\\\]/g, "_").replace(/\\\\.\\\\./g, "_").replace(/\\\\0/g, "");
+        const content = await context.dataRepository.getContent(
+          context.modelType, context.modelId, instanceName,
+        );
+        if (!content) throw new Error("No existing state found - run create or get first");
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        const identifier = existing.InstanceId?.toString();
+        if (!identifier) throw new Error("No identifier found in existing state");
+        try {
+          const result = await readResource("AWS::EC2::Instance", identifier) as StateData;
+          const handle = await context.writeResource("state", instanceName, result);
+          return { dataHandles: [handle] };
+        } catch (error: unknown) {
+          if (isResourceNotFoundError(error)) {
+            const handle = await context.writeResource("state", instanceName, {
+              identifier,
+              status: "not_found",
+              syncedAt: new Date().toISOString(),
+            });
+            return { dataHandles: [handle] };
+          }
+          throw error;
+        }
+      },
+    },
+  },
+};
+'
+`;
+
+snapshot[`generateAwsExtensionModel - read-only resource (no update, no delete) 1`] = `
+'// Auto-generated extension model for @swamp/aws/cloudformation/stack_set
+// Do not edit manually. Re-generate with: deno task generate:aws
+
+// deno-lint-ignore-file no-explicit-any
+
+import { z } from "zod";
+import { createResource, isResourceNotFoundError, readResource } from "./_lib/aws.ts";
+
+const GlobalArgsSchema = z.object({
+  name: z.string().describe("Instance name for this resource (used as the unique identifier in the factory pattern)"),
+  StackSetName: z.string().describe("The name of the stack set"),
+});
+
+const StateSchema = z.object({
+  StackSetName: z.string().optional(),
+  StackSetId: z.string().optional(),
+}).passthrough();
+
+type StateData = z.infer<typeof StateSchema>;
+
+const InputsSchema = z.object({
+  name: z.string().optional(),
+  StackSetName: z.string().describe("The name of the stack set").optional(),
+});
+
+export const model = {
+  type: "@swamp/aws/cloudformation/stack_set",
+  version: "2026.01.01.1",
+  globalArguments: GlobalArgsSchema,
+  inputsSchema: InputsSchema,
+  resources: {
+    state: {
+      description: "CloudFormation StackSet resource state",
+      schema: StateSchema,
+      lifetime: "infinite",
+      garbageCollection: 10,
+    },
+  },
+  methods: {
+    create: {
+      description: "Create a CloudFormation StackSet",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const desiredState: Record<string, unknown> = {};
+        for (const [key, value] of Object.entries(g)) {
+          if (key === "name") continue;
+          if (value !== undefined) desiredState[key] = value;
+        }
+        const result = await createResource("AWS::CloudFormation::StackSet", desiredState) as StateData;
+        const instanceName = (g.name?.toString() ?? "current").replace(/[\\\\/\\\\\\\\]/g, "_").replace(/\\\\.\\\\./g, "_").replace(/\\\\0/g, "");
+        const handle = await context.writeResource("state", instanceName, result);
+        return { dataHandles: [handle] };
+      },
+    },
+    get: {
+      description: "Get a CloudFormation StackSet",
+      arguments: z.object({ identifier: z.string().describe("The primary identifier of the CloudFormation StackSet") }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const result = await readResource("AWS::CloudFormation::StackSet", args.identifier) as StateData;
+        const instanceName = (context.globalArgs.name?.toString() ?? args.identifier).replace(/[\\\\/\\\\\\\\]/g, "_").replace(/\\\\.\\\\./g, "_").replace(/\\\\0/g, "");
+        const handle = await context.writeResource("state", instanceName, result);
+        return { dataHandles: [handle] };
+      },
+    },
+    sync: {
+      description: "Sync CloudFormation StackSet state from AWS",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const instanceName = (g.name?.toString() ?? "current").replace(/[\\\\/\\\\\\\\]/g, "_").replace(/\\\\.\\\\./g, "_").replace(/\\\\0/g, "");
+        const content = await context.dataRepository.getContent(
+          context.modelType, context.modelId, instanceName,
+        );
+        if (!content) throw new Error("No existing state found - run create or get first");
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        const identifier = existing.StackSetId?.toString();
+        if (!identifier) throw new Error("No identifier found in existing state");
+        try {
+          const result = await readResource("AWS::CloudFormation::StackSet", identifier) as StateData;
+          const handle = await context.writeResource("state", instanceName, result);
+          return { dataHandles: [handle] };
+        } catch (error: unknown) {
+          if (isResourceNotFoundError(error)) {
+            const handle = await context.writeResource("state", instanceName, {
+              identifier,
+              status: "not_found",
+              syncedAt: new Date().toISOString(),
+            });
+            return { dataHandles: [handle] };
+          }
+          throw error;
+        }
+      },
+    },
+  },
+};
+'
+`;
+
+snapshot[`generateAwsExtensionModel - extracted schemas and StateSchema collision 1`] = `
+'// Auto-generated extension model for @swamp/aws/ecs/task_definition
+// Do not edit manually. Re-generate with: deno task generate:aws
+
+// deno-lint-ignore-file no-explicit-any
+
+import { z } from "zod";
+import { createResource, isResourceNotFoundError, readResource, deleteResource } from "./_lib/aws.ts";
+
+const StateSchema = z.object({
+  Memory: z.string().optional(),
+});
+
+const GlobalArgsSchema = z.object({
+  name: z.string().describe("Instance name for this resource (used as the unique identifier in the factory pattern)"),
+  Family: z.string().describe("The task family name"),
+});
+
+const _StateSchema = z.object({
+  Family: z.string().optional(),
+  TaskDefinitionArn: z.string().optional(),
+}).passthrough();
+
+type StateData = z.infer<typeof _StateSchema>;
+
+const InputsSchema = z.object({
+  name: z.string().optional(),
+  Family: z.string().describe("The task family name").optional(),
+});
+
+export const model = {
+  type: "@swamp/aws/ecs/task_definition",
+  version: "2026.01.01.1",
+  globalArguments: GlobalArgsSchema,
+  inputsSchema: InputsSchema,
+  resources: {
+    state: {
+      description: "ECS TaskDefinition resource state",
+      schema: _StateSchema,
+      lifetime: "infinite",
+      garbageCollection: 10,
+    },
+  },
+  methods: {
+    create: {
+      description: "Create a ECS TaskDefinition",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const desiredState: Record<string, unknown> = {};
+        for (const [key, value] of Object.entries(g)) {
+          if (key === "name") continue;
+          if (value !== undefined) desiredState[key] = value;
+        }
+        const result = await createResource("AWS::ECS::TaskDefinition", desiredState) as StateData;
+        const instanceName = (g.name?.toString() ?? "current").replace(/[\\\\/\\\\\\\\]/g, "_").replace(/\\\\.\\\\./g, "_").replace(/\\\\0/g, "");
+        const handle = await context.writeResource("state", instanceName, result);
+        return { dataHandles: [handle] };
+      },
+    },
+    get: {
+      description: "Get a ECS TaskDefinition",
+      arguments: z.object({ identifier: z.string().describe("The primary identifier of the ECS TaskDefinition") }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const result = await readResource("AWS::ECS::TaskDefinition", args.identifier) as StateData;
+        const instanceName = (context.globalArgs.name?.toString() ?? args.identifier).replace(/[\\\\/\\\\\\\\]/g, "_").replace(/\\\\.\\\\./g, "_").replace(/\\\\0/g, "");
+        const handle = await context.writeResource("state", instanceName, result);
+        return { dataHandles: [handle] };
+      },
+    },
+    delete: {
+      description: "Delete a ECS TaskDefinition",
+      arguments: z.object({ identifier: z.string().describe("The primary identifier of the ECS TaskDefinition") }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const { existed } = await deleteResource("AWS::ECS::TaskDefinition", args.identifier);
+        const instanceName = (context.globalArgs.name?.toString() ?? args.identifier).replace(/[\\\\/\\\\\\\\]/g, "_").replace(/\\\\.\\\\./g, "_").replace(/\\\\0/g, "");
+        const handle = await context.writeResource("state", instanceName, {
+          identifier: args.identifier,
+          existed,
+          status: existed ? "deleted" : "not_found",
+          deletedAt: new Date().toISOString(),
+        });
+        return { dataHandles: [handle] };
+      },
+    },
+    sync: {
+      description: "Sync ECS TaskDefinition state from AWS",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const instanceName = (g.name?.toString() ?? "current").replace(/[\\\\/\\\\\\\\]/g, "_").replace(/\\\\.\\\\./g, "_").replace(/\\\\0/g, "");
+        const content = await context.dataRepository.getContent(
+          context.modelType, context.modelId, instanceName,
+        );
+        if (!content) throw new Error("No existing state found - run create or get first");
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        const identifier = existing.TaskDefinitionArn?.toString();
+        if (!identifier) throw new Error("No identifier found in existing state");
+        try {
+          const result = await readResource("AWS::ECS::TaskDefinition", identifier) as StateData;
+          const handle = await context.writeResource("state", instanceName, result);
+          return { dataHandles: [handle] };
+        } catch (error: unknown) {
+          if (isResourceNotFoundError(error)) {
+            const handle = await context.writeResource("state", instanceName, {
+              identifier,
+              status: "not_found",
+              syncedAt: new Date().toISOString(),
+            });
+            return { dataHandles: [handle] };
+          }
+          throw error;
+        }
+      },
+    },
+  },
+};
+'
+`;
+
+snapshot[`generateAwsExtensionModel - with upgrades block 1`] = `
+'// Auto-generated extension model for @swamp/aws/sqs/queue
+// Do not edit manually. Re-generate with: deno task generate:aws
+
+// deno-lint-ignore-file no-explicit-any
+
+import { z } from "zod";
+import { createResource, isResourceNotFoundError, readResource, updateResource, deleteResource } from "./_lib/aws.ts";
+
+const GlobalArgsSchema = z.object({
+  name: z.string().describe("Instance name for this resource (used as the unique identifier in the factory pattern)"),
+  QueueName: z.string().describe("The name of the queue"),
+});
+
+const StateSchema = z.object({
+  QueueName: z.string().optional(),
+  QueueUrl: z.string().optional(),
+}).passthrough();
+
+type StateData = z.infer<typeof StateSchema>;
+
+const InputsSchema = z.object({
+  name: z.string().optional(),
+  QueueName: z.string().describe("The name of the queue").optional(),
+});
+
+export const model = {
+  type: "@swamp/aws/sqs/queue",
+  version: "2026.01.02.1",
+  upgrades: [
+    {
+      toVersion: "2026.01.02.1",
+      description: "Added: NewField",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+  ],
+  globalArguments: GlobalArgsSchema,
+  inputsSchema: InputsSchema,
+  resources: {
+    state: {
+      description: "SQS Queue resource state",
+      schema: StateSchema,
+      lifetime: "infinite",
+      garbageCollection: 10,
+    },
+  },
+  methods: {
+    create: {
+      description: "Create a SQS Queue",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const desiredState: Record<string, unknown> = {};
+        for (const [key, value] of Object.entries(g)) {
+          if (key === "name") continue;
+          if (value !== undefined) desiredState[key] = value;
+        }
+        const result = await createResource("AWS::SQS::Queue", desiredState) as StateData;
+        const instanceName = (g.name?.toString() ?? "current").replace(/[\\\\/\\\\\\\\]/g, "_").replace(/\\\\.\\\\./g, "_").replace(/\\\\0/g, "");
+        const handle = await context.writeResource("state", instanceName, result);
+        return { dataHandles: [handle] };
+      },
+    },
+    get: {
+      description: "Get a SQS Queue",
+      arguments: z.object({ identifier: z.string().describe("The primary identifier of the SQS Queue") }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const result = await readResource("AWS::SQS::Queue", args.identifier) as StateData;
+        const instanceName = (context.globalArgs.name?.toString() ?? args.identifier).replace(/[\\\\/\\\\\\\\]/g, "_").replace(/\\\\.\\\\./g, "_").replace(/\\\\0/g, "");
+        const handle = await context.writeResource("state", instanceName, result);
+        return { dataHandles: [handle] };
+      },
+    },
+    update: {
+      description: "Update a SQS Queue",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const instanceName = (g.name?.toString() ?? "current").replace(/[\\\\/\\\\\\\\]/g, "_").replace(/\\\\.\\\\./g, "_").replace(/\\\\0/g, "");
+        const content = await context.dataRepository.getContent(
+          context.modelType, context.modelId, instanceName,
+        );
+        if (!content) throw new Error("No existing state found - run create or get first");
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        const identifier = existing.QueueUrl?.toString();
+        if (!identifier) throw new Error("No identifier found in existing state");
+        const currentState = await readResource("AWS::SQS::Queue", identifier) as StateData;
+        const desiredState: Record<string, unknown> = { ...currentState };
+        for (const [key, value] of Object.entries(g)) {
+          if (key === "name") continue;
+          if (value !== undefined) desiredState[key] = value;
+        }
+        const result = await updateResource("AWS::SQS::Queue", identifier, currentState, desiredState);
+        const handle = await context.writeResource("state", instanceName, result);
+        return { dataHandles: [handle] };
+      },
+    },
+    delete: {
+      description: "Delete a SQS Queue",
+      arguments: z.object({ identifier: z.string().describe("The primary identifier of the SQS Queue") }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const { existed } = await deleteResource("AWS::SQS::Queue", args.identifier);
+        const instanceName = (context.globalArgs.name?.toString() ?? args.identifier).replace(/[\\\\/\\\\\\\\]/g, "_").replace(/\\\\.\\\\./g, "_").replace(/\\\\0/g, "");
+        const handle = await context.writeResource("state", instanceName, {
+          identifier: args.identifier,
+          existed,
+          status: existed ? "deleted" : "not_found",
+          deletedAt: new Date().toISOString(),
+        });
+        return { dataHandles: [handle] };
+      },
+    },
+    sync: {
+      description: "Sync SQS Queue state from AWS",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const instanceName = (g.name?.toString() ?? "current").replace(/[\\\\/\\\\\\\\]/g, "_").replace(/\\\\.\\\\./g, "_").replace(/\\\\0/g, "");
+        const content = await context.dataRepository.getContent(
+          context.modelType, context.modelId, instanceName,
+        );
+        if (!content) throw new Error("No existing state found - run create or get first");
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        const identifier = existing.QueueUrl?.toString();
+        if (!identifier) throw new Error("No identifier found in existing state");
+        try {
+          const result = await readResource("AWS::SQS::Queue", identifier) as StateData;
+          const handle = await context.writeResource("state", instanceName, result);
+          return { dataHandles: [handle] };
+        } catch (error: unknown) {
+          if (isResourceNotFoundError(error)) {
+            const handle = await context.writeResource("state", instanceName, {
+              identifier,
+              status: "not_found",
+              syncedAt: new Date().toISOString(),
+            });
+            return { dataHandles: [handle] };
+          }
+          throw error;
+        }
+      },
+    },
+  },
+};
+'
+`;

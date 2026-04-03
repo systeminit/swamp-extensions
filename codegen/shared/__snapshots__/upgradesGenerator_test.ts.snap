@@ -1,0 +1,80 @@
+export const snapshot = {};
+
+snapshot[`generateUpgradeEntry - added fields only (no-op) 1`] = `
+'    {
+      toVersion: "2.0.0",
+      description: "Added: newField, otherField",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    }'
+`;
+
+snapshot[`generateUpgradeEntry - removed fields only 1`] = `
+'    {
+      toVersion: "2.0.0",
+      description: "Removed: oldField, deprecatedField",
+      upgradeAttributes: (old: Record<string, unknown>) => {
+        const { oldField: _oldField, deprecatedField: _deprecatedField, ...rest } = old;
+        return rest;
+      },
+    }'
+`;
+
+snapshot[`generateUpgradeEntry - both added and removed 1`] = `
+'    {
+      toVersion: "2.0.0",
+      description: "Added: added. Removed: removed",
+      upgradeAttributes: (old: Record<string, unknown>) => {
+        const { removed: _removed, ...rest } = old;
+        return rest;
+      },
+    }'
+`;
+
+snapshot[`generateUpgradeEntry - no changes 1`] = `
+'    {
+      toVersion: "2.0.0",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    }'
+`;
+
+snapshot[`buildUpgradesBlock - single entry 1`] = `
+'  upgrades: [
+    {
+      toVersion: "1.0.0",
+      description: "Added: field1",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+  ],'
+`;
+
+snapshot[`buildUpgradesBlock - existing + new entry 1`] = `
+'  upgrades: [
+    {
+      toVersion: "1.0.0",
+      description: "Added: x",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2.0.0",
+      description: "Removed: removed",
+      upgradeAttributes: (old: Record<string, unknown>) => {
+        const { removed: _removed, ...rest } = old;
+        return rest;
+      },
+    },
+  ],'
+`;
+
+snapshot[`computeUpgradesBlock - changed generates new entry for removed field 1`] = `
+'  upgrades: [
+    {
+      toVersion: "2.0.0",
+      description: "Removed: oldField",
+      upgradeAttributes: (old: Record<string, unknown>) => {
+        const { oldField: _oldField, ...rest } = old;
+        return rest;
+      },
+    },
+  ],'
+`;

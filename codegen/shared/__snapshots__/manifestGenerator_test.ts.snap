@@ -1,0 +1,89 @@
+export const snapshot = {};
+
+snapshot[`generateManifest - full manifest with release notes and additional files 1`] = `
+'# Auto-generated manifest. Re-generate with the appropriate deno task.
+manifestVersion: 1
+name: "@swamp/hetzner-cloud"
+version: "2026.04.03.1"
+description: "Hetzner Cloud infrastructure models"
+labels:
+  - hetzner
+  - cloud
+  - infrastructure
+releaseNotes: |
+  - Updated: servers, volumes
+  - New: ssh_keys
+models:
+  - servers.ts
+  - ssh_keys.ts
+  - volumes.ts
+additionalFiles:
+  - LICENSE.txt
+  - README.md
+'
+`;
+
+snapshot[`generateManifest - no release notes, no additional files 1`] = `
+'# Auto-generated manifest. Re-generate with the appropriate deno task.
+manifestVersion: 1
+name: "@swamp/aws/ec2"
+version: "2026.01.01.1"
+description: "AWS EC2 infrastructure models"
+labels:
+  - aws
+  - ec2
+  - cloud
+models:
+  - instance.ts
+  - vpc.ts
+'
+`;
+
+snapshot[`generateManifest - model files are sorted 1`] = `
+'# Auto-generated manifest. Re-generate with the appropriate deno task.
+manifestVersion: 1
+name: "@swamp/test"
+version: "1.0.0"
+description: "Test"
+labels:
+  - test
+models:
+  - a_first.ts
+  - m_middle.ts
+  - z_last.ts
+'
+`;
+
+snapshot[`generateManifest - additional files are sorted 1`] = `
+'# Auto-generated manifest. Re-generate with the appropriate deno task.
+manifestVersion: 1
+name: "@swamp/test"
+version: "1.0.0"
+description: "Test"
+labels:
+  - test
+models:
+  - model.ts
+additionalFiles:
+  - CHANGELOG.md
+  - LICENSE.txt
+  - README.md
+'
+`;
+
+snapshot[`generateManifest - multiline release notes 1`] = `
+'# Auto-generated manifest. Re-generate with the appropriate deno task.
+manifestVersion: 1
+name: "@swamp/test"
+version: "2.0.0"
+description: "Test extension"
+labels:
+  - test
+releaseNotes: |
+  - New: resource_a
+  - Updated: resource_b
+  - Removed: resource_c
+models:
+  - a.ts
+'
+`;

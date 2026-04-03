@@ -1,0 +1,1449 @@
+export const snapshot = {};
+
+snapshot[`generateDigitalOceanExtensionModel - all handlers, natural name 1`] = `
+'// Auto-generated extension model for @swamp/digitalocean/droplet
+// Do not edit manually. Re-generate with: deno task generate:digitalocean
+
+// deno-lint-ignore-file no-explicit-any
+
+import { z } from "zod";
+import { create, read, tryRead, remove, tryFindByField, update } from "./_lib/digitalocean.ts";
+
+const GlobalArgsSchema = z.object({
+  name: z.string().describe("The hostname for the Droplet"),
+  region: z.enum(["nyc1", "sfo1", "nyc2", "ams2", "sgp1", "lon1", "nyc3", "ams3", "fra1", "tor1", "sfo2", "blr1", "sfo3", "syd1", "atl1"]).describe("The slug of the region"),
+  size: z.string().describe("The slug of the Droplet size"),
+  image: z.string().describe("The image ID or slug"),
+});
+
+const ResourceSchema = z.object({
+  id: z.number(),
+  name: z.string().optional(),
+  status: z.string().optional(),
+  size_slug: z.string().optional(),
+  region: z.object({
+    slug: z.string().optional(),
+    name: z.string().optional(),
+  }).optional(),
+}).passthrough();
+
+type ResourceData = z.infer<typeof ResourceSchema>;
+
+const InputsSchema = z.object({
+  name: z.string().optional(),
+  region: z.enum(["nyc1", "sfo1", "nyc2", "ams2", "sgp1", "lon1", "nyc3", "ams3", "fra1", "tor1", "sfo2", "blr1", "sfo3", "syd1", "atl1"]).optional(),
+  size: z.string().optional(),
+  image: z.string().optional(),
+});
+
+export const model = {
+  type: "@swamp/digitalocean/droplet",
+  version: "2026.01.01.1",
+  globalArguments: GlobalArgsSchema,
+  inputsSchema: InputsSchema,
+  resources: {
+    state: {
+      description: "Droplet resource state",
+      schema: ResourceSchema,
+      lifetime: "infinite",
+      garbageCollection: 10,
+    },
+  },
+  methods: {
+    create: {
+      description: "Create a droplet",
+      arguments: z.object({ checkExists: z.boolean().describe("If true, check whether a resource with this name already exists before creating and fail if it does (default: false)").optional() }),
+      execute: async (args: { checkExists?: boolean }, context: any) => {
+        const g = context.globalArgs;
+        const instanceName = (g.name?.toString() ?? "current").replace(/[\\\\/\\\\\\\\]/g, "_").replace(/\\\\.\\\\./g, "_").replace(/\\\\0/g, "");
+        if (args.checkExists) {
+          const existing = await tryFindByField("/v2/droplets", "name", g.name?.toString() ?? "");
+          if (existing) {
+            throw new Error(\`Resource already exists with name: \${g.name}\`);
+          }
+        }
+        const body: Record<string, unknown> = {};
+        if (g.name !== undefined) body.name = g.name;
+        if (g.region !== undefined) body.region = g.region;
+        if (g.size !== undefined) body.size = g.size;
+        if (g.image !== undefined) body.image = g.image;
+        const result = await create("/v2/droplets", body) as ResourceData;
+        const handle = await context.writeResource("state", instanceName, result);
+        return { dataHandles: [handle] };
+      },
+    },
+    get: {
+      description: "Get a droplet",
+      arguments: z.object({ id: z.union([z.string(), z.number()]).describe("The ID of the droplet") }),
+      execute: async (args: { id: string | number }, context: any) => {
+        const result = await read("/v2/droplets", args.id) as ResourceData;
+        const instanceName = (result.name?.toString() ?? args.id.toString()).replace(/[\\\\/\\\\\\\\]/g, "_").replace(/\\\\.\\\\./g, "_").replace(/\\\\0/g, "");
+        const handle = await context.writeResource("state", instanceName, result);
+        return { dataHandles: [handle] };
+      },
+    },
+    update: {
+      description: "Update droplet attributes",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const instanceName = (g.name?.toString() ?? "current").replace(/[\\\\/\\\\\\\\]/g, "_").replace(/\\\\.\\\\./g, "_").replace(/\\\\0/g, "");
+        const content = await context.dataRepository.getContent(
+          context.modelType, context.modelId, instanceName,
+        );
+        if (!content) throw new Error("No data found - run create first");
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        const body: Record<string, unknown> = {};
+        if (g.name !== undefined) body.name = g.name;
+        const result = await update("/v2/droplets", existing.id ?? existing.id, body, "PATCH") as ResourceData;
+        const handle = await context.writeResource("state", instanceName, result);
+        return { dataHandles: [handle] };
+      },
+    },
+    delete: {
+      description: "Delete the droplet",
+      arguments: z.object({ id: z.union([z.string(), z.number()]).describe("The ID of the droplet") }),
+      execute: async (args: { id: string | number }, context: any) => {
+        const { existed } = await remove("/v2/droplets", args.id);
+        const instanceName = (context.globalArgs.name?.toString() ?? args.id.toString()).replace(/[\\\\/\\\\\\\\]/g, "_").replace(/\\\\.\\\\./g, "_").replace(/\\\\0/g, "");
+        const handle = await context.writeResource("state", instanceName, {
+          id: args.id,
+          existed,
+          status: existed ? "deleted" : "not_found",
+          deletedAt: new Date().toISOString(),
+        });
+        return { dataHandles: [handle] };
+      },
+    },
+    sync: {
+      description: "Sync droplet state from DigitalOcean",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const instanceName = (g.name?.toString() ?? "current").replace(/[\\\\/\\\\\\\\]/g, "_").replace(/\\\\.\\\\./g, "_").replace(/\\\\0/g, "");
+        const content = await context.dataRepository.getContent(
+          context.modelType, context.modelId, instanceName,
+        );
+        if (!content) throw new Error("No data found - run create or get first");
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        const result = await tryRead("/v2/droplets", existing.id ?? existing.id) as ResourceData | null;
+        if (result) {
+          const handle = await context.writeResource("state", instanceName, result);
+          return { dataHandles: [handle] };
+        }
+        const handle = await context.writeResource("state", instanceName, {
+          id: existing.id ?? existing.id,
+          status: "not_found",
+          syncedAt: new Date().toISOString(),
+        });
+        return { dataHandles: [handle] };
+      },
+    },
+  },
+};
+'
+`;
+
+snapshot[`generateDigitalOceanExtensionModel - resource with actions 1`] = `
+'// Auto-generated extension model for @swamp/digitalocean/droplet
+// Do not edit manually. Re-generate with: deno task generate:digitalocean
+
+// deno-lint-ignore-file no-explicit-any
+
+import { z } from "zod";
+import { create, read, tryRead, remove, tryFindByField, update, createAndPollAction } from "./_lib/digitalocean.ts";
+
+const GlobalArgsSchema = z.object({
+  name: z.string().describe("The hostname for the Droplet"),
+});
+
+const ResourceSchema = z.object({
+  id: z.number(),
+  name: z.string().optional(),
+  status: z.string().optional(),
+}).passthrough();
+
+type ResourceData = z.infer<typeof ResourceSchema>;
+
+const InputsSchema = z.object({
+  name: z.string().optional(),
+});
+
+export const model = {
+  type: "@swamp/digitalocean/droplet",
+  version: "2026.01.01.1",
+  globalArguments: GlobalArgsSchema,
+  inputsSchema: InputsSchema,
+  resources: {
+    state: {
+      description: "Droplet resource state",
+      schema: ResourceSchema,
+      lifetime: "infinite",
+      garbageCollection: 10,
+    },
+    droplet_action: {
+      description: "Droplet action result",
+      schema: z.object({}).passthrough(),
+      lifetime: "ephemeral",
+      garbageCollection: 5,
+    },
+  },
+  methods: {
+    create: {
+      description: "Create a droplet",
+      arguments: z.object({ checkExists: z.boolean().describe("If true, check whether a resource with this name already exists before creating and fail if it does (default: false)").optional() }),
+      execute: async (args: { checkExists?: boolean }, context: any) => {
+        const g = context.globalArgs;
+        const instanceName = (g.name?.toString() ?? "current").replace(/[\\\\/\\\\\\\\]/g, "_").replace(/\\\\.\\\\./g, "_").replace(/\\\\0/g, "");
+        if (args.checkExists) {
+          const existing = await tryFindByField("/v2/droplets", "name", g.name?.toString() ?? "");
+          if (existing) {
+            throw new Error(\`Resource already exists with name: \${g.name}\`);
+          }
+        }
+        const body: Record<string, unknown> = {};
+        if (g.name !== undefined) body.name = g.name;
+        const result = await create("/v2/droplets", body) as ResourceData;
+        const handle = await context.writeResource("state", instanceName, result);
+        return { dataHandles: [handle] };
+      },
+    },
+    get: {
+      description: "Get a droplet",
+      arguments: z.object({ id: z.union([z.string(), z.number()]).describe("The ID of the droplet") }),
+      execute: async (args: { id: string | number }, context: any) => {
+        const result = await read("/v2/droplets", args.id) as ResourceData;
+        const instanceName = (result.name?.toString() ?? args.id.toString()).replace(/[\\\\/\\\\\\\\]/g, "_").replace(/\\\\.\\\\./g, "_").replace(/\\\\0/g, "");
+        const handle = await context.writeResource("state", instanceName, result);
+        return { dataHandles: [handle] };
+      },
+    },
+    update: {
+      description: "Update droplet attributes",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const instanceName = (g.name?.toString() ?? "current").replace(/[\\\\/\\\\\\\\]/g, "_").replace(/\\\\.\\\\./g, "_").replace(/\\\\0/g, "");
+        const content = await context.dataRepository.getContent(
+          context.modelType, context.modelId, instanceName,
+        );
+        if (!content) throw new Error("No data found - run create first");
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        const body: Record<string, unknown> = {};
+        const result = await update("/v2/droplets", existing.id ?? existing.id, body, "PUT") as ResourceData;
+        const handle = await context.writeResource("state", instanceName, result);
+        return { dataHandles: [handle] };
+      },
+    },
+    delete: {
+      description: "Delete the droplet",
+      arguments: z.object({ id: z.union([z.string(), z.number()]).describe("The ID of the droplet") }),
+      execute: async (args: { id: string | number }, context: any) => {
+        const { existed } = await remove("/v2/droplets", args.id);
+        const instanceName = (context.globalArgs.name?.toString() ?? args.id.toString()).replace(/[\\\\/\\\\\\\\]/g, "_").replace(/\\\\.\\\\./g, "_").replace(/\\\\0/g, "");
+        const handle = await context.writeResource("state", instanceName, {
+          id: args.id,
+          existed,
+          status: existed ? "deleted" : "not_found",
+          deletedAt: new Date().toISOString(),
+        });
+        return { dataHandles: [handle] };
+      },
+    },
+    sync: {
+      description: "Sync droplet state from DigitalOcean",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const instanceName = (g.name?.toString() ?? "current").replace(/[\\\\/\\\\\\\\]/g, "_").replace(/\\\\.\\\\./g, "_").replace(/\\\\0/g, "");
+        const content = await context.dataRepository.getContent(
+          context.modelType, context.modelId, instanceName,
+        );
+        if (!content) throw new Error("No data found - run create or get first");
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        const result = await tryRead("/v2/droplets", existing.id ?? existing.id) as ResourceData | null;
+        if (result) {
+          const handle = await context.writeResource("state", instanceName, result);
+          return { dataHandles: [handle] };
+        }
+        const handle = await context.writeResource("state", instanceName, {
+          id: existing.id ?? existing.id,
+          status: "not_found",
+          syncedAt: new Date().toISOString(),
+        });
+        return { dataHandles: [handle] };
+      },
+    },
+    power_on: {
+      description: "power on the droplet",
+      arguments: z.object({
+        id: z.union([z.string(), z.number()]).describe("The ID of the droplet"),
+        waitForCompletion: z.boolean().describe("Wait for the action to complete before returning (default: true)").optional(),
+      }),
+      execute: async (args: { id: string | number, waitForCompletion?: boolean }, context: any) => {
+        const body: Record<string, unknown> = { type: "power_on" };
+        const { action: actionResult, resource: updatedResource } = await createAndPollAction("/v2/droplets", args.id, body, args.waitForCompletion ?? true);
+        const actionInstanceName = \`\${args.id}-power_on\`;
+        const handles = [];
+        const actionHandle = await context.writeResource("droplet_action", actionInstanceName, actionResult);
+        handles.push(actionHandle);
+        if (updatedResource) {
+          const resourceInstanceName = (updatedResource as Record<string, unknown>).name?.toString() ?? args.id.toString();
+          const stateHandle = await context.writeResource("state", resourceInstanceName, updatedResource);
+          handles.push(stateHandle);
+        }
+        return { dataHandles: handles };
+      },
+    },
+    resize: {
+      description: "resize the droplet",
+      arguments: z.object({
+        id: z.union([z.string(), z.number()]).describe("The ID of the droplet"),
+        size: z.string().describe("The slug of the target size"),
+        disk: z.boolean().describe("Whether to also resize the disk").optional(),
+        waitForCompletion: z.boolean().describe("Wait for the action to complete before returning (default: true)").optional(),
+      }),
+      execute: async (args: { id: string | number, size: string, disk?: boolean, waitForCompletion?: boolean }, context: any) => {
+        const body: Record<string, unknown> = { type: "resize" };
+        if (args.size !== undefined) body.size = args.size;
+        if (args.disk !== undefined) body.disk = args.disk;
+        const { action: actionResult, resource: updatedResource } = await createAndPollAction("/v2/droplets", args.id, body, args.waitForCompletion ?? true);
+        const actionInstanceName = \`\${args.id}-resize\`;
+        const handles = [];
+        const actionHandle = await context.writeResource("droplet_action", actionInstanceName, actionResult);
+        handles.push(actionHandle);
+        if (updatedResource) {
+          const resourceInstanceName = (updatedResource as Record<string, unknown>).name?.toString() ?? args.id.toString();
+          const stateHandle = await context.writeResource("state", resourceInstanceName, updatedResource);
+          handles.push(stateHandle);
+        }
+        return { dataHandles: handles };
+      },
+    },
+  },
+};
+'
+`;
+
+snapshot[`generateDigitalOceanExtensionModel - resource with sub-resource methods 1`] = `
+'// Auto-generated extension model for @swamp/digitalocean/database-cluster
+// Do not edit manually. Re-generate with: deno task generate:digitalocean
+
+// deno-lint-ignore-file no-explicit-any
+
+import { z } from "zod";
+import { create, read, tryRead, remove, subResourceUpdate, tryFindByField, update } from "./_lib/digitalocean.ts";
+
+const GlobalArgsSchema = z.object({
+  name: z.string().describe("A unique name for the database cluster"),
+  engine: z.string().describe("The database engine"),
+});
+
+const ResourceSchema = z.object({
+  id: z.string(),
+  name: z.string().optional(),
+  engine: z.string().optional(),
+  status: z.string().optional(),
+}).passthrough();
+
+type ResourceData = z.infer<typeof ResourceSchema>;
+
+const InputsSchema = z.object({
+  name: z.string().optional(),
+  engine: z.string().optional(),
+});
+
+export const model = {
+  type: "@swamp/digitalocean/database-cluster",
+  version: "2026.01.01.1",
+  globalArguments: GlobalArgsSchema,
+  inputsSchema: InputsSchema,
+  resources: {
+    state: {
+      description: "Database Cluster resource state",
+      schema: ResourceSchema,
+      lifetime: "infinite",
+      garbageCollection: 10,
+    },
+  },
+  methods: {
+    create: {
+      description: "Create a database cluster",
+      arguments: z.object({ checkExists: z.boolean().describe("If true, check whether a resource with this name already exists before creating and fail if it does (default: false)").optional() }),
+      execute: async (args: { checkExists?: boolean }, context: any) => {
+        const g = context.globalArgs;
+        const instanceName = (g.name?.toString() ?? "current").replace(/[\\\\/\\\\\\\\]/g, "_").replace(/\\\\.\\\\./g, "_").replace(/\\\\0/g, "");
+        if (args.checkExists) {
+          const existing = await tryFindByField("/v2/databases", "name", g.name?.toString() ?? "");
+          if (existing) {
+            throw new Error(\`Resource already exists with name: \${g.name}\`);
+          }
+        }
+        const body: Record<string, unknown> = {};
+        if (g.name !== undefined) body.name = g.name;
+        if (g.engine !== undefined) body.engine = g.engine;
+        const result = await create("/v2/databases", body) as ResourceData;
+        const handle = await context.writeResource("state", instanceName, result);
+        return { dataHandles: [handle] };
+      },
+    },
+    get: {
+      description: "Get a database cluster",
+      arguments: z.object({ id: z.string().describe("The UUID of the database cluster") }),
+      execute: async (args: { id: string }, context: any) => {
+        const result = await read("/v2/databases", args.id) as ResourceData;
+        const instanceName = (result.name?.toString() ?? args.id.toString()).replace(/[\\\\/\\\\\\\\]/g, "_").replace(/\\\\.\\\\./g, "_").replace(/\\\\0/g, "");
+        const handle = await context.writeResource("state", instanceName, result);
+        return { dataHandles: [handle] };
+      },
+    },
+    update: {
+      description: "Update database cluster attributes",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const instanceName = (g.name?.toString() ?? "current").replace(/[\\\\/\\\\\\\\]/g, "_").replace(/\\\\.\\\\./g, "_").replace(/\\\\0/g, "");
+        const content = await context.dataRepository.getContent(
+          context.modelType, context.modelId, instanceName,
+        );
+        if (!content) throw new Error("No data found - run create first");
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        const body: Record<string, unknown> = {};
+        const result = await update("/v2/databases", existing.id ?? existing.id, body, "PUT") as ResourceData;
+        const handle = await context.writeResource("state", instanceName, result);
+        return { dataHandles: [handle] };
+      },
+    },
+    delete: {
+      description: "Delete the database cluster",
+      arguments: z.object({ id: z.string().describe("The UUID of the database cluster") }),
+      execute: async (args: { id: string }, context: any) => {
+        const { existed } = await remove("/v2/databases", args.id);
+        const instanceName = (context.globalArgs.name?.toString() ?? args.id.toString()).replace(/[\\\\/\\\\\\\\]/g, "_").replace(/\\\\.\\\\./g, "_").replace(/\\\\0/g, "");
+        const handle = await context.writeResource("state", instanceName, {
+          id: args.id,
+          existed,
+          status: existed ? "deleted" : "not_found",
+          deletedAt: new Date().toISOString(),
+        });
+        return { dataHandles: [handle] };
+      },
+    },
+    sync: {
+      description: "Sync database cluster state from DigitalOcean",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const instanceName = (g.name?.toString() ?? "current").replace(/[\\\\/\\\\\\\\]/g, "_").replace(/\\\\.\\\\./g, "_").replace(/\\\\0/g, "");
+        const content = await context.dataRepository.getContent(
+          context.modelType, context.modelId, instanceName,
+        );
+        if (!content) throw new Error("No data found - run create or get first");
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        const result = await tryRead("/v2/databases", existing.id ?? existing.id) as ResourceData | null;
+        if (result) {
+          const handle = await context.writeResource("state", instanceName, result);
+          return { dataHandles: [handle] };
+        }
+        const handle = await context.writeResource("state", instanceName, {
+          id: existing.id ?? existing.id,
+          status: "not_found",
+          syncedAt: new Date().toISOString(),
+        });
+        return { dataHandles: [handle] };
+      },
+    },
+    resize: {
+      description: "resize the database cluster",
+      arguments: z.object({
+        id: z.string().describe("The UUID of the database cluster"),
+        size: z.string().describe("The slug of the new size"),
+        num_nodes: z.number().int().describe("The number of nodes"),
+      }),
+      execute: async (args: { id: string, size: string, num_nodes: number }, context: any) => {
+        const body: Record<string, unknown> = {};
+        if (args.size !== undefined) body.size = args.size;
+        if (args.num_nodes !== undefined) body.num_nodes = args.num_nodes;
+        await subResourceUpdate("/v2/databases", args.id, "resize", body, "PUT");
+        const result = await read("/v2/databases", args.id) as ResourceData;
+        const instanceName = (result.name?.toString() ?? args.id.toString()).replace(/[\\\\/\\\\\\\\]/g, "_").replace(/\\\\.\\\\./g, "_").replace(/\\\\0/g, "");
+        const handle = await context.writeResource("state", instanceName, result);
+        return { dataHandles: [handle] };
+      },
+    },
+    migrate: {
+      description: "migrate the database cluster",
+      arguments: z.object({
+        id: z.string().describe("The UUID of the database cluster"),
+        region: z.string().describe("Target region slug"),
+      }),
+      execute: async (args: { id: string, region: string }, context: any) => {
+        const body: Record<string, unknown> = {};
+        if (args.region !== undefined) body.region = args.region;
+        await subResourceUpdate("/v2/databases", args.id, "migrate", body, "PUT");
+        const result = await read("/v2/databases", args.id) as ResourceData;
+        const instanceName = (result.name?.toString() ?? args.id.toString()).replace(/[\\\\/\\\\\\\\]/g, "_").replace(/\\\\.\\\\./g, "_").replace(/\\\\0/g, "");
+        const handle = await context.writeResource("state", instanceName, result);
+        return { dataHandles: [handle] };
+      },
+    },
+  },
+};
+'
+`;
+
+snapshot[`generateDigitalOceanExtensionModel - synthetic name 1`] = `
+'// Auto-generated extension model for @swamp/digitalocean/reserved-ip
+// Do not edit manually. Re-generate with: deno task generate:digitalocean
+
+// deno-lint-ignore-file no-explicit-any
+
+import { z } from "zod";
+import { create, read, tryRead, remove, update } from "./_lib/digitalocean.ts";
+
+const GlobalArgsSchema = z.object({
+  name: z.string().describe("Instance name for this resource (used as the unique identifier in the factory pattern)"),
+  region: z.enum(["nyc1", "sfo1", "nyc2", "ams2", "sgp1", "lon1", "nyc3", "ams3", "fra1", "tor1", "sfo2", "blr1", "sfo3", "syd1", "atl1"]).describe("The slug of the region").optional(),
+  droplet_id: z.number().int().describe("The Droplet ID to assign the IP to").optional(),
+});
+
+const ResourceSchema = z.object({
+  ip: z.string(),
+  region: z.object({
+    slug: z.string().optional(),
+    name: z.string().optional(),
+  }).optional(),
+  droplet: z.object({
+    id: z.number().optional(),
+    name: z.string().optional(),
+  }).nullable().optional(),
+}).passthrough();
+
+type ResourceData = z.infer<typeof ResourceSchema>;
+
+const InputsSchema = z.object({
+  name: z.string().optional(),
+  region: z.enum(["nyc1", "sfo1", "nyc2", "ams2", "sgp1", "lon1", "nyc3", "ams3", "fra1", "tor1", "sfo2", "blr1", "sfo3", "syd1", "atl1"]).optional(),
+  droplet_id: z.number().int().optional(),
+});
+
+export const model = {
+  type: "@swamp/digitalocean/reserved-ip",
+  version: "2026.01.01.1",
+  globalArguments: GlobalArgsSchema,
+  inputsSchema: InputsSchema,
+  resources: {
+    state: {
+      description: "Reserved IP resource state",
+      schema: ResourceSchema,
+      lifetime: "infinite",
+      garbageCollection: 10,
+    },
+  },
+  methods: {
+    create: {
+      description: "Create a reserved ip",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const instanceName = (g.name?.toString() ?? "current").replace(/[\\\\/\\\\\\\\]/g, "_").replace(/\\\\.\\\\./g, "_").replace(/\\\\0/g, "");
+        const body: Record<string, unknown> = {};
+        if (g.region !== undefined) body.region = g.region;
+        if (g.droplet_id !== undefined) body.droplet_id = g.droplet_id;
+        const result = await create("/v2/reserved_ips", body) as ResourceData;
+        const handle = await context.writeResource("state", instanceName, result);
+        return { dataHandles: [handle] };
+      },
+    },
+    get: {
+      description: "Get a reserved ip",
+      arguments: z.object({ ip: z.string().describe("The IP address of the reserved ip") }),
+      execute: async (args: { ip: string }, context: any) => {
+        const result = await read("/v2/reserved_ips", args.ip) as ResourceData;
+        const instanceName = (context.globalArgs.name?.toString() ?? args.ip.toString()).replace(/[\\\\/\\\\\\\\]/g, "_").replace(/\\\\.\\\\./g, "_").replace(/\\\\0/g, "");
+        const handle = await context.writeResource("state", instanceName, result);
+        return { dataHandles: [handle] };
+      },
+    },
+    update: {
+      description: "Update reserved ip attributes",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const instanceName = (g.name?.toString() ?? "current").replace(/[\\\\/\\\\\\\\]/g, "_").replace(/\\\\.\\\\./g, "_").replace(/\\\\0/g, "");
+        const content = await context.dataRepository.getContent(
+          context.modelType, context.modelId, instanceName,
+        );
+        if (!content) throw new Error("No data found - run create first");
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        const body: Record<string, unknown> = {};
+        const result = await update("/v2/reserved_ips", existing.ip ?? existing.id, body, "PUT") as ResourceData;
+        const handle = await context.writeResource("state", instanceName, result);
+        return { dataHandles: [handle] };
+      },
+    },
+    delete: {
+      description: "Delete the reserved ip",
+      arguments: z.object({ ip: z.string().describe("The IP address of the reserved ip") }),
+      execute: async (args: { ip: string }, context: any) => {
+        const { existed } = await remove("/v2/reserved_ips", args.ip);
+        const instanceName = (context.globalArgs.name?.toString() ?? args.ip.toString()).replace(/[\\\\/\\\\\\\\]/g, "_").replace(/\\\\.\\\\./g, "_").replace(/\\\\0/g, "");
+        const handle = await context.writeResource("state", instanceName, {
+          ip: args.ip,
+          existed,
+          status: existed ? "deleted" : "not_found",
+          deletedAt: new Date().toISOString(),
+        });
+        return { dataHandles: [handle] };
+      },
+    },
+    sync: {
+      description: "Sync reserved ip state from DigitalOcean",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const instanceName = (g.name?.toString() ?? "current").replace(/[\\\\/\\\\\\\\]/g, "_").replace(/\\\\.\\\\./g, "_").replace(/\\\\0/g, "");
+        const content = await context.dataRepository.getContent(
+          context.modelType, context.modelId, instanceName,
+        );
+        if (!content) throw new Error("No data found - run create or get first");
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        const result = await tryRead("/v2/reserved_ips", existing.ip ?? existing.id) as ResourceData | null;
+        if (result) {
+          const handle = await context.writeResource("state", instanceName, result);
+          return { dataHandles: [handle] };
+        }
+        const handle = await context.writeResource("state", instanceName, {
+          ip: existing.ip ?? existing.id,
+          status: "not_found",
+          syncedAt: new Date().toISOString(),
+        });
+        return { dataHandles: [handle] };
+      },
+    },
+  },
+};
+'
+`;
+
+snapshot[`generateDigitalOceanExtensionModel - resource with readiness polling 1`] = `
+'// Auto-generated extension model for @swamp/digitalocean/droplet
+// Do not edit manually. Re-generate with: deno task generate:digitalocean
+
+// deno-lint-ignore-file no-explicit-any
+
+import { z } from "zod";
+import { create, read, tryRead, remove, tryFindByField, update, pollResourceReady } from "./_lib/digitalocean.ts";
+
+const GlobalArgsSchema = z.object({
+  name: z.string().describe("The hostname for the Droplet"),
+  region: z.enum(["nyc1", "sfo1", "nyc2", "ams2", "sgp1", "lon1", "nyc3", "ams3", "fra1", "tor1", "sfo2", "blr1", "sfo3", "syd1", "atl1"]).describe("The slug of the region"),
+  size: z.string().describe("The slug of the Droplet size"),
+});
+
+const ResourceSchema = z.object({
+  id: z.number(),
+  name: z.string().optional(),
+  status: z.string().optional(),
+}).passthrough();
+
+type ResourceData = z.infer<typeof ResourceSchema>;
+
+const InputsSchema = z.object({
+  name: z.string().optional(),
+  region: z.enum(["nyc1", "sfo1", "nyc2", "ams2", "sgp1", "lon1", "nyc3", "ams3", "fra1", "tor1", "sfo2", "blr1", "sfo3", "syd1", "atl1"]).optional(),
+  size: z.string().optional(),
+});
+
+export const model = {
+  type: "@swamp/digitalocean/droplet",
+  version: "2026.01.01.1",
+  globalArguments: GlobalArgsSchema,
+  inputsSchema: InputsSchema,
+  resources: {
+    state: {
+      description: "Droplet resource state",
+      schema: ResourceSchema,
+      lifetime: "infinite",
+      garbageCollection: 10,
+    },
+  },
+  methods: {
+    create: {
+      description: "Create a droplet",
+      arguments: z.object({ checkExists: z.boolean().describe("If true, check whether a resource with this name already exists before creating and fail if it does (default: false)").optional(), waitForReady: z.boolean().describe("Wait for the resource to reach ready state after creation (default: true)").optional() }),
+      execute: async (args: { checkExists?: boolean, waitForReady?: boolean }, context: any) => {
+        const g = context.globalArgs;
+        const instanceName = (g.name?.toString() ?? "current").replace(/[\\\\/\\\\\\\\]/g, "_").replace(/\\\\.\\\\./g, "_").replace(/\\\\0/g, "");
+        if (args.checkExists) {
+          const existing = await tryFindByField("/v2/droplets", "name", g.name?.toString() ?? "");
+          if (existing) {
+            throw new Error(\`Resource already exists with name: \${g.name}\`);
+          }
+        }
+        const body: Record<string, unknown> = {};
+        if (g.name !== undefined) body.name = g.name;
+        if (g.region !== undefined) body.region = g.region;
+        if (g.size !== undefined) body.size = g.size;
+        let result = await create("/v2/droplets", body) as ResourceData;
+        if (args.waitForReady !== false) {
+          const resourceId = result.id ?? result.id;
+          if (resourceId) {
+            result = await pollResourceReady("/v2/droplets", resourceId as string | number, {"statusField":"status","readyValues":["active"],"failedValues":["errored"]}) as ResourceData;
+          }
+        }
+        const handle = await context.writeResource("state", instanceName, result);
+        return { dataHandles: [handle] };
+      },
+    },
+    get: {
+      description: "Get a droplet",
+      arguments: z.object({ id: z.union([z.string(), z.number()]).describe("The ID of the droplet") }),
+      execute: async (args: { id: string | number }, context: any) => {
+        const result = await read("/v2/droplets", args.id) as ResourceData;
+        const instanceName = (result.name?.toString() ?? args.id.toString()).replace(/[\\\\/\\\\\\\\]/g, "_").replace(/\\\\.\\\\./g, "_").replace(/\\\\0/g, "");
+        const handle = await context.writeResource("state", instanceName, result);
+        return { dataHandles: [handle] };
+      },
+    },
+    update: {
+      description: "Update droplet attributes",
+      arguments: z.object({ waitForReady: z.boolean().describe("Wait for the resource to reach ready state after update (default: true)").optional() }),
+      execute: async (args: { waitForReady?: boolean }, context: any) => {
+        const g = context.globalArgs;
+        const instanceName = (g.name?.toString() ?? "current").replace(/[\\\\/\\\\\\\\]/g, "_").replace(/\\\\.\\\\./g, "_").replace(/\\\\0/g, "");
+        const content = await context.dataRepository.getContent(
+          context.modelType, context.modelId, instanceName,
+        );
+        if (!content) throw new Error("No data found - run create first");
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        const body: Record<string, unknown> = {};
+        if (g.name !== undefined) body.name = g.name;
+        let result = await update("/v2/droplets", existing.id ?? existing.id, body, "PATCH") as ResourceData;
+        if (args.waitForReady !== false) {
+          const resourceId = result.id ?? result.id ?? existing.id ?? existing.id;
+          if (resourceId) {
+            result = await pollResourceReady("/v2/droplets", resourceId as string | number, {"statusField":"status","readyValues":["active"],"failedValues":["errored"]}) as ResourceData;
+          }
+        }
+        const handle = await context.writeResource("state", instanceName, result);
+        return { dataHandles: [handle] };
+      },
+    },
+    delete: {
+      description: "Delete the droplet",
+      arguments: z.object({ id: z.union([z.string(), z.number()]).describe("The ID of the droplet") }),
+      execute: async (args: { id: string | number }, context: any) => {
+        const { existed } = await remove("/v2/droplets", args.id);
+        const instanceName = (context.globalArgs.name?.toString() ?? args.id.toString()).replace(/[\\\\/\\\\\\\\]/g, "_").replace(/\\\\.\\\\./g, "_").replace(/\\\\0/g, "");
+        const handle = await context.writeResource("state", instanceName, {
+          id: args.id,
+          existed,
+          status: existed ? "deleted" : "not_found",
+          deletedAt: new Date().toISOString(),
+        });
+        return { dataHandles: [handle] };
+      },
+    },
+    sync: {
+      description: "Sync droplet state from DigitalOcean",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const instanceName = (g.name?.toString() ?? "current").replace(/[\\\\/\\\\\\\\]/g, "_").replace(/\\\\.\\\\./g, "_").replace(/\\\\0/g, "");
+        const content = await context.dataRepository.getContent(
+          context.modelType, context.modelId, instanceName,
+        );
+        if (!content) throw new Error("No data found - run create or get first");
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        const result = await tryRead("/v2/droplets", existing.id ?? existing.id) as ResourceData | null;
+        if (result) {
+          const handle = await context.writeResource("state", instanceName, result);
+          return { dataHandles: [handle] };
+        }
+        const handle = await context.writeResource("state", instanceName, {
+          id: existing.id ?? existing.id,
+          status: "not_found",
+          syncedAt: new Date().toISOString(),
+        });
+        return { dataHandles: [handle] };
+      },
+    },
+  },
+};
+'
+`;
+
+snapshot[`generateDigitalOceanExtensionModel - checkExists direct lookup 1`] = `
+'// Auto-generated extension model for @swamp/digitalocean/domain
+// Do not edit manually. Re-generate with: deno task generate:digitalocean
+
+// deno-lint-ignore-file no-explicit-any
+
+import { z } from "zod";
+import { create, read, tryRead, remove, update } from "./_lib/digitalocean.ts";
+
+const GlobalArgsSchema = z.object({
+  name: z.string().describe("The domain name to add"),
+  ip_address: z.string().describe("Optional IP for an A record").optional(),
+});
+
+const ResourceSchema = z.object({
+  name: z.string(),
+  ttl: z.number().optional(),
+  zone_file: z.string().optional(),
+}).passthrough();
+
+type ResourceData = z.infer<typeof ResourceSchema>;
+
+const InputsSchema = z.object({
+  name: z.string().optional(),
+  ip_address: z.string().optional(),
+});
+
+export const model = {
+  type: "@swamp/digitalocean/domain",
+  version: "2026.01.01.1",
+  globalArguments: GlobalArgsSchema,
+  inputsSchema: InputsSchema,
+  resources: {
+    state: {
+      description: "Domain resource state",
+      schema: ResourceSchema,
+      lifetime: "infinite",
+      garbageCollection: 10,
+    },
+  },
+  methods: {
+    create: {
+      description: "Create a domain",
+      arguments: z.object({ checkExists: z.boolean().describe("If true, check whether a resource with this name already exists before creating and fail if it does (default: false)").optional() }),
+      execute: async (args: { checkExists?: boolean }, context: any) => {
+        const g = context.globalArgs;
+        const instanceName = (g.name?.toString() ?? "current").replace(/[\\\\/\\\\\\\\]/g, "_").replace(/\\\\.\\\\./g, "_").replace(/\\\\0/g, "");
+        if (args.checkExists) {
+          const existing = await tryRead("/v2/domains", g.name);
+          if (existing) {
+            throw new Error(\`Resource already exists: \${g.name}\`);
+          }
+        }
+        const body: Record<string, unknown> = {};
+        if (g.name !== undefined) body.name = g.name;
+        if (g.ip_address !== undefined) body.ip_address = g.ip_address;
+        const result = await create("/v2/domains", body) as ResourceData;
+        const handle = await context.writeResource("state", instanceName, result);
+        return { dataHandles: [handle] };
+      },
+    },
+    get: {
+      description: "Get a domain",
+      arguments: z.object({ name: z.string().describe("The name of the domain") }),
+      execute: async (args: { name: string }, context: any) => {
+        const result = await read("/v2/domains", args.name) as ResourceData;
+        const instanceName = (result.name?.toString() ?? args.name.toString()).replace(/[\\\\/\\\\\\\\]/g, "_").replace(/\\\\.\\\\./g, "_").replace(/\\\\0/g, "");
+        const handle = await context.writeResource("state", instanceName, result);
+        return { dataHandles: [handle] };
+      },
+    },
+    update: {
+      description: "Update domain attributes",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const instanceName = (g.name?.toString() ?? "current").replace(/[\\\\/\\\\\\\\]/g, "_").replace(/\\\\.\\\\./g, "_").replace(/\\\\0/g, "");
+        const content = await context.dataRepository.getContent(
+          context.modelType, context.modelId, instanceName,
+        );
+        if (!content) throw new Error("No data found - run create first");
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        const body: Record<string, unknown> = {};
+        const result = await update("/v2/domains", existing.name ?? existing.id, body, "PUT") as ResourceData;
+        const handle = await context.writeResource("state", instanceName, result);
+        return { dataHandles: [handle] };
+      },
+    },
+    delete: {
+      description: "Delete the domain",
+      arguments: z.object({ name: z.string().describe("The name of the domain") }),
+      execute: async (args: { name: string }, context: any) => {
+        const { existed } = await remove("/v2/domains", args.name);
+        const instanceName = (context.globalArgs.name?.toString() ?? args.name.toString()).replace(/[\\\\/\\\\\\\\]/g, "_").replace(/\\\\.\\\\./g, "_").replace(/\\\\0/g, "");
+        const handle = await context.writeResource("state", instanceName, {
+          name: args.name,
+          existed,
+          status: existed ? "deleted" : "not_found",
+          deletedAt: new Date().toISOString(),
+        });
+        return { dataHandles: [handle] };
+      },
+    },
+    sync: {
+      description: "Sync domain state from DigitalOcean",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const instanceName = (g.name?.toString() ?? "current").replace(/[\\\\/\\\\\\\\]/g, "_").replace(/\\\\.\\\\./g, "_").replace(/\\\\0/g, "");
+        const content = await context.dataRepository.getContent(
+          context.modelType, context.modelId, instanceName,
+        );
+        if (!content) throw new Error("No data found - run create or get first");
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        const result = await tryRead("/v2/domains", existing.name ?? existing.id) as ResourceData | null;
+        if (result) {
+          const handle = await context.writeResource("state", instanceName, result);
+          return { dataHandles: [handle] };
+        }
+        const handle = await context.writeResource("state", instanceName, {
+          name: existing.name ?? existing.id,
+          status: "not_found",
+          syncedAt: new Date().toISOString(),
+        });
+        return { dataHandles: [handle] };
+      },
+    },
+  },
+};
+'
+`;
+
+snapshot[`generateDigitalOceanExtensionModel - checkExists list filter 1`] = `
+'// Auto-generated extension model for @swamp/digitalocean/firewall
+// Do not edit manually. Re-generate with: deno task generate:digitalocean
+
+// deno-lint-ignore-file no-explicit-any
+
+import { z } from "zod";
+import { create, read, tryRead, remove, tryFindByField, update } from "./_lib/digitalocean.ts";
+
+const GlobalArgsSchema = z.object({
+  name: z.string().describe("A human-friendly name"),
+  inbound_rules: z.array(z.object({
+    protocol: z.string().optional(),
+    ports: z.string().optional(),
+  })).describe("Inbound rules").optional(),
+});
+
+const ResourceSchema = z.object({
+  id: z.string(),
+  name: z.string().optional(),
+  status: z.string().optional(),
+  inbound_rules: z.array(z.object({
+    protocol: z.string().optional(),
+    ports: z.string().optional(),
+  })).optional(),
+}).passthrough();
+
+type ResourceData = z.infer<typeof ResourceSchema>;
+
+const InputsSchema = z.object({
+  name: z.string().optional(),
+  inbound_rules: z.array(z.object({
+    protocol: z.string().optional(),
+    ports: z.string().optional(),
+  })).optional(),
+});
+
+export const model = {
+  type: "@swamp/digitalocean/firewall",
+  version: "2026.01.01.1",
+  globalArguments: GlobalArgsSchema,
+  inputsSchema: InputsSchema,
+  resources: {
+    state: {
+      description: "Firewall resource state",
+      schema: ResourceSchema,
+      lifetime: "infinite",
+      garbageCollection: 10,
+    },
+  },
+  methods: {
+    create: {
+      description: "Create a firewall",
+      arguments: z.object({ checkExists: z.boolean().describe("If true, check whether a resource with this name already exists before creating and fail if it does (default: false)").optional() }),
+      execute: async (args: { checkExists?: boolean }, context: any) => {
+        const g = context.globalArgs;
+        const instanceName = (g.name?.toString() ?? "current").replace(/[\\\\/\\\\\\\\]/g, "_").replace(/\\\\.\\\\./g, "_").replace(/\\\\0/g, "");
+        if (args.checkExists) {
+          const existing = await tryFindByField("/v2/firewalls", "name", g.name?.toString() ?? "");
+          if (existing) {
+            throw new Error(\`Resource already exists with name: \${g.name}\`);
+          }
+        }
+        const body: Record<string, unknown> = {};
+        if (g.name !== undefined) body.name = g.name;
+        if (g.inbound_rules !== undefined) body.inbound_rules = g.inbound_rules;
+        const result = await create("/v2/firewalls", body) as ResourceData;
+        const handle = await context.writeResource("state", instanceName, result);
+        return { dataHandles: [handle] };
+      },
+    },
+    get: {
+      description: "Get a firewall",
+      arguments: z.object({ id: z.union([z.string(), z.number()]).describe("The ID of the firewall") }),
+      execute: async (args: { id: string | number }, context: any) => {
+        const result = await read("/v2/firewalls", args.id) as ResourceData;
+        const instanceName = (result.name?.toString() ?? args.id.toString()).replace(/[\\\\/\\\\\\\\]/g, "_").replace(/\\\\.\\\\./g, "_").replace(/\\\\0/g, "");
+        const handle = await context.writeResource("state", instanceName, result);
+        return { dataHandles: [handle] };
+      },
+    },
+    update: {
+      description: "Update firewall attributes",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const instanceName = (g.name?.toString() ?? "current").replace(/[\\\\/\\\\\\\\]/g, "_").replace(/\\\\.\\\\./g, "_").replace(/\\\\0/g, "");
+        const content = await context.dataRepository.getContent(
+          context.modelType, context.modelId, instanceName,
+        );
+        if (!content) throw new Error("No data found - run create first");
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        const body: Record<string, unknown> = {};
+        const result = await update("/v2/firewalls", existing.id ?? existing.id, body, "PUT") as ResourceData;
+        const handle = await context.writeResource("state", instanceName, result);
+        return { dataHandles: [handle] };
+      },
+    },
+    delete: {
+      description: "Delete the firewall",
+      arguments: z.object({ id: z.union([z.string(), z.number()]).describe("The ID of the firewall") }),
+      execute: async (args: { id: string | number }, context: any) => {
+        const { existed } = await remove("/v2/firewalls", args.id);
+        const instanceName = (context.globalArgs.name?.toString() ?? args.id.toString()).replace(/[\\\\/\\\\\\\\]/g, "_").replace(/\\\\.\\\\./g, "_").replace(/\\\\0/g, "");
+        const handle = await context.writeResource("state", instanceName, {
+          id: args.id,
+          existed,
+          status: existed ? "deleted" : "not_found",
+          deletedAt: new Date().toISOString(),
+        });
+        return { dataHandles: [handle] };
+      },
+    },
+    sync: {
+      description: "Sync firewall state from DigitalOcean",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const instanceName = (g.name?.toString() ?? "current").replace(/[\\\\/\\\\\\\\]/g, "_").replace(/\\\\.\\\\./g, "_").replace(/\\\\0/g, "");
+        const content = await context.dataRepository.getContent(
+          context.modelType, context.modelId, instanceName,
+        );
+        if (!content) throw new Error("No data found - run create or get first");
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        const result = await tryRead("/v2/firewalls", existing.id ?? existing.id) as ResourceData | null;
+        if (result) {
+          const handle = await context.writeResource("state", instanceName, result);
+          return { dataHandles: [handle] };
+        }
+        const handle = await context.writeResource("state", instanceName, {
+          id: existing.id ?? existing.id,
+          status: "not_found",
+          syncedAt: new Date().toISOString(),
+        });
+        return { dataHandles: [handle] };
+      },
+    },
+  },
+};
+'
+`;
+
+snapshot[`generateDigitalOceanExtensionModel - discovery endpoint 1`] = `
+'// Auto-generated extension model for @swamp/digitalocean/kubernetes-cluster
+// Do not edit manually. Re-generate with: deno task generate:digitalocean
+
+// deno-lint-ignore-file no-explicit-any
+
+import { z } from "zod";
+import { create, read, tryRead, discover, remove, tryFindByField, update } from "./_lib/digitalocean.ts";
+
+const GlobalArgsSchema = z.object({
+  name: z.string().describe("A human-friendly name for the cluster"),
+  region: z.enum(["nyc1", "sfo1", "nyc2", "ams2", "sgp1", "lon1", "nyc3", "ams3", "fra1", "tor1", "sfo2", "blr1", "sfo3", "syd1", "atl1"]).describe("The slug of the region"),
+  version: z.string().describe("The Kubernetes version"),
+});
+
+const ResourceSchema = z.object({
+  id: z.string(),
+  name: z.string().optional(),
+  region: z.string().optional(),
+  status: z.object({
+    state: z.string().optional(),
+    message: z.string().optional(),
+  }).optional(),
+}).passthrough();
+
+type ResourceData = z.infer<typeof ResourceSchema>;
+
+const InputsSchema = z.object({
+  name: z.string().optional(),
+  region: z.enum(["nyc1", "sfo1", "nyc2", "ams2", "sgp1", "lon1", "nyc3", "ams3", "fra1", "tor1", "sfo2", "blr1", "sfo3", "syd1", "atl1"]).optional(),
+  version: z.string().optional(),
+});
+
+export const model = {
+  type: "@swamp/digitalocean/kubernetes-cluster",
+  version: "2026.01.01.1",
+  globalArguments: GlobalArgsSchema,
+  inputsSchema: InputsSchema,
+  resources: {
+    state: {
+      description: "Kubernetes Cluster resource state",
+      schema: ResourceSchema,
+      lifetime: "infinite",
+      garbageCollection: 10,
+    },
+  },
+  methods: {
+    create: {
+      description: "Create a kubernetes cluster",
+      arguments: z.object({ checkExists: z.boolean().describe("If true, check whether a resource with this name already exists before creating and fail if it does (default: false)").optional() }),
+      execute: async (args: { checkExists?: boolean }, context: any) => {
+        const g = context.globalArgs;
+        const instanceName = (g.name?.toString() ?? "current").replace(/[\\\\/\\\\\\\\]/g, "_").replace(/\\\\.\\\\./g, "_").replace(/\\\\0/g, "");
+        if (args.checkExists) {
+          const existing = await tryFindByField("/v2/kubernetes/clusters", "name", g.name?.toString() ?? "");
+          if (existing) {
+            throw new Error(\`Resource already exists with name: \${g.name}\`);
+          }
+        }
+        const body: Record<string, unknown> = {};
+        if (g.name !== undefined) body.name = g.name;
+        if (g.region !== undefined) body.region = g.region;
+        if (g.version !== undefined) body.version = g.version;
+        const result = await create("/v2/kubernetes/clusters", body) as ResourceData;
+        const handle = await context.writeResource("state", instanceName, result);
+        return { dataHandles: [handle] };
+      },
+    },
+    get: {
+      description: "Get a kubernetes cluster",
+      arguments: z.object({ id: z.union([z.string(), z.number()]).describe("The ID of the kubernetes cluster") }),
+      execute: async (args: { id: string | number }, context: any) => {
+        const result = await read("/v2/kubernetes/clusters", args.id) as ResourceData;
+        const instanceName = (result.name?.toString() ?? args.id.toString()).replace(/[\\\\/\\\\\\\\]/g, "_").replace(/\\\\.\\\\./g, "_").replace(/\\\\0/g, "");
+        const handle = await context.writeResource("state", instanceName, result);
+        return { dataHandles: [handle] };
+      },
+    },
+    update: {
+      description: "Update kubernetes cluster attributes",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const instanceName = (g.name?.toString() ?? "current").replace(/[\\\\/\\\\\\\\]/g, "_").replace(/\\\\.\\\\./g, "_").replace(/\\\\0/g, "");
+        const content = await context.dataRepository.getContent(
+          context.modelType, context.modelId, instanceName,
+        );
+        if (!content) throw new Error("No data found - run create first");
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        const body: Record<string, unknown> = {};
+        const result = await update("/v2/kubernetes/clusters", existing.id ?? existing.id, body, "PUT") as ResourceData;
+        const handle = await context.writeResource("state", instanceName, result);
+        return { dataHandles: [handle] };
+      },
+    },
+    delete: {
+      description: "Delete the kubernetes cluster",
+      arguments: z.object({ id: z.union([z.string(), z.number()]).describe("The ID of the kubernetes cluster") }),
+      execute: async (args: { id: string | number }, context: any) => {
+        const { existed } = await remove("/v2/kubernetes/clusters", args.id);
+        const instanceName = (context.globalArgs.name?.toString() ?? args.id.toString()).replace(/[\\\\/\\\\\\\\]/g, "_").replace(/\\\\.\\\\./g, "_").replace(/\\\\0/g, "");
+        const handle = await context.writeResource("state", instanceName, {
+          id: args.id,
+          existed,
+          status: existed ? "deleted" : "not_found",
+          deletedAt: new Date().toISOString(),
+        });
+        return { dataHandles: [handle] };
+      },
+    },
+    sync: {
+      description: "Sync kubernetes cluster state from DigitalOcean",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const instanceName = (g.name?.toString() ?? "current").replace(/[\\\\/\\\\\\\\]/g, "_").replace(/\\\\.\\\\./g, "_").replace(/\\\\0/g, "");
+        const content = await context.dataRepository.getContent(
+          context.modelType, context.modelId, instanceName,
+        );
+        if (!content) throw new Error("No data found - run create or get first");
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        const result = await tryRead("/v2/kubernetes/clusters", existing.id ?? existing.id) as ResourceData | null;
+        if (result) {
+          const handle = await context.writeResource("state", instanceName, result);
+          return { dataHandles: [handle] };
+        }
+        const handle = await context.writeResource("state", instanceName, {
+          id: existing.id ?? existing.id,
+          status: "not_found",
+          syncedAt: new Date().toISOString(),
+        });
+        return { dataHandles: [handle] };
+      },
+    },
+    list_options: {
+      description: "List available options for kubernetes cluster (versions, sizes, regions)",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const result = await discover("/v2/kubernetes/options");
+        const handle = await context.writeResource("state", "options", result);
+        return { dataHandles: [handle] };
+      },
+    },
+  },
+};
+'
+`;
+
+snapshot[`generateDigitalOceanExtensionModel - no update, no delete 1`] = `
+'// Auto-generated extension model for @swamp/digitalocean/snapshot
+// Do not edit manually. Re-generate with: deno task generate:digitalocean
+
+// deno-lint-ignore-file no-explicit-any
+
+import { z } from "zod";
+import { create, read, tryRead, tryFindByField } from "./_lib/digitalocean.ts";
+
+const GlobalArgsSchema = z.object({
+  resource_id: z.string().describe("The ID of the resource to snapshot"),
+  name: z.string().describe("A name for the snapshot"),
+});
+
+const ResourceSchema = z.object({
+  id: z.string(),
+  name: z.string().optional(),
+  resource_id: z.string().optional(),
+  resource_type: z.string().optional(),
+  created_at: z.string().optional(),
+}).passthrough();
+
+type ResourceData = z.infer<typeof ResourceSchema>;
+
+const InputsSchema = z.object({
+  resource_id: z.string().optional(),
+  name: z.string().optional(),
+});
+
+export const model = {
+  type: "@swamp/digitalocean/snapshot",
+  version: "2026.01.01.1",
+  globalArguments: GlobalArgsSchema,
+  inputsSchema: InputsSchema,
+  resources: {
+    state: {
+      description: "Snapshot resource state",
+      schema: ResourceSchema,
+      lifetime: "infinite",
+      garbageCollection: 10,
+    },
+  },
+  methods: {
+    create: {
+      description: "Create a snapshot",
+      arguments: z.object({ checkExists: z.boolean().describe("If true, check whether a resource with this name already exists before creating and fail if it does (default: false)").optional() }),
+      execute: async (args: { checkExists?: boolean }, context: any) => {
+        const g = context.globalArgs;
+        const instanceName = (g.name?.toString() ?? "current").replace(/[\\\\/\\\\\\\\]/g, "_").replace(/\\\\.\\\\./g, "_").replace(/\\\\0/g, "");
+        if (args.checkExists) {
+          const existing = await tryFindByField("/v2/snapshots", "name", g.name?.toString() ?? "");
+          if (existing) {
+            throw new Error(\`Resource already exists with name: \${g.name}\`);
+          }
+        }
+        const body: Record<string, unknown> = {};
+        if (g.resource_id !== undefined) body.resource_id = g.resource_id;
+        if (g.name !== undefined) body.name = g.name;
+        const result = await create("/v2/snapshots", body) as ResourceData;
+        const handle = await context.writeResource("state", instanceName, result);
+        return { dataHandles: [handle] };
+      },
+    },
+    get: {
+      description: "Get a snapshot",
+      arguments: z.object({ id: z.union([z.string(), z.number()]).describe("The ID of the snapshot") }),
+      execute: async (args: { id: string | number }, context: any) => {
+        const result = await read("/v2/snapshots", args.id) as ResourceData;
+        const instanceName = (result.name?.toString() ?? args.id.toString()).replace(/[\\\\/\\\\\\\\]/g, "_").replace(/\\\\.\\\\./g, "_").replace(/\\\\0/g, "");
+        const handle = await context.writeResource("state", instanceName, result);
+        return { dataHandles: [handle] };
+      },
+    },
+    sync: {
+      description: "Sync snapshot state from DigitalOcean",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const instanceName = (g.name?.toString() ?? "current").replace(/[\\\\/\\\\\\\\]/g, "_").replace(/\\\\.\\\\./g, "_").replace(/\\\\0/g, "");
+        const content = await context.dataRepository.getContent(
+          context.modelType, context.modelId, instanceName,
+        );
+        if (!content) throw new Error("No data found - run create or get first");
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        const result = await tryRead("/v2/snapshots", existing.id ?? existing.id) as ResourceData | null;
+        if (result) {
+          const handle = await context.writeResource("state", instanceName, result);
+          return { dataHandles: [handle] };
+        }
+        const handle = await context.writeResource("state", instanceName, {
+          id: existing.id ?? existing.id,
+          status: "not_found",
+          syncedAt: new Date().toISOString(),
+        });
+        return { dataHandles: [handle] };
+      },
+    },
+  },
+};
+'
+`;
+
+snapshot[`generateDigitalOceanExtensionModel - with upgrades block 1`] = `
+'// Auto-generated extension model for @swamp/digitalocean/volume
+// Do not edit manually. Re-generate with: deno task generate:digitalocean
+
+// deno-lint-ignore-file no-explicit-any
+
+import { z } from "zod";
+import { create, read, tryRead, remove, tryFindByField, update } from "./_lib/digitalocean.ts";
+
+const GlobalArgsSchema = z.object({
+  name: z.string().describe("A human-friendly name"),
+  size_gigabytes: z.number().int().min(1).max(16384).describe("The size in GiB"),
+  region: z.enum(["nyc1", "sfo1", "nyc2", "ams2", "sgp1", "lon1", "nyc3", "ams3", "fra1", "tor1", "sfo2", "blr1", "sfo3", "syd1", "atl1"]).describe("The slug of the region"),
+});
+
+const ResourceSchema = z.object({
+  id: z.string(),
+  name: z.string().optional(),
+  size_gigabytes: z.number().optional(),
+  region: z.object({
+    slug: z.string().optional(),
+    name: z.string().optional(),
+  }).optional(),
+}).passthrough();
+
+type ResourceData = z.infer<typeof ResourceSchema>;
+
+const InputsSchema = z.object({
+  name: z.string().optional(),
+  size_gigabytes: z.number().int().min(1).max(16384).optional(),
+  region: z.enum(["nyc1", "sfo1", "nyc2", "ams2", "sgp1", "lon1", "nyc3", "ams3", "fra1", "tor1", "sfo2", "blr1", "sfo3", "syd1", "atl1"]).optional(),
+});
+
+export const model = {
+  type: "@swamp/digitalocean/volume",
+  version: "2026.01.02.1",
+  upgrades: [
+    {
+      toVersion: "2026.01.02.1",
+      description: "Removed: description field",
+      upgradeAttributes: (old: Record<string, unknown>) => {
+        const { description: _desc, ...rest } = old;
+        return rest;
+      },
+    },
+  ],
+  globalArguments: GlobalArgsSchema,
+  inputsSchema: InputsSchema,
+  resources: {
+    state: {
+      description: "Volume resource state",
+      schema: ResourceSchema,
+      lifetime: "infinite",
+      garbageCollection: 10,
+    },
+  },
+  methods: {
+    create: {
+      description: "Create a volume",
+      arguments: z.object({ checkExists: z.boolean().describe("If true, check whether a resource with this name already exists before creating and fail if it does (default: false)").optional() }),
+      execute: async (args: { checkExists?: boolean }, context: any) => {
+        const g = context.globalArgs;
+        const instanceName = (g.name?.toString() ?? "current").replace(/[\\\\/\\\\\\\\]/g, "_").replace(/\\\\.\\\\./g, "_").replace(/\\\\0/g, "");
+        if (args.checkExists) {
+          const existing = await tryFindByField("/v2/volumes", "name", g.name?.toString() ?? "");
+          if (existing) {
+            throw new Error(\`Resource already exists with name: \${g.name}\`);
+          }
+        }
+        const body: Record<string, unknown> = {};
+        if (g.name !== undefined) body.name = g.name;
+        if (g.size_gigabytes !== undefined) body.size_gigabytes = g.size_gigabytes;
+        if (g.region !== undefined) body.region = g.region;
+        const result = await create("/v2/volumes", body) as ResourceData;
+        const handle = await context.writeResource("state", instanceName, result);
+        return { dataHandles: [handle] };
+      },
+    },
+    get: {
+      description: "Get a volume",
+      arguments: z.object({ id: z.union([z.string(), z.number()]).describe("The ID of the volume") }),
+      execute: async (args: { id: string | number }, context: any) => {
+        const result = await read("/v2/volumes", args.id) as ResourceData;
+        const instanceName = (result.name?.toString() ?? args.id.toString()).replace(/[\\\\/\\\\\\\\]/g, "_").replace(/\\\\.\\\\./g, "_").replace(/\\\\0/g, "");
+        const handle = await context.writeResource("state", instanceName, result);
+        return { dataHandles: [handle] };
+      },
+    },
+    update: {
+      description: "Update volume attributes",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const instanceName = (g.name?.toString() ?? "current").replace(/[\\\\/\\\\\\\\]/g, "_").replace(/\\\\.\\\\./g, "_").replace(/\\\\0/g, "");
+        const content = await context.dataRepository.getContent(
+          context.modelType, context.modelId, instanceName,
+        );
+        if (!content) throw new Error("No data found - run create first");
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        const body: Record<string, unknown> = {};
+        if (g.name !== undefined) body.name = g.name;
+        const result = await update("/v2/volumes", existing.id ?? existing.id, body, "PATCH") as ResourceData;
+        const handle = await context.writeResource("state", instanceName, result);
+        return { dataHandles: [handle] };
+      },
+    },
+    delete: {
+      description: "Delete the volume",
+      arguments: z.object({ id: z.union([z.string(), z.number()]).describe("The ID of the volume") }),
+      execute: async (args: { id: string | number }, context: any) => {
+        const { existed } = await remove("/v2/volumes", args.id);
+        const instanceName = (context.globalArgs.name?.toString() ?? args.id.toString()).replace(/[\\\\/\\\\\\\\]/g, "_").replace(/\\\\.\\\\./g, "_").replace(/\\\\0/g, "");
+        const handle = await context.writeResource("state", instanceName, {
+          id: args.id,
+          existed,
+          status: existed ? "deleted" : "not_found",
+          deletedAt: new Date().toISOString(),
+        });
+        return { dataHandles: [handle] };
+      },
+    },
+    sync: {
+      description: "Sync volume state from DigitalOcean",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const instanceName = (g.name?.toString() ?? "current").replace(/[\\\\/\\\\\\\\]/g, "_").replace(/\\\\.\\\\./g, "_").replace(/\\\\0/g, "");
+        const content = await context.dataRepository.getContent(
+          context.modelType, context.modelId, instanceName,
+        );
+        if (!content) throw new Error("No data found - run create or get first");
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        const result = await tryRead("/v2/volumes", existing.id ?? existing.id) as ResourceData | null;
+        if (result) {
+          const handle = await context.writeResource("state", instanceName, result);
+          return { dataHandles: [handle] };
+        }
+        const handle = await context.writeResource("state", instanceName, {
+          id: existing.id ?? existing.id,
+          status: "not_found",
+          syncedAt: new Date().toISOString(),
+        });
+        return { dataHandles: [handle] };
+      },
+    },
+  },
+};
+'
+`;
