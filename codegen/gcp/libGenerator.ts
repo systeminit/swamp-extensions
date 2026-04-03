@@ -560,24 +560,34 @@ export async function readViaList(
   filterField: string,
   filterValue: string,
 ): Promise<any> {
-  const url = buildUrl(baseUrl, config, params);
-  const resp = await request("GET", url);
+  const baseUrlBuilt = buildUrl(baseUrl, config, params);
+  const maxPages = 100;
+  let url = baseUrlBuilt;
 
-  if (!resp.ok) {
-    const text = await resp.text();
-    throw new Error(\`List failed (\${resp.status}): \${text}\`);
-  }
+  for (let page = 0; page < maxPages; page++) {
+    const resp = await request("GET", url);
 
-  const data = await resp.json();
-
-  // Find the array property containing resources
-  for (const value of Object.values(data)) {
-    if (Array.isArray(value)) {
-      const match = value.find((item: any) =>
-        item && item[filterField] === filterValue
-      );
-      if (match) return match;
+    if (!resp.ok) {
+      const text = await resp.text();
+      throw new Error(\`List failed (\${resp.status}): \${text}\`);
     }
+
+    const data = await resp.json();
+
+    // Find the array property containing resources
+    for (const value of Object.values(data)) {
+      if (Array.isArray(value)) {
+        const match = value.find((item: any) =>
+          item && item[filterField] === filterValue
+        );
+        if (match) return match;
+      }
+    }
+
+    // Follow pagination
+    if (!data.nextPageToken) break;
+    const separator = baseUrlBuilt.includes("?") ? "&" : "?";
+    url = \`\${baseUrlBuilt}\${separator}pageToken=\${encodeURIComponent(data.nextPageToken)}\`;
   }
 
   throw new Error(\`Resource not found: \${filterField}=\${filterValue}\`);
