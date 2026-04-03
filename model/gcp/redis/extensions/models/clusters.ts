@@ -145,73 +145,59 @@ const GlobalArgsSchema = z.object({
   clusterEndpoints: z.array(z.object({
     connections: z.array(z.object({
       pscAutoConnection: z.object({
-        address: z.string().describe(
+        address: z.unknown().describe(
           "Output only. The IP allocated on the consumer network for the PSC forwarding rule.",
         ).optional(),
-        connectionType: z.enum([
-          "CONNECTION_TYPE_UNSPECIFIED",
-          "CONNECTION_TYPE_DISCOVERY",
-          "CONNECTION_TYPE_PRIMARY",
-          "CONNECTION_TYPE_READER",
-        ]).describe("Output only. Type of the PSC connection.").optional(),
-        forwardingRule: z.string().describe(
+        connectionType: z.unknown().describe(
+          "Output only. Type of the PSC connection.",
+        ).optional(),
+        forwardingRule: z.unknown().describe(
           "Output only. The URI of the consumer side forwarding rule. Example: projects/{projectNumOrId}/regions/us-east1/forwardingRules/{resourceId}.",
         ).optional(),
-        network: z.string().describe(
+        network: z.unknown().describe(
           "Required. The consumer network where the IP address resides, in the form of projects/{project_id}/global/networks/{network_id}.",
         ).optional(),
-        projectId: z.string().describe(
+        projectId: z.unknown().describe(
           "Required. The consumer project_id where the forwarding rule is created from.",
         ).optional(),
-        pscConnectionId: z.string().describe(
+        pscConnectionId: z.unknown().describe(
           "Output only. The PSC connection id of the forwarding rule connected to the service attachment.",
         ).optional(),
-        pscConnectionStatus: z.enum([
-          "PSC_CONNECTION_STATUS_UNSPECIFIED",
-          "PSC_CONNECTION_STATUS_ACTIVE",
-          "PSC_CONNECTION_STATUS_NOT_FOUND",
-        ]).describe(
+        pscConnectionStatus: z.unknown().describe(
           "Output only. The status of the PSC connection. Please note that this value is updated periodically. Please use Private Service Connect APIs for the latest status.",
         ).optional(),
-        serviceAttachment: z.string().describe(
+        serviceAttachment: z.unknown().describe(
           "Output only. The service attachment which is the target of the PSC connection, in the form of projects/{project-id}/regions/{region}/serviceAttachments/{service-attachment-id}.",
         ).optional(),
       }).describe(
         "Details of consumer resources in a PSC connection that is created through Service Connectivity Automation.",
       ).optional(),
       pscConnection: z.object({
-        address: z.string().describe(
+        address: z.unknown().describe(
           "Required. The IP allocated on the consumer network for the PSC forwarding rule.",
         ).optional(),
-        connectionType: z.enum([
-          "CONNECTION_TYPE_UNSPECIFIED",
-          "CONNECTION_TYPE_DISCOVERY",
-          "CONNECTION_TYPE_PRIMARY",
-          "CONNECTION_TYPE_READER",
-        ]).describe("Output only. Type of the PSC connection.").optional(),
-        forwardingRule: z.string().describe(
+        connectionType: z.unknown().describe(
+          "Output only. Type of the PSC connection.",
+        ).optional(),
+        forwardingRule: z.unknown().describe(
           "Required. The URI of the consumer side forwarding rule. Example: projects/{projectNumOrId}/regions/us-east1/forwardingRules/{resourceId}.",
         ).optional(),
-        network: z.string().describe(
+        network: z.unknown().describe(
           "Required. The consumer network where the IP address resides, in the form of projects/{project_id}/global/networks/{network_id}.",
         ).optional(),
-        port: z.number().int().describe(
+        port: z.unknown().describe(
           "Output only. port will only be set for Primary/Reader or Discovery endpoint.",
         ).optional(),
-        projectId: z.string().describe(
+        projectId: z.unknown().describe(
           "Optional. Project ID of the consumer project where the forwarding rule is created in.",
         ).optional(),
-        pscConnectionId: z.string().describe(
+        pscConnectionId: z.unknown().describe(
           "Required. The PSC connection id of the forwarding rule connected to the service attachment.",
         ).optional(),
-        pscConnectionStatus: z.enum([
-          "PSC_CONNECTION_STATUS_UNSPECIFIED",
-          "PSC_CONNECTION_STATUS_ACTIVE",
-          "PSC_CONNECTION_STATUS_NOT_FOUND",
-        ]).describe(
+        pscConnectionStatus: z.unknown().describe(
           "Output only. The status of the PSC connection. Please note that this value is updated periodically. To get the latest status of a PSC connection, follow https://cloud.google.com/vpc/docs/configure-private-service-connect-services#endpoint-details.",
         ).optional(),
-        serviceAttachment: z.string().describe(
+        serviceAttachment: z.unknown().describe(
           "Required. The service attachment which is the target of the PSC connection, in the form of projects/{project-id}/regions/{region}/serviceAttachments/{service-attachment-id}.",
         ).optional(),
       }).describe("Details of consumer resources in a PSC connection.")
@@ -516,25 +502,25 @@ const StateSchema = z.object({
   clusterEndpoints: z.array(z.object({
     connections: z.array(z.object({
       pscAutoConnection: z.object({
-        address: z.string(),
-        connectionType: z.string(),
-        forwardingRule: z.string(),
-        network: z.string(),
-        projectId: z.string(),
-        pscConnectionId: z.string(),
-        pscConnectionStatus: z.string(),
-        serviceAttachment: z.string(),
+        address: z.unknown(),
+        connectionType: z.unknown(),
+        forwardingRule: z.unknown(),
+        network: z.unknown(),
+        projectId: z.unknown(),
+        pscConnectionId: z.unknown(),
+        pscConnectionStatus: z.unknown(),
+        serviceAttachment: z.unknown(),
       }),
       pscConnection: z.object({
-        address: z.string(),
-        connectionType: z.string(),
-        forwardingRule: z.string(),
-        network: z.string(),
-        port: z.number(),
-        projectId: z.string(),
-        pscConnectionId: z.string(),
-        pscConnectionStatus: z.string(),
-        serviceAttachment: z.string(),
+        address: z.unknown(),
+        connectionType: z.unknown(),
+        forwardingRule: z.unknown(),
+        network: z.unknown(),
+        port: z.unknown(),
+        projectId: z.unknown(),
+        pscConnectionId: z.unknown(),
+        pscConnectionStatus: z.unknown(),
+        serviceAttachment: z.unknown(),
       }),
     })),
   })).optional(),
@@ -712,73 +698,59 @@ const InputsSchema = z.object({
   clusterEndpoints: z.array(z.object({
     connections: z.array(z.object({
       pscAutoConnection: z.object({
-        address: z.string().describe(
+        address: z.unknown().describe(
           "Output only. The IP allocated on the consumer network for the PSC forwarding rule.",
         ).optional(),
-        connectionType: z.enum([
-          "CONNECTION_TYPE_UNSPECIFIED",
-          "CONNECTION_TYPE_DISCOVERY",
-          "CONNECTION_TYPE_PRIMARY",
-          "CONNECTION_TYPE_READER",
-        ]).describe("Output only. Type of the PSC connection.").optional(),
-        forwardingRule: z.string().describe(
+        connectionType: z.unknown().describe(
+          "Output only. Type of the PSC connection.",
+        ).optional(),
+        forwardingRule: z.unknown().describe(
           "Output only. The URI of the consumer side forwarding rule. Example: projects/{projectNumOrId}/regions/us-east1/forwardingRules/{resourceId}.",
         ).optional(),
-        network: z.string().describe(
+        network: z.unknown().describe(
           "Required. The consumer network where the IP address resides, in the form of projects/{project_id}/global/networks/{network_id}.",
         ).optional(),
-        projectId: z.string().describe(
+        projectId: z.unknown().describe(
           "Required. The consumer project_id where the forwarding rule is created from.",
         ).optional(),
-        pscConnectionId: z.string().describe(
+        pscConnectionId: z.unknown().describe(
           "Output only. The PSC connection id of the forwarding rule connected to the service attachment.",
         ).optional(),
-        pscConnectionStatus: z.enum([
-          "PSC_CONNECTION_STATUS_UNSPECIFIED",
-          "PSC_CONNECTION_STATUS_ACTIVE",
-          "PSC_CONNECTION_STATUS_NOT_FOUND",
-        ]).describe(
+        pscConnectionStatus: z.unknown().describe(
           "Output only. The status of the PSC connection. Please note that this value is updated periodically. Please use Private Service Connect APIs for the latest status.",
         ).optional(),
-        serviceAttachment: z.string().describe(
+        serviceAttachment: z.unknown().describe(
           "Output only. The service attachment which is the target of the PSC connection, in the form of projects/{project-id}/regions/{region}/serviceAttachments/{service-attachment-id}.",
         ).optional(),
       }).describe(
         "Details of consumer resources in a PSC connection that is created through Service Connectivity Automation.",
       ).optional(),
       pscConnection: z.object({
-        address: z.string().describe(
+        address: z.unknown().describe(
           "Required. The IP allocated on the consumer network for the PSC forwarding rule.",
         ).optional(),
-        connectionType: z.enum([
-          "CONNECTION_TYPE_UNSPECIFIED",
-          "CONNECTION_TYPE_DISCOVERY",
-          "CONNECTION_TYPE_PRIMARY",
-          "CONNECTION_TYPE_READER",
-        ]).describe("Output only. Type of the PSC connection.").optional(),
-        forwardingRule: z.string().describe(
+        connectionType: z.unknown().describe(
+          "Output only. Type of the PSC connection.",
+        ).optional(),
+        forwardingRule: z.unknown().describe(
           "Required. The URI of the consumer side forwarding rule. Example: projects/{projectNumOrId}/regions/us-east1/forwardingRules/{resourceId}.",
         ).optional(),
-        network: z.string().describe(
+        network: z.unknown().describe(
           "Required. The consumer network where the IP address resides, in the form of projects/{project_id}/global/networks/{network_id}.",
         ).optional(),
-        port: z.number().int().describe(
+        port: z.unknown().describe(
           "Output only. port will only be set for Primary/Reader or Discovery endpoint.",
         ).optional(),
-        projectId: z.string().describe(
+        projectId: z.unknown().describe(
           "Optional. Project ID of the consumer project where the forwarding rule is created in.",
         ).optional(),
-        pscConnectionId: z.string().describe(
+        pscConnectionId: z.unknown().describe(
           "Required. The PSC connection id of the forwarding rule connected to the service attachment.",
         ).optional(),
-        pscConnectionStatus: z.enum([
-          "PSC_CONNECTION_STATUS_UNSPECIFIED",
-          "PSC_CONNECTION_STATUS_ACTIVE",
-          "PSC_CONNECTION_STATUS_NOT_FOUND",
-        ]).describe(
+        pscConnectionStatus: z.unknown().describe(
           "Output only. The status of the PSC connection. Please note that this value is updated periodically. To get the latest status of a PSC connection, follow https://cloud.google.com/vpc/docs/configure-private-service-connect-services#endpoint-details.",
         ).optional(),
-        serviceAttachment: z.string().describe(
+        serviceAttachment: z.unknown().describe(
           "Required. The service attachment which is the target of the PSC connection, in the form of projects/{project-id}/regions/{region}/serviceAttachments/{service-attachment-id}.",
         ).optional(),
       }).describe("Details of consumer resources in a PSC connection.")
@@ -1062,7 +1034,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/redis/clusters",
-  version: "2026.04.03.3",
+  version: "2026.04.04.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -1086,6 +1058,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.3",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.04.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

@@ -58,28 +58,21 @@ const GlobalArgsSchema = z.object({
       appLogoImage: z.object({
         contentDescription: z.object({
           defaultValue: z.object({
-            kind: z.string().describe(
+            kind: z.unknown().describe(
               'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#translatedString"`.',
             ).optional(),
-            language: z.string().describe(
+            language: z.unknown().describe(
               'Represents the BCP 47 language tag. Example values are "en-US", "en-GB", "de", or "de-AT".',
             ).optional(),
-            value: z.string().describe("The UTF-8 encoded translated string.")
+            value: z.unknown().describe("The UTF-8 encoded translated string.")
               .optional(),
           }).optional(),
           kind: z.string().describe(
             'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#localizedString"`.',
           ).optional(),
-          translatedValues: z.array(z.object({
-            kind: z.string().describe(
-              'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#translatedString"`.',
-            ).optional(),
-            language: z.string().describe(
-              'Represents the BCP 47 language tag. Example values are "en-US", "en-GB", "de", or "de-AT".',
-            ).optional(),
-            value: z.string().describe("The UTF-8 encoded translated string.")
-              .optional(),
-          })).describe("Contains the translations for the string.").optional(),
+          translatedValues: z.array(z.unknown()).describe(
+            "Contains the translations for the string.",
+          ).optional(),
         }).optional(),
         kind: z.string().describe(
           'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#image"`.',
@@ -92,30 +85,13 @@ const GlobalArgsSchema = z.object({
             "Additional information about the image, which is unused and retained only for backward compatibility.",
           ).optional(),
           localizedDescription: z.object({
-            defaultValue: z.object({
-              kind: z.string().describe(
-                'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#translatedString"`.',
-              ).optional(),
-              language: z.string().describe(
-                'Represents the BCP 47 language tag. Example values are "en-US", "en-GB", "de", or "de-AT".',
-              ).optional(),
-              value: z.string().describe("The UTF-8 encoded translated string.")
-                .optional(),
-            }).optional(),
-            kind: z.string().describe(
+            defaultValue: z.unknown().optional(),
+            kind: z.unknown().describe(
               'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#localizedString"`.',
             ).optional(),
-            translatedValues: z.array(z.object({
-              kind: z.string().describe(
-                'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#translatedString"`.',
-              ).optional(),
-              language: z.string().describe(
-                'Represents the BCP 47 language tag. Example values are "en-US", "en-GB", "de", or "de-AT".',
-              ).optional(),
-              value: z.string().describe("The UTF-8 encoded translated string.")
-                .optional(),
-            })).describe("Contains the translations for the string.")
-              .optional(),
+            translatedValues: z.unknown().describe(
+              "Contains the translations for the string.",
+            ).optional(),
           }).optional(),
           uri: z.string().describe(
             "The location of the image. URIs must have a scheme.",
@@ -137,30 +113,13 @@ const GlobalArgsSchema = z.object({
             'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#uri"`.',
           ).optional(),
           localizedDescription: z.object({
-            defaultValue: z.object({
-              kind: z.string().describe(
-                'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#translatedString"`.',
-              ).optional(),
-              language: z.string().describe(
-                'Represents the BCP 47 language tag. Example values are "en-US", "en-GB", "de", or "de-AT".',
-              ).optional(),
-              value: z.string().describe("The UTF-8 encoded translated string.")
-                .optional(),
-            }).optional(),
-            kind: z.string().describe(
+            defaultValue: z.unknown().optional(),
+            kind: z.unknown().describe(
               'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#localizedString"`.',
             ).optional(),
-            translatedValues: z.array(z.object({
-              kind: z.string().describe(
-                'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#translatedString"`.',
-              ).optional(),
-              language: z.string().describe(
-                'Represents the BCP 47 language tag. Example values are "en-US", "en-GB", "de", or "de-AT".',
-              ).optional(),
-              value: z.string().describe("The UTF-8 encoded translated string.")
-                .optional(),
-            })).describe("Contains the translations for the string.")
-              .optional(),
+            translatedValues: z.unknown().describe(
+              "Contains the translations for the string.",
+            ).optional(),
           }).optional(),
           uri: z.string().describe(
             "The location of a web page, image, or other resource. URIs in the `LinksModuleData` module can have different prefixes indicating the type of URI (a link to a web page, a link to a map, a telephone number, or an email address). URIs must have a scheme.",
@@ -182,13 +141,13 @@ const GlobalArgsSchema = z.object({
           'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#localizedString"`.',
         ).optional(),
         translatedValues: z.array(z.object({
-          kind: z.string().describe(
+          kind: z.unknown().describe(
             'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#translatedString"`.',
           ).optional(),
-          language: z.string().describe(
+          language: z.unknown().describe(
             'Represents the BCP 47 language tag. Example values are "en-US", "en-GB", "de", or "de-AT".',
           ).optional(),
-          value: z.string().describe("The UTF-8 encoded translated string.")
+          value: z.unknown().describe("The UTF-8 encoded translated string.")
             .optional(),
         })).describe("Contains the translations for the string.").optional(),
       }).optional(),
@@ -207,13 +166,13 @@ const GlobalArgsSchema = z.object({
           'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#localizedString"`.',
         ).optional(),
         translatedValues: z.array(z.object({
-          kind: z.string().describe(
+          kind: z.unknown().describe(
             'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#translatedString"`.',
           ).optional(),
-          language: z.string().describe(
+          language: z.unknown().describe(
             'Represents the BCP 47 language tag. Example values are "en-US", "en-GB", "de", or "de-AT".',
           ).optional(),
-          value: z.string().describe("The UTF-8 encoded translated string.")
+          value: z.unknown().describe("The UTF-8 encoded translated string.")
             .optional(),
         })).describe("Contains the translations for the string.").optional(),
       }).optional(),
@@ -247,28 +206,21 @@ const GlobalArgsSchema = z.object({
       appLogoImage: z.object({
         contentDescription: z.object({
           defaultValue: z.object({
-            kind: z.string().describe(
+            kind: z.unknown().describe(
               'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#translatedString"`.',
             ).optional(),
-            language: z.string().describe(
+            language: z.unknown().describe(
               'Represents the BCP 47 language tag. Example values are "en-US", "en-GB", "de", or "de-AT".',
             ).optional(),
-            value: z.string().describe("The UTF-8 encoded translated string.")
+            value: z.unknown().describe("The UTF-8 encoded translated string.")
               .optional(),
           }).optional(),
           kind: z.string().describe(
             'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#localizedString"`.',
           ).optional(),
-          translatedValues: z.array(z.object({
-            kind: z.string().describe(
-              'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#translatedString"`.',
-            ).optional(),
-            language: z.string().describe(
-              'Represents the BCP 47 language tag. Example values are "en-US", "en-GB", "de", or "de-AT".',
-            ).optional(),
-            value: z.string().describe("The UTF-8 encoded translated string.")
-              .optional(),
-          })).describe("Contains the translations for the string.").optional(),
+          translatedValues: z.array(z.unknown()).describe(
+            "Contains the translations for the string.",
+          ).optional(),
         }).optional(),
         kind: z.string().describe(
           'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#image"`.',
@@ -281,30 +233,13 @@ const GlobalArgsSchema = z.object({
             "Additional information about the image, which is unused and retained only for backward compatibility.",
           ).optional(),
           localizedDescription: z.object({
-            defaultValue: z.object({
-              kind: z.string().describe(
-                'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#translatedString"`.',
-              ).optional(),
-              language: z.string().describe(
-                'Represents the BCP 47 language tag. Example values are "en-US", "en-GB", "de", or "de-AT".',
-              ).optional(),
-              value: z.string().describe("The UTF-8 encoded translated string.")
-                .optional(),
-            }).optional(),
-            kind: z.string().describe(
+            defaultValue: z.unknown().optional(),
+            kind: z.unknown().describe(
               'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#localizedString"`.',
             ).optional(),
-            translatedValues: z.array(z.object({
-              kind: z.string().describe(
-                'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#translatedString"`.',
-              ).optional(),
-              language: z.string().describe(
-                'Represents the BCP 47 language tag. Example values are "en-US", "en-GB", "de", or "de-AT".',
-              ).optional(),
-              value: z.string().describe("The UTF-8 encoded translated string.")
-                .optional(),
-            })).describe("Contains the translations for the string.")
-              .optional(),
+            translatedValues: z.unknown().describe(
+              "Contains the translations for the string.",
+            ).optional(),
           }).optional(),
           uri: z.string().describe(
             "The location of the image. URIs must have a scheme.",
@@ -326,30 +261,13 @@ const GlobalArgsSchema = z.object({
             'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#uri"`.',
           ).optional(),
           localizedDescription: z.object({
-            defaultValue: z.object({
-              kind: z.string().describe(
-                'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#translatedString"`.',
-              ).optional(),
-              language: z.string().describe(
-                'Represents the BCP 47 language tag. Example values are "en-US", "en-GB", "de", or "de-AT".',
-              ).optional(),
-              value: z.string().describe("The UTF-8 encoded translated string.")
-                .optional(),
-            }).optional(),
-            kind: z.string().describe(
+            defaultValue: z.unknown().optional(),
+            kind: z.unknown().describe(
               'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#localizedString"`.',
             ).optional(),
-            translatedValues: z.array(z.object({
-              kind: z.string().describe(
-                'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#translatedString"`.',
-              ).optional(),
-              language: z.string().describe(
-                'Represents the BCP 47 language tag. Example values are "en-US", "en-GB", "de", or "de-AT".',
-              ).optional(),
-              value: z.string().describe("The UTF-8 encoded translated string.")
-                .optional(),
-            })).describe("Contains the translations for the string.")
-              .optional(),
+            translatedValues: z.unknown().describe(
+              "Contains the translations for the string.",
+            ).optional(),
           }).optional(),
           uri: z.string().describe(
             "The location of a web page, image, or other resource. URIs in the `LinksModuleData` module can have different prefixes indicating the type of URI (a link to a web page, a link to a map, a telephone number, or an email address). URIs must have a scheme.",
@@ -371,13 +289,13 @@ const GlobalArgsSchema = z.object({
           'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#localizedString"`.',
         ).optional(),
         translatedValues: z.array(z.object({
-          kind: z.string().describe(
+          kind: z.unknown().describe(
             'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#translatedString"`.',
           ).optional(),
-          language: z.string().describe(
+          language: z.unknown().describe(
             'Represents the BCP 47 language tag. Example values are "en-US", "en-GB", "de", or "de-AT".',
           ).optional(),
-          value: z.string().describe("The UTF-8 encoded translated string.")
+          value: z.unknown().describe("The UTF-8 encoded translated string.")
             .optional(),
         })).describe("Contains the translations for the string.").optional(),
       }).optional(),
@@ -396,13 +314,13 @@ const GlobalArgsSchema = z.object({
           'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#localizedString"`.',
         ).optional(),
         translatedValues: z.array(z.object({
-          kind: z.string().describe(
+          kind: z.unknown().describe(
             'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#translatedString"`.',
           ).optional(),
-          language: z.string().describe(
+          language: z.unknown().describe(
             'Represents the BCP 47 language tag. Example values are "en-US", "en-GB", "de", or "de-AT".',
           ).optional(),
-          value: z.string().describe("The UTF-8 encoded translated string.")
+          value: z.unknown().describe("The UTF-8 encoded translated string.")
             .optional(),
         })).describe("Contains the translations for the string.").optional(),
       }).optional(),
@@ -411,28 +329,21 @@ const GlobalArgsSchema = z.object({
       appLogoImage: z.object({
         contentDescription: z.object({
           defaultValue: z.object({
-            kind: z.string().describe(
+            kind: z.unknown().describe(
               'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#translatedString"`.',
             ).optional(),
-            language: z.string().describe(
+            language: z.unknown().describe(
               'Represents the BCP 47 language tag. Example values are "en-US", "en-GB", "de", or "de-AT".',
             ).optional(),
-            value: z.string().describe("The UTF-8 encoded translated string.")
+            value: z.unknown().describe("The UTF-8 encoded translated string.")
               .optional(),
           }).optional(),
           kind: z.string().describe(
             'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#localizedString"`.',
           ).optional(),
-          translatedValues: z.array(z.object({
-            kind: z.string().describe(
-              'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#translatedString"`.',
-            ).optional(),
-            language: z.string().describe(
-              'Represents the BCP 47 language tag. Example values are "en-US", "en-GB", "de", or "de-AT".',
-            ).optional(),
-            value: z.string().describe("The UTF-8 encoded translated string.")
-              .optional(),
-          })).describe("Contains the translations for the string.").optional(),
+          translatedValues: z.array(z.unknown()).describe(
+            "Contains the translations for the string.",
+          ).optional(),
         }).optional(),
         kind: z.string().describe(
           'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#image"`.',
@@ -445,30 +356,13 @@ const GlobalArgsSchema = z.object({
             "Additional information about the image, which is unused and retained only for backward compatibility.",
           ).optional(),
           localizedDescription: z.object({
-            defaultValue: z.object({
-              kind: z.string().describe(
-                'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#translatedString"`.',
-              ).optional(),
-              language: z.string().describe(
-                'Represents the BCP 47 language tag. Example values are "en-US", "en-GB", "de", or "de-AT".',
-              ).optional(),
-              value: z.string().describe("The UTF-8 encoded translated string.")
-                .optional(),
-            }).optional(),
-            kind: z.string().describe(
+            defaultValue: z.unknown().optional(),
+            kind: z.unknown().describe(
               'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#localizedString"`.',
             ).optional(),
-            translatedValues: z.array(z.object({
-              kind: z.string().describe(
-                'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#translatedString"`.',
-              ).optional(),
-              language: z.string().describe(
-                'Represents the BCP 47 language tag. Example values are "en-US", "en-GB", "de", or "de-AT".',
-              ).optional(),
-              value: z.string().describe("The UTF-8 encoded translated string.")
-                .optional(),
-            })).describe("Contains the translations for the string.")
-              .optional(),
+            translatedValues: z.unknown().describe(
+              "Contains the translations for the string.",
+            ).optional(),
           }).optional(),
           uri: z.string().describe(
             "The location of the image. URIs must have a scheme.",
@@ -490,30 +384,13 @@ const GlobalArgsSchema = z.object({
             'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#uri"`.',
           ).optional(),
           localizedDescription: z.object({
-            defaultValue: z.object({
-              kind: z.string().describe(
-                'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#translatedString"`.',
-              ).optional(),
-              language: z.string().describe(
-                'Represents the BCP 47 language tag. Example values are "en-US", "en-GB", "de", or "de-AT".',
-              ).optional(),
-              value: z.string().describe("The UTF-8 encoded translated string.")
-                .optional(),
-            }).optional(),
-            kind: z.string().describe(
+            defaultValue: z.unknown().optional(),
+            kind: z.unknown().describe(
               'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#localizedString"`.',
             ).optional(),
-            translatedValues: z.array(z.object({
-              kind: z.string().describe(
-                'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#translatedString"`.',
-              ).optional(),
-              language: z.string().describe(
-                'Represents the BCP 47 language tag. Example values are "en-US", "en-GB", "de", or "de-AT".',
-              ).optional(),
-              value: z.string().describe("The UTF-8 encoded translated string.")
-                .optional(),
-            })).describe("Contains the translations for the string.")
-              .optional(),
+            translatedValues: z.unknown().describe(
+              "Contains the translations for the string.",
+            ).optional(),
           }).optional(),
           uri: z.string().describe(
             "The location of a web page, image, or other resource. URIs in the `LinksModuleData` module can have different prefixes indicating the type of URI (a link to a web page, a link to a map, a telephone number, or an email address). URIs must have a scheme.",
@@ -535,13 +412,13 @@ const GlobalArgsSchema = z.object({
           'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#localizedString"`.',
         ).optional(),
         translatedValues: z.array(z.object({
-          kind: z.string().describe(
+          kind: z.unknown().describe(
             'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#translatedString"`.',
           ).optional(),
-          language: z.string().describe(
+          language: z.unknown().describe(
             'Represents the BCP 47 language tag. Example values are "en-US", "en-GB", "de", or "de-AT".',
           ).optional(),
-          value: z.string().describe("The UTF-8 encoded translated string.")
+          value: z.unknown().describe("The UTF-8 encoded translated string.")
             .optional(),
         })).describe("Contains the translations for the string.").optional(),
       }).optional(),
@@ -560,13 +437,13 @@ const GlobalArgsSchema = z.object({
           'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#localizedString"`.',
         ).optional(),
         translatedValues: z.array(z.object({
-          kind: z.string().describe(
+          kind: z.unknown().describe(
             'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#translatedString"`.',
           ).optional(),
-          language: z.string().describe(
+          language: z.unknown().describe(
             'Represents the BCP 47 language tag. Example values are "en-US", "en-GB", "de", or "de-AT".',
           ).optional(),
-          value: z.string().describe("The UTF-8 encoded translated string.")
+          value: z.unknown().describe("The UTF-8 encoded translated string.")
             .optional(),
         })).describe("Contains the translations for the string.").optional(),
       }).optional(),
@@ -650,30 +527,13 @@ const GlobalArgsSchema = z.object({
       androidAppLinkInfo: z.object({
         appLogoImage: z.object({
           contentDescription: z.object({
-            defaultValue: z.object({
-              kind: z.string().describe(
-                'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#translatedString"`.',
-              ).optional(),
-              language: z.string().describe(
-                'Represents the BCP 47 language tag. Example values are "en-US", "en-GB", "de", or "de-AT".',
-              ).optional(),
-              value: z.string().describe("The UTF-8 encoded translated string.")
-                .optional(),
-            }).optional(),
-            kind: z.string().describe(
+            defaultValue: z.unknown().optional(),
+            kind: z.unknown().describe(
               'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#localizedString"`.',
             ).optional(),
-            translatedValues: z.array(z.object({
-              kind: z.string().describe(
-                'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#translatedString"`.',
-              ).optional(),
-              language: z.string().describe(
-                'Represents the BCP 47 language tag. Example values are "en-US", "en-GB", "de", or "de-AT".',
-              ).optional(),
-              value: z.string().describe("The UTF-8 encoded translated string.")
-                .optional(),
-            })).describe("Contains the translations for the string.")
-              .optional(),
+            translatedValues: z.unknown().describe(
+              "Contains the translations for the string.",
+            ).optional(),
           }).optional(),
           kind: z.string().describe(
             'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#image"`.',
@@ -682,38 +542,11 @@ const GlobalArgsSchema = z.object({
             "An ID for an already uploaded private image. Either this or source_uri should be set. Requests setting both or neither will be rejected. Please contact support to use private images.",
           ).optional(),
           sourceUri: z.object({
-            description: z.string().describe(
+            description: z.unknown().describe(
               "Additional information about the image, which is unused and retained only for backward compatibility.",
             ).optional(),
-            localizedDescription: z.object({
-              defaultValue: z.object({
-                kind: z.string().describe(
-                  'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#translatedString"`.',
-                ).optional(),
-                language: z.string().describe(
-                  'Represents the BCP 47 language tag. Example values are "en-US", "en-GB", "de", or "de-AT".',
-                ).optional(),
-                value: z.string().describe(
-                  "The UTF-8 encoded translated string.",
-                ).optional(),
-              }).optional(),
-              kind: z.string().describe(
-                'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#localizedString"`.',
-              ).optional(),
-              translatedValues: z.array(z.object({
-                kind: z.string().describe(
-                  'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#translatedString"`.',
-                ).optional(),
-                language: z.string().describe(
-                  'Represents the BCP 47 language tag. Example values are "en-US", "en-GB", "de", or "de-AT".',
-                ).optional(),
-                value: z.string().describe(
-                  "The UTF-8 encoded translated string.",
-                ).optional(),
-              })).describe("Contains the translations for the string.")
-                .optional(),
-            }).optional(),
-            uri: z.string().describe(
+            localizedDescription: z.unknown().optional(),
+            uri: z.unknown().describe(
               "The location of the image. URIs must have a scheme.",
             ).optional(),
           }).optional(),
@@ -723,97 +556,56 @@ const GlobalArgsSchema = z.object({
             "Package name for AppTarget. For example: com.google.android.gm",
           ).optional(),
           targetUri: z.object({
-            description: z.string().describe(
+            description: z.unknown().describe(
               "The URI's title appearing in the app as text. Recommended maximum is 20 characters to ensure full string is displayed on smaller screens. Note that in some contexts this text is not used, such as when `description` is part of an image.",
             ).optional(),
-            id: z.string().describe(
+            id: z.unknown().describe(
               "The ID associated with a uri. This field is here to enable ease of management of uris.",
             ).optional(),
-            kind: z.string().describe(
+            kind: z.unknown().describe(
               'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#uri"`.',
             ).optional(),
-            localizedDescription: z.object({
-              defaultValue: z.object({
-                kind: z.string().describe(
-                  'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#translatedString"`.',
-                ).optional(),
-                language: z.string().describe(
-                  'Represents the BCP 47 language tag. Example values are "en-US", "en-GB", "de", or "de-AT".',
-                ).optional(),
-                value: z.string().describe(
-                  "The UTF-8 encoded translated string.",
-                ).optional(),
-              }).optional(),
-              kind: z.string().describe(
-                'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#localizedString"`.',
-              ).optional(),
-              translatedValues: z.array(z.object({
-                kind: z.string().describe(
-                  'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#translatedString"`.',
-                ).optional(),
-                language: z.string().describe(
-                  'Represents the BCP 47 language tag. Example values are "en-US", "en-GB", "de", or "de-AT".',
-                ).optional(),
-                value: z.string().describe(
-                  "The UTF-8 encoded translated string.",
-                ).optional(),
-              })).describe("Contains the translations for the string.")
-                .optional(),
-            }).optional(),
-            uri: z.string().describe(
+            localizedDescription: z.unknown().optional(),
+            uri: z.unknown().describe(
               "The location of a web page, image, or other resource. URIs in the `LinksModuleData` module can have different prefixes indicating the type of URI (a link to a web page, a link to a map, a telephone number, or an email address). URIs must have a scheme.",
             ).optional(),
           }).optional(),
         }).optional(),
         description: z.object({
           defaultValue: z.object({
-            kind: z.string().describe(
+            kind: z.unknown().describe(
               'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#translatedString"`.',
             ).optional(),
-            language: z.string().describe(
+            language: z.unknown().describe(
               'Represents the BCP 47 language tag. Example values are "en-US", "en-GB", "de", or "de-AT".',
             ).optional(),
-            value: z.string().describe("The UTF-8 encoded translated string.")
+            value: z.unknown().describe("The UTF-8 encoded translated string.")
               .optional(),
           }).optional(),
           kind: z.string().describe(
             'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#localizedString"`.',
           ).optional(),
-          translatedValues: z.array(z.object({
-            kind: z.string().describe(
-              'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#translatedString"`.',
-            ).optional(),
-            language: z.string().describe(
-              'Represents the BCP 47 language tag. Example values are "en-US", "en-GB", "de", or "de-AT".',
-            ).optional(),
-            value: z.string().describe("The UTF-8 encoded translated string.")
-              .optional(),
-          })).describe("Contains the translations for the string.").optional(),
+          translatedValues: z.array(z.unknown()).describe(
+            "Contains the translations for the string.",
+          ).optional(),
         }).optional(),
         title: z.object({
           defaultValue: z.object({
-            kind: z.string().describe(
+            kind: z.unknown().describe(
               'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#translatedString"`.',
             ).optional(),
-            language: z.string().describe(
+            language: z.unknown().describe(
               'Represents the BCP 47 language tag. Example values are "en-US", "en-GB", "de", or "de-AT".',
             ).optional(),
-            value: z.string().describe("The UTF-8 encoded translated string.")
+            value: z.unknown().describe("The UTF-8 encoded translated string.")
               .optional(),
           }).optional(),
           kind: z.string().describe(
             'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#localizedString"`.',
           ).optional(),
-          translatedValues: z.array(z.object({
-            kind: z.string().describe(
-              'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#translatedString"`.',
-            ).optional(),
-            language: z.string().describe(
-              'Represents the BCP 47 language tag. Example values are "en-US", "en-GB", "de", or "de-AT".',
-            ).optional(),
-            value: z.string().describe("The UTF-8 encoded translated string.")
-              .optional(),
-          })).describe("Contains the translations for the string.").optional(),
+          translatedValues: z.array(z.unknown()).describe(
+            "Contains the translations for the string.",
+          ).optional(),
         }).optional(),
       }).optional(),
       displayText: z.object({
@@ -831,43 +623,26 @@ const GlobalArgsSchema = z.object({
           'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#localizedString"`.',
         ).optional(),
         translatedValues: z.array(z.object({
-          kind: z.string().describe(
+          kind: z.unknown().describe(
             'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#translatedString"`.',
           ).optional(),
-          language: z.string().describe(
+          language: z.unknown().describe(
             'Represents the BCP 47 language tag. Example values are "en-US", "en-GB", "de", or "de-AT".',
           ).optional(),
-          value: z.string().describe("The UTF-8 encoded translated string.")
+          value: z.unknown().describe("The UTF-8 encoded translated string.")
             .optional(),
         })).describe("Contains the translations for the string.").optional(),
       }).optional(),
       iosAppLinkInfo: z.object({
         appLogoImage: z.object({
           contentDescription: z.object({
-            defaultValue: z.object({
-              kind: z.string().describe(
-                'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#translatedString"`.',
-              ).optional(),
-              language: z.string().describe(
-                'Represents the BCP 47 language tag. Example values are "en-US", "en-GB", "de", or "de-AT".',
-              ).optional(),
-              value: z.string().describe("The UTF-8 encoded translated string.")
-                .optional(),
-            }).optional(),
-            kind: z.string().describe(
+            defaultValue: z.unknown().optional(),
+            kind: z.unknown().describe(
               'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#localizedString"`.',
             ).optional(),
-            translatedValues: z.array(z.object({
-              kind: z.string().describe(
-                'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#translatedString"`.',
-              ).optional(),
-              language: z.string().describe(
-                'Represents the BCP 47 language tag. Example values are "en-US", "en-GB", "de", or "de-AT".',
-              ).optional(),
-              value: z.string().describe("The UTF-8 encoded translated string.")
-                .optional(),
-            })).describe("Contains the translations for the string.")
-              .optional(),
+            translatedValues: z.unknown().describe(
+              "Contains the translations for the string.",
+            ).optional(),
           }).optional(),
           kind: z.string().describe(
             'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#image"`.',
@@ -876,38 +651,11 @@ const GlobalArgsSchema = z.object({
             "An ID for an already uploaded private image. Either this or source_uri should be set. Requests setting both or neither will be rejected. Please contact support to use private images.",
           ).optional(),
           sourceUri: z.object({
-            description: z.string().describe(
+            description: z.unknown().describe(
               "Additional information about the image, which is unused and retained only for backward compatibility.",
             ).optional(),
-            localizedDescription: z.object({
-              defaultValue: z.object({
-                kind: z.string().describe(
-                  'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#translatedString"`.',
-                ).optional(),
-                language: z.string().describe(
-                  'Represents the BCP 47 language tag. Example values are "en-US", "en-GB", "de", or "de-AT".',
-                ).optional(),
-                value: z.string().describe(
-                  "The UTF-8 encoded translated string.",
-                ).optional(),
-              }).optional(),
-              kind: z.string().describe(
-                'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#localizedString"`.',
-              ).optional(),
-              translatedValues: z.array(z.object({
-                kind: z.string().describe(
-                  'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#translatedString"`.',
-                ).optional(),
-                language: z.string().describe(
-                  'Represents the BCP 47 language tag. Example values are "en-US", "en-GB", "de", or "de-AT".',
-                ).optional(),
-                value: z.string().describe(
-                  "The UTF-8 encoded translated string.",
-                ).optional(),
-              })).describe("Contains the translations for the string.")
-                .optional(),
-            }).optional(),
-            uri: z.string().describe(
+            localizedDescription: z.unknown().optional(),
+            uri: z.unknown().describe(
               "The location of the image. URIs must have a scheme.",
             ).optional(),
           }).optional(),
@@ -917,126 +665,68 @@ const GlobalArgsSchema = z.object({
             "Package name for AppTarget. For example: com.google.android.gm",
           ).optional(),
           targetUri: z.object({
-            description: z.string().describe(
+            description: z.unknown().describe(
               "The URI's title appearing in the app as text. Recommended maximum is 20 characters to ensure full string is displayed on smaller screens. Note that in some contexts this text is not used, such as when `description` is part of an image.",
             ).optional(),
-            id: z.string().describe(
+            id: z.unknown().describe(
               "The ID associated with a uri. This field is here to enable ease of management of uris.",
             ).optional(),
-            kind: z.string().describe(
+            kind: z.unknown().describe(
               'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#uri"`.',
             ).optional(),
-            localizedDescription: z.object({
-              defaultValue: z.object({
-                kind: z.string().describe(
-                  'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#translatedString"`.',
-                ).optional(),
-                language: z.string().describe(
-                  'Represents the BCP 47 language tag. Example values are "en-US", "en-GB", "de", or "de-AT".',
-                ).optional(),
-                value: z.string().describe(
-                  "The UTF-8 encoded translated string.",
-                ).optional(),
-              }).optional(),
-              kind: z.string().describe(
-                'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#localizedString"`.',
-              ).optional(),
-              translatedValues: z.array(z.object({
-                kind: z.string().describe(
-                  'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#translatedString"`.',
-                ).optional(),
-                language: z.string().describe(
-                  'Represents the BCP 47 language tag. Example values are "en-US", "en-GB", "de", or "de-AT".',
-                ).optional(),
-                value: z.string().describe(
-                  "The UTF-8 encoded translated string.",
-                ).optional(),
-              })).describe("Contains the translations for the string.")
-                .optional(),
-            }).optional(),
-            uri: z.string().describe(
+            localizedDescription: z.unknown().optional(),
+            uri: z.unknown().describe(
               "The location of a web page, image, or other resource. URIs in the `LinksModuleData` module can have different prefixes indicating the type of URI (a link to a web page, a link to a map, a telephone number, or an email address). URIs must have a scheme.",
             ).optional(),
           }).optional(),
         }).optional(),
         description: z.object({
           defaultValue: z.object({
-            kind: z.string().describe(
+            kind: z.unknown().describe(
               'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#translatedString"`.',
             ).optional(),
-            language: z.string().describe(
+            language: z.unknown().describe(
               'Represents the BCP 47 language tag. Example values are "en-US", "en-GB", "de", or "de-AT".',
             ).optional(),
-            value: z.string().describe("The UTF-8 encoded translated string.")
+            value: z.unknown().describe("The UTF-8 encoded translated string.")
               .optional(),
           }).optional(),
           kind: z.string().describe(
             'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#localizedString"`.',
           ).optional(),
-          translatedValues: z.array(z.object({
-            kind: z.string().describe(
-              'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#translatedString"`.',
-            ).optional(),
-            language: z.string().describe(
-              'Represents the BCP 47 language tag. Example values are "en-US", "en-GB", "de", or "de-AT".',
-            ).optional(),
-            value: z.string().describe("The UTF-8 encoded translated string.")
-              .optional(),
-          })).describe("Contains the translations for the string.").optional(),
+          translatedValues: z.array(z.unknown()).describe(
+            "Contains the translations for the string.",
+          ).optional(),
         }).optional(),
         title: z.object({
           defaultValue: z.object({
-            kind: z.string().describe(
+            kind: z.unknown().describe(
               'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#translatedString"`.',
             ).optional(),
-            language: z.string().describe(
+            language: z.unknown().describe(
               'Represents the BCP 47 language tag. Example values are "en-US", "en-GB", "de", or "de-AT".',
             ).optional(),
-            value: z.string().describe("The UTF-8 encoded translated string.")
+            value: z.unknown().describe("The UTF-8 encoded translated string.")
               .optional(),
           }).optional(),
           kind: z.string().describe(
             'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#localizedString"`.',
           ).optional(),
-          translatedValues: z.array(z.object({
-            kind: z.string().describe(
-              'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#translatedString"`.',
-            ).optional(),
-            language: z.string().describe(
-              'Represents the BCP 47 language tag. Example values are "en-US", "en-GB", "de", or "de-AT".',
-            ).optional(),
-            value: z.string().describe("The UTF-8 encoded translated string.")
-              .optional(),
-          })).describe("Contains the translations for the string.").optional(),
+          translatedValues: z.array(z.unknown()).describe(
+            "Contains the translations for the string.",
+          ).optional(),
         }).optional(),
       }).optional(),
       webAppLinkInfo: z.object({
         appLogoImage: z.object({
           contentDescription: z.object({
-            defaultValue: z.object({
-              kind: z.string().describe(
-                'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#translatedString"`.',
-              ).optional(),
-              language: z.string().describe(
-                'Represents the BCP 47 language tag. Example values are "en-US", "en-GB", "de", or "de-AT".',
-              ).optional(),
-              value: z.string().describe("The UTF-8 encoded translated string.")
-                .optional(),
-            }).optional(),
-            kind: z.string().describe(
+            defaultValue: z.unknown().optional(),
+            kind: z.unknown().describe(
               'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#localizedString"`.',
             ).optional(),
-            translatedValues: z.array(z.object({
-              kind: z.string().describe(
-                'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#translatedString"`.',
-              ).optional(),
-              language: z.string().describe(
-                'Represents the BCP 47 language tag. Example values are "en-US", "en-GB", "de", or "de-AT".',
-              ).optional(),
-              value: z.string().describe("The UTF-8 encoded translated string.")
-                .optional(),
-            })).describe("Contains the translations for the string.")
-              .optional(),
+            translatedValues: z.unknown().describe(
+              "Contains the translations for the string.",
+            ).optional(),
           }).optional(),
           kind: z.string().describe(
             'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#image"`.',
@@ -1045,38 +735,11 @@ const GlobalArgsSchema = z.object({
             "An ID for an already uploaded private image. Either this or source_uri should be set. Requests setting both or neither will be rejected. Please contact support to use private images.",
           ).optional(),
           sourceUri: z.object({
-            description: z.string().describe(
+            description: z.unknown().describe(
               "Additional information about the image, which is unused and retained only for backward compatibility.",
             ).optional(),
-            localizedDescription: z.object({
-              defaultValue: z.object({
-                kind: z.string().describe(
-                  'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#translatedString"`.',
-                ).optional(),
-                language: z.string().describe(
-                  'Represents the BCP 47 language tag. Example values are "en-US", "en-GB", "de", or "de-AT".',
-                ).optional(),
-                value: z.string().describe(
-                  "The UTF-8 encoded translated string.",
-                ).optional(),
-              }).optional(),
-              kind: z.string().describe(
-                'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#localizedString"`.',
-              ).optional(),
-              translatedValues: z.array(z.object({
-                kind: z.string().describe(
-                  'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#translatedString"`.',
-                ).optional(),
-                language: z.string().describe(
-                  'Represents the BCP 47 language tag. Example values are "en-US", "en-GB", "de", or "de-AT".',
-                ).optional(),
-                value: z.string().describe(
-                  "The UTF-8 encoded translated string.",
-                ).optional(),
-              })).describe("Contains the translations for the string.")
-                .optional(),
-            }).optional(),
-            uri: z.string().describe(
+            localizedDescription: z.unknown().optional(),
+            uri: z.unknown().describe(
               "The location of the image. URIs must have a scheme.",
             ).optional(),
           }).optional(),
@@ -1086,97 +749,56 @@ const GlobalArgsSchema = z.object({
             "Package name for AppTarget. For example: com.google.android.gm",
           ).optional(),
           targetUri: z.object({
-            description: z.string().describe(
+            description: z.unknown().describe(
               "The URI's title appearing in the app as text. Recommended maximum is 20 characters to ensure full string is displayed on smaller screens. Note that in some contexts this text is not used, such as when `description` is part of an image.",
             ).optional(),
-            id: z.string().describe(
+            id: z.unknown().describe(
               "The ID associated with a uri. This field is here to enable ease of management of uris.",
             ).optional(),
-            kind: z.string().describe(
+            kind: z.unknown().describe(
               'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#uri"`.',
             ).optional(),
-            localizedDescription: z.object({
-              defaultValue: z.object({
-                kind: z.string().describe(
-                  'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#translatedString"`.',
-                ).optional(),
-                language: z.string().describe(
-                  'Represents the BCP 47 language tag. Example values are "en-US", "en-GB", "de", or "de-AT".',
-                ).optional(),
-                value: z.string().describe(
-                  "The UTF-8 encoded translated string.",
-                ).optional(),
-              }).optional(),
-              kind: z.string().describe(
-                'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#localizedString"`.',
-              ).optional(),
-              translatedValues: z.array(z.object({
-                kind: z.string().describe(
-                  'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#translatedString"`.',
-                ).optional(),
-                language: z.string().describe(
-                  'Represents the BCP 47 language tag. Example values are "en-US", "en-GB", "de", or "de-AT".',
-                ).optional(),
-                value: z.string().describe(
-                  "The UTF-8 encoded translated string.",
-                ).optional(),
-              })).describe("Contains the translations for the string.")
-                .optional(),
-            }).optional(),
-            uri: z.string().describe(
+            localizedDescription: z.unknown().optional(),
+            uri: z.unknown().describe(
               "The location of a web page, image, or other resource. URIs in the `LinksModuleData` module can have different prefixes indicating the type of URI (a link to a web page, a link to a map, a telephone number, or an email address). URIs must have a scheme.",
             ).optional(),
           }).optional(),
         }).optional(),
         description: z.object({
           defaultValue: z.object({
-            kind: z.string().describe(
+            kind: z.unknown().describe(
               'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#translatedString"`.',
             ).optional(),
-            language: z.string().describe(
+            language: z.unknown().describe(
               'Represents the BCP 47 language tag. Example values are "en-US", "en-GB", "de", or "de-AT".',
             ).optional(),
-            value: z.string().describe("The UTF-8 encoded translated string.")
+            value: z.unknown().describe("The UTF-8 encoded translated string.")
               .optional(),
           }).optional(),
           kind: z.string().describe(
             'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#localizedString"`.',
           ).optional(),
-          translatedValues: z.array(z.object({
-            kind: z.string().describe(
-              'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#translatedString"`.',
-            ).optional(),
-            language: z.string().describe(
-              'Represents the BCP 47 language tag. Example values are "en-US", "en-GB", "de", or "de-AT".',
-            ).optional(),
-            value: z.string().describe("The UTF-8 encoded translated string.")
-              .optional(),
-          })).describe("Contains the translations for the string.").optional(),
+          translatedValues: z.array(z.unknown()).describe(
+            "Contains the translations for the string.",
+          ).optional(),
         }).optional(),
         title: z.object({
           defaultValue: z.object({
-            kind: z.string().describe(
+            kind: z.unknown().describe(
               'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#translatedString"`.',
             ).optional(),
-            language: z.string().describe(
+            language: z.unknown().describe(
               'Represents the BCP 47 language tag. Example values are "en-US", "en-GB", "de", or "de-AT".',
             ).optional(),
-            value: z.string().describe("The UTF-8 encoded translated string.")
+            value: z.unknown().describe("The UTF-8 encoded translated string.")
               .optional(),
           }).optional(),
           kind: z.string().describe(
             'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#localizedString"`.',
           ).optional(),
-          translatedValues: z.array(z.object({
-            kind: z.string().describe(
-              'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#translatedString"`.',
-            ).optional(),
-            language: z.string().describe(
-              'Represents the BCP 47 language tag. Example values are "en-US", "en-GB", "de", or "de-AT".',
-            ).optional(),
-            value: z.string().describe("The UTF-8 encoded translated string.")
-              .optional(),
-          })).describe("Contains the translations for the string.").optional(),
+          translatedValues: z.array(z.unknown()).describe(
+            "Contains the translations for the string.",
+          ).optional(),
         }).optional(),
       }).optional(),
     }).optional(),
@@ -1192,28 +814,7 @@ const GlobalArgsSchema = z.object({
       cardBarcodeSectionDetails: z.object({
         firstBottomDetail: z.object({
           fieldSelector: z.object({
-            fields: z.array(z.object({
-              dateFormat: z.enum([
-                "DATE_FORMAT_UNSPECIFIED",
-                "DATE_TIME",
-                "dateTime",
-                "DATE_ONLY",
-                "dateOnly",
-                "TIME_ONLY",
-                "timeOnly",
-                "DATE_TIME_YEAR",
-                "dateTimeYear",
-                "DATE_YEAR",
-                "dateYear",
-                "YEAR_MONTH",
-                "YEAR_MONTH_DAY",
-              ]).describe(
-                "Only valid if the `fieldPath` references a date field. Chooses how the date field will be formatted and displayed in the UI.",
-              ).optional(),
-              fieldPath: z.string().describe(
-                'Path to the field being referenced, prefixed with "object" or "class" and separated with dots. For example, it may be the string "object.purchaseDetails.purchasePrice".',
-              ).optional(),
-            })).describe(
+            fields: z.unknown().describe(
               "If more than one reference is supplied, then the first one that references a non-empty field will be displayed.",
             ).optional(),
           }).describe("Custom field selector to use with field overrides.")
@@ -1221,28 +822,7 @@ const GlobalArgsSchema = z.object({
         }).optional(),
         firstTopDetail: z.object({
           fieldSelector: z.object({
-            fields: z.array(z.object({
-              dateFormat: z.enum([
-                "DATE_FORMAT_UNSPECIFIED",
-                "DATE_TIME",
-                "dateTime",
-                "DATE_ONLY",
-                "dateOnly",
-                "TIME_ONLY",
-                "timeOnly",
-                "DATE_TIME_YEAR",
-                "dateTimeYear",
-                "DATE_YEAR",
-                "dateYear",
-                "YEAR_MONTH",
-                "YEAR_MONTH_DAY",
-              ]).describe(
-                "Only valid if the `fieldPath` references a date field. Chooses how the date field will be formatted and displayed in the UI.",
-              ).optional(),
-              fieldPath: z.string().describe(
-                'Path to the field being referenced, prefixed with "object" or "class" and separated with dots. For example, it may be the string "object.purchaseDetails.purchasePrice".',
-              ).optional(),
-            })).describe(
+            fields: z.unknown().describe(
               "If more than one reference is supplied, then the first one that references a non-empty field will be displayed.",
             ).optional(),
           }).describe("Custom field selector to use with field overrides.")
@@ -1250,28 +830,7 @@ const GlobalArgsSchema = z.object({
         }).optional(),
         secondTopDetail: z.object({
           fieldSelector: z.object({
-            fields: z.array(z.object({
-              dateFormat: z.enum([
-                "DATE_FORMAT_UNSPECIFIED",
-                "DATE_TIME",
-                "dateTime",
-                "DATE_ONLY",
-                "dateOnly",
-                "TIME_ONLY",
-                "timeOnly",
-                "DATE_TIME_YEAR",
-                "dateTimeYear",
-                "DATE_YEAR",
-                "dateYear",
-                "YEAR_MONTH",
-                "YEAR_MONTH_DAY",
-              ]).describe(
-                "Only valid if the `fieldPath` references a date field. Chooses how the date field will be formatted and displayed in the UI.",
-              ).optional(),
-              fieldPath: z.string().describe(
-                'Path to the field being referenced, prefixed with "object" or "class" and separated with dots. For example, it may be the string "object.purchaseDetails.purchasePrice".',
-              ).optional(),
-            })).describe(
+            fields: z.unknown().describe(
               "If more than one reference is supplied, then the first one that references a non-empty field will be displayed.",
             ).optional(),
           }).describe("Custom field selector to use with field overrides.")
@@ -1280,473 +839,16 @@ const GlobalArgsSchema = z.object({
       }).optional(),
       cardTemplateOverride: z.object({
         cardRowTemplateInfos: z.array(z.object({
-          oneItem: z.object({
-            item: z.object({
-              firstValue: z.object({
-                fields: z.array(z.object({
-                  dateFormat: z.enum([
-                    "DATE_FORMAT_UNSPECIFIED",
-                    "DATE_TIME",
-                    "dateTime",
-                    "DATE_ONLY",
-                    "dateOnly",
-                    "TIME_ONLY",
-                    "timeOnly",
-                    "DATE_TIME_YEAR",
-                    "dateTimeYear",
-                    "DATE_YEAR",
-                    "dateYear",
-                    "YEAR_MONTH",
-                    "YEAR_MONTH_DAY",
-                  ]).describe(
-                    "Only valid if the `fieldPath` references a date field. Chooses how the date field will be formatted and displayed in the UI.",
-                  ).optional(),
-                  fieldPath: z.string().describe(
-                    'Path to the field being referenced, prefixed with "object" or "class" and separated with dots. For example, it may be the string "object.purchaseDetails.purchasePrice".',
-                  ).optional(),
-                })).describe(
-                  "If more than one reference is supplied, then the first one that references a non-empty field will be displayed.",
-                ).optional(),
-              }).describe("Custom field selector to use with field overrides.")
-                .optional(),
-              predefinedItem: z.enum([
-                "PREDEFINED_ITEM_UNSPECIFIED",
-                "FREQUENT_FLYER_PROGRAM_NAME_AND_NUMBER",
-                "frequentFlyerProgramNameAndNumber",
-                "FLIGHT_NUMBER_AND_OPERATING_FLIGHT_NUMBER",
-                "flightNumberAndOperatingFlightNumber",
-              ]).describe(
-                "A predefined item to display. Only one of `firstValue` or `predefinedItem` may be set.",
-              ).optional(),
-              secondValue: z.object({
-                fields: z.array(z.object({
-                  dateFormat: z.enum([
-                    "DATE_FORMAT_UNSPECIFIED",
-                    "DATE_TIME",
-                    "dateTime",
-                    "DATE_ONLY",
-                    "dateOnly",
-                    "TIME_ONLY",
-                    "timeOnly",
-                    "DATE_TIME_YEAR",
-                    "dateTimeYear",
-                    "DATE_YEAR",
-                    "dateYear",
-                    "YEAR_MONTH",
-                    "YEAR_MONTH_DAY",
-                  ]).describe(
-                    "Only valid if the `fieldPath` references a date field. Chooses how the date field will be formatted and displayed in the UI.",
-                  ).optional(),
-                  fieldPath: z.string().describe(
-                    'Path to the field being referenced, prefixed with "object" or "class" and separated with dots. For example, it may be the string "object.purchaseDetails.purchasePrice".',
-                  ).optional(),
-                })).describe(
-                  "If more than one reference is supplied, then the first one that references a non-empty field will be displayed.",
-                ).optional(),
-              }).describe("Custom field selector to use with field overrides.")
-                .optional(),
-            }).optional(),
-          }).optional(),
-          threeItems: z.object({
-            endItem: z.object({
-              firstValue: z.object({
-                fields: z.array(z.object({
-                  dateFormat: z.enum([
-                    "DATE_FORMAT_UNSPECIFIED",
-                    "DATE_TIME",
-                    "dateTime",
-                    "DATE_ONLY",
-                    "dateOnly",
-                    "TIME_ONLY",
-                    "timeOnly",
-                    "DATE_TIME_YEAR",
-                    "dateTimeYear",
-                    "DATE_YEAR",
-                    "dateYear",
-                    "YEAR_MONTH",
-                    "YEAR_MONTH_DAY",
-                  ]).describe(
-                    "Only valid if the `fieldPath` references a date field. Chooses how the date field will be formatted and displayed in the UI.",
-                  ).optional(),
-                  fieldPath: z.string().describe(
-                    'Path to the field being referenced, prefixed with "object" or "class" and separated with dots. For example, it may be the string "object.purchaseDetails.purchasePrice".',
-                  ).optional(),
-                })).describe(
-                  "If more than one reference is supplied, then the first one that references a non-empty field will be displayed.",
-                ).optional(),
-              }).describe("Custom field selector to use with field overrides.")
-                .optional(),
-              predefinedItem: z.enum([
-                "PREDEFINED_ITEM_UNSPECIFIED",
-                "FREQUENT_FLYER_PROGRAM_NAME_AND_NUMBER",
-                "frequentFlyerProgramNameAndNumber",
-                "FLIGHT_NUMBER_AND_OPERATING_FLIGHT_NUMBER",
-                "flightNumberAndOperatingFlightNumber",
-              ]).describe(
-                "A predefined item to display. Only one of `firstValue` or `predefinedItem` may be set.",
-              ).optional(),
-              secondValue: z.object({
-                fields: z.array(z.object({
-                  dateFormat: z.enum([
-                    "DATE_FORMAT_UNSPECIFIED",
-                    "DATE_TIME",
-                    "dateTime",
-                    "DATE_ONLY",
-                    "dateOnly",
-                    "TIME_ONLY",
-                    "timeOnly",
-                    "DATE_TIME_YEAR",
-                    "dateTimeYear",
-                    "DATE_YEAR",
-                    "dateYear",
-                    "YEAR_MONTH",
-                    "YEAR_MONTH_DAY",
-                  ]).describe(
-                    "Only valid if the `fieldPath` references a date field. Chooses how the date field will be formatted and displayed in the UI.",
-                  ).optional(),
-                  fieldPath: z.string().describe(
-                    'Path to the field being referenced, prefixed with "object" or "class" and separated with dots. For example, it may be the string "object.purchaseDetails.purchasePrice".',
-                  ).optional(),
-                })).describe(
-                  "If more than one reference is supplied, then the first one that references a non-empty field will be displayed.",
-                ).optional(),
-              }).describe("Custom field selector to use with field overrides.")
-                .optional(),
-            }).optional(),
-            middleItem: z.object({
-              firstValue: z.object({
-                fields: z.array(z.object({
-                  dateFormat: z.enum([
-                    "DATE_FORMAT_UNSPECIFIED",
-                    "DATE_TIME",
-                    "dateTime",
-                    "DATE_ONLY",
-                    "dateOnly",
-                    "TIME_ONLY",
-                    "timeOnly",
-                    "DATE_TIME_YEAR",
-                    "dateTimeYear",
-                    "DATE_YEAR",
-                    "dateYear",
-                    "YEAR_MONTH",
-                    "YEAR_MONTH_DAY",
-                  ]).describe(
-                    "Only valid if the `fieldPath` references a date field. Chooses how the date field will be formatted and displayed in the UI.",
-                  ).optional(),
-                  fieldPath: z.string().describe(
-                    'Path to the field being referenced, prefixed with "object" or "class" and separated with dots. For example, it may be the string "object.purchaseDetails.purchasePrice".',
-                  ).optional(),
-                })).describe(
-                  "If more than one reference is supplied, then the first one that references a non-empty field will be displayed.",
-                ).optional(),
-              }).describe("Custom field selector to use with field overrides.")
-                .optional(),
-              predefinedItem: z.enum([
-                "PREDEFINED_ITEM_UNSPECIFIED",
-                "FREQUENT_FLYER_PROGRAM_NAME_AND_NUMBER",
-                "frequentFlyerProgramNameAndNumber",
-                "FLIGHT_NUMBER_AND_OPERATING_FLIGHT_NUMBER",
-                "flightNumberAndOperatingFlightNumber",
-              ]).describe(
-                "A predefined item to display. Only one of `firstValue` or `predefinedItem` may be set.",
-              ).optional(),
-              secondValue: z.object({
-                fields: z.array(z.object({
-                  dateFormat: z.enum([
-                    "DATE_FORMAT_UNSPECIFIED",
-                    "DATE_TIME",
-                    "dateTime",
-                    "DATE_ONLY",
-                    "dateOnly",
-                    "TIME_ONLY",
-                    "timeOnly",
-                    "DATE_TIME_YEAR",
-                    "dateTimeYear",
-                    "DATE_YEAR",
-                    "dateYear",
-                    "YEAR_MONTH",
-                    "YEAR_MONTH_DAY",
-                  ]).describe(
-                    "Only valid if the `fieldPath` references a date field. Chooses how the date field will be formatted and displayed in the UI.",
-                  ).optional(),
-                  fieldPath: z.string().describe(
-                    'Path to the field being referenced, prefixed with "object" or "class" and separated with dots. For example, it may be the string "object.purchaseDetails.purchasePrice".',
-                  ).optional(),
-                })).describe(
-                  "If more than one reference is supplied, then the first one that references a non-empty field will be displayed.",
-                ).optional(),
-              }).describe("Custom field selector to use with field overrides.")
-                .optional(),
-            }).optional(),
-            startItem: z.object({
-              firstValue: z.object({
-                fields: z.array(z.object({
-                  dateFormat: z.enum([
-                    "DATE_FORMAT_UNSPECIFIED",
-                    "DATE_TIME",
-                    "dateTime",
-                    "DATE_ONLY",
-                    "dateOnly",
-                    "TIME_ONLY",
-                    "timeOnly",
-                    "DATE_TIME_YEAR",
-                    "dateTimeYear",
-                    "DATE_YEAR",
-                    "dateYear",
-                    "YEAR_MONTH",
-                    "YEAR_MONTH_DAY",
-                  ]).describe(
-                    "Only valid if the `fieldPath` references a date field. Chooses how the date field will be formatted and displayed in the UI.",
-                  ).optional(),
-                  fieldPath: z.string().describe(
-                    'Path to the field being referenced, prefixed with "object" or "class" and separated with dots. For example, it may be the string "object.purchaseDetails.purchasePrice".',
-                  ).optional(),
-                })).describe(
-                  "If more than one reference is supplied, then the first one that references a non-empty field will be displayed.",
-                ).optional(),
-              }).describe("Custom field selector to use with field overrides.")
-                .optional(),
-              predefinedItem: z.enum([
-                "PREDEFINED_ITEM_UNSPECIFIED",
-                "FREQUENT_FLYER_PROGRAM_NAME_AND_NUMBER",
-                "frequentFlyerProgramNameAndNumber",
-                "FLIGHT_NUMBER_AND_OPERATING_FLIGHT_NUMBER",
-                "flightNumberAndOperatingFlightNumber",
-              ]).describe(
-                "A predefined item to display. Only one of `firstValue` or `predefinedItem` may be set.",
-              ).optional(),
-              secondValue: z.object({
-                fields: z.array(z.object({
-                  dateFormat: z.enum([
-                    "DATE_FORMAT_UNSPECIFIED",
-                    "DATE_TIME",
-                    "dateTime",
-                    "DATE_ONLY",
-                    "dateOnly",
-                    "TIME_ONLY",
-                    "timeOnly",
-                    "DATE_TIME_YEAR",
-                    "dateTimeYear",
-                    "DATE_YEAR",
-                    "dateYear",
-                    "YEAR_MONTH",
-                    "YEAR_MONTH_DAY",
-                  ]).describe(
-                    "Only valid if the `fieldPath` references a date field. Chooses how the date field will be formatted and displayed in the UI.",
-                  ).optional(),
-                  fieldPath: z.string().describe(
-                    'Path to the field being referenced, prefixed with "object" or "class" and separated with dots. For example, it may be the string "object.purchaseDetails.purchasePrice".',
-                  ).optional(),
-                })).describe(
-                  "If more than one reference is supplied, then the first one that references a non-empty field will be displayed.",
-                ).optional(),
-              }).describe("Custom field selector to use with field overrides.")
-                .optional(),
-            }).optional(),
-          }).optional(),
-          twoItems: z.object({
-            endItem: z.object({
-              firstValue: z.object({
-                fields: z.array(z.object({
-                  dateFormat: z.enum([
-                    "DATE_FORMAT_UNSPECIFIED",
-                    "DATE_TIME",
-                    "dateTime",
-                    "DATE_ONLY",
-                    "dateOnly",
-                    "TIME_ONLY",
-                    "timeOnly",
-                    "DATE_TIME_YEAR",
-                    "dateTimeYear",
-                    "DATE_YEAR",
-                    "dateYear",
-                    "YEAR_MONTH",
-                    "YEAR_MONTH_DAY",
-                  ]).describe(
-                    "Only valid if the `fieldPath` references a date field. Chooses how the date field will be formatted and displayed in the UI.",
-                  ).optional(),
-                  fieldPath: z.string().describe(
-                    'Path to the field being referenced, prefixed with "object" or "class" and separated with dots. For example, it may be the string "object.purchaseDetails.purchasePrice".',
-                  ).optional(),
-                })).describe(
-                  "If more than one reference is supplied, then the first one that references a non-empty field will be displayed.",
-                ).optional(),
-              }).describe("Custom field selector to use with field overrides.")
-                .optional(),
-              predefinedItem: z.enum([
-                "PREDEFINED_ITEM_UNSPECIFIED",
-                "FREQUENT_FLYER_PROGRAM_NAME_AND_NUMBER",
-                "frequentFlyerProgramNameAndNumber",
-                "FLIGHT_NUMBER_AND_OPERATING_FLIGHT_NUMBER",
-                "flightNumberAndOperatingFlightNumber",
-              ]).describe(
-                "A predefined item to display. Only one of `firstValue` or `predefinedItem` may be set.",
-              ).optional(),
-              secondValue: z.object({
-                fields: z.array(z.object({
-                  dateFormat: z.enum([
-                    "DATE_FORMAT_UNSPECIFIED",
-                    "DATE_TIME",
-                    "dateTime",
-                    "DATE_ONLY",
-                    "dateOnly",
-                    "TIME_ONLY",
-                    "timeOnly",
-                    "DATE_TIME_YEAR",
-                    "dateTimeYear",
-                    "DATE_YEAR",
-                    "dateYear",
-                    "YEAR_MONTH",
-                    "YEAR_MONTH_DAY",
-                  ]).describe(
-                    "Only valid if the `fieldPath` references a date field. Chooses how the date field will be formatted and displayed in the UI.",
-                  ).optional(),
-                  fieldPath: z.string().describe(
-                    'Path to the field being referenced, prefixed with "object" or "class" and separated with dots. For example, it may be the string "object.purchaseDetails.purchasePrice".',
-                  ).optional(),
-                })).describe(
-                  "If more than one reference is supplied, then the first one that references a non-empty field will be displayed.",
-                ).optional(),
-              }).describe("Custom field selector to use with field overrides.")
-                .optional(),
-            }).optional(),
-            startItem: z.object({
-              firstValue: z.object({
-                fields: z.array(z.object({
-                  dateFormat: z.enum([
-                    "DATE_FORMAT_UNSPECIFIED",
-                    "DATE_TIME",
-                    "dateTime",
-                    "DATE_ONLY",
-                    "dateOnly",
-                    "TIME_ONLY",
-                    "timeOnly",
-                    "DATE_TIME_YEAR",
-                    "dateTimeYear",
-                    "DATE_YEAR",
-                    "dateYear",
-                    "YEAR_MONTH",
-                    "YEAR_MONTH_DAY",
-                  ]).describe(
-                    "Only valid if the `fieldPath` references a date field. Chooses how the date field will be formatted and displayed in the UI.",
-                  ).optional(),
-                  fieldPath: z.string().describe(
-                    'Path to the field being referenced, prefixed with "object" or "class" and separated with dots. For example, it may be the string "object.purchaseDetails.purchasePrice".',
-                  ).optional(),
-                })).describe(
-                  "If more than one reference is supplied, then the first one that references a non-empty field will be displayed.",
-                ).optional(),
-              }).describe("Custom field selector to use with field overrides.")
-                .optional(),
-              predefinedItem: z.enum([
-                "PREDEFINED_ITEM_UNSPECIFIED",
-                "FREQUENT_FLYER_PROGRAM_NAME_AND_NUMBER",
-                "frequentFlyerProgramNameAndNumber",
-                "FLIGHT_NUMBER_AND_OPERATING_FLIGHT_NUMBER",
-                "flightNumberAndOperatingFlightNumber",
-              ]).describe(
-                "A predefined item to display. Only one of `firstValue` or `predefinedItem` may be set.",
-              ).optional(),
-              secondValue: z.object({
-                fields: z.array(z.object({
-                  dateFormat: z.enum([
-                    "DATE_FORMAT_UNSPECIFIED",
-                    "DATE_TIME",
-                    "dateTime",
-                    "DATE_ONLY",
-                    "dateOnly",
-                    "TIME_ONLY",
-                    "timeOnly",
-                    "DATE_TIME_YEAR",
-                    "dateTimeYear",
-                    "DATE_YEAR",
-                    "dateYear",
-                    "YEAR_MONTH",
-                    "YEAR_MONTH_DAY",
-                  ]).describe(
-                    "Only valid if the `fieldPath` references a date field. Chooses how the date field will be formatted and displayed in the UI.",
-                  ).optional(),
-                  fieldPath: z.string().describe(
-                    'Path to the field being referenced, prefixed with "object" or "class" and separated with dots. For example, it may be the string "object.purchaseDetails.purchasePrice".',
-                  ).optional(),
-                })).describe(
-                  "If more than one reference is supplied, then the first one that references a non-empty field will be displayed.",
-                ).optional(),
-              }).describe("Custom field selector to use with field overrides.")
-                .optional(),
-            }).optional(),
-          }).optional(),
+          oneItem: z.unknown().optional(),
+          threeItems: z.unknown().optional(),
+          twoItems: z.unknown().optional(),
         })).describe(
           "Template information for rows in the card view. At most three rows are allowed to be specified.",
         ).optional(),
       }).optional(),
       detailsTemplateOverride: z.object({
         detailsItemInfos: z.array(z.object({
-          item: z.object({
-            firstValue: z.object({
-              fields: z.array(z.object({
-                dateFormat: z.enum([
-                  "DATE_FORMAT_UNSPECIFIED",
-                  "DATE_TIME",
-                  "dateTime",
-                  "DATE_ONLY",
-                  "dateOnly",
-                  "TIME_ONLY",
-                  "timeOnly",
-                  "DATE_TIME_YEAR",
-                  "dateTimeYear",
-                  "DATE_YEAR",
-                  "dateYear",
-                  "YEAR_MONTH",
-                  "YEAR_MONTH_DAY",
-                ]).describe(
-                  "Only valid if the `fieldPath` references a date field. Chooses how the date field will be formatted and displayed in the UI.",
-                ).optional(),
-                fieldPath: z.string().describe(
-                  'Path to the field being referenced, prefixed with "object" or "class" and separated with dots. For example, it may be the string "object.purchaseDetails.purchasePrice".',
-                ).optional(),
-              })).describe(
-                "If more than one reference is supplied, then the first one that references a non-empty field will be displayed.",
-              ).optional(),
-            }).describe("Custom field selector to use with field overrides.")
-              .optional(),
-            predefinedItem: z.enum([
-              "PREDEFINED_ITEM_UNSPECIFIED",
-              "FREQUENT_FLYER_PROGRAM_NAME_AND_NUMBER",
-              "frequentFlyerProgramNameAndNumber",
-              "FLIGHT_NUMBER_AND_OPERATING_FLIGHT_NUMBER",
-              "flightNumberAndOperatingFlightNumber",
-            ]).describe(
-              "A predefined item to display. Only one of `firstValue` or `predefinedItem` may be set.",
-            ).optional(),
-            secondValue: z.object({
-              fields: z.array(z.object({
-                dateFormat: z.enum([
-                  "DATE_FORMAT_UNSPECIFIED",
-                  "DATE_TIME",
-                  "dateTime",
-                  "DATE_ONLY",
-                  "dateOnly",
-                  "TIME_ONLY",
-                  "timeOnly",
-                  "DATE_TIME_YEAR",
-                  "dateTimeYear",
-                  "DATE_YEAR",
-                  "dateYear",
-                  "YEAR_MONTH",
-                  "YEAR_MONTH_DAY",
-                ]).describe(
-                  "Only valid if the `fieldPath` references a date field. Chooses how the date field will be formatted and displayed in the UI.",
-                ).optional(),
-                fieldPath: z.string().describe(
-                  'Path to the field being referenced, prefixed with "object" or "class" and separated with dots. For example, it may be the string "object.purchaseDetails.purchasePrice".',
-                ).optional(),
-              })).describe(
-                "If more than one reference is supplied, then the first one that references a non-empty field will be displayed.",
-              ).optional(),
-            }).describe("Custom field selector to use with field overrides.")
-              .optional(),
-          }).optional(),
+          item: z.unknown().optional(),
         })).describe(
           'Information for the "nth" item displayed in the details list.',
         ).optional(),
@@ -1754,28 +856,7 @@ const GlobalArgsSchema = z.object({
       listTemplateOverride: z.object({
         firstRowOption: z.object({
           fieldOption: z.object({
-            fields: z.array(z.object({
-              dateFormat: z.enum([
-                "DATE_FORMAT_UNSPECIFIED",
-                "DATE_TIME",
-                "dateTime",
-                "DATE_ONLY",
-                "dateOnly",
-                "TIME_ONLY",
-                "timeOnly",
-                "DATE_TIME_YEAR",
-                "dateTimeYear",
-                "DATE_YEAR",
-                "dateYear",
-                "YEAR_MONTH",
-                "YEAR_MONTH_DAY",
-              ]).describe(
-                "Only valid if the `fieldPath` references a date field. Chooses how the date field will be formatted and displayed in the UI.",
-              ).optional(),
-              fieldPath: z.string().describe(
-                'Path to the field being referenced, prefixed with "object" or "class" and separated with dots. For example, it may be the string "object.purchaseDetails.purchasePrice".',
-              ).optional(),
-            })).describe(
+            fields: z.unknown().describe(
               "If more than one reference is supplied, then the first one that references a non-empty field will be displayed.",
             ).optional(),
           }).describe("Custom field selector to use with field overrides.")
@@ -1791,55 +872,13 @@ const GlobalArgsSchema = z.object({
           ]).optional(),
         }).optional(),
         secondRowOption: z.object({
-          fields: z.array(z.object({
-            dateFormat: z.enum([
-              "DATE_FORMAT_UNSPECIFIED",
-              "DATE_TIME",
-              "dateTime",
-              "DATE_ONLY",
-              "dateOnly",
-              "TIME_ONLY",
-              "timeOnly",
-              "DATE_TIME_YEAR",
-              "dateTimeYear",
-              "DATE_YEAR",
-              "dateYear",
-              "YEAR_MONTH",
-              "YEAR_MONTH_DAY",
-            ]).describe(
-              "Only valid if the `fieldPath` references a date field. Chooses how the date field will be formatted and displayed in the UI.",
-            ).optional(),
-            fieldPath: z.string().describe(
-              'Path to the field being referenced, prefixed with "object" or "class" and separated with dots. For example, it may be the string "object.purchaseDetails.purchasePrice".',
-            ).optional(),
-          })).describe(
+          fields: z.array(z.unknown()).describe(
             "If more than one reference is supplied, then the first one that references a non-empty field will be displayed.",
           ).optional(),
         }).describe("Custom field selector to use with field overrides.")
           .optional(),
         thirdRowOption: z.object({
-          fields: z.array(z.object({
-            dateFormat: z.enum([
-              "DATE_FORMAT_UNSPECIFIED",
-              "DATE_TIME",
-              "dateTime",
-              "DATE_ONLY",
-              "dateOnly",
-              "TIME_ONLY",
-              "timeOnly",
-              "DATE_TIME_YEAR",
-              "dateTimeYear",
-              "DATE_YEAR",
-              "dateYear",
-              "YEAR_MONTH",
-              "YEAR_MONTH_DAY",
-            ]).describe(
-              "Only valid if the `fieldPath` references a date field. Chooses how the date field will be formatted and displayed in the UI.",
-            ).optional(),
-            fieldPath: z.string().describe(
-              'Path to the field being referenced, prefixed with "object" or "class" and separated with dots. For example, it may be the string "object.purchaseDetails.purchasePrice".',
-            ).optional(),
-          })).describe(
+          fields: z.array(z.unknown()).describe(
             "If more than one reference is supplied, then the first one that references a non-empty field will be displayed.",
           ).optional(),
         }).describe("Custom field selector to use with field overrides.")
@@ -2003,13 +1042,13 @@ const GlobalArgsSchema = z.object({
           'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#localizedString"`.',
         ).optional(),
         translatedValues: z.array(z.object({
-          kind: z.string().describe(
+          kind: z.unknown().describe(
             'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#translatedString"`.',
           ).optional(),
-          language: z.string().describe(
+          language: z.unknown().describe(
             'Represents the BCP 47 language tag. Example values are "en-US", "en-GB", "de", or "de-AT".',
           ).optional(),
-          value: z.string().describe("The UTF-8 encoded translated string.")
+          value: z.unknown().describe("The UTF-8 encoded translated string.")
             .optional(),
         })).describe("Contains the translations for the string.").optional(),
       }).optional(),
@@ -2118,13 +1157,13 @@ const GlobalArgsSchema = z.object({
           'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#localizedString"`.',
         ).optional(),
         translatedValues: z.array(z.object({
-          kind: z.string().describe(
+          kind: z.unknown().describe(
             'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#translatedString"`.',
           ).optional(),
-          language: z.string().describe(
+          language: z.unknown().describe(
             'Represents the BCP 47 language tag. Example values are "en-US", "en-GB", "de", or "de-AT".',
           ).optional(),
-          value: z.string().describe("The UTF-8 encoded translated string.")
+          value: z.unknown().describe("The UTF-8 encoded translated string.")
             .optional(),
         })).describe("Contains the translations for the string.").optional(),
       }).optional(),
@@ -2140,28 +1179,21 @@ const GlobalArgsSchema = z.object({
         ).optional(),
         localizedDescription: z.object({
           defaultValue: z.object({
-            kind: z.string().describe(
+            kind: z.unknown().describe(
               'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#translatedString"`.',
             ).optional(),
-            language: z.string().describe(
+            language: z.unknown().describe(
               'Represents the BCP 47 language tag. Example values are "en-US", "en-GB", "de", or "de-AT".',
             ).optional(),
-            value: z.string().describe("The UTF-8 encoded translated string.")
+            value: z.unknown().describe("The UTF-8 encoded translated string.")
               .optional(),
           }).optional(),
           kind: z.string().describe(
             'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#localizedString"`.',
           ).optional(),
-          translatedValues: z.array(z.object({
-            kind: z.string().describe(
-              'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#translatedString"`.',
-            ).optional(),
-            language: z.string().describe(
-              'Represents the BCP 47 language tag. Example values are "en-US", "en-GB", "de", or "de-AT".',
-            ).optional(),
-            value: z.string().describe("The UTF-8 encoded translated string.")
-              .optional(),
-          })).describe("Contains the translations for the string.").optional(),
+          translatedValues: z.array(z.unknown()).describe(
+            "Contains the translations for the string.",
+          ).optional(),
         }).optional(),
         uri: z.string().describe(
           "The location of the image. URIs must have a scheme.",
@@ -2196,13 +1228,13 @@ const GlobalArgsSchema = z.object({
           'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#localizedString"`.',
         ).optional(),
         translatedValues: z.array(z.object({
-          kind: z.string().describe(
+          kind: z.unknown().describe(
             'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#translatedString"`.',
           ).optional(),
-          language: z.string().describe(
+          language: z.unknown().describe(
             'Represents the BCP 47 language tag. Example values are "en-US", "en-GB", "de", or "de-AT".',
           ).optional(),
-          value: z.string().describe("The UTF-8 encoded translated string.")
+          value: z.unknown().describe("The UTF-8 encoded translated string.")
             .optional(),
         })).describe("Contains the translations for the string.").optional(),
       }).optional(),
@@ -2219,29 +1251,13 @@ const GlobalArgsSchema = z.object({
       ).optional(),
       mainImage: z.object({
         contentDescription: z.object({
-          defaultValue: z.object({
-            kind: z.string().describe(
-              'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#translatedString"`.',
-            ).optional(),
-            language: z.string().describe(
-              'Represents the BCP 47 language tag. Example values are "en-US", "en-GB", "de", or "de-AT".',
-            ).optional(),
-            value: z.string().describe("The UTF-8 encoded translated string.")
-              .optional(),
-          }).optional(),
-          kind: z.string().describe(
+          defaultValue: z.unknown().optional(),
+          kind: z.unknown().describe(
             'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#localizedString"`.',
           ).optional(),
-          translatedValues: z.array(z.object({
-            kind: z.string().describe(
-              'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#translatedString"`.',
-            ).optional(),
-            language: z.string().describe(
-              'Represents the BCP 47 language tag. Example values are "en-US", "en-GB", "de", or "de-AT".',
-            ).optional(),
-            value: z.string().describe("The UTF-8 encoded translated string.")
-              .optional(),
-          })).describe("Contains the translations for the string.").optional(),
+          translatedValues: z.unknown().describe(
+            "Contains the translations for the string.",
+          ).optional(),
         }).optional(),
         kind: z.string().describe(
           'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#image"`.',
@@ -2250,36 +1266,11 @@ const GlobalArgsSchema = z.object({
           "An ID for an already uploaded private image. Either this or source_uri should be set. Requests setting both or neither will be rejected. Please contact support to use private images.",
         ).optional(),
         sourceUri: z.object({
-          description: z.string().describe(
+          description: z.unknown().describe(
             "Additional information about the image, which is unused and retained only for backward compatibility.",
           ).optional(),
-          localizedDescription: z.object({
-            defaultValue: z.object({
-              kind: z.string().describe(
-                'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#translatedString"`.',
-              ).optional(),
-              language: z.string().describe(
-                'Represents the BCP 47 language tag. Example values are "en-US", "en-GB", "de", or "de-AT".',
-              ).optional(),
-              value: z.string().describe("The UTF-8 encoded translated string.")
-                .optional(),
-            }).optional(),
-            kind: z.string().describe(
-              'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#localizedString"`.',
-            ).optional(),
-            translatedValues: z.array(z.object({
-              kind: z.string().describe(
-                'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#translatedString"`.',
-              ).optional(),
-              language: z.string().describe(
-                'Represents the BCP 47 language tag. Example values are "en-US", "en-GB", "de", or "de-AT".',
-              ).optional(),
-              value: z.string().describe("The UTF-8 encoded translated string.")
-                .optional(),
-            })).describe("Contains the translations for the string.")
-              .optional(),
-          }).optional(),
-          uri: z.string().describe(
+          localizedDescription: z.unknown().optional(),
+          uri: z.unknown().describe(
             "The location of the image. URIs must have a scheme.",
           ).optional(),
         }).optional(),
@@ -2289,66 +1280,7 @@ const GlobalArgsSchema = z.object({
     ).optional(),
     infoModuleData: z.object({
       labelValueRows: z.array(z.object({
-        columns: z.array(z.object({
-          label: z.string().describe(
-            "The label for a specific row and column. Recommended maximum is 15 characters for a two-column layout and 30 characters for a one-column layout.",
-          ).optional(),
-          localizedLabel: z.object({
-            defaultValue: z.object({
-              kind: z.string().describe(
-                'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#translatedString"`.',
-              ).optional(),
-              language: z.string().describe(
-                'Represents the BCP 47 language tag. Example values are "en-US", "en-GB", "de", or "de-AT".',
-              ).optional(),
-              value: z.string().describe("The UTF-8 encoded translated string.")
-                .optional(),
-            }).optional(),
-            kind: z.string().describe(
-              'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#localizedString"`.',
-            ).optional(),
-            translatedValues: z.array(z.object({
-              kind: z.string().describe(
-                'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#translatedString"`.',
-              ).optional(),
-              language: z.string().describe(
-                'Represents the BCP 47 language tag. Example values are "en-US", "en-GB", "de", or "de-AT".',
-              ).optional(),
-              value: z.string().describe("The UTF-8 encoded translated string.")
-                .optional(),
-            })).describe("Contains the translations for the string.")
-              .optional(),
-          }).optional(),
-          localizedValue: z.object({
-            defaultValue: z.object({
-              kind: z.string().describe(
-                'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#translatedString"`.',
-              ).optional(),
-              language: z.string().describe(
-                'Represents the BCP 47 language tag. Example values are "en-US", "en-GB", "de", or "de-AT".',
-              ).optional(),
-              value: z.string().describe("The UTF-8 encoded translated string.")
-                .optional(),
-            }).optional(),
-            kind: z.string().describe(
-              'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#localizedString"`.',
-            ).optional(),
-            translatedValues: z.array(z.object({
-              kind: z.string().describe(
-                'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#translatedString"`.',
-              ).optional(),
-              language: z.string().describe(
-                'Represents the BCP 47 language tag. Example values are "en-US", "en-GB", "de", or "de-AT".',
-              ).optional(),
-              value: z.string().describe("The UTF-8 encoded translated string.")
-                .optional(),
-            })).describe("Contains the translations for the string.")
-              .optional(),
-          }).optional(),
-          value: z.string().describe(
-            "The value for a specific row and column. Recommended maximum is 15 characters for a two-column layout and 30 characters for a one-column layout.",
-          ).optional(),
-        })).describe(
+        columns: z.array(z.unknown()).describe(
           "A list of labels and values. These will be displayed in a singular column, one after the other, not in multiple columns, despite the field name.",
         ).optional(),
       })).describe(
@@ -2374,29 +1306,13 @@ const GlobalArgsSchema = z.object({
           'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#uri"`.',
         ).optional(),
         localizedDescription: z.object({
-          defaultValue: z.object({
-            kind: z.string().describe(
-              'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#translatedString"`.',
-            ).optional(),
-            language: z.string().describe(
-              'Represents the BCP 47 language tag. Example values are "en-US", "en-GB", "de", or "de-AT".',
-            ).optional(),
-            value: z.string().describe("The UTF-8 encoded translated string.")
-              .optional(),
-          }).optional(),
-          kind: z.string().describe(
+          defaultValue: z.unknown().optional(),
+          kind: z.unknown().describe(
             'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#localizedString"`.',
           ).optional(),
-          translatedValues: z.array(z.object({
-            kind: z.string().describe(
-              'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#translatedString"`.',
-            ).optional(),
-            language: z.string().describe(
-              'Represents the BCP 47 language tag. Example values are "en-US", "en-GB", "de", or "de-AT".',
-            ).optional(),
-            value: z.string().describe("The UTF-8 encoded translated string.")
-              .optional(),
-          })).describe("Contains the translations for the string.").optional(),
+          translatedValues: z.unknown().describe(
+            "Contains the translations for the string.",
+          ).optional(),
         }).optional(),
         uri: z.string().describe(
           "The location of a web page, image, or other resource. URIs in the `LinksModuleData` module can have different prefixes indicating the type of URI (a link to a web page, a link to a map, a telephone number, or an email address). URIs must have a scheme.",
@@ -2457,13 +1373,13 @@ const GlobalArgsSchema = z.object({
           'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#localizedString"`.',
         ).optional(),
         translatedValues: z.array(z.object({
-          kind: z.string().describe(
+          kind: z.unknown().describe(
             'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#translatedString"`.',
           ).optional(),
-          language: z.string().describe(
+          language: z.unknown().describe(
             'Represents the BCP 47 language tag. Example values are "en-US", "en-GB", "de", or "de-AT".',
           ).optional(),
-          value: z.string().describe("The UTF-8 encoded translated string.")
+          value: z.unknown().describe("The UTF-8 encoded translated string.")
             .optional(),
         })).describe("Contains the translations for the string.").optional(),
       }).optional(),
@@ -2479,28 +1395,21 @@ const GlobalArgsSchema = z.object({
         ).optional(),
         localizedDescription: z.object({
           defaultValue: z.object({
-            kind: z.string().describe(
+            kind: z.unknown().describe(
               'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#translatedString"`.',
             ).optional(),
-            language: z.string().describe(
+            language: z.unknown().describe(
               'Represents the BCP 47 language tag. Example values are "en-US", "en-GB", "de", or "de-AT".',
             ).optional(),
-            value: z.string().describe("The UTF-8 encoded translated string.")
+            value: z.unknown().describe("The UTF-8 encoded translated string.")
               .optional(),
           }).optional(),
           kind: z.string().describe(
             'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#localizedString"`.',
           ).optional(),
-          translatedValues: z.array(z.object({
-            kind: z.string().describe(
-              'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#translatedString"`.',
-            ).optional(),
-            language: z.string().describe(
-              'Represents the BCP 47 language tag. Example values are "en-US", "en-GB", "de", or "de-AT".',
-            ).optional(),
-            value: z.string().describe("The UTF-8 encoded translated string.")
-              .optional(),
-          })).describe("Contains the translations for the string.").optional(),
+          translatedValues: z.array(z.unknown()).describe(
+            "Contains the translations for the string.",
+          ).optional(),
         }).optional(),
         uri: z.string().describe(
           "The location of the image. URIs must have a scheme.",
@@ -2521,7 +1430,7 @@ const GlobalArgsSchema = z.object({
       body: z.string().describe("The message body.").optional(),
       displayInterval: z.object({
         end: z.object({
-          date: z.string().describe(
+          date: z.unknown().describe(
             "An ISO 8601 extended format date/time. Offset may or may not be required (refer to the parent field's documentation). Time may be specified up to nanosecond precision. Offsets may be specified with seconds precision (even though offset seconds is not part of ISO 8601). For example: `1985-04-12T23:20:50.52Z` would be 20 minutes and 50.52 seconds after the 23rd hour of April 12th, 1985 in UTC. `1985-04-12T19:20:50.52-04:00` would be 20 minutes and 50.52 seconds after the 19th hour of April 12th, 1985, 4 hours before UTC (same instant in time as the above example). If the date/time is intended for a physical location in New York, this would be the equivalent of Eastern Daylight Time (EDT). Remember that offset varies in regions that observe Daylight Saving Time (or Summer Time), depending on the time of the year. `1985-04-12T19:20:50.52` would be 20 minutes and 50.52 seconds after the 19th hour of April 12th, 1985 with no offset information. Providing an offset makes this an absolute instant in time around the world. The date/time will be adjusted based on the user's time zone. For example, a time of `2018-06-19T18:30:00-04:00` will be 18:30:00 for a user in New York and 15:30:00 for a user in Los Angeles. Omitting the offset makes this a local date/time, representing several instants in time around the world. The date/time will always be in the user's current time zone. For example, a time of `2018-06-19T18:30:00` will be 18:30:00 for a user in New York and also 18:30:00 for a user in Los Angeles. This is useful when the same local date/time should apply to many physical locations across several time zones.",
           ).optional(),
         }).optional(),
@@ -2529,7 +1438,7 @@ const GlobalArgsSchema = z.object({
           'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#timeInterval"`.',
         ).optional(),
         start: z.object({
-          date: z.string().describe(
+          date: z.unknown().describe(
             "An ISO 8601 extended format date/time. Offset may or may not be required (refer to the parent field's documentation). Time may be specified up to nanosecond precision. Offsets may be specified with seconds precision (even though offset seconds is not part of ISO 8601). For example: `1985-04-12T23:20:50.52Z` would be 20 minutes and 50.52 seconds after the 23rd hour of April 12th, 1985 in UTC. `1985-04-12T19:20:50.52-04:00` would be 20 minutes and 50.52 seconds after the 19th hour of April 12th, 1985, 4 hours before UTC (same instant in time as the above example). If the date/time is intended for a physical location in New York, this would be the equivalent of Eastern Daylight Time (EDT). Remember that offset varies in regions that observe Daylight Saving Time (or Summer Time), depending on the time of the year. `1985-04-12T19:20:50.52` would be 20 minutes and 50.52 seconds after the 19th hour of April 12th, 1985 with no offset information. Providing an offset makes this an absolute instant in time around the world. The date/time will be adjusted based on the user's time zone. For example, a time of `2018-06-19T18:30:00-04:00` will be 18:30:00 for a user in New York and 15:30:00 for a user in Los Angeles. Omitting the offset makes this a local date/time, representing several instants in time around the world. The date/time will always be in the user's current time zone. For example, a time of `2018-06-19T18:30:00` will be 18:30:00 for a user in New York and also 18:30:00 for a user in Los Angeles. This is useful when the same local date/time should apply to many physical locations across several time zones.",
           ).optional(),
         }).optional(),
@@ -2543,53 +1452,39 @@ const GlobalArgsSchema = z.object({
       ).optional(),
       localizedBody: z.object({
         defaultValue: z.object({
-          kind: z.string().describe(
+          kind: z.unknown().describe(
             'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#translatedString"`.',
           ).optional(),
-          language: z.string().describe(
+          language: z.unknown().describe(
             'Represents the BCP 47 language tag. Example values are "en-US", "en-GB", "de", or "de-AT".',
           ).optional(),
-          value: z.string().describe("The UTF-8 encoded translated string.")
+          value: z.unknown().describe("The UTF-8 encoded translated string.")
             .optional(),
         }).optional(),
         kind: z.string().describe(
           'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#localizedString"`.',
         ).optional(),
-        translatedValues: z.array(z.object({
-          kind: z.string().describe(
-            'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#translatedString"`.',
-          ).optional(),
-          language: z.string().describe(
-            'Represents the BCP 47 language tag. Example values are "en-US", "en-GB", "de", or "de-AT".',
-          ).optional(),
-          value: z.string().describe("The UTF-8 encoded translated string.")
-            .optional(),
-        })).describe("Contains the translations for the string.").optional(),
+        translatedValues: z.array(z.unknown()).describe(
+          "Contains the translations for the string.",
+        ).optional(),
       }).optional(),
       localizedHeader: z.object({
         defaultValue: z.object({
-          kind: z.string().describe(
+          kind: z.unknown().describe(
             'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#translatedString"`.',
           ).optional(),
-          language: z.string().describe(
+          language: z.unknown().describe(
             'Represents the BCP 47 language tag. Example values are "en-US", "en-GB", "de", or "de-AT".',
           ).optional(),
-          value: z.string().describe("The UTF-8 encoded translated string.")
+          value: z.unknown().describe("The UTF-8 encoded translated string.")
             .optional(),
         }).optional(),
         kind: z.string().describe(
           'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#localizedString"`.',
         ).optional(),
-        translatedValues: z.array(z.object({
-          kind: z.string().describe(
-            'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#translatedString"`.',
-          ).optional(),
-          language: z.string().describe(
-            'Represents the BCP 47 language tag. Example values are "en-US", "en-GB", "de", or "de-AT".',
-          ).optional(),
-          value: z.string().describe("The UTF-8 encoded translated string.")
-            .optional(),
-        })).describe("Contains the translations for the string.").optional(),
+        translatedValues: z.array(z.unknown()).describe(
+          "Contains the translations for the string.",
+        ).optional(),
       }).optional(),
       messageType: z.enum([
         "MESSAGE_TYPE_UNSPECIFIED",
@@ -2672,53 +1567,39 @@ const GlobalArgsSchema = z.object({
       ).optional(),
       localizedBody: z.object({
         defaultValue: z.object({
-          kind: z.string().describe(
+          kind: z.unknown().describe(
             'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#translatedString"`.',
           ).optional(),
-          language: z.string().describe(
+          language: z.unknown().describe(
             'Represents the BCP 47 language tag. Example values are "en-US", "en-GB", "de", or "de-AT".',
           ).optional(),
-          value: z.string().describe("The UTF-8 encoded translated string.")
+          value: z.unknown().describe("The UTF-8 encoded translated string.")
             .optional(),
         }).optional(),
         kind: z.string().describe(
           'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#localizedString"`.',
         ).optional(),
-        translatedValues: z.array(z.object({
-          kind: z.string().describe(
-            'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#translatedString"`.',
-          ).optional(),
-          language: z.string().describe(
-            'Represents the BCP 47 language tag. Example values are "en-US", "en-GB", "de", or "de-AT".',
-          ).optional(),
-          value: z.string().describe("The UTF-8 encoded translated string.")
-            .optional(),
-        })).describe("Contains the translations for the string.").optional(),
+        translatedValues: z.array(z.unknown()).describe(
+          "Contains the translations for the string.",
+        ).optional(),
       }).optional(),
       localizedHeader: z.object({
         defaultValue: z.object({
-          kind: z.string().describe(
+          kind: z.unknown().describe(
             'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#translatedString"`.',
           ).optional(),
-          language: z.string().describe(
+          language: z.unknown().describe(
             'Represents the BCP 47 language tag. Example values are "en-US", "en-GB", "de", or "de-AT".',
           ).optional(),
-          value: z.string().describe("The UTF-8 encoded translated string.")
+          value: z.unknown().describe("The UTF-8 encoded translated string.")
             .optional(),
         }).optional(),
         kind: z.string().describe(
           'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#localizedString"`.',
         ).optional(),
-        translatedValues: z.array(z.object({
-          kind: z.string().describe(
-            'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#translatedString"`.',
-          ).optional(),
-          language: z.string().describe(
-            'Represents the BCP 47 language tag. Example values are "en-US", "en-GB", "de", or "de-AT".',
-          ).optional(),
-          value: z.string().describe("The UTF-8 encoded translated string.")
-            .optional(),
-        })).describe("Contains the translations for the string.").optional(),
+        translatedValues: z.array(z.unknown()).describe(
+          "Contains the translations for the string.",
+        ).optional(),
       }).optional(),
     })).describe(
       "Text module data. If text module data is also defined on the class, both will be displayed. The maximum number of these fields displayed is 10 from the object and 10 from the class.",
@@ -2726,79 +1607,49 @@ const GlobalArgsSchema = z.object({
     valueAddedModuleData: z.array(z.object({
       body: z.object({
         defaultValue: z.object({
-          kind: z.string().describe(
+          kind: z.unknown().describe(
             'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#translatedString"`.',
           ).optional(),
-          language: z.string().describe(
+          language: z.unknown().describe(
             'Represents the BCP 47 language tag. Example values are "en-US", "en-GB", "de", or "de-AT".',
           ).optional(),
-          value: z.string().describe("The UTF-8 encoded translated string.")
+          value: z.unknown().describe("The UTF-8 encoded translated string.")
             .optional(),
         }).optional(),
         kind: z.string().describe(
           'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#localizedString"`.',
         ).optional(),
-        translatedValues: z.array(z.object({
-          kind: z.string().describe(
-            'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#translatedString"`.',
-          ).optional(),
-          language: z.string().describe(
-            'Represents the BCP 47 language tag. Example values are "en-US", "en-GB", "de", or "de-AT".',
-          ).optional(),
-          value: z.string().describe("The UTF-8 encoded translated string.")
-            .optional(),
-        })).describe("Contains the translations for the string.").optional(),
+        translatedValues: z.array(z.unknown()).describe(
+          "Contains the translations for the string.",
+        ).optional(),
       }).optional(),
       header: z.object({
         defaultValue: z.object({
-          kind: z.string().describe(
+          kind: z.unknown().describe(
             'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#translatedString"`.',
           ).optional(),
-          language: z.string().describe(
+          language: z.unknown().describe(
             'Represents the BCP 47 language tag. Example values are "en-US", "en-GB", "de", or "de-AT".',
           ).optional(),
-          value: z.string().describe("The UTF-8 encoded translated string.")
+          value: z.unknown().describe("The UTF-8 encoded translated string.")
             .optional(),
         }).optional(),
         kind: z.string().describe(
           'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#localizedString"`.',
         ).optional(),
-        translatedValues: z.array(z.object({
-          kind: z.string().describe(
-            'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#translatedString"`.',
-          ).optional(),
-          language: z.string().describe(
-            'Represents the BCP 47 language tag. Example values are "en-US", "en-GB", "de", or "de-AT".',
-          ).optional(),
-          value: z.string().describe("The UTF-8 encoded translated string.")
-            .optional(),
-        })).describe("Contains the translations for the string.").optional(),
+        translatedValues: z.array(z.unknown()).describe(
+          "Contains the translations for the string.",
+        ).optional(),
       }).optional(),
       image: z.object({
         contentDescription: z.object({
-          defaultValue: z.object({
-            kind: z.string().describe(
-              'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#translatedString"`.',
-            ).optional(),
-            language: z.string().describe(
-              'Represents the BCP 47 language tag. Example values are "en-US", "en-GB", "de", or "de-AT".',
-            ).optional(),
-            value: z.string().describe("The UTF-8 encoded translated string.")
-              .optional(),
-          }).optional(),
-          kind: z.string().describe(
+          defaultValue: z.unknown().optional(),
+          kind: z.unknown().describe(
             'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#localizedString"`.',
           ).optional(),
-          translatedValues: z.array(z.object({
-            kind: z.string().describe(
-              'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#translatedString"`.',
-            ).optional(),
-            language: z.string().describe(
-              'Represents the BCP 47 language tag. Example values are "en-US", "en-GB", "de", or "de-AT".',
-            ).optional(),
-            value: z.string().describe("The UTF-8 encoded translated string.")
-              .optional(),
-          })).describe("Contains the translations for the string.").optional(),
+          translatedValues: z.unknown().describe(
+            "Contains the translations for the string.",
+          ).optional(),
         }).optional(),
         kind: z.string().describe(
           'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#image"`.',
@@ -2807,36 +1658,11 @@ const GlobalArgsSchema = z.object({
           "An ID for an already uploaded private image. Either this or source_uri should be set. Requests setting both or neither will be rejected. Please contact support to use private images.",
         ).optional(),
         sourceUri: z.object({
-          description: z.string().describe(
+          description: z.unknown().describe(
             "Additional information about the image, which is unused and retained only for backward compatibility.",
           ).optional(),
-          localizedDescription: z.object({
-            defaultValue: z.object({
-              kind: z.string().describe(
-                'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#translatedString"`.',
-              ).optional(),
-              language: z.string().describe(
-                'Represents the BCP 47 language tag. Example values are "en-US", "en-GB", "de", or "de-AT".',
-              ).optional(),
-              value: z.string().describe("The UTF-8 encoded translated string.")
-                .optional(),
-            }).optional(),
-            kind: z.string().describe(
-              'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#localizedString"`.',
-            ).optional(),
-            translatedValues: z.array(z.object({
-              kind: z.string().describe(
-                'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#translatedString"`.',
-              ).optional(),
-              language: z.string().describe(
-                'Represents the BCP 47 language tag. Example values are "en-US", "en-GB", "de", or "de-AT".',
-              ).optional(),
-              value: z.string().describe("The UTF-8 encoded translated string.")
-                .optional(),
-            })).describe("Contains the translations for the string.")
-              .optional(),
-          }).optional(),
-          uri: z.string().describe(
+          localizedDescription: z.unknown().optional(),
+          uri: z.unknown().describe(
             "The location of the image. URIs must have a scheme.",
           ).optional(),
         }).optional(),
@@ -2849,19 +1675,11 @@ const GlobalArgsSchema = z.object({
       ).optional(),
       viewConstraints: z.object({
         displayInterval: z.object({
-          end: z.object({
-            date: z.string().describe(
-              "An ISO 8601 extended format date/time. Offset may or may not be required (refer to the parent field's documentation). Time may be specified up to nanosecond precision. Offsets may be specified with seconds precision (even though offset seconds is not part of ISO 8601). For example: `1985-04-12T23:20:50.52Z` would be 20 minutes and 50.52 seconds after the 23rd hour of April 12th, 1985 in UTC. `1985-04-12T19:20:50.52-04:00` would be 20 minutes and 50.52 seconds after the 19th hour of April 12th, 1985, 4 hours before UTC (same instant in time as the above example). If the date/time is intended for a physical location in New York, this would be the equivalent of Eastern Daylight Time (EDT). Remember that offset varies in regions that observe Daylight Saving Time (or Summer Time), depending on the time of the year. `1985-04-12T19:20:50.52` would be 20 minutes and 50.52 seconds after the 19th hour of April 12th, 1985 with no offset information. Providing an offset makes this an absolute instant in time around the world. The date/time will be adjusted based on the user's time zone. For example, a time of `2018-06-19T18:30:00-04:00` will be 18:30:00 for a user in New York and 15:30:00 for a user in Los Angeles. Omitting the offset makes this a local date/time, representing several instants in time around the world. The date/time will always be in the user's current time zone. For example, a time of `2018-06-19T18:30:00` will be 18:30:00 for a user in New York and also 18:30:00 for a user in Los Angeles. This is useful when the same local date/time should apply to many physical locations across several time zones.",
-            ).optional(),
-          }).optional(),
-          kind: z.string().describe(
+          end: z.unknown().optional(),
+          kind: z.unknown().describe(
             'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#timeInterval"`.',
           ).optional(),
-          start: z.object({
-            date: z.string().describe(
-              "An ISO 8601 extended format date/time. Offset may or may not be required (refer to the parent field's documentation). Time may be specified up to nanosecond precision. Offsets may be specified with seconds precision (even though offset seconds is not part of ISO 8601). For example: `1985-04-12T23:20:50.52Z` would be 20 minutes and 50.52 seconds after the 23rd hour of April 12th, 1985 in UTC. `1985-04-12T19:20:50.52-04:00` would be 20 minutes and 50.52 seconds after the 19th hour of April 12th, 1985, 4 hours before UTC (same instant in time as the above example). If the date/time is intended for a physical location in New York, this would be the equivalent of Eastern Daylight Time (EDT). Remember that offset varies in regions that observe Daylight Saving Time (or Summer Time), depending on the time of the year. `1985-04-12T19:20:50.52` would be 20 minutes and 50.52 seconds after the 19th hour of April 12th, 1985 with no offset information. Providing an offset makes this an absolute instant in time around the world. The date/time will be adjusted based on the user's time zone. For example, a time of `2018-06-19T18:30:00-04:00` will be 18:30:00 for a user in New York and 15:30:00 for a user in Los Angeles. Omitting the offset makes this a local date/time, representing several instants in time around the world. The date/time will always be in the user's current time zone. For example, a time of `2018-06-19T18:30:00` will be 18:30:00 for a user in New York and also 18:30:00 for a user in Los Angeles. This is useful when the same local date/time should apply to many physical locations across several time zones.",
-            ).optional(),
-          }).optional(),
+          start: z.unknown().optional(),
         }).optional(),
       }).describe(
         "Constraints that all must be met for the module to be shown.",
@@ -2885,13 +1703,13 @@ const GlobalArgsSchema = z.object({
           'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#localizedString"`.',
         ).optional(),
         translatedValues: z.array(z.object({
-          kind: z.string().describe(
+          kind: z.unknown().describe(
             'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#translatedString"`.',
           ).optional(),
-          language: z.string().describe(
+          language: z.unknown().describe(
             'Represents the BCP 47 language tag. Example values are "en-US", "en-GB", "de", or "de-AT".',
           ).optional(),
-          value: z.string().describe("The UTF-8 encoded translated string.")
+          value: z.unknown().describe("The UTF-8 encoded translated string.")
             .optional(),
         })).describe("Contains the translations for the string.").optional(),
       }).optional(),
@@ -2913,13 +1731,13 @@ const GlobalArgsSchema = z.object({
           'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#localizedString"`.',
         ).optional(),
         translatedValues: z.array(z.object({
-          kind: z.string().describe(
+          kind: z.unknown().describe(
             'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#translatedString"`.',
           ).optional(),
-          language: z.string().describe(
+          language: z.unknown().describe(
             'Represents the BCP 47 language tag. Example values are "en-US", "en-GB", "de", or "de-AT".',
           ).optional(),
-          value: z.string().describe("The UTF-8 encoded translated string.")
+          value: z.unknown().describe("The UTF-8 encoded translated string.")
             .optional(),
         })).describe("Contains the translations for the string.").optional(),
       }).optional(),
@@ -2947,13 +1765,13 @@ const GlobalArgsSchema = z.object({
           'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#localizedString"`.',
         ).optional(),
         translatedValues: z.array(z.object({
-          kind: z.string().describe(
+          kind: z.unknown().describe(
             'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#translatedString"`.',
           ).optional(),
-          language: z.string().describe(
+          language: z.unknown().describe(
             'Represents the BCP 47 language tag. Example values are "en-US", "en-GB", "de", or "de-AT".',
           ).optional(),
-          value: z.string().describe("The UTF-8 encoded translated string.")
+          value: z.unknown().describe("The UTF-8 encoded translated string.")
             .optional(),
         })).describe("Contains the translations for the string.").optional(),
       }).optional(),
@@ -2969,28 +1787,21 @@ const GlobalArgsSchema = z.object({
         ).optional(),
         localizedDescription: z.object({
           defaultValue: z.object({
-            kind: z.string().describe(
+            kind: z.unknown().describe(
               'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#translatedString"`.',
             ).optional(),
-            language: z.string().describe(
+            language: z.unknown().describe(
               'Represents the BCP 47 language tag. Example values are "en-US", "en-GB", "de", or "de-AT".',
             ).optional(),
-            value: z.string().describe("The UTF-8 encoded translated string.")
+            value: z.unknown().describe("The UTF-8 encoded translated string.")
               .optional(),
           }).optional(),
           kind: z.string().describe(
             'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#localizedString"`.',
           ).optional(),
-          translatedValues: z.array(z.object({
-            kind: z.string().describe(
-              'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#translatedString"`.',
-            ).optional(),
-            language: z.string().describe(
-              'Represents the BCP 47 language tag. Example values are "en-US", "en-GB", "de", or "de-AT".',
-            ).optional(),
-            value: z.string().describe("The UTF-8 encoded translated string.")
-              .optional(),
-          })).describe("Contains the translations for the string.").optional(),
+          translatedValues: z.array(z.unknown()).describe(
+            "Contains the translations for the string.",
+          ).optional(),
         }).optional(),
         uri: z.string().describe(
           "The location of the image. URIs must have a scheme.",
@@ -3013,13 +1824,13 @@ const GlobalArgsSchema = z.object({
           'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#localizedString"`.',
         ).optional(),
         translatedValues: z.array(z.object({
-          kind: z.string().describe(
+          kind: z.unknown().describe(
             'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#translatedString"`.',
           ).optional(),
-          language: z.string().describe(
+          language: z.unknown().describe(
             'Represents the BCP 47 language tag. Example values are "en-US", "en-GB", "de", or "de-AT".',
           ).optional(),
-          value: z.string().describe("The UTF-8 encoded translated string.")
+          value: z.unknown().describe("The UTF-8 encoded translated string.")
             .optional(),
         })).describe("Contains the translations for the string.").optional(),
       }).optional(),
@@ -3035,28 +1846,21 @@ const GlobalArgsSchema = z.object({
         ).optional(),
         localizedDescription: z.object({
           defaultValue: z.object({
-            kind: z.string().describe(
+            kind: z.unknown().describe(
               'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#translatedString"`.',
             ).optional(),
-            language: z.string().describe(
+            language: z.unknown().describe(
               'Represents the BCP 47 language tag. Example values are "en-US", "en-GB", "de", or "de-AT".',
             ).optional(),
-            value: z.string().describe("The UTF-8 encoded translated string.")
+            value: z.unknown().describe("The UTF-8 encoded translated string.")
               .optional(),
           }).optional(),
           kind: z.string().describe(
             'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#localizedString"`.',
           ).optional(),
-          translatedValues: z.array(z.object({
-            kind: z.string().describe(
-              'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#translatedString"`.',
-            ).optional(),
-            language: z.string().describe(
-              'Represents the BCP 47 language tag. Example values are "en-US", "en-GB", "de", or "de-AT".',
-            ).optional(),
-            value: z.string().describe("The UTF-8 encoded translated string.")
-              .optional(),
-          })).describe("Contains the translations for the string.").optional(),
+          translatedValues: z.array(z.unknown()).describe(
+            "Contains the translations for the string.",
+          ).optional(),
         }).optional(),
         uri: z.string().describe(
           "The location of the image. URIs must have a scheme.",
@@ -3143,13 +1947,13 @@ const GlobalArgsSchema = z.object({
           'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#localizedString"`.',
         ).optional(),
         translatedValues: z.array(z.object({
-          kind: z.string().describe(
+          kind: z.unknown().describe(
             'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#translatedString"`.',
           ).optional(),
-          language: z.string().describe(
+          language: z.unknown().describe(
             'Represents the BCP 47 language tag. Example values are "en-US", "en-GB", "de", or "de-AT".',
           ).optional(),
-          value: z.string().describe("The UTF-8 encoded translated string.")
+          value: z.unknown().describe("The UTF-8 encoded translated string.")
             .optional(),
         })).describe("Contains the translations for the string.").optional(),
       }).optional(),
@@ -3171,28 +1975,21 @@ const GlobalArgsSchema = z.object({
     mainImage: z.object({
       contentDescription: z.object({
         defaultValue: z.object({
-          kind: z.string().describe(
+          kind: z.unknown().describe(
             'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#translatedString"`.',
           ).optional(),
-          language: z.string().describe(
+          language: z.unknown().describe(
             'Represents the BCP 47 language tag. Example values are "en-US", "en-GB", "de", or "de-AT".',
           ).optional(),
-          value: z.string().describe("The UTF-8 encoded translated string.")
+          value: z.unknown().describe("The UTF-8 encoded translated string.")
             .optional(),
         }).optional(),
         kind: z.string().describe(
           'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#localizedString"`.',
         ).optional(),
-        translatedValues: z.array(z.object({
-          kind: z.string().describe(
-            'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#translatedString"`.',
-          ).optional(),
-          language: z.string().describe(
-            'Represents the BCP 47 language tag. Example values are "en-US", "en-GB", "de", or "de-AT".',
-          ).optional(),
-          value: z.string().describe("The UTF-8 encoded translated string.")
-            .optional(),
-        })).describe("Contains the translations for the string.").optional(),
+        translatedValues: z.array(z.unknown()).describe(
+          "Contains the translations for the string.",
+        ).optional(),
       }).optional(),
       kind: z.string().describe(
         'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#image"`.',
@@ -3205,29 +2002,13 @@ const GlobalArgsSchema = z.object({
           "Additional information about the image, which is unused and retained only for backward compatibility.",
         ).optional(),
         localizedDescription: z.object({
-          defaultValue: z.object({
-            kind: z.string().describe(
-              'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#translatedString"`.',
-            ).optional(),
-            language: z.string().describe(
-              'Represents the BCP 47 language tag. Example values are "en-US", "en-GB", "de", or "de-AT".',
-            ).optional(),
-            value: z.string().describe("The UTF-8 encoded translated string.")
-              .optional(),
-          }).optional(),
-          kind: z.string().describe(
+          defaultValue: z.unknown().optional(),
+          kind: z.unknown().describe(
             'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#localizedString"`.',
           ).optional(),
-          translatedValues: z.array(z.object({
-            kind: z.string().describe(
-              'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#translatedString"`.',
-            ).optional(),
-            language: z.string().describe(
-              'Represents the BCP 47 language tag. Example values are "en-US", "en-GB", "de", or "de-AT".',
-            ).optional(),
-            value: z.string().describe("The UTF-8 encoded translated string.")
-              .optional(),
-          })).describe("Contains the translations for the string.").optional(),
+          translatedValues: z.unknown().describe(
+            "Contains the translations for the string.",
+          ).optional(),
         }).optional(),
         uri: z.string().describe(
           "The location of the image. URIs must have a scheme.",
@@ -3240,60 +2021,12 @@ const GlobalArgsSchema = z.object({
   infoModuleData: z.object({
     labelValueRows: z.array(z.object({
       columns: z.array(z.object({
-        label: z.string().describe(
+        label: z.unknown().describe(
           "The label for a specific row and column. Recommended maximum is 15 characters for a two-column layout and 30 characters for a one-column layout.",
         ).optional(),
-        localizedLabel: z.object({
-          defaultValue: z.object({
-            kind: z.string().describe(
-              'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#translatedString"`.',
-            ).optional(),
-            language: z.string().describe(
-              'Represents the BCP 47 language tag. Example values are "en-US", "en-GB", "de", or "de-AT".',
-            ).optional(),
-            value: z.string().describe("The UTF-8 encoded translated string.")
-              .optional(),
-          }).optional(),
-          kind: z.string().describe(
-            'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#localizedString"`.',
-          ).optional(),
-          translatedValues: z.array(z.object({
-            kind: z.string().describe(
-              'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#translatedString"`.',
-            ).optional(),
-            language: z.string().describe(
-              'Represents the BCP 47 language tag. Example values are "en-US", "en-GB", "de", or "de-AT".',
-            ).optional(),
-            value: z.string().describe("The UTF-8 encoded translated string.")
-              .optional(),
-          })).describe("Contains the translations for the string.").optional(),
-        }).optional(),
-        localizedValue: z.object({
-          defaultValue: z.object({
-            kind: z.string().describe(
-              'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#translatedString"`.',
-            ).optional(),
-            language: z.string().describe(
-              'Represents the BCP 47 language tag. Example values are "en-US", "en-GB", "de", or "de-AT".',
-            ).optional(),
-            value: z.string().describe("The UTF-8 encoded translated string.")
-              .optional(),
-          }).optional(),
-          kind: z.string().describe(
-            'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#localizedString"`.',
-          ).optional(),
-          translatedValues: z.array(z.object({
-            kind: z.string().describe(
-              'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#translatedString"`.',
-            ).optional(),
-            language: z.string().describe(
-              'Represents the BCP 47 language tag. Example values are "en-US", "en-GB", "de", or "de-AT".',
-            ).optional(),
-            value: z.string().describe("The UTF-8 encoded translated string.")
-              .optional(),
-          })).describe("Contains the translations for the string.").optional(),
-        }).optional(),
-        value: z.string().describe(
+        localizedLabel: z.unknown().optional(),
+        localizedValue: z.unknown().optional(),
+        value: z.unknown().describe(
           "The value for a specific row and column. Recommended maximum is 15 characters for a two-column layout and 30 characters for a one-column layout.",
         ).optional(),
       })).describe(
@@ -3323,28 +2056,21 @@ const GlobalArgsSchema = z.object({
       ).optional(),
       localizedDescription: z.object({
         defaultValue: z.object({
-          kind: z.string().describe(
+          kind: z.unknown().describe(
             'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#translatedString"`.',
           ).optional(),
-          language: z.string().describe(
+          language: z.unknown().describe(
             'Represents the BCP 47 language tag. Example values are "en-US", "en-GB", "de", or "de-AT".',
           ).optional(),
-          value: z.string().describe("The UTF-8 encoded translated string.")
+          value: z.unknown().describe("The UTF-8 encoded translated string.")
             .optional(),
         }).optional(),
         kind: z.string().describe(
           'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#localizedString"`.',
         ).optional(),
-        translatedValues: z.array(z.object({
-          kind: z.string().describe(
-            'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#translatedString"`.',
-          ).optional(),
-          language: z.string().describe(
-            'Represents the BCP 47 language tag. Example values are "en-US", "en-GB", "de", or "de-AT".',
-          ).optional(),
-          value: z.string().describe("The UTF-8 encoded translated string.")
-            .optional(),
-        })).describe("Contains the translations for the string.").optional(),
+        translatedValues: z.array(z.unknown()).describe(
+          "Contains the translations for the string.",
+        ).optional(),
       }).optional(),
       uri: z.string().describe(
         "The location of a web page, image, or other resource. URIs in the `LinksModuleData` module can have different prefixes indicating the type of URI (a link to a web page, a link to a map, a telephone number, or an email address). URIs must have a scheme.",
@@ -3400,13 +2126,13 @@ const GlobalArgsSchema = z.object({
         'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#localizedString"`.',
       ).optional(),
       translatedValues: z.array(z.object({
-        kind: z.string().describe(
+        kind: z.unknown().describe(
           'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#translatedString"`.',
         ).optional(),
-        language: z.string().describe(
+        language: z.unknown().describe(
           'Represents the BCP 47 language tag. Example values are "en-US", "en-GB", "de", or "de-AT".',
         ).optional(),
-        value: z.string().describe("The UTF-8 encoded translated string.")
+        value: z.unknown().describe("The UTF-8 encoded translated string.")
           .optional(),
       })).describe("Contains the translations for the string.").optional(),
     }).optional(),
@@ -3425,13 +2151,13 @@ const GlobalArgsSchema = z.object({
         'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#localizedString"`.',
       ).optional(),
       translatedValues: z.array(z.object({
-        kind: z.string().describe(
+        kind: z.unknown().describe(
           'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#translatedString"`.',
         ).optional(),
-        language: z.string().describe(
+        language: z.unknown().describe(
           'Represents the BCP 47 language tag. Example values are "en-US", "en-GB", "de", or "de-AT".',
         ).optional(),
-        value: z.string().describe("The UTF-8 encoded translated string.")
+        value: z.unknown().describe("The UTF-8 encoded translated string.")
           .optional(),
       })).describe("Contains the translations for the string.").optional(),
     }).optional(),
@@ -3726,13 +2452,13 @@ const GlobalArgsSchema = z.object({
         'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#localizedString"`.',
       ).optional(),
       translatedValues: z.array(z.object({
-        kind: z.string().describe(
+        kind: z.unknown().describe(
           'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#translatedString"`.',
         ).optional(),
-        language: z.string().describe(
+        language: z.unknown().describe(
           'Represents the BCP 47 language tag. Example values are "en-US", "en-GB", "de", or "de-AT".',
         ).optional(),
-        value: z.string().describe("The UTF-8 encoded translated string.")
+        value: z.unknown().describe("The UTF-8 encoded translated string.")
           .optional(),
       })).describe("Contains the translations for the string.").optional(),
     }).optional(),
@@ -3751,13 +2477,13 @@ const GlobalArgsSchema = z.object({
         'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#localizedString"`.',
       ).optional(),
       translatedValues: z.array(z.object({
-        kind: z.string().describe(
+        kind: z.unknown().describe(
           'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#translatedString"`.',
         ).optional(),
-        language: z.string().describe(
+        language: z.unknown().describe(
           'Represents the BCP 47 language tag. Example values are "en-US", "en-GB", "de", or "de-AT".',
         ).optional(),
-        value: z.string().describe("The UTF-8 encoded translated string.")
+        value: z.unknown().describe("The UTF-8 encoded translated string.")
           .optional(),
       })).describe("Contains the translations for the string.").optional(),
     }).optional(),
@@ -3826,13 +2552,13 @@ const GlobalArgsSchema = z.object({
         'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#localizedString"`.',
       ).optional(),
       translatedValues: z.array(z.object({
-        kind: z.string().describe(
+        kind: z.unknown().describe(
           'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#translatedString"`.',
         ).optional(),
-        language: z.string().describe(
+        language: z.unknown().describe(
           'Represents the BCP 47 language tag. Example values are "en-US", "en-GB", "de", or "de-AT".',
         ).optional(),
-        value: z.string().describe("The UTF-8 encoded translated string.")
+        value: z.unknown().describe("The UTF-8 encoded translated string.")
           .optional(),
       })).describe("Contains the translations for the string.").optional(),
     }).optional(),
@@ -3851,41 +2577,34 @@ const GlobalArgsSchema = z.object({
         'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#localizedString"`.',
       ).optional(),
       translatedValues: z.array(z.object({
-        kind: z.string().describe(
+        kind: z.unknown().describe(
           'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#translatedString"`.',
         ).optional(),
-        language: z.string().describe(
+        language: z.unknown().describe(
           'Represents the BCP 47 language tag. Example values are "en-US", "en-GB", "de", or "de-AT".',
         ).optional(),
-        value: z.string().describe("The UTF-8 encoded translated string.")
+        value: z.unknown().describe("The UTF-8 encoded translated string.")
           .optional(),
       })).describe("Contains the translations for the string.").optional(),
     }).optional(),
     image: z.object({
       contentDescription: z.object({
         defaultValue: z.object({
-          kind: z.string().describe(
+          kind: z.unknown().describe(
             'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#translatedString"`.',
           ).optional(),
-          language: z.string().describe(
+          language: z.unknown().describe(
             'Represents the BCP 47 language tag. Example values are "en-US", "en-GB", "de", or "de-AT".',
           ).optional(),
-          value: z.string().describe("The UTF-8 encoded translated string.")
+          value: z.unknown().describe("The UTF-8 encoded translated string.")
             .optional(),
         }).optional(),
         kind: z.string().describe(
           'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#localizedString"`.',
         ).optional(),
-        translatedValues: z.array(z.object({
-          kind: z.string().describe(
-            'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#translatedString"`.',
-          ).optional(),
-          language: z.string().describe(
-            'Represents the BCP 47 language tag. Example values are "en-US", "en-GB", "de", or "de-AT".',
-          ).optional(),
-          value: z.string().describe("The UTF-8 encoded translated string.")
-            .optional(),
-        })).describe("Contains the translations for the string.").optional(),
+        translatedValues: z.array(z.unknown()).describe(
+          "Contains the translations for the string.",
+        ).optional(),
       }).optional(),
       kind: z.string().describe(
         'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#image"`.',
@@ -3898,29 +2617,13 @@ const GlobalArgsSchema = z.object({
           "Additional information about the image, which is unused and retained only for backward compatibility.",
         ).optional(),
         localizedDescription: z.object({
-          defaultValue: z.object({
-            kind: z.string().describe(
-              'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#translatedString"`.',
-            ).optional(),
-            language: z.string().describe(
-              'Represents the BCP 47 language tag. Example values are "en-US", "en-GB", "de", or "de-AT".',
-            ).optional(),
-            value: z.string().describe("The UTF-8 encoded translated string.")
-              .optional(),
-          }).optional(),
-          kind: z.string().describe(
+          defaultValue: z.unknown().optional(),
+          kind: z.unknown().describe(
             'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#localizedString"`.',
           ).optional(),
-          translatedValues: z.array(z.object({
-            kind: z.string().describe(
-              'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#translatedString"`.',
-            ).optional(),
-            language: z.string().describe(
-              'Represents the BCP 47 language tag. Example values are "en-US", "en-GB", "de", or "de-AT".',
-            ).optional(),
-            value: z.string().describe("The UTF-8 encoded translated string.")
-              .optional(),
-          })).describe("Contains the translations for the string.").optional(),
+          translatedValues: z.unknown().describe(
+            "Contains the translations for the string.",
+          ).optional(),
         }).optional(),
         uri: z.string().describe(
           "The location of the image. URIs must have a scheme.",
@@ -3936,7 +2639,7 @@ const GlobalArgsSchema = z.object({
     viewConstraints: z.object({
       displayInterval: z.object({
         end: z.object({
-          date: z.string().describe(
+          date: z.unknown().describe(
             "An ISO 8601 extended format date/time. Offset may or may not be required (refer to the parent field's documentation). Time may be specified up to nanosecond precision. Offsets may be specified with seconds precision (even though offset seconds is not part of ISO 8601). For example: `1985-04-12T23:20:50.52Z` would be 20 minutes and 50.52 seconds after the 23rd hour of April 12th, 1985 in UTC. `1985-04-12T19:20:50.52-04:00` would be 20 minutes and 50.52 seconds after the 19th hour of April 12th, 1985, 4 hours before UTC (same instant in time as the above example). If the date/time is intended for a physical location in New York, this would be the equivalent of Eastern Daylight Time (EDT). Remember that offset varies in regions that observe Daylight Saving Time (or Summer Time), depending on the time of the year. `1985-04-12T19:20:50.52` would be 20 minutes and 50.52 seconds after the 19th hour of April 12th, 1985 with no offset information. Providing an offset makes this an absolute instant in time around the world. The date/time will be adjusted based on the user's time zone. For example, a time of `2018-06-19T18:30:00-04:00` will be 18:30:00 for a user in New York and 15:30:00 for a user in Los Angeles. Omitting the offset makes this a local date/time, representing several instants in time around the world. The date/time will always be in the user's current time zone. For example, a time of `2018-06-19T18:30:00` will be 18:30:00 for a user in New York and also 18:30:00 for a user in Los Angeles. This is useful when the same local date/time should apply to many physical locations across several time zones.",
           ).optional(),
         }).optional(),
@@ -3944,7 +2647,7 @@ const GlobalArgsSchema = z.object({
           'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#timeInterval"`.',
         ).optional(),
         start: z.object({
-          date: z.string().describe(
+          date: z.unknown().describe(
             "An ISO 8601 extended format date/time. Offset may or may not be required (refer to the parent field's documentation). Time may be specified up to nanosecond precision. Offsets may be specified with seconds precision (even though offset seconds is not part of ISO 8601). For example: `1985-04-12T23:20:50.52Z` would be 20 minutes and 50.52 seconds after the 23rd hour of April 12th, 1985 in UTC. `1985-04-12T19:20:50.52-04:00` would be 20 minutes and 50.52 seconds after the 19th hour of April 12th, 1985, 4 hours before UTC (same instant in time as the above example). If the date/time is intended for a physical location in New York, this would be the equivalent of Eastern Daylight Time (EDT). Remember that offset varies in regions that observe Daylight Saving Time (or Summer Time), depending on the time of the year. `1985-04-12T19:20:50.52` would be 20 minutes and 50.52 seconds after the 19th hour of April 12th, 1985 with no offset information. Providing an offset makes this an absolute instant in time around the world. The date/time will be adjusted based on the user's time zone. For example, a time of `2018-06-19T18:30:00-04:00` will be 18:30:00 for a user in New York and 15:30:00 for a user in Los Angeles. Omitting the offset makes this a local date/time, representing several instants in time around the world. The date/time will always be in the user's current time zone. For example, a time of `2018-06-19T18:30:00` will be 18:30:00 for a user in New York and also 18:30:00 for a user in Los Angeles. This is useful when the same local date/time should apply to many physical locations across several time zones.",
           ).optional(),
         }).optional(),
@@ -3962,33 +2665,21 @@ const StateSchema = z.object({
       appLogoImage: z.object({
         contentDescription: z.object({
           defaultValue: z.object({
-            kind: z.string(),
-            language: z.string(),
-            value: z.string(),
+            kind: z.unknown(),
+            language: z.unknown(),
+            value: z.unknown(),
           }),
           kind: z.string(),
-          translatedValues: z.array(z.object({
-            kind: z.string(),
-            language: z.string(),
-            value: z.string(),
-          })),
+          translatedValues: z.array(z.unknown()),
         }),
         kind: z.string(),
         privateImageId: z.string(),
         sourceUri: z.object({
           description: z.string(),
           localizedDescription: z.object({
-            defaultValue: z.object({
-              kind: z.string(),
-              language: z.string(),
-              value: z.string(),
-            }),
-            kind: z.string(),
-            translatedValues: z.array(z.object({
-              kind: z.string(),
-              language: z.string(),
-              value: z.string(),
-            })),
+            defaultValue: z.unknown(),
+            kind: z.unknown(),
+            translatedValues: z.unknown(),
           }),
           uri: z.string(),
         }),
@@ -4000,17 +2691,9 @@ const StateSchema = z.object({
           id: z.string(),
           kind: z.string(),
           localizedDescription: z.object({
-            defaultValue: z.object({
-              kind: z.string(),
-              language: z.string(),
-              value: z.string(),
-            }),
-            kind: z.string(),
-            translatedValues: z.array(z.object({
-              kind: z.string(),
-              language: z.string(),
-              value: z.string(),
-            })),
+            defaultValue: z.unknown(),
+            kind: z.unknown(),
+            translatedValues: z.unknown(),
           }),
           uri: z.string(),
         }),
@@ -4023,9 +2706,9 @@ const StateSchema = z.object({
         }),
         kind: z.string(),
         translatedValues: z.array(z.object({
-          kind: z.string(),
-          language: z.string(),
-          value: z.string(),
+          kind: z.unknown(),
+          language: z.unknown(),
+          value: z.unknown(),
         })),
       }),
       title: z.object({
@@ -4036,9 +2719,9 @@ const StateSchema = z.object({
         }),
         kind: z.string(),
         translatedValues: z.array(z.object({
-          kind: z.string(),
-          language: z.string(),
-          value: z.string(),
+          kind: z.unknown(),
+          language: z.unknown(),
+          value: z.unknown(),
         })),
       }),
     }),
@@ -4059,33 +2742,21 @@ const StateSchema = z.object({
       appLogoImage: z.object({
         contentDescription: z.object({
           defaultValue: z.object({
-            kind: z.string(),
-            language: z.string(),
-            value: z.string(),
+            kind: z.unknown(),
+            language: z.unknown(),
+            value: z.unknown(),
           }),
           kind: z.string(),
-          translatedValues: z.array(z.object({
-            kind: z.string(),
-            language: z.string(),
-            value: z.string(),
-          })),
+          translatedValues: z.array(z.unknown()),
         }),
         kind: z.string(),
         privateImageId: z.string(),
         sourceUri: z.object({
           description: z.string(),
           localizedDescription: z.object({
-            defaultValue: z.object({
-              kind: z.string(),
-              language: z.string(),
-              value: z.string(),
-            }),
-            kind: z.string(),
-            translatedValues: z.array(z.object({
-              kind: z.string(),
-              language: z.string(),
-              value: z.string(),
-            })),
+            defaultValue: z.unknown(),
+            kind: z.unknown(),
+            translatedValues: z.unknown(),
           }),
           uri: z.string(),
         }),
@@ -4097,17 +2768,9 @@ const StateSchema = z.object({
           id: z.string(),
           kind: z.string(),
           localizedDescription: z.object({
-            defaultValue: z.object({
-              kind: z.string(),
-              language: z.string(),
-              value: z.string(),
-            }),
-            kind: z.string(),
-            translatedValues: z.array(z.object({
-              kind: z.string(),
-              language: z.string(),
-              value: z.string(),
-            })),
+            defaultValue: z.unknown(),
+            kind: z.unknown(),
+            translatedValues: z.unknown(),
           }),
           uri: z.string(),
         }),
@@ -4120,9 +2783,9 @@ const StateSchema = z.object({
         }),
         kind: z.string(),
         translatedValues: z.array(z.object({
-          kind: z.string(),
-          language: z.string(),
-          value: z.string(),
+          kind: z.unknown(),
+          language: z.unknown(),
+          value: z.unknown(),
         })),
       }),
       title: z.object({
@@ -4133,9 +2796,9 @@ const StateSchema = z.object({
         }),
         kind: z.string(),
         translatedValues: z.array(z.object({
-          kind: z.string(),
-          language: z.string(),
-          value: z.string(),
+          kind: z.unknown(),
+          language: z.unknown(),
+          value: z.unknown(),
         })),
       }),
     }),
@@ -4143,33 +2806,21 @@ const StateSchema = z.object({
       appLogoImage: z.object({
         contentDescription: z.object({
           defaultValue: z.object({
-            kind: z.string(),
-            language: z.string(),
-            value: z.string(),
+            kind: z.unknown(),
+            language: z.unknown(),
+            value: z.unknown(),
           }),
           kind: z.string(),
-          translatedValues: z.array(z.object({
-            kind: z.string(),
-            language: z.string(),
-            value: z.string(),
-          })),
+          translatedValues: z.array(z.unknown()),
         }),
         kind: z.string(),
         privateImageId: z.string(),
         sourceUri: z.object({
           description: z.string(),
           localizedDescription: z.object({
-            defaultValue: z.object({
-              kind: z.string(),
-              language: z.string(),
-              value: z.string(),
-            }),
-            kind: z.string(),
-            translatedValues: z.array(z.object({
-              kind: z.string(),
-              language: z.string(),
-              value: z.string(),
-            })),
+            defaultValue: z.unknown(),
+            kind: z.unknown(),
+            translatedValues: z.unknown(),
           }),
           uri: z.string(),
         }),
@@ -4181,17 +2832,9 @@ const StateSchema = z.object({
           id: z.string(),
           kind: z.string(),
           localizedDescription: z.object({
-            defaultValue: z.object({
-              kind: z.string(),
-              language: z.string(),
-              value: z.string(),
-            }),
-            kind: z.string(),
-            translatedValues: z.array(z.object({
-              kind: z.string(),
-              language: z.string(),
-              value: z.string(),
-            })),
+            defaultValue: z.unknown(),
+            kind: z.unknown(),
+            translatedValues: z.unknown(),
           }),
           uri: z.string(),
         }),
@@ -4204,9 +2847,9 @@ const StateSchema = z.object({
         }),
         kind: z.string(),
         translatedValues: z.array(z.object({
-          kind: z.string(),
-          language: z.string(),
-          value: z.string(),
+          kind: z.unknown(),
+          language: z.unknown(),
+          value: z.unknown(),
         })),
       }),
       title: z.object({
@@ -4217,9 +2860,9 @@ const StateSchema = z.object({
         }),
         kind: z.string(),
         translatedValues: z.array(z.object({
-          kind: z.string(),
-          language: z.string(),
-          value: z.string(),
+          kind: z.unknown(),
+          language: z.unknown(),
+          value: z.unknown(),
         })),
       }),
     }),
@@ -4251,85 +2894,45 @@ const StateSchema = z.object({
       androidAppLinkInfo: z.object({
         appLogoImage: z.object({
           contentDescription: z.object({
-            defaultValue: z.object({
-              kind: z.string(),
-              language: z.string(),
-              value: z.string(),
-            }),
-            kind: z.string(),
-            translatedValues: z.array(z.object({
-              kind: z.string(),
-              language: z.string(),
-              value: z.string(),
-            })),
+            defaultValue: z.unknown(),
+            kind: z.unknown(),
+            translatedValues: z.unknown(),
           }),
           kind: z.string(),
           privateImageId: z.string(),
           sourceUri: z.object({
-            description: z.string(),
-            localizedDescription: z.object({
-              defaultValue: z.object({
-                kind: z.string(),
-                language: z.string(),
-                value: z.string(),
-              }),
-              kind: z.string(),
-              translatedValues: z.array(z.object({
-                kind: z.string(),
-                language: z.string(),
-                value: z.string(),
-              })),
-            }),
-            uri: z.string(),
+            description: z.unknown(),
+            localizedDescription: z.unknown(),
+            uri: z.unknown(),
           }),
         }),
         appTarget: z.object({
           packageName: z.string(),
           targetUri: z.object({
-            description: z.string(),
-            id: z.string(),
-            kind: z.string(),
-            localizedDescription: z.object({
-              defaultValue: z.object({
-                kind: z.string(),
-                language: z.string(),
-                value: z.string(),
-              }),
-              kind: z.string(),
-              translatedValues: z.array(z.object({
-                kind: z.string(),
-                language: z.string(),
-                value: z.string(),
-              })),
-            }),
-            uri: z.string(),
+            description: z.unknown(),
+            id: z.unknown(),
+            kind: z.unknown(),
+            localizedDescription: z.unknown(),
+            uri: z.unknown(),
           }),
         }),
         description: z.object({
           defaultValue: z.object({
-            kind: z.string(),
-            language: z.string(),
-            value: z.string(),
+            kind: z.unknown(),
+            language: z.unknown(),
+            value: z.unknown(),
           }),
           kind: z.string(),
-          translatedValues: z.array(z.object({
-            kind: z.string(),
-            language: z.string(),
-            value: z.string(),
-          })),
+          translatedValues: z.array(z.unknown()),
         }),
         title: z.object({
           defaultValue: z.object({
-            kind: z.string(),
-            language: z.string(),
-            value: z.string(),
+            kind: z.unknown(),
+            language: z.unknown(),
+            value: z.unknown(),
           }),
           kind: z.string(),
-          translatedValues: z.array(z.object({
-            kind: z.string(),
-            language: z.string(),
-            value: z.string(),
-          })),
+          translatedValues: z.array(z.unknown()),
         }),
       }),
       displayText: z.object({
@@ -4340,177 +2943,97 @@ const StateSchema = z.object({
         }),
         kind: z.string(),
         translatedValues: z.array(z.object({
-          kind: z.string(),
-          language: z.string(),
-          value: z.string(),
+          kind: z.unknown(),
+          language: z.unknown(),
+          value: z.unknown(),
         })),
       }),
       iosAppLinkInfo: z.object({
         appLogoImage: z.object({
           contentDescription: z.object({
-            defaultValue: z.object({
-              kind: z.string(),
-              language: z.string(),
-              value: z.string(),
-            }),
-            kind: z.string(),
-            translatedValues: z.array(z.object({
-              kind: z.string(),
-              language: z.string(),
-              value: z.string(),
-            })),
+            defaultValue: z.unknown(),
+            kind: z.unknown(),
+            translatedValues: z.unknown(),
           }),
           kind: z.string(),
           privateImageId: z.string(),
           sourceUri: z.object({
-            description: z.string(),
-            localizedDescription: z.object({
-              defaultValue: z.object({
-                kind: z.string(),
-                language: z.string(),
-                value: z.string(),
-              }),
-              kind: z.string(),
-              translatedValues: z.array(z.object({
-                kind: z.string(),
-                language: z.string(),
-                value: z.string(),
-              })),
-            }),
-            uri: z.string(),
+            description: z.unknown(),
+            localizedDescription: z.unknown(),
+            uri: z.unknown(),
           }),
         }),
         appTarget: z.object({
           packageName: z.string(),
           targetUri: z.object({
-            description: z.string(),
-            id: z.string(),
-            kind: z.string(),
-            localizedDescription: z.object({
-              defaultValue: z.object({
-                kind: z.string(),
-                language: z.string(),
-                value: z.string(),
-              }),
-              kind: z.string(),
-              translatedValues: z.array(z.object({
-                kind: z.string(),
-                language: z.string(),
-                value: z.string(),
-              })),
-            }),
-            uri: z.string(),
+            description: z.unknown(),
+            id: z.unknown(),
+            kind: z.unknown(),
+            localizedDescription: z.unknown(),
+            uri: z.unknown(),
           }),
         }),
         description: z.object({
           defaultValue: z.object({
-            kind: z.string(),
-            language: z.string(),
-            value: z.string(),
+            kind: z.unknown(),
+            language: z.unknown(),
+            value: z.unknown(),
           }),
           kind: z.string(),
-          translatedValues: z.array(z.object({
-            kind: z.string(),
-            language: z.string(),
-            value: z.string(),
-          })),
+          translatedValues: z.array(z.unknown()),
         }),
         title: z.object({
           defaultValue: z.object({
-            kind: z.string(),
-            language: z.string(),
-            value: z.string(),
+            kind: z.unknown(),
+            language: z.unknown(),
+            value: z.unknown(),
           }),
           kind: z.string(),
-          translatedValues: z.array(z.object({
-            kind: z.string(),
-            language: z.string(),
-            value: z.string(),
-          })),
+          translatedValues: z.array(z.unknown()),
         }),
       }),
       webAppLinkInfo: z.object({
         appLogoImage: z.object({
           contentDescription: z.object({
-            defaultValue: z.object({
-              kind: z.string(),
-              language: z.string(),
-              value: z.string(),
-            }),
-            kind: z.string(),
-            translatedValues: z.array(z.object({
-              kind: z.string(),
-              language: z.string(),
-              value: z.string(),
-            })),
+            defaultValue: z.unknown(),
+            kind: z.unknown(),
+            translatedValues: z.unknown(),
           }),
           kind: z.string(),
           privateImageId: z.string(),
           sourceUri: z.object({
-            description: z.string(),
-            localizedDescription: z.object({
-              defaultValue: z.object({
-                kind: z.string(),
-                language: z.string(),
-                value: z.string(),
-              }),
-              kind: z.string(),
-              translatedValues: z.array(z.object({
-                kind: z.string(),
-                language: z.string(),
-                value: z.string(),
-              })),
-            }),
-            uri: z.string(),
+            description: z.unknown(),
+            localizedDescription: z.unknown(),
+            uri: z.unknown(),
           }),
         }),
         appTarget: z.object({
           packageName: z.string(),
           targetUri: z.object({
-            description: z.string(),
-            id: z.string(),
-            kind: z.string(),
-            localizedDescription: z.object({
-              defaultValue: z.object({
-                kind: z.string(),
-                language: z.string(),
-                value: z.string(),
-              }),
-              kind: z.string(),
-              translatedValues: z.array(z.object({
-                kind: z.string(),
-                language: z.string(),
-                value: z.string(),
-              })),
-            }),
-            uri: z.string(),
+            description: z.unknown(),
+            id: z.unknown(),
+            kind: z.unknown(),
+            localizedDescription: z.unknown(),
+            uri: z.unknown(),
           }),
         }),
         description: z.object({
           defaultValue: z.object({
-            kind: z.string(),
-            language: z.string(),
-            value: z.string(),
+            kind: z.unknown(),
+            language: z.unknown(),
+            value: z.unknown(),
           }),
           kind: z.string(),
-          translatedValues: z.array(z.object({
-            kind: z.string(),
-            language: z.string(),
-            value: z.string(),
-          })),
+          translatedValues: z.array(z.unknown()),
         }),
         title: z.object({
           defaultValue: z.object({
-            kind: z.string(),
-            language: z.string(),
-            value: z.string(),
+            kind: z.unknown(),
+            language: z.unknown(),
+            value: z.unknown(),
           }),
           kind: z.string(),
-          translatedValues: z.array(z.object({
-            kind: z.string(),
-            language: z.string(),
-            value: z.string(),
-          })),
+          translatedValues: z.array(z.unknown()),
         }),
       }),
     }),
@@ -4522,169 +3045,44 @@ const StateSchema = z.object({
       cardBarcodeSectionDetails: z.object({
         firstBottomDetail: z.object({
           fieldSelector: z.object({
-            fields: z.array(z.object({
-              dateFormat: z.string(),
-              fieldPath: z.string(),
-            })),
+            fields: z.unknown(),
           }),
         }),
         firstTopDetail: z.object({
           fieldSelector: z.object({
-            fields: z.array(z.object({
-              dateFormat: z.string(),
-              fieldPath: z.string(),
-            })),
+            fields: z.unknown(),
           }),
         }),
         secondTopDetail: z.object({
           fieldSelector: z.object({
-            fields: z.array(z.object({
-              dateFormat: z.string(),
-              fieldPath: z.string(),
-            })),
+            fields: z.unknown(),
           }),
         }),
       }),
       cardTemplateOverride: z.object({
         cardRowTemplateInfos: z.array(z.object({
-          oneItem: z.object({
-            item: z.object({
-              firstValue: z.object({
-                fields: z.array(z.object({
-                  dateFormat: z.string(),
-                  fieldPath: z.string(),
-                })),
-              }),
-              predefinedItem: z.string(),
-              secondValue: z.object({
-                fields: z.array(z.object({
-                  dateFormat: z.string(),
-                  fieldPath: z.string(),
-                })),
-              }),
-            }),
-          }),
-          threeItems: z.object({
-            endItem: z.object({
-              firstValue: z.object({
-                fields: z.array(z.object({
-                  dateFormat: z.string(),
-                  fieldPath: z.string(),
-                })),
-              }),
-              predefinedItem: z.string(),
-              secondValue: z.object({
-                fields: z.array(z.object({
-                  dateFormat: z.string(),
-                  fieldPath: z.string(),
-                })),
-              }),
-            }),
-            middleItem: z.object({
-              firstValue: z.object({
-                fields: z.array(z.object({
-                  dateFormat: z.string(),
-                  fieldPath: z.string(),
-                })),
-              }),
-              predefinedItem: z.string(),
-              secondValue: z.object({
-                fields: z.array(z.object({
-                  dateFormat: z.string(),
-                  fieldPath: z.string(),
-                })),
-              }),
-            }),
-            startItem: z.object({
-              firstValue: z.object({
-                fields: z.array(z.object({
-                  dateFormat: z.string(),
-                  fieldPath: z.string(),
-                })),
-              }),
-              predefinedItem: z.string(),
-              secondValue: z.object({
-                fields: z.array(z.object({
-                  dateFormat: z.string(),
-                  fieldPath: z.string(),
-                })),
-              }),
-            }),
-          }),
-          twoItems: z.object({
-            endItem: z.object({
-              firstValue: z.object({
-                fields: z.array(z.object({
-                  dateFormat: z.string(),
-                  fieldPath: z.string(),
-                })),
-              }),
-              predefinedItem: z.string(),
-              secondValue: z.object({
-                fields: z.array(z.object({
-                  dateFormat: z.string(),
-                  fieldPath: z.string(),
-                })),
-              }),
-            }),
-            startItem: z.object({
-              firstValue: z.object({
-                fields: z.array(z.object({
-                  dateFormat: z.string(),
-                  fieldPath: z.string(),
-                })),
-              }),
-              predefinedItem: z.string(),
-              secondValue: z.object({
-                fields: z.array(z.object({
-                  dateFormat: z.string(),
-                  fieldPath: z.string(),
-                })),
-              }),
-            }),
-          }),
+          oneItem: z.unknown(),
+          threeItems: z.unknown(),
+          twoItems: z.unknown(),
         })),
       }),
       detailsTemplateOverride: z.object({
         detailsItemInfos: z.array(z.object({
-          item: z.object({
-            firstValue: z.object({
-              fields: z.array(z.object({
-                dateFormat: z.string(),
-                fieldPath: z.string(),
-              })),
-            }),
-            predefinedItem: z.string(),
-            secondValue: z.object({
-              fields: z.array(z.object({
-                dateFormat: z.string(),
-                fieldPath: z.string(),
-              })),
-            }),
-          }),
+          item: z.unknown(),
         })),
       }),
       listTemplateOverride: z.object({
         firstRowOption: z.object({
           fieldOption: z.object({
-            fields: z.array(z.object({
-              dateFormat: z.string(),
-              fieldPath: z.string(),
-            })),
+            fields: z.unknown(),
           }),
           transitOption: z.string(),
         }),
         secondRowOption: z.object({
-          fields: z.array(z.object({
-            dateFormat: z.string(),
-            fieldPath: z.string(),
-          })),
+          fields: z.array(z.unknown()),
         }),
         thirdRowOption: z.object({
-          fields: z.array(z.object({
-            dateFormat: z.string(),
-            fieldPath: z.string(),
-          })),
+          fields: z.array(z.unknown()),
         }),
       }),
     }),
@@ -4764,9 +3162,9 @@ const StateSchema = z.object({
         }),
         kind: z.string(),
         translatedValues: z.array(z.object({
-          kind: z.string(),
-          language: z.string(),
-          value: z.string(),
+          kind: z.unknown(),
+          language: z.unknown(),
+          value: z.unknown(),
         })),
       }),
       doorsOpen: z.string(),
@@ -4813,9 +3211,9 @@ const StateSchema = z.object({
         }),
         kind: z.string(),
         translatedValues: z.array(z.object({
-          kind: z.string(),
-          language: z.string(),
-          value: z.string(),
+          kind: z.unknown(),
+          language: z.unknown(),
+          value: z.unknown(),
         })),
       }),
       kind: z.string(),
@@ -4824,16 +3222,12 @@ const StateSchema = z.object({
         description: z.string(),
         localizedDescription: z.object({
           defaultValue: z.object({
-            kind: z.string(),
-            language: z.string(),
-            value: z.string(),
+            kind: z.unknown(),
+            language: z.unknown(),
+            value: z.unknown(),
           }),
           kind: z.string(),
-          translatedValues: z.array(z.object({
-            kind: z.string(),
-            language: z.string(),
-            value: z.string(),
-          })),
+          translatedValues: z.array(z.unknown()),
         }),
         uri: z.string(),
       }),
@@ -4851,9 +3245,9 @@ const StateSchema = z.object({
         }),
         kind: z.string(),
         translatedValues: z.array(z.object({
-          kind: z.string(),
-          language: z.string(),
-          value: z.string(),
+          kind: z.unknown(),
+          language: z.unknown(),
+          value: z.unknown(),
         })),
       }),
       uri: z.string(),
@@ -4863,71 +3257,22 @@ const StateSchema = z.object({
       id: z.string(),
       mainImage: z.object({
         contentDescription: z.object({
-          defaultValue: z.object({
-            kind: z.string(),
-            language: z.string(),
-            value: z.string(),
-          }),
-          kind: z.string(),
-          translatedValues: z.array(z.object({
-            kind: z.string(),
-            language: z.string(),
-            value: z.string(),
-          })),
+          defaultValue: z.unknown(),
+          kind: z.unknown(),
+          translatedValues: z.unknown(),
         }),
         kind: z.string(),
         privateImageId: z.string(),
         sourceUri: z.object({
-          description: z.string(),
-          localizedDescription: z.object({
-            defaultValue: z.object({
-              kind: z.string(),
-              language: z.string(),
-              value: z.string(),
-            }),
-            kind: z.string(),
-            translatedValues: z.array(z.object({
-              kind: z.string(),
-              language: z.string(),
-              value: z.string(),
-            })),
-          }),
-          uri: z.string(),
+          description: z.unknown(),
+          localizedDescription: z.unknown(),
+          uri: z.unknown(),
         }),
       }),
     })),
     infoModuleData: z.object({
       labelValueRows: z.array(z.object({
-        columns: z.array(z.object({
-          label: z.string(),
-          localizedLabel: z.object({
-            defaultValue: z.object({
-              kind: z.string(),
-              language: z.string(),
-              value: z.string(),
-            }),
-            kind: z.string(),
-            translatedValues: z.array(z.object({
-              kind: z.string(),
-              language: z.string(),
-              value: z.string(),
-            })),
-          }),
-          localizedValue: z.object({
-            defaultValue: z.object({
-              kind: z.string(),
-              language: z.string(),
-              value: z.string(),
-            }),
-            kind: z.string(),
-            translatedValues: z.array(z.object({
-              kind: z.string(),
-              language: z.string(),
-              value: z.string(),
-            })),
-          }),
-          value: z.string(),
-        })),
+        columns: z.array(z.unknown()),
       })),
       showLastUpdateTime: z.boolean(),
     }),
@@ -4939,17 +3284,9 @@ const StateSchema = z.object({
         id: z.string(),
         kind: z.string(),
         localizedDescription: z.object({
-          defaultValue: z.object({
-            kind: z.string(),
-            language: z.string(),
-            value: z.string(),
-          }),
-          kind: z.string(),
-          translatedValues: z.array(z.object({
-            kind: z.string(),
-            language: z.string(),
-            value: z.string(),
-          })),
+          defaultValue: z.unknown(),
+          kind: z.unknown(),
+          translatedValues: z.unknown(),
         }),
         uri: z.string(),
       })),
@@ -4981,9 +3318,9 @@ const StateSchema = z.object({
         }),
         kind: z.string(),
         translatedValues: z.array(z.object({
-          kind: z.string(),
-          language: z.string(),
-          value: z.string(),
+          kind: z.unknown(),
+          language: z.unknown(),
+          value: z.unknown(),
         })),
       }),
       kind: z.string(),
@@ -4992,16 +3329,12 @@ const StateSchema = z.object({
         description: z.string(),
         localizedDescription: z.object({
           defaultValue: z.object({
-            kind: z.string(),
-            language: z.string(),
-            value: z.string(),
+            kind: z.unknown(),
+            language: z.unknown(),
+            value: z.unknown(),
           }),
           kind: z.string(),
-          translatedValues: z.array(z.object({
-            kind: z.string(),
-            language: z.string(),
-            value: z.string(),
-          })),
+          translatedValues: z.array(z.unknown()),
         }),
         uri: z.string(),
       }),
@@ -5014,11 +3347,11 @@ const StateSchema = z.object({
       body: z.string(),
       displayInterval: z.object({
         end: z.object({
-          date: z.string(),
+          date: z.unknown(),
         }),
         kind: z.string(),
         start: z.object({
-          date: z.string(),
+          date: z.unknown(),
         }),
       }),
       header: z.string(),
@@ -5026,29 +3359,21 @@ const StateSchema = z.object({
       kind: z.string(),
       localizedBody: z.object({
         defaultValue: z.object({
-          kind: z.string(),
-          language: z.string(),
-          value: z.string(),
+          kind: z.unknown(),
+          language: z.unknown(),
+          value: z.unknown(),
         }),
         kind: z.string(),
-        translatedValues: z.array(z.object({
-          kind: z.string(),
-          language: z.string(),
-          value: z.string(),
-        })),
+        translatedValues: z.array(z.unknown()),
       }),
       localizedHeader: z.object({
         defaultValue: z.object({
-          kind: z.string(),
-          language: z.string(),
-          value: z.string(),
+          kind: z.unknown(),
+          language: z.unknown(),
+          value: z.unknown(),
         }),
         kind: z.string(),
-        translatedValues: z.array(z.object({
-          kind: z.string(),
-          language: z.string(),
-          value: z.string(),
-        })),
+        translatedValues: z.array(z.unknown()),
       }),
       messageType: z.string(),
     })),
@@ -5071,103 +3396,63 @@ const StateSchema = z.object({
       id: z.string(),
       localizedBody: z.object({
         defaultValue: z.object({
-          kind: z.string(),
-          language: z.string(),
-          value: z.string(),
+          kind: z.unknown(),
+          language: z.unknown(),
+          value: z.unknown(),
         }),
         kind: z.string(),
-        translatedValues: z.array(z.object({
-          kind: z.string(),
-          language: z.string(),
-          value: z.string(),
-        })),
+        translatedValues: z.array(z.unknown()),
       }),
       localizedHeader: z.object({
         defaultValue: z.object({
-          kind: z.string(),
-          language: z.string(),
-          value: z.string(),
+          kind: z.unknown(),
+          language: z.unknown(),
+          value: z.unknown(),
         }),
         kind: z.string(),
-        translatedValues: z.array(z.object({
-          kind: z.string(),
-          language: z.string(),
-          value: z.string(),
-        })),
+        translatedValues: z.array(z.unknown()),
       }),
     })),
     valueAddedModuleData: z.array(z.object({
       body: z.object({
         defaultValue: z.object({
-          kind: z.string(),
-          language: z.string(),
-          value: z.string(),
+          kind: z.unknown(),
+          language: z.unknown(),
+          value: z.unknown(),
         }),
         kind: z.string(),
-        translatedValues: z.array(z.object({
-          kind: z.string(),
-          language: z.string(),
-          value: z.string(),
-        })),
+        translatedValues: z.array(z.unknown()),
       }),
       header: z.object({
         defaultValue: z.object({
-          kind: z.string(),
-          language: z.string(),
-          value: z.string(),
+          kind: z.unknown(),
+          language: z.unknown(),
+          value: z.unknown(),
         }),
         kind: z.string(),
-        translatedValues: z.array(z.object({
-          kind: z.string(),
-          language: z.string(),
-          value: z.string(),
-        })),
+        translatedValues: z.array(z.unknown()),
       }),
       image: z.object({
         contentDescription: z.object({
-          defaultValue: z.object({
-            kind: z.string(),
-            language: z.string(),
-            value: z.string(),
-          }),
-          kind: z.string(),
-          translatedValues: z.array(z.object({
-            kind: z.string(),
-            language: z.string(),
-            value: z.string(),
-          })),
+          defaultValue: z.unknown(),
+          kind: z.unknown(),
+          translatedValues: z.unknown(),
         }),
         kind: z.string(),
         privateImageId: z.string(),
         sourceUri: z.object({
-          description: z.string(),
-          localizedDescription: z.object({
-            defaultValue: z.object({
-              kind: z.string(),
-              language: z.string(),
-              value: z.string(),
-            }),
-            kind: z.string(),
-            translatedValues: z.array(z.object({
-              kind: z.string(),
-              language: z.string(),
-              value: z.string(),
-            })),
-          }),
-          uri: z.string(),
+          description: z.unknown(),
+          localizedDescription: z.unknown(),
+          uri: z.unknown(),
         }),
       }),
       sortIndex: z.number(),
       uri: z.string(),
       viewConstraints: z.object({
         displayInterval: z.object({
-          end: z.object({
-            date: z.string(),
-          }),
-          kind: z.string(),
-          start: z.object({
-            date: z.string(),
-          }),
+          end: z.unknown(),
+          kind: z.unknown(),
+          start: z.unknown(),
         }),
       }),
     })),
@@ -5180,9 +3465,9 @@ const StateSchema = z.object({
         }),
         kind: z.string(),
         translatedValues: z.array(z.object({
-          kind: z.string(),
-          language: z.string(),
-          value: z.string(),
+          kind: z.unknown(),
+          language: z.unknown(),
+          value: z.unknown(),
         })),
       }),
       kind: z.string(),
@@ -5194,9 +3479,9 @@ const StateSchema = z.object({
         }),
         kind: z.string(),
         translatedValues: z.array(z.object({
-          kind: z.string(),
-          language: z.string(),
-          value: z.string(),
+          kind: z.unknown(),
+          language: z.unknown(),
+          value: z.unknown(),
         })),
       }),
     }),
@@ -5211,9 +3496,9 @@ const StateSchema = z.object({
         }),
         kind: z.string(),
         translatedValues: z.array(z.object({
-          kind: z.string(),
-          language: z.string(),
-          value: z.string(),
+          kind: z.unknown(),
+          language: z.unknown(),
+          value: z.unknown(),
         })),
       }),
       kind: z.string(),
@@ -5222,16 +3507,12 @@ const StateSchema = z.object({
         description: z.string(),
         localizedDescription: z.object({
           defaultValue: z.object({
-            kind: z.string(),
-            language: z.string(),
-            value: z.string(),
+            kind: z.unknown(),
+            language: z.unknown(),
+            value: z.unknown(),
           }),
           kind: z.string(),
-          translatedValues: z.array(z.object({
-            kind: z.string(),
-            language: z.string(),
-            value: z.string(),
-          })),
+          translatedValues: z.array(z.unknown()),
         }),
         uri: z.string(),
       }),
@@ -5245,9 +3526,9 @@ const StateSchema = z.object({
         }),
         kind: z.string(),
         translatedValues: z.array(z.object({
-          kind: z.string(),
-          language: z.string(),
-          value: z.string(),
+          kind: z.unknown(),
+          language: z.unknown(),
+          value: z.unknown(),
         })),
       }),
       kind: z.string(),
@@ -5256,16 +3537,12 @@ const StateSchema = z.object({
         description: z.string(),
         localizedDescription: z.object({
           defaultValue: z.object({
-            kind: z.string(),
-            language: z.string(),
-            value: z.string(),
+            kind: z.unknown(),
+            language: z.unknown(),
+            value: z.unknown(),
           }),
           kind: z.string(),
-          translatedValues: z.array(z.object({
-            kind: z.string(),
-            language: z.string(),
-            value: z.string(),
-          })),
+          translatedValues: z.array(z.unknown()),
         }),
         uri: z.string(),
       }),
@@ -5309,9 +3586,9 @@ const StateSchema = z.object({
         }),
         kind: z.string(),
         translatedValues: z.array(z.object({
-          kind: z.string(),
-          language: z.string(),
-          value: z.string(),
+          kind: z.unknown(),
+          language: z.unknown(),
+          value: z.unknown(),
         })),
       }),
       uri: z.string(),
@@ -5324,33 +3601,21 @@ const StateSchema = z.object({
     mainImage: z.object({
       contentDescription: z.object({
         defaultValue: z.object({
-          kind: z.string(),
-          language: z.string(),
-          value: z.string(),
+          kind: z.unknown(),
+          language: z.unknown(),
+          value: z.unknown(),
         }),
         kind: z.string(),
-        translatedValues: z.array(z.object({
-          kind: z.string(),
-          language: z.string(),
-          value: z.string(),
-        })),
+        translatedValues: z.array(z.unknown()),
       }),
       kind: z.string(),
       privateImageId: z.string(),
       sourceUri: z.object({
         description: z.string(),
         localizedDescription: z.object({
-          defaultValue: z.object({
-            kind: z.string(),
-            language: z.string(),
-            value: z.string(),
-          }),
-          kind: z.string(),
-          translatedValues: z.array(z.object({
-            kind: z.string(),
-            language: z.string(),
-            value: z.string(),
-          })),
+          defaultValue: z.unknown(),
+          kind: z.unknown(),
+          translatedValues: z.unknown(),
         }),
         uri: z.string(),
       }),
@@ -5359,34 +3624,10 @@ const StateSchema = z.object({
   infoModuleData: z.object({
     labelValueRows: z.array(z.object({
       columns: z.array(z.object({
-        label: z.string(),
-        localizedLabel: z.object({
-          defaultValue: z.object({
-            kind: z.string(),
-            language: z.string(),
-            value: z.string(),
-          }),
-          kind: z.string(),
-          translatedValues: z.array(z.object({
-            kind: z.string(),
-            language: z.string(),
-            value: z.string(),
-          })),
-        }),
-        localizedValue: z.object({
-          defaultValue: z.object({
-            kind: z.string(),
-            language: z.string(),
-            value: z.string(),
-          }),
-          kind: z.string(),
-          translatedValues: z.array(z.object({
-            kind: z.string(),
-            language: z.string(),
-            value: z.string(),
-          })),
-        }),
-        value: z.string(),
+        label: z.unknown(),
+        localizedLabel: z.unknown(),
+        localizedValue: z.unknown(),
+        value: z.unknown(),
       })),
     })),
     showLastUpdateTime: z.boolean(),
@@ -5401,16 +3642,12 @@ const StateSchema = z.object({
       kind: z.string(),
       localizedDescription: z.object({
         defaultValue: z.object({
-          kind: z.string(),
-          language: z.string(),
-          value: z.string(),
+          kind: z.unknown(),
+          language: z.unknown(),
+          value: z.unknown(),
         }),
         kind: z.string(),
-        translatedValues: z.array(z.object({
-          kind: z.string(),
-          language: z.string(),
-          value: z.string(),
-        })),
+        translatedValues: z.array(z.unknown()),
       }),
       uri: z.string(),
     })),
@@ -5446,9 +3683,9 @@ const StateSchema = z.object({
       }),
       kind: z.string(),
       translatedValues: z.array(z.object({
-        kind: z.string(),
-        language: z.string(),
-        value: z.string(),
+        kind: z.unknown(),
+        language: z.unknown(),
+        value: z.unknown(),
       })),
     }),
     localizedHeader: z.object({
@@ -5459,9 +3696,9 @@ const StateSchema = z.object({
       }),
       kind: z.string(),
       translatedValues: z.array(z.object({
-        kind: z.string(),
-        language: z.string(),
-        value: z.string(),
+        kind: z.unknown(),
+        language: z.unknown(),
+        value: z.unknown(),
       })),
     }),
     messageType: z.string(),
@@ -5579,9 +3816,9 @@ const StateSchema = z.object({
       }),
       kind: z.string(),
       translatedValues: z.array(z.object({
-        kind: z.string(),
-        language: z.string(),
-        value: z.string(),
+        kind: z.unknown(),
+        language: z.unknown(),
+        value: z.unknown(),
       })),
     }),
     localizedHeader: z.object({
@@ -5592,9 +3829,9 @@ const StateSchema = z.object({
       }),
       kind: z.string(),
       translatedValues: z.array(z.object({
-        kind: z.string(),
-        language: z.string(),
-        value: z.string(),
+        kind: z.unknown(),
+        language: z.unknown(),
+        value: z.unknown(),
       })),
     }),
   })).optional(),
@@ -5631,9 +3868,9 @@ const StateSchema = z.object({
       }),
       kind: z.string(),
       translatedValues: z.array(z.object({
-        kind: z.string(),
-        language: z.string(),
-        value: z.string(),
+        kind: z.unknown(),
+        language: z.unknown(),
+        value: z.unknown(),
       })),
     }),
     header: z.object({
@@ -5644,41 +3881,29 @@ const StateSchema = z.object({
       }),
       kind: z.string(),
       translatedValues: z.array(z.object({
-        kind: z.string(),
-        language: z.string(),
-        value: z.string(),
+        kind: z.unknown(),
+        language: z.unknown(),
+        value: z.unknown(),
       })),
     }),
     image: z.object({
       contentDescription: z.object({
         defaultValue: z.object({
-          kind: z.string(),
-          language: z.string(),
-          value: z.string(),
+          kind: z.unknown(),
+          language: z.unknown(),
+          value: z.unknown(),
         }),
         kind: z.string(),
-        translatedValues: z.array(z.object({
-          kind: z.string(),
-          language: z.string(),
-          value: z.string(),
-        })),
+        translatedValues: z.array(z.unknown()),
       }),
       kind: z.string(),
       privateImageId: z.string(),
       sourceUri: z.object({
         description: z.string(),
         localizedDescription: z.object({
-          defaultValue: z.object({
-            kind: z.string(),
-            language: z.string(),
-            value: z.string(),
-          }),
-          kind: z.string(),
-          translatedValues: z.array(z.object({
-            kind: z.string(),
-            language: z.string(),
-            value: z.string(),
-          })),
+          defaultValue: z.unknown(),
+          kind: z.unknown(),
+          translatedValues: z.unknown(),
         }),
         uri: z.string(),
       }),
@@ -5688,11 +3913,11 @@ const StateSchema = z.object({
     viewConstraints: z.object({
       displayInterval: z.object({
         end: z.object({
-          date: z.string(),
+          date: z.unknown(),
         }),
         kind: z.string(),
         start: z.object({
-          date: z.string(),
+          date: z.unknown(),
         }),
       }),
     }),
@@ -5708,28 +3933,21 @@ const InputsSchema = z.object({
       appLogoImage: z.object({
         contentDescription: z.object({
           defaultValue: z.object({
-            kind: z.string().describe(
+            kind: z.unknown().describe(
               'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#translatedString"`.',
             ).optional(),
-            language: z.string().describe(
+            language: z.unknown().describe(
               'Represents the BCP 47 language tag. Example values are "en-US", "en-GB", "de", or "de-AT".',
             ).optional(),
-            value: z.string().describe("The UTF-8 encoded translated string.")
+            value: z.unknown().describe("The UTF-8 encoded translated string.")
               .optional(),
           }).optional(),
           kind: z.string().describe(
             'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#localizedString"`.',
           ).optional(),
-          translatedValues: z.array(z.object({
-            kind: z.string().describe(
-              'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#translatedString"`.',
-            ).optional(),
-            language: z.string().describe(
-              'Represents the BCP 47 language tag. Example values are "en-US", "en-GB", "de", or "de-AT".',
-            ).optional(),
-            value: z.string().describe("The UTF-8 encoded translated string.")
-              .optional(),
-          })).describe("Contains the translations for the string.").optional(),
+          translatedValues: z.array(z.unknown()).describe(
+            "Contains the translations for the string.",
+          ).optional(),
         }).optional(),
         kind: z.string().describe(
           'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#image"`.',
@@ -5742,30 +3960,13 @@ const InputsSchema = z.object({
             "Additional information about the image, which is unused and retained only for backward compatibility.",
           ).optional(),
           localizedDescription: z.object({
-            defaultValue: z.object({
-              kind: z.string().describe(
-                'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#translatedString"`.',
-              ).optional(),
-              language: z.string().describe(
-                'Represents the BCP 47 language tag. Example values are "en-US", "en-GB", "de", or "de-AT".',
-              ).optional(),
-              value: z.string().describe("The UTF-8 encoded translated string.")
-                .optional(),
-            }).optional(),
-            kind: z.string().describe(
+            defaultValue: z.unknown().optional(),
+            kind: z.unknown().describe(
               'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#localizedString"`.',
             ).optional(),
-            translatedValues: z.array(z.object({
-              kind: z.string().describe(
-                'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#translatedString"`.',
-              ).optional(),
-              language: z.string().describe(
-                'Represents the BCP 47 language tag. Example values are "en-US", "en-GB", "de", or "de-AT".',
-              ).optional(),
-              value: z.string().describe("The UTF-8 encoded translated string.")
-                .optional(),
-            })).describe("Contains the translations for the string.")
-              .optional(),
+            translatedValues: z.unknown().describe(
+              "Contains the translations for the string.",
+            ).optional(),
           }).optional(),
           uri: z.string().describe(
             "The location of the image. URIs must have a scheme.",
@@ -5787,30 +3988,13 @@ const InputsSchema = z.object({
             'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#uri"`.',
           ).optional(),
           localizedDescription: z.object({
-            defaultValue: z.object({
-              kind: z.string().describe(
-                'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#translatedString"`.',
-              ).optional(),
-              language: z.string().describe(
-                'Represents the BCP 47 language tag. Example values are "en-US", "en-GB", "de", or "de-AT".',
-              ).optional(),
-              value: z.string().describe("The UTF-8 encoded translated string.")
-                .optional(),
-            }).optional(),
-            kind: z.string().describe(
+            defaultValue: z.unknown().optional(),
+            kind: z.unknown().describe(
               'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#localizedString"`.',
             ).optional(),
-            translatedValues: z.array(z.object({
-              kind: z.string().describe(
-                'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#translatedString"`.',
-              ).optional(),
-              language: z.string().describe(
-                'Represents the BCP 47 language tag. Example values are "en-US", "en-GB", "de", or "de-AT".',
-              ).optional(),
-              value: z.string().describe("The UTF-8 encoded translated string.")
-                .optional(),
-            })).describe("Contains the translations for the string.")
-              .optional(),
+            translatedValues: z.unknown().describe(
+              "Contains the translations for the string.",
+            ).optional(),
           }).optional(),
           uri: z.string().describe(
             "The location of a web page, image, or other resource. URIs in the `LinksModuleData` module can have different prefixes indicating the type of URI (a link to a web page, a link to a map, a telephone number, or an email address). URIs must have a scheme.",
@@ -5832,13 +4016,13 @@ const InputsSchema = z.object({
           'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#localizedString"`.',
         ).optional(),
         translatedValues: z.array(z.object({
-          kind: z.string().describe(
+          kind: z.unknown().describe(
             'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#translatedString"`.',
           ).optional(),
-          language: z.string().describe(
+          language: z.unknown().describe(
             'Represents the BCP 47 language tag. Example values are "en-US", "en-GB", "de", or "de-AT".',
           ).optional(),
-          value: z.string().describe("The UTF-8 encoded translated string.")
+          value: z.unknown().describe("The UTF-8 encoded translated string.")
             .optional(),
         })).describe("Contains the translations for the string.").optional(),
       }).optional(),
@@ -5857,13 +4041,13 @@ const InputsSchema = z.object({
           'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#localizedString"`.',
         ).optional(),
         translatedValues: z.array(z.object({
-          kind: z.string().describe(
+          kind: z.unknown().describe(
             'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#translatedString"`.',
           ).optional(),
-          language: z.string().describe(
+          language: z.unknown().describe(
             'Represents the BCP 47 language tag. Example values are "en-US", "en-GB", "de", or "de-AT".',
           ).optional(),
-          value: z.string().describe("The UTF-8 encoded translated string.")
+          value: z.unknown().describe("The UTF-8 encoded translated string.")
             .optional(),
         })).describe("Contains the translations for the string.").optional(),
       }).optional(),
@@ -5897,28 +4081,21 @@ const InputsSchema = z.object({
       appLogoImage: z.object({
         contentDescription: z.object({
           defaultValue: z.object({
-            kind: z.string().describe(
+            kind: z.unknown().describe(
               'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#translatedString"`.',
             ).optional(),
-            language: z.string().describe(
+            language: z.unknown().describe(
               'Represents the BCP 47 language tag. Example values are "en-US", "en-GB", "de", or "de-AT".',
             ).optional(),
-            value: z.string().describe("The UTF-8 encoded translated string.")
+            value: z.unknown().describe("The UTF-8 encoded translated string.")
               .optional(),
           }).optional(),
           kind: z.string().describe(
             'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#localizedString"`.',
           ).optional(),
-          translatedValues: z.array(z.object({
-            kind: z.string().describe(
-              'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#translatedString"`.',
-            ).optional(),
-            language: z.string().describe(
-              'Represents the BCP 47 language tag. Example values are "en-US", "en-GB", "de", or "de-AT".',
-            ).optional(),
-            value: z.string().describe("The UTF-8 encoded translated string.")
-              .optional(),
-          })).describe("Contains the translations for the string.").optional(),
+          translatedValues: z.array(z.unknown()).describe(
+            "Contains the translations for the string.",
+          ).optional(),
         }).optional(),
         kind: z.string().describe(
           'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#image"`.',
@@ -5931,30 +4108,13 @@ const InputsSchema = z.object({
             "Additional information about the image, which is unused and retained only for backward compatibility.",
           ).optional(),
           localizedDescription: z.object({
-            defaultValue: z.object({
-              kind: z.string().describe(
-                'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#translatedString"`.',
-              ).optional(),
-              language: z.string().describe(
-                'Represents the BCP 47 language tag. Example values are "en-US", "en-GB", "de", or "de-AT".',
-              ).optional(),
-              value: z.string().describe("The UTF-8 encoded translated string.")
-                .optional(),
-            }).optional(),
-            kind: z.string().describe(
+            defaultValue: z.unknown().optional(),
+            kind: z.unknown().describe(
               'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#localizedString"`.',
             ).optional(),
-            translatedValues: z.array(z.object({
-              kind: z.string().describe(
-                'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#translatedString"`.',
-              ).optional(),
-              language: z.string().describe(
-                'Represents the BCP 47 language tag. Example values are "en-US", "en-GB", "de", or "de-AT".',
-              ).optional(),
-              value: z.string().describe("The UTF-8 encoded translated string.")
-                .optional(),
-            })).describe("Contains the translations for the string.")
-              .optional(),
+            translatedValues: z.unknown().describe(
+              "Contains the translations for the string.",
+            ).optional(),
           }).optional(),
           uri: z.string().describe(
             "The location of the image. URIs must have a scheme.",
@@ -5976,30 +4136,13 @@ const InputsSchema = z.object({
             'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#uri"`.',
           ).optional(),
           localizedDescription: z.object({
-            defaultValue: z.object({
-              kind: z.string().describe(
-                'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#translatedString"`.',
-              ).optional(),
-              language: z.string().describe(
-                'Represents the BCP 47 language tag. Example values are "en-US", "en-GB", "de", or "de-AT".',
-              ).optional(),
-              value: z.string().describe("The UTF-8 encoded translated string.")
-                .optional(),
-            }).optional(),
-            kind: z.string().describe(
+            defaultValue: z.unknown().optional(),
+            kind: z.unknown().describe(
               'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#localizedString"`.',
             ).optional(),
-            translatedValues: z.array(z.object({
-              kind: z.string().describe(
-                'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#translatedString"`.',
-              ).optional(),
-              language: z.string().describe(
-                'Represents the BCP 47 language tag. Example values are "en-US", "en-GB", "de", or "de-AT".',
-              ).optional(),
-              value: z.string().describe("The UTF-8 encoded translated string.")
-                .optional(),
-            })).describe("Contains the translations for the string.")
-              .optional(),
+            translatedValues: z.unknown().describe(
+              "Contains the translations for the string.",
+            ).optional(),
           }).optional(),
           uri: z.string().describe(
             "The location of a web page, image, or other resource. URIs in the `LinksModuleData` module can have different prefixes indicating the type of URI (a link to a web page, a link to a map, a telephone number, or an email address). URIs must have a scheme.",
@@ -6021,13 +4164,13 @@ const InputsSchema = z.object({
           'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#localizedString"`.',
         ).optional(),
         translatedValues: z.array(z.object({
-          kind: z.string().describe(
+          kind: z.unknown().describe(
             'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#translatedString"`.',
           ).optional(),
-          language: z.string().describe(
+          language: z.unknown().describe(
             'Represents the BCP 47 language tag. Example values are "en-US", "en-GB", "de", or "de-AT".',
           ).optional(),
-          value: z.string().describe("The UTF-8 encoded translated string.")
+          value: z.unknown().describe("The UTF-8 encoded translated string.")
             .optional(),
         })).describe("Contains the translations for the string.").optional(),
       }).optional(),
@@ -6046,13 +4189,13 @@ const InputsSchema = z.object({
           'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#localizedString"`.',
         ).optional(),
         translatedValues: z.array(z.object({
-          kind: z.string().describe(
+          kind: z.unknown().describe(
             'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#translatedString"`.',
           ).optional(),
-          language: z.string().describe(
+          language: z.unknown().describe(
             'Represents the BCP 47 language tag. Example values are "en-US", "en-GB", "de", or "de-AT".',
           ).optional(),
-          value: z.string().describe("The UTF-8 encoded translated string.")
+          value: z.unknown().describe("The UTF-8 encoded translated string.")
             .optional(),
         })).describe("Contains the translations for the string.").optional(),
       }).optional(),
@@ -6061,28 +4204,21 @@ const InputsSchema = z.object({
       appLogoImage: z.object({
         contentDescription: z.object({
           defaultValue: z.object({
-            kind: z.string().describe(
+            kind: z.unknown().describe(
               'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#translatedString"`.',
             ).optional(),
-            language: z.string().describe(
+            language: z.unknown().describe(
               'Represents the BCP 47 language tag. Example values are "en-US", "en-GB", "de", or "de-AT".',
             ).optional(),
-            value: z.string().describe("The UTF-8 encoded translated string.")
+            value: z.unknown().describe("The UTF-8 encoded translated string.")
               .optional(),
           }).optional(),
           kind: z.string().describe(
             'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#localizedString"`.',
           ).optional(),
-          translatedValues: z.array(z.object({
-            kind: z.string().describe(
-              'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#translatedString"`.',
-            ).optional(),
-            language: z.string().describe(
-              'Represents the BCP 47 language tag. Example values are "en-US", "en-GB", "de", or "de-AT".',
-            ).optional(),
-            value: z.string().describe("The UTF-8 encoded translated string.")
-              .optional(),
-          })).describe("Contains the translations for the string.").optional(),
+          translatedValues: z.array(z.unknown()).describe(
+            "Contains the translations for the string.",
+          ).optional(),
         }).optional(),
         kind: z.string().describe(
           'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#image"`.',
@@ -6095,30 +4231,13 @@ const InputsSchema = z.object({
             "Additional information about the image, which is unused and retained only for backward compatibility.",
           ).optional(),
           localizedDescription: z.object({
-            defaultValue: z.object({
-              kind: z.string().describe(
-                'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#translatedString"`.',
-              ).optional(),
-              language: z.string().describe(
-                'Represents the BCP 47 language tag. Example values are "en-US", "en-GB", "de", or "de-AT".',
-              ).optional(),
-              value: z.string().describe("The UTF-8 encoded translated string.")
-                .optional(),
-            }).optional(),
-            kind: z.string().describe(
+            defaultValue: z.unknown().optional(),
+            kind: z.unknown().describe(
               'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#localizedString"`.',
             ).optional(),
-            translatedValues: z.array(z.object({
-              kind: z.string().describe(
-                'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#translatedString"`.',
-              ).optional(),
-              language: z.string().describe(
-                'Represents the BCP 47 language tag. Example values are "en-US", "en-GB", "de", or "de-AT".',
-              ).optional(),
-              value: z.string().describe("The UTF-8 encoded translated string.")
-                .optional(),
-            })).describe("Contains the translations for the string.")
-              .optional(),
+            translatedValues: z.unknown().describe(
+              "Contains the translations for the string.",
+            ).optional(),
           }).optional(),
           uri: z.string().describe(
             "The location of the image. URIs must have a scheme.",
@@ -6140,30 +4259,13 @@ const InputsSchema = z.object({
             'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#uri"`.',
           ).optional(),
           localizedDescription: z.object({
-            defaultValue: z.object({
-              kind: z.string().describe(
-                'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#translatedString"`.',
-              ).optional(),
-              language: z.string().describe(
-                'Represents the BCP 47 language tag. Example values are "en-US", "en-GB", "de", or "de-AT".',
-              ).optional(),
-              value: z.string().describe("The UTF-8 encoded translated string.")
-                .optional(),
-            }).optional(),
-            kind: z.string().describe(
+            defaultValue: z.unknown().optional(),
+            kind: z.unknown().describe(
               'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#localizedString"`.',
             ).optional(),
-            translatedValues: z.array(z.object({
-              kind: z.string().describe(
-                'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#translatedString"`.',
-              ).optional(),
-              language: z.string().describe(
-                'Represents the BCP 47 language tag. Example values are "en-US", "en-GB", "de", or "de-AT".',
-              ).optional(),
-              value: z.string().describe("The UTF-8 encoded translated string.")
-                .optional(),
-            })).describe("Contains the translations for the string.")
-              .optional(),
+            translatedValues: z.unknown().describe(
+              "Contains the translations for the string.",
+            ).optional(),
           }).optional(),
           uri: z.string().describe(
             "The location of a web page, image, or other resource. URIs in the `LinksModuleData` module can have different prefixes indicating the type of URI (a link to a web page, a link to a map, a telephone number, or an email address). URIs must have a scheme.",
@@ -6185,13 +4287,13 @@ const InputsSchema = z.object({
           'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#localizedString"`.',
         ).optional(),
         translatedValues: z.array(z.object({
-          kind: z.string().describe(
+          kind: z.unknown().describe(
             'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#translatedString"`.',
           ).optional(),
-          language: z.string().describe(
+          language: z.unknown().describe(
             'Represents the BCP 47 language tag. Example values are "en-US", "en-GB", "de", or "de-AT".',
           ).optional(),
-          value: z.string().describe("The UTF-8 encoded translated string.")
+          value: z.unknown().describe("The UTF-8 encoded translated string.")
             .optional(),
         })).describe("Contains the translations for the string.").optional(),
       }).optional(),
@@ -6210,13 +4312,13 @@ const InputsSchema = z.object({
           'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#localizedString"`.',
         ).optional(),
         translatedValues: z.array(z.object({
-          kind: z.string().describe(
+          kind: z.unknown().describe(
             'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#translatedString"`.',
           ).optional(),
-          language: z.string().describe(
+          language: z.unknown().describe(
             'Represents the BCP 47 language tag. Example values are "en-US", "en-GB", "de", or "de-AT".',
           ).optional(),
-          value: z.string().describe("The UTF-8 encoded translated string.")
+          value: z.unknown().describe("The UTF-8 encoded translated string.")
             .optional(),
         })).describe("Contains the translations for the string.").optional(),
       }).optional(),
@@ -6300,30 +4402,13 @@ const InputsSchema = z.object({
       androidAppLinkInfo: z.object({
         appLogoImage: z.object({
           contentDescription: z.object({
-            defaultValue: z.object({
-              kind: z.string().describe(
-                'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#translatedString"`.',
-              ).optional(),
-              language: z.string().describe(
-                'Represents the BCP 47 language tag. Example values are "en-US", "en-GB", "de", or "de-AT".',
-              ).optional(),
-              value: z.string().describe("The UTF-8 encoded translated string.")
-                .optional(),
-            }).optional(),
-            kind: z.string().describe(
+            defaultValue: z.unknown().optional(),
+            kind: z.unknown().describe(
               'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#localizedString"`.',
             ).optional(),
-            translatedValues: z.array(z.object({
-              kind: z.string().describe(
-                'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#translatedString"`.',
-              ).optional(),
-              language: z.string().describe(
-                'Represents the BCP 47 language tag. Example values are "en-US", "en-GB", "de", or "de-AT".',
-              ).optional(),
-              value: z.string().describe("The UTF-8 encoded translated string.")
-                .optional(),
-            })).describe("Contains the translations for the string.")
-              .optional(),
+            translatedValues: z.unknown().describe(
+              "Contains the translations for the string.",
+            ).optional(),
           }).optional(),
           kind: z.string().describe(
             'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#image"`.',
@@ -6332,38 +4417,11 @@ const InputsSchema = z.object({
             "An ID for an already uploaded private image. Either this or source_uri should be set. Requests setting both or neither will be rejected. Please contact support to use private images.",
           ).optional(),
           sourceUri: z.object({
-            description: z.string().describe(
+            description: z.unknown().describe(
               "Additional information about the image, which is unused and retained only for backward compatibility.",
             ).optional(),
-            localizedDescription: z.object({
-              defaultValue: z.object({
-                kind: z.string().describe(
-                  'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#translatedString"`.',
-                ).optional(),
-                language: z.string().describe(
-                  'Represents the BCP 47 language tag. Example values are "en-US", "en-GB", "de", or "de-AT".',
-                ).optional(),
-                value: z.string().describe(
-                  "The UTF-8 encoded translated string.",
-                ).optional(),
-              }).optional(),
-              kind: z.string().describe(
-                'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#localizedString"`.',
-              ).optional(),
-              translatedValues: z.array(z.object({
-                kind: z.string().describe(
-                  'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#translatedString"`.',
-                ).optional(),
-                language: z.string().describe(
-                  'Represents the BCP 47 language tag. Example values are "en-US", "en-GB", "de", or "de-AT".',
-                ).optional(),
-                value: z.string().describe(
-                  "The UTF-8 encoded translated string.",
-                ).optional(),
-              })).describe("Contains the translations for the string.")
-                .optional(),
-            }).optional(),
-            uri: z.string().describe(
+            localizedDescription: z.unknown().optional(),
+            uri: z.unknown().describe(
               "The location of the image. URIs must have a scheme.",
             ).optional(),
           }).optional(),
@@ -6373,97 +4431,56 @@ const InputsSchema = z.object({
             "Package name for AppTarget. For example: com.google.android.gm",
           ).optional(),
           targetUri: z.object({
-            description: z.string().describe(
+            description: z.unknown().describe(
               "The URI's title appearing in the app as text. Recommended maximum is 20 characters to ensure full string is displayed on smaller screens. Note that in some contexts this text is not used, such as when `description` is part of an image.",
             ).optional(),
-            id: z.string().describe(
+            id: z.unknown().describe(
               "The ID associated with a uri. This field is here to enable ease of management of uris.",
             ).optional(),
-            kind: z.string().describe(
+            kind: z.unknown().describe(
               'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#uri"`.',
             ).optional(),
-            localizedDescription: z.object({
-              defaultValue: z.object({
-                kind: z.string().describe(
-                  'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#translatedString"`.',
-                ).optional(),
-                language: z.string().describe(
-                  'Represents the BCP 47 language tag. Example values are "en-US", "en-GB", "de", or "de-AT".',
-                ).optional(),
-                value: z.string().describe(
-                  "The UTF-8 encoded translated string.",
-                ).optional(),
-              }).optional(),
-              kind: z.string().describe(
-                'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#localizedString"`.',
-              ).optional(),
-              translatedValues: z.array(z.object({
-                kind: z.string().describe(
-                  'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#translatedString"`.',
-                ).optional(),
-                language: z.string().describe(
-                  'Represents the BCP 47 language tag. Example values are "en-US", "en-GB", "de", or "de-AT".',
-                ).optional(),
-                value: z.string().describe(
-                  "The UTF-8 encoded translated string.",
-                ).optional(),
-              })).describe("Contains the translations for the string.")
-                .optional(),
-            }).optional(),
-            uri: z.string().describe(
+            localizedDescription: z.unknown().optional(),
+            uri: z.unknown().describe(
               "The location of a web page, image, or other resource. URIs in the `LinksModuleData` module can have different prefixes indicating the type of URI (a link to a web page, a link to a map, a telephone number, or an email address). URIs must have a scheme.",
             ).optional(),
           }).optional(),
         }).optional(),
         description: z.object({
           defaultValue: z.object({
-            kind: z.string().describe(
+            kind: z.unknown().describe(
               'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#translatedString"`.',
             ).optional(),
-            language: z.string().describe(
+            language: z.unknown().describe(
               'Represents the BCP 47 language tag. Example values are "en-US", "en-GB", "de", or "de-AT".',
             ).optional(),
-            value: z.string().describe("The UTF-8 encoded translated string.")
+            value: z.unknown().describe("The UTF-8 encoded translated string.")
               .optional(),
           }).optional(),
           kind: z.string().describe(
             'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#localizedString"`.',
           ).optional(),
-          translatedValues: z.array(z.object({
-            kind: z.string().describe(
-              'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#translatedString"`.',
-            ).optional(),
-            language: z.string().describe(
-              'Represents the BCP 47 language tag. Example values are "en-US", "en-GB", "de", or "de-AT".',
-            ).optional(),
-            value: z.string().describe("The UTF-8 encoded translated string.")
-              .optional(),
-          })).describe("Contains the translations for the string.").optional(),
+          translatedValues: z.array(z.unknown()).describe(
+            "Contains the translations for the string.",
+          ).optional(),
         }).optional(),
         title: z.object({
           defaultValue: z.object({
-            kind: z.string().describe(
+            kind: z.unknown().describe(
               'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#translatedString"`.',
             ).optional(),
-            language: z.string().describe(
+            language: z.unknown().describe(
               'Represents the BCP 47 language tag. Example values are "en-US", "en-GB", "de", or "de-AT".',
             ).optional(),
-            value: z.string().describe("The UTF-8 encoded translated string.")
+            value: z.unknown().describe("The UTF-8 encoded translated string.")
               .optional(),
           }).optional(),
           kind: z.string().describe(
             'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#localizedString"`.',
           ).optional(),
-          translatedValues: z.array(z.object({
-            kind: z.string().describe(
-              'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#translatedString"`.',
-            ).optional(),
-            language: z.string().describe(
-              'Represents the BCP 47 language tag. Example values are "en-US", "en-GB", "de", or "de-AT".',
-            ).optional(),
-            value: z.string().describe("The UTF-8 encoded translated string.")
-              .optional(),
-          })).describe("Contains the translations for the string.").optional(),
+          translatedValues: z.array(z.unknown()).describe(
+            "Contains the translations for the string.",
+          ).optional(),
         }).optional(),
       }).optional(),
       displayText: z.object({
@@ -6481,43 +4498,26 @@ const InputsSchema = z.object({
           'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#localizedString"`.',
         ).optional(),
         translatedValues: z.array(z.object({
-          kind: z.string().describe(
+          kind: z.unknown().describe(
             'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#translatedString"`.',
           ).optional(),
-          language: z.string().describe(
+          language: z.unknown().describe(
             'Represents the BCP 47 language tag. Example values are "en-US", "en-GB", "de", or "de-AT".',
           ).optional(),
-          value: z.string().describe("The UTF-8 encoded translated string.")
+          value: z.unknown().describe("The UTF-8 encoded translated string.")
             .optional(),
         })).describe("Contains the translations for the string.").optional(),
       }).optional(),
       iosAppLinkInfo: z.object({
         appLogoImage: z.object({
           contentDescription: z.object({
-            defaultValue: z.object({
-              kind: z.string().describe(
-                'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#translatedString"`.',
-              ).optional(),
-              language: z.string().describe(
-                'Represents the BCP 47 language tag. Example values are "en-US", "en-GB", "de", or "de-AT".',
-              ).optional(),
-              value: z.string().describe("The UTF-8 encoded translated string.")
-                .optional(),
-            }).optional(),
-            kind: z.string().describe(
+            defaultValue: z.unknown().optional(),
+            kind: z.unknown().describe(
               'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#localizedString"`.',
             ).optional(),
-            translatedValues: z.array(z.object({
-              kind: z.string().describe(
-                'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#translatedString"`.',
-              ).optional(),
-              language: z.string().describe(
-                'Represents the BCP 47 language tag. Example values are "en-US", "en-GB", "de", or "de-AT".',
-              ).optional(),
-              value: z.string().describe("The UTF-8 encoded translated string.")
-                .optional(),
-            })).describe("Contains the translations for the string.")
-              .optional(),
+            translatedValues: z.unknown().describe(
+              "Contains the translations for the string.",
+            ).optional(),
           }).optional(),
           kind: z.string().describe(
             'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#image"`.',
@@ -6526,38 +4526,11 @@ const InputsSchema = z.object({
             "An ID for an already uploaded private image. Either this or source_uri should be set. Requests setting both or neither will be rejected. Please contact support to use private images.",
           ).optional(),
           sourceUri: z.object({
-            description: z.string().describe(
+            description: z.unknown().describe(
               "Additional information about the image, which is unused and retained only for backward compatibility.",
             ).optional(),
-            localizedDescription: z.object({
-              defaultValue: z.object({
-                kind: z.string().describe(
-                  'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#translatedString"`.',
-                ).optional(),
-                language: z.string().describe(
-                  'Represents the BCP 47 language tag. Example values are "en-US", "en-GB", "de", or "de-AT".',
-                ).optional(),
-                value: z.string().describe(
-                  "The UTF-8 encoded translated string.",
-                ).optional(),
-              }).optional(),
-              kind: z.string().describe(
-                'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#localizedString"`.',
-              ).optional(),
-              translatedValues: z.array(z.object({
-                kind: z.string().describe(
-                  'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#translatedString"`.',
-                ).optional(),
-                language: z.string().describe(
-                  'Represents the BCP 47 language tag. Example values are "en-US", "en-GB", "de", or "de-AT".',
-                ).optional(),
-                value: z.string().describe(
-                  "The UTF-8 encoded translated string.",
-                ).optional(),
-              })).describe("Contains the translations for the string.")
-                .optional(),
-            }).optional(),
-            uri: z.string().describe(
+            localizedDescription: z.unknown().optional(),
+            uri: z.unknown().describe(
               "The location of the image. URIs must have a scheme.",
             ).optional(),
           }).optional(),
@@ -6567,126 +4540,68 @@ const InputsSchema = z.object({
             "Package name for AppTarget. For example: com.google.android.gm",
           ).optional(),
           targetUri: z.object({
-            description: z.string().describe(
+            description: z.unknown().describe(
               "The URI's title appearing in the app as text. Recommended maximum is 20 characters to ensure full string is displayed on smaller screens. Note that in some contexts this text is not used, such as when `description` is part of an image.",
             ).optional(),
-            id: z.string().describe(
+            id: z.unknown().describe(
               "The ID associated with a uri. This field is here to enable ease of management of uris.",
             ).optional(),
-            kind: z.string().describe(
+            kind: z.unknown().describe(
               'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#uri"`.',
             ).optional(),
-            localizedDescription: z.object({
-              defaultValue: z.object({
-                kind: z.string().describe(
-                  'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#translatedString"`.',
-                ).optional(),
-                language: z.string().describe(
-                  'Represents the BCP 47 language tag. Example values are "en-US", "en-GB", "de", or "de-AT".',
-                ).optional(),
-                value: z.string().describe(
-                  "The UTF-8 encoded translated string.",
-                ).optional(),
-              }).optional(),
-              kind: z.string().describe(
-                'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#localizedString"`.',
-              ).optional(),
-              translatedValues: z.array(z.object({
-                kind: z.string().describe(
-                  'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#translatedString"`.',
-                ).optional(),
-                language: z.string().describe(
-                  'Represents the BCP 47 language tag. Example values are "en-US", "en-GB", "de", or "de-AT".',
-                ).optional(),
-                value: z.string().describe(
-                  "The UTF-8 encoded translated string.",
-                ).optional(),
-              })).describe("Contains the translations for the string.")
-                .optional(),
-            }).optional(),
-            uri: z.string().describe(
+            localizedDescription: z.unknown().optional(),
+            uri: z.unknown().describe(
               "The location of a web page, image, or other resource. URIs in the `LinksModuleData` module can have different prefixes indicating the type of URI (a link to a web page, a link to a map, a telephone number, or an email address). URIs must have a scheme.",
             ).optional(),
           }).optional(),
         }).optional(),
         description: z.object({
           defaultValue: z.object({
-            kind: z.string().describe(
+            kind: z.unknown().describe(
               'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#translatedString"`.',
             ).optional(),
-            language: z.string().describe(
+            language: z.unknown().describe(
               'Represents the BCP 47 language tag. Example values are "en-US", "en-GB", "de", or "de-AT".',
             ).optional(),
-            value: z.string().describe("The UTF-8 encoded translated string.")
+            value: z.unknown().describe("The UTF-8 encoded translated string.")
               .optional(),
           }).optional(),
           kind: z.string().describe(
             'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#localizedString"`.',
           ).optional(),
-          translatedValues: z.array(z.object({
-            kind: z.string().describe(
-              'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#translatedString"`.',
-            ).optional(),
-            language: z.string().describe(
-              'Represents the BCP 47 language tag. Example values are "en-US", "en-GB", "de", or "de-AT".',
-            ).optional(),
-            value: z.string().describe("The UTF-8 encoded translated string.")
-              .optional(),
-          })).describe("Contains the translations for the string.").optional(),
+          translatedValues: z.array(z.unknown()).describe(
+            "Contains the translations for the string.",
+          ).optional(),
         }).optional(),
         title: z.object({
           defaultValue: z.object({
-            kind: z.string().describe(
+            kind: z.unknown().describe(
               'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#translatedString"`.',
             ).optional(),
-            language: z.string().describe(
+            language: z.unknown().describe(
               'Represents the BCP 47 language tag. Example values are "en-US", "en-GB", "de", or "de-AT".',
             ).optional(),
-            value: z.string().describe("The UTF-8 encoded translated string.")
+            value: z.unknown().describe("The UTF-8 encoded translated string.")
               .optional(),
           }).optional(),
           kind: z.string().describe(
             'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#localizedString"`.',
           ).optional(),
-          translatedValues: z.array(z.object({
-            kind: z.string().describe(
-              'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#translatedString"`.',
-            ).optional(),
-            language: z.string().describe(
-              'Represents the BCP 47 language tag. Example values are "en-US", "en-GB", "de", or "de-AT".',
-            ).optional(),
-            value: z.string().describe("The UTF-8 encoded translated string.")
-              .optional(),
-          })).describe("Contains the translations for the string.").optional(),
+          translatedValues: z.array(z.unknown()).describe(
+            "Contains the translations for the string.",
+          ).optional(),
         }).optional(),
       }).optional(),
       webAppLinkInfo: z.object({
         appLogoImage: z.object({
           contentDescription: z.object({
-            defaultValue: z.object({
-              kind: z.string().describe(
-                'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#translatedString"`.',
-              ).optional(),
-              language: z.string().describe(
-                'Represents the BCP 47 language tag. Example values are "en-US", "en-GB", "de", or "de-AT".',
-              ).optional(),
-              value: z.string().describe("The UTF-8 encoded translated string.")
-                .optional(),
-            }).optional(),
-            kind: z.string().describe(
+            defaultValue: z.unknown().optional(),
+            kind: z.unknown().describe(
               'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#localizedString"`.',
             ).optional(),
-            translatedValues: z.array(z.object({
-              kind: z.string().describe(
-                'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#translatedString"`.',
-              ).optional(),
-              language: z.string().describe(
-                'Represents the BCP 47 language tag. Example values are "en-US", "en-GB", "de", or "de-AT".',
-              ).optional(),
-              value: z.string().describe("The UTF-8 encoded translated string.")
-                .optional(),
-            })).describe("Contains the translations for the string.")
-              .optional(),
+            translatedValues: z.unknown().describe(
+              "Contains the translations for the string.",
+            ).optional(),
           }).optional(),
           kind: z.string().describe(
             'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#image"`.',
@@ -6695,38 +4610,11 @@ const InputsSchema = z.object({
             "An ID for an already uploaded private image. Either this or source_uri should be set. Requests setting both or neither will be rejected. Please contact support to use private images.",
           ).optional(),
           sourceUri: z.object({
-            description: z.string().describe(
+            description: z.unknown().describe(
               "Additional information about the image, which is unused and retained only for backward compatibility.",
             ).optional(),
-            localizedDescription: z.object({
-              defaultValue: z.object({
-                kind: z.string().describe(
-                  'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#translatedString"`.',
-                ).optional(),
-                language: z.string().describe(
-                  'Represents the BCP 47 language tag. Example values are "en-US", "en-GB", "de", or "de-AT".',
-                ).optional(),
-                value: z.string().describe(
-                  "The UTF-8 encoded translated string.",
-                ).optional(),
-              }).optional(),
-              kind: z.string().describe(
-                'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#localizedString"`.',
-              ).optional(),
-              translatedValues: z.array(z.object({
-                kind: z.string().describe(
-                  'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#translatedString"`.',
-                ).optional(),
-                language: z.string().describe(
-                  'Represents the BCP 47 language tag. Example values are "en-US", "en-GB", "de", or "de-AT".',
-                ).optional(),
-                value: z.string().describe(
-                  "The UTF-8 encoded translated string.",
-                ).optional(),
-              })).describe("Contains the translations for the string.")
-                .optional(),
-            }).optional(),
-            uri: z.string().describe(
+            localizedDescription: z.unknown().optional(),
+            uri: z.unknown().describe(
               "The location of the image. URIs must have a scheme.",
             ).optional(),
           }).optional(),
@@ -6736,97 +4624,56 @@ const InputsSchema = z.object({
             "Package name for AppTarget. For example: com.google.android.gm",
           ).optional(),
           targetUri: z.object({
-            description: z.string().describe(
+            description: z.unknown().describe(
               "The URI's title appearing in the app as text. Recommended maximum is 20 characters to ensure full string is displayed on smaller screens. Note that in some contexts this text is not used, such as when `description` is part of an image.",
             ).optional(),
-            id: z.string().describe(
+            id: z.unknown().describe(
               "The ID associated with a uri. This field is here to enable ease of management of uris.",
             ).optional(),
-            kind: z.string().describe(
+            kind: z.unknown().describe(
               'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#uri"`.',
             ).optional(),
-            localizedDescription: z.object({
-              defaultValue: z.object({
-                kind: z.string().describe(
-                  'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#translatedString"`.',
-                ).optional(),
-                language: z.string().describe(
-                  'Represents the BCP 47 language tag. Example values are "en-US", "en-GB", "de", or "de-AT".',
-                ).optional(),
-                value: z.string().describe(
-                  "The UTF-8 encoded translated string.",
-                ).optional(),
-              }).optional(),
-              kind: z.string().describe(
-                'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#localizedString"`.',
-              ).optional(),
-              translatedValues: z.array(z.object({
-                kind: z.string().describe(
-                  'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#translatedString"`.',
-                ).optional(),
-                language: z.string().describe(
-                  'Represents the BCP 47 language tag. Example values are "en-US", "en-GB", "de", or "de-AT".',
-                ).optional(),
-                value: z.string().describe(
-                  "The UTF-8 encoded translated string.",
-                ).optional(),
-              })).describe("Contains the translations for the string.")
-                .optional(),
-            }).optional(),
-            uri: z.string().describe(
+            localizedDescription: z.unknown().optional(),
+            uri: z.unknown().describe(
               "The location of a web page, image, or other resource. URIs in the `LinksModuleData` module can have different prefixes indicating the type of URI (a link to a web page, a link to a map, a telephone number, or an email address). URIs must have a scheme.",
             ).optional(),
           }).optional(),
         }).optional(),
         description: z.object({
           defaultValue: z.object({
-            kind: z.string().describe(
+            kind: z.unknown().describe(
               'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#translatedString"`.',
             ).optional(),
-            language: z.string().describe(
+            language: z.unknown().describe(
               'Represents the BCP 47 language tag. Example values are "en-US", "en-GB", "de", or "de-AT".',
             ).optional(),
-            value: z.string().describe("The UTF-8 encoded translated string.")
+            value: z.unknown().describe("The UTF-8 encoded translated string.")
               .optional(),
           }).optional(),
           kind: z.string().describe(
             'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#localizedString"`.',
           ).optional(),
-          translatedValues: z.array(z.object({
-            kind: z.string().describe(
-              'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#translatedString"`.',
-            ).optional(),
-            language: z.string().describe(
-              'Represents the BCP 47 language tag. Example values are "en-US", "en-GB", "de", or "de-AT".',
-            ).optional(),
-            value: z.string().describe("The UTF-8 encoded translated string.")
-              .optional(),
-          })).describe("Contains the translations for the string.").optional(),
+          translatedValues: z.array(z.unknown()).describe(
+            "Contains the translations for the string.",
+          ).optional(),
         }).optional(),
         title: z.object({
           defaultValue: z.object({
-            kind: z.string().describe(
+            kind: z.unknown().describe(
               'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#translatedString"`.',
             ).optional(),
-            language: z.string().describe(
+            language: z.unknown().describe(
               'Represents the BCP 47 language tag. Example values are "en-US", "en-GB", "de", or "de-AT".',
             ).optional(),
-            value: z.string().describe("The UTF-8 encoded translated string.")
+            value: z.unknown().describe("The UTF-8 encoded translated string.")
               .optional(),
           }).optional(),
           kind: z.string().describe(
             'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#localizedString"`.',
           ).optional(),
-          translatedValues: z.array(z.object({
-            kind: z.string().describe(
-              'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#translatedString"`.',
-            ).optional(),
-            language: z.string().describe(
-              'Represents the BCP 47 language tag. Example values are "en-US", "en-GB", "de", or "de-AT".',
-            ).optional(),
-            value: z.string().describe("The UTF-8 encoded translated string.")
-              .optional(),
-          })).describe("Contains the translations for the string.").optional(),
+          translatedValues: z.array(z.unknown()).describe(
+            "Contains the translations for the string.",
+          ).optional(),
         }).optional(),
       }).optional(),
     }).optional(),
@@ -6842,28 +4689,7 @@ const InputsSchema = z.object({
       cardBarcodeSectionDetails: z.object({
         firstBottomDetail: z.object({
           fieldSelector: z.object({
-            fields: z.array(z.object({
-              dateFormat: z.enum([
-                "DATE_FORMAT_UNSPECIFIED",
-                "DATE_TIME",
-                "dateTime",
-                "DATE_ONLY",
-                "dateOnly",
-                "TIME_ONLY",
-                "timeOnly",
-                "DATE_TIME_YEAR",
-                "dateTimeYear",
-                "DATE_YEAR",
-                "dateYear",
-                "YEAR_MONTH",
-                "YEAR_MONTH_DAY",
-              ]).describe(
-                "Only valid if the `fieldPath` references a date field. Chooses how the date field will be formatted and displayed in the UI.",
-              ).optional(),
-              fieldPath: z.string().describe(
-                'Path to the field being referenced, prefixed with "object" or "class" and separated with dots. For example, it may be the string "object.purchaseDetails.purchasePrice".',
-              ).optional(),
-            })).describe(
+            fields: z.unknown().describe(
               "If more than one reference is supplied, then the first one that references a non-empty field will be displayed.",
             ).optional(),
           }).describe("Custom field selector to use with field overrides.")
@@ -6871,28 +4697,7 @@ const InputsSchema = z.object({
         }).optional(),
         firstTopDetail: z.object({
           fieldSelector: z.object({
-            fields: z.array(z.object({
-              dateFormat: z.enum([
-                "DATE_FORMAT_UNSPECIFIED",
-                "DATE_TIME",
-                "dateTime",
-                "DATE_ONLY",
-                "dateOnly",
-                "TIME_ONLY",
-                "timeOnly",
-                "DATE_TIME_YEAR",
-                "dateTimeYear",
-                "DATE_YEAR",
-                "dateYear",
-                "YEAR_MONTH",
-                "YEAR_MONTH_DAY",
-              ]).describe(
-                "Only valid if the `fieldPath` references a date field. Chooses how the date field will be formatted and displayed in the UI.",
-              ).optional(),
-              fieldPath: z.string().describe(
-                'Path to the field being referenced, prefixed with "object" or "class" and separated with dots. For example, it may be the string "object.purchaseDetails.purchasePrice".',
-              ).optional(),
-            })).describe(
+            fields: z.unknown().describe(
               "If more than one reference is supplied, then the first one that references a non-empty field will be displayed.",
             ).optional(),
           }).describe("Custom field selector to use with field overrides.")
@@ -6900,28 +4705,7 @@ const InputsSchema = z.object({
         }).optional(),
         secondTopDetail: z.object({
           fieldSelector: z.object({
-            fields: z.array(z.object({
-              dateFormat: z.enum([
-                "DATE_FORMAT_UNSPECIFIED",
-                "DATE_TIME",
-                "dateTime",
-                "DATE_ONLY",
-                "dateOnly",
-                "TIME_ONLY",
-                "timeOnly",
-                "DATE_TIME_YEAR",
-                "dateTimeYear",
-                "DATE_YEAR",
-                "dateYear",
-                "YEAR_MONTH",
-                "YEAR_MONTH_DAY",
-              ]).describe(
-                "Only valid if the `fieldPath` references a date field. Chooses how the date field will be formatted and displayed in the UI.",
-              ).optional(),
-              fieldPath: z.string().describe(
-                'Path to the field being referenced, prefixed with "object" or "class" and separated with dots. For example, it may be the string "object.purchaseDetails.purchasePrice".',
-              ).optional(),
-            })).describe(
+            fields: z.unknown().describe(
               "If more than one reference is supplied, then the first one that references a non-empty field will be displayed.",
             ).optional(),
           }).describe("Custom field selector to use with field overrides.")
@@ -6930,473 +4714,16 @@ const InputsSchema = z.object({
       }).optional(),
       cardTemplateOverride: z.object({
         cardRowTemplateInfos: z.array(z.object({
-          oneItem: z.object({
-            item: z.object({
-              firstValue: z.object({
-                fields: z.array(z.object({
-                  dateFormat: z.enum([
-                    "DATE_FORMAT_UNSPECIFIED",
-                    "DATE_TIME",
-                    "dateTime",
-                    "DATE_ONLY",
-                    "dateOnly",
-                    "TIME_ONLY",
-                    "timeOnly",
-                    "DATE_TIME_YEAR",
-                    "dateTimeYear",
-                    "DATE_YEAR",
-                    "dateYear",
-                    "YEAR_MONTH",
-                    "YEAR_MONTH_DAY",
-                  ]).describe(
-                    "Only valid if the `fieldPath` references a date field. Chooses how the date field will be formatted and displayed in the UI.",
-                  ).optional(),
-                  fieldPath: z.string().describe(
-                    'Path to the field being referenced, prefixed with "object" or "class" and separated with dots. For example, it may be the string "object.purchaseDetails.purchasePrice".',
-                  ).optional(),
-                })).describe(
-                  "If more than one reference is supplied, then the first one that references a non-empty field will be displayed.",
-                ).optional(),
-              }).describe("Custom field selector to use with field overrides.")
-                .optional(),
-              predefinedItem: z.enum([
-                "PREDEFINED_ITEM_UNSPECIFIED",
-                "FREQUENT_FLYER_PROGRAM_NAME_AND_NUMBER",
-                "frequentFlyerProgramNameAndNumber",
-                "FLIGHT_NUMBER_AND_OPERATING_FLIGHT_NUMBER",
-                "flightNumberAndOperatingFlightNumber",
-              ]).describe(
-                "A predefined item to display. Only one of `firstValue` or `predefinedItem` may be set.",
-              ).optional(),
-              secondValue: z.object({
-                fields: z.array(z.object({
-                  dateFormat: z.enum([
-                    "DATE_FORMAT_UNSPECIFIED",
-                    "DATE_TIME",
-                    "dateTime",
-                    "DATE_ONLY",
-                    "dateOnly",
-                    "TIME_ONLY",
-                    "timeOnly",
-                    "DATE_TIME_YEAR",
-                    "dateTimeYear",
-                    "DATE_YEAR",
-                    "dateYear",
-                    "YEAR_MONTH",
-                    "YEAR_MONTH_DAY",
-                  ]).describe(
-                    "Only valid if the `fieldPath` references a date field. Chooses how the date field will be formatted and displayed in the UI.",
-                  ).optional(),
-                  fieldPath: z.string().describe(
-                    'Path to the field being referenced, prefixed with "object" or "class" and separated with dots. For example, it may be the string "object.purchaseDetails.purchasePrice".',
-                  ).optional(),
-                })).describe(
-                  "If more than one reference is supplied, then the first one that references a non-empty field will be displayed.",
-                ).optional(),
-              }).describe("Custom field selector to use with field overrides.")
-                .optional(),
-            }).optional(),
-          }).optional(),
-          threeItems: z.object({
-            endItem: z.object({
-              firstValue: z.object({
-                fields: z.array(z.object({
-                  dateFormat: z.enum([
-                    "DATE_FORMAT_UNSPECIFIED",
-                    "DATE_TIME",
-                    "dateTime",
-                    "DATE_ONLY",
-                    "dateOnly",
-                    "TIME_ONLY",
-                    "timeOnly",
-                    "DATE_TIME_YEAR",
-                    "dateTimeYear",
-                    "DATE_YEAR",
-                    "dateYear",
-                    "YEAR_MONTH",
-                    "YEAR_MONTH_DAY",
-                  ]).describe(
-                    "Only valid if the `fieldPath` references a date field. Chooses how the date field will be formatted and displayed in the UI.",
-                  ).optional(),
-                  fieldPath: z.string().describe(
-                    'Path to the field being referenced, prefixed with "object" or "class" and separated with dots. For example, it may be the string "object.purchaseDetails.purchasePrice".',
-                  ).optional(),
-                })).describe(
-                  "If more than one reference is supplied, then the first one that references a non-empty field will be displayed.",
-                ).optional(),
-              }).describe("Custom field selector to use with field overrides.")
-                .optional(),
-              predefinedItem: z.enum([
-                "PREDEFINED_ITEM_UNSPECIFIED",
-                "FREQUENT_FLYER_PROGRAM_NAME_AND_NUMBER",
-                "frequentFlyerProgramNameAndNumber",
-                "FLIGHT_NUMBER_AND_OPERATING_FLIGHT_NUMBER",
-                "flightNumberAndOperatingFlightNumber",
-              ]).describe(
-                "A predefined item to display. Only one of `firstValue` or `predefinedItem` may be set.",
-              ).optional(),
-              secondValue: z.object({
-                fields: z.array(z.object({
-                  dateFormat: z.enum([
-                    "DATE_FORMAT_UNSPECIFIED",
-                    "DATE_TIME",
-                    "dateTime",
-                    "DATE_ONLY",
-                    "dateOnly",
-                    "TIME_ONLY",
-                    "timeOnly",
-                    "DATE_TIME_YEAR",
-                    "dateTimeYear",
-                    "DATE_YEAR",
-                    "dateYear",
-                    "YEAR_MONTH",
-                    "YEAR_MONTH_DAY",
-                  ]).describe(
-                    "Only valid if the `fieldPath` references a date field. Chooses how the date field will be formatted and displayed in the UI.",
-                  ).optional(),
-                  fieldPath: z.string().describe(
-                    'Path to the field being referenced, prefixed with "object" or "class" and separated with dots. For example, it may be the string "object.purchaseDetails.purchasePrice".',
-                  ).optional(),
-                })).describe(
-                  "If more than one reference is supplied, then the first one that references a non-empty field will be displayed.",
-                ).optional(),
-              }).describe("Custom field selector to use with field overrides.")
-                .optional(),
-            }).optional(),
-            middleItem: z.object({
-              firstValue: z.object({
-                fields: z.array(z.object({
-                  dateFormat: z.enum([
-                    "DATE_FORMAT_UNSPECIFIED",
-                    "DATE_TIME",
-                    "dateTime",
-                    "DATE_ONLY",
-                    "dateOnly",
-                    "TIME_ONLY",
-                    "timeOnly",
-                    "DATE_TIME_YEAR",
-                    "dateTimeYear",
-                    "DATE_YEAR",
-                    "dateYear",
-                    "YEAR_MONTH",
-                    "YEAR_MONTH_DAY",
-                  ]).describe(
-                    "Only valid if the `fieldPath` references a date field. Chooses how the date field will be formatted and displayed in the UI.",
-                  ).optional(),
-                  fieldPath: z.string().describe(
-                    'Path to the field being referenced, prefixed with "object" or "class" and separated with dots. For example, it may be the string "object.purchaseDetails.purchasePrice".',
-                  ).optional(),
-                })).describe(
-                  "If more than one reference is supplied, then the first one that references a non-empty field will be displayed.",
-                ).optional(),
-              }).describe("Custom field selector to use with field overrides.")
-                .optional(),
-              predefinedItem: z.enum([
-                "PREDEFINED_ITEM_UNSPECIFIED",
-                "FREQUENT_FLYER_PROGRAM_NAME_AND_NUMBER",
-                "frequentFlyerProgramNameAndNumber",
-                "FLIGHT_NUMBER_AND_OPERATING_FLIGHT_NUMBER",
-                "flightNumberAndOperatingFlightNumber",
-              ]).describe(
-                "A predefined item to display. Only one of `firstValue` or `predefinedItem` may be set.",
-              ).optional(),
-              secondValue: z.object({
-                fields: z.array(z.object({
-                  dateFormat: z.enum([
-                    "DATE_FORMAT_UNSPECIFIED",
-                    "DATE_TIME",
-                    "dateTime",
-                    "DATE_ONLY",
-                    "dateOnly",
-                    "TIME_ONLY",
-                    "timeOnly",
-                    "DATE_TIME_YEAR",
-                    "dateTimeYear",
-                    "DATE_YEAR",
-                    "dateYear",
-                    "YEAR_MONTH",
-                    "YEAR_MONTH_DAY",
-                  ]).describe(
-                    "Only valid if the `fieldPath` references a date field. Chooses how the date field will be formatted and displayed in the UI.",
-                  ).optional(),
-                  fieldPath: z.string().describe(
-                    'Path to the field being referenced, prefixed with "object" or "class" and separated with dots. For example, it may be the string "object.purchaseDetails.purchasePrice".',
-                  ).optional(),
-                })).describe(
-                  "If more than one reference is supplied, then the first one that references a non-empty field will be displayed.",
-                ).optional(),
-              }).describe("Custom field selector to use with field overrides.")
-                .optional(),
-            }).optional(),
-            startItem: z.object({
-              firstValue: z.object({
-                fields: z.array(z.object({
-                  dateFormat: z.enum([
-                    "DATE_FORMAT_UNSPECIFIED",
-                    "DATE_TIME",
-                    "dateTime",
-                    "DATE_ONLY",
-                    "dateOnly",
-                    "TIME_ONLY",
-                    "timeOnly",
-                    "DATE_TIME_YEAR",
-                    "dateTimeYear",
-                    "DATE_YEAR",
-                    "dateYear",
-                    "YEAR_MONTH",
-                    "YEAR_MONTH_DAY",
-                  ]).describe(
-                    "Only valid if the `fieldPath` references a date field. Chooses how the date field will be formatted and displayed in the UI.",
-                  ).optional(),
-                  fieldPath: z.string().describe(
-                    'Path to the field being referenced, prefixed with "object" or "class" and separated with dots. For example, it may be the string "object.purchaseDetails.purchasePrice".',
-                  ).optional(),
-                })).describe(
-                  "If more than one reference is supplied, then the first one that references a non-empty field will be displayed.",
-                ).optional(),
-              }).describe("Custom field selector to use with field overrides.")
-                .optional(),
-              predefinedItem: z.enum([
-                "PREDEFINED_ITEM_UNSPECIFIED",
-                "FREQUENT_FLYER_PROGRAM_NAME_AND_NUMBER",
-                "frequentFlyerProgramNameAndNumber",
-                "FLIGHT_NUMBER_AND_OPERATING_FLIGHT_NUMBER",
-                "flightNumberAndOperatingFlightNumber",
-              ]).describe(
-                "A predefined item to display. Only one of `firstValue` or `predefinedItem` may be set.",
-              ).optional(),
-              secondValue: z.object({
-                fields: z.array(z.object({
-                  dateFormat: z.enum([
-                    "DATE_FORMAT_UNSPECIFIED",
-                    "DATE_TIME",
-                    "dateTime",
-                    "DATE_ONLY",
-                    "dateOnly",
-                    "TIME_ONLY",
-                    "timeOnly",
-                    "DATE_TIME_YEAR",
-                    "dateTimeYear",
-                    "DATE_YEAR",
-                    "dateYear",
-                    "YEAR_MONTH",
-                    "YEAR_MONTH_DAY",
-                  ]).describe(
-                    "Only valid if the `fieldPath` references a date field. Chooses how the date field will be formatted and displayed in the UI.",
-                  ).optional(),
-                  fieldPath: z.string().describe(
-                    'Path to the field being referenced, prefixed with "object" or "class" and separated with dots. For example, it may be the string "object.purchaseDetails.purchasePrice".',
-                  ).optional(),
-                })).describe(
-                  "If more than one reference is supplied, then the first one that references a non-empty field will be displayed.",
-                ).optional(),
-              }).describe("Custom field selector to use with field overrides.")
-                .optional(),
-            }).optional(),
-          }).optional(),
-          twoItems: z.object({
-            endItem: z.object({
-              firstValue: z.object({
-                fields: z.array(z.object({
-                  dateFormat: z.enum([
-                    "DATE_FORMAT_UNSPECIFIED",
-                    "DATE_TIME",
-                    "dateTime",
-                    "DATE_ONLY",
-                    "dateOnly",
-                    "TIME_ONLY",
-                    "timeOnly",
-                    "DATE_TIME_YEAR",
-                    "dateTimeYear",
-                    "DATE_YEAR",
-                    "dateYear",
-                    "YEAR_MONTH",
-                    "YEAR_MONTH_DAY",
-                  ]).describe(
-                    "Only valid if the `fieldPath` references a date field. Chooses how the date field will be formatted and displayed in the UI.",
-                  ).optional(),
-                  fieldPath: z.string().describe(
-                    'Path to the field being referenced, prefixed with "object" or "class" and separated with dots. For example, it may be the string "object.purchaseDetails.purchasePrice".',
-                  ).optional(),
-                })).describe(
-                  "If more than one reference is supplied, then the first one that references a non-empty field will be displayed.",
-                ).optional(),
-              }).describe("Custom field selector to use with field overrides.")
-                .optional(),
-              predefinedItem: z.enum([
-                "PREDEFINED_ITEM_UNSPECIFIED",
-                "FREQUENT_FLYER_PROGRAM_NAME_AND_NUMBER",
-                "frequentFlyerProgramNameAndNumber",
-                "FLIGHT_NUMBER_AND_OPERATING_FLIGHT_NUMBER",
-                "flightNumberAndOperatingFlightNumber",
-              ]).describe(
-                "A predefined item to display. Only one of `firstValue` or `predefinedItem` may be set.",
-              ).optional(),
-              secondValue: z.object({
-                fields: z.array(z.object({
-                  dateFormat: z.enum([
-                    "DATE_FORMAT_UNSPECIFIED",
-                    "DATE_TIME",
-                    "dateTime",
-                    "DATE_ONLY",
-                    "dateOnly",
-                    "TIME_ONLY",
-                    "timeOnly",
-                    "DATE_TIME_YEAR",
-                    "dateTimeYear",
-                    "DATE_YEAR",
-                    "dateYear",
-                    "YEAR_MONTH",
-                    "YEAR_MONTH_DAY",
-                  ]).describe(
-                    "Only valid if the `fieldPath` references a date field. Chooses how the date field will be formatted and displayed in the UI.",
-                  ).optional(),
-                  fieldPath: z.string().describe(
-                    'Path to the field being referenced, prefixed with "object" or "class" and separated with dots. For example, it may be the string "object.purchaseDetails.purchasePrice".',
-                  ).optional(),
-                })).describe(
-                  "If more than one reference is supplied, then the first one that references a non-empty field will be displayed.",
-                ).optional(),
-              }).describe("Custom field selector to use with field overrides.")
-                .optional(),
-            }).optional(),
-            startItem: z.object({
-              firstValue: z.object({
-                fields: z.array(z.object({
-                  dateFormat: z.enum([
-                    "DATE_FORMAT_UNSPECIFIED",
-                    "DATE_TIME",
-                    "dateTime",
-                    "DATE_ONLY",
-                    "dateOnly",
-                    "TIME_ONLY",
-                    "timeOnly",
-                    "DATE_TIME_YEAR",
-                    "dateTimeYear",
-                    "DATE_YEAR",
-                    "dateYear",
-                    "YEAR_MONTH",
-                    "YEAR_MONTH_DAY",
-                  ]).describe(
-                    "Only valid if the `fieldPath` references a date field. Chooses how the date field will be formatted and displayed in the UI.",
-                  ).optional(),
-                  fieldPath: z.string().describe(
-                    'Path to the field being referenced, prefixed with "object" or "class" and separated with dots. For example, it may be the string "object.purchaseDetails.purchasePrice".',
-                  ).optional(),
-                })).describe(
-                  "If more than one reference is supplied, then the first one that references a non-empty field will be displayed.",
-                ).optional(),
-              }).describe("Custom field selector to use with field overrides.")
-                .optional(),
-              predefinedItem: z.enum([
-                "PREDEFINED_ITEM_UNSPECIFIED",
-                "FREQUENT_FLYER_PROGRAM_NAME_AND_NUMBER",
-                "frequentFlyerProgramNameAndNumber",
-                "FLIGHT_NUMBER_AND_OPERATING_FLIGHT_NUMBER",
-                "flightNumberAndOperatingFlightNumber",
-              ]).describe(
-                "A predefined item to display. Only one of `firstValue` or `predefinedItem` may be set.",
-              ).optional(),
-              secondValue: z.object({
-                fields: z.array(z.object({
-                  dateFormat: z.enum([
-                    "DATE_FORMAT_UNSPECIFIED",
-                    "DATE_TIME",
-                    "dateTime",
-                    "DATE_ONLY",
-                    "dateOnly",
-                    "TIME_ONLY",
-                    "timeOnly",
-                    "DATE_TIME_YEAR",
-                    "dateTimeYear",
-                    "DATE_YEAR",
-                    "dateYear",
-                    "YEAR_MONTH",
-                    "YEAR_MONTH_DAY",
-                  ]).describe(
-                    "Only valid if the `fieldPath` references a date field. Chooses how the date field will be formatted and displayed in the UI.",
-                  ).optional(),
-                  fieldPath: z.string().describe(
-                    'Path to the field being referenced, prefixed with "object" or "class" and separated with dots. For example, it may be the string "object.purchaseDetails.purchasePrice".',
-                  ).optional(),
-                })).describe(
-                  "If more than one reference is supplied, then the first one that references a non-empty field will be displayed.",
-                ).optional(),
-              }).describe("Custom field selector to use with field overrides.")
-                .optional(),
-            }).optional(),
-          }).optional(),
+          oneItem: z.unknown().optional(),
+          threeItems: z.unknown().optional(),
+          twoItems: z.unknown().optional(),
         })).describe(
           "Template information for rows in the card view. At most three rows are allowed to be specified.",
         ).optional(),
       }).optional(),
       detailsTemplateOverride: z.object({
         detailsItemInfos: z.array(z.object({
-          item: z.object({
-            firstValue: z.object({
-              fields: z.array(z.object({
-                dateFormat: z.enum([
-                  "DATE_FORMAT_UNSPECIFIED",
-                  "DATE_TIME",
-                  "dateTime",
-                  "DATE_ONLY",
-                  "dateOnly",
-                  "TIME_ONLY",
-                  "timeOnly",
-                  "DATE_TIME_YEAR",
-                  "dateTimeYear",
-                  "DATE_YEAR",
-                  "dateYear",
-                  "YEAR_MONTH",
-                  "YEAR_MONTH_DAY",
-                ]).describe(
-                  "Only valid if the `fieldPath` references a date field. Chooses how the date field will be formatted and displayed in the UI.",
-                ).optional(),
-                fieldPath: z.string().describe(
-                  'Path to the field being referenced, prefixed with "object" or "class" and separated with dots. For example, it may be the string "object.purchaseDetails.purchasePrice".',
-                ).optional(),
-              })).describe(
-                "If more than one reference is supplied, then the first one that references a non-empty field will be displayed.",
-              ).optional(),
-            }).describe("Custom field selector to use with field overrides.")
-              .optional(),
-            predefinedItem: z.enum([
-              "PREDEFINED_ITEM_UNSPECIFIED",
-              "FREQUENT_FLYER_PROGRAM_NAME_AND_NUMBER",
-              "frequentFlyerProgramNameAndNumber",
-              "FLIGHT_NUMBER_AND_OPERATING_FLIGHT_NUMBER",
-              "flightNumberAndOperatingFlightNumber",
-            ]).describe(
-              "A predefined item to display. Only one of `firstValue` or `predefinedItem` may be set.",
-            ).optional(),
-            secondValue: z.object({
-              fields: z.array(z.object({
-                dateFormat: z.enum([
-                  "DATE_FORMAT_UNSPECIFIED",
-                  "DATE_TIME",
-                  "dateTime",
-                  "DATE_ONLY",
-                  "dateOnly",
-                  "TIME_ONLY",
-                  "timeOnly",
-                  "DATE_TIME_YEAR",
-                  "dateTimeYear",
-                  "DATE_YEAR",
-                  "dateYear",
-                  "YEAR_MONTH",
-                  "YEAR_MONTH_DAY",
-                ]).describe(
-                  "Only valid if the `fieldPath` references a date field. Chooses how the date field will be formatted and displayed in the UI.",
-                ).optional(),
-                fieldPath: z.string().describe(
-                  'Path to the field being referenced, prefixed with "object" or "class" and separated with dots. For example, it may be the string "object.purchaseDetails.purchasePrice".',
-                ).optional(),
-              })).describe(
-                "If more than one reference is supplied, then the first one that references a non-empty field will be displayed.",
-              ).optional(),
-            }).describe("Custom field selector to use with field overrides.")
-              .optional(),
-          }).optional(),
+          item: z.unknown().optional(),
         })).describe(
           'Information for the "nth" item displayed in the details list.',
         ).optional(),
@@ -7404,28 +4731,7 @@ const InputsSchema = z.object({
       listTemplateOverride: z.object({
         firstRowOption: z.object({
           fieldOption: z.object({
-            fields: z.array(z.object({
-              dateFormat: z.enum([
-                "DATE_FORMAT_UNSPECIFIED",
-                "DATE_TIME",
-                "dateTime",
-                "DATE_ONLY",
-                "dateOnly",
-                "TIME_ONLY",
-                "timeOnly",
-                "DATE_TIME_YEAR",
-                "dateTimeYear",
-                "DATE_YEAR",
-                "dateYear",
-                "YEAR_MONTH",
-                "YEAR_MONTH_DAY",
-              ]).describe(
-                "Only valid if the `fieldPath` references a date field. Chooses how the date field will be formatted and displayed in the UI.",
-              ).optional(),
-              fieldPath: z.string().describe(
-                'Path to the field being referenced, prefixed with "object" or "class" and separated with dots. For example, it may be the string "object.purchaseDetails.purchasePrice".',
-              ).optional(),
-            })).describe(
+            fields: z.unknown().describe(
               "If more than one reference is supplied, then the first one that references a non-empty field will be displayed.",
             ).optional(),
           }).describe("Custom field selector to use with field overrides.")
@@ -7441,55 +4747,13 @@ const InputsSchema = z.object({
           ]).optional(),
         }).optional(),
         secondRowOption: z.object({
-          fields: z.array(z.object({
-            dateFormat: z.enum([
-              "DATE_FORMAT_UNSPECIFIED",
-              "DATE_TIME",
-              "dateTime",
-              "DATE_ONLY",
-              "dateOnly",
-              "TIME_ONLY",
-              "timeOnly",
-              "DATE_TIME_YEAR",
-              "dateTimeYear",
-              "DATE_YEAR",
-              "dateYear",
-              "YEAR_MONTH",
-              "YEAR_MONTH_DAY",
-            ]).describe(
-              "Only valid if the `fieldPath` references a date field. Chooses how the date field will be formatted and displayed in the UI.",
-            ).optional(),
-            fieldPath: z.string().describe(
-              'Path to the field being referenced, prefixed with "object" or "class" and separated with dots. For example, it may be the string "object.purchaseDetails.purchasePrice".',
-            ).optional(),
-          })).describe(
+          fields: z.array(z.unknown()).describe(
             "If more than one reference is supplied, then the first one that references a non-empty field will be displayed.",
           ).optional(),
         }).describe("Custom field selector to use with field overrides.")
           .optional(),
         thirdRowOption: z.object({
-          fields: z.array(z.object({
-            dateFormat: z.enum([
-              "DATE_FORMAT_UNSPECIFIED",
-              "DATE_TIME",
-              "dateTime",
-              "DATE_ONLY",
-              "dateOnly",
-              "TIME_ONLY",
-              "timeOnly",
-              "DATE_TIME_YEAR",
-              "dateTimeYear",
-              "DATE_YEAR",
-              "dateYear",
-              "YEAR_MONTH",
-              "YEAR_MONTH_DAY",
-            ]).describe(
-              "Only valid if the `fieldPath` references a date field. Chooses how the date field will be formatted and displayed in the UI.",
-            ).optional(),
-            fieldPath: z.string().describe(
-              'Path to the field being referenced, prefixed with "object" or "class" and separated with dots. For example, it may be the string "object.purchaseDetails.purchasePrice".',
-            ).optional(),
-          })).describe(
+          fields: z.array(z.unknown()).describe(
             "If more than one reference is supplied, then the first one that references a non-empty field will be displayed.",
           ).optional(),
         }).describe("Custom field selector to use with field overrides.")
@@ -7653,13 +4917,13 @@ const InputsSchema = z.object({
           'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#localizedString"`.',
         ).optional(),
         translatedValues: z.array(z.object({
-          kind: z.string().describe(
+          kind: z.unknown().describe(
             'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#translatedString"`.',
           ).optional(),
-          language: z.string().describe(
+          language: z.unknown().describe(
             'Represents the BCP 47 language tag. Example values are "en-US", "en-GB", "de", or "de-AT".',
           ).optional(),
-          value: z.string().describe("The UTF-8 encoded translated string.")
+          value: z.unknown().describe("The UTF-8 encoded translated string.")
             .optional(),
         })).describe("Contains the translations for the string.").optional(),
       }).optional(),
@@ -7768,13 +5032,13 @@ const InputsSchema = z.object({
           'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#localizedString"`.',
         ).optional(),
         translatedValues: z.array(z.object({
-          kind: z.string().describe(
+          kind: z.unknown().describe(
             'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#translatedString"`.',
           ).optional(),
-          language: z.string().describe(
+          language: z.unknown().describe(
             'Represents the BCP 47 language tag. Example values are "en-US", "en-GB", "de", or "de-AT".',
           ).optional(),
-          value: z.string().describe("The UTF-8 encoded translated string.")
+          value: z.unknown().describe("The UTF-8 encoded translated string.")
             .optional(),
         })).describe("Contains the translations for the string.").optional(),
       }).optional(),
@@ -7790,28 +5054,21 @@ const InputsSchema = z.object({
         ).optional(),
         localizedDescription: z.object({
           defaultValue: z.object({
-            kind: z.string().describe(
+            kind: z.unknown().describe(
               'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#translatedString"`.',
             ).optional(),
-            language: z.string().describe(
+            language: z.unknown().describe(
               'Represents the BCP 47 language tag. Example values are "en-US", "en-GB", "de", or "de-AT".',
             ).optional(),
-            value: z.string().describe("The UTF-8 encoded translated string.")
+            value: z.unknown().describe("The UTF-8 encoded translated string.")
               .optional(),
           }).optional(),
           kind: z.string().describe(
             'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#localizedString"`.',
           ).optional(),
-          translatedValues: z.array(z.object({
-            kind: z.string().describe(
-              'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#translatedString"`.',
-            ).optional(),
-            language: z.string().describe(
-              'Represents the BCP 47 language tag. Example values are "en-US", "en-GB", "de", or "de-AT".',
-            ).optional(),
-            value: z.string().describe("The UTF-8 encoded translated string.")
-              .optional(),
-          })).describe("Contains the translations for the string.").optional(),
+          translatedValues: z.array(z.unknown()).describe(
+            "Contains the translations for the string.",
+          ).optional(),
         }).optional(),
         uri: z.string().describe(
           "The location of the image. URIs must have a scheme.",
@@ -7846,13 +5103,13 @@ const InputsSchema = z.object({
           'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#localizedString"`.',
         ).optional(),
         translatedValues: z.array(z.object({
-          kind: z.string().describe(
+          kind: z.unknown().describe(
             'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#translatedString"`.',
           ).optional(),
-          language: z.string().describe(
+          language: z.unknown().describe(
             'Represents the BCP 47 language tag. Example values are "en-US", "en-GB", "de", or "de-AT".',
           ).optional(),
-          value: z.string().describe("The UTF-8 encoded translated string.")
+          value: z.unknown().describe("The UTF-8 encoded translated string.")
             .optional(),
         })).describe("Contains the translations for the string.").optional(),
       }).optional(),
@@ -7869,29 +5126,13 @@ const InputsSchema = z.object({
       ).optional(),
       mainImage: z.object({
         contentDescription: z.object({
-          defaultValue: z.object({
-            kind: z.string().describe(
-              'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#translatedString"`.',
-            ).optional(),
-            language: z.string().describe(
-              'Represents the BCP 47 language tag. Example values are "en-US", "en-GB", "de", or "de-AT".',
-            ).optional(),
-            value: z.string().describe("The UTF-8 encoded translated string.")
-              .optional(),
-          }).optional(),
-          kind: z.string().describe(
+          defaultValue: z.unknown().optional(),
+          kind: z.unknown().describe(
             'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#localizedString"`.',
           ).optional(),
-          translatedValues: z.array(z.object({
-            kind: z.string().describe(
-              'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#translatedString"`.',
-            ).optional(),
-            language: z.string().describe(
-              'Represents the BCP 47 language tag. Example values are "en-US", "en-GB", "de", or "de-AT".',
-            ).optional(),
-            value: z.string().describe("The UTF-8 encoded translated string.")
-              .optional(),
-          })).describe("Contains the translations for the string.").optional(),
+          translatedValues: z.unknown().describe(
+            "Contains the translations for the string.",
+          ).optional(),
         }).optional(),
         kind: z.string().describe(
           'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#image"`.',
@@ -7900,36 +5141,11 @@ const InputsSchema = z.object({
           "An ID for an already uploaded private image. Either this or source_uri should be set. Requests setting both or neither will be rejected. Please contact support to use private images.",
         ).optional(),
         sourceUri: z.object({
-          description: z.string().describe(
+          description: z.unknown().describe(
             "Additional information about the image, which is unused and retained only for backward compatibility.",
           ).optional(),
-          localizedDescription: z.object({
-            defaultValue: z.object({
-              kind: z.string().describe(
-                'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#translatedString"`.',
-              ).optional(),
-              language: z.string().describe(
-                'Represents the BCP 47 language tag. Example values are "en-US", "en-GB", "de", or "de-AT".',
-              ).optional(),
-              value: z.string().describe("The UTF-8 encoded translated string.")
-                .optional(),
-            }).optional(),
-            kind: z.string().describe(
-              'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#localizedString"`.',
-            ).optional(),
-            translatedValues: z.array(z.object({
-              kind: z.string().describe(
-                'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#translatedString"`.',
-              ).optional(),
-              language: z.string().describe(
-                'Represents the BCP 47 language tag. Example values are "en-US", "en-GB", "de", or "de-AT".',
-              ).optional(),
-              value: z.string().describe("The UTF-8 encoded translated string.")
-                .optional(),
-            })).describe("Contains the translations for the string.")
-              .optional(),
-          }).optional(),
-          uri: z.string().describe(
+          localizedDescription: z.unknown().optional(),
+          uri: z.unknown().describe(
             "The location of the image. URIs must have a scheme.",
           ).optional(),
         }).optional(),
@@ -7939,66 +5155,7 @@ const InputsSchema = z.object({
     ).optional(),
     infoModuleData: z.object({
       labelValueRows: z.array(z.object({
-        columns: z.array(z.object({
-          label: z.string().describe(
-            "The label for a specific row and column. Recommended maximum is 15 characters for a two-column layout and 30 characters for a one-column layout.",
-          ).optional(),
-          localizedLabel: z.object({
-            defaultValue: z.object({
-              kind: z.string().describe(
-                'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#translatedString"`.',
-              ).optional(),
-              language: z.string().describe(
-                'Represents the BCP 47 language tag. Example values are "en-US", "en-GB", "de", or "de-AT".',
-              ).optional(),
-              value: z.string().describe("The UTF-8 encoded translated string.")
-                .optional(),
-            }).optional(),
-            kind: z.string().describe(
-              'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#localizedString"`.',
-            ).optional(),
-            translatedValues: z.array(z.object({
-              kind: z.string().describe(
-                'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#translatedString"`.',
-              ).optional(),
-              language: z.string().describe(
-                'Represents the BCP 47 language tag. Example values are "en-US", "en-GB", "de", or "de-AT".',
-              ).optional(),
-              value: z.string().describe("The UTF-8 encoded translated string.")
-                .optional(),
-            })).describe("Contains the translations for the string.")
-              .optional(),
-          }).optional(),
-          localizedValue: z.object({
-            defaultValue: z.object({
-              kind: z.string().describe(
-                'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#translatedString"`.',
-              ).optional(),
-              language: z.string().describe(
-                'Represents the BCP 47 language tag. Example values are "en-US", "en-GB", "de", or "de-AT".',
-              ).optional(),
-              value: z.string().describe("The UTF-8 encoded translated string.")
-                .optional(),
-            }).optional(),
-            kind: z.string().describe(
-              'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#localizedString"`.',
-            ).optional(),
-            translatedValues: z.array(z.object({
-              kind: z.string().describe(
-                'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#translatedString"`.',
-              ).optional(),
-              language: z.string().describe(
-                'Represents the BCP 47 language tag. Example values are "en-US", "en-GB", "de", or "de-AT".',
-              ).optional(),
-              value: z.string().describe("The UTF-8 encoded translated string.")
-                .optional(),
-            })).describe("Contains the translations for the string.")
-              .optional(),
-          }).optional(),
-          value: z.string().describe(
-            "The value for a specific row and column. Recommended maximum is 15 characters for a two-column layout and 30 characters for a one-column layout.",
-          ).optional(),
-        })).describe(
+        columns: z.array(z.unknown()).describe(
           "A list of labels and values. These will be displayed in a singular column, one after the other, not in multiple columns, despite the field name.",
         ).optional(),
       })).describe(
@@ -8024,29 +5181,13 @@ const InputsSchema = z.object({
           'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#uri"`.',
         ).optional(),
         localizedDescription: z.object({
-          defaultValue: z.object({
-            kind: z.string().describe(
-              'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#translatedString"`.',
-            ).optional(),
-            language: z.string().describe(
-              'Represents the BCP 47 language tag. Example values are "en-US", "en-GB", "de", or "de-AT".',
-            ).optional(),
-            value: z.string().describe("The UTF-8 encoded translated string.")
-              .optional(),
-          }).optional(),
-          kind: z.string().describe(
+          defaultValue: z.unknown().optional(),
+          kind: z.unknown().describe(
             'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#localizedString"`.',
           ).optional(),
-          translatedValues: z.array(z.object({
-            kind: z.string().describe(
-              'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#translatedString"`.',
-            ).optional(),
-            language: z.string().describe(
-              'Represents the BCP 47 language tag. Example values are "en-US", "en-GB", "de", or "de-AT".',
-            ).optional(),
-            value: z.string().describe("The UTF-8 encoded translated string.")
-              .optional(),
-          })).describe("Contains the translations for the string.").optional(),
+          translatedValues: z.unknown().describe(
+            "Contains the translations for the string.",
+          ).optional(),
         }).optional(),
         uri: z.string().describe(
           "The location of a web page, image, or other resource. URIs in the `LinksModuleData` module can have different prefixes indicating the type of URI (a link to a web page, a link to a map, a telephone number, or an email address). URIs must have a scheme.",
@@ -8107,13 +5248,13 @@ const InputsSchema = z.object({
           'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#localizedString"`.',
         ).optional(),
         translatedValues: z.array(z.object({
-          kind: z.string().describe(
+          kind: z.unknown().describe(
             'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#translatedString"`.',
           ).optional(),
-          language: z.string().describe(
+          language: z.unknown().describe(
             'Represents the BCP 47 language tag. Example values are "en-US", "en-GB", "de", or "de-AT".',
           ).optional(),
-          value: z.string().describe("The UTF-8 encoded translated string.")
+          value: z.unknown().describe("The UTF-8 encoded translated string.")
             .optional(),
         })).describe("Contains the translations for the string.").optional(),
       }).optional(),
@@ -8129,28 +5270,21 @@ const InputsSchema = z.object({
         ).optional(),
         localizedDescription: z.object({
           defaultValue: z.object({
-            kind: z.string().describe(
+            kind: z.unknown().describe(
               'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#translatedString"`.',
             ).optional(),
-            language: z.string().describe(
+            language: z.unknown().describe(
               'Represents the BCP 47 language tag. Example values are "en-US", "en-GB", "de", or "de-AT".',
             ).optional(),
-            value: z.string().describe("The UTF-8 encoded translated string.")
+            value: z.unknown().describe("The UTF-8 encoded translated string.")
               .optional(),
           }).optional(),
           kind: z.string().describe(
             'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#localizedString"`.',
           ).optional(),
-          translatedValues: z.array(z.object({
-            kind: z.string().describe(
-              'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#translatedString"`.',
-            ).optional(),
-            language: z.string().describe(
-              'Represents the BCP 47 language tag. Example values are "en-US", "en-GB", "de", or "de-AT".',
-            ).optional(),
-            value: z.string().describe("The UTF-8 encoded translated string.")
-              .optional(),
-          })).describe("Contains the translations for the string.").optional(),
+          translatedValues: z.array(z.unknown()).describe(
+            "Contains the translations for the string.",
+          ).optional(),
         }).optional(),
         uri: z.string().describe(
           "The location of the image. URIs must have a scheme.",
@@ -8171,7 +5305,7 @@ const InputsSchema = z.object({
       body: z.string().describe("The message body.").optional(),
       displayInterval: z.object({
         end: z.object({
-          date: z.string().describe(
+          date: z.unknown().describe(
             "An ISO 8601 extended format date/time. Offset may or may not be required (refer to the parent field's documentation). Time may be specified up to nanosecond precision. Offsets may be specified with seconds precision (even though offset seconds is not part of ISO 8601). For example: `1985-04-12T23:20:50.52Z` would be 20 minutes and 50.52 seconds after the 23rd hour of April 12th, 1985 in UTC. `1985-04-12T19:20:50.52-04:00` would be 20 minutes and 50.52 seconds after the 19th hour of April 12th, 1985, 4 hours before UTC (same instant in time as the above example). If the date/time is intended for a physical location in New York, this would be the equivalent of Eastern Daylight Time (EDT). Remember that offset varies in regions that observe Daylight Saving Time (or Summer Time), depending on the time of the year. `1985-04-12T19:20:50.52` would be 20 minutes and 50.52 seconds after the 19th hour of April 12th, 1985 with no offset information. Providing an offset makes this an absolute instant in time around the world. The date/time will be adjusted based on the user's time zone. For example, a time of `2018-06-19T18:30:00-04:00` will be 18:30:00 for a user in New York and 15:30:00 for a user in Los Angeles. Omitting the offset makes this a local date/time, representing several instants in time around the world. The date/time will always be in the user's current time zone. For example, a time of `2018-06-19T18:30:00` will be 18:30:00 for a user in New York and also 18:30:00 for a user in Los Angeles. This is useful when the same local date/time should apply to many physical locations across several time zones.",
           ).optional(),
         }).optional(),
@@ -8179,7 +5313,7 @@ const InputsSchema = z.object({
           'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#timeInterval"`.',
         ).optional(),
         start: z.object({
-          date: z.string().describe(
+          date: z.unknown().describe(
             "An ISO 8601 extended format date/time. Offset may or may not be required (refer to the parent field's documentation). Time may be specified up to nanosecond precision. Offsets may be specified with seconds precision (even though offset seconds is not part of ISO 8601). For example: `1985-04-12T23:20:50.52Z` would be 20 minutes and 50.52 seconds after the 23rd hour of April 12th, 1985 in UTC. `1985-04-12T19:20:50.52-04:00` would be 20 minutes and 50.52 seconds after the 19th hour of April 12th, 1985, 4 hours before UTC (same instant in time as the above example). If the date/time is intended for a physical location in New York, this would be the equivalent of Eastern Daylight Time (EDT). Remember that offset varies in regions that observe Daylight Saving Time (or Summer Time), depending on the time of the year. `1985-04-12T19:20:50.52` would be 20 minutes and 50.52 seconds after the 19th hour of April 12th, 1985 with no offset information. Providing an offset makes this an absolute instant in time around the world. The date/time will be adjusted based on the user's time zone. For example, a time of `2018-06-19T18:30:00-04:00` will be 18:30:00 for a user in New York and 15:30:00 for a user in Los Angeles. Omitting the offset makes this a local date/time, representing several instants in time around the world. The date/time will always be in the user's current time zone. For example, a time of `2018-06-19T18:30:00` will be 18:30:00 for a user in New York and also 18:30:00 for a user in Los Angeles. This is useful when the same local date/time should apply to many physical locations across several time zones.",
           ).optional(),
         }).optional(),
@@ -8193,53 +5327,39 @@ const InputsSchema = z.object({
       ).optional(),
       localizedBody: z.object({
         defaultValue: z.object({
-          kind: z.string().describe(
+          kind: z.unknown().describe(
             'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#translatedString"`.',
           ).optional(),
-          language: z.string().describe(
+          language: z.unknown().describe(
             'Represents the BCP 47 language tag. Example values are "en-US", "en-GB", "de", or "de-AT".',
           ).optional(),
-          value: z.string().describe("The UTF-8 encoded translated string.")
+          value: z.unknown().describe("The UTF-8 encoded translated string.")
             .optional(),
         }).optional(),
         kind: z.string().describe(
           'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#localizedString"`.',
         ).optional(),
-        translatedValues: z.array(z.object({
-          kind: z.string().describe(
-            'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#translatedString"`.',
-          ).optional(),
-          language: z.string().describe(
-            'Represents the BCP 47 language tag. Example values are "en-US", "en-GB", "de", or "de-AT".',
-          ).optional(),
-          value: z.string().describe("The UTF-8 encoded translated string.")
-            .optional(),
-        })).describe("Contains the translations for the string.").optional(),
+        translatedValues: z.array(z.unknown()).describe(
+          "Contains the translations for the string.",
+        ).optional(),
       }).optional(),
       localizedHeader: z.object({
         defaultValue: z.object({
-          kind: z.string().describe(
+          kind: z.unknown().describe(
             'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#translatedString"`.',
           ).optional(),
-          language: z.string().describe(
+          language: z.unknown().describe(
             'Represents the BCP 47 language tag. Example values are "en-US", "en-GB", "de", or "de-AT".',
           ).optional(),
-          value: z.string().describe("The UTF-8 encoded translated string.")
+          value: z.unknown().describe("The UTF-8 encoded translated string.")
             .optional(),
         }).optional(),
         kind: z.string().describe(
           'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#localizedString"`.',
         ).optional(),
-        translatedValues: z.array(z.object({
-          kind: z.string().describe(
-            'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#translatedString"`.',
-          ).optional(),
-          language: z.string().describe(
-            'Represents the BCP 47 language tag. Example values are "en-US", "en-GB", "de", or "de-AT".',
-          ).optional(),
-          value: z.string().describe("The UTF-8 encoded translated string.")
-            .optional(),
-        })).describe("Contains the translations for the string.").optional(),
+        translatedValues: z.array(z.unknown()).describe(
+          "Contains the translations for the string.",
+        ).optional(),
       }).optional(),
       messageType: z.enum([
         "MESSAGE_TYPE_UNSPECIFIED",
@@ -8322,53 +5442,39 @@ const InputsSchema = z.object({
       ).optional(),
       localizedBody: z.object({
         defaultValue: z.object({
-          kind: z.string().describe(
+          kind: z.unknown().describe(
             'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#translatedString"`.',
           ).optional(),
-          language: z.string().describe(
+          language: z.unknown().describe(
             'Represents the BCP 47 language tag. Example values are "en-US", "en-GB", "de", or "de-AT".',
           ).optional(),
-          value: z.string().describe("The UTF-8 encoded translated string.")
+          value: z.unknown().describe("The UTF-8 encoded translated string.")
             .optional(),
         }).optional(),
         kind: z.string().describe(
           'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#localizedString"`.',
         ).optional(),
-        translatedValues: z.array(z.object({
-          kind: z.string().describe(
-            'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#translatedString"`.',
-          ).optional(),
-          language: z.string().describe(
-            'Represents the BCP 47 language tag. Example values are "en-US", "en-GB", "de", or "de-AT".',
-          ).optional(),
-          value: z.string().describe("The UTF-8 encoded translated string.")
-            .optional(),
-        })).describe("Contains the translations for the string.").optional(),
+        translatedValues: z.array(z.unknown()).describe(
+          "Contains the translations for the string.",
+        ).optional(),
       }).optional(),
       localizedHeader: z.object({
         defaultValue: z.object({
-          kind: z.string().describe(
+          kind: z.unknown().describe(
             'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#translatedString"`.',
           ).optional(),
-          language: z.string().describe(
+          language: z.unknown().describe(
             'Represents the BCP 47 language tag. Example values are "en-US", "en-GB", "de", or "de-AT".',
           ).optional(),
-          value: z.string().describe("The UTF-8 encoded translated string.")
+          value: z.unknown().describe("The UTF-8 encoded translated string.")
             .optional(),
         }).optional(),
         kind: z.string().describe(
           'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#localizedString"`.',
         ).optional(),
-        translatedValues: z.array(z.object({
-          kind: z.string().describe(
-            'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#translatedString"`.',
-          ).optional(),
-          language: z.string().describe(
-            'Represents the BCP 47 language tag. Example values are "en-US", "en-GB", "de", or "de-AT".',
-          ).optional(),
-          value: z.string().describe("The UTF-8 encoded translated string.")
-            .optional(),
-        })).describe("Contains the translations for the string.").optional(),
+        translatedValues: z.array(z.unknown()).describe(
+          "Contains the translations for the string.",
+        ).optional(),
       }).optional(),
     })).describe(
       "Text module data. If text module data is also defined on the class, both will be displayed. The maximum number of these fields displayed is 10 from the object and 10 from the class.",
@@ -8376,79 +5482,49 @@ const InputsSchema = z.object({
     valueAddedModuleData: z.array(z.object({
       body: z.object({
         defaultValue: z.object({
-          kind: z.string().describe(
+          kind: z.unknown().describe(
             'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#translatedString"`.',
           ).optional(),
-          language: z.string().describe(
+          language: z.unknown().describe(
             'Represents the BCP 47 language tag. Example values are "en-US", "en-GB", "de", or "de-AT".',
           ).optional(),
-          value: z.string().describe("The UTF-8 encoded translated string.")
+          value: z.unknown().describe("The UTF-8 encoded translated string.")
             .optional(),
         }).optional(),
         kind: z.string().describe(
           'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#localizedString"`.',
         ).optional(),
-        translatedValues: z.array(z.object({
-          kind: z.string().describe(
-            'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#translatedString"`.',
-          ).optional(),
-          language: z.string().describe(
-            'Represents the BCP 47 language tag. Example values are "en-US", "en-GB", "de", or "de-AT".',
-          ).optional(),
-          value: z.string().describe("The UTF-8 encoded translated string.")
-            .optional(),
-        })).describe("Contains the translations for the string.").optional(),
+        translatedValues: z.array(z.unknown()).describe(
+          "Contains the translations for the string.",
+        ).optional(),
       }).optional(),
       header: z.object({
         defaultValue: z.object({
-          kind: z.string().describe(
+          kind: z.unknown().describe(
             'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#translatedString"`.',
           ).optional(),
-          language: z.string().describe(
+          language: z.unknown().describe(
             'Represents the BCP 47 language tag. Example values are "en-US", "en-GB", "de", or "de-AT".',
           ).optional(),
-          value: z.string().describe("The UTF-8 encoded translated string.")
+          value: z.unknown().describe("The UTF-8 encoded translated string.")
             .optional(),
         }).optional(),
         kind: z.string().describe(
           'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#localizedString"`.',
         ).optional(),
-        translatedValues: z.array(z.object({
-          kind: z.string().describe(
-            'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#translatedString"`.',
-          ).optional(),
-          language: z.string().describe(
-            'Represents the BCP 47 language tag. Example values are "en-US", "en-GB", "de", or "de-AT".',
-          ).optional(),
-          value: z.string().describe("The UTF-8 encoded translated string.")
-            .optional(),
-        })).describe("Contains the translations for the string.").optional(),
+        translatedValues: z.array(z.unknown()).describe(
+          "Contains the translations for the string.",
+        ).optional(),
       }).optional(),
       image: z.object({
         contentDescription: z.object({
-          defaultValue: z.object({
-            kind: z.string().describe(
-              'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#translatedString"`.',
-            ).optional(),
-            language: z.string().describe(
-              'Represents the BCP 47 language tag. Example values are "en-US", "en-GB", "de", or "de-AT".',
-            ).optional(),
-            value: z.string().describe("The UTF-8 encoded translated string.")
-              .optional(),
-          }).optional(),
-          kind: z.string().describe(
+          defaultValue: z.unknown().optional(),
+          kind: z.unknown().describe(
             'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#localizedString"`.',
           ).optional(),
-          translatedValues: z.array(z.object({
-            kind: z.string().describe(
-              'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#translatedString"`.',
-            ).optional(),
-            language: z.string().describe(
-              'Represents the BCP 47 language tag. Example values are "en-US", "en-GB", "de", or "de-AT".',
-            ).optional(),
-            value: z.string().describe("The UTF-8 encoded translated string.")
-              .optional(),
-          })).describe("Contains the translations for the string.").optional(),
+          translatedValues: z.unknown().describe(
+            "Contains the translations for the string.",
+          ).optional(),
         }).optional(),
         kind: z.string().describe(
           'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#image"`.',
@@ -8457,36 +5533,11 @@ const InputsSchema = z.object({
           "An ID for an already uploaded private image. Either this or source_uri should be set. Requests setting both or neither will be rejected. Please contact support to use private images.",
         ).optional(),
         sourceUri: z.object({
-          description: z.string().describe(
+          description: z.unknown().describe(
             "Additional information about the image, which is unused and retained only for backward compatibility.",
           ).optional(),
-          localizedDescription: z.object({
-            defaultValue: z.object({
-              kind: z.string().describe(
-                'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#translatedString"`.',
-              ).optional(),
-              language: z.string().describe(
-                'Represents the BCP 47 language tag. Example values are "en-US", "en-GB", "de", or "de-AT".',
-              ).optional(),
-              value: z.string().describe("The UTF-8 encoded translated string.")
-                .optional(),
-            }).optional(),
-            kind: z.string().describe(
-              'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#localizedString"`.',
-            ).optional(),
-            translatedValues: z.array(z.object({
-              kind: z.string().describe(
-                'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#translatedString"`.',
-              ).optional(),
-              language: z.string().describe(
-                'Represents the BCP 47 language tag. Example values are "en-US", "en-GB", "de", or "de-AT".',
-              ).optional(),
-              value: z.string().describe("The UTF-8 encoded translated string.")
-                .optional(),
-            })).describe("Contains the translations for the string.")
-              .optional(),
-          }).optional(),
-          uri: z.string().describe(
+          localizedDescription: z.unknown().optional(),
+          uri: z.unknown().describe(
             "The location of the image. URIs must have a scheme.",
           ).optional(),
         }).optional(),
@@ -8499,19 +5550,11 @@ const InputsSchema = z.object({
       ).optional(),
       viewConstraints: z.object({
         displayInterval: z.object({
-          end: z.object({
-            date: z.string().describe(
-              "An ISO 8601 extended format date/time. Offset may or may not be required (refer to the parent field's documentation). Time may be specified up to nanosecond precision. Offsets may be specified with seconds precision (even though offset seconds is not part of ISO 8601). For example: `1985-04-12T23:20:50.52Z` would be 20 minutes and 50.52 seconds after the 23rd hour of April 12th, 1985 in UTC. `1985-04-12T19:20:50.52-04:00` would be 20 minutes and 50.52 seconds after the 19th hour of April 12th, 1985, 4 hours before UTC (same instant in time as the above example). If the date/time is intended for a physical location in New York, this would be the equivalent of Eastern Daylight Time (EDT). Remember that offset varies in regions that observe Daylight Saving Time (or Summer Time), depending on the time of the year. `1985-04-12T19:20:50.52` would be 20 minutes and 50.52 seconds after the 19th hour of April 12th, 1985 with no offset information. Providing an offset makes this an absolute instant in time around the world. The date/time will be adjusted based on the user's time zone. For example, a time of `2018-06-19T18:30:00-04:00` will be 18:30:00 for a user in New York and 15:30:00 for a user in Los Angeles. Omitting the offset makes this a local date/time, representing several instants in time around the world. The date/time will always be in the user's current time zone. For example, a time of `2018-06-19T18:30:00` will be 18:30:00 for a user in New York and also 18:30:00 for a user in Los Angeles. This is useful when the same local date/time should apply to many physical locations across several time zones.",
-            ).optional(),
-          }).optional(),
-          kind: z.string().describe(
+          end: z.unknown().optional(),
+          kind: z.unknown().describe(
             'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#timeInterval"`.',
           ).optional(),
-          start: z.object({
-            date: z.string().describe(
-              "An ISO 8601 extended format date/time. Offset may or may not be required (refer to the parent field's documentation). Time may be specified up to nanosecond precision. Offsets may be specified with seconds precision (even though offset seconds is not part of ISO 8601). For example: `1985-04-12T23:20:50.52Z` would be 20 minutes and 50.52 seconds after the 23rd hour of April 12th, 1985 in UTC. `1985-04-12T19:20:50.52-04:00` would be 20 minutes and 50.52 seconds after the 19th hour of April 12th, 1985, 4 hours before UTC (same instant in time as the above example). If the date/time is intended for a physical location in New York, this would be the equivalent of Eastern Daylight Time (EDT). Remember that offset varies in regions that observe Daylight Saving Time (or Summer Time), depending on the time of the year. `1985-04-12T19:20:50.52` would be 20 minutes and 50.52 seconds after the 19th hour of April 12th, 1985 with no offset information. Providing an offset makes this an absolute instant in time around the world. The date/time will be adjusted based on the user's time zone. For example, a time of `2018-06-19T18:30:00-04:00` will be 18:30:00 for a user in New York and 15:30:00 for a user in Los Angeles. Omitting the offset makes this a local date/time, representing several instants in time around the world. The date/time will always be in the user's current time zone. For example, a time of `2018-06-19T18:30:00` will be 18:30:00 for a user in New York and also 18:30:00 for a user in Los Angeles. This is useful when the same local date/time should apply to many physical locations across several time zones.",
-            ).optional(),
-          }).optional(),
+          start: z.unknown().optional(),
         }).optional(),
       }).describe(
         "Constraints that all must be met for the module to be shown.",
@@ -8535,13 +5578,13 @@ const InputsSchema = z.object({
           'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#localizedString"`.',
         ).optional(),
         translatedValues: z.array(z.object({
-          kind: z.string().describe(
+          kind: z.unknown().describe(
             'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#translatedString"`.',
           ).optional(),
-          language: z.string().describe(
+          language: z.unknown().describe(
             'Represents the BCP 47 language tag. Example values are "en-US", "en-GB", "de", or "de-AT".',
           ).optional(),
-          value: z.string().describe("The UTF-8 encoded translated string.")
+          value: z.unknown().describe("The UTF-8 encoded translated string.")
             .optional(),
         })).describe("Contains the translations for the string.").optional(),
       }).optional(),
@@ -8563,13 +5606,13 @@ const InputsSchema = z.object({
           'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#localizedString"`.',
         ).optional(),
         translatedValues: z.array(z.object({
-          kind: z.string().describe(
+          kind: z.unknown().describe(
             'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#translatedString"`.',
           ).optional(),
-          language: z.string().describe(
+          language: z.unknown().describe(
             'Represents the BCP 47 language tag. Example values are "en-US", "en-GB", "de", or "de-AT".',
           ).optional(),
-          value: z.string().describe("The UTF-8 encoded translated string.")
+          value: z.unknown().describe("The UTF-8 encoded translated string.")
             .optional(),
         })).describe("Contains the translations for the string.").optional(),
       }).optional(),
@@ -8597,13 +5640,13 @@ const InputsSchema = z.object({
           'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#localizedString"`.',
         ).optional(),
         translatedValues: z.array(z.object({
-          kind: z.string().describe(
+          kind: z.unknown().describe(
             'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#translatedString"`.',
           ).optional(),
-          language: z.string().describe(
+          language: z.unknown().describe(
             'Represents the BCP 47 language tag. Example values are "en-US", "en-GB", "de", or "de-AT".',
           ).optional(),
-          value: z.string().describe("The UTF-8 encoded translated string.")
+          value: z.unknown().describe("The UTF-8 encoded translated string.")
             .optional(),
         })).describe("Contains the translations for the string.").optional(),
       }).optional(),
@@ -8619,28 +5662,21 @@ const InputsSchema = z.object({
         ).optional(),
         localizedDescription: z.object({
           defaultValue: z.object({
-            kind: z.string().describe(
+            kind: z.unknown().describe(
               'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#translatedString"`.',
             ).optional(),
-            language: z.string().describe(
+            language: z.unknown().describe(
               'Represents the BCP 47 language tag. Example values are "en-US", "en-GB", "de", or "de-AT".',
             ).optional(),
-            value: z.string().describe("The UTF-8 encoded translated string.")
+            value: z.unknown().describe("The UTF-8 encoded translated string.")
               .optional(),
           }).optional(),
           kind: z.string().describe(
             'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#localizedString"`.',
           ).optional(),
-          translatedValues: z.array(z.object({
-            kind: z.string().describe(
-              'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#translatedString"`.',
-            ).optional(),
-            language: z.string().describe(
-              'Represents the BCP 47 language tag. Example values are "en-US", "en-GB", "de", or "de-AT".',
-            ).optional(),
-            value: z.string().describe("The UTF-8 encoded translated string.")
-              .optional(),
-          })).describe("Contains the translations for the string.").optional(),
+          translatedValues: z.array(z.unknown()).describe(
+            "Contains the translations for the string.",
+          ).optional(),
         }).optional(),
         uri: z.string().describe(
           "The location of the image. URIs must have a scheme.",
@@ -8663,13 +5699,13 @@ const InputsSchema = z.object({
           'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#localizedString"`.',
         ).optional(),
         translatedValues: z.array(z.object({
-          kind: z.string().describe(
+          kind: z.unknown().describe(
             'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#translatedString"`.',
           ).optional(),
-          language: z.string().describe(
+          language: z.unknown().describe(
             'Represents the BCP 47 language tag. Example values are "en-US", "en-GB", "de", or "de-AT".',
           ).optional(),
-          value: z.string().describe("The UTF-8 encoded translated string.")
+          value: z.unknown().describe("The UTF-8 encoded translated string.")
             .optional(),
         })).describe("Contains the translations for the string.").optional(),
       }).optional(),
@@ -8685,28 +5721,21 @@ const InputsSchema = z.object({
         ).optional(),
         localizedDescription: z.object({
           defaultValue: z.object({
-            kind: z.string().describe(
+            kind: z.unknown().describe(
               'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#translatedString"`.',
             ).optional(),
-            language: z.string().describe(
+            language: z.unknown().describe(
               'Represents the BCP 47 language tag. Example values are "en-US", "en-GB", "de", or "de-AT".',
             ).optional(),
-            value: z.string().describe("The UTF-8 encoded translated string.")
+            value: z.unknown().describe("The UTF-8 encoded translated string.")
               .optional(),
           }).optional(),
           kind: z.string().describe(
             'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#localizedString"`.',
           ).optional(),
-          translatedValues: z.array(z.object({
-            kind: z.string().describe(
-              'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#translatedString"`.',
-            ).optional(),
-            language: z.string().describe(
-              'Represents the BCP 47 language tag. Example values are "en-US", "en-GB", "de", or "de-AT".',
-            ).optional(),
-            value: z.string().describe("The UTF-8 encoded translated string.")
-              .optional(),
-          })).describe("Contains the translations for the string.").optional(),
+          translatedValues: z.array(z.unknown()).describe(
+            "Contains the translations for the string.",
+          ).optional(),
         }).optional(),
         uri: z.string().describe(
           "The location of the image. URIs must have a scheme.",
@@ -8793,13 +5822,13 @@ const InputsSchema = z.object({
           'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#localizedString"`.',
         ).optional(),
         translatedValues: z.array(z.object({
-          kind: z.string().describe(
+          kind: z.unknown().describe(
             'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#translatedString"`.',
           ).optional(),
-          language: z.string().describe(
+          language: z.unknown().describe(
             'Represents the BCP 47 language tag. Example values are "en-US", "en-GB", "de", or "de-AT".',
           ).optional(),
-          value: z.string().describe("The UTF-8 encoded translated string.")
+          value: z.unknown().describe("The UTF-8 encoded translated string.")
             .optional(),
         })).describe("Contains the translations for the string.").optional(),
       }).optional(),
@@ -8821,28 +5850,21 @@ const InputsSchema = z.object({
     mainImage: z.object({
       contentDescription: z.object({
         defaultValue: z.object({
-          kind: z.string().describe(
+          kind: z.unknown().describe(
             'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#translatedString"`.',
           ).optional(),
-          language: z.string().describe(
+          language: z.unknown().describe(
             'Represents the BCP 47 language tag. Example values are "en-US", "en-GB", "de", or "de-AT".',
           ).optional(),
-          value: z.string().describe("The UTF-8 encoded translated string.")
+          value: z.unknown().describe("The UTF-8 encoded translated string.")
             .optional(),
         }).optional(),
         kind: z.string().describe(
           'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#localizedString"`.',
         ).optional(),
-        translatedValues: z.array(z.object({
-          kind: z.string().describe(
-            'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#translatedString"`.',
-          ).optional(),
-          language: z.string().describe(
-            'Represents the BCP 47 language tag. Example values are "en-US", "en-GB", "de", or "de-AT".',
-          ).optional(),
-          value: z.string().describe("The UTF-8 encoded translated string.")
-            .optional(),
-        })).describe("Contains the translations for the string.").optional(),
+        translatedValues: z.array(z.unknown()).describe(
+          "Contains the translations for the string.",
+        ).optional(),
       }).optional(),
       kind: z.string().describe(
         'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#image"`.',
@@ -8855,29 +5877,13 @@ const InputsSchema = z.object({
           "Additional information about the image, which is unused and retained only for backward compatibility.",
         ).optional(),
         localizedDescription: z.object({
-          defaultValue: z.object({
-            kind: z.string().describe(
-              'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#translatedString"`.',
-            ).optional(),
-            language: z.string().describe(
-              'Represents the BCP 47 language tag. Example values are "en-US", "en-GB", "de", or "de-AT".',
-            ).optional(),
-            value: z.string().describe("The UTF-8 encoded translated string.")
-              .optional(),
-          }).optional(),
-          kind: z.string().describe(
+          defaultValue: z.unknown().optional(),
+          kind: z.unknown().describe(
             'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#localizedString"`.',
           ).optional(),
-          translatedValues: z.array(z.object({
-            kind: z.string().describe(
-              'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#translatedString"`.',
-            ).optional(),
-            language: z.string().describe(
-              'Represents the BCP 47 language tag. Example values are "en-US", "en-GB", "de", or "de-AT".',
-            ).optional(),
-            value: z.string().describe("The UTF-8 encoded translated string.")
-              .optional(),
-          })).describe("Contains the translations for the string.").optional(),
+          translatedValues: z.unknown().describe(
+            "Contains the translations for the string.",
+          ).optional(),
         }).optional(),
         uri: z.string().describe(
           "The location of the image. URIs must have a scheme.",
@@ -8890,60 +5896,12 @@ const InputsSchema = z.object({
   infoModuleData: z.object({
     labelValueRows: z.array(z.object({
       columns: z.array(z.object({
-        label: z.string().describe(
+        label: z.unknown().describe(
           "The label for a specific row and column. Recommended maximum is 15 characters for a two-column layout and 30 characters for a one-column layout.",
         ).optional(),
-        localizedLabel: z.object({
-          defaultValue: z.object({
-            kind: z.string().describe(
-              'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#translatedString"`.',
-            ).optional(),
-            language: z.string().describe(
-              'Represents the BCP 47 language tag. Example values are "en-US", "en-GB", "de", or "de-AT".',
-            ).optional(),
-            value: z.string().describe("The UTF-8 encoded translated string.")
-              .optional(),
-          }).optional(),
-          kind: z.string().describe(
-            'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#localizedString"`.',
-          ).optional(),
-          translatedValues: z.array(z.object({
-            kind: z.string().describe(
-              'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#translatedString"`.',
-            ).optional(),
-            language: z.string().describe(
-              'Represents the BCP 47 language tag. Example values are "en-US", "en-GB", "de", or "de-AT".',
-            ).optional(),
-            value: z.string().describe("The UTF-8 encoded translated string.")
-              .optional(),
-          })).describe("Contains the translations for the string.").optional(),
-        }).optional(),
-        localizedValue: z.object({
-          defaultValue: z.object({
-            kind: z.string().describe(
-              'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#translatedString"`.',
-            ).optional(),
-            language: z.string().describe(
-              'Represents the BCP 47 language tag. Example values are "en-US", "en-GB", "de", or "de-AT".',
-            ).optional(),
-            value: z.string().describe("The UTF-8 encoded translated string.")
-              .optional(),
-          }).optional(),
-          kind: z.string().describe(
-            'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#localizedString"`.',
-          ).optional(),
-          translatedValues: z.array(z.object({
-            kind: z.string().describe(
-              'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#translatedString"`.',
-            ).optional(),
-            language: z.string().describe(
-              'Represents the BCP 47 language tag. Example values are "en-US", "en-GB", "de", or "de-AT".',
-            ).optional(),
-            value: z.string().describe("The UTF-8 encoded translated string.")
-              .optional(),
-          })).describe("Contains the translations for the string.").optional(),
-        }).optional(),
-        value: z.string().describe(
+        localizedLabel: z.unknown().optional(),
+        localizedValue: z.unknown().optional(),
+        value: z.unknown().describe(
           "The value for a specific row and column. Recommended maximum is 15 characters for a two-column layout and 30 characters for a one-column layout.",
         ).optional(),
       })).describe(
@@ -8973,28 +5931,21 @@ const InputsSchema = z.object({
       ).optional(),
       localizedDescription: z.object({
         defaultValue: z.object({
-          kind: z.string().describe(
+          kind: z.unknown().describe(
             'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#translatedString"`.',
           ).optional(),
-          language: z.string().describe(
+          language: z.unknown().describe(
             'Represents the BCP 47 language tag. Example values are "en-US", "en-GB", "de", or "de-AT".',
           ).optional(),
-          value: z.string().describe("The UTF-8 encoded translated string.")
+          value: z.unknown().describe("The UTF-8 encoded translated string.")
             .optional(),
         }).optional(),
         kind: z.string().describe(
           'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#localizedString"`.',
         ).optional(),
-        translatedValues: z.array(z.object({
-          kind: z.string().describe(
-            'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#translatedString"`.',
-          ).optional(),
-          language: z.string().describe(
-            'Represents the BCP 47 language tag. Example values are "en-US", "en-GB", "de", or "de-AT".',
-          ).optional(),
-          value: z.string().describe("The UTF-8 encoded translated string.")
-            .optional(),
-        })).describe("Contains the translations for the string.").optional(),
+        translatedValues: z.array(z.unknown()).describe(
+          "Contains the translations for the string.",
+        ).optional(),
       }).optional(),
       uri: z.string().describe(
         "The location of a web page, image, or other resource. URIs in the `LinksModuleData` module can have different prefixes indicating the type of URI (a link to a web page, a link to a map, a telephone number, or an email address). URIs must have a scheme.",
@@ -9050,13 +6001,13 @@ const InputsSchema = z.object({
         'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#localizedString"`.',
       ).optional(),
       translatedValues: z.array(z.object({
-        kind: z.string().describe(
+        kind: z.unknown().describe(
           'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#translatedString"`.',
         ).optional(),
-        language: z.string().describe(
+        language: z.unknown().describe(
           'Represents the BCP 47 language tag. Example values are "en-US", "en-GB", "de", or "de-AT".',
         ).optional(),
-        value: z.string().describe("The UTF-8 encoded translated string.")
+        value: z.unknown().describe("The UTF-8 encoded translated string.")
           .optional(),
       })).describe("Contains the translations for the string.").optional(),
     }).optional(),
@@ -9075,13 +6026,13 @@ const InputsSchema = z.object({
         'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#localizedString"`.',
       ).optional(),
       translatedValues: z.array(z.object({
-        kind: z.string().describe(
+        kind: z.unknown().describe(
           'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#translatedString"`.',
         ).optional(),
-        language: z.string().describe(
+        language: z.unknown().describe(
           'Represents the BCP 47 language tag. Example values are "en-US", "en-GB", "de", or "de-AT".',
         ).optional(),
-        value: z.string().describe("The UTF-8 encoded translated string.")
+        value: z.unknown().describe("The UTF-8 encoded translated string.")
           .optional(),
       })).describe("Contains the translations for the string.").optional(),
     }).optional(),
@@ -9376,13 +6327,13 @@ const InputsSchema = z.object({
         'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#localizedString"`.',
       ).optional(),
       translatedValues: z.array(z.object({
-        kind: z.string().describe(
+        kind: z.unknown().describe(
           'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#translatedString"`.',
         ).optional(),
-        language: z.string().describe(
+        language: z.unknown().describe(
           'Represents the BCP 47 language tag. Example values are "en-US", "en-GB", "de", or "de-AT".',
         ).optional(),
-        value: z.string().describe("The UTF-8 encoded translated string.")
+        value: z.unknown().describe("The UTF-8 encoded translated string.")
           .optional(),
       })).describe("Contains the translations for the string.").optional(),
     }).optional(),
@@ -9401,13 +6352,13 @@ const InputsSchema = z.object({
         'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#localizedString"`.',
       ).optional(),
       translatedValues: z.array(z.object({
-        kind: z.string().describe(
+        kind: z.unknown().describe(
           'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#translatedString"`.',
         ).optional(),
-        language: z.string().describe(
+        language: z.unknown().describe(
           'Represents the BCP 47 language tag. Example values are "en-US", "en-GB", "de", or "de-AT".',
         ).optional(),
-        value: z.string().describe("The UTF-8 encoded translated string.")
+        value: z.unknown().describe("The UTF-8 encoded translated string.")
           .optional(),
       })).describe("Contains the translations for the string.").optional(),
     }).optional(),
@@ -9476,13 +6427,13 @@ const InputsSchema = z.object({
         'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#localizedString"`.',
       ).optional(),
       translatedValues: z.array(z.object({
-        kind: z.string().describe(
+        kind: z.unknown().describe(
           'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#translatedString"`.',
         ).optional(),
-        language: z.string().describe(
+        language: z.unknown().describe(
           'Represents the BCP 47 language tag. Example values are "en-US", "en-GB", "de", or "de-AT".',
         ).optional(),
-        value: z.string().describe("The UTF-8 encoded translated string.")
+        value: z.unknown().describe("The UTF-8 encoded translated string.")
           .optional(),
       })).describe("Contains the translations for the string.").optional(),
     }).optional(),
@@ -9501,41 +6452,34 @@ const InputsSchema = z.object({
         'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#localizedString"`.',
       ).optional(),
       translatedValues: z.array(z.object({
-        kind: z.string().describe(
+        kind: z.unknown().describe(
           'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#translatedString"`.',
         ).optional(),
-        language: z.string().describe(
+        language: z.unknown().describe(
           'Represents the BCP 47 language tag. Example values are "en-US", "en-GB", "de", or "de-AT".',
         ).optional(),
-        value: z.string().describe("The UTF-8 encoded translated string.")
+        value: z.unknown().describe("The UTF-8 encoded translated string.")
           .optional(),
       })).describe("Contains the translations for the string.").optional(),
     }).optional(),
     image: z.object({
       contentDescription: z.object({
         defaultValue: z.object({
-          kind: z.string().describe(
+          kind: z.unknown().describe(
             'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#translatedString"`.',
           ).optional(),
-          language: z.string().describe(
+          language: z.unknown().describe(
             'Represents the BCP 47 language tag. Example values are "en-US", "en-GB", "de", or "de-AT".',
           ).optional(),
-          value: z.string().describe("The UTF-8 encoded translated string.")
+          value: z.unknown().describe("The UTF-8 encoded translated string.")
             .optional(),
         }).optional(),
         kind: z.string().describe(
           'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#localizedString"`.',
         ).optional(),
-        translatedValues: z.array(z.object({
-          kind: z.string().describe(
-            'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#translatedString"`.',
-          ).optional(),
-          language: z.string().describe(
-            'Represents the BCP 47 language tag. Example values are "en-US", "en-GB", "de", or "de-AT".',
-          ).optional(),
-          value: z.string().describe("The UTF-8 encoded translated string.")
-            .optional(),
-        })).describe("Contains the translations for the string.").optional(),
+        translatedValues: z.array(z.unknown()).describe(
+          "Contains the translations for the string.",
+        ).optional(),
       }).optional(),
       kind: z.string().describe(
         'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#image"`.',
@@ -9548,29 +6492,13 @@ const InputsSchema = z.object({
           "Additional information about the image, which is unused and retained only for backward compatibility.",
         ).optional(),
         localizedDescription: z.object({
-          defaultValue: z.object({
-            kind: z.string().describe(
-              'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#translatedString"`.',
-            ).optional(),
-            language: z.string().describe(
-              'Represents the BCP 47 language tag. Example values are "en-US", "en-GB", "de", or "de-AT".',
-            ).optional(),
-            value: z.string().describe("The UTF-8 encoded translated string.")
-              .optional(),
-          }).optional(),
-          kind: z.string().describe(
+          defaultValue: z.unknown().optional(),
+          kind: z.unknown().describe(
             'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#localizedString"`.',
           ).optional(),
-          translatedValues: z.array(z.object({
-            kind: z.string().describe(
-              'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#translatedString"`.',
-            ).optional(),
-            language: z.string().describe(
-              'Represents the BCP 47 language tag. Example values are "en-US", "en-GB", "de", or "de-AT".',
-            ).optional(),
-            value: z.string().describe("The UTF-8 encoded translated string.")
-              .optional(),
-          })).describe("Contains the translations for the string.").optional(),
+          translatedValues: z.unknown().describe(
+            "Contains the translations for the string.",
+          ).optional(),
         }).optional(),
         uri: z.string().describe(
           "The location of the image. URIs must have a scheme.",
@@ -9586,7 +6514,7 @@ const InputsSchema = z.object({
     viewConstraints: z.object({
       displayInterval: z.object({
         end: z.object({
-          date: z.string().describe(
+          date: z.unknown().describe(
             "An ISO 8601 extended format date/time. Offset may or may not be required (refer to the parent field's documentation). Time may be specified up to nanosecond precision. Offsets may be specified with seconds precision (even though offset seconds is not part of ISO 8601). For example: `1985-04-12T23:20:50.52Z` would be 20 minutes and 50.52 seconds after the 23rd hour of April 12th, 1985 in UTC. `1985-04-12T19:20:50.52-04:00` would be 20 minutes and 50.52 seconds after the 19th hour of April 12th, 1985, 4 hours before UTC (same instant in time as the above example). If the date/time is intended for a physical location in New York, this would be the equivalent of Eastern Daylight Time (EDT). Remember that offset varies in regions that observe Daylight Saving Time (or Summer Time), depending on the time of the year. `1985-04-12T19:20:50.52` would be 20 minutes and 50.52 seconds after the 19th hour of April 12th, 1985 with no offset information. Providing an offset makes this an absolute instant in time around the world. The date/time will be adjusted based on the user's time zone. For example, a time of `2018-06-19T18:30:00-04:00` will be 18:30:00 for a user in New York and 15:30:00 for a user in Los Angeles. Omitting the offset makes this a local date/time, representing several instants in time around the world. The date/time will always be in the user's current time zone. For example, a time of `2018-06-19T18:30:00` will be 18:30:00 for a user in New York and also 18:30:00 for a user in Los Angeles. This is useful when the same local date/time should apply to many physical locations across several time zones.",
           ).optional(),
         }).optional(),
@@ -9594,7 +6522,7 @@ const InputsSchema = z.object({
           'Identifies what kind of resource this is. Value: the fixed string `"walletobjects#timeInterval"`.',
         ).optional(),
         start: z.object({
-          date: z.string().describe(
+          date: z.unknown().describe(
             "An ISO 8601 extended format date/time. Offset may or may not be required (refer to the parent field's documentation). Time may be specified up to nanosecond precision. Offsets may be specified with seconds precision (even though offset seconds is not part of ISO 8601). For example: `1985-04-12T23:20:50.52Z` would be 20 minutes and 50.52 seconds after the 23rd hour of April 12th, 1985 in UTC. `1985-04-12T19:20:50.52-04:00` would be 20 minutes and 50.52 seconds after the 19th hour of April 12th, 1985, 4 hours before UTC (same instant in time as the above example). If the date/time is intended for a physical location in New York, this would be the equivalent of Eastern Daylight Time (EDT). Remember that offset varies in regions that observe Daylight Saving Time (or Summer Time), depending on the time of the year. `1985-04-12T19:20:50.52` would be 20 minutes and 50.52 seconds after the 19th hour of April 12th, 1985 with no offset information. Providing an offset makes this an absolute instant in time around the world. The date/time will be adjusted based on the user's time zone. For example, a time of `2018-06-19T18:30:00-04:00` will be 18:30:00 for a user in New York and 15:30:00 for a user in Los Angeles. Omitting the offset makes this a local date/time, representing several instants in time around the world. The date/time will always be in the user's current time zone. For example, a time of `2018-06-19T18:30:00` will be 18:30:00 for a user in New York and also 18:30:00 for a user in Los Angeles. This is useful when the same local date/time should apply to many physical locations across several time zones.",
           ).optional(),
         }).optional(),
@@ -9608,7 +6536,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/walletobjects/eventticketobject",
-  version: "2026.04.03.3",
+  version: "2026.04.04.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -9632,6 +6560,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.3",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.04.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

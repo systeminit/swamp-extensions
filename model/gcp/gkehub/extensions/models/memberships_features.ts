@@ -145,29 +145,13 @@ const GlobalArgsSchema = z.object({
       ).optional(),
       configSync: z.object({
         deploymentOverrides: z.array(z.object({
-          containers: z.array(z.object({
-            containerName: z.string().describe(
-              "Required. The name of the container.",
-            ).optional(),
-            cpuLimit: z.string().describe(
-              "Optional. The cpu limit of the container. Use the following CPU resource units: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/#meaning-of-cpu.",
-            ).optional(),
-            cpuRequest: z.string().describe(
-              "Optional. The cpu request of the container. Use the following CPU resource units: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/#meaning-of-cpu.",
-            ).optional(),
-            memoryLimit: z.string().describe(
-              "Optional. The memory limit of the container. Use the following memory resource units: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/#meaning-of-memory.",
-            ).optional(),
-            memoryRequest: z.string().describe(
-              "Optional. The memory request of the container. Use the following memory resource units: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/#meaning-of-memory.",
-            ).optional(),
-          })).describe(
+          containers: z.unknown().describe(
             "Optional. The containers of the deployment resource to be overridden.",
           ).optional(),
-          deploymentName: z.string().describe(
+          deploymentName: z.unknown().describe(
             "Required. The name of the deployment resource to be overridden.",
           ).optional(),
-          deploymentNamespace: z.string().describe(
+          deploymentNamespace: z.unknown().describe(
             "Required. The namespace of the deployment resource to be overridden.",
           ).optional(),
         })).describe(
@@ -264,13 +248,7 @@ const GlobalArgsSchema = z.object({
           "Logs all denies and dry run failures.",
         ).optional(),
         monitoring: z.object({
-          backends: z.array(
-            z.enum([
-              "MONITORING_BACKEND_UNSPECIFIED",
-              "PROMETHEUS",
-              "CLOUD_MONITORING",
-            ]),
-          ).describe(
+          backends: z.array(z.unknown()).describe(
             "Specifies the list of backends Policy Controller will export to. An empty list would effectively disable metrics export.",
           ).optional(),
         }).describe(
@@ -298,159 +276,114 @@ const GlobalArgsSchema = z.object({
     identityservice: z.object({
       authMethods: z.array(z.object({
         azureadConfig: z.object({
-          clientId: z.string().describe(
+          clientId: z.unknown().describe(
             "ID for the registered client application that makes authentication requests to the Azure AD identity provider.",
           ).optional(),
-          clientSecret: z.string().describe(
+          clientSecret: z.unknown().describe(
             "Input only. Unencrypted AzureAD client secret will be passed to the GKE Hub CLH.",
           ).optional(),
-          encryptedClientSecret: z.string().describe(
+          encryptedClientSecret: z.unknown().describe(
             "Output only. Encrypted AzureAD client secret.",
           ).optional(),
-          groupFormat: z.string().describe(
+          groupFormat: z.unknown().describe(
             "Optional. Format of the AzureAD groups that the client wants for auth.",
           ).optional(),
-          kubectlRedirectUri: z.string().describe(
+          kubectlRedirectUri: z.unknown().describe(
             "The redirect URL that kubectl uses for authorization.",
           ).optional(),
-          tenant: z.string().describe(
+          tenant: z.unknown().describe(
             "Kind of Azure AD account to be authenticated. Supported values are or for accounts belonging to a specific tenant.",
           ).optional(),
-          userClaim: z.string().describe(
+          userClaim: z.unknown().describe(
             "Optional. Claim in the AzureAD ID Token that holds the user details.",
           ).optional(),
         }).describe("Configuration for the AzureAD Auth flow.").optional(),
         googleConfig: z.object({
-          disable: z.boolean().describe(
+          disable: z.unknown().describe(
             "Disable automatic configuration of Google Plugin on supported platforms.",
           ).optional(),
         }).describe("Configuration for the Google Plugin Auth flow.")
           .optional(),
         ldapConfig: z.object({
-          group: z.object({
-            baseDn: z.string().describe(
-              "Required. The location of the subtree in the LDAP directory to search for group entries.",
-            ).optional(),
-            filter: z.string().describe(
-              'Optional. Optional filter to be used when searching for groups a user belongs to. This can be used to explicitly match only certain groups in order to reduce the amount of groups returned for each user. This defaults to "(objectClass=Group)".',
-            ).optional(),
-            idAttribute: z.string().describe(
-              'Optional. The identifying name of each group a user belongs to. For example, if this is set to "distinguishedName" then RBACs and other group expectations should be written as full DNs. This defaults to "distinguishedName".',
-            ).optional(),
-          }).describe(
+          group: z.unknown().describe(
             "Contains the properties for locating and authenticating groups in the directory.",
           ).optional(),
-          server: z.object({
-            certificateAuthorityData: z.string().describe(
-              'Optional. Contains a Base64 encoded, PEM formatted certificate authority certificate for the LDAP server. This must be provided for the "ldaps" and "startTLS" connections.',
-            ).optional(),
-            connectionType: z.string().describe(
-              "Optional. Defines the connection type to communicate with the LDAP server. If `starttls` or `ldaps` is specified, the certificate_authority_data should not be empty.",
-            ).optional(),
-            host: z.string().describe(
-              'Required. Defines the hostname or IP of the LDAP server. Port is optional and will default to 389, if unspecified. For example, "ldap.server.example" or "10.10.10.10:389".',
-            ).optional(),
-          }).describe("Server settings for the external LDAP server.")
-            .optional(),
-          serviceAccount: z.object({
-            simpleBindCredentials: z.object({
-              dn: z.string().describe(
-                "Required. The distinguished name(DN) of the service account object/user.",
-              ).optional(),
-              encryptedPassword: z.string().describe(
-                "Output only. The encrypted password of the service account object/user.",
-              ).optional(),
-              password: z.string().describe(
-                "Required. Input only. The password of the service account object/user.",
-              ).optional(),
-            }).describe(
-              "The structure holds the LDAP simple binding credential.",
-            ).optional(),
-          }).describe(
+          server: z.unknown().describe(
+            "Server settings for the external LDAP server.",
+          ).optional(),
+          serviceAccount: z.unknown().describe(
             "Contains the credentials of the service account which is authorized to perform the LDAP search in the directory. The credentials can be supplied by the combination of the DN and password or the client certificate.",
           ).optional(),
-          user: z.object({
-            baseDn: z.string().describe(
-              "Required. The location of the subtree in the LDAP directory to search for user entries.",
-            ).optional(),
-            filter: z.string().describe(
-              'Optional. Filter to apply when searching for the user. This can be used to further restrict the user accounts which are allowed to login. This defaults to "(objectClass=User)".',
-            ).optional(),
-            idAttribute: z.string().describe(
-              'Optional. Determines which attribute to use as the user\'s identity after they are authenticated. This is distinct from the loginAttribute field to allow users to login with a username, but then have their actual identifier be an email address or full Distinguished Name (DN). For example, setting loginAttribute to "sAMAccountName" and identifierAttribute to "userPrincipalName" would allow a user to login as "bsmith", but actual RBAC policies for the user would be written as "bsmith@example.com". Using "userPrincipalName" is recommended since this will be unique for each user. This defaults to "userPrincipalName".',
-            ).optional(),
-            loginAttribute: z.string().describe(
-              'Optional. The name of the attribute which matches against the input username. This is used to find the user in the LDAP database e.g. "(=)" and is combined with the optional filter field. This defaults to "userPrincipalName".',
-            ).optional(),
-          }).describe("Defines where users exist in the LDAP directory.")
-            .optional(),
+          user: z.unknown().describe(
+            "Defines where users exist in the LDAP directory.",
+          ).optional(),
         }).describe("Configuration for the LDAP Auth flow.").optional(),
         name: z.string().describe("Identifier for auth config.").optional(),
         oidcConfig: z.object({
-          certificateAuthorityData: z.string().describe(
+          certificateAuthorityData: z.unknown().describe(
             "PEM-encoded CA for OIDC provider.",
           ).optional(),
-          clientId: z.string().describe("ID for OIDC client application.")
+          clientId: z.unknown().describe("ID for OIDC client application.")
             .optional(),
-          clientSecret: z.string().describe(
+          clientSecret: z.unknown().describe(
             "Input only. Unencrypted OIDC client secret will be passed to the GKE Hub CLH.",
           ).optional(),
-          deployCloudConsoleProxy: z.boolean().describe(
+          deployCloudConsoleProxy: z.unknown().describe(
             "Flag to denote if reverse proxy is used to connect to auth provider. This flag should be set to true when provider is not reachable by Google Cloud Console.",
           ).optional(),
-          enableAccessToken: z.boolean().describe("Enable access token.")
+          enableAccessToken: z.unknown().describe("Enable access token.")
             .optional(),
-          encryptedClientSecret: z.string().describe(
+          encryptedClientSecret: z.unknown().describe(
             "Output only. Encrypted OIDC Client secret",
           ).optional(),
-          extraParams: z.string().describe(
+          extraParams: z.unknown().describe(
             "Comma-separated list of key-value pairs.",
           ).optional(),
-          groupPrefix: z.string().describe("Prefix to prepend to group name.")
+          groupPrefix: z.unknown().describe("Prefix to prepend to group name.")
             .optional(),
-          groupsClaim: z.string().describe(
+          groupsClaim: z.unknown().describe(
             "Claim in OIDC ID token that holds group information.",
           ).optional(),
-          issuerUri: z.string().describe(
+          issuerUri: z.unknown().describe(
             "URI for the OIDC provider. This should point to the level below.well-known/openid-configuration.",
           ).optional(),
-          kubectlRedirectUri: z.string().describe(
+          kubectlRedirectUri: z.unknown().describe(
             "Registered redirect uri to redirect users going through OAuth flow using kubectl plugin.",
           ).optional(),
-          scopes: z.string().describe("Comma-separated list of identifiers.")
+          scopes: z.unknown().describe("Comma-separated list of identifiers.")
             .optional(),
-          userClaim: z.string().describe(
+          userClaim: z.unknown().describe(
             "Claim in OIDC ID token that holds username.",
           ).optional(),
-          userPrefix: z.string().describe("Prefix to prepend to user name.")
+          userPrefix: z.unknown().describe("Prefix to prepend to user name.")
             .optional(),
         }).describe("Configuration for OIDC Auth flow.").optional(),
         proxy: z.string().describe(
           "Proxy server address to use for auth method.",
         ).optional(),
         samlConfig: z.object({
-          attributeMapping: z.record(z.string(), z.string()).describe(
+          attributeMapping: z.unknown().describe(
             'Optional. The mapping of additional user attributes like nickname, birthday and address etc.. `key` is the name of this additional attribute. `value` is a string presenting as CEL(common expression language, go/cel) used for getting the value from the resources. Take nickname as an example, in this case, `key` is "attribute.nickname" and `value` is "assertion.nickname".',
           ).optional(),
-          groupPrefix: z.string().describe(
+          groupPrefix: z.unknown().describe(
             "Optional. Prefix to prepend to group name.",
           ).optional(),
-          groupsAttribute: z.string().describe(
+          groupsAttribute: z.unknown().describe(
             "Optional. The SAML attribute to read groups from. This value is expected to be a string and will be passed along as-is (with the option of being prefixed by the `group_prefix`).",
           ).optional(),
-          identityProviderCertificates: z.array(z.string()).describe(
+          identityProviderCertificates: z.unknown().describe(
             "Required. The list of IdP certificates to validate the SAML response against.",
           ).optional(),
-          identityProviderId: z.string().describe(
+          identityProviderId: z.unknown().describe(
             "Required. The entity ID of the SAML IdP.",
           ).optional(),
-          identityProviderSsoUri: z.string().describe(
+          identityProviderSsoUri: z.unknown().describe(
             "Required. The URI where the SAML IdP exposes the SSO service.",
           ).optional(),
-          userAttribute: z.string().describe(
+          userAttribute: z.unknown().describe(
             "Optional. The SAML attribute to read username from. If unspecified, the username will be read from the NameID element of the assertion in SAML response. This value is expected to be a string and will be passed along as-is (with the option of being prefixed by the `user_prefix`).",
           ).optional(),
-          userPrefix: z.string().describe(
+          userPrefix: z.unknown().describe(
             "Optional. Prefix to prepend to user name.",
           ).optional(),
         }).describe("Configuration for the SAML Auth flow.").optional(),
@@ -488,48 +421,18 @@ const GlobalArgsSchema = z.object({
         deploymentConfigs: z.record(
           z.string(),
           z.object({
-            containerResources: z.object({
-              limits: z.object({
-                cpu: z.string().describe(
-                  "CPU requirement expressed in Kubernetes resource units.",
-                ).optional(),
-                memory: z.string().describe(
-                  "Memory requirement expressed in Kubernetes resource units.",
-                ).optional(),
-              }).describe(
-                "ResourceList contains container resource requirements.",
-              ).optional(),
-              requests: z.object({
-                cpu: z.string().describe(
-                  "CPU requirement expressed in Kubernetes resource units.",
-                ).optional(),
-                memory: z.string().describe(
-                  "Memory requirement expressed in Kubernetes resource units.",
-                ).optional(),
-              }).describe(
-                "ResourceList contains container resource requirements.",
-              ).optional(),
-            }).describe(
+            containerResources: z.unknown().describe(
               "ResourceRequirements describes the compute resource requirements.",
             ).optional(),
-            podAffinity: z.enum([
-              "AFFINITY_UNSPECIFIED",
-              "NO_AFFINITY",
-              "ANTI_AFFINITY",
-            ]).describe("Pod affinity configuration.").optional(),
-            podAntiAffinity: z.boolean().describe(
+            podAffinity: z.unknown().describe("Pod affinity configuration.")
+              .optional(),
+            podAntiAffinity: z.unknown().describe(
               "Pod anti-affinity enablement. Deprecated: use `pod_affinity` instead.",
             ).optional(),
-            podTolerations: z.array(z.object({
-              effect: z.string().describe("Matches a taint effect.").optional(),
-              key: z.string().describe(
-                "Matches a taint key (not necessarily unique).",
-              ).optional(),
-              operator: z.string().describe("Matches a taint operator.")
-                .optional(),
-              value: z.string().describe("Matches a taint value.").optional(),
-            })).describe("Pod tolerations of node taints.").optional(),
-            replicaCount: z.string().describe("Pod replica count.").optional(),
+            podTolerations: z.unknown().describe(
+              "Pod tolerations of node taints.",
+            ).optional(),
+            replicaCount: z.unknown().describe("Pod replica count.").optional(),
           }),
         ).describe(
           "Map of deployment configs to deployments (“admission”, “audit”, “mutation”).",
@@ -550,13 +453,7 @@ const GlobalArgsSchema = z.object({
           "Logs all denies and dry run failures.",
         ).optional(),
         monitoring: z.object({
-          backends: z.array(
-            z.enum([
-              "MONITORING_BACKEND_UNSPECIFIED",
-              "PROMETHEUS",
-              "CLOUD_MONITORING",
-            ]),
-          ).describe(
+          backends: z.array(z.unknown()).describe(
             "Specifies the list of backends Policy Controller will export to. An empty list would effectively disable metrics export.",
           ).optional(),
         }).describe(
@@ -566,22 +463,11 @@ const GlobalArgsSchema = z.object({
           "Enables the ability to mutate resources using Policy Controller.",
         ).optional(),
         policyContent: z.object({
-          bundles: z.record(
-            z.string(),
-            z.object({
-              exemptedNamespaces: z.array(z.string()).describe(
-                "the set of namespaces to be exempted from the bundle",
-              ).optional(),
-            }),
-          ).describe(
+          bundles: z.record(z.string(), z.unknown()).describe(
             "map of bundle name to BundleInstallSpec. The bundle name maps to the `bundleName` key in the `policycontroller.gke.io/constraintData` annotation on a constraint.",
           ).optional(),
           templateLibrary: z.object({
-            installation: z.enum([
-              "INSTALLATION_UNSPECIFIED",
-              "NOT_INSTALLED",
-              "ALL",
-            ]).describe(
+            installation: z.unknown().describe(
               "Configures the manner in which the template library is installed on the cluster.",
             ).optional(),
           }).describe(
@@ -671,27 +557,19 @@ const GlobalArgsSchema = z.object({
       ).optional(),
       upgrades: z.array(z.object({
         status: z.object({
-          code: z.enum([
-            "CODE_UNSPECIFIED",
-            "INELIGIBLE",
-            "PENDING",
-            "IN_PROGRESS",
-            "SOAKING",
-            "FORCED_SOAKING",
-            "COMPLETE",
-          ]).describe("Status code of the upgrade.").optional(),
-          reason: z.string().describe("Reason for this status.").optional(),
-          updateTime: z.string().describe(
+          code: z.unknown().describe("Status code of the upgrade.").optional(),
+          reason: z.unknown().describe("Reason for this status.").optional(),
+          updateTime: z.unknown().describe(
             "Last timestamp the status was updated.",
           ).optional(),
         }).describe(
           "UpgradeStatus provides status information for each upgrade.",
         ).optional(),
         upgrade: z.object({
-          name: z.string().describe(
+          name: z.unknown().describe(
             'Name of the upgrade, e.g., "k8s_control_plane".',
           ).optional(),
-          version: z.string().describe(
+          version: z.unknown().describe(
             'Version of the upgrade, e.g., "1.22.1-gke.100".',
           ).optional(),
         }).describe(
@@ -797,7 +675,7 @@ const GlobalArgsSchema = z.object({
         }).describe("The state of ConfigSync's deployment on a cluster.")
           .optional(),
         errors: z.array(z.object({
-          errorMessage: z.string().describe(
+          errorMessage: z.unknown().describe(
             "A string representing the user facing error message",
           ).optional(),
         })).describe(
@@ -837,29 +715,7 @@ const GlobalArgsSchema = z.object({
             "UNAUTHORIZED",
             "UNREACHABLE",
           ]).describe("Sync status code.").optional(),
-          errors: z.array(z.object({
-            code: z.string().describe("An ACM defined error code").optional(),
-            errorMessage: z.string().describe("A description of the error")
-              .optional(),
-            errorResources: z.array(z.object({
-              resourceGvk: z.object({
-                group: z.string().describe("Kubernetes Group").optional(),
-                kind: z.string().describe("Kubernetes Kind").optional(),
-                version: z.string().describe("Kubernetes Version").optional(),
-              }).describe("A Kubernetes object's GVK.").optional(),
-              resourceName: z.string().describe(
-                "Metadata name of the resource that is causing an error",
-              ).optional(),
-              resourceNamespace: z.string().describe(
-                "Namespace of the resource that is causing an error",
-              ).optional(),
-              sourcePath: z.string().describe(
-                "Path in the git repo of the erroneous config",
-              ).optional(),
-            })).describe(
-              "A list of config(s) associated with the error, if any",
-            ).optional(),
-          })).describe(
+          errors: z.array(z.unknown()).describe(
             "A list of errors resulting from problematic configs. This list will be truncated after 100 errors, although it is unlikely for that many errors to simultaneously exist.",
           ).optional(),
           importToken: z.string().describe(
@@ -949,61 +805,35 @@ const GlobalArgsSchema = z.object({
           "Optional. User-specified cluster name used by the Config Sync cluster-name-selector annotation or ClusterSelector object, for applying configs to only a subset of clusters. Read more about the cluster-name-selector annotation and ClusterSelector object at https://docs.cloud.google.com/kubernetes-engine/config-sync/docs/how-to/cluster-scoped-objects#limiting-configs. Only set this field if a name different from the cluster's fleet membership name is used by the Config Sync cluster-name-selector annotation or ClusterSelector.",
         ).optional(),
         configSync: z.object({
-          deploymentOverrides: z.array(z.object({
-            containers: z.array(z.object({
-              containerName: z.string().describe(
-                "Required. The name of the container.",
-              ).optional(),
-              cpuLimit: z.string().describe(
-                "Optional. The cpu limit of the container. Use the following CPU resource units: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/#meaning-of-cpu.",
-              ).optional(),
-              cpuRequest: z.string().describe(
-                "Optional. The cpu request of the container. Use the following CPU resource units: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/#meaning-of-cpu.",
-              ).optional(),
-              memoryLimit: z.string().describe(
-                "Optional. The memory limit of the container. Use the following memory resource units: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/#meaning-of-memory.",
-              ).optional(),
-              memoryRequest: z.string().describe(
-                "Optional. The memory request of the container. Use the following memory resource units: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/#meaning-of-memory.",
-              ).optional(),
-            })).describe(
-              "Optional. The containers of the deployment resource to be overridden.",
-            ).optional(),
-            deploymentName: z.string().describe(
-              "Required. The name of the deployment resource to be overridden.",
-            ).optional(),
-            deploymentNamespace: z.string().describe(
-              "Required. The namespace of the deployment resource to be overridden.",
-            ).optional(),
-          })).describe(
+          deploymentOverrides: z.array(z.unknown()).describe(
             "Optional. Configuration for deployment overrides. Applies only to Config Sync deployments with containers that are not a root or namespace reconciler: `reconciler-manager`, `otel-collector`, `resource-group-controller-manager`, `admission-webhook`. To override a root or namespace reconciler, use the rootsync or reposync fields at https://docs.cloud.google.com/kubernetes-engine/config-sync/docs/reference/rootsync-reposync-fields#override-resources instead.",
           ).optional(),
           enabled: z.boolean().describe(
             "Optional. Enables the installation of Config Sync. If set to true, the Feature will manage Config Sync resources, and apply the other ConfigSync fields if they exist. If set to false, the Feature will ignore all other ConfigSync fields and delete the Config Sync resources. If omitted, ConfigSync is considered enabled if the git or oci field is present.",
           ).optional(),
           git: z.object({
-            gcpServiceAccountEmail: z.string().describe(
+            gcpServiceAccountEmail: z.unknown().describe(
               "Optional. The Google Cloud Service Account Email used for auth when secret_type is `gcpserviceaccount`.",
             ).optional(),
-            httpsProxy: z.string().describe(
+            httpsProxy: z.unknown().describe(
               "Optional. URL for the HTTPS proxy to be used when communicating with the Git repo. Only specify when secret_type is `cookiefile`, `token`, or `none`.",
             ).optional(),
-            policyDir: z.string().describe(
+            policyDir: z.unknown().describe(
               "Optional. The path within the Git repository that represents the top level of the repo to sync. Default: the root directory of the repository.",
             ).optional(),
-            secretType: z.string().describe(
+            secretType: z.unknown().describe(
               "Required. Type of secret configured for access to the Git repo. Must be one of `ssh`, `cookiefile`, `gcenode`, `token`, `gcpserviceaccount`, `githubapp` or `none`. The validation of this is case-sensitive.",
             ).optional(),
-            syncBranch: z.string().describe(
+            syncBranch: z.unknown().describe(
               "Optional. The branch of the repository to sync from. Default: master.",
             ).optional(),
-            syncRepo: z.string().describe(
+            syncRepo: z.unknown().describe(
               "Required. The URL of the Git repository to use as the source of truth.",
             ).optional(),
-            syncRev: z.string().describe(
+            syncRev: z.unknown().describe(
               "Optional. Git revision (tag or hash) to check out. Default HEAD.",
             ).optional(),
-            syncWaitSecs: z.string().describe(
+            syncWaitSecs: z.unknown().describe(
               "Optional. Period in seconds between consecutive syncs. Default: 15.",
             ).optional(),
           }).describe("Git repo configuration for a single cluster.")
@@ -1012,19 +842,19 @@ const GlobalArgsSchema = z.object({
             "Optional. The Email of the Google Cloud Service Account (GSA) used for exporting Config Sync metrics to Cloud Monitoring and Cloud Monarch when Workload Identity is enabled. The GSA should have the Monitoring Metric Writer (roles/monitoring.metricWriter) IAM role. The Kubernetes ServiceAccount `default` in the namespace `config-management-monitoring` should be bound to the GSA. Deprecated: If Workload Identity Federation for GKE is enabled, Google Cloud Service Account is no longer needed for exporting Config Sync metrics: https://cloud.google.com/kubernetes-engine/enterprise/config-sync/docs/how-to/monitor-config-sync-cloud-monitoring#custom-monitoring.",
           ).optional(),
           oci: z.object({
-            gcpServiceAccountEmail: z.string().describe(
+            gcpServiceAccountEmail: z.unknown().describe(
               "Optional. The Google Cloud Service Account Email used for auth when secret_type is `gcpserviceaccount`.",
             ).optional(),
-            policyDir: z.string().describe(
+            policyDir: z.unknown().describe(
               "Optional. The absolute path of the directory that contains the local resources. Default: the root directory of the image.",
             ).optional(),
-            secretType: z.string().describe(
+            secretType: z.unknown().describe(
               "Required. Type of secret configured for access to the OCI repo. Must be one of `gcenode`, `gcpserviceaccount`, `k8sserviceaccount` or `none`. The validation of this is case-sensitive.",
             ).optional(),
-            syncRepo: z.string().describe(
+            syncRepo: z.unknown().describe(
               "Required. The OCI image repository URL for the package to sync from. e.g. `LOCATION-docker.pkg.dev/PROJECT_ID/REPOSITORY_NAME/PACKAGE_NAME`.",
             ).optional(),
-            syncWaitSecs: z.string().describe(
+            syncWaitSecs: z.unknown().describe(
               "Optional. Period in seconds between consecutive syncs. Default: 15.",
             ).optional(),
           }).describe("OCI repo configuration for a single cluster.")
@@ -1064,20 +894,14 @@ const GlobalArgsSchema = z.object({
           enabled: z.boolean().describe(
             "Enables the installation of Policy Controller. If false, the rest of PolicyController fields take no effect.",
           ).optional(),
-          exemptableNamespaces: z.array(z.string()).describe(
+          exemptableNamespaces: z.array(z.unknown()).describe(
             "The set of namespaces that are excluded from Policy Controller checks. Namespaces do not need to currently exist on the cluster.",
           ).optional(),
           logDeniesEnabled: z.boolean().describe(
             "Logs all denies and dry run failures.",
           ).optional(),
           monitoring: z.object({
-            backends: z.array(
-              z.enum([
-                "MONITORING_BACKEND_UNSPECIFIED",
-                "PROMETHEUS",
-                "CLOUD_MONITORING",
-              ]),
-            ).describe(
+            backends: z.unknown().describe(
               "Specifies the list of backends Policy Controller will export to. An empty list would effectively disable metrics export.",
             ).optional(),
           }).describe(
@@ -1111,7 +935,7 @@ const GlobalArgsSchema = z.object({
           "PENDING",
         ]).describe("The state of the Operator's deployment.").optional(),
         errors: z.array(z.object({
-          errorMessage: z.string().describe(
+          errorMessage: z.unknown().describe(
             "A string representing the user facing error message.",
           ).optional(),
         })).describe("Install errors.").optional(),
@@ -1172,170 +996,31 @@ const GlobalArgsSchema = z.object({
       ).optional(),
       memberConfig: z.object({
         authMethods: z.array(z.object({
-          azureadConfig: z.object({
-            clientId: z.string().describe(
-              "ID for the registered client application that makes authentication requests to the Azure AD identity provider.",
-            ).optional(),
-            clientSecret: z.string().describe(
-              "Input only. Unencrypted AzureAD client secret will be passed to the GKE Hub CLH.",
-            ).optional(),
-            encryptedClientSecret: z.string().describe(
-              "Output only. Encrypted AzureAD client secret.",
-            ).optional(),
-            groupFormat: z.string().describe(
-              "Optional. Format of the AzureAD groups that the client wants for auth.",
-            ).optional(),
-            kubectlRedirectUri: z.string().describe(
-              "The redirect URL that kubectl uses for authorization.",
-            ).optional(),
-            tenant: z.string().describe(
-              "Kind of Azure AD account to be authenticated. Supported values are or for accounts belonging to a specific tenant.",
-            ).optional(),
-            userClaim: z.string().describe(
-              "Optional. Claim in the AzureAD ID Token that holds the user details.",
-            ).optional(),
-          }).describe("Configuration for the AzureAD Auth flow.").optional(),
-          googleConfig: z.object({
-            disable: z.boolean().describe(
-              "Disable automatic configuration of Google Plugin on supported platforms.",
-            ).optional(),
-          }).describe("Configuration for the Google Plugin Auth flow.")
+          azureadConfig: z.unknown().describe(
+            "Configuration for the AzureAD Auth flow.",
+          ).optional(),
+          googleConfig: z.unknown().describe(
+            "Configuration for the Google Plugin Auth flow.",
+          ).optional(),
+          ldapConfig: z.unknown().describe(
+            "Configuration for the LDAP Auth flow.",
+          ).optional(),
+          name: z.unknown().describe("Identifier for auth config.").optional(),
+          oidcConfig: z.unknown().describe("Configuration for OIDC Auth flow.")
             .optional(),
-          ldapConfig: z.object({
-            group: z.object({
-              baseDn: z.string().describe(
-                "Required. The location of the subtree in the LDAP directory to search for group entries.",
-              ).optional(),
-              filter: z.string().describe(
-                'Optional. Optional filter to be used when searching for groups a user belongs to. This can be used to explicitly match only certain groups in order to reduce the amount of groups returned for each user. This defaults to "(objectClass=Group)".',
-              ).optional(),
-              idAttribute: z.string().describe(
-                'Optional. The identifying name of each group a user belongs to. For example, if this is set to "distinguishedName" then RBACs and other group expectations should be written as full DNs. This defaults to "distinguishedName".',
-              ).optional(),
-            }).describe(
-              "Contains the properties for locating and authenticating groups in the directory.",
-            ).optional(),
-            server: z.object({
-              certificateAuthorityData: z.string().describe(
-                'Optional. Contains a Base64 encoded, PEM formatted certificate authority certificate for the LDAP server. This must be provided for the "ldaps" and "startTLS" connections.',
-              ).optional(),
-              connectionType: z.string().describe(
-                "Optional. Defines the connection type to communicate with the LDAP server. If `starttls` or `ldaps` is specified, the certificate_authority_data should not be empty.",
-              ).optional(),
-              host: z.string().describe(
-                'Required. Defines the hostname or IP of the LDAP server. Port is optional and will default to 389, if unspecified. For example, "ldap.server.example" or "10.10.10.10:389".',
-              ).optional(),
-            }).describe("Server settings for the external LDAP server.")
-              .optional(),
-            serviceAccount: z.object({
-              simpleBindCredentials: z.object({
-                dn: z.string().describe(
-                  "Required. The distinguished name(DN) of the service account object/user.",
-                ).optional(),
-                encryptedPassword: z.string().describe(
-                  "Output only. The encrypted password of the service account object/user.",
-                ).optional(),
-                password: z.string().describe(
-                  "Required. Input only. The password of the service account object/user.",
-                ).optional(),
-              }).describe(
-                "The structure holds the LDAP simple binding credential.",
-              ).optional(),
-            }).describe(
-              "Contains the credentials of the service account which is authorized to perform the LDAP search in the directory. The credentials can be supplied by the combination of the DN and password or the client certificate.",
-            ).optional(),
-            user: z.object({
-              baseDn: z.string().describe(
-                "Required. The location of the subtree in the LDAP directory to search for user entries.",
-              ).optional(),
-              filter: z.string().describe(
-                'Optional. Filter to apply when searching for the user. This can be used to further restrict the user accounts which are allowed to login. This defaults to "(objectClass=User)".',
-              ).optional(),
-              idAttribute: z.string().describe(
-                'Optional. Determines which attribute to use as the user\'s identity after they are authenticated. This is distinct from the loginAttribute field to allow users to login with a username, but then have their actual identifier be an email address or full Distinguished Name (DN). For example, setting loginAttribute to "sAMAccountName" and identifierAttribute to "userPrincipalName" would allow a user to login as "bsmith", but actual RBAC policies for the user would be written as "bsmith@example.com". Using "userPrincipalName" is recommended since this will be unique for each user. This defaults to "userPrincipalName".',
-              ).optional(),
-              loginAttribute: z.string().describe(
-                'Optional. The name of the attribute which matches against the input username. This is used to find the user in the LDAP database e.g. "(=)" and is combined with the optional filter field. This defaults to "userPrincipalName".',
-              ).optional(),
-            }).describe("Defines where users exist in the LDAP directory.")
-              .optional(),
-          }).describe("Configuration for the LDAP Auth flow.").optional(),
-          name: z.string().describe("Identifier for auth config.").optional(),
-          oidcConfig: z.object({
-            certificateAuthorityData: z.string().describe(
-              "PEM-encoded CA for OIDC provider.",
-            ).optional(),
-            clientId: z.string().describe("ID for OIDC client application.")
-              .optional(),
-            clientSecret: z.string().describe(
-              "Input only. Unencrypted OIDC client secret will be passed to the GKE Hub CLH.",
-            ).optional(),
-            deployCloudConsoleProxy: z.boolean().describe(
-              "Flag to denote if reverse proxy is used to connect to auth provider. This flag should be set to true when provider is not reachable by Google Cloud Console.",
-            ).optional(),
-            enableAccessToken: z.boolean().describe("Enable access token.")
-              .optional(),
-            encryptedClientSecret: z.string().describe(
-              "Output only. Encrypted OIDC Client secret",
-            ).optional(),
-            extraParams: z.string().describe(
-              "Comma-separated list of key-value pairs.",
-            ).optional(),
-            groupPrefix: z.string().describe("Prefix to prepend to group name.")
-              .optional(),
-            groupsClaim: z.string().describe(
-              "Claim in OIDC ID token that holds group information.",
-            ).optional(),
-            issuerUri: z.string().describe(
-              "URI for the OIDC provider. This should point to the level below.well-known/openid-configuration.",
-            ).optional(),
-            kubectlRedirectUri: z.string().describe(
-              "Registered redirect uri to redirect users going through OAuth flow using kubectl plugin.",
-            ).optional(),
-            scopes: z.string().describe("Comma-separated list of identifiers.")
-              .optional(),
-            userClaim: z.string().describe(
-              "Claim in OIDC ID token that holds username.",
-            ).optional(),
-            userPrefix: z.string().describe("Prefix to prepend to user name.")
-              .optional(),
-          }).describe("Configuration for OIDC Auth flow.").optional(),
-          proxy: z.string().describe(
+          proxy: z.unknown().describe(
             "Proxy server address to use for auth method.",
           ).optional(),
-          samlConfig: z.object({
-            attributeMapping: z.record(z.string(), z.string()).describe(
-              'Optional. The mapping of additional user attributes like nickname, birthday and address etc.. `key` is the name of this additional attribute. `value` is a string presenting as CEL(common expression language, go/cel) used for getting the value from the resources. Take nickname as an example, in this case, `key` is "attribute.nickname" and `value` is "assertion.nickname".',
-            ).optional(),
-            groupPrefix: z.string().describe(
-              "Optional. Prefix to prepend to group name.",
-            ).optional(),
-            groupsAttribute: z.string().describe(
-              "Optional. The SAML attribute to read groups from. This value is expected to be a string and will be passed along as-is (with the option of being prefixed by the `group_prefix`).",
-            ).optional(),
-            identityProviderCertificates: z.array(z.string()).describe(
-              "Required. The list of IdP certificates to validate the SAML response against.",
-            ).optional(),
-            identityProviderId: z.string().describe(
-              "Required. The entity ID of the SAML IdP.",
-            ).optional(),
-            identityProviderSsoUri: z.string().describe(
-              "Required. The URI where the SAML IdP exposes the SSO service.",
-            ).optional(),
-            userAttribute: z.string().describe(
-              "Optional. The SAML attribute to read username from. If unspecified, the username will be read from the NameID element of the assertion in SAML response. This value is expected to be a string and will be passed along as-is (with the option of being prefixed by the `user_prefix`).",
-            ).optional(),
-            userPrefix: z.string().describe(
-              "Optional. Prefix to prepend to user name.",
-            ).optional(),
-          }).describe("Configuration for the SAML Auth flow.").optional(),
+          samlConfig: z.unknown().describe(
+            "Configuration for the SAML Auth flow.",
+          ).optional(),
         })).describe("A member may support multiple auth methods.").optional(),
         identityServiceOptions: z.object({
           diagnosticInterface: z.object({
-            enabled: z.boolean().describe(
+            enabled: z.unknown().describe(
               "Determines whether to enable the diagnostic interface.",
             ).optional(),
-            expirationTime: z.string().describe(
+            expirationTime: z.unknown().describe(
               "Determines the expiration time of the diagnostic interface enablement. When reached, requests to the interface would be automatically rejected.",
             ).optional(),
           }).describe("Configuration options for the AIS diagnostic interface.")
@@ -1390,21 +1075,12 @@ const GlobalArgsSchema = z.object({
         bundleStates: z.record(
           z.string(),
           z.object({
-            details: z.string().describe(
+            details: z.unknown().describe(
               "Surface potential errors or information logs.",
             ).optional(),
-            state: z.enum([
-              "LIFECYCLE_STATE_UNSPECIFIED",
-              "NOT_INSTALLED",
-              "INSTALLING",
-              "ACTIVE",
-              "UPDATING",
-              "DECOMMISSIONING",
-              "CLUSTER_ERROR",
-              "HUB_ERROR",
-              "SUSPENDED",
-              "DETACHED",
-            ]).describe("The lifecycle state of this component.").optional(),
+            state: z.unknown().describe(
+              "The lifecycle state of this component.",
+            ).optional(),
           }),
         ).describe(
           "The state of the any bundles included in the chosen version of the manifest",
@@ -1489,32 +1165,25 @@ const GlobalArgsSchema = z.object({
     ).optional(),
     servicemesh: z.object({
       analysisMessages: z.array(z.object({
-        args: z.record(z.string(), z.string()).describe(
+        args: z.record(z.string(), z.unknown()).describe(
           "A UI can combine these args with a template (based on message_base.type) to produce an internationalized message.",
         ).optional(),
         description: z.string().describe(
           "A human readable description of what the error means. It is suitable for non-internationalize display purposes.",
         ).optional(),
         messageBase: z.object({
-          documentationUrl: z.string().describe(
+          documentationUrl: z.unknown().describe(
             "A url pointing to the Service Mesh or Istio documentation for this specific error type.",
           ).optional(),
-          level: z.enum(["LEVEL_UNSPECIFIED", "ERROR", "WARNING", "INFO"])
-            .describe("Represents how severe a message is.").optional(),
-          type: z.object({
-            code: z.string().describe(
-              'A 7 character code matching `^IST[0-9]{4}$` or `^ASM[0-9]{4}$`, intended to uniquely identify the message type. (e.g. "IST0001" is mapped to the "InternalError" message type.)',
-            ).optional(),
-            displayName: z.string().describe(
-              'A human-readable name for the message type. e.g. "InternalError", "PodMissingProxy". This should be the same for all messages of the same type. (This corresponds to the `name` field in open-source Istio.)',
-            ).optional(),
-          }).describe(
+          level: z.unknown().describe("Represents how severe a message is.")
+            .optional(),
+          type: z.unknown().describe(
             "A unique identifier for the type of message. Display_name is intended to be human-readable, code is intended to be machine readable. There should be a one-to-one mapping between display_name and code. (i.e. do not re-use display_names or codes between message types.) See istio.analysis.v1alpha1.AnalysisMessageBase.Type",
           ).optional(),
         }).describe(
           "AnalysisMessageBase describes some common information that is needed for all messages.",
         ).optional(),
-        resourcePaths: z.array(z.string()).describe(
+        resourcePaths: z.array(z.unknown()).describe(
           'A list of strings specifying the resource identifiers that were the cause of message generation. A "path" here may be: * MEMBERSHIP_ID if the cause is a specific member cluster * MEMBERSHIP_ID/(NAMESPACE\\/)?RESOURCETYPE/NAME if the cause is a resource in a cluster',
         ).optional(),
       })).describe("Output only. Results of running Service Mesh analyzers.")
@@ -1593,10 +1262,10 @@ const GlobalArgsSchema = z.object({
       ).optional(),
       controlPlaneManagement: z.object({
         details: z.array(z.object({
-          code: z.string().describe(
+          code: z.unknown().describe(
             "A machine-readable code that further describes a broad status.",
           ).optional(),
-          details: z.string().describe("Human-readable explanation of code.")
+          details: z.unknown().describe("Human-readable explanation of code.")
             .optional(),
         })).describe("Explanation of state.").optional(),
         implementation: z.enum([
@@ -1620,10 +1289,10 @@ const GlobalArgsSchema = z.object({
       }).describe("Status of control plane management.").optional(),
       dataPlaneManagement: z.object({
         details: z.array(z.object({
-          code: z.string().describe(
+          code: z.unknown().describe(
             "A machine-readable code that further describes a broad status.",
           ).optional(),
-          details: z.string().describe("Human-readable explanation of code.")
+          details: z.unknown().describe("Human-readable explanation of code.")
             .optional(),
         })).describe("Explanation of the status.").optional(),
         state: z.enum([
@@ -1707,15 +1376,9 @@ const StateSchema = z.object({
       cluster: z.string(),
       configSync: z.object({
         deploymentOverrides: z.array(z.object({
-          containers: z.array(z.object({
-            containerName: z.string(),
-            cpuLimit: z.string(),
-            cpuRequest: z.string(),
-            memoryLimit: z.string(),
-            memoryRequest: z.string(),
-          })),
-          deploymentName: z.string(),
-          deploymentNamespace: z.string(),
+          containers: z.unknown(),
+          deploymentName: z.unknown(),
+          deploymentNamespace: z.unknown(),
         })),
         enabled: z.boolean(),
         git: z.object({
@@ -1752,7 +1415,7 @@ const StateSchema = z.object({
         exemptableNamespaces: z.array(z.string()),
         logDeniesEnabled: z.boolean(),
         monitoring: z.object({
-          backends: z.array(z.string()),
+          backends: z.array(z.unknown()),
         }),
         mutationEnabled: z.boolean(),
         referentialRulesEnabled: z.boolean(),
@@ -1764,69 +1427,50 @@ const StateSchema = z.object({
     identityservice: z.object({
       authMethods: z.array(z.object({
         azureadConfig: z.object({
-          clientId: z.string(),
-          clientSecret: z.string(),
-          encryptedClientSecret: z.string(),
-          groupFormat: z.string(),
-          kubectlRedirectUri: z.string(),
-          tenant: z.string(),
-          userClaim: z.string(),
+          clientId: z.unknown(),
+          clientSecret: z.unknown(),
+          encryptedClientSecret: z.unknown(),
+          groupFormat: z.unknown(),
+          kubectlRedirectUri: z.unknown(),
+          tenant: z.unknown(),
+          userClaim: z.unknown(),
         }),
         googleConfig: z.object({
-          disable: z.boolean(),
+          disable: z.unknown(),
         }),
         ldapConfig: z.object({
-          group: z.object({
-            baseDn: z.string(),
-            filter: z.string(),
-            idAttribute: z.string(),
-          }),
-          server: z.object({
-            certificateAuthorityData: z.string(),
-            connectionType: z.string(),
-            host: z.string(),
-          }),
-          serviceAccount: z.object({
-            simpleBindCredentials: z.object({
-              dn: z.string(),
-              encryptedPassword: z.string(),
-              password: z.string(),
-            }),
-          }),
-          user: z.object({
-            baseDn: z.string(),
-            filter: z.string(),
-            idAttribute: z.string(),
-            loginAttribute: z.string(),
-          }),
+          group: z.unknown(),
+          server: z.unknown(),
+          serviceAccount: z.unknown(),
+          user: z.unknown(),
         }),
         name: z.string(),
         oidcConfig: z.object({
-          certificateAuthorityData: z.string(),
-          clientId: z.string(),
-          clientSecret: z.string(),
-          deployCloudConsoleProxy: z.boolean(),
-          enableAccessToken: z.boolean(),
-          encryptedClientSecret: z.string(),
-          extraParams: z.string(),
-          groupPrefix: z.string(),
-          groupsClaim: z.string(),
-          issuerUri: z.string(),
-          kubectlRedirectUri: z.string(),
-          scopes: z.string(),
-          userClaim: z.string(),
-          userPrefix: z.string(),
+          certificateAuthorityData: z.unknown(),
+          clientId: z.unknown(),
+          clientSecret: z.unknown(),
+          deployCloudConsoleProxy: z.unknown(),
+          enableAccessToken: z.unknown(),
+          encryptedClientSecret: z.unknown(),
+          extraParams: z.unknown(),
+          groupPrefix: z.unknown(),
+          groupsClaim: z.unknown(),
+          issuerUri: z.unknown(),
+          kubectlRedirectUri: z.unknown(),
+          scopes: z.unknown(),
+          userClaim: z.unknown(),
+          userPrefix: z.unknown(),
         }),
         proxy: z.string(),
         samlConfig: z.object({
-          attributeMapping: z.record(z.string(), z.unknown()),
-          groupPrefix: z.string(),
-          groupsAttribute: z.string(),
-          identityProviderCertificates: z.array(z.string()),
-          identityProviderId: z.string(),
-          identityProviderSsoUri: z.string(),
-          userAttribute: z.string(),
-          userPrefix: z.string(),
+          attributeMapping: z.unknown(),
+          groupPrefix: z.unknown(),
+          groupsAttribute: z.unknown(),
+          identityProviderCertificates: z.unknown(),
+          identityProviderId: z.unknown(),
+          identityProviderSsoUri: z.unknown(),
+          userAttribute: z.unknown(),
+          userPrefix: z.unknown(),
         }),
       })),
       identityServiceOptions: z.object({
@@ -1849,13 +1493,13 @@ const StateSchema = z.object({
         installSpec: z.string(),
         logDeniesEnabled: z.boolean(),
         monitoring: z.object({
-          backends: z.array(z.string()),
+          backends: z.array(z.unknown()),
         }),
         mutationEnabled: z.boolean(),
         policyContent: z.object({
           bundles: z.record(z.string(), z.unknown()),
           templateLibrary: z.object({
-            installation: z.string(),
+            installation: z.unknown(),
           }),
         }),
         referentialRulesEnabled: z.boolean(),
@@ -1887,13 +1531,13 @@ const StateSchema = z.object({
       }),
       upgrades: z.array(z.object({
         status: z.object({
-          code: z.string(),
-          reason: z.string(),
-          updateTime: z.string(),
+          code: z.unknown(),
+          reason: z.unknown(),
+          updateTime: z.unknown(),
         }),
         upgrade: z.object({
-          name: z.string(),
-          version: z.string(),
+          name: z.unknown(),
+          version: z.unknown(),
         }),
       })),
     }),
@@ -1920,27 +1564,14 @@ const StateSchema = z.object({
           syncer: z.string(),
         }),
         errors: z.array(z.object({
-          errorMessage: z.string(),
+          errorMessage: z.unknown(),
         })),
         reposyncCrd: z.string(),
         rootsyncCrd: z.string(),
         state: z.string(),
         syncState: z.object({
           code: z.string(),
-          errors: z.array(z.object({
-            code: z.string(),
-            errorMessage: z.string(),
-            errorResources: z.array(z.object({
-              resourceGvk: z.object({
-                group: z.string(),
-                kind: z.string(),
-                version: z.string(),
-              }),
-              resourceName: z.string(),
-              resourceNamespace: z.string(),
-              sourcePath: z.string(),
-            })),
-          })),
+          errors: z.array(z.unknown()),
           importToken: z.string(),
           lastSync: z.string(),
           lastSyncTime: z.string(),
@@ -1976,35 +1607,25 @@ const StateSchema = z.object({
         }),
         cluster: z.string(),
         configSync: z.object({
-          deploymentOverrides: z.array(z.object({
-            containers: z.array(z.object({
-              containerName: z.string(),
-              cpuLimit: z.string(),
-              cpuRequest: z.string(),
-              memoryLimit: z.string(),
-              memoryRequest: z.string(),
-            })),
-            deploymentName: z.string(),
-            deploymentNamespace: z.string(),
-          })),
+          deploymentOverrides: z.array(z.unknown()),
           enabled: z.boolean(),
           git: z.object({
-            gcpServiceAccountEmail: z.string(),
-            httpsProxy: z.string(),
-            policyDir: z.string(),
-            secretType: z.string(),
-            syncBranch: z.string(),
-            syncRepo: z.string(),
-            syncRev: z.string(),
-            syncWaitSecs: z.string(),
+            gcpServiceAccountEmail: z.unknown(),
+            httpsProxy: z.unknown(),
+            policyDir: z.unknown(),
+            secretType: z.unknown(),
+            syncBranch: z.unknown(),
+            syncRepo: z.unknown(),
+            syncRev: z.unknown(),
+            syncWaitSecs: z.unknown(),
           }),
           metricsGcpServiceAccountEmail: z.string(),
           oci: z.object({
-            gcpServiceAccountEmail: z.string(),
-            policyDir: z.string(),
-            secretType: z.string(),
-            syncRepo: z.string(),
-            syncWaitSecs: z.string(),
+            gcpServiceAccountEmail: z.unknown(),
+            policyDir: z.unknown(),
+            secretType: z.unknown(),
+            syncRepo: z.unknown(),
+            syncWaitSecs: z.unknown(),
           }),
           preventDrift: z.boolean(),
           sourceFormat: z.string(),
@@ -2019,10 +1640,10 @@ const StateSchema = z.object({
         policyController: z.object({
           auditIntervalSeconds: z.string(),
           enabled: z.boolean(),
-          exemptableNamespaces: z.array(z.string()),
+          exemptableNamespaces: z.array(z.unknown()),
           logDeniesEnabled: z.boolean(),
           monitoring: z.object({
-            backends: z.array(z.string()),
+            backends: z.unknown(),
           }),
           mutationEnabled: z.boolean(),
           referentialRulesEnabled: z.boolean(),
@@ -2034,7 +1655,7 @@ const StateSchema = z.object({
       operatorState: z.object({
         deploymentState: z.string(),
         errors: z.array(z.object({
-          errorMessage: z.string(),
+          errorMessage: z.unknown(),
         })),
         version: z.string(),
       }),
@@ -2058,76 +1679,18 @@ const StateSchema = z.object({
       installedVersion: z.string(),
       memberConfig: z.object({
         authMethods: z.array(z.object({
-          azureadConfig: z.object({
-            clientId: z.string(),
-            clientSecret: z.string(),
-            encryptedClientSecret: z.string(),
-            groupFormat: z.string(),
-            kubectlRedirectUri: z.string(),
-            tenant: z.string(),
-            userClaim: z.string(),
-          }),
-          googleConfig: z.object({
-            disable: z.boolean(),
-          }),
-          ldapConfig: z.object({
-            group: z.object({
-              baseDn: z.string(),
-              filter: z.string(),
-              idAttribute: z.string(),
-            }),
-            server: z.object({
-              certificateAuthorityData: z.string(),
-              connectionType: z.string(),
-              host: z.string(),
-            }),
-            serviceAccount: z.object({
-              simpleBindCredentials: z.object({
-                dn: z.string(),
-                encryptedPassword: z.string(),
-                password: z.string(),
-              }),
-            }),
-            user: z.object({
-              baseDn: z.string(),
-              filter: z.string(),
-              idAttribute: z.string(),
-              loginAttribute: z.string(),
-            }),
-          }),
-          name: z.string(),
-          oidcConfig: z.object({
-            certificateAuthorityData: z.string(),
-            clientId: z.string(),
-            clientSecret: z.string(),
-            deployCloudConsoleProxy: z.boolean(),
-            enableAccessToken: z.boolean(),
-            encryptedClientSecret: z.string(),
-            extraParams: z.string(),
-            groupPrefix: z.string(),
-            groupsClaim: z.string(),
-            issuerUri: z.string(),
-            kubectlRedirectUri: z.string(),
-            scopes: z.string(),
-            userClaim: z.string(),
-            userPrefix: z.string(),
-          }),
-          proxy: z.string(),
-          samlConfig: z.object({
-            attributeMapping: z.record(z.string(), z.unknown()),
-            groupPrefix: z.string(),
-            groupsAttribute: z.string(),
-            identityProviderCertificates: z.array(z.string()),
-            identityProviderId: z.string(),
-            identityProviderSsoUri: z.string(),
-            userAttribute: z.string(),
-            userPrefix: z.string(),
-          }),
+          azureadConfig: z.unknown(),
+          googleConfig: z.unknown(),
+          ldapConfig: z.unknown(),
+          name: z.unknown(),
+          oidcConfig: z.unknown(),
+          proxy: z.unknown(),
+          samlConfig: z.unknown(),
         })),
         identityServiceOptions: z.object({
           diagnosticInterface: z.object({
-            enabled: z.boolean(),
-            expirationTime: z.string(),
+            enabled: z.unknown(),
+            expirationTime: z.unknown(),
           }),
           sessionDuration: z.string(),
         }),
@@ -2161,14 +1724,11 @@ const StateSchema = z.object({
         args: z.record(z.string(), z.unknown()),
         description: z.string(),
         messageBase: z.object({
-          documentationUrl: z.string(),
-          level: z.string(),
-          type: z.object({
-            code: z.string(),
-            displayName: z.string(),
-          }),
+          documentationUrl: z.unknown(),
+          level: z.unknown(),
+          type: z.unknown(),
         }),
-        resourcePaths: z.array(z.string()),
+        resourcePaths: z.array(z.unknown()),
       })),
       conditions: z.array(z.object({
         code: z.string(),
@@ -2179,16 +1739,16 @@ const StateSchema = z.object({
       configApiVersion: z.string(),
       controlPlaneManagement: z.object({
         details: z.array(z.object({
-          code: z.string(),
-          details: z.string(),
+          code: z.unknown(),
+          details: z.unknown(),
         })),
         implementation: z.string(),
         state: z.string(),
       }),
       dataPlaneManagement: z.object({
         details: z.array(z.object({
-          code: z.string(),
-          details: z.string(),
+          code: z.unknown(),
+          details: z.unknown(),
         })),
         state: z.string(),
       }),
@@ -2253,29 +1813,13 @@ const InputsSchema = z.object({
       ).optional(),
       configSync: z.object({
         deploymentOverrides: z.array(z.object({
-          containers: z.array(z.object({
-            containerName: z.string().describe(
-              "Required. The name of the container.",
-            ).optional(),
-            cpuLimit: z.string().describe(
-              "Optional. The cpu limit of the container. Use the following CPU resource units: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/#meaning-of-cpu.",
-            ).optional(),
-            cpuRequest: z.string().describe(
-              "Optional. The cpu request of the container. Use the following CPU resource units: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/#meaning-of-cpu.",
-            ).optional(),
-            memoryLimit: z.string().describe(
-              "Optional. The memory limit of the container. Use the following memory resource units: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/#meaning-of-memory.",
-            ).optional(),
-            memoryRequest: z.string().describe(
-              "Optional. The memory request of the container. Use the following memory resource units: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/#meaning-of-memory.",
-            ).optional(),
-          })).describe(
+          containers: z.unknown().describe(
             "Optional. The containers of the deployment resource to be overridden.",
           ).optional(),
-          deploymentName: z.string().describe(
+          deploymentName: z.unknown().describe(
             "Required. The name of the deployment resource to be overridden.",
           ).optional(),
-          deploymentNamespace: z.string().describe(
+          deploymentNamespace: z.unknown().describe(
             "Required. The namespace of the deployment resource to be overridden.",
           ).optional(),
         })).describe(
@@ -2372,13 +1916,7 @@ const InputsSchema = z.object({
           "Logs all denies and dry run failures.",
         ).optional(),
         monitoring: z.object({
-          backends: z.array(
-            z.enum([
-              "MONITORING_BACKEND_UNSPECIFIED",
-              "PROMETHEUS",
-              "CLOUD_MONITORING",
-            ]),
-          ).describe(
+          backends: z.array(z.unknown()).describe(
             "Specifies the list of backends Policy Controller will export to. An empty list would effectively disable metrics export.",
           ).optional(),
         }).describe(
@@ -2406,159 +1944,114 @@ const InputsSchema = z.object({
     identityservice: z.object({
       authMethods: z.array(z.object({
         azureadConfig: z.object({
-          clientId: z.string().describe(
+          clientId: z.unknown().describe(
             "ID for the registered client application that makes authentication requests to the Azure AD identity provider.",
           ).optional(),
-          clientSecret: z.string().describe(
+          clientSecret: z.unknown().describe(
             "Input only. Unencrypted AzureAD client secret will be passed to the GKE Hub CLH.",
           ).optional(),
-          encryptedClientSecret: z.string().describe(
+          encryptedClientSecret: z.unknown().describe(
             "Output only. Encrypted AzureAD client secret.",
           ).optional(),
-          groupFormat: z.string().describe(
+          groupFormat: z.unknown().describe(
             "Optional. Format of the AzureAD groups that the client wants for auth.",
           ).optional(),
-          kubectlRedirectUri: z.string().describe(
+          kubectlRedirectUri: z.unknown().describe(
             "The redirect URL that kubectl uses for authorization.",
           ).optional(),
-          tenant: z.string().describe(
+          tenant: z.unknown().describe(
             "Kind of Azure AD account to be authenticated. Supported values are or for accounts belonging to a specific tenant.",
           ).optional(),
-          userClaim: z.string().describe(
+          userClaim: z.unknown().describe(
             "Optional. Claim in the AzureAD ID Token that holds the user details.",
           ).optional(),
         }).describe("Configuration for the AzureAD Auth flow.").optional(),
         googleConfig: z.object({
-          disable: z.boolean().describe(
+          disable: z.unknown().describe(
             "Disable automatic configuration of Google Plugin on supported platforms.",
           ).optional(),
         }).describe("Configuration for the Google Plugin Auth flow.")
           .optional(),
         ldapConfig: z.object({
-          group: z.object({
-            baseDn: z.string().describe(
-              "Required. The location of the subtree in the LDAP directory to search for group entries.",
-            ).optional(),
-            filter: z.string().describe(
-              'Optional. Optional filter to be used when searching for groups a user belongs to. This can be used to explicitly match only certain groups in order to reduce the amount of groups returned for each user. This defaults to "(objectClass=Group)".',
-            ).optional(),
-            idAttribute: z.string().describe(
-              'Optional. The identifying name of each group a user belongs to. For example, if this is set to "distinguishedName" then RBACs and other group expectations should be written as full DNs. This defaults to "distinguishedName".',
-            ).optional(),
-          }).describe(
+          group: z.unknown().describe(
             "Contains the properties for locating and authenticating groups in the directory.",
           ).optional(),
-          server: z.object({
-            certificateAuthorityData: z.string().describe(
-              'Optional. Contains a Base64 encoded, PEM formatted certificate authority certificate for the LDAP server. This must be provided for the "ldaps" and "startTLS" connections.',
-            ).optional(),
-            connectionType: z.string().describe(
-              "Optional. Defines the connection type to communicate with the LDAP server. If `starttls` or `ldaps` is specified, the certificate_authority_data should not be empty.",
-            ).optional(),
-            host: z.string().describe(
-              'Required. Defines the hostname or IP of the LDAP server. Port is optional and will default to 389, if unspecified. For example, "ldap.server.example" or "10.10.10.10:389".',
-            ).optional(),
-          }).describe("Server settings for the external LDAP server.")
-            .optional(),
-          serviceAccount: z.object({
-            simpleBindCredentials: z.object({
-              dn: z.string().describe(
-                "Required. The distinguished name(DN) of the service account object/user.",
-              ).optional(),
-              encryptedPassword: z.string().describe(
-                "Output only. The encrypted password of the service account object/user.",
-              ).optional(),
-              password: z.string().describe(
-                "Required. Input only. The password of the service account object/user.",
-              ).optional(),
-            }).describe(
-              "The structure holds the LDAP simple binding credential.",
-            ).optional(),
-          }).describe(
+          server: z.unknown().describe(
+            "Server settings for the external LDAP server.",
+          ).optional(),
+          serviceAccount: z.unknown().describe(
             "Contains the credentials of the service account which is authorized to perform the LDAP search in the directory. The credentials can be supplied by the combination of the DN and password or the client certificate.",
           ).optional(),
-          user: z.object({
-            baseDn: z.string().describe(
-              "Required. The location of the subtree in the LDAP directory to search for user entries.",
-            ).optional(),
-            filter: z.string().describe(
-              'Optional. Filter to apply when searching for the user. This can be used to further restrict the user accounts which are allowed to login. This defaults to "(objectClass=User)".',
-            ).optional(),
-            idAttribute: z.string().describe(
-              'Optional. Determines which attribute to use as the user\'s identity after they are authenticated. This is distinct from the loginAttribute field to allow users to login with a username, but then have their actual identifier be an email address or full Distinguished Name (DN). For example, setting loginAttribute to "sAMAccountName" and identifierAttribute to "userPrincipalName" would allow a user to login as "bsmith", but actual RBAC policies for the user would be written as "bsmith@example.com". Using "userPrincipalName" is recommended since this will be unique for each user. This defaults to "userPrincipalName".',
-            ).optional(),
-            loginAttribute: z.string().describe(
-              'Optional. The name of the attribute which matches against the input username. This is used to find the user in the LDAP database e.g. "(=)" and is combined with the optional filter field. This defaults to "userPrincipalName".',
-            ).optional(),
-          }).describe("Defines where users exist in the LDAP directory.")
-            .optional(),
+          user: z.unknown().describe(
+            "Defines where users exist in the LDAP directory.",
+          ).optional(),
         }).describe("Configuration for the LDAP Auth flow.").optional(),
         name: z.string().describe("Identifier for auth config.").optional(),
         oidcConfig: z.object({
-          certificateAuthorityData: z.string().describe(
+          certificateAuthorityData: z.unknown().describe(
             "PEM-encoded CA for OIDC provider.",
           ).optional(),
-          clientId: z.string().describe("ID for OIDC client application.")
+          clientId: z.unknown().describe("ID for OIDC client application.")
             .optional(),
-          clientSecret: z.string().describe(
+          clientSecret: z.unknown().describe(
             "Input only. Unencrypted OIDC client secret will be passed to the GKE Hub CLH.",
           ).optional(),
-          deployCloudConsoleProxy: z.boolean().describe(
+          deployCloudConsoleProxy: z.unknown().describe(
             "Flag to denote if reverse proxy is used to connect to auth provider. This flag should be set to true when provider is not reachable by Google Cloud Console.",
           ).optional(),
-          enableAccessToken: z.boolean().describe("Enable access token.")
+          enableAccessToken: z.unknown().describe("Enable access token.")
             .optional(),
-          encryptedClientSecret: z.string().describe(
+          encryptedClientSecret: z.unknown().describe(
             "Output only. Encrypted OIDC Client secret",
           ).optional(),
-          extraParams: z.string().describe(
+          extraParams: z.unknown().describe(
             "Comma-separated list of key-value pairs.",
           ).optional(),
-          groupPrefix: z.string().describe("Prefix to prepend to group name.")
+          groupPrefix: z.unknown().describe("Prefix to prepend to group name.")
             .optional(),
-          groupsClaim: z.string().describe(
+          groupsClaim: z.unknown().describe(
             "Claim in OIDC ID token that holds group information.",
           ).optional(),
-          issuerUri: z.string().describe(
+          issuerUri: z.unknown().describe(
             "URI for the OIDC provider. This should point to the level below.well-known/openid-configuration.",
           ).optional(),
-          kubectlRedirectUri: z.string().describe(
+          kubectlRedirectUri: z.unknown().describe(
             "Registered redirect uri to redirect users going through OAuth flow using kubectl plugin.",
           ).optional(),
-          scopes: z.string().describe("Comma-separated list of identifiers.")
+          scopes: z.unknown().describe("Comma-separated list of identifiers.")
             .optional(),
-          userClaim: z.string().describe(
+          userClaim: z.unknown().describe(
             "Claim in OIDC ID token that holds username.",
           ).optional(),
-          userPrefix: z.string().describe("Prefix to prepend to user name.")
+          userPrefix: z.unknown().describe("Prefix to prepend to user name.")
             .optional(),
         }).describe("Configuration for OIDC Auth flow.").optional(),
         proxy: z.string().describe(
           "Proxy server address to use for auth method.",
         ).optional(),
         samlConfig: z.object({
-          attributeMapping: z.record(z.string(), z.string()).describe(
+          attributeMapping: z.unknown().describe(
             'Optional. The mapping of additional user attributes like nickname, birthday and address etc.. `key` is the name of this additional attribute. `value` is a string presenting as CEL(common expression language, go/cel) used for getting the value from the resources. Take nickname as an example, in this case, `key` is "attribute.nickname" and `value` is "assertion.nickname".',
           ).optional(),
-          groupPrefix: z.string().describe(
+          groupPrefix: z.unknown().describe(
             "Optional. Prefix to prepend to group name.",
           ).optional(),
-          groupsAttribute: z.string().describe(
+          groupsAttribute: z.unknown().describe(
             "Optional. The SAML attribute to read groups from. This value is expected to be a string and will be passed along as-is (with the option of being prefixed by the `group_prefix`).",
           ).optional(),
-          identityProviderCertificates: z.array(z.string()).describe(
+          identityProviderCertificates: z.unknown().describe(
             "Required. The list of IdP certificates to validate the SAML response against.",
           ).optional(),
-          identityProviderId: z.string().describe(
+          identityProviderId: z.unknown().describe(
             "Required. The entity ID of the SAML IdP.",
           ).optional(),
-          identityProviderSsoUri: z.string().describe(
+          identityProviderSsoUri: z.unknown().describe(
             "Required. The URI where the SAML IdP exposes the SSO service.",
           ).optional(),
-          userAttribute: z.string().describe(
+          userAttribute: z.unknown().describe(
             "Optional. The SAML attribute to read username from. If unspecified, the username will be read from the NameID element of the assertion in SAML response. This value is expected to be a string and will be passed along as-is (with the option of being prefixed by the `user_prefix`).",
           ).optional(),
-          userPrefix: z.string().describe(
+          userPrefix: z.unknown().describe(
             "Optional. Prefix to prepend to user name.",
           ).optional(),
         }).describe("Configuration for the SAML Auth flow.").optional(),
@@ -2596,48 +2089,18 @@ const InputsSchema = z.object({
         deploymentConfigs: z.record(
           z.string(),
           z.object({
-            containerResources: z.object({
-              limits: z.object({
-                cpu: z.string().describe(
-                  "CPU requirement expressed in Kubernetes resource units.",
-                ).optional(),
-                memory: z.string().describe(
-                  "Memory requirement expressed in Kubernetes resource units.",
-                ).optional(),
-              }).describe(
-                "ResourceList contains container resource requirements.",
-              ).optional(),
-              requests: z.object({
-                cpu: z.string().describe(
-                  "CPU requirement expressed in Kubernetes resource units.",
-                ).optional(),
-                memory: z.string().describe(
-                  "Memory requirement expressed in Kubernetes resource units.",
-                ).optional(),
-              }).describe(
-                "ResourceList contains container resource requirements.",
-              ).optional(),
-            }).describe(
+            containerResources: z.unknown().describe(
               "ResourceRequirements describes the compute resource requirements.",
             ).optional(),
-            podAffinity: z.enum([
-              "AFFINITY_UNSPECIFIED",
-              "NO_AFFINITY",
-              "ANTI_AFFINITY",
-            ]).describe("Pod affinity configuration.").optional(),
-            podAntiAffinity: z.boolean().describe(
+            podAffinity: z.unknown().describe("Pod affinity configuration.")
+              .optional(),
+            podAntiAffinity: z.unknown().describe(
               "Pod anti-affinity enablement. Deprecated: use `pod_affinity` instead.",
             ).optional(),
-            podTolerations: z.array(z.object({
-              effect: z.string().describe("Matches a taint effect.").optional(),
-              key: z.string().describe(
-                "Matches a taint key (not necessarily unique).",
-              ).optional(),
-              operator: z.string().describe("Matches a taint operator.")
-                .optional(),
-              value: z.string().describe("Matches a taint value.").optional(),
-            })).describe("Pod tolerations of node taints.").optional(),
-            replicaCount: z.string().describe("Pod replica count.").optional(),
+            podTolerations: z.unknown().describe(
+              "Pod tolerations of node taints.",
+            ).optional(),
+            replicaCount: z.unknown().describe("Pod replica count.").optional(),
           }),
         ).describe(
           "Map of deployment configs to deployments (“admission”, “audit”, “mutation”).",
@@ -2658,13 +2121,7 @@ const InputsSchema = z.object({
           "Logs all denies and dry run failures.",
         ).optional(),
         monitoring: z.object({
-          backends: z.array(
-            z.enum([
-              "MONITORING_BACKEND_UNSPECIFIED",
-              "PROMETHEUS",
-              "CLOUD_MONITORING",
-            ]),
-          ).describe(
+          backends: z.array(z.unknown()).describe(
             "Specifies the list of backends Policy Controller will export to. An empty list would effectively disable metrics export.",
           ).optional(),
         }).describe(
@@ -2674,22 +2131,11 @@ const InputsSchema = z.object({
           "Enables the ability to mutate resources using Policy Controller.",
         ).optional(),
         policyContent: z.object({
-          bundles: z.record(
-            z.string(),
-            z.object({
-              exemptedNamespaces: z.array(z.string()).describe(
-                "the set of namespaces to be exempted from the bundle",
-              ).optional(),
-            }),
-          ).describe(
+          bundles: z.record(z.string(), z.unknown()).describe(
             "map of bundle name to BundleInstallSpec. The bundle name maps to the `bundleName` key in the `policycontroller.gke.io/constraintData` annotation on a constraint.",
           ).optional(),
           templateLibrary: z.object({
-            installation: z.enum([
-              "INSTALLATION_UNSPECIFIED",
-              "NOT_INSTALLED",
-              "ALL",
-            ]).describe(
+            installation: z.unknown().describe(
               "Configures the manner in which the template library is installed on the cluster.",
             ).optional(),
           }).describe(
@@ -2779,27 +2225,19 @@ const InputsSchema = z.object({
       ).optional(),
       upgrades: z.array(z.object({
         status: z.object({
-          code: z.enum([
-            "CODE_UNSPECIFIED",
-            "INELIGIBLE",
-            "PENDING",
-            "IN_PROGRESS",
-            "SOAKING",
-            "FORCED_SOAKING",
-            "COMPLETE",
-          ]).describe("Status code of the upgrade.").optional(),
-          reason: z.string().describe("Reason for this status.").optional(),
-          updateTime: z.string().describe(
+          code: z.unknown().describe("Status code of the upgrade.").optional(),
+          reason: z.unknown().describe("Reason for this status.").optional(),
+          updateTime: z.unknown().describe(
             "Last timestamp the status was updated.",
           ).optional(),
         }).describe(
           "UpgradeStatus provides status information for each upgrade.",
         ).optional(),
         upgrade: z.object({
-          name: z.string().describe(
+          name: z.unknown().describe(
             'Name of the upgrade, e.g., "k8s_control_plane".',
           ).optional(),
-          version: z.string().describe(
+          version: z.unknown().describe(
             'Version of the upgrade, e.g., "1.22.1-gke.100".',
           ).optional(),
         }).describe(
@@ -2905,7 +2343,7 @@ const InputsSchema = z.object({
         }).describe("The state of ConfigSync's deployment on a cluster.")
           .optional(),
         errors: z.array(z.object({
-          errorMessage: z.string().describe(
+          errorMessage: z.unknown().describe(
             "A string representing the user facing error message",
           ).optional(),
         })).describe(
@@ -2945,29 +2383,7 @@ const InputsSchema = z.object({
             "UNAUTHORIZED",
             "UNREACHABLE",
           ]).describe("Sync status code.").optional(),
-          errors: z.array(z.object({
-            code: z.string().describe("An ACM defined error code").optional(),
-            errorMessage: z.string().describe("A description of the error")
-              .optional(),
-            errorResources: z.array(z.object({
-              resourceGvk: z.object({
-                group: z.string().describe("Kubernetes Group").optional(),
-                kind: z.string().describe("Kubernetes Kind").optional(),
-                version: z.string().describe("Kubernetes Version").optional(),
-              }).describe("A Kubernetes object's GVK.").optional(),
-              resourceName: z.string().describe(
-                "Metadata name of the resource that is causing an error",
-              ).optional(),
-              resourceNamespace: z.string().describe(
-                "Namespace of the resource that is causing an error",
-              ).optional(),
-              sourcePath: z.string().describe(
-                "Path in the git repo of the erroneous config",
-              ).optional(),
-            })).describe(
-              "A list of config(s) associated with the error, if any",
-            ).optional(),
-          })).describe(
+          errors: z.array(z.unknown()).describe(
             "A list of errors resulting from problematic configs. This list will be truncated after 100 errors, although it is unlikely for that many errors to simultaneously exist.",
           ).optional(),
           importToken: z.string().describe(
@@ -3057,61 +2473,35 @@ const InputsSchema = z.object({
           "Optional. User-specified cluster name used by the Config Sync cluster-name-selector annotation or ClusterSelector object, for applying configs to only a subset of clusters. Read more about the cluster-name-selector annotation and ClusterSelector object at https://docs.cloud.google.com/kubernetes-engine/config-sync/docs/how-to/cluster-scoped-objects#limiting-configs. Only set this field if a name different from the cluster's fleet membership name is used by the Config Sync cluster-name-selector annotation or ClusterSelector.",
         ).optional(),
         configSync: z.object({
-          deploymentOverrides: z.array(z.object({
-            containers: z.array(z.object({
-              containerName: z.string().describe(
-                "Required. The name of the container.",
-              ).optional(),
-              cpuLimit: z.string().describe(
-                "Optional. The cpu limit of the container. Use the following CPU resource units: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/#meaning-of-cpu.",
-              ).optional(),
-              cpuRequest: z.string().describe(
-                "Optional. The cpu request of the container. Use the following CPU resource units: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/#meaning-of-cpu.",
-              ).optional(),
-              memoryLimit: z.string().describe(
-                "Optional. The memory limit of the container. Use the following memory resource units: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/#meaning-of-memory.",
-              ).optional(),
-              memoryRequest: z.string().describe(
-                "Optional. The memory request of the container. Use the following memory resource units: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/#meaning-of-memory.",
-              ).optional(),
-            })).describe(
-              "Optional. The containers of the deployment resource to be overridden.",
-            ).optional(),
-            deploymentName: z.string().describe(
-              "Required. The name of the deployment resource to be overridden.",
-            ).optional(),
-            deploymentNamespace: z.string().describe(
-              "Required. The namespace of the deployment resource to be overridden.",
-            ).optional(),
-          })).describe(
+          deploymentOverrides: z.array(z.unknown()).describe(
             "Optional. Configuration for deployment overrides. Applies only to Config Sync deployments with containers that are not a root or namespace reconciler: `reconciler-manager`, `otel-collector`, `resource-group-controller-manager`, `admission-webhook`. To override a root or namespace reconciler, use the rootsync or reposync fields at https://docs.cloud.google.com/kubernetes-engine/config-sync/docs/reference/rootsync-reposync-fields#override-resources instead.",
           ).optional(),
           enabled: z.boolean().describe(
             "Optional. Enables the installation of Config Sync. If set to true, the Feature will manage Config Sync resources, and apply the other ConfigSync fields if they exist. If set to false, the Feature will ignore all other ConfigSync fields and delete the Config Sync resources. If omitted, ConfigSync is considered enabled if the git or oci field is present.",
           ).optional(),
           git: z.object({
-            gcpServiceAccountEmail: z.string().describe(
+            gcpServiceAccountEmail: z.unknown().describe(
               "Optional. The Google Cloud Service Account Email used for auth when secret_type is `gcpserviceaccount`.",
             ).optional(),
-            httpsProxy: z.string().describe(
+            httpsProxy: z.unknown().describe(
               "Optional. URL for the HTTPS proxy to be used when communicating with the Git repo. Only specify when secret_type is `cookiefile`, `token`, or `none`.",
             ).optional(),
-            policyDir: z.string().describe(
+            policyDir: z.unknown().describe(
               "Optional. The path within the Git repository that represents the top level of the repo to sync. Default: the root directory of the repository.",
             ).optional(),
-            secretType: z.string().describe(
+            secretType: z.unknown().describe(
               "Required. Type of secret configured for access to the Git repo. Must be one of `ssh`, `cookiefile`, `gcenode`, `token`, `gcpserviceaccount`, `githubapp` or `none`. The validation of this is case-sensitive.",
             ).optional(),
-            syncBranch: z.string().describe(
+            syncBranch: z.unknown().describe(
               "Optional. The branch of the repository to sync from. Default: master.",
             ).optional(),
-            syncRepo: z.string().describe(
+            syncRepo: z.unknown().describe(
               "Required. The URL of the Git repository to use as the source of truth.",
             ).optional(),
-            syncRev: z.string().describe(
+            syncRev: z.unknown().describe(
               "Optional. Git revision (tag or hash) to check out. Default HEAD.",
             ).optional(),
-            syncWaitSecs: z.string().describe(
+            syncWaitSecs: z.unknown().describe(
               "Optional. Period in seconds between consecutive syncs. Default: 15.",
             ).optional(),
           }).describe("Git repo configuration for a single cluster.")
@@ -3120,19 +2510,19 @@ const InputsSchema = z.object({
             "Optional. The Email of the Google Cloud Service Account (GSA) used for exporting Config Sync metrics to Cloud Monitoring and Cloud Monarch when Workload Identity is enabled. The GSA should have the Monitoring Metric Writer (roles/monitoring.metricWriter) IAM role. The Kubernetes ServiceAccount `default` in the namespace `config-management-monitoring` should be bound to the GSA. Deprecated: If Workload Identity Federation for GKE is enabled, Google Cloud Service Account is no longer needed for exporting Config Sync metrics: https://cloud.google.com/kubernetes-engine/enterprise/config-sync/docs/how-to/monitor-config-sync-cloud-monitoring#custom-monitoring.",
           ).optional(),
           oci: z.object({
-            gcpServiceAccountEmail: z.string().describe(
+            gcpServiceAccountEmail: z.unknown().describe(
               "Optional. The Google Cloud Service Account Email used for auth when secret_type is `gcpserviceaccount`.",
             ).optional(),
-            policyDir: z.string().describe(
+            policyDir: z.unknown().describe(
               "Optional. The absolute path of the directory that contains the local resources. Default: the root directory of the image.",
             ).optional(),
-            secretType: z.string().describe(
+            secretType: z.unknown().describe(
               "Required. Type of secret configured for access to the OCI repo. Must be one of `gcenode`, `gcpserviceaccount`, `k8sserviceaccount` or `none`. The validation of this is case-sensitive.",
             ).optional(),
-            syncRepo: z.string().describe(
+            syncRepo: z.unknown().describe(
               "Required. The OCI image repository URL for the package to sync from. e.g. `LOCATION-docker.pkg.dev/PROJECT_ID/REPOSITORY_NAME/PACKAGE_NAME`.",
             ).optional(),
-            syncWaitSecs: z.string().describe(
+            syncWaitSecs: z.unknown().describe(
               "Optional. Period in seconds between consecutive syncs. Default: 15.",
             ).optional(),
           }).describe("OCI repo configuration for a single cluster.")
@@ -3172,20 +2562,14 @@ const InputsSchema = z.object({
           enabled: z.boolean().describe(
             "Enables the installation of Policy Controller. If false, the rest of PolicyController fields take no effect.",
           ).optional(),
-          exemptableNamespaces: z.array(z.string()).describe(
+          exemptableNamespaces: z.array(z.unknown()).describe(
             "The set of namespaces that are excluded from Policy Controller checks. Namespaces do not need to currently exist on the cluster.",
           ).optional(),
           logDeniesEnabled: z.boolean().describe(
             "Logs all denies and dry run failures.",
           ).optional(),
           monitoring: z.object({
-            backends: z.array(
-              z.enum([
-                "MONITORING_BACKEND_UNSPECIFIED",
-                "PROMETHEUS",
-                "CLOUD_MONITORING",
-              ]),
-            ).describe(
+            backends: z.unknown().describe(
               "Specifies the list of backends Policy Controller will export to. An empty list would effectively disable metrics export.",
             ).optional(),
           }).describe(
@@ -3219,7 +2603,7 @@ const InputsSchema = z.object({
           "PENDING",
         ]).describe("The state of the Operator's deployment.").optional(),
         errors: z.array(z.object({
-          errorMessage: z.string().describe(
+          errorMessage: z.unknown().describe(
             "A string representing the user facing error message.",
           ).optional(),
         })).describe("Install errors.").optional(),
@@ -3280,170 +2664,31 @@ const InputsSchema = z.object({
       ).optional(),
       memberConfig: z.object({
         authMethods: z.array(z.object({
-          azureadConfig: z.object({
-            clientId: z.string().describe(
-              "ID for the registered client application that makes authentication requests to the Azure AD identity provider.",
-            ).optional(),
-            clientSecret: z.string().describe(
-              "Input only. Unencrypted AzureAD client secret will be passed to the GKE Hub CLH.",
-            ).optional(),
-            encryptedClientSecret: z.string().describe(
-              "Output only. Encrypted AzureAD client secret.",
-            ).optional(),
-            groupFormat: z.string().describe(
-              "Optional. Format of the AzureAD groups that the client wants for auth.",
-            ).optional(),
-            kubectlRedirectUri: z.string().describe(
-              "The redirect URL that kubectl uses for authorization.",
-            ).optional(),
-            tenant: z.string().describe(
-              "Kind of Azure AD account to be authenticated. Supported values are or for accounts belonging to a specific tenant.",
-            ).optional(),
-            userClaim: z.string().describe(
-              "Optional. Claim in the AzureAD ID Token that holds the user details.",
-            ).optional(),
-          }).describe("Configuration for the AzureAD Auth flow.").optional(),
-          googleConfig: z.object({
-            disable: z.boolean().describe(
-              "Disable automatic configuration of Google Plugin on supported platforms.",
-            ).optional(),
-          }).describe("Configuration for the Google Plugin Auth flow.")
+          azureadConfig: z.unknown().describe(
+            "Configuration for the AzureAD Auth flow.",
+          ).optional(),
+          googleConfig: z.unknown().describe(
+            "Configuration for the Google Plugin Auth flow.",
+          ).optional(),
+          ldapConfig: z.unknown().describe(
+            "Configuration for the LDAP Auth flow.",
+          ).optional(),
+          name: z.unknown().describe("Identifier for auth config.").optional(),
+          oidcConfig: z.unknown().describe("Configuration for OIDC Auth flow.")
             .optional(),
-          ldapConfig: z.object({
-            group: z.object({
-              baseDn: z.string().describe(
-                "Required. The location of the subtree in the LDAP directory to search for group entries.",
-              ).optional(),
-              filter: z.string().describe(
-                'Optional. Optional filter to be used when searching for groups a user belongs to. This can be used to explicitly match only certain groups in order to reduce the amount of groups returned for each user. This defaults to "(objectClass=Group)".',
-              ).optional(),
-              idAttribute: z.string().describe(
-                'Optional. The identifying name of each group a user belongs to. For example, if this is set to "distinguishedName" then RBACs and other group expectations should be written as full DNs. This defaults to "distinguishedName".',
-              ).optional(),
-            }).describe(
-              "Contains the properties for locating and authenticating groups in the directory.",
-            ).optional(),
-            server: z.object({
-              certificateAuthorityData: z.string().describe(
-                'Optional. Contains a Base64 encoded, PEM formatted certificate authority certificate for the LDAP server. This must be provided for the "ldaps" and "startTLS" connections.',
-              ).optional(),
-              connectionType: z.string().describe(
-                "Optional. Defines the connection type to communicate with the LDAP server. If `starttls` or `ldaps` is specified, the certificate_authority_data should not be empty.",
-              ).optional(),
-              host: z.string().describe(
-                'Required. Defines the hostname or IP of the LDAP server. Port is optional and will default to 389, if unspecified. For example, "ldap.server.example" or "10.10.10.10:389".',
-              ).optional(),
-            }).describe("Server settings for the external LDAP server.")
-              .optional(),
-            serviceAccount: z.object({
-              simpleBindCredentials: z.object({
-                dn: z.string().describe(
-                  "Required. The distinguished name(DN) of the service account object/user.",
-                ).optional(),
-                encryptedPassword: z.string().describe(
-                  "Output only. The encrypted password of the service account object/user.",
-                ).optional(),
-                password: z.string().describe(
-                  "Required. Input only. The password of the service account object/user.",
-                ).optional(),
-              }).describe(
-                "The structure holds the LDAP simple binding credential.",
-              ).optional(),
-            }).describe(
-              "Contains the credentials of the service account which is authorized to perform the LDAP search in the directory. The credentials can be supplied by the combination of the DN and password or the client certificate.",
-            ).optional(),
-            user: z.object({
-              baseDn: z.string().describe(
-                "Required. The location of the subtree in the LDAP directory to search for user entries.",
-              ).optional(),
-              filter: z.string().describe(
-                'Optional. Filter to apply when searching for the user. This can be used to further restrict the user accounts which are allowed to login. This defaults to "(objectClass=User)".',
-              ).optional(),
-              idAttribute: z.string().describe(
-                'Optional. Determines which attribute to use as the user\'s identity after they are authenticated. This is distinct from the loginAttribute field to allow users to login with a username, but then have their actual identifier be an email address or full Distinguished Name (DN). For example, setting loginAttribute to "sAMAccountName" and identifierAttribute to "userPrincipalName" would allow a user to login as "bsmith", but actual RBAC policies for the user would be written as "bsmith@example.com". Using "userPrincipalName" is recommended since this will be unique for each user. This defaults to "userPrincipalName".',
-              ).optional(),
-              loginAttribute: z.string().describe(
-                'Optional. The name of the attribute which matches against the input username. This is used to find the user in the LDAP database e.g. "(=)" and is combined with the optional filter field. This defaults to "userPrincipalName".',
-              ).optional(),
-            }).describe("Defines where users exist in the LDAP directory.")
-              .optional(),
-          }).describe("Configuration for the LDAP Auth flow.").optional(),
-          name: z.string().describe("Identifier for auth config.").optional(),
-          oidcConfig: z.object({
-            certificateAuthorityData: z.string().describe(
-              "PEM-encoded CA for OIDC provider.",
-            ).optional(),
-            clientId: z.string().describe("ID for OIDC client application.")
-              .optional(),
-            clientSecret: z.string().describe(
-              "Input only. Unencrypted OIDC client secret will be passed to the GKE Hub CLH.",
-            ).optional(),
-            deployCloudConsoleProxy: z.boolean().describe(
-              "Flag to denote if reverse proxy is used to connect to auth provider. This flag should be set to true when provider is not reachable by Google Cloud Console.",
-            ).optional(),
-            enableAccessToken: z.boolean().describe("Enable access token.")
-              .optional(),
-            encryptedClientSecret: z.string().describe(
-              "Output only. Encrypted OIDC Client secret",
-            ).optional(),
-            extraParams: z.string().describe(
-              "Comma-separated list of key-value pairs.",
-            ).optional(),
-            groupPrefix: z.string().describe("Prefix to prepend to group name.")
-              .optional(),
-            groupsClaim: z.string().describe(
-              "Claim in OIDC ID token that holds group information.",
-            ).optional(),
-            issuerUri: z.string().describe(
-              "URI for the OIDC provider. This should point to the level below.well-known/openid-configuration.",
-            ).optional(),
-            kubectlRedirectUri: z.string().describe(
-              "Registered redirect uri to redirect users going through OAuth flow using kubectl plugin.",
-            ).optional(),
-            scopes: z.string().describe("Comma-separated list of identifiers.")
-              .optional(),
-            userClaim: z.string().describe(
-              "Claim in OIDC ID token that holds username.",
-            ).optional(),
-            userPrefix: z.string().describe("Prefix to prepend to user name.")
-              .optional(),
-          }).describe("Configuration for OIDC Auth flow.").optional(),
-          proxy: z.string().describe(
+          proxy: z.unknown().describe(
             "Proxy server address to use for auth method.",
           ).optional(),
-          samlConfig: z.object({
-            attributeMapping: z.record(z.string(), z.string()).describe(
-              'Optional. The mapping of additional user attributes like nickname, birthday and address etc.. `key` is the name of this additional attribute. `value` is a string presenting as CEL(common expression language, go/cel) used for getting the value from the resources. Take nickname as an example, in this case, `key` is "attribute.nickname" and `value` is "assertion.nickname".',
-            ).optional(),
-            groupPrefix: z.string().describe(
-              "Optional. Prefix to prepend to group name.",
-            ).optional(),
-            groupsAttribute: z.string().describe(
-              "Optional. The SAML attribute to read groups from. This value is expected to be a string and will be passed along as-is (with the option of being prefixed by the `group_prefix`).",
-            ).optional(),
-            identityProviderCertificates: z.array(z.string()).describe(
-              "Required. The list of IdP certificates to validate the SAML response against.",
-            ).optional(),
-            identityProviderId: z.string().describe(
-              "Required. The entity ID of the SAML IdP.",
-            ).optional(),
-            identityProviderSsoUri: z.string().describe(
-              "Required. The URI where the SAML IdP exposes the SSO service.",
-            ).optional(),
-            userAttribute: z.string().describe(
-              "Optional. The SAML attribute to read username from. If unspecified, the username will be read from the NameID element of the assertion in SAML response. This value is expected to be a string and will be passed along as-is (with the option of being prefixed by the `user_prefix`).",
-            ).optional(),
-            userPrefix: z.string().describe(
-              "Optional. Prefix to prepend to user name.",
-            ).optional(),
-          }).describe("Configuration for the SAML Auth flow.").optional(),
+          samlConfig: z.unknown().describe(
+            "Configuration for the SAML Auth flow.",
+          ).optional(),
         })).describe("A member may support multiple auth methods.").optional(),
         identityServiceOptions: z.object({
           diagnosticInterface: z.object({
-            enabled: z.boolean().describe(
+            enabled: z.unknown().describe(
               "Determines whether to enable the diagnostic interface.",
             ).optional(),
-            expirationTime: z.string().describe(
+            expirationTime: z.unknown().describe(
               "Determines the expiration time of the diagnostic interface enablement. When reached, requests to the interface would be automatically rejected.",
             ).optional(),
           }).describe("Configuration options for the AIS diagnostic interface.")
@@ -3498,21 +2743,12 @@ const InputsSchema = z.object({
         bundleStates: z.record(
           z.string(),
           z.object({
-            details: z.string().describe(
+            details: z.unknown().describe(
               "Surface potential errors or information logs.",
             ).optional(),
-            state: z.enum([
-              "LIFECYCLE_STATE_UNSPECIFIED",
-              "NOT_INSTALLED",
-              "INSTALLING",
-              "ACTIVE",
-              "UPDATING",
-              "DECOMMISSIONING",
-              "CLUSTER_ERROR",
-              "HUB_ERROR",
-              "SUSPENDED",
-              "DETACHED",
-            ]).describe("The lifecycle state of this component.").optional(),
+            state: z.unknown().describe(
+              "The lifecycle state of this component.",
+            ).optional(),
           }),
         ).describe(
           "The state of the any bundles included in the chosen version of the manifest",
@@ -3597,32 +2833,25 @@ const InputsSchema = z.object({
     ).optional(),
     servicemesh: z.object({
       analysisMessages: z.array(z.object({
-        args: z.record(z.string(), z.string()).describe(
+        args: z.record(z.string(), z.unknown()).describe(
           "A UI can combine these args with a template (based on message_base.type) to produce an internationalized message.",
         ).optional(),
         description: z.string().describe(
           "A human readable description of what the error means. It is suitable for non-internationalize display purposes.",
         ).optional(),
         messageBase: z.object({
-          documentationUrl: z.string().describe(
+          documentationUrl: z.unknown().describe(
             "A url pointing to the Service Mesh or Istio documentation for this specific error type.",
           ).optional(),
-          level: z.enum(["LEVEL_UNSPECIFIED", "ERROR", "WARNING", "INFO"])
-            .describe("Represents how severe a message is.").optional(),
-          type: z.object({
-            code: z.string().describe(
-              'A 7 character code matching `^IST[0-9]{4}$` or `^ASM[0-9]{4}$`, intended to uniquely identify the message type. (e.g. "IST0001" is mapped to the "InternalError" message type.)',
-            ).optional(),
-            displayName: z.string().describe(
-              'A human-readable name for the message type. e.g. "InternalError", "PodMissingProxy". This should be the same for all messages of the same type. (This corresponds to the `name` field in open-source Istio.)',
-            ).optional(),
-          }).describe(
+          level: z.unknown().describe("Represents how severe a message is.")
+            .optional(),
+          type: z.unknown().describe(
             "A unique identifier for the type of message. Display_name is intended to be human-readable, code is intended to be machine readable. There should be a one-to-one mapping between display_name and code. (i.e. do not re-use display_names or codes between message types.) See istio.analysis.v1alpha1.AnalysisMessageBase.Type",
           ).optional(),
         }).describe(
           "AnalysisMessageBase describes some common information that is needed for all messages.",
         ).optional(),
-        resourcePaths: z.array(z.string()).describe(
+        resourcePaths: z.array(z.unknown()).describe(
           'A list of strings specifying the resource identifiers that were the cause of message generation. A "path" here may be: * MEMBERSHIP_ID if the cause is a specific member cluster * MEMBERSHIP_ID/(NAMESPACE\\/)?RESOURCETYPE/NAME if the cause is a resource in a cluster',
         ).optional(),
       })).describe("Output only. Results of running Service Mesh analyzers.")
@@ -3701,10 +2930,10 @@ const InputsSchema = z.object({
       ).optional(),
       controlPlaneManagement: z.object({
         details: z.array(z.object({
-          code: z.string().describe(
+          code: z.unknown().describe(
             "A machine-readable code that further describes a broad status.",
           ).optional(),
-          details: z.string().describe("Human-readable explanation of code.")
+          details: z.unknown().describe("Human-readable explanation of code.")
             .optional(),
         })).describe("Explanation of state.").optional(),
         implementation: z.enum([
@@ -3728,10 +2957,10 @@ const InputsSchema = z.object({
       }).describe("Status of control plane management.").optional(),
       dataPlaneManagement: z.object({
         details: z.array(z.object({
-          code: z.string().describe(
+          code: z.unknown().describe(
             "A machine-readable code that further describes a broad status.",
           ).optional(),
-          details: z.string().describe("Human-readable explanation of code.")
+          details: z.unknown().describe("Human-readable explanation of code.")
             .optional(),
         })).describe("Explanation of the status.").optional(),
         state: z.enum([
@@ -3797,7 +3026,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/gkehub/memberships-features",
-  version: "2026.04.03.3",
+  version: "2026.04.04.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -3821,6 +3050,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.3",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.04.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

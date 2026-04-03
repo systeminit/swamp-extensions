@@ -205,7 +205,7 @@ const GlobalArgsSchema = z.object({
           "SPECIFIC_RESERVATION",
         ]).describe("Required. Specifies the reservation affinity type.")
           .optional(),
-        values: z.array(z.string()).describe(
+        values: z.array(z.unknown()).describe(
           "Optional. Corresponds to the label values of a reservation resource. This must be the full resource name of the reservation or reservation block.",
         ).optional(),
       }).describe(
@@ -314,7 +314,7 @@ const StateSchema = z.object({
       reservationAffinity: z.object({
         key: z.string(),
         reservationAffinityType: z.string(),
-        values: z.array(z.string()),
+        values: z.array(z.unknown()),
       }),
       tpuTopology: z.string(),
     }),
@@ -469,7 +469,7 @@ const InputsSchema = z.object({
           "SPECIFIC_RESERVATION",
         ]).describe("Required. Specifies the reservation affinity type.")
           .optional(),
-        values: z.array(z.string()).describe(
+        values: z.array(z.unknown()).describe(
           "Optional. Corresponds to the label values of a reservation resource. This must be the full resource name of the reservation or reservation block.",
         ).optional(),
       }).describe(
@@ -539,7 +539,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/aiplatform/persistentresources",
-  version: "2026.04.03.3",
+  version: "2026.04.04.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -563,6 +563,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.3",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.04.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

@@ -48,18 +48,18 @@ const StateSchema = z.object({
       ruleId: z.string(),
       standardSchedule: z.object({
         backupWindow: z.object({
-          endHourOfDay: z.number(),
-          startHourOfDay: z.number(),
+          endHourOfDay: z.unknown(),
+          startHourOfDay: z.unknown(),
         }),
-        daysOfMonth: z.array(z.number()),
-        daysOfWeek: z.array(z.string()),
+        daysOfMonth: z.array(z.unknown()),
+        daysOfWeek: z.array(z.unknown()),
         hourlyFrequency: z.number(),
-        months: z.array(z.string()),
+        months: z.array(z.unknown()),
         recurrenceType: z.string(),
         timeZone: z.string(),
         weekDayOfMonth: z.object({
-          dayOfWeek: z.string(),
-          weekOfMonth: z.string(),
+          dayOfWeek: z.unknown(),
+          weekOfMonth: z.unknown(),
         }),
       }),
     })),
@@ -102,7 +102,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/backupdr/backupplans-revisions",
-  version: "2026.04.03.3",
+  version: "2026.04.04.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -136,6 +136,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.3",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.04.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

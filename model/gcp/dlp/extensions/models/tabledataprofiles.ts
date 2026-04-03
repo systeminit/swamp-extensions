@@ -62,47 +62,24 @@ const StateSchema = z.object({
     dataProfileJob: z.object({
       dataProfileActions: z.array(z.object({
         exportData: z.object({
-          profileTable: z.object({
-            datasetId: z.string(),
-            projectId: z.string(),
-            tableId: z.string(),
-          }),
-          sampleFindingsTable: z.object({
-            datasetId: z.string(),
-            projectId: z.string(),
-            tableId: z.string(),
-          }),
+          profileTable: z.unknown(),
+          sampleFindingsTable: z.unknown(),
         }),
         pubSubNotification: z.object({
-          detailOfMessage: z.string(),
-          event: z.string(),
-          pubsubCondition: z.object({
-            expressions: z.object({
-              conditions: z.array(z.object({
-                minimumRiskScore: z.string(),
-                minimumSensitivityScore: z.string(),
-              })),
-              logicalOperator: z.string(),
-            }),
-          }),
-          topic: z.string(),
+          detailOfMessage: z.unknown(),
+          event: z.unknown(),
+          pubsubCondition: z.unknown(),
+          topic: z.unknown(),
         }),
         publishToChronicle: z.object({}),
         publishToDataplexCatalog: z.object({
-          lowerDataRiskToLow: z.boolean(),
+          lowerDataRiskToLow: z.unknown(),
         }),
         publishToScc: z.object({}),
         tagResources: z.object({
-          lowerDataRiskToLow: z.boolean(),
-          profileGenerationsToTag: z.array(z.string()),
-          tagConditions: z.array(z.object({
-            sensitivityScore: z.object({
-              score: z.string(),
-            }),
-            tag: z.object({
-              namespacedValue: z.string(),
-            }),
-          })),
+          lowerDataRiskToLow: z.unknown(),
+          profileGenerationsToTag: z.unknown(),
+          tagConditions: z.unknown(),
         }),
       })),
       inspectTemplates: z.array(z.string()),
@@ -121,59 +98,36 @@ const StateSchema = z.object({
     discoveryConfig: z.object({
       actions: z.array(z.object({
         exportData: z.object({
-          profileTable: z.object({
-            datasetId: z.string(),
-            projectId: z.string(),
-            tableId: z.string(),
-          }),
-          sampleFindingsTable: z.object({
-            datasetId: z.string(),
-            projectId: z.string(),
-            tableId: z.string(),
-          }),
+          profileTable: z.unknown(),
+          sampleFindingsTable: z.unknown(),
         }),
         pubSubNotification: z.object({
-          detailOfMessage: z.string(),
-          event: z.string(),
-          pubsubCondition: z.object({
-            expressions: z.object({
-              conditions: z.array(z.object({
-                minimumRiskScore: z.string(),
-                minimumSensitivityScore: z.string(),
-              })),
-              logicalOperator: z.string(),
-            }),
-          }),
-          topic: z.string(),
+          detailOfMessage: z.unknown(),
+          event: z.unknown(),
+          pubsubCondition: z.unknown(),
+          topic: z.unknown(),
         }),
         publishToChronicle: z.object({}),
         publishToDataplexCatalog: z.object({
-          lowerDataRiskToLow: z.boolean(),
+          lowerDataRiskToLow: z.unknown(),
         }),
         publishToScc: z.object({}),
         tagResources: z.object({
-          lowerDataRiskToLow: z.boolean(),
-          profileGenerationsToTag: z.array(z.string()),
-          tagConditions: z.array(z.object({
-            sensitivityScore: z.object({
-              score: z.string(),
-            }),
-            tag: z.object({
-              namespacedValue: z.string(),
-            }),
-          })),
+          lowerDataRiskToLow: z.unknown(),
+          profileGenerationsToTag: z.unknown(),
+          tagConditions: z.unknown(),
         }),
       })),
       createTime: z.string(),
       displayName: z.string(),
       errors: z.array(z.object({
         details: z.object({
-          code: z.number(),
-          details: z.array(z.record(z.string(), z.unknown())),
-          message: z.string(),
+          code: z.unknown(),
+          details: z.unknown(),
+          message: z.unknown(),
         }),
         extraInfo: z.string(),
-        timestamps: z.array(z.string()),
+        timestamps: z.array(z.unknown()),
       })),
       inspectTemplates: z.array(z.string()),
       lastRunTime: z.string(),
@@ -204,194 +158,36 @@ const StateSchema = z.object({
       status: z.string(),
       targets: z.array(z.object({
         bigQueryTarget: z.object({
-          cadence: z.object({
-            inspectTemplateModifiedCadence: z.object({
-              frequency: z.string(),
-            }),
-            refreshFrequency: z.string(),
-            schemaModifiedCadence: z.object({
-              frequency: z.string(),
-              types: z.array(z.string()),
-            }),
-            tableModifiedCadence: z.object({
-              frequency: z.string(),
-              types: z.array(z.string()),
-            }),
-          }),
-          conditions: z.object({
-            createdAfter: z.string(),
-            orConditions: z.object({
-              minAge: z.string(),
-              minRowCount: z.number(),
-            }),
-            typeCollection: z.string(),
-            types: z.object({
-              types: z.array(z.string()),
-            }),
-          }),
-          disabled: z.object({}),
-          filter: z.object({
-            otherTables: z.object({}),
-            tableReference: z.object({
-              datasetId: z.string(),
-              projectId: z.string(),
-              tableId: z.string(),
-            }),
-            tables: z.object({
-              includeRegexes: z.object({
-                patterns: z.array(z.object({
-                  datasetIdRegex: z.string(),
-                  projectIdRegex: z.string(),
-                  tableIdRegex: z.string(),
-                })),
-              }),
-            }),
-          }),
+          cadence: z.unknown(),
+          conditions: z.unknown(),
+          disabled: z.unknown(),
+          filter: z.unknown(),
         }),
         cloudSqlTarget: z.object({
-          conditions: z.object({
-            databaseEngines: z.array(z.string()),
-            types: z.array(z.string()),
-          }),
-          disabled: z.object({}),
-          filter: z.object({
-            collection: z.object({
-              includeRegexes: z.object({
-                patterns: z.array(z.object({
-                  databaseRegex: z.string(),
-                  databaseResourceNameRegex: z.string(),
-                  instanceRegex: z.string(),
-                  projectIdRegex: z.string(),
-                })),
-              }),
-            }),
-            databaseResourceReference: z.object({
-              database: z.string(),
-              databaseResource: z.string(),
-              instance: z.string(),
-              projectId: z.string(),
-            }),
-            others: z.object({}),
-          }),
-          generationCadence: z.object({
-            inspectTemplateModifiedCadence: z.object({
-              frequency: z.string(),
-            }),
-            refreshFrequency: z.string(),
-            schemaModifiedCadence: z.object({
-              frequency: z.string(),
-              types: z.array(z.string()),
-            }),
-          }),
+          conditions: z.unknown(),
+          disabled: z.unknown(),
+          filter: z.unknown(),
+          generationCadence: z.unknown(),
         }),
         cloudStorageTarget: z.object({
-          conditions: z.object({
-            cloudStorageConditions: z.object({
-              includedBucketAttributes: z.array(z.string()),
-              includedObjectAttributes: z.array(z.string()),
-            }),
-            createdAfter: z.string(),
-            minAge: z.string(),
-          }),
-          disabled: z.object({}),
-          filter: z.object({
-            cloudStorageResourceReference: z.object({
-              bucketName: z.string(),
-              projectId: z.string(),
-            }),
-            collection: z.object({
-              includeRegexes: z.object({
-                patterns: z.array(z.object({
-                  cloudStorageRegex: z.object({
-                    bucketNameRegex: z.string(),
-                    projectIdRegex: z.string(),
-                  }),
-                })),
-              }),
-              includeTags: z.object({
-                tagFilters: z.array(z.object({
-                  namespacedTagKey: z.string(),
-                  namespacedTagValue: z.string(),
-                })),
-              }),
-            }),
-            others: z.object({}),
-          }),
-          generationCadence: z.object({
-            inspectTemplateModifiedCadence: z.object({
-              frequency: z.string(),
-            }),
-            refreshFrequency: z.string(),
-          }),
+          conditions: z.unknown(),
+          disabled: z.unknown(),
+          filter: z.unknown(),
+          generationCadence: z.unknown(),
         }),
         otherCloudTarget: z.object({
-          conditions: z.object({
-            amazonS3BucketConditions: z.object({
-              bucketTypes: z.array(z.string()),
-              objectStorageClasses: z.array(z.string()),
-            }),
-            minAge: z.string(),
-          }),
-          dataSourceType: z.object({
-            dataSource: z.string(),
-          }),
-          disabled: z.object({}),
-          filter: z.object({
-            collection: z.object({
-              includeRegexes: z.object({
-                patterns: z.array(z.object({
-                  amazonS3BucketRegex: z.object({
-                    awsAccountRegex: z.object({
-                      accountIdRegex: z.string(),
-                    }),
-                    bucketNameRegex: z.string(),
-                  }),
-                })),
-              }),
-            }),
-            others: z.object({}),
-            singleResource: z.object({
-              amazonS3Bucket: z.object({
-                awsAccount: z.object({
-                  accountId: z.string(),
-                }),
-                bucketName: z.string(),
-              }),
-            }),
-          }),
-          generationCadence: z.object({
-            inspectTemplateModifiedCadence: z.object({
-              frequency: z.string(),
-            }),
-            refreshFrequency: z.string(),
-          }),
+          conditions: z.unknown(),
+          dataSourceType: z.unknown(),
+          disabled: z.unknown(),
+          filter: z.unknown(),
+          generationCadence: z.unknown(),
         }),
         secretsTarget: z.object({}),
         vertexDatasetTarget: z.object({
-          conditions: z.object({
-            createdAfter: z.string(),
-            minAge: z.string(),
-          }),
-          disabled: z.object({}),
-          filter: z.object({
-            collection: z.object({
-              vertexDatasetRegexes: z.object({
-                patterns: z.array(z.object({
-                  projectIdRegex: z.string(),
-                })),
-              }),
-            }),
-            others: z.object({}),
-            vertexDatasetResourceReference: z.object({
-              datasetResourceName: z.string(),
-            }),
-          }),
-          generationCadence: z.object({
-            inspectTemplateModifiedCadence: z.object({
-              frequency: z.string(),
-            }),
-            refreshFrequency: z.string(),
-          }),
+          conditions: z.unknown(),
+          disabled: z.unknown(),
+          filter: z.unknown(),
+          generationCadence: z.unknown(),
         }),
       })),
       updateTime: z.string(),
@@ -399,53 +195,32 @@ const StateSchema = z.object({
     inspectConfig: z.object({
       contentOptions: z.array(z.string()),
       customInfoTypes: z.array(z.object({
-        detectionRules: z.array(z.object({
-          hotwordRule: z.object({
-            hotwordRegex: z.object({
-              groupIndexes: z.array(z.number()),
-              pattern: z.string(),
-            }),
-            likelihoodAdjustment: z.object({
-              fixedLikelihood: z.string(),
-              relativeLikelihood: z.number(),
-            }),
-            proximity: z.object({
-              windowAfter: z.number(),
-              windowBefore: z.number(),
-            }),
-          }),
-        })),
+        detectionRules: z.array(z.unknown()),
         dictionary: z.object({
-          cloudStoragePath: z.object({
-            path: z.string(),
-          }),
-          wordList: z.object({
-            words: z.array(z.string()),
-          }),
+          cloudStoragePath: z.unknown(),
+          wordList: z.unknown(),
         }),
         exclusionType: z.string(),
         infoType: z.object({
-          name: z.string(),
-          sensitivityScore: z.object({
-            score: z.string(),
-          }),
-          version: z.string(),
+          name: z.unknown(),
+          sensitivityScore: z.unknown(),
+          version: z.unknown(),
         }),
         likelihood: z.string(),
         metadataKeyValueExpression: z.object({
-          keyRegex: z.string(),
-          valueRegex: z.string(),
+          keyRegex: z.unknown(),
+          valueRegex: z.unknown(),
         }),
         regex: z.object({
-          groupIndexes: z.array(z.number()),
-          pattern: z.string(),
+          groupIndexes: z.unknown(),
+          pattern: z.unknown(),
         }),
         sensitivityScore: z.object({
-          score: z.string(),
+          score: z.unknown(),
         }),
         storedType: z.object({
-          createTime: z.string(),
-          name: z.string(),
+          createTime: z.unknown(),
+          name: z.unknown(),
         }),
         surrogateType: z.object({}),
       })),
@@ -454,20 +229,14 @@ const StateSchema = z.object({
       infoTypes: z.array(z.object({
         name: z.string(),
         sensitivityScore: z.object({
-          score: z.string(),
+          score: z.unknown(),
         }),
         version: z.string(),
       })),
       limits: z.object({
         maxFindingsPerInfoType: z.array(z.object({
-          infoType: z.object({
-            name: z.string(),
-            sensitivityScore: z.object({
-              score: z.string(),
-            }),
-            version: z.string(),
-          }),
-          maxFindings: z.number(),
+          infoType: z.unknown(),
+          maxFindings: z.unknown(),
         })),
         maxFindingsPerItem: z.number(),
         maxFindingsPerRequest: z.number(),
@@ -475,118 +244,15 @@ const StateSchema = z.object({
       minLikelihood: z.string(),
       minLikelihoodPerInfoType: z.array(z.object({
         infoType: z.object({
-          name: z.string(),
-          sensitivityScore: z.object({
-            score: z.string(),
-          }),
-          version: z.string(),
+          name: z.unknown(),
+          sensitivityScore: z.unknown(),
+          version: z.unknown(),
         }),
         minLikelihood: z.string(),
       })),
       ruleSet: z.array(z.object({
-        infoTypes: z.array(z.object({
-          name: z.string(),
-          sensitivityScore: z.object({
-            score: z.string(),
-          }),
-          version: z.string(),
-        })),
-        rules: z.array(z.object({
-          adjustmentRule: z.object({
-            adjustByImageFindings: z.object({
-              imageContainmentType: z.object({
-                encloses: z.object({}),
-                fullyInside: z.object({}),
-                overlaps: z.object({}),
-              }),
-              infoTypes: z.array(z.object({
-                name: z.string(),
-                sensitivityScore: z.object({
-                  score: z.string(),
-                }),
-                version: z.string(),
-              })),
-              minLikelihood: z.string(),
-            }),
-            adjustByMatchingInfoTypes: z.object({
-              infoTypes: z.array(z.object({
-                name: z.string(),
-                sensitivityScore: z.object({
-                  score: z.string(),
-                }),
-                version: z.string(),
-              })),
-              matchingType: z.string(),
-              minLikelihood: z.string(),
-            }),
-            likelihoodAdjustment: z.object({
-              fixedLikelihood: z.string(),
-              relativeLikelihood: z.number(),
-            }),
-          }),
-          exclusionRule: z.object({
-            dictionary: z.object({
-              cloudStoragePath: z.object({
-                path: z.string(),
-              }),
-              wordList: z.object({
-                words: z.array(z.string()),
-              }),
-            }),
-            excludeByHotword: z.object({
-              hotwordRegex: z.object({
-                groupIndexes: z.array(z.number()),
-                pattern: z.string(),
-              }),
-              proximity: z.object({
-                windowAfter: z.number(),
-                windowBefore: z.number(),
-              }),
-            }),
-            excludeByImageFindings: z.object({
-              imageContainmentType: z.object({
-                encloses: z.object({}),
-                fullyInside: z.object({}),
-                overlaps: z.object({}),
-              }),
-              infoTypes: z.array(z.object({
-                name: z.string(),
-                sensitivityScore: z.object({
-                  score: z.string(),
-                }),
-                version: z.string(),
-              })),
-            }),
-            excludeInfoTypes: z.object({
-              infoTypes: z.array(z.object({
-                name: z.string(),
-                sensitivityScore: z.object({
-                  score: z.string(),
-                }),
-                version: z.string(),
-              })),
-            }),
-            matchingType: z.string(),
-            regex: z.object({
-              groupIndexes: z.array(z.number()),
-              pattern: z.string(),
-            }),
-          }),
-          hotwordRule: z.object({
-            hotwordRegex: z.object({
-              groupIndexes: z.array(z.number()),
-              pattern: z.string(),
-            }),
-            likelihoodAdjustment: z.object({
-              fixedLikelihood: z.string(),
-              relativeLikelihood: z.number(),
-            }),
-            proximity: z.object({
-              windowAfter: z.number(),
-              windowBefore: z.number(),
-            }),
-          }),
-        })),
+        infoTypes: z.array(z.unknown()),
+        rules: z.array(z.unknown()),
       })),
     }),
     inspectTemplateModifiedTime: z.string(),
@@ -679,7 +345,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/dlp/tabledataprofiles",
-  version: "2026.04.03.3",
+  version: "2026.04.04.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -703,6 +369,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.3",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.04.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

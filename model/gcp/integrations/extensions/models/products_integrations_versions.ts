@@ -189,27 +189,24 @@ const GlobalArgsSchema = z.object({
       ]).describe("Type of the parameter.").optional(),
       defaultValue: z.object({
         booleanArray: z.object({
-          booleanValues: z.array(z.boolean()).describe("Boolean array.")
-            .optional(),
+          booleanValues: z.unknown().describe("Boolean array.").optional(),
         }).describe("This message only contains a field of boolean array.")
           .optional(),
         booleanValue: z.boolean().describe("Boolean.").optional(),
         doubleArray: z.object({
-          doubleValues: z.array(z.number()).describe("Double number array.")
-            .optional(),
+          doubleValues: z.unknown().describe("Double number array.").optional(),
         }).describe(
           "This message only contains a field of double number array.",
         ).optional(),
         doubleValue: z.number().describe("Double Number.").optional(),
         intArray: z.object({
-          intValues: z.array(z.string()).describe("Integer array.").optional(),
+          intValues: z.unknown().describe("Integer array.").optional(),
         }).describe("This message only contains a field of integer array.")
           .optional(),
         intValue: z.string().describe("Integer.").optional(),
         jsonValue: z.string().describe("Json.").optional(),
         stringArray: z.object({
-          stringValues: z.array(z.string()).describe("String array.")
-            .optional(),
+          stringValues: z.unknown().describe("String array.").optional(),
         }).describe("This message only contains a field of string array.")
           .optional(),
         stringValue: z.string().describe("String.").optional(),
@@ -250,25 +247,25 @@ const GlobalArgsSchema = z.object({
     ).optional(),
     value: z.object({
       booleanArray: z.object({
-        booleanValues: z.array(z.boolean()).describe("Boolean array.")
+        booleanValues: z.array(z.unknown()).describe("Boolean array.")
           .optional(),
       }).describe("This message only contains a field of boolean array.")
         .optional(),
       booleanValue: z.boolean().describe("Boolean.").optional(),
       doubleArray: z.object({
-        doubleValues: z.array(z.number()).describe("Double number array.")
+        doubleValues: z.array(z.unknown()).describe("Double number array.")
           .optional(),
       }).describe("This message only contains a field of double number array.")
         .optional(),
       doubleValue: z.number().describe("Double Number.").optional(),
       intArray: z.object({
-        intValues: z.array(z.string()).describe("Integer array.").optional(),
+        intValues: z.array(z.unknown()).describe("Integer array.").optional(),
       }).describe("This message only contains a field of integer array.")
         .optional(),
       intValue: z.string().describe("Integer.").optional(),
       jsonValue: z.string().describe("Json.").optional(),
       stringArray: z.object({
-        stringValues: z.array(z.string()).describe("String array.").optional(),
+        stringValues: z.array(z.unknown()).describe("String array.").optional(),
       }).describe("This message only contains a field of string array.")
         .optional(),
       stringValue: z.string().describe("String.").optional(),
@@ -302,25 +299,25 @@ const GlobalArgsSchema = z.object({
     ]).describe("Type of the parameter.").optional(),
     defaultValue: z.object({
       booleanArray: z.object({
-        booleanValues: z.array(z.boolean()).describe("Boolean array.")
+        booleanValues: z.array(z.unknown()).describe("Boolean array.")
           .optional(),
       }).describe("This message only contains a field of boolean array.")
         .optional(),
       booleanValue: z.boolean().describe("Boolean.").optional(),
       doubleArray: z.object({
-        doubleValues: z.array(z.number()).describe("Double number array.")
+        doubleValues: z.array(z.unknown()).describe("Double number array.")
           .optional(),
       }).describe("This message only contains a field of double number array.")
         .optional(),
       doubleValue: z.number().describe("Double Number.").optional(),
       intArray: z.object({
-        intValues: z.array(z.string()).describe("Integer array.").optional(),
+        intValues: z.array(z.unknown()).describe("Integer array.").optional(),
       }).describe("This message only contains a field of integer array.")
         .optional(),
       intValue: z.string().describe("Integer.").optional(),
       jsonValue: z.string().describe("Json.").optional(),
       stringArray: z.object({
-        stringValues: z.array(z.string()).describe("String array.").optional(),
+        stringValues: z.array(z.unknown()).describe("String array.").optional(),
       }).describe("This message only contains a field of string array.")
         .optional(),
       stringValue: z.string().describe("String.").optional(),
@@ -367,20 +364,14 @@ const GlobalArgsSchema = z.object({
           "Things like URL, Email, Currency, Timestamp (rather than string, int64...)",
         ).optional(),
         defaultValue: z.object({
-          booleanValue: z.boolean().optional(),
-          doubleArray: z.object({
-            values: z.array(z.number()).optional(),
-          }).optional(),
-          doubleValue: z.number().optional(),
-          intArray: z.object({
-            values: z.array(z.string()).optional(),
-          }).optional(),
-          intValue: z.string().optional(),
-          protoValue: z.record(z.string(), z.string()).optional(),
-          stringArray: z.object({
-            values: z.array(z.string()).optional(),
-          }).optional(),
-          stringValue: z.string().optional(),
+          booleanValue: z.unknown().optional(),
+          doubleArray: z.unknown().optional(),
+          doubleValue: z.unknown().optional(),
+          intArray: z.unknown().optional(),
+          intValue: z.unknown().optional(),
+          protoValue: z.unknown().optional(),
+          stringArray: z.unknown().optional(),
+          stringValue: z.unknown().optional(),
         }).describe(
           "Used for define type for values. Currently supported value types include int, string, double, array, and any proto message.",
         ).optional(),
@@ -391,21 +382,11 @@ const GlobalArgsSchema = z.object({
           "Used to indicate if a ParameterEntry should be converted to ParamIndexes for ST-Spanner full-text search. DEPRECATED: use searchable.",
         ).optional(),
         logSettings: z.object({
-          logFieldName: z.string().describe(
+          logFieldName: z.unknown().describe(
             "The name of corresponding logging field of the event property. If omitted, assumes the same name as the event property key.",
           ).optional(),
-          seedPeriod: z.enum([
-            "SEED_PERIOD_UNSPECIFIED",
-            "DAY",
-            "WEEK",
-            "MONTH",
-          ]).optional(),
-          seedScope: z.enum([
-            "SEED_SCOPE_UNSPECIFIED",
-            "EVENT_NAME",
-            "TIME_PERIOD",
-            "PARAM_NAME",
-          ]).optional(),
+          seedPeriod: z.unknown().optional(),
+          seedScope: z.unknown().optional(),
         }).describe(
           "The LogSettings define the logging attributes for an event property. These attributes are used to map the property to the parameter in the log proto. Also used to define scrubbing/truncation behavior and PII information.",
         ).optional(),
@@ -416,7 +397,7 @@ const GlobalArgsSchema = z.object({
           "Used to indicate if the ParameterEntry is a read only field or not.",
         ).optional(),
         searchable: z.enum(["UNSPECIFIED", "YES", "NO"]).optional(),
-        taskVisibility: z.array(z.string()).describe(
+        taskVisibility: z.array(z.unknown()).describe(
           "List of tasks that can view this property, if empty then all.",
         ).optional(),
       }).describe(
@@ -450,27 +431,27 @@ const GlobalArgsSchema = z.object({
       ]).describe("The data type of the parameter.").optional(),
       defaultValue: z.object({
         booleanArray: z.object({
-          booleanValues: z.array(z.boolean()).optional(),
+          booleanValues: z.unknown().optional(),
         }).optional(),
         booleanValue: z.boolean().optional(),
         doubleArray: z.object({
-          doubleValues: z.array(z.number()).optional(),
+          doubleValues: z.unknown().optional(),
         }).optional(),
         doubleValue: z.number().optional(),
         intArray: z.object({
-          intValues: z.array(z.string()).optional(),
+          intValues: z.unknown().optional(),
         }).optional(),
         intValue: z.string().optional(),
         jsonValue: z.string().optional(),
         protoArray: z.object({
-          protoValues: z.array(z.record(z.string(), z.string())).optional(),
+          protoValues: z.unknown().optional(),
         }).optional(),
-        protoValue: z.record(z.string(), z.string()).optional(),
+        protoValue: z.record(z.string(), z.unknown()).optional(),
         serializedObjectValue: z.object({
-          objectValue: z.string().optional(),
+          objectValue: z.unknown().optional(),
         }).optional(),
         stringArray: z.object({
-          stringValues: z.array(z.string()).optional(),
+          stringValues: z.unknown().optional(),
         }).optional(),
         stringValue: z.string().optional(),
       }).describe(
@@ -557,26 +538,18 @@ const GlobalArgsSchema = z.object({
         "Policy that defines the task retry logic and failure type. If no FailurePolicy is defined for a task, all its dependent tasks will not be executed (i.e, a `retry_strategy` of NONE will be applied).",
       ).optional(),
       failurePolicies: z.array(z.object({
-        condition: z.string().describe(
+        condition: z.unknown().describe(
           "Optional. The string condition that will be evaluated to determine if the task should be retried with this failure policy.",
         ).optional(),
-        intervalTime: z.string().describe(
+        intervalTime: z.unknown().describe(
           "Required if retry_strategy is FIXED_INTERVAL or LINEAR/EXPONENTIAL_BACKOFF/RESTART_INTEGRATION_WITH_BACKOFF. Defines the initial interval in seconds for backoff.",
         ).optional(),
-        maxRetries: z.number().int().describe(
+        maxRetries: z.unknown().describe(
           "Required if retry_strategy is FIXED_INTERVAL or LINEAR/EXPONENTIAL_BACKOFF/RESTART_INTEGRATION_WITH_BACKOFF. Defines the number of times the task will be retried if failed.",
         ).optional(),
-        retryStrategy: z.enum([
-          "RETRY_STRATEGY_UNSPECIFIED",
-          "IGNORE",
-          "NONE",
-          "FATAL",
-          "FIXED_INTERVAL",
-          "LINEAR_BACKOFF",
-          "EXPONENTIAL_BACKOFF",
-          "RESTART_INTEGRATION_WITH_BACKOFF",
-        ]).describe("Defines what happens to the task upon failure.")
-          .optional(),
+        retryStrategy: z.unknown().describe(
+          "Defines what happens to the task upon failure.",
+        ).optional(),
       })).describe(
         "The list of failure policies that will be applied to the task in order.",
       ).optional(),
@@ -659,32 +632,23 @@ const GlobalArgsSchema = z.object({
           "True if this parameter should be masked in the logs",
         ).optional(),
         value: z.object({
-          booleanArray: z.object({
-            booleanValues: z.array(z.boolean()).describe("Boolean array.")
-              .optional(),
-          }).describe("This message only contains a field of boolean array.")
-            .optional(),
-          booleanValue: z.boolean().describe("Boolean.").optional(),
-          doubleArray: z.object({
-            doubleValues: z.array(z.number()).describe("Double number array.")
-              .optional(),
-          }).describe(
+          booleanArray: z.unknown().describe(
+            "This message only contains a field of boolean array.",
+          ).optional(),
+          booleanValue: z.unknown().describe("Boolean.").optional(),
+          doubleArray: z.unknown().describe(
             "This message only contains a field of double number array.",
           ).optional(),
-          doubleValue: z.number().describe("Double Number.").optional(),
-          intArray: z.object({
-            intValues: z.array(z.string()).describe("Integer array.")
-              .optional(),
-          }).describe("This message only contains a field of integer array.")
-            .optional(),
-          intValue: z.string().describe("Integer.").optional(),
-          jsonValue: z.string().describe("Json.").optional(),
-          stringArray: z.object({
-            stringValues: z.array(z.string()).describe("String array.")
-              .optional(),
-          }).describe("This message only contains a field of string array.")
-            .optional(),
-          stringValue: z.string().describe("String.").optional(),
+          doubleValue: z.unknown().describe("Double Number.").optional(),
+          intArray: z.unknown().describe(
+            "This message only contains a field of integer array.",
+          ).optional(),
+          intValue: z.unknown().describe("Integer.").optional(),
+          jsonValue: z.unknown().describe("Json.").optional(),
+          stringArray: z.unknown().describe(
+            "This message only contains a field of string array.",
+          ).optional(),
+          stringValue: z.unknown().describe("String.").optional(),
         }).describe("The type of the parameter.").optional(),
       }),
     ).describe(
@@ -760,70 +724,16 @@ const GlobalArgsSchema = z.object({
         "The teardown task that is next in line to be executed. We support only sequential execution of teardown tasks (i.e. no branching).",
       ).optional(),
       parameters: z.object({
-        parameters: z.array(z.object({
-          key: z.string().describe(
-            "Key is used to retrieve the corresponding parameter value. This should be unique for a given fired event. These parameters must be predefined in the integration definition.",
-          ).optional(),
-          masked: z.boolean().describe(
-            "True if this parameter should be masked in the logs",
-          ).optional(),
-          value: z.object({
-            booleanArray: z.object({
-              booleanValues: z.array(z.boolean()).optional(),
-            }).optional(),
-            booleanValue: z.boolean().optional(),
-            doubleArray: z.object({
-              doubleValues: z.array(z.number()).optional(),
-            }).optional(),
-            doubleValue: z.number().optional(),
-            intArray: z.object({
-              intValues: z.array(z.string()).optional(),
-            }).optional(),
-            intValue: z.string().optional(),
-            protoArray: z.object({
-              protoValues: z.array(z.record(z.string(), z.string())).optional(),
-            }).optional(),
-            protoValue: z.record(z.string(), z.string()).optional(),
-            serializedObjectValue: z.object({
-              objectValue: z.string().optional(),
-            }).optional(),
-            stringArray: z.object({
-              stringValues: z.array(z.string()).optional(),
-            }).optional(),
-            stringValue: z.string().optional(),
-          }).describe(
-            "LINT.IfChange To support various types of parameter values. Next available id: 14",
-          ).optional(),
-        })).describe(
+        parameters: z.array(z.unknown()).describe(
           "Parameters are a part of Event and can be used to communicate between different tasks that are part of the same integration execution.",
         ).optional(),
       }).describe(
         "LINT.IfChange This message is used for processing and persisting (when applicable) key value pair parameters for each event in the event bus. Please see",
       ).optional(),
       properties: z.object({
-        properties: z.array(z.object({
-          key: z.string().describe(
-            "Key is used to retrieve the corresponding property value. This should be unique for a given fired event. The Tasks should be aware of the keys used while firing the events for them to be able to retrieve the values.",
-          ).optional(),
-          value: z.object({
-            booleanValue: z.boolean().optional(),
-            doubleArray: z.object({
-              values: z.array(z.number()).optional(),
-            }).optional(),
-            doubleValue: z.number().optional(),
-            intArray: z.object({
-              values: z.array(z.string()).optional(),
-            }).optional(),
-            intValue: z.string().optional(),
-            protoValue: z.record(z.string(), z.string()).optional(),
-            stringArray: z.object({
-              values: z.array(z.string()).optional(),
-            }).optional(),
-            stringValue: z.string().optional(),
-          }).describe(
-            "Used for define type for values. Currently supported value types include int, string, double, array, and any proto message.",
-          ).optional(),
-        })).describe("An unordered list of property entries.").optional(),
+        properties: z.array(z.unknown()).describe(
+          "An unordered list of property entries.",
+        ).optional(),
       }).describe(
         "LINT.IfChange This message is used for storing key value pair properties for each Event / Task in the EventBus.",
       ).optional(),
@@ -873,9 +783,8 @@ const GlobalArgsSchema = z.object({
         "The threshold type, whether lower(expected_min) or upper(expected_max), for which this alert is being configured. If value falls below expected_min or exceeds expected_max, an alert will be fired.",
       ).optional(),
       thresholdValue: z.object({
-        absolute: z.string().describe("Absolute value threshold.").optional(),
-        percentage: z.number().int().describe("Percentage threshold.")
-          .optional(),
+        absolute: z.unknown().describe("Absolute value threshold.").optional(),
+        percentage: z.unknown().describe("Percentage threshold.").optional(),
       }).describe(
         "The threshold value of the metric, above or below which the alert should be triggered. See EventAlertConfig or TaskAlertConfig for the different alert metric types in each case. For the *RATE metrics, one or both of these fields may be set. Zero is the default value and can be left at that. For *PERCENTILE_DURATION metrics, one or both of these fields may be set, and also, the duration threshold value should be specified in the threshold_duration_ms member below. For *AVERAGE_DURATION metrics, these fields should not be set at all. A different member, threshold_duration_ms, must be set in the EventAlertConfig or the TaskAlertConfig.",
       ).optional(),
@@ -1015,20 +924,20 @@ const StateSchema = z.object({
       dataType: z.string(),
       defaultValue: z.object({
         booleanArray: z.object({
-          booleanValues: z.array(z.boolean()),
+          booleanValues: z.unknown(),
         }),
         booleanValue: z.boolean(),
         doubleArray: z.object({
-          doubleValues: z.array(z.number()),
+          doubleValues: z.unknown(),
         }),
         doubleValue: z.number(),
         intArray: z.object({
-          intValues: z.array(z.string()),
+          intValues: z.unknown(),
         }),
         intValue: z.string(),
         jsonValue: z.string(),
         stringArray: z.object({
-          stringValues: z.array(z.string()),
+          stringValues: z.unknown(),
         }),
         stringValue: z.string(),
       }),
@@ -1044,20 +953,20 @@ const StateSchema = z.object({
     }),
     value: z.object({
       booleanArray: z.object({
-        booleanValues: z.array(z.boolean()),
+        booleanValues: z.array(z.unknown()),
       }),
       booleanValue: z.boolean(),
       doubleArray: z.object({
-        doubleValues: z.array(z.number()),
+        doubleValues: z.array(z.unknown()),
       }),
       doubleValue: z.number(),
       intArray: z.object({
-        intValues: z.array(z.string()),
+        intValues: z.array(z.unknown()),
       }),
       intValue: z.string(),
       jsonValue: z.string(),
       stringArray: z.object({
-        stringValues: z.array(z.string()),
+        stringValues: z.array(z.unknown()),
       }),
       stringValue: z.string(),
     }),
@@ -1067,20 +976,20 @@ const StateSchema = z.object({
     dataType: z.string(),
     defaultValue: z.object({
       booleanArray: z.object({
-        booleanValues: z.array(z.boolean()),
+        booleanValues: z.array(z.unknown()),
       }),
       booleanValue: z.boolean(),
       doubleArray: z.object({
-        doubleValues: z.array(z.number()),
+        doubleValues: z.array(z.unknown()),
       }),
       doubleValue: z.number(),
       intArray: z.object({
-        intValues: z.array(z.string()),
+        intValues: z.array(z.unknown()),
       }),
       intValue: z.string(),
       jsonValue: z.string(),
       stringArray: z.object({
-        stringValues: z.array(z.string()),
+        stringValues: z.array(z.unknown()),
       }),
       stringValue: z.string(),
     }),
@@ -1099,59 +1008,53 @@ const StateSchema = z.object({
       attributes: z.object({
         dataType: z.string(),
         defaultValue: z.object({
-          booleanValue: z.boolean(),
-          doubleArray: z.object({
-            values: z.array(z.number()),
-          }),
-          doubleValue: z.number(),
-          intArray: z.object({
-            values: z.array(z.string()),
-          }),
-          intValue: z.string(),
-          protoValue: z.record(z.string(), z.unknown()),
-          stringArray: z.object({
-            values: z.array(z.string()),
-          }),
-          stringValue: z.string(),
+          booleanValue: z.unknown(),
+          doubleArray: z.unknown(),
+          doubleValue: z.unknown(),
+          intArray: z.unknown(),
+          intValue: z.unknown(),
+          protoValue: z.unknown(),
+          stringArray: z.unknown(),
+          stringValue: z.unknown(),
         }),
         isRequired: z.boolean(),
         isSearchable: z.boolean(),
         logSettings: z.object({
-          logFieldName: z.string(),
-          seedPeriod: z.string(),
-          seedScope: z.string(),
+          logFieldName: z.unknown(),
+          seedPeriod: z.unknown(),
+          seedScope: z.unknown(),
         }),
         masked: z.boolean(),
         readOnly: z.boolean(),
         searchable: z.string(),
-        taskVisibility: z.array(z.string()),
+        taskVisibility: z.array(z.unknown()),
       }),
       children: z.array(z.string()),
       containsLargeData: z.boolean(),
       dataType: z.string(),
       defaultValue: z.object({
         booleanArray: z.object({
-          booleanValues: z.array(z.boolean()),
+          booleanValues: z.unknown(),
         }),
         booleanValue: z.boolean(),
         doubleArray: z.object({
-          doubleValues: z.array(z.number()),
+          doubleValues: z.unknown(),
         }),
         doubleValue: z.number(),
         intArray: z.object({
-          intValues: z.array(z.string()),
+          intValues: z.unknown(),
         }),
         intValue: z.string(),
         jsonValue: z.string(),
         protoArray: z.object({
-          protoValues: z.array(z.record(z.string(), z.unknown())),
+          protoValues: z.unknown(),
         }),
         protoValue: z.record(z.string(), z.unknown()),
         serializedObjectValue: z.object({
-          objectValue: z.string(),
+          objectValue: z.unknown(),
         }),
         stringArray: z.object({
-          stringValues: z.array(z.string()),
+          stringValues: z.unknown(),
         }),
         stringValue: z.string(),
       }),
@@ -1189,10 +1092,10 @@ const StateSchema = z.object({
         retryStrategy: z.string(),
       }),
       failurePolicies: z.array(z.object({
-        condition: z.string(),
-        intervalTime: z.string(),
-        maxRetries: z.number(),
-        retryStrategy: z.string(),
+        condition: z.unknown(),
+        intervalTime: z.unknown(),
+        maxRetries: z.unknown(),
+        retryStrategy: z.unknown(),
       })),
     }),
     description: z.string(),
@@ -1241,8 +1144,8 @@ const StateSchema = z.object({
       clientId: z.string(),
       durationThresholdMs: z.string(),
       errorEnumList: z.object({
-        enumStrings: z.array(z.string()),
-        filterType: z.string(),
+        enumStrings: z.unknown(),
+        filterType: z.unknown(),
       }),
       metricType: z.string(),
       numAggregationPeriods: z.number(),
@@ -1250,12 +1153,12 @@ const StateSchema = z.object({
       playbookUrl: z.string(),
       thresholdType: z.string(),
       thresholdValue: z.object({
-        absolute: z.string(),
-        percentage: z.number(),
+        absolute: z.unknown(),
+        percentage: z.unknown(),
       }),
       warningEnumList: z.object({
-        enumStrings: z.array(z.string()),
-        filterType: z.string(),
+        enumStrings: z.unknown(),
+        filterType: z.unknown(),
       }),
     })),
     conditionalFailurePolicies: z.object({
@@ -1266,10 +1169,10 @@ const StateSchema = z.object({
         retryStrategy: z.string(),
       }),
       failurePolicies: z.array(z.object({
-        intervalInSeconds: z.string(),
-        maxNumRetries: z.number(),
-        retryCondition: z.string(),
-        retryStrategy: z.string(),
+        intervalInSeconds: z.unknown(),
+        maxNumRetries: z.unknown(),
+        retryCondition: z.unknown(),
+        retryStrategy: z.unknown(),
       })),
     }),
     createTime: z.string(),
@@ -1289,28 +1192,7 @@ const StateSchema = z.object({
     label: z.string(),
     lastModifiedTime: z.string(),
     nextTasks: z.array(z.object({
-      combinedConditions: z.array(z.object({
-        conditions: z.array(z.object({
-          eventPropertyKey: z.string(),
-          operator: z.string(),
-          value: z.object({
-            booleanValue: z.boolean(),
-            doubleArray: z.object({
-              values: z.array(z.number()),
-            }),
-            doubleValue: z.number(),
-            intArray: z.object({
-              values: z.array(z.string()),
-            }),
-            intValue: z.string(),
-            protoValue: z.record(z.string(), z.unknown()),
-            stringArray: z.object({
-              values: z.array(z.string()),
-            }),
-            stringValue: z.string(),
-          }),
-        })),
-      })),
+      combinedConditions: z.array(z.unknown()),
       condition: z.string(),
       description: z.string(),
       label: z.string(),
@@ -1327,37 +1209,7 @@ const StateSchema = z.object({
     preconditionLabel: z.string(),
     rollbackStrategy: z.object({
       parameters: z.object({
-        parameters: z.array(z.object({
-          dataType: z.string(),
-          key: z.string(),
-          masked: z.boolean(),
-          value: z.object({
-            booleanArray: z.object({
-              booleanValues: z.array(z.boolean()),
-            }),
-            booleanValue: z.boolean(),
-            doubleArray: z.object({
-              doubleValues: z.array(z.number()),
-            }),
-            doubleValue: z.number(),
-            intArray: z.object({
-              intValues: z.array(z.string()),
-            }),
-            intValue: z.string(),
-            jsonValue: z.string(),
-            protoArray: z.object({
-              protoValues: z.array(z.record(z.string(), z.unknown())),
-            }),
-            protoValue: z.record(z.string(), z.unknown()),
-            serializedObjectValue: z.object({
-              objectValue: z.string(),
-            }),
-            stringArray: z.object({
-              stringValues: z.array(z.string()),
-            }),
-            stringValue: z.string(),
-          }),
-        })),
+        parameters: z.array(z.unknown()),
       }),
       rollbackTaskImplementationClassName: z.string(),
       taskNumbersToRollback: z.array(z.string()),
@@ -1375,10 +1227,7 @@ const StateSchema = z.object({
       disabledForVpcSc: z.boolean(),
       metadata: z.object({
         activeTaskName: z.string(),
-        admins: z.array(z.object({
-          googleGroupEmail: z.string(),
-          userEmail: z.string(),
-        })),
+        admins: z.array(z.unknown()),
         category: z.string(),
         codeSearchLink: z.string(),
         defaultJsonValidationOption: z.string(),
@@ -1398,87 +1247,23 @@ const StateSchema = z.object({
         standaloneExternalDocHtml: z.string(),
         status: z.string(),
         system: z.string(),
-        tags: z.array(z.string()),
+        tags: z.array(z.unknown()),
       }),
       paramSpecs: z.object({
-        parameters: z.array(z.object({
-          className: z.string(),
-          collectionElementClassName: z.string(),
-          config: z.object({
-            descriptivePhrase: z.string(),
-            helpText: z.string(),
-            hideDefaultValue: z.boolean(),
-            inputDisplayOption: z.string(),
-            isHidden: z.boolean(),
-            label: z.string(),
-            parameterNameOption: z.string(),
-            subSectionLabel: z.string(),
-            uiPlaceholderText: z.string(),
-          }),
-          dataType: z.string(),
-          defaultValue: z.object({
-            booleanArray: z.object({
-              booleanValues: z.array(z.boolean()),
-            }),
-            booleanValue: z.boolean(),
-            doubleArray: z.object({
-              doubleValues: z.array(z.number()),
-            }),
-            doubleValue: z.number(),
-            intArray: z.object({
-              intValues: z.array(z.string()),
-            }),
-            intValue: z.string(),
-            jsonValue: z.string(),
-            protoArray: z.object({
-              protoValues: z.array(z.record(z.string(), z.unknown())),
-            }),
-            protoValue: z.record(z.string(), z.unknown()),
-            serializedObjectValue: z.object({
-              objectValue: z.string(),
-            }),
-            stringArray: z.object({
-              stringValues: z.array(z.string()),
-            }),
-            stringValue: z.string(),
-          }),
-          isDeprecated: z.boolean(),
-          isOutput: z.boolean(),
-          jsonSchema: z.string(),
-          key: z.string(),
-          protoDef: z.object({
-            fullName: z.string(),
-            path: z.string(),
-          }),
-          required: z.boolean(),
-          validationRule: z.object({
-            doubleRange: z.object({
-              max: z.number(),
-              min: z.number(),
-            }),
-            intRange: z.object({
-              max: z.string(),
-              min: z.string(),
-            }),
-            stringRegex: z.object({
-              exclusive: z.boolean(),
-              regex: z.string(),
-            }),
-          }),
-        })),
+        parameters: z.array(z.unknown()),
       }),
       stats: z.object({
         dimensions: z.object({
-          clientId: z.string(),
-          enumFilterType: z.string(),
-          errorEnumString: z.string(),
-          retryAttempt: z.string(),
-          taskName: z.string(),
-          taskNumber: z.string(),
-          triggerId: z.string(),
-          warningEnumString: z.string(),
-          workflowId: z.string(),
-          workflowName: z.string(),
+          clientId: z.unknown(),
+          enumFilterType: z.unknown(),
+          errorEnumString: z.unknown(),
+          retryAttempt: z.unknown(),
+          taskName: z.unknown(),
+          taskNumber: z.unknown(),
+          triggerId: z.unknown(),
+          warningEnumString: z.unknown(),
+          workflowId: z.unknown(),
+          workflowName: z.unknown(),
         }),
         durationInSeconds: z.number(),
         errorRate: z.number(),
@@ -1487,9 +1272,7 @@ const StateSchema = z.object({
       }),
       taskType: z.string(),
       uiConfig: z.object({
-        taskUiModuleConfigs: z.array(z.object({
-          moduleId: z.string(),
-        })),
+        taskUiModuleConfigs: z.array(z.unknown()),
       }),
     }),
     taskExecutionStrategy: z.string(),
@@ -1507,56 +1290,10 @@ const StateSchema = z.object({
         name: z.string(),
       }),
       parameters: z.object({
-        parameters: z.array(z.object({
-          key: z.string(),
-          masked: z.boolean(),
-          value: z.object({
-            booleanArray: z.object({
-              booleanValues: z.array(z.boolean()),
-            }),
-            booleanValue: z.boolean(),
-            doubleArray: z.object({
-              doubleValues: z.array(z.number()),
-            }),
-            doubleValue: z.number(),
-            intArray: z.object({
-              intValues: z.array(z.string()),
-            }),
-            intValue: z.string(),
-            protoArray: z.object({
-              protoValues: z.array(z.record(z.string(), z.unknown())),
-            }),
-            protoValue: z.record(z.string(), z.unknown()),
-            serializedObjectValue: z.object({
-              objectValue: z.string(),
-            }),
-            stringArray: z.object({
-              stringValues: z.array(z.string()),
-            }),
-            stringValue: z.string(),
-          }),
-        })),
+        parameters: z.array(z.unknown()),
       }),
       properties: z.object({
-        properties: z.array(z.object({
-          key: z.string(),
-          value: z.object({
-            booleanValue: z.boolean(),
-            doubleArray: z.object({
-              values: z.array(z.number()),
-            }),
-            doubleValue: z.number(),
-            intArray: z.object({
-              values: z.array(z.string()),
-            }),
-            intValue: z.string(),
-            protoValue: z.record(z.string(), z.unknown()),
-            stringArray: z.object({
-              values: z.array(z.string()),
-            }),
-            stringValue: z.string(),
-          }),
-        })),
+        properties: z.array(z.unknown()),
       }),
       teardownTaskImplementationClassName: z.string(),
     })),
@@ -1572,8 +1309,8 @@ const StateSchema = z.object({
       onlyFinalAttempt: z.boolean(),
       thresholdType: z.string(),
       thresholdValue: z.object({
-        absolute: z.string(),
-        percentage: z.number(),
+        absolute: z.unknown(),
+        percentage: z.unknown(),
       }),
     })),
     cloudSchedulerConfig: z.object({
@@ -1617,8 +1354,8 @@ const StateSchema = z.object({
       clientId: z.string(),
       durationThresholdMs: z.string(),
       errorEnumList: z.object({
-        enumStrings: z.array(z.string()),
-        filterType: z.string(),
+        enumStrings: z.unknown(),
+        filterType: z.unknown(),
       }),
       metricType: z.string(),
       numAggregationPeriods: z.number(),
@@ -1626,12 +1363,12 @@ const StateSchema = z.object({
       playbookUrl: z.string(),
       thresholdType: z.string(),
       thresholdValue: z.object({
-        absolute: z.string(),
-        percentage: z.number(),
+        absolute: z.unknown(),
+        percentage: z.unknown(),
       }),
       warningEnumList: z.object({
-        enumStrings: z.array(z.string()),
-        filterType: z.string(),
+        enumStrings: z.unknown(),
+        filterType: z.unknown(),
       }),
     })),
     cloudSchedulerConfig: z.object({
@@ -1658,28 +1395,7 @@ const StateSchema = z.object({
     }),
     properties: z.record(z.string(), z.unknown()),
     startTasks: z.array(z.object({
-      combinedConditions: z.array(z.object({
-        conditions: z.array(z.object({
-          eventPropertyKey: z.string(),
-          operator: z.string(),
-          value: z.object({
-            booleanValue: z.boolean(),
-            doubleArray: z.object({
-              values: z.array(z.number()),
-            }),
-            doubleValue: z.number(),
-            intArray: z.object({
-              values: z.array(z.string()),
-            }),
-            intValue: z.string(),
-            protoValue: z.record(z.string(), z.unknown()),
-            stringArray: z.object({
-              values: z.array(z.string()),
-            }),
-            stringValue: z.string(),
-          }),
-        })),
-      })),
+      combinedConditions: z.array(z.unknown()),
       condition: z.string(),
       description: z.string(),
       label: z.string(),
@@ -1689,35 +1405,7 @@ const StateSchema = z.object({
     triggerCriteria: z.object({
       condition: z.string(),
       parameters: z.object({
-        parameters: z.array(z.object({
-          key: z.string(),
-          masked: z.boolean(),
-          value: z.object({
-            booleanArray: z.object({
-              booleanValues: z.array(z.boolean()),
-            }),
-            booleanValue: z.boolean(),
-            doubleArray: z.object({
-              doubleValues: z.array(z.number()),
-            }),
-            doubleValue: z.number(),
-            intArray: z.object({
-              intValues: z.array(z.string()),
-            }),
-            intValue: z.string(),
-            protoArray: z.object({
-              protoValues: z.array(z.record(z.string(), z.unknown())),
-            }),
-            protoValue: z.record(z.string(), z.unknown()),
-            serializedObjectValue: z.object({
-              objectValue: z.string(),
-            }),
-            stringArray: z.object({
-              stringValues: z.array(z.string()),
-            }),
-            stringValue: z.string(),
-          }),
-        })),
+        parameters: z.array(z.unknown()),
       }),
       triggerCriteriaTaskImplementationClassName: z.string(),
     }),
@@ -1830,27 +1518,24 @@ const InputsSchema = z.object({
       ]).describe("Type of the parameter.").optional(),
       defaultValue: z.object({
         booleanArray: z.object({
-          booleanValues: z.array(z.boolean()).describe("Boolean array.")
-            .optional(),
+          booleanValues: z.unknown().describe("Boolean array.").optional(),
         }).describe("This message only contains a field of boolean array.")
           .optional(),
         booleanValue: z.boolean().describe("Boolean.").optional(),
         doubleArray: z.object({
-          doubleValues: z.array(z.number()).describe("Double number array.")
-            .optional(),
+          doubleValues: z.unknown().describe("Double number array.").optional(),
         }).describe(
           "This message only contains a field of double number array.",
         ).optional(),
         doubleValue: z.number().describe("Double Number.").optional(),
         intArray: z.object({
-          intValues: z.array(z.string()).describe("Integer array.").optional(),
+          intValues: z.unknown().describe("Integer array.").optional(),
         }).describe("This message only contains a field of integer array.")
           .optional(),
         intValue: z.string().describe("Integer.").optional(),
         jsonValue: z.string().describe("Json.").optional(),
         stringArray: z.object({
-          stringValues: z.array(z.string()).describe("String array.")
-            .optional(),
+          stringValues: z.unknown().describe("String array.").optional(),
         }).describe("This message only contains a field of string array.")
           .optional(),
         stringValue: z.string().describe("String.").optional(),
@@ -1891,25 +1576,25 @@ const InputsSchema = z.object({
     ).optional(),
     value: z.object({
       booleanArray: z.object({
-        booleanValues: z.array(z.boolean()).describe("Boolean array.")
+        booleanValues: z.array(z.unknown()).describe("Boolean array.")
           .optional(),
       }).describe("This message only contains a field of boolean array.")
         .optional(),
       booleanValue: z.boolean().describe("Boolean.").optional(),
       doubleArray: z.object({
-        doubleValues: z.array(z.number()).describe("Double number array.")
+        doubleValues: z.array(z.unknown()).describe("Double number array.")
           .optional(),
       }).describe("This message only contains a field of double number array.")
         .optional(),
       doubleValue: z.number().describe("Double Number.").optional(),
       intArray: z.object({
-        intValues: z.array(z.string()).describe("Integer array.").optional(),
+        intValues: z.array(z.unknown()).describe("Integer array.").optional(),
       }).describe("This message only contains a field of integer array.")
         .optional(),
       intValue: z.string().describe("Integer.").optional(),
       jsonValue: z.string().describe("Json.").optional(),
       stringArray: z.object({
-        stringValues: z.array(z.string()).describe("String array.").optional(),
+        stringValues: z.array(z.unknown()).describe("String array.").optional(),
       }).describe("This message only contains a field of string array.")
         .optional(),
       stringValue: z.string().describe("String.").optional(),
@@ -1943,25 +1628,25 @@ const InputsSchema = z.object({
     ]).describe("Type of the parameter.").optional(),
     defaultValue: z.object({
       booleanArray: z.object({
-        booleanValues: z.array(z.boolean()).describe("Boolean array.")
+        booleanValues: z.array(z.unknown()).describe("Boolean array.")
           .optional(),
       }).describe("This message only contains a field of boolean array.")
         .optional(),
       booleanValue: z.boolean().describe("Boolean.").optional(),
       doubleArray: z.object({
-        doubleValues: z.array(z.number()).describe("Double number array.")
+        doubleValues: z.array(z.unknown()).describe("Double number array.")
           .optional(),
       }).describe("This message only contains a field of double number array.")
         .optional(),
       doubleValue: z.number().describe("Double Number.").optional(),
       intArray: z.object({
-        intValues: z.array(z.string()).describe("Integer array.").optional(),
+        intValues: z.array(z.unknown()).describe("Integer array.").optional(),
       }).describe("This message only contains a field of integer array.")
         .optional(),
       intValue: z.string().describe("Integer.").optional(),
       jsonValue: z.string().describe("Json.").optional(),
       stringArray: z.object({
-        stringValues: z.array(z.string()).describe("String array.").optional(),
+        stringValues: z.array(z.unknown()).describe("String array.").optional(),
       }).describe("This message only contains a field of string array.")
         .optional(),
       stringValue: z.string().describe("String.").optional(),
@@ -2008,20 +1693,14 @@ const InputsSchema = z.object({
           "Things like URL, Email, Currency, Timestamp (rather than string, int64...)",
         ).optional(),
         defaultValue: z.object({
-          booleanValue: z.boolean().optional(),
-          doubleArray: z.object({
-            values: z.array(z.number()).optional(),
-          }).optional(),
-          doubleValue: z.number().optional(),
-          intArray: z.object({
-            values: z.array(z.string()).optional(),
-          }).optional(),
-          intValue: z.string().optional(),
-          protoValue: z.record(z.string(), z.string()).optional(),
-          stringArray: z.object({
-            values: z.array(z.string()).optional(),
-          }).optional(),
-          stringValue: z.string().optional(),
+          booleanValue: z.unknown().optional(),
+          doubleArray: z.unknown().optional(),
+          doubleValue: z.unknown().optional(),
+          intArray: z.unknown().optional(),
+          intValue: z.unknown().optional(),
+          protoValue: z.unknown().optional(),
+          stringArray: z.unknown().optional(),
+          stringValue: z.unknown().optional(),
         }).describe(
           "Used for define type for values. Currently supported value types include int, string, double, array, and any proto message.",
         ).optional(),
@@ -2032,21 +1711,11 @@ const InputsSchema = z.object({
           "Used to indicate if a ParameterEntry should be converted to ParamIndexes for ST-Spanner full-text search. DEPRECATED: use searchable.",
         ).optional(),
         logSettings: z.object({
-          logFieldName: z.string().describe(
+          logFieldName: z.unknown().describe(
             "The name of corresponding logging field of the event property. If omitted, assumes the same name as the event property key.",
           ).optional(),
-          seedPeriod: z.enum([
-            "SEED_PERIOD_UNSPECIFIED",
-            "DAY",
-            "WEEK",
-            "MONTH",
-          ]).optional(),
-          seedScope: z.enum([
-            "SEED_SCOPE_UNSPECIFIED",
-            "EVENT_NAME",
-            "TIME_PERIOD",
-            "PARAM_NAME",
-          ]).optional(),
+          seedPeriod: z.unknown().optional(),
+          seedScope: z.unknown().optional(),
         }).describe(
           "The LogSettings define the logging attributes for an event property. These attributes are used to map the property to the parameter in the log proto. Also used to define scrubbing/truncation behavior and PII information.",
         ).optional(),
@@ -2057,7 +1726,7 @@ const InputsSchema = z.object({
           "Used to indicate if the ParameterEntry is a read only field or not.",
         ).optional(),
         searchable: z.enum(["UNSPECIFIED", "YES", "NO"]).optional(),
-        taskVisibility: z.array(z.string()).describe(
+        taskVisibility: z.array(z.unknown()).describe(
           "List of tasks that can view this property, if empty then all.",
         ).optional(),
       }).describe(
@@ -2091,27 +1760,27 @@ const InputsSchema = z.object({
       ]).describe("The data type of the parameter.").optional(),
       defaultValue: z.object({
         booleanArray: z.object({
-          booleanValues: z.array(z.boolean()).optional(),
+          booleanValues: z.unknown().optional(),
         }).optional(),
         booleanValue: z.boolean().optional(),
         doubleArray: z.object({
-          doubleValues: z.array(z.number()).optional(),
+          doubleValues: z.unknown().optional(),
         }).optional(),
         doubleValue: z.number().optional(),
         intArray: z.object({
-          intValues: z.array(z.string()).optional(),
+          intValues: z.unknown().optional(),
         }).optional(),
         intValue: z.string().optional(),
         jsonValue: z.string().optional(),
         protoArray: z.object({
-          protoValues: z.array(z.record(z.string(), z.string())).optional(),
+          protoValues: z.unknown().optional(),
         }).optional(),
-        protoValue: z.record(z.string(), z.string()).optional(),
+        protoValue: z.record(z.string(), z.unknown()).optional(),
         serializedObjectValue: z.object({
-          objectValue: z.string().optional(),
+          objectValue: z.unknown().optional(),
         }).optional(),
         stringArray: z.object({
-          stringValues: z.array(z.string()).optional(),
+          stringValues: z.unknown().optional(),
         }).optional(),
         stringValue: z.string().optional(),
       }).describe(
@@ -2198,26 +1867,18 @@ const InputsSchema = z.object({
         "Policy that defines the task retry logic and failure type. If no FailurePolicy is defined for a task, all its dependent tasks will not be executed (i.e, a `retry_strategy` of NONE will be applied).",
       ).optional(),
       failurePolicies: z.array(z.object({
-        condition: z.string().describe(
+        condition: z.unknown().describe(
           "Optional. The string condition that will be evaluated to determine if the task should be retried with this failure policy.",
         ).optional(),
-        intervalTime: z.string().describe(
+        intervalTime: z.unknown().describe(
           "Required if retry_strategy is FIXED_INTERVAL or LINEAR/EXPONENTIAL_BACKOFF/RESTART_INTEGRATION_WITH_BACKOFF. Defines the initial interval in seconds for backoff.",
         ).optional(),
-        maxRetries: z.number().int().describe(
+        maxRetries: z.unknown().describe(
           "Required if retry_strategy is FIXED_INTERVAL or LINEAR/EXPONENTIAL_BACKOFF/RESTART_INTEGRATION_WITH_BACKOFF. Defines the number of times the task will be retried if failed.",
         ).optional(),
-        retryStrategy: z.enum([
-          "RETRY_STRATEGY_UNSPECIFIED",
-          "IGNORE",
-          "NONE",
-          "FATAL",
-          "FIXED_INTERVAL",
-          "LINEAR_BACKOFF",
-          "EXPONENTIAL_BACKOFF",
-          "RESTART_INTEGRATION_WITH_BACKOFF",
-        ]).describe("Defines what happens to the task upon failure.")
-          .optional(),
+        retryStrategy: z.unknown().describe(
+          "Defines what happens to the task upon failure.",
+        ).optional(),
       })).describe(
         "The list of failure policies that will be applied to the task in order.",
       ).optional(),
@@ -2300,32 +1961,23 @@ const InputsSchema = z.object({
           "True if this parameter should be masked in the logs",
         ).optional(),
         value: z.object({
-          booleanArray: z.object({
-            booleanValues: z.array(z.boolean()).describe("Boolean array.")
-              .optional(),
-          }).describe("This message only contains a field of boolean array.")
-            .optional(),
-          booleanValue: z.boolean().describe("Boolean.").optional(),
-          doubleArray: z.object({
-            doubleValues: z.array(z.number()).describe("Double number array.")
-              .optional(),
-          }).describe(
+          booleanArray: z.unknown().describe(
+            "This message only contains a field of boolean array.",
+          ).optional(),
+          booleanValue: z.unknown().describe("Boolean.").optional(),
+          doubleArray: z.unknown().describe(
             "This message only contains a field of double number array.",
           ).optional(),
-          doubleValue: z.number().describe("Double Number.").optional(),
-          intArray: z.object({
-            intValues: z.array(z.string()).describe("Integer array.")
-              .optional(),
-          }).describe("This message only contains a field of integer array.")
-            .optional(),
-          intValue: z.string().describe("Integer.").optional(),
-          jsonValue: z.string().describe("Json.").optional(),
-          stringArray: z.object({
-            stringValues: z.array(z.string()).describe("String array.")
-              .optional(),
-          }).describe("This message only contains a field of string array.")
-            .optional(),
-          stringValue: z.string().describe("String.").optional(),
+          doubleValue: z.unknown().describe("Double Number.").optional(),
+          intArray: z.unknown().describe(
+            "This message only contains a field of integer array.",
+          ).optional(),
+          intValue: z.unknown().describe("Integer.").optional(),
+          jsonValue: z.unknown().describe("Json.").optional(),
+          stringArray: z.unknown().describe(
+            "This message only contains a field of string array.",
+          ).optional(),
+          stringValue: z.unknown().describe("String.").optional(),
         }).describe("The type of the parameter.").optional(),
       }),
     ).describe(
@@ -2401,70 +2053,16 @@ const InputsSchema = z.object({
         "The teardown task that is next in line to be executed. We support only sequential execution of teardown tasks (i.e. no branching).",
       ).optional(),
       parameters: z.object({
-        parameters: z.array(z.object({
-          key: z.string().describe(
-            "Key is used to retrieve the corresponding parameter value. This should be unique for a given fired event. These parameters must be predefined in the integration definition.",
-          ).optional(),
-          masked: z.boolean().describe(
-            "True if this parameter should be masked in the logs",
-          ).optional(),
-          value: z.object({
-            booleanArray: z.object({
-              booleanValues: z.array(z.boolean()).optional(),
-            }).optional(),
-            booleanValue: z.boolean().optional(),
-            doubleArray: z.object({
-              doubleValues: z.array(z.number()).optional(),
-            }).optional(),
-            doubleValue: z.number().optional(),
-            intArray: z.object({
-              intValues: z.array(z.string()).optional(),
-            }).optional(),
-            intValue: z.string().optional(),
-            protoArray: z.object({
-              protoValues: z.array(z.record(z.string(), z.string())).optional(),
-            }).optional(),
-            protoValue: z.record(z.string(), z.string()).optional(),
-            serializedObjectValue: z.object({
-              objectValue: z.string().optional(),
-            }).optional(),
-            stringArray: z.object({
-              stringValues: z.array(z.string()).optional(),
-            }).optional(),
-            stringValue: z.string().optional(),
-          }).describe(
-            "LINT.IfChange To support various types of parameter values. Next available id: 14",
-          ).optional(),
-        })).describe(
+        parameters: z.array(z.unknown()).describe(
           "Parameters are a part of Event and can be used to communicate between different tasks that are part of the same integration execution.",
         ).optional(),
       }).describe(
         "LINT.IfChange This message is used for processing and persisting (when applicable) key value pair parameters for each event in the event bus. Please see",
       ).optional(),
       properties: z.object({
-        properties: z.array(z.object({
-          key: z.string().describe(
-            "Key is used to retrieve the corresponding property value. This should be unique for a given fired event. The Tasks should be aware of the keys used while firing the events for them to be able to retrieve the values.",
-          ).optional(),
-          value: z.object({
-            booleanValue: z.boolean().optional(),
-            doubleArray: z.object({
-              values: z.array(z.number()).optional(),
-            }).optional(),
-            doubleValue: z.number().optional(),
-            intArray: z.object({
-              values: z.array(z.string()).optional(),
-            }).optional(),
-            intValue: z.string().optional(),
-            protoValue: z.record(z.string(), z.string()).optional(),
-            stringArray: z.object({
-              values: z.array(z.string()).optional(),
-            }).optional(),
-            stringValue: z.string().optional(),
-          }).describe(
-            "Used for define type for values. Currently supported value types include int, string, double, array, and any proto message.",
-          ).optional(),
-        })).describe("An unordered list of property entries.").optional(),
+        properties: z.array(z.unknown()).describe(
+          "An unordered list of property entries.",
+        ).optional(),
       }).describe(
         "LINT.IfChange This message is used for storing key value pair properties for each Event / Task in the EventBus.",
       ).optional(),
@@ -2514,9 +2112,8 @@ const InputsSchema = z.object({
         "The threshold type, whether lower(expected_min) or upper(expected_max), for which this alert is being configured. If value falls below expected_min or exceeds expected_max, an alert will be fired.",
       ).optional(),
       thresholdValue: z.object({
-        absolute: z.string().describe("Absolute value threshold.").optional(),
-        percentage: z.number().int().describe("Percentage threshold.")
-          .optional(),
+        absolute: z.unknown().describe("Absolute value threshold.").optional(),
+        percentage: z.unknown().describe("Percentage threshold.").optional(),
       }).describe(
         "The threshold value of the metric, above or below which the alert should be triggered. See EventAlertConfig or TaskAlertConfig for the different alert metric types in each case. For the *RATE metrics, one or both of these fields may be set. Zero is the default value and can be left at that. For *PERCENTILE_DURATION metrics, one or both of these fields may be set, and also, the duration threshold value should be specified in the threshold_duration_ms member below. For *AVERAGE_DURATION metrics, these fields should not be set at all. A different member, threshold_duration_ms, must be set in the EventAlertConfig or the TaskAlertConfig.",
       ).optional(),
@@ -2624,7 +2221,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/integrations/products-integrations-versions",
-  version: "2026.04.03.3",
+  version: "2026.04.04.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -2648,6 +2245,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.3",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.04.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

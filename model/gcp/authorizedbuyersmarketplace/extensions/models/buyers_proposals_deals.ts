@@ -332,32 +332,32 @@ const GlobalArgsSchema = z.object({
           "SUNDAY",
         ]).describe("Day of week for the period.").optional(),
         endTime: z.object({
-          hours: z.number().int().describe(
+          hours: z.unknown().describe(
             'Hours of a day in 24 hour format. Must be greater than or equal to 0 and typically must be less than or equal to 23. An API may choose to allow the value "24:00:00" for scenarios like business closing time.',
           ).optional(),
-          minutes: z.number().int().describe(
+          minutes: z.unknown().describe(
             "Minutes of an hour. Must be greater than or equal to 0 and less than or equal to 59.",
           ).optional(),
-          nanos: z.number().int().describe(
+          nanos: z.unknown().describe(
             "Fractions of seconds, in nanoseconds. Must be greater than or equal to 0 and less than or equal to 999,999,999.",
           ).optional(),
-          seconds: z.number().int().describe(
+          seconds: z.unknown().describe(
             "Seconds of a minute. Must be greater than or equal to 0 and typically must be less than or equal to 59. An API may allow the value 60 if it allows leap-seconds.",
           ).optional(),
         }).describe(
           "Represents a time of day. The date and time zone are either not significant or are specified elsewhere. An API may choose to allow leap seconds. Related types are google.type.Date and `google.protobuf.Timestamp`.",
         ).optional(),
         startTime: z.object({
-          hours: z.number().int().describe(
+          hours: z.unknown().describe(
             'Hours of a day in 24 hour format. Must be greater than or equal to 0 and typically must be less than or equal to 23. An API may choose to allow the value "24:00:00" for scenarios like business closing time.',
           ).optional(),
-          minutes: z.number().int().describe(
+          minutes: z.unknown().describe(
             "Minutes of an hour. Must be greater than or equal to 0 and less than or equal to 59.",
           ).optional(),
-          nanos: z.number().int().describe(
+          nanos: z.unknown().describe(
             "Fractions of seconds, in nanoseconds. Must be greater than or equal to 0 and less than or equal to 999,999,999.",
           ).optional(),
-          seconds: z.number().int().describe(
+          seconds: z.unknown().describe(
             "Seconds of a minute. Must be greater than or equal to 0 and typically must be less than or equal to 59. An API may allow the value 60 if it allows leap-seconds.",
           ).optional(),
         }).describe(
@@ -430,10 +430,10 @@ const GlobalArgsSchema = z.object({
     placementTargeting: z.object({
       mobileApplicationTargeting: z.object({
         firstPartyTargeting: z.object({
-          excludedAppIds: z.array(z.string()).describe(
+          excludedAppIds: z.array(z.unknown()).describe(
             "A list of application IDs to be excluded.",
           ).optional(),
-          targetedAppIds: z.array(z.string()).describe(
+          targetedAppIds: z.array(z.unknown()).describe(
             "A list of application IDs to be included.",
           ).optional(),
         }).describe(
@@ -476,20 +476,20 @@ const GlobalArgsSchema = z.object({
       ).optional(),
       operatingSystemTargeting: z.object({
         operatingSystemCriteria: z.object({
-          excludedCriteriaIds: z.array(z.string()).describe(
+          excludedCriteriaIds: z.array(z.unknown()).describe(
             "A list of numeric IDs to be excluded.",
           ).optional(),
-          targetedCriteriaIds: z.array(z.string()).describe(
+          targetedCriteriaIds: z.array(z.unknown()).describe(
             "A list of numeric IDs to be included.",
           ).optional(),
         }).describe(
           "Generic targeting used for targeting dimensions that contains a list of included and excluded numeric IDs. This cannot be filtered using list filter syntax.",
         ).optional(),
         operatingSystemVersionCriteria: z.object({
-          excludedCriteriaIds: z.array(z.string()).describe(
+          excludedCriteriaIds: z.array(z.unknown()).describe(
             "A list of numeric IDs to be excluded.",
           ).optional(),
-          targetedCriteriaIds: z.array(z.string()).describe(
+          targetedCriteriaIds: z.array(z.unknown()).describe(
             "A list of numeric IDs to be included.",
           ).optional(),
         }).describe(
@@ -632,16 +632,16 @@ const StateSchema = z.object({
       dayParts: z.array(z.object({
         dayOfWeek: z.string(),
         endTime: z.object({
-          hours: z.number(),
-          minutes: z.number(),
-          nanos: z.number(),
-          seconds: z.number(),
+          hours: z.unknown(),
+          minutes: z.unknown(),
+          nanos: z.unknown(),
+          seconds: z.unknown(),
         }),
         startTime: z.object({
-          hours: z.number(),
-          minutes: z.number(),
-          nanos: z.number(),
-          seconds: z.number(),
+          hours: z.unknown(),
+          minutes: z.unknown(),
+          nanos: z.unknown(),
+          seconds: z.unknown(),
         }),
       })),
       timeZoneType: z.string(),
@@ -669,8 +669,8 @@ const StateSchema = z.object({
     placementTargeting: z.object({
       mobileApplicationTargeting: z.object({
         firstPartyTargeting: z.object({
-          excludedAppIds: z.array(z.string()),
-          targetedAppIds: z.array(z.string()),
+          excludedAppIds: z.array(z.unknown()),
+          targetedAppIds: z.array(z.unknown()),
         }),
       }),
       uriTargeting: z.object({
@@ -689,12 +689,12 @@ const StateSchema = z.object({
       }),
       operatingSystemTargeting: z.object({
         operatingSystemCriteria: z.object({
-          excludedCriteriaIds: z.array(z.string()),
-          targetedCriteriaIds: z.array(z.string()),
+          excludedCriteriaIds: z.array(z.unknown()),
+          targetedCriteriaIds: z.array(z.unknown()),
         }),
         operatingSystemVersionCriteria: z.object({
-          excludedCriteriaIds: z.array(z.string()),
-          targetedCriteriaIds: z.array(z.string()),
+          excludedCriteriaIds: z.array(z.unknown()),
+          targetedCriteriaIds: z.array(z.unknown()),
         }),
       }),
     }),
@@ -996,32 +996,32 @@ const InputsSchema = z.object({
           "SUNDAY",
         ]).describe("Day of week for the period.").optional(),
         endTime: z.object({
-          hours: z.number().int().describe(
+          hours: z.unknown().describe(
             'Hours of a day in 24 hour format. Must be greater than or equal to 0 and typically must be less than or equal to 23. An API may choose to allow the value "24:00:00" for scenarios like business closing time.',
           ).optional(),
-          minutes: z.number().int().describe(
+          minutes: z.unknown().describe(
             "Minutes of an hour. Must be greater than or equal to 0 and less than or equal to 59.",
           ).optional(),
-          nanos: z.number().int().describe(
+          nanos: z.unknown().describe(
             "Fractions of seconds, in nanoseconds. Must be greater than or equal to 0 and less than or equal to 999,999,999.",
           ).optional(),
-          seconds: z.number().int().describe(
+          seconds: z.unknown().describe(
             "Seconds of a minute. Must be greater than or equal to 0 and typically must be less than or equal to 59. An API may allow the value 60 if it allows leap-seconds.",
           ).optional(),
         }).describe(
           "Represents a time of day. The date and time zone are either not significant or are specified elsewhere. An API may choose to allow leap seconds. Related types are google.type.Date and `google.protobuf.Timestamp`.",
         ).optional(),
         startTime: z.object({
-          hours: z.number().int().describe(
+          hours: z.unknown().describe(
             'Hours of a day in 24 hour format. Must be greater than or equal to 0 and typically must be less than or equal to 23. An API may choose to allow the value "24:00:00" for scenarios like business closing time.',
           ).optional(),
-          minutes: z.number().int().describe(
+          minutes: z.unknown().describe(
             "Minutes of an hour. Must be greater than or equal to 0 and less than or equal to 59.",
           ).optional(),
-          nanos: z.number().int().describe(
+          nanos: z.unknown().describe(
             "Fractions of seconds, in nanoseconds. Must be greater than or equal to 0 and less than or equal to 999,999,999.",
           ).optional(),
-          seconds: z.number().int().describe(
+          seconds: z.unknown().describe(
             "Seconds of a minute. Must be greater than or equal to 0 and typically must be less than or equal to 59. An API may allow the value 60 if it allows leap-seconds.",
           ).optional(),
         }).describe(
@@ -1094,10 +1094,10 @@ const InputsSchema = z.object({
     placementTargeting: z.object({
       mobileApplicationTargeting: z.object({
         firstPartyTargeting: z.object({
-          excludedAppIds: z.array(z.string()).describe(
+          excludedAppIds: z.array(z.unknown()).describe(
             "A list of application IDs to be excluded.",
           ).optional(),
-          targetedAppIds: z.array(z.string()).describe(
+          targetedAppIds: z.array(z.unknown()).describe(
             "A list of application IDs to be included.",
           ).optional(),
         }).describe(
@@ -1140,20 +1140,20 @@ const InputsSchema = z.object({
       ).optional(),
       operatingSystemTargeting: z.object({
         operatingSystemCriteria: z.object({
-          excludedCriteriaIds: z.array(z.string()).describe(
+          excludedCriteriaIds: z.array(z.unknown()).describe(
             "A list of numeric IDs to be excluded.",
           ).optional(),
-          targetedCriteriaIds: z.array(z.string()).describe(
+          targetedCriteriaIds: z.array(z.unknown()).describe(
             "A list of numeric IDs to be included.",
           ).optional(),
         }).describe(
           "Generic targeting used for targeting dimensions that contains a list of included and excluded numeric IDs. This cannot be filtered using list filter syntax.",
         ).optional(),
         operatingSystemVersionCriteria: z.object({
-          excludedCriteriaIds: z.array(z.string()).describe(
+          excludedCriteriaIds: z.array(z.unknown()).describe(
             "A list of numeric IDs to be excluded.",
           ).optional(),
-          targetedCriteriaIds: z.array(z.string()).describe(
+          targetedCriteriaIds: z.array(z.unknown()).describe(
             "A list of numeric IDs to be included.",
           ).optional(),
         }).describe(
@@ -1208,7 +1208,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/authorizedbuyersmarketplace/buyers-proposals-deals",
-  version: "2026.04.03.3",
+  version: "2026.04.04.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -1232,6 +1232,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.3",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.04.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

@@ -112,60 +112,49 @@ const StateSchema = z.object({
       command: z.array(z.string()),
       dependsOn: z.array(z.string()),
       env: z.array(z.object({
-        name: z.string(),
-        value: z.string(),
-        valueSource: z.object({
-          secretKeyRef: z.object({
-            secret: z.string(),
-            version: z.string(),
-          }),
-        }),
+        name: z.unknown(),
+        value: z.unknown(),
+        valueSource: z.unknown(),
       })),
       image: z.string(),
       livenessProbe: z.object({
         failureThreshold: z.number(),
         grpc: z.object({
-          port: z.number(),
-          service: z.string(),
+          port: z.unknown(),
+          service: z.unknown(),
         }),
         httpGet: z.object({
-          httpHeaders: z.array(z.object({
-            name: z.string(),
-            value: z.string(),
-          })),
-          path: z.string(),
-          port: z.number(),
+          httpHeaders: z.unknown(),
+          path: z.unknown(),
+          port: z.unknown(),
         }),
         initialDelaySeconds: z.number(),
         periodSeconds: z.number(),
         tcpSocket: z.object({
-          port: z.number(),
+          port: z.unknown(),
         }),
         timeoutSeconds: z.number(),
       }),
       name: z.string(),
       ports: z.array(z.object({
-        containerPort: z.number(),
-        name: z.string(),
+        containerPort: z.unknown(),
+        name: z.unknown(),
       })),
       readinessProbe: z.object({
         failureThreshold: z.number(),
         grpc: z.object({
-          port: z.number(),
-          service: z.string(),
+          port: z.unknown(),
+          service: z.unknown(),
         }),
         httpGet: z.object({
-          httpHeaders: z.array(z.object({
-            name: z.string(),
-            value: z.string(),
-          })),
-          path: z.string(),
-          port: z.number(),
+          httpHeaders: z.unknown(),
+          path: z.unknown(),
+          port: z.unknown(),
         }),
         initialDelaySeconds: z.number(),
         periodSeconds: z.number(),
         tcpSocket: z.object({
-          port: z.number(),
+          port: z.unknown(),
         }),
         timeoutSeconds: z.number(),
       }),
@@ -176,42 +165,36 @@ const StateSchema = z.object({
       }),
       sourceCode: z.object({
         cloudStorageSource: z.object({
-          bucket: z.string(),
-          generation: z.string(),
-          object: z.string(),
+          bucket: z.unknown(),
+          generation: z.unknown(),
+          object: z.unknown(),
         }),
         inlinedSource: z.object({
-          sources: z.array(z.object({
-            content: z.string(),
-            filename: z.string(),
-          })),
+          sources: z.unknown(),
         }),
       }),
       startupProbe: z.object({
         failureThreshold: z.number(),
         grpc: z.object({
-          port: z.number(),
-          service: z.string(),
+          port: z.unknown(),
+          service: z.unknown(),
         }),
         httpGet: z.object({
-          httpHeaders: z.array(z.object({
-            name: z.string(),
-            value: z.string(),
-          })),
-          path: z.string(),
-          port: z.number(),
+          httpHeaders: z.unknown(),
+          path: z.unknown(),
+          port: z.unknown(),
         }),
         initialDelaySeconds: z.number(),
         periodSeconds: z.number(),
         tcpSocket: z.object({
-          port: z.number(),
+          port: z.unknown(),
         }),
         timeoutSeconds: z.number(),
       }),
       volumeMounts: z.array(z.object({
-        mountPath: z.string(),
-        name: z.string(),
-        subPath: z.string(),
+        mountPath: z.unknown(),
+        name: z.unknown(),
+        subPath: z.unknown(),
       })),
       workingDir: z.string(),
     })),
@@ -226,7 +209,7 @@ const StateSchema = z.object({
     timeout: z.string(),
     volumes: z.array(z.object({
       cloudSqlInstance: z.object({
-        instances: z.array(z.string()),
+        instances: z.array(z.unknown()),
       }),
       emptyDir: z.object({
         medium: z.string(),
@@ -234,7 +217,7 @@ const StateSchema = z.object({
       }),
       gcs: z.object({
         bucket: z.string(),
-        mountOptions: z.array(z.string()),
+        mountOptions: z.array(z.unknown()),
         readOnly: z.boolean(),
       }),
       name: z.string(),
@@ -245,11 +228,7 @@ const StateSchema = z.object({
       }),
       secret: z.object({
         defaultMode: z.number(),
-        items: z.array(z.object({
-          mode: z.number(),
-          path: z.string(),
-          version: z.string(),
-        })),
+        items: z.array(z.unknown()),
         secret: z.string(),
       }),
     })),
@@ -259,7 +238,7 @@ const StateSchema = z.object({
       networkInterfaces: z.array(z.object({
         network: z.string(),
         subnetwork: z.string(),
-        tags: z.array(z.string()),
+        tags: z.array(z.unknown()),
       })),
     }),
   }).optional(),
@@ -278,7 +257,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/run/jobs-executions",
-  version: "2026.04.03.3",
+  version: "2026.04.04.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -302,6 +281,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.3",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.04.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

@@ -235,26 +235,26 @@ const GlobalArgsSchema = z.object({
       ).optional(),
       dateRange: z.object({
         endDate: z.object({
-          day: z.number().int().describe(
+          day: z.unknown().describe(
             "Day of a month. Must be from 1 to 31 and valid for the year and month, or 0 to specify a year by itself or a year and month where the day isn't significant.",
           ).optional(),
-          month: z.number().int().describe(
+          month: z.unknown().describe(
             "Month of a year. Must be from 1 to 12, or 0 to specify a year without a month and day.",
           ).optional(),
-          year: z.number().int().describe(
+          year: z.unknown().describe(
             "Year of the date. Must be from 1 to 9999, or 0 to specify a date without a year.",
           ).optional(),
         }).describe(
           "Represents a whole or partial calendar date, such as a birthday. The time of day and time zone are either specified elsewhere or are insignificant. The date is relative to the Gregorian Calendar. This can represent one of the following: * A full date, with non-zero year, month, and day values. * A month and day, with a zero year (for example, an anniversary). * A year on its own, with a zero month and a zero day. * A year and month, with a zero day (for example, a credit card expiration date). Related types: * google.type.TimeOfDay * google.type.DateTime * google.protobuf.Timestamp",
         ).optional(),
         startDate: z.object({
-          day: z.number().int().describe(
+          day: z.unknown().describe(
             "Day of a month. Must be from 1 to 31 and valid for the year and month, or 0 to specify a year by itself or a year and month where the day isn't significant.",
           ).optional(),
-          month: z.number().int().describe(
+          month: z.unknown().describe(
             "Month of a year. Must be from 1 to 12, or 0 to specify a year without a month and day.",
           ).optional(),
-          year: z.number().int().describe(
+          year: z.unknown().describe(
             "Year of the date. Must be from 1 to 9999, or 0 to specify a date without a year.",
           ).optional(),
         }).describe(
@@ -501,14 +501,14 @@ const StateSchema = z.object({
       campaignBudgetId: z.string(),
       dateRange: z.object({
         endDate: z.object({
-          day: z.number(),
-          month: z.number(),
-          year: z.number(),
+          day: z.unknown(),
+          month: z.unknown(),
+          year: z.unknown(),
         }),
         startDate: z.object({
-          day: z.number(),
-          month: z.number(),
-          year: z.number(),
+          day: z.unknown(),
+          month: z.unknown(),
+          year: z.unknown(),
         }),
       }),
       description: z.string(),
@@ -699,26 +699,26 @@ const InputsSchema = z.object({
       ).optional(),
       dateRange: z.object({
         endDate: z.object({
-          day: z.number().int().describe(
+          day: z.unknown().describe(
             "Day of a month. Must be from 1 to 31 and valid for the year and month, or 0 to specify a year by itself or a year and month where the day isn't significant.",
           ).optional(),
-          month: z.number().int().describe(
+          month: z.unknown().describe(
             "Month of a year. Must be from 1 to 12, or 0 to specify a year without a month and day.",
           ).optional(),
-          year: z.number().int().describe(
+          year: z.unknown().describe(
             "Year of the date. Must be from 1 to 9999, or 0 to specify a date without a year.",
           ).optional(),
         }).describe(
           "Represents a whole or partial calendar date, such as a birthday. The time of day and time zone are either specified elsewhere or are insignificant. The date is relative to the Gregorian Calendar. This can represent one of the following: * A full date, with non-zero year, month, and day values. * A month and day, with a zero year (for example, an anniversary). * A year on its own, with a zero month and a zero day. * A year and month, with a zero day (for example, a credit card expiration date). Related types: * google.type.TimeOfDay * google.type.DateTime * google.protobuf.Timestamp",
         ).optional(),
         startDate: z.object({
-          day: z.number().int().describe(
+          day: z.unknown().describe(
             "Day of a month. Must be from 1 to 31 and valid for the year and month, or 0 to specify a year by itself or a year and month where the day isn't significant.",
           ).optional(),
-          month: z.number().int().describe(
+          month: z.unknown().describe(
             "Month of a year. Must be from 1 to 12, or 0 to specify a year without a month and day.",
           ).optional(),
-          year: z.number().int().describe(
+          year: z.unknown().describe(
             "Year of the date. Must be from 1 to 9999, or 0 to specify a date without a year.",
           ).optional(),
         }).describe(
@@ -929,7 +929,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/displayvideo/advertisers-insertionorders",
-  version: "2026.04.03.3",
+  version: "2026.04.04.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -958,6 +958,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.3",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.04.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

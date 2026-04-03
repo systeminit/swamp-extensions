@@ -139,25 +139,25 @@ const GlobalArgsSchema = z.object({
     ]).describe("Type of the parameter.").optional(),
     defaultValue: z.object({
       booleanArray: z.object({
-        booleanValues: z.array(z.boolean()).describe("Boolean array.")
+        booleanValues: z.array(z.unknown()).describe("Boolean array.")
           .optional(),
       }).describe("This message only contains a field of boolean array.")
         .optional(),
       booleanValue: z.boolean().describe("Boolean.").optional(),
       doubleArray: z.object({
-        doubleValues: z.array(z.number()).describe("Double number array.")
+        doubleValues: z.array(z.unknown()).describe("Double number array.")
           .optional(),
       }).describe("This message only contains a field of double number array.")
         .optional(),
       doubleValue: z.number().describe("Double Number.").optional(),
       intArray: z.object({
-        intValues: z.array(z.string()).describe("Integer array.").optional(),
+        intValues: z.array(z.unknown()).describe("Integer array.").optional(),
       }).describe("This message only contains a field of integer array.")
         .optional(),
       intValue: z.string().describe("Integer.").optional(),
       jsonValue: z.string().describe("Json.").optional(),
       stringArray: z.object({
-        stringValues: z.array(z.string()).describe("String array.").optional(),
+        stringValues: z.array(z.unknown()).describe("String array.").optional(),
       }).describe("This message only contains a field of string array.")
         .optional(),
       stringValue: z.string().describe("String.").optional(),
@@ -206,40 +206,13 @@ const GlobalArgsSchema = z.object({
         "Optional. Standard filter expression for ASSERT_CONDITION to succeed",
       ).optional(),
       parameter: z.object({
-        key: z.string().describe(
+        key: z.unknown().describe(
           "Key is used to retrieve the corresponding parameter value. This should be unique for a given fired event. These parameters must be predefined in the integration definition.",
         ).optional(),
-        masked: z.boolean().describe(
+        masked: z.unknown().describe(
           "True if this parameter should be masked in the logs",
         ).optional(),
-        value: z.object({
-          booleanArray: z.object({
-            booleanValues: z.array(z.boolean()).describe("Boolean array.")
-              .optional(),
-          }).describe("This message only contains a field of boolean array.")
-            .optional(),
-          booleanValue: z.boolean().describe("Boolean.").optional(),
-          doubleArray: z.object({
-            doubleValues: z.array(z.number()).describe("Double number array.")
-              .optional(),
-          }).describe(
-            "This message only contains a field of double number array.",
-          ).optional(),
-          doubleValue: z.number().describe("Double Number.").optional(),
-          intArray: z.object({
-            intValues: z.array(z.string()).describe("Integer array.")
-              .optional(),
-          }).describe("This message only contains a field of integer array.")
-            .optional(),
-          intValue: z.string().describe("Integer.").optional(),
-          jsonValue: z.string().describe("Json.").optional(),
-          stringArray: z.object({
-            stringValues: z.array(z.string()).describe("String array.")
-              .optional(),
-          }).describe("This message only contains a field of string array.")
-            .optional(),
-          stringValue: z.string().describe("String.").optional(),
-        }).describe("The type of the parameter.").optional(),
+        value: z.unknown().describe("The type of the parameter.").optional(),
       }).describe(
         "This message is used for processing and persisting (when applicable) key value pair parameters for each event in the event bus. Next available id: 4",
       ).optional(),
@@ -263,40 +236,13 @@ const GlobalArgsSchema = z.object({
         "Mockstrategy defines how the particular task should be mocked during test execution",
       ).optional(),
       parameters: z.array(z.object({
-        key: z.string().describe(
+        key: z.unknown().describe(
           "Key is used to retrieve the corresponding parameter value. This should be unique for a given fired event. These parameters must be predefined in the integration definition.",
         ).optional(),
-        masked: z.boolean().describe(
+        masked: z.unknown().describe(
           "True if this parameter should be masked in the logs",
         ).optional(),
-        value: z.object({
-          booleanArray: z.object({
-            booleanValues: z.array(z.boolean()).describe("Boolean array.")
-              .optional(),
-          }).describe("This message only contains a field of boolean array.")
-            .optional(),
-          booleanValue: z.boolean().describe("Boolean.").optional(),
-          doubleArray: z.object({
-            doubleValues: z.array(z.number()).describe("Double number array.")
-              .optional(),
-          }).describe(
-            "This message only contains a field of double number array.",
-          ).optional(),
-          doubleValue: z.number().describe("Double Number.").optional(),
-          intArray: z.object({
-            intValues: z.array(z.string()).describe("Integer array.")
-              .optional(),
-          }).describe("This message only contains a field of integer array.")
-            .optional(),
-          intValue: z.string().describe("Integer.").optional(),
-          jsonValue: z.string().describe("Json.").optional(),
-          stringArray: z.object({
-            stringValues: z.array(z.string()).describe("String array.")
-              .optional(),
-          }).describe("This message only contains a field of string array.")
-            .optional(),
-          stringValue: z.string().describe("String.").optional(),
-        }).describe("The type of the parameter.").optional(),
+        value: z.unknown().describe("The type of the parameter.").optional(),
       })).describe(
         "Optional. List of key-value pairs for specific mock strategy",
       ).optional(),
@@ -309,51 +255,22 @@ const GlobalArgsSchema = z.object({
     taskConfig: z.object({
       conditionalFailurePolicies: z.object({
         defaultFailurePolicy: z.object({
-          condition: z.string().describe(
+          condition: z.unknown().describe(
             "Optional. The string condition that will be evaluated to determine if the task should be retried with this failure policy.",
           ).optional(),
-          intervalTime: z.string().describe(
+          intervalTime: z.unknown().describe(
             "Required if retry_strategy is FIXED_INTERVAL or LINEAR/EXPONENTIAL_BACKOFF/RESTART_INTEGRATION_WITH_BACKOFF. Defines the initial interval in seconds for backoff.",
           ).optional(),
-          maxRetries: z.number().int().describe(
+          maxRetries: z.unknown().describe(
             "Required if retry_strategy is FIXED_INTERVAL or LINEAR/EXPONENTIAL_BACKOFF/RESTART_INTEGRATION_WITH_BACKOFF. Defines the number of times the task will be retried if failed.",
           ).optional(),
-          retryStrategy: z.enum([
-            "RETRY_STRATEGY_UNSPECIFIED",
-            "IGNORE",
-            "NONE",
-            "FATAL",
-            "FIXED_INTERVAL",
-            "LINEAR_BACKOFF",
-            "EXPONENTIAL_BACKOFF",
-            "RESTART_INTEGRATION_WITH_BACKOFF",
-          ]).describe("Defines what happens to the task upon failure.")
-            .optional(),
+          retryStrategy: z.unknown().describe(
+            "Defines what happens to the task upon failure.",
+          ).optional(),
         }).describe(
           "Policy that defines the task retry logic and failure type. If no FailurePolicy is defined for a task, all its dependent tasks will not be executed (i.e, a `retry_strategy` of NONE will be applied).",
         ).optional(),
-        failurePolicies: z.array(z.object({
-          condition: z.string().describe(
-            "Optional. The string condition that will be evaluated to determine if the task should be retried with this failure policy.",
-          ).optional(),
-          intervalTime: z.string().describe(
-            "Required if retry_strategy is FIXED_INTERVAL or LINEAR/EXPONENTIAL_BACKOFF/RESTART_INTEGRATION_WITH_BACKOFF. Defines the initial interval in seconds for backoff.",
-          ).optional(),
-          maxRetries: z.number().int().describe(
-            "Required if retry_strategy is FIXED_INTERVAL or LINEAR/EXPONENTIAL_BACKOFF/RESTART_INTEGRATION_WITH_BACKOFF. Defines the number of times the task will be retried if failed.",
-          ).optional(),
-          retryStrategy: z.enum([
-            "RETRY_STRATEGY_UNSPECIFIED",
-            "IGNORE",
-            "NONE",
-            "FATAL",
-            "FIXED_INTERVAL",
-            "LINEAR_BACKOFF",
-            "EXPONENTIAL_BACKOFF",
-            "RESTART_INTEGRATION_WITH_BACKOFF",
-          ]).describe("Defines what happens to the task upon failure.")
-            .optional(),
-        })).describe(
+        failurePolicies: z.array(z.unknown()).describe(
           "The list of failure policies that will be applied to the task in order.",
         ).optional(),
       }).describe("Conditional task failur retry strategies").optional(),
@@ -405,17 +322,18 @@ const GlobalArgsSchema = z.object({
         "Optional. If set, overrides the option configured in the Task implementation class.",
       ).optional(),
       nextTasks: z.array(z.object({
-        condition: z.string().describe(
+        condition: z.unknown().describe(
           "Standard filter expression for this task to become an eligible next task.",
         ).optional(),
-        description: z.string().describe(
+        description: z.unknown().describe(
           "User-provided description intended to give additional business context about the task.",
         ).optional(),
-        displayName: z.string().describe(
+        displayName: z.unknown().describe(
           "User-provided label that is attached to this edge in the UI.",
         ).optional(),
-        taskConfigId: z.string().describe("ID of the next task.").optional(),
-        taskId: z.string().describe("Task number of the next task.").optional(),
+        taskConfigId: z.unknown().describe("ID of the next task.").optional(),
+        taskId: z.unknown().describe("Task number of the next task.")
+          .optional(),
       })).describe(
         "Optional. The set of tasks that are next in line to be executed as per the execution graph defined for the parent event, specified by `event_config_id`. Each of these next tasks are executed only if the condition associated with them evaluates to true.",
       ).optional(),
@@ -429,40 +347,13 @@ const GlobalArgsSchema = z.object({
       parameters: z.record(
         z.string(),
         z.object({
-          key: z.string().describe(
+          key: z.unknown().describe(
             "Key is used to retrieve the corresponding parameter value. This should be unique for a given fired event. These parameters must be predefined in the integration definition.",
           ).optional(),
-          masked: z.boolean().describe(
+          masked: z.unknown().describe(
             "True if this parameter should be masked in the logs",
           ).optional(),
-          value: z.object({
-            booleanArray: z.object({
-              booleanValues: z.array(z.boolean()).describe("Boolean array.")
-                .optional(),
-            }).describe("This message only contains a field of boolean array.")
-              .optional(),
-            booleanValue: z.boolean().describe("Boolean.").optional(),
-            doubleArray: z.object({
-              doubleValues: z.array(z.number()).describe("Double number array.")
-                .optional(),
-            }).describe(
-              "This message only contains a field of double number array.",
-            ).optional(),
-            doubleValue: z.number().describe("Double Number.").optional(),
-            intArray: z.object({
-              intValues: z.array(z.string()).describe("Integer array.")
-                .optional(),
-            }).describe("This message only contains a field of integer array.")
-              .optional(),
-            intValue: z.string().describe("Integer.").optional(),
-            jsonValue: z.string().describe("Json.").optional(),
-            stringArray: z.object({
-              stringValues: z.array(z.string()).describe("String array.")
-                .optional(),
-            }).describe("This message only contains a field of string array.")
-              .optional(),
-            stringValue: z.string().describe("String.").optional(),
-          }).describe("The type of the parameter.").optional(),
+          value: z.unknown().describe("The type of the parameter.").optional(),
         }),
       ).describe(
         "Optional. The customized parameters the user can pass to this task.",
@@ -692,20 +583,20 @@ const StateSchema = z.object({
     dataType: z.string(),
     defaultValue: z.object({
       booleanArray: z.object({
-        booleanValues: z.array(z.boolean()),
+        booleanValues: z.array(z.unknown()),
       }),
       booleanValue: z.boolean(),
       doubleArray: z.object({
-        doubleValues: z.array(z.number()),
+        doubleValues: z.array(z.unknown()),
       }),
       doubleValue: z.number(),
       intArray: z.object({
-        intValues: z.array(z.string()),
+        intValues: z.array(z.unknown()),
       }),
       intValue: z.string(),
       jsonValue: z.string(),
       stringArray: z.object({
-        stringValues: z.array(z.string()),
+        stringValues: z.array(z.unknown()),
       }),
       stringValue: z.string(),
     }),
@@ -724,27 +615,9 @@ const StateSchema = z.object({
       assertionStrategy: z.string(),
       condition: z.string(),
       parameter: z.object({
-        key: z.string(),
-        masked: z.boolean(),
-        value: z.object({
-          booleanArray: z.object({
-            booleanValues: z.array(z.boolean()),
-          }),
-          booleanValue: z.boolean(),
-          doubleArray: z.object({
-            doubleValues: z.array(z.number()),
-          }),
-          doubleValue: z.number(),
-          intArray: z.object({
-            intValues: z.array(z.string()),
-          }),
-          intValue: z.string(),
-          jsonValue: z.string(),
-          stringArray: z.object({
-            stringValues: z.array(z.string()),
-          }),
-          stringValue: z.string(),
-        }),
+        key: z.unknown(),
+        masked: z.unknown(),
+        value: z.unknown(),
       }),
       retryCount: z.number(),
     })),
@@ -752,44 +625,21 @@ const StateSchema = z.object({
       failedExecutions: z.string(),
       mockStrategy: z.string(),
       parameters: z.array(z.object({
-        key: z.string(),
-        masked: z.boolean(),
-        value: z.object({
-          booleanArray: z.object({
-            booleanValues: z.array(z.boolean()),
-          }),
-          booleanValue: z.boolean(),
-          doubleArray: z.object({
-            doubleValues: z.array(z.number()),
-          }),
-          doubleValue: z.number(),
-          intArray: z.object({
-            intValues: z.array(z.string()),
-          }),
-          intValue: z.string(),
-          jsonValue: z.string(),
-          stringArray: z.object({
-            stringValues: z.array(z.string()),
-          }),
-          stringValue: z.string(),
-        }),
+        key: z.unknown(),
+        masked: z.unknown(),
+        value: z.unknown(),
       })),
     }),
     task: z.string(),
     taskConfig: z.object({
       conditionalFailurePolicies: z.object({
         defaultFailurePolicy: z.object({
-          condition: z.string(),
-          intervalTime: z.string(),
-          maxRetries: z.number(),
-          retryStrategy: z.string(),
+          condition: z.unknown(),
+          intervalTime: z.unknown(),
+          maxRetries: z.unknown(),
+          retryStrategy: z.unknown(),
         }),
-        failurePolicies: z.array(z.object({
-          condition: z.string(),
-          intervalTime: z.string(),
-          maxRetries: z.number(),
-          retryStrategy: z.string(),
-        })),
+        failurePolicies: z.array(z.unknown()),
       }),
       description: z.string(),
       displayName: z.string(),
@@ -803,11 +653,11 @@ const StateSchema = z.object({
       }),
       jsonValidationOption: z.string(),
       nextTasks: z.array(z.object({
-        condition: z.string(),
-        description: z.string(),
-        displayName: z.string(),
-        taskConfigId: z.string(),
-        taskId: z.string(),
+        condition: z.unknown(),
+        description: z.unknown(),
+        displayName: z.unknown(),
+        taskConfigId: z.unknown(),
+        taskId: z.unknown(),
       })),
       nextTasksExecutionPolicy: z.string(),
       parameters: z.record(z.string(), z.unknown()),
@@ -934,25 +784,25 @@ const InputsSchema = z.object({
     ]).describe("Type of the parameter.").optional(),
     defaultValue: z.object({
       booleanArray: z.object({
-        booleanValues: z.array(z.boolean()).describe("Boolean array.")
+        booleanValues: z.array(z.unknown()).describe("Boolean array.")
           .optional(),
       }).describe("This message only contains a field of boolean array.")
         .optional(),
       booleanValue: z.boolean().describe("Boolean.").optional(),
       doubleArray: z.object({
-        doubleValues: z.array(z.number()).describe("Double number array.")
+        doubleValues: z.array(z.unknown()).describe("Double number array.")
           .optional(),
       }).describe("This message only contains a field of double number array.")
         .optional(),
       doubleValue: z.number().describe("Double Number.").optional(),
       intArray: z.object({
-        intValues: z.array(z.string()).describe("Integer array.").optional(),
+        intValues: z.array(z.unknown()).describe("Integer array.").optional(),
       }).describe("This message only contains a field of integer array.")
         .optional(),
       intValue: z.string().describe("Integer.").optional(),
       jsonValue: z.string().describe("Json.").optional(),
       stringArray: z.object({
-        stringValues: z.array(z.string()).describe("String array.").optional(),
+        stringValues: z.array(z.unknown()).describe("String array.").optional(),
       }).describe("This message only contains a field of string array.")
         .optional(),
       stringValue: z.string().describe("String.").optional(),
@@ -1001,40 +851,13 @@ const InputsSchema = z.object({
         "Optional. Standard filter expression for ASSERT_CONDITION to succeed",
       ).optional(),
       parameter: z.object({
-        key: z.string().describe(
+        key: z.unknown().describe(
           "Key is used to retrieve the corresponding parameter value. This should be unique for a given fired event. These parameters must be predefined in the integration definition.",
         ).optional(),
-        masked: z.boolean().describe(
+        masked: z.unknown().describe(
           "True if this parameter should be masked in the logs",
         ).optional(),
-        value: z.object({
-          booleanArray: z.object({
-            booleanValues: z.array(z.boolean()).describe("Boolean array.")
-              .optional(),
-          }).describe("This message only contains a field of boolean array.")
-            .optional(),
-          booleanValue: z.boolean().describe("Boolean.").optional(),
-          doubleArray: z.object({
-            doubleValues: z.array(z.number()).describe("Double number array.")
-              .optional(),
-          }).describe(
-            "This message only contains a field of double number array.",
-          ).optional(),
-          doubleValue: z.number().describe("Double Number.").optional(),
-          intArray: z.object({
-            intValues: z.array(z.string()).describe("Integer array.")
-              .optional(),
-          }).describe("This message only contains a field of integer array.")
-            .optional(),
-          intValue: z.string().describe("Integer.").optional(),
-          jsonValue: z.string().describe("Json.").optional(),
-          stringArray: z.object({
-            stringValues: z.array(z.string()).describe("String array.")
-              .optional(),
-          }).describe("This message only contains a field of string array.")
-            .optional(),
-          stringValue: z.string().describe("String.").optional(),
-        }).describe("The type of the parameter.").optional(),
+        value: z.unknown().describe("The type of the parameter.").optional(),
       }).describe(
         "This message is used for processing and persisting (when applicable) key value pair parameters for each event in the event bus. Next available id: 4",
       ).optional(),
@@ -1058,40 +881,13 @@ const InputsSchema = z.object({
         "Mockstrategy defines how the particular task should be mocked during test execution",
       ).optional(),
       parameters: z.array(z.object({
-        key: z.string().describe(
+        key: z.unknown().describe(
           "Key is used to retrieve the corresponding parameter value. This should be unique for a given fired event. These parameters must be predefined in the integration definition.",
         ).optional(),
-        masked: z.boolean().describe(
+        masked: z.unknown().describe(
           "True if this parameter should be masked in the logs",
         ).optional(),
-        value: z.object({
-          booleanArray: z.object({
-            booleanValues: z.array(z.boolean()).describe("Boolean array.")
-              .optional(),
-          }).describe("This message only contains a field of boolean array.")
-            .optional(),
-          booleanValue: z.boolean().describe("Boolean.").optional(),
-          doubleArray: z.object({
-            doubleValues: z.array(z.number()).describe("Double number array.")
-              .optional(),
-          }).describe(
-            "This message only contains a field of double number array.",
-          ).optional(),
-          doubleValue: z.number().describe("Double Number.").optional(),
-          intArray: z.object({
-            intValues: z.array(z.string()).describe("Integer array.")
-              .optional(),
-          }).describe("This message only contains a field of integer array.")
-            .optional(),
-          intValue: z.string().describe("Integer.").optional(),
-          jsonValue: z.string().describe("Json.").optional(),
-          stringArray: z.object({
-            stringValues: z.array(z.string()).describe("String array.")
-              .optional(),
-          }).describe("This message only contains a field of string array.")
-            .optional(),
-          stringValue: z.string().describe("String.").optional(),
-        }).describe("The type of the parameter.").optional(),
+        value: z.unknown().describe("The type of the parameter.").optional(),
       })).describe(
         "Optional. List of key-value pairs for specific mock strategy",
       ).optional(),
@@ -1104,51 +900,22 @@ const InputsSchema = z.object({
     taskConfig: z.object({
       conditionalFailurePolicies: z.object({
         defaultFailurePolicy: z.object({
-          condition: z.string().describe(
+          condition: z.unknown().describe(
             "Optional. The string condition that will be evaluated to determine if the task should be retried with this failure policy.",
           ).optional(),
-          intervalTime: z.string().describe(
+          intervalTime: z.unknown().describe(
             "Required if retry_strategy is FIXED_INTERVAL or LINEAR/EXPONENTIAL_BACKOFF/RESTART_INTEGRATION_WITH_BACKOFF. Defines the initial interval in seconds for backoff.",
           ).optional(),
-          maxRetries: z.number().int().describe(
+          maxRetries: z.unknown().describe(
             "Required if retry_strategy is FIXED_INTERVAL or LINEAR/EXPONENTIAL_BACKOFF/RESTART_INTEGRATION_WITH_BACKOFF. Defines the number of times the task will be retried if failed.",
           ).optional(),
-          retryStrategy: z.enum([
-            "RETRY_STRATEGY_UNSPECIFIED",
-            "IGNORE",
-            "NONE",
-            "FATAL",
-            "FIXED_INTERVAL",
-            "LINEAR_BACKOFF",
-            "EXPONENTIAL_BACKOFF",
-            "RESTART_INTEGRATION_WITH_BACKOFF",
-          ]).describe("Defines what happens to the task upon failure.")
-            .optional(),
+          retryStrategy: z.unknown().describe(
+            "Defines what happens to the task upon failure.",
+          ).optional(),
         }).describe(
           "Policy that defines the task retry logic and failure type. If no FailurePolicy is defined for a task, all its dependent tasks will not be executed (i.e, a `retry_strategy` of NONE will be applied).",
         ).optional(),
-        failurePolicies: z.array(z.object({
-          condition: z.string().describe(
-            "Optional. The string condition that will be evaluated to determine if the task should be retried with this failure policy.",
-          ).optional(),
-          intervalTime: z.string().describe(
-            "Required if retry_strategy is FIXED_INTERVAL or LINEAR/EXPONENTIAL_BACKOFF/RESTART_INTEGRATION_WITH_BACKOFF. Defines the initial interval in seconds for backoff.",
-          ).optional(),
-          maxRetries: z.number().int().describe(
-            "Required if retry_strategy is FIXED_INTERVAL or LINEAR/EXPONENTIAL_BACKOFF/RESTART_INTEGRATION_WITH_BACKOFF. Defines the number of times the task will be retried if failed.",
-          ).optional(),
-          retryStrategy: z.enum([
-            "RETRY_STRATEGY_UNSPECIFIED",
-            "IGNORE",
-            "NONE",
-            "FATAL",
-            "FIXED_INTERVAL",
-            "LINEAR_BACKOFF",
-            "EXPONENTIAL_BACKOFF",
-            "RESTART_INTEGRATION_WITH_BACKOFF",
-          ]).describe("Defines what happens to the task upon failure.")
-            .optional(),
-        })).describe(
+        failurePolicies: z.array(z.unknown()).describe(
           "The list of failure policies that will be applied to the task in order.",
         ).optional(),
       }).describe("Conditional task failur retry strategies").optional(),
@@ -1200,17 +967,18 @@ const InputsSchema = z.object({
         "Optional. If set, overrides the option configured in the Task implementation class.",
       ).optional(),
       nextTasks: z.array(z.object({
-        condition: z.string().describe(
+        condition: z.unknown().describe(
           "Standard filter expression for this task to become an eligible next task.",
         ).optional(),
-        description: z.string().describe(
+        description: z.unknown().describe(
           "User-provided description intended to give additional business context about the task.",
         ).optional(),
-        displayName: z.string().describe(
+        displayName: z.unknown().describe(
           "User-provided label that is attached to this edge in the UI.",
         ).optional(),
-        taskConfigId: z.string().describe("ID of the next task.").optional(),
-        taskId: z.string().describe("Task number of the next task.").optional(),
+        taskConfigId: z.unknown().describe("ID of the next task.").optional(),
+        taskId: z.unknown().describe("Task number of the next task.")
+          .optional(),
       })).describe(
         "Optional. The set of tasks that are next in line to be executed as per the execution graph defined for the parent event, specified by `event_config_id`. Each of these next tasks are executed only if the condition associated with them evaluates to true.",
       ).optional(),
@@ -1224,40 +992,13 @@ const InputsSchema = z.object({
       parameters: z.record(
         z.string(),
         z.object({
-          key: z.string().describe(
+          key: z.unknown().describe(
             "Key is used to retrieve the corresponding parameter value. This should be unique for a given fired event. These parameters must be predefined in the integration definition.",
           ).optional(),
-          masked: z.boolean().describe(
+          masked: z.unknown().describe(
             "True if this parameter should be masked in the logs",
           ).optional(),
-          value: z.object({
-            booleanArray: z.object({
-              booleanValues: z.array(z.boolean()).describe("Boolean array.")
-                .optional(),
-            }).describe("This message only contains a field of boolean array.")
-              .optional(),
-            booleanValue: z.boolean().describe("Boolean.").optional(),
-            doubleArray: z.object({
-              doubleValues: z.array(z.number()).describe("Double number array.")
-                .optional(),
-            }).describe(
-              "This message only contains a field of double number array.",
-            ).optional(),
-            doubleValue: z.number().describe("Double Number.").optional(),
-            intArray: z.object({
-              intValues: z.array(z.string()).describe("Integer array.")
-                .optional(),
-            }).describe("This message only contains a field of integer array.")
-              .optional(),
-            intValue: z.string().describe("Integer.").optional(),
-            jsonValue: z.string().describe("Json.").optional(),
-            stringArray: z.object({
-              stringValues: z.array(z.string()).describe("String array.")
-                .optional(),
-            }).describe("This message only contains a field of string array.")
-              .optional(),
-            stringValue: z.string().describe("String.").optional(),
-          }).describe("The type of the parameter.").optional(),
+          value: z.unknown().describe("The type of the parameter.").optional(),
         }),
       ).describe(
         "Optional. The customized parameters the user can pass to this task.",
@@ -1475,7 +1216,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/integrations/integrations-versions-testcases",
-  version: "2026.04.03.3",
+  version: "2026.04.04.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -1499,6 +1240,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.3",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.04.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

@@ -50,22 +50,13 @@ const StateSchema = z.object({
     gatewayPluginAddonConfig: z.object({
       gatewayPluginConfigs: z.array(z.object({
         apigeeEdgeConfig: z.object({
-          environmentFilter: z.object({
-            allEnvironments: z.boolean(),
-            environments: z.array(z.string()),
-          }),
+          environmentFilter: z.unknown(),
         }),
         apigeeOpdkConfig: z.object({
-          environmentFilter: z.object({
-            allEnvironments: z.boolean(),
-            environments: z.array(z.string()),
-          }),
+          environmentFilter: z.unknown(),
         }),
         apigeeXHybridConfig: z.object({
-          environmentFilter: z.object({
-            allEnvironments: z.boolean(),
-            environments: z.array(z.string()),
-          }),
+          environmentFilter: z.unknown(),
         }),
         pluginInstance: z.string(),
       })),
@@ -91,7 +82,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/apihub/addons",
-  version: "2026.04.03.3",
+  version: "2026.04.04.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -115,6 +106,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.3",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.04.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

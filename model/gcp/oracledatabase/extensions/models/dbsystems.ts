@@ -172,99 +172,34 @@ const GlobalArgsSchema = z.object({
         ).optional(),
         properties: z.object({
           databaseManagementConfig: z.object({
-            managementState: z.enum([
-              "MANAGEMENT_STATE_UNSPECIFIED",
-              "ENABLING",
-              "ENABLED",
-              "DISABLING",
-              "DISABLED",
-              "UPDATING",
-              "FAILED_ENABLING",
-              "FAILED_DISABLING",
-              "FAILED_UPDATING",
-            ]).describe(
+            managementState: z.unknown().describe(
               "Output only. The status of the Database Management service.",
             ).optional(),
-            managementType: z.enum([
-              "MANAGEMENT_TYPE_UNSPECIFIED",
-              "BASIC",
-              "ADVANCED",
-            ]).describe("Output only. The Database Management type.")
-              .optional(),
+            managementType: z.unknown().describe(
+              "Output only. The Database Management type.",
+            ).optional(),
           }).describe("The configuration of the Database Management service.")
             .optional(),
           dbBackupConfig: z.object({
-            autoBackupEnabled: z.boolean().describe(
+            autoBackupEnabled: z.unknown().describe(
               "Optional. If set to true, enables automatic backups on the database.",
             ).optional(),
-            autoFullBackupDay: z.enum([
-              "DAY_OF_WEEK_UNSPECIFIED",
-              "MONDAY",
-              "TUESDAY",
-              "WEDNESDAY",
-              "THURSDAY",
-              "FRIDAY",
-              "SATURDAY",
-              "SUNDAY",
-            ]).describe(
+            autoFullBackupDay: z.unknown().describe(
               "Optional. The day of the week on which the full backup should be performed on the database. If no value is provided, it will default to Sunday.",
             ).optional(),
-            autoFullBackupWindow: z.enum([
-              "BACKUP_WINDOW_UNSPECIFIED",
-              "SLOT_ONE",
-              "SLOT_TWO",
-              "SLOT_THREE",
-              "SLOT_FOUR",
-              "SLOT_FIVE",
-              "SLOT_SIX",
-              "SLOT_SEVEN",
-              "SLOT_EIGHT",
-              "SLOT_NINE",
-              "SLOT_TEN",
-              "SLOT_ELEVEN",
-              "SLOT_TWELVE",
-            ]).describe(
+            autoFullBackupWindow: z.unknown().describe(
               "Optional. The window in which the full backup should be performed on the database. If no value is provided, the default is anytime.",
             ).optional(),
-            autoIncrementalBackupWindow: z.enum([
-              "BACKUP_WINDOW_UNSPECIFIED",
-              "SLOT_ONE",
-              "SLOT_TWO",
-              "SLOT_THREE",
-              "SLOT_FOUR",
-              "SLOT_FIVE",
-              "SLOT_SIX",
-              "SLOT_SEVEN",
-              "SLOT_EIGHT",
-              "SLOT_NINE",
-              "SLOT_TEN",
-              "SLOT_ELEVEN",
-              "SLOT_TWELVE",
-            ]).describe(
+            autoIncrementalBackupWindow: z.unknown().describe(
               "Optional. The window in which the incremental backup should be performed on the database. If no value is provided, the default is anytime except the auto full backup day.",
             ).optional(),
-            backupDeletionPolicy: z.enum([
-              "BACKUP_DELETION_POLICY_UNSPECIFIED",
-              "DELETE_IMMEDIATELY",
-              "DELETE_AFTER_RETENTION_PERIOD",
-            ]).describe(
+            backupDeletionPolicy: z.unknown().describe(
               "Optional. This defines when the backups will be deleted after Database termination.",
             ).optional(),
-            backupDestinationDetails: z.array(z.object({
-              type: z.enum([
-                "BACKUP_DESTINATION_TYPE_UNSPECIFIED",
-                "NFS",
-                "RECOVERY_APPLIANCE",
-                "OBJECT_STORE",
-                "LOCAL",
-                "DBRS",
-              ]).describe(
-                "Optional. The type of the database backup destination.",
-              ).optional(),
-            })).describe(
+            backupDestinationDetails: z.unknown().describe(
               "Optional. Details of the database backup destinations.",
             ).optional(),
-            retentionPeriodDays: z.number().int().describe(
+            retentionPeriodDays: z.unknown().describe(
               "Optional. The number of days an automatic backup is retained before being automatically deleted. This value determines the earliest point in time to which a database can be restored. Min: 1, Max: 60.",
             ).optional(),
           }).describe("Backup Options for the Database.").optional(),
@@ -416,19 +351,17 @@ const StateSchema = z.object({
         pluggableDatabaseName: z.string(),
         properties: z.object({
           databaseManagementConfig: z.object({
-            managementState: z.string(),
-            managementType: z.string(),
+            managementState: z.unknown(),
+            managementType: z.unknown(),
           }),
           dbBackupConfig: z.object({
-            autoBackupEnabled: z.boolean(),
-            autoFullBackupDay: z.string(),
-            autoFullBackupWindow: z.string(),
-            autoIncrementalBackupWindow: z.string(),
-            backupDeletionPolicy: z.string(),
-            backupDestinationDetails: z.array(z.object({
-              type: z.string(),
-            })),
-            retentionPeriodDays: z.number(),
+            autoBackupEnabled: z.unknown(),
+            autoFullBackupDay: z.unknown(),
+            autoFullBackupWindow: z.unknown(),
+            autoIncrementalBackupWindow: z.unknown(),
+            backupDeletionPolicy: z.unknown(),
+            backupDestinationDetails: z.unknown(),
+            retentionPeriodDays: z.unknown(),
           }),
           dbVersion: z.string(),
           state: z.string(),
@@ -564,99 +497,34 @@ const InputsSchema = z.object({
         ).optional(),
         properties: z.object({
           databaseManagementConfig: z.object({
-            managementState: z.enum([
-              "MANAGEMENT_STATE_UNSPECIFIED",
-              "ENABLING",
-              "ENABLED",
-              "DISABLING",
-              "DISABLED",
-              "UPDATING",
-              "FAILED_ENABLING",
-              "FAILED_DISABLING",
-              "FAILED_UPDATING",
-            ]).describe(
+            managementState: z.unknown().describe(
               "Output only. The status of the Database Management service.",
             ).optional(),
-            managementType: z.enum([
-              "MANAGEMENT_TYPE_UNSPECIFIED",
-              "BASIC",
-              "ADVANCED",
-            ]).describe("Output only. The Database Management type.")
-              .optional(),
+            managementType: z.unknown().describe(
+              "Output only. The Database Management type.",
+            ).optional(),
           }).describe("The configuration of the Database Management service.")
             .optional(),
           dbBackupConfig: z.object({
-            autoBackupEnabled: z.boolean().describe(
+            autoBackupEnabled: z.unknown().describe(
               "Optional. If set to true, enables automatic backups on the database.",
             ).optional(),
-            autoFullBackupDay: z.enum([
-              "DAY_OF_WEEK_UNSPECIFIED",
-              "MONDAY",
-              "TUESDAY",
-              "WEDNESDAY",
-              "THURSDAY",
-              "FRIDAY",
-              "SATURDAY",
-              "SUNDAY",
-            ]).describe(
+            autoFullBackupDay: z.unknown().describe(
               "Optional. The day of the week on which the full backup should be performed on the database. If no value is provided, it will default to Sunday.",
             ).optional(),
-            autoFullBackupWindow: z.enum([
-              "BACKUP_WINDOW_UNSPECIFIED",
-              "SLOT_ONE",
-              "SLOT_TWO",
-              "SLOT_THREE",
-              "SLOT_FOUR",
-              "SLOT_FIVE",
-              "SLOT_SIX",
-              "SLOT_SEVEN",
-              "SLOT_EIGHT",
-              "SLOT_NINE",
-              "SLOT_TEN",
-              "SLOT_ELEVEN",
-              "SLOT_TWELVE",
-            ]).describe(
+            autoFullBackupWindow: z.unknown().describe(
               "Optional. The window in which the full backup should be performed on the database. If no value is provided, the default is anytime.",
             ).optional(),
-            autoIncrementalBackupWindow: z.enum([
-              "BACKUP_WINDOW_UNSPECIFIED",
-              "SLOT_ONE",
-              "SLOT_TWO",
-              "SLOT_THREE",
-              "SLOT_FOUR",
-              "SLOT_FIVE",
-              "SLOT_SIX",
-              "SLOT_SEVEN",
-              "SLOT_EIGHT",
-              "SLOT_NINE",
-              "SLOT_TEN",
-              "SLOT_ELEVEN",
-              "SLOT_TWELVE",
-            ]).describe(
+            autoIncrementalBackupWindow: z.unknown().describe(
               "Optional. The window in which the incremental backup should be performed on the database. If no value is provided, the default is anytime except the auto full backup day.",
             ).optional(),
-            backupDeletionPolicy: z.enum([
-              "BACKUP_DELETION_POLICY_UNSPECIFIED",
-              "DELETE_IMMEDIATELY",
-              "DELETE_AFTER_RETENTION_PERIOD",
-            ]).describe(
+            backupDeletionPolicy: z.unknown().describe(
               "Optional. This defines when the backups will be deleted after Database termination.",
             ).optional(),
-            backupDestinationDetails: z.array(z.object({
-              type: z.enum([
-                "BACKUP_DESTINATION_TYPE_UNSPECIFIED",
-                "NFS",
-                "RECOVERY_APPLIANCE",
-                "OBJECT_STORE",
-                "LOCAL",
-                "DBRS",
-              ]).describe(
-                "Optional. The type of the database backup destination.",
-              ).optional(),
-            })).describe(
+            backupDestinationDetails: z.unknown().describe(
               "Optional. Details of the database backup destinations.",
             ).optional(),
-            retentionPeriodDays: z.number().int().describe(
+            retentionPeriodDays: z.unknown().describe(
               "Optional. The number of days an automatic backup is retained before being automatically deleted. This value determines the earliest point in time to which a database can be restored. Min: 1, Max: 60.",
             ).optional(),
           }).describe("Backup Options for the Database.").optional(),
@@ -772,7 +640,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/oracledatabase/dbsystems",
-  version: "2026.04.03.3",
+  version: "2026.04.04.1",
   upgrades: [
     {
       toVersion: "2026.04.01.2",
@@ -796,6 +664,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.3",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.04.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

@@ -123,7 +123,7 @@ const GlobalArgsSchema = z.object({
     affiliateLocationAssetFilter: z.object({
       affiliateLocationMatchingFunction: z.object({
         chains: z.array(z.object({
-          chainId: z.string().describe(
+          chainId: z.unknown().describe(
             "Required. ID of the affiliate location chain.",
           ).optional(),
         })).describe(
@@ -204,7 +204,7 @@ const StateSchema = z.object({
     affiliateLocationAssetFilter: z.object({
       affiliateLocationMatchingFunction: z.object({
         chains: z.array(z.object({
-          chainId: z.string(),
+          chainId: z.unknown(),
         })),
       }),
       affiliateLocationMatchingType: z.string(),
@@ -234,7 +234,7 @@ const InputsSchema = z.object({
     affiliateLocationAssetFilter: z.object({
       affiliateLocationMatchingFunction: z.object({
         chains: z.array(z.object({
-          chainId: z.string().describe(
+          chainId: z.unknown().describe(
             "Required. ID of the affiliate location chain.",
           ).optional(),
         })).describe(
@@ -313,7 +313,7 @@ const InputsSchema = z.object({
 export const model = {
   type:
     "@swamp/gcp/displayvideo/advertisers-lineitems-youtubeassettypes-youtubeassetassociations",
-  version: "2026.04.03.3",
+  version: "2026.04.04.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -337,6 +337,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.3",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.04.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

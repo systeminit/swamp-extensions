@@ -48,7 +48,7 @@ const StateSchema = z.object({
   annotations: z.array(z.object({
     annotationMetadata: z.object({
       operatorMetadata: z.object({
-        comments: z.array(z.string()),
+        comments: z.array(z.unknown()),
         labelVotes: z.number(),
         score: z.number(),
         totalVotes: z.number(),
@@ -59,47 +59,35 @@ const StateSchema = z.object({
     annotationValue: z.object({
       imageBoundingPolyAnnotation: z.object({
         annotationSpec: z.object({
-          description: z.string(),
-          displayName: z.string(),
-          index: z.number(),
+          description: z.unknown(),
+          displayName: z.unknown(),
+          index: z.unknown(),
         }),
         boundingPoly: z.object({
-          vertices: z.array(z.object({
-            x: z.number(),
-            y: z.number(),
-          })),
+          vertices: z.unknown(),
         }),
         normalizedBoundingPoly: z.object({
-          normalizedVertices: z.array(z.object({
-            x: z.number(),
-            y: z.number(),
-          })),
+          normalizedVertices: z.unknown(),
         }),
       }),
       imageClassificationAnnotation: z.object({
         annotationSpec: z.object({
-          description: z.string(),
-          displayName: z.string(),
-          index: z.number(),
+          description: z.unknown(),
+          displayName: z.unknown(),
+          index: z.unknown(),
         }),
       }),
       imagePolylineAnnotation: z.object({
         annotationSpec: z.object({
-          description: z.string(),
-          displayName: z.string(),
-          index: z.number(),
+          description: z.unknown(),
+          displayName: z.unknown(),
+          index: z.unknown(),
         }),
         normalizedPolyline: z.object({
-          normalizedVertices: z.array(z.object({
-            x: z.number(),
-            y: z.number(),
-          })),
+          normalizedVertices: z.unknown(),
         }),
         polyline: z.object({
-          vertices: z.array(z.object({
-            x: z.number(),
-            y: z.number(),
-          })),
+          vertices: z.unknown(),
         }),
       }),
       imageSegmentationAnnotation: z.object({
@@ -109,68 +97,54 @@ const StateSchema = z.object({
       }),
       textClassificationAnnotation: z.object({
         annotationSpec: z.object({
-          description: z.string(),
-          displayName: z.string(),
-          index: z.number(),
+          description: z.unknown(),
+          displayName: z.unknown(),
+          index: z.unknown(),
         }),
       }),
       textEntityExtractionAnnotation: z.object({
         annotationSpec: z.object({
-          description: z.string(),
-          displayName: z.string(),
-          index: z.number(),
+          description: z.unknown(),
+          displayName: z.unknown(),
+          index: z.unknown(),
         }),
         sequentialSegment: z.object({
-          end: z.number(),
-          start: z.number(),
+          end: z.unknown(),
+          start: z.unknown(),
         }),
       }),
       videoClassificationAnnotation: z.object({
         annotationSpec: z.object({
-          description: z.string(),
-          displayName: z.string(),
-          index: z.number(),
+          description: z.unknown(),
+          displayName: z.unknown(),
+          index: z.unknown(),
         }),
         timeSegment: z.object({
-          endTimeOffset: z.string(),
-          startTimeOffset: z.string(),
+          endTimeOffset: z.unknown(),
+          startTimeOffset: z.unknown(),
         }),
       }),
       videoEventAnnotation: z.object({
         annotationSpec: z.object({
-          description: z.string(),
-          displayName: z.string(),
-          index: z.number(),
+          description: z.unknown(),
+          displayName: z.unknown(),
+          index: z.unknown(),
         }),
         timeSegment: z.object({
-          endTimeOffset: z.string(),
-          startTimeOffset: z.string(),
+          endTimeOffset: z.unknown(),
+          startTimeOffset: z.unknown(),
         }),
       }),
       videoObjectTrackingAnnotation: z.object({
         annotationSpec: z.object({
-          description: z.string(),
-          displayName: z.string(),
-          index: z.number(),
+          description: z.unknown(),
+          displayName: z.unknown(),
+          index: z.unknown(),
         }),
-        objectTrackingFrames: z.array(z.object({
-          boundingPoly: z.object({
-            vertices: z.array(z.object({
-              x: z.number(),
-              y: z.number(),
-            })),
-          }),
-          normalizedBoundingPoly: z.object({
-            normalizedVertices: z.array(z.object({
-              x: z.number(),
-              y: z.number(),
-            })),
-          }),
-          timeOffset: z.string(),
-        })),
+        objectTrackingFrames: z.array(z.unknown()),
         timeSegment: z.object({
-          endTimeOffset: z.string(),
-          startTimeOffset: z.string(),
+          endTimeOffset: z.unknown(),
+          startTimeOffset: z.unknown(),
         }),
       }),
     }),
@@ -209,7 +183,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/datalabeling/datasets-annotateddatasets-examples",
-  version: "2026.04.03.3",
+  version: "2026.04.04.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -233,6 +207,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.3",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.04.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

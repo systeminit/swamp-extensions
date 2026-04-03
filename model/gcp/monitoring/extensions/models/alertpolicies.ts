@@ -118,51 +118,16 @@ const GlobalArgsSchema = z.object({
   conditions: z.array(z.object({
     conditionAbsent: z.object({
       aggregations: z.array(z.object({
-        alignmentPeriod: z.string().describe(
+        alignmentPeriod: z.unknown().describe(
           "The alignment_period specifies a time interval, in seconds, that is used to divide the data in all the time series into consistent blocks of time. This will be done before the per-series aligner can be applied to the data.The value must be at least 60 seconds. If a per-series aligner other than ALIGN_NONE is specified, this field is required or an error is returned. If no per-series aligner is specified, or the aligner ALIGN_NONE is specified, then this field is ignored.The maximum value of the alignment_period is 104 weeks (2 years) for charts, and 90,000 seconds (25 hours) for alerting policies.",
         ).optional(),
-        crossSeriesReducer: z.enum([
-          "REDUCE_NONE",
-          "REDUCE_MEAN",
-          "REDUCE_MIN",
-          "REDUCE_MAX",
-          "REDUCE_SUM",
-          "REDUCE_STDDEV",
-          "REDUCE_COUNT",
-          "REDUCE_COUNT_TRUE",
-          "REDUCE_COUNT_FALSE",
-          "REDUCE_FRACTION_TRUE",
-          "REDUCE_PERCENTILE_99",
-          "REDUCE_PERCENTILE_95",
-          "REDUCE_PERCENTILE_50",
-          "REDUCE_PERCENTILE_05",
-        ]).describe(
+        crossSeriesReducer: z.unknown().describe(
           "The reduction operation to be used to combine time series into a single time series, where the value of each data point in the resulting series is a function of all the already aligned values in the input time series.Not all reducer operations can be applied to all time series. The valid choices depend on the metric_kind and the value_type of the original time series. Reduction can yield a time series with a different metric_kind or value_type than the input time series.Time series data must first be aligned (see per_series_aligner) in order to perform cross-time series reduction. If cross_series_reducer is specified, then per_series_aligner must be specified, and must not be ALIGN_NONE. An alignment_period must also be specified; otherwise, an error is returned.",
         ).optional(),
-        groupByFields: z.array(z.string()).describe(
+        groupByFields: z.unknown().describe(
           "The set of fields to preserve when cross_series_reducer is specified. The group_by_fields determine how the time series are partitioned into subsets prior to applying the aggregation operation. Each subset contains time series that have the same value for each of the grouping fields. Each individual time series is a member of exactly one subset. The cross_series_reducer is applied to each subset of time series. It is not possible to reduce across different resource types, so this field implicitly contains resource.type. Fields not specified in group_by_fields are aggregated away. If group_by_fields is not specified and all the time series have the same resource type, then the time series are aggregated into a single output time series. If cross_series_reducer is not defined, this field is ignored.",
         ).optional(),
-        perSeriesAligner: z.enum([
-          "ALIGN_NONE",
-          "ALIGN_DELTA",
-          "ALIGN_RATE",
-          "ALIGN_INTERPOLATE",
-          "ALIGN_NEXT_OLDER",
-          "ALIGN_MIN",
-          "ALIGN_MAX",
-          "ALIGN_MEAN",
-          "ALIGN_COUNT",
-          "ALIGN_SUM",
-          "ALIGN_STDDEV",
-          "ALIGN_COUNT_TRUE",
-          "ALIGN_COUNT_FALSE",
-          "ALIGN_FRACTION_TRUE",
-          "ALIGN_PERCENTILE_99",
-          "ALIGN_PERCENTILE_95",
-          "ALIGN_PERCENTILE_50",
-          "ALIGN_PERCENTILE_05",
-          "ALIGN_PERCENT_CHANGE",
-        ]).describe(
+        perSeriesAligner: z.unknown().describe(
           "An Aligner describes how to bring the data points in a single time series into temporal alignment. Except for ALIGN_NONE, all alignments cause all the data points in an alignment_period to be mathematically grouped together, resulting in a single data point for each alignment_period with end timestamp at the end of the period.Not all alignment operations may be applied to all time series. The valid choices depend on the metric_kind and value_type of the original time series. Alignment can change the metric_kind or the value_type of the time series.Time series data must be aligned in order to perform cross-time series reduction. If cross_series_reducer is specified, then per_series_aligner must be specified and not equal to ALIGN_NONE and alignment_period must be specified; otherwise, an error is returned.",
         ).optional(),
       })).describe(
@@ -260,16 +225,16 @@ const GlobalArgsSchema = z.object({
       ).optional(),
       daily: z.object({
         executionTime: z.object({
-          hours: z.number().int().describe(
+          hours: z.unknown().describe(
             'Hours of a day in 24 hour format. Must be greater than or equal to 0 and typically must be less than or equal to 23. An API may choose to allow the value "24:00:00" for scenarios like business closing time.',
           ).optional(),
-          minutes: z.number().int().describe(
+          minutes: z.unknown().describe(
             "Minutes of an hour. Must be greater than or equal to 0 and less than or equal to 59.",
           ).optional(),
-          nanos: z.number().int().describe(
+          nanos: z.unknown().describe(
             "Fractions of seconds, in nanoseconds. Must be greater than or equal to 0 and less than or equal to 999,999,999.",
           ).optional(),
-          seconds: z.number().int().describe(
+          seconds: z.unknown().describe(
             "Seconds of a minute. Must be greater than or equal to 0 and typically must be less than or equal to 59. An API may allow the value 60 if it allows leap-seconds.",
           ).optional(),
         }).describe(
@@ -321,51 +286,16 @@ const GlobalArgsSchema = z.object({
     ).optional(),
     conditionThreshold: z.object({
       aggregations: z.array(z.object({
-        alignmentPeriod: z.string().describe(
+        alignmentPeriod: z.unknown().describe(
           "The alignment_period specifies a time interval, in seconds, that is used to divide the data in all the time series into consistent blocks of time. This will be done before the per-series aligner can be applied to the data.The value must be at least 60 seconds. If a per-series aligner other than ALIGN_NONE is specified, this field is required or an error is returned. If no per-series aligner is specified, or the aligner ALIGN_NONE is specified, then this field is ignored.The maximum value of the alignment_period is 104 weeks (2 years) for charts, and 90,000 seconds (25 hours) for alerting policies.",
         ).optional(),
-        crossSeriesReducer: z.enum([
-          "REDUCE_NONE",
-          "REDUCE_MEAN",
-          "REDUCE_MIN",
-          "REDUCE_MAX",
-          "REDUCE_SUM",
-          "REDUCE_STDDEV",
-          "REDUCE_COUNT",
-          "REDUCE_COUNT_TRUE",
-          "REDUCE_COUNT_FALSE",
-          "REDUCE_FRACTION_TRUE",
-          "REDUCE_PERCENTILE_99",
-          "REDUCE_PERCENTILE_95",
-          "REDUCE_PERCENTILE_50",
-          "REDUCE_PERCENTILE_05",
-        ]).describe(
+        crossSeriesReducer: z.unknown().describe(
           "The reduction operation to be used to combine time series into a single time series, where the value of each data point in the resulting series is a function of all the already aligned values in the input time series.Not all reducer operations can be applied to all time series. The valid choices depend on the metric_kind and the value_type of the original time series. Reduction can yield a time series with a different metric_kind or value_type than the input time series.Time series data must first be aligned (see per_series_aligner) in order to perform cross-time series reduction. If cross_series_reducer is specified, then per_series_aligner must be specified, and must not be ALIGN_NONE. An alignment_period must also be specified; otherwise, an error is returned.",
         ).optional(),
-        groupByFields: z.array(z.string()).describe(
+        groupByFields: z.unknown().describe(
           "The set of fields to preserve when cross_series_reducer is specified. The group_by_fields determine how the time series are partitioned into subsets prior to applying the aggregation operation. Each subset contains time series that have the same value for each of the grouping fields. Each individual time series is a member of exactly one subset. The cross_series_reducer is applied to each subset of time series. It is not possible to reduce across different resource types, so this field implicitly contains resource.type. Fields not specified in group_by_fields are aggregated away. If group_by_fields is not specified and all the time series have the same resource type, then the time series are aggregated into a single output time series. If cross_series_reducer is not defined, this field is ignored.",
         ).optional(),
-        perSeriesAligner: z.enum([
-          "ALIGN_NONE",
-          "ALIGN_DELTA",
-          "ALIGN_RATE",
-          "ALIGN_INTERPOLATE",
-          "ALIGN_NEXT_OLDER",
-          "ALIGN_MIN",
-          "ALIGN_MAX",
-          "ALIGN_MEAN",
-          "ALIGN_COUNT",
-          "ALIGN_SUM",
-          "ALIGN_STDDEV",
-          "ALIGN_COUNT_TRUE",
-          "ALIGN_COUNT_FALSE",
-          "ALIGN_FRACTION_TRUE",
-          "ALIGN_PERCENTILE_99",
-          "ALIGN_PERCENTILE_95",
-          "ALIGN_PERCENTILE_50",
-          "ALIGN_PERCENTILE_05",
-          "ALIGN_PERCENT_CHANGE",
-        ]).describe(
+        perSeriesAligner: z.unknown().describe(
           "An Aligner describes how to bring the data points in a single time series into temporal alignment. Except for ALIGN_NONE, all alignments cause all the data points in an alignment_period to be mathematically grouped together, resulting in a single data point for each alignment_period with end timestamp at the end of the period.Not all alignment operations may be applied to all time series. The valid choices depend on the metric_kind and value_type of the original time series. Alignment can change the metric_kind or the value_type of the time series.Time series data must be aligned in order to perform cross-time series reduction. If cross_series_reducer is specified, then per_series_aligner must be specified and not equal to ALIGN_NONE and alignment_period must be specified; otherwise, an error is returned.",
         ).optional(),
       })).describe(
@@ -383,51 +313,16 @@ const GlobalArgsSchema = z.object({
         "The comparison to apply between the time series (indicated by filter and aggregation) and the threshold (indicated by threshold_value). The comparison is applied on each time series, with the time series on the left-hand side and the threshold on the right-hand side.Only COMPARISON_LT and COMPARISON_GT are supported currently.",
       ).optional(),
       denominatorAggregations: z.array(z.object({
-        alignmentPeriod: z.string().describe(
+        alignmentPeriod: z.unknown().describe(
           "The alignment_period specifies a time interval, in seconds, that is used to divide the data in all the time series into consistent blocks of time. This will be done before the per-series aligner can be applied to the data.The value must be at least 60 seconds. If a per-series aligner other than ALIGN_NONE is specified, this field is required or an error is returned. If no per-series aligner is specified, or the aligner ALIGN_NONE is specified, then this field is ignored.The maximum value of the alignment_period is 104 weeks (2 years) for charts, and 90,000 seconds (25 hours) for alerting policies.",
         ).optional(),
-        crossSeriesReducer: z.enum([
-          "REDUCE_NONE",
-          "REDUCE_MEAN",
-          "REDUCE_MIN",
-          "REDUCE_MAX",
-          "REDUCE_SUM",
-          "REDUCE_STDDEV",
-          "REDUCE_COUNT",
-          "REDUCE_COUNT_TRUE",
-          "REDUCE_COUNT_FALSE",
-          "REDUCE_FRACTION_TRUE",
-          "REDUCE_PERCENTILE_99",
-          "REDUCE_PERCENTILE_95",
-          "REDUCE_PERCENTILE_50",
-          "REDUCE_PERCENTILE_05",
-        ]).describe(
+        crossSeriesReducer: z.unknown().describe(
           "The reduction operation to be used to combine time series into a single time series, where the value of each data point in the resulting series is a function of all the already aligned values in the input time series.Not all reducer operations can be applied to all time series. The valid choices depend on the metric_kind and the value_type of the original time series. Reduction can yield a time series with a different metric_kind or value_type than the input time series.Time series data must first be aligned (see per_series_aligner) in order to perform cross-time series reduction. If cross_series_reducer is specified, then per_series_aligner must be specified, and must not be ALIGN_NONE. An alignment_period must also be specified; otherwise, an error is returned.",
         ).optional(),
-        groupByFields: z.array(z.string()).describe(
+        groupByFields: z.unknown().describe(
           "The set of fields to preserve when cross_series_reducer is specified. The group_by_fields determine how the time series are partitioned into subsets prior to applying the aggregation operation. Each subset contains time series that have the same value for each of the grouping fields. Each individual time series is a member of exactly one subset. The cross_series_reducer is applied to each subset of time series. It is not possible to reduce across different resource types, so this field implicitly contains resource.type. Fields not specified in group_by_fields are aggregated away. If group_by_fields is not specified and all the time series have the same resource type, then the time series are aggregated into a single output time series. If cross_series_reducer is not defined, this field is ignored.",
         ).optional(),
-        perSeriesAligner: z.enum([
-          "ALIGN_NONE",
-          "ALIGN_DELTA",
-          "ALIGN_RATE",
-          "ALIGN_INTERPOLATE",
-          "ALIGN_NEXT_OLDER",
-          "ALIGN_MIN",
-          "ALIGN_MAX",
-          "ALIGN_MEAN",
-          "ALIGN_COUNT",
-          "ALIGN_SUM",
-          "ALIGN_STDDEV",
-          "ALIGN_COUNT_TRUE",
-          "ALIGN_COUNT_FALSE",
-          "ALIGN_FRACTION_TRUE",
-          "ALIGN_PERCENTILE_99",
-          "ALIGN_PERCENTILE_95",
-          "ALIGN_PERCENTILE_50",
-          "ALIGN_PERCENTILE_05",
-          "ALIGN_PERCENT_CHANGE",
-        ]).describe(
+        perSeriesAligner: z.unknown().describe(
           "An Aligner describes how to bring the data points in a single time series into temporal alignment. Except for ALIGN_NONE, all alignments cause all the data points in an alignment_period to be mathematically grouped together, resulting in a single data point for each alignment_period with end timestamp at the end of the period.Not all alignment operations may be applied to all time series. The valid choices depend on the metric_kind and value_type of the original time series. Alignment can change the metric_kind or the value_type of the time series.Time series data must be aligned in order to perform cross-time series reduction. If cross_series_reducer is specified, then per_series_aligner must be specified and not equal to ALIGN_NONE and alignment_period must be specified; otherwise, an error is returned.",
         ).optional(),
       })).describe(
@@ -567,10 +462,10 @@ const StateSchema = z.object({
   conditions: z.array(z.object({
     conditionAbsent: z.object({
       aggregations: z.array(z.object({
-        alignmentPeriod: z.string(),
-        crossSeriesReducer: z.string(),
-        groupByFields: z.array(z.string()),
-        perSeriesAligner: z.string(),
+        alignmentPeriod: z.unknown(),
+        crossSeriesReducer: z.unknown(),
+        groupByFields: z.unknown(),
+        perSeriesAligner: z.unknown(),
       })),
       duration: z.string(),
       filter: z.string(),
@@ -607,10 +502,10 @@ const StateSchema = z.object({
       }),
       daily: z.object({
         executionTime: z.object({
-          hours: z.number(),
-          minutes: z.number(),
-          nanos: z.number(),
-          seconds: z.number(),
+          hours: z.unknown(),
+          minutes: z.unknown(),
+          nanos: z.unknown(),
+          seconds: z.unknown(),
         }),
         periodicity: z.number(),
       }),
@@ -629,17 +524,17 @@ const StateSchema = z.object({
     }),
     conditionThreshold: z.object({
       aggregations: z.array(z.object({
-        alignmentPeriod: z.string(),
-        crossSeriesReducer: z.string(),
-        groupByFields: z.array(z.string()),
-        perSeriesAligner: z.string(),
+        alignmentPeriod: z.unknown(),
+        crossSeriesReducer: z.unknown(),
+        groupByFields: z.unknown(),
+        perSeriesAligner: z.unknown(),
       })),
       comparison: z.string(),
       denominatorAggregations: z.array(z.object({
-        alignmentPeriod: z.string(),
-        crossSeriesReducer: z.string(),
-        groupByFields: z.array(z.string()),
-        perSeriesAligner: z.string(),
+        alignmentPeriod: z.unknown(),
+        crossSeriesReducer: z.unknown(),
+        groupByFields: z.unknown(),
+        perSeriesAligner: z.unknown(),
       })),
       denominatorFilter: z.string(),
       duration: z.string(),
@@ -729,51 +624,16 @@ const InputsSchema = z.object({
   conditions: z.array(z.object({
     conditionAbsent: z.object({
       aggregations: z.array(z.object({
-        alignmentPeriod: z.string().describe(
+        alignmentPeriod: z.unknown().describe(
           "The alignment_period specifies a time interval, in seconds, that is used to divide the data in all the time series into consistent blocks of time. This will be done before the per-series aligner can be applied to the data.The value must be at least 60 seconds. If a per-series aligner other than ALIGN_NONE is specified, this field is required or an error is returned. If no per-series aligner is specified, or the aligner ALIGN_NONE is specified, then this field is ignored.The maximum value of the alignment_period is 104 weeks (2 years) for charts, and 90,000 seconds (25 hours) for alerting policies.",
         ).optional(),
-        crossSeriesReducer: z.enum([
-          "REDUCE_NONE",
-          "REDUCE_MEAN",
-          "REDUCE_MIN",
-          "REDUCE_MAX",
-          "REDUCE_SUM",
-          "REDUCE_STDDEV",
-          "REDUCE_COUNT",
-          "REDUCE_COUNT_TRUE",
-          "REDUCE_COUNT_FALSE",
-          "REDUCE_FRACTION_TRUE",
-          "REDUCE_PERCENTILE_99",
-          "REDUCE_PERCENTILE_95",
-          "REDUCE_PERCENTILE_50",
-          "REDUCE_PERCENTILE_05",
-        ]).describe(
+        crossSeriesReducer: z.unknown().describe(
           "The reduction operation to be used to combine time series into a single time series, where the value of each data point in the resulting series is a function of all the already aligned values in the input time series.Not all reducer operations can be applied to all time series. The valid choices depend on the metric_kind and the value_type of the original time series. Reduction can yield a time series with a different metric_kind or value_type than the input time series.Time series data must first be aligned (see per_series_aligner) in order to perform cross-time series reduction. If cross_series_reducer is specified, then per_series_aligner must be specified, and must not be ALIGN_NONE. An alignment_period must also be specified; otherwise, an error is returned.",
         ).optional(),
-        groupByFields: z.array(z.string()).describe(
+        groupByFields: z.unknown().describe(
           "The set of fields to preserve when cross_series_reducer is specified. The group_by_fields determine how the time series are partitioned into subsets prior to applying the aggregation operation. Each subset contains time series that have the same value for each of the grouping fields. Each individual time series is a member of exactly one subset. The cross_series_reducer is applied to each subset of time series. It is not possible to reduce across different resource types, so this field implicitly contains resource.type. Fields not specified in group_by_fields are aggregated away. If group_by_fields is not specified and all the time series have the same resource type, then the time series are aggregated into a single output time series. If cross_series_reducer is not defined, this field is ignored.",
         ).optional(),
-        perSeriesAligner: z.enum([
-          "ALIGN_NONE",
-          "ALIGN_DELTA",
-          "ALIGN_RATE",
-          "ALIGN_INTERPOLATE",
-          "ALIGN_NEXT_OLDER",
-          "ALIGN_MIN",
-          "ALIGN_MAX",
-          "ALIGN_MEAN",
-          "ALIGN_COUNT",
-          "ALIGN_SUM",
-          "ALIGN_STDDEV",
-          "ALIGN_COUNT_TRUE",
-          "ALIGN_COUNT_FALSE",
-          "ALIGN_FRACTION_TRUE",
-          "ALIGN_PERCENTILE_99",
-          "ALIGN_PERCENTILE_95",
-          "ALIGN_PERCENTILE_50",
-          "ALIGN_PERCENTILE_05",
-          "ALIGN_PERCENT_CHANGE",
-        ]).describe(
+        perSeriesAligner: z.unknown().describe(
           "An Aligner describes how to bring the data points in a single time series into temporal alignment. Except for ALIGN_NONE, all alignments cause all the data points in an alignment_period to be mathematically grouped together, resulting in a single data point for each alignment_period with end timestamp at the end of the period.Not all alignment operations may be applied to all time series. The valid choices depend on the metric_kind and value_type of the original time series. Alignment can change the metric_kind or the value_type of the time series.Time series data must be aligned in order to perform cross-time series reduction. If cross_series_reducer is specified, then per_series_aligner must be specified and not equal to ALIGN_NONE and alignment_period must be specified; otherwise, an error is returned.",
         ).optional(),
       })).describe(
@@ -871,16 +731,16 @@ const InputsSchema = z.object({
       ).optional(),
       daily: z.object({
         executionTime: z.object({
-          hours: z.number().int().describe(
+          hours: z.unknown().describe(
             'Hours of a day in 24 hour format. Must be greater than or equal to 0 and typically must be less than or equal to 23. An API may choose to allow the value "24:00:00" for scenarios like business closing time.',
           ).optional(),
-          minutes: z.number().int().describe(
+          minutes: z.unknown().describe(
             "Minutes of an hour. Must be greater than or equal to 0 and less than or equal to 59.",
           ).optional(),
-          nanos: z.number().int().describe(
+          nanos: z.unknown().describe(
             "Fractions of seconds, in nanoseconds. Must be greater than or equal to 0 and less than or equal to 999,999,999.",
           ).optional(),
-          seconds: z.number().int().describe(
+          seconds: z.unknown().describe(
             "Seconds of a minute. Must be greater than or equal to 0 and typically must be less than or equal to 59. An API may allow the value 60 if it allows leap-seconds.",
           ).optional(),
         }).describe(
@@ -932,51 +792,16 @@ const InputsSchema = z.object({
     ).optional(),
     conditionThreshold: z.object({
       aggregations: z.array(z.object({
-        alignmentPeriod: z.string().describe(
+        alignmentPeriod: z.unknown().describe(
           "The alignment_period specifies a time interval, in seconds, that is used to divide the data in all the time series into consistent blocks of time. This will be done before the per-series aligner can be applied to the data.The value must be at least 60 seconds. If a per-series aligner other than ALIGN_NONE is specified, this field is required or an error is returned. If no per-series aligner is specified, or the aligner ALIGN_NONE is specified, then this field is ignored.The maximum value of the alignment_period is 104 weeks (2 years) for charts, and 90,000 seconds (25 hours) for alerting policies.",
         ).optional(),
-        crossSeriesReducer: z.enum([
-          "REDUCE_NONE",
-          "REDUCE_MEAN",
-          "REDUCE_MIN",
-          "REDUCE_MAX",
-          "REDUCE_SUM",
-          "REDUCE_STDDEV",
-          "REDUCE_COUNT",
-          "REDUCE_COUNT_TRUE",
-          "REDUCE_COUNT_FALSE",
-          "REDUCE_FRACTION_TRUE",
-          "REDUCE_PERCENTILE_99",
-          "REDUCE_PERCENTILE_95",
-          "REDUCE_PERCENTILE_50",
-          "REDUCE_PERCENTILE_05",
-        ]).describe(
+        crossSeriesReducer: z.unknown().describe(
           "The reduction operation to be used to combine time series into a single time series, where the value of each data point in the resulting series is a function of all the already aligned values in the input time series.Not all reducer operations can be applied to all time series. The valid choices depend on the metric_kind and the value_type of the original time series. Reduction can yield a time series with a different metric_kind or value_type than the input time series.Time series data must first be aligned (see per_series_aligner) in order to perform cross-time series reduction. If cross_series_reducer is specified, then per_series_aligner must be specified, and must not be ALIGN_NONE. An alignment_period must also be specified; otherwise, an error is returned.",
         ).optional(),
-        groupByFields: z.array(z.string()).describe(
+        groupByFields: z.unknown().describe(
           "The set of fields to preserve when cross_series_reducer is specified. The group_by_fields determine how the time series are partitioned into subsets prior to applying the aggregation operation. Each subset contains time series that have the same value for each of the grouping fields. Each individual time series is a member of exactly one subset. The cross_series_reducer is applied to each subset of time series. It is not possible to reduce across different resource types, so this field implicitly contains resource.type. Fields not specified in group_by_fields are aggregated away. If group_by_fields is not specified and all the time series have the same resource type, then the time series are aggregated into a single output time series. If cross_series_reducer is not defined, this field is ignored.",
         ).optional(),
-        perSeriesAligner: z.enum([
-          "ALIGN_NONE",
-          "ALIGN_DELTA",
-          "ALIGN_RATE",
-          "ALIGN_INTERPOLATE",
-          "ALIGN_NEXT_OLDER",
-          "ALIGN_MIN",
-          "ALIGN_MAX",
-          "ALIGN_MEAN",
-          "ALIGN_COUNT",
-          "ALIGN_SUM",
-          "ALIGN_STDDEV",
-          "ALIGN_COUNT_TRUE",
-          "ALIGN_COUNT_FALSE",
-          "ALIGN_FRACTION_TRUE",
-          "ALIGN_PERCENTILE_99",
-          "ALIGN_PERCENTILE_95",
-          "ALIGN_PERCENTILE_50",
-          "ALIGN_PERCENTILE_05",
-          "ALIGN_PERCENT_CHANGE",
-        ]).describe(
+        perSeriesAligner: z.unknown().describe(
           "An Aligner describes how to bring the data points in a single time series into temporal alignment. Except for ALIGN_NONE, all alignments cause all the data points in an alignment_period to be mathematically grouped together, resulting in a single data point for each alignment_period with end timestamp at the end of the period.Not all alignment operations may be applied to all time series. The valid choices depend on the metric_kind and value_type of the original time series. Alignment can change the metric_kind or the value_type of the time series.Time series data must be aligned in order to perform cross-time series reduction. If cross_series_reducer is specified, then per_series_aligner must be specified and not equal to ALIGN_NONE and alignment_period must be specified; otherwise, an error is returned.",
         ).optional(),
       })).describe(
@@ -994,51 +819,16 @@ const InputsSchema = z.object({
         "The comparison to apply between the time series (indicated by filter and aggregation) and the threshold (indicated by threshold_value). The comparison is applied on each time series, with the time series on the left-hand side and the threshold on the right-hand side.Only COMPARISON_LT and COMPARISON_GT are supported currently.",
       ).optional(),
       denominatorAggregations: z.array(z.object({
-        alignmentPeriod: z.string().describe(
+        alignmentPeriod: z.unknown().describe(
           "The alignment_period specifies a time interval, in seconds, that is used to divide the data in all the time series into consistent blocks of time. This will be done before the per-series aligner can be applied to the data.The value must be at least 60 seconds. If a per-series aligner other than ALIGN_NONE is specified, this field is required or an error is returned. If no per-series aligner is specified, or the aligner ALIGN_NONE is specified, then this field is ignored.The maximum value of the alignment_period is 104 weeks (2 years) for charts, and 90,000 seconds (25 hours) for alerting policies.",
         ).optional(),
-        crossSeriesReducer: z.enum([
-          "REDUCE_NONE",
-          "REDUCE_MEAN",
-          "REDUCE_MIN",
-          "REDUCE_MAX",
-          "REDUCE_SUM",
-          "REDUCE_STDDEV",
-          "REDUCE_COUNT",
-          "REDUCE_COUNT_TRUE",
-          "REDUCE_COUNT_FALSE",
-          "REDUCE_FRACTION_TRUE",
-          "REDUCE_PERCENTILE_99",
-          "REDUCE_PERCENTILE_95",
-          "REDUCE_PERCENTILE_50",
-          "REDUCE_PERCENTILE_05",
-        ]).describe(
+        crossSeriesReducer: z.unknown().describe(
           "The reduction operation to be used to combine time series into a single time series, where the value of each data point in the resulting series is a function of all the already aligned values in the input time series.Not all reducer operations can be applied to all time series. The valid choices depend on the metric_kind and the value_type of the original time series. Reduction can yield a time series with a different metric_kind or value_type than the input time series.Time series data must first be aligned (see per_series_aligner) in order to perform cross-time series reduction. If cross_series_reducer is specified, then per_series_aligner must be specified, and must not be ALIGN_NONE. An alignment_period must also be specified; otherwise, an error is returned.",
         ).optional(),
-        groupByFields: z.array(z.string()).describe(
+        groupByFields: z.unknown().describe(
           "The set of fields to preserve when cross_series_reducer is specified. The group_by_fields determine how the time series are partitioned into subsets prior to applying the aggregation operation. Each subset contains time series that have the same value for each of the grouping fields. Each individual time series is a member of exactly one subset. The cross_series_reducer is applied to each subset of time series. It is not possible to reduce across different resource types, so this field implicitly contains resource.type. Fields not specified in group_by_fields are aggregated away. If group_by_fields is not specified and all the time series have the same resource type, then the time series are aggregated into a single output time series. If cross_series_reducer is not defined, this field is ignored.",
         ).optional(),
-        perSeriesAligner: z.enum([
-          "ALIGN_NONE",
-          "ALIGN_DELTA",
-          "ALIGN_RATE",
-          "ALIGN_INTERPOLATE",
-          "ALIGN_NEXT_OLDER",
-          "ALIGN_MIN",
-          "ALIGN_MAX",
-          "ALIGN_MEAN",
-          "ALIGN_COUNT",
-          "ALIGN_SUM",
-          "ALIGN_STDDEV",
-          "ALIGN_COUNT_TRUE",
-          "ALIGN_COUNT_FALSE",
-          "ALIGN_FRACTION_TRUE",
-          "ALIGN_PERCENTILE_99",
-          "ALIGN_PERCENTILE_95",
-          "ALIGN_PERCENTILE_50",
-          "ALIGN_PERCENTILE_05",
-          "ALIGN_PERCENT_CHANGE",
-        ]).describe(
+        perSeriesAligner: z.unknown().describe(
           "An Aligner describes how to bring the data points in a single time series into temporal alignment. Except for ALIGN_NONE, all alignments cause all the data points in an alignment_period to be mathematically grouped together, resulting in a single data point for each alignment_period with end timestamp at the end of the period.Not all alignment operations may be applied to all time series. The valid choices depend on the metric_kind and value_type of the original time series. Alignment can change the metric_kind or the value_type of the time series.Time series data must be aligned in order to perform cross-time series reduction. If cross_series_reducer is specified, then per_series_aligner must be specified and not equal to ALIGN_NONE and alignment_period must be specified; otherwise, an error is returned.",
         ).optional(),
       })).describe(
@@ -1164,7 +954,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/monitoring/alertpolicies",
-  version: "2026.04.03.3",
+  version: "2026.04.04.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -1188,6 +978,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.3",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.04.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

@@ -83,96 +83,96 @@ const GlobalArgsSchema = z.object({
   snapshot: z.object({
     agents: z.array(z.object({
       afterAgentCallbacks: z.array(z.object({
-        description: z.string().describe(
+        description: z.unknown().describe(
           "Optional. Human-readable description of the callback.",
         ).optional(),
-        disabled: z.boolean().describe(
+        disabled: z.unknown().describe(
           "Optional. Whether the callback is disabled. Disabled callbacks are ignored by the agent.",
         ).optional(),
-        proactiveExecutionEnabled: z.boolean().describe(
+        proactiveExecutionEnabled: z.unknown().describe(
           "Optional. If enabled, the callback will also be executed on intermediate model outputs. This setting only affects after model callback. **ENABLE WITH CAUTION**. Typically after model callback only needs to be executed after receiving all model responses. Enabling proactive execution may have negative implication on the execution cost and latency, and should only be enabled in rare situations.",
         ).optional(),
-        pythonCode: z.string().describe(
+        pythonCode: z.unknown().describe(
           "Required. The python code to execute for the callback.",
         ).optional(),
       })).describe(
         "Optional. The callbacks to execute after the agent is called. The provided callbacks are executed sequentially in the exact order they are given in the list. If a callback returns an overridden response, execution stops and any remaining callbacks are skipped.",
       ).optional(),
       afterModelCallbacks: z.array(z.object({
-        description: z.string().describe(
+        description: z.unknown().describe(
           "Optional. Human-readable description of the callback.",
         ).optional(),
-        disabled: z.boolean().describe(
+        disabled: z.unknown().describe(
           "Optional. Whether the callback is disabled. Disabled callbacks are ignored by the agent.",
         ).optional(),
-        proactiveExecutionEnabled: z.boolean().describe(
+        proactiveExecutionEnabled: z.unknown().describe(
           "Optional. If enabled, the callback will also be executed on intermediate model outputs. This setting only affects after model callback. **ENABLE WITH CAUTION**. Typically after model callback only needs to be executed after receiving all model responses. Enabling proactive execution may have negative implication on the execution cost and latency, and should only be enabled in rare situations.",
         ).optional(),
-        pythonCode: z.string().describe(
+        pythonCode: z.unknown().describe(
           "Required. The python code to execute for the callback.",
         ).optional(),
       })).describe(
         "Optional. The callbacks to execute after the model is called. If there are multiple calls to the model, the callback will be executed multiple times. The provided callbacks are executed sequentially in the exact order they are given in the list. If a callback returns an overridden response, execution stops and any remaining callbacks are skipped.",
       ).optional(),
       afterToolCallbacks: z.array(z.object({
-        description: z.string().describe(
+        description: z.unknown().describe(
           "Optional. Human-readable description of the callback.",
         ).optional(),
-        disabled: z.boolean().describe(
+        disabled: z.unknown().describe(
           "Optional. Whether the callback is disabled. Disabled callbacks are ignored by the agent.",
         ).optional(),
-        proactiveExecutionEnabled: z.boolean().describe(
+        proactiveExecutionEnabled: z.unknown().describe(
           "Optional. If enabled, the callback will also be executed on intermediate model outputs. This setting only affects after model callback. **ENABLE WITH CAUTION**. Typically after model callback only needs to be executed after receiving all model responses. Enabling proactive execution may have negative implication on the execution cost and latency, and should only be enabled in rare situations.",
         ).optional(),
-        pythonCode: z.string().describe(
+        pythonCode: z.unknown().describe(
           "Required. The python code to execute for the callback.",
         ).optional(),
       })).describe(
         "Optional. The callbacks to execute after the tool is invoked. If there are multiple tool invocations, the callback will be executed multiple times. The provided callbacks are executed sequentially in the exact order they are given in the list. If a callback returns an overridden response, execution stops and any remaining callbacks are skipped.",
       ).optional(),
       beforeAgentCallbacks: z.array(z.object({
-        description: z.string().describe(
+        description: z.unknown().describe(
           "Optional. Human-readable description of the callback.",
         ).optional(),
-        disabled: z.boolean().describe(
+        disabled: z.unknown().describe(
           "Optional. Whether the callback is disabled. Disabled callbacks are ignored by the agent.",
         ).optional(),
-        proactiveExecutionEnabled: z.boolean().describe(
+        proactiveExecutionEnabled: z.unknown().describe(
           "Optional. If enabled, the callback will also be executed on intermediate model outputs. This setting only affects after model callback. **ENABLE WITH CAUTION**. Typically after model callback only needs to be executed after receiving all model responses. Enabling proactive execution may have negative implication on the execution cost and latency, and should only be enabled in rare situations.",
         ).optional(),
-        pythonCode: z.string().describe(
+        pythonCode: z.unknown().describe(
           "Required. The python code to execute for the callback.",
         ).optional(),
       })).describe(
         "Optional. The callbacks to execute before the agent is called. The provided callbacks are executed sequentially in the exact order they are given in the list. If a callback returns an overridden response, execution stops and any remaining callbacks are skipped.",
       ).optional(),
       beforeModelCallbacks: z.array(z.object({
-        description: z.string().describe(
+        description: z.unknown().describe(
           "Optional. Human-readable description of the callback.",
         ).optional(),
-        disabled: z.boolean().describe(
+        disabled: z.unknown().describe(
           "Optional. Whether the callback is disabled. Disabled callbacks are ignored by the agent.",
         ).optional(),
-        proactiveExecutionEnabled: z.boolean().describe(
+        proactiveExecutionEnabled: z.unknown().describe(
           "Optional. If enabled, the callback will also be executed on intermediate model outputs. This setting only affects after model callback. **ENABLE WITH CAUTION**. Typically after model callback only needs to be executed after receiving all model responses. Enabling proactive execution may have negative implication on the execution cost and latency, and should only be enabled in rare situations.",
         ).optional(),
-        pythonCode: z.string().describe(
+        pythonCode: z.unknown().describe(
           "Required. The python code to execute for the callback.",
         ).optional(),
       })).describe(
         "Optional. The callbacks to execute before the model is called. If there are multiple calls to the model, the callback will be executed multiple times. The provided callbacks are executed sequentially in the exact order they are given in the list. If a callback returns an overridden response, execution stops and any remaining callbacks are skipped.",
       ).optional(),
       beforeToolCallbacks: z.array(z.object({
-        description: z.string().describe(
+        description: z.unknown().describe(
           "Optional. Human-readable description of the callback.",
         ).optional(),
-        disabled: z.boolean().describe(
+        disabled: z.unknown().describe(
           "Optional. Whether the callback is disabled. Disabled callbacks are ignored by the agent.",
         ).optional(),
-        proactiveExecutionEnabled: z.boolean().describe(
+        proactiveExecutionEnabled: z.unknown().describe(
           "Optional. If enabled, the callback will also be executed on intermediate model outputs. This setting only affects after model callback. **ENABLE WITH CAUTION**. Typically after model callback only needs to be executed after receiving all model responses. Enabling proactive execution may have negative implication on the execution cost and latency, and should only be enabled in rare situations.",
         ).optional(),
-        pythonCode: z.string().describe(
+        pythonCode: z.unknown().describe(
           "Required. The python code to execute for the callback.",
         ).optional(),
       })).describe(
@@ -227,10 +227,10 @@ const GlobalArgsSchema = z.object({
         flowId: z.string().describe(
           "Optional. The flow ID of the flow in the Dialogflow agent.",
         ).optional(),
-        inputVariableMapping: z.record(z.string(), z.string()).describe(
+        inputVariableMapping: z.record(z.string(), z.unknown()).describe(
           "Optional. The mapping of the app variables names to the Dialogflow session parameters names to be sent to the Dialogflow agent as input.",
         ).optional(),
-        outputVariableMapping: z.record(z.string(), z.string()).describe(
+        outputVariableMapping: z.record(z.string(), z.unknown()).describe(
           "Optional. The mapping of the Dialogflow session parameters names to the app variables names to be sent back to the CES agent after the Dialogflow agent execution ends.",
         ).optional(),
         respectResponseInterruptionSettings: z.boolean().describe(
@@ -243,46 +243,24 @@ const GlobalArgsSchema = z.object({
         "Optional. List of available tools for the agent. Format: `projects/{project}/locations/{location}/apps/{app}/tools/{tool}`",
       ).optional(),
       toolsets: z.array(z.object({
-        toolIds: z.array(z.string()).describe(
+        toolIds: z.unknown().describe(
           "Optional. The tools IDs to filter the toolset.",
         ).optional(),
-        toolset: z.string().describe(
+        toolset: z.unknown().describe(
           "Required. The resource name of the toolset. Format: `projects/{project}/locations/{location}/apps/{app}/toolsets/{toolset}`",
         ).optional(),
       })).describe("Optional. List of toolsets for the agent.").optional(),
       transferRules: z.array(z.object({
-        childAgent: z.string().describe(
+        childAgent: z.unknown().describe(
           "Required. The resource name of the child agent the rule applies to. Format: `projects/{project}/locations/{location}/apps/{app}/agents/{agent}`",
         ).optional(),
-        deterministicTransfer: z.object({
-          expressionCondition: z.object({
-            expression: z.string().describe(
-              "Required. The string representation of cloud.api.Expression condition.",
-            ).optional(),
-          }).describe("Expression condition based on session state.")
-            .optional(),
-          pythonCodeCondition: z.object({
-            pythonCode: z.string().describe(
-              "Required. The python code to execute.",
-            ).optional(),
-          }).describe("Python code block to evaluate the condition.")
-            .optional(),
-        }).describe(
+        deterministicTransfer: z.unknown().describe(
           "Deterministic transfer rule. When the condition evaluates to true, the transfer occurs.",
         ).optional(),
-        direction: z.enum([
-          "DIRECTION_UNSPECIFIED",
-          "PARENT_TO_CHILD",
-          "CHILD_TO_PARENT",
-        ]).describe("Required. The direction of the transfer.").optional(),
-        disablePlannerTransfer: z.object({
-          expressionCondition: z.object({
-            expression: z.string().describe(
-              "Required. The string representation of cloud.api.Expression condition.",
-            ).optional(),
-          }).describe("Expression condition based on session state.")
-            .optional(),
-        }).describe(
+        direction: z.unknown().describe(
+          "Required. The direction of the transfer.",
+        ).optional(),
+        disablePlannerTransfer: z.unknown().describe(
           "A rule that prevents the planner from transferring to the target agent.",
         ).optional(),
       })).describe(
@@ -331,10 +309,10 @@ const GlobalArgsSchema = z.object({
         synthesizeSpeechConfigs: z.record(
           z.string(),
           z.object({
-            speakingRate: z.number().describe(
+            speakingRate: z.unknown().describe(
               "Optional. The speaking rate/speed in the range [0.25, 2.0]. 1.0 is the normal native speed supported by the specific voice. 2.0 is twice as fast, and 0.5 is half as fast. Values outside of the range [0.25, 2.0] will return an error.",
             ).optional(),
-            voice: z.string().describe(
+            voice: z.unknown().describe(
               "Optional. The name of the voice. If not set, the service will choose a voice based on the other parameters such as language_code. For the list of available voices, please refer to [Supported voices and languages](https://cloud.google.com/text-to-speech/docs/voices) from Cloud Text-to-Speech.",
             ).optional(),
           }),
@@ -360,14 +338,11 @@ const GlobalArgsSchema = z.object({
       ).optional(),
       dataStoreSettings: z.object({
         engines: z.array(z.object({
-          name: z.string().describe(
+          name: z.unknown().describe(
             "Output only. The resource name of the engine. Format: `projects/{project}/locations/{location}/collections/{collection}/engines/{engine}`",
           ).optional(),
-          type: z.enum([
-            "TYPE_UNSPECIFIED",
-            "ENGINE_TYPE_SEARCH",
-            "ENGINE_TYPE_CHAT",
-          ]).describe("Output only. The type of the engine.").optional(),
+          type: z.unknown().describe("Output only. The type of the engine.")
+            .optional(),
         })).describe("Output only. The engines for the app.").optional(),
       }).describe("Data store related settings for the app.").optional(),
       defaultChannelProfile: z.object({
@@ -407,16 +382,16 @@ const GlobalArgsSchema = z.object({
             "CHAT_VOICE_AND_VIDEO",
           ]).describe("Optional. The modality of the web widget.").optional(),
           securitySettings: z.object({
-            allowedOrigins: z.array(z.string()).describe(
+            allowedOrigins: z.unknown().describe(
               'Optional. The origins that are allowed to host the web widget. An origin is defined by RFC 6454. If empty, all origins are allowed. A maximum of 100 origins is allowed. Example: "https://example.com"',
             ).optional(),
-            enableOriginCheck: z.boolean().describe(
+            enableOriginCheck: z.unknown().describe(
               "Optional. Indicates whether origin check for the web widget is enabled. If `true`, the web widget will check the origin of the website that loads the web widget and only allow it to be loaded in the same origin or any of the allowed origins.",
             ).optional(),
-            enablePublicAccess: z.boolean().describe(
+            enablePublicAccess: z.unknown().describe(
               "Optional. Indicates whether public access to the web widget is enabled. If `true`, the web widget will be publicly accessible. If `false`, the web widget must be integrated with your own authentication and authorization system to return valid credentials for accessing the CES agent.",
             ).optional(),
-            enableRecaptcha: z.boolean().describe(
+            enableRecaptcha: z.unknown().describe(
               "Optional. Indicates whether reCAPTCHA verification for the web widget is enabled.",
             ).optional(),
           }).describe("Security settings for the web widget.").optional(),
@@ -455,31 +430,23 @@ const GlobalArgsSchema = z.object({
       evaluationMetricsThresholds: z.object({
         goldenEvaluationMetricsThresholds: z.object({
           expectationLevelMetricsThresholds: z.object({
-            toolInvocationParameterCorrectnessThreshold: z.number().describe(
+            toolInvocationParameterCorrectnessThreshold: z.unknown().describe(
               "Optional. The success threshold for individual tool invocation parameter correctness. Must be a float between 0 and 1. Default is 1.0.",
             ).optional(),
           }).describe("Expectation level metrics thresholds.").optional(),
           toolMatchingSettings: z.object({
-            extraToolCallBehavior: z.enum([
-              "EXTRA_TOOL_CALL_BEHAVIOR_UNSPECIFIED",
-              "FAIL",
-              "ALLOW",
-            ]).describe(
+            extraToolCallBehavior: z.unknown().describe(
               "Optional. Behavior for extra tool calls. Defaults to FAIL.",
             ).optional(),
           }).describe("Settings for matching tool calls.").optional(),
           turnLevelMetricsThresholds: z.object({
-            overallToolInvocationCorrectnessThreshold: z.number().describe(
+            overallToolInvocationCorrectnessThreshold: z.unknown().describe(
               "Optional. The success threshold for overall tool invocation correctness. Must be a float between 0 and 1. Default is 1.0.",
             ).optional(),
-            semanticSimilarityChannel: z.enum([
-              "SEMANTIC_SIMILARITY_CHANNEL_UNSPECIFIED",
-              "TEXT",
-              "AUDIO",
-            ]).describe(
+            semanticSimilarityChannel: z.unknown().describe(
               "Optional. The semantic similarity channel to use for evaluation.",
             ).optional(),
-            semanticSimilaritySuccessThreshold: z.number().int().describe(
+            semanticSimilaritySuccessThreshold: z.unknown().describe(
               "Optional. The success threshold for semantic similarity. Must be an integer between 0 and 4. Default is >= 3.",
             ).optional(),
           }).describe("Turn level metrics thresholds.").optional(),
@@ -627,63 +594,57 @@ const GlobalArgsSchema = z.object({
           "Required. The name of the variable. The name must start with a letter or underscore and contain only letters, numbers, or underscores.",
         ).optional(),
         schema: z.object({
-          additionalProperties: z.string().describe(
+          additionalProperties: z.unknown().describe(
             "Circular reference to Schema",
           ).optional(),
-          anyOf: z.array(z.string()).describe(
+          anyOf: z.unknown().describe(
             "Optional. The value should be validated against any (one or more) of the subschemas in the list.",
           ).optional(),
-          default: z.string().describe("Optional. Default value of the data.")
+          default: z.unknown().describe("Optional. Default value of the data.")
             .optional(),
-          defs: z.record(z.string(), z.string()).describe(
+          defs: z.unknown().describe(
             "Optional. A map of definitions for use by `ref`. Only allowed at the root of the schema.",
           ).optional(),
-          description: z.string().describe(
+          description: z.unknown().describe(
             "Optional. The description of the data.",
           ).optional(),
-          enum: z.array(z.string()).describe(
+          enum: z.unknown().describe(
             'Optional. Possible values of the element of primitive type with enum format. Examples: 1. We can define direction as: {type:STRING, format:enum, enum:["EAST", NORTH", "SOUTH", "WEST"]} 2. We can define apartment number as: {type:INTEGER, format:enum, enum:["101", "201", "301"]}',
           ).optional(),
-          items: z.string().describe("Circular reference to Schema").optional(),
-          maxItems: z.string().describe(
+          items: z.unknown().describe("Circular reference to Schema")
+            .optional(),
+          maxItems: z.unknown().describe(
             "Optional. Maximum number of the elements for Type.ARRAY.",
           ).optional(),
-          maximum: z.number().describe(
+          maximum: z.unknown().describe(
             "Optional. Maximum value for Type.INTEGER and Type.NUMBER.",
           ).optional(),
-          minItems: z.string().describe(
+          minItems: z.unknown().describe(
             "Optional. Minimum number of the elements for Type.ARRAY.",
           ).optional(),
-          minimum: z.number().describe(
+          minimum: z.unknown().describe(
             "Optional. Minimum value for Type.INTEGER and Type.NUMBER.",
           ).optional(),
-          nullable: z.boolean().describe(
+          nullable: z.unknown().describe(
             "Optional. Indicates if the value may be null.",
           ).optional(),
-          prefixItems: z.array(z.string()).describe(
+          prefixItems: z.unknown().describe(
             "Optional. Schemas of initial elements of Type.ARRAY.",
           ).optional(),
-          properties: z.record(z.string(), z.string()).describe(
+          properties: z.unknown().describe(
             "Optional. Properties of Type.OBJECT.",
           ).optional(),
-          ref: z.string().describe(
+          ref: z.unknown().describe(
             'Optional. Allows indirect references between schema nodes. The value should be a valid reference to a child of the root `defs`. For example, the following schema defines a reference to a schema node named "Pet": ` type: object properties: pet: ref: #/defs/Pet defs: Pet: type: object properties: name: type: string ` The value of the "pet" property is a reference to the schema node named "Pet". See details in https://json-schema.org/understanding-json-schema/structuring.',
           ).optional(),
-          required: z.array(z.string()).describe(
+          required: z.unknown().describe(
             "Optional. Required properties of Type.OBJECT.",
           ).optional(),
-          title: z.string().describe("Optional. The title of the schema.")
+          title: z.unknown().describe("Optional. The title of the schema.")
             .optional(),
-          type: z.enum([
-            "TYPE_UNSPECIFIED",
-            "STRING",
-            "INTEGER",
-            "NUMBER",
-            "BOOLEAN",
-            "OBJECT",
-            "ARRAY",
-          ]).describe("Required. The type of the data.").optional(),
-          uniqueItems: z.boolean().describe(
+          type: z.unknown().describe("Required. The type of the data.")
+            .optional(),
+          uniqueItems: z.unknown().describe(
             "Optional. Indicate the items in the array must be unique. Only applies to TYPE.ARRAY.",
           ).optional(),
         }).describe(
@@ -718,63 +679,57 @@ const GlobalArgsSchema = z.object({
           "Required. The name of the variable. The name must start with a letter or underscore and contain only letters, numbers, or underscores.",
         ).optional(),
         schema: z.object({
-          additionalProperties: z.string().describe(
+          additionalProperties: z.unknown().describe(
             "Circular reference to Schema",
           ).optional(),
-          anyOf: z.array(z.string()).describe(
+          anyOf: z.unknown().describe(
             "Optional. The value should be validated against any (one or more) of the subschemas in the list.",
           ).optional(),
-          default: z.string().describe("Optional. Default value of the data.")
+          default: z.unknown().describe("Optional. Default value of the data.")
             .optional(),
-          defs: z.record(z.string(), z.string()).describe(
+          defs: z.unknown().describe(
             "Optional. A map of definitions for use by `ref`. Only allowed at the root of the schema.",
           ).optional(),
-          description: z.string().describe(
+          description: z.unknown().describe(
             "Optional. The description of the data.",
           ).optional(),
-          enum: z.array(z.string()).describe(
+          enum: z.unknown().describe(
             'Optional. Possible values of the element of primitive type with enum format. Examples: 1. We can define direction as: {type:STRING, format:enum, enum:["EAST", NORTH", "SOUTH", "WEST"]} 2. We can define apartment number as: {type:INTEGER, format:enum, enum:["101", "201", "301"]}',
           ).optional(),
-          items: z.string().describe("Circular reference to Schema").optional(),
-          maxItems: z.string().describe(
+          items: z.unknown().describe("Circular reference to Schema")
+            .optional(),
+          maxItems: z.unknown().describe(
             "Optional. Maximum number of the elements for Type.ARRAY.",
           ).optional(),
-          maximum: z.number().describe(
+          maximum: z.unknown().describe(
             "Optional. Maximum value for Type.INTEGER and Type.NUMBER.",
           ).optional(),
-          minItems: z.string().describe(
+          minItems: z.unknown().describe(
             "Optional. Minimum number of the elements for Type.ARRAY.",
           ).optional(),
-          minimum: z.number().describe(
+          minimum: z.unknown().describe(
             "Optional. Minimum value for Type.INTEGER and Type.NUMBER.",
           ).optional(),
-          nullable: z.boolean().describe(
+          nullable: z.unknown().describe(
             "Optional. Indicates if the value may be null.",
           ).optional(),
-          prefixItems: z.array(z.string()).describe(
+          prefixItems: z.unknown().describe(
             "Optional. Schemas of initial elements of Type.ARRAY.",
           ).optional(),
-          properties: z.record(z.string(), z.string()).describe(
+          properties: z.unknown().describe(
             "Optional. Properties of Type.OBJECT.",
           ).optional(),
-          ref: z.string().describe(
+          ref: z.unknown().describe(
             'Optional. Allows indirect references between schema nodes. The value should be a valid reference to a child of the root `defs`. For example, the following schema defines a reference to a schema node named "Pet": ` type: object properties: pet: ref: #/defs/Pet defs: Pet: type: object properties: name: type: string ` The value of the "pet" property is a reference to the schema node named "Pet". See details in https://json-schema.org/understanding-json-schema/structuring.',
           ).optional(),
-          required: z.array(z.string()).describe(
+          required: z.unknown().describe(
             "Optional. Required properties of Type.OBJECT.",
           ).optional(),
-          title: z.string().describe("Optional. The title of the schema.")
+          title: z.unknown().describe("Optional. The title of the schema.")
             .optional(),
-          type: z.enum([
-            "TYPE_UNSPECIFIED",
-            "STRING",
-            "INTEGER",
-            "NUMBER",
-            "BOOLEAN",
-            "OBJECT",
-            "ARRAY",
-          ]).describe("Required. The type of the data.").optional(),
-          uniqueItems: z.boolean().describe(
+          type: z.unknown().describe("Required. The type of the data.")
+            .optional(),
+          uniqueItems: z.unknown().describe(
             "Optional. Indicate the items in the array must be unique. Only applies to TYPE.ARRAY.",
           ).optional(),
         }).describe(
@@ -803,101 +758,13 @@ const GlobalArgsSchema = z.object({
         "Output only. The example may become invalid if referencing resources are deleted. Invalid examples will not be used as few-shot examples.",
       ).optional(),
       messages: z.array(z.object({
-        chunks: z.array(z.object({
-          agentTransfer: z.object({
-            displayName: z.string().describe(
-              "Output only. Display name of the agent.",
-            ).optional(),
-            targetAgent: z.string().describe(
-              "Required. The agent to which the conversation is being transferred. The agent will handle the conversation from this point forward. Format: `projects/{project}/locations/{location}/apps/{app}/agents/{agent}`",
-            ).optional(),
-          }).describe(
-            "Represents an event indicating the transfer of a conversation to a different agent.",
-          ).optional(),
-          blob: z.object({
-            data: z.string().describe("Required. Raw bytes of the blob.")
-              .optional(),
-            mimeType: z.string().describe(
-              "Required. The IANA standard MIME type of the source data.",
-            ).optional(),
-          }).describe("Represents a blob input or output in the conversation.")
-            .optional(),
-          defaultVariables: z.record(z.string(), z.string()).describe(
-            "A struct represents default variables at the start of the conversation, keyed by variable names.",
-          ).optional(),
-          image: z.object({
-            data: z.string().describe("Required. Raw bytes of the image.")
-              .optional(),
-            mimeType: z.string().describe(
-              "Required. The IANA standard MIME type of the source data. Supported image types includes: * image/png * image/jpeg * image/webp",
-            ).optional(),
-          }).describe(
-            "Represents an image input or output in the conversation.",
-          ).optional(),
-          payload: z.record(z.string(), z.string()).describe(
-            "Optional. Custom payload data.",
-          ).optional(),
-          text: z.string().describe("Optional. Text data.").optional(),
-          toolCall: z.object({
-            args: z.record(z.string(), z.string()).describe(
-              "Optional. The input parameters and values for the tool in JSON object format.",
-            ).optional(),
-            displayName: z.string().describe(
-              "Output only. Display name of the tool.",
-            ).optional(),
-            id: z.string().describe(
-              "Optional. The unique identifier of the tool call. If populated, the client should return the execution result with the matching ID in ToolResponse.",
-            ).optional(),
-            tool: z.string().describe(
-              "Optional. The name of the tool to execute. Format: `projects/{project}/locations/{location}/apps/{app}/tools/{tool}`",
-            ).optional(),
-            toolsetTool: z.object({
-              toolId: z.string().describe(
-                "Optional. The tool ID to filter the tools to retrieve the schema for.",
-              ).optional(),
-              toolset: z.string().describe(
-                "Required. The resource name of the Toolset from which this tool is derived. Format: `projects/{project}/locations/{location}/apps/{app}/toolsets/{toolset}`",
-              ).optional(),
-            }).describe("A tool that is created from a toolset.").optional(),
-          }).describe(
-            "Request for the client or the agent to execute the specified tool.",
-          ).optional(),
-          toolResponse: z.object({
-            displayName: z.string().describe(
-              "Output only. Display name of the tool.",
-            ).optional(),
-            id: z.string().describe(
-              "Optional. The matching ID of the tool call the response is for.",
-            ).optional(),
-            response: z.record(z.string(), z.string()).describe(
-              'Required. The tool execution result in JSON object format. Use "output" key to specify tool response and "error" key to specify error details (if any). If "output" and "error" keys are not specified, then whole "response" is treated as tool execution result.',
-            ).optional(),
-            tool: z.string().describe(
-              "Optional. The name of the tool to execute. Format: `projects/{project}/locations/{location}/apps/{app}/tools/{tool}`",
-            ).optional(),
-            toolsetTool: z.object({
-              toolId: z.string().describe(
-                "Optional. The tool ID to filter the tools to retrieve the schema for.",
-              ).optional(),
-              toolset: z.string().describe(
-                "Required. The resource name of the Toolset from which this tool is derived. Format: `projects/{project}/locations/{location}/apps/{app}/toolsets/{toolset}`",
-              ).optional(),
-            }).describe("A tool that is created from a toolset.").optional(),
-          }).describe(
-            "The execution result of a specific tool from the client or the agent.",
-          ).optional(),
-          transcript: z.string().describe(
-            "Optional. Transcript associated with the audio.",
-          ).optional(),
-          updatedVariables: z.record(z.string(), z.string()).describe(
-            "A struct represents variables that were updated in the conversation, keyed by variable names.",
-          ).optional(),
-        })).describe("Optional. Content of the message as a series of chunks.")
-          .optional(),
-        eventTime: z.string().describe(
+        chunks: z.unknown().describe(
+          "Optional. Content of the message as a series of chunks.",
+        ).optional(),
+        eventTime: z.unknown().describe(
           "Optional. Timestamp when the message was sent or received. Should not be used if the message is part of an example.",
         ).optional(),
-        role: z.string().describe(
+        role: z.unknown().describe(
           "Optional. The role within the conversation, e.g., user, agent.",
         ).optional(),
       })).describe(
@@ -913,28 +780,21 @@ const GlobalArgsSchema = z.object({
     guardrails: z.array(z.object({
       action: z.object({
         generativeAnswer: z.object({
-          prompt: z.string().describe(
+          prompt: z.unknown().describe(
             "Required. The prompt to use for the generative answer.",
           ).optional(),
         }).describe(
           "The agent will immediately respond with a generative answer.",
         ).optional(),
         respondImmediately: z.object({
-          responses: z.array(z.object({
-            disabled: z.boolean().describe(
-              "Optional. Whether the response is disabled. Disabled responses are not used by the agent.",
-            ).optional(),
-            text: z.string().describe(
-              "Required. Text for the agent to respond with.",
-            ).optional(),
-          })).describe(
+          responses: z.unknown().describe(
             "Required. The canned responses for the agent to choose from. The response is chosen randomly.",
           ).optional(),
         }).describe(
           "The agent will immediately respond with a preconfigured response.",
         ).optional(),
         transferAgent: z.object({
-          agent: z.string().describe(
+          agent: z.unknown().describe(
             "Required. The name of the agent to transfer the conversation to. The agent must be in the same app as the current agent. Format: `projects/{project}/locations/{location}/apps/{app}/agents/{agent}`",
           ).optional(),
         }).describe(
@@ -944,64 +804,64 @@ const GlobalArgsSchema = z.object({
         .optional(),
       codeCallback: z.object({
         afterAgentCallback: z.object({
-          description: z.string().describe(
+          description: z.unknown().describe(
             "Optional. Human-readable description of the callback.",
           ).optional(),
-          disabled: z.boolean().describe(
+          disabled: z.unknown().describe(
             "Optional. Whether the callback is disabled. Disabled callbacks are ignored by the agent.",
           ).optional(),
-          proactiveExecutionEnabled: z.boolean().describe(
+          proactiveExecutionEnabled: z.unknown().describe(
             "Optional. If enabled, the callback will also be executed on intermediate model outputs. This setting only affects after model callback. **ENABLE WITH CAUTION**. Typically after model callback only needs to be executed after receiving all model responses. Enabling proactive execution may have negative implication on the execution cost and latency, and should only be enabled in rare situations.",
           ).optional(),
-          pythonCode: z.string().describe(
+          pythonCode: z.unknown().describe(
             "Required. The python code to execute for the callback.",
           ).optional(),
         }).describe(
           "A callback defines the custom logic to be executed at various stages of agent interaction.",
         ).optional(),
         afterModelCallback: z.object({
-          description: z.string().describe(
+          description: z.unknown().describe(
             "Optional. Human-readable description of the callback.",
           ).optional(),
-          disabled: z.boolean().describe(
+          disabled: z.unknown().describe(
             "Optional. Whether the callback is disabled. Disabled callbacks are ignored by the agent.",
           ).optional(),
-          proactiveExecutionEnabled: z.boolean().describe(
+          proactiveExecutionEnabled: z.unknown().describe(
             "Optional. If enabled, the callback will also be executed on intermediate model outputs. This setting only affects after model callback. **ENABLE WITH CAUTION**. Typically after model callback only needs to be executed after receiving all model responses. Enabling proactive execution may have negative implication on the execution cost and latency, and should only be enabled in rare situations.",
           ).optional(),
-          pythonCode: z.string().describe(
+          pythonCode: z.unknown().describe(
             "Required. The python code to execute for the callback.",
           ).optional(),
         }).describe(
           "A callback defines the custom logic to be executed at various stages of agent interaction.",
         ).optional(),
         beforeAgentCallback: z.object({
-          description: z.string().describe(
+          description: z.unknown().describe(
             "Optional. Human-readable description of the callback.",
           ).optional(),
-          disabled: z.boolean().describe(
+          disabled: z.unknown().describe(
             "Optional. Whether the callback is disabled. Disabled callbacks are ignored by the agent.",
           ).optional(),
-          proactiveExecutionEnabled: z.boolean().describe(
+          proactiveExecutionEnabled: z.unknown().describe(
             "Optional. If enabled, the callback will also be executed on intermediate model outputs. This setting only affects after model callback. **ENABLE WITH CAUTION**. Typically after model callback only needs to be executed after receiving all model responses. Enabling proactive execution may have negative implication on the execution cost and latency, and should only be enabled in rare situations.",
           ).optional(),
-          pythonCode: z.string().describe(
+          pythonCode: z.unknown().describe(
             "Required. The python code to execute for the callback.",
           ).optional(),
         }).describe(
           "A callback defines the custom logic to be executed at various stages of agent interaction.",
         ).optional(),
         beforeModelCallback: z.object({
-          description: z.string().describe(
+          description: z.unknown().describe(
             "Optional. Human-readable description of the callback.",
           ).optional(),
-          disabled: z.boolean().describe(
+          disabled: z.unknown().describe(
             "Optional. Whether the callback is disabled. Disabled callbacks are ignored by the agent.",
           ).optional(),
-          proactiveExecutionEnabled: z.boolean().describe(
+          proactiveExecutionEnabled: z.unknown().describe(
             "Optional. If enabled, the callback will also be executed on intermediate model outputs. This setting only affects after model callback. **ENABLE WITH CAUTION**. Typically after model callback only needs to be executed after receiving all model responses. Enabling proactive execution may have negative implication on the execution cost and latency, and should only be enabled in rare situations.",
           ).optional(),
-          pythonCode: z.string().describe(
+          pythonCode: z.unknown().describe(
             "Required. The python code to execute for the callback.",
           ).optional(),
         }).describe(
@@ -1011,13 +871,13 @@ const GlobalArgsSchema = z.object({
         "Guardrail that blocks the conversation based on the code callbacks provided.",
       ).optional(),
       contentFilter: z.object({
-        bannedContents: z.array(z.string()).describe(
+        bannedContents: z.array(z.unknown()).describe(
           "Optional. List of banned phrases. Applies to both user inputs and agent responses.",
         ).optional(),
-        bannedContentsInAgentResponse: z.array(z.string()).describe(
+        bannedContentsInAgentResponse: z.array(z.unknown()).describe(
           "Optional. List of banned phrases. Applies only to agent responses.",
         ).optional(),
-        bannedContentsInUserInput: z.array(z.string()).describe(
+        bannedContentsInUserInput: z.array(z.unknown()).describe(
           "Optional. List of banned phrases. Applies only to user inputs.",
         ).optional(),
         disregardDiacritics: z.boolean().describe(
@@ -1058,10 +918,10 @@ const GlobalArgsSchema = z.object({
           "Optional. When checking this policy, consider the last 'n' messages in the conversation. When not set a default value of 10 will be used.",
         ).optional(),
         modelSettings: z.object({
-          model: z.string().describe(
+          model: z.unknown().describe(
             "Optional. The LLM model that the agent should use. If not set, the agent will inherit the model from its parent agent.",
           ).optional(),
-          temperature: z.number().describe(
+          temperature: z.unknown().describe(
             "Optional. If set, this temperature will be used for the LLM model. Temperature controls the randomness of the model's responses. Lower temperatures produce responses that are more predictable. Higher temperatures produce responses that are more creative.",
           ).optional(),
         }).describe(
@@ -1081,39 +941,27 @@ const GlobalArgsSchema = z.object({
       ).optional(),
       llmPromptSecurity: z.object({
         customPolicy: z.object({
-          allowShortUtterance: z.boolean().describe(
+          allowShortUtterance: z.unknown().describe(
             "Optional. By default, the LLM policy check is bypassed for short utterances. Enabling this setting applies the policy check to all utterances, including those that would normally be skipped.",
           ).optional(),
-          failOpen: z.boolean().describe(
+          failOpen: z.unknown().describe(
             "Optional. If an error occurs during the policy check, fail open and do not trigger the guardrail.",
           ).optional(),
-          maxConversationMessages: z.number().int().describe(
+          maxConversationMessages: z.unknown().describe(
             "Optional. When checking this policy, consider the last 'n' messages in the conversation. When not set a default value of 10 will be used.",
           ).optional(),
-          modelSettings: z.object({
-            model: z.string().describe(
-              "Optional. The LLM model that the agent should use. If not set, the agent will inherit the model from its parent agent.",
-            ).optional(),
-            temperature: z.number().describe(
-              "Optional. If set, this temperature will be used for the LLM model. Temperature controls the randomness of the model's responses. Lower temperatures produce responses that are more predictable. Higher temperatures produce responses that are more creative.",
-            ).optional(),
-          }).describe(
+          modelSettings: z.unknown().describe(
             "Model settings contains various configurations for the LLM model.",
           ).optional(),
-          policyScope: z.enum([
-            "POLICY_SCOPE_UNSPECIFIED",
-            "USER_QUERY",
-            "AGENT_RESPONSE",
-            "USER_QUERY_AND_AGENT_RESPONSE",
-          ]).describe(
+          policyScope: z.unknown().describe(
             "Required. Defines when to apply the policy check during the conversation. If set to `POLICY_SCOPE_UNSPECIFIED`, the policy will be applied to the user input. When applying the policy to the agent response, additional latency will be introduced before the agent can respond.",
           ).optional(),
-          prompt: z.string().describe("Required. Policy prompt.").optional(),
+          prompt: z.unknown().describe("Required. Policy prompt.").optional(),
         }).describe(
           "Guardrail that blocks the conversation if the LLM response is considered violating the policy based on the LLM classification.",
         ).optional(),
         defaultSettings: z.object({
-          defaultPromptTemplate: z.string().describe(
+          defaultPromptTemplate: z.unknown().describe(
             "Output only. The default prompt template used by the system. This field is for display purposes to show the user what prompt the system uses by default. It is OUTPUT_ONLY.",
           ).optional(),
         }).describe("Configuration for default system security settings.")
@@ -1125,23 +973,9 @@ const GlobalArgsSchema = z.object({
         "Guardrail that blocks the conversation if the input is considered unsafe based on the LLM classification.",
       ).optional(),
       modelSafety: z.object({
-        safetySettings: z.array(z.object({
-          category: z.enum([
-            "HARM_CATEGORY_UNSPECIFIED",
-            "HARM_CATEGORY_HATE_SPEECH",
-            "HARM_CATEGORY_DANGEROUS_CONTENT",
-            "HARM_CATEGORY_HARASSMENT",
-            "HARM_CATEGORY_SEXUALLY_EXPLICIT",
-          ]).describe("Required. The harm category.").optional(),
-          threshold: z.enum([
-            "HARM_BLOCK_THRESHOLD_UNSPECIFIED",
-            "BLOCK_LOW_AND_ABOVE",
-            "BLOCK_MEDIUM_AND_ABOVE",
-            "BLOCK_ONLY_HIGH",
-            "BLOCK_NONE",
-            "OFF",
-          ]).describe("Required. The harm block threshold.").optional(),
-        })).describe("Required. List of safety settings.").optional(),
+        safetySettings: z.array(z.unknown()).describe(
+          "Required. List of safety settings.",
+        ).optional(),
       }).describe(
         "Model safety settings overrides. When this is set, it will override the default settings and trigger the guardrail if the response is considered unsafe.",
       ).optional(),
@@ -1170,126 +1004,114 @@ const GlobalArgsSchema = z.object({
           .optional(),
         name: z.string().describe("Required. The function name.").optional(),
         parameters: z.object({
-          additionalProperties: z.string().describe(
+          additionalProperties: z.unknown().describe(
             "Circular reference to Schema",
           ).optional(),
-          anyOf: z.array(z.string()).describe(
+          anyOf: z.unknown().describe(
             "Optional. The value should be validated against any (one or more) of the subschemas in the list.",
           ).optional(),
-          default: z.string().describe("Optional. Default value of the data.")
+          default: z.unknown().describe("Optional. Default value of the data.")
             .optional(),
-          defs: z.record(z.string(), z.string()).describe(
+          defs: z.unknown().describe(
             "Optional. A map of definitions for use by `ref`. Only allowed at the root of the schema.",
           ).optional(),
-          description: z.string().describe(
+          description: z.unknown().describe(
             "Optional. The description of the data.",
           ).optional(),
-          enum: z.array(z.string()).describe(
+          enum: z.unknown().describe(
             'Optional. Possible values of the element of primitive type with enum format. Examples: 1. We can define direction as: {type:STRING, format:enum, enum:["EAST", NORTH", "SOUTH", "WEST"]} 2. We can define apartment number as: {type:INTEGER, format:enum, enum:["101", "201", "301"]}',
           ).optional(),
-          items: z.string().describe("Circular reference to Schema").optional(),
-          maxItems: z.string().describe(
+          items: z.unknown().describe("Circular reference to Schema")
+            .optional(),
+          maxItems: z.unknown().describe(
             "Optional. Maximum number of the elements for Type.ARRAY.",
           ).optional(),
-          maximum: z.number().describe(
+          maximum: z.unknown().describe(
             "Optional. Maximum value for Type.INTEGER and Type.NUMBER.",
           ).optional(),
-          minItems: z.string().describe(
+          minItems: z.unknown().describe(
             "Optional. Minimum number of the elements for Type.ARRAY.",
           ).optional(),
-          minimum: z.number().describe(
+          minimum: z.unknown().describe(
             "Optional. Minimum value for Type.INTEGER and Type.NUMBER.",
           ).optional(),
-          nullable: z.boolean().describe(
+          nullable: z.unknown().describe(
             "Optional. Indicates if the value may be null.",
           ).optional(),
-          prefixItems: z.array(z.string()).describe(
+          prefixItems: z.unknown().describe(
             "Optional. Schemas of initial elements of Type.ARRAY.",
           ).optional(),
-          properties: z.record(z.string(), z.string()).describe(
+          properties: z.unknown().describe(
             "Optional. Properties of Type.OBJECT.",
           ).optional(),
-          ref: z.string().describe(
+          ref: z.unknown().describe(
             'Optional. Allows indirect references between schema nodes. The value should be a valid reference to a child of the root `defs`. For example, the following schema defines a reference to a schema node named "Pet": ` type: object properties: pet: ref: #/defs/Pet defs: Pet: type: object properties: name: type: string ` The value of the "pet" property is a reference to the schema node named "Pet". See details in https://json-schema.org/understanding-json-schema/structuring.',
           ).optional(),
-          required: z.array(z.string()).describe(
+          required: z.unknown().describe(
             "Optional. Required properties of Type.OBJECT.",
           ).optional(),
-          title: z.string().describe("Optional. The title of the schema.")
+          title: z.unknown().describe("Optional. The title of the schema.")
             .optional(),
-          type: z.enum([
-            "TYPE_UNSPECIFIED",
-            "STRING",
-            "INTEGER",
-            "NUMBER",
-            "BOOLEAN",
-            "OBJECT",
-            "ARRAY",
-          ]).describe("Required. The type of the data.").optional(),
-          uniqueItems: z.boolean().describe(
+          type: z.unknown().describe("Required. The type of the data.")
+            .optional(),
+          uniqueItems: z.unknown().describe(
             "Optional. Indicate the items in the array must be unique. Only applies to TYPE.ARRAY.",
           ).optional(),
         }).describe(
           "Represents a select subset of an OpenAPI 3.0 schema object.",
         ).optional(),
         response: z.object({
-          additionalProperties: z.string().describe(
+          additionalProperties: z.unknown().describe(
             "Circular reference to Schema",
           ).optional(),
-          anyOf: z.array(z.string()).describe(
+          anyOf: z.unknown().describe(
             "Optional. The value should be validated against any (one or more) of the subschemas in the list.",
           ).optional(),
-          default: z.string().describe("Optional. Default value of the data.")
+          default: z.unknown().describe("Optional. Default value of the data.")
             .optional(),
-          defs: z.record(z.string(), z.string()).describe(
+          defs: z.unknown().describe(
             "Optional. A map of definitions for use by `ref`. Only allowed at the root of the schema.",
           ).optional(),
-          description: z.string().describe(
+          description: z.unknown().describe(
             "Optional. The description of the data.",
           ).optional(),
-          enum: z.array(z.string()).describe(
+          enum: z.unknown().describe(
             'Optional. Possible values of the element of primitive type with enum format. Examples: 1. We can define direction as: {type:STRING, format:enum, enum:["EAST", NORTH", "SOUTH", "WEST"]} 2. We can define apartment number as: {type:INTEGER, format:enum, enum:["101", "201", "301"]}',
           ).optional(),
-          items: z.string().describe("Circular reference to Schema").optional(),
-          maxItems: z.string().describe(
+          items: z.unknown().describe("Circular reference to Schema")
+            .optional(),
+          maxItems: z.unknown().describe(
             "Optional. Maximum number of the elements for Type.ARRAY.",
           ).optional(),
-          maximum: z.number().describe(
+          maximum: z.unknown().describe(
             "Optional. Maximum value for Type.INTEGER and Type.NUMBER.",
           ).optional(),
-          minItems: z.string().describe(
+          minItems: z.unknown().describe(
             "Optional. Minimum number of the elements for Type.ARRAY.",
           ).optional(),
-          minimum: z.number().describe(
+          minimum: z.unknown().describe(
             "Optional. Minimum value for Type.INTEGER and Type.NUMBER.",
           ).optional(),
-          nullable: z.boolean().describe(
+          nullable: z.unknown().describe(
             "Optional. Indicates if the value may be null.",
           ).optional(),
-          prefixItems: z.array(z.string()).describe(
+          prefixItems: z.unknown().describe(
             "Optional. Schemas of initial elements of Type.ARRAY.",
           ).optional(),
-          properties: z.record(z.string(), z.string()).describe(
+          properties: z.unknown().describe(
             "Optional. Properties of Type.OBJECT.",
           ).optional(),
-          ref: z.string().describe(
+          ref: z.unknown().describe(
             'Optional. Allows indirect references between schema nodes. The value should be a valid reference to a child of the root `defs`. For example, the following schema defines a reference to a schema node named "Pet": ` type: object properties: pet: ref: #/defs/Pet defs: Pet: type: object properties: name: type: string ` The value of the "pet" property is a reference to the schema node named "Pet". See details in https://json-schema.org/understanding-json-schema/structuring.',
           ).optional(),
-          required: z.array(z.string()).describe(
+          required: z.unknown().describe(
             "Optional. Required properties of Type.OBJECT.",
           ).optional(),
-          title: z.string().describe("Optional. The title of the schema.")
+          title: z.unknown().describe("Optional. The title of the schema.")
             .optional(),
-          type: z.enum([
-            "TYPE_UNSPECIFIED",
-            "STRING",
-            "INTEGER",
-            "NUMBER",
-            "BOOLEAN",
-            "OBJECT",
-            "ARRAY",
-          ]).describe("Required. The type of the data.").optional(),
-          uniqueItems: z.boolean().describe(
+          type: z.unknown().describe("Required. The type of the data.")
+            .optional(),
+          uniqueItems: z.unknown().describe(
             "Optional. Indicate the items in the array must be unique. Only applies to TYPE.ARRAY.",
           ).optional(),
         }).describe(
@@ -1300,50 +1122,26 @@ const GlobalArgsSchema = z.object({
       ).optional(),
       connectorTool: z.object({
         action: z.object({
-          connectionActionId: z.string().describe(
+          connectionActionId: z.unknown().describe(
             "ID of a Connection action for the tool to use.",
           ).optional(),
-          entityOperation: z.object({
-            entityId: z.string().describe("Required. ID of the entity.")
-              .optional(),
-            operation: z.enum([
-              "OPERATION_TYPE_UNSPECIFIED",
-              "LIST",
-              "GET",
-              "CREATE",
-              "UPDATE",
-              "DELETE",
-            ]).describe("Required. Operation to perform on the entity.")
-              .optional(),
-          }).describe("Entity CRUD operation specification.").optional(),
-          inputFields: z.array(z.string()).describe(
+          entityOperation: z.unknown().describe(
+            "Entity CRUD operation specification.",
+          ).optional(),
+          inputFields: z.unknown().describe(
             "Optional. Entity fields to use as inputs for the operation. If no fields are specified, all fields of the Entity will be used.",
           ).optional(),
-          outputFields: z.array(z.string()).describe(
+          outputFields: z.unknown().describe(
             "Optional. Entity fields to return from the operation. If no fields are specified, all fields of the Entity will be returned.",
           ).optional(),
         }).describe(
           "Configuration of an Action for the tool to use. Note: This can be either an Action or an Operation. See https://cloud.google.com/integration-connectors/docs/entities-operation-action for details.",
         ).optional(),
         authConfig: z.object({
-          oauth2AuthCodeConfig: z.object({
-            oauthToken: z.string().describe(
-              "Required. Oauth token parameter name to pass through. Must be in the format `$context.variables.`.",
-            ).optional(),
-          }).describe(
+          oauth2AuthCodeConfig: z.unknown().describe(
             "Oauth 2.0 Authorization Code authentication configuration.",
           ).optional(),
-          oauth2JwtBearerConfig: z.object({
-            clientKey: z.string().describe(
-              "Required. Client parameter name to pass through. Must be in the format `$context.variables.`.",
-            ).optional(),
-            issuer: z.string().describe(
-              "Required. Issuer parameter name to pass through. Must be in the format `$context.variables.`.",
-            ).optional(),
-            subject: z.string().describe(
-              "Required. Subject parameter name to pass through. Must be in the format `$context.variables.`.",
-            ).optional(),
-          }).describe(
+          oauth2JwtBearerConfig: z.unknown().describe(
             "JWT Profile Oauth 2.0 Authorization Grant authentication configuration.",
           ).optional(),
         }).describe(
@@ -1365,96 +1163,14 @@ const GlobalArgsSchema = z.object({
         "Output only. Timestamp when the tool was created.",
       ).optional(),
       dataStoreTool: z.object({
-        boostSpecs: z.array(z.object({
-          dataStores: z.array(z.string()).describe(
-            "Required. The Data Store where the boosting configuration is applied. Full resource name of DataStore, such as projects/{project}/locations/{location}/collections/{collection}/dataStores/{dataStore}.",
-          ).optional(),
-          spec: z.array(z.object({
-            conditionBoostSpecs: z.array(z.object({
-              boost: z.number().describe(
-                "Optional. Strength of the boost, which should be in [-1, 1]. Negative boost means demotion. Default is 0.0. Setting to 1.0 gives the suggestions a big promotion. However, it does not necessarily mean that the top result will be a boosted suggestion. Setting to -1.0 gives the suggestions a big demotion. However, other suggestions that are relevant might still be shown. Setting to 0.0 means no boost applied. The boosting condition is ignored.",
-              ).optional(),
-              boostControlSpec: z.object({
-                attributeType: z.enum([
-                  "ATTRIBUTE_TYPE_UNSPECIFIED",
-                  "NUMERICAL",
-                  "FRESHNESS",
-                ]).describe(
-                  "Optional. The attribute type to be used to determine the boost amount. The attribute value can be derived from the field value of the specified field_name. In the case of numerical it is straightforward i.e. attribute_value = numerical_field_value. In the case of freshness however, attribute_value = (time.now() - datetime_field_value).",
-                ).optional(),
-                controlPoints: z.array(z.object({
-                  attributeValue: z.string().describe(
-                    "Optional. Can be one of: 1. The numerical field value. 2. The duration spec for freshness: The value must be formatted as an XSD `dayTimeDuration` value (a restricted subset of an ISO 8601 duration value). The pattern for this is: `nDnM]`.",
-                  ).optional(),
-                  boostAmount: z.number().describe(
-                    "Optional. The value between -1 to 1 by which to boost the score if the attribute_value evaluates to the value specified above.",
-                  ).optional(),
-                })).describe(
-                  "Optional. The control points used to define the curve. The monotonic function (defined through the interpolation_type above) passes through the control points listed here.",
-                ).optional(),
-                fieldName: z.string().describe(
-                  "Optional. The name of the field whose value will be used to determine the boost amount.",
-                ).optional(),
-                interpolationType: z.enum([
-                  "INTERPOLATION_TYPE_UNSPECIFIED",
-                  "LINEAR",
-                ]).describe(
-                  "Optional. The interpolation type to be applied to connect the control points listed below.",
-                ).optional(),
-              }).describe(
-                "Specification for custom ranking based on customer specified attribute value. It provides more controls for customized ranking than the simple (condition, boost) combination above.",
-              ).optional(),
-              condition: z.string().describe(
-                'Required. An expression which specifies a boost condition. The syntax is the same as filter expression syntax. Currently, the only supported condition is a list of BCP-47 lang codes. Example: To boost suggestions in languages en or fr: (lang_code: ANY("en", "fr"))',
-              ).optional(),
-            })).describe("Required. A list of boosting specifications.")
-              .optional(),
-          })).describe("Required. A list of boosting specifications.")
-            .optional(),
-        })).describe(
+        boostSpecs: z.array(z.unknown()).describe(
           "Optional. Boost specification to boost certain documents.",
         ).optional(),
         dataStoreSource: z.object({
-          dataStore: z.object({
-            connectorConfig: z.object({
-              collection: z.string().describe(
-                "Resource name of the collection the data store belongs to.",
-              ).optional(),
-              collectionDisplayName: z.string().describe(
-                "Display name of the collection the data store belongs to.",
-              ).optional(),
-              dataSource: z.string().describe(
-                "The name of the data source. Example: `salesforce`, `jira`, `confluence`, `bigquery`.",
-              ).optional(),
-            }).describe("The connector config for the data store connection.")
-              .optional(),
-            createTime: z.string().describe(
-              "Output only. Timestamp when the data store was created.",
-            ).optional(),
-            displayName: z.string().describe(
-              "Output only. The display name of the data store.",
-            ).optional(),
-            documentProcessingMode: z.enum([
-              "DOCUMENT_PROCESSING_MODE_UNSPECIFIED",
-              "DOCUMENTS",
-              "CHUNKS",
-            ]).describe(
-              "Output only. The document processing mode for the data store connection. Only set for PUBLIC_WEB and UNSTRUCTURED data stores.",
-            ).optional(),
-            name: z.string().describe(
-              "Required. Full resource name of the DataStore. Format: `projects/{project}/locations/{location}/collections/{collection}/dataStores/{dataStore}`",
-            ).optional(),
-            type: z.enum([
-              "DATA_STORE_TYPE_UNSPECIFIED",
-              "PUBLIC_WEB",
-              "UNSTRUCTURED",
-              "FAQ",
-              "CONNECTOR",
-            ]).describe(
-              "Output only. The type of the data store. This field is readonly and populated by the server.",
-            ).optional(),
-          }).describe("A DataStore resource in Vertex AI Search.").optional(),
-          filter: z.string().describe(
+          dataStore: z.unknown().describe(
+            "A DataStore resource in Vertex AI Search.",
+          ).optional(),
+          filter: z.unknown().describe(
             "Optional. Filter specification for the DataStore. See: https://cloud.google.com/generative-ai-app-builder/docs/filter-search-metadata",
           ).optional(),
         }).describe("Configuration for searching within a specific DataStore.")
@@ -1462,56 +1178,13 @@ const GlobalArgsSchema = z.object({
         description: z.string().describe("Optional. The tool description.")
           .optional(),
         engineSource: z.object({
-          dataStoreSources: z.array(z.object({
-            dataStore: z.object({
-              connectorConfig: z.object({
-                collection: z.string().describe(
-                  "Resource name of the collection the data store belongs to.",
-                ).optional(),
-                collectionDisplayName: z.string().describe(
-                  "Display name of the collection the data store belongs to.",
-                ).optional(),
-                dataSource: z.string().describe(
-                  "The name of the data source. Example: `salesforce`, `jira`, `confluence`, `bigquery`.",
-                ).optional(),
-              }).describe("The connector config for the data store connection.")
-                .optional(),
-              createTime: z.string().describe(
-                "Output only. Timestamp when the data store was created.",
-              ).optional(),
-              displayName: z.string().describe(
-                "Output only. The display name of the data store.",
-              ).optional(),
-              documentProcessingMode: z.enum([
-                "DOCUMENT_PROCESSING_MODE_UNSPECIFIED",
-                "DOCUMENTS",
-                "CHUNKS",
-              ]).describe(
-                "Output only. The document processing mode for the data store connection. Only set for PUBLIC_WEB and UNSTRUCTURED data stores.",
-              ).optional(),
-              name: z.string().describe(
-                "Required. Full resource name of the DataStore. Format: `projects/{project}/locations/{location}/collections/{collection}/dataStores/{dataStore}`",
-              ).optional(),
-              type: z.enum([
-                "DATA_STORE_TYPE_UNSPECIFIED",
-                "PUBLIC_WEB",
-                "UNSTRUCTURED",
-                "FAQ",
-                "CONNECTOR",
-              ]).describe(
-                "Output only. The type of the data store. This field is readonly and populated by the server.",
-              ).optional(),
-            }).describe("A DataStore resource in Vertex AI Search.").optional(),
-            filter: z.string().describe(
-              "Optional. Filter specification for the DataStore. See: https://cloud.google.com/generative-ai-app-builder/docs/filter-search-metadata",
-            ).optional(),
-          })).describe(
+          dataStoreSources: z.unknown().describe(
             "Optional. Use to target specific DataStores within the Engine. If empty, the search applies to all DataStores associated with the Engine.",
           ).optional(),
-          engine: z.string().describe(
+          engine: z.unknown().describe(
             "Required. Full resource name of the Engine. Format: `projects/{project}/locations/{location}/collections/{collection}/engines/{engine}`",
           ).optional(),
-          filter: z.string().describe(
+          filter: z.unknown().describe(
             "Optional. A filter applied to the search across the Engine. Not relevant and not used if 'data_store_sources' is provided. See: https://cloud.google.com/generative-ai-app-builder/docs/filter-search-metadata",
           ).optional(),
         }).describe(
@@ -1522,55 +1195,9 @@ const GlobalArgsSchema = z.object({
           "ALWAYS_INCLUDE",
           "NEVER_INCLUDE",
         ]).describe("Optional. The filter parameter behavior.").optional(),
-        modalityConfigs: z.array(z.object({
-          groundingConfig: z.object({
-            disabled: z.boolean().describe(
-              "Optional. Whether grounding is disabled.",
-            ).optional(),
-            groundingLevel: z.number().describe(
-              "Optional. The groundedness threshold of the answer based on the retrieved sources. The value has a configurable range of [1, 5]. The level is used to threshold the groundedness of the answer, meaning that all responses with a groundedness score below the threshold will fall back to returning relevant snippets only. For example, a level of 3 means that the groundedness score must be 3 or higher for the response to be returned.",
-            ).optional(),
-          }).describe("Grounding configuration.").optional(),
-          modalityType: z.enum(["MODALITY_TYPE_UNSPECIFIED", "TEXT", "AUDIO"])
-            .describe("Required. The modality type.").optional(),
-          rewriterConfig: z.object({
-            disabled: z.boolean().describe(
-              "Optional. Whether the rewriter is disabled.",
-            ).optional(),
-            modelSettings: z.object({
-              model: z.string().describe(
-                "Optional. The LLM model that the agent should use. If not set, the agent will inherit the model from its parent agent.",
-              ).optional(),
-              temperature: z.number().describe(
-                "Optional. If set, this temperature will be used for the LLM model. Temperature controls the randomness of the model's responses. Lower temperatures produce responses that are more predictable. Higher temperatures produce responses that are more creative.",
-              ).optional(),
-            }).describe(
-              "Model settings contains various configurations for the LLM model.",
-            ).optional(),
-            prompt: z.string().describe(
-              "Optional. The prompt definition. If not set, default prompt will be used.",
-            ).optional(),
-          }).describe("Rewriter configuration.").optional(),
-          summarizationConfig: z.object({
-            disabled: z.boolean().describe(
-              "Optional. Whether summarization is disabled.",
-            ).optional(),
-            modelSettings: z.object({
-              model: z.string().describe(
-                "Optional. The LLM model that the agent should use. If not set, the agent will inherit the model from its parent agent.",
-              ).optional(),
-              temperature: z.number().describe(
-                "Optional. If set, this temperature will be used for the LLM model. Temperature controls the randomness of the model's responses. Lower temperatures produce responses that are more predictable. Higher temperatures produce responses that are more creative.",
-              ).optional(),
-            }).describe(
-              "Model settings contains various configurations for the LLM model.",
-            ).optional(),
-            prompt: z.string().describe(
-              "Optional. The prompt definition. If not set, default prompt will be used.",
-            ).optional(),
-          }).describe("Summarization configuration.").optional(),
-        })).describe("Optional. The modality configs for the data store.")
-          .optional(),
+        modalityConfigs: z.array(z.unknown()).describe(
+          "Optional. The modality configs for the data store.",
+        ).optional(),
         name: z.string().describe("Required. The data store tool name.")
           .optional(),
       }).describe(
@@ -1608,24 +1235,24 @@ const GlobalArgsSchema = z.object({
         "Output only. If the tool is generated by the LLM assistant, this field contains a descriptive summary of the generation.",
       ).optional(),
       googleSearchTool: z.object({
-        contextUrls: z.array(z.string()).describe(
+        contextUrls: z.array(z.unknown()).describe(
           'Optional. Content will be fetched directly from these URLs for context and grounding. Example: "https://example.com/path.html". A maximum of 20 URLs are allowed.',
         ).optional(),
         description: z.string().describe(
           "Optional. Description of the tool's purpose.",
         ).optional(),
-        excludeDomains: z.array(z.string()).describe(
+        excludeDomains: z.array(z.unknown()).describe(
           'Optional. List of domains to be excluded from the search results. Example: "example.com". A maximum of 2000 domains can be excluded.',
         ).optional(),
         name: z.string().describe("Required. The name of the tool.").optional(),
-        preferredDomains: z.array(z.string()).describe(
+        preferredDomains: z.array(z.unknown()).describe(
           'Optional. Specifies domains to restrict search results to. Example: "example.com", "another.site". A maximum of 20 domains can be specified.',
         ).optional(),
         promptConfig: z.object({
-          textPrompt: z.string().describe(
+          textPrompt: z.unknown().describe(
             "Optional. Defines the prompt used for the system instructions when interacting with the agent in chat conversations. If not set, default prompt will be used.",
           ).optional(),
-          voicePrompt: z.string().describe(
+          voicePrompt: z.unknown().describe(
             "Optional. Defines the prompt used for the system instructions when interacting with the agent in voice conversations. If not set, default prompt will be used.",
           ).optional(),
         }).describe(
@@ -1636,124 +1263,81 @@ const GlobalArgsSchema = z.object({
       ).optional(),
       mcpTool: z.object({
         apiAuthentication: z.object({
-          apiKeyConfig: z.object({
-            apiKeySecretVersion: z.string().describe(
-              "Required. The name of the SecretManager secret version resource storing the API key. Format: `projects/{project}/secrets/{secret}/versions/{version}` Note: You should grant `roles/secretmanager.secretAccessor` role to the CES service agent `service-@gcp-sa-ces.iam.gserviceaccount.com`.",
-            ).optional(),
-            keyName: z.string().describe(
-              'Required. The parameter name or the header name of the API key. E.g., If the API request is "https://example.com/act?X-Api-Key=", "X-Api-Key" would be the parameter name.',
-            ).optional(),
-            requestLocation: z.enum([
-              "REQUEST_LOCATION_UNSPECIFIED",
-              "HEADER",
-              "QUERY_STRING",
-            ]).describe("Required. Key location in the request.").optional(),
-          }).describe("Configurations for authentication with API key.")
-            .optional(),
-          bearerTokenConfig: z.object({
-            token: z.string().describe(
-              "Required. The bearer token. Must be in the format `$context.variables.`.",
-            ).optional(),
-          }).describe("Configurations for authentication with a bearer token.")
-            .optional(),
-          oauthConfig: z.object({
-            clientId: z.string().describe(
-              "Required. The client ID from the OAuth provider.",
-            ).optional(),
-            clientSecretVersion: z.string().describe(
-              "Required. The name of the SecretManager secret version resource storing the client secret. Format: `projects/{project}/secrets/{secret}/versions/{version}` Note: You should grant `roles/secretmanager.secretAccessor` role to the CES service agent `service-@gcp-sa-ces.iam.gserviceaccount.com`.",
-            ).optional(),
-            oauthGrantType: z.enum([
-              "OAUTH_GRANT_TYPE_UNSPECIFIED",
-              "CLIENT_CREDENTIAL",
-            ]).describe("Required. OAuth grant types.").optional(),
-            scopes: z.array(z.string()).describe(
-              "Optional. The OAuth scopes to grant.",
-            ).optional(),
-            tokenEndpoint: z.string().describe(
-              "Required. The token endpoint in the OAuth provider to exchange for an access token.",
-            ).optional(),
-          }).describe("Configurations for authentication with OAuth.")
-            .optional(),
-          serviceAccountAuthConfig: z.object({
-            scopes: z.array(z.string()).describe(
-              "Optional. The OAuth scopes to grant. If not specified, the default scope `https://www.googleapis.com/auth/cloud-platform` is used.",
-            ).optional(),
-            serviceAccount: z.string().describe(
-              "Required. The email address of the service account used for authentication. CES uses this service account to exchange an access token and the access token is then sent in the `Authorization` header of the request. The service account must have the `roles/iam.serviceAccountTokenCreator` role granted to the CES service agent `service-@gcp-sa-ces.iam.gserviceaccount.com`.",
-            ).optional(),
-          }).describe(
+          apiKeyConfig: z.unknown().describe(
+            "Configurations for authentication with API key.",
+          ).optional(),
+          bearerTokenConfig: z.unknown().describe(
+            "Configurations for authentication with a bearer token.",
+          ).optional(),
+          oauthConfig: z.unknown().describe(
+            "Configurations for authentication with OAuth.",
+          ).optional(),
+          serviceAccountAuthConfig: z.unknown().describe(
             "Configurations for authentication using a custom service account.",
           ).optional(),
-          serviceAgentIdTokenAuthConfig: z.object({}).describe(
+          serviceAgentIdTokenAuthConfig: z.unknown().describe(
             "Configurations for authentication with [ID token](https://cloud.google.com/docs/authentication/token-types#id) generated from service agent.",
           ).optional(),
         }).describe("Authentication information required for API calls.")
           .optional(),
-        customHeaders: z.record(z.string(), z.string()).describe(
+        customHeaders: z.record(z.string(), z.unknown()).describe(
           "Optional. The custom headers to send in the request to the MCP server. The values must be in the format `$context.variables.` and can be set in the session variables. See https://docs.cloud.google.com/customer-engagement-ai/conversational-agents/ps/tool/open-api#openapi-injection for more details.",
         ).optional(),
         description: z.string().describe(
           "Optional. The description of the MCP tool.",
         ).optional(),
         inputSchema: z.object({
-          additionalProperties: z.string().describe(
+          additionalProperties: z.unknown().describe(
             "Circular reference to Schema",
           ).optional(),
-          anyOf: z.array(z.string()).describe(
+          anyOf: z.unknown().describe(
             "Optional. The value should be validated against any (one or more) of the subschemas in the list.",
           ).optional(),
-          default: z.string().describe("Optional. Default value of the data.")
+          default: z.unknown().describe("Optional. Default value of the data.")
             .optional(),
-          defs: z.record(z.string(), z.string()).describe(
+          defs: z.unknown().describe(
             "Optional. A map of definitions for use by `ref`. Only allowed at the root of the schema.",
           ).optional(),
-          description: z.string().describe(
+          description: z.unknown().describe(
             "Optional. The description of the data.",
           ).optional(),
-          enum: z.array(z.string()).describe(
+          enum: z.unknown().describe(
             'Optional. Possible values of the element of primitive type with enum format. Examples: 1. We can define direction as: {type:STRING, format:enum, enum:["EAST", NORTH", "SOUTH", "WEST"]} 2. We can define apartment number as: {type:INTEGER, format:enum, enum:["101", "201", "301"]}',
           ).optional(),
-          items: z.string().describe("Circular reference to Schema").optional(),
-          maxItems: z.string().describe(
+          items: z.unknown().describe("Circular reference to Schema")
+            .optional(),
+          maxItems: z.unknown().describe(
             "Optional. Maximum number of the elements for Type.ARRAY.",
           ).optional(),
-          maximum: z.number().describe(
+          maximum: z.unknown().describe(
             "Optional. Maximum value for Type.INTEGER and Type.NUMBER.",
           ).optional(),
-          minItems: z.string().describe(
+          minItems: z.unknown().describe(
             "Optional. Minimum number of the elements for Type.ARRAY.",
           ).optional(),
-          minimum: z.number().describe(
+          minimum: z.unknown().describe(
             "Optional. Minimum value for Type.INTEGER and Type.NUMBER.",
           ).optional(),
-          nullable: z.boolean().describe(
+          nullable: z.unknown().describe(
             "Optional. Indicates if the value may be null.",
           ).optional(),
-          prefixItems: z.array(z.string()).describe(
+          prefixItems: z.unknown().describe(
             "Optional. Schemas of initial elements of Type.ARRAY.",
           ).optional(),
-          properties: z.record(z.string(), z.string()).describe(
+          properties: z.unknown().describe(
             "Optional. Properties of Type.OBJECT.",
           ).optional(),
-          ref: z.string().describe(
+          ref: z.unknown().describe(
             'Optional. Allows indirect references between schema nodes. The value should be a valid reference to a child of the root `defs`. For example, the following schema defines a reference to a schema node named "Pet": ` type: object properties: pet: ref: #/defs/Pet defs: Pet: type: object properties: name: type: string ` The value of the "pet" property is a reference to the schema node named "Pet". See details in https://json-schema.org/understanding-json-schema/structuring.',
           ).optional(),
-          required: z.array(z.string()).describe(
+          required: z.unknown().describe(
             "Optional. Required properties of Type.OBJECT.",
           ).optional(),
-          title: z.string().describe("Optional. The title of the schema.")
+          title: z.unknown().describe("Optional. The title of the schema.")
             .optional(),
-          type: z.enum([
-            "TYPE_UNSPECIFIED",
-            "STRING",
-            "INTEGER",
-            "NUMBER",
-            "BOOLEAN",
-            "OBJECT",
-            "ARRAY",
-          ]).describe("Required. The type of the data.").optional(),
-          uniqueItems: z.boolean().describe(
+          type: z.unknown().describe("Required. The type of the data.")
+            .optional(),
+          uniqueItems: z.unknown().describe(
             "Optional. Indicate the items in the array must be unique. Only applies to TYPE.ARRAY.",
           ).optional(),
         }).describe(
@@ -1762,63 +1346,57 @@ const GlobalArgsSchema = z.object({
         name: z.string().describe("Required. The name of the MCP tool.")
           .optional(),
         outputSchema: z.object({
-          additionalProperties: z.string().describe(
+          additionalProperties: z.unknown().describe(
             "Circular reference to Schema",
           ).optional(),
-          anyOf: z.array(z.string()).describe(
+          anyOf: z.unknown().describe(
             "Optional. The value should be validated against any (one or more) of the subschemas in the list.",
           ).optional(),
-          default: z.string().describe("Optional. Default value of the data.")
+          default: z.unknown().describe("Optional. Default value of the data.")
             .optional(),
-          defs: z.record(z.string(), z.string()).describe(
+          defs: z.unknown().describe(
             "Optional. A map of definitions for use by `ref`. Only allowed at the root of the schema.",
           ).optional(),
-          description: z.string().describe(
+          description: z.unknown().describe(
             "Optional. The description of the data.",
           ).optional(),
-          enum: z.array(z.string()).describe(
+          enum: z.unknown().describe(
             'Optional. Possible values of the element of primitive type with enum format. Examples: 1. We can define direction as: {type:STRING, format:enum, enum:["EAST", NORTH", "SOUTH", "WEST"]} 2. We can define apartment number as: {type:INTEGER, format:enum, enum:["101", "201", "301"]}',
           ).optional(),
-          items: z.string().describe("Circular reference to Schema").optional(),
-          maxItems: z.string().describe(
+          items: z.unknown().describe("Circular reference to Schema")
+            .optional(),
+          maxItems: z.unknown().describe(
             "Optional. Maximum number of the elements for Type.ARRAY.",
           ).optional(),
-          maximum: z.number().describe(
+          maximum: z.unknown().describe(
             "Optional. Maximum value for Type.INTEGER and Type.NUMBER.",
           ).optional(),
-          minItems: z.string().describe(
+          minItems: z.unknown().describe(
             "Optional. Minimum number of the elements for Type.ARRAY.",
           ).optional(),
-          minimum: z.number().describe(
+          minimum: z.unknown().describe(
             "Optional. Minimum value for Type.INTEGER and Type.NUMBER.",
           ).optional(),
-          nullable: z.boolean().describe(
+          nullable: z.unknown().describe(
             "Optional. Indicates if the value may be null.",
           ).optional(),
-          prefixItems: z.array(z.string()).describe(
+          prefixItems: z.unknown().describe(
             "Optional. Schemas of initial elements of Type.ARRAY.",
           ).optional(),
-          properties: z.record(z.string(), z.string()).describe(
+          properties: z.unknown().describe(
             "Optional. Properties of Type.OBJECT.",
           ).optional(),
-          ref: z.string().describe(
+          ref: z.unknown().describe(
             'Optional. Allows indirect references between schema nodes. The value should be a valid reference to a child of the root `defs`. For example, the following schema defines a reference to a schema node named "Pet": ` type: object properties: pet: ref: #/defs/Pet defs: Pet: type: object properties: name: type: string ` The value of the "pet" property is a reference to the schema node named "Pet". See details in https://json-schema.org/understanding-json-schema/structuring.',
           ).optional(),
-          required: z.array(z.string()).describe(
+          required: z.unknown().describe(
             "Optional. Required properties of Type.OBJECT.",
           ).optional(),
-          title: z.string().describe("Optional. The title of the schema.")
+          title: z.unknown().describe("Optional. The title of the schema.")
             .optional(),
-          type: z.enum([
-            "TYPE_UNSPECIFIED",
-            "STRING",
-            "INTEGER",
-            "NUMBER",
-            "BOOLEAN",
-            "OBJECT",
-            "ARRAY",
-          ]).describe("Required. The type of the data.").optional(),
-          uniqueItems: z.boolean().describe(
+          type: z.unknown().describe("Required. The type of the data.")
+            .optional(),
+          uniqueItems: z.unknown().describe(
             "Optional. Indicate the items in the array must be unique. Only applies to TYPE.ARRAY.",
           ).optional(),
         }).describe(
@@ -1828,20 +1406,13 @@ const GlobalArgsSchema = z.object({
           'Required. The server address of the MCP server, e.g., "https://example.com/mcp/". If the server is built with the MCP SDK, the url should be suffixed with "/mcp/". Only Streamable HTTP transport based servers are supported. This is the same as the server_address in the McpToolset. See https://modelcontextprotocol.io/specification/2025-03-26/basic/transports#streamable-http for more details.',
         ).optional(),
         serviceDirectoryConfig: z.object({
-          service: z.string().describe(
+          service: z.unknown().describe(
             "Required. The name of [Service Directory](https://cloud.google.com/service-directory) service. Format: `projects/{project}/locations/{location}/namespaces/{namespace}/services/{service}`. Location of the service directory must be the same as the location of the app.",
           ).optional(),
         }).describe("Configuration for tools using Service Directory.")
           .optional(),
         tlsConfig: z.object({
-          caCerts: z.array(z.object({
-            cert: z.string().describe(
-              'Required. The allowed custom CA certificates (in DER format) for HTTPS verification. This overrides the default SSL trust store. If this is empty or unspecified, CES will use Google\'s default trust store to verify certificates. N.B. Make sure the HTTPS server certificates are signed with "subject alt name". For instance a certificate can be self-signed using the following command: ` openssl x509 -req -days 200 -in example.com.csr \\ -signkey example.com.key \\ -out example.com.crt \\ -extfile <(printf "\\nsubjectAltName=\'DNS:www.example.com\'") `',
-            ).optional(),
-            displayName: z.string().describe(
-              "Required. The name of the allowed custom CA certificates. This can be used to disambiguate the custom CA certificates.",
-            ).optional(),
-          })).describe(
+          caCerts: z.unknown().describe(
             "Required. Specifies a list of allowed custom CA certificates for HTTPS verification.",
           ).optional(),
         }).describe("The TLS configuration.").optional(),
@@ -1853,56 +1424,19 @@ const GlobalArgsSchema = z.object({
       ).optional(),
       openApiTool: z.object({
         apiAuthentication: z.object({
-          apiKeyConfig: z.object({
-            apiKeySecretVersion: z.string().describe(
-              "Required. The name of the SecretManager secret version resource storing the API key. Format: `projects/{project}/secrets/{secret}/versions/{version}` Note: You should grant `roles/secretmanager.secretAccessor` role to the CES service agent `service-@gcp-sa-ces.iam.gserviceaccount.com`.",
-            ).optional(),
-            keyName: z.string().describe(
-              'Required. The parameter name or the header name of the API key. E.g., If the API request is "https://example.com/act?X-Api-Key=", "X-Api-Key" would be the parameter name.',
-            ).optional(),
-            requestLocation: z.enum([
-              "REQUEST_LOCATION_UNSPECIFIED",
-              "HEADER",
-              "QUERY_STRING",
-            ]).describe("Required. Key location in the request.").optional(),
-          }).describe("Configurations for authentication with API key.")
-            .optional(),
-          bearerTokenConfig: z.object({
-            token: z.string().describe(
-              "Required. The bearer token. Must be in the format `$context.variables.`.",
-            ).optional(),
-          }).describe("Configurations for authentication with a bearer token.")
-            .optional(),
-          oauthConfig: z.object({
-            clientId: z.string().describe(
-              "Required. The client ID from the OAuth provider.",
-            ).optional(),
-            clientSecretVersion: z.string().describe(
-              "Required. The name of the SecretManager secret version resource storing the client secret. Format: `projects/{project}/secrets/{secret}/versions/{version}` Note: You should grant `roles/secretmanager.secretAccessor` role to the CES service agent `service-@gcp-sa-ces.iam.gserviceaccount.com`.",
-            ).optional(),
-            oauthGrantType: z.enum([
-              "OAUTH_GRANT_TYPE_UNSPECIFIED",
-              "CLIENT_CREDENTIAL",
-            ]).describe("Required. OAuth grant types.").optional(),
-            scopes: z.array(z.string()).describe(
-              "Optional. The OAuth scopes to grant.",
-            ).optional(),
-            tokenEndpoint: z.string().describe(
-              "Required. The token endpoint in the OAuth provider to exchange for an access token.",
-            ).optional(),
-          }).describe("Configurations for authentication with OAuth.")
-            .optional(),
-          serviceAccountAuthConfig: z.object({
-            scopes: z.array(z.string()).describe(
-              "Optional. The OAuth scopes to grant. If not specified, the default scope `https://www.googleapis.com/auth/cloud-platform` is used.",
-            ).optional(),
-            serviceAccount: z.string().describe(
-              "Required. The email address of the service account used for authentication. CES uses this service account to exchange an access token and the access token is then sent in the `Authorization` header of the request. The service account must have the `roles/iam.serviceAccountTokenCreator` role granted to the CES service agent `service-@gcp-sa-ces.iam.gserviceaccount.com`.",
-            ).optional(),
-          }).describe(
+          apiKeyConfig: z.unknown().describe(
+            "Configurations for authentication with API key.",
+          ).optional(),
+          bearerTokenConfig: z.unknown().describe(
+            "Configurations for authentication with a bearer token.",
+          ).optional(),
+          oauthConfig: z.unknown().describe(
+            "Configurations for authentication with OAuth.",
+          ).optional(),
+          serviceAccountAuthConfig: z.unknown().describe(
             "Configurations for authentication using a custom service account.",
           ).optional(),
-          serviceAgentIdTokenAuthConfig: z.object({}).describe(
+          serviceAgentIdTokenAuthConfig: z.unknown().describe(
             "Configurations for authentication with [ID token](https://cloud.google.com/docs/authentication/token-types#id) generated from service agent.",
           ).optional(),
         }).describe("Authentication information required for API calls.")
@@ -1920,20 +1454,13 @@ const GlobalArgsSchema = z.object({
           "Required. The OpenAPI schema in JSON or YAML format.",
         ).optional(),
         serviceDirectoryConfig: z.object({
-          service: z.string().describe(
+          service: z.unknown().describe(
             "Required. The name of [Service Directory](https://cloud.google.com/service-directory) service. Format: `projects/{project}/locations/{location}/namespaces/{namespace}/services/{service}`. Location of the service directory must be the same as the location of the app.",
           ).optional(),
         }).describe("Configuration for tools using Service Directory.")
           .optional(),
         tlsConfig: z.object({
-          caCerts: z.array(z.object({
-            cert: z.string().describe(
-              'Required. The allowed custom CA certificates (in DER format) for HTTPS verification. This overrides the default SSL trust store. If this is empty or unspecified, CES will use Google\'s default trust store to verify certificates. N.B. Make sure the HTTPS server certificates are signed with "subject alt name". For instance a certificate can be self-signed using the following command: ` openssl x509 -req -days 200 -in example.com.csr \\ -signkey example.com.key \\ -out example.com.crt \\ -extfile <(printf "\\nsubjectAltName=\'DNS:www.example.com\'") `',
-            ).optional(),
-            displayName: z.string().describe(
-              "Required. The name of the allowed custom CA certificates. This can be used to disambiguate the custom CA certificates.",
-            ).optional(),
-          })).describe(
+          caCerts: z.unknown().describe(
             "Required. Specifies a list of allowed custom CA certificates for HTTPS verification.",
           ).optional(),
         }).describe("The TLS configuration.").optional(),
@@ -1961,7 +1488,7 @@ const GlobalArgsSchema = z.object({
       }).describe("Pre-defined system tool.").optional(),
       toolFakeConfig: z.object({
         codeBlock: z.object({
-          pythonCode: z.string().describe(
+          pythonCode: z.unknown().describe(
             "Required. Python code which will be invoked in tool fake mode. Expected Python function signature - To catch all tool calls: def fake_tool_call(tool: Tool, input: dict[str, Any], callback_context: CallbackContext) -> Optional[dict[str, Any]]: To catch a specific tool call: def fake_{tool_id}(tool: Tool, input: dict[str, Any], callback_context: CallbackContext) -> Optional[dict[str, Any]]: If the function returns None, the real tool will be invoked instead.",
           ).optional(),
         }).describe("A code block to be executed instead of a real tool call.")
@@ -1975,26 +1502,17 @@ const GlobalArgsSchema = z.object({
       ).optional(),
       widgetTool: z.object({
         dataMapping: z.object({
-          fieldMappings: z.record(z.string(), z.string()).describe(
+          fieldMappings: z.unknown().describe(
             "Optional. A map of widget input parameter fields to the corresponding output fields of the source tool.",
           ).optional(),
-          mode: z.enum(["MODE_UNSPECIFIED", "FIELD_MAPPING", "PYTHON_SCRIPT"])
-            .describe("Optional. The mode of the data mapping.").optional(),
-          pythonFunction: z.object({
-            description: z.string().describe(
-              "Output only. The description of the Python function, parsed from the python code's docstring.",
-            ).optional(),
-            name: z.string().describe(
-              "Optional. The name of the Python function to execute. Must match a Python function name defined in the python code. Case sensitive. If the name is not provided, the first function defined in the python code will be used.",
-            ).optional(),
-            pythonCode: z.string().describe(
-              "Optional. The Python code to execute for the tool.",
-            ).optional(),
-          }).describe("A Python function tool.").optional(),
-          pythonScript: z.string().describe(
+          mode: z.unknown().describe("Optional. The mode of the data mapping.")
+            .optional(),
+          pythonFunction: z.unknown().describe("A Python function tool.")
+            .optional(),
+          pythonScript: z.unknown().describe(
             "Deprecated: Use `python_function` instead.",
           ).optional(),
-          sourceToolName: z.string().describe(
+          sourceToolName: z.unknown().describe(
             "Optional. The resource name of the tool that provides the data for the widget (e.g., a search tool or a custom function). Format: `projects/{project}/locations/{location}/agents/{agent}/tools/{tool}`",
           ).optional(),
         }).describe(
@@ -2007,69 +1525,63 @@ const GlobalArgsSchema = z.object({
           "Required. The display name of the widget tool.",
         ).optional(),
         parameters: z.object({
-          additionalProperties: z.string().describe(
+          additionalProperties: z.unknown().describe(
             "Circular reference to Schema",
           ).optional(),
-          anyOf: z.array(z.string()).describe(
+          anyOf: z.unknown().describe(
             "Optional. The value should be validated against any (one or more) of the subschemas in the list.",
           ).optional(),
-          default: z.string().describe("Optional. Default value of the data.")
+          default: z.unknown().describe("Optional. Default value of the data.")
             .optional(),
-          defs: z.record(z.string(), z.string()).describe(
+          defs: z.unknown().describe(
             "Optional. A map of definitions for use by `ref`. Only allowed at the root of the schema.",
           ).optional(),
-          description: z.string().describe(
+          description: z.unknown().describe(
             "Optional. The description of the data.",
           ).optional(),
-          enum: z.array(z.string()).describe(
+          enum: z.unknown().describe(
             'Optional. Possible values of the element of primitive type with enum format. Examples: 1. We can define direction as: {type:STRING, format:enum, enum:["EAST", NORTH", "SOUTH", "WEST"]} 2. We can define apartment number as: {type:INTEGER, format:enum, enum:["101", "201", "301"]}',
           ).optional(),
-          items: z.string().describe("Circular reference to Schema").optional(),
-          maxItems: z.string().describe(
+          items: z.unknown().describe("Circular reference to Schema")
+            .optional(),
+          maxItems: z.unknown().describe(
             "Optional. Maximum number of the elements for Type.ARRAY.",
           ).optional(),
-          maximum: z.number().describe(
+          maximum: z.unknown().describe(
             "Optional. Maximum value for Type.INTEGER and Type.NUMBER.",
           ).optional(),
-          minItems: z.string().describe(
+          minItems: z.unknown().describe(
             "Optional. Minimum number of the elements for Type.ARRAY.",
           ).optional(),
-          minimum: z.number().describe(
+          minimum: z.unknown().describe(
             "Optional. Minimum value for Type.INTEGER and Type.NUMBER.",
           ).optional(),
-          nullable: z.boolean().describe(
+          nullable: z.unknown().describe(
             "Optional. Indicates if the value may be null.",
           ).optional(),
-          prefixItems: z.array(z.string()).describe(
+          prefixItems: z.unknown().describe(
             "Optional. Schemas of initial elements of Type.ARRAY.",
           ).optional(),
-          properties: z.record(z.string(), z.string()).describe(
+          properties: z.unknown().describe(
             "Optional. Properties of Type.OBJECT.",
           ).optional(),
-          ref: z.string().describe(
+          ref: z.unknown().describe(
             'Optional. Allows indirect references between schema nodes. The value should be a valid reference to a child of the root `defs`. For example, the following schema defines a reference to a schema node named "Pet": ` type: object properties: pet: ref: #/defs/Pet defs: Pet: type: object properties: name: type: string ` The value of the "pet" property is a reference to the schema node named "Pet". See details in https://json-schema.org/understanding-json-schema/structuring.',
           ).optional(),
-          required: z.array(z.string()).describe(
+          required: z.unknown().describe(
             "Optional. Required properties of Type.OBJECT.",
           ).optional(),
-          title: z.string().describe("Optional. The title of the schema.")
+          title: z.unknown().describe("Optional. The title of the schema.")
             .optional(),
-          type: z.enum([
-            "TYPE_UNSPECIFIED",
-            "STRING",
-            "INTEGER",
-            "NUMBER",
-            "BOOLEAN",
-            "OBJECT",
-            "ARRAY",
-          ]).describe("Required. The type of the data.").optional(),
-          uniqueItems: z.boolean().describe(
+          type: z.unknown().describe("Required. The type of the data.")
+            .optional(),
+          uniqueItems: z.unknown().describe(
             "Optional. Indicate the items in the array must be unique. Only applies to TYPE.ARRAY.",
           ).optional(),
         }).describe(
           "Represents a select subset of an OpenAPI 3.0 schema object.",
         ).optional(),
-        uiConfig: z.record(z.string(), z.string()).describe(
+        uiConfig: z.record(z.string(), z.unknown()).describe(
           "Optional. Configuration for rendering the widget.",
         ).optional(),
         widgetType: z.enum([
@@ -2096,24 +1608,10 @@ const GlobalArgsSchema = z.object({
     toolsets: z.array(z.object({
       connectorToolset: z.object({
         authConfig: z.object({
-          oauth2AuthCodeConfig: z.object({
-            oauthToken: z.string().describe(
-              "Required. Oauth token parameter name to pass through. Must be in the format `$context.variables.`.",
-            ).optional(),
-          }).describe(
+          oauth2AuthCodeConfig: z.unknown().describe(
             "Oauth 2.0 Authorization Code authentication configuration.",
           ).optional(),
-          oauth2JwtBearerConfig: z.object({
-            clientKey: z.string().describe(
-              "Required. Client parameter name to pass through. Must be in the format `$context.variables.`.",
-            ).optional(),
-            issuer: z.string().describe(
-              "Required. Issuer parameter name to pass through. Must be in the format `$context.variables.`.",
-            ).optional(),
-            subject: z.string().describe(
-              "Required. Subject parameter name to pass through. Must be in the format `$context.variables.`.",
-            ).optional(),
-          }).describe(
+          oauth2JwtBearerConfig: z.unknown().describe(
             "JWT Profile Oauth 2.0 Authorization Grant authentication configuration.",
           ).optional(),
         }).describe(
@@ -2122,30 +1620,7 @@ const GlobalArgsSchema = z.object({
         connection: z.string().describe(
           "Required. The full resource name of the referenced Integration Connectors Connection. Format: `projects/{project}/locations/{location}/connections/{connection}`",
         ).optional(),
-        connectorActions: z.array(z.object({
-          connectionActionId: z.string().describe(
-            "ID of a Connection action for the tool to use.",
-          ).optional(),
-          entityOperation: z.object({
-            entityId: z.string().describe("Required. ID of the entity.")
-              .optional(),
-            operation: z.enum([
-              "OPERATION_TYPE_UNSPECIFIED",
-              "LIST",
-              "GET",
-              "CREATE",
-              "UPDATE",
-              "DELETE",
-            ]).describe("Required. Operation to perform on the entity.")
-              .optional(),
-          }).describe("Entity CRUD operation specification.").optional(),
-          inputFields: z.array(z.string()).describe(
-            "Optional. Entity fields to use as inputs for the operation. If no fields are specified, all fields of the Entity will be used.",
-          ).optional(),
-          outputFields: z.array(z.string()).describe(
-            "Optional. Entity fields to return from the operation. If no fields are specified, all fields of the Entity will be returned.",
-          ).optional(),
-        })).describe(
+        connectorActions: z.array(z.unknown()).describe(
           "Required. The list of connector actions/entity operations to generate tools for.",
         ).optional(),
       }).describe(
@@ -2171,81 +1646,37 @@ const GlobalArgsSchema = z.object({
         .optional(),
       mcpToolset: z.object({
         apiAuthentication: z.object({
-          apiKeyConfig: z.object({
-            apiKeySecretVersion: z.string().describe(
-              "Required. The name of the SecretManager secret version resource storing the API key. Format: `projects/{project}/secrets/{secret}/versions/{version}` Note: You should grant `roles/secretmanager.secretAccessor` role to the CES service agent `service-@gcp-sa-ces.iam.gserviceaccount.com`.",
-            ).optional(),
-            keyName: z.string().describe(
-              'Required. The parameter name or the header name of the API key. E.g., If the API request is "https://example.com/act?X-Api-Key=", "X-Api-Key" would be the parameter name.',
-            ).optional(),
-            requestLocation: z.enum([
-              "REQUEST_LOCATION_UNSPECIFIED",
-              "HEADER",
-              "QUERY_STRING",
-            ]).describe("Required. Key location in the request.").optional(),
-          }).describe("Configurations for authentication with API key.")
-            .optional(),
-          bearerTokenConfig: z.object({
-            token: z.string().describe(
-              "Required. The bearer token. Must be in the format `$context.variables.`.",
-            ).optional(),
-          }).describe("Configurations for authentication with a bearer token.")
-            .optional(),
-          oauthConfig: z.object({
-            clientId: z.string().describe(
-              "Required. The client ID from the OAuth provider.",
-            ).optional(),
-            clientSecretVersion: z.string().describe(
-              "Required. The name of the SecretManager secret version resource storing the client secret. Format: `projects/{project}/secrets/{secret}/versions/{version}` Note: You should grant `roles/secretmanager.secretAccessor` role to the CES service agent `service-@gcp-sa-ces.iam.gserviceaccount.com`.",
-            ).optional(),
-            oauthGrantType: z.enum([
-              "OAUTH_GRANT_TYPE_UNSPECIFIED",
-              "CLIENT_CREDENTIAL",
-            ]).describe("Required. OAuth grant types.").optional(),
-            scopes: z.array(z.string()).describe(
-              "Optional. The OAuth scopes to grant.",
-            ).optional(),
-            tokenEndpoint: z.string().describe(
-              "Required. The token endpoint in the OAuth provider to exchange for an access token.",
-            ).optional(),
-          }).describe("Configurations for authentication with OAuth.")
-            .optional(),
-          serviceAccountAuthConfig: z.object({
-            scopes: z.array(z.string()).describe(
-              "Optional. The OAuth scopes to grant. If not specified, the default scope `https://www.googleapis.com/auth/cloud-platform` is used.",
-            ).optional(),
-            serviceAccount: z.string().describe(
-              "Required. The email address of the service account used for authentication. CES uses this service account to exchange an access token and the access token is then sent in the `Authorization` header of the request. The service account must have the `roles/iam.serviceAccountTokenCreator` role granted to the CES service agent `service-@gcp-sa-ces.iam.gserviceaccount.com`.",
-            ).optional(),
-          }).describe(
+          apiKeyConfig: z.unknown().describe(
+            "Configurations for authentication with API key.",
+          ).optional(),
+          bearerTokenConfig: z.unknown().describe(
+            "Configurations for authentication with a bearer token.",
+          ).optional(),
+          oauthConfig: z.unknown().describe(
+            "Configurations for authentication with OAuth.",
+          ).optional(),
+          serviceAccountAuthConfig: z.unknown().describe(
             "Configurations for authentication using a custom service account.",
           ).optional(),
-          serviceAgentIdTokenAuthConfig: z.object({}).describe(
+          serviceAgentIdTokenAuthConfig: z.unknown().describe(
             "Configurations for authentication with [ID token](https://cloud.google.com/docs/authentication/token-types#id) generated from service agent.",
           ).optional(),
         }).describe("Authentication information required for API calls.")
           .optional(),
-        customHeaders: z.record(z.string(), z.string()).describe(
+        customHeaders: z.record(z.string(), z.unknown()).describe(
           "Optional. The custom headers to send in the request to the MCP server. The values must be in the format `$context.variables.` and can be set in the session variables. See https://docs.cloud.google.com/customer-engagement-ai/conversational-agents/ps/tool/open-api#openapi-injection for more details.",
         ).optional(),
         serverAddress: z.string().describe(
           'Required. The address of the MCP server, for example, "https://example.com/mcp/". If the server is built with the MCP SDK, the url should be suffixed with "/mcp/". Only Streamable HTTP transport based servers are supported. See https://modelcontextprotocol.io/specification/2025-03-26/basic/transports#streamable-http for more details.',
         ).optional(),
         serviceDirectoryConfig: z.object({
-          service: z.string().describe(
+          service: z.unknown().describe(
             "Required. The name of [Service Directory](https://cloud.google.com/service-directory) service. Format: `projects/{project}/locations/{location}/namespaces/{namespace}/services/{service}`. Location of the service directory must be the same as the location of the app.",
           ).optional(),
         }).describe("Configuration for tools using Service Directory.")
           .optional(),
         tlsConfig: z.object({
-          caCerts: z.array(z.object({
-            cert: z.string().describe(
-              'Required. The allowed custom CA certificates (in DER format) for HTTPS verification. This overrides the default SSL trust store. If this is empty or unspecified, CES will use Google\'s default trust store to verify certificates. N.B. Make sure the HTTPS server certificates are signed with "subject alt name". For instance a certificate can be self-signed using the following command: ` openssl x509 -req -days 200 -in example.com.csr \\ -signkey example.com.key \\ -out example.com.crt \\ -extfile <(printf "\\nsubjectAltName=\'DNS:www.example.com\'") `',
-            ).optional(),
-            displayName: z.string().describe(
-              "Required. The name of the allowed custom CA certificates. This can be used to disambiguate the custom CA certificates.",
-            ).optional(),
-          })).describe(
+          caCerts: z.unknown().describe(
             "Required. Specifies a list of allowed custom CA certificates for HTTPS verification.",
           ).optional(),
         }).describe("The TLS configuration.").optional(),
@@ -2257,56 +1688,19 @@ const GlobalArgsSchema = z.object({
       ).optional(),
       openApiToolset: z.object({
         apiAuthentication: z.object({
-          apiKeyConfig: z.object({
-            apiKeySecretVersion: z.string().describe(
-              "Required. The name of the SecretManager secret version resource storing the API key. Format: `projects/{project}/secrets/{secret}/versions/{version}` Note: You should grant `roles/secretmanager.secretAccessor` role to the CES service agent `service-@gcp-sa-ces.iam.gserviceaccount.com`.",
-            ).optional(),
-            keyName: z.string().describe(
-              'Required. The parameter name or the header name of the API key. E.g., If the API request is "https://example.com/act?X-Api-Key=", "X-Api-Key" would be the parameter name.',
-            ).optional(),
-            requestLocation: z.enum([
-              "REQUEST_LOCATION_UNSPECIFIED",
-              "HEADER",
-              "QUERY_STRING",
-            ]).describe("Required. Key location in the request.").optional(),
-          }).describe("Configurations for authentication with API key.")
-            .optional(),
-          bearerTokenConfig: z.object({
-            token: z.string().describe(
-              "Required. The bearer token. Must be in the format `$context.variables.`.",
-            ).optional(),
-          }).describe("Configurations for authentication with a bearer token.")
-            .optional(),
-          oauthConfig: z.object({
-            clientId: z.string().describe(
-              "Required. The client ID from the OAuth provider.",
-            ).optional(),
-            clientSecretVersion: z.string().describe(
-              "Required. The name of the SecretManager secret version resource storing the client secret. Format: `projects/{project}/secrets/{secret}/versions/{version}` Note: You should grant `roles/secretmanager.secretAccessor` role to the CES service agent `service-@gcp-sa-ces.iam.gserviceaccount.com`.",
-            ).optional(),
-            oauthGrantType: z.enum([
-              "OAUTH_GRANT_TYPE_UNSPECIFIED",
-              "CLIENT_CREDENTIAL",
-            ]).describe("Required. OAuth grant types.").optional(),
-            scopes: z.array(z.string()).describe(
-              "Optional. The OAuth scopes to grant.",
-            ).optional(),
-            tokenEndpoint: z.string().describe(
-              "Required. The token endpoint in the OAuth provider to exchange for an access token.",
-            ).optional(),
-          }).describe("Configurations for authentication with OAuth.")
-            .optional(),
-          serviceAccountAuthConfig: z.object({
-            scopes: z.array(z.string()).describe(
-              "Optional. The OAuth scopes to grant. If not specified, the default scope `https://www.googleapis.com/auth/cloud-platform` is used.",
-            ).optional(),
-            serviceAccount: z.string().describe(
-              "Required. The email address of the service account used for authentication. CES uses this service account to exchange an access token and the access token is then sent in the `Authorization` header of the request. The service account must have the `roles/iam.serviceAccountTokenCreator` role granted to the CES service agent `service-@gcp-sa-ces.iam.gserviceaccount.com`.",
-            ).optional(),
-          }).describe(
+          apiKeyConfig: z.unknown().describe(
+            "Configurations for authentication with API key.",
+          ).optional(),
+          bearerTokenConfig: z.unknown().describe(
+            "Configurations for authentication with a bearer token.",
+          ).optional(),
+          oauthConfig: z.unknown().describe(
+            "Configurations for authentication with OAuth.",
+          ).optional(),
+          serviceAccountAuthConfig: z.unknown().describe(
             "Configurations for authentication using a custom service account.",
           ).optional(),
-          serviceAgentIdTokenAuthConfig: z.object({}).describe(
+          serviceAgentIdTokenAuthConfig: z.unknown().describe(
             "Configurations for authentication with [ID token](https://cloud.google.com/docs/authentication/token-types#id) generated from service agent.",
           ).optional(),
         }).describe("Authentication information required for API calls.")
@@ -2318,20 +1712,13 @@ const GlobalArgsSchema = z.object({
           "Required. The OpenAPI schema of the toolset.",
         ).optional(),
         serviceDirectoryConfig: z.object({
-          service: z.string().describe(
+          service: z.unknown().describe(
             "Required. The name of [Service Directory](https://cloud.google.com/service-directory) service. Format: `projects/{project}/locations/{location}/namespaces/{namespace}/services/{service}`. Location of the service directory must be the same as the location of the app.",
           ).optional(),
         }).describe("Configuration for tools using Service Directory.")
           .optional(),
         tlsConfig: z.object({
-          caCerts: z.array(z.object({
-            cert: z.string().describe(
-              'Required. The allowed custom CA certificates (in DER format) for HTTPS verification. This overrides the default SSL trust store. If this is empty or unspecified, CES will use Google\'s default trust store to verify certificates. N.B. Make sure the HTTPS server certificates are signed with "subject alt name". For instance a certificate can be self-signed using the following command: ` openssl x509 -req -days 200 -in example.com.csr \\ -signkey example.com.key \\ -out example.com.crt \\ -extfile <(printf "\\nsubjectAltName=\'DNS:www.example.com\'") `',
-            ).optional(),
-            displayName: z.string().describe(
-              "Required. The name of the allowed custom CA certificates. This can be used to disambiguate the custom CA certificates.",
-            ).optional(),
-          })).describe(
+          caCerts: z.unknown().describe(
             "Required. Specifies a list of allowed custom CA certificates for HTTPS verification.",
           ).optional(),
         }).describe("The TLS configuration.").optional(),
@@ -2343,7 +1730,7 @@ const GlobalArgsSchema = z.object({
       ).optional(),
       toolFakeConfig: z.object({
         codeBlock: z.object({
-          pythonCode: z.string().describe(
+          pythonCode: z.unknown().describe(
             "Required. Python code which will be invoked in tool fake mode. Expected Python function signature - To catch all tool calls: def fake_tool_call(tool: Tool, input: dict[str, Any], callback_context: CallbackContext) -> Optional[dict[str, Any]]: To catch a specific tool call: def fake_{tool_id}(tool: Tool, input: dict[str, Any], callback_context: CallbackContext) -> Optional[dict[str, Any]]: If the function returns None, the real tool will be invoked instead.",
           ).optional(),
         }).describe("A code block to be executed instead of a real tool call.")
@@ -2375,40 +1762,40 @@ const StateSchema = z.object({
   snapshot: z.object({
     agents: z.array(z.object({
       afterAgentCallbacks: z.array(z.object({
-        description: z.string(),
-        disabled: z.boolean(),
-        proactiveExecutionEnabled: z.boolean(),
-        pythonCode: z.string(),
+        description: z.unknown(),
+        disabled: z.unknown(),
+        proactiveExecutionEnabled: z.unknown(),
+        pythonCode: z.unknown(),
       })),
       afterModelCallbacks: z.array(z.object({
-        description: z.string(),
-        disabled: z.boolean(),
-        proactiveExecutionEnabled: z.boolean(),
-        pythonCode: z.string(),
+        description: z.unknown(),
+        disabled: z.unknown(),
+        proactiveExecutionEnabled: z.unknown(),
+        pythonCode: z.unknown(),
       })),
       afterToolCallbacks: z.array(z.object({
-        description: z.string(),
-        disabled: z.boolean(),
-        proactiveExecutionEnabled: z.boolean(),
-        pythonCode: z.string(),
+        description: z.unknown(),
+        disabled: z.unknown(),
+        proactiveExecutionEnabled: z.unknown(),
+        pythonCode: z.unknown(),
       })),
       beforeAgentCallbacks: z.array(z.object({
-        description: z.string(),
-        disabled: z.boolean(),
-        proactiveExecutionEnabled: z.boolean(),
-        pythonCode: z.string(),
+        description: z.unknown(),
+        disabled: z.unknown(),
+        proactiveExecutionEnabled: z.unknown(),
+        pythonCode: z.unknown(),
       })),
       beforeModelCallbacks: z.array(z.object({
-        description: z.string(),
-        disabled: z.boolean(),
-        proactiveExecutionEnabled: z.boolean(),
-        pythonCode: z.string(),
+        description: z.unknown(),
+        disabled: z.unknown(),
+        proactiveExecutionEnabled: z.unknown(),
+        pythonCode: z.unknown(),
       })),
       beforeToolCallbacks: z.array(z.object({
-        description: z.string(),
-        disabled: z.boolean(),
-        proactiveExecutionEnabled: z.boolean(),
-        pythonCode: z.string(),
+        description: z.unknown(),
+        disabled: z.unknown(),
+        proactiveExecutionEnabled: z.unknown(),
+        pythonCode: z.unknown(),
       })),
       childAgents: z.array(z.string()),
       createTime: z.string(),
@@ -2434,25 +1821,14 @@ const StateSchema = z.object({
       }),
       tools: z.array(z.string()),
       toolsets: z.array(z.object({
-        toolIds: z.array(z.string()),
-        toolset: z.string(),
+        toolIds: z.unknown(),
+        toolset: z.unknown(),
       })),
       transferRules: z.array(z.object({
-        childAgent: z.string(),
-        deterministicTransfer: z.object({
-          expressionCondition: z.object({
-            expression: z.string(),
-          }),
-          pythonCodeCondition: z.object({
-            pythonCode: z.string(),
-          }),
-        }),
-        direction: z.string(),
-        disablePlannerTransfer: z.object({
-          expressionCondition: z.object({
-            expression: z.string(),
-          }),
-        }),
+        childAgent: z.unknown(),
+        deterministicTransfer: z.unknown(),
+        direction: z.unknown(),
+        disablePlannerTransfer: z.unknown(),
       })),
       updateTime: z.string(),
     })),
@@ -2479,8 +1855,8 @@ const StateSchema = z.object({
       createTime: z.string(),
       dataStoreSettings: z.object({
         engines: z.array(z.object({
-          name: z.string(),
-          type: z.string(),
+          name: z.unknown(),
+          type: z.unknown(),
         })),
       }),
       defaultChannelProfile: z.object({
@@ -2495,10 +1871,10 @@ const StateSchema = z.object({
         webWidgetConfig: z.object({
           modality: z.string(),
           securitySettings: z.object({
-            allowedOrigins: z.array(z.string()),
-            enableOriginCheck: z.boolean(),
-            enablePublicAccess: z.boolean(),
-            enableRecaptcha: z.boolean(),
+            allowedOrigins: z.unknown(),
+            enableOriginCheck: z.unknown(),
+            enablePublicAccess: z.unknown(),
+            enableRecaptcha: z.unknown(),
           }),
           theme: z.string(),
           webWidgetTitle: z.string(),
@@ -2514,15 +1890,15 @@ const StateSchema = z.object({
       evaluationMetricsThresholds: z.object({
         goldenEvaluationMetricsThresholds: z.object({
           expectationLevelMetricsThresholds: z.object({
-            toolInvocationParameterCorrectnessThreshold: z.number(),
+            toolInvocationParameterCorrectnessThreshold: z.unknown(),
           }),
           toolMatchingSettings: z.object({
-            extraToolCallBehavior: z.string(),
+            extraToolCallBehavior: z.unknown(),
           }),
           turnLevelMetricsThresholds: z.object({
-            overallToolInvocationCorrectnessThreshold: z.number(),
-            semanticSimilarityChannel: z.string(),
-            semanticSimilaritySuccessThreshold: z.number(),
+            overallToolInvocationCorrectnessThreshold: z.unknown(),
+            semanticSimilarityChannel: z.unknown(),
+            semanticSimilaritySuccessThreshold: z.unknown(),
           }),
         }),
         goldenHallucinationMetricBehavior: z.string(),
@@ -2578,25 +1954,25 @@ const StateSchema = z.object({
         description: z.string(),
         name: z.string(),
         schema: z.object({
-          additionalProperties: z.string(),
-          anyOf: z.array(z.string()),
-          default: z.string(),
-          defs: z.record(z.string(), z.unknown()),
-          description: z.string(),
-          enum: z.array(z.string()),
-          items: z.string(),
-          maxItems: z.string(),
-          maximum: z.number(),
-          minItems: z.string(),
-          minimum: z.number(),
-          nullable: z.boolean(),
-          prefixItems: z.array(z.string()),
-          properties: z.record(z.string(), z.unknown()),
-          ref: z.string(),
-          required: z.array(z.string()),
-          title: z.string(),
-          type: z.string(),
-          uniqueItems: z.boolean(),
+          additionalProperties: z.unknown(),
+          anyOf: z.unknown(),
+          default: z.unknown(),
+          defs: z.unknown(),
+          description: z.unknown(),
+          enum: z.unknown(),
+          items: z.unknown(),
+          maxItems: z.unknown(),
+          maximum: z.unknown(),
+          minItems: z.unknown(),
+          minimum: z.unknown(),
+          nullable: z.unknown(),
+          prefixItems: z.unknown(),
+          properties: z.unknown(),
+          ref: z.unknown(),
+          required: z.unknown(),
+          title: z.unknown(),
+          type: z.unknown(),
+          uniqueItems: z.unknown(),
         }),
       })),
       rootAgent: z.string(),
@@ -2609,25 +1985,25 @@ const StateSchema = z.object({
         description: z.string(),
         name: z.string(),
         schema: z.object({
-          additionalProperties: z.string(),
-          anyOf: z.array(z.string()),
-          default: z.string(),
-          defs: z.record(z.string(), z.unknown()),
-          description: z.string(),
-          enum: z.array(z.string()),
-          items: z.string(),
-          maxItems: z.string(),
-          maximum: z.number(),
-          minItems: z.string(),
-          minimum: z.number(),
-          nullable: z.boolean(),
-          prefixItems: z.array(z.string()),
-          properties: z.record(z.string(), z.unknown()),
-          ref: z.string(),
-          required: z.array(z.string()),
-          title: z.string(),
-          type: z.string(),
-          uniqueItems: z.boolean(),
+          additionalProperties: z.unknown(),
+          anyOf: z.unknown(),
+          default: z.unknown(),
+          defs: z.unknown(),
+          description: z.unknown(),
+          enum: z.unknown(),
+          items: z.unknown(),
+          maxItems: z.unknown(),
+          maximum: z.unknown(),
+          minItems: z.unknown(),
+          minimum: z.unknown(),
+          nullable: z.unknown(),
+          prefixItems: z.unknown(),
+          properties: z.unknown(),
+          ref: z.unknown(),
+          required: z.unknown(),
+          title: z.unknown(),
+          type: z.unknown(),
+          uniqueItems: z.unknown(),
         }),
       })),
     }),
@@ -2639,47 +2015,9 @@ const StateSchema = z.object({
       etag: z.string(),
       invalid: z.boolean(),
       messages: z.array(z.object({
-        chunks: z.array(z.object({
-          agentTransfer: z.object({
-            displayName: z.string(),
-            targetAgent: z.string(),
-          }),
-          blob: z.object({
-            data: z.string(),
-            mimeType: z.string(),
-          }),
-          defaultVariables: z.record(z.string(), z.unknown()),
-          image: z.object({
-            data: z.string(),
-            mimeType: z.string(),
-          }),
-          payload: z.record(z.string(), z.unknown()),
-          text: z.string(),
-          toolCall: z.object({
-            args: z.record(z.string(), z.unknown()),
-            displayName: z.string(),
-            id: z.string(),
-            tool: z.string(),
-            toolsetTool: z.object({
-              toolId: z.string(),
-              toolset: z.string(),
-            }),
-          }),
-          toolResponse: z.object({
-            displayName: z.string(),
-            id: z.string(),
-            response: z.record(z.string(), z.unknown()),
-            tool: z.string(),
-            toolsetTool: z.object({
-              toolId: z.string(),
-              toolset: z.string(),
-            }),
-          }),
-          transcript: z.string(),
-          updatedVariables: z.record(z.string(), z.unknown()),
-        })),
-        eventTime: z.string(),
-        role: z.string(),
+        chunks: z.unknown(),
+        eventTime: z.unknown(),
+        role: z.unknown(),
       })),
       name: z.string(),
       updateTime: z.string(),
@@ -2687,48 +2025,45 @@ const StateSchema = z.object({
     guardrails: z.array(z.object({
       action: z.object({
         generativeAnswer: z.object({
-          prompt: z.string(),
+          prompt: z.unknown(),
         }),
         respondImmediately: z.object({
-          responses: z.array(z.object({
-            disabled: z.boolean(),
-            text: z.string(),
-          })),
+          responses: z.unknown(),
         }),
         transferAgent: z.object({
-          agent: z.string(),
+          agent: z.unknown(),
         }),
       }),
       codeCallback: z.object({
         afterAgentCallback: z.object({
-          description: z.string(),
-          disabled: z.boolean(),
-          proactiveExecutionEnabled: z.boolean(),
-          pythonCode: z.string(),
+          description: z.unknown(),
+          disabled: z.unknown(),
+          proactiveExecutionEnabled: z.unknown(),
+          pythonCode: z.unknown(),
         }),
         afterModelCallback: z.object({
-          description: z.string(),
-          disabled: z.boolean(),
-          proactiveExecutionEnabled: z.boolean(),
-          pythonCode: z.string(),
+          description: z.unknown(),
+          disabled: z.unknown(),
+          proactiveExecutionEnabled: z.unknown(),
+          pythonCode: z.unknown(),
         }),
         beforeAgentCallback: z.object({
-          description: z.string(),
-          disabled: z.boolean(),
-          proactiveExecutionEnabled: z.boolean(),
-          pythonCode: z.string(),
+          description: z.unknown(),
+          disabled: z.unknown(),
+          proactiveExecutionEnabled: z.unknown(),
+          pythonCode: z.unknown(),
         }),
         beforeModelCallback: z.object({
-          description: z.string(),
-          disabled: z.boolean(),
-          proactiveExecutionEnabled: z.boolean(),
-          pythonCode: z.string(),
+          description: z.unknown(),
+          disabled: z.unknown(),
+          proactiveExecutionEnabled: z.unknown(),
+          pythonCode: z.unknown(),
         }),
       }),
       contentFilter: z.object({
-        bannedContents: z.array(z.string()),
-        bannedContentsInAgentResponse: z.array(z.string()),
-        bannedContentsInUserInput: z.array(z.string()),
+        bannedContents: z.array(z.unknown()),
+        bannedContentsInAgentResponse: z.array(z.unknown()),
+        bannedContentsInUserInput: z.array(z.unknown()),
         disregardDiacritics: z.boolean(),
         matchType: z.string(),
       }),
@@ -2742,34 +2077,28 @@ const StateSchema = z.object({
         failOpen: z.boolean(),
         maxConversationMessages: z.number(),
         modelSettings: z.object({
-          model: z.string(),
-          temperature: z.number(),
+          model: z.unknown(),
+          temperature: z.unknown(),
         }),
         policyScope: z.string(),
         prompt: z.string(),
       }),
       llmPromptSecurity: z.object({
         customPolicy: z.object({
-          allowShortUtterance: z.boolean(),
-          failOpen: z.boolean(),
-          maxConversationMessages: z.number(),
-          modelSettings: z.object({
-            model: z.string(),
-            temperature: z.number(),
-          }),
-          policyScope: z.string(),
-          prompt: z.string(),
+          allowShortUtterance: z.unknown(),
+          failOpen: z.unknown(),
+          maxConversationMessages: z.unknown(),
+          modelSettings: z.unknown(),
+          policyScope: z.unknown(),
+          prompt: z.unknown(),
         }),
         defaultSettings: z.object({
-          defaultPromptTemplate: z.string(),
+          defaultPromptTemplate: z.unknown(),
         }),
         failOpen: z.boolean(),
       }),
       modelSafety: z.object({
-        safetySettings: z.array(z.object({
-          category: z.string(),
-          threshold: z.string(),
-        })),
+        safetySettings: z.array(z.unknown()),
       }),
       name: z.string(),
       updateTime: z.string(),
@@ -2784,67 +2113,58 @@ const StateSchema = z.object({
         description: z.string(),
         name: z.string(),
         parameters: z.object({
-          additionalProperties: z.string(),
-          anyOf: z.array(z.string()),
-          default: z.string(),
-          defs: z.record(z.string(), z.unknown()),
-          description: z.string(),
-          enum: z.array(z.string()),
-          items: z.string(),
-          maxItems: z.string(),
-          maximum: z.number(),
-          minItems: z.string(),
-          minimum: z.number(),
-          nullable: z.boolean(),
-          prefixItems: z.array(z.string()),
-          properties: z.record(z.string(), z.unknown()),
-          ref: z.string(),
-          required: z.array(z.string()),
-          title: z.string(),
-          type: z.string(),
-          uniqueItems: z.boolean(),
+          additionalProperties: z.unknown(),
+          anyOf: z.unknown(),
+          default: z.unknown(),
+          defs: z.unknown(),
+          description: z.unknown(),
+          enum: z.unknown(),
+          items: z.unknown(),
+          maxItems: z.unknown(),
+          maximum: z.unknown(),
+          minItems: z.unknown(),
+          minimum: z.unknown(),
+          nullable: z.unknown(),
+          prefixItems: z.unknown(),
+          properties: z.unknown(),
+          ref: z.unknown(),
+          required: z.unknown(),
+          title: z.unknown(),
+          type: z.unknown(),
+          uniqueItems: z.unknown(),
         }),
         response: z.object({
-          additionalProperties: z.string(),
-          anyOf: z.array(z.string()),
-          default: z.string(),
-          defs: z.record(z.string(), z.unknown()),
-          description: z.string(),
-          enum: z.array(z.string()),
-          items: z.string(),
-          maxItems: z.string(),
-          maximum: z.number(),
-          minItems: z.string(),
-          minimum: z.number(),
-          nullable: z.boolean(),
-          prefixItems: z.array(z.string()),
-          properties: z.record(z.string(), z.unknown()),
-          ref: z.string(),
-          required: z.array(z.string()),
-          title: z.string(),
-          type: z.string(),
-          uniqueItems: z.boolean(),
+          additionalProperties: z.unknown(),
+          anyOf: z.unknown(),
+          default: z.unknown(),
+          defs: z.unknown(),
+          description: z.unknown(),
+          enum: z.unknown(),
+          items: z.unknown(),
+          maxItems: z.unknown(),
+          maximum: z.unknown(),
+          minItems: z.unknown(),
+          minimum: z.unknown(),
+          nullable: z.unknown(),
+          prefixItems: z.unknown(),
+          properties: z.unknown(),
+          ref: z.unknown(),
+          required: z.unknown(),
+          title: z.unknown(),
+          type: z.unknown(),
+          uniqueItems: z.unknown(),
         }),
       }),
       connectorTool: z.object({
         action: z.object({
-          connectionActionId: z.string(),
-          entityOperation: z.object({
-            entityId: z.string(),
-            operation: z.string(),
-          }),
-          inputFields: z.array(z.string()),
-          outputFields: z.array(z.string()),
+          connectionActionId: z.unknown(),
+          entityOperation: z.unknown(),
+          inputFields: z.unknown(),
+          outputFields: z.unknown(),
         }),
         authConfig: z.object({
-          oauth2AuthCodeConfig: z.object({
-            oauthToken: z.string(),
-          }),
-          oauth2JwtBearerConfig: z.object({
-            clientKey: z.string(),
-            issuer: z.string(),
-            subject: z.string(),
-          }),
+          oauth2AuthCodeConfig: z.unknown(),
+          oauth2JwtBearerConfig: z.unknown(),
         }),
         connection: z.string(),
         description: z.string(),
@@ -2852,83 +2172,19 @@ const StateSchema = z.object({
       }),
       createTime: z.string(),
       dataStoreTool: z.object({
-        boostSpecs: z.array(z.object({
-          dataStores: z.array(z.string()),
-          spec: z.array(z.object({
-            conditionBoostSpecs: z.array(z.object({
-              boost: z.number(),
-              boostControlSpec: z.object({
-                attributeType: z.string(),
-                controlPoints: z.array(z.object({
-                  attributeValue: z.string(),
-                  boostAmount: z.number(),
-                })),
-                fieldName: z.string(),
-                interpolationType: z.string(),
-              }),
-              condition: z.string(),
-            })),
-          })),
-        })),
+        boostSpecs: z.array(z.unknown()),
         dataStoreSource: z.object({
-          dataStore: z.object({
-            connectorConfig: z.object({
-              collection: z.string(),
-              collectionDisplayName: z.string(),
-              dataSource: z.string(),
-            }),
-            createTime: z.string(),
-            displayName: z.string(),
-            documentProcessingMode: z.string(),
-            name: z.string(),
-            type: z.string(),
-          }),
-          filter: z.string(),
+          dataStore: z.unknown(),
+          filter: z.unknown(),
         }),
         description: z.string(),
         engineSource: z.object({
-          dataStoreSources: z.array(z.object({
-            dataStore: z.object({
-              connectorConfig: z.object({
-                collection: z.string(),
-                collectionDisplayName: z.string(),
-                dataSource: z.string(),
-              }),
-              createTime: z.string(),
-              displayName: z.string(),
-              documentProcessingMode: z.string(),
-              name: z.string(),
-              type: z.string(),
-            }),
-            filter: z.string(),
-          })),
-          engine: z.string(),
-          filter: z.string(),
+          dataStoreSources: z.unknown(),
+          engine: z.unknown(),
+          filter: z.unknown(),
         }),
         filterParameterBehavior: z.string(),
-        modalityConfigs: z.array(z.object({
-          groundingConfig: z.object({
-            disabled: z.boolean(),
-            groundingLevel: z.number(),
-          }),
-          modalityType: z.string(),
-          rewriterConfig: z.object({
-            disabled: z.boolean(),
-            modelSettings: z.object({
-              model: z.string(),
-              temperature: z.number(),
-            }),
-            prompt: z.string(),
-          }),
-          summarizationConfig: z.object({
-            disabled: z.boolean(),
-            modelSettings: z.object({
-              model: z.string(),
-              temperature: z.number(),
-            }),
-            prompt: z.string(),
-          }),
-        })),
+        modalityConfigs: z.array(z.unknown()),
         name: z.string(),
       }),
       displayName: z.string(),
@@ -2942,131 +2198,95 @@ const StateSchema = z.object({
       }),
       generatedSummary: z.string(),
       googleSearchTool: z.object({
-        contextUrls: z.array(z.string()),
+        contextUrls: z.array(z.unknown()),
         description: z.string(),
-        excludeDomains: z.array(z.string()),
+        excludeDomains: z.array(z.unknown()),
         name: z.string(),
-        preferredDomains: z.array(z.string()),
+        preferredDomains: z.array(z.unknown()),
         promptConfig: z.object({
-          textPrompt: z.string(),
-          voicePrompt: z.string(),
+          textPrompt: z.unknown(),
+          voicePrompt: z.unknown(),
         }),
       }),
       mcpTool: z.object({
         apiAuthentication: z.object({
-          apiKeyConfig: z.object({
-            apiKeySecretVersion: z.string(),
-            keyName: z.string(),
-            requestLocation: z.string(),
-          }),
-          bearerTokenConfig: z.object({
-            token: z.string(),
-          }),
-          oauthConfig: z.object({
-            clientId: z.string(),
-            clientSecretVersion: z.string(),
-            oauthGrantType: z.string(),
-            scopes: z.array(z.string()),
-            tokenEndpoint: z.string(),
-          }),
-          serviceAccountAuthConfig: z.object({
-            scopes: z.array(z.string()),
-            serviceAccount: z.string(),
-          }),
-          serviceAgentIdTokenAuthConfig: z.object({}),
+          apiKeyConfig: z.unknown(),
+          bearerTokenConfig: z.unknown(),
+          oauthConfig: z.unknown(),
+          serviceAccountAuthConfig: z.unknown(),
+          serviceAgentIdTokenAuthConfig: z.unknown(),
         }),
         customHeaders: z.record(z.string(), z.unknown()),
         description: z.string(),
         inputSchema: z.object({
-          additionalProperties: z.string(),
-          anyOf: z.array(z.string()),
-          default: z.string(),
-          defs: z.record(z.string(), z.unknown()),
-          description: z.string(),
-          enum: z.array(z.string()),
-          items: z.string(),
-          maxItems: z.string(),
-          maximum: z.number(),
-          minItems: z.string(),
-          minimum: z.number(),
-          nullable: z.boolean(),
-          prefixItems: z.array(z.string()),
-          properties: z.record(z.string(), z.unknown()),
-          ref: z.string(),
-          required: z.array(z.string()),
-          title: z.string(),
-          type: z.string(),
-          uniqueItems: z.boolean(),
+          additionalProperties: z.unknown(),
+          anyOf: z.unknown(),
+          default: z.unknown(),
+          defs: z.unknown(),
+          description: z.unknown(),
+          enum: z.unknown(),
+          items: z.unknown(),
+          maxItems: z.unknown(),
+          maximum: z.unknown(),
+          minItems: z.unknown(),
+          minimum: z.unknown(),
+          nullable: z.unknown(),
+          prefixItems: z.unknown(),
+          properties: z.unknown(),
+          ref: z.unknown(),
+          required: z.unknown(),
+          title: z.unknown(),
+          type: z.unknown(),
+          uniqueItems: z.unknown(),
         }),
         name: z.string(),
         outputSchema: z.object({
-          additionalProperties: z.string(),
-          anyOf: z.array(z.string()),
-          default: z.string(),
-          defs: z.record(z.string(), z.unknown()),
-          description: z.string(),
-          enum: z.array(z.string()),
-          items: z.string(),
-          maxItems: z.string(),
-          maximum: z.number(),
-          minItems: z.string(),
-          minimum: z.number(),
-          nullable: z.boolean(),
-          prefixItems: z.array(z.string()),
-          properties: z.record(z.string(), z.unknown()),
-          ref: z.string(),
-          required: z.array(z.string()),
-          title: z.string(),
-          type: z.string(),
-          uniqueItems: z.boolean(),
+          additionalProperties: z.unknown(),
+          anyOf: z.unknown(),
+          default: z.unknown(),
+          defs: z.unknown(),
+          description: z.unknown(),
+          enum: z.unknown(),
+          items: z.unknown(),
+          maxItems: z.unknown(),
+          maximum: z.unknown(),
+          minItems: z.unknown(),
+          minimum: z.unknown(),
+          nullable: z.unknown(),
+          prefixItems: z.unknown(),
+          properties: z.unknown(),
+          ref: z.unknown(),
+          required: z.unknown(),
+          title: z.unknown(),
+          type: z.unknown(),
+          uniqueItems: z.unknown(),
         }),
         serverAddress: z.string(),
         serviceDirectoryConfig: z.object({
-          service: z.string(),
+          service: z.unknown(),
         }),
         tlsConfig: z.object({
-          caCerts: z.array(z.object({
-            cert: z.string(),
-            displayName: z.string(),
-          })),
+          caCerts: z.unknown(),
         }),
       }),
       name: z.string(),
       openApiTool: z.object({
         apiAuthentication: z.object({
-          apiKeyConfig: z.object({
-            apiKeySecretVersion: z.string(),
-            keyName: z.string(),
-            requestLocation: z.string(),
-          }),
-          bearerTokenConfig: z.object({
-            token: z.string(),
-          }),
-          oauthConfig: z.object({
-            clientId: z.string(),
-            clientSecretVersion: z.string(),
-            oauthGrantType: z.string(),
-            scopes: z.array(z.string()),
-            tokenEndpoint: z.string(),
-          }),
-          serviceAccountAuthConfig: z.object({
-            scopes: z.array(z.string()),
-            serviceAccount: z.string(),
-          }),
-          serviceAgentIdTokenAuthConfig: z.object({}),
+          apiKeyConfig: z.unknown(),
+          bearerTokenConfig: z.unknown(),
+          oauthConfig: z.unknown(),
+          serviceAccountAuthConfig: z.unknown(),
+          serviceAgentIdTokenAuthConfig: z.unknown(),
         }),
         description: z.string(),
         ignoreUnknownFields: z.boolean(),
         name: z.string(),
         openApiSchema: z.string(),
         serviceDirectoryConfig: z.object({
-          service: z.string(),
+          service: z.unknown(),
         }),
         tlsConfig: z.object({
-          caCerts: z.array(z.object({
-            cert: z.string(),
-            displayName: z.string(),
-          })),
+          caCerts: z.unknown(),
         }),
         url: z.string(),
       }),
@@ -3081,45 +2301,41 @@ const StateSchema = z.object({
       }),
       toolFakeConfig: z.object({
         codeBlock: z.object({
-          pythonCode: z.string(),
+          pythonCode: z.unknown(),
         }),
         enableFakeMode: z.boolean(),
       }),
       updateTime: z.string(),
       widgetTool: z.object({
         dataMapping: z.object({
-          fieldMappings: z.record(z.string(), z.unknown()),
-          mode: z.string(),
-          pythonFunction: z.object({
-            description: z.string(),
-            name: z.string(),
-            pythonCode: z.string(),
-          }),
-          pythonScript: z.string(),
-          sourceToolName: z.string(),
+          fieldMappings: z.unknown(),
+          mode: z.unknown(),
+          pythonFunction: z.unknown(),
+          pythonScript: z.unknown(),
+          sourceToolName: z.unknown(),
         }),
         description: z.string(),
         name: z.string(),
         parameters: z.object({
-          additionalProperties: z.string(),
-          anyOf: z.array(z.string()),
-          default: z.string(),
-          defs: z.record(z.string(), z.unknown()),
-          description: z.string(),
-          enum: z.array(z.string()),
-          items: z.string(),
-          maxItems: z.string(),
-          maximum: z.number(),
-          minItems: z.string(),
-          minimum: z.number(),
-          nullable: z.boolean(),
-          prefixItems: z.array(z.string()),
-          properties: z.record(z.string(), z.unknown()),
-          ref: z.string(),
-          required: z.array(z.string()),
-          title: z.string(),
-          type: z.string(),
-          uniqueItems: z.boolean(),
+          additionalProperties: z.unknown(),
+          anyOf: z.unknown(),
+          default: z.unknown(),
+          defs: z.unknown(),
+          description: z.unknown(),
+          enum: z.unknown(),
+          items: z.unknown(),
+          maxItems: z.unknown(),
+          maximum: z.unknown(),
+          minItems: z.unknown(),
+          minimum: z.unknown(),
+          nullable: z.unknown(),
+          prefixItems: z.unknown(),
+          properties: z.unknown(),
+          ref: z.unknown(),
+          required: z.unknown(),
+          title: z.unknown(),
+          type: z.unknown(),
+          uniqueItems: z.unknown(),
         }),
         uiConfig: z.record(z.string(), z.unknown()),
         widgetType: z.string(),
@@ -3128,25 +2344,11 @@ const StateSchema = z.object({
     toolsets: z.array(z.object({
       connectorToolset: z.object({
         authConfig: z.object({
-          oauth2AuthCodeConfig: z.object({
-            oauthToken: z.string(),
-          }),
-          oauth2JwtBearerConfig: z.object({
-            clientKey: z.string(),
-            issuer: z.string(),
-            subject: z.string(),
-          }),
+          oauth2AuthCodeConfig: z.unknown(),
+          oauth2JwtBearerConfig: z.unknown(),
         }),
         connection: z.string(),
-        connectorActions: z.array(z.object({
-          connectionActionId: z.string(),
-          entityOperation: z.object({
-            entityId: z.string(),
-            operation: z.string(),
-          }),
-          inputFields: z.array(z.string()),
-          outputFields: z.array(z.string()),
-        })),
+        connectorActions: z.array(z.unknown()),
       }),
       createTime: z.string(),
       description: z.string(),
@@ -3155,79 +2357,43 @@ const StateSchema = z.object({
       executionType: z.string(),
       mcpToolset: z.object({
         apiAuthentication: z.object({
-          apiKeyConfig: z.object({
-            apiKeySecretVersion: z.string(),
-            keyName: z.string(),
-            requestLocation: z.string(),
-          }),
-          bearerTokenConfig: z.object({
-            token: z.string(),
-          }),
-          oauthConfig: z.object({
-            clientId: z.string(),
-            clientSecretVersion: z.string(),
-            oauthGrantType: z.string(),
-            scopes: z.array(z.string()),
-            tokenEndpoint: z.string(),
-          }),
-          serviceAccountAuthConfig: z.object({
-            scopes: z.array(z.string()),
-            serviceAccount: z.string(),
-          }),
-          serviceAgentIdTokenAuthConfig: z.object({}),
+          apiKeyConfig: z.unknown(),
+          bearerTokenConfig: z.unknown(),
+          oauthConfig: z.unknown(),
+          serviceAccountAuthConfig: z.unknown(),
+          serviceAgentIdTokenAuthConfig: z.unknown(),
         }),
         customHeaders: z.record(z.string(), z.unknown()),
         serverAddress: z.string(),
         serviceDirectoryConfig: z.object({
-          service: z.string(),
+          service: z.unknown(),
         }),
         tlsConfig: z.object({
-          caCerts: z.array(z.object({
-            cert: z.string(),
-            displayName: z.string(),
-          })),
+          caCerts: z.unknown(),
         }),
       }),
       name: z.string(),
       openApiToolset: z.object({
         apiAuthentication: z.object({
-          apiKeyConfig: z.object({
-            apiKeySecretVersion: z.string(),
-            keyName: z.string(),
-            requestLocation: z.string(),
-          }),
-          bearerTokenConfig: z.object({
-            token: z.string(),
-          }),
-          oauthConfig: z.object({
-            clientId: z.string(),
-            clientSecretVersion: z.string(),
-            oauthGrantType: z.string(),
-            scopes: z.array(z.string()),
-            tokenEndpoint: z.string(),
-          }),
-          serviceAccountAuthConfig: z.object({
-            scopes: z.array(z.string()),
-            serviceAccount: z.string(),
-          }),
-          serviceAgentIdTokenAuthConfig: z.object({}),
+          apiKeyConfig: z.unknown(),
+          bearerTokenConfig: z.unknown(),
+          oauthConfig: z.unknown(),
+          serviceAccountAuthConfig: z.unknown(),
+          serviceAgentIdTokenAuthConfig: z.unknown(),
         }),
         ignoreUnknownFields: z.boolean(),
         openApiSchema: z.string(),
         serviceDirectoryConfig: z.object({
-          service: z.string(),
+          service: z.unknown(),
         }),
         tlsConfig: z.object({
-          caCerts: z.array(z.object({
-            cert: z.string(),
-            displayName: z.string(),
-          })),
+          caCerts: z.unknown(),
         }),
         url: z.string(),
       }),
       toolFakeConfig: z.object({
         codeBlock: z.object({
-          pythonCode: z.string(),
+          pythonCode: z.unknown(),
         }),
         enableFakeMode: z.boolean(),
       }),
@@ -3251,96 +2417,96 @@ const InputsSchema = z.object({
   snapshot: z.object({
     agents: z.array(z.object({
       afterAgentCallbacks: z.array(z.object({
-        description: z.string().describe(
+        description: z.unknown().describe(
           "Optional. Human-readable description of the callback.",
         ).optional(),
-        disabled: z.boolean().describe(
+        disabled: z.unknown().describe(
           "Optional. Whether the callback is disabled. Disabled callbacks are ignored by the agent.",
         ).optional(),
-        proactiveExecutionEnabled: z.boolean().describe(
+        proactiveExecutionEnabled: z.unknown().describe(
           "Optional. If enabled, the callback will also be executed on intermediate model outputs. This setting only affects after model callback. **ENABLE WITH CAUTION**. Typically after model callback only needs to be executed after receiving all model responses. Enabling proactive execution may have negative implication on the execution cost and latency, and should only be enabled in rare situations.",
         ).optional(),
-        pythonCode: z.string().describe(
+        pythonCode: z.unknown().describe(
           "Required. The python code to execute for the callback.",
         ).optional(),
       })).describe(
         "Optional. The callbacks to execute after the agent is called. The provided callbacks are executed sequentially in the exact order they are given in the list. If a callback returns an overridden response, execution stops and any remaining callbacks are skipped.",
       ).optional(),
       afterModelCallbacks: z.array(z.object({
-        description: z.string().describe(
+        description: z.unknown().describe(
           "Optional. Human-readable description of the callback.",
         ).optional(),
-        disabled: z.boolean().describe(
+        disabled: z.unknown().describe(
           "Optional. Whether the callback is disabled. Disabled callbacks are ignored by the agent.",
         ).optional(),
-        proactiveExecutionEnabled: z.boolean().describe(
+        proactiveExecutionEnabled: z.unknown().describe(
           "Optional. If enabled, the callback will also be executed on intermediate model outputs. This setting only affects after model callback. **ENABLE WITH CAUTION**. Typically after model callback only needs to be executed after receiving all model responses. Enabling proactive execution may have negative implication on the execution cost and latency, and should only be enabled in rare situations.",
         ).optional(),
-        pythonCode: z.string().describe(
+        pythonCode: z.unknown().describe(
           "Required. The python code to execute for the callback.",
         ).optional(),
       })).describe(
         "Optional. The callbacks to execute after the model is called. If there are multiple calls to the model, the callback will be executed multiple times. The provided callbacks are executed sequentially in the exact order they are given in the list. If a callback returns an overridden response, execution stops and any remaining callbacks are skipped.",
       ).optional(),
       afterToolCallbacks: z.array(z.object({
-        description: z.string().describe(
+        description: z.unknown().describe(
           "Optional. Human-readable description of the callback.",
         ).optional(),
-        disabled: z.boolean().describe(
+        disabled: z.unknown().describe(
           "Optional. Whether the callback is disabled. Disabled callbacks are ignored by the agent.",
         ).optional(),
-        proactiveExecutionEnabled: z.boolean().describe(
+        proactiveExecutionEnabled: z.unknown().describe(
           "Optional. If enabled, the callback will also be executed on intermediate model outputs. This setting only affects after model callback. **ENABLE WITH CAUTION**. Typically after model callback only needs to be executed after receiving all model responses. Enabling proactive execution may have negative implication on the execution cost and latency, and should only be enabled in rare situations.",
         ).optional(),
-        pythonCode: z.string().describe(
+        pythonCode: z.unknown().describe(
           "Required. The python code to execute for the callback.",
         ).optional(),
       })).describe(
         "Optional. The callbacks to execute after the tool is invoked. If there are multiple tool invocations, the callback will be executed multiple times. The provided callbacks are executed sequentially in the exact order they are given in the list. If a callback returns an overridden response, execution stops and any remaining callbacks are skipped.",
       ).optional(),
       beforeAgentCallbacks: z.array(z.object({
-        description: z.string().describe(
+        description: z.unknown().describe(
           "Optional. Human-readable description of the callback.",
         ).optional(),
-        disabled: z.boolean().describe(
+        disabled: z.unknown().describe(
           "Optional. Whether the callback is disabled. Disabled callbacks are ignored by the agent.",
         ).optional(),
-        proactiveExecutionEnabled: z.boolean().describe(
+        proactiveExecutionEnabled: z.unknown().describe(
           "Optional. If enabled, the callback will also be executed on intermediate model outputs. This setting only affects after model callback. **ENABLE WITH CAUTION**. Typically after model callback only needs to be executed after receiving all model responses. Enabling proactive execution may have negative implication on the execution cost and latency, and should only be enabled in rare situations.",
         ).optional(),
-        pythonCode: z.string().describe(
+        pythonCode: z.unknown().describe(
           "Required. The python code to execute for the callback.",
         ).optional(),
       })).describe(
         "Optional. The callbacks to execute before the agent is called. The provided callbacks are executed sequentially in the exact order they are given in the list. If a callback returns an overridden response, execution stops and any remaining callbacks are skipped.",
       ).optional(),
       beforeModelCallbacks: z.array(z.object({
-        description: z.string().describe(
+        description: z.unknown().describe(
           "Optional. Human-readable description of the callback.",
         ).optional(),
-        disabled: z.boolean().describe(
+        disabled: z.unknown().describe(
           "Optional. Whether the callback is disabled. Disabled callbacks are ignored by the agent.",
         ).optional(),
-        proactiveExecutionEnabled: z.boolean().describe(
+        proactiveExecutionEnabled: z.unknown().describe(
           "Optional. If enabled, the callback will also be executed on intermediate model outputs. This setting only affects after model callback. **ENABLE WITH CAUTION**. Typically after model callback only needs to be executed after receiving all model responses. Enabling proactive execution may have negative implication on the execution cost and latency, and should only be enabled in rare situations.",
         ).optional(),
-        pythonCode: z.string().describe(
+        pythonCode: z.unknown().describe(
           "Required. The python code to execute for the callback.",
         ).optional(),
       })).describe(
         "Optional. The callbacks to execute before the model is called. If there are multiple calls to the model, the callback will be executed multiple times. The provided callbacks are executed sequentially in the exact order they are given in the list. If a callback returns an overridden response, execution stops and any remaining callbacks are skipped.",
       ).optional(),
       beforeToolCallbacks: z.array(z.object({
-        description: z.string().describe(
+        description: z.unknown().describe(
           "Optional. Human-readable description of the callback.",
         ).optional(),
-        disabled: z.boolean().describe(
+        disabled: z.unknown().describe(
           "Optional. Whether the callback is disabled. Disabled callbacks are ignored by the agent.",
         ).optional(),
-        proactiveExecutionEnabled: z.boolean().describe(
+        proactiveExecutionEnabled: z.unknown().describe(
           "Optional. If enabled, the callback will also be executed on intermediate model outputs. This setting only affects after model callback. **ENABLE WITH CAUTION**. Typically after model callback only needs to be executed after receiving all model responses. Enabling proactive execution may have negative implication on the execution cost and latency, and should only be enabled in rare situations.",
         ).optional(),
-        pythonCode: z.string().describe(
+        pythonCode: z.unknown().describe(
           "Required. The python code to execute for the callback.",
         ).optional(),
       })).describe(
@@ -3395,10 +2561,10 @@ const InputsSchema = z.object({
         flowId: z.string().describe(
           "Optional. The flow ID of the flow in the Dialogflow agent.",
         ).optional(),
-        inputVariableMapping: z.record(z.string(), z.string()).describe(
+        inputVariableMapping: z.record(z.string(), z.unknown()).describe(
           "Optional. The mapping of the app variables names to the Dialogflow session parameters names to be sent to the Dialogflow agent as input.",
         ).optional(),
-        outputVariableMapping: z.record(z.string(), z.string()).describe(
+        outputVariableMapping: z.record(z.string(), z.unknown()).describe(
           "Optional. The mapping of the Dialogflow session parameters names to the app variables names to be sent back to the CES agent after the Dialogflow agent execution ends.",
         ).optional(),
         respectResponseInterruptionSettings: z.boolean().describe(
@@ -3411,46 +2577,24 @@ const InputsSchema = z.object({
         "Optional. List of available tools for the agent. Format: `projects/{project}/locations/{location}/apps/{app}/tools/{tool}`",
       ).optional(),
       toolsets: z.array(z.object({
-        toolIds: z.array(z.string()).describe(
+        toolIds: z.unknown().describe(
           "Optional. The tools IDs to filter the toolset.",
         ).optional(),
-        toolset: z.string().describe(
+        toolset: z.unknown().describe(
           "Required. The resource name of the toolset. Format: `projects/{project}/locations/{location}/apps/{app}/toolsets/{toolset}`",
         ).optional(),
       })).describe("Optional. List of toolsets for the agent.").optional(),
       transferRules: z.array(z.object({
-        childAgent: z.string().describe(
+        childAgent: z.unknown().describe(
           "Required. The resource name of the child agent the rule applies to. Format: `projects/{project}/locations/{location}/apps/{app}/agents/{agent}`",
         ).optional(),
-        deterministicTransfer: z.object({
-          expressionCondition: z.object({
-            expression: z.string().describe(
-              "Required. The string representation of cloud.api.Expression condition.",
-            ).optional(),
-          }).describe("Expression condition based on session state.")
-            .optional(),
-          pythonCodeCondition: z.object({
-            pythonCode: z.string().describe(
-              "Required. The python code to execute.",
-            ).optional(),
-          }).describe("Python code block to evaluate the condition.")
-            .optional(),
-        }).describe(
+        deterministicTransfer: z.unknown().describe(
           "Deterministic transfer rule. When the condition evaluates to true, the transfer occurs.",
         ).optional(),
-        direction: z.enum([
-          "DIRECTION_UNSPECIFIED",
-          "PARENT_TO_CHILD",
-          "CHILD_TO_PARENT",
-        ]).describe("Required. The direction of the transfer.").optional(),
-        disablePlannerTransfer: z.object({
-          expressionCondition: z.object({
-            expression: z.string().describe(
-              "Required. The string representation of cloud.api.Expression condition.",
-            ).optional(),
-          }).describe("Expression condition based on session state.")
-            .optional(),
-        }).describe(
+        direction: z.unknown().describe(
+          "Required. The direction of the transfer.",
+        ).optional(),
+        disablePlannerTransfer: z.unknown().describe(
           "A rule that prevents the planner from transferring to the target agent.",
         ).optional(),
       })).describe(
@@ -3499,10 +2643,10 @@ const InputsSchema = z.object({
         synthesizeSpeechConfigs: z.record(
           z.string(),
           z.object({
-            speakingRate: z.number().describe(
+            speakingRate: z.unknown().describe(
               "Optional. The speaking rate/speed in the range [0.25, 2.0]. 1.0 is the normal native speed supported by the specific voice. 2.0 is twice as fast, and 0.5 is half as fast. Values outside of the range [0.25, 2.0] will return an error.",
             ).optional(),
-            voice: z.string().describe(
+            voice: z.unknown().describe(
               "Optional. The name of the voice. If not set, the service will choose a voice based on the other parameters such as language_code. For the list of available voices, please refer to [Supported voices and languages](https://cloud.google.com/text-to-speech/docs/voices) from Cloud Text-to-Speech.",
             ).optional(),
           }),
@@ -3528,14 +2672,11 @@ const InputsSchema = z.object({
       ).optional(),
       dataStoreSettings: z.object({
         engines: z.array(z.object({
-          name: z.string().describe(
+          name: z.unknown().describe(
             "Output only. The resource name of the engine. Format: `projects/{project}/locations/{location}/collections/{collection}/engines/{engine}`",
           ).optional(),
-          type: z.enum([
-            "TYPE_UNSPECIFIED",
-            "ENGINE_TYPE_SEARCH",
-            "ENGINE_TYPE_CHAT",
-          ]).describe("Output only. The type of the engine.").optional(),
+          type: z.unknown().describe("Output only. The type of the engine.")
+            .optional(),
         })).describe("Output only. The engines for the app.").optional(),
       }).describe("Data store related settings for the app.").optional(),
       defaultChannelProfile: z.object({
@@ -3575,16 +2716,16 @@ const InputsSchema = z.object({
             "CHAT_VOICE_AND_VIDEO",
           ]).describe("Optional. The modality of the web widget.").optional(),
           securitySettings: z.object({
-            allowedOrigins: z.array(z.string()).describe(
+            allowedOrigins: z.unknown().describe(
               'Optional. The origins that are allowed to host the web widget. An origin is defined by RFC 6454. If empty, all origins are allowed. A maximum of 100 origins is allowed. Example: "https://example.com"',
             ).optional(),
-            enableOriginCheck: z.boolean().describe(
+            enableOriginCheck: z.unknown().describe(
               "Optional. Indicates whether origin check for the web widget is enabled. If `true`, the web widget will check the origin of the website that loads the web widget and only allow it to be loaded in the same origin or any of the allowed origins.",
             ).optional(),
-            enablePublicAccess: z.boolean().describe(
+            enablePublicAccess: z.unknown().describe(
               "Optional. Indicates whether public access to the web widget is enabled. If `true`, the web widget will be publicly accessible. If `false`, the web widget must be integrated with your own authentication and authorization system to return valid credentials for accessing the CES agent.",
             ).optional(),
-            enableRecaptcha: z.boolean().describe(
+            enableRecaptcha: z.unknown().describe(
               "Optional. Indicates whether reCAPTCHA verification for the web widget is enabled.",
             ).optional(),
           }).describe("Security settings for the web widget.").optional(),
@@ -3623,31 +2764,23 @@ const InputsSchema = z.object({
       evaluationMetricsThresholds: z.object({
         goldenEvaluationMetricsThresholds: z.object({
           expectationLevelMetricsThresholds: z.object({
-            toolInvocationParameterCorrectnessThreshold: z.number().describe(
+            toolInvocationParameterCorrectnessThreshold: z.unknown().describe(
               "Optional. The success threshold for individual tool invocation parameter correctness. Must be a float between 0 and 1. Default is 1.0.",
             ).optional(),
           }).describe("Expectation level metrics thresholds.").optional(),
           toolMatchingSettings: z.object({
-            extraToolCallBehavior: z.enum([
-              "EXTRA_TOOL_CALL_BEHAVIOR_UNSPECIFIED",
-              "FAIL",
-              "ALLOW",
-            ]).describe(
+            extraToolCallBehavior: z.unknown().describe(
               "Optional. Behavior for extra tool calls. Defaults to FAIL.",
             ).optional(),
           }).describe("Settings for matching tool calls.").optional(),
           turnLevelMetricsThresholds: z.object({
-            overallToolInvocationCorrectnessThreshold: z.number().describe(
+            overallToolInvocationCorrectnessThreshold: z.unknown().describe(
               "Optional. The success threshold for overall tool invocation correctness. Must be a float between 0 and 1. Default is 1.0.",
             ).optional(),
-            semanticSimilarityChannel: z.enum([
-              "SEMANTIC_SIMILARITY_CHANNEL_UNSPECIFIED",
-              "TEXT",
-              "AUDIO",
-            ]).describe(
+            semanticSimilarityChannel: z.unknown().describe(
               "Optional. The semantic similarity channel to use for evaluation.",
             ).optional(),
-            semanticSimilaritySuccessThreshold: z.number().int().describe(
+            semanticSimilaritySuccessThreshold: z.unknown().describe(
               "Optional. The success threshold for semantic similarity. Must be an integer between 0 and 4. Default is >= 3.",
             ).optional(),
           }).describe("Turn level metrics thresholds.").optional(),
@@ -3795,63 +2928,57 @@ const InputsSchema = z.object({
           "Required. The name of the variable. The name must start with a letter or underscore and contain only letters, numbers, or underscores.",
         ).optional(),
         schema: z.object({
-          additionalProperties: z.string().describe(
+          additionalProperties: z.unknown().describe(
             "Circular reference to Schema",
           ).optional(),
-          anyOf: z.array(z.string()).describe(
+          anyOf: z.unknown().describe(
             "Optional. The value should be validated against any (one or more) of the subschemas in the list.",
           ).optional(),
-          default: z.string().describe("Optional. Default value of the data.")
+          default: z.unknown().describe("Optional. Default value of the data.")
             .optional(),
-          defs: z.record(z.string(), z.string()).describe(
+          defs: z.unknown().describe(
             "Optional. A map of definitions for use by `ref`. Only allowed at the root of the schema.",
           ).optional(),
-          description: z.string().describe(
+          description: z.unknown().describe(
             "Optional. The description of the data.",
           ).optional(),
-          enum: z.array(z.string()).describe(
+          enum: z.unknown().describe(
             'Optional. Possible values of the element of primitive type with enum format. Examples: 1. We can define direction as: {type:STRING, format:enum, enum:["EAST", NORTH", "SOUTH", "WEST"]} 2. We can define apartment number as: {type:INTEGER, format:enum, enum:["101", "201", "301"]}',
           ).optional(),
-          items: z.string().describe("Circular reference to Schema").optional(),
-          maxItems: z.string().describe(
+          items: z.unknown().describe("Circular reference to Schema")
+            .optional(),
+          maxItems: z.unknown().describe(
             "Optional. Maximum number of the elements for Type.ARRAY.",
           ).optional(),
-          maximum: z.number().describe(
+          maximum: z.unknown().describe(
             "Optional. Maximum value for Type.INTEGER and Type.NUMBER.",
           ).optional(),
-          minItems: z.string().describe(
+          minItems: z.unknown().describe(
             "Optional. Minimum number of the elements for Type.ARRAY.",
           ).optional(),
-          minimum: z.number().describe(
+          minimum: z.unknown().describe(
             "Optional. Minimum value for Type.INTEGER and Type.NUMBER.",
           ).optional(),
-          nullable: z.boolean().describe(
+          nullable: z.unknown().describe(
             "Optional. Indicates if the value may be null.",
           ).optional(),
-          prefixItems: z.array(z.string()).describe(
+          prefixItems: z.unknown().describe(
             "Optional. Schemas of initial elements of Type.ARRAY.",
           ).optional(),
-          properties: z.record(z.string(), z.string()).describe(
+          properties: z.unknown().describe(
             "Optional. Properties of Type.OBJECT.",
           ).optional(),
-          ref: z.string().describe(
+          ref: z.unknown().describe(
             'Optional. Allows indirect references between schema nodes. The value should be a valid reference to a child of the root `defs`. For example, the following schema defines a reference to a schema node named "Pet": ` type: object properties: pet: ref: #/defs/Pet defs: Pet: type: object properties: name: type: string ` The value of the "pet" property is a reference to the schema node named "Pet". See details in https://json-schema.org/understanding-json-schema/structuring.',
           ).optional(),
-          required: z.array(z.string()).describe(
+          required: z.unknown().describe(
             "Optional. Required properties of Type.OBJECT.",
           ).optional(),
-          title: z.string().describe("Optional. The title of the schema.")
+          title: z.unknown().describe("Optional. The title of the schema.")
             .optional(),
-          type: z.enum([
-            "TYPE_UNSPECIFIED",
-            "STRING",
-            "INTEGER",
-            "NUMBER",
-            "BOOLEAN",
-            "OBJECT",
-            "ARRAY",
-          ]).describe("Required. The type of the data.").optional(),
-          uniqueItems: z.boolean().describe(
+          type: z.unknown().describe("Required. The type of the data.")
+            .optional(),
+          uniqueItems: z.unknown().describe(
             "Optional. Indicate the items in the array must be unique. Only applies to TYPE.ARRAY.",
           ).optional(),
         }).describe(
@@ -3886,63 +3013,57 @@ const InputsSchema = z.object({
           "Required. The name of the variable. The name must start with a letter or underscore and contain only letters, numbers, or underscores.",
         ).optional(),
         schema: z.object({
-          additionalProperties: z.string().describe(
+          additionalProperties: z.unknown().describe(
             "Circular reference to Schema",
           ).optional(),
-          anyOf: z.array(z.string()).describe(
+          anyOf: z.unknown().describe(
             "Optional. The value should be validated against any (one or more) of the subschemas in the list.",
           ).optional(),
-          default: z.string().describe("Optional. Default value of the data.")
+          default: z.unknown().describe("Optional. Default value of the data.")
             .optional(),
-          defs: z.record(z.string(), z.string()).describe(
+          defs: z.unknown().describe(
             "Optional. A map of definitions for use by `ref`. Only allowed at the root of the schema.",
           ).optional(),
-          description: z.string().describe(
+          description: z.unknown().describe(
             "Optional. The description of the data.",
           ).optional(),
-          enum: z.array(z.string()).describe(
+          enum: z.unknown().describe(
             'Optional. Possible values of the element of primitive type with enum format. Examples: 1. We can define direction as: {type:STRING, format:enum, enum:["EAST", NORTH", "SOUTH", "WEST"]} 2. We can define apartment number as: {type:INTEGER, format:enum, enum:["101", "201", "301"]}',
           ).optional(),
-          items: z.string().describe("Circular reference to Schema").optional(),
-          maxItems: z.string().describe(
+          items: z.unknown().describe("Circular reference to Schema")
+            .optional(),
+          maxItems: z.unknown().describe(
             "Optional. Maximum number of the elements for Type.ARRAY.",
           ).optional(),
-          maximum: z.number().describe(
+          maximum: z.unknown().describe(
             "Optional. Maximum value for Type.INTEGER and Type.NUMBER.",
           ).optional(),
-          minItems: z.string().describe(
+          minItems: z.unknown().describe(
             "Optional. Minimum number of the elements for Type.ARRAY.",
           ).optional(),
-          minimum: z.number().describe(
+          minimum: z.unknown().describe(
             "Optional. Minimum value for Type.INTEGER and Type.NUMBER.",
           ).optional(),
-          nullable: z.boolean().describe(
+          nullable: z.unknown().describe(
             "Optional. Indicates if the value may be null.",
           ).optional(),
-          prefixItems: z.array(z.string()).describe(
+          prefixItems: z.unknown().describe(
             "Optional. Schemas of initial elements of Type.ARRAY.",
           ).optional(),
-          properties: z.record(z.string(), z.string()).describe(
+          properties: z.unknown().describe(
             "Optional. Properties of Type.OBJECT.",
           ).optional(),
-          ref: z.string().describe(
+          ref: z.unknown().describe(
             'Optional. Allows indirect references between schema nodes. The value should be a valid reference to a child of the root `defs`. For example, the following schema defines a reference to a schema node named "Pet": ` type: object properties: pet: ref: #/defs/Pet defs: Pet: type: object properties: name: type: string ` The value of the "pet" property is a reference to the schema node named "Pet". See details in https://json-schema.org/understanding-json-schema/structuring.',
           ).optional(),
-          required: z.array(z.string()).describe(
+          required: z.unknown().describe(
             "Optional. Required properties of Type.OBJECT.",
           ).optional(),
-          title: z.string().describe("Optional. The title of the schema.")
+          title: z.unknown().describe("Optional. The title of the schema.")
             .optional(),
-          type: z.enum([
-            "TYPE_UNSPECIFIED",
-            "STRING",
-            "INTEGER",
-            "NUMBER",
-            "BOOLEAN",
-            "OBJECT",
-            "ARRAY",
-          ]).describe("Required. The type of the data.").optional(),
-          uniqueItems: z.boolean().describe(
+          type: z.unknown().describe("Required. The type of the data.")
+            .optional(),
+          uniqueItems: z.unknown().describe(
             "Optional. Indicate the items in the array must be unique. Only applies to TYPE.ARRAY.",
           ).optional(),
         }).describe(
@@ -3971,101 +3092,13 @@ const InputsSchema = z.object({
         "Output only. The example may become invalid if referencing resources are deleted. Invalid examples will not be used as few-shot examples.",
       ).optional(),
       messages: z.array(z.object({
-        chunks: z.array(z.object({
-          agentTransfer: z.object({
-            displayName: z.string().describe(
-              "Output only. Display name of the agent.",
-            ).optional(),
-            targetAgent: z.string().describe(
-              "Required. The agent to which the conversation is being transferred. The agent will handle the conversation from this point forward. Format: `projects/{project}/locations/{location}/apps/{app}/agents/{agent}`",
-            ).optional(),
-          }).describe(
-            "Represents an event indicating the transfer of a conversation to a different agent.",
-          ).optional(),
-          blob: z.object({
-            data: z.string().describe("Required. Raw bytes of the blob.")
-              .optional(),
-            mimeType: z.string().describe(
-              "Required. The IANA standard MIME type of the source data.",
-            ).optional(),
-          }).describe("Represents a blob input or output in the conversation.")
-            .optional(),
-          defaultVariables: z.record(z.string(), z.string()).describe(
-            "A struct represents default variables at the start of the conversation, keyed by variable names.",
-          ).optional(),
-          image: z.object({
-            data: z.string().describe("Required. Raw bytes of the image.")
-              .optional(),
-            mimeType: z.string().describe(
-              "Required. The IANA standard MIME type of the source data. Supported image types includes: * image/png * image/jpeg * image/webp",
-            ).optional(),
-          }).describe(
-            "Represents an image input or output in the conversation.",
-          ).optional(),
-          payload: z.record(z.string(), z.string()).describe(
-            "Optional. Custom payload data.",
-          ).optional(),
-          text: z.string().describe("Optional. Text data.").optional(),
-          toolCall: z.object({
-            args: z.record(z.string(), z.string()).describe(
-              "Optional. The input parameters and values for the tool in JSON object format.",
-            ).optional(),
-            displayName: z.string().describe(
-              "Output only. Display name of the tool.",
-            ).optional(),
-            id: z.string().describe(
-              "Optional. The unique identifier of the tool call. If populated, the client should return the execution result with the matching ID in ToolResponse.",
-            ).optional(),
-            tool: z.string().describe(
-              "Optional. The name of the tool to execute. Format: `projects/{project}/locations/{location}/apps/{app}/tools/{tool}`",
-            ).optional(),
-            toolsetTool: z.object({
-              toolId: z.string().describe(
-                "Optional. The tool ID to filter the tools to retrieve the schema for.",
-              ).optional(),
-              toolset: z.string().describe(
-                "Required. The resource name of the Toolset from which this tool is derived. Format: `projects/{project}/locations/{location}/apps/{app}/toolsets/{toolset}`",
-              ).optional(),
-            }).describe("A tool that is created from a toolset.").optional(),
-          }).describe(
-            "Request for the client or the agent to execute the specified tool.",
-          ).optional(),
-          toolResponse: z.object({
-            displayName: z.string().describe(
-              "Output only. Display name of the tool.",
-            ).optional(),
-            id: z.string().describe(
-              "Optional. The matching ID of the tool call the response is for.",
-            ).optional(),
-            response: z.record(z.string(), z.string()).describe(
-              'Required. The tool execution result in JSON object format. Use "output" key to specify tool response and "error" key to specify error details (if any). If "output" and "error" keys are not specified, then whole "response" is treated as tool execution result.',
-            ).optional(),
-            tool: z.string().describe(
-              "Optional. The name of the tool to execute. Format: `projects/{project}/locations/{location}/apps/{app}/tools/{tool}`",
-            ).optional(),
-            toolsetTool: z.object({
-              toolId: z.string().describe(
-                "Optional. The tool ID to filter the tools to retrieve the schema for.",
-              ).optional(),
-              toolset: z.string().describe(
-                "Required. The resource name of the Toolset from which this tool is derived. Format: `projects/{project}/locations/{location}/apps/{app}/toolsets/{toolset}`",
-              ).optional(),
-            }).describe("A tool that is created from a toolset.").optional(),
-          }).describe(
-            "The execution result of a specific tool from the client or the agent.",
-          ).optional(),
-          transcript: z.string().describe(
-            "Optional. Transcript associated with the audio.",
-          ).optional(),
-          updatedVariables: z.record(z.string(), z.string()).describe(
-            "A struct represents variables that were updated in the conversation, keyed by variable names.",
-          ).optional(),
-        })).describe("Optional. Content of the message as a series of chunks.")
-          .optional(),
-        eventTime: z.string().describe(
+        chunks: z.unknown().describe(
+          "Optional. Content of the message as a series of chunks.",
+        ).optional(),
+        eventTime: z.unknown().describe(
           "Optional. Timestamp when the message was sent or received. Should not be used if the message is part of an example.",
         ).optional(),
-        role: z.string().describe(
+        role: z.unknown().describe(
           "Optional. The role within the conversation, e.g., user, agent.",
         ).optional(),
       })).describe(
@@ -4081,28 +3114,21 @@ const InputsSchema = z.object({
     guardrails: z.array(z.object({
       action: z.object({
         generativeAnswer: z.object({
-          prompt: z.string().describe(
+          prompt: z.unknown().describe(
             "Required. The prompt to use for the generative answer.",
           ).optional(),
         }).describe(
           "The agent will immediately respond with a generative answer.",
         ).optional(),
         respondImmediately: z.object({
-          responses: z.array(z.object({
-            disabled: z.boolean().describe(
-              "Optional. Whether the response is disabled. Disabled responses are not used by the agent.",
-            ).optional(),
-            text: z.string().describe(
-              "Required. Text for the agent to respond with.",
-            ).optional(),
-          })).describe(
+          responses: z.unknown().describe(
             "Required. The canned responses for the agent to choose from. The response is chosen randomly.",
           ).optional(),
         }).describe(
           "The agent will immediately respond with a preconfigured response.",
         ).optional(),
         transferAgent: z.object({
-          agent: z.string().describe(
+          agent: z.unknown().describe(
             "Required. The name of the agent to transfer the conversation to. The agent must be in the same app as the current agent. Format: `projects/{project}/locations/{location}/apps/{app}/agents/{agent}`",
           ).optional(),
         }).describe(
@@ -4112,64 +3138,64 @@ const InputsSchema = z.object({
         .optional(),
       codeCallback: z.object({
         afterAgentCallback: z.object({
-          description: z.string().describe(
+          description: z.unknown().describe(
             "Optional. Human-readable description of the callback.",
           ).optional(),
-          disabled: z.boolean().describe(
+          disabled: z.unknown().describe(
             "Optional. Whether the callback is disabled. Disabled callbacks are ignored by the agent.",
           ).optional(),
-          proactiveExecutionEnabled: z.boolean().describe(
+          proactiveExecutionEnabled: z.unknown().describe(
             "Optional. If enabled, the callback will also be executed on intermediate model outputs. This setting only affects after model callback. **ENABLE WITH CAUTION**. Typically after model callback only needs to be executed after receiving all model responses. Enabling proactive execution may have negative implication on the execution cost and latency, and should only be enabled in rare situations.",
           ).optional(),
-          pythonCode: z.string().describe(
+          pythonCode: z.unknown().describe(
             "Required. The python code to execute for the callback.",
           ).optional(),
         }).describe(
           "A callback defines the custom logic to be executed at various stages of agent interaction.",
         ).optional(),
         afterModelCallback: z.object({
-          description: z.string().describe(
+          description: z.unknown().describe(
             "Optional. Human-readable description of the callback.",
           ).optional(),
-          disabled: z.boolean().describe(
+          disabled: z.unknown().describe(
             "Optional. Whether the callback is disabled. Disabled callbacks are ignored by the agent.",
           ).optional(),
-          proactiveExecutionEnabled: z.boolean().describe(
+          proactiveExecutionEnabled: z.unknown().describe(
             "Optional. If enabled, the callback will also be executed on intermediate model outputs. This setting only affects after model callback. **ENABLE WITH CAUTION**. Typically after model callback only needs to be executed after receiving all model responses. Enabling proactive execution may have negative implication on the execution cost and latency, and should only be enabled in rare situations.",
           ).optional(),
-          pythonCode: z.string().describe(
+          pythonCode: z.unknown().describe(
             "Required. The python code to execute for the callback.",
           ).optional(),
         }).describe(
           "A callback defines the custom logic to be executed at various stages of agent interaction.",
         ).optional(),
         beforeAgentCallback: z.object({
-          description: z.string().describe(
+          description: z.unknown().describe(
             "Optional. Human-readable description of the callback.",
           ).optional(),
-          disabled: z.boolean().describe(
+          disabled: z.unknown().describe(
             "Optional. Whether the callback is disabled. Disabled callbacks are ignored by the agent.",
           ).optional(),
-          proactiveExecutionEnabled: z.boolean().describe(
+          proactiveExecutionEnabled: z.unknown().describe(
             "Optional. If enabled, the callback will also be executed on intermediate model outputs. This setting only affects after model callback. **ENABLE WITH CAUTION**. Typically after model callback only needs to be executed after receiving all model responses. Enabling proactive execution may have negative implication on the execution cost and latency, and should only be enabled in rare situations.",
           ).optional(),
-          pythonCode: z.string().describe(
+          pythonCode: z.unknown().describe(
             "Required. The python code to execute for the callback.",
           ).optional(),
         }).describe(
           "A callback defines the custom logic to be executed at various stages of agent interaction.",
         ).optional(),
         beforeModelCallback: z.object({
-          description: z.string().describe(
+          description: z.unknown().describe(
             "Optional. Human-readable description of the callback.",
           ).optional(),
-          disabled: z.boolean().describe(
+          disabled: z.unknown().describe(
             "Optional. Whether the callback is disabled. Disabled callbacks are ignored by the agent.",
           ).optional(),
-          proactiveExecutionEnabled: z.boolean().describe(
+          proactiveExecutionEnabled: z.unknown().describe(
             "Optional. If enabled, the callback will also be executed on intermediate model outputs. This setting only affects after model callback. **ENABLE WITH CAUTION**. Typically after model callback only needs to be executed after receiving all model responses. Enabling proactive execution may have negative implication on the execution cost and latency, and should only be enabled in rare situations.",
           ).optional(),
-          pythonCode: z.string().describe(
+          pythonCode: z.unknown().describe(
             "Required. The python code to execute for the callback.",
           ).optional(),
         }).describe(
@@ -4179,13 +3205,13 @@ const InputsSchema = z.object({
         "Guardrail that blocks the conversation based on the code callbacks provided.",
       ).optional(),
       contentFilter: z.object({
-        bannedContents: z.array(z.string()).describe(
+        bannedContents: z.array(z.unknown()).describe(
           "Optional. List of banned phrases. Applies to both user inputs and agent responses.",
         ).optional(),
-        bannedContentsInAgentResponse: z.array(z.string()).describe(
+        bannedContentsInAgentResponse: z.array(z.unknown()).describe(
           "Optional. List of banned phrases. Applies only to agent responses.",
         ).optional(),
-        bannedContentsInUserInput: z.array(z.string()).describe(
+        bannedContentsInUserInput: z.array(z.unknown()).describe(
           "Optional. List of banned phrases. Applies only to user inputs.",
         ).optional(),
         disregardDiacritics: z.boolean().describe(
@@ -4226,10 +3252,10 @@ const InputsSchema = z.object({
           "Optional. When checking this policy, consider the last 'n' messages in the conversation. When not set a default value of 10 will be used.",
         ).optional(),
         modelSettings: z.object({
-          model: z.string().describe(
+          model: z.unknown().describe(
             "Optional. The LLM model that the agent should use. If not set, the agent will inherit the model from its parent agent.",
           ).optional(),
-          temperature: z.number().describe(
+          temperature: z.unknown().describe(
             "Optional. If set, this temperature will be used for the LLM model. Temperature controls the randomness of the model's responses. Lower temperatures produce responses that are more predictable. Higher temperatures produce responses that are more creative.",
           ).optional(),
         }).describe(
@@ -4249,39 +3275,27 @@ const InputsSchema = z.object({
       ).optional(),
       llmPromptSecurity: z.object({
         customPolicy: z.object({
-          allowShortUtterance: z.boolean().describe(
+          allowShortUtterance: z.unknown().describe(
             "Optional. By default, the LLM policy check is bypassed for short utterances. Enabling this setting applies the policy check to all utterances, including those that would normally be skipped.",
           ).optional(),
-          failOpen: z.boolean().describe(
+          failOpen: z.unknown().describe(
             "Optional. If an error occurs during the policy check, fail open and do not trigger the guardrail.",
           ).optional(),
-          maxConversationMessages: z.number().int().describe(
+          maxConversationMessages: z.unknown().describe(
             "Optional. When checking this policy, consider the last 'n' messages in the conversation. When not set a default value of 10 will be used.",
           ).optional(),
-          modelSettings: z.object({
-            model: z.string().describe(
-              "Optional. The LLM model that the agent should use. If not set, the agent will inherit the model from its parent agent.",
-            ).optional(),
-            temperature: z.number().describe(
-              "Optional. If set, this temperature will be used for the LLM model. Temperature controls the randomness of the model's responses. Lower temperatures produce responses that are more predictable. Higher temperatures produce responses that are more creative.",
-            ).optional(),
-          }).describe(
+          modelSettings: z.unknown().describe(
             "Model settings contains various configurations for the LLM model.",
           ).optional(),
-          policyScope: z.enum([
-            "POLICY_SCOPE_UNSPECIFIED",
-            "USER_QUERY",
-            "AGENT_RESPONSE",
-            "USER_QUERY_AND_AGENT_RESPONSE",
-          ]).describe(
+          policyScope: z.unknown().describe(
             "Required. Defines when to apply the policy check during the conversation. If set to `POLICY_SCOPE_UNSPECIFIED`, the policy will be applied to the user input. When applying the policy to the agent response, additional latency will be introduced before the agent can respond.",
           ).optional(),
-          prompt: z.string().describe("Required. Policy prompt.").optional(),
+          prompt: z.unknown().describe("Required. Policy prompt.").optional(),
         }).describe(
           "Guardrail that blocks the conversation if the LLM response is considered violating the policy based on the LLM classification.",
         ).optional(),
         defaultSettings: z.object({
-          defaultPromptTemplate: z.string().describe(
+          defaultPromptTemplate: z.unknown().describe(
             "Output only. The default prompt template used by the system. This field is for display purposes to show the user what prompt the system uses by default. It is OUTPUT_ONLY.",
           ).optional(),
         }).describe("Configuration for default system security settings.")
@@ -4293,23 +3307,9 @@ const InputsSchema = z.object({
         "Guardrail that blocks the conversation if the input is considered unsafe based on the LLM classification.",
       ).optional(),
       modelSafety: z.object({
-        safetySettings: z.array(z.object({
-          category: z.enum([
-            "HARM_CATEGORY_UNSPECIFIED",
-            "HARM_CATEGORY_HATE_SPEECH",
-            "HARM_CATEGORY_DANGEROUS_CONTENT",
-            "HARM_CATEGORY_HARASSMENT",
-            "HARM_CATEGORY_SEXUALLY_EXPLICIT",
-          ]).describe("Required. The harm category.").optional(),
-          threshold: z.enum([
-            "HARM_BLOCK_THRESHOLD_UNSPECIFIED",
-            "BLOCK_LOW_AND_ABOVE",
-            "BLOCK_MEDIUM_AND_ABOVE",
-            "BLOCK_ONLY_HIGH",
-            "BLOCK_NONE",
-            "OFF",
-          ]).describe("Required. The harm block threshold.").optional(),
-        })).describe("Required. List of safety settings.").optional(),
+        safetySettings: z.array(z.unknown()).describe(
+          "Required. List of safety settings.",
+        ).optional(),
       }).describe(
         "Model safety settings overrides. When this is set, it will override the default settings and trigger the guardrail if the response is considered unsafe.",
       ).optional(),
@@ -4338,126 +3338,114 @@ const InputsSchema = z.object({
           .optional(),
         name: z.string().describe("Required. The function name.").optional(),
         parameters: z.object({
-          additionalProperties: z.string().describe(
+          additionalProperties: z.unknown().describe(
             "Circular reference to Schema",
           ).optional(),
-          anyOf: z.array(z.string()).describe(
+          anyOf: z.unknown().describe(
             "Optional. The value should be validated against any (one or more) of the subschemas in the list.",
           ).optional(),
-          default: z.string().describe("Optional. Default value of the data.")
+          default: z.unknown().describe("Optional. Default value of the data.")
             .optional(),
-          defs: z.record(z.string(), z.string()).describe(
+          defs: z.unknown().describe(
             "Optional. A map of definitions for use by `ref`. Only allowed at the root of the schema.",
           ).optional(),
-          description: z.string().describe(
+          description: z.unknown().describe(
             "Optional. The description of the data.",
           ).optional(),
-          enum: z.array(z.string()).describe(
+          enum: z.unknown().describe(
             'Optional. Possible values of the element of primitive type with enum format. Examples: 1. We can define direction as: {type:STRING, format:enum, enum:["EAST", NORTH", "SOUTH", "WEST"]} 2. We can define apartment number as: {type:INTEGER, format:enum, enum:["101", "201", "301"]}',
           ).optional(),
-          items: z.string().describe("Circular reference to Schema").optional(),
-          maxItems: z.string().describe(
+          items: z.unknown().describe("Circular reference to Schema")
+            .optional(),
+          maxItems: z.unknown().describe(
             "Optional. Maximum number of the elements for Type.ARRAY.",
           ).optional(),
-          maximum: z.number().describe(
+          maximum: z.unknown().describe(
             "Optional. Maximum value for Type.INTEGER and Type.NUMBER.",
           ).optional(),
-          minItems: z.string().describe(
+          minItems: z.unknown().describe(
             "Optional. Minimum number of the elements for Type.ARRAY.",
           ).optional(),
-          minimum: z.number().describe(
+          minimum: z.unknown().describe(
             "Optional. Minimum value for Type.INTEGER and Type.NUMBER.",
           ).optional(),
-          nullable: z.boolean().describe(
+          nullable: z.unknown().describe(
             "Optional. Indicates if the value may be null.",
           ).optional(),
-          prefixItems: z.array(z.string()).describe(
+          prefixItems: z.unknown().describe(
             "Optional. Schemas of initial elements of Type.ARRAY.",
           ).optional(),
-          properties: z.record(z.string(), z.string()).describe(
+          properties: z.unknown().describe(
             "Optional. Properties of Type.OBJECT.",
           ).optional(),
-          ref: z.string().describe(
+          ref: z.unknown().describe(
             'Optional. Allows indirect references between schema nodes. The value should be a valid reference to a child of the root `defs`. For example, the following schema defines a reference to a schema node named "Pet": ` type: object properties: pet: ref: #/defs/Pet defs: Pet: type: object properties: name: type: string ` The value of the "pet" property is a reference to the schema node named "Pet". See details in https://json-schema.org/understanding-json-schema/structuring.',
           ).optional(),
-          required: z.array(z.string()).describe(
+          required: z.unknown().describe(
             "Optional. Required properties of Type.OBJECT.",
           ).optional(),
-          title: z.string().describe("Optional. The title of the schema.")
+          title: z.unknown().describe("Optional. The title of the schema.")
             .optional(),
-          type: z.enum([
-            "TYPE_UNSPECIFIED",
-            "STRING",
-            "INTEGER",
-            "NUMBER",
-            "BOOLEAN",
-            "OBJECT",
-            "ARRAY",
-          ]).describe("Required. The type of the data.").optional(),
-          uniqueItems: z.boolean().describe(
+          type: z.unknown().describe("Required. The type of the data.")
+            .optional(),
+          uniqueItems: z.unknown().describe(
             "Optional. Indicate the items in the array must be unique. Only applies to TYPE.ARRAY.",
           ).optional(),
         }).describe(
           "Represents a select subset of an OpenAPI 3.0 schema object.",
         ).optional(),
         response: z.object({
-          additionalProperties: z.string().describe(
+          additionalProperties: z.unknown().describe(
             "Circular reference to Schema",
           ).optional(),
-          anyOf: z.array(z.string()).describe(
+          anyOf: z.unknown().describe(
             "Optional. The value should be validated against any (one or more) of the subschemas in the list.",
           ).optional(),
-          default: z.string().describe("Optional. Default value of the data.")
+          default: z.unknown().describe("Optional. Default value of the data.")
             .optional(),
-          defs: z.record(z.string(), z.string()).describe(
+          defs: z.unknown().describe(
             "Optional. A map of definitions for use by `ref`. Only allowed at the root of the schema.",
           ).optional(),
-          description: z.string().describe(
+          description: z.unknown().describe(
             "Optional. The description of the data.",
           ).optional(),
-          enum: z.array(z.string()).describe(
+          enum: z.unknown().describe(
             'Optional. Possible values of the element of primitive type with enum format. Examples: 1. We can define direction as: {type:STRING, format:enum, enum:["EAST", NORTH", "SOUTH", "WEST"]} 2. We can define apartment number as: {type:INTEGER, format:enum, enum:["101", "201", "301"]}',
           ).optional(),
-          items: z.string().describe("Circular reference to Schema").optional(),
-          maxItems: z.string().describe(
+          items: z.unknown().describe("Circular reference to Schema")
+            .optional(),
+          maxItems: z.unknown().describe(
             "Optional. Maximum number of the elements for Type.ARRAY.",
           ).optional(),
-          maximum: z.number().describe(
+          maximum: z.unknown().describe(
             "Optional. Maximum value for Type.INTEGER and Type.NUMBER.",
           ).optional(),
-          minItems: z.string().describe(
+          minItems: z.unknown().describe(
             "Optional. Minimum number of the elements for Type.ARRAY.",
           ).optional(),
-          minimum: z.number().describe(
+          minimum: z.unknown().describe(
             "Optional. Minimum value for Type.INTEGER and Type.NUMBER.",
           ).optional(),
-          nullable: z.boolean().describe(
+          nullable: z.unknown().describe(
             "Optional. Indicates if the value may be null.",
           ).optional(),
-          prefixItems: z.array(z.string()).describe(
+          prefixItems: z.unknown().describe(
             "Optional. Schemas of initial elements of Type.ARRAY.",
           ).optional(),
-          properties: z.record(z.string(), z.string()).describe(
+          properties: z.unknown().describe(
             "Optional. Properties of Type.OBJECT.",
           ).optional(),
-          ref: z.string().describe(
+          ref: z.unknown().describe(
             'Optional. Allows indirect references between schema nodes. The value should be a valid reference to a child of the root `defs`. For example, the following schema defines a reference to a schema node named "Pet": ` type: object properties: pet: ref: #/defs/Pet defs: Pet: type: object properties: name: type: string ` The value of the "pet" property is a reference to the schema node named "Pet". See details in https://json-schema.org/understanding-json-schema/structuring.',
           ).optional(),
-          required: z.array(z.string()).describe(
+          required: z.unknown().describe(
             "Optional. Required properties of Type.OBJECT.",
           ).optional(),
-          title: z.string().describe("Optional. The title of the schema.")
+          title: z.unknown().describe("Optional. The title of the schema.")
             .optional(),
-          type: z.enum([
-            "TYPE_UNSPECIFIED",
-            "STRING",
-            "INTEGER",
-            "NUMBER",
-            "BOOLEAN",
-            "OBJECT",
-            "ARRAY",
-          ]).describe("Required. The type of the data.").optional(),
-          uniqueItems: z.boolean().describe(
+          type: z.unknown().describe("Required. The type of the data.")
+            .optional(),
+          uniqueItems: z.unknown().describe(
             "Optional. Indicate the items in the array must be unique. Only applies to TYPE.ARRAY.",
           ).optional(),
         }).describe(
@@ -4468,50 +3456,26 @@ const InputsSchema = z.object({
       ).optional(),
       connectorTool: z.object({
         action: z.object({
-          connectionActionId: z.string().describe(
+          connectionActionId: z.unknown().describe(
             "ID of a Connection action for the tool to use.",
           ).optional(),
-          entityOperation: z.object({
-            entityId: z.string().describe("Required. ID of the entity.")
-              .optional(),
-            operation: z.enum([
-              "OPERATION_TYPE_UNSPECIFIED",
-              "LIST",
-              "GET",
-              "CREATE",
-              "UPDATE",
-              "DELETE",
-            ]).describe("Required. Operation to perform on the entity.")
-              .optional(),
-          }).describe("Entity CRUD operation specification.").optional(),
-          inputFields: z.array(z.string()).describe(
+          entityOperation: z.unknown().describe(
+            "Entity CRUD operation specification.",
+          ).optional(),
+          inputFields: z.unknown().describe(
             "Optional. Entity fields to use as inputs for the operation. If no fields are specified, all fields of the Entity will be used.",
           ).optional(),
-          outputFields: z.array(z.string()).describe(
+          outputFields: z.unknown().describe(
             "Optional. Entity fields to return from the operation. If no fields are specified, all fields of the Entity will be returned.",
           ).optional(),
         }).describe(
           "Configuration of an Action for the tool to use. Note: This can be either an Action or an Operation. See https://cloud.google.com/integration-connectors/docs/entities-operation-action for details.",
         ).optional(),
         authConfig: z.object({
-          oauth2AuthCodeConfig: z.object({
-            oauthToken: z.string().describe(
-              "Required. Oauth token parameter name to pass through. Must be in the format `$context.variables.`.",
-            ).optional(),
-          }).describe(
+          oauth2AuthCodeConfig: z.unknown().describe(
             "Oauth 2.0 Authorization Code authentication configuration.",
           ).optional(),
-          oauth2JwtBearerConfig: z.object({
-            clientKey: z.string().describe(
-              "Required. Client parameter name to pass through. Must be in the format `$context.variables.`.",
-            ).optional(),
-            issuer: z.string().describe(
-              "Required. Issuer parameter name to pass through. Must be in the format `$context.variables.`.",
-            ).optional(),
-            subject: z.string().describe(
-              "Required. Subject parameter name to pass through. Must be in the format `$context.variables.`.",
-            ).optional(),
-          }).describe(
+          oauth2JwtBearerConfig: z.unknown().describe(
             "JWT Profile Oauth 2.0 Authorization Grant authentication configuration.",
           ).optional(),
         }).describe(
@@ -4533,96 +3497,14 @@ const InputsSchema = z.object({
         "Output only. Timestamp when the tool was created.",
       ).optional(),
       dataStoreTool: z.object({
-        boostSpecs: z.array(z.object({
-          dataStores: z.array(z.string()).describe(
-            "Required. The Data Store where the boosting configuration is applied. Full resource name of DataStore, such as projects/{project}/locations/{location}/collections/{collection}/dataStores/{dataStore}.",
-          ).optional(),
-          spec: z.array(z.object({
-            conditionBoostSpecs: z.array(z.object({
-              boost: z.number().describe(
-                "Optional. Strength of the boost, which should be in [-1, 1]. Negative boost means demotion. Default is 0.0. Setting to 1.0 gives the suggestions a big promotion. However, it does not necessarily mean that the top result will be a boosted suggestion. Setting to -1.0 gives the suggestions a big demotion. However, other suggestions that are relevant might still be shown. Setting to 0.0 means no boost applied. The boosting condition is ignored.",
-              ).optional(),
-              boostControlSpec: z.object({
-                attributeType: z.enum([
-                  "ATTRIBUTE_TYPE_UNSPECIFIED",
-                  "NUMERICAL",
-                  "FRESHNESS",
-                ]).describe(
-                  "Optional. The attribute type to be used to determine the boost amount. The attribute value can be derived from the field value of the specified field_name. In the case of numerical it is straightforward i.e. attribute_value = numerical_field_value. In the case of freshness however, attribute_value = (time.now() - datetime_field_value).",
-                ).optional(),
-                controlPoints: z.array(z.object({
-                  attributeValue: z.string().describe(
-                    "Optional. Can be one of: 1. The numerical field value. 2. The duration spec for freshness: The value must be formatted as an XSD `dayTimeDuration` value (a restricted subset of an ISO 8601 duration value). The pattern for this is: `nDnM]`.",
-                  ).optional(),
-                  boostAmount: z.number().describe(
-                    "Optional. The value between -1 to 1 by which to boost the score if the attribute_value evaluates to the value specified above.",
-                  ).optional(),
-                })).describe(
-                  "Optional. The control points used to define the curve. The monotonic function (defined through the interpolation_type above) passes through the control points listed here.",
-                ).optional(),
-                fieldName: z.string().describe(
-                  "Optional. The name of the field whose value will be used to determine the boost amount.",
-                ).optional(),
-                interpolationType: z.enum([
-                  "INTERPOLATION_TYPE_UNSPECIFIED",
-                  "LINEAR",
-                ]).describe(
-                  "Optional. The interpolation type to be applied to connect the control points listed below.",
-                ).optional(),
-              }).describe(
-                "Specification for custom ranking based on customer specified attribute value. It provides more controls for customized ranking than the simple (condition, boost) combination above.",
-              ).optional(),
-              condition: z.string().describe(
-                'Required. An expression which specifies a boost condition. The syntax is the same as filter expression syntax. Currently, the only supported condition is a list of BCP-47 lang codes. Example: To boost suggestions in languages en or fr: (lang_code: ANY("en", "fr"))',
-              ).optional(),
-            })).describe("Required. A list of boosting specifications.")
-              .optional(),
-          })).describe("Required. A list of boosting specifications.")
-            .optional(),
-        })).describe(
+        boostSpecs: z.array(z.unknown()).describe(
           "Optional. Boost specification to boost certain documents.",
         ).optional(),
         dataStoreSource: z.object({
-          dataStore: z.object({
-            connectorConfig: z.object({
-              collection: z.string().describe(
-                "Resource name of the collection the data store belongs to.",
-              ).optional(),
-              collectionDisplayName: z.string().describe(
-                "Display name of the collection the data store belongs to.",
-              ).optional(),
-              dataSource: z.string().describe(
-                "The name of the data source. Example: `salesforce`, `jira`, `confluence`, `bigquery`.",
-              ).optional(),
-            }).describe("The connector config for the data store connection.")
-              .optional(),
-            createTime: z.string().describe(
-              "Output only. Timestamp when the data store was created.",
-            ).optional(),
-            displayName: z.string().describe(
-              "Output only. The display name of the data store.",
-            ).optional(),
-            documentProcessingMode: z.enum([
-              "DOCUMENT_PROCESSING_MODE_UNSPECIFIED",
-              "DOCUMENTS",
-              "CHUNKS",
-            ]).describe(
-              "Output only. The document processing mode for the data store connection. Only set for PUBLIC_WEB and UNSTRUCTURED data stores.",
-            ).optional(),
-            name: z.string().describe(
-              "Required. Full resource name of the DataStore. Format: `projects/{project}/locations/{location}/collections/{collection}/dataStores/{dataStore}`",
-            ).optional(),
-            type: z.enum([
-              "DATA_STORE_TYPE_UNSPECIFIED",
-              "PUBLIC_WEB",
-              "UNSTRUCTURED",
-              "FAQ",
-              "CONNECTOR",
-            ]).describe(
-              "Output only. The type of the data store. This field is readonly and populated by the server.",
-            ).optional(),
-          }).describe("A DataStore resource in Vertex AI Search.").optional(),
-          filter: z.string().describe(
+          dataStore: z.unknown().describe(
+            "A DataStore resource in Vertex AI Search.",
+          ).optional(),
+          filter: z.unknown().describe(
             "Optional. Filter specification for the DataStore. See: https://cloud.google.com/generative-ai-app-builder/docs/filter-search-metadata",
           ).optional(),
         }).describe("Configuration for searching within a specific DataStore.")
@@ -4630,56 +3512,13 @@ const InputsSchema = z.object({
         description: z.string().describe("Optional. The tool description.")
           .optional(),
         engineSource: z.object({
-          dataStoreSources: z.array(z.object({
-            dataStore: z.object({
-              connectorConfig: z.object({
-                collection: z.string().describe(
-                  "Resource name of the collection the data store belongs to.",
-                ).optional(),
-                collectionDisplayName: z.string().describe(
-                  "Display name of the collection the data store belongs to.",
-                ).optional(),
-                dataSource: z.string().describe(
-                  "The name of the data source. Example: `salesforce`, `jira`, `confluence`, `bigquery`.",
-                ).optional(),
-              }).describe("The connector config for the data store connection.")
-                .optional(),
-              createTime: z.string().describe(
-                "Output only. Timestamp when the data store was created.",
-              ).optional(),
-              displayName: z.string().describe(
-                "Output only. The display name of the data store.",
-              ).optional(),
-              documentProcessingMode: z.enum([
-                "DOCUMENT_PROCESSING_MODE_UNSPECIFIED",
-                "DOCUMENTS",
-                "CHUNKS",
-              ]).describe(
-                "Output only. The document processing mode for the data store connection. Only set for PUBLIC_WEB and UNSTRUCTURED data stores.",
-              ).optional(),
-              name: z.string().describe(
-                "Required. Full resource name of the DataStore. Format: `projects/{project}/locations/{location}/collections/{collection}/dataStores/{dataStore}`",
-              ).optional(),
-              type: z.enum([
-                "DATA_STORE_TYPE_UNSPECIFIED",
-                "PUBLIC_WEB",
-                "UNSTRUCTURED",
-                "FAQ",
-                "CONNECTOR",
-              ]).describe(
-                "Output only. The type of the data store. This field is readonly and populated by the server.",
-              ).optional(),
-            }).describe("A DataStore resource in Vertex AI Search.").optional(),
-            filter: z.string().describe(
-              "Optional. Filter specification for the DataStore. See: https://cloud.google.com/generative-ai-app-builder/docs/filter-search-metadata",
-            ).optional(),
-          })).describe(
+          dataStoreSources: z.unknown().describe(
             "Optional. Use to target specific DataStores within the Engine. If empty, the search applies to all DataStores associated with the Engine.",
           ).optional(),
-          engine: z.string().describe(
+          engine: z.unknown().describe(
             "Required. Full resource name of the Engine. Format: `projects/{project}/locations/{location}/collections/{collection}/engines/{engine}`",
           ).optional(),
-          filter: z.string().describe(
+          filter: z.unknown().describe(
             "Optional. A filter applied to the search across the Engine. Not relevant and not used if 'data_store_sources' is provided. See: https://cloud.google.com/generative-ai-app-builder/docs/filter-search-metadata",
           ).optional(),
         }).describe(
@@ -4690,55 +3529,9 @@ const InputsSchema = z.object({
           "ALWAYS_INCLUDE",
           "NEVER_INCLUDE",
         ]).describe("Optional. The filter parameter behavior.").optional(),
-        modalityConfigs: z.array(z.object({
-          groundingConfig: z.object({
-            disabled: z.boolean().describe(
-              "Optional. Whether grounding is disabled.",
-            ).optional(),
-            groundingLevel: z.number().describe(
-              "Optional. The groundedness threshold of the answer based on the retrieved sources. The value has a configurable range of [1, 5]. The level is used to threshold the groundedness of the answer, meaning that all responses with a groundedness score below the threshold will fall back to returning relevant snippets only. For example, a level of 3 means that the groundedness score must be 3 or higher for the response to be returned.",
-            ).optional(),
-          }).describe("Grounding configuration.").optional(),
-          modalityType: z.enum(["MODALITY_TYPE_UNSPECIFIED", "TEXT", "AUDIO"])
-            .describe("Required. The modality type.").optional(),
-          rewriterConfig: z.object({
-            disabled: z.boolean().describe(
-              "Optional. Whether the rewriter is disabled.",
-            ).optional(),
-            modelSettings: z.object({
-              model: z.string().describe(
-                "Optional. The LLM model that the agent should use. If not set, the agent will inherit the model from its parent agent.",
-              ).optional(),
-              temperature: z.number().describe(
-                "Optional. If set, this temperature will be used for the LLM model. Temperature controls the randomness of the model's responses. Lower temperatures produce responses that are more predictable. Higher temperatures produce responses that are more creative.",
-              ).optional(),
-            }).describe(
-              "Model settings contains various configurations for the LLM model.",
-            ).optional(),
-            prompt: z.string().describe(
-              "Optional. The prompt definition. If not set, default prompt will be used.",
-            ).optional(),
-          }).describe("Rewriter configuration.").optional(),
-          summarizationConfig: z.object({
-            disabled: z.boolean().describe(
-              "Optional. Whether summarization is disabled.",
-            ).optional(),
-            modelSettings: z.object({
-              model: z.string().describe(
-                "Optional. The LLM model that the agent should use. If not set, the agent will inherit the model from its parent agent.",
-              ).optional(),
-              temperature: z.number().describe(
-                "Optional. If set, this temperature will be used for the LLM model. Temperature controls the randomness of the model's responses. Lower temperatures produce responses that are more predictable. Higher temperatures produce responses that are more creative.",
-              ).optional(),
-            }).describe(
-              "Model settings contains various configurations for the LLM model.",
-            ).optional(),
-            prompt: z.string().describe(
-              "Optional. The prompt definition. If not set, default prompt will be used.",
-            ).optional(),
-          }).describe("Summarization configuration.").optional(),
-        })).describe("Optional. The modality configs for the data store.")
-          .optional(),
+        modalityConfigs: z.array(z.unknown()).describe(
+          "Optional. The modality configs for the data store.",
+        ).optional(),
         name: z.string().describe("Required. The data store tool name.")
           .optional(),
       }).describe(
@@ -4776,24 +3569,24 @@ const InputsSchema = z.object({
         "Output only. If the tool is generated by the LLM assistant, this field contains a descriptive summary of the generation.",
       ).optional(),
       googleSearchTool: z.object({
-        contextUrls: z.array(z.string()).describe(
+        contextUrls: z.array(z.unknown()).describe(
           'Optional. Content will be fetched directly from these URLs for context and grounding. Example: "https://example.com/path.html". A maximum of 20 URLs are allowed.',
         ).optional(),
         description: z.string().describe(
           "Optional. Description of the tool's purpose.",
         ).optional(),
-        excludeDomains: z.array(z.string()).describe(
+        excludeDomains: z.array(z.unknown()).describe(
           'Optional. List of domains to be excluded from the search results. Example: "example.com". A maximum of 2000 domains can be excluded.',
         ).optional(),
         name: z.string().describe("Required. The name of the tool.").optional(),
-        preferredDomains: z.array(z.string()).describe(
+        preferredDomains: z.array(z.unknown()).describe(
           'Optional. Specifies domains to restrict search results to. Example: "example.com", "another.site". A maximum of 20 domains can be specified.',
         ).optional(),
         promptConfig: z.object({
-          textPrompt: z.string().describe(
+          textPrompt: z.unknown().describe(
             "Optional. Defines the prompt used for the system instructions when interacting with the agent in chat conversations. If not set, default prompt will be used.",
           ).optional(),
-          voicePrompt: z.string().describe(
+          voicePrompt: z.unknown().describe(
             "Optional. Defines the prompt used for the system instructions when interacting with the agent in voice conversations. If not set, default prompt will be used.",
           ).optional(),
         }).describe(
@@ -4804,124 +3597,81 @@ const InputsSchema = z.object({
       ).optional(),
       mcpTool: z.object({
         apiAuthentication: z.object({
-          apiKeyConfig: z.object({
-            apiKeySecretVersion: z.string().describe(
-              "Required. The name of the SecretManager secret version resource storing the API key. Format: `projects/{project}/secrets/{secret}/versions/{version}` Note: You should grant `roles/secretmanager.secretAccessor` role to the CES service agent `service-@gcp-sa-ces.iam.gserviceaccount.com`.",
-            ).optional(),
-            keyName: z.string().describe(
-              'Required. The parameter name or the header name of the API key. E.g., If the API request is "https://example.com/act?X-Api-Key=", "X-Api-Key" would be the parameter name.',
-            ).optional(),
-            requestLocation: z.enum([
-              "REQUEST_LOCATION_UNSPECIFIED",
-              "HEADER",
-              "QUERY_STRING",
-            ]).describe("Required. Key location in the request.").optional(),
-          }).describe("Configurations for authentication with API key.")
-            .optional(),
-          bearerTokenConfig: z.object({
-            token: z.string().describe(
-              "Required. The bearer token. Must be in the format `$context.variables.`.",
-            ).optional(),
-          }).describe("Configurations for authentication with a bearer token.")
-            .optional(),
-          oauthConfig: z.object({
-            clientId: z.string().describe(
-              "Required. The client ID from the OAuth provider.",
-            ).optional(),
-            clientSecretVersion: z.string().describe(
-              "Required. The name of the SecretManager secret version resource storing the client secret. Format: `projects/{project}/secrets/{secret}/versions/{version}` Note: You should grant `roles/secretmanager.secretAccessor` role to the CES service agent `service-@gcp-sa-ces.iam.gserviceaccount.com`.",
-            ).optional(),
-            oauthGrantType: z.enum([
-              "OAUTH_GRANT_TYPE_UNSPECIFIED",
-              "CLIENT_CREDENTIAL",
-            ]).describe("Required. OAuth grant types.").optional(),
-            scopes: z.array(z.string()).describe(
-              "Optional. The OAuth scopes to grant.",
-            ).optional(),
-            tokenEndpoint: z.string().describe(
-              "Required. The token endpoint in the OAuth provider to exchange for an access token.",
-            ).optional(),
-          }).describe("Configurations for authentication with OAuth.")
-            .optional(),
-          serviceAccountAuthConfig: z.object({
-            scopes: z.array(z.string()).describe(
-              "Optional. The OAuth scopes to grant. If not specified, the default scope `https://www.googleapis.com/auth/cloud-platform` is used.",
-            ).optional(),
-            serviceAccount: z.string().describe(
-              "Required. The email address of the service account used for authentication. CES uses this service account to exchange an access token and the access token is then sent in the `Authorization` header of the request. The service account must have the `roles/iam.serviceAccountTokenCreator` role granted to the CES service agent `service-@gcp-sa-ces.iam.gserviceaccount.com`.",
-            ).optional(),
-          }).describe(
+          apiKeyConfig: z.unknown().describe(
+            "Configurations for authentication with API key.",
+          ).optional(),
+          bearerTokenConfig: z.unknown().describe(
+            "Configurations for authentication with a bearer token.",
+          ).optional(),
+          oauthConfig: z.unknown().describe(
+            "Configurations for authentication with OAuth.",
+          ).optional(),
+          serviceAccountAuthConfig: z.unknown().describe(
             "Configurations for authentication using a custom service account.",
           ).optional(),
-          serviceAgentIdTokenAuthConfig: z.object({}).describe(
+          serviceAgentIdTokenAuthConfig: z.unknown().describe(
             "Configurations for authentication with [ID token](https://cloud.google.com/docs/authentication/token-types#id) generated from service agent.",
           ).optional(),
         }).describe("Authentication information required for API calls.")
           .optional(),
-        customHeaders: z.record(z.string(), z.string()).describe(
+        customHeaders: z.record(z.string(), z.unknown()).describe(
           "Optional. The custom headers to send in the request to the MCP server. The values must be in the format `$context.variables.` and can be set in the session variables. See https://docs.cloud.google.com/customer-engagement-ai/conversational-agents/ps/tool/open-api#openapi-injection for more details.",
         ).optional(),
         description: z.string().describe(
           "Optional. The description of the MCP tool.",
         ).optional(),
         inputSchema: z.object({
-          additionalProperties: z.string().describe(
+          additionalProperties: z.unknown().describe(
             "Circular reference to Schema",
           ).optional(),
-          anyOf: z.array(z.string()).describe(
+          anyOf: z.unknown().describe(
             "Optional. The value should be validated against any (one or more) of the subschemas in the list.",
           ).optional(),
-          default: z.string().describe("Optional. Default value of the data.")
+          default: z.unknown().describe("Optional. Default value of the data.")
             .optional(),
-          defs: z.record(z.string(), z.string()).describe(
+          defs: z.unknown().describe(
             "Optional. A map of definitions for use by `ref`. Only allowed at the root of the schema.",
           ).optional(),
-          description: z.string().describe(
+          description: z.unknown().describe(
             "Optional. The description of the data.",
           ).optional(),
-          enum: z.array(z.string()).describe(
+          enum: z.unknown().describe(
             'Optional. Possible values of the element of primitive type with enum format. Examples: 1. We can define direction as: {type:STRING, format:enum, enum:["EAST", NORTH", "SOUTH", "WEST"]} 2. We can define apartment number as: {type:INTEGER, format:enum, enum:["101", "201", "301"]}',
           ).optional(),
-          items: z.string().describe("Circular reference to Schema").optional(),
-          maxItems: z.string().describe(
+          items: z.unknown().describe("Circular reference to Schema")
+            .optional(),
+          maxItems: z.unknown().describe(
             "Optional. Maximum number of the elements for Type.ARRAY.",
           ).optional(),
-          maximum: z.number().describe(
+          maximum: z.unknown().describe(
             "Optional. Maximum value for Type.INTEGER and Type.NUMBER.",
           ).optional(),
-          minItems: z.string().describe(
+          minItems: z.unknown().describe(
             "Optional. Minimum number of the elements for Type.ARRAY.",
           ).optional(),
-          minimum: z.number().describe(
+          minimum: z.unknown().describe(
             "Optional. Minimum value for Type.INTEGER and Type.NUMBER.",
           ).optional(),
-          nullable: z.boolean().describe(
+          nullable: z.unknown().describe(
             "Optional. Indicates if the value may be null.",
           ).optional(),
-          prefixItems: z.array(z.string()).describe(
+          prefixItems: z.unknown().describe(
             "Optional. Schemas of initial elements of Type.ARRAY.",
           ).optional(),
-          properties: z.record(z.string(), z.string()).describe(
+          properties: z.unknown().describe(
             "Optional. Properties of Type.OBJECT.",
           ).optional(),
-          ref: z.string().describe(
+          ref: z.unknown().describe(
             'Optional. Allows indirect references between schema nodes. The value should be a valid reference to a child of the root `defs`. For example, the following schema defines a reference to a schema node named "Pet": ` type: object properties: pet: ref: #/defs/Pet defs: Pet: type: object properties: name: type: string ` The value of the "pet" property is a reference to the schema node named "Pet". See details in https://json-schema.org/understanding-json-schema/structuring.',
           ).optional(),
-          required: z.array(z.string()).describe(
+          required: z.unknown().describe(
             "Optional. Required properties of Type.OBJECT.",
           ).optional(),
-          title: z.string().describe("Optional. The title of the schema.")
+          title: z.unknown().describe("Optional. The title of the schema.")
             .optional(),
-          type: z.enum([
-            "TYPE_UNSPECIFIED",
-            "STRING",
-            "INTEGER",
-            "NUMBER",
-            "BOOLEAN",
-            "OBJECT",
-            "ARRAY",
-          ]).describe("Required. The type of the data.").optional(),
-          uniqueItems: z.boolean().describe(
+          type: z.unknown().describe("Required. The type of the data.")
+            .optional(),
+          uniqueItems: z.unknown().describe(
             "Optional. Indicate the items in the array must be unique. Only applies to TYPE.ARRAY.",
           ).optional(),
         }).describe(
@@ -4930,63 +3680,57 @@ const InputsSchema = z.object({
         name: z.string().describe("Required. The name of the MCP tool.")
           .optional(),
         outputSchema: z.object({
-          additionalProperties: z.string().describe(
+          additionalProperties: z.unknown().describe(
             "Circular reference to Schema",
           ).optional(),
-          anyOf: z.array(z.string()).describe(
+          anyOf: z.unknown().describe(
             "Optional. The value should be validated against any (one or more) of the subschemas in the list.",
           ).optional(),
-          default: z.string().describe("Optional. Default value of the data.")
+          default: z.unknown().describe("Optional. Default value of the data.")
             .optional(),
-          defs: z.record(z.string(), z.string()).describe(
+          defs: z.unknown().describe(
             "Optional. A map of definitions for use by `ref`. Only allowed at the root of the schema.",
           ).optional(),
-          description: z.string().describe(
+          description: z.unknown().describe(
             "Optional. The description of the data.",
           ).optional(),
-          enum: z.array(z.string()).describe(
+          enum: z.unknown().describe(
             'Optional. Possible values of the element of primitive type with enum format. Examples: 1. We can define direction as: {type:STRING, format:enum, enum:["EAST", NORTH", "SOUTH", "WEST"]} 2. We can define apartment number as: {type:INTEGER, format:enum, enum:["101", "201", "301"]}',
           ).optional(),
-          items: z.string().describe("Circular reference to Schema").optional(),
-          maxItems: z.string().describe(
+          items: z.unknown().describe("Circular reference to Schema")
+            .optional(),
+          maxItems: z.unknown().describe(
             "Optional. Maximum number of the elements for Type.ARRAY.",
           ).optional(),
-          maximum: z.number().describe(
+          maximum: z.unknown().describe(
             "Optional. Maximum value for Type.INTEGER and Type.NUMBER.",
           ).optional(),
-          minItems: z.string().describe(
+          minItems: z.unknown().describe(
             "Optional. Minimum number of the elements for Type.ARRAY.",
           ).optional(),
-          minimum: z.number().describe(
+          minimum: z.unknown().describe(
             "Optional. Minimum value for Type.INTEGER and Type.NUMBER.",
           ).optional(),
-          nullable: z.boolean().describe(
+          nullable: z.unknown().describe(
             "Optional. Indicates if the value may be null.",
           ).optional(),
-          prefixItems: z.array(z.string()).describe(
+          prefixItems: z.unknown().describe(
             "Optional. Schemas of initial elements of Type.ARRAY.",
           ).optional(),
-          properties: z.record(z.string(), z.string()).describe(
+          properties: z.unknown().describe(
             "Optional. Properties of Type.OBJECT.",
           ).optional(),
-          ref: z.string().describe(
+          ref: z.unknown().describe(
             'Optional. Allows indirect references between schema nodes. The value should be a valid reference to a child of the root `defs`. For example, the following schema defines a reference to a schema node named "Pet": ` type: object properties: pet: ref: #/defs/Pet defs: Pet: type: object properties: name: type: string ` The value of the "pet" property is a reference to the schema node named "Pet". See details in https://json-schema.org/understanding-json-schema/structuring.',
           ).optional(),
-          required: z.array(z.string()).describe(
+          required: z.unknown().describe(
             "Optional. Required properties of Type.OBJECT.",
           ).optional(),
-          title: z.string().describe("Optional. The title of the schema.")
+          title: z.unknown().describe("Optional. The title of the schema.")
             .optional(),
-          type: z.enum([
-            "TYPE_UNSPECIFIED",
-            "STRING",
-            "INTEGER",
-            "NUMBER",
-            "BOOLEAN",
-            "OBJECT",
-            "ARRAY",
-          ]).describe("Required. The type of the data.").optional(),
-          uniqueItems: z.boolean().describe(
+          type: z.unknown().describe("Required. The type of the data.")
+            .optional(),
+          uniqueItems: z.unknown().describe(
             "Optional. Indicate the items in the array must be unique. Only applies to TYPE.ARRAY.",
           ).optional(),
         }).describe(
@@ -4996,20 +3740,13 @@ const InputsSchema = z.object({
           'Required. The server address of the MCP server, e.g., "https://example.com/mcp/". If the server is built with the MCP SDK, the url should be suffixed with "/mcp/". Only Streamable HTTP transport based servers are supported. This is the same as the server_address in the McpToolset. See https://modelcontextprotocol.io/specification/2025-03-26/basic/transports#streamable-http for more details.',
         ).optional(),
         serviceDirectoryConfig: z.object({
-          service: z.string().describe(
+          service: z.unknown().describe(
             "Required. The name of [Service Directory](https://cloud.google.com/service-directory) service. Format: `projects/{project}/locations/{location}/namespaces/{namespace}/services/{service}`. Location of the service directory must be the same as the location of the app.",
           ).optional(),
         }).describe("Configuration for tools using Service Directory.")
           .optional(),
         tlsConfig: z.object({
-          caCerts: z.array(z.object({
-            cert: z.string().describe(
-              'Required. The allowed custom CA certificates (in DER format) for HTTPS verification. This overrides the default SSL trust store. If this is empty or unspecified, CES will use Google\'s default trust store to verify certificates. N.B. Make sure the HTTPS server certificates are signed with "subject alt name". For instance a certificate can be self-signed using the following command: ` openssl x509 -req -days 200 -in example.com.csr \\ -signkey example.com.key \\ -out example.com.crt \\ -extfile <(printf "\\nsubjectAltName=\'DNS:www.example.com\'") `',
-            ).optional(),
-            displayName: z.string().describe(
-              "Required. The name of the allowed custom CA certificates. This can be used to disambiguate the custom CA certificates.",
-            ).optional(),
-          })).describe(
+          caCerts: z.unknown().describe(
             "Required. Specifies a list of allowed custom CA certificates for HTTPS verification.",
           ).optional(),
         }).describe("The TLS configuration.").optional(),
@@ -5021,56 +3758,19 @@ const InputsSchema = z.object({
       ).optional(),
       openApiTool: z.object({
         apiAuthentication: z.object({
-          apiKeyConfig: z.object({
-            apiKeySecretVersion: z.string().describe(
-              "Required. The name of the SecretManager secret version resource storing the API key. Format: `projects/{project}/secrets/{secret}/versions/{version}` Note: You should grant `roles/secretmanager.secretAccessor` role to the CES service agent `service-@gcp-sa-ces.iam.gserviceaccount.com`.",
-            ).optional(),
-            keyName: z.string().describe(
-              'Required. The parameter name or the header name of the API key. E.g., If the API request is "https://example.com/act?X-Api-Key=", "X-Api-Key" would be the parameter name.',
-            ).optional(),
-            requestLocation: z.enum([
-              "REQUEST_LOCATION_UNSPECIFIED",
-              "HEADER",
-              "QUERY_STRING",
-            ]).describe("Required. Key location in the request.").optional(),
-          }).describe("Configurations for authentication with API key.")
-            .optional(),
-          bearerTokenConfig: z.object({
-            token: z.string().describe(
-              "Required. The bearer token. Must be in the format `$context.variables.`.",
-            ).optional(),
-          }).describe("Configurations for authentication with a bearer token.")
-            .optional(),
-          oauthConfig: z.object({
-            clientId: z.string().describe(
-              "Required. The client ID from the OAuth provider.",
-            ).optional(),
-            clientSecretVersion: z.string().describe(
-              "Required. The name of the SecretManager secret version resource storing the client secret. Format: `projects/{project}/secrets/{secret}/versions/{version}` Note: You should grant `roles/secretmanager.secretAccessor` role to the CES service agent `service-@gcp-sa-ces.iam.gserviceaccount.com`.",
-            ).optional(),
-            oauthGrantType: z.enum([
-              "OAUTH_GRANT_TYPE_UNSPECIFIED",
-              "CLIENT_CREDENTIAL",
-            ]).describe("Required. OAuth grant types.").optional(),
-            scopes: z.array(z.string()).describe(
-              "Optional. The OAuth scopes to grant.",
-            ).optional(),
-            tokenEndpoint: z.string().describe(
-              "Required. The token endpoint in the OAuth provider to exchange for an access token.",
-            ).optional(),
-          }).describe("Configurations for authentication with OAuth.")
-            .optional(),
-          serviceAccountAuthConfig: z.object({
-            scopes: z.array(z.string()).describe(
-              "Optional. The OAuth scopes to grant. If not specified, the default scope `https://www.googleapis.com/auth/cloud-platform` is used.",
-            ).optional(),
-            serviceAccount: z.string().describe(
-              "Required. The email address of the service account used for authentication. CES uses this service account to exchange an access token and the access token is then sent in the `Authorization` header of the request. The service account must have the `roles/iam.serviceAccountTokenCreator` role granted to the CES service agent `service-@gcp-sa-ces.iam.gserviceaccount.com`.",
-            ).optional(),
-          }).describe(
+          apiKeyConfig: z.unknown().describe(
+            "Configurations for authentication with API key.",
+          ).optional(),
+          bearerTokenConfig: z.unknown().describe(
+            "Configurations for authentication with a bearer token.",
+          ).optional(),
+          oauthConfig: z.unknown().describe(
+            "Configurations for authentication with OAuth.",
+          ).optional(),
+          serviceAccountAuthConfig: z.unknown().describe(
             "Configurations for authentication using a custom service account.",
           ).optional(),
-          serviceAgentIdTokenAuthConfig: z.object({}).describe(
+          serviceAgentIdTokenAuthConfig: z.unknown().describe(
             "Configurations for authentication with [ID token](https://cloud.google.com/docs/authentication/token-types#id) generated from service agent.",
           ).optional(),
         }).describe("Authentication information required for API calls.")
@@ -5088,20 +3788,13 @@ const InputsSchema = z.object({
           "Required. The OpenAPI schema in JSON or YAML format.",
         ).optional(),
         serviceDirectoryConfig: z.object({
-          service: z.string().describe(
+          service: z.unknown().describe(
             "Required. The name of [Service Directory](https://cloud.google.com/service-directory) service. Format: `projects/{project}/locations/{location}/namespaces/{namespace}/services/{service}`. Location of the service directory must be the same as the location of the app.",
           ).optional(),
         }).describe("Configuration for tools using Service Directory.")
           .optional(),
         tlsConfig: z.object({
-          caCerts: z.array(z.object({
-            cert: z.string().describe(
-              'Required. The allowed custom CA certificates (in DER format) for HTTPS verification. This overrides the default SSL trust store. If this is empty or unspecified, CES will use Google\'s default trust store to verify certificates. N.B. Make sure the HTTPS server certificates are signed with "subject alt name". For instance a certificate can be self-signed using the following command: ` openssl x509 -req -days 200 -in example.com.csr \\ -signkey example.com.key \\ -out example.com.crt \\ -extfile <(printf "\\nsubjectAltName=\'DNS:www.example.com\'") `',
-            ).optional(),
-            displayName: z.string().describe(
-              "Required. The name of the allowed custom CA certificates. This can be used to disambiguate the custom CA certificates.",
-            ).optional(),
-          })).describe(
+          caCerts: z.unknown().describe(
             "Required. Specifies a list of allowed custom CA certificates for HTTPS verification.",
           ).optional(),
         }).describe("The TLS configuration.").optional(),
@@ -5129,7 +3822,7 @@ const InputsSchema = z.object({
       }).describe("Pre-defined system tool.").optional(),
       toolFakeConfig: z.object({
         codeBlock: z.object({
-          pythonCode: z.string().describe(
+          pythonCode: z.unknown().describe(
             "Required. Python code which will be invoked in tool fake mode. Expected Python function signature - To catch all tool calls: def fake_tool_call(tool: Tool, input: dict[str, Any], callback_context: CallbackContext) -> Optional[dict[str, Any]]: To catch a specific tool call: def fake_{tool_id}(tool: Tool, input: dict[str, Any], callback_context: CallbackContext) -> Optional[dict[str, Any]]: If the function returns None, the real tool will be invoked instead.",
           ).optional(),
         }).describe("A code block to be executed instead of a real tool call.")
@@ -5143,26 +3836,17 @@ const InputsSchema = z.object({
       ).optional(),
       widgetTool: z.object({
         dataMapping: z.object({
-          fieldMappings: z.record(z.string(), z.string()).describe(
+          fieldMappings: z.unknown().describe(
             "Optional. A map of widget input parameter fields to the corresponding output fields of the source tool.",
           ).optional(),
-          mode: z.enum(["MODE_UNSPECIFIED", "FIELD_MAPPING", "PYTHON_SCRIPT"])
-            .describe("Optional. The mode of the data mapping.").optional(),
-          pythonFunction: z.object({
-            description: z.string().describe(
-              "Output only. The description of the Python function, parsed from the python code's docstring.",
-            ).optional(),
-            name: z.string().describe(
-              "Optional. The name of the Python function to execute. Must match a Python function name defined in the python code. Case sensitive. If the name is not provided, the first function defined in the python code will be used.",
-            ).optional(),
-            pythonCode: z.string().describe(
-              "Optional. The Python code to execute for the tool.",
-            ).optional(),
-          }).describe("A Python function tool.").optional(),
-          pythonScript: z.string().describe(
+          mode: z.unknown().describe("Optional. The mode of the data mapping.")
+            .optional(),
+          pythonFunction: z.unknown().describe("A Python function tool.")
+            .optional(),
+          pythonScript: z.unknown().describe(
             "Deprecated: Use `python_function` instead.",
           ).optional(),
-          sourceToolName: z.string().describe(
+          sourceToolName: z.unknown().describe(
             "Optional. The resource name of the tool that provides the data for the widget (e.g., a search tool or a custom function). Format: `projects/{project}/locations/{location}/agents/{agent}/tools/{tool}`",
           ).optional(),
         }).describe(
@@ -5175,69 +3859,63 @@ const InputsSchema = z.object({
           "Required. The display name of the widget tool.",
         ).optional(),
         parameters: z.object({
-          additionalProperties: z.string().describe(
+          additionalProperties: z.unknown().describe(
             "Circular reference to Schema",
           ).optional(),
-          anyOf: z.array(z.string()).describe(
+          anyOf: z.unknown().describe(
             "Optional. The value should be validated against any (one or more) of the subschemas in the list.",
           ).optional(),
-          default: z.string().describe("Optional. Default value of the data.")
+          default: z.unknown().describe("Optional. Default value of the data.")
             .optional(),
-          defs: z.record(z.string(), z.string()).describe(
+          defs: z.unknown().describe(
             "Optional. A map of definitions for use by `ref`. Only allowed at the root of the schema.",
           ).optional(),
-          description: z.string().describe(
+          description: z.unknown().describe(
             "Optional. The description of the data.",
           ).optional(),
-          enum: z.array(z.string()).describe(
+          enum: z.unknown().describe(
             'Optional. Possible values of the element of primitive type with enum format. Examples: 1. We can define direction as: {type:STRING, format:enum, enum:["EAST", NORTH", "SOUTH", "WEST"]} 2. We can define apartment number as: {type:INTEGER, format:enum, enum:["101", "201", "301"]}',
           ).optional(),
-          items: z.string().describe("Circular reference to Schema").optional(),
-          maxItems: z.string().describe(
+          items: z.unknown().describe("Circular reference to Schema")
+            .optional(),
+          maxItems: z.unknown().describe(
             "Optional. Maximum number of the elements for Type.ARRAY.",
           ).optional(),
-          maximum: z.number().describe(
+          maximum: z.unknown().describe(
             "Optional. Maximum value for Type.INTEGER and Type.NUMBER.",
           ).optional(),
-          minItems: z.string().describe(
+          minItems: z.unknown().describe(
             "Optional. Minimum number of the elements for Type.ARRAY.",
           ).optional(),
-          minimum: z.number().describe(
+          minimum: z.unknown().describe(
             "Optional. Minimum value for Type.INTEGER and Type.NUMBER.",
           ).optional(),
-          nullable: z.boolean().describe(
+          nullable: z.unknown().describe(
             "Optional. Indicates if the value may be null.",
           ).optional(),
-          prefixItems: z.array(z.string()).describe(
+          prefixItems: z.unknown().describe(
             "Optional. Schemas of initial elements of Type.ARRAY.",
           ).optional(),
-          properties: z.record(z.string(), z.string()).describe(
+          properties: z.unknown().describe(
             "Optional. Properties of Type.OBJECT.",
           ).optional(),
-          ref: z.string().describe(
+          ref: z.unknown().describe(
             'Optional. Allows indirect references between schema nodes. The value should be a valid reference to a child of the root `defs`. For example, the following schema defines a reference to a schema node named "Pet": ` type: object properties: pet: ref: #/defs/Pet defs: Pet: type: object properties: name: type: string ` The value of the "pet" property is a reference to the schema node named "Pet". See details in https://json-schema.org/understanding-json-schema/structuring.',
           ).optional(),
-          required: z.array(z.string()).describe(
+          required: z.unknown().describe(
             "Optional. Required properties of Type.OBJECT.",
           ).optional(),
-          title: z.string().describe("Optional. The title of the schema.")
+          title: z.unknown().describe("Optional. The title of the schema.")
             .optional(),
-          type: z.enum([
-            "TYPE_UNSPECIFIED",
-            "STRING",
-            "INTEGER",
-            "NUMBER",
-            "BOOLEAN",
-            "OBJECT",
-            "ARRAY",
-          ]).describe("Required. The type of the data.").optional(),
-          uniqueItems: z.boolean().describe(
+          type: z.unknown().describe("Required. The type of the data.")
+            .optional(),
+          uniqueItems: z.unknown().describe(
             "Optional. Indicate the items in the array must be unique. Only applies to TYPE.ARRAY.",
           ).optional(),
         }).describe(
           "Represents a select subset of an OpenAPI 3.0 schema object.",
         ).optional(),
-        uiConfig: z.record(z.string(), z.string()).describe(
+        uiConfig: z.record(z.string(), z.unknown()).describe(
           "Optional. Configuration for rendering the widget.",
         ).optional(),
         widgetType: z.enum([
@@ -5264,24 +3942,10 @@ const InputsSchema = z.object({
     toolsets: z.array(z.object({
       connectorToolset: z.object({
         authConfig: z.object({
-          oauth2AuthCodeConfig: z.object({
-            oauthToken: z.string().describe(
-              "Required. Oauth token parameter name to pass through. Must be in the format `$context.variables.`.",
-            ).optional(),
-          }).describe(
+          oauth2AuthCodeConfig: z.unknown().describe(
             "Oauth 2.0 Authorization Code authentication configuration.",
           ).optional(),
-          oauth2JwtBearerConfig: z.object({
-            clientKey: z.string().describe(
-              "Required. Client parameter name to pass through. Must be in the format `$context.variables.`.",
-            ).optional(),
-            issuer: z.string().describe(
-              "Required. Issuer parameter name to pass through. Must be in the format `$context.variables.`.",
-            ).optional(),
-            subject: z.string().describe(
-              "Required. Subject parameter name to pass through. Must be in the format `$context.variables.`.",
-            ).optional(),
-          }).describe(
+          oauth2JwtBearerConfig: z.unknown().describe(
             "JWT Profile Oauth 2.0 Authorization Grant authentication configuration.",
           ).optional(),
         }).describe(
@@ -5290,30 +3954,7 @@ const InputsSchema = z.object({
         connection: z.string().describe(
           "Required. The full resource name of the referenced Integration Connectors Connection. Format: `projects/{project}/locations/{location}/connections/{connection}`",
         ).optional(),
-        connectorActions: z.array(z.object({
-          connectionActionId: z.string().describe(
-            "ID of a Connection action for the tool to use.",
-          ).optional(),
-          entityOperation: z.object({
-            entityId: z.string().describe("Required. ID of the entity.")
-              .optional(),
-            operation: z.enum([
-              "OPERATION_TYPE_UNSPECIFIED",
-              "LIST",
-              "GET",
-              "CREATE",
-              "UPDATE",
-              "DELETE",
-            ]).describe("Required. Operation to perform on the entity.")
-              .optional(),
-          }).describe("Entity CRUD operation specification.").optional(),
-          inputFields: z.array(z.string()).describe(
-            "Optional. Entity fields to use as inputs for the operation. If no fields are specified, all fields of the Entity will be used.",
-          ).optional(),
-          outputFields: z.array(z.string()).describe(
-            "Optional. Entity fields to return from the operation. If no fields are specified, all fields of the Entity will be returned.",
-          ).optional(),
-        })).describe(
+        connectorActions: z.array(z.unknown()).describe(
           "Required. The list of connector actions/entity operations to generate tools for.",
         ).optional(),
       }).describe(
@@ -5339,81 +3980,37 @@ const InputsSchema = z.object({
         .optional(),
       mcpToolset: z.object({
         apiAuthentication: z.object({
-          apiKeyConfig: z.object({
-            apiKeySecretVersion: z.string().describe(
-              "Required. The name of the SecretManager secret version resource storing the API key. Format: `projects/{project}/secrets/{secret}/versions/{version}` Note: You should grant `roles/secretmanager.secretAccessor` role to the CES service agent `service-@gcp-sa-ces.iam.gserviceaccount.com`.",
-            ).optional(),
-            keyName: z.string().describe(
-              'Required. The parameter name or the header name of the API key. E.g., If the API request is "https://example.com/act?X-Api-Key=", "X-Api-Key" would be the parameter name.',
-            ).optional(),
-            requestLocation: z.enum([
-              "REQUEST_LOCATION_UNSPECIFIED",
-              "HEADER",
-              "QUERY_STRING",
-            ]).describe("Required. Key location in the request.").optional(),
-          }).describe("Configurations for authentication with API key.")
-            .optional(),
-          bearerTokenConfig: z.object({
-            token: z.string().describe(
-              "Required. The bearer token. Must be in the format `$context.variables.`.",
-            ).optional(),
-          }).describe("Configurations for authentication with a bearer token.")
-            .optional(),
-          oauthConfig: z.object({
-            clientId: z.string().describe(
-              "Required. The client ID from the OAuth provider.",
-            ).optional(),
-            clientSecretVersion: z.string().describe(
-              "Required. The name of the SecretManager secret version resource storing the client secret. Format: `projects/{project}/secrets/{secret}/versions/{version}` Note: You should grant `roles/secretmanager.secretAccessor` role to the CES service agent `service-@gcp-sa-ces.iam.gserviceaccount.com`.",
-            ).optional(),
-            oauthGrantType: z.enum([
-              "OAUTH_GRANT_TYPE_UNSPECIFIED",
-              "CLIENT_CREDENTIAL",
-            ]).describe("Required. OAuth grant types.").optional(),
-            scopes: z.array(z.string()).describe(
-              "Optional. The OAuth scopes to grant.",
-            ).optional(),
-            tokenEndpoint: z.string().describe(
-              "Required. The token endpoint in the OAuth provider to exchange for an access token.",
-            ).optional(),
-          }).describe("Configurations for authentication with OAuth.")
-            .optional(),
-          serviceAccountAuthConfig: z.object({
-            scopes: z.array(z.string()).describe(
-              "Optional. The OAuth scopes to grant. If not specified, the default scope `https://www.googleapis.com/auth/cloud-platform` is used.",
-            ).optional(),
-            serviceAccount: z.string().describe(
-              "Required. The email address of the service account used for authentication. CES uses this service account to exchange an access token and the access token is then sent in the `Authorization` header of the request. The service account must have the `roles/iam.serviceAccountTokenCreator` role granted to the CES service agent `service-@gcp-sa-ces.iam.gserviceaccount.com`.",
-            ).optional(),
-          }).describe(
+          apiKeyConfig: z.unknown().describe(
+            "Configurations for authentication with API key.",
+          ).optional(),
+          bearerTokenConfig: z.unknown().describe(
+            "Configurations for authentication with a bearer token.",
+          ).optional(),
+          oauthConfig: z.unknown().describe(
+            "Configurations for authentication with OAuth.",
+          ).optional(),
+          serviceAccountAuthConfig: z.unknown().describe(
             "Configurations for authentication using a custom service account.",
           ).optional(),
-          serviceAgentIdTokenAuthConfig: z.object({}).describe(
+          serviceAgentIdTokenAuthConfig: z.unknown().describe(
             "Configurations for authentication with [ID token](https://cloud.google.com/docs/authentication/token-types#id) generated from service agent.",
           ).optional(),
         }).describe("Authentication information required for API calls.")
           .optional(),
-        customHeaders: z.record(z.string(), z.string()).describe(
+        customHeaders: z.record(z.string(), z.unknown()).describe(
           "Optional. The custom headers to send in the request to the MCP server. The values must be in the format `$context.variables.` and can be set in the session variables. See https://docs.cloud.google.com/customer-engagement-ai/conversational-agents/ps/tool/open-api#openapi-injection for more details.",
         ).optional(),
         serverAddress: z.string().describe(
           'Required. The address of the MCP server, for example, "https://example.com/mcp/". If the server is built with the MCP SDK, the url should be suffixed with "/mcp/". Only Streamable HTTP transport based servers are supported. See https://modelcontextprotocol.io/specification/2025-03-26/basic/transports#streamable-http for more details.',
         ).optional(),
         serviceDirectoryConfig: z.object({
-          service: z.string().describe(
+          service: z.unknown().describe(
             "Required. The name of [Service Directory](https://cloud.google.com/service-directory) service. Format: `projects/{project}/locations/{location}/namespaces/{namespace}/services/{service}`. Location of the service directory must be the same as the location of the app.",
           ).optional(),
         }).describe("Configuration for tools using Service Directory.")
           .optional(),
         tlsConfig: z.object({
-          caCerts: z.array(z.object({
-            cert: z.string().describe(
-              'Required. The allowed custom CA certificates (in DER format) for HTTPS verification. This overrides the default SSL trust store. If this is empty or unspecified, CES will use Google\'s default trust store to verify certificates. N.B. Make sure the HTTPS server certificates are signed with "subject alt name". For instance a certificate can be self-signed using the following command: ` openssl x509 -req -days 200 -in example.com.csr \\ -signkey example.com.key \\ -out example.com.crt \\ -extfile <(printf "\\nsubjectAltName=\'DNS:www.example.com\'") `',
-            ).optional(),
-            displayName: z.string().describe(
-              "Required. The name of the allowed custom CA certificates. This can be used to disambiguate the custom CA certificates.",
-            ).optional(),
-          })).describe(
+          caCerts: z.unknown().describe(
             "Required. Specifies a list of allowed custom CA certificates for HTTPS verification.",
           ).optional(),
         }).describe("The TLS configuration.").optional(),
@@ -5425,56 +4022,19 @@ const InputsSchema = z.object({
       ).optional(),
       openApiToolset: z.object({
         apiAuthentication: z.object({
-          apiKeyConfig: z.object({
-            apiKeySecretVersion: z.string().describe(
-              "Required. The name of the SecretManager secret version resource storing the API key. Format: `projects/{project}/secrets/{secret}/versions/{version}` Note: You should grant `roles/secretmanager.secretAccessor` role to the CES service agent `service-@gcp-sa-ces.iam.gserviceaccount.com`.",
-            ).optional(),
-            keyName: z.string().describe(
-              'Required. The parameter name or the header name of the API key. E.g., If the API request is "https://example.com/act?X-Api-Key=", "X-Api-Key" would be the parameter name.',
-            ).optional(),
-            requestLocation: z.enum([
-              "REQUEST_LOCATION_UNSPECIFIED",
-              "HEADER",
-              "QUERY_STRING",
-            ]).describe("Required. Key location in the request.").optional(),
-          }).describe("Configurations for authentication with API key.")
-            .optional(),
-          bearerTokenConfig: z.object({
-            token: z.string().describe(
-              "Required. The bearer token. Must be in the format `$context.variables.`.",
-            ).optional(),
-          }).describe("Configurations for authentication with a bearer token.")
-            .optional(),
-          oauthConfig: z.object({
-            clientId: z.string().describe(
-              "Required. The client ID from the OAuth provider.",
-            ).optional(),
-            clientSecretVersion: z.string().describe(
-              "Required. The name of the SecretManager secret version resource storing the client secret. Format: `projects/{project}/secrets/{secret}/versions/{version}` Note: You should grant `roles/secretmanager.secretAccessor` role to the CES service agent `service-@gcp-sa-ces.iam.gserviceaccount.com`.",
-            ).optional(),
-            oauthGrantType: z.enum([
-              "OAUTH_GRANT_TYPE_UNSPECIFIED",
-              "CLIENT_CREDENTIAL",
-            ]).describe("Required. OAuth grant types.").optional(),
-            scopes: z.array(z.string()).describe(
-              "Optional. The OAuth scopes to grant.",
-            ).optional(),
-            tokenEndpoint: z.string().describe(
-              "Required. The token endpoint in the OAuth provider to exchange for an access token.",
-            ).optional(),
-          }).describe("Configurations for authentication with OAuth.")
-            .optional(),
-          serviceAccountAuthConfig: z.object({
-            scopes: z.array(z.string()).describe(
-              "Optional. The OAuth scopes to grant. If not specified, the default scope `https://www.googleapis.com/auth/cloud-platform` is used.",
-            ).optional(),
-            serviceAccount: z.string().describe(
-              "Required. The email address of the service account used for authentication. CES uses this service account to exchange an access token and the access token is then sent in the `Authorization` header of the request. The service account must have the `roles/iam.serviceAccountTokenCreator` role granted to the CES service agent `service-@gcp-sa-ces.iam.gserviceaccount.com`.",
-            ).optional(),
-          }).describe(
+          apiKeyConfig: z.unknown().describe(
+            "Configurations for authentication with API key.",
+          ).optional(),
+          bearerTokenConfig: z.unknown().describe(
+            "Configurations for authentication with a bearer token.",
+          ).optional(),
+          oauthConfig: z.unknown().describe(
+            "Configurations for authentication with OAuth.",
+          ).optional(),
+          serviceAccountAuthConfig: z.unknown().describe(
             "Configurations for authentication using a custom service account.",
           ).optional(),
-          serviceAgentIdTokenAuthConfig: z.object({}).describe(
+          serviceAgentIdTokenAuthConfig: z.unknown().describe(
             "Configurations for authentication with [ID token](https://cloud.google.com/docs/authentication/token-types#id) generated from service agent.",
           ).optional(),
         }).describe("Authentication information required for API calls.")
@@ -5486,20 +4046,13 @@ const InputsSchema = z.object({
           "Required. The OpenAPI schema of the toolset.",
         ).optional(),
         serviceDirectoryConfig: z.object({
-          service: z.string().describe(
+          service: z.unknown().describe(
             "Required. The name of [Service Directory](https://cloud.google.com/service-directory) service. Format: `projects/{project}/locations/{location}/namespaces/{namespace}/services/{service}`. Location of the service directory must be the same as the location of the app.",
           ).optional(),
         }).describe("Configuration for tools using Service Directory.")
           .optional(),
         tlsConfig: z.object({
-          caCerts: z.array(z.object({
-            cert: z.string().describe(
-              'Required. The allowed custom CA certificates (in DER format) for HTTPS verification. This overrides the default SSL trust store. If this is empty or unspecified, CES will use Google\'s default trust store to verify certificates. N.B. Make sure the HTTPS server certificates are signed with "subject alt name". For instance a certificate can be self-signed using the following command: ` openssl x509 -req -days 200 -in example.com.csr \\ -signkey example.com.key \\ -out example.com.crt \\ -extfile <(printf "\\nsubjectAltName=\'DNS:www.example.com\'") `',
-            ).optional(),
-            displayName: z.string().describe(
-              "Required. The name of the allowed custom CA certificates. This can be used to disambiguate the custom CA certificates.",
-            ).optional(),
-          })).describe(
+          caCerts: z.unknown().describe(
             "Required. Specifies a list of allowed custom CA certificates for HTTPS verification.",
           ).optional(),
         }).describe("The TLS configuration.").optional(),
@@ -5511,7 +4064,7 @@ const InputsSchema = z.object({
       ).optional(),
       toolFakeConfig: z.object({
         codeBlock: z.object({
-          pythonCode: z.string().describe(
+          pythonCode: z.unknown().describe(
             "Required. Python code which will be invoked in tool fake mode. Expected Python function signature - To catch all tool calls: def fake_tool_call(tool: Tool, input: dict[str, Any], callback_context: CallbackContext) -> Optional[dict[str, Any]]: To catch a specific tool call: def fake_{tool_id}(tool: Tool, input: dict[str, Any], callback_context: CallbackContext) -> Optional[dict[str, Any]]: If the function returns None, the real tool will be invoked instead.",
           ).optional(),
         }).describe("A code block to be executed instead of a real tool call.")
@@ -5535,7 +4088,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/ces/apps-versions",
-  version: "2026.04.03.3",
+  version: "2026.04.04.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -5569,6 +4122,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.3",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.04.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

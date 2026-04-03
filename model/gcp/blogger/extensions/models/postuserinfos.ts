@@ -80,24 +80,22 @@ const StateSchema = z.object({
     replies: z.object({
       items: z.array(z.object({
         author: z.object({
-          displayName: z.string(),
-          id: z.string(),
-          image: z.object({
-            url: z.string(),
-          }),
-          url: z.string(),
+          displayName: z.unknown(),
+          id: z.unknown(),
+          image: z.unknown(),
+          url: z.unknown(),
         }),
         blog: z.object({
-          id: z.string(),
+          id: z.unknown(),
         }),
         content: z.string(),
         id: z.string(),
         inReplyTo: z.object({
-          id: z.string(),
+          id: z.unknown(),
         }),
         kind: z.string(),
         post: z.object({
-          id: z.string(),
+          id: z.unknown(),
         }),
         published: z.string(),
         selfLink: z.string(),
@@ -132,7 +130,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/blogger/postuserinfos",
-  version: "2026.04.03.3",
+  version: "2026.04.04.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -156,6 +154,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.3",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.04.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

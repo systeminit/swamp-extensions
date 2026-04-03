@@ -234,23 +234,7 @@ const GlobalArgsSchema = z.object({
         "PERSISTENT",
       ]).describe("Specifies the type of the disk.").optional(),
       guestOsFeature: z.array(z.object({
-        type: z.enum([
-          "FEATURE_TYPE_UNSPECIFIED",
-          "VIRTIO_SCSI_MULTIQUEUE",
-          "WINDOWS",
-          "MULTI_IP_SUBNET",
-          "UEFI_COMPATIBLE",
-          "SECURE_BOOT",
-          "GVNIC",
-          "SEV_CAPABLE",
-          "BARE_METAL_LINUX_COMPATIBLE",
-          "SUSPEND_RESUME_COMPATIBLE",
-          "SEV_LIVE_MIGRATABLE",
-          "SEV_SNP_CAPABLE",
-          "TDX_CAPABLE",
-          "IDPF",
-          "SEV_LIVE_MIGRATABLE_V2",
-        ]).describe("The ID of a supported feature.").optional(),
+        type: z.unknown().describe("The ID of a supported feature.").optional(),
       })).describe(
         "Optional. A list of features to enable on the guest operating system. Applicable only for bootable images.",
       ).optional(),
@@ -261,7 +245,7 @@ const GlobalArgsSchema = z.object({
         diskName: z.string().describe(
           "Optional. Specifies the disk name. If not specified, the default is to use the name of the instance.",
         ).optional(),
-        replicaZones: z.array(z.string()).describe(
+        replicaZones: z.array(z.unknown()).describe(
           "Optional. URL of the zone where the disk should be created. Required for each regional disk associated with the instance.",
         ).optional(),
       }).describe("Specifies the parameters to initialize this disk.")
@@ -330,43 +314,38 @@ const GlobalArgsSchema = z.object({
     ).optional(),
     networkInterface: z.array(z.object({
       accessConfigs: z.array(z.object({
-        externalIpv6: z.string().describe(
+        externalIpv6: z.unknown().describe(
           "Optional. The external IPv6 address of this access configuration.",
         ).optional(),
-        externalIpv6PrefixLength: z.number().int().describe(
+        externalIpv6PrefixLength: z.unknown().describe(
           "Optional. The prefix length of the external IPv6 range.",
         ).optional(),
-        name: z.string().describe(
+        name: z.unknown().describe(
           "Optional. The name of this access configuration.",
         ).optional(),
-        natIP: z.string().describe(
+        natIP: z.unknown().describe(
           "Optional. The external IP address of this access configuration.",
         ).optional(),
-        networkTier: z.enum(["NETWORK_TIER_UNSPECIFIED", "PREMIUM", "STANDARD"])
-          .describe(
-            "Optional. This signifies the networking tier used for configuring this access",
-          ).optional(),
-        publicPtrDomainName: z.string().describe(
+        networkTier: z.unknown().describe(
+          "Optional. This signifies the networking tier used for configuring this access",
+        ).optional(),
+        publicPtrDomainName: z.unknown().describe(
           "Optional. The DNS domain name for the public PTR record.",
         ).optional(),
-        setPublicPtr: z.boolean().describe(
+        setPublicPtr: z.unknown().describe(
           "Optional. Specifies whether a public DNS 'PTR' record should be created to map the external IP address of the instance to a DNS domain name.",
         ).optional(),
-        type: z.enum([
-          "ACCESS_TYPE_UNSPECIFIED",
-          "ONE_TO_ONE_NAT",
-          "DIRECT_IPV6",
-        ]).describe(
+        type: z.unknown().describe(
           "Optional. In accessConfigs (IPv4), the default and only option is ONE_TO_ONE_NAT. In ipv6AccessConfigs, the default and only option is DIRECT_IPV6.",
         ).optional(),
       })).describe(
         "Optional. An array of configurations for this interface. Currently, only one access config,ONE_TO_ONE_NAT is supported. If there are no accessConfigs specified, then this instance will have no external internet access.",
       ).optional(),
       aliasIpRanges: z.array(z.object({
-        ipCidrRange: z.string().describe(
+        ipCidrRange: z.unknown().describe(
           "Optional. The IP alias ranges to allocate for this interface.",
         ).optional(),
-        subnetworkRangeName: z.string().describe(
+        subnetworkRangeName: z.unknown().describe(
           "Optional. The name of a subnetwork secondary IP range from which to allocate an IP alias range. If not specified, the primary range of the subnetwork is used.",
         ).optional(),
       })).describe(
@@ -376,33 +355,28 @@ const GlobalArgsSchema = z.object({
         "Optional. The prefix length of the primary internal IPv6 range.",
       ).optional(),
       ipv6AccessConfigs: z.array(z.object({
-        externalIpv6: z.string().describe(
+        externalIpv6: z.unknown().describe(
           "Optional. The external IPv6 address of this access configuration.",
         ).optional(),
-        externalIpv6PrefixLength: z.number().int().describe(
+        externalIpv6PrefixLength: z.unknown().describe(
           "Optional. The prefix length of the external IPv6 range.",
         ).optional(),
-        name: z.string().describe(
+        name: z.unknown().describe(
           "Optional. The name of this access configuration.",
         ).optional(),
-        natIP: z.string().describe(
+        natIP: z.unknown().describe(
           "Optional. The external IP address of this access configuration.",
         ).optional(),
-        networkTier: z.enum(["NETWORK_TIER_UNSPECIFIED", "PREMIUM", "STANDARD"])
-          .describe(
-            "Optional. This signifies the networking tier used for configuring this access",
-          ).optional(),
-        publicPtrDomainName: z.string().describe(
+        networkTier: z.unknown().describe(
+          "Optional. This signifies the networking tier used for configuring this access",
+        ).optional(),
+        publicPtrDomainName: z.unknown().describe(
           "Optional. The DNS domain name for the public PTR record.",
         ).optional(),
-        setPublicPtr: z.boolean().describe(
+        setPublicPtr: z.unknown().describe(
           "Optional. Specifies whether a public DNS 'PTR' record should be created to map the external IP address of the instance to a DNS domain name.",
         ).optional(),
-        type: z.enum([
-          "ACCESS_TYPE_UNSPECIFIED",
-          "ONE_TO_ONE_NAT",
-          "DIRECT_IPV6",
-        ]).describe(
+        type: z.unknown().describe(
           "Optional. In accessConfigs (IPv4), the default and only option is ONE_TO_ONE_NAT. In ipv6AccessConfigs, the default and only option is DIRECT_IPV6.",
         ).optional(),
       })).describe(
@@ -475,7 +449,7 @@ const GlobalArgsSchema = z.object({
         operator: z.enum(["OPERATOR_UNSPECIFIED", "IN", "NOT_IN"]).describe(
           "Optional. Defines the operation of node selection.",
         ).optional(),
-        values: z.array(z.string()).describe(
+        values: z.array(z.unknown()).describe(
           "Optional. Corresponds to the label values of Node resource.",
         ).optional(),
       })).describe(
@@ -766,12 +740,12 @@ const StateSchema = z.object({
       diskType: z.string(),
       diskTypeDeprecated: z.string(),
       guestOsFeature: z.array(z.object({
-        type: z.string(),
+        type: z.unknown(),
       })),
       index: z.string(),
       initializeParams: z.object({
         diskName: z.string(),
-        replicaZones: z.array(z.string()),
+        replicaZones: z.array(z.unknown()),
       }),
       kind: z.string(),
       license: z.array(z.string()),
@@ -797,29 +771,29 @@ const StateSchema = z.object({
     minCpuPlatform: z.string(),
     networkInterface: z.array(z.object({
       accessConfigs: z.array(z.object({
-        externalIpv6: z.string(),
-        externalIpv6PrefixLength: z.number(),
-        name: z.string(),
-        natIP: z.string(),
-        networkTier: z.string(),
-        publicPtrDomainName: z.string(),
-        setPublicPtr: z.boolean(),
-        type: z.string(),
+        externalIpv6: z.unknown(),
+        externalIpv6PrefixLength: z.unknown(),
+        name: z.unknown(),
+        natIP: z.unknown(),
+        networkTier: z.unknown(),
+        publicPtrDomainName: z.unknown(),
+        setPublicPtr: z.unknown(),
+        type: z.unknown(),
       })),
       aliasIpRanges: z.array(z.object({
-        ipCidrRange: z.string(),
-        subnetworkRangeName: z.string(),
+        ipCidrRange: z.unknown(),
+        subnetworkRangeName: z.unknown(),
       })),
       internalIpv6PrefixLength: z.number(),
       ipv6AccessConfigs: z.array(z.object({
-        externalIpv6: z.string(),
-        externalIpv6PrefixLength: z.number(),
-        name: z.string(),
-        natIP: z.string(),
-        networkTier: z.string(),
-        publicPtrDomainName: z.string(),
-        setPublicPtr: z.boolean(),
-        type: z.string(),
+        externalIpv6: z.unknown(),
+        externalIpv6PrefixLength: z.unknown(),
+        name: z.unknown(),
+        natIP: z.unknown(),
+        networkTier: z.unknown(),
+        publicPtrDomainName: z.unknown(),
+        setPublicPtr: z.unknown(),
+        type: z.unknown(),
       })),
       ipv6AccessType: z.string(),
       ipv6Address: z.string(),
@@ -843,7 +817,7 @@ const StateSchema = z.object({
       nodeAffinities: z.array(z.object({
         key: z.string(),
         operator: z.string(),
-        values: z.array(z.string()),
+        values: z.array(z.unknown()),
       })),
       onHostMaintenance: z.string(),
       preemptible: z.boolean(),
@@ -1083,23 +1057,7 @@ const InputsSchema = z.object({
         "PERSISTENT",
       ]).describe("Specifies the type of the disk.").optional(),
       guestOsFeature: z.array(z.object({
-        type: z.enum([
-          "FEATURE_TYPE_UNSPECIFIED",
-          "VIRTIO_SCSI_MULTIQUEUE",
-          "WINDOWS",
-          "MULTI_IP_SUBNET",
-          "UEFI_COMPATIBLE",
-          "SECURE_BOOT",
-          "GVNIC",
-          "SEV_CAPABLE",
-          "BARE_METAL_LINUX_COMPATIBLE",
-          "SUSPEND_RESUME_COMPATIBLE",
-          "SEV_LIVE_MIGRATABLE",
-          "SEV_SNP_CAPABLE",
-          "TDX_CAPABLE",
-          "IDPF",
-          "SEV_LIVE_MIGRATABLE_V2",
-        ]).describe("The ID of a supported feature.").optional(),
+        type: z.unknown().describe("The ID of a supported feature.").optional(),
       })).describe(
         "Optional. A list of features to enable on the guest operating system. Applicable only for bootable images.",
       ).optional(),
@@ -1110,7 +1068,7 @@ const InputsSchema = z.object({
         diskName: z.string().describe(
           "Optional. Specifies the disk name. If not specified, the default is to use the name of the instance.",
         ).optional(),
-        replicaZones: z.array(z.string()).describe(
+        replicaZones: z.array(z.unknown()).describe(
           "Optional. URL of the zone where the disk should be created. Required for each regional disk associated with the instance.",
         ).optional(),
       }).describe("Specifies the parameters to initialize this disk.")
@@ -1179,43 +1137,38 @@ const InputsSchema = z.object({
     ).optional(),
     networkInterface: z.array(z.object({
       accessConfigs: z.array(z.object({
-        externalIpv6: z.string().describe(
+        externalIpv6: z.unknown().describe(
           "Optional. The external IPv6 address of this access configuration.",
         ).optional(),
-        externalIpv6PrefixLength: z.number().int().describe(
+        externalIpv6PrefixLength: z.unknown().describe(
           "Optional. The prefix length of the external IPv6 range.",
         ).optional(),
-        name: z.string().describe(
+        name: z.unknown().describe(
           "Optional. The name of this access configuration.",
         ).optional(),
-        natIP: z.string().describe(
+        natIP: z.unknown().describe(
           "Optional. The external IP address of this access configuration.",
         ).optional(),
-        networkTier: z.enum(["NETWORK_TIER_UNSPECIFIED", "PREMIUM", "STANDARD"])
-          .describe(
-            "Optional. This signifies the networking tier used for configuring this access",
-          ).optional(),
-        publicPtrDomainName: z.string().describe(
+        networkTier: z.unknown().describe(
+          "Optional. This signifies the networking tier used for configuring this access",
+        ).optional(),
+        publicPtrDomainName: z.unknown().describe(
           "Optional. The DNS domain name for the public PTR record.",
         ).optional(),
-        setPublicPtr: z.boolean().describe(
+        setPublicPtr: z.unknown().describe(
           "Optional. Specifies whether a public DNS 'PTR' record should be created to map the external IP address of the instance to a DNS domain name.",
         ).optional(),
-        type: z.enum([
-          "ACCESS_TYPE_UNSPECIFIED",
-          "ONE_TO_ONE_NAT",
-          "DIRECT_IPV6",
-        ]).describe(
+        type: z.unknown().describe(
           "Optional. In accessConfigs (IPv4), the default and only option is ONE_TO_ONE_NAT. In ipv6AccessConfigs, the default and only option is DIRECT_IPV6.",
         ).optional(),
       })).describe(
         "Optional. An array of configurations for this interface. Currently, only one access config,ONE_TO_ONE_NAT is supported. If there are no accessConfigs specified, then this instance will have no external internet access.",
       ).optional(),
       aliasIpRanges: z.array(z.object({
-        ipCidrRange: z.string().describe(
+        ipCidrRange: z.unknown().describe(
           "Optional. The IP alias ranges to allocate for this interface.",
         ).optional(),
-        subnetworkRangeName: z.string().describe(
+        subnetworkRangeName: z.unknown().describe(
           "Optional. The name of a subnetwork secondary IP range from which to allocate an IP alias range. If not specified, the primary range of the subnetwork is used.",
         ).optional(),
       })).describe(
@@ -1225,33 +1178,28 @@ const InputsSchema = z.object({
         "Optional. The prefix length of the primary internal IPv6 range.",
       ).optional(),
       ipv6AccessConfigs: z.array(z.object({
-        externalIpv6: z.string().describe(
+        externalIpv6: z.unknown().describe(
           "Optional. The external IPv6 address of this access configuration.",
         ).optional(),
-        externalIpv6PrefixLength: z.number().int().describe(
+        externalIpv6PrefixLength: z.unknown().describe(
           "Optional. The prefix length of the external IPv6 range.",
         ).optional(),
-        name: z.string().describe(
+        name: z.unknown().describe(
           "Optional. The name of this access configuration.",
         ).optional(),
-        natIP: z.string().describe(
+        natIP: z.unknown().describe(
           "Optional. The external IP address of this access configuration.",
         ).optional(),
-        networkTier: z.enum(["NETWORK_TIER_UNSPECIFIED", "PREMIUM", "STANDARD"])
-          .describe(
-            "Optional. This signifies the networking tier used for configuring this access",
-          ).optional(),
-        publicPtrDomainName: z.string().describe(
+        networkTier: z.unknown().describe(
+          "Optional. This signifies the networking tier used for configuring this access",
+        ).optional(),
+        publicPtrDomainName: z.unknown().describe(
           "Optional. The DNS domain name for the public PTR record.",
         ).optional(),
-        setPublicPtr: z.boolean().describe(
+        setPublicPtr: z.unknown().describe(
           "Optional. Specifies whether a public DNS 'PTR' record should be created to map the external IP address of the instance to a DNS domain name.",
         ).optional(),
-        type: z.enum([
-          "ACCESS_TYPE_UNSPECIFIED",
-          "ONE_TO_ONE_NAT",
-          "DIRECT_IPV6",
-        ]).describe(
+        type: z.unknown().describe(
           "Optional. In accessConfigs (IPv4), the default and only option is ONE_TO_ONE_NAT. In ipv6AccessConfigs, the default and only option is DIRECT_IPV6.",
         ).optional(),
       })).describe(
@@ -1324,7 +1272,7 @@ const InputsSchema = z.object({
         operator: z.enum(["OPERATOR_UNSPECIFIED", "IN", "NOT_IN"]).describe(
           "Optional. Defines the operation of node selection.",
         ).optional(),
-        values: z.array(z.string()).describe(
+        values: z.array(z.unknown()).describe(
           "Optional. Corresponds to the label values of Node resource.",
         ).optional(),
       })).describe(
@@ -1562,7 +1510,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/backupdr/backupvaults-datasources-backups",
-  version: "2026.04.03.3",
+  version: "2026.04.04.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -1596,6 +1544,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.3",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.04.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

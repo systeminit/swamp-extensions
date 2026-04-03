@@ -116,7 +116,7 @@ const GlobalArgsSchema = z.object({
         code: z.number().int().describe(
           "The status code, which should be an enum value of google.rpc.Code.",
         ).optional(),
-        details: z.array(z.record(z.string(), z.string())).describe(
+        details: z.array(z.unknown()).describe(
           "A list of messages that carry the error details. There is a common set of message types for APIs to use.",
         ).optional(),
         message: z.string().describe(
@@ -217,7 +217,7 @@ const InputsSchema = z.object({
         code: z.number().int().describe(
           "The status code, which should be an enum value of google.rpc.Code.",
         ).optional(),
-        details: z.array(z.record(z.string(), z.string())).describe(
+        details: z.array(z.unknown()).describe(
           "A list of messages that carry the error details. There is a common set of message types for APIs to use.",
         ).optional(),
         message: z.string().describe(
@@ -260,7 +260,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/dlp/connections",
-  version: "2026.04.03.3",
+  version: "2026.04.04.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -284,6 +284,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.3",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.04.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

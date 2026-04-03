@@ -170,27 +170,27 @@ const StateSchema = z.object({
   courseMaterialSets: z.array(z.object({
     materials: z.array(z.object({
       driveFile: z.object({
-        alternateLink: z.string(),
-        id: z.string(),
-        thumbnailUrl: z.string(),
-        title: z.string(),
+        alternateLink: z.unknown(),
+        id: z.unknown(),
+        thumbnailUrl: z.unknown(),
+        title: z.unknown(),
       }),
       form: z.object({
-        formUrl: z.string(),
-        responseUrl: z.string(),
-        thumbnailUrl: z.string(),
-        title: z.string(),
+        formUrl: z.unknown(),
+        responseUrl: z.unknown(),
+        thumbnailUrl: z.unknown(),
+        title: z.unknown(),
       }),
       link: z.object({
-        thumbnailUrl: z.string(),
-        title: z.string(),
-        url: z.string(),
+        thumbnailUrl: z.unknown(),
+        title: z.unknown(),
+        url: z.unknown(),
       }),
       youTubeVideo: z.object({
-        alternateLink: z.string(),
-        id: z.string(),
-        thumbnailUrl: z.string(),
-        title: z.string(),
+        alternateLink: z.unknown(),
+        id: z.unknown(),
+        thumbnailUrl: z.unknown(),
+        title: z.unknown(),
       }),
     })),
     title: z.string(),
@@ -325,7 +325,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/classroom/courses",
-  version: "2026.04.03.3",
+  version: "2026.04.04.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -349,6 +349,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.3",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.04.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

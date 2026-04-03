@@ -100,7 +100,7 @@ const GlobalArgsSchema = z.object({
     ).optional(),
     egressPolicies: z.array(z.object({
       egressFrom: z.object({
-        identities: z.array(z.string()).describe(
+        identities: z.array(z.unknown()).describe(
           "A list of identities that are allowed access through [EgressPolicy]. Identities can be an individual user, service account, Google group, or third-party identity. For the list of supported identity types, see https://docs.cloud.google.com/vpc-service-controls/docs/supported-identities.",
         ).optional(),
         identityType: z.enum([
@@ -118,44 +118,23 @@ const GlobalArgsSchema = z.object({
         ]).describe(
           "Whether to enforce traffic restrictions based on `sources` field. If the `sources` fields is non-empty, then this field must be set to `SOURCE_RESTRICTION_ENABLED`.",
         ).optional(),
-        sources: z.array(z.object({
-          accessLevel: z.string().describe(
-            "An AccessLevel resource name that allows protected resources inside the ServicePerimeters to access outside the ServicePerimeter boundaries. AccessLevels listed must be in the same policy as this ServicePerimeter. Referencing a nonexistent AccessLevel will cause an error. If an AccessLevel name is not specified, only resources within the perimeter can be accessed through Google Cloud calls with request origins within the perimeter. Example: `accessPolicies/MY_POLICY/accessLevels/MY_LEVEL`. If a single `*` is specified for `access_level`, then all EgressSources will be allowed.",
-          ).optional(),
-          resource: z.string().describe(
-            "A Google Cloud resource from the service perimeter that you want to allow to access data outside the perimeter. This field supports only projects. The project format is `projects/{project_number}`. You can't use `*` in this field to allow all Google Cloud resources.",
-          ).optional(),
-        })).describe(
+        sources: z.array(z.unknown()).describe(
           "Sources that this EgressPolicy authorizes access from. If this field is not empty, then `source_restriction` must be set to `SOURCE_RESTRICTION_ENABLED`.",
         ).optional(),
       }).describe(
         "Defines the conditions under which an EgressPolicy matches a request. Conditions based on information about the source of the request. Note that if the destination of the request is also protected by a ServicePerimeter, then that ServicePerimeter must have an IngressPolicy which allows access in order for this request to succeed.",
       ).optional(),
       egressTo: z.object({
-        externalResources: z.array(z.string()).describe(
+        externalResources: z.array(z.unknown()).describe(
           "A list of external resources that are allowed to be accessed. Only AWS and Azure resources are supported. For Amazon S3, the supported formats are s3://BUCKET_NAME, s3a://BUCKET_NAME, and s3n://BUCKET_NAME. For Azure Storage, the supported format is azure://myaccount.blob.core.windows.net/CONTAINER_NAME. A request matches if it contains an external resource in this list (Example: s3://bucket/path). Currently '*' is not allowed.",
         ).optional(),
-        operations: z.array(z.object({
-          methodSelectors: z.array(z.object({
-            method: z.string().describe(
-              "A valid method name for the corresponding `service_name` in ApiOperation. If `*` is used as the value for the `method`, then ALL methods and permissions are allowed.",
-            ).optional(),
-            permission: z.string().describe(
-              "A valid Cloud IAM permission for the corresponding `service_name` in ApiOperation.",
-            ).optional(),
-          })).describe(
-            "API methods or permissions to allow. Method or permission must belong to the service specified by `service_name` field. A single MethodSelector entry with `*` specified for the `method` field will allow all methods AND permissions for the service specified in `service_name`.",
-          ).optional(),
-          serviceName: z.string().describe(
-            "The name of the API whose methods or permissions the IngressPolicy or EgressPolicy want to allow. A single ApiOperation with `service_name` field set to `*` will allow all methods AND permissions for all services.",
-          ).optional(),
-        })).describe(
+        operations: z.array(z.unknown()).describe(
           "A list of ApiOperations allowed to be performed by the sources specified in the corresponding EgressFrom. A request matches if it uses an operation/service in this list.",
         ).optional(),
-        resources: z.array(z.string()).describe(
+        resources: z.array(z.unknown()).describe(
           "A list of resources, currently only projects in the form `projects/`, that are allowed to be accessed by sources defined in the corresponding EgressFrom. A request matches if it contains a resource in this list. If `*` is specified for `resources`, then this EgressTo rule will authorize access to all resources outside the perimeter.",
         ).optional(),
-        roles: z.array(z.string()).describe(
+        roles: z.array(z.unknown()).describe(
           "IAM roles that represent the set of operations that the sources specified in the corresponding EgressFrom. are allowed to perform in this ServicePerimeter.",
         ).optional(),
       }).describe(
@@ -169,7 +148,7 @@ const GlobalArgsSchema = z.object({
     ).optional(),
     ingressPolicies: z.array(z.object({
       ingressFrom: z.object({
-        identities: z.array(z.string()).describe(
+        identities: z.array(z.unknown()).describe(
           "A list of identities that are allowed access through [IngressPolicy]. Identities can be an individual user, service account, Google group, or third-party identity. For the list of supported identity types, see https://docs.cloud.google.com/vpc-service-controls/docs/supported-identities.",
         ).optional(),
         identityType: z.enum([
@@ -180,40 +159,20 @@ const GlobalArgsSchema = z.object({
         ]).describe(
           "Specifies the type of identities that are allowed access from outside the perimeter. If left unspecified, then members of `identities` field will be allowed access.",
         ).optional(),
-        sources: z.array(z.object({
-          accessLevel: z.string().describe(
-            "An AccessLevel resource name that allow resources within the ServicePerimeters to be accessed from the internet. AccessLevels listed must be in the same policy as this ServicePerimeter. Referencing a nonexistent AccessLevel will cause an error. If no AccessLevel names are listed, resources within the perimeter can only be accessed via Google Cloud calls with request origins within the perimeter. Example: `accessPolicies/MY_POLICY/accessLevels/MY_LEVEL`. If a single `*` is specified for `access_level`, then all IngressSources will be allowed.",
-          ).optional(),
-          resource: z.string().describe(
-            "A Google Cloud resource that is allowed to ingress the perimeter. Requests from these resources will be allowed to access perimeter data. Currently only projects and VPCs are allowed. Project format: `projects/{project_number}` VPC network format: `//compute.googleapis.com/projects/{PROJECT_ID}/global/networks/{NAME}`. The project may be in any Google Cloud organization, not just the organization that the perimeter is defined in. `*` is not allowed, the case of allowing all Google Cloud resources only is not supported.",
-          ).optional(),
-        })).describe("Sources that this IngressPolicy authorizes access from.")
-          .optional(),
+        sources: z.array(z.unknown()).describe(
+          "Sources that this IngressPolicy authorizes access from.",
+        ).optional(),
       }).describe(
         "Defines the conditions under which an IngressPolicy matches a request. Conditions are based on information about the source of the request. The request must satisfy what is defined in `sources` AND identity related fields in order to match.",
       ).optional(),
       ingressTo: z.object({
-        operations: z.array(z.object({
-          methodSelectors: z.array(z.object({
-            method: z.string().describe(
-              "A valid method name for the corresponding `service_name` in ApiOperation. If `*` is used as the value for the `method`, then ALL methods and permissions are allowed.",
-            ).optional(),
-            permission: z.string().describe(
-              "A valid Cloud IAM permission for the corresponding `service_name` in ApiOperation.",
-            ).optional(),
-          })).describe(
-            "API methods or permissions to allow. Method or permission must belong to the service specified by `service_name` field. A single MethodSelector entry with `*` specified for the `method` field will allow all methods AND permissions for the service specified in `service_name`.",
-          ).optional(),
-          serviceName: z.string().describe(
-            "The name of the API whose methods or permissions the IngressPolicy or EgressPolicy want to allow. A single ApiOperation with `service_name` field set to `*` will allow all methods AND permissions for all services.",
-          ).optional(),
-        })).describe(
+        operations: z.array(z.unknown()).describe(
           "A list of ApiOperations allowed to be performed by the sources specified in corresponding IngressFrom in this ServicePerimeter.",
         ).optional(),
-        resources: z.array(z.string()).describe(
+        resources: z.array(z.unknown()).describe(
           "A list of resources, currently only projects in the form `projects/`, protected by this ServicePerimeter that are allowed to be accessed by sources defined in the corresponding IngressFrom. If a single `*` is specified, then access to all resources inside the perimeter are allowed.",
         ).optional(),
-        roles: z.array(z.string()).describe(
+        roles: z.array(z.unknown()).describe(
           "IAM roles that represent the set of operations that the sources specified in the corresponding IngressFrom are allowed to perform in this ServicePerimeter.",
         ).optional(),
       }).describe(
@@ -250,7 +209,7 @@ const GlobalArgsSchema = z.object({
     ).optional(),
     egressPolicies: z.array(z.object({
       egressFrom: z.object({
-        identities: z.array(z.string()).describe(
+        identities: z.array(z.unknown()).describe(
           "A list of identities that are allowed access through [EgressPolicy]. Identities can be an individual user, service account, Google group, or third-party identity. For the list of supported identity types, see https://docs.cloud.google.com/vpc-service-controls/docs/supported-identities.",
         ).optional(),
         identityType: z.enum([
@@ -268,44 +227,23 @@ const GlobalArgsSchema = z.object({
         ]).describe(
           "Whether to enforce traffic restrictions based on `sources` field. If the `sources` fields is non-empty, then this field must be set to `SOURCE_RESTRICTION_ENABLED`.",
         ).optional(),
-        sources: z.array(z.object({
-          accessLevel: z.string().describe(
-            "An AccessLevel resource name that allows protected resources inside the ServicePerimeters to access outside the ServicePerimeter boundaries. AccessLevels listed must be in the same policy as this ServicePerimeter. Referencing a nonexistent AccessLevel will cause an error. If an AccessLevel name is not specified, only resources within the perimeter can be accessed through Google Cloud calls with request origins within the perimeter. Example: `accessPolicies/MY_POLICY/accessLevels/MY_LEVEL`. If a single `*` is specified for `access_level`, then all EgressSources will be allowed.",
-          ).optional(),
-          resource: z.string().describe(
-            "A Google Cloud resource from the service perimeter that you want to allow to access data outside the perimeter. This field supports only projects. The project format is `projects/{project_number}`. You can't use `*` in this field to allow all Google Cloud resources.",
-          ).optional(),
-        })).describe(
+        sources: z.array(z.unknown()).describe(
           "Sources that this EgressPolicy authorizes access from. If this field is not empty, then `source_restriction` must be set to `SOURCE_RESTRICTION_ENABLED`.",
         ).optional(),
       }).describe(
         "Defines the conditions under which an EgressPolicy matches a request. Conditions based on information about the source of the request. Note that if the destination of the request is also protected by a ServicePerimeter, then that ServicePerimeter must have an IngressPolicy which allows access in order for this request to succeed.",
       ).optional(),
       egressTo: z.object({
-        externalResources: z.array(z.string()).describe(
+        externalResources: z.array(z.unknown()).describe(
           "A list of external resources that are allowed to be accessed. Only AWS and Azure resources are supported. For Amazon S3, the supported formats are s3://BUCKET_NAME, s3a://BUCKET_NAME, and s3n://BUCKET_NAME. For Azure Storage, the supported format is azure://myaccount.blob.core.windows.net/CONTAINER_NAME. A request matches if it contains an external resource in this list (Example: s3://bucket/path). Currently '*' is not allowed.",
         ).optional(),
-        operations: z.array(z.object({
-          methodSelectors: z.array(z.object({
-            method: z.string().describe(
-              "A valid method name for the corresponding `service_name` in ApiOperation. If `*` is used as the value for the `method`, then ALL methods and permissions are allowed.",
-            ).optional(),
-            permission: z.string().describe(
-              "A valid Cloud IAM permission for the corresponding `service_name` in ApiOperation.",
-            ).optional(),
-          })).describe(
-            "API methods or permissions to allow. Method or permission must belong to the service specified by `service_name` field. A single MethodSelector entry with `*` specified for the `method` field will allow all methods AND permissions for the service specified in `service_name`.",
-          ).optional(),
-          serviceName: z.string().describe(
-            "The name of the API whose methods or permissions the IngressPolicy or EgressPolicy want to allow. A single ApiOperation with `service_name` field set to `*` will allow all methods AND permissions for all services.",
-          ).optional(),
-        })).describe(
+        operations: z.array(z.unknown()).describe(
           "A list of ApiOperations allowed to be performed by the sources specified in the corresponding EgressFrom. A request matches if it uses an operation/service in this list.",
         ).optional(),
-        resources: z.array(z.string()).describe(
+        resources: z.array(z.unknown()).describe(
           "A list of resources, currently only projects in the form `projects/`, that are allowed to be accessed by sources defined in the corresponding EgressFrom. A request matches if it contains a resource in this list. If `*` is specified for `resources`, then this EgressTo rule will authorize access to all resources outside the perimeter.",
         ).optional(),
-        roles: z.array(z.string()).describe(
+        roles: z.array(z.unknown()).describe(
           "IAM roles that represent the set of operations that the sources specified in the corresponding EgressFrom. are allowed to perform in this ServicePerimeter.",
         ).optional(),
       }).describe(
@@ -319,7 +257,7 @@ const GlobalArgsSchema = z.object({
     ).optional(),
     ingressPolicies: z.array(z.object({
       ingressFrom: z.object({
-        identities: z.array(z.string()).describe(
+        identities: z.array(z.unknown()).describe(
           "A list of identities that are allowed access through [IngressPolicy]. Identities can be an individual user, service account, Google group, or third-party identity. For the list of supported identity types, see https://docs.cloud.google.com/vpc-service-controls/docs/supported-identities.",
         ).optional(),
         identityType: z.enum([
@@ -330,40 +268,20 @@ const GlobalArgsSchema = z.object({
         ]).describe(
           "Specifies the type of identities that are allowed access from outside the perimeter. If left unspecified, then members of `identities` field will be allowed access.",
         ).optional(),
-        sources: z.array(z.object({
-          accessLevel: z.string().describe(
-            "An AccessLevel resource name that allow resources within the ServicePerimeters to be accessed from the internet. AccessLevels listed must be in the same policy as this ServicePerimeter. Referencing a nonexistent AccessLevel will cause an error. If no AccessLevel names are listed, resources within the perimeter can only be accessed via Google Cloud calls with request origins within the perimeter. Example: `accessPolicies/MY_POLICY/accessLevels/MY_LEVEL`. If a single `*` is specified for `access_level`, then all IngressSources will be allowed.",
-          ).optional(),
-          resource: z.string().describe(
-            "A Google Cloud resource that is allowed to ingress the perimeter. Requests from these resources will be allowed to access perimeter data. Currently only projects and VPCs are allowed. Project format: `projects/{project_number}` VPC network format: `//compute.googleapis.com/projects/{PROJECT_ID}/global/networks/{NAME}`. The project may be in any Google Cloud organization, not just the organization that the perimeter is defined in. `*` is not allowed, the case of allowing all Google Cloud resources only is not supported.",
-          ).optional(),
-        })).describe("Sources that this IngressPolicy authorizes access from.")
-          .optional(),
+        sources: z.array(z.unknown()).describe(
+          "Sources that this IngressPolicy authorizes access from.",
+        ).optional(),
       }).describe(
         "Defines the conditions under which an IngressPolicy matches a request. Conditions are based on information about the source of the request. The request must satisfy what is defined in `sources` AND identity related fields in order to match.",
       ).optional(),
       ingressTo: z.object({
-        operations: z.array(z.object({
-          methodSelectors: z.array(z.object({
-            method: z.string().describe(
-              "A valid method name for the corresponding `service_name` in ApiOperation. If `*` is used as the value for the `method`, then ALL methods and permissions are allowed.",
-            ).optional(),
-            permission: z.string().describe(
-              "A valid Cloud IAM permission for the corresponding `service_name` in ApiOperation.",
-            ).optional(),
-          })).describe(
-            "API methods or permissions to allow. Method or permission must belong to the service specified by `service_name` field. A single MethodSelector entry with `*` specified for the `method` field will allow all methods AND permissions for the service specified in `service_name`.",
-          ).optional(),
-          serviceName: z.string().describe(
-            "The name of the API whose methods or permissions the IngressPolicy or EgressPolicy want to allow. A single ApiOperation with `service_name` field set to `*` will allow all methods AND permissions for all services.",
-          ).optional(),
-        })).describe(
+        operations: z.array(z.unknown()).describe(
           "A list of ApiOperations allowed to be performed by the sources specified in corresponding IngressFrom in this ServicePerimeter.",
         ).optional(),
-        resources: z.array(z.string()).describe(
+        resources: z.array(z.unknown()).describe(
           "A list of resources, currently only projects in the form `projects/`, protected by this ServicePerimeter that are allowed to be accessed by sources defined in the corresponding IngressFrom. If a single `*` is specified, then access to all resources inside the perimeter are allowed.",
         ).optional(),
-        roles: z.array(z.string()).describe(
+        roles: z.array(z.unknown()).describe(
           "IAM roles that represent the set of operations that the sources specified in the corresponding IngressFrom are allowed to perform in this ServicePerimeter.",
         ).optional(),
       }).describe(
@@ -414,47 +332,29 @@ const StateSchema = z.object({
     accessLevels: z.array(z.string()),
     egressPolicies: z.array(z.object({
       egressFrom: z.object({
-        identities: z.array(z.string()),
+        identities: z.array(z.unknown()),
         identityType: z.string(),
         sourceRestriction: z.string(),
-        sources: z.array(z.object({
-          accessLevel: z.string(),
-          resource: z.string(),
-        })),
+        sources: z.array(z.unknown()),
       }),
       egressTo: z.object({
-        externalResources: z.array(z.string()),
-        operations: z.array(z.object({
-          methodSelectors: z.array(z.object({
-            method: z.string(),
-            permission: z.string(),
-          })),
-          serviceName: z.string(),
-        })),
-        resources: z.array(z.string()),
-        roles: z.array(z.string()),
+        externalResources: z.array(z.unknown()),
+        operations: z.array(z.unknown()),
+        resources: z.array(z.unknown()),
+        roles: z.array(z.unknown()),
       }),
       title: z.string(),
     })),
     ingressPolicies: z.array(z.object({
       ingressFrom: z.object({
-        identities: z.array(z.string()),
+        identities: z.array(z.unknown()),
         identityType: z.string(),
-        sources: z.array(z.object({
-          accessLevel: z.string(),
-          resource: z.string(),
-        })),
+        sources: z.array(z.unknown()),
       }),
       ingressTo: z.object({
-        operations: z.array(z.object({
-          methodSelectors: z.array(z.object({
-            method: z.string(),
-            permission: z.string(),
-          })),
-          serviceName: z.string(),
-        })),
-        resources: z.array(z.string()),
-        roles: z.array(z.string()),
+        operations: z.array(z.unknown()),
+        resources: z.array(z.unknown()),
+        roles: z.array(z.unknown()),
       }),
       title: z.string(),
     })),
@@ -469,47 +369,29 @@ const StateSchema = z.object({
     accessLevels: z.array(z.string()),
     egressPolicies: z.array(z.object({
       egressFrom: z.object({
-        identities: z.array(z.string()),
+        identities: z.array(z.unknown()),
         identityType: z.string(),
         sourceRestriction: z.string(),
-        sources: z.array(z.object({
-          accessLevel: z.string(),
-          resource: z.string(),
-        })),
+        sources: z.array(z.unknown()),
       }),
       egressTo: z.object({
-        externalResources: z.array(z.string()),
-        operations: z.array(z.object({
-          methodSelectors: z.array(z.object({
-            method: z.string(),
-            permission: z.string(),
-          })),
-          serviceName: z.string(),
-        })),
-        resources: z.array(z.string()),
-        roles: z.array(z.string()),
+        externalResources: z.array(z.unknown()),
+        operations: z.array(z.unknown()),
+        resources: z.array(z.unknown()),
+        roles: z.array(z.unknown()),
       }),
       title: z.string(),
     })),
     ingressPolicies: z.array(z.object({
       ingressFrom: z.object({
-        identities: z.array(z.string()),
+        identities: z.array(z.unknown()),
         identityType: z.string(),
-        sources: z.array(z.object({
-          accessLevel: z.string(),
-          resource: z.string(),
-        })),
+        sources: z.array(z.unknown()),
       }),
       ingressTo: z.object({
-        operations: z.array(z.object({
-          methodSelectors: z.array(z.object({
-            method: z.string(),
-            permission: z.string(),
-          })),
-          serviceName: z.string(),
-        })),
-        resources: z.array(z.string()),
-        roles: z.array(z.string()),
+        operations: z.array(z.unknown()),
+        resources: z.array(z.unknown()),
+        roles: z.array(z.unknown()),
       }),
       title: z.string(),
     })),
@@ -543,7 +425,7 @@ const InputsSchema = z.object({
     ).optional(),
     egressPolicies: z.array(z.object({
       egressFrom: z.object({
-        identities: z.array(z.string()).describe(
+        identities: z.array(z.unknown()).describe(
           "A list of identities that are allowed access through [EgressPolicy]. Identities can be an individual user, service account, Google group, or third-party identity. For the list of supported identity types, see https://docs.cloud.google.com/vpc-service-controls/docs/supported-identities.",
         ).optional(),
         identityType: z.enum([
@@ -561,44 +443,23 @@ const InputsSchema = z.object({
         ]).describe(
           "Whether to enforce traffic restrictions based on `sources` field. If the `sources` fields is non-empty, then this field must be set to `SOURCE_RESTRICTION_ENABLED`.",
         ).optional(),
-        sources: z.array(z.object({
-          accessLevel: z.string().describe(
-            "An AccessLevel resource name that allows protected resources inside the ServicePerimeters to access outside the ServicePerimeter boundaries. AccessLevels listed must be in the same policy as this ServicePerimeter. Referencing a nonexistent AccessLevel will cause an error. If an AccessLevel name is not specified, only resources within the perimeter can be accessed through Google Cloud calls with request origins within the perimeter. Example: `accessPolicies/MY_POLICY/accessLevels/MY_LEVEL`. If a single `*` is specified for `access_level`, then all EgressSources will be allowed.",
-          ).optional(),
-          resource: z.string().describe(
-            "A Google Cloud resource from the service perimeter that you want to allow to access data outside the perimeter. This field supports only projects. The project format is `projects/{project_number}`. You can't use `*` in this field to allow all Google Cloud resources.",
-          ).optional(),
-        })).describe(
+        sources: z.array(z.unknown()).describe(
           "Sources that this EgressPolicy authorizes access from. If this field is not empty, then `source_restriction` must be set to `SOURCE_RESTRICTION_ENABLED`.",
         ).optional(),
       }).describe(
         "Defines the conditions under which an EgressPolicy matches a request. Conditions based on information about the source of the request. Note that if the destination of the request is also protected by a ServicePerimeter, then that ServicePerimeter must have an IngressPolicy which allows access in order for this request to succeed.",
       ).optional(),
       egressTo: z.object({
-        externalResources: z.array(z.string()).describe(
+        externalResources: z.array(z.unknown()).describe(
           "A list of external resources that are allowed to be accessed. Only AWS and Azure resources are supported. For Amazon S3, the supported formats are s3://BUCKET_NAME, s3a://BUCKET_NAME, and s3n://BUCKET_NAME. For Azure Storage, the supported format is azure://myaccount.blob.core.windows.net/CONTAINER_NAME. A request matches if it contains an external resource in this list (Example: s3://bucket/path). Currently '*' is not allowed.",
         ).optional(),
-        operations: z.array(z.object({
-          methodSelectors: z.array(z.object({
-            method: z.string().describe(
-              "A valid method name for the corresponding `service_name` in ApiOperation. If `*` is used as the value for the `method`, then ALL methods and permissions are allowed.",
-            ).optional(),
-            permission: z.string().describe(
-              "A valid Cloud IAM permission for the corresponding `service_name` in ApiOperation.",
-            ).optional(),
-          })).describe(
-            "API methods or permissions to allow. Method or permission must belong to the service specified by `service_name` field. A single MethodSelector entry with `*` specified for the `method` field will allow all methods AND permissions for the service specified in `service_name`.",
-          ).optional(),
-          serviceName: z.string().describe(
-            "The name of the API whose methods or permissions the IngressPolicy or EgressPolicy want to allow. A single ApiOperation with `service_name` field set to `*` will allow all methods AND permissions for all services.",
-          ).optional(),
-        })).describe(
+        operations: z.array(z.unknown()).describe(
           "A list of ApiOperations allowed to be performed by the sources specified in the corresponding EgressFrom. A request matches if it uses an operation/service in this list.",
         ).optional(),
-        resources: z.array(z.string()).describe(
+        resources: z.array(z.unknown()).describe(
           "A list of resources, currently only projects in the form `projects/`, that are allowed to be accessed by sources defined in the corresponding EgressFrom. A request matches if it contains a resource in this list. If `*` is specified for `resources`, then this EgressTo rule will authorize access to all resources outside the perimeter.",
         ).optional(),
-        roles: z.array(z.string()).describe(
+        roles: z.array(z.unknown()).describe(
           "IAM roles that represent the set of operations that the sources specified in the corresponding EgressFrom. are allowed to perform in this ServicePerimeter.",
         ).optional(),
       }).describe(
@@ -612,7 +473,7 @@ const InputsSchema = z.object({
     ).optional(),
     ingressPolicies: z.array(z.object({
       ingressFrom: z.object({
-        identities: z.array(z.string()).describe(
+        identities: z.array(z.unknown()).describe(
           "A list of identities that are allowed access through [IngressPolicy]. Identities can be an individual user, service account, Google group, or third-party identity. For the list of supported identity types, see https://docs.cloud.google.com/vpc-service-controls/docs/supported-identities.",
         ).optional(),
         identityType: z.enum([
@@ -623,40 +484,20 @@ const InputsSchema = z.object({
         ]).describe(
           "Specifies the type of identities that are allowed access from outside the perimeter. If left unspecified, then members of `identities` field will be allowed access.",
         ).optional(),
-        sources: z.array(z.object({
-          accessLevel: z.string().describe(
-            "An AccessLevel resource name that allow resources within the ServicePerimeters to be accessed from the internet. AccessLevels listed must be in the same policy as this ServicePerimeter. Referencing a nonexistent AccessLevel will cause an error. If no AccessLevel names are listed, resources within the perimeter can only be accessed via Google Cloud calls with request origins within the perimeter. Example: `accessPolicies/MY_POLICY/accessLevels/MY_LEVEL`. If a single `*` is specified for `access_level`, then all IngressSources will be allowed.",
-          ).optional(),
-          resource: z.string().describe(
-            "A Google Cloud resource that is allowed to ingress the perimeter. Requests from these resources will be allowed to access perimeter data. Currently only projects and VPCs are allowed. Project format: `projects/{project_number}` VPC network format: `//compute.googleapis.com/projects/{PROJECT_ID}/global/networks/{NAME}`. The project may be in any Google Cloud organization, not just the organization that the perimeter is defined in. `*` is not allowed, the case of allowing all Google Cloud resources only is not supported.",
-          ).optional(),
-        })).describe("Sources that this IngressPolicy authorizes access from.")
-          .optional(),
+        sources: z.array(z.unknown()).describe(
+          "Sources that this IngressPolicy authorizes access from.",
+        ).optional(),
       }).describe(
         "Defines the conditions under which an IngressPolicy matches a request. Conditions are based on information about the source of the request. The request must satisfy what is defined in `sources` AND identity related fields in order to match.",
       ).optional(),
       ingressTo: z.object({
-        operations: z.array(z.object({
-          methodSelectors: z.array(z.object({
-            method: z.string().describe(
-              "A valid method name for the corresponding `service_name` in ApiOperation. If `*` is used as the value for the `method`, then ALL methods and permissions are allowed.",
-            ).optional(),
-            permission: z.string().describe(
-              "A valid Cloud IAM permission for the corresponding `service_name` in ApiOperation.",
-            ).optional(),
-          })).describe(
-            "API methods or permissions to allow. Method or permission must belong to the service specified by `service_name` field. A single MethodSelector entry with `*` specified for the `method` field will allow all methods AND permissions for the service specified in `service_name`.",
-          ).optional(),
-          serviceName: z.string().describe(
-            "The name of the API whose methods or permissions the IngressPolicy or EgressPolicy want to allow. A single ApiOperation with `service_name` field set to `*` will allow all methods AND permissions for all services.",
-          ).optional(),
-        })).describe(
+        operations: z.array(z.unknown()).describe(
           "A list of ApiOperations allowed to be performed by the sources specified in corresponding IngressFrom in this ServicePerimeter.",
         ).optional(),
-        resources: z.array(z.string()).describe(
+        resources: z.array(z.unknown()).describe(
           "A list of resources, currently only projects in the form `projects/`, protected by this ServicePerimeter that are allowed to be accessed by sources defined in the corresponding IngressFrom. If a single `*` is specified, then access to all resources inside the perimeter are allowed.",
         ).optional(),
-        roles: z.array(z.string()).describe(
+        roles: z.array(z.unknown()).describe(
           "IAM roles that represent the set of operations that the sources specified in the corresponding IngressFrom are allowed to perform in this ServicePerimeter.",
         ).optional(),
       }).describe(
@@ -693,7 +534,7 @@ const InputsSchema = z.object({
     ).optional(),
     egressPolicies: z.array(z.object({
       egressFrom: z.object({
-        identities: z.array(z.string()).describe(
+        identities: z.array(z.unknown()).describe(
           "A list of identities that are allowed access through [EgressPolicy]. Identities can be an individual user, service account, Google group, or third-party identity. For the list of supported identity types, see https://docs.cloud.google.com/vpc-service-controls/docs/supported-identities.",
         ).optional(),
         identityType: z.enum([
@@ -711,44 +552,23 @@ const InputsSchema = z.object({
         ]).describe(
           "Whether to enforce traffic restrictions based on `sources` field. If the `sources` fields is non-empty, then this field must be set to `SOURCE_RESTRICTION_ENABLED`.",
         ).optional(),
-        sources: z.array(z.object({
-          accessLevel: z.string().describe(
-            "An AccessLevel resource name that allows protected resources inside the ServicePerimeters to access outside the ServicePerimeter boundaries. AccessLevels listed must be in the same policy as this ServicePerimeter. Referencing a nonexistent AccessLevel will cause an error. If an AccessLevel name is not specified, only resources within the perimeter can be accessed through Google Cloud calls with request origins within the perimeter. Example: `accessPolicies/MY_POLICY/accessLevels/MY_LEVEL`. If a single `*` is specified for `access_level`, then all EgressSources will be allowed.",
-          ).optional(),
-          resource: z.string().describe(
-            "A Google Cloud resource from the service perimeter that you want to allow to access data outside the perimeter. This field supports only projects. The project format is `projects/{project_number}`. You can't use `*` in this field to allow all Google Cloud resources.",
-          ).optional(),
-        })).describe(
+        sources: z.array(z.unknown()).describe(
           "Sources that this EgressPolicy authorizes access from. If this field is not empty, then `source_restriction` must be set to `SOURCE_RESTRICTION_ENABLED`.",
         ).optional(),
       }).describe(
         "Defines the conditions under which an EgressPolicy matches a request. Conditions based on information about the source of the request. Note that if the destination of the request is also protected by a ServicePerimeter, then that ServicePerimeter must have an IngressPolicy which allows access in order for this request to succeed.",
       ).optional(),
       egressTo: z.object({
-        externalResources: z.array(z.string()).describe(
+        externalResources: z.array(z.unknown()).describe(
           "A list of external resources that are allowed to be accessed. Only AWS and Azure resources are supported. For Amazon S3, the supported formats are s3://BUCKET_NAME, s3a://BUCKET_NAME, and s3n://BUCKET_NAME. For Azure Storage, the supported format is azure://myaccount.blob.core.windows.net/CONTAINER_NAME. A request matches if it contains an external resource in this list (Example: s3://bucket/path). Currently '*' is not allowed.",
         ).optional(),
-        operations: z.array(z.object({
-          methodSelectors: z.array(z.object({
-            method: z.string().describe(
-              "A valid method name for the corresponding `service_name` in ApiOperation. If `*` is used as the value for the `method`, then ALL methods and permissions are allowed.",
-            ).optional(),
-            permission: z.string().describe(
-              "A valid Cloud IAM permission for the corresponding `service_name` in ApiOperation.",
-            ).optional(),
-          })).describe(
-            "API methods or permissions to allow. Method or permission must belong to the service specified by `service_name` field. A single MethodSelector entry with `*` specified for the `method` field will allow all methods AND permissions for the service specified in `service_name`.",
-          ).optional(),
-          serviceName: z.string().describe(
-            "The name of the API whose methods or permissions the IngressPolicy or EgressPolicy want to allow. A single ApiOperation with `service_name` field set to `*` will allow all methods AND permissions for all services.",
-          ).optional(),
-        })).describe(
+        operations: z.array(z.unknown()).describe(
           "A list of ApiOperations allowed to be performed by the sources specified in the corresponding EgressFrom. A request matches if it uses an operation/service in this list.",
         ).optional(),
-        resources: z.array(z.string()).describe(
+        resources: z.array(z.unknown()).describe(
           "A list of resources, currently only projects in the form `projects/`, that are allowed to be accessed by sources defined in the corresponding EgressFrom. A request matches if it contains a resource in this list. If `*` is specified for `resources`, then this EgressTo rule will authorize access to all resources outside the perimeter.",
         ).optional(),
-        roles: z.array(z.string()).describe(
+        roles: z.array(z.unknown()).describe(
           "IAM roles that represent the set of operations that the sources specified in the corresponding EgressFrom. are allowed to perform in this ServicePerimeter.",
         ).optional(),
       }).describe(
@@ -762,7 +582,7 @@ const InputsSchema = z.object({
     ).optional(),
     ingressPolicies: z.array(z.object({
       ingressFrom: z.object({
-        identities: z.array(z.string()).describe(
+        identities: z.array(z.unknown()).describe(
           "A list of identities that are allowed access through [IngressPolicy]. Identities can be an individual user, service account, Google group, or third-party identity. For the list of supported identity types, see https://docs.cloud.google.com/vpc-service-controls/docs/supported-identities.",
         ).optional(),
         identityType: z.enum([
@@ -773,40 +593,20 @@ const InputsSchema = z.object({
         ]).describe(
           "Specifies the type of identities that are allowed access from outside the perimeter. If left unspecified, then members of `identities` field will be allowed access.",
         ).optional(),
-        sources: z.array(z.object({
-          accessLevel: z.string().describe(
-            "An AccessLevel resource name that allow resources within the ServicePerimeters to be accessed from the internet. AccessLevels listed must be in the same policy as this ServicePerimeter. Referencing a nonexistent AccessLevel will cause an error. If no AccessLevel names are listed, resources within the perimeter can only be accessed via Google Cloud calls with request origins within the perimeter. Example: `accessPolicies/MY_POLICY/accessLevels/MY_LEVEL`. If a single `*` is specified for `access_level`, then all IngressSources will be allowed.",
-          ).optional(),
-          resource: z.string().describe(
-            "A Google Cloud resource that is allowed to ingress the perimeter. Requests from these resources will be allowed to access perimeter data. Currently only projects and VPCs are allowed. Project format: `projects/{project_number}` VPC network format: `//compute.googleapis.com/projects/{PROJECT_ID}/global/networks/{NAME}`. The project may be in any Google Cloud organization, not just the organization that the perimeter is defined in. `*` is not allowed, the case of allowing all Google Cloud resources only is not supported.",
-          ).optional(),
-        })).describe("Sources that this IngressPolicy authorizes access from.")
-          .optional(),
+        sources: z.array(z.unknown()).describe(
+          "Sources that this IngressPolicy authorizes access from.",
+        ).optional(),
       }).describe(
         "Defines the conditions under which an IngressPolicy matches a request. Conditions are based on information about the source of the request. The request must satisfy what is defined in `sources` AND identity related fields in order to match.",
       ).optional(),
       ingressTo: z.object({
-        operations: z.array(z.object({
-          methodSelectors: z.array(z.object({
-            method: z.string().describe(
-              "A valid method name for the corresponding `service_name` in ApiOperation. If `*` is used as the value for the `method`, then ALL methods and permissions are allowed.",
-            ).optional(),
-            permission: z.string().describe(
-              "A valid Cloud IAM permission for the corresponding `service_name` in ApiOperation.",
-            ).optional(),
-          })).describe(
-            "API methods or permissions to allow. Method or permission must belong to the service specified by `service_name` field. A single MethodSelector entry with `*` specified for the `method` field will allow all methods AND permissions for the service specified in `service_name`.",
-          ).optional(),
-          serviceName: z.string().describe(
-            "The name of the API whose methods or permissions the IngressPolicy or EgressPolicy want to allow. A single ApiOperation with `service_name` field set to `*` will allow all methods AND permissions for all services.",
-          ).optional(),
-        })).describe(
+        operations: z.array(z.unknown()).describe(
           "A list of ApiOperations allowed to be performed by the sources specified in corresponding IngressFrom in this ServicePerimeter.",
         ).optional(),
-        resources: z.array(z.string()).describe(
+        resources: z.array(z.unknown()).describe(
           "A list of resources, currently only projects in the form `projects/`, protected by this ServicePerimeter that are allowed to be accessed by sources defined in the corresponding IngressFrom. If a single `*` is specified, then access to all resources inside the perimeter are allowed.",
         ).optional(),
-        roles: z.array(z.string()).describe(
+        roles: z.array(z.unknown()).describe(
           "IAM roles that represent the set of operations that the sources specified in the corresponding IngressFrom are allowed to perform in this ServicePerimeter.",
         ).optional(),
       }).describe(
@@ -850,7 +650,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/accesscontextmanager/accesspolicies-serviceperimeters",
-  version: "2026.04.03.3",
+  version: "2026.04.04.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -884,6 +684,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.3",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.04.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

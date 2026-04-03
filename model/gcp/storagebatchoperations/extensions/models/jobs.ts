@@ -88,7 +88,7 @@ const GlobalArgsSchema = z.object({
         ).optional(),
       }).describe("Describes list of objects to be transformed.").optional(),
       prefixList: z.object({
-        includedObjectPrefixes: z.array(z.string()).describe(
+        includedObjectPrefixes: z.array(z.unknown()).describe(
           "Optional. Include prefixes of the objects to be transformed. * Supports full object name * Supports prefix of the object name * Wildcards are not supported * Supports empty string for all objects in a bucket.",
         ).optional(),
       }).describe("Describes prefixes of objects to be transformed.")
@@ -231,7 +231,7 @@ const StateSchema = z.object({
         manifestLocation: z.string(),
       }),
       prefixList: z.object({
-        includedObjectPrefixes: z.array(z.string()),
+        includedObjectPrefixes: z.array(z.unknown()),
       }),
     })),
   }).optional(),
@@ -255,7 +255,7 @@ const StateSchema = z.object({
     errorCode: z.string(),
     errorCount: z.string(),
     errorLogEntries: z.array(z.object({
-      errorDetails: z.array(z.string()),
+      errorDetails: z.array(z.unknown()),
       objectUri: z.string(),
     })),
   })).optional(),
@@ -310,7 +310,7 @@ const InputsSchema = z.object({
         ).optional(),
       }).describe("Describes list of objects to be transformed.").optional(),
       prefixList: z.object({
-        includedObjectPrefixes: z.array(z.string()).describe(
+        includedObjectPrefixes: z.array(z.unknown()).describe(
           "Optional. Include prefixes of the objects to be transformed. * Supports full object name * Supports prefix of the object name * Wildcards are not supported * Supports empty string for all objects in a bucket.",
         ).optional(),
       }).describe("Describes prefixes of objects to be transformed.")
@@ -447,7 +447,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/storagebatchoperations/jobs",
-  version: "2026.04.03.3",
+  version: "2026.04.04.1",
   upgrades: [
     {
       toVersion: "2026.03.31.1",
@@ -481,6 +481,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.3",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.04.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

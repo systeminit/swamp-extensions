@@ -160,24 +160,13 @@ const GlobalArgsSchema = z.object({
           "If want to analyze the Vertex Explainable AI feature attribute scores or not. If set to true, Vertex AI will log the feature attributions from explain response and do the skew/drift detection for them.",
         ).optional(),
         explanationBaseline: z.object({
-          bigquery: z.object({
-            outputUri: z.string().describe(
-              "Required. BigQuery URI to a project or table, up to 2000 characters long. When only the project is specified, the Dataset and Table is created. When the full table reference is specified, the Dataset must exist and table must not exist. Accepted forms: * BigQuery path. For example: `bq://projectId` or `bq://projectId.bqDatasetId` or `bq://projectId.bqDatasetId.bqTableId`.",
-            ).optional(),
-          }).describe("The BigQuery location for the output content.")
-            .optional(),
-          gcs: z.object({
-            outputUriPrefix: z.string().describe(
-              "Required. Google Cloud Storage URI to output directory. If the uri doesn't end with '/', a '/' will be automatically appended. The directory is created if it doesn't exist.",
-            ).optional(),
-          }).describe(
+          bigquery: z.unknown().describe(
+            "The BigQuery location for the output content.",
+          ).optional(),
+          gcs: z.unknown().describe(
             "The Google Cloud Storage location where the output is to be written to.",
           ).optional(),
-          predictionFormat: z.enum([
-            "PREDICTION_FORMAT_UNSPECIFIED",
-            "JSONL",
-            "BIGQUERY",
-          ]).describe(
+          predictionFormat: z.unknown().describe(
             "The storage format of the predictions generated BatchPrediction job.",
           ).optional(),
         }).describe(
@@ -187,35 +176,22 @@ const GlobalArgsSchema = z.object({
         "The config for integrating with Vertex Explainable AI. Only applicable if the Model has explanation_spec populated.",
       ).optional(),
       predictionDriftDetectionConfig: z.object({
-        attributionScoreDriftThresholds: z.record(
-          z.string(),
-          z.object({
-            value: z.number().describe(
-              "Specify a threshold value that can trigger the alert. If this threshold config is for feature distribution distance: 1. For categorical feature, the distribution distance is calculated by L-inifinity norm. 2. For numerical feature, the distribution distance is calculated by Jensen–Shannon divergence. Each feature must have a non-zero threshold if they need to be monitored. Otherwise no alert will be triggered for that feature.",
-            ).optional(),
-          }),
-        ).describe(
-          "Key is the feature name and value is the threshold. The threshold here is against attribution score distance between different time windows.",
-        ).optional(),
+        attributionScoreDriftThresholds: z.record(z.string(), z.unknown())
+          .describe(
+            "Key is the feature name and value is the threshold. The threshold here is against attribution score distance between different time windows.",
+          ).optional(),
         defaultDriftThreshold: z.object({
-          value: z.number().describe(
+          value: z.unknown().describe(
             "Specify a threshold value that can trigger the alert. If this threshold config is for feature distribution distance: 1. For categorical feature, the distribution distance is calculated by L-inifinity norm. 2. For numerical feature, the distribution distance is calculated by Jensen–Shannon divergence. Each feature must have a non-zero threshold if they need to be monitored. Otherwise no alert will be triggered for that feature.",
           ).optional(),
         }).describe("The config for feature monitoring threshold.").optional(),
-        driftThresholds: z.record(
-          z.string(),
-          z.object({
-            value: z.number().describe(
-              "Specify a threshold value that can trigger the alert. If this threshold config is for feature distribution distance: 1. For categorical feature, the distribution distance is calculated by L-inifinity norm. 2. For numerical feature, the distribution distance is calculated by Jensen–Shannon divergence. Each feature must have a non-zero threshold if they need to be monitored. Otherwise no alert will be triggered for that feature.",
-            ).optional(),
-          }),
-        ).describe(
+        driftThresholds: z.record(z.string(), z.unknown()).describe(
           "Key is the feature name and value is the threshold. If a feature needs to be monitored for drift, a value threshold must be configured for that feature. The threshold here is against feature distribution distance between different time windws.",
         ).optional(),
       }).describe("The config for Prediction data drift detection.").optional(),
       trainingDataset: z.object({
         bigquerySource: z.object({
-          inputUri: z.string().describe(
+          inputUri: z.unknown().describe(
             "Required. BigQuery URI to a table, up to 2000 characters long. Accepted forms: * BigQuery path. For example: `bq://projectId.bqDatasetId.bqTableId`.",
           ).optional(),
         }).describe("The BigQuery location for the input content.").optional(),
@@ -226,15 +202,15 @@ const GlobalArgsSchema = z.object({
           "The resource name of the Dataset used to train this Model.",
         ).optional(),
         gcsSource: z.object({
-          uris: z.array(z.string()).describe(
+          uris: z.unknown().describe(
             "Required. Google Cloud Storage URI(-s) to the input file(s). May contain wildcards. For more information on wildcards, see https://cloud.google.com/storage/docs/wildcards.",
           ).optional(),
         }).describe("The Google Cloud Storage location for the input content.")
           .optional(),
         loggingSamplingStrategy: z.object({
-          randomSampleConfig: z.object({
-            sampleRate: z.number().describe("Sample rate (0, 1]").optional(),
-          }).describe("Requests are randomly selected.").optional(),
+          randomSampleConfig: z.unknown().describe(
+            "Requests are randomly selected.",
+          ).optional(),
         }).describe(
           "Sampling Strategy for logging, can be for both training and prediction dataset.",
         ).optional(),
@@ -243,29 +219,16 @@ const GlobalArgsSchema = z.object({
         ).optional(),
       }).describe("Training Dataset information.").optional(),
       trainingPredictionSkewDetectionConfig: z.object({
-        attributionScoreSkewThresholds: z.record(
-          z.string(),
-          z.object({
-            value: z.number().describe(
-              "Specify a threshold value that can trigger the alert. If this threshold config is for feature distribution distance: 1. For categorical feature, the distribution distance is calculated by L-inifinity norm. 2. For numerical feature, the distribution distance is calculated by Jensen–Shannon divergence. Each feature must have a non-zero threshold if they need to be monitored. Otherwise no alert will be triggered for that feature.",
-            ).optional(),
-          }),
-        ).describe(
-          "Key is the feature name and value is the threshold. The threshold here is against attribution score distance between the training and prediction feature.",
-        ).optional(),
+        attributionScoreSkewThresholds: z.record(z.string(), z.unknown())
+          .describe(
+            "Key is the feature name and value is the threshold. The threshold here is against attribution score distance between the training and prediction feature.",
+          ).optional(),
         defaultSkewThreshold: z.object({
-          value: z.number().describe(
+          value: z.unknown().describe(
             "Specify a threshold value that can trigger the alert. If this threshold config is for feature distribution distance: 1. For categorical feature, the distribution distance is calculated by L-inifinity norm. 2. For numerical feature, the distribution distance is calculated by Jensen–Shannon divergence. Each feature must have a non-zero threshold if they need to be monitored. Otherwise no alert will be triggered for that feature.",
           ).optional(),
         }).describe("The config for feature monitoring threshold.").optional(),
-        skewThresholds: z.record(
-          z.string(),
-          z.object({
-            value: z.number().describe(
-              "Specify a threshold value that can trigger the alert. If this threshold config is for feature distribution distance: 1. For categorical feature, the distribution distance is calculated by L-inifinity norm. 2. For numerical feature, the distribution distance is calculated by Jensen–Shannon divergence. Each feature must have a non-zero threshold if they need to be monitored. Otherwise no alert will be triggered for that feature.",
-            ).optional(),
-          }),
-        ).describe(
+        skewThresholds: z.record(z.string(), z.unknown()).describe(
           "Key is the feature name and value is the threshold. If a feature needs to be monitored for skew, a value threshold must be configured for that feature. The threshold here is against feature distribution distance between the training and prediction feature.",
         ).optional(),
       }).describe(
@@ -357,42 +320,36 @@ const StateSchema = z.object({
       explanationConfig: z.object({
         enableFeatureAttributes: z.boolean(),
         explanationBaseline: z.object({
-          bigquery: z.object({
-            outputUri: z.string(),
-          }),
-          gcs: z.object({
-            outputUriPrefix: z.string(),
-          }),
-          predictionFormat: z.string(),
+          bigquery: z.unknown(),
+          gcs: z.unknown(),
+          predictionFormat: z.unknown(),
         }),
       }),
       predictionDriftDetectionConfig: z.object({
         attributionScoreDriftThresholds: z.record(z.string(), z.unknown()),
         defaultDriftThreshold: z.object({
-          value: z.number(),
+          value: z.unknown(),
         }),
         driftThresholds: z.record(z.string(), z.unknown()),
       }),
       trainingDataset: z.object({
         bigquerySource: z.object({
-          inputUri: z.string(),
+          inputUri: z.unknown(),
         }),
         dataFormat: z.string(),
         dataset: z.string(),
         gcsSource: z.object({
-          uris: z.array(z.string()),
+          uris: z.unknown(),
         }),
         loggingSamplingStrategy: z.object({
-          randomSampleConfig: z.object({
-            sampleRate: z.number(),
-          }),
+          randomSampleConfig: z.unknown(),
         }),
         targetField: z.string(),
       }),
       trainingPredictionSkewDetectionConfig: z.object({
         attributionScoreSkewThresholds: z.record(z.string(), z.unknown()),
         defaultSkewThreshold: z.object({
-          value: z.number(),
+          value: z.unknown(),
         }),
         skewThresholds: z.record(z.string(), z.unknown()),
       }),
@@ -500,24 +457,13 @@ const InputsSchema = z.object({
           "If want to analyze the Vertex Explainable AI feature attribute scores or not. If set to true, Vertex AI will log the feature attributions from explain response and do the skew/drift detection for them.",
         ).optional(),
         explanationBaseline: z.object({
-          bigquery: z.object({
-            outputUri: z.string().describe(
-              "Required. BigQuery URI to a project or table, up to 2000 characters long. When only the project is specified, the Dataset and Table is created. When the full table reference is specified, the Dataset must exist and table must not exist. Accepted forms: * BigQuery path. For example: `bq://projectId` or `bq://projectId.bqDatasetId` or `bq://projectId.bqDatasetId.bqTableId`.",
-            ).optional(),
-          }).describe("The BigQuery location for the output content.")
-            .optional(),
-          gcs: z.object({
-            outputUriPrefix: z.string().describe(
-              "Required. Google Cloud Storage URI to output directory. If the uri doesn't end with '/', a '/' will be automatically appended. The directory is created if it doesn't exist.",
-            ).optional(),
-          }).describe(
+          bigquery: z.unknown().describe(
+            "The BigQuery location for the output content.",
+          ).optional(),
+          gcs: z.unknown().describe(
             "The Google Cloud Storage location where the output is to be written to.",
           ).optional(),
-          predictionFormat: z.enum([
-            "PREDICTION_FORMAT_UNSPECIFIED",
-            "JSONL",
-            "BIGQUERY",
-          ]).describe(
+          predictionFormat: z.unknown().describe(
             "The storage format of the predictions generated BatchPrediction job.",
           ).optional(),
         }).describe(
@@ -527,35 +473,22 @@ const InputsSchema = z.object({
         "The config for integrating with Vertex Explainable AI. Only applicable if the Model has explanation_spec populated.",
       ).optional(),
       predictionDriftDetectionConfig: z.object({
-        attributionScoreDriftThresholds: z.record(
-          z.string(),
-          z.object({
-            value: z.number().describe(
-              "Specify a threshold value that can trigger the alert. If this threshold config is for feature distribution distance: 1. For categorical feature, the distribution distance is calculated by L-inifinity norm. 2. For numerical feature, the distribution distance is calculated by Jensen–Shannon divergence. Each feature must have a non-zero threshold if they need to be monitored. Otherwise no alert will be triggered for that feature.",
-            ).optional(),
-          }),
-        ).describe(
-          "Key is the feature name and value is the threshold. The threshold here is against attribution score distance between different time windows.",
-        ).optional(),
+        attributionScoreDriftThresholds: z.record(z.string(), z.unknown())
+          .describe(
+            "Key is the feature name and value is the threshold. The threshold here is against attribution score distance between different time windows.",
+          ).optional(),
         defaultDriftThreshold: z.object({
-          value: z.number().describe(
+          value: z.unknown().describe(
             "Specify a threshold value that can trigger the alert. If this threshold config is for feature distribution distance: 1. For categorical feature, the distribution distance is calculated by L-inifinity norm. 2. For numerical feature, the distribution distance is calculated by Jensen–Shannon divergence. Each feature must have a non-zero threshold if they need to be monitored. Otherwise no alert will be triggered for that feature.",
           ).optional(),
         }).describe("The config for feature monitoring threshold.").optional(),
-        driftThresholds: z.record(
-          z.string(),
-          z.object({
-            value: z.number().describe(
-              "Specify a threshold value that can trigger the alert. If this threshold config is for feature distribution distance: 1. For categorical feature, the distribution distance is calculated by L-inifinity norm. 2. For numerical feature, the distribution distance is calculated by Jensen–Shannon divergence. Each feature must have a non-zero threshold if they need to be monitored. Otherwise no alert will be triggered for that feature.",
-            ).optional(),
-          }),
-        ).describe(
+        driftThresholds: z.record(z.string(), z.unknown()).describe(
           "Key is the feature name and value is the threshold. If a feature needs to be monitored for drift, a value threshold must be configured for that feature. The threshold here is against feature distribution distance between different time windws.",
         ).optional(),
       }).describe("The config for Prediction data drift detection.").optional(),
       trainingDataset: z.object({
         bigquerySource: z.object({
-          inputUri: z.string().describe(
+          inputUri: z.unknown().describe(
             "Required. BigQuery URI to a table, up to 2000 characters long. Accepted forms: * BigQuery path. For example: `bq://projectId.bqDatasetId.bqTableId`.",
           ).optional(),
         }).describe("The BigQuery location for the input content.").optional(),
@@ -566,15 +499,15 @@ const InputsSchema = z.object({
           "The resource name of the Dataset used to train this Model.",
         ).optional(),
         gcsSource: z.object({
-          uris: z.array(z.string()).describe(
+          uris: z.unknown().describe(
             "Required. Google Cloud Storage URI(-s) to the input file(s). May contain wildcards. For more information on wildcards, see https://cloud.google.com/storage/docs/wildcards.",
           ).optional(),
         }).describe("The Google Cloud Storage location for the input content.")
           .optional(),
         loggingSamplingStrategy: z.object({
-          randomSampleConfig: z.object({
-            sampleRate: z.number().describe("Sample rate (0, 1]").optional(),
-          }).describe("Requests are randomly selected.").optional(),
+          randomSampleConfig: z.unknown().describe(
+            "Requests are randomly selected.",
+          ).optional(),
         }).describe(
           "Sampling Strategy for logging, can be for both training and prediction dataset.",
         ).optional(),
@@ -583,29 +516,16 @@ const InputsSchema = z.object({
         ).optional(),
       }).describe("Training Dataset information.").optional(),
       trainingPredictionSkewDetectionConfig: z.object({
-        attributionScoreSkewThresholds: z.record(
-          z.string(),
-          z.object({
-            value: z.number().describe(
-              "Specify a threshold value that can trigger the alert. If this threshold config is for feature distribution distance: 1. For categorical feature, the distribution distance is calculated by L-inifinity norm. 2. For numerical feature, the distribution distance is calculated by Jensen–Shannon divergence. Each feature must have a non-zero threshold if they need to be monitored. Otherwise no alert will be triggered for that feature.",
-            ).optional(),
-          }),
-        ).describe(
-          "Key is the feature name and value is the threshold. The threshold here is against attribution score distance between the training and prediction feature.",
-        ).optional(),
+        attributionScoreSkewThresholds: z.record(z.string(), z.unknown())
+          .describe(
+            "Key is the feature name and value is the threshold. The threshold here is against attribution score distance between the training and prediction feature.",
+          ).optional(),
         defaultSkewThreshold: z.object({
-          value: z.number().describe(
+          value: z.unknown().describe(
             "Specify a threshold value that can trigger the alert. If this threshold config is for feature distribution distance: 1. For categorical feature, the distribution distance is calculated by L-inifinity norm. 2. For numerical feature, the distribution distance is calculated by Jensen–Shannon divergence. Each feature must have a non-zero threshold if they need to be monitored. Otherwise no alert will be triggered for that feature.",
           ).optional(),
         }).describe("The config for feature monitoring threshold.").optional(),
-        skewThresholds: z.record(
-          z.string(),
-          z.object({
-            value: z.number().describe(
-              "Specify a threshold value that can trigger the alert. If this threshold config is for feature distribution distance: 1. For categorical feature, the distribution distance is calculated by L-inifinity norm. 2. For numerical feature, the distribution distance is calculated by Jensen–Shannon divergence. Each feature must have a non-zero threshold if they need to be monitored. Otherwise no alert will be triggered for that feature.",
-            ).optional(),
-          }),
-        ).describe(
+        skewThresholds: z.record(z.string(), z.unknown()).describe(
           "Key is the feature name and value is the threshold. If a feature needs to be monitored for skew, a value threshold must be configured for that feature. The threshold here is against feature distribution distance between the training and prediction feature.",
         ).optional(),
       }).describe(
@@ -658,7 +578,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/aiplatform/modeldeploymentmonitoringjobs",
-  version: "2026.04.03.3",
+  version: "2026.04.04.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -682,6 +602,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.3",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.04.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

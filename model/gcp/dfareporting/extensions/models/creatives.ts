@@ -464,29 +464,29 @@ const GlobalArgsSchema = z.object({
       ).optional(),
       popupWindowProperties: z.object({
         dimension: z.object({
-          height: z.number().int().describe(
+          height: z.unknown().describe(
             "Height of this size. Acceptable values are 0 to 32767, inclusive.",
           ).optional(),
-          iab: z.boolean().describe(
+          iab: z.unknown().describe(
             "IAB standard size. This is a read-only, auto-generated field.",
           ).optional(),
-          id: z.string().describe(
+          id: z.unknown().describe(
             "ID of this size. This is a read-only, auto-generated field.",
           ).optional(),
-          kind: z.string().describe(
+          kind: z.unknown().describe(
             'Identifies what kind of resource this is. Value: the fixed string "dfareporting#size".',
           ).optional(),
-          width: z.number().int().describe(
+          width: z.unknown().describe(
             "Width of this size. Acceptable values are 0 to 32767, inclusive.",
           ).optional(),
         }).describe(
           "Represents the dimensions of ads, placements, creatives, or creative assets.",
         ).optional(),
         offset: z.object({
-          left: z.number().int().describe(
+          left: z.unknown().describe(
             "Offset distance from left side of an asset or a window.",
           ).optional(),
-          top: z.number().int().describe(
+          top: z.unknown().describe(
             "Offset distance from top side of an asset or a window.",
           ).optional(),
         }).describe("Offset Position.").optional(),
@@ -1430,15 +1430,15 @@ const StateSchema = z.object({
       id: z.string(),
       popupWindowProperties: z.object({
         dimension: z.object({
-          height: z.number(),
-          iab: z.boolean(),
-          id: z.string(),
-          kind: z.string(),
-          width: z.number(),
+          height: z.unknown(),
+          iab: z.unknown(),
+          id: z.unknown(),
+          kind: z.unknown(),
+          width: z.unknown(),
         }),
         offset: z.object({
-          left: z.number(),
-          top: z.number(),
+          left: z.unknown(),
+          top: z.unknown(),
         }),
         positionType: z.string(),
         showAddressBar: z.boolean(),
@@ -2093,29 +2093,29 @@ const InputsSchema = z.object({
       ).optional(),
       popupWindowProperties: z.object({
         dimension: z.object({
-          height: z.number().int().describe(
+          height: z.unknown().describe(
             "Height of this size. Acceptable values are 0 to 32767, inclusive.",
           ).optional(),
-          iab: z.boolean().describe(
+          iab: z.unknown().describe(
             "IAB standard size. This is a read-only, auto-generated field.",
           ).optional(),
-          id: z.string().describe(
+          id: z.unknown().describe(
             "ID of this size. This is a read-only, auto-generated field.",
           ).optional(),
-          kind: z.string().describe(
+          kind: z.unknown().describe(
             'Identifies what kind of resource this is. Value: the fixed string "dfareporting#size".',
           ).optional(),
-          width: z.number().int().describe(
+          width: z.unknown().describe(
             "Width of this size. Acceptable values are 0 to 32767, inclusive.",
           ).optional(),
         }).describe(
           "Represents the dimensions of ads, placements, creatives, or creative assets.",
         ).optional(),
         offset: z.object({
-          left: z.number().int().describe(
+          left: z.unknown().describe(
             "Offset distance from left side of an asset or a window.",
           ).optional(),
-          top: z.number().int().describe(
+          top: z.unknown().describe(
             "Offset distance from top side of an asset or a window.",
           ).optional(),
         }).describe("Offset Position.").optional(),
@@ -2950,7 +2950,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/dfareporting/creatives",
-  version: "2026.04.03.3",
+  version: "2026.04.04.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -2974,6 +2974,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.3",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.04.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

@@ -191,7 +191,7 @@ const GlobalArgsSchema = z.object({
       "VIRTIO_SCSI_MULTIQUEUE",
       "WINDOWS",
     ]).describe(
-      "The ID of a supported feature. To add multiple values, use commas to separate values. Set to one or more of the following values: - VIRTIO_SCSI_MULTIQUEUE - WINDOWS - MULTI_IP_SUBNET - UEFI_COMPATIBLE - GVNIC - SEV_CAPABLE - SUSPEND_RESUME_COMPATIBLE - SEV_LIVE_MIGRATABLE_V2 - SEV_SNP_CAPABLE - TDX_CAPABLE - IDPF - SNP_SVSM_CAPABLE For more information, see Enabling guest operating system features.",
+      "The ID of a supported feature. To add multiple values, use commas to separate values. Set to one or more of the following values: - VIRTIO_SCSI_MULTIQUEUE - WINDOWS - MULTI_IP_SUBNET - UEFI_COMPATIBLE - GVNIC - SEV_CAPABLE - SUSPEND_RESUME_COMPATIBLE - SEV_LIVE_MIGRATABLE_V2 - SEV_SNP_CAPABLE - TDX_CAPABLE - IDPF - SNP_SVSM_CAPABLE - CCA_CAPABLE For more information, see Enabling guest operating system features.",
     ).optional(),
   })).describe(
     "A list of features to enable on the guest operating system. Applicable only for bootable images. Read Enabling guest operating system features to see a list of available options.",
@@ -477,7 +477,7 @@ const InputsSchema = z.object({
       "VIRTIO_SCSI_MULTIQUEUE",
       "WINDOWS",
     ]).describe(
-      "The ID of a supported feature. To add multiple values, use commas to separate values. Set to one or more of the following values: - VIRTIO_SCSI_MULTIQUEUE - WINDOWS - MULTI_IP_SUBNET - UEFI_COMPATIBLE - GVNIC - SEV_CAPABLE - SUSPEND_RESUME_COMPATIBLE - SEV_LIVE_MIGRATABLE_V2 - SEV_SNP_CAPABLE - TDX_CAPABLE - IDPF - SNP_SVSM_CAPABLE For more information, see Enabling guest operating system features.",
+      "The ID of a supported feature. To add multiple values, use commas to separate values. Set to one or more of the following values: - VIRTIO_SCSI_MULTIQUEUE - WINDOWS - MULTI_IP_SUBNET - UEFI_COMPATIBLE - GVNIC - SEV_CAPABLE - SUSPEND_RESUME_COMPATIBLE - SEV_LIVE_MIGRATABLE_V2 - SEV_SNP_CAPABLE - TDX_CAPABLE - IDPF - SNP_SVSM_CAPABLE - CCA_CAPABLE For more information, see Enabling guest operating system features.",
     ).optional(),
   })).describe(
     "A list of features to enable on the guest operating system. Applicable only for bootable images. Read Enabling guest operating system features to see a list of available options.",
@@ -615,7 +615,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/compute/regiondisks",
-  version: "2026.04.03.3",
+  version: "2026.04.04.1",
   upgrades: [
     {
       toVersion: "2026.03.31.1",
@@ -649,6 +649,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.3",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.04.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },
@@ -1081,6 +1086,8 @@ export const model = {
     bulk_insert: {
       description: "bulk insert",
       arguments: z.object({
+        instantSnapshotGroupParameters: z.any().optional(),
+        snapshotGroupParameters: z.any().optional(),
         sourceConsistencyGroupPolicy: z.any().optional(),
       }),
       execute: async (args: Record<string, unknown>, context: any) => {
@@ -1089,6 +1096,13 @@ export const model = {
         const params: Record<string, string> = { project: projectId };
         if (g["region"] !== undefined) params["region"] = String(g["region"]);
         const body: Record<string, unknown> = {};
+        if (args["instantSnapshotGroupParameters"] !== undefined) {
+          body["instantSnapshotGroupParameters"] =
+            args["instantSnapshotGroupParameters"];
+        }
+        if (args["snapshotGroupParameters"] !== undefined) {
+          body["snapshotGroupParameters"] = args["snapshotGroupParameters"];
+        }
         if (args["sourceConsistencyGroupPolicy"] !== undefined) {
           body["sourceConsistencyGroupPolicy"] =
             args["sourceConsistencyGroupPolicy"];
@@ -1135,10 +1149,13 @@ export const model = {
         locationHint: z.any().optional(),
         name: z.any().optional(),
         params: z.any().optional(),
+        region: z.any().optional(),
         satisfiesPzi: z.any().optional(),
         satisfiesPzs: z.any().optional(),
         selfLink: z.any().optional(),
         snapshotEncryptionKey: z.any().optional(),
+        snapshotGroupId: z.any().optional(),
+        snapshotGroupName: z.any().optional(),
         snapshotType: z.any().optional(),
         sourceDisk: z.any().optional(),
         sourceDiskEncryptionKey: z.any().optional(),
@@ -1222,6 +1239,7 @@ export const model = {
         }
         if (args["name"] !== undefined) body["name"] = args["name"];
         if (args["params"] !== undefined) body["params"] = args["params"];
+        if (args["region"] !== undefined) body["region"] = args["region"];
         if (args["satisfiesPzi"] !== undefined) {
           body["satisfiesPzi"] = args["satisfiesPzi"];
         }
@@ -1231,6 +1249,12 @@ export const model = {
         if (args["selfLink"] !== undefined) body["selfLink"] = args["selfLink"];
         if (args["snapshotEncryptionKey"] !== undefined) {
           body["snapshotEncryptionKey"] = args["snapshotEncryptionKey"];
+        }
+        if (args["snapshotGroupId"] !== undefined) {
+          body["snapshotGroupId"] = args["snapshotGroupId"];
+        }
+        if (args["snapshotGroupName"] !== undefined) {
+          body["snapshotGroupName"] = args["snapshotGroupName"];
         }
         if (args["snapshotType"] !== undefined) {
           body["snapshotType"] = args["snapshotType"];
@@ -1509,6 +1533,55 @@ export const model = {
             "httpMethod": "POST",
             "parameterOrder": ["project", "region"],
             "parameters": {
+              "project": { "location": "path", "required": true },
+              "region": { "location": "path", "required": true },
+              "requestId": { "location": "query" },
+            },
+          },
+          params,
+          body,
+        );
+        return { result };
+      },
+    },
+    update_kms_key: {
+      description: "update kms key",
+      arguments: z.object({
+        kmsKeyName: z.any().optional(),
+      }),
+      execute: async (args: Record<string, unknown>, context: any) => {
+        const g = context.globalArgs;
+        const projectId = await getProjectId();
+        const params: Record<string, string> = { project: projectId };
+        if (g["region"] !== undefined) params["region"] = String(g["region"]);
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          (g.name?.toString() ?? "current").replace(/[\/\\]/g, "_").replace(
+            /\.\./g,
+            "_",
+          ).replace(/\0/g, ""),
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        params["disk"] = existing["name"]?.toString() ??
+          g["name"]?.toString() ?? "";
+        const body: Record<string, unknown> = {};
+        if (args["kmsKeyName"] !== undefined) {
+          body["kmsKeyName"] = args["kmsKeyName"];
+        }
+        const result = await createResource(
+          BASE_URL,
+          {
+            "id": "compute.regionDisks.updateKmsKey",
+            "path":
+              "projects/{project}/regions/{region}/disks/{disk}/updateKmsKey",
+            "httpMethod": "POST",
+            "parameterOrder": ["project", "region", "disk"],
+            "parameters": {
+              "disk": { "location": "path", "required": true },
               "project": { "location": "path", "required": true },
               "region": { "location": "path", "required": true },
               "requestId": { "location": "query" },

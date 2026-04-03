@@ -106,7 +106,7 @@ const GlobalArgsSchema = z.object({
       displayName: z.string().describe("User defined name for the type.")
         .optional(),
       enumValues: z.object({
-        values: z.array(z.string()).describe(
+        values: z.array(z.unknown()).describe(
           "The individual values that this enum values type can include.",
         ).optional(),
       }).describe("Defines the a list of enum values.").optional(),
@@ -114,27 +114,18 @@ const GlobalArgsSchema = z.object({
         'Name of the type. It must be unique within the schema file and cannot be a "Common Type". The following naming conventions are used: - Use `snake_casing`. - Name matching is case-sensitive. - Maximum 64 characters. - Must start with a letter. - Allowed characters: ASCII letters `[a-z0-9_-]`. (For backward compatibility, internal infrastructure and tooling can handle any ASCII character.) - The `/` is sometimes used to denote a property of a type. For example `line_item/amount`. This convention is deprecated, but will still be honored for backward compatibility.',
       ).optional(),
       properties: z.array(z.object({
-        displayName: z.string().describe("User defined name for the property.")
+        displayName: z.unknown().describe("User defined name for the property.")
           .optional(),
-        method: z.enum([
-          "METHOD_UNSPECIFIED",
-          "EXTRACT",
-          "DERIVE",
-          "RELAXED_EXTRACT",
-        ]).describe("Specifies how the entity's value is obtained.").optional(),
-        name: z.string().describe(
+        method: z.unknown().describe(
+          "Specifies how the entity's value is obtained.",
+        ).optional(),
+        name: z.unknown().describe(
           "The name of the property. Follows the same guidelines as the EntityType name.",
         ).optional(),
-        occurrenceType: z.enum([
-          "OCCURRENCE_TYPE_UNSPECIFIED",
-          "OPTIONAL_ONCE",
-          "OPTIONAL_MULTIPLE",
-          "REQUIRED_ONCE",
-          "REQUIRED_MULTIPLE",
-        ]).describe(
+        occurrenceType: z.unknown().describe(
           "Occurrence type limits the number of instances an entity type appears in the document.",
         ).optional(),
-        valueType: z.string().describe(
+        valueType: z.unknown().describe(
           "A reference to the value type of the property. This type is subject to the same conventions as the `Entity.base_types` field.",
         ).optional(),
       })).describe(
@@ -176,15 +167,15 @@ const StateSchema = z.object({
       baseTypes: z.array(z.string()),
       displayName: z.string(),
       enumValues: z.object({
-        values: z.array(z.string()),
+        values: z.array(z.unknown()),
       }),
       name: z.string(),
       properties: z.array(z.object({
-        displayName: z.string(),
-        method: z.string(),
-        name: z.string(),
-        occurrenceType: z.string(),
-        valueType: z.string(),
+        displayName: z.unknown(),
+        method: z.unknown(),
+        name: z.unknown(),
+        occurrenceType: z.unknown(),
+        valueType: z.unknown(),
       })),
     })),
     metadata: z.object({
@@ -221,7 +212,7 @@ const InputsSchema = z.object({
       displayName: z.string().describe("User defined name for the type.")
         .optional(),
       enumValues: z.object({
-        values: z.array(z.string()).describe(
+        values: z.array(z.unknown()).describe(
           "The individual values that this enum values type can include.",
         ).optional(),
       }).describe("Defines the a list of enum values.").optional(),
@@ -229,27 +220,18 @@ const InputsSchema = z.object({
         'Name of the type. It must be unique within the schema file and cannot be a "Common Type". The following naming conventions are used: - Use `snake_casing`. - Name matching is case-sensitive. - Maximum 64 characters. - Must start with a letter. - Allowed characters: ASCII letters `[a-z0-9_-]`. (For backward compatibility, internal infrastructure and tooling can handle any ASCII character.) - The `/` is sometimes used to denote a property of a type. For example `line_item/amount`. This convention is deprecated, but will still be honored for backward compatibility.',
       ).optional(),
       properties: z.array(z.object({
-        displayName: z.string().describe("User defined name for the property.")
+        displayName: z.unknown().describe("User defined name for the property.")
           .optional(),
-        method: z.enum([
-          "METHOD_UNSPECIFIED",
-          "EXTRACT",
-          "DERIVE",
-          "RELAXED_EXTRACT",
-        ]).describe("Specifies how the entity's value is obtained.").optional(),
-        name: z.string().describe(
+        method: z.unknown().describe(
+          "Specifies how the entity's value is obtained.",
+        ).optional(),
+        name: z.unknown().describe(
           "The name of the property. Follows the same guidelines as the EntityType name.",
         ).optional(),
-        occurrenceType: z.enum([
-          "OCCURRENCE_TYPE_UNSPECIFIED",
-          "OPTIONAL_ONCE",
-          "OPTIONAL_MULTIPLE",
-          "REQUIRED_ONCE",
-          "REQUIRED_MULTIPLE",
-        ]).describe(
+        occurrenceType: z.unknown().describe(
           "Occurrence type limits the number of instances an entity type appears in the document.",
         ).optional(),
-        valueType: z.string().describe(
+        valueType: z.unknown().describe(
           "A reference to the value type of the property. This type is subject to the same conventions as the `Entity.base_types` field.",
         ).optional(),
       })).describe(
@@ -280,7 +262,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/documentai/schemas-schemaversions",
-  version: "2026.04.03.3",
+  version: "2026.04.04.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -304,6 +286,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.3",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.04.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

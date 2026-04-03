@@ -101,31 +101,31 @@ const GlobalArgsSchema = z.object({
   ).optional(),
   rules: z.array(z.object({
     destinations: z.array(z.object({
-      hosts: z.array(z.string()).describe(
+      hosts: z.array(z.unknown()).describe(
         'Required. List of host names to match. Matched against the ":authority" header in http requests. At least one host should match. Each host can be an exact match, or a prefix match (example "mydomain.*") or a suffix match (example "*.myorg.com") or a presence (any) match "*".',
       ).optional(),
       httpHeaderMatch: z.object({
-        headerName: z.string().describe(
+        headerName: z.unknown().describe(
           'Required. The name of the HTTP header to match. For matching against the HTTP request\'s authority, use a headerMatch with the header name ":authority". For matching a request\'s method, use the headerName ":method".',
         ).optional(),
-        regexMatch: z.string().describe(
+        regexMatch: z.unknown().describe(
           "Required. The value of the header must match the regular expression specified in regexMatch. For regular expression grammar, please see: en.cppreference.com/w/cpp/regex/ecmascript For matching against a port specified in the HTTP request, use a headerMatch with headerName set to Host and a regular expression that satisfies the RFC2616 Host header's port specifier.",
         ).optional(),
       }).describe("Specification of HTTP header match attributes.").optional(),
-      methods: z.array(z.string()).describe(
+      methods: z.array(z.unknown()).describe(
         "Optional. A list of HTTP methods to match. At least one method should match. Should not be set for gRPC services.",
       ).optional(),
-      ports: z.array(z.number().int()).describe(
+      ports: z.array(z.unknown()).describe(
         "Required. List of destination ports to match. At least one port should match.",
       ).optional(),
     })).describe(
       "Optional. List of attributes for the traffic destination. All of the destinations must match. A destination is a match if a request matches all the specified hosts, ports, methods and headers. If not set, the action specified in the 'action' field will be applied without any rule checks for the destination.",
     ).optional(),
     sources: z.array(z.object({
-      ipBlocks: z.array(z.string()).describe(
+      ipBlocks: z.array(z.unknown()).describe(
         'Optional. List of CIDR ranges to match based on source IP address. At least one IP block should match. Single IP (e.g., "1.2.3.4") and CIDR (e.g., "1.2.3.0/24") are supported. Authorization based on source IP alone should be avoided. The IP addresses of any load balancers or proxies should be considered untrusted.',
       ).optional(),
-      principals: z.array(z.string()).describe(
+      principals: z.array(z.unknown()).describe(
         'Optional. List of peer identities to match for authorization. At least one principal should match. Each peer can be an exact match, or a prefix match (example, "namespace/*") or a suffix match (example, "*/service-account") or a presence match "*". Authorization based on the principal name without certificate validation (configured by ServerTlsPolicy resource) is considered insecure.',
       ).optional(),
     })).describe(
@@ -150,17 +150,17 @@ const StateSchema = z.object({
   name: z.string(),
   rules: z.array(z.object({
     destinations: z.array(z.object({
-      hosts: z.array(z.string()),
+      hosts: z.array(z.unknown()),
       httpHeaderMatch: z.object({
-        headerName: z.string(),
-        regexMatch: z.string(),
+        headerName: z.unknown(),
+        regexMatch: z.unknown(),
       }),
-      methods: z.array(z.string()),
-      ports: z.array(z.number()),
+      methods: z.array(z.unknown()),
+      ports: z.array(z.unknown()),
     })),
     sources: z.array(z.object({
-      ipBlocks: z.array(z.string()),
-      principals: z.array(z.string()),
+      ipBlocks: z.array(z.unknown()),
+      principals: z.array(z.unknown()),
     })),
   })).optional(),
   updateTime: z.string().optional(),
@@ -183,31 +183,31 @@ const InputsSchema = z.object({
   ).optional(),
   rules: z.array(z.object({
     destinations: z.array(z.object({
-      hosts: z.array(z.string()).describe(
+      hosts: z.array(z.unknown()).describe(
         'Required. List of host names to match. Matched against the ":authority" header in http requests. At least one host should match. Each host can be an exact match, or a prefix match (example "mydomain.*") or a suffix match (example "*.myorg.com") or a presence (any) match "*".',
       ).optional(),
       httpHeaderMatch: z.object({
-        headerName: z.string().describe(
+        headerName: z.unknown().describe(
           'Required. The name of the HTTP header to match. For matching against the HTTP request\'s authority, use a headerMatch with the header name ":authority". For matching a request\'s method, use the headerName ":method".',
         ).optional(),
-        regexMatch: z.string().describe(
+        regexMatch: z.unknown().describe(
           "Required. The value of the header must match the regular expression specified in regexMatch. For regular expression grammar, please see: en.cppreference.com/w/cpp/regex/ecmascript For matching against a port specified in the HTTP request, use a headerMatch with headerName set to Host and a regular expression that satisfies the RFC2616 Host header's port specifier.",
         ).optional(),
       }).describe("Specification of HTTP header match attributes.").optional(),
-      methods: z.array(z.string()).describe(
+      methods: z.array(z.unknown()).describe(
         "Optional. A list of HTTP methods to match. At least one method should match. Should not be set for gRPC services.",
       ).optional(),
-      ports: z.array(z.number().int()).describe(
+      ports: z.array(z.unknown()).describe(
         "Required. List of destination ports to match. At least one port should match.",
       ).optional(),
     })).describe(
       "Optional. List of attributes for the traffic destination. All of the destinations must match. A destination is a match if a request matches all the specified hosts, ports, methods and headers. If not set, the action specified in the 'action' field will be applied without any rule checks for the destination.",
     ).optional(),
     sources: z.array(z.object({
-      ipBlocks: z.array(z.string()).describe(
+      ipBlocks: z.array(z.unknown()).describe(
         'Optional. List of CIDR ranges to match based on source IP address. At least one IP block should match. Single IP (e.g., "1.2.3.4") and CIDR (e.g., "1.2.3.0/24") are supported. Authorization based on source IP alone should be avoided. The IP addresses of any load balancers or proxies should be considered untrusted.',
       ).optional(),
-      principals: z.array(z.string()).describe(
+      principals: z.array(z.unknown()).describe(
         'Optional. List of peer identities to match for authorization. At least one principal should match. Each peer can be an exact match, or a prefix match (example, "namespace/*") or a suffix match (example, "*/service-account") or a presence match "*". Authorization based on the principal name without certificate validation (configured by ServerTlsPolicy resource) is considered insecure.',
       ).optional(),
     })).describe(
@@ -226,7 +226,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/networksecurity/authorizationpolicies",
-  version: "2026.04.03.3",
+  version: "2026.04.04.1",
   upgrades: [
     {
       toVersion: "2026.04.01.2",
@@ -250,6 +250,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.3",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.04.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

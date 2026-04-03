@@ -660,10 +660,10 @@ const GlobalArgsSchema = z.object({
     ]).describe("Device's security posture value.").optional(),
     postureDetails: z.array(z.object({
       advice: z.array(z.object({
-        defaultMessage: z.string().describe(
+        defaultMessage: z.unknown().describe(
           "The default message displayed if no localized message is specified or the user's locale doesn't match with any of the localized messages. A default message must be provided if any localized messages are provided.",
         ).optional(),
-        localizedMessages: z.record(z.string(), z.string()).describe(
+        localizedMessages: z.unknown().describe(
           "A map containing pairs, where locale is a well-formed BCP 47 language (https://www.w3.org/International/articles/language-tags/) code, such as en-US, es-ES, or fr.",
         ).optional(),
       })).describe(
@@ -931,8 +931,8 @@ const StateSchema = z.object({
     devicePosture: z.string(),
     postureDetails: z.array(z.object({
       advice: z.array(z.object({
-        defaultMessage: z.string(),
-        localizedMessages: z.record(z.string(), z.unknown()),
+        defaultMessage: z.unknown(),
+        localizedMessages: z.unknown(),
       })),
       securityRisk: z.string(),
     })),
@@ -1549,10 +1549,10 @@ const InputsSchema = z.object({
     ]).describe("Device's security posture value.").optional(),
     postureDetails: z.array(z.object({
       advice: z.array(z.object({
-        defaultMessage: z.string().describe(
+        defaultMessage: z.unknown().describe(
           "The default message displayed if no localized message is specified or the user's locale doesn't match with any of the localized messages. A default message must be provided if any localized messages are provided.",
         ).optional(),
-        localizedMessages: z.record(z.string(), z.string()).describe(
+        localizedMessages: z.unknown().describe(
           "A map containing pairs, where locale is a well-formed BCP 47 language (https://www.w3.org/International/articles/language-tags/) code, such as en-US, es-ES, or fr.",
         ).optional(),
       })).describe(
@@ -1647,7 +1647,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/androidmanagement/enterprises-devices",
-  version: "2026.04.03.3",
+  version: "2026.04.04.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -1671,6 +1671,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.3",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.04.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

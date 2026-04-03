@@ -96,29 +96,22 @@ const StateSchema = z.object({
       })),
       schemaRelationships: z.array(z.object({
         leftSchemaPaths: z.object({
-          paths: z.array(z.string()),
-          tableFqn: z.string(),
+          paths: z.unknown(),
+          tableFqn: z.unknown(),
         }),
         rightSchemaPaths: z.object({
-          paths: z.array(z.string()),
-          tableFqn: z.string(),
+          paths: z.unknown(),
+          tableFqn: z.unknown(),
         }),
-        sources: z.array(z.string()),
+        sources: z.array(z.unknown()),
         type: z.string(),
       })),
       tableResults: z.array(z.object({
         name: z.string(),
         overview: z.string(),
-        queries: z.array(z.object({
-          description: z.string(),
-          sql: z.string(),
-        })),
+        queries: z.array(z.unknown()),
         schema: z.object({
-          fields: z.array(z.object({
-            description: z.string(),
-            fields: z.array(z.string()),
-            name: z.string(),
-          })),
+          fields: z.unknown(),
         }),
       })),
     }),
@@ -131,9 +124,9 @@ const StateSchema = z.object({
       })),
       schema: z.object({
         fields: z.array(z.object({
-          description: z.string(),
-          fields: z.array(z.string()),
-          name: z.string(),
+          description: z.unknown(),
+          fields: z.unknown(),
+          name: z.unknown(),
         })),
       }),
     }),
@@ -157,32 +150,12 @@ const StateSchema = z.object({
         mode: z.string(),
         name: z.string(),
         profile: z.object({
-          distinctRatio: z.number(),
-          doubleProfile: z.object({
-            average: z.number(),
-            max: z.number(),
-            min: z.number(),
-            quartiles: z.array(z.number()),
-            standardDeviation: z.number(),
-          }),
-          integerProfile: z.object({
-            average: z.number(),
-            max: z.string(),
-            min: z.string(),
-            quartiles: z.array(z.string()),
-            standardDeviation: z.number(),
-          }),
-          nullRatio: z.number(),
-          stringProfile: z.object({
-            averageLength: z.number(),
-            maxLength: z.string(),
-            minLength: z.string(),
-          }),
-          topNValues: z.array(z.object({
-            count: z.string(),
-            ratio: z.number(),
-            value: z.string(),
-          })),
+          distinctRatio: z.unknown(),
+          doubleProfile: z.unknown(),
+          integerProfile: z.unknown(),
+          nullRatio: z.unknown(),
+          stringProfile: z.unknown(),
+          topNValues: z.unknown(),
         }),
         type: z.string(),
       })),
@@ -225,11 +198,9 @@ const StateSchema = z.object({
     columns: z.array(z.object({
       column: z.string(),
       dimensions: z.array(z.object({
-        dimension: z.object({
-          name: z.string(),
-        }),
-        passed: z.boolean(),
-        score: z.number(),
+        dimension: z.unknown(),
+        passed: z.unknown(),
+        score: z.unknown(),
       })),
       passed: z.boolean(),
       score: z.number(),
@@ -252,11 +223,7 @@ const StateSchema = z.object({
     rules: z.array(z.object({
       assertionRowCount: z.string(),
       debugQueriesResultSets: z.array(z.object({
-        results: z.array(z.object({
-          name: z.string(),
-          type: z.string(),
-          value: z.string(),
-        })),
+        results: z.unknown(),
       })),
       evaluatedCount: z.string(),
       failingRowsQuery: z.string(),
@@ -266,43 +233,40 @@ const StateSchema = z.object({
       passedCount: z.string(),
       rule: z.object({
         column: z.string(),
-        debugQueries: z.array(z.object({
-          description: z.string(),
-          sqlStatement: z.string(),
-        })),
+        debugQueries: z.array(z.unknown()),
         description: z.string(),
         dimension: z.string(),
         ignoreNull: z.boolean(),
         name: z.string(),
         nonNullExpectation: z.object({}),
         rangeExpectation: z.object({
-          maxValue: z.string(),
-          minValue: z.string(),
-          strictMaxEnabled: z.boolean(),
-          strictMinEnabled: z.boolean(),
+          maxValue: z.unknown(),
+          minValue: z.unknown(),
+          strictMaxEnabled: z.unknown(),
+          strictMinEnabled: z.unknown(),
         }),
         regexExpectation: z.object({
-          regex: z.string(),
+          regex: z.unknown(),
         }),
         rowConditionExpectation: z.object({
-          sqlExpression: z.string(),
+          sqlExpression: z.unknown(),
         }),
         setExpectation: z.object({
-          values: z.array(z.string()),
+          values: z.unknown(),
         }),
         sqlAssertion: z.object({
-          sqlStatement: z.string(),
+          sqlStatement: z.unknown(),
         }),
         statisticRangeExpectation: z.object({
-          maxValue: z.string(),
-          minValue: z.string(),
-          statistic: z.string(),
-          strictMaxEnabled: z.boolean(),
-          strictMinEnabled: z.boolean(),
+          maxValue: z.unknown(),
+          minValue: z.unknown(),
+          statistic: z.unknown(),
+          strictMaxEnabled: z.unknown(),
+          strictMinEnabled: z.unknown(),
         }),
         suspended: z.boolean(),
         tableConditionExpectation: z.object({
-          sqlExpression: z.string(),
+          sqlExpression: z.unknown(),
         }),
         threshold: z.number(),
         uniquenessExpectation: z.object({}),
@@ -327,7 +291,7 @@ const StateSchema = z.object({
         jobEndTrigger: z.object({}),
         jobFailureTrigger: z.object({}),
         recipients: z.object({
-          emails: z.array(z.string()),
+          emails: z.array(z.unknown()),
         }),
         scoreThresholdTrigger: z.object({
           scoreThreshold: z.number(),
@@ -338,8 +302,8 @@ const StateSchema = z.object({
     rules: z.array(z.object({
       column: z.string(),
       debugQueries: z.array(z.object({
-        description: z.string(),
-        sqlStatement: z.string(),
+        description: z.unknown(),
+        sqlStatement: z.unknown(),
       })),
       description: z.string(),
       dimension: z.string(),
@@ -359,7 +323,7 @@ const StateSchema = z.object({
         sqlExpression: z.string(),
       }),
       setExpectation: z.object({
-        values: z.array(z.string()),
+        values: z.array(z.unknown()),
       }),
       sqlAssertion: z.object({
         sqlStatement: z.string(),
@@ -400,7 +364,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/dataplex/datascans-jobs",
-  version: "2026.04.03.3",
+  version: "2026.04.04.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -434,6 +398,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.3",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.04.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

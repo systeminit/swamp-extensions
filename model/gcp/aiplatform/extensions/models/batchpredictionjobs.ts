@@ -161,7 +161,7 @@ const GlobalArgsSchema = z.object({
           denseShapeTensorName: z.string().describe(
             "Specifies the shape of the values of the input if the input is a sparse representation. Refer to Tensorflow documentation for more details: https://www.tensorflow.org/api_docs/python/tf/sparse/SparseTensor.",
           ).optional(),
-          encodedBaselines: z.array(z.string()).describe(
+          encodedBaselines: z.array(z.unknown()).describe(
             "A list of baselines for the encoded tensor. The shape of each baseline should match the shape of the encoded tensor. If a scalar is provided, Vertex AI broadcasts to the same shape as the encoded tensor.",
           ).optional(),
           encodedTensorName: z.string().describe(
@@ -179,16 +179,16 @@ const GlobalArgsSchema = z.object({
             "Defines how the feature is encoded into the input tensor. Defaults to IDENTITY.",
           ).optional(),
           featureValueDomain: z.object({
-            maxValue: z.number().describe(
+            maxValue: z.unknown().describe(
               "The maximum permissible value for this feature.",
             ).optional(),
-            minValue: z.number().describe(
+            minValue: z.unknown().describe(
               "The minimum permissible value for this feature.",
             ).optional(),
-            originalMean: z.number().describe(
+            originalMean: z.unknown().describe(
               "If this input feature has been normalized to a mean value of 0, the original_mean specifies the mean value of the domain prior to normalization.",
             ).optional(),
-            originalStddev: z.number().describe(
+            originalStddev: z.unknown().describe(
               "If this input feature has been normalized to a standard deviation of 1.0, the original_stddev specifies the standard deviation of the domain prior to normalization.",
             ).optional(),
           }).describe(
@@ -197,13 +197,13 @@ const GlobalArgsSchema = z.object({
           groupName: z.string().describe(
             "Name of the group that the input belongs to. Features with the same group name will be treated as one feature when computing attributions. Features grouped together can have different shapes in value. If provided, there will be one single attribution generated in Attribution.feature_attributions, keyed by the group name.",
           ).optional(),
-          indexFeatureMapping: z.array(z.string()).describe(
+          indexFeatureMapping: z.array(z.unknown()).describe(
             "A list of feature names for each index in the input tensor. Required when the input InputMetadata.encoding is BAG_OF_FEATURES, BAG_OF_FEATURES_SPARSE, INDICATOR.",
           ).optional(),
           indicesTensorName: z.string().describe(
             "Specifies the index of the values of the input tensor. Required when the input tensor is a sparse representation. Refer to Tensorflow documentation for more details: https://www.tensorflow.org/api_docs/python/tf/sparse/SparseTensor.",
           ).optional(),
-          inputBaselines: z.array(z.string()).describe(
+          inputBaselines: z.array(z.unknown()).describe(
             "Baseline inputs for this feature. If no baseline is specified, Vertex AI chooses the baseline for this feature. If multiple baselines are specified, Vertex AI returns the average attributions across them in Attribution.feature_attributions. For Vertex AI-provided Tensorflow images (both 1.x and 2.x), the shape of each baseline must match the shape of the input tensor. If a scalar is provided, we broadcast to the same shape as the input tensor. For custom images, the element of the baselines must be in the same format as the feature's input in the instance[]. The schema of any single instance may be specified via Endpoint's DeployedModels' Model's PredictSchemata's instance_schema_uri.",
           ).optional(),
           inputTensorName: z.string().describe(
@@ -213,41 +213,22 @@ const GlobalArgsSchema = z.object({
             "Modality of the feature. Valid values are: numeric, image. Defaults to numeric.",
           ).optional(),
           visualization: z.object({
-            clipPercentLowerbound: z.number().describe(
+            clipPercentLowerbound: z.unknown().describe(
               "Excludes attributions below the specified percentile, from the highlighted areas. Defaults to 62.",
             ).optional(),
-            clipPercentUpperbound: z.number().describe(
+            clipPercentUpperbound: z.unknown().describe(
               "Excludes attributions above the specified percentile from the highlighted areas. Using the clip_percent_upperbound and clip_percent_lowerbound together can be useful for filtering out noise and making it easier to see areas of strong attribution. Defaults to 99.9.",
             ).optional(),
-            colorMap: z.enum([
-              "COLOR_MAP_UNSPECIFIED",
-              "PINK_GREEN",
-              "VIRIDIS",
-              "RED",
-              "GREEN",
-              "RED_GREEN",
-              "PINK_WHITE_GREEN",
-            ]).describe(
+            colorMap: z.unknown().describe(
               "The color scheme used for the highlighted areas. Defaults to PINK_GREEN for Integrated Gradients attribution, which shows positive attributions in green and negative in pink. Defaults to VIRIDIS for XRAI attribution, which highlights the most influential regions in yellow and the least influential in blue.",
             ).optional(),
-            overlayType: z.enum([
-              "OVERLAY_TYPE_UNSPECIFIED",
-              "NONE",
-              "ORIGINAL",
-              "GRAYSCALE",
-              "MASK_BLACK",
-            ]).describe(
+            overlayType: z.unknown().describe(
               "How the original image is displayed in the visualization. Adjusting the overlay can help increase visual clarity if the original image makes it difficult to view the visualization. Defaults to NONE.",
             ).optional(),
-            polarity: z.enum([
-              "POLARITY_UNSPECIFIED",
-              "POSITIVE",
-              "NEGATIVE",
-              "BOTH",
-            ]).describe(
+            polarity: z.unknown().describe(
               "Whether to only highlight pixels with positive contributions, negative or both. Defaults to POSITIVE.",
             ).optional(),
-            type: z.enum(["TYPE_UNSPECIFIED", "PIXELS", "OUTLINES"]).describe(
+            type: z.unknown().describe(
               "Type of the image visualization. Only applicable to Integrated Gradients attribution. OUTLINES shows regions of attribution, while PIXELS shows per-pixel attribution. Defaults to OUTLINES.",
             ).optional(),
           }).describe("Visualization configurations for image explanation.")
@@ -285,7 +266,7 @@ const GlobalArgsSchema = z.object({
             "The format in which instances are given, if not specified, assume it's JSONL format. Currently only JSONL format is supported.",
           ).optional(),
           gcsSource: z.object({
-            uris: z.array(z.string()).describe(
+            uris: z.unknown().describe(
               "Required. Google Cloud Storage URI(-s) to the input file(s). May contain wildcards. For more information on wildcards, see https://cloud.google.com/storage/docs/wildcards.",
             ).optional(),
           }).describe(
@@ -321,14 +302,7 @@ const GlobalArgsSchema = z.object({
         ).optional(),
         smoothGradConfig: z.object({
           featureNoiseSigma: z.object({
-            noiseSigma: z.array(z.object({
-              name: z.string().describe(
-                "The name of the input feature for which noise sigma is provided. The features are defined in explanation metadata inputs.",
-              ).optional(),
-              sigma: z.number().describe(
-                "This represents the standard deviation of the Gaussian kernel that will be used to add noise to the feature prior to computing gradients. Similar to noise_sigma but represents the noise added to the current feature. Defaults to 0.1.",
-              ).optional(),
-            })).describe(
+            noiseSigma: z.unknown().describe(
               "Noise sigma per feature. No noise is added to features that are not set.",
             ).optional(),
           }).describe(
@@ -372,14 +346,7 @@ const GlobalArgsSchema = z.object({
         ).optional(),
         smoothGradConfig: z.object({
           featureNoiseSigma: z.object({
-            noiseSigma: z.array(z.object({
-              name: z.string().describe(
-                "The name of the input feature for which noise sigma is provided. The features are defined in explanation metadata inputs.",
-              ).optional(),
-              sigma: z.number().describe(
-                "This represents the standard deviation of the Gaussian kernel that will be used to add noise to the feature prior to computing gradients. Similar to noise_sigma but represents the noise added to the current feature. Defaults to 0.1.",
-              ).optional(),
-            })).describe(
+            noiseSigma: z.unknown().describe(
               "Noise sigma per feature. No noise is added to features that are not set.",
             ).optional(),
           }).describe(
@@ -546,7 +513,7 @@ const GlobalArgsSchema = z.object({
       ).optional(),
       healthProbe: z.object({
         exec: z.object({
-          command: z.array(z.string()).describe(
+          command: z.array(z.unknown()).describe(
             "Command is the command line to execute inside the container, the working directory for the command is root ('/') in the container's filesystem. The command is simply exec'd, it is not run inside a shell, so traditional shell instructions ('|', etc) won't work. To use a shell, you need to explicitly call out to that shell. Exit status of 0 is treated as live/healthy and non-zero is unhealthy.",
           ).optional(),
         }).describe("ExecAction specifies a command to execute.").optional(),
@@ -567,12 +534,7 @@ const GlobalArgsSchema = z.object({
           host: z.string().describe(
             'Host name to connect to, defaults to the model serving container\'s IP. You probably want to set "Host" in httpHeaders instead.',
           ).optional(),
-          httpHeaders: z.array(z.object({
-            name: z.string().describe(
-              "The header field name. This will be canonicalized upon output, so case-variant names will be understood as the same header.",
-            ).optional(),
-            value: z.string().describe("The header field value").optional(),
-          })).describe(
+          httpHeaders: z.array(z.unknown()).describe(
             "Custom headers to set in the request. HTTP allows repeated headers.",
           ).optional(),
           path: z.string().describe("Path to access on the HTTP server.")
@@ -622,7 +584,7 @@ const GlobalArgsSchema = z.object({
       ).optional(),
       livenessProbe: z.object({
         exec: z.object({
-          command: z.array(z.string()).describe(
+          command: z.array(z.unknown()).describe(
             "Command is the command line to execute inside the container, the working directory for the command is root ('/') in the container's filesystem. The command is simply exec'd, it is not run inside a shell, so traditional shell instructions ('|', etc) won't work. To use a shell, you need to explicitly call out to that shell. Exit status of 0 is treated as live/healthy and non-zero is unhealthy.",
           ).optional(),
         }).describe("ExecAction specifies a command to execute.").optional(),
@@ -643,12 +605,7 @@ const GlobalArgsSchema = z.object({
           host: z.string().describe(
             'Host name to connect to, defaults to the model serving container\'s IP. You probably want to set "Host" in httpHeaders instead.',
           ).optional(),
-          httpHeaders: z.array(z.object({
-            name: z.string().describe(
-              "The header field name. This will be canonicalized upon output, so case-variant names will be understood as the same header.",
-            ).optional(),
-            value: z.string().describe("The header field value").optional(),
-          })).describe(
+          httpHeaders: z.array(z.unknown()).describe(
             "Custom headers to set in the request. HTTP allows repeated headers.",
           ).optional(),
           path: z.string().describe("Path to access on the HTTP server.")
@@ -702,7 +659,7 @@ const GlobalArgsSchema = z.object({
       ).optional(),
       startupProbe: z.object({
         exec: z.object({
-          command: z.array(z.string()).describe(
+          command: z.array(z.unknown()).describe(
             "Command is the command line to execute inside the container, the working directory for the command is root ('/') in the container's filesystem. The command is simply exec'd, it is not run inside a shell, so traditional shell instructions ('|', etc) won't work. To use a shell, you need to explicitly call out to that shell. Exit status of 0 is treated as live/healthy and non-zero is unhealthy.",
           ).optional(),
         }).describe("ExecAction specifies a command to execute.").optional(),
@@ -723,12 +680,7 @@ const GlobalArgsSchema = z.object({
           host: z.string().describe(
             'Host name to connect to, defaults to the model serving container\'s IP. You probably want to set "Host" in httpHeaders instead.',
           ).optional(),
-          httpHeaders: z.array(z.object({
-            name: z.string().describe(
-              "The header field name. This will be canonicalized upon output, so case-variant names will be understood as the same header.",
-            ).optional(),
-            value: z.string().describe("The header field value").optional(),
-          })).describe(
+          httpHeaders: z.array(z.unknown()).describe(
             "Custom headers to set in the request. HTTP allows repeated headers.",
           ).optional(),
           path: z.string().describe("Path to access on the HTTP server.")
@@ -838,7 +790,7 @@ const StateSchema = z.object({
         exampleGcsSource: z.object({
           dataFormat: z.string(),
           gcsSource: z.object({
-            uris: z.array(z.string()),
+            uris: z.unknown(),
           }),
         }),
         nearestNeighborSearchConfig: z.string(),
@@ -854,10 +806,7 @@ const StateSchema = z.object({
         }),
         smoothGradConfig: z.object({
           featureNoiseSigma: z.object({
-            noiseSigma: z.array(z.object({
-              name: z.string(),
-              sigma: z.number(),
-            })),
+            noiseSigma: z.unknown(),
           }),
           noiseSigma: z.number(),
           noisySampleCount: z.number(),
@@ -875,10 +824,7 @@ const StateSchema = z.object({
         }),
         smoothGradConfig: z.object({
           featureNoiseSigma: z.object({
-            noiseSigma: z.array(z.object({
-              name: z.string(),
-              sigma: z.number(),
-            })),
+            noiseSigma: z.unknown(),
           }),
           noiseSigma: z.number(),
           noisySampleCount: z.number(),
@@ -963,7 +909,7 @@ const StateSchema = z.object({
       })),
       healthProbe: z.object({
         exec: z.object({
-          command: z.array(z.string()),
+          command: z.array(z.unknown()),
         }),
         failureThreshold: z.number(),
         grpc: z.object({
@@ -972,10 +918,7 @@ const StateSchema = z.object({
         }),
         httpGet: z.object({
           host: z.string(),
-          httpHeaders: z.array(z.object({
-            name: z.string(),
-            value: z.string(),
-          })),
+          httpHeaders: z.array(z.unknown()),
           path: z.string(),
           port: z.number(),
           scheme: z.string(),
@@ -994,7 +937,7 @@ const StateSchema = z.object({
       invokeRoutePrefix: z.string(),
       livenessProbe: z.object({
         exec: z.object({
-          command: z.array(z.string()),
+          command: z.array(z.unknown()),
         }),
         failureThreshold: z.number(),
         grpc: z.object({
@@ -1003,10 +946,7 @@ const StateSchema = z.object({
         }),
         httpGet: z.object({
           host: z.string(),
-          httpHeaders: z.array(z.object({
-            name: z.string(),
-            value: z.string(),
-          })),
+          httpHeaders: z.array(z.unknown()),
           path: z.string(),
           port: z.number(),
           scheme: z.string(),
@@ -1027,7 +967,7 @@ const StateSchema = z.object({
       sharedMemorySizeMb: z.string(),
       startupProbe: z.object({
         exec: z.object({
-          command: z.array(z.string()),
+          command: z.array(z.unknown()),
         }),
         failureThreshold: z.number(),
         grpc: z.object({
@@ -1036,10 +976,7 @@ const StateSchema = z.object({
         }),
         httpGet: z.object({
           host: z.string(),
-          httpHeaders: z.array(z.object({
-            name: z.string(),
-            value: z.string(),
-          })),
+          httpHeaders: z.array(z.unknown()),
           path: z.string(),
           port: z.number(),
           scheme: z.string(),
@@ -1184,7 +1121,7 @@ const InputsSchema = z.object({
           denseShapeTensorName: z.string().describe(
             "Specifies the shape of the values of the input if the input is a sparse representation. Refer to Tensorflow documentation for more details: https://www.tensorflow.org/api_docs/python/tf/sparse/SparseTensor.",
           ).optional(),
-          encodedBaselines: z.array(z.string()).describe(
+          encodedBaselines: z.array(z.unknown()).describe(
             "A list of baselines for the encoded tensor. The shape of each baseline should match the shape of the encoded tensor. If a scalar is provided, Vertex AI broadcasts to the same shape as the encoded tensor.",
           ).optional(),
           encodedTensorName: z.string().describe(
@@ -1202,16 +1139,16 @@ const InputsSchema = z.object({
             "Defines how the feature is encoded into the input tensor. Defaults to IDENTITY.",
           ).optional(),
           featureValueDomain: z.object({
-            maxValue: z.number().describe(
+            maxValue: z.unknown().describe(
               "The maximum permissible value for this feature.",
             ).optional(),
-            minValue: z.number().describe(
+            minValue: z.unknown().describe(
               "The minimum permissible value for this feature.",
             ).optional(),
-            originalMean: z.number().describe(
+            originalMean: z.unknown().describe(
               "If this input feature has been normalized to a mean value of 0, the original_mean specifies the mean value of the domain prior to normalization.",
             ).optional(),
-            originalStddev: z.number().describe(
+            originalStddev: z.unknown().describe(
               "If this input feature has been normalized to a standard deviation of 1.0, the original_stddev specifies the standard deviation of the domain prior to normalization.",
             ).optional(),
           }).describe(
@@ -1220,13 +1157,13 @@ const InputsSchema = z.object({
           groupName: z.string().describe(
             "Name of the group that the input belongs to. Features with the same group name will be treated as one feature when computing attributions. Features grouped together can have different shapes in value. If provided, there will be one single attribution generated in Attribution.feature_attributions, keyed by the group name.",
           ).optional(),
-          indexFeatureMapping: z.array(z.string()).describe(
+          indexFeatureMapping: z.array(z.unknown()).describe(
             "A list of feature names for each index in the input tensor. Required when the input InputMetadata.encoding is BAG_OF_FEATURES, BAG_OF_FEATURES_SPARSE, INDICATOR.",
           ).optional(),
           indicesTensorName: z.string().describe(
             "Specifies the index of the values of the input tensor. Required when the input tensor is a sparse representation. Refer to Tensorflow documentation for more details: https://www.tensorflow.org/api_docs/python/tf/sparse/SparseTensor.",
           ).optional(),
-          inputBaselines: z.array(z.string()).describe(
+          inputBaselines: z.array(z.unknown()).describe(
             "Baseline inputs for this feature. If no baseline is specified, Vertex AI chooses the baseline for this feature. If multiple baselines are specified, Vertex AI returns the average attributions across them in Attribution.feature_attributions. For Vertex AI-provided Tensorflow images (both 1.x and 2.x), the shape of each baseline must match the shape of the input tensor. If a scalar is provided, we broadcast to the same shape as the input tensor. For custom images, the element of the baselines must be in the same format as the feature's input in the instance[]. The schema of any single instance may be specified via Endpoint's DeployedModels' Model's PredictSchemata's instance_schema_uri.",
           ).optional(),
           inputTensorName: z.string().describe(
@@ -1236,41 +1173,22 @@ const InputsSchema = z.object({
             "Modality of the feature. Valid values are: numeric, image. Defaults to numeric.",
           ).optional(),
           visualization: z.object({
-            clipPercentLowerbound: z.number().describe(
+            clipPercentLowerbound: z.unknown().describe(
               "Excludes attributions below the specified percentile, from the highlighted areas. Defaults to 62.",
             ).optional(),
-            clipPercentUpperbound: z.number().describe(
+            clipPercentUpperbound: z.unknown().describe(
               "Excludes attributions above the specified percentile from the highlighted areas. Using the clip_percent_upperbound and clip_percent_lowerbound together can be useful for filtering out noise and making it easier to see areas of strong attribution. Defaults to 99.9.",
             ).optional(),
-            colorMap: z.enum([
-              "COLOR_MAP_UNSPECIFIED",
-              "PINK_GREEN",
-              "VIRIDIS",
-              "RED",
-              "GREEN",
-              "RED_GREEN",
-              "PINK_WHITE_GREEN",
-            ]).describe(
+            colorMap: z.unknown().describe(
               "The color scheme used for the highlighted areas. Defaults to PINK_GREEN for Integrated Gradients attribution, which shows positive attributions in green and negative in pink. Defaults to VIRIDIS for XRAI attribution, which highlights the most influential regions in yellow and the least influential in blue.",
             ).optional(),
-            overlayType: z.enum([
-              "OVERLAY_TYPE_UNSPECIFIED",
-              "NONE",
-              "ORIGINAL",
-              "GRAYSCALE",
-              "MASK_BLACK",
-            ]).describe(
+            overlayType: z.unknown().describe(
               "How the original image is displayed in the visualization. Adjusting the overlay can help increase visual clarity if the original image makes it difficult to view the visualization. Defaults to NONE.",
             ).optional(),
-            polarity: z.enum([
-              "POLARITY_UNSPECIFIED",
-              "POSITIVE",
-              "NEGATIVE",
-              "BOTH",
-            ]).describe(
+            polarity: z.unknown().describe(
               "Whether to only highlight pixels with positive contributions, negative or both. Defaults to POSITIVE.",
             ).optional(),
-            type: z.enum(["TYPE_UNSPECIFIED", "PIXELS", "OUTLINES"]).describe(
+            type: z.unknown().describe(
               "Type of the image visualization. Only applicable to Integrated Gradients attribution. OUTLINES shows regions of attribution, while PIXELS shows per-pixel attribution. Defaults to OUTLINES.",
             ).optional(),
           }).describe("Visualization configurations for image explanation.")
@@ -1308,7 +1226,7 @@ const InputsSchema = z.object({
             "The format in which instances are given, if not specified, assume it's JSONL format. Currently only JSONL format is supported.",
           ).optional(),
           gcsSource: z.object({
-            uris: z.array(z.string()).describe(
+            uris: z.unknown().describe(
               "Required. Google Cloud Storage URI(-s) to the input file(s). May contain wildcards. For more information on wildcards, see https://cloud.google.com/storage/docs/wildcards.",
             ).optional(),
           }).describe(
@@ -1344,14 +1262,7 @@ const InputsSchema = z.object({
         ).optional(),
         smoothGradConfig: z.object({
           featureNoiseSigma: z.object({
-            noiseSigma: z.array(z.object({
-              name: z.string().describe(
-                "The name of the input feature for which noise sigma is provided. The features are defined in explanation metadata inputs.",
-              ).optional(),
-              sigma: z.number().describe(
-                "This represents the standard deviation of the Gaussian kernel that will be used to add noise to the feature prior to computing gradients. Similar to noise_sigma but represents the noise added to the current feature. Defaults to 0.1.",
-              ).optional(),
-            })).describe(
+            noiseSigma: z.unknown().describe(
               "Noise sigma per feature. No noise is added to features that are not set.",
             ).optional(),
           }).describe(
@@ -1395,14 +1306,7 @@ const InputsSchema = z.object({
         ).optional(),
         smoothGradConfig: z.object({
           featureNoiseSigma: z.object({
-            noiseSigma: z.array(z.object({
-              name: z.string().describe(
-                "The name of the input feature for which noise sigma is provided. The features are defined in explanation metadata inputs.",
-              ).optional(),
-              sigma: z.number().describe(
-                "This represents the standard deviation of the Gaussian kernel that will be used to add noise to the feature prior to computing gradients. Similar to noise_sigma but represents the noise added to the current feature. Defaults to 0.1.",
-              ).optional(),
-            })).describe(
+            noiseSigma: z.unknown().describe(
               "Noise sigma per feature. No noise is added to features that are not set.",
             ).optional(),
           }).describe(
@@ -1569,7 +1473,7 @@ const InputsSchema = z.object({
       ).optional(),
       healthProbe: z.object({
         exec: z.object({
-          command: z.array(z.string()).describe(
+          command: z.array(z.unknown()).describe(
             "Command is the command line to execute inside the container, the working directory for the command is root ('/') in the container's filesystem. The command is simply exec'd, it is not run inside a shell, so traditional shell instructions ('|', etc) won't work. To use a shell, you need to explicitly call out to that shell. Exit status of 0 is treated as live/healthy and non-zero is unhealthy.",
           ).optional(),
         }).describe("ExecAction specifies a command to execute.").optional(),
@@ -1590,12 +1494,7 @@ const InputsSchema = z.object({
           host: z.string().describe(
             'Host name to connect to, defaults to the model serving container\'s IP. You probably want to set "Host" in httpHeaders instead.',
           ).optional(),
-          httpHeaders: z.array(z.object({
-            name: z.string().describe(
-              "The header field name. This will be canonicalized upon output, so case-variant names will be understood as the same header.",
-            ).optional(),
-            value: z.string().describe("The header field value").optional(),
-          })).describe(
+          httpHeaders: z.array(z.unknown()).describe(
             "Custom headers to set in the request. HTTP allows repeated headers.",
           ).optional(),
           path: z.string().describe("Path to access on the HTTP server.")
@@ -1645,7 +1544,7 @@ const InputsSchema = z.object({
       ).optional(),
       livenessProbe: z.object({
         exec: z.object({
-          command: z.array(z.string()).describe(
+          command: z.array(z.unknown()).describe(
             "Command is the command line to execute inside the container, the working directory for the command is root ('/') in the container's filesystem. The command is simply exec'd, it is not run inside a shell, so traditional shell instructions ('|', etc) won't work. To use a shell, you need to explicitly call out to that shell. Exit status of 0 is treated as live/healthy and non-zero is unhealthy.",
           ).optional(),
         }).describe("ExecAction specifies a command to execute.").optional(),
@@ -1666,12 +1565,7 @@ const InputsSchema = z.object({
           host: z.string().describe(
             'Host name to connect to, defaults to the model serving container\'s IP. You probably want to set "Host" in httpHeaders instead.',
           ).optional(),
-          httpHeaders: z.array(z.object({
-            name: z.string().describe(
-              "The header field name. This will be canonicalized upon output, so case-variant names will be understood as the same header.",
-            ).optional(),
-            value: z.string().describe("The header field value").optional(),
-          })).describe(
+          httpHeaders: z.array(z.unknown()).describe(
             "Custom headers to set in the request. HTTP allows repeated headers.",
           ).optional(),
           path: z.string().describe("Path to access on the HTTP server.")
@@ -1725,7 +1619,7 @@ const InputsSchema = z.object({
       ).optional(),
       startupProbe: z.object({
         exec: z.object({
-          command: z.array(z.string()).describe(
+          command: z.array(z.unknown()).describe(
             "Command is the command line to execute inside the container, the working directory for the command is root ('/') in the container's filesystem. The command is simply exec'd, it is not run inside a shell, so traditional shell instructions ('|', etc) won't work. To use a shell, you need to explicitly call out to that shell. Exit status of 0 is treated as live/healthy and non-zero is unhealthy.",
           ).optional(),
         }).describe("ExecAction specifies a command to execute.").optional(),
@@ -1746,12 +1640,7 @@ const InputsSchema = z.object({
           host: z.string().describe(
             'Host name to connect to, defaults to the model serving container\'s IP. You probably want to set "Host" in httpHeaders instead.',
           ).optional(),
-          httpHeaders: z.array(z.object({
-            name: z.string().describe(
-              "The header field name. This will be canonicalized upon output, so case-variant names will be understood as the same header.",
-            ).optional(),
-            value: z.string().describe("The header field value").optional(),
-          })).describe(
+          httpHeaders: z.array(z.unknown()).describe(
             "Custom headers to set in the request. HTTP allows repeated headers.",
           ).optional(),
           path: z.string().describe("Path to access on the HTTP server.")
@@ -1816,7 +1705,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/aiplatform/batchpredictionjobs",
-  version: "2026.04.03.3",
+  version: "2026.04.04.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -1840,6 +1729,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.3",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.04.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

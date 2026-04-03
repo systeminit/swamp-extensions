@@ -58,21 +58,21 @@ const StateSchema = z.object({
       dataSourceSeparatorToken: z.string(),
       diagnosticMessages: z.array(z.object({
         info: z.object({
-          args: z.record(z.string(), z.unknown()),
-          message: z.string(),
-          token: z.string(),
+          args: z.unknown(),
+          message: z.unknown(),
+          token: z.unknown(),
         }),
         metric: z.object({
-          args: z.record(z.string(), z.unknown()),
-          message: z.string(),
-          token: z.string(),
+          args: z.unknown(),
+          message: z.unknown(),
+          token: z.unknown(),
         }),
         metricSpecific: z.boolean(),
         severity: z.string(),
         shortMessage: z.object({
-          args: z.record(z.string(), z.unknown()),
-          message: z.string(),
-          token: z.string(),
+          args: z.unknown(),
+          message: z.unknown(),
+          token: z.unknown(),
         }),
       })),
       endKeyStrings: z.array(z.string()),
@@ -83,45 +83,35 @@ const StateSchema = z.object({
       metrics: z.array(z.object({
         aggregation: z.string(),
         category: z.object({
-          args: z.record(z.string(), z.unknown()),
-          message: z.string(),
-          token: z.string(),
+          args: z.unknown(),
+          message: z.unknown(),
+          token: z.unknown(),
         }),
         derived: z.object({
-          denominator: z.object({
-            args: z.record(z.string(), z.unknown()),
-            message: z.string(),
-            token: z.string(),
-          }),
-          numerator: z.object({
-            args: z.record(z.string(), z.unknown()),
-            message: z.string(),
-            token: z.string(),
-          }),
+          denominator: z.unknown(),
+          numerator: z.unknown(),
         }),
         displayLabel: z.object({
-          args: z.record(z.string(), z.unknown()),
-          message: z.string(),
-          token: z.string(),
+          args: z.unknown(),
+          message: z.unknown(),
+          token: z.unknown(),
         }),
         hasNonzeroData: z.boolean(),
         hotValue: z.number(),
         indexedHotKeys: z.record(z.string(), z.unknown()),
         indexedKeyRangeInfos: z.record(z.string(), z.unknown()),
         info: z.object({
-          args: z.record(z.string(), z.unknown()),
-          message: z.string(),
-          token: z.string(),
+          args: z.unknown(),
+          message: z.unknown(),
+          token: z.unknown(),
         }),
         matrix: z.object({
-          rows: z.array(z.object({
-            cols: z.array(z.number()),
-          })),
+          rows: z.unknown(),
         }),
         unit: z.object({
-          args: z.record(z.string(), z.unknown()),
-          message: z.string(),
-          token: z.string(),
+          args: z.unknown(),
+          message: z.unknown(),
+          token: z.unknown(),
         }),
         visible: z.boolean(),
       })),
@@ -150,7 +140,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/spanner/scans",
-  version: "2026.04.03.3",
+  version: "2026.04.04.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -174,6 +164,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.3",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.04.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

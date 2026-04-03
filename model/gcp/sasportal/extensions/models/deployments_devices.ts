@@ -239,10 +239,10 @@ const GlobalArgsSchema = z.object({
     moveList: z.array(z.object({
       dpaId: z.string().describe("The ID of the DPA.").optional(),
       frequencyRange: z.object({
-        highFrequencyMhz: z.number().describe(
+        highFrequencyMhz: z.unknown().describe(
           "The highest frequency of the frequency range in MHz.",
         ).optional(),
-        lowFrequencyMhz: z.number().describe(
+        lowFrequencyMhz: z.unknown().describe(
           "The lowest frequency of the frequency range in MHz.",
         ).optional(),
       }).describe("Frequency range from `low_frequency` to `high_frequency`.")
@@ -452,8 +452,8 @@ const StateSchema = z.object({
     moveList: z.array(z.object({
       dpaId: z.string(),
       frequencyRange: z.object({
-        highFrequencyMhz: z.number(),
-        lowFrequencyMhz: z.number(),
+        highFrequencyMhz: z.unknown(),
+        lowFrequencyMhz: z.unknown(),
       }),
     })),
     state: z.string(),
@@ -678,10 +678,10 @@ const InputsSchema = z.object({
     moveList: z.array(z.object({
       dpaId: z.string().describe("The ID of the DPA.").optional(),
       frequencyRange: z.object({
-        highFrequencyMhz: z.number().describe(
+        highFrequencyMhz: z.unknown().describe(
           "The highest frequency of the frequency range in MHz.",
         ).optional(),
-        lowFrequencyMhz: z.number().describe(
+        lowFrequencyMhz: z.unknown().describe(
           "The lowest frequency of the frequency range in MHz.",
         ).optional(),
       }).describe("Frequency range from `low_frequency` to `high_frequency`.")
@@ -817,7 +817,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/sasportal/deployments-devices",
-  version: "2026.04.03.3",
+  version: "2026.04.04.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -841,6 +841,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.3",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.04.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

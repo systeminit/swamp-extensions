@@ -70,74 +70,12 @@ const StateSchema = z.object({
   targetingInfo: z.object({
     assetSliceSet: z.array(z.object({
       apkDescription: z.array(z.object({
-        assetSliceMetadata: z.object({
-          isMasterSplit: z.boolean(),
-          splitId: z.string(),
-        }),
-        instantApkMetadata: z.object({
-          isMasterSplit: z.boolean(),
-          splitId: z.string(),
-        }),
-        path: z.string(),
-        splitApkMetadata: z.object({
-          isMasterSplit: z.boolean(),
-          splitId: z.string(),
-        }),
-        standaloneApkMetadata: z.object({
-          fusedModuleName: z.array(z.string()),
-        }),
-        targeting: z.object({
-          abiTargeting: z.object({
-            alternatives: z.array(z.object({
-              alias: z.string(),
-            })),
-            value: z.array(z.object({
-              alias: z.string(),
-            })),
-          }),
-          languageTargeting: z.object({
-            alternatives: z.array(z.string()),
-            value: z.array(z.string()),
-          }),
-          multiAbiTargeting: z.object({
-            alternatives: z.array(z.object({
-              abi: z.array(z.object({
-                alias: z.string(),
-              })),
-            })),
-            value: z.array(z.object({
-              abi: z.array(z.object({
-                alias: z.string(),
-              })),
-            })),
-          }),
-          screenDensityTargeting: z.object({
-            alternatives: z.array(z.object({
-              densityAlias: z.string(),
-              densityDpi: z.number(),
-            })),
-            value: z.array(z.object({
-              densityAlias: z.string(),
-              densityDpi: z.number(),
-            })),
-          }),
-          sdkVersionTargeting: z.object({
-            alternatives: z.array(z.object({
-              min: z.number(),
-            })),
-            value: z.array(z.object({
-              min: z.number(),
-            })),
-          }),
-          textureCompressionFormatTargeting: z.object({
-            alternatives: z.array(z.object({
-              alias: z.string(),
-            })),
-            value: z.array(z.object({
-              alias: z.string(),
-            })),
-          }),
-        }),
+        assetSliceMetadata: z.unknown(),
+        instantApkMetadata: z.unknown(),
+        path: z.unknown(),
+        splitApkMetadata: z.unknown(),
+        standaloneApkMetadata: z.unknown(),
+        targeting: z.unknown(),
       })),
       assetModuleMetadata: z.object({
         deliveryType: z.string(),
@@ -147,149 +85,29 @@ const StateSchema = z.object({
     packageName: z.string(),
     variant: z.array(z.object({
       apkSet: z.array(z.object({
-        apkDescription: z.array(z.object({
-          assetSliceMetadata: z.object({
-            isMasterSplit: z.boolean(),
-            splitId: z.string(),
-          }),
-          instantApkMetadata: z.object({
-            isMasterSplit: z.boolean(),
-            splitId: z.string(),
-          }),
-          path: z.string(),
-          splitApkMetadata: z.object({
-            isMasterSplit: z.boolean(),
-            splitId: z.string(),
-          }),
-          standaloneApkMetadata: z.object({
-            fusedModuleName: z.array(z.string()),
-          }),
-          targeting: z.object({
-            abiTargeting: z.object({
-              alternatives: z.array(z.object({
-                alias: z.string(),
-              })),
-              value: z.array(z.object({
-                alias: z.string(),
-              })),
-            }),
-            languageTargeting: z.object({
-              alternatives: z.array(z.string()),
-              value: z.array(z.string()),
-            }),
-            multiAbiTargeting: z.object({
-              alternatives: z.array(z.object({
-                abi: z.array(z.object({
-                  alias: z.string(),
-                })),
-              })),
-              value: z.array(z.object({
-                abi: z.array(z.object({
-                  alias: z.string(),
-                })),
-              })),
-            }),
-            screenDensityTargeting: z.object({
-              alternatives: z.array(z.object({
-                densityAlias: z.string(),
-                densityDpi: z.number(),
-              })),
-              value: z.array(z.object({
-                densityAlias: z.string(),
-                densityDpi: z.number(),
-              })),
-            }),
-            sdkVersionTargeting: z.object({
-              alternatives: z.array(z.object({
-                min: z.number(),
-              })),
-              value: z.array(z.object({
-                min: z.number(),
-              })),
-            }),
-            textureCompressionFormatTargeting: z.object({
-              alternatives: z.array(z.object({
-                alias: z.string(),
-              })),
-              value: z.array(z.object({
-                alias: z.string(),
-              })),
-            }),
-          }),
-        })),
-        moduleMetadata: z.object({
-          deliveryType: z.string(),
-          dependencies: z.array(z.string()),
-          moduleType: z.string(),
-          name: z.string(),
-          targeting: z.object({
-            deviceFeatureTargeting: z.array(z.object({
-              requiredFeature: z.object({
-                featureName: z.string(),
-                featureVersion: z.number(),
-              }),
-            })),
-            sdkVersionTargeting: z.object({
-              alternatives: z.array(z.object({
-                min: z.number(),
-              })),
-              value: z.array(z.object({
-                min: z.number(),
-              })),
-            }),
-            userCountriesTargeting: z.object({
-              countryCodes: z.array(z.string()),
-              exclude: z.boolean(),
-            }),
-          }),
-        }),
+        apkDescription: z.unknown(),
+        moduleMetadata: z.unknown(),
       })),
       targeting: z.object({
         abiTargeting: z.object({
-          alternatives: z.array(z.object({
-            alias: z.string(),
-          })),
-          value: z.array(z.object({
-            alias: z.string(),
-          })),
+          alternatives: z.unknown(),
+          value: z.unknown(),
         }),
         multiAbiTargeting: z.object({
-          alternatives: z.array(z.object({
-            abi: z.array(z.object({
-              alias: z.string(),
-            })),
-          })),
-          value: z.array(z.object({
-            abi: z.array(z.object({
-              alias: z.string(),
-            })),
-          })),
+          alternatives: z.unknown(),
+          value: z.unknown(),
         }),
         screenDensityTargeting: z.object({
-          alternatives: z.array(z.object({
-            densityAlias: z.string(),
-            densityDpi: z.number(),
-          })),
-          value: z.array(z.object({
-            densityAlias: z.string(),
-            densityDpi: z.number(),
-          })),
+          alternatives: z.unknown(),
+          value: z.unknown(),
         }),
         sdkVersionTargeting: z.object({
-          alternatives: z.array(z.object({
-            min: z.number(),
-          })),
-          value: z.array(z.object({
-            min: z.number(),
-          })),
+          alternatives: z.unknown(),
+          value: z.unknown(),
         }),
         textureCompressionFormatTargeting: z.object({
-          alternatives: z.array(z.object({
-            alias: z.string(),
-          })),
-          value: z.array(z.object({
-            alias: z.string(),
-          })),
+          alternatives: z.unknown(),
+          value: z.unknown(),
         }),
       }),
       variantNumber: z.number(),
@@ -305,7 +123,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/androidpublisher/generatedapks",
-  version: "2026.04.03.3",
+  version: "2026.04.04.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -329,6 +147,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.3",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.04.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

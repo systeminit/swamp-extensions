@@ -82,57 +82,24 @@ const StateSchema = z.object({
       emailAddress: z.object({
         email: z.string(),
         name: z.string(),
-        tokens: z.array(z.object({
-          name: z.string(),
-          value: z.string(),
-        })),
+        tokens: z.array(z.unknown()),
       }),
       escalatorQueue: z.string(),
       pubsubTopic: z.string(),
       request: z.object({
         postToQueueWithTriggerIdRequest: z.object({
-          clientId: z.string(),
-          ignoreErrorIfNoActiveWorkflow: z.boolean(),
-          parameters: z.object({
-            parameters: z.array(z.object({
-              key: z.string(),
-              masked: z.boolean(),
-              value: z.object({
-                booleanArray: z.object({
-                  booleanValues: z.array(z.boolean()),
-                }),
-                booleanValue: z.boolean(),
-                doubleArray: z.object({
-                  doubleValues: z.array(z.number()),
-                }),
-                doubleValue: z.number(),
-                intArray: z.object({
-                  intValues: z.array(z.string()),
-                }),
-                intValue: z.string(),
-                protoArray: z.object({
-                  protoValues: z.array(z.record(z.string(), z.unknown())),
-                }),
-                protoValue: z.record(z.string(), z.unknown()),
-                serializedObjectValue: z.object({
-                  objectValue: z.string(),
-                }),
-                stringArray: z.object({
-                  stringValues: z.array(z.string()),
-                }),
-                stringValue: z.string(),
-              }),
-            })),
-          }),
-          priority: z.string(),
-          quotaRetryCount: z.number(),
-          requestId: z.string(),
-          resourceName: z.string(),
-          scheduledTime: z.string(),
-          testMode: z.boolean(),
-          triggerId: z.string(),
-          userGeneratedExecutionId: z.string(),
-          workflowName: z.string(),
+          clientId: z.unknown(),
+          ignoreErrorIfNoActiveWorkflow: z.unknown(),
+          parameters: z.unknown(),
+          priority: z.unknown(),
+          quotaRetryCount: z.unknown(),
+          requestId: z.unknown(),
+          resourceName: z.unknown(),
+          scheduledTime: z.unknown(),
+          testMode: z.unknown(),
+          triggerId: z.unknown(),
+          userGeneratedExecutionId: z.unknown(),
+          workflowName: z.unknown(),
         }),
         suspensionInfoEventParameterKey: z.string(),
       }),
@@ -169,7 +136,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/integrations/integrations-executions-suspensions",
-  version: "2026.04.03.3",
+  version: "2026.04.04.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -193,6 +160,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.3",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.04.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

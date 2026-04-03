@@ -260,41 +260,10 @@ const GlobalArgsSchema = z.object({
     ).optional(),
     includedFirstPartyAndPartnerAudienceGroups: z.array(z.object({
       settings: z.array(z.object({
-        firstPartyAndPartnerAudienceId: z.string().describe(
+        firstPartyAndPartnerAudienceId: z.unknown().describe(
           "Required. First party and partner audience id of the first party and partner audience targeting setting. This id is first_party_and_partner_audience_id.",
         ).optional(),
-        recency: z.enum([
-          "RECENCY_NO_LIMIT",
-          "RECENCY_1_MINUTE",
-          "RECENCY_5_MINUTES",
-          "RECENCY_10_MINUTES",
-          "RECENCY_15_MINUTES",
-          "RECENCY_30_MINUTES",
-          "RECENCY_1_HOUR",
-          "RECENCY_2_HOURS",
-          "RECENCY_3_HOURS",
-          "RECENCY_6_HOURS",
-          "RECENCY_12_HOURS",
-          "RECENCY_1_DAY",
-          "RECENCY_2_DAYS",
-          "RECENCY_3_DAYS",
-          "RECENCY_5_DAYS",
-          "RECENCY_7_DAYS",
-          "RECENCY_10_DAYS",
-          "RECENCY_14_DAYS",
-          "RECENCY_15_DAYS",
-          "RECENCY_21_DAYS",
-          "RECENCY_28_DAYS",
-          "RECENCY_30_DAYS",
-          "RECENCY_40_DAYS",
-          "RECENCY_45_DAYS",
-          "RECENCY_60_DAYS",
-          "RECENCY_90_DAYS",
-          "RECENCY_120_DAYS",
-          "RECENCY_180_DAYS",
-          "RECENCY_270_DAYS",
-          "RECENCY_365_DAYS",
-        ]).describe(
+        recency: z.unknown().describe(
           "Required. The recency of the first party and partner audience targeting setting. Only applicable to first party audiences, otherwise will be ignored. For more info, refer to https://support.google.com/displayvideo/answer/2949947#recency When unspecified, no recency limit will be used.",
         ).optional(),
       })).describe(
@@ -1543,8 +1512,8 @@ const StateSchema = z.object({
     }),
     includedFirstPartyAndPartnerAudienceGroups: z.array(z.object({
       settings: z.array(z.object({
-        firstPartyAndPartnerAudienceId: z.string(),
-        recency: z.string(),
+        firstPartyAndPartnerAudienceId: z.unknown(),
+        recency: z.unknown(),
       })),
     })),
     includedGoogleAudienceGroup: z.object({
@@ -1957,41 +1926,10 @@ const InputsSchema = z.object({
     ).optional(),
     includedFirstPartyAndPartnerAudienceGroups: z.array(z.object({
       settings: z.array(z.object({
-        firstPartyAndPartnerAudienceId: z.string().describe(
+        firstPartyAndPartnerAudienceId: z.unknown().describe(
           "Required. First party and partner audience id of the first party and partner audience targeting setting. This id is first_party_and_partner_audience_id.",
         ).optional(),
-        recency: z.enum([
-          "RECENCY_NO_LIMIT",
-          "RECENCY_1_MINUTE",
-          "RECENCY_5_MINUTES",
-          "RECENCY_10_MINUTES",
-          "RECENCY_15_MINUTES",
-          "RECENCY_30_MINUTES",
-          "RECENCY_1_HOUR",
-          "RECENCY_2_HOURS",
-          "RECENCY_3_HOURS",
-          "RECENCY_6_HOURS",
-          "RECENCY_12_HOURS",
-          "RECENCY_1_DAY",
-          "RECENCY_2_DAYS",
-          "RECENCY_3_DAYS",
-          "RECENCY_5_DAYS",
-          "RECENCY_7_DAYS",
-          "RECENCY_10_DAYS",
-          "RECENCY_14_DAYS",
-          "RECENCY_15_DAYS",
-          "RECENCY_21_DAYS",
-          "RECENCY_28_DAYS",
-          "RECENCY_30_DAYS",
-          "RECENCY_40_DAYS",
-          "RECENCY_45_DAYS",
-          "RECENCY_60_DAYS",
-          "RECENCY_90_DAYS",
-          "RECENCY_120_DAYS",
-          "RECENCY_180_DAYS",
-          "RECENCY_270_DAYS",
-          "RECENCY_365_DAYS",
-        ]).describe(
+        recency: z.unknown().describe(
           "Required. The recency of the first party and partner audience targeting setting. Only applicable to first party audiences, otherwise will be ignored. For more info, refer to https://support.google.com/displayvideo/answer/2949947#recency When unspecified, no recency limit will be used.",
         ).optional(),
       })).describe(
@@ -3202,7 +3140,7 @@ const InputsSchema = z.object({
 export const model = {
   type:
     "@swamp/gcp/displayvideo/advertisers-lineitems-targetingtypes-assignedtargetingoptions",
-  version: "2026.04.03.3",
+  version: "2026.04.04.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -3226,6 +3164,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.3",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.04.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

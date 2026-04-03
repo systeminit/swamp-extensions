@@ -124,6 +124,11 @@ const GlobalArgsSchema = z.object({
     .describe(
       "Name of the commitment. You must specify a name when you purchase the commitment. The name must be 1-63 characters long, and comply withRFC1035. Specifically, the name must be 1-63 characters long and match the regular expression `[a-z]([-a-z0-9]*[a-z0-9])?` which means the first character must be a lowercase letter, and all following characters must be a dash, lowercase letter, or digit, except the last character, which cannot be a dash.",
     ).optional(),
+  params: z.object({
+    resourceManagerTags: z.record(z.string(), z.string()).describe(
+      "Input only. Resource manager tags to be bound to the commitment. Tag keys and values have the same definition as resource manager tags. Keys and values can be either in numeric format, such as `tagKeys/{tag_key_id}` and `tagValues/{tag_value_id}` or in namespaced format such as `{org_id|project_id}/{tag_key_short_name}` and `{tag_value_short_name}`. The field is ignored (both PUT & PATCH) when empty.",
+    ).optional(),
+  }).describe("Additional commitment params.").optional(),
   plan: z.enum(["INVALID", "THIRTY_SIX_MONTH", "TWELVE_MONTH"]).describe(
     "The minimum time duration that you commit to purchasing resources. The plan that you choose determines the preset term length of the commitment (which is 1 year or 3 years) and affects the discount rate that you receive for your resources. Committing to a longer time duration typically gives you a higher discount rate. The supported values for this field are TWELVE_MONTH (1 year), andTHIRTY_SIX_MONTH (3 years).",
   ).optional(),
@@ -144,26 +149,12 @@ const GlobalArgsSchema = z.object({
     ).optional(),
     aggregateReservation: z.object({
       inUseResources: z.array(z.object({
-        accelerator: z.object({
-          acceleratorCount: z.number().int().describe(
-            "Number of accelerators of specified type.",
-          ).optional(),
-          acceleratorType: z.string().describe(
-            'Full or partial URL to accelerator type. e.g. "projects/{PROJECT}/zones/{ZONE}/acceleratorTypes/ct4l"',
-          ).optional(),
-        }).optional(),
+        accelerator: z.unknown().optional(),
       })).describe(
         "Output only. [Output only] List of resources currently in use.",
       ).optional(),
       reservedResources: z.array(z.object({
-        accelerator: z.object({
-          acceleratorCount: z.number().int().describe(
-            "Number of accelerators of specified type.",
-          ).optional(),
-          acceleratorType: z.string().describe(
-            'Full or partial URL to accelerator type. e.g. "projects/{PROJECT}/zones/{ZONE}/acceleratorTypes/ct4l"',
-          ).optional(),
-        }).optional(),
+        accelerator: z.unknown().optional(),
       })).describe("List of reserved resources (CPUs, memory, accelerators).")
         .optional(),
       vmFamily: z.enum([
@@ -187,6 +178,10 @@ const GlobalArgsSchema = z.object({
     commitment: z.string().describe(
       "Output only. [Output Only] Full or partial URL to a parent commitment. This field displays for reservations that are tied to a commitment.",
     ).optional(),
+    confidentialComputeType: z.enum([
+      "CONFIDENTIAL_COMPUTE_TYPE_TDX",
+      "CONFIDENTIAL_COMPUTE_TYPE_UNSPECIFIED",
+    ]).optional(),
     creationTimestamp: z.string().describe(
       "Output only. [Output Only] Creation timestamp inRFC3339 text format.",
     ).optional(),
@@ -293,45 +288,25 @@ const GlobalArgsSchema = z.object({
           "Describes number of subblock Infrastructure that has pending maintenance. Here, Subblock Infrastructure Maintenance pertains to upstream hardware contained in the Subblock that is necessary for a VM Family (e.g. NVLink Domains). Not all VM Families will support this field.",
         ).optional(),
         upcomingGroupMaintenance: z.object({
-          canReschedule: z.boolean().describe(
+          canReschedule: z.unknown().describe(
             "Indicates if the maintenance can be customer triggered.",
           ).optional(),
-          latestWindowStartTime: z.string().describe(
+          latestWindowStartTime: z.unknown().describe(
             "The latest time for the planned maintenance window to start. This timestamp value is in RFC3339 text format.",
           ).optional(),
-          maintenanceOnShutdown: z.boolean().describe(
+          maintenanceOnShutdown: z.unknown().describe(
             "Indicates whether the UpcomingMaintenance will be triggered on VM shutdown.",
           ).optional(),
-          maintenanceReasons: z.array(
-            z.enum([
-              "FAILURE_DISK",
-              "FAILURE_GPU",
-              "FAILURE_GPU_MULTIPLE_FAULTY_HOSTS_CUSTOMER_REPORTED",
-              "FAILURE_GPU_NVLINK_SWITCH_CUSTOMER_REPORTED",
-              "FAILURE_GPU_TEMPERATURE",
-              "FAILURE_GPU_XID",
-              "FAILURE_INFRA",
-              "FAILURE_INTERFACE",
-              "FAILURE_MEMORY",
-              "FAILURE_NETWORK",
-              "FAILURE_NVLINK",
-              "FAILURE_REDUNDANT_HARDWARE_FAULT",
-              "FAILURE_TPU",
-              "INFRASTRUCTURE_RELOCATION",
-              "MAINTENANCE_REASON_UNKNOWN",
-              "PLANNED_NETWORK_UPDATE",
-              "PLANNED_UPDATE",
-            ]),
-          ).describe("The reasons for the maintenance. Only valid for vms.")
+          maintenanceReasons: z.unknown().describe(
+            "The reasons for the maintenance. Only valid for vms.",
+          ).optional(),
+          maintenanceStatus: z.unknown().optional(),
+          type: z.unknown().describe("Defines the type of maintenance.")
             .optional(),
-          maintenanceStatus: z.enum(["ONGOING", "PENDING", "UNKNOWN"])
-            .optional(),
-          type: z.enum(["MULTIPLE", "SCHEDULED", "UNKNOWN_TYPE", "UNSCHEDULED"])
-            .describe("Defines the type of maintenance.").optional(),
-          windowEndTime: z.string().describe(
+          windowEndTime: z.unknown().describe(
             "The time by which the maintenance disruption will be completed. This timestamp value is in RFC3339 text format.",
           ).optional(),
-          windowStartTime: z.string().describe(
+          windowStartTime: z.unknown().describe(
             "The current start time of the maintenance window. This timestamp value is in RFC3339 text format.",
           ).optional(),
         }).describe("Upcoming Maintenance notification information.")
@@ -341,7 +316,7 @@ const GlobalArgsSchema = z.object({
         sourceInstanceTemplateId: z.string().describe(
           "ID of the instance template used to populate reservation properties.",
         ).optional(),
-        utilizations: z.record(z.string(), z.string()).describe(
+        utilizations: z.record(z.string(), z.unknown()).describe(
           "Per service utilization breakdown. The Key is the Google Cloud managed service name.",
         ).optional(),
       }).describe("Contains Properties set for the reservation.").optional(),
@@ -361,7 +336,7 @@ const GlobalArgsSchema = z.object({
       projectMap: z.record(
         z.string(),
         z.object({
-          projectId: z.string().describe(
+          projectId: z.unknown().describe(
             "The project ID, should be same as the key of this project config in the parent map.",
           ).optional(),
         }),
@@ -388,22 +363,10 @@ const GlobalArgsSchema = z.object({
         "Output only. [Output Only] Indicates how many instances are in use.",
       ).optional(),
       instanceProperties: z.object({
-        guestAccelerators: z.array(z.object({
-          acceleratorCount: z.number().int().describe(
-            "The number of the guest accelerator cards exposed to this instance.",
-          ).optional(),
-          acceleratorType: z.string().describe(
-            "Full or partial URL of the accelerator type resource to attach to this instance. For example:projects/my-project/zones/us-central1-c/acceleratorTypes/nvidia-tesla-p100 If you are creating an instance template, specify only the accelerator name. See GPUs on Compute Engine for a full list of accelerator types.",
-          ).optional(),
-        })).describe("Specifies accelerator type and count.").optional(),
-        localSsds: z.array(z.object({
-          diskSizeGb: z.string().describe(
-            "Specifies the size of the disk in base-2 GB.",
-          ).optional(),
-          interface: z.enum(["NVME", "SCSI"]).describe(
-            "Specifies the disk interface to use for attaching this disk, which is either SCSI or NVME. The default isSCSI. For performance characteristics of SCSI over NVMe, seeLocal SSD performance.",
-          ).optional(),
-        })).describe(
+        guestAccelerators: z.array(z.unknown()).describe(
+          "Specifies accelerator type and count.",
+        ).optional(),
+        localSsds: z.array(z.unknown()).describe(
           "Specifies amount of local ssd to reserve with each instance. The type of disk is local-ssd.",
         ).optional(),
         locationHint: z.string().describe(
@@ -518,6 +481,9 @@ const StateSchema = z.object({
   }).optional(),
   mergeSourceCommitments: z.array(z.string()).optional(),
   name: z.string(),
+  params: z.object({
+    resourceManagerTags: z.record(z.string(), z.unknown()),
+  }).optional(),
   plan: z.string().optional(),
   region: z.string().optional(),
   reservations: z.array(z.object({
@@ -526,21 +492,16 @@ const StateSchema = z.object({
     }),
     aggregateReservation: z.object({
       inUseResources: z.array(z.object({
-        accelerator: z.object({
-          acceleratorCount: z.number(),
-          acceleratorType: z.string(),
-        }),
+        accelerator: z.unknown(),
       })),
       reservedResources: z.array(z.object({
-        accelerator: z.object({
-          acceleratorCount: z.number(),
-          acceleratorType: z.string(),
-        }),
+        accelerator: z.unknown(),
       })),
       vmFamily: z.string(),
       workloadType: z.string(),
     }),
     commitment: z.string(),
+    confidentialComputeType: z.string(),
     creationTimestamp: z.string(),
     deleteAfterDuration: z.object({
       nanos: z.number(),
@@ -579,14 +540,14 @@ const StateSchema = z.object({
         subblockInfraMaintenanceOngoingCount: z.number(),
         subblockInfraMaintenancePendingCount: z.number(),
         upcomingGroupMaintenance: z.object({
-          canReschedule: z.boolean(),
-          latestWindowStartTime: z.string(),
-          maintenanceOnShutdown: z.boolean(),
-          maintenanceReasons: z.array(z.string()),
-          maintenanceStatus: z.string(),
-          type: z.string(),
-          windowEndTime: z.string(),
-          windowStartTime: z.string(),
+          canReschedule: z.unknown(),
+          latestWindowStartTime: z.unknown(),
+          maintenanceOnShutdown: z.unknown(),
+          maintenanceReasons: z.unknown(),
+          maintenanceStatus: z.unknown(),
+          type: z.unknown(),
+          windowEndTime: z.unknown(),
+          windowStartTime: z.unknown(),
         }),
       }),
       specificSkuAllocation: z.object({
@@ -606,14 +567,8 @@ const StateSchema = z.object({
       count: z.string(),
       inUseCount: z.string(),
       instanceProperties: z.object({
-        guestAccelerators: z.array(z.object({
-          acceleratorCount: z.number(),
-          acceleratorType: z.string(),
-        })),
-        localSsds: z.array(z.object({
-          diskSizeGb: z.string(),
-          interface: z.string(),
-        })),
+        guestAccelerators: z.array(z.unknown()),
+        localSsds: z.array(z.unknown()),
         locationHint: z.string(),
         machineType: z.string(),
         minCpuPlatform: z.string(),
@@ -670,6 +625,11 @@ const InputsSchema = z.object({
     .describe(
       "Name of the commitment. You must specify a name when you purchase the commitment. The name must be 1-63 characters long, and comply withRFC1035. Specifically, the name must be 1-63 characters long and match the regular expression `[a-z]([-a-z0-9]*[a-z0-9])?` which means the first character must be a lowercase letter, and all following characters must be a dash, lowercase letter, or digit, except the last character, which cannot be a dash.",
     ).optional(),
+  params: z.object({
+    resourceManagerTags: z.record(z.string(), z.string()).describe(
+      "Input only. Resource manager tags to be bound to the commitment. Tag keys and values have the same definition as resource manager tags. Keys and values can be either in numeric format, such as `tagKeys/{tag_key_id}` and `tagValues/{tag_value_id}` or in namespaced format such as `{org_id|project_id}/{tag_key_short_name}` and `{tag_value_short_name}`. The field is ignored (both PUT & PATCH) when empty.",
+    ).optional(),
+  }).describe("Additional commitment params.").optional(),
   plan: z.enum(["INVALID", "THIRTY_SIX_MONTH", "TWELVE_MONTH"]).describe(
     "The minimum time duration that you commit to purchasing resources. The plan that you choose determines the preset term length of the commitment (which is 1 year or 3 years) and affects the discount rate that you receive for your resources. Committing to a longer time duration typically gives you a higher discount rate. The supported values for this field are TWELVE_MONTH (1 year), andTHIRTY_SIX_MONTH (3 years).",
   ).optional(),
@@ -690,26 +650,12 @@ const InputsSchema = z.object({
     ).optional(),
     aggregateReservation: z.object({
       inUseResources: z.array(z.object({
-        accelerator: z.object({
-          acceleratorCount: z.number().int().describe(
-            "Number of accelerators of specified type.",
-          ).optional(),
-          acceleratorType: z.string().describe(
-            'Full or partial URL to accelerator type. e.g. "projects/{PROJECT}/zones/{ZONE}/acceleratorTypes/ct4l"',
-          ).optional(),
-        }).optional(),
+        accelerator: z.unknown().optional(),
       })).describe(
         "Output only. [Output only] List of resources currently in use.",
       ).optional(),
       reservedResources: z.array(z.object({
-        accelerator: z.object({
-          acceleratorCount: z.number().int().describe(
-            "Number of accelerators of specified type.",
-          ).optional(),
-          acceleratorType: z.string().describe(
-            'Full or partial URL to accelerator type. e.g. "projects/{PROJECT}/zones/{ZONE}/acceleratorTypes/ct4l"',
-          ).optional(),
-        }).optional(),
+        accelerator: z.unknown().optional(),
       })).describe("List of reserved resources (CPUs, memory, accelerators).")
         .optional(),
       vmFamily: z.enum([
@@ -733,6 +679,10 @@ const InputsSchema = z.object({
     commitment: z.string().describe(
       "Output only. [Output Only] Full or partial URL to a parent commitment. This field displays for reservations that are tied to a commitment.",
     ).optional(),
+    confidentialComputeType: z.enum([
+      "CONFIDENTIAL_COMPUTE_TYPE_TDX",
+      "CONFIDENTIAL_COMPUTE_TYPE_UNSPECIFIED",
+    ]).optional(),
     creationTimestamp: z.string().describe(
       "Output only. [Output Only] Creation timestamp inRFC3339 text format.",
     ).optional(),
@@ -839,45 +789,25 @@ const InputsSchema = z.object({
           "Describes number of subblock Infrastructure that has pending maintenance. Here, Subblock Infrastructure Maintenance pertains to upstream hardware contained in the Subblock that is necessary for a VM Family (e.g. NVLink Domains). Not all VM Families will support this field.",
         ).optional(),
         upcomingGroupMaintenance: z.object({
-          canReschedule: z.boolean().describe(
+          canReschedule: z.unknown().describe(
             "Indicates if the maintenance can be customer triggered.",
           ).optional(),
-          latestWindowStartTime: z.string().describe(
+          latestWindowStartTime: z.unknown().describe(
             "The latest time for the planned maintenance window to start. This timestamp value is in RFC3339 text format.",
           ).optional(),
-          maintenanceOnShutdown: z.boolean().describe(
+          maintenanceOnShutdown: z.unknown().describe(
             "Indicates whether the UpcomingMaintenance will be triggered on VM shutdown.",
           ).optional(),
-          maintenanceReasons: z.array(
-            z.enum([
-              "FAILURE_DISK",
-              "FAILURE_GPU",
-              "FAILURE_GPU_MULTIPLE_FAULTY_HOSTS_CUSTOMER_REPORTED",
-              "FAILURE_GPU_NVLINK_SWITCH_CUSTOMER_REPORTED",
-              "FAILURE_GPU_TEMPERATURE",
-              "FAILURE_GPU_XID",
-              "FAILURE_INFRA",
-              "FAILURE_INTERFACE",
-              "FAILURE_MEMORY",
-              "FAILURE_NETWORK",
-              "FAILURE_NVLINK",
-              "FAILURE_REDUNDANT_HARDWARE_FAULT",
-              "FAILURE_TPU",
-              "INFRASTRUCTURE_RELOCATION",
-              "MAINTENANCE_REASON_UNKNOWN",
-              "PLANNED_NETWORK_UPDATE",
-              "PLANNED_UPDATE",
-            ]),
-          ).describe("The reasons for the maintenance. Only valid for vms.")
+          maintenanceReasons: z.unknown().describe(
+            "The reasons for the maintenance. Only valid for vms.",
+          ).optional(),
+          maintenanceStatus: z.unknown().optional(),
+          type: z.unknown().describe("Defines the type of maintenance.")
             .optional(),
-          maintenanceStatus: z.enum(["ONGOING", "PENDING", "UNKNOWN"])
-            .optional(),
-          type: z.enum(["MULTIPLE", "SCHEDULED", "UNKNOWN_TYPE", "UNSCHEDULED"])
-            .describe("Defines the type of maintenance.").optional(),
-          windowEndTime: z.string().describe(
+          windowEndTime: z.unknown().describe(
             "The time by which the maintenance disruption will be completed. This timestamp value is in RFC3339 text format.",
           ).optional(),
-          windowStartTime: z.string().describe(
+          windowStartTime: z.unknown().describe(
             "The current start time of the maintenance window. This timestamp value is in RFC3339 text format.",
           ).optional(),
         }).describe("Upcoming Maintenance notification information.")
@@ -887,7 +817,7 @@ const InputsSchema = z.object({
         sourceInstanceTemplateId: z.string().describe(
           "ID of the instance template used to populate reservation properties.",
         ).optional(),
-        utilizations: z.record(z.string(), z.string()).describe(
+        utilizations: z.record(z.string(), z.unknown()).describe(
           "Per service utilization breakdown. The Key is the Google Cloud managed service name.",
         ).optional(),
       }).describe("Contains Properties set for the reservation.").optional(),
@@ -907,7 +837,7 @@ const InputsSchema = z.object({
       projectMap: z.record(
         z.string(),
         z.object({
-          projectId: z.string().describe(
+          projectId: z.unknown().describe(
             "The project ID, should be same as the key of this project config in the parent map.",
           ).optional(),
         }),
@@ -934,22 +864,10 @@ const InputsSchema = z.object({
         "Output only. [Output Only] Indicates how many instances are in use.",
       ).optional(),
       instanceProperties: z.object({
-        guestAccelerators: z.array(z.object({
-          acceleratorCount: z.number().int().describe(
-            "The number of the guest accelerator cards exposed to this instance.",
-          ).optional(),
-          acceleratorType: z.string().describe(
-            "Full or partial URL of the accelerator type resource to attach to this instance. For example:projects/my-project/zones/us-central1-c/acceleratorTypes/nvidia-tesla-p100 If you are creating an instance template, specify only the accelerator name. See GPUs on Compute Engine for a full list of accelerator types.",
-          ).optional(),
-        })).describe("Specifies accelerator type and count.").optional(),
-        localSsds: z.array(z.object({
-          diskSizeGb: z.string().describe(
-            "Specifies the size of the disk in base-2 GB.",
-          ).optional(),
-          interface: z.enum(["NVME", "SCSI"]).describe(
-            "Specifies the disk interface to use for attaching this disk, which is either SCSI or NVME. The default isSCSI. For performance characteristics of SCSI over NVMe, seeLocal SSD performance.",
-          ).optional(),
-        })).describe(
+        guestAccelerators: z.array(z.unknown()).describe(
+          "Specifies accelerator type and count.",
+        ).optional(),
+        localSsds: z.array(z.unknown()).describe(
           "Specifies amount of local ssd to reserve with each instance. The type of disk is local-ssd.",
         ).optional(),
         locationHint: z.string().describe(
@@ -1049,7 +967,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/compute/regioncommitments",
-  version: "2026.04.03.3",
+  version: "2026.04.04.1",
   upgrades: [
     {
       toVersion: "2026.03.31.1",
@@ -1087,6 +1005,11 @@ export const model = {
     {
       toVersion: "2026.04.03.3",
       description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.04.1",
+      description: "Added: params",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },
   ],
@@ -1133,6 +1056,7 @@ export const model = {
           body["mergeSourceCommitments"] = g["mergeSourceCommitments"];
         }
         if (g["name"] !== undefined) body["name"] = g["name"];
+        if (g["params"] !== undefined) body["params"] = g["params"];
         if (g["plan"] !== undefined) body["plan"] = g["plan"];
         if (g["reservations"] !== undefined) {
           body["reservations"] = g["reservations"];
@@ -1245,6 +1169,7 @@ export const model = {
           body["mergeSourceCommitments"] = g["mergeSourceCommitments"];
         }
         if (g["name"] !== undefined) body["name"] = g["name"];
+        if (g["params"] !== undefined) body["params"] = g["params"];
         if (g["plan"] !== undefined) body["plan"] = g["plan"];
         if (g["reservations"] !== undefined) {
           body["reservations"] = g["reservations"];

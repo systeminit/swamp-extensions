@@ -150,173 +150,60 @@ const GlobalArgsSchema = z.object({
       .optional(),
     auxiliaryNodeGroups: z.array(z.object({
       nodeGroup: z.object({
-        labels: z.record(z.string(), z.string()).describe(
+        labels: z.record(z.string(), z.unknown()).describe(
           "Optional. Node group labels. Label keys must consist of from 1 to 63 characters and conform to RFC 1035 (https://www.ietf.org/rfc/rfc1035.txt). Label values can be empty. If specified, they must consist of from 1 to 63 characters and conform to RFC 1035 (https://www.ietf.org/rfc/rfc1035.txt). The node group must have no more than 32 labels.",
         ).optional(),
         name: z.string().describe(
           "The Node group resource name (https://aip.dev/122).",
         ).optional(),
         nodeGroupConfig: z.object({
-          accelerators: z.array(z.object({
-            acceleratorCount: z.number().int().describe(
-              "The number of the accelerator cards of this type exposed to this instance.",
-            ).optional(),
-            acceleratorTypeUri: z.string().describe(
-              "Full URL, partial URI, or short name of the accelerator type resource to expose to this instance. See Compute Engine AcceleratorTypes (https://cloud.google.com/compute/docs/reference/v1/acceleratorTypes).Examples: https://www.googleapis.com/compute/v1/projects/[project_id]/zones/[zone]/acceleratorTypes/nvidia-tesla-t4 projects/[project_id]/zones/[zone]/acceleratorTypes/nvidia-tesla-t4 nvidia-tesla-t4Auto Zone Exception: If you are using the Dataproc Auto Zone Placement (https://cloud.google.com/dataproc/docs/concepts/configuring-clusters/auto-zone#using_auto_zone_placement) feature, you must use the short name of the accelerator type resource, for example, nvidia-tesla-t4.",
-            ).optional(),
-          })).describe(
+          accelerators: z.unknown().describe(
             "Optional. The Compute Engine accelerator configuration for these instances.",
           ).optional(),
-          diskConfig: z.object({
-            attachedDiskConfigs: z.array(z.object({
-              diskSizeGb: z.number().int().describe(
-                "Optional. Disk size in GB.",
-              ).optional(),
-              diskType: z.enum([
-                "DISK_TYPE_UNSPECIFIED",
-                "HYPERDISK_BALANCED",
-                "HYPERDISK_EXTREME",
-                "HYPERDISK_ML",
-                "HYPERDISK_THROUGHPUT",
-              ]).describe("Optional. Disk type.").optional(),
-              provisionedIops: z.string().describe(
-                "Optional. Indicates how many IOPS to provision for the attached disk. This sets the number of I/O operations per second that the disk can handle. See https://cloud.google.com/compute/docs/disks/hyperdisks#hyperdisk-features",
-              ).optional(),
-              provisionedThroughput: z.string().describe(
-                "Optional. Indicates how much throughput to provision for the attached disk. This sets the number of throughput mb per second that the disk can handle. See https://cloud.google.com/compute/docs/disks/hyperdisks#hyperdisk-features",
-              ).optional(),
-            })).describe(
-              "Optional. A list of attached disk configs for a group of VM instances.",
-            ).optional(),
-            bootDiskProvisionedIops: z.string().describe(
-              "Optional. Indicates how many IOPS to provision for the disk. This sets the number of I/O operations per second that the disk can handle. This field is supported only if boot_disk_type is hyperdisk-balanced.",
-            ).optional(),
-            bootDiskProvisionedThroughput: z.string().describe(
-              "Optional. Indicates how much throughput to provision for the disk. This sets the number of throughput mb per second that the disk can handle. Values must be greater than or equal to 1. This field is supported only if boot_disk_type is hyperdisk-balanced.",
-            ).optional(),
-            bootDiskSizeGb: z.number().int().describe(
-              "Optional. Size in GB of the boot disk (default is 500GB).",
-            ).optional(),
-            bootDiskType: z.string().describe(
-              'Optional. Type of the boot disk (default is "pd-standard"). Valid values: "pd-balanced" (Persistent Disk Balanced Solid State Drive), "pd-ssd" (Persistent Disk Solid State Drive), or "pd-standard" (Persistent Disk Hard Disk Drive). See Disk types (https://cloud.google.com/compute/docs/disks#disk-types).',
-            ).optional(),
-            localSsdInterface: z.string().describe(
-              'Optional. Interface type of local SSDs (default is "scsi"). Valid values: "scsi" (Small Computer System Interface), "nvme" (Non-Volatile Memory Express). See local SSD performance (https://cloud.google.com/compute/docs/disks/local-ssd#performance).',
-            ).optional(),
-            numLocalSsds: z.number().int().describe(
-              "Optional. Number of attached SSDs, from 0 to 8 (default is 0). If SSDs are not attached, the boot disk is used to store runtime logs and HDFS (https://hadoop.apache.org/docs/r1.2.1/hdfs_user_guide.html) data. If one or more SSDs are attached, this runtime bulk data is spread across them, and the boot disk contains only basic config and installed binaries.Note: Local SSD options may vary by machine type and number of vCPUs selected.",
-            ).optional(),
-          }).describe(
+          diskConfig: z.unknown().describe(
             "Specifies the config of boot disk and attached disk options for a group of VM instances.",
           ).optional(),
-          imageUri: z.string().describe(
+          imageUri: z.unknown().describe(
             "Optional. The Compute Engine image resource used for cluster instances.The URI can represent an image or image family.Image examples: https://www.googleapis.com/compute/v1/projects/[project_id]/global/images/[image-id] projects/[project_id]/global/images/[image-id] image-idImage family examples. Dataproc will use the most recent image from the family: https://www.googleapis.com/compute/v1/projects/[project_id]/global/images/family/[custom-image-family-name] projects/[project_id]/global/images/family/[custom-image-family-name]If the URI is unspecified, it will be inferred from SoftwareConfig.image_version or the system default.",
           ).optional(),
-          instanceFlexibilityPolicy: z.object({
-            instanceMachineTypes: z.record(z.string(), z.string()).describe(
-              "Output only. A map of instance short name to machine type. The key is the short name of the Compute Engine instance, and the value is the full machine-type name (e.g., 'n1-standard-16'). See Machine types for more information on valid machine type strings.",
-            ).optional(),
-            instanceSelectionList: z.array(z.object({
-              machineTypes: z.array(z.string()).describe(
-                'Optional. Full machine-type names, e.g. "n1-standard-16".',
-              ).optional(),
-              rank: z.number().int().describe(
-                "Optional. Preference of this instance selection. Lower number means higher preference. Dataproc will first try to create a VM based on the machine-type with priority rank and fallback to next rank based on availability. Machine types and instance selections with the same priority have the same preference.",
-              ).optional(),
-            })).describe(
-              "Optional. List of instance selection options that the group will use when creating new VMs.",
-            ).optional(),
-            instanceSelectionResults: z.array(z.object({
-              machineType: z.string().describe(
-                'Output only. Full machine-type names, e.g. "n1-standard-16".',
-              ).optional(),
-              vmCount: z.number().int().describe(
-                "Output only. Number of VM provisioned with the machine_type.",
-              ).optional(),
-            })).describe(
-              "Output only. A list of instance selection results in the group.",
-            ).optional(),
-            provisioningModelMix: z.object({
-              standardCapacityBase: z.number().int().describe(
-                "Optional. The base capacity that will always use Standard VMs to avoid risk of more preemption than the minimum capacity you need. Dataproc will create only standard VMs until it reaches standard_capacity_base, then it will start using standard_capacity_percent_above_base to mix Spot with Standard VMs. eg. If 15 instances are requested and standard_capacity_base is 5, Dataproc will create 5 standard VMs and then start mixing spot and standard VMs for remaining 10 instances.",
-              ).optional(),
-              standardCapacityPercentAboveBase: z.number().int().describe(
-                "Optional. The percentage of target capacity that should use Standard VM. The remaining percentage will use Spot VMs. The percentage applies only to the capacity above standard_capacity_base. eg. If 15 instances are requested and standard_capacity_base is 5 and standard_capacity_percent_above_base is 30, Dataproc will create 5 standard VMs and then start mixing spot and standard VMs for remaining 10 instances. The mix will be 30% standard and 70% spot.",
-              ).optional(),
-            }).describe(
-              "Defines how Dataproc should create VMs with a mixture of provisioning models.",
-            ).optional(),
-          }).describe(
+          instanceFlexibilityPolicy: z.unknown().describe(
             "Instance flexibility Policy allowing a mixture of VM shapes and provisioning models.",
           ).optional(),
-          instanceNames: z.array(z.string()).describe(
+          instanceNames: z.unknown().describe(
             "Output only. The list of instance names. Dataproc derives the names from cluster_name, num_instances, and the instance group.",
           ).optional(),
-          instanceReferences: z.array(z.object({
-            instanceId: z.string().describe(
-              "The unique identifier of the Compute Engine instance.",
-            ).optional(),
-            instanceName: z.string().describe(
-              "The user-friendly name of the Compute Engine instance.",
-            ).optional(),
-            publicEciesKey: z.string().describe(
-              "The public ECIES key used for sharing data with this instance.",
-            ).optional(),
-            publicKey: z.string().describe(
-              "The public RSA key used for sharing data with this instance.",
-            ).optional(),
-          })).describe(
+          instanceReferences: z.unknown().describe(
             "Output only. List of references to Compute Engine instances.",
           ).optional(),
-          isPreemptible: z.boolean().describe(
+          isPreemptible: z.unknown().describe(
             "Output only. Specifies that this instance group contains preemptible instances.",
           ).optional(),
-          machineTypeUri: z.string().describe(
+          machineTypeUri: z.unknown().describe(
             "Optional. The Compute Engine machine type used for cluster instances.A full URL, partial URI, or short name are valid. Examples: https://www.googleapis.com/compute/v1/projects/[project_id]/zones/[zone]/machineTypes/n1-standard-2 projects/[project_id]/zones/[zone]/machineTypes/n1-standard-2 n1-standard-2Auto Zone Exception: If you are using the Dataproc Auto Zone Placement (https://cloud.google.com/dataproc/docs/concepts/configuring-clusters/auto-zone#using_auto_zone_placement) feature, you must use the short name of the machine type resource, for example, n1-standard-2.",
           ).optional(),
-          managedGroupConfig: z.object({
-            instanceGroupManagerName: z.string().describe(
-              "Output only. The name of the Instance Group Manager for this group.",
-            ).optional(),
-            instanceGroupManagerUri: z.string().describe(
-              "Output only. The partial URI to the instance group manager for this group. E.g. projects/my-project/regions/us-central1/instanceGroupManagers/my-igm.",
-            ).optional(),
-            instanceTemplateName: z.string().describe(
-              "Output only. The name of the Instance Template used for the Managed Instance Group.",
-            ).optional(),
-          }).describe(
+          managedGroupConfig: z.unknown().describe(
             "Specifies the resources used to actively manage an instance group.",
           ).optional(),
-          minCpuPlatform: z.string().describe(
+          minCpuPlatform: z.unknown().describe(
             "Optional. Specifies the minimum cpu platform for the Instance Group. See Dataproc -> Minimum CPU Platform (https://cloud.google.com/dataproc/docs/concepts/compute/dataproc-min-cpu).",
           ).optional(),
-          minNumInstances: z.number().int().describe(
+          minNumInstances: z.unknown().describe(
             "Optional. The minimum number of primary worker instances to create. If min_num_instances is set, cluster creation will succeed if the number of primary workers created is at least equal to the min_num_instances number.Example: Cluster creation request with num_instances = 5 and min_num_instances = 3: If 4 VMs are created and 1 instance fails, the failed VM is deleted. The cluster is resized to 4 instances and placed in a RUNNING state. If 2 instances are created and 3 instances fail, the cluster in placed in an ERROR state. The failed VMs are not deleted.",
           ).optional(),
-          numInstances: z.number().int().describe(
+          numInstances: z.unknown().describe(
             "Optional. The number of VM instances in the instance group. For HA cluster master_config groups, must be set to 3. For standard cluster master_config groups, must be set to 1.",
           ).optional(),
-          preemptibility: z.enum([
-            "PREEMPTIBILITY_UNSPECIFIED",
-            "NON_PREEMPTIBLE",
-            "PREEMPTIBLE",
-            "SPOT",
-          ]).describe(
+          preemptibility: z.unknown().describe(
             "Optional. Specifies the preemptibility of the instance group.The default value for master and worker groups is NON_PREEMPTIBLE. This default cannot be changed.The default value for secondary instances is PREEMPTIBLE.",
           ).optional(),
-          startupConfig: z.object({
-            requiredRegistrationFraction: z.number().describe(
-              "Optional. The config setting to enable cluster creation/ updation to be successful only after required_registration_fraction of instances are up and running. This configuration is applicable to only secondary workers for now. The cluster will fail if required_registration_fraction of instances are not available. This will include instance creation, agent registration, and service registration (if enabled).",
-            ).optional(),
-          }).describe(
+          startupConfig: z.unknown().describe(
             "Configuration to handle the startup of instances during cluster create and update process.",
           ).optional(),
         }).describe(
           "The config settings for Compute Engine resources in an instance group, such as a master or worker group.",
         ).optional(),
-        roles: z.array(z.enum(["ROLE_UNSPECIFIED", "DRIVER"])).describe(
-          "Required. Node group roles.",
-        ).optional(),
+        roles: z.array(z.unknown()).describe("Required. Node group roles.")
+          .optional(),
       }).describe(
         "Dataproc Node Group. The Dataproc NodeGroup resource is not related to the Dataproc NodeGroupAffinity resource.",
       ).optional(),
@@ -340,7 +227,7 @@ const GlobalArgsSchema = z.object({
     ).optional(),
     dataprocMetricConfig: z.object({
       metrics: z.array(z.object({
-        metricOverrides: z.array(z.string()).describe(
+        metricOverrides: z.array(z.unknown()).describe(
           "Optional. Specify one or more Custom metrics (https://cloud.google.com/dataproc/docs/guides/dataproc-metrics#custom_metrics) to collect for the metric course (for the SPARK metric source (any Spark metric (https://spark.apache.org/docs/latest/monitoring.html#metrics) can be specified).Provide metrics in the following format: METRIC_SOURCE: INSTANCE:GROUP:METRIC Use camelcase as appropriate.Examples: yarn:ResourceManager:QueueMetrics:AppsCompleted spark:driver:DAGScheduler:job.allJobs sparkHistoryServer:JVM:Memory:NonHeapMemoryUsage.committed hiveserver2:JVM:Memory:NonHeapMemoryUsage.used Notes: Only the specified overridden metrics are collected for the metric source. For example, if one or more spark:executive metrics are listed as metric overrides, other SPARK metrics are not collected. The collection of the metrics for other enabled custom metric sources is unaffected. For example, if both SPARK and YARN metric sources are enabled, and overrides are provided for Spark metrics only, all YARN metrics are collected.",
         ).optional(),
         metricSource: z.enum([
@@ -482,65 +369,21 @@ const GlobalArgsSchema = z.object({
           "Required. The target GKE node pool. Format: 'projects/{project}/locations/{location}/clusters/{cluster}/nodePools/{node_pool}'",
         ).optional(),
         nodePoolConfig: z.object({
-          autoscaling: z.object({
-            maxNodeCount: z.number().int().describe(
-              "The maximum number of nodes in the node pool. Must be >= min_node_count, and must be > 0. Note: Quota must be sufficient to scale up the cluster.",
-            ).optional(),
-            minNodeCount: z.number().int().describe(
-              "The minimum number of nodes in the node pool. Must be >= 0 and <= max_node_count.",
-            ).optional(),
-          }).describe(
+          autoscaling: z.unknown().describe(
             "GkeNodePoolAutoscaling contains information the cluster autoscaler needs to adjust the size of the node pool to the current cluster usage.",
           ).optional(),
-          config: z.object({
-            accelerators: z.array(z.object({
-              acceleratorCount: z.string().describe(
-                "The number of accelerator cards exposed to an instance.",
-              ).optional(),
-              acceleratorType: z.string().describe(
-                "The accelerator type resource namename (see GPUs on Compute Engine).",
-              ).optional(),
-              gpuPartitionSize: z.string().describe(
-                "Size of partitions to create on the GPU. Valid values are described in the NVIDIA mig user guide (https://docs.nvidia.com/datacenter/tesla/mig-user-guide/#partitioning).",
-              ).optional(),
-            })).describe(
-              "Optional. A list of hardware accelerators (https://cloud.google.com/compute/docs/gpus) to attach to each node.",
-            ).optional(),
-            bootDiskKmsKey: z.string().describe(
-              "Optional. The Customer Managed Encryption Key (CMEK) (https://cloud.google.com/kubernetes-engine/docs/how-to/using-cmek) used to encrypt the boot disk attached to each node in the node pool. Specify the key using the following format: projects/{project}/locations/{location}/keyRings/{key_ring}/cryptoKeys/{crypto_key}",
-            ).optional(),
-            localSsdCount: z.number().int().describe(
-              "Optional. The number of local SSD disks to attach to the node, which is limited by the maximum number of disks allowable per zone (see Adding Local SSDs (https://cloud.google.com/compute/docs/disks/local-ssd)).",
-            ).optional(),
-            machineType: z.string().describe(
-              "Optional. The name of a Compute Engine machine type (https://cloud.google.com/compute/docs/machine-types).",
-            ).optional(),
-            minCpuPlatform: z.string().describe(
-              'Optional. Minimum CPU platform (https://cloud.google.com/compute/docs/instances/specify-min-cpu-platform) to be used by this instance. The instance may be scheduled on the specified or a newer CPU platform. Specify the friendly names of CPU platforms, such as "Intel Haswell"` or Intel Sandy Bridge".',
-            ).optional(),
-            preemptible: z.boolean().describe(
-              "Optional. Whether the nodes are created as legacy preemptible VM instances (https://cloud.google.com/compute/docs/instances/preemptible). Also see Spot VMs, preemptible VM instances without a maximum lifetime. Legacy and Spot preemptible nodes cannot be used in a node pool with the CONTROLLER role or in the DEFAULT node pool if the CONTROLLER role is not assigned (the DEFAULT node pool will assume the CONTROLLER role).",
-            ).optional(),
-            spot: z.boolean().describe(
-              "Optional. Whether the nodes are created as Spot VM instances (https://cloud.google.com/compute/docs/instances/spot). Spot VMs are the latest update to legacy preemptible VMs. Spot VMs do not have a maximum lifetime. Legacy and Spot preemptible nodes cannot be used in a node pool with the CONTROLLER role or in the DEFAULT node pool if the CONTROLLER role is not assigned (the DEFAULT node pool will assume the CONTROLLER role).",
-            ).optional(),
-          }).describe("Parameters that describe cluster nodes.").optional(),
-          locations: z.array(z.string()).describe(
+          config: z.unknown().describe(
+            "Parameters that describe cluster nodes.",
+          ).optional(),
+          locations: z.unknown().describe(
             "Optional. The list of Compute Engine zones (https://cloud.google.com/compute/docs/zones#available) where node pool nodes associated with a Dataproc on GKE virtual cluster will be located.Note: All node pools associated with a virtual cluster must be located in the same region as the virtual cluster, and they must be located in the same zone within that region.If a location is not specified during node pool creation, Dataproc on GKE will choose the zone.",
           ).optional(),
         }).describe(
           "The configuration of a GKE node pool used by a Dataproc-on-GKE cluster (https://cloud.google.com/dataproc/docs/concepts/jobs/dataproc-gke#create-a-dataproc-on-gke-cluster).",
         ).optional(),
-        roles: z.array(
-          z.enum([
-            "ROLE_UNSPECIFIED",
-            "DEFAULT",
-            "CONTROLLER",
-            "SPARK_DRIVER",
-            "SPARK_EXECUTOR",
-          ]),
-        ).describe("Required. The roles associated with the GKE node pool.")
-          .optional(),
+        roles: z.array(z.unknown()).describe(
+          "Required. The roles associated with the GKE node pool.",
+        ).optional(),
       })).describe(
         "Optional. GKE node pools where workloads will be scheduled. At least one node pool must be assigned the DEFAULT GkeNodePoolTarget.Role. If a GkeNodePoolTarget is not specified, Dataproc constructs a DEFAULT GkeNodePoolTarget. Each role can be given to only one GkeNodePoolTarget. All node pools must have the same location settings.",
       ).optional(),
@@ -592,19 +435,13 @@ const GlobalArgsSchema = z.object({
       ).optional(),
       diskConfig: z.object({
         attachedDiskConfigs: z.array(z.object({
-          diskSizeGb: z.number().int().describe("Optional. Disk size in GB.")
+          diskSizeGb: z.unknown().describe("Optional. Disk size in GB.")
             .optional(),
-          diskType: z.enum([
-            "DISK_TYPE_UNSPECIFIED",
-            "HYPERDISK_BALANCED",
-            "HYPERDISK_EXTREME",
-            "HYPERDISK_ML",
-            "HYPERDISK_THROUGHPUT",
-          ]).describe("Optional. Disk type.").optional(),
-          provisionedIops: z.string().describe(
+          diskType: z.unknown().describe("Optional. Disk type.").optional(),
+          provisionedIops: z.unknown().describe(
             "Optional. Indicates how many IOPS to provision for the attached disk. This sets the number of I/O operations per second that the disk can handle. See https://cloud.google.com/compute/docs/disks/hyperdisks#hyperdisk-features",
           ).optional(),
-          provisionedThroughput: z.string().describe(
+          provisionedThroughput: z.unknown().describe(
             "Optional. Indicates how much throughput to provision for the attached disk. This sets the number of throughput mb per second that the disk can handle. See https://cloud.google.com/compute/docs/disks/hyperdisks#hyperdisk-features",
           ).optional(),
         })).describe(
@@ -639,20 +476,20 @@ const GlobalArgsSchema = z.object({
           "Output only. A map of instance short name to machine type. The key is the short name of the Compute Engine instance, and the value is the full machine-type name (e.g., 'n1-standard-16'). See Machine types for more information on valid machine type strings.",
         ).optional(),
         instanceSelectionList: z.array(z.object({
-          machineTypes: z.array(z.string()).describe(
+          machineTypes: z.unknown().describe(
             'Optional. Full machine-type names, e.g. "n1-standard-16".',
           ).optional(),
-          rank: z.number().int().describe(
+          rank: z.unknown().describe(
             "Optional. Preference of this instance selection. Lower number means higher preference. Dataproc will first try to create a VM based on the machine-type with priority rank and fallback to next rank based on availability. Machine types and instance selections with the same priority have the same preference.",
           ).optional(),
         })).describe(
           "Optional. List of instance selection options that the group will use when creating new VMs.",
         ).optional(),
         instanceSelectionResults: z.array(z.object({
-          machineType: z.string().describe(
+          machineType: z.unknown().describe(
             'Output only. Full machine-type names, e.g. "n1-standard-16".',
           ).optional(),
-          vmCount: z.number().int().describe(
+          vmCount: z.unknown().describe(
             "Output only. Number of VM provisioned with the machine_type.",
           ).optional(),
         })).describe(
@@ -754,19 +591,13 @@ const GlobalArgsSchema = z.object({
       ).optional(),
       diskConfig: z.object({
         attachedDiskConfigs: z.array(z.object({
-          diskSizeGb: z.number().int().describe("Optional. Disk size in GB.")
+          diskSizeGb: z.unknown().describe("Optional. Disk size in GB.")
             .optional(),
-          diskType: z.enum([
-            "DISK_TYPE_UNSPECIFIED",
-            "HYPERDISK_BALANCED",
-            "HYPERDISK_EXTREME",
-            "HYPERDISK_ML",
-            "HYPERDISK_THROUGHPUT",
-          ]).describe("Optional. Disk type.").optional(),
-          provisionedIops: z.string().describe(
+          diskType: z.unknown().describe("Optional. Disk type.").optional(),
+          provisionedIops: z.unknown().describe(
             "Optional. Indicates how many IOPS to provision for the attached disk. This sets the number of I/O operations per second that the disk can handle. See https://cloud.google.com/compute/docs/disks/hyperdisks#hyperdisk-features",
           ).optional(),
-          provisionedThroughput: z.string().describe(
+          provisionedThroughput: z.unknown().describe(
             "Optional. Indicates how much throughput to provision for the attached disk. This sets the number of throughput mb per second that the disk can handle. See https://cloud.google.com/compute/docs/disks/hyperdisks#hyperdisk-features",
           ).optional(),
         })).describe(
@@ -801,20 +632,20 @@ const GlobalArgsSchema = z.object({
           "Output only. A map of instance short name to machine type. The key is the short name of the Compute Engine instance, and the value is the full machine-type name (e.g., 'n1-standard-16'). See Machine types for more information on valid machine type strings.",
         ).optional(),
         instanceSelectionList: z.array(z.object({
-          machineTypes: z.array(z.string()).describe(
+          machineTypes: z.unknown().describe(
             'Optional. Full machine-type names, e.g. "n1-standard-16".',
           ).optional(),
-          rank: z.number().int().describe(
+          rank: z.unknown().describe(
             "Optional. Preference of this instance selection. Lower number means higher preference. Dataproc will first try to create a VM based on the machine-type with priority rank and fallback to next rank based on availability. Machine types and instance selections with the same priority have the same preference.",
           ).optional(),
         })).describe(
           "Optional. List of instance selection options that the group will use when creating new VMs.",
         ).optional(),
         instanceSelectionResults: z.array(z.object({
-          machineType: z.string().describe(
+          machineType: z.unknown().describe(
             'Output only. Full machine-type names, e.g. "n1-standard-16".',
           ).optional(),
-          vmCount: z.number().int().describe(
+          vmCount: z.unknown().describe(
             "Output only. Number of VM provisioned with the machine_type.",
           ).optional(),
         })).describe(
@@ -1006,19 +837,13 @@ const GlobalArgsSchema = z.object({
       ).optional(),
       diskConfig: z.object({
         attachedDiskConfigs: z.array(z.object({
-          diskSizeGb: z.number().int().describe("Optional. Disk size in GB.")
+          diskSizeGb: z.unknown().describe("Optional. Disk size in GB.")
             .optional(),
-          diskType: z.enum([
-            "DISK_TYPE_UNSPECIFIED",
-            "HYPERDISK_BALANCED",
-            "HYPERDISK_EXTREME",
-            "HYPERDISK_ML",
-            "HYPERDISK_THROUGHPUT",
-          ]).describe("Optional. Disk type.").optional(),
-          provisionedIops: z.string().describe(
+          diskType: z.unknown().describe("Optional. Disk type.").optional(),
+          provisionedIops: z.unknown().describe(
             "Optional. Indicates how many IOPS to provision for the attached disk. This sets the number of I/O operations per second that the disk can handle. See https://cloud.google.com/compute/docs/disks/hyperdisks#hyperdisk-features",
           ).optional(),
-          provisionedThroughput: z.string().describe(
+          provisionedThroughput: z.unknown().describe(
             "Optional. Indicates how much throughput to provision for the attached disk. This sets the number of throughput mb per second that the disk can handle. See https://cloud.google.com/compute/docs/disks/hyperdisks#hyperdisk-features",
           ).optional(),
         })).describe(
@@ -1053,20 +878,20 @@ const GlobalArgsSchema = z.object({
           "Output only. A map of instance short name to machine type. The key is the short name of the Compute Engine instance, and the value is the full machine-type name (e.g., 'n1-standard-16'). See Machine types for more information on valid machine type strings.",
         ).optional(),
         instanceSelectionList: z.array(z.object({
-          machineTypes: z.array(z.string()).describe(
+          machineTypes: z.unknown().describe(
             'Optional. Full machine-type names, e.g. "n1-standard-16".',
           ).optional(),
-          rank: z.number().int().describe(
+          rank: z.unknown().describe(
             "Optional. Preference of this instance selection. Lower number means higher preference. Dataproc will first try to create a VM based on the machine-type with priority rank and fallback to next rank based on availability. Machine types and instance selections with the same priority have the same preference.",
           ).optional(),
         })).describe(
           "Optional. List of instance selection options that the group will use when creating new VMs.",
         ).optional(),
         instanceSelectionResults: z.array(z.object({
-          machineType: z.string().describe(
+          machineType: z.unknown().describe(
             'Output only. Full machine-type names, e.g. "n1-standard-16".',
           ).optional(),
-          vmCount: z.number().int().describe(
+          vmCount: z.unknown().describe(
             "Output only. Number of VM provisioned with the machine_type.",
           ).optional(),
         })).describe(
@@ -1220,69 +1045,15 @@ const GlobalArgsSchema = z.object({
           "Deprecated. Used only for the deprecated beta. A full, namespace-isolated deployment target for an existing GKE cluster.",
         ).optional(),
         nodePoolTarget: z.array(z.object({
-          nodePool: z.string().describe(
+          nodePool: z.unknown().describe(
             "Required. The target GKE node pool. Format: 'projects/{project}/locations/{location}/clusters/{cluster}/nodePools/{node_pool}'",
           ).optional(),
-          nodePoolConfig: z.object({
-            autoscaling: z.object({
-              maxNodeCount: z.number().int().describe(
-                "The maximum number of nodes in the node pool. Must be >= min_node_count, and must be > 0. Note: Quota must be sufficient to scale up the cluster.",
-              ).optional(),
-              minNodeCount: z.number().int().describe(
-                "The minimum number of nodes in the node pool. Must be >= 0 and <= max_node_count.",
-              ).optional(),
-            }).describe(
-              "GkeNodePoolAutoscaling contains information the cluster autoscaler needs to adjust the size of the node pool to the current cluster usage.",
-            ).optional(),
-            config: z.object({
-              accelerators: z.array(z.object({
-                acceleratorCount: z.string().describe(
-                  "The number of accelerator cards exposed to an instance.",
-                ).optional(),
-                acceleratorType: z.string().describe(
-                  "The accelerator type resource namename (see GPUs on Compute Engine).",
-                ).optional(),
-                gpuPartitionSize: z.string().describe(
-                  "Size of partitions to create on the GPU. Valid values are described in the NVIDIA mig user guide (https://docs.nvidia.com/datacenter/tesla/mig-user-guide/#partitioning).",
-                ).optional(),
-              })).describe(
-                "Optional. A list of hardware accelerators (https://cloud.google.com/compute/docs/gpus) to attach to each node.",
-              ).optional(),
-              bootDiskKmsKey: z.string().describe(
-                "Optional. The Customer Managed Encryption Key (CMEK) (https://cloud.google.com/kubernetes-engine/docs/how-to/using-cmek) used to encrypt the boot disk attached to each node in the node pool. Specify the key using the following format: projects/{project}/locations/{location}/keyRings/{key_ring}/cryptoKeys/{crypto_key}",
-              ).optional(),
-              localSsdCount: z.number().int().describe(
-                "Optional. The number of local SSD disks to attach to the node, which is limited by the maximum number of disks allowable per zone (see Adding Local SSDs (https://cloud.google.com/compute/docs/disks/local-ssd)).",
-              ).optional(),
-              machineType: z.string().describe(
-                "Optional. The name of a Compute Engine machine type (https://cloud.google.com/compute/docs/machine-types).",
-              ).optional(),
-              minCpuPlatform: z.string().describe(
-                'Optional. Minimum CPU platform (https://cloud.google.com/compute/docs/instances/specify-min-cpu-platform) to be used by this instance. The instance may be scheduled on the specified or a newer CPU platform. Specify the friendly names of CPU platforms, such as "Intel Haswell"` or Intel Sandy Bridge".',
-              ).optional(),
-              preemptible: z.boolean().describe(
-                "Optional. Whether the nodes are created as legacy preemptible VM instances (https://cloud.google.com/compute/docs/instances/preemptible). Also see Spot VMs, preemptible VM instances without a maximum lifetime. Legacy and Spot preemptible nodes cannot be used in a node pool with the CONTROLLER role or in the DEFAULT node pool if the CONTROLLER role is not assigned (the DEFAULT node pool will assume the CONTROLLER role).",
-              ).optional(),
-              spot: z.boolean().describe(
-                "Optional. Whether the nodes are created as Spot VM instances (https://cloud.google.com/compute/docs/instances/spot). Spot VMs are the latest update to legacy preemptible VMs. Spot VMs do not have a maximum lifetime. Legacy and Spot preemptible nodes cannot be used in a node pool with the CONTROLLER role or in the DEFAULT node pool if the CONTROLLER role is not assigned (the DEFAULT node pool will assume the CONTROLLER role).",
-              ).optional(),
-            }).describe("Parameters that describe cluster nodes.").optional(),
-            locations: z.array(z.string()).describe(
-              "Optional. The list of Compute Engine zones (https://cloud.google.com/compute/docs/zones#available) where node pool nodes associated with a Dataproc on GKE virtual cluster will be located.Note: All node pools associated with a virtual cluster must be located in the same region as the virtual cluster, and they must be located in the same zone within that region.If a location is not specified during node pool creation, Dataproc on GKE will choose the zone.",
-            ).optional(),
-          }).describe(
+          nodePoolConfig: z.unknown().describe(
             "The configuration of a GKE node pool used by a Dataproc-on-GKE cluster (https://cloud.google.com/dataproc/docs/concepts/jobs/dataproc-gke#create-a-dataproc-on-gke-cluster).",
           ).optional(),
-          roles: z.array(
-            z.enum([
-              "ROLE_UNSPECIFIED",
-              "DEFAULT",
-              "CONTROLLER",
-              "SPARK_DRIVER",
-              "SPARK_EXECUTOR",
-            ]),
-          ).describe("Required. The roles associated with the GKE node pool.")
-            .optional(),
+          roles: z.unknown().describe(
+            "Required. The roles associated with the GKE node pool.",
+          ).optional(),
         })).describe(
           "Optional. GKE node pools where workloads will be scheduled. At least one node pool must be assigned the DEFAULT GkeNodePoolTarget.Role. If a GkeNodePoolTarget is not specified, Dataproc constructs a DEFAULT GkeNodePoolTarget. Each role can be given to only one GkeNodePoolTarget. All node pools must have the same location settings.",
         ).optional(),
@@ -1332,63 +1103,22 @@ const StateSchema = z.object({
         labels: z.record(z.string(), z.unknown()),
         name: z.string(),
         nodeGroupConfig: z.object({
-          accelerators: z.array(z.object({
-            acceleratorCount: z.number(),
-            acceleratorTypeUri: z.string(),
-          })),
-          diskConfig: z.object({
-            attachedDiskConfigs: z.array(z.object({
-              diskSizeGb: z.number(),
-              diskType: z.string(),
-              provisionedIops: z.string(),
-              provisionedThroughput: z.string(),
-            })),
-            bootDiskProvisionedIops: z.string(),
-            bootDiskProvisionedThroughput: z.string(),
-            bootDiskSizeGb: z.number(),
-            bootDiskType: z.string(),
-            localSsdInterface: z.string(),
-            numLocalSsds: z.number(),
-          }),
-          imageUri: z.string(),
-          instanceFlexibilityPolicy: z.object({
-            instanceMachineTypes: z.record(z.string(), z.unknown()),
-            instanceSelectionList: z.array(z.object({
-              machineTypes: z.array(z.string()),
-              rank: z.number(),
-            })),
-            instanceSelectionResults: z.array(z.object({
-              machineType: z.string(),
-              vmCount: z.number(),
-            })),
-            provisioningModelMix: z.object({
-              standardCapacityBase: z.number(),
-              standardCapacityPercentAboveBase: z.number(),
-            }),
-          }),
-          instanceNames: z.array(z.string()),
-          instanceReferences: z.array(z.object({
-            instanceId: z.string(),
-            instanceName: z.string(),
-            publicEciesKey: z.string(),
-            publicKey: z.string(),
-          })),
-          isPreemptible: z.boolean(),
-          machineTypeUri: z.string(),
-          managedGroupConfig: z.object({
-            instanceGroupManagerName: z.string(),
-            instanceGroupManagerUri: z.string(),
-            instanceTemplateName: z.string(),
-          }),
-          minCpuPlatform: z.string(),
-          minNumInstances: z.number(),
-          numInstances: z.number(),
-          preemptibility: z.string(),
-          startupConfig: z.object({
-            requiredRegistrationFraction: z.number(),
-          }),
+          accelerators: z.unknown(),
+          diskConfig: z.unknown(),
+          imageUri: z.unknown(),
+          instanceFlexibilityPolicy: z.unknown(),
+          instanceNames: z.unknown(),
+          instanceReferences: z.unknown(),
+          isPreemptible: z.unknown(),
+          machineTypeUri: z.unknown(),
+          managedGroupConfig: z.unknown(),
+          minCpuPlatform: z.unknown(),
+          minNumInstances: z.unknown(),
+          numInstances: z.unknown(),
+          preemptibility: z.unknown(),
+          startupConfig: z.unknown(),
         }),
-        roles: z.array(z.string()),
+        roles: z.array(z.unknown()),
       }),
       nodeGroupId: z.string(),
     })),
@@ -1397,7 +1127,7 @@ const StateSchema = z.object({
     configBucket: z.string(),
     dataprocMetricConfig: z.object({
       metrics: z.array(z.object({
-        metricOverrides: z.array(z.string()),
+        metricOverrides: z.array(z.unknown()),
         metricSource: z.string(),
       })),
     }),
@@ -1449,26 +1179,11 @@ const StateSchema = z.object({
       nodePoolTarget: z.array(z.object({
         nodePool: z.string(),
         nodePoolConfig: z.object({
-          autoscaling: z.object({
-            maxNodeCount: z.number(),
-            minNodeCount: z.number(),
-          }),
-          config: z.object({
-            accelerators: z.array(z.object({
-              acceleratorCount: z.string(),
-              acceleratorType: z.string(),
-              gpuPartitionSize: z.string(),
-            })),
-            bootDiskKmsKey: z.string(),
-            localSsdCount: z.number(),
-            machineType: z.string(),
-            minCpuPlatform: z.string(),
-            preemptible: z.boolean(),
-            spot: z.boolean(),
-          }),
-          locations: z.array(z.string()),
+          autoscaling: z.unknown(),
+          config: z.unknown(),
+          locations: z.unknown(),
         }),
-        roles: z.array(z.string()),
+        roles: z.array(z.unknown()),
       })),
     }),
     initializationActions: z.array(z.object({
@@ -1491,10 +1206,10 @@ const StateSchema = z.object({
       })),
       diskConfig: z.object({
         attachedDiskConfigs: z.array(z.object({
-          diskSizeGb: z.number(),
-          diskType: z.string(),
-          provisionedIops: z.string(),
-          provisionedThroughput: z.string(),
+          diskSizeGb: z.unknown(),
+          diskType: z.unknown(),
+          provisionedIops: z.unknown(),
+          provisionedThroughput: z.unknown(),
         })),
         bootDiskProvisionedIops: z.string(),
         bootDiskProvisionedThroughput: z.string(),
@@ -1507,12 +1222,12 @@ const StateSchema = z.object({
       instanceFlexibilityPolicy: z.object({
         instanceMachineTypes: z.record(z.string(), z.unknown()),
         instanceSelectionList: z.array(z.object({
-          machineTypes: z.array(z.string()),
-          rank: z.number(),
+          machineTypes: z.unknown(),
+          rank: z.unknown(),
         })),
         instanceSelectionResults: z.array(z.object({
-          machineType: z.string(),
-          vmCount: z.number(),
+          machineType: z.unknown(),
+          vmCount: z.unknown(),
         })),
         provisioningModelMix: z.object({
           standardCapacityBase: z.number(),
@@ -1551,10 +1266,10 @@ const StateSchema = z.object({
       })),
       diskConfig: z.object({
         attachedDiskConfigs: z.array(z.object({
-          diskSizeGb: z.number(),
-          diskType: z.string(),
-          provisionedIops: z.string(),
-          provisionedThroughput: z.string(),
+          diskSizeGb: z.unknown(),
+          diskType: z.unknown(),
+          provisionedIops: z.unknown(),
+          provisionedThroughput: z.unknown(),
         })),
         bootDiskProvisionedIops: z.string(),
         bootDiskProvisionedThroughput: z.string(),
@@ -1567,12 +1282,12 @@ const StateSchema = z.object({
       instanceFlexibilityPolicy: z.object({
         instanceMachineTypes: z.record(z.string(), z.unknown()),
         instanceSelectionList: z.array(z.object({
-          machineTypes: z.array(z.string()),
-          rank: z.number(),
+          machineTypes: z.unknown(),
+          rank: z.unknown(),
         })),
         instanceSelectionResults: z.array(z.object({
-          machineType: z.string(),
-          vmCount: z.number(),
+          machineType: z.unknown(),
+          vmCount: z.unknown(),
         })),
         provisioningModelMix: z.object({
           standardCapacityBase: z.number(),
@@ -1636,10 +1351,10 @@ const StateSchema = z.object({
       })),
       diskConfig: z.object({
         attachedDiskConfigs: z.array(z.object({
-          diskSizeGb: z.number(),
-          diskType: z.string(),
-          provisionedIops: z.string(),
-          provisionedThroughput: z.string(),
+          diskSizeGb: z.unknown(),
+          diskType: z.unknown(),
+          provisionedIops: z.unknown(),
+          provisionedThroughput: z.unknown(),
         })),
         bootDiskProvisionedIops: z.string(),
         bootDiskProvisionedThroughput: z.string(),
@@ -1652,12 +1367,12 @@ const StateSchema = z.object({
       instanceFlexibilityPolicy: z.object({
         instanceMachineTypes: z.record(z.string(), z.unknown()),
         instanceSelectionList: z.array(z.object({
-          machineTypes: z.array(z.string()),
-          rank: z.number(),
+          machineTypes: z.unknown(),
+          rank: z.unknown(),
         })),
         instanceSelectionResults: z.array(z.object({
-          machineType: z.string(),
-          vmCount: z.number(),
+          machineType: z.unknown(),
+          vmCount: z.unknown(),
         })),
         provisioningModelMix: z.object({
           standardCapacityBase: z.number(),
@@ -1722,28 +1437,9 @@ const StateSchema = z.object({
           targetGkeCluster: z.string(),
         }),
         nodePoolTarget: z.array(z.object({
-          nodePool: z.string(),
-          nodePoolConfig: z.object({
-            autoscaling: z.object({
-              maxNodeCount: z.number(),
-              minNodeCount: z.number(),
-            }),
-            config: z.object({
-              accelerators: z.array(z.object({
-                acceleratorCount: z.string(),
-                acceleratorType: z.string(),
-                gpuPartitionSize: z.string(),
-              })),
-              bootDiskKmsKey: z.string(),
-              localSsdCount: z.number(),
-              machineType: z.string(),
-              minCpuPlatform: z.string(),
-              preemptible: z.boolean(),
-              spot: z.boolean(),
-            }),
-            locations: z.array(z.string()),
-          }),
-          roles: z.array(z.string()),
+          nodePool: z.unknown(),
+          nodePoolConfig: z.unknown(),
+          roles: z.unknown(),
         })),
       }),
       kubernetesNamespace: z.string(),
@@ -1772,173 +1468,60 @@ const InputsSchema = z.object({
       .optional(),
     auxiliaryNodeGroups: z.array(z.object({
       nodeGroup: z.object({
-        labels: z.record(z.string(), z.string()).describe(
+        labels: z.record(z.string(), z.unknown()).describe(
           "Optional. Node group labels. Label keys must consist of from 1 to 63 characters and conform to RFC 1035 (https://www.ietf.org/rfc/rfc1035.txt). Label values can be empty. If specified, they must consist of from 1 to 63 characters and conform to RFC 1035 (https://www.ietf.org/rfc/rfc1035.txt). The node group must have no more than 32 labels.",
         ).optional(),
         name: z.string().describe(
           "The Node group resource name (https://aip.dev/122).",
         ).optional(),
         nodeGroupConfig: z.object({
-          accelerators: z.array(z.object({
-            acceleratorCount: z.number().int().describe(
-              "The number of the accelerator cards of this type exposed to this instance.",
-            ).optional(),
-            acceleratorTypeUri: z.string().describe(
-              "Full URL, partial URI, or short name of the accelerator type resource to expose to this instance. See Compute Engine AcceleratorTypes (https://cloud.google.com/compute/docs/reference/v1/acceleratorTypes).Examples: https://www.googleapis.com/compute/v1/projects/[project_id]/zones/[zone]/acceleratorTypes/nvidia-tesla-t4 projects/[project_id]/zones/[zone]/acceleratorTypes/nvidia-tesla-t4 nvidia-tesla-t4Auto Zone Exception: If you are using the Dataproc Auto Zone Placement (https://cloud.google.com/dataproc/docs/concepts/configuring-clusters/auto-zone#using_auto_zone_placement) feature, you must use the short name of the accelerator type resource, for example, nvidia-tesla-t4.",
-            ).optional(),
-          })).describe(
+          accelerators: z.unknown().describe(
             "Optional. The Compute Engine accelerator configuration for these instances.",
           ).optional(),
-          diskConfig: z.object({
-            attachedDiskConfigs: z.array(z.object({
-              diskSizeGb: z.number().int().describe(
-                "Optional. Disk size in GB.",
-              ).optional(),
-              diskType: z.enum([
-                "DISK_TYPE_UNSPECIFIED",
-                "HYPERDISK_BALANCED",
-                "HYPERDISK_EXTREME",
-                "HYPERDISK_ML",
-                "HYPERDISK_THROUGHPUT",
-              ]).describe("Optional. Disk type.").optional(),
-              provisionedIops: z.string().describe(
-                "Optional. Indicates how many IOPS to provision for the attached disk. This sets the number of I/O operations per second that the disk can handle. See https://cloud.google.com/compute/docs/disks/hyperdisks#hyperdisk-features",
-              ).optional(),
-              provisionedThroughput: z.string().describe(
-                "Optional. Indicates how much throughput to provision for the attached disk. This sets the number of throughput mb per second that the disk can handle. See https://cloud.google.com/compute/docs/disks/hyperdisks#hyperdisk-features",
-              ).optional(),
-            })).describe(
-              "Optional. A list of attached disk configs for a group of VM instances.",
-            ).optional(),
-            bootDiskProvisionedIops: z.string().describe(
-              "Optional. Indicates how many IOPS to provision for the disk. This sets the number of I/O operations per second that the disk can handle. This field is supported only if boot_disk_type is hyperdisk-balanced.",
-            ).optional(),
-            bootDiskProvisionedThroughput: z.string().describe(
-              "Optional. Indicates how much throughput to provision for the disk. This sets the number of throughput mb per second that the disk can handle. Values must be greater than or equal to 1. This field is supported only if boot_disk_type is hyperdisk-balanced.",
-            ).optional(),
-            bootDiskSizeGb: z.number().int().describe(
-              "Optional. Size in GB of the boot disk (default is 500GB).",
-            ).optional(),
-            bootDiskType: z.string().describe(
-              'Optional. Type of the boot disk (default is "pd-standard"). Valid values: "pd-balanced" (Persistent Disk Balanced Solid State Drive), "pd-ssd" (Persistent Disk Solid State Drive), or "pd-standard" (Persistent Disk Hard Disk Drive). See Disk types (https://cloud.google.com/compute/docs/disks#disk-types).',
-            ).optional(),
-            localSsdInterface: z.string().describe(
-              'Optional. Interface type of local SSDs (default is "scsi"). Valid values: "scsi" (Small Computer System Interface), "nvme" (Non-Volatile Memory Express). See local SSD performance (https://cloud.google.com/compute/docs/disks/local-ssd#performance).',
-            ).optional(),
-            numLocalSsds: z.number().int().describe(
-              "Optional. Number of attached SSDs, from 0 to 8 (default is 0). If SSDs are not attached, the boot disk is used to store runtime logs and HDFS (https://hadoop.apache.org/docs/r1.2.1/hdfs_user_guide.html) data. If one or more SSDs are attached, this runtime bulk data is spread across them, and the boot disk contains only basic config and installed binaries.Note: Local SSD options may vary by machine type and number of vCPUs selected.",
-            ).optional(),
-          }).describe(
+          diskConfig: z.unknown().describe(
             "Specifies the config of boot disk and attached disk options for a group of VM instances.",
           ).optional(),
-          imageUri: z.string().describe(
+          imageUri: z.unknown().describe(
             "Optional. The Compute Engine image resource used for cluster instances.The URI can represent an image or image family.Image examples: https://www.googleapis.com/compute/v1/projects/[project_id]/global/images/[image-id] projects/[project_id]/global/images/[image-id] image-idImage family examples. Dataproc will use the most recent image from the family: https://www.googleapis.com/compute/v1/projects/[project_id]/global/images/family/[custom-image-family-name] projects/[project_id]/global/images/family/[custom-image-family-name]If the URI is unspecified, it will be inferred from SoftwareConfig.image_version or the system default.",
           ).optional(),
-          instanceFlexibilityPolicy: z.object({
-            instanceMachineTypes: z.record(z.string(), z.string()).describe(
-              "Output only. A map of instance short name to machine type. The key is the short name of the Compute Engine instance, and the value is the full machine-type name (e.g., 'n1-standard-16'). See Machine types for more information on valid machine type strings.",
-            ).optional(),
-            instanceSelectionList: z.array(z.object({
-              machineTypes: z.array(z.string()).describe(
-                'Optional. Full machine-type names, e.g. "n1-standard-16".',
-              ).optional(),
-              rank: z.number().int().describe(
-                "Optional. Preference of this instance selection. Lower number means higher preference. Dataproc will first try to create a VM based on the machine-type with priority rank and fallback to next rank based on availability. Machine types and instance selections with the same priority have the same preference.",
-              ).optional(),
-            })).describe(
-              "Optional. List of instance selection options that the group will use when creating new VMs.",
-            ).optional(),
-            instanceSelectionResults: z.array(z.object({
-              machineType: z.string().describe(
-                'Output only. Full machine-type names, e.g. "n1-standard-16".',
-              ).optional(),
-              vmCount: z.number().int().describe(
-                "Output only. Number of VM provisioned with the machine_type.",
-              ).optional(),
-            })).describe(
-              "Output only. A list of instance selection results in the group.",
-            ).optional(),
-            provisioningModelMix: z.object({
-              standardCapacityBase: z.number().int().describe(
-                "Optional. The base capacity that will always use Standard VMs to avoid risk of more preemption than the minimum capacity you need. Dataproc will create only standard VMs until it reaches standard_capacity_base, then it will start using standard_capacity_percent_above_base to mix Spot with Standard VMs. eg. If 15 instances are requested and standard_capacity_base is 5, Dataproc will create 5 standard VMs and then start mixing spot and standard VMs for remaining 10 instances.",
-              ).optional(),
-              standardCapacityPercentAboveBase: z.number().int().describe(
-                "Optional. The percentage of target capacity that should use Standard VM. The remaining percentage will use Spot VMs. The percentage applies only to the capacity above standard_capacity_base. eg. If 15 instances are requested and standard_capacity_base is 5 and standard_capacity_percent_above_base is 30, Dataproc will create 5 standard VMs and then start mixing spot and standard VMs for remaining 10 instances. The mix will be 30% standard and 70% spot.",
-              ).optional(),
-            }).describe(
-              "Defines how Dataproc should create VMs with a mixture of provisioning models.",
-            ).optional(),
-          }).describe(
+          instanceFlexibilityPolicy: z.unknown().describe(
             "Instance flexibility Policy allowing a mixture of VM shapes and provisioning models.",
           ).optional(),
-          instanceNames: z.array(z.string()).describe(
+          instanceNames: z.unknown().describe(
             "Output only. The list of instance names. Dataproc derives the names from cluster_name, num_instances, and the instance group.",
           ).optional(),
-          instanceReferences: z.array(z.object({
-            instanceId: z.string().describe(
-              "The unique identifier of the Compute Engine instance.",
-            ).optional(),
-            instanceName: z.string().describe(
-              "The user-friendly name of the Compute Engine instance.",
-            ).optional(),
-            publicEciesKey: z.string().describe(
-              "The public ECIES key used for sharing data with this instance.",
-            ).optional(),
-            publicKey: z.string().describe(
-              "The public RSA key used for sharing data with this instance.",
-            ).optional(),
-          })).describe(
+          instanceReferences: z.unknown().describe(
             "Output only. List of references to Compute Engine instances.",
           ).optional(),
-          isPreemptible: z.boolean().describe(
+          isPreemptible: z.unknown().describe(
             "Output only. Specifies that this instance group contains preemptible instances.",
           ).optional(),
-          machineTypeUri: z.string().describe(
+          machineTypeUri: z.unknown().describe(
             "Optional. The Compute Engine machine type used for cluster instances.A full URL, partial URI, or short name are valid. Examples: https://www.googleapis.com/compute/v1/projects/[project_id]/zones/[zone]/machineTypes/n1-standard-2 projects/[project_id]/zones/[zone]/machineTypes/n1-standard-2 n1-standard-2Auto Zone Exception: If you are using the Dataproc Auto Zone Placement (https://cloud.google.com/dataproc/docs/concepts/configuring-clusters/auto-zone#using_auto_zone_placement) feature, you must use the short name of the machine type resource, for example, n1-standard-2.",
           ).optional(),
-          managedGroupConfig: z.object({
-            instanceGroupManagerName: z.string().describe(
-              "Output only. The name of the Instance Group Manager for this group.",
-            ).optional(),
-            instanceGroupManagerUri: z.string().describe(
-              "Output only. The partial URI to the instance group manager for this group. E.g. projects/my-project/regions/us-central1/instanceGroupManagers/my-igm.",
-            ).optional(),
-            instanceTemplateName: z.string().describe(
-              "Output only. The name of the Instance Template used for the Managed Instance Group.",
-            ).optional(),
-          }).describe(
+          managedGroupConfig: z.unknown().describe(
             "Specifies the resources used to actively manage an instance group.",
           ).optional(),
-          minCpuPlatform: z.string().describe(
+          minCpuPlatform: z.unknown().describe(
             "Optional. Specifies the minimum cpu platform for the Instance Group. See Dataproc -> Minimum CPU Platform (https://cloud.google.com/dataproc/docs/concepts/compute/dataproc-min-cpu).",
           ).optional(),
-          minNumInstances: z.number().int().describe(
+          minNumInstances: z.unknown().describe(
             "Optional. The minimum number of primary worker instances to create. If min_num_instances is set, cluster creation will succeed if the number of primary workers created is at least equal to the min_num_instances number.Example: Cluster creation request with num_instances = 5 and min_num_instances = 3: If 4 VMs are created and 1 instance fails, the failed VM is deleted. The cluster is resized to 4 instances and placed in a RUNNING state. If 2 instances are created and 3 instances fail, the cluster in placed in an ERROR state. The failed VMs are not deleted.",
           ).optional(),
-          numInstances: z.number().int().describe(
+          numInstances: z.unknown().describe(
             "Optional. The number of VM instances in the instance group. For HA cluster master_config groups, must be set to 3. For standard cluster master_config groups, must be set to 1.",
           ).optional(),
-          preemptibility: z.enum([
-            "PREEMPTIBILITY_UNSPECIFIED",
-            "NON_PREEMPTIBLE",
-            "PREEMPTIBLE",
-            "SPOT",
-          ]).describe(
+          preemptibility: z.unknown().describe(
             "Optional. Specifies the preemptibility of the instance group.The default value for master and worker groups is NON_PREEMPTIBLE. This default cannot be changed.The default value for secondary instances is PREEMPTIBLE.",
           ).optional(),
-          startupConfig: z.object({
-            requiredRegistrationFraction: z.number().describe(
-              "Optional. The config setting to enable cluster creation/ updation to be successful only after required_registration_fraction of instances are up and running. This configuration is applicable to only secondary workers for now. The cluster will fail if required_registration_fraction of instances are not available. This will include instance creation, agent registration, and service registration (if enabled).",
-            ).optional(),
-          }).describe(
+          startupConfig: z.unknown().describe(
             "Configuration to handle the startup of instances during cluster create and update process.",
           ).optional(),
         }).describe(
           "The config settings for Compute Engine resources in an instance group, such as a master or worker group.",
         ).optional(),
-        roles: z.array(z.enum(["ROLE_UNSPECIFIED", "DRIVER"])).describe(
-          "Required. Node group roles.",
-        ).optional(),
+        roles: z.array(z.unknown()).describe("Required. Node group roles.")
+          .optional(),
       }).describe(
         "Dataproc Node Group. The Dataproc NodeGroup resource is not related to the Dataproc NodeGroupAffinity resource.",
       ).optional(),
@@ -1962,7 +1545,7 @@ const InputsSchema = z.object({
     ).optional(),
     dataprocMetricConfig: z.object({
       metrics: z.array(z.object({
-        metricOverrides: z.array(z.string()).describe(
+        metricOverrides: z.array(z.unknown()).describe(
           "Optional. Specify one or more Custom metrics (https://cloud.google.com/dataproc/docs/guides/dataproc-metrics#custom_metrics) to collect for the metric course (for the SPARK metric source (any Spark metric (https://spark.apache.org/docs/latest/monitoring.html#metrics) can be specified).Provide metrics in the following format: METRIC_SOURCE: INSTANCE:GROUP:METRIC Use camelcase as appropriate.Examples: yarn:ResourceManager:QueueMetrics:AppsCompleted spark:driver:DAGScheduler:job.allJobs sparkHistoryServer:JVM:Memory:NonHeapMemoryUsage.committed hiveserver2:JVM:Memory:NonHeapMemoryUsage.used Notes: Only the specified overridden metrics are collected for the metric source. For example, if one or more spark:executive metrics are listed as metric overrides, other SPARK metrics are not collected. The collection of the metrics for other enabled custom metric sources is unaffected. For example, if both SPARK and YARN metric sources are enabled, and overrides are provided for Spark metrics only, all YARN metrics are collected.",
         ).optional(),
         metricSource: z.enum([
@@ -2104,65 +1687,21 @@ const InputsSchema = z.object({
           "Required. The target GKE node pool. Format: 'projects/{project}/locations/{location}/clusters/{cluster}/nodePools/{node_pool}'",
         ).optional(),
         nodePoolConfig: z.object({
-          autoscaling: z.object({
-            maxNodeCount: z.number().int().describe(
-              "The maximum number of nodes in the node pool. Must be >= min_node_count, and must be > 0. Note: Quota must be sufficient to scale up the cluster.",
-            ).optional(),
-            minNodeCount: z.number().int().describe(
-              "The minimum number of nodes in the node pool. Must be >= 0 and <= max_node_count.",
-            ).optional(),
-          }).describe(
+          autoscaling: z.unknown().describe(
             "GkeNodePoolAutoscaling contains information the cluster autoscaler needs to adjust the size of the node pool to the current cluster usage.",
           ).optional(),
-          config: z.object({
-            accelerators: z.array(z.object({
-              acceleratorCount: z.string().describe(
-                "The number of accelerator cards exposed to an instance.",
-              ).optional(),
-              acceleratorType: z.string().describe(
-                "The accelerator type resource namename (see GPUs on Compute Engine).",
-              ).optional(),
-              gpuPartitionSize: z.string().describe(
-                "Size of partitions to create on the GPU. Valid values are described in the NVIDIA mig user guide (https://docs.nvidia.com/datacenter/tesla/mig-user-guide/#partitioning).",
-              ).optional(),
-            })).describe(
-              "Optional. A list of hardware accelerators (https://cloud.google.com/compute/docs/gpus) to attach to each node.",
-            ).optional(),
-            bootDiskKmsKey: z.string().describe(
-              "Optional. The Customer Managed Encryption Key (CMEK) (https://cloud.google.com/kubernetes-engine/docs/how-to/using-cmek) used to encrypt the boot disk attached to each node in the node pool. Specify the key using the following format: projects/{project}/locations/{location}/keyRings/{key_ring}/cryptoKeys/{crypto_key}",
-            ).optional(),
-            localSsdCount: z.number().int().describe(
-              "Optional. The number of local SSD disks to attach to the node, which is limited by the maximum number of disks allowable per zone (see Adding Local SSDs (https://cloud.google.com/compute/docs/disks/local-ssd)).",
-            ).optional(),
-            machineType: z.string().describe(
-              "Optional. The name of a Compute Engine machine type (https://cloud.google.com/compute/docs/machine-types).",
-            ).optional(),
-            minCpuPlatform: z.string().describe(
-              'Optional. Minimum CPU platform (https://cloud.google.com/compute/docs/instances/specify-min-cpu-platform) to be used by this instance. The instance may be scheduled on the specified or a newer CPU platform. Specify the friendly names of CPU platforms, such as "Intel Haswell"` or Intel Sandy Bridge".',
-            ).optional(),
-            preemptible: z.boolean().describe(
-              "Optional. Whether the nodes are created as legacy preemptible VM instances (https://cloud.google.com/compute/docs/instances/preemptible). Also see Spot VMs, preemptible VM instances without a maximum lifetime. Legacy and Spot preemptible nodes cannot be used in a node pool with the CONTROLLER role or in the DEFAULT node pool if the CONTROLLER role is not assigned (the DEFAULT node pool will assume the CONTROLLER role).",
-            ).optional(),
-            spot: z.boolean().describe(
-              "Optional. Whether the nodes are created as Spot VM instances (https://cloud.google.com/compute/docs/instances/spot). Spot VMs are the latest update to legacy preemptible VMs. Spot VMs do not have a maximum lifetime. Legacy and Spot preemptible nodes cannot be used in a node pool with the CONTROLLER role or in the DEFAULT node pool if the CONTROLLER role is not assigned (the DEFAULT node pool will assume the CONTROLLER role).",
-            ).optional(),
-          }).describe("Parameters that describe cluster nodes.").optional(),
-          locations: z.array(z.string()).describe(
+          config: z.unknown().describe(
+            "Parameters that describe cluster nodes.",
+          ).optional(),
+          locations: z.unknown().describe(
             "Optional. The list of Compute Engine zones (https://cloud.google.com/compute/docs/zones#available) where node pool nodes associated with a Dataproc on GKE virtual cluster will be located.Note: All node pools associated with a virtual cluster must be located in the same region as the virtual cluster, and they must be located in the same zone within that region.If a location is not specified during node pool creation, Dataproc on GKE will choose the zone.",
           ).optional(),
         }).describe(
           "The configuration of a GKE node pool used by a Dataproc-on-GKE cluster (https://cloud.google.com/dataproc/docs/concepts/jobs/dataproc-gke#create-a-dataproc-on-gke-cluster).",
         ).optional(),
-        roles: z.array(
-          z.enum([
-            "ROLE_UNSPECIFIED",
-            "DEFAULT",
-            "CONTROLLER",
-            "SPARK_DRIVER",
-            "SPARK_EXECUTOR",
-          ]),
-        ).describe("Required. The roles associated with the GKE node pool.")
-          .optional(),
+        roles: z.array(z.unknown()).describe(
+          "Required. The roles associated with the GKE node pool.",
+        ).optional(),
       })).describe(
         "Optional. GKE node pools where workloads will be scheduled. At least one node pool must be assigned the DEFAULT GkeNodePoolTarget.Role. If a GkeNodePoolTarget is not specified, Dataproc constructs a DEFAULT GkeNodePoolTarget. Each role can be given to only one GkeNodePoolTarget. All node pools must have the same location settings.",
       ).optional(),
@@ -2214,19 +1753,13 @@ const InputsSchema = z.object({
       ).optional(),
       diskConfig: z.object({
         attachedDiskConfigs: z.array(z.object({
-          diskSizeGb: z.number().int().describe("Optional. Disk size in GB.")
+          diskSizeGb: z.unknown().describe("Optional. Disk size in GB.")
             .optional(),
-          diskType: z.enum([
-            "DISK_TYPE_UNSPECIFIED",
-            "HYPERDISK_BALANCED",
-            "HYPERDISK_EXTREME",
-            "HYPERDISK_ML",
-            "HYPERDISK_THROUGHPUT",
-          ]).describe("Optional. Disk type.").optional(),
-          provisionedIops: z.string().describe(
+          diskType: z.unknown().describe("Optional. Disk type.").optional(),
+          provisionedIops: z.unknown().describe(
             "Optional. Indicates how many IOPS to provision for the attached disk. This sets the number of I/O operations per second that the disk can handle. See https://cloud.google.com/compute/docs/disks/hyperdisks#hyperdisk-features",
           ).optional(),
-          provisionedThroughput: z.string().describe(
+          provisionedThroughput: z.unknown().describe(
             "Optional. Indicates how much throughput to provision for the attached disk. This sets the number of throughput mb per second that the disk can handle. See https://cloud.google.com/compute/docs/disks/hyperdisks#hyperdisk-features",
           ).optional(),
         })).describe(
@@ -2261,20 +1794,20 @@ const InputsSchema = z.object({
           "Output only. A map of instance short name to machine type. The key is the short name of the Compute Engine instance, and the value is the full machine-type name (e.g., 'n1-standard-16'). See Machine types for more information on valid machine type strings.",
         ).optional(),
         instanceSelectionList: z.array(z.object({
-          machineTypes: z.array(z.string()).describe(
+          machineTypes: z.unknown().describe(
             'Optional. Full machine-type names, e.g. "n1-standard-16".',
           ).optional(),
-          rank: z.number().int().describe(
+          rank: z.unknown().describe(
             "Optional. Preference of this instance selection. Lower number means higher preference. Dataproc will first try to create a VM based on the machine-type with priority rank and fallback to next rank based on availability. Machine types and instance selections with the same priority have the same preference.",
           ).optional(),
         })).describe(
           "Optional. List of instance selection options that the group will use when creating new VMs.",
         ).optional(),
         instanceSelectionResults: z.array(z.object({
-          machineType: z.string().describe(
+          machineType: z.unknown().describe(
             'Output only. Full machine-type names, e.g. "n1-standard-16".',
           ).optional(),
-          vmCount: z.number().int().describe(
+          vmCount: z.unknown().describe(
             "Output only. Number of VM provisioned with the machine_type.",
           ).optional(),
         })).describe(
@@ -2376,19 +1909,13 @@ const InputsSchema = z.object({
       ).optional(),
       diskConfig: z.object({
         attachedDiskConfigs: z.array(z.object({
-          diskSizeGb: z.number().int().describe("Optional. Disk size in GB.")
+          diskSizeGb: z.unknown().describe("Optional. Disk size in GB.")
             .optional(),
-          diskType: z.enum([
-            "DISK_TYPE_UNSPECIFIED",
-            "HYPERDISK_BALANCED",
-            "HYPERDISK_EXTREME",
-            "HYPERDISK_ML",
-            "HYPERDISK_THROUGHPUT",
-          ]).describe("Optional. Disk type.").optional(),
-          provisionedIops: z.string().describe(
+          diskType: z.unknown().describe("Optional. Disk type.").optional(),
+          provisionedIops: z.unknown().describe(
             "Optional. Indicates how many IOPS to provision for the attached disk. This sets the number of I/O operations per second that the disk can handle. See https://cloud.google.com/compute/docs/disks/hyperdisks#hyperdisk-features",
           ).optional(),
-          provisionedThroughput: z.string().describe(
+          provisionedThroughput: z.unknown().describe(
             "Optional. Indicates how much throughput to provision for the attached disk. This sets the number of throughput mb per second that the disk can handle. See https://cloud.google.com/compute/docs/disks/hyperdisks#hyperdisk-features",
           ).optional(),
         })).describe(
@@ -2423,20 +1950,20 @@ const InputsSchema = z.object({
           "Output only. A map of instance short name to machine type. The key is the short name of the Compute Engine instance, and the value is the full machine-type name (e.g., 'n1-standard-16'). See Machine types for more information on valid machine type strings.",
         ).optional(),
         instanceSelectionList: z.array(z.object({
-          machineTypes: z.array(z.string()).describe(
+          machineTypes: z.unknown().describe(
             'Optional. Full machine-type names, e.g. "n1-standard-16".',
           ).optional(),
-          rank: z.number().int().describe(
+          rank: z.unknown().describe(
             "Optional. Preference of this instance selection. Lower number means higher preference. Dataproc will first try to create a VM based on the machine-type with priority rank and fallback to next rank based on availability. Machine types and instance selections with the same priority have the same preference.",
           ).optional(),
         })).describe(
           "Optional. List of instance selection options that the group will use when creating new VMs.",
         ).optional(),
         instanceSelectionResults: z.array(z.object({
-          machineType: z.string().describe(
+          machineType: z.unknown().describe(
             'Output only. Full machine-type names, e.g. "n1-standard-16".',
           ).optional(),
-          vmCount: z.number().int().describe(
+          vmCount: z.unknown().describe(
             "Output only. Number of VM provisioned with the machine_type.",
           ).optional(),
         })).describe(
@@ -2628,19 +2155,13 @@ const InputsSchema = z.object({
       ).optional(),
       diskConfig: z.object({
         attachedDiskConfigs: z.array(z.object({
-          diskSizeGb: z.number().int().describe("Optional. Disk size in GB.")
+          diskSizeGb: z.unknown().describe("Optional. Disk size in GB.")
             .optional(),
-          diskType: z.enum([
-            "DISK_TYPE_UNSPECIFIED",
-            "HYPERDISK_BALANCED",
-            "HYPERDISK_EXTREME",
-            "HYPERDISK_ML",
-            "HYPERDISK_THROUGHPUT",
-          ]).describe("Optional. Disk type.").optional(),
-          provisionedIops: z.string().describe(
+          diskType: z.unknown().describe("Optional. Disk type.").optional(),
+          provisionedIops: z.unknown().describe(
             "Optional. Indicates how many IOPS to provision for the attached disk. This sets the number of I/O operations per second that the disk can handle. See https://cloud.google.com/compute/docs/disks/hyperdisks#hyperdisk-features",
           ).optional(),
-          provisionedThroughput: z.string().describe(
+          provisionedThroughput: z.unknown().describe(
             "Optional. Indicates how much throughput to provision for the attached disk. This sets the number of throughput mb per second that the disk can handle. See https://cloud.google.com/compute/docs/disks/hyperdisks#hyperdisk-features",
           ).optional(),
         })).describe(
@@ -2675,20 +2196,20 @@ const InputsSchema = z.object({
           "Output only. A map of instance short name to machine type. The key is the short name of the Compute Engine instance, and the value is the full machine-type name (e.g., 'n1-standard-16'). See Machine types for more information on valid machine type strings.",
         ).optional(),
         instanceSelectionList: z.array(z.object({
-          machineTypes: z.array(z.string()).describe(
+          machineTypes: z.unknown().describe(
             'Optional. Full machine-type names, e.g. "n1-standard-16".',
           ).optional(),
-          rank: z.number().int().describe(
+          rank: z.unknown().describe(
             "Optional. Preference of this instance selection. Lower number means higher preference. Dataproc will first try to create a VM based on the machine-type with priority rank and fallback to next rank based on availability. Machine types and instance selections with the same priority have the same preference.",
           ).optional(),
         })).describe(
           "Optional. List of instance selection options that the group will use when creating new VMs.",
         ).optional(),
         instanceSelectionResults: z.array(z.object({
-          machineType: z.string().describe(
+          machineType: z.unknown().describe(
             'Output only. Full machine-type names, e.g. "n1-standard-16".',
           ).optional(),
-          vmCount: z.number().int().describe(
+          vmCount: z.unknown().describe(
             "Output only. Number of VM provisioned with the machine_type.",
           ).optional(),
         })).describe(
@@ -2842,69 +2363,15 @@ const InputsSchema = z.object({
           "Deprecated. Used only for the deprecated beta. A full, namespace-isolated deployment target for an existing GKE cluster.",
         ).optional(),
         nodePoolTarget: z.array(z.object({
-          nodePool: z.string().describe(
+          nodePool: z.unknown().describe(
             "Required. The target GKE node pool. Format: 'projects/{project}/locations/{location}/clusters/{cluster}/nodePools/{node_pool}'",
           ).optional(),
-          nodePoolConfig: z.object({
-            autoscaling: z.object({
-              maxNodeCount: z.number().int().describe(
-                "The maximum number of nodes in the node pool. Must be >= min_node_count, and must be > 0. Note: Quota must be sufficient to scale up the cluster.",
-              ).optional(),
-              minNodeCount: z.number().int().describe(
-                "The minimum number of nodes in the node pool. Must be >= 0 and <= max_node_count.",
-              ).optional(),
-            }).describe(
-              "GkeNodePoolAutoscaling contains information the cluster autoscaler needs to adjust the size of the node pool to the current cluster usage.",
-            ).optional(),
-            config: z.object({
-              accelerators: z.array(z.object({
-                acceleratorCount: z.string().describe(
-                  "The number of accelerator cards exposed to an instance.",
-                ).optional(),
-                acceleratorType: z.string().describe(
-                  "The accelerator type resource namename (see GPUs on Compute Engine).",
-                ).optional(),
-                gpuPartitionSize: z.string().describe(
-                  "Size of partitions to create on the GPU. Valid values are described in the NVIDIA mig user guide (https://docs.nvidia.com/datacenter/tesla/mig-user-guide/#partitioning).",
-                ).optional(),
-              })).describe(
-                "Optional. A list of hardware accelerators (https://cloud.google.com/compute/docs/gpus) to attach to each node.",
-              ).optional(),
-              bootDiskKmsKey: z.string().describe(
-                "Optional. The Customer Managed Encryption Key (CMEK) (https://cloud.google.com/kubernetes-engine/docs/how-to/using-cmek) used to encrypt the boot disk attached to each node in the node pool. Specify the key using the following format: projects/{project}/locations/{location}/keyRings/{key_ring}/cryptoKeys/{crypto_key}",
-              ).optional(),
-              localSsdCount: z.number().int().describe(
-                "Optional. The number of local SSD disks to attach to the node, which is limited by the maximum number of disks allowable per zone (see Adding Local SSDs (https://cloud.google.com/compute/docs/disks/local-ssd)).",
-              ).optional(),
-              machineType: z.string().describe(
-                "Optional. The name of a Compute Engine machine type (https://cloud.google.com/compute/docs/machine-types).",
-              ).optional(),
-              minCpuPlatform: z.string().describe(
-                'Optional. Minimum CPU platform (https://cloud.google.com/compute/docs/instances/specify-min-cpu-platform) to be used by this instance. The instance may be scheduled on the specified or a newer CPU platform. Specify the friendly names of CPU platforms, such as "Intel Haswell"` or Intel Sandy Bridge".',
-              ).optional(),
-              preemptible: z.boolean().describe(
-                "Optional. Whether the nodes are created as legacy preemptible VM instances (https://cloud.google.com/compute/docs/instances/preemptible). Also see Spot VMs, preemptible VM instances without a maximum lifetime. Legacy and Spot preemptible nodes cannot be used in a node pool with the CONTROLLER role or in the DEFAULT node pool if the CONTROLLER role is not assigned (the DEFAULT node pool will assume the CONTROLLER role).",
-              ).optional(),
-              spot: z.boolean().describe(
-                "Optional. Whether the nodes are created as Spot VM instances (https://cloud.google.com/compute/docs/instances/spot). Spot VMs are the latest update to legacy preemptible VMs. Spot VMs do not have a maximum lifetime. Legacy and Spot preemptible nodes cannot be used in a node pool with the CONTROLLER role or in the DEFAULT node pool if the CONTROLLER role is not assigned (the DEFAULT node pool will assume the CONTROLLER role).",
-              ).optional(),
-            }).describe("Parameters that describe cluster nodes.").optional(),
-            locations: z.array(z.string()).describe(
-              "Optional. The list of Compute Engine zones (https://cloud.google.com/compute/docs/zones#available) where node pool nodes associated with a Dataproc on GKE virtual cluster will be located.Note: All node pools associated with a virtual cluster must be located in the same region as the virtual cluster, and they must be located in the same zone within that region.If a location is not specified during node pool creation, Dataproc on GKE will choose the zone.",
-            ).optional(),
-          }).describe(
+          nodePoolConfig: z.unknown().describe(
             "The configuration of a GKE node pool used by a Dataproc-on-GKE cluster (https://cloud.google.com/dataproc/docs/concepts/jobs/dataproc-gke#create-a-dataproc-on-gke-cluster).",
           ).optional(),
-          roles: z.array(
-            z.enum([
-              "ROLE_UNSPECIFIED",
-              "DEFAULT",
-              "CONTROLLER",
-              "SPARK_DRIVER",
-              "SPARK_EXECUTOR",
-            ]),
-          ).describe("Required. The roles associated with the GKE node pool.")
-            .optional(),
+          roles: z.unknown().describe(
+            "Required. The roles associated with the GKE node pool.",
+          ).optional(),
         })).describe(
           "Optional. GKE node pools where workloads will be scheduled. At least one node pool must be assigned the DEFAULT GkeNodePoolTarget.Role. If a GkeNodePoolTarget is not specified, Dataproc constructs a DEFAULT GkeNodePoolTarget. Each role can be given to only one GkeNodePoolTarget. All node pools must have the same location settings.",
         ).optional(),
@@ -2944,7 +2411,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/dataproc/clusters",
-  version: "2026.04.03.3",
+  version: "2026.04.04.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -2978,6 +2445,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.3",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.04.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

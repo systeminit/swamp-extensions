@@ -94,13 +94,13 @@ const GlobalArgsSchema = z.object({
     stackTrace: z.object({
       elements: z.array(z.object({
         position: z.object({
-          column: z.string().describe(
+          column: z.unknown().describe(
             "The source code column position (of the line) the current instruction was generated from.",
           ).optional(),
-          length: z.string().describe(
+          length: z.unknown().describe(
             "The number of bytes of source code making up this stack trace element.",
           ).optional(),
-          line: z.string().describe(
+          line: z.unknown().describe(
             "The source code line number the current instruction was generated from.",
           ).optional(),
         }).describe(
@@ -162,9 +162,9 @@ const StateSchema = z.object({
     stackTrace: z.object({
       elements: z.array(z.object({
         position: z.object({
-          column: z.string(),
-          length: z.string(),
-          line: z.string(),
+          column: z.unknown(),
+          length: z.unknown(),
+          line: z.unknown(),
         }),
         routine: z.string(),
         step: z.string(),
@@ -216,13 +216,13 @@ const InputsSchema = z.object({
     stackTrace: z.object({
       elements: z.array(z.object({
         position: z.object({
-          column: z.string().describe(
+          column: z.unknown().describe(
             "The source code column position (of the line) the current instruction was generated from.",
           ).optional(),
-          length: z.string().describe(
+          length: z.unknown().describe(
             "The number of bytes of source code making up this stack trace element.",
           ).optional(),
-          line: z.string().describe(
+          line: z.unknown().describe(
             "The source code line number the current instruction was generated from.",
           ).optional(),
         }).describe(
@@ -273,7 +273,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/workflowexecutions/workflows-executions",
-  version: "2026.04.03.3",
+  version: "2026.04.04.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -297,6 +297,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.3",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.04.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

@@ -175,25 +175,25 @@ const GlobalArgsSchema = z.object({
       ).optional(),
       range: z.object({
         maxCompensation: z.object({
-          currencyCode: z.string().describe(
+          currencyCode: z.unknown().describe(
             "The three-letter currency code defined in ISO 4217.",
           ).optional(),
-          nanos: z.number().int().describe(
+          nanos: z.unknown().describe(
             "Number of nano (10^-9) units of the amount. The value must be between -999,999,999 and +999,999,999 inclusive. If `units` is positive, `nanos` must be positive or zero. If `units` is zero, `nanos` can be positive, zero, or negative. If `units` is negative, `nanos` must be negative or zero. For example $-1.75 is represented as `units`=-1 and `nanos`=-750,000,000.",
           ).optional(),
-          units: z.string().describe(
+          units: z.unknown().describe(
             'The whole units of the amount. For example if `currencyCode` is `"USD"`, then 1 unit is one US dollar.',
           ).optional(),
         }).describe("Represents an amount of money with its currency type.")
           .optional(),
         minCompensation: z.object({
-          currencyCode: z.string().describe(
+          currencyCode: z.unknown().describe(
             "The three-letter currency code defined in ISO 4217.",
           ).optional(),
-          nanos: z.number().int().describe(
+          nanos: z.unknown().describe(
             "Number of nano (10^-9) units of the amount. The value must be between -999,999,999 and +999,999,999 inclusive. If `units` is positive, `nanos` must be positive or zero. If `units` is zero, `nanos` can be positive, zero, or negative. If `units` is negative, `nanos` must be negative or zero. For example $-1.75 is represented as `units`=-1 and `nanos`=-750,000,000.",
           ).optional(),
-          units: z.string().describe(
+          units: z.unknown().describe(
             'The whole units of the amount. For example if `currencyCode` is `"USD"`, then 1 unit is one US dollar.',
           ).optional(),
         }).describe("Represents an amount of money with its currency type.")
@@ -329,7 +329,7 @@ const GlobalArgsSchema = z.object({
         'The type of a location, which corresponds to the address lines field of google.type.PostalAddress. For example, "Downtown, Atlanta, GA, USA" has a type of LocationType.NEIGHBORHOOD, and "Kansas City, KS, USA" has a type of LocationType.LOCALITY.',
       ).optional(),
       postalAddress: z.object({
-        addressLines: z.array(z.string()).describe(
+        addressLines: z.array(z.unknown()).describe(
           'Unstructured address lines describing the lower levels of an address. Because values in `address_lines` do not have type information and may sometimes contain multiple values in a single field (for example, "Austin, TX"), it is important that the line order is clear. The order of address lines should be "envelope order" for the country or region of the address. In places where this can vary (for example, Japan), `address_language` is used to make it explicit (for example, "ja" for large-to-small ordering and "ja-Latn" or "en" for small-to-large). In this way, the most specific line of an address can be selected based on the language. The minimum permitted structural representation of an address consists of a `region_code` with all remaining information placed in the `address_lines`. It would be possible to format such an address very approximately without geocoding, but no semantic reasoning could be made about any of the address components until it was at least partially resolved. Creating an address only containing a `region_code` and `address_lines` and then geocoding is the recommended way to handle completely unstructured addresses (as opposed to guessing which parts of the address should be localities or administrative areas).',
         ).optional(),
         administrativeArea: z.string().describe(
@@ -347,7 +347,7 @@ const GlobalArgsSchema = z.object({
         postalCode: z.string().describe(
           "Optional. Postal code of the address. Not all countries use or require postal codes to be present, but where they are used, they may trigger additional validation with other parts of the address (for example, state or zip code validation in the United States).",
         ).optional(),
-        recipients: z.array(z.string()).describe(
+        recipients: z.array(z.unknown()).describe(
           'Optional. The recipient at the address. This field may, under certain circumstances, contain multiline information. For example, it might contain "care of" information.',
         ).optional(),
         regionCode: z.string().describe(
@@ -523,14 +523,14 @@ const StateSchema = z.object({
       expectedUnitsPerYear: z.number(),
       range: z.object({
         maxCompensation: z.object({
-          currencyCode: z.string(),
-          nanos: z.number(),
-          units: z.string(),
+          currencyCode: z.unknown(),
+          nanos: z.unknown(),
+          units: z.unknown(),
         }),
         minCompensation: z.object({
-          currencyCode: z.string(),
-          nanos: z.number(),
-          units: z.string(),
+          currencyCode: z.unknown(),
+          nanos: z.unknown(),
+          units: z.unknown(),
         }),
       }),
       type: z.string(),
@@ -549,13 +549,13 @@ const StateSchema = z.object({
       }),
       locationType: z.string(),
       postalAddress: z.object({
-        addressLines: z.array(z.string()),
+        addressLines: z.array(z.unknown()),
         administrativeArea: z.string(),
         languageCode: z.string(),
         locality: z.string(),
         organization: z.string(),
         postalCode: z.string(),
-        recipients: z.array(z.string()),
+        recipients: z.array(z.unknown()),
         regionCode: z.string(),
         revision: z.number(),
         sortingCode: z.string(),
@@ -684,25 +684,25 @@ const InputsSchema = z.object({
       ).optional(),
       range: z.object({
         maxCompensation: z.object({
-          currencyCode: z.string().describe(
+          currencyCode: z.unknown().describe(
             "The three-letter currency code defined in ISO 4217.",
           ).optional(),
-          nanos: z.number().int().describe(
+          nanos: z.unknown().describe(
             "Number of nano (10^-9) units of the amount. The value must be between -999,999,999 and +999,999,999 inclusive. If `units` is positive, `nanos` must be positive or zero. If `units` is zero, `nanos` can be positive, zero, or negative. If `units` is negative, `nanos` must be negative or zero. For example $-1.75 is represented as `units`=-1 and `nanos`=-750,000,000.",
           ).optional(),
-          units: z.string().describe(
+          units: z.unknown().describe(
             'The whole units of the amount. For example if `currencyCode` is `"USD"`, then 1 unit is one US dollar.',
           ).optional(),
         }).describe("Represents an amount of money with its currency type.")
           .optional(),
         minCompensation: z.object({
-          currencyCode: z.string().describe(
+          currencyCode: z.unknown().describe(
             "The three-letter currency code defined in ISO 4217.",
           ).optional(),
-          nanos: z.number().int().describe(
+          nanos: z.unknown().describe(
             "Number of nano (10^-9) units of the amount. The value must be between -999,999,999 and +999,999,999 inclusive. If `units` is positive, `nanos` must be positive or zero. If `units` is zero, `nanos` can be positive, zero, or negative. If `units` is negative, `nanos` must be negative or zero. For example $-1.75 is represented as `units`=-1 and `nanos`=-750,000,000.",
           ).optional(),
-          units: z.string().describe(
+          units: z.unknown().describe(
             'The whole units of the amount. For example if `currencyCode` is `"USD"`, then 1 unit is one US dollar.',
           ).optional(),
         }).describe("Represents an amount of money with its currency type.")
@@ -838,7 +838,7 @@ const InputsSchema = z.object({
         'The type of a location, which corresponds to the address lines field of google.type.PostalAddress. For example, "Downtown, Atlanta, GA, USA" has a type of LocationType.NEIGHBORHOOD, and "Kansas City, KS, USA" has a type of LocationType.LOCALITY.',
       ).optional(),
       postalAddress: z.object({
-        addressLines: z.array(z.string()).describe(
+        addressLines: z.array(z.unknown()).describe(
           'Unstructured address lines describing the lower levels of an address. Because values in `address_lines` do not have type information and may sometimes contain multiple values in a single field (for example, "Austin, TX"), it is important that the line order is clear. The order of address lines should be "envelope order" for the country or region of the address. In places where this can vary (for example, Japan), `address_language` is used to make it explicit (for example, "ja" for large-to-small ordering and "ja-Latn" or "en" for small-to-large). In this way, the most specific line of an address can be selected based on the language. The minimum permitted structural representation of an address consists of a `region_code` with all remaining information placed in the `address_lines`. It would be possible to format such an address very approximately without geocoding, but no semantic reasoning could be made about any of the address components until it was at least partially resolved. Creating an address only containing a `region_code` and `address_lines` and then geocoding is the recommended way to handle completely unstructured addresses (as opposed to guessing which parts of the address should be localities or administrative areas).',
         ).optional(),
         administrativeArea: z.string().describe(
@@ -856,7 +856,7 @@ const InputsSchema = z.object({
         postalCode: z.string().describe(
           "Optional. Postal code of the address. Not all countries use or require postal codes to be present, but where they are used, they may trigger additional validation with other parts of the address (for example, state or zip code validation in the United States).",
         ).optional(),
-        recipients: z.array(z.string()).describe(
+        recipients: z.array(z.unknown()).describe(
           'Optional. The recipient at the address. This field may, under certain circumstances, contain multiline information. For example, it might contain "care of" information.',
         ).optional(),
         regionCode: z.string().describe(
@@ -990,7 +990,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/jobs/tenants-jobs",
-  version: "2026.04.03.3",
+  version: "2026.04.04.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -1014,6 +1014,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.3",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.04.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

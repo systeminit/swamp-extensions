@@ -81,13 +81,13 @@ const GlobalArgsSchema = z.object({
         "Output only. The human-readable name of the category. This is set when reading the location. When modifying the location, `category_id` must be set.",
       ).optional(),
       moreHoursTypes: z.array(z.object({
-        displayName: z.string().describe(
+        displayName: z.unknown().describe(
           "Output only. The human-readable English display name for the hours type.",
         ).optional(),
-        hoursTypeId: z.string().describe(
+        hoursTypeId: z.unknown().describe(
           "Output only. A stable ID provided by Google for this hours type.",
         ).optional(),
-        localizedDisplayName: z.string().describe(
+        localizedDisplayName: z.unknown().describe(
           "Output only. The human-readable localized display name for the hours type.",
         ).optional(),
       })).describe(
@@ -97,10 +97,10 @@ const GlobalArgsSchema = z.object({
         "Required. A stable ID (provided by Google) for this category. The value must be specified when modifying the category (when creating or updating a location).",
       ).optional(),
       serviceTypes: z.array(z.object({
-        displayName: z.string().describe(
+        displayName: z.unknown().describe(
           "Output only. The human-readable display name for the service type.",
         ).optional(),
-        serviceTypeId: z.string().describe(
+        serviceTypeId: z.unknown().describe(
           "Output only. A stable ID (provided by Google) for this service type.",
         ).optional(),
       })).describe(
@@ -225,16 +225,16 @@ const GlobalArgsSchema = z.object({
         "Required. Indicates the day of the week this period ends on.",
       ).optional(),
       closeTime: z.object({
-        hours: z.number().int().describe(
+        hours: z.unknown().describe(
           'Hours of a day in 24 hour format. Must be greater than or equal to 0 and typically must be less than or equal to 23. An API may choose to allow the value "24:00:00" for scenarios like business closing time.',
         ).optional(),
-        minutes: z.number().int().describe(
+        minutes: z.unknown().describe(
           "Minutes of an hour. Must be greater than or equal to 0 and less than or equal to 59.",
         ).optional(),
-        nanos: z.number().int().describe(
+        nanos: z.unknown().describe(
           "Fractions of seconds, in nanoseconds. Must be greater than or equal to 0 and less than or equal to 999,999,999.",
         ).optional(),
-        seconds: z.number().int().describe(
+        seconds: z.unknown().describe(
           "Seconds of a minute. Must be greater than or equal to 0 and typically must be less than or equal to 59. An API may allow the value 60 if it allows leap-seconds.",
         ).optional(),
       }).describe(
@@ -253,16 +253,16 @@ const GlobalArgsSchema = z.object({
         "Required. Indicates the day of the week this period starts on.",
       ).optional(),
       openTime: z.object({
-        hours: z.number().int().describe(
+        hours: z.unknown().describe(
           'Hours of a day in 24 hour format. Must be greater than or equal to 0 and typically must be less than or equal to 23. An API may choose to allow the value "24:00:00" for scenarios like business closing time.',
         ).optional(),
-        minutes: z.number().int().describe(
+        minutes: z.unknown().describe(
           "Minutes of an hour. Must be greater than or equal to 0 and less than or equal to 59.",
         ).optional(),
-        nanos: z.number().int().describe(
+        nanos: z.unknown().describe(
           "Fractions of seconds, in nanoseconds. Must be greater than or equal to 0 and less than or equal to 999,999,999.",
         ).optional(),
-        seconds: z.number().int().describe(
+        seconds: z.unknown().describe(
           "Seconds of a minute. Must be greater than or equal to 0 and typically must be less than or equal to 59. An API may allow the value 60 if it allows leap-seconds.",
         ).optional(),
       }).describe(
@@ -612,14 +612,14 @@ const StateSchema = z.object({
     additionalCategories: z.array(z.object({
       displayName: z.string(),
       moreHoursTypes: z.array(z.object({
-        displayName: z.string(),
-        hoursTypeId: z.string(),
-        localizedDisplayName: z.string(),
+        displayName: z.unknown(),
+        hoursTypeId: z.unknown(),
+        localizedDisplayName: z.unknown(),
       })),
       name: z.string(),
       serviceTypes: z.array(z.object({
-        displayName: z.string(),
-        serviceTypeId: z.string(),
+        displayName: z.unknown(),
+        serviceTypeId: z.unknown(),
       })),
     })),
     primaryCategory: z.object({
@@ -664,17 +664,17 @@ const StateSchema = z.object({
     periods: z.array(z.object({
       closeDay: z.string(),
       closeTime: z.object({
-        hours: z.number(),
-        minutes: z.number(),
-        nanos: z.number(),
-        seconds: z.number(),
+        hours: z.unknown(),
+        minutes: z.unknown(),
+        nanos: z.unknown(),
+        seconds: z.unknown(),
       }),
       openDay: z.string(),
       openTime: z.object({
-        hours: z.number(),
-        minutes: z.number(),
-        nanos: z.number(),
-        seconds: z.number(),
+        hours: z.unknown(),
+        minutes: z.unknown(),
+        nanos: z.unknown(),
+        seconds: z.unknown(),
       }),
     })),
   })).optional(),
@@ -812,13 +812,13 @@ const InputsSchema = z.object({
         "Output only. The human-readable name of the category. This is set when reading the location. When modifying the location, `category_id` must be set.",
       ).optional(),
       moreHoursTypes: z.array(z.object({
-        displayName: z.string().describe(
+        displayName: z.unknown().describe(
           "Output only. The human-readable English display name for the hours type.",
         ).optional(),
-        hoursTypeId: z.string().describe(
+        hoursTypeId: z.unknown().describe(
           "Output only. A stable ID provided by Google for this hours type.",
         ).optional(),
-        localizedDisplayName: z.string().describe(
+        localizedDisplayName: z.unknown().describe(
           "Output only. The human-readable localized display name for the hours type.",
         ).optional(),
       })).describe(
@@ -828,10 +828,10 @@ const InputsSchema = z.object({
         "Required. A stable ID (provided by Google) for this category. The value must be specified when modifying the category (when creating or updating a location).",
       ).optional(),
       serviceTypes: z.array(z.object({
-        displayName: z.string().describe(
+        displayName: z.unknown().describe(
           "Output only. The human-readable display name for the service type.",
         ).optional(),
-        serviceTypeId: z.string().describe(
+        serviceTypeId: z.unknown().describe(
           "Output only. A stable ID (provided by Google) for this service type.",
         ).optional(),
       })).describe(
@@ -956,16 +956,16 @@ const InputsSchema = z.object({
         "Required. Indicates the day of the week this period ends on.",
       ).optional(),
       closeTime: z.object({
-        hours: z.number().int().describe(
+        hours: z.unknown().describe(
           'Hours of a day in 24 hour format. Must be greater than or equal to 0 and typically must be less than or equal to 23. An API may choose to allow the value "24:00:00" for scenarios like business closing time.',
         ).optional(),
-        minutes: z.number().int().describe(
+        minutes: z.unknown().describe(
           "Minutes of an hour. Must be greater than or equal to 0 and less than or equal to 59.",
         ).optional(),
-        nanos: z.number().int().describe(
+        nanos: z.unknown().describe(
           "Fractions of seconds, in nanoseconds. Must be greater than or equal to 0 and less than or equal to 999,999,999.",
         ).optional(),
-        seconds: z.number().int().describe(
+        seconds: z.unknown().describe(
           "Seconds of a minute. Must be greater than or equal to 0 and typically must be less than or equal to 59. An API may allow the value 60 if it allows leap-seconds.",
         ).optional(),
       }).describe(
@@ -984,16 +984,16 @@ const InputsSchema = z.object({
         "Required. Indicates the day of the week this period starts on.",
       ).optional(),
       openTime: z.object({
-        hours: z.number().int().describe(
+        hours: z.unknown().describe(
           'Hours of a day in 24 hour format. Must be greater than or equal to 0 and typically must be less than or equal to 23. An API may choose to allow the value "24:00:00" for scenarios like business closing time.',
         ).optional(),
-        minutes: z.number().int().describe(
+        minutes: z.unknown().describe(
           "Minutes of an hour. Must be greater than or equal to 0 and less than or equal to 59.",
         ).optional(),
-        nanos: z.number().int().describe(
+        nanos: z.unknown().describe(
           "Fractions of seconds, in nanoseconds. Must be greater than or equal to 0 and less than or equal to 999,999,999.",
         ).optional(),
-        seconds: z.number().int().describe(
+        seconds: z.unknown().describe(
           "Seconds of a minute. Must be greater than or equal to 0 and typically must be less than or equal to 59. An API may allow the value 60 if it allows leap-seconds.",
         ).optional(),
       }).describe(
@@ -1337,7 +1337,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/mybusinessbusinessinformation/locations",
-  version: "2026.04.03.3",
+  version: "2026.04.04.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -1361,6 +1361,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.3",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.04.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

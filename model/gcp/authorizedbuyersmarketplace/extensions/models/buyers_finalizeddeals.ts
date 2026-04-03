@@ -131,19 +131,9 @@ const StateSchema = z.object({
     targeting: z.object({
       daypartTargeting: z.object({
         dayParts: z.array(z.object({
-          dayOfWeek: z.string(),
-          endTime: z.object({
-            hours: z.number(),
-            minutes: z.number(),
-            nanos: z.number(),
-            seconds: z.number(),
-          }),
-          startTime: z.object({
-            hours: z.number(),
-            minutes: z.number(),
-            nanos: z.number(),
-            seconds: z.number(),
-          }),
+          dayOfWeek: z.unknown(),
+          endTime: z.unknown(),
+          startTime: z.unknown(),
         })),
         timeZoneType: z.string(),
       }),
@@ -154,14 +144,14 @@ const StateSchema = z.object({
       }),
       inventorySizeTargeting: z.object({
         excludedInventorySizes: z.array(z.object({
-          height: z.string(),
-          type: z.string(),
-          width: z.string(),
+          height: z.unknown(),
+          type: z.unknown(),
+          width: z.unknown(),
         })),
         targetedInventorySizes: z.array(z.object({
-          height: z.string(),
-          type: z.string(),
-          width: z.string(),
+          height: z.unknown(),
+          type: z.unknown(),
+          width: z.unknown(),
         })),
       }),
       inventoryTypeTargeting: z.object({
@@ -170,32 +160,32 @@ const StateSchema = z.object({
       placementTargeting: z.object({
         mobileApplicationTargeting: z.object({
           firstPartyTargeting: z.object({
-            excludedAppIds: z.array(z.string()),
-            targetedAppIds: z.array(z.string()),
+            excludedAppIds: z.unknown(),
+            targetedAppIds: z.unknown(),
           }),
         }),
         uriTargeting: z.object({
-          excludedUris: z.array(z.string()),
-          targetedUris: z.array(z.string()),
+          excludedUris: z.array(z.unknown()),
+          targetedUris: z.array(z.unknown()),
         }),
       }),
       technologyTargeting: z.object({
         deviceCapabilityTargeting: z.object({
-          excludedCriteriaIds: z.array(z.string()),
-          targetedCriteriaIds: z.array(z.string()),
+          excludedCriteriaIds: z.array(z.unknown()),
+          targetedCriteriaIds: z.array(z.unknown()),
         }),
         deviceCategoryTargeting: z.object({
-          excludedCriteriaIds: z.array(z.string()),
-          targetedCriteriaIds: z.array(z.string()),
+          excludedCriteriaIds: z.array(z.unknown()),
+          targetedCriteriaIds: z.array(z.unknown()),
         }),
         operatingSystemTargeting: z.object({
           operatingSystemCriteria: z.object({
-            excludedCriteriaIds: z.array(z.string()),
-            targetedCriteriaIds: z.array(z.string()),
+            excludedCriteriaIds: z.unknown(),
+            targetedCriteriaIds: z.unknown(),
           }),
           operatingSystemVersionCriteria: z.object({
-            excludedCriteriaIds: z.array(z.string()),
-            targetedCriteriaIds: z.array(z.string()),
+            excludedCriteriaIds: z.unknown(),
+            targetedCriteriaIds: z.unknown(),
           }),
         }),
       }),
@@ -243,7 +233,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/authorizedbuyersmarketplace/buyers-finalizeddeals",
-  version: "2026.04.03.3",
+  version: "2026.04.04.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -267,6 +257,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.3",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.04.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

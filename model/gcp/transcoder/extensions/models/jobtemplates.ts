@@ -103,7 +103,7 @@ const GlobalArgsSchema = z.object({
         channelCount: z.number().int().describe(
           "Number of audio channels. Must be between 1 and 6. The default is 2.",
         ).optional(),
-        channelLayout: z.array(z.string()).describe(
+        channelLayout: z.array(z.unknown()).describe(
           'A list of channel names specifying layout of the audio channels. This only affects the metadata embedded in the container headers, if supported by the specified format. The default is `["fl", "fr"]`. Supported channel names: - `fl` - Front left channel - `fr` - Front right channel - `sl` - Side left channel - `sr` - Side right channel - `fc` - Front center channel - `lfe` - Low frequency',
         ).optional(),
         codec: z.string().describe(
@@ -115,26 +115,7 @@ const GlobalArgsSchema = z.object({
         languageCode: z.string().describe(
           "The BCP-47 language code, such as `en-US` or `sr-Latn`. For more information, see https://www.unicode.org/reports/tr35/#Unicode_locale_identifier. Not supported in MP4 files.",
         ).optional(),
-        mapping: z.array(z.object({
-          atomKey: z.string().describe(
-            "Required. The EditAtom.key that references the atom with audio inputs in the JobConfig.edit_list.",
-          ).optional(),
-          gainDb: z.number().describe(
-            "Audio volume control in dB. Negative values decrease volume, positive values increase. The default is 0.",
-          ).optional(),
-          inputChannel: z.number().int().describe(
-            "Required. The zero-based index of the channel in the input audio stream.",
-          ).optional(),
-          inputKey: z.string().describe(
-            "Required. The Input.key that identifies the input file.",
-          ).optional(),
-          inputTrack: z.number().int().describe(
-            "Required. The zero-based index of the track in the input file.",
-          ).optional(),
-          outputChannel: z.number().int().describe(
-            "Required. The zero-based index of the channel in the output audio stream.",
-          ).optional(),
-        })).describe(
+        mapping: z.array(z.unknown()).describe(
           "The mapping for the JobConfig.edit_list atoms with audio EditAtom.inputs.",
         ).optional(),
         sampleRateHertz: z.number().int().describe(
@@ -153,17 +134,7 @@ const GlobalArgsSchema = z.object({
         languageCode: z.string().describe(
           "The BCP-47 language code, such as `en-US` or `sr-Latn`. For more information, see https://www.unicode.org/reports/tr35/#Unicode_locale_identifier. Not supported in MP4 files.",
         ).optional(),
-        mapping: z.array(z.object({
-          atomKey: z.string().describe(
-            "Required. The EditAtom.key that references atom with text inputs in the JobConfig.edit_list.",
-          ).optional(),
-          inputKey: z.string().describe(
-            "Required. The Input.key that identifies the input file.",
-          ).optional(),
-          inputTrack: z.number().int().describe(
-            "Required. The zero-based index of the track in the input file.",
-          ).optional(),
-        })).describe(
+        mapping: z.array(z.unknown()).describe(
           "The mapping for the JobConfig.edit_list atoms with text EditAtom.inputs.",
         ).optional(),
       }).describe(
@@ -171,197 +142,185 @@ const GlobalArgsSchema = z.object({
       ).optional(),
       videoStream: z.object({
         h264: z.object({
-          allowOpenGop: z.boolean().describe(
+          allowOpenGop: z.unknown().describe(
             "Specifies whether an open Group of Pictures (GOP) structure should be allowed or not. The default is `false`.",
           ).optional(),
-          aqStrength: z.number().describe(
+          aqStrength: z.unknown().describe(
             "Specify the intensity of the adaptive quantizer (AQ). Must be between 0 and 1, where 0 disables the quantizer and 1 maximizes the quantizer. A higher value equals a lower bitrate but smoother image. The default is 0.",
           ).optional(),
-          bFrameCount: z.number().int().describe(
+          bFrameCount: z.unknown().describe(
             "The number of consecutive B-frames. Must be greater than or equal to zero. Must be less than H264CodecSettings.gop_frame_count if set. The default is 0.",
           ).optional(),
-          bPyramid: z.boolean().describe(
+          bPyramid: z.unknown().describe(
             "Allow B-pyramid for reference frame selection. This may not be supported on all decoders. The default is `false`.",
           ).optional(),
-          bitrateBps: z.number().int().describe(
+          bitrateBps: z.unknown().describe(
             "Required. The video bitrate in bits per second. The minimum value is 1,000. The maximum value is 800,000,000.",
           ).optional(),
-          crfLevel: z.number().int().describe(
+          crfLevel: z.unknown().describe(
             "Target CRF level. Must be between 10 and 36, where 10 is the highest quality and 36 is the most efficient compression. The default is 21.",
           ).optional(),
-          enableTwoPass: z.boolean().describe(
+          enableTwoPass: z.unknown().describe(
             "Use two-pass encoding strategy to achieve better video quality. H264CodecSettings.rate_control_mode must be `vbr`. The default is `false`.",
           ).optional(),
-          entropyCoder: z.string().describe(
+          entropyCoder: z.unknown().describe(
             "The entropy coder to use. The default is `cabac`. Supported entropy coders: - `cavlc` - `cabac`",
           ).optional(),
-          frameRate: z.number().describe(
+          frameRate: z.unknown().describe(
             "Required. The target video frame rate in frames per second (FPS). Must be less than or equal to 120.",
           ).optional(),
-          frameRateConversionStrategy: z.enum([
-            "FRAME_RATE_CONVERSION_STRATEGY_UNSPECIFIED",
-            "DOWNSAMPLE",
-            "DROP_DUPLICATE",
-          ]).describe(
+          frameRateConversionStrategy: z.unknown().describe(
             "Optional. Frame rate conversion strategy for desired frame rate. The default is `DOWNSAMPLE`.",
           ).optional(),
-          gopDuration: z.string().describe(
+          gopDuration: z.unknown().describe(
             "Select the GOP size based on the specified duration. The default is `3s`. Note that `gopDuration` must be less than or equal to [`segmentDuration`](#SegmentSettings), and [`segmentDuration`](#SegmentSettings) must be divisible by `gopDuration`.",
           ).optional(),
-          gopFrameCount: z.number().int().describe(
+          gopFrameCount: z.unknown().describe(
             "Select the GOP size based on the specified frame count. Must be greater than zero.",
           ).optional(),
-          heightPixels: z.number().int().describe(
+          heightPixels: z.unknown().describe(
             "The height of the video in pixels. Must be an even integer. When not specified, the height is adjusted to match the specified width and input aspect ratio. If both are omitted, the input height is used. For portrait videos that contain horizontal ASR and rotation metadata, provide the height, in pixels, per the horizontal ASR. The API calculates the width per the horizontal ASR. The API detects any rotation metadata and swaps the requested height and width for the output.",
           ).optional(),
-          hlg: z.object({}).describe(
+          hlg: z.unknown().describe(
             "Convert the input video to a Hybrid Log Gamma (HLG) video.",
           ).optional(),
-          pixelFormat: z.string().describe(
+          pixelFormat: z.unknown().describe(
             "Pixel format to use. The default is `yuv420p`. Supported pixel formats: - `yuv420p` pixel format - `yuv422p` pixel format - `yuv444p` pixel format - `yuv420p10` 10-bit HDR pixel format - `yuv422p10` 10-bit HDR pixel format - `yuv444p10` 10-bit HDR pixel format - `yuv420p12` 12-bit HDR pixel format - `yuv422p12` 12-bit HDR pixel format - `yuv444p12` 12-bit HDR pixel format",
           ).optional(),
-          preset: z.string().describe(
+          preset: z.unknown().describe(
             "Enforces the specified codec preset. The default is `veryfast`. The available options are [FFmpeg-compatible](https://trac.ffmpeg.org/wiki/Encode/H.264#Preset). Note that certain values for this field may cause the transcoder to override other fields you set in the `H264CodecSettings` message.",
           ).optional(),
-          profile: z.string().describe(
+          profile: z.unknown().describe(
             "Enforces the specified codec profile. The following profiles are supported: * `baseline` * `main` * `high` (default) The available options are [FFmpeg-compatible](https://trac.ffmpeg.org/wiki/Encode/H.264#Tune). Note that certain values for this field may cause the transcoder to override other fields you set in the `H264CodecSettings` message.",
           ).optional(),
-          rateControlMode: z.string().describe(
+          rateControlMode: z.unknown().describe(
             "Specify the mode. The default is `vbr`. Supported rate control modes: - `vbr` - variable bitrate - `crf` - constant rate factor",
           ).optional(),
-          sdr: z.object({}).describe(
+          sdr: z.unknown().describe(
             "Convert the input video to a Standard Dynamic Range (SDR) video.",
           ).optional(),
-          tune: z.string().describe(
+          tune: z.unknown().describe(
             "Enforces the specified codec tune. The available options are [FFmpeg-compatible](https://trac.ffmpeg.org/wiki/Encode/H.264#Tune). Note that certain values for this field may cause the transcoder to override other fields you set in the `H264CodecSettings` message.",
           ).optional(),
-          vbvFullnessBits: z.number().int().describe(
+          vbvFullnessBits: z.unknown().describe(
             "Initial fullness of the Video Buffering Verifier (VBV) buffer in bits. Must be greater than zero. The default is equal to 90% of H264CodecSettings.vbv_size_bits.",
           ).optional(),
-          vbvSizeBits: z.number().int().describe(
+          vbvSizeBits: z.unknown().describe(
             "Size of the Video Buffering Verifier (VBV) buffer in bits. Must be greater than zero. The default is equal to H264CodecSettings.bitrate_bps.",
           ).optional(),
-          widthPixels: z.number().int().describe(
+          widthPixels: z.unknown().describe(
             "The width of the video in pixels. Must be an even integer. When not specified, the width is adjusted to match the specified height and input aspect ratio. If both are omitted, the input width is used. For portrait videos that contain horizontal ASR and rotation metadata, provide the width, in pixels, per the horizontal ASR. The API calculates the height per the horizontal ASR. The API detects any rotation metadata and swaps the requested height and width for the output.",
           ).optional(),
         }).describe("H264 codec settings.").optional(),
         h265: z.object({
-          allowOpenGop: z.boolean().describe(
+          allowOpenGop: z.unknown().describe(
             "Specifies whether an open Group of Pictures (GOP) structure should be allowed or not. The default is `false`.",
           ).optional(),
-          aqStrength: z.number().describe(
+          aqStrength: z.unknown().describe(
             "Specify the intensity of the adaptive quantizer (AQ). Must be between 0 and 1, where 0 disables the quantizer and 1 maximizes the quantizer. A higher value equals a lower bitrate but smoother image. The default is 0.",
           ).optional(),
-          bFrameCount: z.number().int().describe(
+          bFrameCount: z.unknown().describe(
             "The number of consecutive B-frames. Must be greater than or equal to zero. Must be less than H265CodecSettings.gop_frame_count if set. The default is 0.",
           ).optional(),
-          bPyramid: z.boolean().describe(
+          bPyramid: z.unknown().describe(
             "Allow B-pyramid for reference frame selection. This may not be supported on all decoders. The default is `false`.",
           ).optional(),
-          bitrateBps: z.number().int().describe(
+          bitrateBps: z.unknown().describe(
             "Required. The video bitrate in bits per second. The minimum value is 1,000. The maximum value is 800,000,000.",
           ).optional(),
-          crfLevel: z.number().int().describe(
+          crfLevel: z.unknown().describe(
             "Target CRF level. Must be between 10 and 36, where 10 is the highest quality and 36 is the most efficient compression. The default is 21.",
           ).optional(),
-          enableTwoPass: z.boolean().describe(
+          enableTwoPass: z.unknown().describe(
             "Use two-pass encoding strategy to achieve better video quality. H265CodecSettings.rate_control_mode must be `vbr`. The default is `false`.",
           ).optional(),
-          frameRate: z.number().describe(
+          frameRate: z.unknown().describe(
             "Required. The target video frame rate in frames per second (FPS). Must be less than or equal to 120.",
           ).optional(),
-          frameRateConversionStrategy: z.enum([
-            "FRAME_RATE_CONVERSION_STRATEGY_UNSPECIFIED",
-            "DOWNSAMPLE",
-            "DROP_DUPLICATE",
-          ]).describe(
+          frameRateConversionStrategy: z.unknown().describe(
             "Optional. Frame rate conversion strategy for desired frame rate. The default is `DOWNSAMPLE`.",
           ).optional(),
-          gopDuration: z.string().describe(
+          gopDuration: z.unknown().describe(
             "Select the GOP size based on the specified duration. The default is `3s`. Note that `gopDuration` must be less than or equal to [`segmentDuration`](#SegmentSettings), and [`segmentDuration`](#SegmentSettings) must be divisible by `gopDuration`.",
           ).optional(),
-          gopFrameCount: z.number().int().describe(
+          gopFrameCount: z.unknown().describe(
             "Select the GOP size based on the specified frame count. Must be greater than zero.",
           ).optional(),
-          hdr10: z.object({}).describe(
+          hdr10: z.unknown().describe(
             "Convert the input video to a High Dynamic Range 10 (HDR10) video.",
           ).optional(),
-          heightPixels: z.number().int().describe(
+          heightPixels: z.unknown().describe(
             "The height of the video in pixels. Must be an even integer. When not specified, the height is adjusted to match the specified width and input aspect ratio. If both are omitted, the input height is used. For portrait videos that contain horizontal ASR and rotation metadata, provide the height, in pixels, per the horizontal ASR. The API calculates the width per the horizontal ASR. The API detects any rotation metadata and swaps the requested height and width for the output.",
           ).optional(),
-          hlg: z.object({}).describe(
+          hlg: z.unknown().describe(
             "Convert the input video to a Hybrid Log Gamma (HLG) video.",
           ).optional(),
-          pixelFormat: z.string().describe(
+          pixelFormat: z.unknown().describe(
             "Pixel format to use. The default is `yuv420p`. Supported pixel formats: - `yuv420p` pixel format - `yuv422p` pixel format - `yuv444p` pixel format - `yuv420p10` 10-bit HDR pixel format - `yuv422p10` 10-bit HDR pixel format - `yuv444p10` 10-bit HDR pixel format - `yuv420p12` 12-bit HDR pixel format - `yuv422p12` 12-bit HDR pixel format - `yuv444p12` 12-bit HDR pixel format",
           ).optional(),
-          preset: z.string().describe(
+          preset: z.unknown().describe(
             "Enforces the specified codec preset. The default is `veryfast`. The available options are [FFmpeg-compatible](https://trac.ffmpeg.org/wiki/Encode/H.265). Note that certain values for this field may cause the transcoder to override other fields you set in the `H265CodecSettings` message.",
           ).optional(),
-          profile: z.string().describe(
+          profile: z.unknown().describe(
             "Enforces the specified codec profile. The following profiles are supported: * 8-bit profiles * `main` (default) * `main-intra` * `mainstillpicture` * 10-bit profiles * `main10` (default) * `main10-intra` * `main422-10` * `main422-10-intra` * `main444-10` * `main444-10-intra` * 12-bit profiles * `main12` (default) * `main12-intra` * `main422-12` * `main422-12-intra` * `main444-12` * `main444-12-intra` The available options are [FFmpeg-compatible](https://x265.readthedocs.io/). Note that certain values for this field may cause the transcoder to override other fields you set in the `H265CodecSettings` message.",
           ).optional(),
-          rateControlMode: z.string().describe(
+          rateControlMode: z.unknown().describe(
             "Specify the mode. The default is `vbr`. Supported rate control modes: - `vbr` - variable bitrate - `crf` - constant rate factor",
           ).optional(),
-          sdr: z.object({}).describe(
+          sdr: z.unknown().describe(
             "Convert the input video to a Standard Dynamic Range (SDR) video.",
           ).optional(),
-          tune: z.string().describe(
+          tune: z.unknown().describe(
             "Enforces the specified codec tune. The available options are [FFmpeg-compatible](https://trac.ffmpeg.org/wiki/Encode/H.265). Note that certain values for this field may cause the transcoder to override other fields you set in the `H265CodecSettings` message.",
           ).optional(),
-          vbvFullnessBits: z.number().int().describe(
+          vbvFullnessBits: z.unknown().describe(
             "Initial fullness of the Video Buffering Verifier (VBV) buffer in bits. Must be greater than zero. The default is equal to 90% of H265CodecSettings.vbv_size_bits.",
           ).optional(),
-          vbvSizeBits: z.number().int().describe(
+          vbvSizeBits: z.unknown().describe(
             "Size of the Video Buffering Verifier (VBV) buffer in bits. Must be greater than zero. The default is equal to `VideoStream.bitrate_bps`.",
           ).optional(),
-          widthPixels: z.number().int().describe(
+          widthPixels: z.unknown().describe(
             "The width of the video in pixels. Must be an even integer. When not specified, the width is adjusted to match the specified height and input aspect ratio. If both are omitted, the input width is used. For portrait videos that contain horizontal ASR and rotation metadata, provide the width, in pixels, per the horizontal ASR. The API calculates the height per the horizontal ASR. The API detects any rotation metadata and swaps the requested height and width for the output.",
           ).optional(),
         }).describe("H265 codec settings.").optional(),
         vp9: z.object({
-          bitrateBps: z.number().int().describe(
+          bitrateBps: z.unknown().describe(
             "Required. The video bitrate in bits per second. The minimum value is 1,000. The maximum value is 480,000,000.",
           ).optional(),
-          crfLevel: z.number().int().describe(
+          crfLevel: z.unknown().describe(
             "Target CRF level. Must be between 10 and 36, where 10 is the highest quality and 36 is the most efficient compression. The default is 21. **Note:** This field is not supported.",
           ).optional(),
-          frameRate: z.number().describe(
+          frameRate: z.unknown().describe(
             "Required. The target video frame rate in frames per second (FPS). Must be less than or equal to 120.",
           ).optional(),
-          frameRateConversionStrategy: z.enum([
-            "FRAME_RATE_CONVERSION_STRATEGY_UNSPECIFIED",
-            "DOWNSAMPLE",
-            "DROP_DUPLICATE",
-          ]).describe(
+          frameRateConversionStrategy: z.unknown().describe(
             "Optional. Frame rate conversion strategy for desired frame rate. The default is `DOWNSAMPLE`.",
           ).optional(),
-          gopDuration: z.string().describe(
+          gopDuration: z.unknown().describe(
             "Select the GOP size based on the specified duration. The default is `3s`. Note that `gopDuration` must be less than or equal to [`segmentDuration`](#SegmentSettings), and [`segmentDuration`](#SegmentSettings) must be divisible by `gopDuration`.",
           ).optional(),
-          gopFrameCount: z.number().int().describe(
+          gopFrameCount: z.unknown().describe(
             "Select the GOP size based on the specified frame count. Must be greater than zero.",
           ).optional(),
-          heightPixels: z.number().int().describe(
+          heightPixels: z.unknown().describe(
             "The height of the video in pixels. Must be an even integer. When not specified, the height is adjusted to match the specified width and input aspect ratio. If both are omitted, the input height is used. For portrait videos that contain horizontal ASR and rotation metadata, provide the height, in pixels, per the horizontal ASR. The API calculates the width per the horizontal ASR. The API detects any rotation metadata and swaps the requested height and width for the output.",
           ).optional(),
-          hlg: z.object({}).describe(
+          hlg: z.unknown().describe(
             "Convert the input video to a Hybrid Log Gamma (HLG) video.",
           ).optional(),
-          pixelFormat: z.string().describe(
+          pixelFormat: z.unknown().describe(
             "Pixel format to use. The default is `yuv420p`. Supported pixel formats: - `yuv420p` pixel format - `yuv422p` pixel format - `yuv444p` pixel format - `yuv420p10` 10-bit HDR pixel format - `yuv422p10` 10-bit HDR pixel format - `yuv444p10` 10-bit HDR pixel format - `yuv420p12` 12-bit HDR pixel format - `yuv422p12` 12-bit HDR pixel format - `yuv444p12` 12-bit HDR pixel format",
           ).optional(),
-          profile: z.string().describe(
+          profile: z.unknown().describe(
             "Enforces the specified codec profile. The following profiles are supported: * `profile0` (default) * `profile1` * `profile2` * `profile3` The available options are [WebM-compatible](https://www.webmproject.org/vp9/profiles/). Note that certain values for this field may cause the transcoder to override other fields you set in the `Vp9CodecSettings` message.",
           ).optional(),
-          rateControlMode: z.string().describe(
+          rateControlMode: z.unknown().describe(
             "Specify the mode. The default is `vbr`. Supported rate control modes: - `vbr` - variable bitrate",
           ).optional(),
-          sdr: z.object({}).describe(
+          sdr: z.unknown().describe(
             "Convert the input video to a Standard Dynamic Range (SDR) video.",
           ).optional(),
-          widthPixels: z.number().int().describe(
+          widthPixels: z.unknown().describe(
             "The width of the video in pixels. Must be an even integer. When not specified, the width is adjusted to match the specified height and input aspect ratio. If both are omitted, the input width is used. For portrait videos that contain horizontal ASR and rotation metadata, provide the width, in pixels, per the horizontal ASR. The API calculates the height per the horizontal ASR. The API detects any rotation metadata and swaps the requested height and width for the output.",
           ).optional(),
         }).describe("VP9 codec settings.").optional(),
@@ -399,18 +358,7 @@ const GlobalArgsSchema = z.object({
     ).optional(),
     inputs: z.array(z.object({
       attributes: z.object({
-        trackDefinitions: z.array(z.object({
-          detectLanguages: z.boolean().describe(
-            "Optional. Whether to automatically detect the languages present in the track. If true, the system will attempt to identify all the languages present in the track and populate the languages field.",
-          ).optional(),
-          detectedLanguages: z.array(z.string()).describe(
-            'Output only. A list of languages detected in the input asset, represented by a BCP 47 language code, such as "en-US" or "sr-Latn". For more information, see https://www.unicode.org/reports/tr35/#Unicode_locale_identifier. This field is only populated if the detect_languages field is set to true.',
-          ).optional(),
-          inputTrack: z.number().int().describe("The input track.").optional(),
-          languages: z.array(z.string()).describe(
-            'Optional. A list of languages spoken in the input asset, represented by a BCP 47 language code, such as "en-US" or "sr-Latn". For more information, see https://www.unicode.org/reports/tr35/#Unicode_locale_identifier.',
-          ).optional(),
-        })).describe(
+        trackDefinitions: z.array(z.unknown()).describe(
           "Optional. A list of track definitions for the input asset.",
         ).optional(),
       }).describe(
@@ -421,105 +369,84 @@ const GlobalArgsSchema = z.object({
       ).optional(),
       preprocessingConfig: z.object({
         audio: z.object({
-          highBoost: z.boolean().describe(
+          highBoost: z.unknown().describe(
             "Enable boosting high frequency components. The default is `false`. **Note:** This field is not supported.",
           ).optional(),
-          lowBoost: z.boolean().describe(
+          lowBoost: z.unknown().describe(
             "Enable boosting low frequency components. The default is `false`. **Note:** This field is not supported.",
           ).optional(),
-          lufs: z.number().describe(
+          lufs: z.unknown().describe(
             "Specify audio loudness normalization in loudness units relative to full scale (LUFS). Enter a value between -24 and 0 (the default), where: * -24 is the Advanced Television Systems Committee (ATSC A/85) standard * -23 is the EU R128 broadcast standard * -19 is the prior standard for online mono audio * -18 is the ReplayGain standard * -16 is the prior standard for stereo audio * -14 is the new online audio standard recommended by Spotify, as well as Amazon Echo * 0 disables normalization",
           ).optional(),
         }).describe("Audio preprocessing configuration.").optional(),
         color: z.object({
-          brightness: z.number().describe(
+          brightness: z.unknown().describe(
             "Control brightness of the video. Enter a value between -1 and 1, where -1 is minimum brightness and 1 is maximum brightness. 0 is no change. The default is 0.",
           ).optional(),
-          contrast: z.number().describe(
+          contrast: z.unknown().describe(
             "Control black and white contrast of the video. Enter a value between -1 and 1, where -1 is minimum contrast and 1 is maximum contrast. 0 is no change. The default is 0.",
           ).optional(),
-          saturation: z.number().describe(
+          saturation: z.unknown().describe(
             "Control color saturation of the video. Enter a value between -1 and 1, where -1 is fully desaturated and 1 is maximum saturation. 0 is no change. The default is 0.",
           ).optional(),
         }).describe(
           "Color preprocessing configuration. **Note:** This configuration is not supported.",
         ).optional(),
         crop: z.object({
-          bottomPixels: z.number().int().describe(
+          bottomPixels: z.unknown().describe(
             "The number of pixels to crop from the bottom. The default is 0.",
           ).optional(),
-          leftPixels: z.number().int().describe(
+          leftPixels: z.unknown().describe(
             "The number of pixels to crop from the left. The default is 0.",
           ).optional(),
-          rightPixels: z.number().int().describe(
+          rightPixels: z.unknown().describe(
             "The number of pixels to crop from the right. The default is 0.",
           ).optional(),
-          topPixels: z.number().int().describe(
+          topPixels: z.unknown().describe(
             "The number of pixels to crop from the top. The default is 0.",
           ).optional(),
         }).describe(
           "Video cropping configuration for the input video. The cropped input video is scaled to match the output resolution.",
         ).optional(),
         deblock: z.object({
-          enabled: z.boolean().describe(
+          enabled: z.unknown().describe(
             "Enable deblocker. The default is `false`.",
           ).optional(),
-          strength: z.number().describe(
+          strength: z.unknown().describe(
             "Set strength of the deblocker. Enter a value between 0 and 1. The higher the value, the stronger the block removal. 0 is no deblocking. The default is 0.",
           ).optional(),
         }).describe(
           "Deblock preprocessing configuration. **Note:** This configuration is not supported.",
         ).optional(),
         deinterlace: z.object({
-          bwdif: z.object({
-            deinterlaceAllFrames: z.boolean().describe(
-              "Deinterlace all frames rather than just the frames identified as interlaced. The default is `false`.",
-            ).optional(),
-            mode: z.string().describe(
-              "Specifies the deinterlacing mode to adopt. The default is `send_frame`. Supported values: - `send_frame`: Output one frame for each frame - `send_field`: Output one frame for each field",
-            ).optional(),
-            parity: z.string().describe(
-              "The picture field parity assumed for the input interlaced video. The default is `auto`. Supported values: - `tff`: Assume the top field is first - `bff`: Assume the bottom field is first - `auto`: Enable automatic detection of field parity",
-            ).optional(),
-          }).describe("Bob Weaver Deinterlacing Filter Configuration.")
-            .optional(),
-          yadif: z.object({
-            deinterlaceAllFrames: z.boolean().describe(
-              "Deinterlace all frames rather than just the frames identified as interlaced. The default is `false`.",
-            ).optional(),
-            disableSpatialInterlacing: z.boolean().describe(
-              "Disable spacial interlacing. The default is `false`.",
-            ).optional(),
-            mode: z.string().describe(
-              "Specifies the deinterlacing mode to adopt. The default is `send_frame`. Supported values: - `send_frame`: Output one frame for each frame - `send_field`: Output one frame for each field",
-            ).optional(),
-            parity: z.string().describe(
-              "The picture field parity assumed for the input interlaced video. The default is `auto`. Supported values: - `tff`: Assume the top field is first - `bff`: Assume the bottom field is first - `auto`: Enable automatic detection of field parity",
-            ).optional(),
-          }).describe("Yet Another Deinterlacing Filter Configuration.")
-            .optional(),
+          bwdif: z.unknown().describe(
+            "Bob Weaver Deinterlacing Filter Configuration.",
+          ).optional(),
+          yadif: z.unknown().describe(
+            "Yet Another Deinterlacing Filter Configuration.",
+          ).optional(),
         }).describe("Deinterlace configuration for input video.").optional(),
         denoise: z.object({
-          strength: z.number().describe(
+          strength: z.unknown().describe(
             "Set strength of the denoise. Enter a value between 0 and 1. The higher the value, the smoother the image. 0 is no denoising. The default is 0.",
           ).optional(),
-          tune: z.string().describe(
+          tune: z.unknown().describe(
             "Set the denoiser mode. The default is `standard`. Supported denoiser modes: - `standard` - `grain`",
           ).optional(),
         }).describe(
           "Denoise preprocessing configuration. **Note:** This configuration is not supported.",
         ).optional(),
         pad: z.object({
-          bottomPixels: z.number().int().describe(
+          bottomPixels: z.unknown().describe(
             "The number of pixels to add to the bottom. The default is 0.",
           ).optional(),
-          leftPixels: z.number().int().describe(
+          leftPixels: z.unknown().describe(
             "The number of pixels to add to the left. The default is 0.",
           ).optional(),
-          rightPixels: z.number().int().describe(
+          rightPixels: z.unknown().describe(
             "The number of pixels to add to the right. The default is 0.",
           ).optional(),
-          topPixels: z.number().int().describe(
+          topPixels: z.unknown().describe(
             "The number of pixels to add to the top. The default is 0.",
           ).optional(),
         }).describe(
@@ -588,40 +515,14 @@ const GlobalArgsSchema = z.object({
       .optional(),
     overlays: z.array(z.object({
       animations: z.array(z.object({
-        animationEnd: z.object({
-          startTimeOffset: z.string().describe(
-            "The time to end overlay object, in seconds. Default: 0",
-          ).optional(),
-        }).describe(
+        animationEnd: z.unknown().describe(
           "End previous overlay animation from the video. Without `AnimationEnd`, the overlay object will keep the state of previous animation until the end of the video.",
         ).optional(),
-        animationFade: z.object({
-          endTimeOffset: z.string().describe(
-            "The time to end the fade animation, in seconds. Default: `start_time_offset` + 1s",
-          ).optional(),
-          fadeType: z.enum(["FADE_TYPE_UNSPECIFIED", "FADE_IN", "FADE_OUT"])
-            .describe(
-              "Required. Type of fade animation: `FADE_IN` or `FADE_OUT`.",
-            ).optional(),
-          startTimeOffset: z.string().describe(
-            "The time to start the fade animation, in seconds. Default: 0",
-          ).optional(),
-          xy: z.object({
-            x: z.number().describe("Normalized x coordinate.").optional(),
-            y: z.number().describe("Normalized y coordinate.").optional(),
-          }).describe("2D normalized coordinates. Default: `{0.0, 0.0}`")
-            .optional(),
-        }).describe("Display overlay object with fade animation.").optional(),
-        animationStatic: z.object({
-          startTimeOffset: z.string().describe(
-            "The time to start displaying the overlay object, in seconds. Default: 0",
-          ).optional(),
-          xy: z.object({
-            x: z.number().describe("Normalized x coordinate.").optional(),
-            y: z.number().describe("Normalized y coordinate.").optional(),
-          }).describe("2D normalized coordinates. Default: `{0.0, 0.0}`")
-            .optional(),
-        }).describe("Display static overlay object.").optional(),
+        animationFade: z.unknown().describe(
+          "Display overlay object with fade animation.",
+        ).optional(),
+        animationStatic: z.unknown().describe("Display static overlay object.")
+          .optional(),
       })).describe(
         "List of animations. The list should be chronological, without any time overlap.",
       ).optional(),
@@ -630,8 +531,8 @@ const GlobalArgsSchema = z.object({
           "Target image opacity. Valid values are from `1.0` (solid, default) to `0.0` (transparent), exclusive. Set this to a value greater than `0.0`.",
         ).optional(),
         resolution: z.object({
-          x: z.number().describe("Normalized x coordinate.").optional(),
-          y: z.number().describe("Normalized y coordinate.").optional(),
+          x: z.unknown().describe("Normalized x coordinate.").optional(),
+          y: z.unknown().describe("Normalized y coordinate.").optional(),
         }).describe("2D normalized coordinates. Default: `{0.0, 0.0}`")
           .optional(),
         uri: z.string().describe(
@@ -712,18 +613,11 @@ const StateSchema = z.object({
       audioStream: z.object({
         bitrateBps: z.number(),
         channelCount: z.number(),
-        channelLayout: z.array(z.string()),
+        channelLayout: z.array(z.unknown()),
         codec: z.string(),
         displayName: z.string(),
         languageCode: z.string(),
-        mapping: z.array(z.object({
-          atomKey: z.string(),
-          gainDb: z.number(),
-          inputChannel: z.number(),
-          inputKey: z.string(),
-          inputTrack: z.number(),
-          outputChannel: z.number(),
-        })),
+        mapping: z.array(z.unknown()),
         sampleRateHertz: z.number(),
       }),
       key: z.string(),
@@ -731,77 +625,73 @@ const StateSchema = z.object({
         codec: z.string(),
         displayName: z.string(),
         languageCode: z.string(),
-        mapping: z.array(z.object({
-          atomKey: z.string(),
-          inputKey: z.string(),
-          inputTrack: z.number(),
-        })),
+        mapping: z.array(z.unknown()),
       }),
       videoStream: z.object({
         h264: z.object({
-          allowOpenGop: z.boolean(),
-          aqStrength: z.number(),
-          bFrameCount: z.number(),
-          bPyramid: z.boolean(),
-          bitrateBps: z.number(),
-          crfLevel: z.number(),
-          enableTwoPass: z.boolean(),
-          entropyCoder: z.string(),
-          frameRate: z.number(),
-          frameRateConversionStrategy: z.string(),
-          gopDuration: z.string(),
-          gopFrameCount: z.number(),
-          heightPixels: z.number(),
-          hlg: z.object({}),
-          pixelFormat: z.string(),
-          preset: z.string(),
-          profile: z.string(),
-          rateControlMode: z.string(),
-          sdr: z.object({}),
-          tune: z.string(),
-          vbvFullnessBits: z.number(),
-          vbvSizeBits: z.number(),
-          widthPixels: z.number(),
+          allowOpenGop: z.unknown(),
+          aqStrength: z.unknown(),
+          bFrameCount: z.unknown(),
+          bPyramid: z.unknown(),
+          bitrateBps: z.unknown(),
+          crfLevel: z.unknown(),
+          enableTwoPass: z.unknown(),
+          entropyCoder: z.unknown(),
+          frameRate: z.unknown(),
+          frameRateConversionStrategy: z.unknown(),
+          gopDuration: z.unknown(),
+          gopFrameCount: z.unknown(),
+          heightPixels: z.unknown(),
+          hlg: z.unknown(),
+          pixelFormat: z.unknown(),
+          preset: z.unknown(),
+          profile: z.unknown(),
+          rateControlMode: z.unknown(),
+          sdr: z.unknown(),
+          tune: z.unknown(),
+          vbvFullnessBits: z.unknown(),
+          vbvSizeBits: z.unknown(),
+          widthPixels: z.unknown(),
         }),
         h265: z.object({
-          allowOpenGop: z.boolean(),
-          aqStrength: z.number(),
-          bFrameCount: z.number(),
-          bPyramid: z.boolean(),
-          bitrateBps: z.number(),
-          crfLevel: z.number(),
-          enableTwoPass: z.boolean(),
-          frameRate: z.number(),
-          frameRateConversionStrategy: z.string(),
-          gopDuration: z.string(),
-          gopFrameCount: z.number(),
-          hdr10: z.object({}),
-          heightPixels: z.number(),
-          hlg: z.object({}),
-          pixelFormat: z.string(),
-          preset: z.string(),
-          profile: z.string(),
-          rateControlMode: z.string(),
-          sdr: z.object({}),
-          tune: z.string(),
-          vbvFullnessBits: z.number(),
-          vbvSizeBits: z.number(),
-          widthPixels: z.number(),
+          allowOpenGop: z.unknown(),
+          aqStrength: z.unknown(),
+          bFrameCount: z.unknown(),
+          bPyramid: z.unknown(),
+          bitrateBps: z.unknown(),
+          crfLevel: z.unknown(),
+          enableTwoPass: z.unknown(),
+          frameRate: z.unknown(),
+          frameRateConversionStrategy: z.unknown(),
+          gopDuration: z.unknown(),
+          gopFrameCount: z.unknown(),
+          hdr10: z.unknown(),
+          heightPixels: z.unknown(),
+          hlg: z.unknown(),
+          pixelFormat: z.unknown(),
+          preset: z.unknown(),
+          profile: z.unknown(),
+          rateControlMode: z.unknown(),
+          sdr: z.unknown(),
+          tune: z.unknown(),
+          vbvFullnessBits: z.unknown(),
+          vbvSizeBits: z.unknown(),
+          widthPixels: z.unknown(),
         }),
         vp9: z.object({
-          bitrateBps: z.number(),
-          crfLevel: z.number(),
-          frameRate: z.number(),
-          frameRateConversionStrategy: z.string(),
-          gopDuration: z.string(),
-          gopFrameCount: z.number(),
-          heightPixels: z.number(),
-          hlg: z.object({}),
-          pixelFormat: z.string(),
-          profile: z.string(),
-          rateControlMode: z.string(),
-          sdr: z.object({}),
-          widthPixels: z.number(),
+          bitrateBps: z.unknown(),
+          crfLevel: z.unknown(),
+          frameRate: z.unknown(),
+          frameRateConversionStrategy: z.unknown(),
+          gopDuration: z.unknown(),
+          gopFrameCount: z.unknown(),
+          heightPixels: z.unknown(),
+          hlg: z.unknown(),
+          pixelFormat: z.unknown(),
+          profile: z.unknown(),
+          rateControlMode: z.unknown(),
+          sdr: z.unknown(),
+          widthPixels: z.unknown(),
         }),
       }),
     })),
@@ -824,57 +714,43 @@ const StateSchema = z.object({
     })),
     inputs: z.array(z.object({
       attributes: z.object({
-        trackDefinitions: z.array(z.object({
-          detectLanguages: z.boolean(),
-          detectedLanguages: z.array(z.string()),
-          inputTrack: z.number(),
-          languages: z.array(z.string()),
-        })),
+        trackDefinitions: z.array(z.unknown()),
       }),
       key: z.string(),
       preprocessingConfig: z.object({
         audio: z.object({
-          highBoost: z.boolean(),
-          lowBoost: z.boolean(),
-          lufs: z.number(),
+          highBoost: z.unknown(),
+          lowBoost: z.unknown(),
+          lufs: z.unknown(),
         }),
         color: z.object({
-          brightness: z.number(),
-          contrast: z.number(),
-          saturation: z.number(),
+          brightness: z.unknown(),
+          contrast: z.unknown(),
+          saturation: z.unknown(),
         }),
         crop: z.object({
-          bottomPixels: z.number(),
-          leftPixels: z.number(),
-          rightPixels: z.number(),
-          topPixels: z.number(),
+          bottomPixels: z.unknown(),
+          leftPixels: z.unknown(),
+          rightPixels: z.unknown(),
+          topPixels: z.unknown(),
         }),
         deblock: z.object({
-          enabled: z.boolean(),
-          strength: z.number(),
+          enabled: z.unknown(),
+          strength: z.unknown(),
         }),
         deinterlace: z.object({
-          bwdif: z.object({
-            deinterlaceAllFrames: z.boolean(),
-            mode: z.string(),
-            parity: z.string(),
-          }),
-          yadif: z.object({
-            deinterlaceAllFrames: z.boolean(),
-            disableSpatialInterlacing: z.boolean(),
-            mode: z.string(),
-            parity: z.string(),
-          }),
+          bwdif: z.unknown(),
+          yadif: z.unknown(),
         }),
         denoise: z.object({
-          strength: z.number(),
-          tune: z.string(),
+          strength: z.unknown(),
+          tune: z.unknown(),
         }),
         pad: z.object({
-          bottomPixels: z.number(),
-          leftPixels: z.number(),
-          rightPixels: z.number(),
-          topPixels: z.number(),
+          bottomPixels: z.unknown(),
+          leftPixels: z.unknown(),
+          rightPixels: z.unknown(),
+          topPixels: z.unknown(),
         }),
       }),
       uri: z.string(),
@@ -906,31 +782,15 @@ const StateSchema = z.object({
     }),
     overlays: z.array(z.object({
       animations: z.array(z.object({
-        animationEnd: z.object({
-          startTimeOffset: z.string(),
-        }),
-        animationFade: z.object({
-          endTimeOffset: z.string(),
-          fadeType: z.string(),
-          startTimeOffset: z.string(),
-          xy: z.object({
-            x: z.number(),
-            y: z.number(),
-          }),
-        }),
-        animationStatic: z.object({
-          startTimeOffset: z.string(),
-          xy: z.object({
-            x: z.number(),
-            y: z.number(),
-          }),
-        }),
+        animationEnd: z.unknown(),
+        animationFade: z.unknown(),
+        animationStatic: z.unknown(),
       })),
       image: z.object({
         alpha: z.number(),
         resolution: z.object({
-          x: z.number(),
-          y: z.number(),
+          x: z.unknown(),
+          y: z.unknown(),
         }),
         uri: z.string(),
       }),
@@ -991,7 +851,7 @@ const InputsSchema = z.object({
         channelCount: z.number().int().describe(
           "Number of audio channels. Must be between 1 and 6. The default is 2.",
         ).optional(),
-        channelLayout: z.array(z.string()).describe(
+        channelLayout: z.array(z.unknown()).describe(
           'A list of channel names specifying layout of the audio channels. This only affects the metadata embedded in the container headers, if supported by the specified format. The default is `["fl", "fr"]`. Supported channel names: - `fl` - Front left channel - `fr` - Front right channel - `sl` - Side left channel - `sr` - Side right channel - `fc` - Front center channel - `lfe` - Low frequency',
         ).optional(),
         codec: z.string().describe(
@@ -1003,26 +863,7 @@ const InputsSchema = z.object({
         languageCode: z.string().describe(
           "The BCP-47 language code, such as `en-US` or `sr-Latn`. For more information, see https://www.unicode.org/reports/tr35/#Unicode_locale_identifier. Not supported in MP4 files.",
         ).optional(),
-        mapping: z.array(z.object({
-          atomKey: z.string().describe(
-            "Required. The EditAtom.key that references the atom with audio inputs in the JobConfig.edit_list.",
-          ).optional(),
-          gainDb: z.number().describe(
-            "Audio volume control in dB. Negative values decrease volume, positive values increase. The default is 0.",
-          ).optional(),
-          inputChannel: z.number().int().describe(
-            "Required. The zero-based index of the channel in the input audio stream.",
-          ).optional(),
-          inputKey: z.string().describe(
-            "Required. The Input.key that identifies the input file.",
-          ).optional(),
-          inputTrack: z.number().int().describe(
-            "Required. The zero-based index of the track in the input file.",
-          ).optional(),
-          outputChannel: z.number().int().describe(
-            "Required. The zero-based index of the channel in the output audio stream.",
-          ).optional(),
-        })).describe(
+        mapping: z.array(z.unknown()).describe(
           "The mapping for the JobConfig.edit_list atoms with audio EditAtom.inputs.",
         ).optional(),
         sampleRateHertz: z.number().int().describe(
@@ -1041,17 +882,7 @@ const InputsSchema = z.object({
         languageCode: z.string().describe(
           "The BCP-47 language code, such as `en-US` or `sr-Latn`. For more information, see https://www.unicode.org/reports/tr35/#Unicode_locale_identifier. Not supported in MP4 files.",
         ).optional(),
-        mapping: z.array(z.object({
-          atomKey: z.string().describe(
-            "Required. The EditAtom.key that references atom with text inputs in the JobConfig.edit_list.",
-          ).optional(),
-          inputKey: z.string().describe(
-            "Required. The Input.key that identifies the input file.",
-          ).optional(),
-          inputTrack: z.number().int().describe(
-            "Required. The zero-based index of the track in the input file.",
-          ).optional(),
-        })).describe(
+        mapping: z.array(z.unknown()).describe(
           "The mapping for the JobConfig.edit_list atoms with text EditAtom.inputs.",
         ).optional(),
       }).describe(
@@ -1059,197 +890,185 @@ const InputsSchema = z.object({
       ).optional(),
       videoStream: z.object({
         h264: z.object({
-          allowOpenGop: z.boolean().describe(
+          allowOpenGop: z.unknown().describe(
             "Specifies whether an open Group of Pictures (GOP) structure should be allowed or not. The default is `false`.",
           ).optional(),
-          aqStrength: z.number().describe(
+          aqStrength: z.unknown().describe(
             "Specify the intensity of the adaptive quantizer (AQ). Must be between 0 and 1, where 0 disables the quantizer and 1 maximizes the quantizer. A higher value equals a lower bitrate but smoother image. The default is 0.",
           ).optional(),
-          bFrameCount: z.number().int().describe(
+          bFrameCount: z.unknown().describe(
             "The number of consecutive B-frames. Must be greater than or equal to zero. Must be less than H264CodecSettings.gop_frame_count if set. The default is 0.",
           ).optional(),
-          bPyramid: z.boolean().describe(
+          bPyramid: z.unknown().describe(
             "Allow B-pyramid for reference frame selection. This may not be supported on all decoders. The default is `false`.",
           ).optional(),
-          bitrateBps: z.number().int().describe(
+          bitrateBps: z.unknown().describe(
             "Required. The video bitrate in bits per second. The minimum value is 1,000. The maximum value is 800,000,000.",
           ).optional(),
-          crfLevel: z.number().int().describe(
+          crfLevel: z.unknown().describe(
             "Target CRF level. Must be between 10 and 36, where 10 is the highest quality and 36 is the most efficient compression. The default is 21.",
           ).optional(),
-          enableTwoPass: z.boolean().describe(
+          enableTwoPass: z.unknown().describe(
             "Use two-pass encoding strategy to achieve better video quality. H264CodecSettings.rate_control_mode must be `vbr`. The default is `false`.",
           ).optional(),
-          entropyCoder: z.string().describe(
+          entropyCoder: z.unknown().describe(
             "The entropy coder to use. The default is `cabac`. Supported entropy coders: - `cavlc` - `cabac`",
           ).optional(),
-          frameRate: z.number().describe(
+          frameRate: z.unknown().describe(
             "Required. The target video frame rate in frames per second (FPS). Must be less than or equal to 120.",
           ).optional(),
-          frameRateConversionStrategy: z.enum([
-            "FRAME_RATE_CONVERSION_STRATEGY_UNSPECIFIED",
-            "DOWNSAMPLE",
-            "DROP_DUPLICATE",
-          ]).describe(
+          frameRateConversionStrategy: z.unknown().describe(
             "Optional. Frame rate conversion strategy for desired frame rate. The default is `DOWNSAMPLE`.",
           ).optional(),
-          gopDuration: z.string().describe(
+          gopDuration: z.unknown().describe(
             "Select the GOP size based on the specified duration. The default is `3s`. Note that `gopDuration` must be less than or equal to [`segmentDuration`](#SegmentSettings), and [`segmentDuration`](#SegmentSettings) must be divisible by `gopDuration`.",
           ).optional(),
-          gopFrameCount: z.number().int().describe(
+          gopFrameCount: z.unknown().describe(
             "Select the GOP size based on the specified frame count. Must be greater than zero.",
           ).optional(),
-          heightPixels: z.number().int().describe(
+          heightPixels: z.unknown().describe(
             "The height of the video in pixels. Must be an even integer. When not specified, the height is adjusted to match the specified width and input aspect ratio. If both are omitted, the input height is used. For portrait videos that contain horizontal ASR and rotation metadata, provide the height, in pixels, per the horizontal ASR. The API calculates the width per the horizontal ASR. The API detects any rotation metadata and swaps the requested height and width for the output.",
           ).optional(),
-          hlg: z.object({}).describe(
+          hlg: z.unknown().describe(
             "Convert the input video to a Hybrid Log Gamma (HLG) video.",
           ).optional(),
-          pixelFormat: z.string().describe(
+          pixelFormat: z.unknown().describe(
             "Pixel format to use. The default is `yuv420p`. Supported pixel formats: - `yuv420p` pixel format - `yuv422p` pixel format - `yuv444p` pixel format - `yuv420p10` 10-bit HDR pixel format - `yuv422p10` 10-bit HDR pixel format - `yuv444p10` 10-bit HDR pixel format - `yuv420p12` 12-bit HDR pixel format - `yuv422p12` 12-bit HDR pixel format - `yuv444p12` 12-bit HDR pixel format",
           ).optional(),
-          preset: z.string().describe(
+          preset: z.unknown().describe(
             "Enforces the specified codec preset. The default is `veryfast`. The available options are [FFmpeg-compatible](https://trac.ffmpeg.org/wiki/Encode/H.264#Preset). Note that certain values for this field may cause the transcoder to override other fields you set in the `H264CodecSettings` message.",
           ).optional(),
-          profile: z.string().describe(
+          profile: z.unknown().describe(
             "Enforces the specified codec profile. The following profiles are supported: * `baseline` * `main` * `high` (default) The available options are [FFmpeg-compatible](https://trac.ffmpeg.org/wiki/Encode/H.264#Tune). Note that certain values for this field may cause the transcoder to override other fields you set in the `H264CodecSettings` message.",
           ).optional(),
-          rateControlMode: z.string().describe(
+          rateControlMode: z.unknown().describe(
             "Specify the mode. The default is `vbr`. Supported rate control modes: - `vbr` - variable bitrate - `crf` - constant rate factor",
           ).optional(),
-          sdr: z.object({}).describe(
+          sdr: z.unknown().describe(
             "Convert the input video to a Standard Dynamic Range (SDR) video.",
           ).optional(),
-          tune: z.string().describe(
+          tune: z.unknown().describe(
             "Enforces the specified codec tune. The available options are [FFmpeg-compatible](https://trac.ffmpeg.org/wiki/Encode/H.264#Tune). Note that certain values for this field may cause the transcoder to override other fields you set in the `H264CodecSettings` message.",
           ).optional(),
-          vbvFullnessBits: z.number().int().describe(
+          vbvFullnessBits: z.unknown().describe(
             "Initial fullness of the Video Buffering Verifier (VBV) buffer in bits. Must be greater than zero. The default is equal to 90% of H264CodecSettings.vbv_size_bits.",
           ).optional(),
-          vbvSizeBits: z.number().int().describe(
+          vbvSizeBits: z.unknown().describe(
             "Size of the Video Buffering Verifier (VBV) buffer in bits. Must be greater than zero. The default is equal to H264CodecSettings.bitrate_bps.",
           ).optional(),
-          widthPixels: z.number().int().describe(
+          widthPixels: z.unknown().describe(
             "The width of the video in pixels. Must be an even integer. When not specified, the width is adjusted to match the specified height and input aspect ratio. If both are omitted, the input width is used. For portrait videos that contain horizontal ASR and rotation metadata, provide the width, in pixels, per the horizontal ASR. The API calculates the height per the horizontal ASR. The API detects any rotation metadata and swaps the requested height and width for the output.",
           ).optional(),
         }).describe("H264 codec settings.").optional(),
         h265: z.object({
-          allowOpenGop: z.boolean().describe(
+          allowOpenGop: z.unknown().describe(
             "Specifies whether an open Group of Pictures (GOP) structure should be allowed or not. The default is `false`.",
           ).optional(),
-          aqStrength: z.number().describe(
+          aqStrength: z.unknown().describe(
             "Specify the intensity of the adaptive quantizer (AQ). Must be between 0 and 1, where 0 disables the quantizer and 1 maximizes the quantizer. A higher value equals a lower bitrate but smoother image. The default is 0.",
           ).optional(),
-          bFrameCount: z.number().int().describe(
+          bFrameCount: z.unknown().describe(
             "The number of consecutive B-frames. Must be greater than or equal to zero. Must be less than H265CodecSettings.gop_frame_count if set. The default is 0.",
           ).optional(),
-          bPyramid: z.boolean().describe(
+          bPyramid: z.unknown().describe(
             "Allow B-pyramid for reference frame selection. This may not be supported on all decoders. The default is `false`.",
           ).optional(),
-          bitrateBps: z.number().int().describe(
+          bitrateBps: z.unknown().describe(
             "Required. The video bitrate in bits per second. The minimum value is 1,000. The maximum value is 800,000,000.",
           ).optional(),
-          crfLevel: z.number().int().describe(
+          crfLevel: z.unknown().describe(
             "Target CRF level. Must be between 10 and 36, where 10 is the highest quality and 36 is the most efficient compression. The default is 21.",
           ).optional(),
-          enableTwoPass: z.boolean().describe(
+          enableTwoPass: z.unknown().describe(
             "Use two-pass encoding strategy to achieve better video quality. H265CodecSettings.rate_control_mode must be `vbr`. The default is `false`.",
           ).optional(),
-          frameRate: z.number().describe(
+          frameRate: z.unknown().describe(
             "Required. The target video frame rate in frames per second (FPS). Must be less than or equal to 120.",
           ).optional(),
-          frameRateConversionStrategy: z.enum([
-            "FRAME_RATE_CONVERSION_STRATEGY_UNSPECIFIED",
-            "DOWNSAMPLE",
-            "DROP_DUPLICATE",
-          ]).describe(
+          frameRateConversionStrategy: z.unknown().describe(
             "Optional. Frame rate conversion strategy for desired frame rate. The default is `DOWNSAMPLE`.",
           ).optional(),
-          gopDuration: z.string().describe(
+          gopDuration: z.unknown().describe(
             "Select the GOP size based on the specified duration. The default is `3s`. Note that `gopDuration` must be less than or equal to [`segmentDuration`](#SegmentSettings), and [`segmentDuration`](#SegmentSettings) must be divisible by `gopDuration`.",
           ).optional(),
-          gopFrameCount: z.number().int().describe(
+          gopFrameCount: z.unknown().describe(
             "Select the GOP size based on the specified frame count. Must be greater than zero.",
           ).optional(),
-          hdr10: z.object({}).describe(
+          hdr10: z.unknown().describe(
             "Convert the input video to a High Dynamic Range 10 (HDR10) video.",
           ).optional(),
-          heightPixels: z.number().int().describe(
+          heightPixels: z.unknown().describe(
             "The height of the video in pixels. Must be an even integer. When not specified, the height is adjusted to match the specified width and input aspect ratio. If both are omitted, the input height is used. For portrait videos that contain horizontal ASR and rotation metadata, provide the height, in pixels, per the horizontal ASR. The API calculates the width per the horizontal ASR. The API detects any rotation metadata and swaps the requested height and width for the output.",
           ).optional(),
-          hlg: z.object({}).describe(
+          hlg: z.unknown().describe(
             "Convert the input video to a Hybrid Log Gamma (HLG) video.",
           ).optional(),
-          pixelFormat: z.string().describe(
+          pixelFormat: z.unknown().describe(
             "Pixel format to use. The default is `yuv420p`. Supported pixel formats: - `yuv420p` pixel format - `yuv422p` pixel format - `yuv444p` pixel format - `yuv420p10` 10-bit HDR pixel format - `yuv422p10` 10-bit HDR pixel format - `yuv444p10` 10-bit HDR pixel format - `yuv420p12` 12-bit HDR pixel format - `yuv422p12` 12-bit HDR pixel format - `yuv444p12` 12-bit HDR pixel format",
           ).optional(),
-          preset: z.string().describe(
+          preset: z.unknown().describe(
             "Enforces the specified codec preset. The default is `veryfast`. The available options are [FFmpeg-compatible](https://trac.ffmpeg.org/wiki/Encode/H.265). Note that certain values for this field may cause the transcoder to override other fields you set in the `H265CodecSettings` message.",
           ).optional(),
-          profile: z.string().describe(
+          profile: z.unknown().describe(
             "Enforces the specified codec profile. The following profiles are supported: * 8-bit profiles * `main` (default) * `main-intra` * `mainstillpicture` * 10-bit profiles * `main10` (default) * `main10-intra` * `main422-10` * `main422-10-intra` * `main444-10` * `main444-10-intra` * 12-bit profiles * `main12` (default) * `main12-intra` * `main422-12` * `main422-12-intra` * `main444-12` * `main444-12-intra` The available options are [FFmpeg-compatible](https://x265.readthedocs.io/). Note that certain values for this field may cause the transcoder to override other fields you set in the `H265CodecSettings` message.",
           ).optional(),
-          rateControlMode: z.string().describe(
+          rateControlMode: z.unknown().describe(
             "Specify the mode. The default is `vbr`. Supported rate control modes: - `vbr` - variable bitrate - `crf` - constant rate factor",
           ).optional(),
-          sdr: z.object({}).describe(
+          sdr: z.unknown().describe(
             "Convert the input video to a Standard Dynamic Range (SDR) video.",
           ).optional(),
-          tune: z.string().describe(
+          tune: z.unknown().describe(
             "Enforces the specified codec tune. The available options are [FFmpeg-compatible](https://trac.ffmpeg.org/wiki/Encode/H.265). Note that certain values for this field may cause the transcoder to override other fields you set in the `H265CodecSettings` message.",
           ).optional(),
-          vbvFullnessBits: z.number().int().describe(
+          vbvFullnessBits: z.unknown().describe(
             "Initial fullness of the Video Buffering Verifier (VBV) buffer in bits. Must be greater than zero. The default is equal to 90% of H265CodecSettings.vbv_size_bits.",
           ).optional(),
-          vbvSizeBits: z.number().int().describe(
+          vbvSizeBits: z.unknown().describe(
             "Size of the Video Buffering Verifier (VBV) buffer in bits. Must be greater than zero. The default is equal to `VideoStream.bitrate_bps`.",
           ).optional(),
-          widthPixels: z.number().int().describe(
+          widthPixels: z.unknown().describe(
             "The width of the video in pixels. Must be an even integer. When not specified, the width is adjusted to match the specified height and input aspect ratio. If both are omitted, the input width is used. For portrait videos that contain horizontal ASR and rotation metadata, provide the width, in pixels, per the horizontal ASR. The API calculates the height per the horizontal ASR. The API detects any rotation metadata and swaps the requested height and width for the output.",
           ).optional(),
         }).describe("H265 codec settings.").optional(),
         vp9: z.object({
-          bitrateBps: z.number().int().describe(
+          bitrateBps: z.unknown().describe(
             "Required. The video bitrate in bits per second. The minimum value is 1,000. The maximum value is 480,000,000.",
           ).optional(),
-          crfLevel: z.number().int().describe(
+          crfLevel: z.unknown().describe(
             "Target CRF level. Must be between 10 and 36, where 10 is the highest quality and 36 is the most efficient compression. The default is 21. **Note:** This field is not supported.",
           ).optional(),
-          frameRate: z.number().describe(
+          frameRate: z.unknown().describe(
             "Required. The target video frame rate in frames per second (FPS). Must be less than or equal to 120.",
           ).optional(),
-          frameRateConversionStrategy: z.enum([
-            "FRAME_RATE_CONVERSION_STRATEGY_UNSPECIFIED",
-            "DOWNSAMPLE",
-            "DROP_DUPLICATE",
-          ]).describe(
+          frameRateConversionStrategy: z.unknown().describe(
             "Optional. Frame rate conversion strategy for desired frame rate. The default is `DOWNSAMPLE`.",
           ).optional(),
-          gopDuration: z.string().describe(
+          gopDuration: z.unknown().describe(
             "Select the GOP size based on the specified duration. The default is `3s`. Note that `gopDuration` must be less than or equal to [`segmentDuration`](#SegmentSettings), and [`segmentDuration`](#SegmentSettings) must be divisible by `gopDuration`.",
           ).optional(),
-          gopFrameCount: z.number().int().describe(
+          gopFrameCount: z.unknown().describe(
             "Select the GOP size based on the specified frame count. Must be greater than zero.",
           ).optional(),
-          heightPixels: z.number().int().describe(
+          heightPixels: z.unknown().describe(
             "The height of the video in pixels. Must be an even integer. When not specified, the height is adjusted to match the specified width and input aspect ratio. If both are omitted, the input height is used. For portrait videos that contain horizontal ASR and rotation metadata, provide the height, in pixels, per the horizontal ASR. The API calculates the width per the horizontal ASR. The API detects any rotation metadata and swaps the requested height and width for the output.",
           ).optional(),
-          hlg: z.object({}).describe(
+          hlg: z.unknown().describe(
             "Convert the input video to a Hybrid Log Gamma (HLG) video.",
           ).optional(),
-          pixelFormat: z.string().describe(
+          pixelFormat: z.unknown().describe(
             "Pixel format to use. The default is `yuv420p`. Supported pixel formats: - `yuv420p` pixel format - `yuv422p` pixel format - `yuv444p` pixel format - `yuv420p10` 10-bit HDR pixel format - `yuv422p10` 10-bit HDR pixel format - `yuv444p10` 10-bit HDR pixel format - `yuv420p12` 12-bit HDR pixel format - `yuv422p12` 12-bit HDR pixel format - `yuv444p12` 12-bit HDR pixel format",
           ).optional(),
-          profile: z.string().describe(
+          profile: z.unknown().describe(
             "Enforces the specified codec profile. The following profiles are supported: * `profile0` (default) * `profile1` * `profile2` * `profile3` The available options are [WebM-compatible](https://www.webmproject.org/vp9/profiles/). Note that certain values for this field may cause the transcoder to override other fields you set in the `Vp9CodecSettings` message.",
           ).optional(),
-          rateControlMode: z.string().describe(
+          rateControlMode: z.unknown().describe(
             "Specify the mode. The default is `vbr`. Supported rate control modes: - `vbr` - variable bitrate",
           ).optional(),
-          sdr: z.object({}).describe(
+          sdr: z.unknown().describe(
             "Convert the input video to a Standard Dynamic Range (SDR) video.",
           ).optional(),
-          widthPixels: z.number().int().describe(
+          widthPixels: z.unknown().describe(
             "The width of the video in pixels. Must be an even integer. When not specified, the width is adjusted to match the specified height and input aspect ratio. If both are omitted, the input width is used. For portrait videos that contain horizontal ASR and rotation metadata, provide the width, in pixels, per the horizontal ASR. The API calculates the height per the horizontal ASR. The API detects any rotation metadata and swaps the requested height and width for the output.",
           ).optional(),
         }).describe("VP9 codec settings.").optional(),
@@ -1287,18 +1106,7 @@ const InputsSchema = z.object({
     ).optional(),
     inputs: z.array(z.object({
       attributes: z.object({
-        trackDefinitions: z.array(z.object({
-          detectLanguages: z.boolean().describe(
-            "Optional. Whether to automatically detect the languages present in the track. If true, the system will attempt to identify all the languages present in the track and populate the languages field.",
-          ).optional(),
-          detectedLanguages: z.array(z.string()).describe(
-            'Output only. A list of languages detected in the input asset, represented by a BCP 47 language code, such as "en-US" or "sr-Latn". For more information, see https://www.unicode.org/reports/tr35/#Unicode_locale_identifier. This field is only populated if the detect_languages field is set to true.',
-          ).optional(),
-          inputTrack: z.number().int().describe("The input track.").optional(),
-          languages: z.array(z.string()).describe(
-            'Optional. A list of languages spoken in the input asset, represented by a BCP 47 language code, such as "en-US" or "sr-Latn". For more information, see https://www.unicode.org/reports/tr35/#Unicode_locale_identifier.',
-          ).optional(),
-        })).describe(
+        trackDefinitions: z.array(z.unknown()).describe(
           "Optional. A list of track definitions for the input asset.",
         ).optional(),
       }).describe(
@@ -1309,105 +1117,84 @@ const InputsSchema = z.object({
       ).optional(),
       preprocessingConfig: z.object({
         audio: z.object({
-          highBoost: z.boolean().describe(
+          highBoost: z.unknown().describe(
             "Enable boosting high frequency components. The default is `false`. **Note:** This field is not supported.",
           ).optional(),
-          lowBoost: z.boolean().describe(
+          lowBoost: z.unknown().describe(
             "Enable boosting low frequency components. The default is `false`. **Note:** This field is not supported.",
           ).optional(),
-          lufs: z.number().describe(
+          lufs: z.unknown().describe(
             "Specify audio loudness normalization in loudness units relative to full scale (LUFS). Enter a value between -24 and 0 (the default), where: * -24 is the Advanced Television Systems Committee (ATSC A/85) standard * -23 is the EU R128 broadcast standard * -19 is the prior standard for online mono audio * -18 is the ReplayGain standard * -16 is the prior standard for stereo audio * -14 is the new online audio standard recommended by Spotify, as well as Amazon Echo * 0 disables normalization",
           ).optional(),
         }).describe("Audio preprocessing configuration.").optional(),
         color: z.object({
-          brightness: z.number().describe(
+          brightness: z.unknown().describe(
             "Control brightness of the video. Enter a value between -1 and 1, where -1 is minimum brightness and 1 is maximum brightness. 0 is no change. The default is 0.",
           ).optional(),
-          contrast: z.number().describe(
+          contrast: z.unknown().describe(
             "Control black and white contrast of the video. Enter a value between -1 and 1, where -1 is minimum contrast and 1 is maximum contrast. 0 is no change. The default is 0.",
           ).optional(),
-          saturation: z.number().describe(
+          saturation: z.unknown().describe(
             "Control color saturation of the video. Enter a value between -1 and 1, where -1 is fully desaturated and 1 is maximum saturation. 0 is no change. The default is 0.",
           ).optional(),
         }).describe(
           "Color preprocessing configuration. **Note:** This configuration is not supported.",
         ).optional(),
         crop: z.object({
-          bottomPixels: z.number().int().describe(
+          bottomPixels: z.unknown().describe(
             "The number of pixels to crop from the bottom. The default is 0.",
           ).optional(),
-          leftPixels: z.number().int().describe(
+          leftPixels: z.unknown().describe(
             "The number of pixels to crop from the left. The default is 0.",
           ).optional(),
-          rightPixels: z.number().int().describe(
+          rightPixels: z.unknown().describe(
             "The number of pixels to crop from the right. The default is 0.",
           ).optional(),
-          topPixels: z.number().int().describe(
+          topPixels: z.unknown().describe(
             "The number of pixels to crop from the top. The default is 0.",
           ).optional(),
         }).describe(
           "Video cropping configuration for the input video. The cropped input video is scaled to match the output resolution.",
         ).optional(),
         deblock: z.object({
-          enabled: z.boolean().describe(
+          enabled: z.unknown().describe(
             "Enable deblocker. The default is `false`.",
           ).optional(),
-          strength: z.number().describe(
+          strength: z.unknown().describe(
             "Set strength of the deblocker. Enter a value between 0 and 1. The higher the value, the stronger the block removal. 0 is no deblocking. The default is 0.",
           ).optional(),
         }).describe(
           "Deblock preprocessing configuration. **Note:** This configuration is not supported.",
         ).optional(),
         deinterlace: z.object({
-          bwdif: z.object({
-            deinterlaceAllFrames: z.boolean().describe(
-              "Deinterlace all frames rather than just the frames identified as interlaced. The default is `false`.",
-            ).optional(),
-            mode: z.string().describe(
-              "Specifies the deinterlacing mode to adopt. The default is `send_frame`. Supported values: - `send_frame`: Output one frame for each frame - `send_field`: Output one frame for each field",
-            ).optional(),
-            parity: z.string().describe(
-              "The picture field parity assumed for the input interlaced video. The default is `auto`. Supported values: - `tff`: Assume the top field is first - `bff`: Assume the bottom field is first - `auto`: Enable automatic detection of field parity",
-            ).optional(),
-          }).describe("Bob Weaver Deinterlacing Filter Configuration.")
-            .optional(),
-          yadif: z.object({
-            deinterlaceAllFrames: z.boolean().describe(
-              "Deinterlace all frames rather than just the frames identified as interlaced. The default is `false`.",
-            ).optional(),
-            disableSpatialInterlacing: z.boolean().describe(
-              "Disable spacial interlacing. The default is `false`.",
-            ).optional(),
-            mode: z.string().describe(
-              "Specifies the deinterlacing mode to adopt. The default is `send_frame`. Supported values: - `send_frame`: Output one frame for each frame - `send_field`: Output one frame for each field",
-            ).optional(),
-            parity: z.string().describe(
-              "The picture field parity assumed for the input interlaced video. The default is `auto`. Supported values: - `tff`: Assume the top field is first - `bff`: Assume the bottom field is first - `auto`: Enable automatic detection of field parity",
-            ).optional(),
-          }).describe("Yet Another Deinterlacing Filter Configuration.")
-            .optional(),
+          bwdif: z.unknown().describe(
+            "Bob Weaver Deinterlacing Filter Configuration.",
+          ).optional(),
+          yadif: z.unknown().describe(
+            "Yet Another Deinterlacing Filter Configuration.",
+          ).optional(),
         }).describe("Deinterlace configuration for input video.").optional(),
         denoise: z.object({
-          strength: z.number().describe(
+          strength: z.unknown().describe(
             "Set strength of the denoise. Enter a value between 0 and 1. The higher the value, the smoother the image. 0 is no denoising. The default is 0.",
           ).optional(),
-          tune: z.string().describe(
+          tune: z.unknown().describe(
             "Set the denoiser mode. The default is `standard`. Supported denoiser modes: - `standard` - `grain`",
           ).optional(),
         }).describe(
           "Denoise preprocessing configuration. **Note:** This configuration is not supported.",
         ).optional(),
         pad: z.object({
-          bottomPixels: z.number().int().describe(
+          bottomPixels: z.unknown().describe(
             "The number of pixels to add to the bottom. The default is 0.",
           ).optional(),
-          leftPixels: z.number().int().describe(
+          leftPixels: z.unknown().describe(
             "The number of pixels to add to the left. The default is 0.",
           ).optional(),
-          rightPixels: z.number().int().describe(
+          rightPixels: z.unknown().describe(
             "The number of pixels to add to the right. The default is 0.",
           ).optional(),
-          topPixels: z.number().int().describe(
+          topPixels: z.unknown().describe(
             "The number of pixels to add to the top. The default is 0.",
           ).optional(),
         }).describe(
@@ -1476,40 +1263,14 @@ const InputsSchema = z.object({
       .optional(),
     overlays: z.array(z.object({
       animations: z.array(z.object({
-        animationEnd: z.object({
-          startTimeOffset: z.string().describe(
-            "The time to end overlay object, in seconds. Default: 0",
-          ).optional(),
-        }).describe(
+        animationEnd: z.unknown().describe(
           "End previous overlay animation from the video. Without `AnimationEnd`, the overlay object will keep the state of previous animation until the end of the video.",
         ).optional(),
-        animationFade: z.object({
-          endTimeOffset: z.string().describe(
-            "The time to end the fade animation, in seconds. Default: `start_time_offset` + 1s",
-          ).optional(),
-          fadeType: z.enum(["FADE_TYPE_UNSPECIFIED", "FADE_IN", "FADE_OUT"])
-            .describe(
-              "Required. Type of fade animation: `FADE_IN` or `FADE_OUT`.",
-            ).optional(),
-          startTimeOffset: z.string().describe(
-            "The time to start the fade animation, in seconds. Default: 0",
-          ).optional(),
-          xy: z.object({
-            x: z.number().describe("Normalized x coordinate.").optional(),
-            y: z.number().describe("Normalized y coordinate.").optional(),
-          }).describe("2D normalized coordinates. Default: `{0.0, 0.0}`")
-            .optional(),
-        }).describe("Display overlay object with fade animation.").optional(),
-        animationStatic: z.object({
-          startTimeOffset: z.string().describe(
-            "The time to start displaying the overlay object, in seconds. Default: 0",
-          ).optional(),
-          xy: z.object({
-            x: z.number().describe("Normalized x coordinate.").optional(),
-            y: z.number().describe("Normalized y coordinate.").optional(),
-          }).describe("2D normalized coordinates. Default: `{0.0, 0.0}`")
-            .optional(),
-        }).describe("Display static overlay object.").optional(),
+        animationFade: z.unknown().describe(
+          "Display overlay object with fade animation.",
+        ).optional(),
+        animationStatic: z.unknown().describe("Display static overlay object.")
+          .optional(),
       })).describe(
         "List of animations. The list should be chronological, without any time overlap.",
       ).optional(),
@@ -1518,8 +1279,8 @@ const InputsSchema = z.object({
           "Target image opacity. Valid values are from `1.0` (solid, default) to `0.0` (transparent), exclusive. Set this to a value greater than `0.0`.",
         ).optional(),
         resolution: z.object({
-          x: z.number().describe("Normalized x coordinate.").optional(),
-          y: z.number().describe("Normalized y coordinate.").optional(),
+          x: z.unknown().describe("Normalized x coordinate.").optional(),
+          y: z.unknown().describe("Normalized y coordinate.").optional(),
         }).describe("2D normalized coordinates. Default: `{0.0, 0.0}`")
           .optional(),
         uri: z.string().describe(
@@ -1587,7 +1348,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/transcoder/jobtemplates",
-  version: "2026.04.03.3",
+  version: "2026.04.04.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -1611,6 +1372,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.3",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.04.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

@@ -174,10 +174,10 @@ const GlobalArgsSchema = z.object({
     scope: z.object({
       clientScope: z.object({
         restrictedClientApplication: z.object({
-          clientId: z.string().describe(
+          clientId: z.unknown().describe(
             "The OAuth client ID of the application.",
           ).optional(),
-          name: z.string().describe(
+          name: z.unknown().describe(
             'The name of the application. Example: "Cloud Console"',
           ).optional(),
         }).describe("An application that accesses Google Cloud APIs.")
@@ -253,8 +253,8 @@ const StateSchema = z.object({
     scope: z.object({
       clientScope: z.object({
         restrictedClientApplication: z.object({
-          clientId: z.string(),
-          name: z.string(),
+          clientId: z.unknown(),
+          name: z.unknown(),
         }),
       }),
     }),
@@ -358,10 +358,10 @@ const InputsSchema = z.object({
     scope: z.object({
       clientScope: z.object({
         restrictedClientApplication: z.object({
-          clientId: z.string().describe(
+          clientId: z.unknown().describe(
             "The OAuth client ID of the application.",
           ).optional(),
-          name: z.string().describe(
+          name: z.unknown().describe(
             'The name of the application. Example: "Cloud Console"',
           ).optional(),
         }).describe("An application that accesses Google Cloud APIs.")
@@ -406,7 +406,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/accesscontextmanager/gcpuseraccessbindings",
-  version: "2026.04.03.3",
+  version: "2026.04.04.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -430,6 +430,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.3",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.04.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

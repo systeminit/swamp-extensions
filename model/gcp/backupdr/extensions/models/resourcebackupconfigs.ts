@@ -55,8 +55,8 @@ const StateSchema = z.object({
     backupConfigSourceDisplayName: z.string(),
     backupDrPlanConfig: z.object({
       backupDrPlanRules: z.array(z.object({
-        lastSuccessfulBackupTime: z.string(),
-        ruleId: z.string(),
+        lastSuccessfulBackupTime: z.unknown(),
+        ruleId: z.unknown(),
       })),
     }),
     backupDrTemplateConfig: z.object({
@@ -96,7 +96,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/backupdr/resourcebackupconfigs",
-  version: "2026.04.03.3",
+  version: "2026.04.04.1",
   upgrades: [
     {
       toVersion: "2026.04.01.2",
@@ -120,6 +120,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.3",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.04.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

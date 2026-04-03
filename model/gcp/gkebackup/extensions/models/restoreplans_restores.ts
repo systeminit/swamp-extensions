@@ -217,20 +217,20 @@ const GlobalArgsSchema = z.object({
     restoreOrder: z.object({
       groupKindDependencies: z.array(z.object({
         requiring: z.object({
-          resourceGroup: z.string().describe(
+          resourceGroup: z.unknown().describe(
             'Optional. API group string of a Kubernetes resource, e.g. "apiextensions.k8s.io", "storage.k8s.io", etc. Note: use empty string for core API group.',
           ).optional(),
-          resourceKind: z.string().describe(
+          resourceKind: z.unknown().describe(
             'Optional. Kind of a Kubernetes resource, must be in UpperCamelCase (PascalCase) and singular form. E.g. "CustomResourceDefinition", "StorageClass", etc.',
           ).optional(),
         }).describe(
           'This is a direct map to the Kubernetes GroupKind type [GroupKind](https://godoc.org/k8s.io/apimachinery/pkg/runtime/schema#GroupKind) and is used for identifying specific "types" of resources to restore.',
         ).optional(),
         satisfying: z.object({
-          resourceGroup: z.string().describe(
+          resourceGroup: z.unknown().describe(
             'Optional. API group string of a Kubernetes resource, e.g. "apiextensions.k8s.io", "storage.k8s.io", etc. Note: use empty string for core API group.',
           ).optional(),
-          resourceKind: z.string().describe(
+          resourceKind: z.unknown().describe(
             'Optional. Kind of a Kubernetes resource, must be in UpperCamelCase (PascalCase) and singular form. E.g. "CustomResourceDefinition", "StorageClass", etc.',
           ).optional(),
         }).describe(
@@ -266,10 +266,10 @@ const GlobalArgsSchema = z.object({
         'Optional. (Filtering parameter) This is a [regular expression] (https://en.wikipedia.org/wiki/Regular_expression) that is compared against the fields matched by the target_json_path expression (and must also have passed the previous filters). Substitution will not be performed against fields whose value does not match this expression. If this field is NOT specified, then ALL fields matched by the target_json_path expression will undergo substitution. Note that an empty (e.g., "", rather than unspecified) value for this field will only match empty fields.',
       ).optional(),
       targetGroupKinds: z.array(z.object({
-        resourceGroup: z.string().describe(
+        resourceGroup: z.unknown().describe(
           'Optional. API group string of a Kubernetes resource, e.g. "apiextensions.k8s.io", "storage.k8s.io", etc. Note: use empty string for core API group.',
         ).optional(),
-        resourceKind: z.string().describe(
+        resourceKind: z.unknown().describe(
           'Optional. Kind of a Kubernetes resource, must be in UpperCamelCase (PascalCase) and singular form. E.g. "CustomResourceDefinition", "StorageClass", etc.',
         ).optional(),
       })).describe(
@@ -289,43 +289,29 @@ const GlobalArgsSchema = z.object({
         "Optional. The description is a user specified string description of the transformation rule.",
       ).optional(),
       fieldActions: z.array(z.object({
-        fromPath: z.string().describe(
+        fromPath: z.unknown().describe(
           "Optional. A string containing a JSON Pointer value that references the location in the target document to move the value from.",
         ).optional(),
-        op: z.enum([
-          "OP_UNSPECIFIED",
-          "REMOVE",
-          "MOVE",
-          "COPY",
-          "ADD",
-          "TEST",
-          "REPLACE",
-        ]).describe("Required. op specifies the operation to perform.")
-          .optional(),
-        path: z.string().describe(
+        op: z.unknown().describe(
+          "Required. op specifies the operation to perform.",
+        ).optional(),
+        path: z.unknown().describe(
           "Optional. A string containing a JSON-Pointer value that references a location within the target document where the operation is performed.",
         ).optional(),
-        value: z.string().describe(
+        value: z.unknown().describe(
           "Optional. A string that specifies the desired value in string format to use for transformation.",
         ).optional(),
       })).describe(
         "Required. A list of transformation rule actions to take against candidate resources. Actions are executed in order defined - this order matters, as they could potentially interfere with each other and the first operation could affect the outcome of the second operation.",
       ).optional(),
       resourceFilter: z.object({
-        groupKinds: z.array(z.object({
-          resourceGroup: z.string().describe(
-            'Optional. API group string of a Kubernetes resource, e.g. "apiextensions.k8s.io", "storage.k8s.io", etc. Note: use empty string for core API group.',
-          ).optional(),
-          resourceKind: z.string().describe(
-            'Optional. Kind of a Kubernetes resource, must be in UpperCamelCase (PascalCase) and singular form. E.g. "CustomResourceDefinition", "StorageClass", etc.',
-          ).optional(),
-        })).describe(
+        groupKinds: z.array(z.unknown()).describe(
           'Optional. (Filtering parameter) Any resource subject to transformation must belong to one of the listed "types". If this field is not provided, no type filtering will be performed (all resources of all types matching previous filtering parameters will be candidates for transformation).',
         ).optional(),
         jsonPath: z.string().describe(
           "Optional. This is a [JSONPath] (https://github.com/json-path/JsonPath/blob/master/README.md) expression that matches specific fields of candidate resources and it operates as a filtering parameter (resources that are not matched with this expression will not be candidates for transformation).",
         ).optional(),
-        namespaces: z.array(z.string()).describe(
+        namespaces: z.array(z.unknown()).describe(
           "Optional. (Filtering parameter) Any resource subject to transformation must be contained within one of the listed Kubernetes Namespace in the Backup. If this field is not provided, no namespace filtering will be performed (all resources in all Namespaces, including all cluster-scoped resources, will be candidates for transformation).",
         ).optional(),
       }).describe(
@@ -380,10 +366,10 @@ const GlobalArgsSchema = z.object({
     ).optional(),
     selectedPvcs: z.object({
       namespacedNames: z.array(z.object({
-        name: z.string().describe(
+        name: z.unknown().describe(
           "Optional. The name of the Kubernetes resource.",
         ).optional(),
-        namespace: z.string().describe(
+        namespace: z.unknown().describe(
           "Optional. The Namespace of the Kubernetes resource.",
         ).optional(),
       })).describe("Optional. A list of namespaced Kubernetes resources.")
@@ -455,12 +441,12 @@ const StateSchema = z.object({
     restoreOrder: z.object({
       groupKindDependencies: z.array(z.object({
         requiring: z.object({
-          resourceGroup: z.string(),
-          resourceKind: z.string(),
+          resourceGroup: z.unknown(),
+          resourceKind: z.unknown(),
         }),
         satisfying: z.object({
-          resourceGroup: z.string(),
-          resourceKind: z.string(),
+          resourceGroup: z.unknown(),
+          resourceKind: z.unknown(),
         }),
       })),
     }),
@@ -477,8 +463,8 @@ const StateSchema = z.object({
       newValue: z.string(),
       originalValuePattern: z.string(),
       targetGroupKinds: z.array(z.object({
-        resourceGroup: z.string(),
-        resourceKind: z.string(),
+        resourceGroup: z.unknown(),
+        resourceKind: z.unknown(),
       })),
       targetJsonPath: z.string(),
       targetNamespaces: z.array(z.string()),
@@ -486,18 +472,15 @@ const StateSchema = z.object({
     transformationRules: z.array(z.object({
       description: z.string(),
       fieldActions: z.array(z.object({
-        fromPath: z.string(),
-        op: z.string(),
-        path: z.string(),
-        value: z.string(),
+        fromPath: z.unknown(),
+        op: z.unknown(),
+        path: z.unknown(),
+        value: z.unknown(),
       })),
       resourceFilter: z.object({
-        groupKinds: z.array(z.object({
-          resourceGroup: z.string(),
-          resourceKind: z.string(),
-        })),
+        groupKinds: z.array(z.unknown()),
         jsonPath: z.string(),
-        namespaces: z.array(z.string()),
+        namespaces: z.array(z.unknown()),
       }),
     })),
     volumeDataRestorePolicy: z.string(),
@@ -518,8 +501,8 @@ const StateSchema = z.object({
     policy: z.string(),
     selectedPvcs: z.object({
       namespacedNames: z.array(z.object({
-        name: z.string(),
-        namespace: z.string(),
+        name: z.unknown(),
+        namespace: z.unknown(),
       })),
     }),
   })).optional(),
@@ -651,20 +634,20 @@ const InputsSchema = z.object({
     restoreOrder: z.object({
       groupKindDependencies: z.array(z.object({
         requiring: z.object({
-          resourceGroup: z.string().describe(
+          resourceGroup: z.unknown().describe(
             'Optional. API group string of a Kubernetes resource, e.g. "apiextensions.k8s.io", "storage.k8s.io", etc. Note: use empty string for core API group.',
           ).optional(),
-          resourceKind: z.string().describe(
+          resourceKind: z.unknown().describe(
             'Optional. Kind of a Kubernetes resource, must be in UpperCamelCase (PascalCase) and singular form. E.g. "CustomResourceDefinition", "StorageClass", etc.',
           ).optional(),
         }).describe(
           'This is a direct map to the Kubernetes GroupKind type [GroupKind](https://godoc.org/k8s.io/apimachinery/pkg/runtime/schema#GroupKind) and is used for identifying specific "types" of resources to restore.',
         ).optional(),
         satisfying: z.object({
-          resourceGroup: z.string().describe(
+          resourceGroup: z.unknown().describe(
             'Optional. API group string of a Kubernetes resource, e.g. "apiextensions.k8s.io", "storage.k8s.io", etc. Note: use empty string for core API group.',
           ).optional(),
-          resourceKind: z.string().describe(
+          resourceKind: z.unknown().describe(
             'Optional. Kind of a Kubernetes resource, must be in UpperCamelCase (PascalCase) and singular form. E.g. "CustomResourceDefinition", "StorageClass", etc.',
           ).optional(),
         }).describe(
@@ -700,10 +683,10 @@ const InputsSchema = z.object({
         'Optional. (Filtering parameter) This is a [regular expression] (https://en.wikipedia.org/wiki/Regular_expression) that is compared against the fields matched by the target_json_path expression (and must also have passed the previous filters). Substitution will not be performed against fields whose value does not match this expression. If this field is NOT specified, then ALL fields matched by the target_json_path expression will undergo substitution. Note that an empty (e.g., "", rather than unspecified) value for this field will only match empty fields.',
       ).optional(),
       targetGroupKinds: z.array(z.object({
-        resourceGroup: z.string().describe(
+        resourceGroup: z.unknown().describe(
           'Optional. API group string of a Kubernetes resource, e.g. "apiextensions.k8s.io", "storage.k8s.io", etc. Note: use empty string for core API group.',
         ).optional(),
-        resourceKind: z.string().describe(
+        resourceKind: z.unknown().describe(
           'Optional. Kind of a Kubernetes resource, must be in UpperCamelCase (PascalCase) and singular form. E.g. "CustomResourceDefinition", "StorageClass", etc.',
         ).optional(),
       })).describe(
@@ -723,43 +706,29 @@ const InputsSchema = z.object({
         "Optional. The description is a user specified string description of the transformation rule.",
       ).optional(),
       fieldActions: z.array(z.object({
-        fromPath: z.string().describe(
+        fromPath: z.unknown().describe(
           "Optional. A string containing a JSON Pointer value that references the location in the target document to move the value from.",
         ).optional(),
-        op: z.enum([
-          "OP_UNSPECIFIED",
-          "REMOVE",
-          "MOVE",
-          "COPY",
-          "ADD",
-          "TEST",
-          "REPLACE",
-        ]).describe("Required. op specifies the operation to perform.")
-          .optional(),
-        path: z.string().describe(
+        op: z.unknown().describe(
+          "Required. op specifies the operation to perform.",
+        ).optional(),
+        path: z.unknown().describe(
           "Optional. A string containing a JSON-Pointer value that references a location within the target document where the operation is performed.",
         ).optional(),
-        value: z.string().describe(
+        value: z.unknown().describe(
           "Optional. A string that specifies the desired value in string format to use for transformation.",
         ).optional(),
       })).describe(
         "Required. A list of transformation rule actions to take against candidate resources. Actions are executed in order defined - this order matters, as they could potentially interfere with each other and the first operation could affect the outcome of the second operation.",
       ).optional(),
       resourceFilter: z.object({
-        groupKinds: z.array(z.object({
-          resourceGroup: z.string().describe(
-            'Optional. API group string of a Kubernetes resource, e.g. "apiextensions.k8s.io", "storage.k8s.io", etc. Note: use empty string for core API group.',
-          ).optional(),
-          resourceKind: z.string().describe(
-            'Optional. Kind of a Kubernetes resource, must be in UpperCamelCase (PascalCase) and singular form. E.g. "CustomResourceDefinition", "StorageClass", etc.',
-          ).optional(),
-        })).describe(
+        groupKinds: z.array(z.unknown()).describe(
           'Optional. (Filtering parameter) Any resource subject to transformation must belong to one of the listed "types". If this field is not provided, no type filtering will be performed (all resources of all types matching previous filtering parameters will be candidates for transformation).',
         ).optional(),
         jsonPath: z.string().describe(
           "Optional. This is a [JSONPath] (https://github.com/json-path/JsonPath/blob/master/README.md) expression that matches specific fields of candidate resources and it operates as a filtering parameter (resources that are not matched with this expression will not be candidates for transformation).",
         ).optional(),
-        namespaces: z.array(z.string()).describe(
+        namespaces: z.array(z.unknown()).describe(
           "Optional. (Filtering parameter) Any resource subject to transformation must be contained within one of the listed Kubernetes Namespace in the Backup. If this field is not provided, no namespace filtering will be performed (all resources in all Namespaces, including all cluster-scoped resources, will be candidates for transformation).",
         ).optional(),
       }).describe(
@@ -814,10 +783,10 @@ const InputsSchema = z.object({
     ).optional(),
     selectedPvcs: z.object({
       namespacedNames: z.array(z.object({
-        name: z.string().describe(
+        name: z.unknown().describe(
           "Optional. The name of the Kubernetes resource.",
         ).optional(),
-        namespace: z.string().describe(
+        namespace: z.unknown().describe(
           "Optional. The Namespace of the Kubernetes resource.",
         ).optional(),
       })).describe("Optional. A list of namespaced Kubernetes resources.")
@@ -836,7 +805,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/gkebackup/restoreplans-restores",
-  version: "2026.04.03.3",
+  version: "2026.04.04.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -860,6 +829,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.3",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.04.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

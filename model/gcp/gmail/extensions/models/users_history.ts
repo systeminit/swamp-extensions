@@ -54,11 +54,8 @@ const StateSchema = z.object({
     labelIds: z.array(z.string()),
     message: z.object({
       classificationLabelValues: z.array(z.object({
-        fields: z.array(z.object({
-          fieldId: z.string(),
-          selection: z.string(),
-        })),
-        labelId: z.string(),
+        fields: z.unknown(),
+        labelId: z.unknown(),
       })),
       historyId: z.string(),
       id: z.string(),
@@ -66,18 +63,15 @@ const StateSchema = z.object({
       labelIds: z.array(z.string()),
       payload: z.object({
         body: z.object({
-          attachmentId: z.string(),
-          data: z.string(),
-          size: z.number(),
+          attachmentId: z.unknown(),
+          data: z.unknown(),
+          size: z.unknown(),
         }),
         filename: z.string(),
-        headers: z.array(z.object({
-          name: z.string(),
-          value: z.string(),
-        })),
+        headers: z.array(z.unknown()),
         mimeType: z.string(),
         partId: z.string(),
-        parts: z.array(z.string()),
+        parts: z.array(z.unknown()),
       }),
       raw: z.string(),
       sizeEstimate: z.number(),
@@ -89,11 +83,8 @@ const StateSchema = z.object({
     labelIds: z.array(z.string()),
     message: z.object({
       classificationLabelValues: z.array(z.object({
-        fields: z.array(z.object({
-          fieldId: z.string(),
-          selection: z.string(),
-        })),
-        labelId: z.string(),
+        fields: z.unknown(),
+        labelId: z.unknown(),
       })),
       historyId: z.string(),
       id: z.string(),
@@ -101,18 +92,15 @@ const StateSchema = z.object({
       labelIds: z.array(z.string()),
       payload: z.object({
         body: z.object({
-          attachmentId: z.string(),
-          data: z.string(),
-          size: z.number(),
+          attachmentId: z.unknown(),
+          data: z.unknown(),
+          size: z.unknown(),
         }),
         filename: z.string(),
-        headers: z.array(z.object({
-          name: z.string(),
-          value: z.string(),
-        })),
+        headers: z.array(z.unknown()),
         mimeType: z.string(),
         partId: z.string(),
-        parts: z.array(z.string()),
+        parts: z.array(z.unknown()),
       }),
       raw: z.string(),
       sizeEstimate: z.number(),
@@ -122,10 +110,7 @@ const StateSchema = z.object({
   })).optional(),
   messages: z.array(z.object({
     classificationLabelValues: z.array(z.object({
-      fields: z.array(z.object({
-        fieldId: z.string(),
-        selection: z.string(),
-      })),
+      fields: z.array(z.unknown()),
       labelId: z.string(),
     })),
     historyId: z.string(),
@@ -140,8 +125,8 @@ const StateSchema = z.object({
       }),
       filename: z.string(),
       headers: z.array(z.object({
-        name: z.string(),
-        value: z.string(),
+        name: z.unknown(),
+        value: z.unknown(),
       })),
       mimeType: z.string(),
       partId: z.string(),
@@ -155,11 +140,8 @@ const StateSchema = z.object({
   messagesAdded: z.array(z.object({
     message: z.object({
       classificationLabelValues: z.array(z.object({
-        fields: z.array(z.object({
-          fieldId: z.string(),
-          selection: z.string(),
-        })),
-        labelId: z.string(),
+        fields: z.unknown(),
+        labelId: z.unknown(),
       })),
       historyId: z.string(),
       id: z.string(),
@@ -167,18 +149,15 @@ const StateSchema = z.object({
       labelIds: z.array(z.string()),
       payload: z.object({
         body: z.object({
-          attachmentId: z.string(),
-          data: z.string(),
-          size: z.number(),
+          attachmentId: z.unknown(),
+          data: z.unknown(),
+          size: z.unknown(),
         }),
         filename: z.string(),
-        headers: z.array(z.object({
-          name: z.string(),
-          value: z.string(),
-        })),
+        headers: z.array(z.unknown()),
         mimeType: z.string(),
         partId: z.string(),
-        parts: z.array(z.string()),
+        parts: z.array(z.unknown()),
       }),
       raw: z.string(),
       sizeEstimate: z.number(),
@@ -189,11 +168,8 @@ const StateSchema = z.object({
   messagesDeleted: z.array(z.object({
     message: z.object({
       classificationLabelValues: z.array(z.object({
-        fields: z.array(z.object({
-          fieldId: z.string(),
-          selection: z.string(),
-        })),
-        labelId: z.string(),
+        fields: z.unknown(),
+        labelId: z.unknown(),
       })),
       historyId: z.string(),
       id: z.string(),
@@ -201,18 +177,15 @@ const StateSchema = z.object({
       labelIds: z.array(z.string()),
       payload: z.object({
         body: z.object({
-          attachmentId: z.string(),
-          data: z.string(),
-          size: z.number(),
+          attachmentId: z.unknown(),
+          data: z.unknown(),
+          size: z.unknown(),
         }),
         filename: z.string(),
-        headers: z.array(z.object({
-          name: z.string(),
-          value: z.string(),
-        })),
+        headers: z.array(z.unknown()),
         mimeType: z.string(),
         partId: z.string(),
-        parts: z.array(z.string()),
+        parts: z.array(z.unknown()),
       }),
       raw: z.string(),
       sizeEstimate: z.number(),
@@ -230,7 +203,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/gmail/users-history",
-  version: "2026.04.03.3",
+  version: "2026.04.04.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -254,6 +227,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.3",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.04.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

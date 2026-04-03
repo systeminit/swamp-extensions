@@ -233,7 +233,7 @@ const GlobalArgsSchema = z.object({
           "Optional. Whether login node instances should be assigned [external IP addresses](https://cloud.google.com/compute/docs/ip-addresses#externaladdresses).",
         ).optional(),
         instances: z.array(z.object({
-          instance: z.string().describe(
+          instance: z.unknown().describe(
             "Output only. Name of the VM instance, in the format `projects/{project}/zones/{zone}/instances/{instance}`.",
           ).optional(),
         })).describe(
@@ -249,10 +249,10 @@ const GlobalArgsSchema = z.object({
           "Optional. [Startup script](https://cloud.google.com/compute/docs/instances/startup-scripts/linux) to be run on each login node instance. Max 256KB. The script must complete within the system-defined default timeout of 5 minutes. For tasks that require more time, consider running them in the background using methods such as `&` or `nohup`.",
         ).optional(),
         storageConfigs: z.array(z.object({
-          id: z.string().describe(
+          id: z.unknown().describe(
             "Required. ID of the storage resource to mount, which must match a key in the cluster's storage_resources.",
           ).optional(),
-          localMount: z.string().describe(
+          localMount: z.unknown().describe(
             "Required. A directory inside the VM instance's file system where the storage resource should be mounted (e.g., `/mnt/share`).",
           ).optional(),
         })).describe(
@@ -269,20 +269,13 @@ const GlobalArgsSchema = z.object({
           "Optional. ID of the compute resource on which this nodeset will run. Must match a key in the cluster's compute_resources.",
         ).optional(),
         computeInstance: z.object({
-          bootDisk: z.object({
-            sizeGb: z.string().describe(
-              "Required. Immutable. Size of the disk in gigabytes. Must be at least 10GB.",
-            ).optional(),
-            type: z.string().describe(
-              "Required. Immutable. [Persistent disk type](https://cloud.google.com/compute/docs/disks#disk-types), in the format `projects/{project}/zones/{zone}/diskTypes/{disk_type}`.",
-            ).optional(),
-          }).describe(
+          bootDisk: z.unknown().describe(
             "A [Persistent disk](https://cloud.google.com/compute/docs/disks) used as the boot disk for a Compute Engine VM instance.",
           ).optional(),
-          labels: z.record(z.string(), z.string()).describe(
+          labels: z.unknown().describe(
             "Optional. [Labels](https://cloud.google.com/compute/docs/labeling-resources) that should be applied to each VM instance in the nodeset.",
           ).optional(),
-          startupScript: z.string().describe(
+          startupScript: z.unknown().describe(
             "Optional. [Startup script](https://cloud.google.com/compute/docs/instances/startup-scripts/linux) to be run on each VM instance in the nodeset. Max 256KB.",
           ).optional(),
         }).describe(
@@ -297,14 +290,7 @@ const GlobalArgsSchema = z.object({
         staticNodeCount: z.string().describe(
           "Optional. Number of nodes to be statically created for this nodeset. The cluster will attempt to ensure that at least this many nodes exist at all times.",
         ).optional(),
-        storageConfigs: z.array(z.object({
-          id: z.string().describe(
-            "Required. ID of the storage resource to mount, which must match a key in the cluster's storage_resources.",
-          ).optional(),
-          localMount: z.string().describe(
-            "Required. A directory inside the VM instance's file system where the storage resource should be mounted (e.g., `/mnt/share`).",
-          ).optional(),
-        })).describe(
+        storageConfigs: z.array(z.unknown()).describe(
           "Optional. How storage resources should be mounted on each compute node.",
         ).optional(),
       })).describe(
@@ -314,7 +300,7 @@ const GlobalArgsSchema = z.object({
         id: z.string().describe(
           "Required. ID of the partition, which is how users will identify it. Must conform to [RFC-1034](https://datatracker.ietf.org/doc/html/rfc1034) (lower-case, alphanumeric, and at most 63 characters).",
         ).optional(),
-        nodeSetIds: z.array(z.string()).describe(
+        nodeSetIds: z.array(z.unknown()).describe(
           "Required. IDs of the nodesets that make up this partition. Values must match SlurmNodeSet.id.",
         ).optional(),
       })).describe(
@@ -362,13 +348,12 @@ const GlobalArgsSchema = z.object({
         ).optional(),
         newBucket: z.object({
           autoclass: z.object({
-            enabled: z.boolean().describe(
+            enabled: z.unknown().describe(
               "Required. Enables Auto-class feature.",
             ).optional(),
-            terminalStorageClass: z.enum(["TERMINAL_STORAGE_CLASS_UNSPECIFIED"])
-              .describe(
-                "Optional. Terminal storage class of the autoclass bucket",
-              ).optional(),
+            terminalStorageClass: z.unknown().describe(
+              "Optional. Terminal storage class of the autoclass bucket",
+            ).optional(),
           }).describe(
             "Message describing Google Cloud Storage autoclass configuration",
           ).optional(),
@@ -376,7 +361,7 @@ const GlobalArgsSchema = z.object({
             "Required. Immutable. Name of the Cloud Storage bucket to create.",
           ).optional(),
           hierarchicalNamespace: z.object({
-            enabled: z.boolean().describe(
+            enabled: z.unknown().describe(
               "Required. Enables hierarchical namespace setup for the bucket.",
             ).optional(),
           }).describe(
@@ -398,13 +383,7 @@ const GlobalArgsSchema = z.object({
           description: z.string().describe(
             "Optional. Immutable. Description of the instance. Maximum of 2048 characters.",
           ).optional(),
-          fileShares: z.array(z.object({
-            capacityGb: z.string().describe(
-              "Required. Size of the filestore in GB. Must be between 1024 and 102400, and must meet scalability requirements described at https://cloud.google.com/filestore/docs/service-tiers.",
-            ).optional(),
-            fileShare: z.string().describe("Required. Filestore share location")
-              .optional(),
-          })).describe(
+          fileShares: z.array(z.unknown()).describe(
             "Required. Immutable. File system shares on the instance. Exactly one file share must be specified.",
           ).optional(),
           filestore: z.string().describe(
@@ -488,38 +467,32 @@ const StateSchema = z.object({
         enableOsLogin: z.boolean(),
         enablePublicIps: z.boolean(),
         instances: z.array(z.object({
-          instance: z.string(),
+          instance: z.unknown(),
         })),
         labels: z.record(z.string(), z.unknown()),
         machineType: z.string(),
         startupScript: z.string(),
         storageConfigs: z.array(z.object({
-          id: z.string(),
-          localMount: z.string(),
+          id: z.unknown(),
+          localMount: z.unknown(),
         })),
         zone: z.string(),
       }),
       nodeSets: z.array(z.object({
         computeId: z.string(),
         computeInstance: z.object({
-          bootDisk: z.object({
-            sizeGb: z.string(),
-            type: z.string(),
-          }),
-          labels: z.record(z.string(), z.unknown()),
-          startupScript: z.string(),
+          bootDisk: z.unknown(),
+          labels: z.unknown(),
+          startupScript: z.unknown(),
         }),
         id: z.string(),
         maxDynamicNodeCount: z.string(),
         staticNodeCount: z.string(),
-        storageConfigs: z.array(z.object({
-          id: z.string(),
-          localMount: z.string(),
-        })),
+        storageConfigs: z.array(z.unknown()),
       })),
       partitions: z.array(z.object({
         id: z.string(),
-        nodeSetIds: z.array(z.string()),
+        nodeSetIds: z.array(z.unknown()),
       })),
       prologBashScripts: z.array(z.string()),
     }),
@@ -669,7 +642,7 @@ const InputsSchema = z.object({
           "Optional. Whether login node instances should be assigned [external IP addresses](https://cloud.google.com/compute/docs/ip-addresses#externaladdresses).",
         ).optional(),
         instances: z.array(z.object({
-          instance: z.string().describe(
+          instance: z.unknown().describe(
             "Output only. Name of the VM instance, in the format `projects/{project}/zones/{zone}/instances/{instance}`.",
           ).optional(),
         })).describe(
@@ -685,10 +658,10 @@ const InputsSchema = z.object({
           "Optional. [Startup script](https://cloud.google.com/compute/docs/instances/startup-scripts/linux) to be run on each login node instance. Max 256KB. The script must complete within the system-defined default timeout of 5 minutes. For tasks that require more time, consider running them in the background using methods such as `&` or `nohup`.",
         ).optional(),
         storageConfigs: z.array(z.object({
-          id: z.string().describe(
+          id: z.unknown().describe(
             "Required. ID of the storage resource to mount, which must match a key in the cluster's storage_resources.",
           ).optional(),
-          localMount: z.string().describe(
+          localMount: z.unknown().describe(
             "Required. A directory inside the VM instance's file system where the storage resource should be mounted (e.g., `/mnt/share`).",
           ).optional(),
         })).describe(
@@ -705,20 +678,13 @@ const InputsSchema = z.object({
           "Optional. ID of the compute resource on which this nodeset will run. Must match a key in the cluster's compute_resources.",
         ).optional(),
         computeInstance: z.object({
-          bootDisk: z.object({
-            sizeGb: z.string().describe(
-              "Required. Immutable. Size of the disk in gigabytes. Must be at least 10GB.",
-            ).optional(),
-            type: z.string().describe(
-              "Required. Immutable. [Persistent disk type](https://cloud.google.com/compute/docs/disks#disk-types), in the format `projects/{project}/zones/{zone}/diskTypes/{disk_type}`.",
-            ).optional(),
-          }).describe(
+          bootDisk: z.unknown().describe(
             "A [Persistent disk](https://cloud.google.com/compute/docs/disks) used as the boot disk for a Compute Engine VM instance.",
           ).optional(),
-          labels: z.record(z.string(), z.string()).describe(
+          labels: z.unknown().describe(
             "Optional. [Labels](https://cloud.google.com/compute/docs/labeling-resources) that should be applied to each VM instance in the nodeset.",
           ).optional(),
-          startupScript: z.string().describe(
+          startupScript: z.unknown().describe(
             "Optional. [Startup script](https://cloud.google.com/compute/docs/instances/startup-scripts/linux) to be run on each VM instance in the nodeset. Max 256KB.",
           ).optional(),
         }).describe(
@@ -733,14 +699,7 @@ const InputsSchema = z.object({
         staticNodeCount: z.string().describe(
           "Optional. Number of nodes to be statically created for this nodeset. The cluster will attempt to ensure that at least this many nodes exist at all times.",
         ).optional(),
-        storageConfigs: z.array(z.object({
-          id: z.string().describe(
-            "Required. ID of the storage resource to mount, which must match a key in the cluster's storage_resources.",
-          ).optional(),
-          localMount: z.string().describe(
-            "Required. A directory inside the VM instance's file system where the storage resource should be mounted (e.g., `/mnt/share`).",
-          ).optional(),
-        })).describe(
+        storageConfigs: z.array(z.unknown()).describe(
           "Optional. How storage resources should be mounted on each compute node.",
         ).optional(),
       })).describe(
@@ -750,7 +709,7 @@ const InputsSchema = z.object({
         id: z.string().describe(
           "Required. ID of the partition, which is how users will identify it. Must conform to [RFC-1034](https://datatracker.ietf.org/doc/html/rfc1034) (lower-case, alphanumeric, and at most 63 characters).",
         ).optional(),
-        nodeSetIds: z.array(z.string()).describe(
+        nodeSetIds: z.array(z.unknown()).describe(
           "Required. IDs of the nodesets that make up this partition. Values must match SlurmNodeSet.id.",
         ).optional(),
       })).describe(
@@ -798,13 +757,12 @@ const InputsSchema = z.object({
         ).optional(),
         newBucket: z.object({
           autoclass: z.object({
-            enabled: z.boolean().describe(
+            enabled: z.unknown().describe(
               "Required. Enables Auto-class feature.",
             ).optional(),
-            terminalStorageClass: z.enum(["TERMINAL_STORAGE_CLASS_UNSPECIFIED"])
-              .describe(
-                "Optional. Terminal storage class of the autoclass bucket",
-              ).optional(),
+            terminalStorageClass: z.unknown().describe(
+              "Optional. Terminal storage class of the autoclass bucket",
+            ).optional(),
           }).describe(
             "Message describing Google Cloud Storage autoclass configuration",
           ).optional(),
@@ -812,7 +770,7 @@ const InputsSchema = z.object({
             "Required. Immutable. Name of the Cloud Storage bucket to create.",
           ).optional(),
           hierarchicalNamespace: z.object({
-            enabled: z.boolean().describe(
+            enabled: z.unknown().describe(
               "Required. Enables hierarchical namespace setup for the bucket.",
             ).optional(),
           }).describe(
@@ -834,13 +792,7 @@ const InputsSchema = z.object({
           description: z.string().describe(
             "Optional. Immutable. Description of the instance. Maximum of 2048 characters.",
           ).optional(),
-          fileShares: z.array(z.object({
-            capacityGb: z.string().describe(
-              "Required. Size of the filestore in GB. Must be between 1024 and 102400, and must meet scalability requirements described at https://cloud.google.com/filestore/docs/service-tiers.",
-            ).optional(),
-            fileShare: z.string().describe("Required. Filestore share location")
-              .optional(),
-          })).describe(
+          fileShares: z.array(z.unknown()).describe(
             "Required. Immutable. File system shares on the instance. Exactly one file share must be specified.",
           ).optional(),
           filestore: z.string().describe(
@@ -906,7 +858,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/hypercomputecluster/clusters",
-  version: "2026.04.03.3",
+  version: "2026.04.04.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -930,6 +882,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.3",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.04.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

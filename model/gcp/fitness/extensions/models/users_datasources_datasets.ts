@@ -140,14 +140,7 @@ const GlobalArgsSchema = z.object({
       intVal: z.number().int().describe(
         "Integer value. When this is set, other values must not be set.",
       ).optional(),
-      mapVal: z.array(z.object({
-        key: z.string().optional(),
-        value: z.object({
-          fpVal: z.number().describe("Floating point value.").optional(),
-        }).describe(
-          "Holder object for the value of an entry in a map field of a data point. A map value supports a subset of the formats that the regular Value supports.",
-        ).optional(),
-      })).describe(
+      mapVal: z.array(z.unknown()).describe(
         "Map value. The valid key space and units for the corresponding value of each entry should be documented as part of the data type definition. Keys should be kept small whenever possible. Data streams with large keys and high data frequency may be down sampled.",
       ).optional(),
       stringVal: z.string().describe(
@@ -177,12 +170,7 @@ const StateSchema = z.object({
     value: z.array(z.object({
       fpVal: z.number(),
       intVal: z.number(),
-      mapVal: z.array(z.object({
-        key: z.string(),
-        value: z.object({
-          fpVal: z.number(),
-        }),
-      })),
+      mapVal: z.array(z.unknown()),
       stringVal: z.string(),
     })),
   })).optional(),
@@ -233,14 +221,7 @@ const InputsSchema = z.object({
       intVal: z.number().int().describe(
         "Integer value. When this is set, other values must not be set.",
       ).optional(),
-      mapVal: z.array(z.object({
-        key: z.string().optional(),
-        value: z.object({
-          fpVal: z.number().describe("Floating point value.").optional(),
-        }).describe(
-          "Holder object for the value of an entry in a map field of a data point. A map value supports a subset of the formats that the regular Value supports.",
-        ).optional(),
-      })).describe(
+      mapVal: z.array(z.unknown()).describe(
         "Map value. The valid key space and units for the corresponding value of each entry should be documented as part of the data type definition. Keys should be kept small whenever possible. Data streams with large keys and high data frequency may be down sampled.",
       ).optional(),
       stringVal: z.string().describe(
@@ -256,7 +237,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/fitness/users-datasources-datasets",
-  version: "2026.04.03.3",
+  version: "2026.04.04.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -280,6 +261,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.3",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.04.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

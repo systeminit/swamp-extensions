@@ -104,21 +104,7 @@ const GlobalArgsSchema = z.object({
         "The specification for how to build a number search index for a field.",
       ).optional(),
       textSpec: z.object({
-        indexSpecs: z.array(z.object({
-          indexType: z.enum([
-            "TEXT_INDEX_TYPE_UNSPECIFIED",
-            "TOKENIZED",
-            "NGRAMS",
-            "EXACT_MATCH",
-          ]).describe("Required. How to index the text field value.")
-            .optional(),
-          matchType: z.enum([
-            "TEXT_MATCH_TYPE_UNSPECIFIED",
-            "MATCH_GLOBALLY",
-            "MATCH_FIELD",
-          ]).describe("Required. How to match the text field value.")
-            .optional(),
-        })).describe(
+        indexSpecs: z.array(z.unknown()).describe(
           "Required. Specifications for how the field should be indexed. Repeated so that the field can be indexed in multiple ways.",
         ).optional(),
       }).describe(
@@ -186,10 +172,7 @@ const StateSchema = z.object({
         indexType: z.string(),
       }),
       textSpec: z.object({
-        indexSpecs: z.array(z.object({
-          indexType: z.string(),
-          matchType: z.string(),
-        })),
+        indexSpecs: z.array(z.unknown()),
       }),
     }),
     vectorConfig: z.object({
@@ -250,21 +233,7 @@ const InputsSchema = z.object({
         "The specification for how to build a number search index for a field.",
       ).optional(),
       textSpec: z.object({
-        indexSpecs: z.array(z.object({
-          indexType: z.enum([
-            "TEXT_INDEX_TYPE_UNSPECIFIED",
-            "TOKENIZED",
-            "NGRAMS",
-            "EXACT_MATCH",
-          ]).describe("Required. How to index the text field value.")
-            .optional(),
-          matchType: z.enum([
-            "TEXT_MATCH_TYPE_UNSPECIFIED",
-            "MATCH_GLOBALLY",
-            "MATCH_FIELD",
-          ]).describe("Required. How to match the text field value.")
-            .optional(),
-        })).describe(
+        indexSpecs: z.array(z.unknown()).describe(
           "Required. Specifications for how the field should be indexed. Repeated so that the field can be indexed in multiple ways.",
         ).optional(),
       }).describe(
@@ -319,7 +288,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/firestore/databases-collectiongroups-indexes",
-  version: "2026.04.03.3",
+  version: "2026.04.04.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -343,6 +312,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.3",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.04.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

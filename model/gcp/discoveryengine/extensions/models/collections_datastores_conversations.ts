@@ -94,67 +94,24 @@ const GlobalArgsSchema = z.object({
     reply: z.object({
       summary: z.object({
         safetyAttributes: z.object({
-          categories: z.array(z.string()).describe(
+          categories: z.unknown().describe(
             "The display names of Safety Attribute categories associated with the generated content. Order matches the Scores.",
           ).optional(),
-          scores: z.array(z.number()).describe(
+          scores: z.unknown().describe(
             "The confidence scores of the each category, higher value means higher confidence. Order matches the Categories.",
           ).optional(),
         }).describe(
           "Safety Attribute categories and their associated confidence scores.",
         ).optional(),
-        summarySkippedReasons: z.array(
-          z.enum([
-            "SUMMARY_SKIPPED_REASON_UNSPECIFIED",
-            "ADVERSARIAL_QUERY_IGNORED",
-            "NON_SUMMARY_SEEKING_QUERY_IGNORED",
-            "OUT_OF_DOMAIN_QUERY_IGNORED",
-            "POTENTIAL_POLICY_VIOLATION",
-            "LLM_ADDON_NOT_ENABLED",
-            "NO_RELEVANT_CONTENT",
-            "JAIL_BREAKING_QUERY_IGNORED",
-            "CUSTOMER_POLICY_VIOLATION",
-            "NON_SUMMARY_SEEKING_QUERY_IGNORED_V2",
-            "TIME_OUT",
-          ]),
-        ).describe(
+        summarySkippedReasons: z.array(z.unknown()).describe(
           "Additional summary-skipped reasons. This provides the reason for ignored cases. If nothing is skipped, this field is not set.",
         ).optional(),
         summaryText: z.string().describe("The summary content.").optional(),
         summaryWithMetadata: z.object({
-          citationMetadata: z.object({
-            citations: z.array(z.object({
-              endIndex: z.string().describe(
-                "End of the attributed segment, exclusive.",
-              ).optional(),
-              sources: z.array(z.object({
-                referenceIndex: z.string().describe(
-                  "Document reference index from SummaryWithMetadata.references. It is 0-indexed and the value will be zero if the reference_index is not set explicitly.",
-                ).optional(),
-              })).describe("Citation sources for the attributed segment.")
-                .optional(),
-              startIndex: z.string().describe(
-                "Index indicates the start of the segment, measured in bytes/unicode.",
-              ).optional(),
-            })).describe("Citations for segments.").optional(),
-          }).describe("Citation metadata.").optional(),
-          references: z.array(z.object({
-            chunkContents: z.array(z.object({
-              content: z.string().describe("Chunk textual content.").optional(),
-              pageIdentifier: z.string().describe("Page identifier.")
-                .optional(),
-            })).describe(
-              "List of cited chunk contents derived from document content.",
-            ).optional(),
-            document: z.string().describe(
-              "Required. Document.name of the document. Full resource name of the referenced document, in the format `projects/*/locations/*/collections/*/dataStores/*/branches/*/documents/*`.",
-            ).optional(),
-            title: z.string().describe("Title of the document.").optional(),
-            uri: z.string().describe(
-              "Cloud Storage or HTTP uri for the document.",
-            ).optional(),
-          })).describe("Document References.").optional(),
-          summary: z.string().describe(
+          citationMetadata: z.unknown().describe("Citation metadata.")
+            .optional(),
+          references: z.unknown().describe("Document References.").optional(),
+          summary: z.unknown().describe(
             "Summary text with no citation information.",
           ).optional(),
         }).describe("Summary with metadata information.").optional(),
@@ -167,7 +124,7 @@ const GlobalArgsSchema = z.object({
         activeDocument: z.string().describe(
           "The current active document the user opened. It contains the document resource reference.",
         ).optional(),
-        contextDocuments: z.array(z.string()).describe(
+        contextDocuments: z.array(z.unknown()).describe(
           "The current list of documents the user is seeing. It contains the document resource references.",
         ).optional(),
       }).describe("Defines context of the conversation").optional(),
@@ -194,38 +151,22 @@ const StateSchema = z.object({
     reply: z.object({
       summary: z.object({
         safetyAttributes: z.object({
-          categories: z.array(z.string()),
-          scores: z.array(z.number()),
+          categories: z.unknown(),
+          scores: z.unknown(),
         }),
-        summarySkippedReasons: z.array(z.string()),
+        summarySkippedReasons: z.array(z.unknown()),
         summaryText: z.string(),
         summaryWithMetadata: z.object({
-          citationMetadata: z.object({
-            citations: z.array(z.object({
-              endIndex: z.string(),
-              sources: z.array(z.object({
-                referenceIndex: z.string(),
-              })),
-              startIndex: z.string(),
-            })),
-          }),
-          references: z.array(z.object({
-            chunkContents: z.array(z.object({
-              content: z.string(),
-              pageIdentifier: z.string(),
-            })),
-            document: z.string(),
-            title: z.string(),
-            uri: z.string(),
-          })),
-          summary: z.string(),
+          citationMetadata: z.unknown(),
+          references: z.unknown(),
+          summary: z.unknown(),
         }),
       }),
     }),
     userInput: z.object({
       context: z.object({
         activeDocument: z.string(),
-        contextDocuments: z.array(z.string()),
+        contextDocuments: z.array(z.unknown()),
       }),
       input: z.string(),
     }),
@@ -245,67 +186,24 @@ const InputsSchema = z.object({
     reply: z.object({
       summary: z.object({
         safetyAttributes: z.object({
-          categories: z.array(z.string()).describe(
+          categories: z.unknown().describe(
             "The display names of Safety Attribute categories associated with the generated content. Order matches the Scores.",
           ).optional(),
-          scores: z.array(z.number()).describe(
+          scores: z.unknown().describe(
             "The confidence scores of the each category, higher value means higher confidence. Order matches the Categories.",
           ).optional(),
         }).describe(
           "Safety Attribute categories and their associated confidence scores.",
         ).optional(),
-        summarySkippedReasons: z.array(
-          z.enum([
-            "SUMMARY_SKIPPED_REASON_UNSPECIFIED",
-            "ADVERSARIAL_QUERY_IGNORED",
-            "NON_SUMMARY_SEEKING_QUERY_IGNORED",
-            "OUT_OF_DOMAIN_QUERY_IGNORED",
-            "POTENTIAL_POLICY_VIOLATION",
-            "LLM_ADDON_NOT_ENABLED",
-            "NO_RELEVANT_CONTENT",
-            "JAIL_BREAKING_QUERY_IGNORED",
-            "CUSTOMER_POLICY_VIOLATION",
-            "NON_SUMMARY_SEEKING_QUERY_IGNORED_V2",
-            "TIME_OUT",
-          ]),
-        ).describe(
+        summarySkippedReasons: z.array(z.unknown()).describe(
           "Additional summary-skipped reasons. This provides the reason for ignored cases. If nothing is skipped, this field is not set.",
         ).optional(),
         summaryText: z.string().describe("The summary content.").optional(),
         summaryWithMetadata: z.object({
-          citationMetadata: z.object({
-            citations: z.array(z.object({
-              endIndex: z.string().describe(
-                "End of the attributed segment, exclusive.",
-              ).optional(),
-              sources: z.array(z.object({
-                referenceIndex: z.string().describe(
-                  "Document reference index from SummaryWithMetadata.references. It is 0-indexed and the value will be zero if the reference_index is not set explicitly.",
-                ).optional(),
-              })).describe("Citation sources for the attributed segment.")
-                .optional(),
-              startIndex: z.string().describe(
-                "Index indicates the start of the segment, measured in bytes/unicode.",
-              ).optional(),
-            })).describe("Citations for segments.").optional(),
-          }).describe("Citation metadata.").optional(),
-          references: z.array(z.object({
-            chunkContents: z.array(z.object({
-              content: z.string().describe("Chunk textual content.").optional(),
-              pageIdentifier: z.string().describe("Page identifier.")
-                .optional(),
-            })).describe(
-              "List of cited chunk contents derived from document content.",
-            ).optional(),
-            document: z.string().describe(
-              "Required. Document.name of the document. Full resource name of the referenced document, in the format `projects/*/locations/*/collections/*/dataStores/*/branches/*/documents/*`.",
-            ).optional(),
-            title: z.string().describe("Title of the document.").optional(),
-            uri: z.string().describe(
-              "Cloud Storage or HTTP uri for the document.",
-            ).optional(),
-          })).describe("Document References.").optional(),
-          summary: z.string().describe(
+          citationMetadata: z.unknown().describe("Citation metadata.")
+            .optional(),
+          references: z.unknown().describe("Document References.").optional(),
+          summary: z.unknown().describe(
             "Summary text with no citation information.",
           ).optional(),
         }).describe("Summary with metadata information.").optional(),
@@ -318,7 +216,7 @@ const InputsSchema = z.object({
         activeDocument: z.string().describe(
           "The current active document the user opened. It contains the document resource reference.",
         ).optional(),
-        contextDocuments: z.array(z.string()).describe(
+        contextDocuments: z.array(z.unknown()).describe(
           "The current list of documents the user is seeing. It contains the document resource references.",
         ).optional(),
       }).describe("Defines context of the conversation").optional(),
@@ -340,7 +238,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/discoveryengine/collections-datastores-conversations",
-  version: "2026.04.03.3",
+  version: "2026.04.04.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -364,6 +262,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.3",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.04.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

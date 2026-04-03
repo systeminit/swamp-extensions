@@ -1,7 +1,7 @@
 # Auto-generated manifest. Re-generate with the appropriate deno task.
 manifestVersion: 1
 name: "@swamp/gcp/firebaseapphosting"
-version: "2026.04.03.3"
+version: "2026.04.04.1"
 description: "Google Cloud firebaseapphosting infrastructure models"
 labels:
   - gcp
@@ -10,7 +10,7 @@ labels:
   - cloud
   - infrastructure
 releaseNotes: |
-  - Updated: locations, backends, backends_builds, backends_domains, backends_rollouts, backends_traffic
+  - Updated: backends_domains
 models:
   - backends.ts
   - backends_builds.ts

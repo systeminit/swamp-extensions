@@ -358,7 +358,7 @@ const StateSchema = z.object({
     diskImageTargetDetails: z.object({
       additionalLicenses: z.array(z.string()),
       dataDiskImageImport: z.object({
-        guestOsFeatures: z.array(z.string()),
+        guestOsFeatures: z.array(z.unknown()),
       }),
       description: z.string(),
       encryption: z.object({
@@ -368,10 +368,7 @@ const StateSchema = z.object({
       imageName: z.string(),
       labels: z.record(z.string(), z.unknown()),
       osAdaptationParameters: z.object({
-        adaptationModifiers: z.array(z.object({
-          modifier: z.string(),
-          value: z.string(),
-        })),
+        adaptationModifiers: z.array(z.unknown()),
         bootConversion: z.string(),
         generalize: z.boolean(),
         licenseType: z.string(),
@@ -382,7 +379,7 @@ const StateSchema = z.object({
     endTime: z.string(),
     errors: z.array(z.object({
       code: z.number(),
-      details: z.array(z.record(z.string(), z.unknown())),
+      details: z.array(z.unknown()),
       message: z.string(),
     })),
     machineImageTargetDetails: z.object({
@@ -397,24 +394,21 @@ const StateSchema = z.object({
         machineType: z.string(),
       }),
       networkInterfaces: z.array(z.object({
-        externalIp: z.string(),
-        internalIp: z.string(),
-        network: z.string(),
-        networkTier: z.string(),
-        subnetwork: z.string(),
+        externalIp: z.unknown(),
+        internalIp: z.unknown(),
+        network: z.unknown(),
+        networkTier: z.unknown(),
+        subnetwork: z.unknown(),
       })),
       osAdaptationParameters: z.object({
-        adaptationModifiers: z.array(z.object({
-          modifier: z.string(),
-          value: z.string(),
-        })),
+        adaptationModifiers: z.array(z.unknown()),
         bootConversion: z.string(),
         generalize: z.boolean(),
         licenseType: z.string(),
       }),
       serviceAccount: z.object({
         email: z.string(),
-        scopes: z.array(z.string()),
+        scopes: z.array(z.unknown()),
       }),
       shieldedInstanceConfig: z.object({
         enableIntegrityMonitoring: z.boolean(),
@@ -438,17 +432,14 @@ const StateSchema = z.object({
     })),
     warnings: z.array(z.object({
       actionItem: z.object({
-        locale: z.string(),
-        message: z.string(),
+        locale: z.unknown(),
+        message: z.unknown(),
       }),
       code: z.string(),
-      helpLinks: z.array(z.object({
-        description: z.string(),
-        url: z.string(),
-      })),
+      helpLinks: z.array(z.unknown()),
       warningMessage: z.object({
-        locale: z.string(),
-        message: z.string(),
+        locale: z.unknown(),
+        message: z.unknown(),
       }),
       warningTime: z.string(),
     })),
@@ -663,7 +654,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/vmmigration/imageimports",
-  version: "2026.04.03.3",
+  version: "2026.04.04.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -687,6 +678,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.3",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.04.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

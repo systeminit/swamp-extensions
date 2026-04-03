@@ -73,8 +73,8 @@ const StateSchema = z.object({
       instances: z.array(z.object({
         instanceId: z.string(),
         physicalHostTopology: z.object({
-          host: z.string(),
-          subBlock: z.string(),
+          host: z.unknown(),
+          subBlock: z.unknown(),
         }),
         projectId: z.string(),
       })),
@@ -115,7 +115,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/compute/reservationblocks",
-  version: "2026.04.03.3",
+  version: "2026.04.04.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -139,6 +139,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.3",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.04.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

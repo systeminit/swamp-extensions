@@ -62,11 +62,11 @@ const GlobalArgsSchema = z.object({
         checked: z.boolean().describe(
           "Whether this item has been checked off or not.",
         ).optional(),
-        childListItems: z.array(z.string()).describe(
+        childListItems: z.array(z.unknown()).describe(
           "If set, list of list items nested under this list item. Only one level of nesting is allowed.",
         ).optional(),
         text: z.object({
-          text: z.string().describe(
+          text: z.unknown().describe(
             "The text of the note. The limits on this vary with the specific field using this type.",
           ).optional(),
         }).describe("The block of text for a single text section or list item.")
@@ -96,9 +96,9 @@ const StateSchema = z.object({
     list: z.object({
       listItems: z.array(z.object({
         checked: z.boolean(),
-        childListItems: z.array(z.string()),
+        childListItems: z.array(z.unknown()),
         text: z.object({
-          text: z.string(),
+          text: z.unknown(),
         }),
       })),
     }),
@@ -137,11 +137,11 @@ const InputsSchema = z.object({
         checked: z.boolean().describe(
           "Whether this item has been checked off or not.",
         ).optional(),
-        childListItems: z.array(z.string()).describe(
+        childListItems: z.array(z.unknown()).describe(
           "If set, list of list items nested under this list item. Only one level of nesting is allowed.",
         ).optional(),
         text: z.object({
-          text: z.string().describe(
+          text: z.unknown().describe(
             "The text of the note. The limits on this vary with the specific field using this type.",
           ).optional(),
         }).describe("The block of text for a single text section or list item.")
@@ -164,7 +164,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/keep/notes",
-  version: "2026.04.03.3",
+  version: "2026.04.04.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -188,6 +188,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.3",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.04.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

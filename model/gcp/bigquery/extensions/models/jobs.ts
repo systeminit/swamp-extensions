@@ -376,93 +376,56 @@ const GlobalArgsSchema = z.object({
       ).optional(),
       schema: z.object({
         fields: z.array(z.object({
-          categories: z.object({
-            names: z.array(z.string()).describe("Deprecated.").optional(),
-          }).describe("Deprecated.").optional(),
-          collation: z.string().describe(
+          categories: z.unknown().describe("Deprecated.").optional(),
+          collation: z.unknown().describe(
             "Optional. Field collation can be set only when the type of field is STRING. The following values are supported: * 'und:ci': undetermined locale, case insensitive. * '': empty string. Default to case-sensitive behavior.",
           ).optional(),
-          dataPolicies: z.array(z.object({
-            name: z.string().describe(
-              "Data policy resource name in the form of projects/project_id/locations/location_id/dataPolicies/data_policy_id.",
-            ).optional(),
-          })).describe(
+          dataPolicies: z.unknown().describe(
             "Optional. Data policies attached to this field, used for field-level access control.",
           ).optional(),
-          defaultValueExpression: z.string().describe(
+          defaultValueExpression: z.unknown().describe(
             "Optional. A SQL expression to specify the [default value] (https://cloud.google.com/bigquery/docs/default-values) for this field.",
           ).optional(),
-          description: z.string().describe(
+          description: z.unknown().describe(
             "Optional. The field description. The maximum length is 1,024 characters.",
           ).optional(),
-          fields: z.array(z.string()).describe(
+          fields: z.unknown().describe(
             "Optional. Describes the nested schema fields if the type property is set to RECORD.",
           ).optional(),
-          foreignTypeDefinition: z.string().describe(
+          foreignTypeDefinition: z.unknown().describe(
             "Optional. Definition of the foreign data type. Only valid for top-level schema fields (not nested fields). If the type is FOREIGN, this field is required.",
           ).optional(),
-          generatedColumn: z.object({
-            generatedExpressionInfo: z.object({
-              asynchronous: z.boolean().describe(
-                "Optional. Whether the column generation is done asynchronously.",
-              ).optional(),
-              generationExpression: z.string().describe(
-                "Optional. The generation expression (e.g. AI.EMBED(...)) used to generated the field.",
-              ).optional(),
-              stored: z.boolean().describe(
-                "Optional. Whether the generated column is stored in the table.",
-              ).optional(),
-            }).describe(
-              "Definition of the expression used to generate the field.",
-            ).optional(),
-            generatedMode: z.enum([
-              "GENERATED_MODE_UNSPECIFIED",
-              "GENERATED_ALWAYS",
-              "GENERATED_BY_DEFAULT",
-            ]).describe(
-              "Optional. Dictates when system generated values are used to populate the field.",
-            ).optional(),
-          }).describe(
+          generatedColumn: z.unknown().describe(
             "Optional. Definition of how values are generated for the field. Only valid for top-level schema fields (not nested fields).",
           ).optional(),
-          maxLength: z.string().describe(
+          maxLength: z.unknown().describe(
             'Optional. Maximum length of values of this field for STRINGS or BYTES. If max_length is not specified, no maximum length constraint is imposed on this field. If type = "STRING", then max_length represents the maximum UTF-8 length of strings in this field. If type = "BYTES", then max_length represents the maximum number of bytes in this field. It is invalid to set this field if type ≠ "STRING" and ≠ "BYTES".',
           ).optional(),
-          mode: z.string().describe(
+          mode: z.unknown().describe(
             "Optional. The field mode. Possible values include NULLABLE, REQUIRED and REPEATED. The default value is NULLABLE.",
           ).optional(),
-          name: z.string().describe(
+          name: z.unknown().describe(
             "Required. The field name. The name must contain only letters (a-z, A-Z), numbers (0-9), or underscores (_), and must start with a letter or underscore. The maximum length is 300 characters.",
           ).optional(),
-          policyTags: z.object({
-            names: z.array(z.string()).describe(
-              'A list of policy tag resource names. For example, "projects/1/locations/eu/taxonomies/2/policyTags/3". At most 1 policy tag is currently allowed.',
-            ).optional(),
-          }).describe(
+          policyTags: z.unknown().describe(
             "Optional. The policy tags attached to this field, used for field-level access control. If not set, defaults to empty policy_tags.",
           ).optional(),
-          precision: z.string().describe(
+          precision: z.unknown().describe(
             'Optional. Precision (maximum number of total digits in base 10) and scale (maximum number of digits in the fractional part in base 10) constraints for values of this field for NUMERIC or BIGNUMERIC. It is invalid to set precision or scale if type ≠ "NUMERIC" and ≠ "BIGNUMERIC". If precision and scale are not specified, no value range constraint is imposed on this field insofar as values are permitted by the type. Values of this NUMERIC or BIGNUMERIC field must be in this range when: * Precision (P) and scale (S) are specified: [-10P-S + 10-S, 10P-S - 10-S] * Precision (P) is specified but not scale (and thus scale is interpreted to be equal to zero): [-10P + 1, 10P - 1]. Acceptable values for precision and scale if both are specified: * If type = "NUMERIC": 1 ≤ precision - scale ≤ 29 and 0 ≤ scale ≤ 9. * If type = "BIGNUMERIC": 1 ≤ precision - scale ≤ 38 and 0 ≤ scale ≤ 38. Acceptable values for precision if only precision is specified but not scale (and thus scale is interpreted to be equal to zero): * If type = "NUMERIC": 1 ≤ precision ≤ 29. * If type = "BIGNUMERIC": 1 ≤ precision ≤ 38. If scale is specified but not precision, then it is invalid.',
           ).optional(),
-          rangeElementType: z.object({
-            type: z.string().describe(
-              "Required. The type of a field element. For more information, see TableFieldSchema.type.",
-            ).optional(),
-          }).describe("Represents the type of a field element.").optional(),
-          roundingMode: z.enum([
-            "ROUNDING_MODE_UNSPECIFIED",
-            "ROUND_HALF_AWAY_FROM_ZERO",
-            "ROUND_HALF_EVEN",
-          ]).describe(
+          rangeElementType: z.unknown().describe(
+            "Represents the type of a field element.",
+          ).optional(),
+          roundingMode: z.unknown().describe(
             "Optional. Specifies the rounding mode to be used when storing values of NUMERIC and BIGNUMERIC type.",
           ).optional(),
-          scale: z.string().describe(
+          scale: z.unknown().describe(
             "Optional. See documentation for precision.",
           ).optional(),
-          timestampPrecision: z.string().describe(
+          timestampPrecision: z.unknown().describe(
             "Optional. Precision (maximum number of total digits in base 10) for seconds of TIMESTAMP type. Possible values include: * 6 (Default, for TIMESTAMP type with microsecond precision) * 12 (For TIMESTAMP type with picosecond precision)",
           ).optional(),
-          type: z.string().describe(
+          type: z.unknown().describe(
             "Required. The field data type. Possible values include: * STRING * BYTES * INTEGER (or INT64) * FLOAT (or FLOAT64) * BOOLEAN (or BOOL) * TIMESTAMP * DATE * TIME * DATETIME * GEOGRAPHY * NUMERIC * BIGNUMERIC * JSON * RECORD (or STRUCT) * RANGE Use of RECORD/STRUCT indicates that the field contains a nested schema.",
           ).optional(),
         })).describe("Describes the fields in a table.").optional(),
@@ -612,47 +575,31 @@ const GlobalArgsSchema = z.object({
           "Optional. If unset, this is a positional parameter. Otherwise, should be unique within a query.",
         ).optional(),
         parameterType: z.object({
-          arrayType: z.string().describe(
+          arrayType: z.unknown().describe(
             "Circular reference to QueryParameterType",
           ).optional(),
-          rangeElementType: z.string().describe(
+          rangeElementType: z.unknown().describe(
             "Circular reference to QueryParameterType",
           ).optional(),
-          structTypes: z.array(z.object({
-            description: z.string().describe(
-              "Optional. Human-oriented description of the field.",
-            ).optional(),
-            name: z.string().describe("Optional. The name of this field.")
-              .optional(),
-            type: z.string().describe(
-              "Circular reference to QueryParameterType",
-            ).optional(),
-          })).describe(
+          structTypes: z.unknown().describe(
             "Optional. The types of the fields of this struct, in order, if this is a struct.",
           ).optional(),
-          timestampPrecision: z.string().describe(
+          timestampPrecision: z.unknown().describe(
             "Optional. Precision (maximum number of total digits in base 10) for seconds of TIMESTAMP type. Possible values include: * 6 (Default, for TIMESTAMP type with microsecond precision) * 12 (For TIMESTAMP type with picosecond precision)",
           ).optional(),
-          type: z.string().describe(
+          type: z.unknown().describe(
             "Required. The top level type of this field.",
           ).optional(),
         }).describe("The type of a query parameter.").optional(),
         parameterValue: z.object({
-          arrayValues: z.array(z.string()).describe(
+          arrayValues: z.unknown().describe(
             "Optional. The array values, if this is an array type.",
           ).optional(),
-          rangeValue: z.object({
-            end: z.string().describe(
-              "Circular reference to QueryParameterValue",
-            ).optional(),
-            start: z.string().describe(
-              "Circular reference to QueryParameterValue",
-            ).optional(),
-          }).describe("Represents the value of a range.").optional(),
-          structValues: z.record(z.string(), z.string()).describe(
-            "The struct field values.",
-          ).optional(),
-          value: z.string().describe(
+          rangeValue: z.unknown().describe("Represents the value of a range.")
+            .optional(),
+          structValues: z.unknown().describe("The struct field values.")
+            .optional(),
+          value: z.unknown().describe(
             "Optional. The value of this value, if a simple scalar type.",
           ).optional(),
         }).describe("The value of a query parameter.").optional(),
@@ -696,42 +643,16 @@ const GlobalArgsSchema = z.object({
         types: z.record(
           z.string(),
           z.object({
-            arrayElementType: z.string().describe(
+            arrayElementType: z.unknown().describe(
               "Circular reference to StandardSqlDataType",
             ).optional(),
-            rangeElementType: z.string().describe(
+            rangeElementType: z.unknown().describe(
               "Circular reference to StandardSqlDataType",
             ).optional(),
-            structType: z.object({
-              fields: z.array(z.object({
-                name: z.string().describe(
-                  "Optional. The name of this field. Can be absent for struct fields.",
-                ).optional(),
-                type: z.string().describe(
-                  "Circular reference to StandardSqlDataType",
-                ).optional(),
-              })).describe("Fields within the struct.").optional(),
-            }).describe("The representation of a SQL STRUCT type.").optional(),
-            typeKind: z.enum([
-              "TYPE_KIND_UNSPECIFIED",
-              "INT64",
-              "BOOL",
-              "FLOAT64",
-              "STRING",
-              "BYTES",
-              "TIMESTAMP",
-              "DATE",
-              "TIME",
-              "DATETIME",
-              "INTERVAL",
-              "GEOGRAPHY",
-              "NUMERIC",
-              "BIGNUMERIC",
-              "JSON",
-              "ARRAY",
-              "STRUCT",
-              "RANGE",
-            ]).describe(
+            structType: z.unknown().describe(
+              "The representation of a SQL STRUCT type.",
+            ).optional(),
+            typeKind: z.unknown().describe(
               'Required. The top level type of this field. Can be any GoogleSQL data type (e.g., "INT64", "DATE", "ARRAY").',
             ).optional(),
           }),
@@ -748,73 +669,21 @@ const GlobalArgsSchema = z.object({
             "Try to detect schema and format options automatically. Any option specified explicitly will be honored.",
           ).optional(),
           avroOptions: z.object({
-            useAvroLogicalTypes: z.boolean().describe(
+            useAvroLogicalTypes: z.unknown().describe(
               'Optional. If sourceFormat is set to "AVRO", indicates whether to interpret logical types as the corresponding BigQuery data type (for example, TIMESTAMP), instead of using the raw type (for example, INTEGER).',
             ).optional(),
           }).describe("Options for external data sources.").optional(),
           bigtableOptions: z.object({
-            columnFamilies: z.array(z.object({
-              columns: z.array(z.object({
-                encoding: z.string().describe(
-                  "Optional. The encoding of the values when the type is not STRING. Acceptable encoding values are: TEXT - indicates values are alphanumeric text strings. BINARY - indicates values are encoded using HBase Bytes.toBytes family of functions. PROTO_BINARY - indicates values are encoded using serialized proto messages. This can only be used in combination with JSON type. 'encoding' can also be set at the column family level. However, the setting at this level takes precedence if 'encoding' is set at both levels.",
-                ).optional(),
-                fieldName: z.string().describe(
-                  "Optional. If the qualifier is not a valid BigQuery field identifier i.e. does not match a-zA-Z*, a valid identifier must be provided as the column field name and is used as field name in queries.",
-                ).optional(),
-                onlyReadLatest: z.boolean().describe(
-                  "Optional. If this is set, only the latest version of value in this column are exposed. 'onlyReadLatest' can also be set at the column family level. However, the setting at this level takes precedence if 'onlyReadLatest' is set at both levels.",
-                ).optional(),
-                protoConfig: z.object({
-                  protoMessageName: z.string().describe(
-                    'Optional. The fully qualified proto message name of the protobuf. In the format of "foo.bar.Message".',
-                  ).optional(),
-                  schemaBundleId: z.string().describe(
-                    "Optional. The ID of the Bigtable SchemaBundle resource associated with this protobuf. The ID should be referred to within the parent table, e.g., `foo` rather than `projects/{project}/instances/{instance}/tables/{table}/schemaBundles/foo`. See [more details on Bigtable SchemaBundles](https://docs.cloud.google.com/bigtable/docs/create-manage-protobuf-schemas).",
-                  ).optional(),
-                }).describe(
-                  "Information related to a Bigtable protobuf column.",
-                ).optional(),
-                qualifierEncoded: z.string().describe(
-                  "[Required] Qualifier of the column. Columns in the parent column family that has this exact qualifier are exposed as `.` field. If the qualifier is valid UTF-8 string, it can be specified in the qualifier_string field. Otherwise, a base-64 encoded value must be set to qualifier_encoded. The column field name is the same as the column qualifier. However, if the qualifier is not a valid BigQuery field identifier i.e. does not match a-zA-Z*, a valid identifier must be provided as field_name.",
-                ).optional(),
-                qualifierString: z.string().describe("Qualifier string.")
-                  .optional(),
-                type: z.string().describe(
-                  "Optional. The type to convert the value in cells of this column. The values are expected to be encoded using HBase Bytes.toBytes function when using the BINARY encoding value. Following BigQuery types are allowed (case-sensitive): * BYTES * STRING * INTEGER * FLOAT * BOOLEAN * JSON Default type is BYTES. 'type' can also be set at the column family level. However, the setting at this level takes precedence if 'type' is set at both levels.",
-                ).optional(),
-              })).describe(
-                "Optional. Lists of columns that should be exposed as individual fields as opposed to a list of (column name, value) pairs. All columns whose qualifier matches a qualifier in this list can be accessed as `.`. Other columns can be accessed as a list through the `.Column` field.",
-              ).optional(),
-              encoding: z.string().describe(
-                "Optional. The encoding of the values when the type is not STRING. Acceptable encoding values are: TEXT - indicates values are alphanumeric text strings. BINARY - indicates values are encoded using HBase Bytes.toBytes family of functions. PROTO_BINARY - indicates values are encoded using serialized proto messages. This can only be used in combination with JSON type. This can be overridden for a specific column by listing that column in 'columns' and specifying an encoding for it.",
-              ).optional(),
-              familyId: z.string().describe("Identifier of the column family.")
-                .optional(),
-              onlyReadLatest: z.boolean().describe(
-                "Optional. If this is set only the latest version of value are exposed for all columns in this column family. This can be overridden for a specific column by listing that column in 'columns' and specifying a different setting for that column.",
-              ).optional(),
-              protoConfig: z.object({
-                protoMessageName: z.string().describe(
-                  'Optional. The fully qualified proto message name of the protobuf. In the format of "foo.bar.Message".',
-                ).optional(),
-                schemaBundleId: z.string().describe(
-                  "Optional. The ID of the Bigtable SchemaBundle resource associated with this protobuf. The ID should be referred to within the parent table, e.g., `foo` rather than `projects/{project}/instances/{instance}/tables/{table}/schemaBundles/foo`. See [more details on Bigtable SchemaBundles](https://docs.cloud.google.com/bigtable/docs/create-manage-protobuf-schemas).",
-                ).optional(),
-              }).describe("Information related to a Bigtable protobuf column.")
-                .optional(),
-              type: z.string().describe(
-                "Optional. The type to convert the value in cells of this column family. The values are expected to be encoded using HBase Bytes.toBytes function when using the BINARY encoding value. Following BigQuery types are allowed (case-sensitive): * BYTES * STRING * INTEGER * FLOAT * BOOLEAN * JSON Default type is BYTES. This can be overridden for a specific column by listing that column in 'columns' and specifying a type for it.",
-              ).optional(),
-            })).describe(
+            columnFamilies: z.unknown().describe(
               "Optional. List of column families to expose in the table schema along with their types. This list restricts the column families that can be referenced in queries and specifies their value types. You can use this list to do type conversions - see the 'type' field for more details. If you leave this list empty, all column families are present in the table schema and their values are read as BYTES. During a query only the column families referenced in that query are read from Bigtable.",
             ).optional(),
-            ignoreUnspecifiedColumnFamilies: z.boolean().describe(
+            ignoreUnspecifiedColumnFamilies: z.unknown().describe(
               "Optional. If field is true, then the column families that are not specified in columnFamilies list are not exposed in the table schema. Otherwise, they are read with BYTES type values. The default value is false.",
             ).optional(),
-            outputColumnFamiliesAsJson: z.boolean().describe(
+            outputColumnFamiliesAsJson: z.unknown().describe(
               "Optional. If field is true, then each column family will be read as a single JSON column. Otherwise they are read as a repeated cell structure containing timestamp/value tuples. The default value is false.",
             ).optional(),
-            readRowkeyAsString: z.boolean().describe(
+            readRowkeyAsString: z.unknown().describe(
               "Optional. If field is true, then the rowkey column families will be read and converted to string. Otherwise they are read with BYTES type values and users need to manually cast them with CAST if necessary. The default value is false.",
             ).optional(),
           }).describe("Options specific to Google Cloud Bigtable data sources.")
@@ -826,34 +695,34 @@ const GlobalArgsSchema = z.object({
             "Optional. The connection specifying the credentials to be used to read external storage, such as Azure Blob, Cloud Storage, or S3. The connection_id can have the form `{project_id}.{location_id};{connection_id}` or `projects/{project_id}/locations/{location_id}/connections/{connection_id}`.",
           ).optional(),
           csvOptions: z.object({
-            allowJaggedRows: z.boolean().describe(
+            allowJaggedRows: z.unknown().describe(
               "Optional. Indicates if BigQuery should accept rows that are missing trailing optional columns. If true, BigQuery treats missing trailing columns as null values. If false, records with missing trailing columns are treated as bad records, and if there are too many bad records, an invalid error is returned in the job result. The default value is false.",
             ).optional(),
-            allowQuotedNewlines: z.boolean().describe(
+            allowQuotedNewlines: z.unknown().describe(
               "Optional. Indicates if BigQuery should allow quoted data sections that contain newline characters in a CSV file. The default value is false.",
             ).optional(),
-            encoding: z.string().describe(
+            encoding: z.unknown().describe(
               "Optional. The character encoding of the data. The supported values are UTF-8, ISO-8859-1, UTF-16BE, UTF-16LE, UTF-32BE, and UTF-32LE. The default value is UTF-8. BigQuery decodes the data after the raw, binary data has been split using the values of the quote and fieldDelimiter properties.",
             ).optional(),
-            fieldDelimiter: z.string().describe(
+            fieldDelimiter: z.unknown().describe(
               'Optional. The separator character for fields in a CSV file. The separator is interpreted as a single byte. For files encoded in ISO-8859-1, any single character can be used as a separator. For files encoded in UTF-8, characters represented in decimal range 1-127 (U+0001-U+007F) can be used without any modification. UTF-8 characters encoded with multiple bytes (i.e. U+0080 and above) will have only the first byte used for separating fields. The remaining bytes will be treated as a part of the field. BigQuery also supports the escape sequence "\\t" (U+0009) to specify a tab separator. The default value is comma (",", U+002C).',
             ).optional(),
-            nullMarker: z.string().describe(
+            nullMarker: z.unknown().describe(
               'Optional. Specifies a string that represents a null value in a CSV file. For example, if you specify "\\N", BigQuery interprets "\\N" as a null value when querying a CSV file. The default value is the empty string. If you set this property to a custom value, BigQuery throws an error if an empty string is present for all data types except for STRING and BYTE. For STRING and BYTE columns, BigQuery interprets the empty string as an empty value.',
             ).optional(),
-            nullMarkers: z.array(z.string()).describe(
+            nullMarkers: z.unknown().describe(
               "Optional. A list of strings represented as SQL NULL value in a CSV file. null_marker and null_markers can't be set at the same time. If null_marker is set, null_markers has to be not set. If null_markers is set, null_marker has to be not set. If both null_marker and null_markers are set at the same time, a user error would be thrown. Any strings listed in null_markers, including empty string would be interpreted as SQL NULL. This applies to all column types.",
             ).optional(),
-            preserveAsciiControlCharacters: z.boolean().describe(
+            preserveAsciiControlCharacters: z.unknown().describe(
               "Optional. Indicates if the embedded ASCII control characters (the first 32 characters in the ASCII-table, from '\\x00' to '\\x1F') are preserved.",
             ).optional(),
-            quote: z.string().regex(new RegExp(".?")).describe(
+            quote: z.unknown().describe(
               "Optional. The value that is used to quote data sections in a CSV file. BigQuery converts the string to ISO-8859-1 encoding, and then uses the first byte of the encoded string to split the data in its raw, binary state. The default value is a double-quote (\"). If your data does not contain quoted sections, set the property value to an empty string. If your data contains quoted newline characters, you must also set the allowQuotedNewlines property to true. To include the specific quote character within a quoted value, precede it with an additional matching quote character. For example, if you want to escape the default character ' \" ', use ' \"\" '.",
             ).optional(),
-            skipLeadingRows: z.string().describe(
+            skipLeadingRows: z.unknown().describe(
               "Optional. The number of rows at the top of a CSV file that BigQuery will skip when reading the data. The default value is 0. This property is useful if you have header rows in the file that should be skipped. When autodetect is on, the behavior is the following: * skipLeadingRows unspecified - Autodetect tries to detect headers in the first row. If they are not detected, the row is read as data. Otherwise data is read starting from the second row. * skipLeadingRows is 0 - Instructs autodetect that there are no headers and data should be read starting from the first row. * skipLeadingRows = N > 0 - Autodetect skips N-1 rows and tries to detect headers in row N. If headers are not detected, row N is just skipped. Otherwise row N is used to extract column names for the detected schema.",
             ).optional(),
-            sourceColumnMatch: z.string().describe(
+            sourceColumnMatch: z.unknown().describe(
               "Optional. Controls the strategy used to match loaded columns to the schema. If not set, a sensible default is chosen based on how the schema is provided. If autodetect is used, then columns are matched by name. Otherwise, columns are matched by position. This is done to keep the behavior backward-compatible. Acceptable values are: POSITION - matches by position. This assumes that the columns are ordered the same way as the schema. NAME - matches by name. This reads the header row as column names and reorders columns to match the field names in the schema.",
             ).optional(),
           }).describe("Information related to a CSV data source.").optional(),
@@ -863,14 +732,7 @@ const GlobalArgsSchema = z.object({
           datetimeFormat: z.string().describe(
             "Optional. Format used to parse DATETIME values. Supports C-style and SQL-style values.",
           ).optional(),
-          decimalTargetTypes: z.array(
-            z.enum([
-              "DECIMAL_TARGET_TYPE_UNSPECIFIED",
-              "NUMERIC",
-              "BIGNUMERIC",
-              "STRING",
-            ]),
-          ).describe(
+          decimalTargetTypes: z.array(z.unknown()).describe(
             'Defines the list of possible SQL data types to which the source decimal values are converted. This list and the precision and the scale parameters of the decimal field determine the target type. In the order of NUMERIC, BIGNUMERIC, and STRING, a type is picked if it is in the specified list and if it supports the precision and the scale. STRING supports all precision and scale values. If none of the listed types supports the precision and the scale, the type supporting the widest range in the specified list is picked, and if a value exceeds the supported range when reading the data, an error will be thrown. Example: Suppose the value of this field is ["NUMERIC", "BIGNUMERIC"]. If (precision,scale) is: * (38,9) -> NUMERIC; * (39,9) -> BIGNUMERIC (NUMERIC cannot hold 30 integer digits); * (38,10) -> BIGNUMERIC (NUMERIC cannot hold 10 fractional digits); * (76,38) -> BIGNUMERIC; * (77,38) -> BIGNUMERIC (error if value exceeds supported range). This field cannot contain duplicate types. The order of the types in this field is ignored. For example, ["BIGNUMERIC", "NUMERIC"] is the same as ["NUMERIC", "BIGNUMERIC"] and NUMERIC always takes precedence over BIGNUMERIC. Defaults to ["NUMERIC", "STRING"] for ORC and ["NUMERIC"] for the other file formats.',
           ).optional(),
           fileSetSpecType: z.enum([
@@ -880,25 +742,25 @@ const GlobalArgsSchema = z.object({
             "Optional. Specifies how source URIs are interpreted for constructing the file set to load. By default source URIs are expanded against the underlying storage. Other options include specifying manifest files. Only applicable to object storage systems.",
           ).optional(),
           googleSheetsOptions: z.object({
-            range: z.string().describe(
+            range: z.unknown().describe(
               "Optional. Range of a sheet to query from. Only used when non-empty. Typical format: sheet_name!top_left_cell_id:bottom_right_cell_id For example: sheet1!A1:B20",
             ).optional(),
-            skipLeadingRows: z.string().describe(
+            skipLeadingRows: z.unknown().describe(
               "Optional. The number of rows at the top of a sheet that BigQuery will skip when reading the data. The default value is 0. This property is useful if you have header rows that should be skipped. When autodetect is on, the behavior is the following: * skipLeadingRows unspecified - Autodetect tries to detect headers in the first row. If they are not detected, the row is read as data. Otherwise data is read starting from the second row. * skipLeadingRows is 0 - Instructs autodetect that there are no headers and data should be read starting from the first row. * skipLeadingRows = N > 0 - Autodetect skips N-1 rows and tries to detect headers in row N. If headers are not detected, row N is just skipped. Otherwise row N is used to extract column names for the detected schema.",
             ).optional(),
           }).describe("Options specific to Google Sheets data sources.")
             .optional(),
           hivePartitioningOptions: z.object({
-            fields: z.array(z.string()).describe(
+            fields: z.unknown().describe(
               "Output only. For permanent external tables, this field is populated with the hive partition keys in the order they were inferred. The types of the partition keys can be deduced by checking the table schema (which will include the partition keys). Not every API will populate this field in the output. For example, Tables.Get will populate it, but Tables.List will not contain this field.",
             ).optional(),
-            mode: z.string().describe(
+            mode: z.unknown().describe(
               "Optional. When set, what mode of hive partitioning to use when reading data. The following modes are supported: * AUTO: automatically infer partition key name(s) and type(s). * STRINGS: automatically infer partition key name(s). All types are strings. * CUSTOM: partition key schema is encoded in the source URI prefix. Not all storage formats support hive partitioning. Requesting hive partitioning on an unsupported format will lead to an error. Currently supported formats are: JSON, CSV, ORC, Avro and Parquet.",
             ).optional(),
-            requirePartitionFilter: z.boolean().describe(
+            requirePartitionFilter: z.unknown().describe(
               "Optional. If set to true, queries over this table require a partition filter that can be used for partition elimination to be specified. Note that this field should only be true when creating a permanent external table or querying a temporary external table. Hive-partitioned loads with require_partition_filter explicitly set to true will fail.",
             ).optional(),
-            sourceUriPrefix: z.string().describe(
+            sourceUriPrefix: z.unknown().describe(
               "Optional. When hive partition detection is requested, a common prefix for all source uris must be required. The prefix must end immediately before the partition key encoding begins. For example, consider files following this data layout: gs://bucket/path_to_table/dt=2019-06-01/country=USA/id=7/file.avro gs://bucket/path_to_table/dt=2019-05-31/country=CA/id=3/file.avro When hive partitioning is requested with either AUTO or STRINGS detection, the common prefix can be either of gs://bucket/path_to_table or gs://bucket/path_to_table/. CUSTOM detection requires encoding the partitioning schema immediately after the common prefix. For CUSTOM, any of * gs://bucket/path_to_table/{dt:DATE}/{country:STRING}/{id:INTEGER} * gs://bucket/path_to_table/{dt:STRING}/{country:STRING}/{id:INTEGER} * gs://bucket/path_to_table/{dt:DATE}/{country:STRING}/{id:STRING} would all be valid source URI prefixes.",
             ).optional(),
           }).describe("Options for configuring hive partitioning detect.")
@@ -911,7 +773,7 @@ const GlobalArgsSchema = z.object({
               "Optional. Load option to be used together with source_format newline-delimited JSON to indicate that a variant of JSON is being loaded. To load newline-delimited GeoJSON, specify GEOJSON (and source_format must be set to NEWLINE_DELIMITED_JSON).",
             ).optional(),
           jsonOptions: z.object({
-            encoding: z.string().describe(
+            encoding: z.unknown().describe(
               "Optional. The character encoding of the data. The supported values are UTF-8, UTF-16BE, UTF-16LE, UTF-32BE, and UTF-32LE. The default value is UTF-8.",
             ).optional(),
           }).describe("Json Options for load and make external tables.")
@@ -934,16 +796,13 @@ const GlobalArgsSchema = z.object({
             "Optional. ObjectMetadata is used to create Object Tables. Object Tables contain a listing of objects (with their metadata) found at the source_uris. If ObjectMetadata is set, source_format should be omitted. Currently SIMPLE is the only supported Object Metadata type.",
           ).optional(),
           parquetOptions: z.object({
-            enableListInference: z.boolean().describe(
+            enableListInference: z.unknown().describe(
               "Optional. Indicates whether to use schema inference specifically for Parquet LIST logical type.",
             ).optional(),
-            enumAsString: z.boolean().describe(
+            enumAsString: z.unknown().describe(
               "Optional. Indicates whether to infer Parquet ENUM logical type as STRING instead of BYTES by default.",
             ).optional(),
-            mapTargetType: z.enum([
-              "MAP_TARGET_TYPE_UNSPECIFIED",
-              "ARRAY_OF_STRUCT",
-            ]).describe(
+            mapTargetType: z.unknown().describe(
               "Optional. Indicates how to represent a Parquet map if present.",
             ).optional(),
           }).describe("Parquet Options for load and make external tables.")
@@ -952,109 +811,16 @@ const GlobalArgsSchema = z.object({
             "Optional. When creating an external table, the user can provide a reference file with the table schema. This is enabled for the following formats: AVRO, PARQUET, ORC.",
           ).optional(),
           schema: z.object({
-            fields: z.array(z.object({
-              categories: z.object({
-                names: z.array(z.string()).describe("Deprecated.").optional(),
-              }).describe("Deprecated.").optional(),
-              collation: z.string().describe(
-                "Optional. Field collation can be set only when the type of field is STRING. The following values are supported: * 'und:ci': undetermined locale, case insensitive. * '': empty string. Default to case-sensitive behavior.",
-              ).optional(),
-              dataPolicies: z.array(z.object({
-                name: z.string().describe(
-                  "Data policy resource name in the form of projects/project_id/locations/location_id/dataPolicies/data_policy_id.",
-                ).optional(),
-              })).describe(
-                "Optional. Data policies attached to this field, used for field-level access control.",
-              ).optional(),
-              defaultValueExpression: z.string().describe(
-                "Optional. A SQL expression to specify the [default value] (https://cloud.google.com/bigquery/docs/default-values) for this field.",
-              ).optional(),
-              description: z.string().describe(
-                "Optional. The field description. The maximum length is 1,024 characters.",
-              ).optional(),
-              fields: z.array(z.string()).describe(
-                "Optional. Describes the nested schema fields if the type property is set to RECORD.",
-              ).optional(),
-              foreignTypeDefinition: z.string().describe(
-                "Optional. Definition of the foreign data type. Only valid for top-level schema fields (not nested fields). If the type is FOREIGN, this field is required.",
-              ).optional(),
-              generatedColumn: z.object({
-                generatedExpressionInfo: z.object({
-                  asynchronous: z.boolean().describe(
-                    "Optional. Whether the column generation is done asynchronously.",
-                  ).optional(),
-                  generationExpression: z.string().describe(
-                    "Optional. The generation expression (e.g. AI.EMBED(...)) used to generated the field.",
-                  ).optional(),
-                  stored: z.boolean().describe(
-                    "Optional. Whether the generated column is stored in the table.",
-                  ).optional(),
-                }).describe(
-                  "Definition of the expression used to generate the field.",
-                ).optional(),
-                generatedMode: z.enum([
-                  "GENERATED_MODE_UNSPECIFIED",
-                  "GENERATED_ALWAYS",
-                  "GENERATED_BY_DEFAULT",
-                ]).describe(
-                  "Optional. Dictates when system generated values are used to populate the field.",
-                ).optional(),
-              }).describe(
-                "Optional. Definition of how values are generated for the field. Only valid for top-level schema fields (not nested fields).",
-              ).optional(),
-              maxLength: z.string().describe(
-                'Optional. Maximum length of values of this field for STRINGS or BYTES. If max_length is not specified, no maximum length constraint is imposed on this field. If type = "STRING", then max_length represents the maximum UTF-8 length of strings in this field. If type = "BYTES", then max_length represents the maximum number of bytes in this field. It is invalid to set this field if type ≠ "STRING" and ≠ "BYTES".',
-              ).optional(),
-              mode: z.string().describe(
-                "Optional. The field mode. Possible values include NULLABLE, REQUIRED and REPEATED. The default value is NULLABLE.",
-              ).optional(),
-              name: z.string().describe(
-                "Required. The field name. The name must contain only letters (a-z, A-Z), numbers (0-9), or underscores (_), and must start with a letter or underscore. The maximum length is 300 characters.",
-              ).optional(),
-              policyTags: z.object({
-                names: z.array(z.string()).describe(
-                  'A list of policy tag resource names. For example, "projects/1/locations/eu/taxonomies/2/policyTags/3". At most 1 policy tag is currently allowed.',
-                ).optional(),
-              }).describe(
-                "Optional. The policy tags attached to this field, used for field-level access control. If not set, defaults to empty policy_tags.",
-              ).optional(),
-              precision: z.string().describe(
-                'Optional. Precision (maximum number of total digits in base 10) and scale (maximum number of digits in the fractional part in base 10) constraints for values of this field for NUMERIC or BIGNUMERIC. It is invalid to set precision or scale if type ≠ "NUMERIC" and ≠ "BIGNUMERIC". If precision and scale are not specified, no value range constraint is imposed on this field insofar as values are permitted by the type. Values of this NUMERIC or BIGNUMERIC field must be in this range when: * Precision (P) and scale (S) are specified: [-10P-S + 10-S, 10P-S - 10-S] * Precision (P) is specified but not scale (and thus scale is interpreted to be equal to zero): [-10P + 1, 10P - 1]. Acceptable values for precision and scale if both are specified: * If type = "NUMERIC": 1 ≤ precision - scale ≤ 29 and 0 ≤ scale ≤ 9. * If type = "BIGNUMERIC": 1 ≤ precision - scale ≤ 38 and 0 ≤ scale ≤ 38. Acceptable values for precision if only precision is specified but not scale (and thus scale is interpreted to be equal to zero): * If type = "NUMERIC": 1 ≤ precision ≤ 29. * If type = "BIGNUMERIC": 1 ≤ precision ≤ 38. If scale is specified but not precision, then it is invalid.',
-              ).optional(),
-              rangeElementType: z.object({
-                type: z.string().describe(
-                  "Required. The type of a field element. For more information, see TableFieldSchema.type.",
-                ).optional(),
-              }).describe("Represents the type of a field element.").optional(),
-              roundingMode: z.enum([
-                "ROUNDING_MODE_UNSPECIFIED",
-                "ROUND_HALF_AWAY_FROM_ZERO",
-                "ROUND_HALF_EVEN",
-              ]).describe(
-                "Optional. Specifies the rounding mode to be used when storing values of NUMERIC and BIGNUMERIC type.",
-              ).optional(),
-              scale: z.string().describe(
-                "Optional. See documentation for precision.",
-              ).optional(),
-              timestampPrecision: z.string().describe(
-                "Optional. Precision (maximum number of total digits in base 10) for seconds of TIMESTAMP type. Possible values include: * 6 (Default, for TIMESTAMP type with microsecond precision) * 12 (For TIMESTAMP type with picosecond precision)",
-              ).optional(),
-              type: z.string().describe(
-                "Required. The field data type. Possible values include: * STRING * BYTES * INTEGER (or INT64) * FLOAT (or FLOAT64) * BOOLEAN (or BOOL) * TIMESTAMP * DATE * TIME * DATETIME * GEOGRAPHY * NUMERIC * BIGNUMERIC * JSON * RECORD (or STRUCT) * RANGE Use of RECORD/STRUCT indicates that the field contains a nested schema.",
-              ).optional(),
-            })).describe("Describes the fields in a table.").optional(),
-            foreignTypeInfo: z.object({
-              typeSystem: z.enum(["TYPE_SYSTEM_UNSPECIFIED", "HIVE"]).describe(
-                "Required. Specifies the system which defines the foreign data type.",
-              ).optional(),
-            }).describe(
+            fields: z.unknown().describe("Describes the fields in a table.")
+              .optional(),
+            foreignTypeInfo: z.unknown().describe(
               "Metadata about the foreign data type definition such as the system in which the type is defined.",
             ).optional(),
           }).describe("Schema of a table").optional(),
           sourceFormat: z.string().describe(
             '[Required] The data format. For CSV files, specify "CSV". For Google sheets, specify "GOOGLE_SHEETS". For newline-delimited JSON, specify "NEWLINE_DELIMITED_JSON". For Avro files, specify "AVRO". For Google Cloud Datastore backups, specify "DATASTORE_BACKUP". For Apache Iceberg tables, specify "ICEBERG". For ORC files, specify "ORC". For Parquet files, specify "PARQUET". [Beta] For Google Cloud Bigtable, specify "BIGTABLE".',
           ).optional(),
-          sourceUris: z.array(z.string()).describe(
+          sourceUris: z.array(z.unknown()).describe(
             "[Required] The fully-qualified URIs that point to your data in Google Cloud. For Google Cloud Storage URIs: Each URI can contain one '*' wildcard character and it must come after the 'bucket' name. Size limits related to load jobs apply to external data sources. For Google Cloud Bigtable URIs: Exactly one URI can be specified and it has be a fully specified and valid HTTPS URL for a Google Cloud Bigtable table. For Google Cloud Datastore backups, exactly one URI can be specified. Also, the '*' wildcard character is not allowed.",
           ).optional(),
           timeFormat: z.string().describe(
@@ -1066,7 +832,7 @@ const GlobalArgsSchema = z.object({
           timestampFormat: z.string().describe(
             "Optional. Format used to parse TIMESTAMP values. Supports C-style and SQL-style values.",
           ).optional(),
-          timestampTargetPrecision: z.array(z.number().int()).describe(
+          timestampTargetPrecision: z.array(z.unknown()).describe(
             "Precisions (maximum number of total digits in base 10) for seconds of TIMESTAMP types that are allowed to the destination table for autodetection mode. Available for the formats: CSV, PARQUET, and AVRO. Possible values include: Not Specified, [], or [6]: timestamp(6) for all auto detected TIMESTAMP columns [6, 12]: timestamp(6) for all auto detected TIMESTAMP columns that have less than 6 digits of subseconds. timestamp(12) for all auto detected TIMESTAMP columns that have more than 6 digits of subseconds. [12]: timestamp(12) for all auto detected TIMESTAMP columns. The order of the elements in this array is ignored. Inputs that have higher precision than the highest target precision in this array will be truncated.",
           ).optional(),
         }),
@@ -1274,18 +1040,10 @@ const GlobalArgsSchema = z.object({
           "Output only. Specifies which mode of BI Engine acceleration was performed (if any).",
         ).optional(),
         biEngineReasons: z.array(z.object({
-          code: z.enum([
-            "CODE_UNSPECIFIED",
-            "NO_RESERVATION",
-            "INSUFFICIENT_RESERVATION",
-            "UNSUPPORTED_SQL_TEXT",
-            "INPUT_TOO_LARGE",
-            "OTHER_REASON",
-            "TABLE_EXCLUDED",
-          ]).describe(
+          code: z.unknown().describe(
             "Output only. High-level BI Engine reason for partial or disabled acceleration",
           ).optional(),
-          message: z.string().describe(
+          message: z.unknown().describe(
             "Output only. Free form human-readable reason for partial or disabled acceleration.",
           ).optional(),
         })).describe(
@@ -1451,37 +1209,25 @@ const GlobalArgsSchema = z.object({
       ).optional(),
       genAiStats: z.object({
         errorStats: z.object({
-          errors: z.array(z.string()).describe(
+          errors: z.array(z.unknown()).describe(
             "A list of unique errors at query level (up to 5, truncated to 100 chars)",
           ).optional(),
         }).describe(
           "Provides error statistics for the query job across all AI function calls.",
         ).optional(),
         functionStats: z.array(z.object({
-          costOptimizationStats: z.object({
-            message: z.string().describe(
-              "System generated message to provide insights into cost optimization state.",
-            ).optional(),
-            numCostOptimizedRows: z.string().describe(
-              "Number of rows inferred via cost optimized workflow.",
-            ).optional(),
-          }).describe(
+          costOptimizationStats: z.unknown().describe(
             "Provides cost optimization statistics for a GenAi function call.",
           ).optional(),
-          errorStats: z.object({
-            errors: z.array(z.string()).describe(
-              "A list of unique errors at function level (up to 5, truncated to 100 chars).",
-            ).optional(),
-            numFailedRows: z.string().describe(
-              "Number of failed rows processed by the function",
-            ).optional(),
-          }).describe("Provides error statistics for a GenAi function call.")
+          errorStats: z.unknown().describe(
+            "Provides error statistics for a GenAi function call.",
+          ).optional(),
+          functionName: z.unknown().describe("Name of the function.")
             .optional(),
-          functionName: z.string().describe("Name of the function.").optional(),
-          numProcessedRows: z.string().describe(
+          numProcessedRows: z.unknown().describe(
             "Number of rows processed by this GenAi function. This includes all cost_optimized, llm_inferred and failed_rows.",
           ).optional(),
-          prompt: z.string().describe(
+          prompt: z.unknown().describe(
             "User input prompt of the function (truncated to 20 chars).",
           ).optional(),
         })).describe(
@@ -1539,39 +1285,16 @@ const GlobalArgsSchema = z.object({
       }).describe("Statistics for a LOAD query.").optional(),
       materializedViewStatistics: z.object({
         materializedView: z.array(z.object({
-          chosen: z.boolean().describe(
+          chosen: z.unknown().describe(
             "Whether the materialized view is chosen for the query. A materialized view can be chosen to rewrite multiple parts of the same query. If a materialized view is chosen to rewrite any part of the query, then this field is true, even if the materialized view was not chosen to rewrite others parts.",
           ).optional(),
-          estimatedBytesSaved: z.string().describe(
+          estimatedBytesSaved: z.unknown().describe(
             "If present, specifies a best-effort estimation of the bytes saved by using the materialized view rather than its base tables.",
           ).optional(),
-          rejectedReason: z.enum([
-            "REJECTED_REASON_UNSPECIFIED",
-            "NO_DATA",
-            "COST",
-            "BASE_TABLE_TRUNCATED",
-            "BASE_TABLE_DATA_CHANGE",
-            "BASE_TABLE_PARTITION_EXPIRATION_CHANGE",
-            "BASE_TABLE_EXPIRED_PARTITION",
-            "BASE_TABLE_INCOMPATIBLE_METADATA_CHANGE",
-            "TIME_ZONE",
-            "OUT_OF_TIME_TRAVEL_WINDOW",
-            "BASE_TABLE_FINE_GRAINED_SECURITY_POLICY",
-            "BASE_TABLE_TOO_STALE",
-          ]).describe(
+          rejectedReason: z.unknown().describe(
             "If present, specifies the reason why the materialized view was not chosen for the query.",
           ).optional(),
-          tableReference: z.object({
-            datasetId: z.string().describe(
-              "Required. The ID of the dataset containing this table.",
-            ).optional(),
-            projectId: z.string().describe(
-              "Required. The ID of the project containing this table.",
-            ).optional(),
-            tableId: z.string().describe(
-              "Required. The ID of the table. The ID can contain Unicode characters in category L (letter), M (mark), N (number), Pc (connector, including underscore), Pd (dash), and Zs (space). For more information, see [General Category](https://wikipedia.org/wiki/Unicode_character_property#General_Category). The maximum length is 1,024 characters. Certain operations allow suffixing of the table ID with a partition decorator, such as `sample_table$20190123`.",
-            ).optional(),
-          }).optional(),
+          tableReference: z.unknown().optional(),
         })).describe(
           "Materialized views considered for the query job. Only certain materialized views are used. For a detailed list, see the child message. If many materialized views are considered, then the list might be incomplete.",
         ).optional(),
@@ -1579,45 +1302,22 @@ const GlobalArgsSchema = z.object({
         .optional(),
       metadataCacheStatistics: z.object({
         tableMetadataCacheUsage: z.array(z.object({
-          explanation: z.string().describe(
+          explanation: z.unknown().describe(
             "Free form human-readable reason metadata caching was unused for the job.",
           ).optional(),
-          pruningStats: z.object({
-            postCmetaPruningParallelInputCount: z.string().describe(
-              "The number of parallel inputs matched.",
-            ).optional(),
-            postCmetaPruningPartitionCount: z.string().describe(
-              "The number of partitions matched.",
-            ).optional(),
-            preCmetaPruningParallelInputCount: z.string().describe(
-              "The number of parallel inputs scanned.",
-            ).optional(),
-          }).describe("The column metadata index pruning statistics.")
-            .optional(),
-          staleness: z.string().describe(
+          pruningStats: z.unknown().describe(
+            "The column metadata index pruning statistics.",
+          ).optional(),
+          staleness: z.unknown().describe(
             "Duration since last refresh as of this job for managed tables (indicates metadata cache staleness as seen by this job).",
           ).optional(),
-          tableReference: z.object({
-            datasetId: z.string().describe(
-              "Required. The ID of the dataset containing this table.",
-            ).optional(),
-            projectId: z.string().describe(
-              "Required. The ID of the project containing this table.",
-            ).optional(),
-            tableId: z.string().describe(
-              "Required. The ID of the table. The ID can contain Unicode characters in category L (letter), M (mark), N (number), Pc (connector, including underscore), Pd (dash), and Zs (space). For more information, see [General Category](https://wikipedia.org/wiki/Unicode_character_property#General_Category). The maximum length is 1,024 characters. Certain operations allow suffixing of the table ID with a partition decorator, such as `sample_table$20190123`.",
-            ).optional(),
-          }).optional(),
-          tableType: z.string().describe(
+          tableReference: z.unknown().optional(),
+          tableType: z.unknown().describe(
             "[Table type](https://cloud.google.com/bigquery/docs/reference/rest/v2/tables#Table.FIELDS.type).",
           ).optional(),
-          unusedReason: z.enum([
-            "UNUSED_REASON_UNSPECIFIED",
-            "EXCEEDED_MAX_STALENESS",
-            "METADATA_CACHING_NOT_ENABLED",
-            "OTHER_REASON",
-          ]).describe("Reason for not using metadata caching for the table.")
-            .optional(),
+          unusedReason: z.unknown().describe(
+            "Reason for not using metadata caching for the table.",
+          ).optional(),
         })).describe(
           "Set for the Metadata caching eligible tables referenced in the query.",
         ).optional(),
@@ -1625,1243 +1325,54 @@ const GlobalArgsSchema = z.object({
         .optional(),
       mlStatistics: z.object({
         hparamTrials: z.array(z.object({
-          endTimeMs: z.string().describe("Ending time of the trial.")
+          endTimeMs: z.unknown().describe("Ending time of the trial.")
             .optional(),
-          errorMessage: z.string().describe(
+          errorMessage: z.unknown().describe(
             "Error message for FAILED and INFEASIBLE trial.",
           ).optional(),
-          evalLoss: z.number().describe(
+          evalLoss: z.unknown().describe(
             "Loss computed on the eval data at the end of trial.",
           ).optional(),
-          evaluationMetrics: z.object({
-            arimaForecastingMetrics: z.object({
-              arimaFittingMetrics: z.array(z.object({
-                aic: z.number().describe("AIC.").optional(),
-                logLikelihood: z.number().describe("Log-likelihood.")
-                  .optional(),
-                variance: z.number().describe("Variance.").optional(),
-              })).describe("Arima model fitting metrics.").optional(),
-              arimaSingleModelForecastingMetrics: z.array(z.object({
-                arimaFittingMetrics: z.object({
-                  aic: z.number().describe("AIC.").optional(),
-                  logLikelihood: z.number().describe("Log-likelihood.")
-                    .optional(),
-                  variance: z.number().describe("Variance.").optional(),
-                }).describe("ARIMA model fitting metrics.").optional(),
-                hasDrift: z.boolean().describe(
-                  "Is arima model fitted with drift or not. It is always false when d is not 1.",
-                ).optional(),
-                hasHolidayEffect: z.boolean().describe(
-                  "If true, holiday_effect is a part of time series decomposition result.",
-                ).optional(),
-                hasSpikesAndDips: z.boolean().describe(
-                  "If true, spikes_and_dips is a part of time series decomposition result.",
-                ).optional(),
-                hasStepChanges: z.boolean().describe(
-                  "If true, step_changes is a part of time series decomposition result.",
-                ).optional(),
-                nonSeasonalOrder: z.object({
-                  d: z.string().describe("Order of the differencing part.")
-                    .optional(),
-                  p: z.string().describe("Order of the autoregressive part.")
-                    .optional(),
-                  q: z.string().describe("Order of the moving-average part.")
-                    .optional(),
-                }).describe(
-                  "Arima order, can be used for both non-seasonal and seasonal parts.",
-                ).optional(),
-                seasonalPeriods: z.array(
-                  z.enum([
-                    "SEASONAL_PERIOD_TYPE_UNSPECIFIED",
-                    "NO_SEASONALITY",
-                    "DAILY",
-                    "WEEKLY",
-                    "MONTHLY",
-                    "QUARTERLY",
-                    "YEARLY",
-                    "HOURLY",
-                  ]),
-                ).describe(
-                  "Seasonal periods. Repeated because multiple periods are supported for one time series.",
-                ).optional(),
-                timeSeriesId: z.string().describe(
-                  "The time_series_id value for this time series. It will be one of the unique values from the time_series_id_column specified during ARIMA model training. Only present when time_series_id_column training option was used.",
-                ).optional(),
-                timeSeriesIds: z.array(z.string()).describe(
-                  "The tuple of time_series_ids identifying this time series. It will be one of the unique tuples of values present in the time_series_id_columns specified during ARIMA model training. Only present when time_series_id_columns training option was used and the order of values here are same as the order of time_series_id_columns.",
-                ).optional(),
-              })).describe(
-                "Repeated as there can be many metric sets (one for each model) in auto-arima and the large-scale case.",
-              ).optional(),
-              hasDrift: z.array(z.boolean()).describe(
-                "Whether Arima model fitted with drift or not. It is always false when d is not 1.",
-              ).optional(),
-              nonSeasonalOrder: z.array(z.object({
-                d: z.string().describe("Order of the differencing part.")
-                  .optional(),
-                p: z.string().describe("Order of the autoregressive part.")
-                  .optional(),
-                q: z.string().describe("Order of the moving-average part.")
-                  .optional(),
-              })).describe("Non-seasonal order.").optional(),
-              seasonalPeriods: z.array(
-                z.enum([
-                  "SEASONAL_PERIOD_TYPE_UNSPECIFIED",
-                  "NO_SEASONALITY",
-                  "DAILY",
-                  "WEEKLY",
-                  "MONTHLY",
-                  "QUARTERLY",
-                  "YEARLY",
-                  "HOURLY",
-                ]),
-              ).describe(
-                "Seasonal periods. Repeated because multiple periods are supported for one time series.",
-              ).optional(),
-              timeSeriesId: z.array(z.string()).describe(
-                "Id to differentiate different time series for the large-scale case.",
-              ).optional(),
-            }).describe(
-              "Model evaluation metrics for ARIMA forecasting models.",
-            ).optional(),
-            binaryClassificationMetrics: z.object({
-              aggregateClassificationMetrics: z.object({
-                accuracy: z.number().describe(
-                  "Accuracy is the fraction of predictions given the correct label. For multiclass this is a micro-averaged metric.",
-                ).optional(),
-                f1Score: z.number().describe(
-                  "The F1 score is an average of recall and precision. For multiclass this is a macro-averaged metric.",
-                ).optional(),
-                logLoss: z.number().describe(
-                  "Logarithmic Loss. For multiclass this is a macro-averaged metric.",
-                ).optional(),
-                precision: z.number().describe(
-                  "Precision is the fraction of actual positive predictions that had positive actual labels. For multiclass this is a macro-averaged metric treating each class as a binary classifier.",
-                ).optional(),
-                recall: z.number().describe(
-                  "Recall is the fraction of actual positive labels that were given a positive prediction. For multiclass this is a macro-averaged metric.",
-                ).optional(),
-                rocAuc: z.number().describe(
-                  "Area Under a ROC Curve. For multiclass this is a macro-averaged metric.",
-                ).optional(),
-                threshold: z.number().describe(
-                  "Threshold at which the metrics are computed. For binary classification models this is the positive class threshold. For multi-class classification models this is the confidence threshold.",
-                ).optional(),
-              }).describe(
-                "Aggregate metrics for classification/classifier models. For multi-class models, the metrics are either macro-averaged or micro-averaged. When macro-averaged, the metrics are calculated for each label and then an unweighted average is taken of those values. When micro-averaged, the metric is calculated globally by counting the total number of correctly predicted rows.",
-              ).optional(),
-              binaryConfusionMatrixList: z.array(z.object({
-                accuracy: z.number().describe(
-                  "The fraction of predictions given the correct label.",
-                ).optional(),
-                f1Score: z.number().describe(
-                  "The equally weighted average of recall and precision.",
-                ).optional(),
-                falseNegatives: z.string().describe(
-                  "Number of false samples predicted as false.",
-                ).optional(),
-                falsePositives: z.string().describe(
-                  "Number of false samples predicted as true.",
-                ).optional(),
-                positiveClassThreshold: z.number().describe(
-                  "Threshold value used when computing each of the following metric.",
-                ).optional(),
-                precision: z.number().describe(
-                  "The fraction of actual positive predictions that had positive actual labels.",
-                ).optional(),
-                recall: z.number().describe(
-                  "The fraction of actual positive labels that were given a positive prediction.",
-                ).optional(),
-                trueNegatives: z.string().describe(
-                  "Number of true samples predicted as false.",
-                ).optional(),
-                truePositives: z.string().describe(
-                  "Number of true samples predicted as true.",
-                ).optional(),
-              })).describe("Binary confusion matrix at multiple thresholds.")
-                .optional(),
-              negativeLabel: z.string().describe(
-                "Label representing the negative class.",
-              ).optional(),
-              positiveLabel: z.string().describe(
-                "Label representing the positive class.",
-              ).optional(),
-            }).describe(
-              "Evaluation metrics for binary classification/classifier models.",
-            ).optional(),
-            clusteringMetrics: z.object({
-              clusters: z.array(z.object({
-                centroidId: z.string().describe("Centroid id.").optional(),
-                count: z.string().describe(
-                  "Count of training data rows that were assigned to this cluster.",
-                ).optional(),
-                featureValues: z.array(z.object({
-                  categoricalValue: z.object({
-                    categoryCounts: z.array(z.object({
-                      category: z.string().describe("The name of category.")
-                        .optional(),
-                      count: z.string().describe(
-                        "The count of training samples matching the category within the cluster.",
-                      ).optional(),
-                    })).describe(
-                      'Counts of all categories for the categorical feature. If there are more than ten categories, we return top ten (by count) and return one more CategoryCount with category "_OTHER_" and count as aggregate counts of remaining categories.',
-                    ).optional(),
-                  }).describe("Representative value of a categorical feature.")
-                    .optional(),
-                  featureColumn: z.string().describe("The feature column name.")
-                    .optional(),
-                  numericalValue: z.number().describe(
-                    "The numerical feature value. This is the centroid value for this feature.",
-                  ).optional(),
-                })).describe(
-                  "Values of highly variant features for this cluster.",
-                ).optional(),
-              })).describe("Information for all clusters.").optional(),
-              daviesBouldinIndex: z.number().describe("Davies-Bouldin index.")
-                .optional(),
-              meanSquaredDistance: z.number().describe(
-                "Mean of squared distances between each sample to its cluster centroid.",
-              ).optional(),
-            }).describe("Evaluation metrics for clustering models.").optional(),
-            dimensionalityReductionMetrics: z.object({
-              totalExplainedVarianceRatio: z.number().describe(
-                "Total percentage of variance explained by the selected principal components.",
-              ).optional(),
-            }).describe(
-              "Model evaluation metrics for dimensionality reduction models.",
-            ).optional(),
-            multiClassClassificationMetrics: z.object({
-              aggregateClassificationMetrics: z.object({
-                accuracy: z.number().describe(
-                  "Accuracy is the fraction of predictions given the correct label. For multiclass this is a micro-averaged metric.",
-                ).optional(),
-                f1Score: z.number().describe(
-                  "The F1 score is an average of recall and precision. For multiclass this is a macro-averaged metric.",
-                ).optional(),
-                logLoss: z.number().describe(
-                  "Logarithmic Loss. For multiclass this is a macro-averaged metric.",
-                ).optional(),
-                precision: z.number().describe(
-                  "Precision is the fraction of actual positive predictions that had positive actual labels. For multiclass this is a macro-averaged metric treating each class as a binary classifier.",
-                ).optional(),
-                recall: z.number().describe(
-                  "Recall is the fraction of actual positive labels that were given a positive prediction. For multiclass this is a macro-averaged metric.",
-                ).optional(),
-                rocAuc: z.number().describe(
-                  "Area Under a ROC Curve. For multiclass this is a macro-averaged metric.",
-                ).optional(),
-                threshold: z.number().describe(
-                  "Threshold at which the metrics are computed. For binary classification models this is the positive class threshold. For multi-class classification models this is the confidence threshold.",
-                ).optional(),
-              }).describe(
-                "Aggregate metrics for classification/classifier models. For multi-class models, the metrics are either macro-averaged or micro-averaged. When macro-averaged, the metrics are calculated for each label and then an unweighted average is taken of those values. When micro-averaged, the metric is calculated globally by counting the total number of correctly predicted rows.",
-              ).optional(),
-              confusionMatrixList: z.array(z.object({
-                confidenceThreshold: z.number().describe(
-                  "Confidence threshold used when computing the entries of the confusion matrix.",
-                ).optional(),
-                rows: z.array(z.object({
-                  actualLabel: z.string().describe(
-                    "The original label of this row.",
-                  ).optional(),
-                  entries: z.array(z.object({
-                    itemCount: z.string().describe(
-                      "Number of items being predicted as this label.",
-                    ).optional(),
-                    predictedLabel: z.string().describe(
-                      "The predicted label. For confidence_threshold > 0, we will also add an entry indicating the number of items under the confidence threshold.",
-                    ).optional(),
-                  })).describe("Info describing predicted label distribution.")
-                    .optional(),
-                })).describe("One row per actual label.").optional(),
-              })).describe("Confusion matrix at different thresholds.")
-                .optional(),
-            }).describe(
-              "Evaluation metrics for multi-class classification/classifier models.",
-            ).optional(),
-            rankingMetrics: z.object({
-              averageRank: z.number().describe(
-                "Determines the goodness of a ranking by computing the percentile rank from the predicted confidence and dividing it by the original rank.",
-              ).optional(),
-              meanAveragePrecision: z.number().describe(
-                "Calculates a precision per user for all the items by ranking them and then averages all the precisions across all the users.",
-              ).optional(),
-              meanSquaredError: z.number().describe(
-                "Similar to the mean squared error computed in regression and explicit recommendation models except instead of computing the rating directly, the output from evaluate is computed against a preference which is 1 or 0 depending on if the rating exists or not.",
-              ).optional(),
-              normalizedDiscountedCumulativeGain: z.number().describe(
-                "A metric to determine the goodness of a ranking calculated from the predicted confidence by comparing it to an ideal rank measured by the original ratings.",
-              ).optional(),
-            }).describe(
-              "Evaluation metrics used by weighted-ALS models specified by feedback_type=implicit.",
-            ).optional(),
-            regressionMetrics: z.object({
-              meanAbsoluteError: z.number().describe("Mean absolute error.")
-                .optional(),
-              meanSquaredError: z.number().describe("Mean squared error.")
-                .optional(),
-              meanSquaredLogError: z.number().describe(
-                "Mean squared log error.",
-              ).optional(),
-              medianAbsoluteError: z.number().describe("Median absolute error.")
-                .optional(),
-              rSquared: z.number().describe(
-                "R^2 score. This corresponds to r2_score in ML.EVALUATE.",
-              ).optional(),
-            }).describe(
-              "Evaluation metrics for regression and explicit feedback type matrix factorization models.",
-            ).optional(),
-          }).describe(
+          evaluationMetrics: z.unknown().describe(
             "Evaluation metrics of a model. These are either computed on all training data or just the eval data based on whether eval data was used during training. These are not present for imported models.",
           ).optional(),
-          hparamTuningEvaluationMetrics: z.object({
-            arimaForecastingMetrics: z.object({
-              arimaFittingMetrics: z.array(z.object({
-                aic: z.number().describe("AIC.").optional(),
-                logLikelihood: z.number().describe("Log-likelihood.")
-                  .optional(),
-                variance: z.number().describe("Variance.").optional(),
-              })).describe("Arima model fitting metrics.").optional(),
-              arimaSingleModelForecastingMetrics: z.array(z.object({
-                arimaFittingMetrics: z.object({
-                  aic: z.number().describe("AIC.").optional(),
-                  logLikelihood: z.number().describe("Log-likelihood.")
-                    .optional(),
-                  variance: z.number().describe("Variance.").optional(),
-                }).describe("ARIMA model fitting metrics.").optional(),
-                hasDrift: z.boolean().describe(
-                  "Is arima model fitted with drift or not. It is always false when d is not 1.",
-                ).optional(),
-                hasHolidayEffect: z.boolean().describe(
-                  "If true, holiday_effect is a part of time series decomposition result.",
-                ).optional(),
-                hasSpikesAndDips: z.boolean().describe(
-                  "If true, spikes_and_dips is a part of time series decomposition result.",
-                ).optional(),
-                hasStepChanges: z.boolean().describe(
-                  "If true, step_changes is a part of time series decomposition result.",
-                ).optional(),
-                nonSeasonalOrder: z.object({
-                  d: z.string().describe("Order of the differencing part.")
-                    .optional(),
-                  p: z.string().describe("Order of the autoregressive part.")
-                    .optional(),
-                  q: z.string().describe("Order of the moving-average part.")
-                    .optional(),
-                }).describe(
-                  "Arima order, can be used for both non-seasonal and seasonal parts.",
-                ).optional(),
-                seasonalPeriods: z.array(
-                  z.enum([
-                    "SEASONAL_PERIOD_TYPE_UNSPECIFIED",
-                    "NO_SEASONALITY",
-                    "DAILY",
-                    "WEEKLY",
-                    "MONTHLY",
-                    "QUARTERLY",
-                    "YEARLY",
-                    "HOURLY",
-                  ]),
-                ).describe(
-                  "Seasonal periods. Repeated because multiple periods are supported for one time series.",
-                ).optional(),
-                timeSeriesId: z.string().describe(
-                  "The time_series_id value for this time series. It will be one of the unique values from the time_series_id_column specified during ARIMA model training. Only present when time_series_id_column training option was used.",
-                ).optional(),
-                timeSeriesIds: z.array(z.string()).describe(
-                  "The tuple of time_series_ids identifying this time series. It will be one of the unique tuples of values present in the time_series_id_columns specified during ARIMA model training. Only present when time_series_id_columns training option was used and the order of values here are same as the order of time_series_id_columns.",
-                ).optional(),
-              })).describe(
-                "Repeated as there can be many metric sets (one for each model) in auto-arima and the large-scale case.",
-              ).optional(),
-              hasDrift: z.array(z.boolean()).describe(
-                "Whether Arima model fitted with drift or not. It is always false when d is not 1.",
-              ).optional(),
-              nonSeasonalOrder: z.array(z.object({
-                d: z.string().describe("Order of the differencing part.")
-                  .optional(),
-                p: z.string().describe("Order of the autoregressive part.")
-                  .optional(),
-                q: z.string().describe("Order of the moving-average part.")
-                  .optional(),
-              })).describe("Non-seasonal order.").optional(),
-              seasonalPeriods: z.array(
-                z.enum([
-                  "SEASONAL_PERIOD_TYPE_UNSPECIFIED",
-                  "NO_SEASONALITY",
-                  "DAILY",
-                  "WEEKLY",
-                  "MONTHLY",
-                  "QUARTERLY",
-                  "YEARLY",
-                  "HOURLY",
-                ]),
-              ).describe(
-                "Seasonal periods. Repeated because multiple periods are supported for one time series.",
-              ).optional(),
-              timeSeriesId: z.array(z.string()).describe(
-                "Id to differentiate different time series for the large-scale case.",
-              ).optional(),
-            }).describe(
-              "Model evaluation metrics for ARIMA forecasting models.",
-            ).optional(),
-            binaryClassificationMetrics: z.object({
-              aggregateClassificationMetrics: z.object({
-                accuracy: z.number().describe(
-                  "Accuracy is the fraction of predictions given the correct label. For multiclass this is a micro-averaged metric.",
-                ).optional(),
-                f1Score: z.number().describe(
-                  "The F1 score is an average of recall and precision. For multiclass this is a macro-averaged metric.",
-                ).optional(),
-                logLoss: z.number().describe(
-                  "Logarithmic Loss. For multiclass this is a macro-averaged metric.",
-                ).optional(),
-                precision: z.number().describe(
-                  "Precision is the fraction of actual positive predictions that had positive actual labels. For multiclass this is a macro-averaged metric treating each class as a binary classifier.",
-                ).optional(),
-                recall: z.number().describe(
-                  "Recall is the fraction of actual positive labels that were given a positive prediction. For multiclass this is a macro-averaged metric.",
-                ).optional(),
-                rocAuc: z.number().describe(
-                  "Area Under a ROC Curve. For multiclass this is a macro-averaged metric.",
-                ).optional(),
-                threshold: z.number().describe(
-                  "Threshold at which the metrics are computed. For binary classification models this is the positive class threshold. For multi-class classification models this is the confidence threshold.",
-                ).optional(),
-              }).describe(
-                "Aggregate metrics for classification/classifier models. For multi-class models, the metrics are either macro-averaged or micro-averaged. When macro-averaged, the metrics are calculated for each label and then an unweighted average is taken of those values. When micro-averaged, the metric is calculated globally by counting the total number of correctly predicted rows.",
-              ).optional(),
-              binaryConfusionMatrixList: z.array(z.object({
-                accuracy: z.number().describe(
-                  "The fraction of predictions given the correct label.",
-                ).optional(),
-                f1Score: z.number().describe(
-                  "The equally weighted average of recall and precision.",
-                ).optional(),
-                falseNegatives: z.string().describe(
-                  "Number of false samples predicted as false.",
-                ).optional(),
-                falsePositives: z.string().describe(
-                  "Number of false samples predicted as true.",
-                ).optional(),
-                positiveClassThreshold: z.number().describe(
-                  "Threshold value used when computing each of the following metric.",
-                ).optional(),
-                precision: z.number().describe(
-                  "The fraction of actual positive predictions that had positive actual labels.",
-                ).optional(),
-                recall: z.number().describe(
-                  "The fraction of actual positive labels that were given a positive prediction.",
-                ).optional(),
-                trueNegatives: z.string().describe(
-                  "Number of true samples predicted as false.",
-                ).optional(),
-                truePositives: z.string().describe(
-                  "Number of true samples predicted as true.",
-                ).optional(),
-              })).describe("Binary confusion matrix at multiple thresholds.")
-                .optional(),
-              negativeLabel: z.string().describe(
-                "Label representing the negative class.",
-              ).optional(),
-              positiveLabel: z.string().describe(
-                "Label representing the positive class.",
-              ).optional(),
-            }).describe(
-              "Evaluation metrics for binary classification/classifier models.",
-            ).optional(),
-            clusteringMetrics: z.object({
-              clusters: z.array(z.object({
-                centroidId: z.string().describe("Centroid id.").optional(),
-                count: z.string().describe(
-                  "Count of training data rows that were assigned to this cluster.",
-                ).optional(),
-                featureValues: z.array(z.object({
-                  categoricalValue: z.object({
-                    categoryCounts: z.array(z.object({
-                      category: z.string().describe("The name of category.")
-                        .optional(),
-                      count: z.string().describe(
-                        "The count of training samples matching the category within the cluster.",
-                      ).optional(),
-                    })).describe(
-                      'Counts of all categories for the categorical feature. If there are more than ten categories, we return top ten (by count) and return one more CategoryCount with category "_OTHER_" and count as aggregate counts of remaining categories.',
-                    ).optional(),
-                  }).describe("Representative value of a categorical feature.")
-                    .optional(),
-                  featureColumn: z.string().describe("The feature column name.")
-                    .optional(),
-                  numericalValue: z.number().describe(
-                    "The numerical feature value. This is the centroid value for this feature.",
-                  ).optional(),
-                })).describe(
-                  "Values of highly variant features for this cluster.",
-                ).optional(),
-              })).describe("Information for all clusters.").optional(),
-              daviesBouldinIndex: z.number().describe("Davies-Bouldin index.")
-                .optional(),
-              meanSquaredDistance: z.number().describe(
-                "Mean of squared distances between each sample to its cluster centroid.",
-              ).optional(),
-            }).describe("Evaluation metrics for clustering models.").optional(),
-            dimensionalityReductionMetrics: z.object({
-              totalExplainedVarianceRatio: z.number().describe(
-                "Total percentage of variance explained by the selected principal components.",
-              ).optional(),
-            }).describe(
-              "Model evaluation metrics for dimensionality reduction models.",
-            ).optional(),
-            multiClassClassificationMetrics: z.object({
-              aggregateClassificationMetrics: z.object({
-                accuracy: z.number().describe(
-                  "Accuracy is the fraction of predictions given the correct label. For multiclass this is a micro-averaged metric.",
-                ).optional(),
-                f1Score: z.number().describe(
-                  "The F1 score is an average of recall and precision. For multiclass this is a macro-averaged metric.",
-                ).optional(),
-                logLoss: z.number().describe(
-                  "Logarithmic Loss. For multiclass this is a macro-averaged metric.",
-                ).optional(),
-                precision: z.number().describe(
-                  "Precision is the fraction of actual positive predictions that had positive actual labels. For multiclass this is a macro-averaged metric treating each class as a binary classifier.",
-                ).optional(),
-                recall: z.number().describe(
-                  "Recall is the fraction of actual positive labels that were given a positive prediction. For multiclass this is a macro-averaged metric.",
-                ).optional(),
-                rocAuc: z.number().describe(
-                  "Area Under a ROC Curve. For multiclass this is a macro-averaged metric.",
-                ).optional(),
-                threshold: z.number().describe(
-                  "Threshold at which the metrics are computed. For binary classification models this is the positive class threshold. For multi-class classification models this is the confidence threshold.",
-                ).optional(),
-              }).describe(
-                "Aggregate metrics for classification/classifier models. For multi-class models, the metrics are either macro-averaged or micro-averaged. When macro-averaged, the metrics are calculated for each label and then an unweighted average is taken of those values. When micro-averaged, the metric is calculated globally by counting the total number of correctly predicted rows.",
-              ).optional(),
-              confusionMatrixList: z.array(z.object({
-                confidenceThreshold: z.number().describe(
-                  "Confidence threshold used when computing the entries of the confusion matrix.",
-                ).optional(),
-                rows: z.array(z.object({
-                  actualLabel: z.string().describe(
-                    "The original label of this row.",
-                  ).optional(),
-                  entries: z.array(z.object({
-                    itemCount: z.string().describe(
-                      "Number of items being predicted as this label.",
-                    ).optional(),
-                    predictedLabel: z.string().describe(
-                      "The predicted label. For confidence_threshold > 0, we will also add an entry indicating the number of items under the confidence threshold.",
-                    ).optional(),
-                  })).describe("Info describing predicted label distribution.")
-                    .optional(),
-                })).describe("One row per actual label.").optional(),
-              })).describe("Confusion matrix at different thresholds.")
-                .optional(),
-            }).describe(
-              "Evaluation metrics for multi-class classification/classifier models.",
-            ).optional(),
-            rankingMetrics: z.object({
-              averageRank: z.number().describe(
-                "Determines the goodness of a ranking by computing the percentile rank from the predicted confidence and dividing it by the original rank.",
-              ).optional(),
-              meanAveragePrecision: z.number().describe(
-                "Calculates a precision per user for all the items by ranking them and then averages all the precisions across all the users.",
-              ).optional(),
-              meanSquaredError: z.number().describe(
-                "Similar to the mean squared error computed in regression and explicit recommendation models except instead of computing the rating directly, the output from evaluate is computed against a preference which is 1 or 0 depending on if the rating exists or not.",
-              ).optional(),
-              normalizedDiscountedCumulativeGain: z.number().describe(
-                "A metric to determine the goodness of a ranking calculated from the predicted confidence by comparing it to an ideal rank measured by the original ratings.",
-              ).optional(),
-            }).describe(
-              "Evaluation metrics used by weighted-ALS models specified by feedback_type=implicit.",
-            ).optional(),
-            regressionMetrics: z.object({
-              meanAbsoluteError: z.number().describe("Mean absolute error.")
-                .optional(),
-              meanSquaredError: z.number().describe("Mean squared error.")
-                .optional(),
-              meanSquaredLogError: z.number().describe(
-                "Mean squared log error.",
-              ).optional(),
-              medianAbsoluteError: z.number().describe("Median absolute error.")
-                .optional(),
-              rSquared: z.number().describe(
-                "R^2 score. This corresponds to r2_score in ML.EVALUATE.",
-              ).optional(),
-            }).describe(
-              "Evaluation metrics for regression and explicit feedback type matrix factorization models.",
-            ).optional(),
-          }).describe(
+          hparamTuningEvaluationMetrics: z.unknown().describe(
             "Evaluation metrics of a model. These are either computed on all training data or just the eval data based on whether eval data was used during training. These are not present for imported models.",
           ).optional(),
-          hparams: z.object({
-            activationFn: z.string().describe(
-              "Activation function of the neural nets.",
-            ).optional(),
-            adjustStepChanges: z.boolean().describe(
-              "If true, detect step changes and make data adjustment in the input time series.",
-            ).optional(),
-            approxGlobalFeatureContrib: z.boolean().describe(
-              "Whether to use approximate feature contribution method in XGBoost model explanation for global explain.",
-            ).optional(),
-            autoArima: z.boolean().describe(
-              "Whether to enable auto ARIMA or not.",
-            ).optional(),
-            autoArimaMaxOrder: z.string().describe(
-              "The max value of the sum of non-seasonal p and q.",
-            ).optional(),
-            autoArimaMinOrder: z.string().describe(
-              "The min value of the sum of non-seasonal p and q.",
-            ).optional(),
-            autoClassWeights: z.boolean().describe(
-              "Whether to calculate class weights automatically based on the popularity of each label.",
-            ).optional(),
-            batchSize: z.string().describe("Batch size for dnn models.")
-              .optional(),
-            boosterType: z.enum(["BOOSTER_TYPE_UNSPECIFIED", "GBTREE", "DART"])
-              .describe("Booster type for boosted tree models.").optional(),
-            budgetHours: z.number().describe(
-              "Budget in hours for AutoML training.",
-            ).optional(),
-            calculatePValues: z.boolean().describe(
-              "Whether or not p-value test should be computed for this model. Only available for linear and logistic regression models.",
-            ).optional(),
-            categoryEncodingMethod: z.enum([
-              "ENCODING_METHOD_UNSPECIFIED",
-              "ONE_HOT_ENCODING",
-              "LABEL_ENCODING",
-              "DUMMY_ENCODING",
-            ]).describe("Categorical feature encoding method.").optional(),
-            cleanSpikesAndDips: z.boolean().describe(
-              "If true, clean spikes and dips in the input time series.",
-            ).optional(),
-            colorSpace: z.enum([
-              "COLOR_SPACE_UNSPECIFIED",
-              "RGB",
-              "HSV",
-              "YIQ",
-              "YUV",
-              "GRAYSCALE",
-            ]).describe(
-              "Enums for color space, used for processing images in Object Table. See more details at https://www.tensorflow.org/io/tutorials/colorspace.",
-            ).optional(),
-            colsampleBylevel: z.number().describe(
-              "Subsample ratio of columns for each level for boosted tree models.",
-            ).optional(),
-            colsampleBynode: z.number().describe(
-              "Subsample ratio of columns for each node(split) for boosted tree models.",
-            ).optional(),
-            colsampleBytree: z.number().describe(
-              "Subsample ratio of columns when constructing each tree for boosted tree models.",
-            ).optional(),
-            contributionMetric: z.string().describe(
-              "The contribution metric. Applies to contribution analysis models. Allowed formats supported are for summable and summable ratio contribution metrics. These include expressions such as `SUM(x)` or `SUM(x)/SUM(y)`, where x and y are column names from the base table.",
-            ).optional(),
-            dartNormalizeType: z.enum([
-              "DART_NORMALIZE_TYPE_UNSPECIFIED",
-              "TREE",
-              "FOREST",
-            ]).describe(
-              "Type of normalization algorithm for boosted tree models using dart booster.",
-            ).optional(),
-            dataFrequency: z.enum([
-              "DATA_FREQUENCY_UNSPECIFIED",
-              "AUTO_FREQUENCY",
-              "YEARLY",
-              "QUARTERLY",
-              "MONTHLY",
-              "WEEKLY",
-              "DAILY",
-              "HOURLY",
-              "PER_MINUTE",
-            ]).describe("The data frequency of a time series.").optional(),
-            dataSplitColumn: z.string().describe(
-              "The column to split data with. This column won't be used as a feature. 1. When data_split_method is CUSTOM, the corresponding column should be boolean. The rows with true value tag are eval data, and the false are training data. 2. When data_split_method is SEQ, the first DATA_SPLIT_EVAL_FRACTION rows (from smallest to largest) in the corresponding column are used as training data, and the rest are eval data. It respects the order in Orderable data types: https://cloud.google.com/bigquery/docs/reference/standard-sql/data-types#data_type_properties",
-            ).optional(),
-            dataSplitEvalFraction: z.number().describe(
-              "The fraction of evaluation data over the whole input data. The rest of data will be used as training data. The format should be double. Accurate to two decimal places. Default value is 0.2.",
-            ).optional(),
-            dataSplitMethod: z.enum([
-              "DATA_SPLIT_METHOD_UNSPECIFIED",
-              "RANDOM",
-              "CUSTOM",
-              "SEQUENTIAL",
-              "NO_SPLIT",
-              "AUTO_SPLIT",
-            ]).describe(
-              "The data split type for training and evaluation, e.g. RANDOM.",
-            ).optional(),
-            decomposeTimeSeries: z.boolean().describe(
-              "If true, perform decompose time series and save the results.",
-            ).optional(),
-            dimensionIdColumns: z.array(z.string()).describe(
-              "Optional. Names of the columns to slice on. Applies to contribution analysis models.",
-            ).optional(),
-            distanceType: z.enum([
-              "DISTANCE_TYPE_UNSPECIFIED",
-              "EUCLIDEAN",
-              "COSINE",
-            ]).describe("Distance type for clustering models.").optional(),
-            dropout: z.number().describe("Dropout probability for dnn models.")
-              .optional(),
-            earlyStop: z.boolean().describe(
-              "Whether to stop early when the loss doesn't improve significantly any more (compared to min_relative_progress). Used only for iterative training algorithms.",
-            ).optional(),
-            enableGlobalExplain: z.boolean().describe(
-              "If true, enable global explanation during training.",
-            ).optional(),
-            endpointIdleTtl: z.string().describe(
-              "The idle TTL of the endpoint before the resources get destroyed. The default value is 6.5 hours.",
-            ).optional(),
-            feedbackType: z.enum([
-              "FEEDBACK_TYPE_UNSPECIFIED",
-              "IMPLICIT",
-              "EXPLICIT",
-            ]).describe(
-              "Feedback type that specifies which algorithm to run for matrix factorization.",
-            ).optional(),
-            fitIntercept: z.boolean().describe(
-              "Whether the model should include intercept during model training.",
-            ).optional(),
-            forecastLimitLowerBound: z.number().describe(
-              "The forecast limit lower bound that was used during ARIMA model training with limits. To see more details of the algorithm: https://otexts.com/fpp2/limits.html",
-            ).optional(),
-            forecastLimitUpperBound: z.number().describe(
-              "The forecast limit upper bound that was used during ARIMA model training with limits.",
-            ).optional(),
-            hiddenUnits: z.array(z.string()).describe(
-              "Hidden units for dnn models.",
-            ).optional(),
-            holidayRegion: z.enum([
-              "HOLIDAY_REGION_UNSPECIFIED",
-              "GLOBAL",
-              "NA",
-              "JAPAC",
-              "EMEA",
-              "LAC",
-              "AE",
-              "AR",
-              "AT",
-              "AU",
-              "BE",
-              "BR",
-              "CA",
-              "CH",
-              "CL",
-              "CN",
-              "CO",
-              "CS",
-              "CZ",
-              "DE",
-              "DK",
-              "DZ",
-              "EC",
-              "EE",
-              "EG",
-              "ES",
-              "FI",
-              "FR",
-              "GB",
-              "GR",
-              "HK",
-              "HU",
-              "ID",
-              "IE",
-              "IL",
-              "IN",
-              "IR",
-              "IT",
-              "JP",
-              "KR",
-              "LV",
-              "MA",
-              "MX",
-              "MY",
-              "NG",
-              "NL",
-              "NO",
-              "NZ",
-              "PE",
-              "PH",
-              "PK",
-              "PL",
-              "PT",
-              "RO",
-              "RS",
-              "RU",
-              "SA",
-              "SE",
-              "SG",
-              "SI",
-              "SK",
-              "TH",
-              "TR",
-              "TW",
-              "UA",
-              "US",
-              "VE",
-              "VN",
-              "ZA",
-            ]).describe(
-              "The geographical region based on which the holidays are considered in time series modeling. If a valid value is specified, then holiday effects modeling is enabled.",
-            ).optional(),
-            holidayRegions: z.array(
-              z.enum([
-                "HOLIDAY_REGION_UNSPECIFIED",
-                "GLOBAL",
-                "NA",
-                "JAPAC",
-                "EMEA",
-                "LAC",
-                "AE",
-                "AR",
-                "AT",
-                "AU",
-                "BE",
-                "BR",
-                "CA",
-                "CH",
-                "CL",
-                "CN",
-                "CO",
-                "CS",
-                "CZ",
-                "DE",
-                "DK",
-                "DZ",
-                "EC",
-                "EE",
-                "EG",
-                "ES",
-                "FI",
-                "FR",
-                "GB",
-                "GR",
-                "HK",
-                "HU",
-                "ID",
-                "IE",
-                "IL",
-                "IN",
-                "IR",
-                "IT",
-                "JP",
-                "KR",
-                "LV",
-                "MA",
-                "MX",
-                "MY",
-                "NG",
-                "NL",
-                "NO",
-                "NZ",
-                "PE",
-                "PH",
-                "PK",
-                "PL",
-                "PT",
-                "RO",
-                "RS",
-                "RU",
-                "SA",
-                "SE",
-                "SG",
-                "SI",
-                "SK",
-                "TH",
-                "TR",
-                "TW",
-                "UA",
-                "US",
-                "VE",
-                "VN",
-                "ZA",
-              ]),
-            ).describe(
-              "A list of geographical regions that are used for time series modeling.",
-            ).optional(),
-            horizon: z.string().describe(
-              "The number of periods ahead that need to be forecasted.",
-            ).optional(),
-            hparamTuningObjectives: z.array(
-              z.enum([
-                "HPARAM_TUNING_OBJECTIVE_UNSPECIFIED",
-                "MEAN_ABSOLUTE_ERROR",
-                "MEAN_SQUARED_ERROR",
-                "MEAN_SQUARED_LOG_ERROR",
-                "MEDIAN_ABSOLUTE_ERROR",
-                "R_SQUARED",
-                "EXPLAINED_VARIANCE",
-                "PRECISION",
-                "RECALL",
-                "ACCURACY",
-                "F1_SCORE",
-                "LOG_LOSS",
-                "ROC_AUC",
-                "DAVIES_BOULDIN_INDEX",
-                "MEAN_AVERAGE_PRECISION",
-                "NORMALIZED_DISCOUNTED_CUMULATIVE_GAIN",
-                "AVERAGE_RANK",
-              ]),
-            ).describe(
-              "The target evaluation metrics to optimize the hyperparameters for.",
-            ).optional(),
-            huggingFaceModelId: z.string().describe(
-              "The id of a Hugging Face model. For example, `google/gemma-2-2b-it`.",
-            ).optional(),
-            includeDrift: z.boolean().describe(
-              "Include drift when fitting an ARIMA model.",
-            ).optional(),
-            initialLearnRate: z.number().describe(
-              "Specifies the initial learning rate for the line search learn rate strategy.",
-            ).optional(),
-            inputLabelColumns: z.array(z.string()).describe(
-              "Name of input label columns in training data.",
-            ).optional(),
-            instanceWeightColumn: z.string().describe(
-              "Name of the instance weight column for training data. This column isn't be used as a feature.",
-            ).optional(),
-            integratedGradientsNumSteps: z.string().describe(
-              "Number of integral steps for the integrated gradients explain method.",
-            ).optional(),
-            isTestColumn: z.string().describe(
-              "Name of the column used to determine the rows corresponding to control and test. Applies to contribution analysis models.",
-            ).optional(),
-            itemColumn: z.string().describe(
-              "Item column specified for matrix factorization models.",
-            ).optional(),
-            kmeansInitializationColumn: z.string().describe(
-              "The column used to provide the initial centroids for kmeans algorithm when kmeans_initialization_method is CUSTOM.",
-            ).optional(),
-            kmeansInitializationMethod: z.enum([
-              "KMEANS_INITIALIZATION_METHOD_UNSPECIFIED",
-              "RANDOM",
-              "CUSTOM",
-              "KMEANS_PLUS_PLUS",
-            ]).describe(
-              "The method used to initialize the centroids for kmeans algorithm.",
-            ).optional(),
-            l1RegActivation: z.number().describe(
-              "L1 regularization coefficient to activations.",
-            ).optional(),
-            l1Regularization: z.number().describe(
-              "L1 regularization coefficient.",
-            ).optional(),
-            l2Regularization: z.number().describe(
-              "L2 regularization coefficient.",
-            ).optional(),
-            labelClassWeights: z.record(z.string(), z.number()).describe(
-              "Weights associated with each label class, for rebalancing the training data. Only applicable for classification models.",
-            ).optional(),
-            learnRate: z.number().describe(
-              "Learning rate in training. Used only for iterative training algorithms.",
-            ).optional(),
-            learnRateStrategy: z.enum([
-              "LEARN_RATE_STRATEGY_UNSPECIFIED",
-              "LINE_SEARCH",
-              "CONSTANT",
-            ]).describe(
-              "The strategy to determine learn rate for the current iteration.",
-            ).optional(),
-            lossType: z.enum([
-              "LOSS_TYPE_UNSPECIFIED",
-              "MEAN_SQUARED_LOSS",
-              "MEAN_LOG_LOSS",
-            ]).describe("Type of loss function used during training run.")
-              .optional(),
-            machineType: z.string().describe(
-              "The type of the machine used to deploy and serve the model.",
-            ).optional(),
-            maxIterations: z.string().describe(
-              "The maximum number of iterations in training. Used only for iterative training algorithms.",
-            ).optional(),
-            maxParallelTrials: z.string().describe(
-              "Maximum number of trials to run in parallel.",
-            ).optional(),
-            maxReplicaCount: z.string().describe(
-              "The maximum number of machine replicas that will be deployed on an endpoint. The default value is equal to min_replica_count.",
-            ).optional(),
-            maxTimeSeriesLength: z.string().describe(
-              "The maximum number of time points in a time series that can be used in modeling the trend component of the time series. Don't use this option with the `timeSeriesLengthFraction` or `minTimeSeriesLength` options.",
-            ).optional(),
-            maxTreeDepth: z.string().describe(
-              "Maximum depth of a tree for boosted tree models.",
-            ).optional(),
-            minAprioriSupport: z.number().describe(
-              "The apriori support minimum. Applies to contribution analysis models.",
-            ).optional(),
-            minRelativeProgress: z.number().describe(
-              "When early_stop is true, stops training when accuracy improvement is less than 'min_relative_progress'. Used only for iterative training algorithms.",
-            ).optional(),
-            minReplicaCount: z.string().describe(
-              "The minimum number of machine replicas that will be always deployed on an endpoint. This value must be greater than or equal to 1. The default value is 1.",
-            ).optional(),
-            minSplitLoss: z.number().describe(
-              "Minimum split loss for boosted tree models.",
-            ).optional(),
-            minTimeSeriesLength: z.string().describe(
-              "The minimum number of time points in a time series that are used in modeling the trend component of the time series. If you use this option you must also set the `timeSeriesLengthFraction` option. This training option ensures that enough time points are available when you use `timeSeriesLengthFraction` in trend modeling. This is particularly important when forecasting multiple time series in a single query using `timeSeriesIdColumn`. If the total number of time points is less than the `minTimeSeriesLength` value, then the query uses all available time points.",
-            ).optional(),
-            minTreeChildWeight: z.string().describe(
-              "Minimum sum of instance weight needed in a child for boosted tree models.",
-            ).optional(),
-            modelGardenModelName: z.string().describe(
-              "The name of a Vertex model garden publisher model. Format is `publishers/{publisher}/models/{model}@{optional_version_id}`.",
-            ).optional(),
-            modelRegistry: z.enum(["MODEL_REGISTRY_UNSPECIFIED", "VERTEX_AI"])
-              .describe("The model registry.").optional(),
-            modelUri: z.string().describe(
-              "Google Cloud Storage URI from which the model was imported. Only applicable for imported models.",
-            ).optional(),
-            nonSeasonalOrder: z.object({
-              d: z.string().describe("Order of the differencing part.")
-                .optional(),
-              p: z.string().describe("Order of the autoregressive part.")
-                .optional(),
-              q: z.string().describe("Order of the moving-average part.")
-                .optional(),
-            }).describe(
-              "Arima order, can be used for both non-seasonal and seasonal parts.",
-            ).optional(),
-            numClusters: z.string().describe(
-              "Number of clusters for clustering models.",
-            ).optional(),
-            numFactors: z.string().describe(
-              "Num factors specified for matrix factorization models.",
-            ).optional(),
-            numParallelTree: z.string().describe(
-              "Number of parallel trees constructed during each iteration for boosted tree models.",
-            ).optional(),
-            numPrincipalComponents: z.string().describe(
-              "Number of principal components to keep in the PCA model. Must be <= the number of features.",
-            ).optional(),
-            numTrials: z.string().describe(
-              "Number of trials to run this hyperparameter tuning job.",
-            ).optional(),
-            optimizationStrategy: z.enum([
-              "OPTIMIZATION_STRATEGY_UNSPECIFIED",
-              "BATCH_GRADIENT_DESCENT",
-              "NORMAL_EQUATION",
-            ]).describe(
-              "Optimization strategy for training linear regression models.",
-            ).optional(),
-            optimizer: z.string().describe(
-              "Optimizer used for training the neural nets.",
-            ).optional(),
-            pcaExplainedVarianceRatio: z.number().describe(
-              "The minimum ratio of cumulative explained variance that needs to be given by the PCA model.",
-            ).optional(),
-            pcaSolver: z.enum(["UNSPECIFIED", "FULL", "RANDOMIZED", "AUTO"])
-              .describe("The solver for PCA.").optional(),
-            reservationAffinityKey: z.string().describe(
-              "Corresponds to the label key of a reservation resource used by Vertex AI. To target a SPECIFIC_RESERVATION by name, use `compute.googleapis.com/reservation-name` as the key and specify the name of your reservation as its value.",
-            ).optional(),
-            reservationAffinityType: z.enum([
-              "RESERVATION_AFFINITY_TYPE_UNSPECIFIED",
-              "NO_RESERVATION",
-              "ANY_RESERVATION",
-              "SPECIFIC_RESERVATION",
-            ]).describe(
-              "Specifies the reservation affinity type used to configure a Vertex AI resource. The default value is `NO_RESERVATION`.",
-            ).optional(),
-            reservationAffinityValues: z.array(z.string()).describe(
-              "Corresponds to the label values of a reservation resource used by Vertex AI. This must be the full resource name of the reservation or reservation block.",
-            ).optional(),
-            sampledShapleyNumPaths: z.string().describe(
-              "Number of paths for the sampled Shapley explain method.",
-            ).optional(),
-            scaleFeatures: z.boolean().describe(
-              "If true, scale the feature values by dividing the feature standard deviation. Currently only apply to PCA.",
-            ).optional(),
-            standardizeFeatures: z.boolean().describe(
-              "Whether to standardize numerical features. Default to true.",
-            ).optional(),
-            subsample: z.number().describe(
-              "Subsample fraction of the training data to grow tree to prevent overfitting for boosted tree models.",
-            ).optional(),
-            tfVersion: z.string().describe(
-              "Based on the selected TF version, the corresponding docker image is used to train external models.",
-            ).optional(),
-            timeSeriesDataColumn: z.string().describe(
-              "Column to be designated as time series data for ARIMA model.",
-            ).optional(),
-            timeSeriesIdColumn: z.string().describe(
-              "The time series id column that was used during ARIMA model training.",
-            ).optional(),
-            timeSeriesIdColumns: z.array(z.string()).describe(
-              "The time series id columns that were used during ARIMA model training.",
-            ).optional(),
-            timeSeriesLengthFraction: z.number().describe(
-              "The fraction of the interpolated length of the time series that's used to model the time series trend component. All of the time points of the time series are used to model the non-trend component. This training option accelerates modeling training without sacrificing much forecasting accuracy. You can use this option with `minTimeSeriesLength` but not with `maxTimeSeriesLength`.",
-            ).optional(),
-            timeSeriesTimestampColumn: z.string().describe(
-              "Column to be designated as time series timestamp for ARIMA model.",
-            ).optional(),
-            treeMethod: z.enum([
-              "TREE_METHOD_UNSPECIFIED",
-              "AUTO",
-              "EXACT",
-              "APPROX",
-              "HIST",
-            ]).describe("Tree construction algorithm for boosted tree models.")
-              .optional(),
-            trendSmoothingWindowSize: z.string().describe(
-              "Smoothing window size for the trend component. When a positive value is specified, a center moving average smoothing is applied on the history trend. When the smoothing window is out of the boundary at the beginning or the end of the trend, the first element or the last element is padded to fill the smoothing window before the average is applied.",
-            ).optional(),
-            userColumn: z.string().describe(
-              "User column specified for matrix factorization models.",
-            ).optional(),
-            vertexAiModelVersionAliases: z.array(z.string()).describe(
-              "The version aliases to apply in Vertex AI model registry. Always overwrite if the version aliases exists in a existing model.",
-            ).optional(),
-            walsAlpha: z.number().describe(
-              "Hyperparameter for matrix factoration when implicit feedback type is specified.",
-            ).optional(),
-            warmStart: z.boolean().describe(
-              "Whether to train a model from the last checkpoint.",
-            ).optional(),
-            xgboostVersion: z.string().describe(
-              "User-selected XGBoost versions for training of XGBoost models.",
-            ).optional(),
-          }).describe("Options used in model training.").optional(),
-          startTimeMs: z.string().describe("Starting time of the trial.")
+          hparams: z.unknown().describe("Options used in model training.")
             .optional(),
-          status: z.enum([
-            "TRIAL_STATUS_UNSPECIFIED",
-            "NOT_STARTED",
-            "RUNNING",
-            "SUCCEEDED",
-            "FAILED",
-            "INFEASIBLE",
-            "STOPPED_EARLY",
-          ]).describe("The status of the trial.").optional(),
-          trainingLoss: z.number().describe(
+          startTimeMs: z.unknown().describe("Starting time of the trial.")
+            .optional(),
+          status: z.unknown().describe("The status of the trial.").optional(),
+          trainingLoss: z.unknown().describe(
             "Loss computed on the training data at the end of trial.",
           ).optional(),
-          trialId: z.string().describe("1-based index of the trial.")
+          trialId: z.unknown().describe("1-based index of the trial.")
             .optional(),
         })).describe(
           "Output only. Trials of a [hyperparameter tuning job](https://cloud.google.com/bigquery-ml/docs/reference/standard-sql/bigqueryml-syntax-hp-tuning-overview) sorted by trial_id.",
         ).optional(),
         iterationResults: z.array(z.object({
-          arimaResult: z.object({
-            arimaModelInfo: z.array(z.object({
-              arimaCoefficients: z.object({
-                autoRegressiveCoefficients: z.array(z.number()).describe(
-                  "Auto-regressive coefficients, an array of double.",
-                ).optional(),
-                interceptCoefficient: z.number().describe(
-                  "Intercept coefficient, just a double not an array.",
-                ).optional(),
-                movingAverageCoefficients: z.array(z.number()).describe(
-                  "Moving-average coefficients, an array of double.",
-                ).optional(),
-              }).describe("Arima coefficients.").optional(),
-              arimaFittingMetrics: z.object({
-                aic: z.number().describe("AIC.").optional(),
-                logLikelihood: z.number().describe("Log-likelihood.")
-                  .optional(),
-                variance: z.number().describe("Variance.").optional(),
-              }).describe("ARIMA model fitting metrics.").optional(),
-              hasDrift: z.boolean().describe(
-                "Whether Arima model fitted with drift or not. It is always false when d is not 1.",
-              ).optional(),
-              hasHolidayEffect: z.boolean().describe(
-                "If true, holiday_effect is a part of time series decomposition result.",
-              ).optional(),
-              hasSpikesAndDips: z.boolean().describe(
-                "If true, spikes_and_dips is a part of time series decomposition result.",
-              ).optional(),
-              hasStepChanges: z.boolean().describe(
-                "If true, step_changes is a part of time series decomposition result.",
-              ).optional(),
-              nonSeasonalOrder: z.object({
-                d: z.string().describe("Order of the differencing part.")
-                  .optional(),
-                p: z.string().describe("Order of the autoregressive part.")
-                  .optional(),
-                q: z.string().describe("Order of the moving-average part.")
-                  .optional(),
-              }).describe(
-                "Arima order, can be used for both non-seasonal and seasonal parts.",
-              ).optional(),
-              seasonalPeriods: z.array(
-                z.enum([
-                  "SEASONAL_PERIOD_TYPE_UNSPECIFIED",
-                  "NO_SEASONALITY",
-                  "DAILY",
-                  "WEEKLY",
-                  "MONTHLY",
-                  "QUARTERLY",
-                  "YEARLY",
-                  "HOURLY",
-                ]),
-              ).describe(
-                "Seasonal periods. Repeated because multiple periods are supported for one time series.",
-              ).optional(),
-              timeSeriesId: z.string().describe(
-                "The time_series_id value for this time series. It will be one of the unique values from the time_series_id_column specified during ARIMA model training. Only present when time_series_id_column training option was used.",
-              ).optional(),
-              timeSeriesIds: z.array(z.string()).describe(
-                "The tuple of time_series_ids identifying this time series. It will be one of the unique tuples of values present in the time_series_id_columns specified during ARIMA model training. Only present when time_series_id_columns training option was used and the order of values here are same as the order of time_series_id_columns.",
-              ).optional(),
-            })).describe(
-              "This message is repeated because there are multiple arima models fitted in auto-arima. For non-auto-arima model, its size is one.",
-            ).optional(),
-            seasonalPeriods: z.array(
-              z.enum([
-                "SEASONAL_PERIOD_TYPE_UNSPECIFIED",
-                "NO_SEASONALITY",
-                "DAILY",
-                "WEEKLY",
-                "MONTHLY",
-                "QUARTERLY",
-                "YEARLY",
-                "HOURLY",
-              ]),
-            ).describe(
-              "Seasonal periods. Repeated because multiple periods are supported for one time series.",
-            ).optional(),
-          }).describe(
+          arimaResult: z.unknown().describe(
             "(Auto-)arima fitting result. Wrap everything in ArimaResult for easier refactoring if we want to use model-specific iteration results.",
           ).optional(),
-          clusterInfos: z.array(z.object({
-            centroidId: z.string().describe("Centroid id.").optional(),
-            clusterRadius: z.number().describe(
-              "Cluster radius, the average distance from centroid to each point assigned to the cluster.",
-            ).optional(),
-            clusterSize: z.string().describe(
-              "Cluster size, the total number of points assigned to the cluster.",
-            ).optional(),
-          })).describe("Information about top clusters for clustering models.")
-            .optional(),
-          durationMs: z.string().describe(
+          clusterInfos: z.unknown().describe(
+            "Information about top clusters for clustering models.",
+          ).optional(),
+          durationMs: z.unknown().describe(
             "Time taken to run the iteration in milliseconds.",
           ).optional(),
-          evalLoss: z.number().describe(
+          evalLoss: z.unknown().describe(
             "Loss computed on the eval data at the end of iteration.",
           ).optional(),
-          index: z.number().int().describe("Index of the iteration, 0 based.")
+          index: z.unknown().describe("Index of the iteration, 0 based.")
             .optional(),
-          learnRate: z.number().describe("Learn rate used for this iteration.")
+          learnRate: z.unknown().describe("Learn rate used for this iteration.")
             .optional(),
-          principalComponentInfos: z.array(z.object({
-            cumulativeExplainedVarianceRatio: z.number().describe(
-              "The explained_variance is pre-ordered in the descending order to compute the cumulative explained variance ratio.",
-            ).optional(),
-            explainedVariance: z.number().describe(
-              "Explained variance by this principal component, which is simply the eigenvalue.",
-            ).optional(),
-            explainedVarianceRatio: z.number().describe(
-              "Explained_variance over the total explained variance.",
-            ).optional(),
-            principalComponentId: z.string().describe(
-              "Id of the principal component.",
-            ).optional(),
-          })).describe("The information of the principal components.")
-            .optional(),
-          trainingLoss: z.number().describe(
+          principalComponentInfos: z.unknown().describe(
+            "The information of the principal components.",
+          ).optional(),
+          trainingLoss: z.unknown().describe(
             "Loss computed on the training data at the end of iteration.",
           ).optional(),
         })).describe(
@@ -2922,68 +1433,32 @@ const GlobalArgsSchema = z.object({
           "Output only. Average execution ms of previous runs. Indicates the job ran slow compared to previous executions. To find previous executions, use INFORMATION_SCHEMA tables and filter jobs with same query hash.",
         ).optional(),
         stagePerformanceChangeInsights: z.array(z.object({
-          inputDataChange: z.object({
-            recordsReadDiffPercentage: z.number().describe(
-              "Output only. Records read difference percentage compared to a previous run.",
-            ).optional(),
-          }).describe("Details about the input data change insight.")
-            .optional(),
-          stageId: z.string().describe(
+          inputDataChange: z.unknown().describe(
+            "Details about the input data change insight.",
+          ).optional(),
+          stageId: z.unknown().describe(
             "Output only. The stage id that the insight mapped to.",
           ).optional(),
         })).describe(
           "Output only. Query stage performance insights compared to previous runs, for diagnosing performance regression.",
         ).optional(),
         stagePerformanceStandaloneInsights: z.array(z.object({
-          biEngineReasons: z.array(z.object({
-            code: z.enum([
-              "CODE_UNSPECIFIED",
-              "NO_RESERVATION",
-              "INSUFFICIENT_RESERVATION",
-              "UNSUPPORTED_SQL_TEXT",
-              "INPUT_TOO_LARGE",
-              "OTHER_REASON",
-              "TABLE_EXCLUDED",
-            ]).describe(
-              "Output only. High-level BI Engine reason for partial or disabled acceleration",
-            ).optional(),
-            message: z.string().describe(
-              "Output only. Free form human-readable reason for partial or disabled acceleration.",
-            ).optional(),
-          })).describe(
+          biEngineReasons: z.unknown().describe(
             "Output only. If present, the stage had the following reasons for being disqualified from BI Engine execution.",
           ).optional(),
-          highCardinalityJoins: z.array(z.object({
-            leftRows: z.string().describe(
-              "Output only. Count of left input rows.",
-            ).optional(),
-            outputRows: z.string().describe(
-              "Output only. Count of the output rows.",
-            ).optional(),
-            rightRows: z.string().describe(
-              "Output only. Count of right input rows.",
-            ).optional(),
-            stepIndex: z.number().int().describe(
-              "Output only. The index of the join operator in the ExplainQueryStep lists.",
-            ).optional(),
-          })).describe("Output only. High cardinality joins in the stage.")
-            .optional(),
-          insufficientShuffleQuota: z.boolean().describe(
+          highCardinalityJoins: z.unknown().describe(
+            "Output only. High cardinality joins in the stage.",
+          ).optional(),
+          insufficientShuffleQuota: z.unknown().describe(
             "Output only. True if the stage has insufficient shuffle quota.",
           ).optional(),
-          partitionSkew: z.object({
-            skewSources: z.array(z.object({
-              stageId: z.string().describe(
-                "Output only. Stage id of the skew source stage.",
-              ).optional(),
-            })).describe(
-              "Output only. Source stages which produce skewed data.",
-            ).optional(),
-          }).describe("Partition skew detailed information.").optional(),
-          slotContention: z.boolean().describe(
+          partitionSkew: z.unknown().describe(
+            "Partition skew detailed information.",
+          ).optional(),
+          slotContention: z.unknown().describe(
             "Output only. True if the stage has a slot contention issue.",
           ).optional(),
-          stageId: z.string().describe(
+          stageId: z.unknown().describe(
             "Output only. The stage id that the insight mapped to.",
           ).optional(),
         })).describe(
@@ -3021,7 +1496,7 @@ const GlobalArgsSchema = z.object({
         ).optional(),
         id: z.string().describe("Unique ID for the stage within the plan.")
           .optional(),
-        inputStages: z.array(z.string()).describe(
+        inputStages: z.array(z.unknown()).describe(
           "IDs for stages that are inputs to this stage.",
         ).optional(),
         name: z.string().describe("Human-readable name for the stage.")
@@ -3060,13 +1535,7 @@ const GlobalArgsSchema = z.object({
         ).optional(),
         status: z.string().describe("Current status for this stage.")
           .optional(),
-        steps: z.array(z.object({
-          kind: z.string().describe("Machine-readable operation type.")
-            .optional(),
-          substeps: z.array(z.string()).describe(
-            "Human-readable description of the step(s).",
-          ).optional(),
-        })).describe(
+        steps: z.array(z.unknown()).describe(
           "List of operations within the stage in dependency order (approximately chronological).",
         ).optional(),
         waitMsAvg: z.string().describe(
@@ -3142,93 +1611,56 @@ const GlobalArgsSchema = z.object({
       ).optional(),
       schema: z.object({
         fields: z.array(z.object({
-          categories: z.object({
-            names: z.array(z.string()).describe("Deprecated.").optional(),
-          }).describe("Deprecated.").optional(),
-          collation: z.string().describe(
+          categories: z.unknown().describe("Deprecated.").optional(),
+          collation: z.unknown().describe(
             "Optional. Field collation can be set only when the type of field is STRING. The following values are supported: * 'und:ci': undetermined locale, case insensitive. * '': empty string. Default to case-sensitive behavior.",
           ).optional(),
-          dataPolicies: z.array(z.object({
-            name: z.string().describe(
-              "Data policy resource name in the form of projects/project_id/locations/location_id/dataPolicies/data_policy_id.",
-            ).optional(),
-          })).describe(
+          dataPolicies: z.unknown().describe(
             "Optional. Data policies attached to this field, used for field-level access control.",
           ).optional(),
-          defaultValueExpression: z.string().describe(
+          defaultValueExpression: z.unknown().describe(
             "Optional. A SQL expression to specify the [default value] (https://cloud.google.com/bigquery/docs/default-values) for this field.",
           ).optional(),
-          description: z.string().describe(
+          description: z.unknown().describe(
             "Optional. The field description. The maximum length is 1,024 characters.",
           ).optional(),
-          fields: z.array(z.string()).describe(
+          fields: z.unknown().describe(
             "Optional. Describes the nested schema fields if the type property is set to RECORD.",
           ).optional(),
-          foreignTypeDefinition: z.string().describe(
+          foreignTypeDefinition: z.unknown().describe(
             "Optional. Definition of the foreign data type. Only valid for top-level schema fields (not nested fields). If the type is FOREIGN, this field is required.",
           ).optional(),
-          generatedColumn: z.object({
-            generatedExpressionInfo: z.object({
-              asynchronous: z.boolean().describe(
-                "Optional. Whether the column generation is done asynchronously.",
-              ).optional(),
-              generationExpression: z.string().describe(
-                "Optional. The generation expression (e.g. AI.EMBED(...)) used to generated the field.",
-              ).optional(),
-              stored: z.boolean().describe(
-                "Optional. Whether the generated column is stored in the table.",
-              ).optional(),
-            }).describe(
-              "Definition of the expression used to generate the field.",
-            ).optional(),
-            generatedMode: z.enum([
-              "GENERATED_MODE_UNSPECIFIED",
-              "GENERATED_ALWAYS",
-              "GENERATED_BY_DEFAULT",
-            ]).describe(
-              "Optional. Dictates when system generated values are used to populate the field.",
-            ).optional(),
-          }).describe(
+          generatedColumn: z.unknown().describe(
             "Optional. Definition of how values are generated for the field. Only valid for top-level schema fields (not nested fields).",
           ).optional(),
-          maxLength: z.string().describe(
+          maxLength: z.unknown().describe(
             'Optional. Maximum length of values of this field for STRINGS or BYTES. If max_length is not specified, no maximum length constraint is imposed on this field. If type = "STRING", then max_length represents the maximum UTF-8 length of strings in this field. If type = "BYTES", then max_length represents the maximum number of bytes in this field. It is invalid to set this field if type ≠ "STRING" and ≠ "BYTES".',
           ).optional(),
-          mode: z.string().describe(
+          mode: z.unknown().describe(
             "Optional. The field mode. Possible values include NULLABLE, REQUIRED and REPEATED. The default value is NULLABLE.",
           ).optional(),
-          name: z.string().describe(
+          name: z.unknown().describe(
             "Required. The field name. The name must contain only letters (a-z, A-Z), numbers (0-9), or underscores (_), and must start with a letter or underscore. The maximum length is 300 characters.",
           ).optional(),
-          policyTags: z.object({
-            names: z.array(z.string()).describe(
-              'A list of policy tag resource names. For example, "projects/1/locations/eu/taxonomies/2/policyTags/3". At most 1 policy tag is currently allowed.',
-            ).optional(),
-          }).describe(
+          policyTags: z.unknown().describe(
             "Optional. The policy tags attached to this field, used for field-level access control. If not set, defaults to empty policy_tags.",
           ).optional(),
-          precision: z.string().describe(
+          precision: z.unknown().describe(
             'Optional. Precision (maximum number of total digits in base 10) and scale (maximum number of digits in the fractional part in base 10) constraints for values of this field for NUMERIC or BIGNUMERIC. It is invalid to set precision or scale if type ≠ "NUMERIC" and ≠ "BIGNUMERIC". If precision and scale are not specified, no value range constraint is imposed on this field insofar as values are permitted by the type. Values of this NUMERIC or BIGNUMERIC field must be in this range when: * Precision (P) and scale (S) are specified: [-10P-S + 10-S, 10P-S - 10-S] * Precision (P) is specified but not scale (and thus scale is interpreted to be equal to zero): [-10P + 1, 10P - 1]. Acceptable values for precision and scale if both are specified: * If type = "NUMERIC": 1 ≤ precision - scale ≤ 29 and 0 ≤ scale ≤ 9. * If type = "BIGNUMERIC": 1 ≤ precision - scale ≤ 38 and 0 ≤ scale ≤ 38. Acceptable values for precision if only precision is specified but not scale (and thus scale is interpreted to be equal to zero): * If type = "NUMERIC": 1 ≤ precision ≤ 29. * If type = "BIGNUMERIC": 1 ≤ precision ≤ 38. If scale is specified but not precision, then it is invalid.',
           ).optional(),
-          rangeElementType: z.object({
-            type: z.string().describe(
-              "Required. The type of a field element. For more information, see TableFieldSchema.type.",
-            ).optional(),
-          }).describe("Represents the type of a field element.").optional(),
-          roundingMode: z.enum([
-            "ROUNDING_MODE_UNSPECIFIED",
-            "ROUND_HALF_AWAY_FROM_ZERO",
-            "ROUND_HALF_EVEN",
-          ]).describe(
+          rangeElementType: z.unknown().describe(
+            "Represents the type of a field element.",
+          ).optional(),
+          roundingMode: z.unknown().describe(
             "Optional. Specifies the rounding mode to be used when storing values of NUMERIC and BIGNUMERIC type.",
           ).optional(),
-          scale: z.string().describe(
+          scale: z.unknown().describe(
             "Optional. See documentation for precision.",
           ).optional(),
-          timestampPrecision: z.string().describe(
+          timestampPrecision: z.unknown().describe(
             "Optional. Precision (maximum number of total digits in base 10) for seconds of TIMESTAMP type. Possible values include: * 6 (Default, for TIMESTAMP type with microsecond precision) * 12 (For TIMESTAMP type with picosecond precision)",
           ).optional(),
-          type: z.string().describe(
+          type: z.unknown().describe(
             "Required. The field data type. Possible values include: * STRING * BYTES * INTEGER (or INT64) * FLOAT (or FLOAT64) * BOOLEAN (or BOOL) * TIMESTAMP * DATE * TIME * DATETIME * GEOGRAPHY * NUMERIC * BIGNUMERIC * JSON * RECORD (or STRUCT) * RANGE Use of RECORD/STRUCT indicates that the field contains a nested schema.",
           ).optional(),
         })).describe("Describes the fields in a table.").optional(),
@@ -3242,69 +1674,26 @@ const GlobalArgsSchema = z.object({
       }).describe("Schema of a table").optional(),
       searchStatistics: z.object({
         indexPruningStats: z.array(z.object({
-          baseTable: z.object({
-            datasetId: z.string().describe(
-              "Required. The ID of the dataset containing this table.",
-            ).optional(),
-            projectId: z.string().describe(
-              "Required. The ID of the project containing this table.",
-            ).optional(),
-            tableId: z.string().describe(
-              "Required. The ID of the table. The ID can contain Unicode characters in category L (letter), M (mark), N (number), Pc (connector, including underscore), Pd (dash), and Zs (space). For more information, see [General Category](https://wikipedia.org/wiki/Unicode_character_property#General_Category). The maximum length is 1,024 characters. Certain operations allow suffixing of the table ID with a partition decorator, such as `sample_table$20190123`.",
-            ).optional(),
-          }).optional(),
-          indexId: z.string().describe("The index id.").optional(),
-          postIndexPruningParallelInputCount: z.string().describe(
+          baseTable: z.unknown().optional(),
+          indexId: z.unknown().describe("The index id.").optional(),
+          postIndexPruningParallelInputCount: z.unknown().describe(
             "The number of parallel inputs after index pruning.",
           ).optional(),
-          preIndexPruningParallelInputCount: z.string().describe(
+          preIndexPruningParallelInputCount: z.unknown().describe(
             "The number of parallel inputs before index pruning.",
           ).optional(),
         })).describe(
           "Search index pruning statistics, one for each base table that has a search index. If a base table does not have a search index or the index does not help with pruning on the base table, then there is no pruning statistics for that table.",
         ).optional(),
         indexUnusedReasons: z.array(z.object({
-          baseTable: z.object({
-            datasetId: z.string().describe(
-              "Required. The ID of the dataset containing this table.",
-            ).optional(),
-            projectId: z.string().describe(
-              "Required. The ID of the project containing this table.",
-            ).optional(),
-            tableId: z.string().describe(
-              "Required. The ID of the table. The ID can contain Unicode characters in category L (letter), M (mark), N (number), Pc (connector, including underscore), Pd (dash), and Zs (space). For more information, see [General Category](https://wikipedia.org/wiki/Unicode_character_property#General_Category). The maximum length is 1,024 characters. Certain operations allow suffixing of the table ID with a partition decorator, such as `sample_table$20190123`.",
-            ).optional(),
-          }).optional(),
-          code: z.enum([
-            "CODE_UNSPECIFIED",
-            "INDEX_CONFIG_NOT_AVAILABLE",
-            "PENDING_INDEX_CREATION",
-            "BASE_TABLE_TRUNCATED",
-            "INDEX_CONFIG_MODIFIED",
-            "TIME_TRAVEL_QUERY",
-            "NO_PRUNING_POWER",
-            "UNINDEXED_SEARCH_FIELDS",
-            "UNSUPPORTED_SEARCH_PATTERN",
-            "OPTIMIZED_WITH_MATERIALIZED_VIEW",
-            "SECURED_BY_DATA_MASKING",
-            "MISMATCHED_TEXT_ANALYZER",
-            "BASE_TABLE_TOO_SMALL",
-            "BASE_TABLE_TOO_LARGE",
-            "ESTIMATED_PERFORMANCE_GAIN_TOO_LOW",
-            "COLUMN_METADATA_INDEX_NOT_USED",
-            "NOT_SUPPORTED_IN_STANDARD_EDITION",
-            "INDEX_SUPPRESSED_BY_FUNCTION_OPTION",
-            "QUERY_CACHE_HIT",
-            "STALE_INDEX",
-            "INTERNAL_ERROR",
-            "OTHER_REASON",
-          ]).describe(
+          baseTable: z.unknown().optional(),
+          code: z.unknown().describe(
             "Specifies the high-level reason for the scenario when no search index was used.",
           ).optional(),
-          indexName: z.string().describe(
+          indexName: z.unknown().describe(
             "Specifies the name of the unused search index, if available.",
           ).optional(),
-          message: z.string().describe(
+          message: z.unknown().describe(
             "Free form human-readable reason for the scenario when no search index was used.",
           ).optional(),
         })).describe(
@@ -3401,47 +1790,31 @@ const GlobalArgsSchema = z.object({
           "Optional. If unset, this is a positional parameter. Otherwise, should be unique within a query.",
         ).optional(),
         parameterType: z.object({
-          arrayType: z.string().describe(
+          arrayType: z.unknown().describe(
             "Circular reference to QueryParameterType",
           ).optional(),
-          rangeElementType: z.string().describe(
+          rangeElementType: z.unknown().describe(
             "Circular reference to QueryParameterType",
           ).optional(),
-          structTypes: z.array(z.object({
-            description: z.string().describe(
-              "Optional. Human-oriented description of the field.",
-            ).optional(),
-            name: z.string().describe("Optional. The name of this field.")
-              .optional(),
-            type: z.string().describe(
-              "Circular reference to QueryParameterType",
-            ).optional(),
-          })).describe(
+          structTypes: z.unknown().describe(
             "Optional. The types of the fields of this struct, in order, if this is a struct.",
           ).optional(),
-          timestampPrecision: z.string().describe(
+          timestampPrecision: z.unknown().describe(
             "Optional. Precision (maximum number of total digits in base 10) for seconds of TIMESTAMP type. Possible values include: * 6 (Default, for TIMESTAMP type with microsecond precision) * 12 (For TIMESTAMP type with picosecond precision)",
           ).optional(),
-          type: z.string().describe(
+          type: z.unknown().describe(
             "Required. The top level type of this field.",
           ).optional(),
         }).describe("The type of a query parameter.").optional(),
         parameterValue: z.object({
-          arrayValues: z.array(z.string()).describe(
+          arrayValues: z.unknown().describe(
             "Optional. The array values, if this is an array type.",
           ).optional(),
-          rangeValue: z.object({
-            end: z.string().describe(
-              "Circular reference to QueryParameterValue",
-            ).optional(),
-            start: z.string().describe(
-              "Circular reference to QueryParameterValue",
-            ).optional(),
-          }).describe("Represents the value of a range.").optional(),
-          structValues: z.record(z.string(), z.string()).describe(
-            "The struct field values.",
-          ).optional(),
-          value: z.string().describe(
+          rangeValue: z.unknown().describe("Represents the value of a range.")
+            .optional(),
+          structValues: z.unknown().describe("The struct field values.")
+            .optional(),
+          value: z.unknown().describe(
             "Optional. The value of this value, if a simple scalar type.",
           ).optional(),
         }).describe("The value of a query parameter.").optional(),
@@ -3450,47 +1823,14 @@ const GlobalArgsSchema = z.object({
       ).optional(),
       vectorSearchStatistics: z.object({
         indexUnusedReasons: z.array(z.object({
-          baseTable: z.object({
-            datasetId: z.string().describe(
-              "Required. The ID of the dataset containing this table.",
-            ).optional(),
-            projectId: z.string().describe(
-              "Required. The ID of the project containing this table.",
-            ).optional(),
-            tableId: z.string().describe(
-              "Required. The ID of the table. The ID can contain Unicode characters in category L (letter), M (mark), N (number), Pc (connector, including underscore), Pd (dash), and Zs (space). For more information, see [General Category](https://wikipedia.org/wiki/Unicode_character_property#General_Category). The maximum length is 1,024 characters. Certain operations allow suffixing of the table ID with a partition decorator, such as `sample_table$20190123`.",
-            ).optional(),
-          }).optional(),
-          code: z.enum([
-            "CODE_UNSPECIFIED",
-            "INDEX_CONFIG_NOT_AVAILABLE",
-            "PENDING_INDEX_CREATION",
-            "BASE_TABLE_TRUNCATED",
-            "INDEX_CONFIG_MODIFIED",
-            "TIME_TRAVEL_QUERY",
-            "NO_PRUNING_POWER",
-            "UNINDEXED_SEARCH_FIELDS",
-            "UNSUPPORTED_SEARCH_PATTERN",
-            "OPTIMIZED_WITH_MATERIALIZED_VIEW",
-            "SECURED_BY_DATA_MASKING",
-            "MISMATCHED_TEXT_ANALYZER",
-            "BASE_TABLE_TOO_SMALL",
-            "BASE_TABLE_TOO_LARGE",
-            "ESTIMATED_PERFORMANCE_GAIN_TOO_LOW",
-            "COLUMN_METADATA_INDEX_NOT_USED",
-            "NOT_SUPPORTED_IN_STANDARD_EDITION",
-            "INDEX_SUPPRESSED_BY_FUNCTION_OPTION",
-            "QUERY_CACHE_HIT",
-            "STALE_INDEX",
-            "INTERNAL_ERROR",
-            "OTHER_REASON",
-          ]).describe(
+          baseTable: z.unknown().optional(),
+          code: z.unknown().describe(
             "Specifies the high-level reason for the scenario when no search index was used.",
           ).optional(),
-          indexName: z.string().describe(
+          indexName: z.unknown().describe(
             "Specifies the name of the unused search index, if available.",
           ).optional(),
-          message: z.string().describe(
+          message: z.unknown().describe(
             "Free form human-readable reason for the scenario when no search index was used.",
           ).optional(),
         })).describe(
@@ -3503,40 +1843,13 @@ const GlobalArgsSchema = z.object({
           "FULLY_USED",
         ]).describe("Specifies the index usage mode for the query.").optional(),
         storedColumnsUsages: z.array(z.object({
-          baseTable: z.object({
-            datasetId: z.string().describe(
-              "Required. The ID of the dataset containing this table.",
-            ).optional(),
-            projectId: z.string().describe(
-              "Required. The ID of the project containing this table.",
-            ).optional(),
-            tableId: z.string().describe(
-              "Required. The ID of the table. The ID can contain Unicode characters in category L (letter), M (mark), N (number), Pc (connector, including underscore), Pd (dash), and Zs (space). For more information, see [General Category](https://wikipedia.org/wiki/Unicode_character_property#General_Category). The maximum length is 1,024 characters. Certain operations allow suffixing of the table ID with a partition decorator, such as `sample_table$20190123`.",
-            ).optional(),
-          }).optional(),
-          isQueryAccelerated: z.boolean().describe(
+          baseTable: z.unknown().optional(),
+          isQueryAccelerated: z.unknown().describe(
             "Specifies whether the query was accelerated with stored columns.",
           ).optional(),
-          storedColumnsUnusedReasons: z.array(z.object({
-            code: z.enum([
-              "CODE_UNSPECIFIED",
-              "STORED_COLUMNS_COVER_INSUFFICIENT",
-              "BASE_TABLE_HAS_RLS",
-              "BASE_TABLE_HAS_CLS",
-              "UNSUPPORTED_PREFILTER",
-              "INTERNAL_ERROR",
-              "OTHER_REASON",
-            ]).describe(
-              "Specifies the high-level reason for the unused scenario, each reason must have a code associated.",
-            ).optional(),
-            message: z.string().describe(
-              "Specifies the detailed description for the scenario.",
-            ).optional(),
-            uncoveredColumns: z.array(z.string()).describe(
-              "Specifies which columns were not covered by the stored columns for the specified code up to 20 columns. This is populated when the code is STORED_COLUMNS_COVER_INSUFFICIENT and BASE_TABLE_HAS_CLS.",
-            ).optional(),
-          })).describe("If stored columns were not used, explain why.")
-            .optional(),
+          storedColumnsUnusedReasons: z.unknown().describe(
+            "If stored columns were not used, explain why.",
+          ).optional(),
         })).describe(
           "Specifies the usage of stored columns in the query when stored columns are used in the query.",
         ).optional(),
@@ -3770,39 +2083,24 @@ const StateSchema = z.object({
       referenceFileSchemaUri: z.string(),
       schema: z.object({
         fields: z.array(z.object({
-          categories: z.object({
-            names: z.array(z.string()),
-          }),
-          collation: z.string(),
-          dataPolicies: z.array(z.object({
-            name: z.string(),
-          })),
-          defaultValueExpression: z.string(),
-          description: z.string(),
-          fields: z.array(z.string()),
-          foreignTypeDefinition: z.string(),
-          generatedColumn: z.object({
-            generatedExpressionInfo: z.object({
-              asynchronous: z.boolean(),
-              generationExpression: z.string(),
-              stored: z.boolean(),
-            }),
-            generatedMode: z.string(),
-          }),
-          maxLength: z.string(),
-          mode: z.string(),
-          name: z.string(),
-          policyTags: z.object({
-            names: z.array(z.string()),
-          }),
-          precision: z.string(),
-          rangeElementType: z.object({
-            type: z.string(),
-          }),
-          roundingMode: z.string(),
-          scale: z.string(),
-          timestampPrecision: z.string(),
-          type: z.string(),
+          categories: z.unknown(),
+          collation: z.unknown(),
+          dataPolicies: z.unknown(),
+          defaultValueExpression: z.unknown(),
+          description: z.unknown(),
+          fields: z.unknown(),
+          foreignTypeDefinition: z.unknown(),
+          generatedColumn: z.unknown(),
+          maxLength: z.unknown(),
+          mode: z.unknown(),
+          name: z.unknown(),
+          policyTags: z.unknown(),
+          precision: z.unknown(),
+          rangeElementType: z.unknown(),
+          roundingMode: z.unknown(),
+          scale: z.unknown(),
+          timestampPrecision: z.unknown(),
+          type: z.unknown(),
         })),
         foreignTypeInfo: z.object({
           typeSystem: z.string(),
@@ -3863,24 +2161,17 @@ const StateSchema = z.object({
       queryParameters: z.array(z.object({
         name: z.string(),
         parameterType: z.object({
-          arrayType: z.string(),
-          rangeElementType: z.string(),
-          structTypes: z.array(z.object({
-            description: z.string(),
-            name: z.string(),
-            type: z.string(),
-          })),
-          timestampPrecision: z.string(),
-          type: z.string(),
+          arrayType: z.unknown(),
+          rangeElementType: z.unknown(),
+          structTypes: z.unknown(),
+          timestampPrecision: z.unknown(),
+          type: z.unknown(),
         }),
         parameterValue: z.object({
-          arrayValues: z.array(z.string()),
-          rangeValue: z.object({
-            end: z.string(),
-            start: z.string(),
-          }),
-          structValues: z.record(z.string(), z.unknown()),
-          value: z.string(),
+          arrayValues: z.unknown(),
+          rangeValue: z.unknown(),
+          structValues: z.unknown(),
+          value: z.unknown(),
         }),
       })),
       rangePartitioning: z.object({
@@ -3981,8 +2272,8 @@ const StateSchema = z.object({
         accelerationMode: z.string(),
         biEngineMode: z.string(),
         biEngineReasons: z.array(z.object({
-          code: z.string(),
-          message: z.string(),
+          code: z.unknown(),
+          message: z.unknown(),
         })),
       }),
       billingTier: z.number(),
@@ -4050,20 +2341,14 @@ const StateSchema = z.object({
       })),
       genAiStats: z.object({
         errorStats: z.object({
-          errors: z.array(z.string()),
+          errors: z.array(z.unknown()),
         }),
         functionStats: z.array(z.object({
-          costOptimizationStats: z.object({
-            message: z.string(),
-            numCostOptimizedRows: z.string(),
-          }),
-          errorStats: z.object({
-            errors: z.array(z.string()),
-            numFailedRows: z.string(),
-          }),
-          functionName: z.string(),
-          numProcessedRows: z.string(),
-          prompt: z.string(),
+          costOptimizationStats: z.unknown(),
+          errorStats: z.unknown(),
+          functionName: z.unknown(),
+          numProcessedRows: z.unknown(),
+          prompt: z.unknown(),
         })),
       }),
       incrementalResultStats: z.object({
@@ -4085,425 +2370,44 @@ const StateSchema = z.object({
       }),
       materializedViewStatistics: z.object({
         materializedView: z.array(z.object({
-          chosen: z.boolean(),
-          estimatedBytesSaved: z.string(),
-          rejectedReason: z.string(),
-          tableReference: z.object({
-            datasetId: z.string(),
-            projectId: z.string(),
-            tableId: z.string(),
-          }),
+          chosen: z.unknown(),
+          estimatedBytesSaved: z.unknown(),
+          rejectedReason: z.unknown(),
+          tableReference: z.unknown(),
         })),
       }),
       metadataCacheStatistics: z.object({
         tableMetadataCacheUsage: z.array(z.object({
-          explanation: z.string(),
-          pruningStats: z.object({
-            postCmetaPruningParallelInputCount: z.string(),
-            postCmetaPruningPartitionCount: z.string(),
-            preCmetaPruningParallelInputCount: z.string(),
-          }),
-          staleness: z.string(),
-          tableReference: z.object({
-            datasetId: z.string(),
-            projectId: z.string(),
-            tableId: z.string(),
-          }),
-          tableType: z.string(),
-          unusedReason: z.string(),
+          explanation: z.unknown(),
+          pruningStats: z.unknown(),
+          staleness: z.unknown(),
+          tableReference: z.unknown(),
+          tableType: z.unknown(),
+          unusedReason: z.unknown(),
         })),
       }),
       mlStatistics: z.object({
         hparamTrials: z.array(z.object({
-          endTimeMs: z.string(),
-          errorMessage: z.string(),
-          evalLoss: z.number(),
-          evaluationMetrics: z.object({
-            arimaForecastingMetrics: z.object({
-              arimaFittingMetrics: z.array(z.object({
-                aic: z.number(),
-                logLikelihood: z.number(),
-                variance: z.number(),
-              })),
-              arimaSingleModelForecastingMetrics: z.array(z.object({
-                arimaFittingMetrics: z.object({
-                  aic: z.number(),
-                  logLikelihood: z.number(),
-                  variance: z.number(),
-                }),
-                hasDrift: z.boolean(),
-                hasHolidayEffect: z.boolean(),
-                hasSpikesAndDips: z.boolean(),
-                hasStepChanges: z.boolean(),
-                nonSeasonalOrder: z.object({
-                  d: z.string(),
-                  p: z.string(),
-                  q: z.string(),
-                }),
-                seasonalPeriods: z.array(z.string()),
-                timeSeriesId: z.string(),
-                timeSeriesIds: z.array(z.string()),
-              })),
-              hasDrift: z.array(z.boolean()),
-              nonSeasonalOrder: z.array(z.object({
-                d: z.string(),
-                p: z.string(),
-                q: z.string(),
-              })),
-              seasonalPeriods: z.array(z.string()),
-              timeSeriesId: z.array(z.string()),
-            }),
-            binaryClassificationMetrics: z.object({
-              aggregateClassificationMetrics: z.object({
-                accuracy: z.number(),
-                f1Score: z.number(),
-                logLoss: z.number(),
-                precision: z.number(),
-                recall: z.number(),
-                rocAuc: z.number(),
-                threshold: z.number(),
-              }),
-              binaryConfusionMatrixList: z.array(z.object({
-                accuracy: z.number(),
-                f1Score: z.number(),
-                falseNegatives: z.string(),
-                falsePositives: z.string(),
-                positiveClassThreshold: z.number(),
-                precision: z.number(),
-                recall: z.number(),
-                trueNegatives: z.string(),
-                truePositives: z.string(),
-              })),
-              negativeLabel: z.string(),
-              positiveLabel: z.string(),
-            }),
-            clusteringMetrics: z.object({
-              clusters: z.array(z.object({
-                centroidId: z.string(),
-                count: z.string(),
-                featureValues: z.array(z.object({
-                  categoricalValue: z.object({
-                    categoryCounts: z.array(z.object({
-                      category: z.string(),
-                      count: z.string(),
-                    })),
-                  }),
-                  featureColumn: z.string(),
-                  numericalValue: z.number(),
-                })),
-              })),
-              daviesBouldinIndex: z.number(),
-              meanSquaredDistance: z.number(),
-            }),
-            dimensionalityReductionMetrics: z.object({
-              totalExplainedVarianceRatio: z.number(),
-            }),
-            multiClassClassificationMetrics: z.object({
-              aggregateClassificationMetrics: z.object({
-                accuracy: z.number(),
-                f1Score: z.number(),
-                logLoss: z.number(),
-                precision: z.number(),
-                recall: z.number(),
-                rocAuc: z.number(),
-                threshold: z.number(),
-              }),
-              confusionMatrixList: z.array(z.object({
-                confidenceThreshold: z.number(),
-                rows: z.array(z.object({
-                  actualLabel: z.string(),
-                  entries: z.array(z.object({
-                    itemCount: z.string(),
-                    predictedLabel: z.string(),
-                  })),
-                })),
-              })),
-            }),
-            rankingMetrics: z.object({
-              averageRank: z.number(),
-              meanAveragePrecision: z.number(),
-              meanSquaredError: z.number(),
-              normalizedDiscountedCumulativeGain: z.number(),
-            }),
-            regressionMetrics: z.object({
-              meanAbsoluteError: z.number(),
-              meanSquaredError: z.number(),
-              meanSquaredLogError: z.number(),
-              medianAbsoluteError: z.number(),
-              rSquared: z.number(),
-            }),
-          }),
-          hparamTuningEvaluationMetrics: z.object({
-            arimaForecastingMetrics: z.object({
-              arimaFittingMetrics: z.array(z.object({
-                aic: z.number(),
-                logLikelihood: z.number(),
-                variance: z.number(),
-              })),
-              arimaSingleModelForecastingMetrics: z.array(z.object({
-                arimaFittingMetrics: z.object({
-                  aic: z.number(),
-                  logLikelihood: z.number(),
-                  variance: z.number(),
-                }),
-                hasDrift: z.boolean(),
-                hasHolidayEffect: z.boolean(),
-                hasSpikesAndDips: z.boolean(),
-                hasStepChanges: z.boolean(),
-                nonSeasonalOrder: z.object({
-                  d: z.string(),
-                  p: z.string(),
-                  q: z.string(),
-                }),
-                seasonalPeriods: z.array(z.string()),
-                timeSeriesId: z.string(),
-                timeSeriesIds: z.array(z.string()),
-              })),
-              hasDrift: z.array(z.boolean()),
-              nonSeasonalOrder: z.array(z.object({
-                d: z.string(),
-                p: z.string(),
-                q: z.string(),
-              })),
-              seasonalPeriods: z.array(z.string()),
-              timeSeriesId: z.array(z.string()),
-            }),
-            binaryClassificationMetrics: z.object({
-              aggregateClassificationMetrics: z.object({
-                accuracy: z.number(),
-                f1Score: z.number(),
-                logLoss: z.number(),
-                precision: z.number(),
-                recall: z.number(),
-                rocAuc: z.number(),
-                threshold: z.number(),
-              }),
-              binaryConfusionMatrixList: z.array(z.object({
-                accuracy: z.number(),
-                f1Score: z.number(),
-                falseNegatives: z.string(),
-                falsePositives: z.string(),
-                positiveClassThreshold: z.number(),
-                precision: z.number(),
-                recall: z.number(),
-                trueNegatives: z.string(),
-                truePositives: z.string(),
-              })),
-              negativeLabel: z.string(),
-              positiveLabel: z.string(),
-            }),
-            clusteringMetrics: z.object({
-              clusters: z.array(z.object({
-                centroidId: z.string(),
-                count: z.string(),
-                featureValues: z.array(z.object({
-                  categoricalValue: z.object({
-                    categoryCounts: z.array(z.object({
-                      category: z.string(),
-                      count: z.string(),
-                    })),
-                  }),
-                  featureColumn: z.string(),
-                  numericalValue: z.number(),
-                })),
-              })),
-              daviesBouldinIndex: z.number(),
-              meanSquaredDistance: z.number(),
-            }),
-            dimensionalityReductionMetrics: z.object({
-              totalExplainedVarianceRatio: z.number(),
-            }),
-            multiClassClassificationMetrics: z.object({
-              aggregateClassificationMetrics: z.object({
-                accuracy: z.number(),
-                f1Score: z.number(),
-                logLoss: z.number(),
-                precision: z.number(),
-                recall: z.number(),
-                rocAuc: z.number(),
-                threshold: z.number(),
-              }),
-              confusionMatrixList: z.array(z.object({
-                confidenceThreshold: z.number(),
-                rows: z.array(z.object({
-                  actualLabel: z.string(),
-                  entries: z.array(z.object({
-                    itemCount: z.string(),
-                    predictedLabel: z.string(),
-                  })),
-                })),
-              })),
-            }),
-            rankingMetrics: z.object({
-              averageRank: z.number(),
-              meanAveragePrecision: z.number(),
-              meanSquaredError: z.number(),
-              normalizedDiscountedCumulativeGain: z.number(),
-            }),
-            regressionMetrics: z.object({
-              meanAbsoluteError: z.number(),
-              meanSquaredError: z.number(),
-              meanSquaredLogError: z.number(),
-              medianAbsoluteError: z.number(),
-              rSquared: z.number(),
-            }),
-          }),
-          hparams: z.object({
-            activationFn: z.string(),
-            adjustStepChanges: z.boolean(),
-            approxGlobalFeatureContrib: z.boolean(),
-            autoArima: z.boolean(),
-            autoArimaMaxOrder: z.string(),
-            autoArimaMinOrder: z.string(),
-            autoClassWeights: z.boolean(),
-            batchSize: z.string(),
-            boosterType: z.string(),
-            budgetHours: z.number(),
-            calculatePValues: z.boolean(),
-            categoryEncodingMethod: z.string(),
-            cleanSpikesAndDips: z.boolean(),
-            colorSpace: z.string(),
-            colsampleBylevel: z.number(),
-            colsampleBynode: z.number(),
-            colsampleBytree: z.number(),
-            contributionMetric: z.string(),
-            dartNormalizeType: z.string(),
-            dataFrequency: z.string(),
-            dataSplitColumn: z.string(),
-            dataSplitEvalFraction: z.number(),
-            dataSplitMethod: z.string(),
-            decomposeTimeSeries: z.boolean(),
-            dimensionIdColumns: z.array(z.string()),
-            distanceType: z.string(),
-            dropout: z.number(),
-            earlyStop: z.boolean(),
-            enableGlobalExplain: z.boolean(),
-            endpointIdleTtl: z.string(),
-            feedbackType: z.string(),
-            fitIntercept: z.boolean(),
-            forecastLimitLowerBound: z.number(),
-            forecastLimitUpperBound: z.number(),
-            hiddenUnits: z.array(z.string()),
-            holidayRegion: z.string(),
-            holidayRegions: z.array(z.string()),
-            horizon: z.string(),
-            hparamTuningObjectives: z.array(z.string()),
-            huggingFaceModelId: z.string(),
-            includeDrift: z.boolean(),
-            initialLearnRate: z.number(),
-            inputLabelColumns: z.array(z.string()),
-            instanceWeightColumn: z.string(),
-            integratedGradientsNumSteps: z.string(),
-            isTestColumn: z.string(),
-            itemColumn: z.string(),
-            kmeansInitializationColumn: z.string(),
-            kmeansInitializationMethod: z.string(),
-            l1RegActivation: z.number(),
-            l1Regularization: z.number(),
-            l2Regularization: z.number(),
-            labelClassWeights: z.record(z.string(), z.unknown()),
-            learnRate: z.number(),
-            learnRateStrategy: z.string(),
-            lossType: z.string(),
-            machineType: z.string(),
-            maxIterations: z.string(),
-            maxParallelTrials: z.string(),
-            maxReplicaCount: z.string(),
-            maxTimeSeriesLength: z.string(),
-            maxTreeDepth: z.string(),
-            minAprioriSupport: z.number(),
-            minRelativeProgress: z.number(),
-            minReplicaCount: z.string(),
-            minSplitLoss: z.number(),
-            minTimeSeriesLength: z.string(),
-            minTreeChildWeight: z.string(),
-            modelGardenModelName: z.string(),
-            modelRegistry: z.string(),
-            modelUri: z.string(),
-            nonSeasonalOrder: z.object({
-              d: z.string(),
-              p: z.string(),
-              q: z.string(),
-            }),
-            numClusters: z.string(),
-            numFactors: z.string(),
-            numParallelTree: z.string(),
-            numPrincipalComponents: z.string(),
-            numTrials: z.string(),
-            optimizationStrategy: z.string(),
-            optimizer: z.string(),
-            pcaExplainedVarianceRatio: z.number(),
-            pcaSolver: z.string(),
-            reservationAffinityKey: z.string(),
-            reservationAffinityType: z.string(),
-            reservationAffinityValues: z.array(z.string()),
-            sampledShapleyNumPaths: z.string(),
-            scaleFeatures: z.boolean(),
-            standardizeFeatures: z.boolean(),
-            subsample: z.number(),
-            tfVersion: z.string(),
-            timeSeriesDataColumn: z.string(),
-            timeSeriesIdColumn: z.string(),
-            timeSeriesIdColumns: z.array(z.string()),
-            timeSeriesLengthFraction: z.number(),
-            timeSeriesTimestampColumn: z.string(),
-            treeMethod: z.string(),
-            trendSmoothingWindowSize: z.string(),
-            userColumn: z.string(),
-            vertexAiModelVersionAliases: z.array(z.string()),
-            walsAlpha: z.number(),
-            warmStart: z.boolean(),
-            xgboostVersion: z.string(),
-          }),
-          startTimeMs: z.string(),
-          status: z.string(),
-          trainingLoss: z.number(),
-          trialId: z.string(),
+          endTimeMs: z.unknown(),
+          errorMessage: z.unknown(),
+          evalLoss: z.unknown(),
+          evaluationMetrics: z.unknown(),
+          hparamTuningEvaluationMetrics: z.unknown(),
+          hparams: z.unknown(),
+          startTimeMs: z.unknown(),
+          status: z.unknown(),
+          trainingLoss: z.unknown(),
+          trialId: z.unknown(),
         })),
         iterationResults: z.array(z.object({
-          arimaResult: z.object({
-            arimaModelInfo: z.array(z.object({
-              arimaCoefficients: z.object({
-                autoRegressiveCoefficients: z.array(z.number()),
-                interceptCoefficient: z.number(),
-                movingAverageCoefficients: z.array(z.number()),
-              }),
-              arimaFittingMetrics: z.object({
-                aic: z.number(),
-                logLikelihood: z.number(),
-                variance: z.number(),
-              }),
-              hasDrift: z.boolean(),
-              hasHolidayEffect: z.boolean(),
-              hasSpikesAndDips: z.boolean(),
-              hasStepChanges: z.boolean(),
-              nonSeasonalOrder: z.object({
-                d: z.string(),
-                p: z.string(),
-                q: z.string(),
-              }),
-              seasonalPeriods: z.array(z.string()),
-              timeSeriesId: z.string(),
-              timeSeriesIds: z.array(z.string()),
-            })),
-            seasonalPeriods: z.array(z.string()),
-          }),
-          clusterInfos: z.array(z.object({
-            centroidId: z.string(),
-            clusterRadius: z.number(),
-            clusterSize: z.string(),
-          })),
-          durationMs: z.string(),
-          evalLoss: z.number(),
-          index: z.number(),
-          learnRate: z.number(),
-          principalComponentInfos: z.array(z.object({
-            cumulativeExplainedVarianceRatio: z.number(),
-            explainedVariance: z.number(),
-            explainedVarianceRatio: z.number(),
-            principalComponentId: z.string(),
-          })),
-          trainingLoss: z.number(),
+          arimaResult: z.unknown(),
+          clusterInfos: z.unknown(),
+          durationMs: z.unknown(),
+          evalLoss: z.unknown(),
+          index: z.unknown(),
+          learnRate: z.unknown(),
+          principalComponentInfos: z.unknown(),
+          trainingLoss: z.unknown(),
         })),
         maxIterations: z.string(),
         modelType: z.string(),
@@ -4519,30 +2423,16 @@ const StateSchema = z.object({
       performanceInsights: z.object({
         avgPreviousExecutionMs: z.string(),
         stagePerformanceChangeInsights: z.array(z.object({
-          inputDataChange: z.object({
-            recordsReadDiffPercentage: z.number(),
-          }),
-          stageId: z.string(),
+          inputDataChange: z.unknown(),
+          stageId: z.unknown(),
         })),
         stagePerformanceStandaloneInsights: z.array(z.object({
-          biEngineReasons: z.array(z.object({
-            code: z.string(),
-            message: z.string(),
-          })),
-          highCardinalityJoins: z.array(z.object({
-            leftRows: z.string(),
-            outputRows: z.string(),
-            rightRows: z.string(),
-            stepIndex: z.number(),
-          })),
-          insufficientShuffleQuota: z.boolean(),
-          partitionSkew: z.object({
-            skewSources: z.array(z.object({
-              stageId: z.string(),
-            })),
-          }),
-          slotContention: z.boolean(),
-          stageId: z.string(),
+          biEngineReasons: z.unknown(),
+          highCardinalityJoins: z.unknown(),
+          insufficientShuffleQuota: z.unknown(),
+          partitionSkew: z.unknown(),
+          slotContention: z.unknown(),
+          stageId: z.unknown(),
         })),
       }),
       queryInfo: z.object({
@@ -4557,7 +2447,7 @@ const StateSchema = z.object({
         computeRatioMax: z.number(),
         endMs: z.string(),
         id: z.string(),
-        inputStages: z.array(z.string()),
+        inputStages: z.array(z.unknown()),
         name: z.string(),
         parallelInputs: z.string(),
         readMsAvg: z.string(),
@@ -4571,10 +2461,7 @@ const StateSchema = z.object({
         slotMs: z.string(),
         startMs: z.string(),
         status: z.string(),
-        steps: z.array(z.object({
-          kind: z.string(),
-          substeps: z.array(z.string()),
-        })),
+        steps: z.array(z.unknown()),
         waitMsAvg: z.string(),
         waitMsMax: z.string(),
         waitRatioAvg: z.number(),
@@ -4605,39 +2492,24 @@ const StateSchema = z.object({
       })),
       schema: z.object({
         fields: z.array(z.object({
-          categories: z.object({
-            names: z.array(z.string()),
-          }),
-          collation: z.string(),
-          dataPolicies: z.array(z.object({
-            name: z.string(),
-          })),
-          defaultValueExpression: z.string(),
-          description: z.string(),
-          fields: z.array(z.string()),
-          foreignTypeDefinition: z.string(),
-          generatedColumn: z.object({
-            generatedExpressionInfo: z.object({
-              asynchronous: z.boolean(),
-              generationExpression: z.string(),
-              stored: z.boolean(),
-            }),
-            generatedMode: z.string(),
-          }),
-          maxLength: z.string(),
-          mode: z.string(),
-          name: z.string(),
-          policyTags: z.object({
-            names: z.array(z.string()),
-          }),
-          precision: z.string(),
-          rangeElementType: z.object({
-            type: z.string(),
-          }),
-          roundingMode: z.string(),
-          scale: z.string(),
-          timestampPrecision: z.string(),
-          type: z.string(),
+          categories: z.unknown(),
+          collation: z.unknown(),
+          dataPolicies: z.unknown(),
+          defaultValueExpression: z.unknown(),
+          description: z.unknown(),
+          fields: z.unknown(),
+          foreignTypeDefinition: z.unknown(),
+          generatedColumn: z.unknown(),
+          maxLength: z.unknown(),
+          mode: z.unknown(),
+          name: z.unknown(),
+          policyTags: z.unknown(),
+          precision: z.unknown(),
+          rangeElementType: z.unknown(),
+          roundingMode: z.unknown(),
+          scale: z.unknown(),
+          timestampPrecision: z.unknown(),
+          type: z.unknown(),
         })),
         foreignTypeInfo: z.object({
           typeSystem: z.string(),
@@ -4645,24 +2517,16 @@ const StateSchema = z.object({
       }),
       searchStatistics: z.object({
         indexPruningStats: z.array(z.object({
-          baseTable: z.object({
-            datasetId: z.string(),
-            projectId: z.string(),
-            tableId: z.string(),
-          }),
-          indexId: z.string(),
-          postIndexPruningParallelInputCount: z.string(),
-          preIndexPruningParallelInputCount: z.string(),
+          baseTable: z.unknown(),
+          indexId: z.unknown(),
+          postIndexPruningParallelInputCount: z.unknown(),
+          preIndexPruningParallelInputCount: z.unknown(),
         })),
         indexUnusedReasons: z.array(z.object({
-          baseTable: z.object({
-            datasetId: z.string(),
-            projectId: z.string(),
-            tableId: z.string(),
-          }),
-          code: z.string(),
-          indexName: z.string(),
-          message: z.string(),
+          baseTable: z.unknown(),
+          code: z.unknown(),
+          indexName: z.unknown(),
+          message: z.unknown(),
         })),
         indexUsageMode: z.string(),
       }),
@@ -4697,50 +2561,31 @@ const StateSchema = z.object({
       undeclaredQueryParameters: z.array(z.object({
         name: z.string(),
         parameterType: z.object({
-          arrayType: z.string(),
-          rangeElementType: z.string(),
-          structTypes: z.array(z.object({
-            description: z.string(),
-            name: z.string(),
-            type: z.string(),
-          })),
-          timestampPrecision: z.string(),
-          type: z.string(),
+          arrayType: z.unknown(),
+          rangeElementType: z.unknown(),
+          structTypes: z.unknown(),
+          timestampPrecision: z.unknown(),
+          type: z.unknown(),
         }),
         parameterValue: z.object({
-          arrayValues: z.array(z.string()),
-          rangeValue: z.object({
-            end: z.string(),
-            start: z.string(),
-          }),
-          structValues: z.record(z.string(), z.unknown()),
-          value: z.string(),
+          arrayValues: z.unknown(),
+          rangeValue: z.unknown(),
+          structValues: z.unknown(),
+          value: z.unknown(),
         }),
       })),
       vectorSearchStatistics: z.object({
         indexUnusedReasons: z.array(z.object({
-          baseTable: z.object({
-            datasetId: z.string(),
-            projectId: z.string(),
-            tableId: z.string(),
-          }),
-          code: z.string(),
-          indexName: z.string(),
-          message: z.string(),
+          baseTable: z.unknown(),
+          code: z.unknown(),
+          indexName: z.unknown(),
+          message: z.unknown(),
         })),
         indexUsageMode: z.string(),
         storedColumnsUsages: z.array(z.object({
-          baseTable: z.object({
-            datasetId: z.string(),
-            projectId: z.string(),
-            tableId: z.string(),
-          }),
-          isQueryAccelerated: z.boolean(),
-          storedColumnsUnusedReasons: z.array(z.object({
-            code: z.string(),
-            message: z.string(),
-            uncoveredColumns: z.array(z.string()),
-          })),
+          baseTable: z.unknown(),
+          isQueryAccelerated: z.unknown(),
+          storedColumnsUnusedReasons: z.unknown(),
         })),
       }),
     }),
@@ -5094,93 +2939,56 @@ const InputsSchema = z.object({
       ).optional(),
       schema: z.object({
         fields: z.array(z.object({
-          categories: z.object({
-            names: z.array(z.string()).describe("Deprecated.").optional(),
-          }).describe("Deprecated.").optional(),
-          collation: z.string().describe(
+          categories: z.unknown().describe("Deprecated.").optional(),
+          collation: z.unknown().describe(
             "Optional. Field collation can be set only when the type of field is STRING. The following values are supported: * 'und:ci': undetermined locale, case insensitive. * '': empty string. Default to case-sensitive behavior.",
           ).optional(),
-          dataPolicies: z.array(z.object({
-            name: z.string().describe(
-              "Data policy resource name in the form of projects/project_id/locations/location_id/dataPolicies/data_policy_id.",
-            ).optional(),
-          })).describe(
+          dataPolicies: z.unknown().describe(
             "Optional. Data policies attached to this field, used for field-level access control.",
           ).optional(),
-          defaultValueExpression: z.string().describe(
+          defaultValueExpression: z.unknown().describe(
             "Optional. A SQL expression to specify the [default value] (https://cloud.google.com/bigquery/docs/default-values) for this field.",
           ).optional(),
-          description: z.string().describe(
+          description: z.unknown().describe(
             "Optional. The field description. The maximum length is 1,024 characters.",
           ).optional(),
-          fields: z.array(z.string()).describe(
+          fields: z.unknown().describe(
             "Optional. Describes the nested schema fields if the type property is set to RECORD.",
           ).optional(),
-          foreignTypeDefinition: z.string().describe(
+          foreignTypeDefinition: z.unknown().describe(
             "Optional. Definition of the foreign data type. Only valid for top-level schema fields (not nested fields). If the type is FOREIGN, this field is required.",
           ).optional(),
-          generatedColumn: z.object({
-            generatedExpressionInfo: z.object({
-              asynchronous: z.boolean().describe(
-                "Optional. Whether the column generation is done asynchronously.",
-              ).optional(),
-              generationExpression: z.string().describe(
-                "Optional. The generation expression (e.g. AI.EMBED(...)) used to generated the field.",
-              ).optional(),
-              stored: z.boolean().describe(
-                "Optional. Whether the generated column is stored in the table.",
-              ).optional(),
-            }).describe(
-              "Definition of the expression used to generate the field.",
-            ).optional(),
-            generatedMode: z.enum([
-              "GENERATED_MODE_UNSPECIFIED",
-              "GENERATED_ALWAYS",
-              "GENERATED_BY_DEFAULT",
-            ]).describe(
-              "Optional. Dictates when system generated values are used to populate the field.",
-            ).optional(),
-          }).describe(
+          generatedColumn: z.unknown().describe(
             "Optional. Definition of how values are generated for the field. Only valid for top-level schema fields (not nested fields).",
           ).optional(),
-          maxLength: z.string().describe(
+          maxLength: z.unknown().describe(
             'Optional. Maximum length of values of this field for STRINGS or BYTES. If max_length is not specified, no maximum length constraint is imposed on this field. If type = "STRING", then max_length represents the maximum UTF-8 length of strings in this field. If type = "BYTES", then max_length represents the maximum number of bytes in this field. It is invalid to set this field if type ≠ "STRING" and ≠ "BYTES".',
           ).optional(),
-          mode: z.string().describe(
+          mode: z.unknown().describe(
             "Optional. The field mode. Possible values include NULLABLE, REQUIRED and REPEATED. The default value is NULLABLE.",
           ).optional(),
-          name: z.string().describe(
+          name: z.unknown().describe(
             "Required. The field name. The name must contain only letters (a-z, A-Z), numbers (0-9), or underscores (_), and must start with a letter or underscore. The maximum length is 300 characters.",
           ).optional(),
-          policyTags: z.object({
-            names: z.array(z.string()).describe(
-              'A list of policy tag resource names. For example, "projects/1/locations/eu/taxonomies/2/policyTags/3". At most 1 policy tag is currently allowed.',
-            ).optional(),
-          }).describe(
+          policyTags: z.unknown().describe(
             "Optional. The policy tags attached to this field, used for field-level access control. If not set, defaults to empty policy_tags.",
           ).optional(),
-          precision: z.string().describe(
+          precision: z.unknown().describe(
             'Optional. Precision (maximum number of total digits in base 10) and scale (maximum number of digits in the fractional part in base 10) constraints for values of this field for NUMERIC or BIGNUMERIC. It is invalid to set precision or scale if type ≠ "NUMERIC" and ≠ "BIGNUMERIC". If precision and scale are not specified, no value range constraint is imposed on this field insofar as values are permitted by the type. Values of this NUMERIC or BIGNUMERIC field must be in this range when: * Precision (P) and scale (S) are specified: [-10P-S + 10-S, 10P-S - 10-S] * Precision (P) is specified but not scale (and thus scale is interpreted to be equal to zero): [-10P + 1, 10P - 1]. Acceptable values for precision and scale if both are specified: * If type = "NUMERIC": 1 ≤ precision - scale ≤ 29 and 0 ≤ scale ≤ 9. * If type = "BIGNUMERIC": 1 ≤ precision - scale ≤ 38 and 0 ≤ scale ≤ 38. Acceptable values for precision if only precision is specified but not scale (and thus scale is interpreted to be equal to zero): * If type = "NUMERIC": 1 ≤ precision ≤ 29. * If type = "BIGNUMERIC": 1 ≤ precision ≤ 38. If scale is specified but not precision, then it is invalid.',
           ).optional(),
-          rangeElementType: z.object({
-            type: z.string().describe(
-              "Required. The type of a field element. For more information, see TableFieldSchema.type.",
-            ).optional(),
-          }).describe("Represents the type of a field element.").optional(),
-          roundingMode: z.enum([
-            "ROUNDING_MODE_UNSPECIFIED",
-            "ROUND_HALF_AWAY_FROM_ZERO",
-            "ROUND_HALF_EVEN",
-          ]).describe(
+          rangeElementType: z.unknown().describe(
+            "Represents the type of a field element.",
+          ).optional(),
+          roundingMode: z.unknown().describe(
             "Optional. Specifies the rounding mode to be used when storing values of NUMERIC and BIGNUMERIC type.",
           ).optional(),
-          scale: z.string().describe(
+          scale: z.unknown().describe(
             "Optional. See documentation for precision.",
           ).optional(),
-          timestampPrecision: z.string().describe(
+          timestampPrecision: z.unknown().describe(
             "Optional. Precision (maximum number of total digits in base 10) for seconds of TIMESTAMP type. Possible values include: * 6 (Default, for TIMESTAMP type with microsecond precision) * 12 (For TIMESTAMP type with picosecond precision)",
           ).optional(),
-          type: z.string().describe(
+          type: z.unknown().describe(
             "Required. The field data type. Possible values include: * STRING * BYTES * INTEGER (or INT64) * FLOAT (or FLOAT64) * BOOLEAN (or BOOL) * TIMESTAMP * DATE * TIME * DATETIME * GEOGRAPHY * NUMERIC * BIGNUMERIC * JSON * RECORD (or STRUCT) * RANGE Use of RECORD/STRUCT indicates that the field contains a nested schema.",
           ).optional(),
         })).describe("Describes the fields in a table.").optional(),
@@ -5330,47 +3138,31 @@ const InputsSchema = z.object({
           "Optional. If unset, this is a positional parameter. Otherwise, should be unique within a query.",
         ).optional(),
         parameterType: z.object({
-          arrayType: z.string().describe(
+          arrayType: z.unknown().describe(
             "Circular reference to QueryParameterType",
           ).optional(),
-          rangeElementType: z.string().describe(
+          rangeElementType: z.unknown().describe(
             "Circular reference to QueryParameterType",
           ).optional(),
-          structTypes: z.array(z.object({
-            description: z.string().describe(
-              "Optional. Human-oriented description of the field.",
-            ).optional(),
-            name: z.string().describe("Optional. The name of this field.")
-              .optional(),
-            type: z.string().describe(
-              "Circular reference to QueryParameterType",
-            ).optional(),
-          })).describe(
+          structTypes: z.unknown().describe(
             "Optional. The types of the fields of this struct, in order, if this is a struct.",
           ).optional(),
-          timestampPrecision: z.string().describe(
+          timestampPrecision: z.unknown().describe(
             "Optional. Precision (maximum number of total digits in base 10) for seconds of TIMESTAMP type. Possible values include: * 6 (Default, for TIMESTAMP type with microsecond precision) * 12 (For TIMESTAMP type with picosecond precision)",
           ).optional(),
-          type: z.string().describe(
+          type: z.unknown().describe(
             "Required. The top level type of this field.",
           ).optional(),
         }).describe("The type of a query parameter.").optional(),
         parameterValue: z.object({
-          arrayValues: z.array(z.string()).describe(
+          arrayValues: z.unknown().describe(
             "Optional. The array values, if this is an array type.",
           ).optional(),
-          rangeValue: z.object({
-            end: z.string().describe(
-              "Circular reference to QueryParameterValue",
-            ).optional(),
-            start: z.string().describe(
-              "Circular reference to QueryParameterValue",
-            ).optional(),
-          }).describe("Represents the value of a range.").optional(),
-          structValues: z.record(z.string(), z.string()).describe(
-            "The struct field values.",
-          ).optional(),
-          value: z.string().describe(
+          rangeValue: z.unknown().describe("Represents the value of a range.")
+            .optional(),
+          structValues: z.unknown().describe("The struct field values.")
+            .optional(),
+          value: z.unknown().describe(
             "Optional. The value of this value, if a simple scalar type.",
           ).optional(),
         }).describe("The value of a query parameter.").optional(),
@@ -5414,42 +3206,16 @@ const InputsSchema = z.object({
         types: z.record(
           z.string(),
           z.object({
-            arrayElementType: z.string().describe(
+            arrayElementType: z.unknown().describe(
               "Circular reference to StandardSqlDataType",
             ).optional(),
-            rangeElementType: z.string().describe(
+            rangeElementType: z.unknown().describe(
               "Circular reference to StandardSqlDataType",
             ).optional(),
-            structType: z.object({
-              fields: z.array(z.object({
-                name: z.string().describe(
-                  "Optional. The name of this field. Can be absent for struct fields.",
-                ).optional(),
-                type: z.string().describe(
-                  "Circular reference to StandardSqlDataType",
-                ).optional(),
-              })).describe("Fields within the struct.").optional(),
-            }).describe("The representation of a SQL STRUCT type.").optional(),
-            typeKind: z.enum([
-              "TYPE_KIND_UNSPECIFIED",
-              "INT64",
-              "BOOL",
-              "FLOAT64",
-              "STRING",
-              "BYTES",
-              "TIMESTAMP",
-              "DATE",
-              "TIME",
-              "DATETIME",
-              "INTERVAL",
-              "GEOGRAPHY",
-              "NUMERIC",
-              "BIGNUMERIC",
-              "JSON",
-              "ARRAY",
-              "STRUCT",
-              "RANGE",
-            ]).describe(
+            structType: z.unknown().describe(
+              "The representation of a SQL STRUCT type.",
+            ).optional(),
+            typeKind: z.unknown().describe(
               'Required. The top level type of this field. Can be any GoogleSQL data type (e.g., "INT64", "DATE", "ARRAY").',
             ).optional(),
           }),
@@ -5466,73 +3232,21 @@ const InputsSchema = z.object({
             "Try to detect schema and format options automatically. Any option specified explicitly will be honored.",
           ).optional(),
           avroOptions: z.object({
-            useAvroLogicalTypes: z.boolean().describe(
+            useAvroLogicalTypes: z.unknown().describe(
               'Optional. If sourceFormat is set to "AVRO", indicates whether to interpret logical types as the corresponding BigQuery data type (for example, TIMESTAMP), instead of using the raw type (for example, INTEGER).',
             ).optional(),
           }).describe("Options for external data sources.").optional(),
           bigtableOptions: z.object({
-            columnFamilies: z.array(z.object({
-              columns: z.array(z.object({
-                encoding: z.string().describe(
-                  "Optional. The encoding of the values when the type is not STRING. Acceptable encoding values are: TEXT - indicates values are alphanumeric text strings. BINARY - indicates values are encoded using HBase Bytes.toBytes family of functions. PROTO_BINARY - indicates values are encoded using serialized proto messages. This can only be used in combination with JSON type. 'encoding' can also be set at the column family level. However, the setting at this level takes precedence if 'encoding' is set at both levels.",
-                ).optional(),
-                fieldName: z.string().describe(
-                  "Optional. If the qualifier is not a valid BigQuery field identifier i.e. does not match a-zA-Z*, a valid identifier must be provided as the column field name and is used as field name in queries.",
-                ).optional(),
-                onlyReadLatest: z.boolean().describe(
-                  "Optional. If this is set, only the latest version of value in this column are exposed. 'onlyReadLatest' can also be set at the column family level. However, the setting at this level takes precedence if 'onlyReadLatest' is set at both levels.",
-                ).optional(),
-                protoConfig: z.object({
-                  protoMessageName: z.string().describe(
-                    'Optional. The fully qualified proto message name of the protobuf. In the format of "foo.bar.Message".',
-                  ).optional(),
-                  schemaBundleId: z.string().describe(
-                    "Optional. The ID of the Bigtable SchemaBundle resource associated with this protobuf. The ID should be referred to within the parent table, e.g., `foo` rather than `projects/{project}/instances/{instance}/tables/{table}/schemaBundles/foo`. See [more details on Bigtable SchemaBundles](https://docs.cloud.google.com/bigtable/docs/create-manage-protobuf-schemas).",
-                  ).optional(),
-                }).describe(
-                  "Information related to a Bigtable protobuf column.",
-                ).optional(),
-                qualifierEncoded: z.string().describe(
-                  "[Required] Qualifier of the column. Columns in the parent column family that has this exact qualifier are exposed as `.` field. If the qualifier is valid UTF-8 string, it can be specified in the qualifier_string field. Otherwise, a base-64 encoded value must be set to qualifier_encoded. The column field name is the same as the column qualifier. However, if the qualifier is not a valid BigQuery field identifier i.e. does not match a-zA-Z*, a valid identifier must be provided as field_name.",
-                ).optional(),
-                qualifierString: z.string().describe("Qualifier string.")
-                  .optional(),
-                type: z.string().describe(
-                  "Optional. The type to convert the value in cells of this column. The values are expected to be encoded using HBase Bytes.toBytes function when using the BINARY encoding value. Following BigQuery types are allowed (case-sensitive): * BYTES * STRING * INTEGER * FLOAT * BOOLEAN * JSON Default type is BYTES. 'type' can also be set at the column family level. However, the setting at this level takes precedence if 'type' is set at both levels.",
-                ).optional(),
-              })).describe(
-                "Optional. Lists of columns that should be exposed as individual fields as opposed to a list of (column name, value) pairs. All columns whose qualifier matches a qualifier in this list can be accessed as `.`. Other columns can be accessed as a list through the `.Column` field.",
-              ).optional(),
-              encoding: z.string().describe(
-                "Optional. The encoding of the values when the type is not STRING. Acceptable encoding values are: TEXT - indicates values are alphanumeric text strings. BINARY - indicates values are encoded using HBase Bytes.toBytes family of functions. PROTO_BINARY - indicates values are encoded using serialized proto messages. This can only be used in combination with JSON type. This can be overridden for a specific column by listing that column in 'columns' and specifying an encoding for it.",
-              ).optional(),
-              familyId: z.string().describe("Identifier of the column family.")
-                .optional(),
-              onlyReadLatest: z.boolean().describe(
-                "Optional. If this is set only the latest version of value are exposed for all columns in this column family. This can be overridden for a specific column by listing that column in 'columns' and specifying a different setting for that column.",
-              ).optional(),
-              protoConfig: z.object({
-                protoMessageName: z.string().describe(
-                  'Optional. The fully qualified proto message name of the protobuf. In the format of "foo.bar.Message".',
-                ).optional(),
-                schemaBundleId: z.string().describe(
-                  "Optional. The ID of the Bigtable SchemaBundle resource associated with this protobuf. The ID should be referred to within the parent table, e.g., `foo` rather than `projects/{project}/instances/{instance}/tables/{table}/schemaBundles/foo`. See [more details on Bigtable SchemaBundles](https://docs.cloud.google.com/bigtable/docs/create-manage-protobuf-schemas).",
-                ).optional(),
-              }).describe("Information related to a Bigtable protobuf column.")
-                .optional(),
-              type: z.string().describe(
-                "Optional. The type to convert the value in cells of this column family. The values are expected to be encoded using HBase Bytes.toBytes function when using the BINARY encoding value. Following BigQuery types are allowed (case-sensitive): * BYTES * STRING * INTEGER * FLOAT * BOOLEAN * JSON Default type is BYTES. This can be overridden for a specific column by listing that column in 'columns' and specifying a type for it.",
-              ).optional(),
-            })).describe(
+            columnFamilies: z.unknown().describe(
               "Optional. List of column families to expose in the table schema along with their types. This list restricts the column families that can be referenced in queries and specifies their value types. You can use this list to do type conversions - see the 'type' field for more details. If you leave this list empty, all column families are present in the table schema and their values are read as BYTES. During a query only the column families referenced in that query are read from Bigtable.",
             ).optional(),
-            ignoreUnspecifiedColumnFamilies: z.boolean().describe(
+            ignoreUnspecifiedColumnFamilies: z.unknown().describe(
               "Optional. If field is true, then the column families that are not specified in columnFamilies list are not exposed in the table schema. Otherwise, they are read with BYTES type values. The default value is false.",
             ).optional(),
-            outputColumnFamiliesAsJson: z.boolean().describe(
+            outputColumnFamiliesAsJson: z.unknown().describe(
               "Optional. If field is true, then each column family will be read as a single JSON column. Otherwise they are read as a repeated cell structure containing timestamp/value tuples. The default value is false.",
             ).optional(),
-            readRowkeyAsString: z.boolean().describe(
+            readRowkeyAsString: z.unknown().describe(
               "Optional. If field is true, then the rowkey column families will be read and converted to string. Otherwise they are read with BYTES type values and users need to manually cast them with CAST if necessary. The default value is false.",
             ).optional(),
           }).describe("Options specific to Google Cloud Bigtable data sources.")
@@ -5544,34 +3258,34 @@ const InputsSchema = z.object({
             "Optional. The connection specifying the credentials to be used to read external storage, such as Azure Blob, Cloud Storage, or S3. The connection_id can have the form `{project_id}.{location_id};{connection_id}` or `projects/{project_id}/locations/{location_id}/connections/{connection_id}`.",
           ).optional(),
           csvOptions: z.object({
-            allowJaggedRows: z.boolean().describe(
+            allowJaggedRows: z.unknown().describe(
               "Optional. Indicates if BigQuery should accept rows that are missing trailing optional columns. If true, BigQuery treats missing trailing columns as null values. If false, records with missing trailing columns are treated as bad records, and if there are too many bad records, an invalid error is returned in the job result. The default value is false.",
             ).optional(),
-            allowQuotedNewlines: z.boolean().describe(
+            allowQuotedNewlines: z.unknown().describe(
               "Optional. Indicates if BigQuery should allow quoted data sections that contain newline characters in a CSV file. The default value is false.",
             ).optional(),
-            encoding: z.string().describe(
+            encoding: z.unknown().describe(
               "Optional. The character encoding of the data. The supported values are UTF-8, ISO-8859-1, UTF-16BE, UTF-16LE, UTF-32BE, and UTF-32LE. The default value is UTF-8. BigQuery decodes the data after the raw, binary data has been split using the values of the quote and fieldDelimiter properties.",
             ).optional(),
-            fieldDelimiter: z.string().describe(
+            fieldDelimiter: z.unknown().describe(
               'Optional. The separator character for fields in a CSV file. The separator is interpreted as a single byte. For files encoded in ISO-8859-1, any single character can be used as a separator. For files encoded in UTF-8, characters represented in decimal range 1-127 (U+0001-U+007F) can be used without any modification. UTF-8 characters encoded with multiple bytes (i.e. U+0080 and above) will have only the first byte used for separating fields. The remaining bytes will be treated as a part of the field. BigQuery also supports the escape sequence "\\t" (U+0009) to specify a tab separator. The default value is comma (",", U+002C).',
             ).optional(),
-            nullMarker: z.string().describe(
+            nullMarker: z.unknown().describe(
               'Optional. Specifies a string that represents a null value in a CSV file. For example, if you specify "\\N", BigQuery interprets "\\N" as a null value when querying a CSV file. The default value is the empty string. If you set this property to a custom value, BigQuery throws an error if an empty string is present for all data types except for STRING and BYTE. For STRING and BYTE columns, BigQuery interprets the empty string as an empty value.',
             ).optional(),
-            nullMarkers: z.array(z.string()).describe(
+            nullMarkers: z.unknown().describe(
               "Optional. A list of strings represented as SQL NULL value in a CSV file. null_marker and null_markers can't be set at the same time. If null_marker is set, null_markers has to be not set. If null_markers is set, null_marker has to be not set. If both null_marker and null_markers are set at the same time, a user error would be thrown. Any strings listed in null_markers, including empty string would be interpreted as SQL NULL. This applies to all column types.",
             ).optional(),
-            preserveAsciiControlCharacters: z.boolean().describe(
+            preserveAsciiControlCharacters: z.unknown().describe(
               "Optional. Indicates if the embedded ASCII control characters (the first 32 characters in the ASCII-table, from '\\x00' to '\\x1F') are preserved.",
             ).optional(),
-            quote: z.string().regex(new RegExp(".?")).describe(
+            quote: z.unknown().describe(
               "Optional. The value that is used to quote data sections in a CSV file. BigQuery converts the string to ISO-8859-1 encoding, and then uses the first byte of the encoded string to split the data in its raw, binary state. The default value is a double-quote (\"). If your data does not contain quoted sections, set the property value to an empty string. If your data contains quoted newline characters, you must also set the allowQuotedNewlines property to true. To include the specific quote character within a quoted value, precede it with an additional matching quote character. For example, if you want to escape the default character ' \" ', use ' \"\" '.",
             ).optional(),
-            skipLeadingRows: z.string().describe(
+            skipLeadingRows: z.unknown().describe(
               "Optional. The number of rows at the top of a CSV file that BigQuery will skip when reading the data. The default value is 0. This property is useful if you have header rows in the file that should be skipped. When autodetect is on, the behavior is the following: * skipLeadingRows unspecified - Autodetect tries to detect headers in the first row. If they are not detected, the row is read as data. Otherwise data is read starting from the second row. * skipLeadingRows is 0 - Instructs autodetect that there are no headers and data should be read starting from the first row. * skipLeadingRows = N > 0 - Autodetect skips N-1 rows and tries to detect headers in row N. If headers are not detected, row N is just skipped. Otherwise row N is used to extract column names for the detected schema.",
             ).optional(),
-            sourceColumnMatch: z.string().describe(
+            sourceColumnMatch: z.unknown().describe(
               "Optional. Controls the strategy used to match loaded columns to the schema. If not set, a sensible default is chosen based on how the schema is provided. If autodetect is used, then columns are matched by name. Otherwise, columns are matched by position. This is done to keep the behavior backward-compatible. Acceptable values are: POSITION - matches by position. This assumes that the columns are ordered the same way as the schema. NAME - matches by name. This reads the header row as column names and reorders columns to match the field names in the schema.",
             ).optional(),
           }).describe("Information related to a CSV data source.").optional(),
@@ -5581,14 +3295,7 @@ const InputsSchema = z.object({
           datetimeFormat: z.string().describe(
             "Optional. Format used to parse DATETIME values. Supports C-style and SQL-style values.",
           ).optional(),
-          decimalTargetTypes: z.array(
-            z.enum([
-              "DECIMAL_TARGET_TYPE_UNSPECIFIED",
-              "NUMERIC",
-              "BIGNUMERIC",
-              "STRING",
-            ]),
-          ).describe(
+          decimalTargetTypes: z.array(z.unknown()).describe(
             'Defines the list of possible SQL data types to which the source decimal values are converted. This list and the precision and the scale parameters of the decimal field determine the target type. In the order of NUMERIC, BIGNUMERIC, and STRING, a type is picked if it is in the specified list and if it supports the precision and the scale. STRING supports all precision and scale values. If none of the listed types supports the precision and the scale, the type supporting the widest range in the specified list is picked, and if a value exceeds the supported range when reading the data, an error will be thrown. Example: Suppose the value of this field is ["NUMERIC", "BIGNUMERIC"]. If (precision,scale) is: * (38,9) -> NUMERIC; * (39,9) -> BIGNUMERIC (NUMERIC cannot hold 30 integer digits); * (38,10) -> BIGNUMERIC (NUMERIC cannot hold 10 fractional digits); * (76,38) -> BIGNUMERIC; * (77,38) -> BIGNUMERIC (error if value exceeds supported range). This field cannot contain duplicate types. The order of the types in this field is ignored. For example, ["BIGNUMERIC", "NUMERIC"] is the same as ["NUMERIC", "BIGNUMERIC"] and NUMERIC always takes precedence over BIGNUMERIC. Defaults to ["NUMERIC", "STRING"] for ORC and ["NUMERIC"] for the other file formats.',
           ).optional(),
           fileSetSpecType: z.enum([
@@ -5598,25 +3305,25 @@ const InputsSchema = z.object({
             "Optional. Specifies how source URIs are interpreted for constructing the file set to load. By default source URIs are expanded against the underlying storage. Other options include specifying manifest files. Only applicable to object storage systems.",
           ).optional(),
           googleSheetsOptions: z.object({
-            range: z.string().describe(
+            range: z.unknown().describe(
               "Optional. Range of a sheet to query from. Only used when non-empty. Typical format: sheet_name!top_left_cell_id:bottom_right_cell_id For example: sheet1!A1:B20",
             ).optional(),
-            skipLeadingRows: z.string().describe(
+            skipLeadingRows: z.unknown().describe(
               "Optional. The number of rows at the top of a sheet that BigQuery will skip when reading the data. The default value is 0. This property is useful if you have header rows that should be skipped. When autodetect is on, the behavior is the following: * skipLeadingRows unspecified - Autodetect tries to detect headers in the first row. If they are not detected, the row is read as data. Otherwise data is read starting from the second row. * skipLeadingRows is 0 - Instructs autodetect that there are no headers and data should be read starting from the first row. * skipLeadingRows = N > 0 - Autodetect skips N-1 rows and tries to detect headers in row N. If headers are not detected, row N is just skipped. Otherwise row N is used to extract column names for the detected schema.",
             ).optional(),
           }).describe("Options specific to Google Sheets data sources.")
             .optional(),
           hivePartitioningOptions: z.object({
-            fields: z.array(z.string()).describe(
+            fields: z.unknown().describe(
               "Output only. For permanent external tables, this field is populated with the hive partition keys in the order they were inferred. The types of the partition keys can be deduced by checking the table schema (which will include the partition keys). Not every API will populate this field in the output. For example, Tables.Get will populate it, but Tables.List will not contain this field.",
             ).optional(),
-            mode: z.string().describe(
+            mode: z.unknown().describe(
               "Optional. When set, what mode of hive partitioning to use when reading data. The following modes are supported: * AUTO: automatically infer partition key name(s) and type(s). * STRINGS: automatically infer partition key name(s). All types are strings. * CUSTOM: partition key schema is encoded in the source URI prefix. Not all storage formats support hive partitioning. Requesting hive partitioning on an unsupported format will lead to an error. Currently supported formats are: JSON, CSV, ORC, Avro and Parquet.",
             ).optional(),
-            requirePartitionFilter: z.boolean().describe(
+            requirePartitionFilter: z.unknown().describe(
               "Optional. If set to true, queries over this table require a partition filter that can be used for partition elimination to be specified. Note that this field should only be true when creating a permanent external table or querying a temporary external table. Hive-partitioned loads with require_partition_filter explicitly set to true will fail.",
             ).optional(),
-            sourceUriPrefix: z.string().describe(
+            sourceUriPrefix: z.unknown().describe(
               "Optional. When hive partition detection is requested, a common prefix for all source uris must be required. The prefix must end immediately before the partition key encoding begins. For example, consider files following this data layout: gs://bucket/path_to_table/dt=2019-06-01/country=USA/id=7/file.avro gs://bucket/path_to_table/dt=2019-05-31/country=CA/id=3/file.avro When hive partitioning is requested with either AUTO or STRINGS detection, the common prefix can be either of gs://bucket/path_to_table or gs://bucket/path_to_table/. CUSTOM detection requires encoding the partitioning schema immediately after the common prefix. For CUSTOM, any of * gs://bucket/path_to_table/{dt:DATE}/{country:STRING}/{id:INTEGER} * gs://bucket/path_to_table/{dt:STRING}/{country:STRING}/{id:INTEGER} * gs://bucket/path_to_table/{dt:DATE}/{country:STRING}/{id:STRING} would all be valid source URI prefixes.",
             ).optional(),
           }).describe("Options for configuring hive partitioning detect.")
@@ -5629,7 +3336,7 @@ const InputsSchema = z.object({
               "Optional. Load option to be used together with source_format newline-delimited JSON to indicate that a variant of JSON is being loaded. To load newline-delimited GeoJSON, specify GEOJSON (and source_format must be set to NEWLINE_DELIMITED_JSON).",
             ).optional(),
           jsonOptions: z.object({
-            encoding: z.string().describe(
+            encoding: z.unknown().describe(
               "Optional. The character encoding of the data. The supported values are UTF-8, UTF-16BE, UTF-16LE, UTF-32BE, and UTF-32LE. The default value is UTF-8.",
             ).optional(),
           }).describe("Json Options for load and make external tables.")
@@ -5652,16 +3359,13 @@ const InputsSchema = z.object({
             "Optional. ObjectMetadata is used to create Object Tables. Object Tables contain a listing of objects (with their metadata) found at the source_uris. If ObjectMetadata is set, source_format should be omitted. Currently SIMPLE is the only supported Object Metadata type.",
           ).optional(),
           parquetOptions: z.object({
-            enableListInference: z.boolean().describe(
+            enableListInference: z.unknown().describe(
               "Optional. Indicates whether to use schema inference specifically for Parquet LIST logical type.",
             ).optional(),
-            enumAsString: z.boolean().describe(
+            enumAsString: z.unknown().describe(
               "Optional. Indicates whether to infer Parquet ENUM logical type as STRING instead of BYTES by default.",
             ).optional(),
-            mapTargetType: z.enum([
-              "MAP_TARGET_TYPE_UNSPECIFIED",
-              "ARRAY_OF_STRUCT",
-            ]).describe(
+            mapTargetType: z.unknown().describe(
               "Optional. Indicates how to represent a Parquet map if present.",
             ).optional(),
           }).describe("Parquet Options for load and make external tables.")
@@ -5670,109 +3374,16 @@ const InputsSchema = z.object({
             "Optional. When creating an external table, the user can provide a reference file with the table schema. This is enabled for the following formats: AVRO, PARQUET, ORC.",
           ).optional(),
           schema: z.object({
-            fields: z.array(z.object({
-              categories: z.object({
-                names: z.array(z.string()).describe("Deprecated.").optional(),
-              }).describe("Deprecated.").optional(),
-              collation: z.string().describe(
-                "Optional. Field collation can be set only when the type of field is STRING. The following values are supported: * 'und:ci': undetermined locale, case insensitive. * '': empty string. Default to case-sensitive behavior.",
-              ).optional(),
-              dataPolicies: z.array(z.object({
-                name: z.string().describe(
-                  "Data policy resource name in the form of projects/project_id/locations/location_id/dataPolicies/data_policy_id.",
-                ).optional(),
-              })).describe(
-                "Optional. Data policies attached to this field, used for field-level access control.",
-              ).optional(),
-              defaultValueExpression: z.string().describe(
-                "Optional. A SQL expression to specify the [default value] (https://cloud.google.com/bigquery/docs/default-values) for this field.",
-              ).optional(),
-              description: z.string().describe(
-                "Optional. The field description. The maximum length is 1,024 characters.",
-              ).optional(),
-              fields: z.array(z.string()).describe(
-                "Optional. Describes the nested schema fields if the type property is set to RECORD.",
-              ).optional(),
-              foreignTypeDefinition: z.string().describe(
-                "Optional. Definition of the foreign data type. Only valid for top-level schema fields (not nested fields). If the type is FOREIGN, this field is required.",
-              ).optional(),
-              generatedColumn: z.object({
-                generatedExpressionInfo: z.object({
-                  asynchronous: z.boolean().describe(
-                    "Optional. Whether the column generation is done asynchronously.",
-                  ).optional(),
-                  generationExpression: z.string().describe(
-                    "Optional. The generation expression (e.g. AI.EMBED(...)) used to generated the field.",
-                  ).optional(),
-                  stored: z.boolean().describe(
-                    "Optional. Whether the generated column is stored in the table.",
-                  ).optional(),
-                }).describe(
-                  "Definition of the expression used to generate the field.",
-                ).optional(),
-                generatedMode: z.enum([
-                  "GENERATED_MODE_UNSPECIFIED",
-                  "GENERATED_ALWAYS",
-                  "GENERATED_BY_DEFAULT",
-                ]).describe(
-                  "Optional. Dictates when system generated values are used to populate the field.",
-                ).optional(),
-              }).describe(
-                "Optional. Definition of how values are generated for the field. Only valid for top-level schema fields (not nested fields).",
-              ).optional(),
-              maxLength: z.string().describe(
-                'Optional. Maximum length of values of this field for STRINGS or BYTES. If max_length is not specified, no maximum length constraint is imposed on this field. If type = "STRING", then max_length represents the maximum UTF-8 length of strings in this field. If type = "BYTES", then max_length represents the maximum number of bytes in this field. It is invalid to set this field if type ≠ "STRING" and ≠ "BYTES".',
-              ).optional(),
-              mode: z.string().describe(
-                "Optional. The field mode. Possible values include NULLABLE, REQUIRED and REPEATED. The default value is NULLABLE.",
-              ).optional(),
-              name: z.string().describe(
-                "Required. The field name. The name must contain only letters (a-z, A-Z), numbers (0-9), or underscores (_), and must start with a letter or underscore. The maximum length is 300 characters.",
-              ).optional(),
-              policyTags: z.object({
-                names: z.array(z.string()).describe(
-                  'A list of policy tag resource names. For example, "projects/1/locations/eu/taxonomies/2/policyTags/3". At most 1 policy tag is currently allowed.',
-                ).optional(),
-              }).describe(
-                "Optional. The policy tags attached to this field, used for field-level access control. If not set, defaults to empty policy_tags.",
-              ).optional(),
-              precision: z.string().describe(
-                'Optional. Precision (maximum number of total digits in base 10) and scale (maximum number of digits in the fractional part in base 10) constraints for values of this field for NUMERIC or BIGNUMERIC. It is invalid to set precision or scale if type ≠ "NUMERIC" and ≠ "BIGNUMERIC". If precision and scale are not specified, no value range constraint is imposed on this field insofar as values are permitted by the type. Values of this NUMERIC or BIGNUMERIC field must be in this range when: * Precision (P) and scale (S) are specified: [-10P-S + 10-S, 10P-S - 10-S] * Precision (P) is specified but not scale (and thus scale is interpreted to be equal to zero): [-10P + 1, 10P - 1]. Acceptable values for precision and scale if both are specified: * If type = "NUMERIC": 1 ≤ precision - scale ≤ 29 and 0 ≤ scale ≤ 9. * If type = "BIGNUMERIC": 1 ≤ precision - scale ≤ 38 and 0 ≤ scale ≤ 38. Acceptable values for precision if only precision is specified but not scale (and thus scale is interpreted to be equal to zero): * If type = "NUMERIC": 1 ≤ precision ≤ 29. * If type = "BIGNUMERIC": 1 ≤ precision ≤ 38. If scale is specified but not precision, then it is invalid.',
-              ).optional(),
-              rangeElementType: z.object({
-                type: z.string().describe(
-                  "Required. The type of a field element. For more information, see TableFieldSchema.type.",
-                ).optional(),
-              }).describe("Represents the type of a field element.").optional(),
-              roundingMode: z.enum([
-                "ROUNDING_MODE_UNSPECIFIED",
-                "ROUND_HALF_AWAY_FROM_ZERO",
-                "ROUND_HALF_EVEN",
-              ]).describe(
-                "Optional. Specifies the rounding mode to be used when storing values of NUMERIC and BIGNUMERIC type.",
-              ).optional(),
-              scale: z.string().describe(
-                "Optional. See documentation for precision.",
-              ).optional(),
-              timestampPrecision: z.string().describe(
-                "Optional. Precision (maximum number of total digits in base 10) for seconds of TIMESTAMP type. Possible values include: * 6 (Default, for TIMESTAMP type with microsecond precision) * 12 (For TIMESTAMP type with picosecond precision)",
-              ).optional(),
-              type: z.string().describe(
-                "Required. The field data type. Possible values include: * STRING * BYTES * INTEGER (or INT64) * FLOAT (or FLOAT64) * BOOLEAN (or BOOL) * TIMESTAMP * DATE * TIME * DATETIME * GEOGRAPHY * NUMERIC * BIGNUMERIC * JSON * RECORD (or STRUCT) * RANGE Use of RECORD/STRUCT indicates that the field contains a nested schema.",
-              ).optional(),
-            })).describe("Describes the fields in a table.").optional(),
-            foreignTypeInfo: z.object({
-              typeSystem: z.enum(["TYPE_SYSTEM_UNSPECIFIED", "HIVE"]).describe(
-                "Required. Specifies the system which defines the foreign data type.",
-              ).optional(),
-            }).describe(
+            fields: z.unknown().describe("Describes the fields in a table.")
+              .optional(),
+            foreignTypeInfo: z.unknown().describe(
               "Metadata about the foreign data type definition such as the system in which the type is defined.",
             ).optional(),
           }).describe("Schema of a table").optional(),
           sourceFormat: z.string().describe(
             '[Required] The data format. For CSV files, specify "CSV". For Google sheets, specify "GOOGLE_SHEETS". For newline-delimited JSON, specify "NEWLINE_DELIMITED_JSON". For Avro files, specify "AVRO". For Google Cloud Datastore backups, specify "DATASTORE_BACKUP". For Apache Iceberg tables, specify "ICEBERG". For ORC files, specify "ORC". For Parquet files, specify "PARQUET". [Beta] For Google Cloud Bigtable, specify "BIGTABLE".',
           ).optional(),
-          sourceUris: z.array(z.string()).describe(
+          sourceUris: z.array(z.unknown()).describe(
             "[Required] The fully-qualified URIs that point to your data in Google Cloud. For Google Cloud Storage URIs: Each URI can contain one '*' wildcard character and it must come after the 'bucket' name. Size limits related to load jobs apply to external data sources. For Google Cloud Bigtable URIs: Exactly one URI can be specified and it has be a fully specified and valid HTTPS URL for a Google Cloud Bigtable table. For Google Cloud Datastore backups, exactly one URI can be specified. Also, the '*' wildcard character is not allowed.",
           ).optional(),
           timeFormat: z.string().describe(
@@ -5784,7 +3395,7 @@ const InputsSchema = z.object({
           timestampFormat: z.string().describe(
             "Optional. Format used to parse TIMESTAMP values. Supports C-style and SQL-style values.",
           ).optional(),
-          timestampTargetPrecision: z.array(z.number().int()).describe(
+          timestampTargetPrecision: z.array(z.unknown()).describe(
             "Precisions (maximum number of total digits in base 10) for seconds of TIMESTAMP types that are allowed to the destination table for autodetection mode. Available for the formats: CSV, PARQUET, and AVRO. Possible values include: Not Specified, [], or [6]: timestamp(6) for all auto detected TIMESTAMP columns [6, 12]: timestamp(6) for all auto detected TIMESTAMP columns that have less than 6 digits of subseconds. timestamp(12) for all auto detected TIMESTAMP columns that have more than 6 digits of subseconds. [12]: timestamp(12) for all auto detected TIMESTAMP columns. The order of the elements in this array is ignored. Inputs that have higher precision than the highest target precision in this array will be truncated.",
           ).optional(),
         }),
@@ -5992,18 +3603,10 @@ const InputsSchema = z.object({
           "Output only. Specifies which mode of BI Engine acceleration was performed (if any).",
         ).optional(),
         biEngineReasons: z.array(z.object({
-          code: z.enum([
-            "CODE_UNSPECIFIED",
-            "NO_RESERVATION",
-            "INSUFFICIENT_RESERVATION",
-            "UNSUPPORTED_SQL_TEXT",
-            "INPUT_TOO_LARGE",
-            "OTHER_REASON",
-            "TABLE_EXCLUDED",
-          ]).describe(
+          code: z.unknown().describe(
             "Output only. High-level BI Engine reason for partial or disabled acceleration",
           ).optional(),
-          message: z.string().describe(
+          message: z.unknown().describe(
             "Output only. Free form human-readable reason for partial or disabled acceleration.",
           ).optional(),
         })).describe(
@@ -6169,37 +3772,25 @@ const InputsSchema = z.object({
       ).optional(),
       genAiStats: z.object({
         errorStats: z.object({
-          errors: z.array(z.string()).describe(
+          errors: z.array(z.unknown()).describe(
             "A list of unique errors at query level (up to 5, truncated to 100 chars)",
           ).optional(),
         }).describe(
           "Provides error statistics for the query job across all AI function calls.",
         ).optional(),
         functionStats: z.array(z.object({
-          costOptimizationStats: z.object({
-            message: z.string().describe(
-              "System generated message to provide insights into cost optimization state.",
-            ).optional(),
-            numCostOptimizedRows: z.string().describe(
-              "Number of rows inferred via cost optimized workflow.",
-            ).optional(),
-          }).describe(
+          costOptimizationStats: z.unknown().describe(
             "Provides cost optimization statistics for a GenAi function call.",
           ).optional(),
-          errorStats: z.object({
-            errors: z.array(z.string()).describe(
-              "A list of unique errors at function level (up to 5, truncated to 100 chars).",
-            ).optional(),
-            numFailedRows: z.string().describe(
-              "Number of failed rows processed by the function",
-            ).optional(),
-          }).describe("Provides error statistics for a GenAi function call.")
+          errorStats: z.unknown().describe(
+            "Provides error statistics for a GenAi function call.",
+          ).optional(),
+          functionName: z.unknown().describe("Name of the function.")
             .optional(),
-          functionName: z.string().describe("Name of the function.").optional(),
-          numProcessedRows: z.string().describe(
+          numProcessedRows: z.unknown().describe(
             "Number of rows processed by this GenAi function. This includes all cost_optimized, llm_inferred and failed_rows.",
           ).optional(),
-          prompt: z.string().describe(
+          prompt: z.unknown().describe(
             "User input prompt of the function (truncated to 20 chars).",
           ).optional(),
         })).describe(
@@ -6257,39 +3848,16 @@ const InputsSchema = z.object({
       }).describe("Statistics for a LOAD query.").optional(),
       materializedViewStatistics: z.object({
         materializedView: z.array(z.object({
-          chosen: z.boolean().describe(
+          chosen: z.unknown().describe(
             "Whether the materialized view is chosen for the query. A materialized view can be chosen to rewrite multiple parts of the same query. If a materialized view is chosen to rewrite any part of the query, then this field is true, even if the materialized view was not chosen to rewrite others parts.",
           ).optional(),
-          estimatedBytesSaved: z.string().describe(
+          estimatedBytesSaved: z.unknown().describe(
             "If present, specifies a best-effort estimation of the bytes saved by using the materialized view rather than its base tables.",
           ).optional(),
-          rejectedReason: z.enum([
-            "REJECTED_REASON_UNSPECIFIED",
-            "NO_DATA",
-            "COST",
-            "BASE_TABLE_TRUNCATED",
-            "BASE_TABLE_DATA_CHANGE",
-            "BASE_TABLE_PARTITION_EXPIRATION_CHANGE",
-            "BASE_TABLE_EXPIRED_PARTITION",
-            "BASE_TABLE_INCOMPATIBLE_METADATA_CHANGE",
-            "TIME_ZONE",
-            "OUT_OF_TIME_TRAVEL_WINDOW",
-            "BASE_TABLE_FINE_GRAINED_SECURITY_POLICY",
-            "BASE_TABLE_TOO_STALE",
-          ]).describe(
+          rejectedReason: z.unknown().describe(
             "If present, specifies the reason why the materialized view was not chosen for the query.",
           ).optional(),
-          tableReference: z.object({
-            datasetId: z.string().describe(
-              "Required. The ID of the dataset containing this table.",
-            ).optional(),
-            projectId: z.string().describe(
-              "Required. The ID of the project containing this table.",
-            ).optional(),
-            tableId: z.string().describe(
-              "Required. The ID of the table. The ID can contain Unicode characters in category L (letter), M (mark), N (number), Pc (connector, including underscore), Pd (dash), and Zs (space). For more information, see [General Category](https://wikipedia.org/wiki/Unicode_character_property#General_Category). The maximum length is 1,024 characters. Certain operations allow suffixing of the table ID with a partition decorator, such as `sample_table$20190123`.",
-            ).optional(),
-          }).optional(),
+          tableReference: z.unknown().optional(),
         })).describe(
           "Materialized views considered for the query job. Only certain materialized views are used. For a detailed list, see the child message. If many materialized views are considered, then the list might be incomplete.",
         ).optional(),
@@ -6297,45 +3865,22 @@ const InputsSchema = z.object({
         .optional(),
       metadataCacheStatistics: z.object({
         tableMetadataCacheUsage: z.array(z.object({
-          explanation: z.string().describe(
+          explanation: z.unknown().describe(
             "Free form human-readable reason metadata caching was unused for the job.",
           ).optional(),
-          pruningStats: z.object({
-            postCmetaPruningParallelInputCount: z.string().describe(
-              "The number of parallel inputs matched.",
-            ).optional(),
-            postCmetaPruningPartitionCount: z.string().describe(
-              "The number of partitions matched.",
-            ).optional(),
-            preCmetaPruningParallelInputCount: z.string().describe(
-              "The number of parallel inputs scanned.",
-            ).optional(),
-          }).describe("The column metadata index pruning statistics.")
-            .optional(),
-          staleness: z.string().describe(
+          pruningStats: z.unknown().describe(
+            "The column metadata index pruning statistics.",
+          ).optional(),
+          staleness: z.unknown().describe(
             "Duration since last refresh as of this job for managed tables (indicates metadata cache staleness as seen by this job).",
           ).optional(),
-          tableReference: z.object({
-            datasetId: z.string().describe(
-              "Required. The ID of the dataset containing this table.",
-            ).optional(),
-            projectId: z.string().describe(
-              "Required. The ID of the project containing this table.",
-            ).optional(),
-            tableId: z.string().describe(
-              "Required. The ID of the table. The ID can contain Unicode characters in category L (letter), M (mark), N (number), Pc (connector, including underscore), Pd (dash), and Zs (space). For more information, see [General Category](https://wikipedia.org/wiki/Unicode_character_property#General_Category). The maximum length is 1,024 characters. Certain operations allow suffixing of the table ID with a partition decorator, such as `sample_table$20190123`.",
-            ).optional(),
-          }).optional(),
-          tableType: z.string().describe(
+          tableReference: z.unknown().optional(),
+          tableType: z.unknown().describe(
             "[Table type](https://cloud.google.com/bigquery/docs/reference/rest/v2/tables#Table.FIELDS.type).",
           ).optional(),
-          unusedReason: z.enum([
-            "UNUSED_REASON_UNSPECIFIED",
-            "EXCEEDED_MAX_STALENESS",
-            "METADATA_CACHING_NOT_ENABLED",
-            "OTHER_REASON",
-          ]).describe("Reason for not using metadata caching for the table.")
-            .optional(),
+          unusedReason: z.unknown().describe(
+            "Reason for not using metadata caching for the table.",
+          ).optional(),
         })).describe(
           "Set for the Metadata caching eligible tables referenced in the query.",
         ).optional(),
@@ -6343,1243 +3888,54 @@ const InputsSchema = z.object({
         .optional(),
       mlStatistics: z.object({
         hparamTrials: z.array(z.object({
-          endTimeMs: z.string().describe("Ending time of the trial.")
+          endTimeMs: z.unknown().describe("Ending time of the trial.")
             .optional(),
-          errorMessage: z.string().describe(
+          errorMessage: z.unknown().describe(
             "Error message for FAILED and INFEASIBLE trial.",
           ).optional(),
-          evalLoss: z.number().describe(
+          evalLoss: z.unknown().describe(
             "Loss computed on the eval data at the end of trial.",
           ).optional(),
-          evaluationMetrics: z.object({
-            arimaForecastingMetrics: z.object({
-              arimaFittingMetrics: z.array(z.object({
-                aic: z.number().describe("AIC.").optional(),
-                logLikelihood: z.number().describe("Log-likelihood.")
-                  .optional(),
-                variance: z.number().describe("Variance.").optional(),
-              })).describe("Arima model fitting metrics.").optional(),
-              arimaSingleModelForecastingMetrics: z.array(z.object({
-                arimaFittingMetrics: z.object({
-                  aic: z.number().describe("AIC.").optional(),
-                  logLikelihood: z.number().describe("Log-likelihood.")
-                    .optional(),
-                  variance: z.number().describe("Variance.").optional(),
-                }).describe("ARIMA model fitting metrics.").optional(),
-                hasDrift: z.boolean().describe(
-                  "Is arima model fitted with drift or not. It is always false when d is not 1.",
-                ).optional(),
-                hasHolidayEffect: z.boolean().describe(
-                  "If true, holiday_effect is a part of time series decomposition result.",
-                ).optional(),
-                hasSpikesAndDips: z.boolean().describe(
-                  "If true, spikes_and_dips is a part of time series decomposition result.",
-                ).optional(),
-                hasStepChanges: z.boolean().describe(
-                  "If true, step_changes is a part of time series decomposition result.",
-                ).optional(),
-                nonSeasonalOrder: z.object({
-                  d: z.string().describe("Order of the differencing part.")
-                    .optional(),
-                  p: z.string().describe("Order of the autoregressive part.")
-                    .optional(),
-                  q: z.string().describe("Order of the moving-average part.")
-                    .optional(),
-                }).describe(
-                  "Arima order, can be used for both non-seasonal and seasonal parts.",
-                ).optional(),
-                seasonalPeriods: z.array(
-                  z.enum([
-                    "SEASONAL_PERIOD_TYPE_UNSPECIFIED",
-                    "NO_SEASONALITY",
-                    "DAILY",
-                    "WEEKLY",
-                    "MONTHLY",
-                    "QUARTERLY",
-                    "YEARLY",
-                    "HOURLY",
-                  ]),
-                ).describe(
-                  "Seasonal periods. Repeated because multiple periods are supported for one time series.",
-                ).optional(),
-                timeSeriesId: z.string().describe(
-                  "The time_series_id value for this time series. It will be one of the unique values from the time_series_id_column specified during ARIMA model training. Only present when time_series_id_column training option was used.",
-                ).optional(),
-                timeSeriesIds: z.array(z.string()).describe(
-                  "The tuple of time_series_ids identifying this time series. It will be one of the unique tuples of values present in the time_series_id_columns specified during ARIMA model training. Only present when time_series_id_columns training option was used and the order of values here are same as the order of time_series_id_columns.",
-                ).optional(),
-              })).describe(
-                "Repeated as there can be many metric sets (one for each model) in auto-arima and the large-scale case.",
-              ).optional(),
-              hasDrift: z.array(z.boolean()).describe(
-                "Whether Arima model fitted with drift or not. It is always false when d is not 1.",
-              ).optional(),
-              nonSeasonalOrder: z.array(z.object({
-                d: z.string().describe("Order of the differencing part.")
-                  .optional(),
-                p: z.string().describe("Order of the autoregressive part.")
-                  .optional(),
-                q: z.string().describe("Order of the moving-average part.")
-                  .optional(),
-              })).describe("Non-seasonal order.").optional(),
-              seasonalPeriods: z.array(
-                z.enum([
-                  "SEASONAL_PERIOD_TYPE_UNSPECIFIED",
-                  "NO_SEASONALITY",
-                  "DAILY",
-                  "WEEKLY",
-                  "MONTHLY",
-                  "QUARTERLY",
-                  "YEARLY",
-                  "HOURLY",
-                ]),
-              ).describe(
-                "Seasonal periods. Repeated because multiple periods are supported for one time series.",
-              ).optional(),
-              timeSeriesId: z.array(z.string()).describe(
-                "Id to differentiate different time series for the large-scale case.",
-              ).optional(),
-            }).describe(
-              "Model evaluation metrics for ARIMA forecasting models.",
-            ).optional(),
-            binaryClassificationMetrics: z.object({
-              aggregateClassificationMetrics: z.object({
-                accuracy: z.number().describe(
-                  "Accuracy is the fraction of predictions given the correct label. For multiclass this is a micro-averaged metric.",
-                ).optional(),
-                f1Score: z.number().describe(
-                  "The F1 score is an average of recall and precision. For multiclass this is a macro-averaged metric.",
-                ).optional(),
-                logLoss: z.number().describe(
-                  "Logarithmic Loss. For multiclass this is a macro-averaged metric.",
-                ).optional(),
-                precision: z.number().describe(
-                  "Precision is the fraction of actual positive predictions that had positive actual labels. For multiclass this is a macro-averaged metric treating each class as a binary classifier.",
-                ).optional(),
-                recall: z.number().describe(
-                  "Recall is the fraction of actual positive labels that were given a positive prediction. For multiclass this is a macro-averaged metric.",
-                ).optional(),
-                rocAuc: z.number().describe(
-                  "Area Under a ROC Curve. For multiclass this is a macro-averaged metric.",
-                ).optional(),
-                threshold: z.number().describe(
-                  "Threshold at which the metrics are computed. For binary classification models this is the positive class threshold. For multi-class classification models this is the confidence threshold.",
-                ).optional(),
-              }).describe(
-                "Aggregate metrics for classification/classifier models. For multi-class models, the metrics are either macro-averaged or micro-averaged. When macro-averaged, the metrics are calculated for each label and then an unweighted average is taken of those values. When micro-averaged, the metric is calculated globally by counting the total number of correctly predicted rows.",
-              ).optional(),
-              binaryConfusionMatrixList: z.array(z.object({
-                accuracy: z.number().describe(
-                  "The fraction of predictions given the correct label.",
-                ).optional(),
-                f1Score: z.number().describe(
-                  "The equally weighted average of recall and precision.",
-                ).optional(),
-                falseNegatives: z.string().describe(
-                  "Number of false samples predicted as false.",
-                ).optional(),
-                falsePositives: z.string().describe(
-                  "Number of false samples predicted as true.",
-                ).optional(),
-                positiveClassThreshold: z.number().describe(
-                  "Threshold value used when computing each of the following metric.",
-                ).optional(),
-                precision: z.number().describe(
-                  "The fraction of actual positive predictions that had positive actual labels.",
-                ).optional(),
-                recall: z.number().describe(
-                  "The fraction of actual positive labels that were given a positive prediction.",
-                ).optional(),
-                trueNegatives: z.string().describe(
-                  "Number of true samples predicted as false.",
-                ).optional(),
-                truePositives: z.string().describe(
-                  "Number of true samples predicted as true.",
-                ).optional(),
-              })).describe("Binary confusion matrix at multiple thresholds.")
-                .optional(),
-              negativeLabel: z.string().describe(
-                "Label representing the negative class.",
-              ).optional(),
-              positiveLabel: z.string().describe(
-                "Label representing the positive class.",
-              ).optional(),
-            }).describe(
-              "Evaluation metrics for binary classification/classifier models.",
-            ).optional(),
-            clusteringMetrics: z.object({
-              clusters: z.array(z.object({
-                centroidId: z.string().describe("Centroid id.").optional(),
-                count: z.string().describe(
-                  "Count of training data rows that were assigned to this cluster.",
-                ).optional(),
-                featureValues: z.array(z.object({
-                  categoricalValue: z.object({
-                    categoryCounts: z.array(z.object({
-                      category: z.string().describe("The name of category.")
-                        .optional(),
-                      count: z.string().describe(
-                        "The count of training samples matching the category within the cluster.",
-                      ).optional(),
-                    })).describe(
-                      'Counts of all categories for the categorical feature. If there are more than ten categories, we return top ten (by count) and return one more CategoryCount with category "_OTHER_" and count as aggregate counts of remaining categories.',
-                    ).optional(),
-                  }).describe("Representative value of a categorical feature.")
-                    .optional(),
-                  featureColumn: z.string().describe("The feature column name.")
-                    .optional(),
-                  numericalValue: z.number().describe(
-                    "The numerical feature value. This is the centroid value for this feature.",
-                  ).optional(),
-                })).describe(
-                  "Values of highly variant features for this cluster.",
-                ).optional(),
-              })).describe("Information for all clusters.").optional(),
-              daviesBouldinIndex: z.number().describe("Davies-Bouldin index.")
-                .optional(),
-              meanSquaredDistance: z.number().describe(
-                "Mean of squared distances between each sample to its cluster centroid.",
-              ).optional(),
-            }).describe("Evaluation metrics for clustering models.").optional(),
-            dimensionalityReductionMetrics: z.object({
-              totalExplainedVarianceRatio: z.number().describe(
-                "Total percentage of variance explained by the selected principal components.",
-              ).optional(),
-            }).describe(
-              "Model evaluation metrics for dimensionality reduction models.",
-            ).optional(),
-            multiClassClassificationMetrics: z.object({
-              aggregateClassificationMetrics: z.object({
-                accuracy: z.number().describe(
-                  "Accuracy is the fraction of predictions given the correct label. For multiclass this is a micro-averaged metric.",
-                ).optional(),
-                f1Score: z.number().describe(
-                  "The F1 score is an average of recall and precision. For multiclass this is a macro-averaged metric.",
-                ).optional(),
-                logLoss: z.number().describe(
-                  "Logarithmic Loss. For multiclass this is a macro-averaged metric.",
-                ).optional(),
-                precision: z.number().describe(
-                  "Precision is the fraction of actual positive predictions that had positive actual labels. For multiclass this is a macro-averaged metric treating each class as a binary classifier.",
-                ).optional(),
-                recall: z.number().describe(
-                  "Recall is the fraction of actual positive labels that were given a positive prediction. For multiclass this is a macro-averaged metric.",
-                ).optional(),
-                rocAuc: z.number().describe(
-                  "Area Under a ROC Curve. For multiclass this is a macro-averaged metric.",
-                ).optional(),
-                threshold: z.number().describe(
-                  "Threshold at which the metrics are computed. For binary classification models this is the positive class threshold. For multi-class classification models this is the confidence threshold.",
-                ).optional(),
-              }).describe(
-                "Aggregate metrics for classification/classifier models. For multi-class models, the metrics are either macro-averaged or micro-averaged. When macro-averaged, the metrics are calculated for each label and then an unweighted average is taken of those values. When micro-averaged, the metric is calculated globally by counting the total number of correctly predicted rows.",
-              ).optional(),
-              confusionMatrixList: z.array(z.object({
-                confidenceThreshold: z.number().describe(
-                  "Confidence threshold used when computing the entries of the confusion matrix.",
-                ).optional(),
-                rows: z.array(z.object({
-                  actualLabel: z.string().describe(
-                    "The original label of this row.",
-                  ).optional(),
-                  entries: z.array(z.object({
-                    itemCount: z.string().describe(
-                      "Number of items being predicted as this label.",
-                    ).optional(),
-                    predictedLabel: z.string().describe(
-                      "The predicted label. For confidence_threshold > 0, we will also add an entry indicating the number of items under the confidence threshold.",
-                    ).optional(),
-                  })).describe("Info describing predicted label distribution.")
-                    .optional(),
-                })).describe("One row per actual label.").optional(),
-              })).describe("Confusion matrix at different thresholds.")
-                .optional(),
-            }).describe(
-              "Evaluation metrics for multi-class classification/classifier models.",
-            ).optional(),
-            rankingMetrics: z.object({
-              averageRank: z.number().describe(
-                "Determines the goodness of a ranking by computing the percentile rank from the predicted confidence and dividing it by the original rank.",
-              ).optional(),
-              meanAveragePrecision: z.number().describe(
-                "Calculates a precision per user for all the items by ranking them and then averages all the precisions across all the users.",
-              ).optional(),
-              meanSquaredError: z.number().describe(
-                "Similar to the mean squared error computed in regression and explicit recommendation models except instead of computing the rating directly, the output from evaluate is computed against a preference which is 1 or 0 depending on if the rating exists or not.",
-              ).optional(),
-              normalizedDiscountedCumulativeGain: z.number().describe(
-                "A metric to determine the goodness of a ranking calculated from the predicted confidence by comparing it to an ideal rank measured by the original ratings.",
-              ).optional(),
-            }).describe(
-              "Evaluation metrics used by weighted-ALS models specified by feedback_type=implicit.",
-            ).optional(),
-            regressionMetrics: z.object({
-              meanAbsoluteError: z.number().describe("Mean absolute error.")
-                .optional(),
-              meanSquaredError: z.number().describe("Mean squared error.")
-                .optional(),
-              meanSquaredLogError: z.number().describe(
-                "Mean squared log error.",
-              ).optional(),
-              medianAbsoluteError: z.number().describe("Median absolute error.")
-                .optional(),
-              rSquared: z.number().describe(
-                "R^2 score. This corresponds to r2_score in ML.EVALUATE.",
-              ).optional(),
-            }).describe(
-              "Evaluation metrics for regression and explicit feedback type matrix factorization models.",
-            ).optional(),
-          }).describe(
+          evaluationMetrics: z.unknown().describe(
             "Evaluation metrics of a model. These are either computed on all training data or just the eval data based on whether eval data was used during training. These are not present for imported models.",
           ).optional(),
-          hparamTuningEvaluationMetrics: z.object({
-            arimaForecastingMetrics: z.object({
-              arimaFittingMetrics: z.array(z.object({
-                aic: z.number().describe("AIC.").optional(),
-                logLikelihood: z.number().describe("Log-likelihood.")
-                  .optional(),
-                variance: z.number().describe("Variance.").optional(),
-              })).describe("Arima model fitting metrics.").optional(),
-              arimaSingleModelForecastingMetrics: z.array(z.object({
-                arimaFittingMetrics: z.object({
-                  aic: z.number().describe("AIC.").optional(),
-                  logLikelihood: z.number().describe("Log-likelihood.")
-                    .optional(),
-                  variance: z.number().describe("Variance.").optional(),
-                }).describe("ARIMA model fitting metrics.").optional(),
-                hasDrift: z.boolean().describe(
-                  "Is arima model fitted with drift or not. It is always false when d is not 1.",
-                ).optional(),
-                hasHolidayEffect: z.boolean().describe(
-                  "If true, holiday_effect is a part of time series decomposition result.",
-                ).optional(),
-                hasSpikesAndDips: z.boolean().describe(
-                  "If true, spikes_and_dips is a part of time series decomposition result.",
-                ).optional(),
-                hasStepChanges: z.boolean().describe(
-                  "If true, step_changes is a part of time series decomposition result.",
-                ).optional(),
-                nonSeasonalOrder: z.object({
-                  d: z.string().describe("Order of the differencing part.")
-                    .optional(),
-                  p: z.string().describe("Order of the autoregressive part.")
-                    .optional(),
-                  q: z.string().describe("Order of the moving-average part.")
-                    .optional(),
-                }).describe(
-                  "Arima order, can be used for both non-seasonal and seasonal parts.",
-                ).optional(),
-                seasonalPeriods: z.array(
-                  z.enum([
-                    "SEASONAL_PERIOD_TYPE_UNSPECIFIED",
-                    "NO_SEASONALITY",
-                    "DAILY",
-                    "WEEKLY",
-                    "MONTHLY",
-                    "QUARTERLY",
-                    "YEARLY",
-                    "HOURLY",
-                  ]),
-                ).describe(
-                  "Seasonal periods. Repeated because multiple periods are supported for one time series.",
-                ).optional(),
-                timeSeriesId: z.string().describe(
-                  "The time_series_id value for this time series. It will be one of the unique values from the time_series_id_column specified during ARIMA model training. Only present when time_series_id_column training option was used.",
-                ).optional(),
-                timeSeriesIds: z.array(z.string()).describe(
-                  "The tuple of time_series_ids identifying this time series. It will be one of the unique tuples of values present in the time_series_id_columns specified during ARIMA model training. Only present when time_series_id_columns training option was used and the order of values here are same as the order of time_series_id_columns.",
-                ).optional(),
-              })).describe(
-                "Repeated as there can be many metric sets (one for each model) in auto-arima and the large-scale case.",
-              ).optional(),
-              hasDrift: z.array(z.boolean()).describe(
-                "Whether Arima model fitted with drift or not. It is always false when d is not 1.",
-              ).optional(),
-              nonSeasonalOrder: z.array(z.object({
-                d: z.string().describe("Order of the differencing part.")
-                  .optional(),
-                p: z.string().describe("Order of the autoregressive part.")
-                  .optional(),
-                q: z.string().describe("Order of the moving-average part.")
-                  .optional(),
-              })).describe("Non-seasonal order.").optional(),
-              seasonalPeriods: z.array(
-                z.enum([
-                  "SEASONAL_PERIOD_TYPE_UNSPECIFIED",
-                  "NO_SEASONALITY",
-                  "DAILY",
-                  "WEEKLY",
-                  "MONTHLY",
-                  "QUARTERLY",
-                  "YEARLY",
-                  "HOURLY",
-                ]),
-              ).describe(
-                "Seasonal periods. Repeated because multiple periods are supported for one time series.",
-              ).optional(),
-              timeSeriesId: z.array(z.string()).describe(
-                "Id to differentiate different time series for the large-scale case.",
-              ).optional(),
-            }).describe(
-              "Model evaluation metrics for ARIMA forecasting models.",
-            ).optional(),
-            binaryClassificationMetrics: z.object({
-              aggregateClassificationMetrics: z.object({
-                accuracy: z.number().describe(
-                  "Accuracy is the fraction of predictions given the correct label. For multiclass this is a micro-averaged metric.",
-                ).optional(),
-                f1Score: z.number().describe(
-                  "The F1 score is an average of recall and precision. For multiclass this is a macro-averaged metric.",
-                ).optional(),
-                logLoss: z.number().describe(
-                  "Logarithmic Loss. For multiclass this is a macro-averaged metric.",
-                ).optional(),
-                precision: z.number().describe(
-                  "Precision is the fraction of actual positive predictions that had positive actual labels. For multiclass this is a macro-averaged metric treating each class as a binary classifier.",
-                ).optional(),
-                recall: z.number().describe(
-                  "Recall is the fraction of actual positive labels that were given a positive prediction. For multiclass this is a macro-averaged metric.",
-                ).optional(),
-                rocAuc: z.number().describe(
-                  "Area Under a ROC Curve. For multiclass this is a macro-averaged metric.",
-                ).optional(),
-                threshold: z.number().describe(
-                  "Threshold at which the metrics are computed. For binary classification models this is the positive class threshold. For multi-class classification models this is the confidence threshold.",
-                ).optional(),
-              }).describe(
-                "Aggregate metrics for classification/classifier models. For multi-class models, the metrics are either macro-averaged or micro-averaged. When macro-averaged, the metrics are calculated for each label and then an unweighted average is taken of those values. When micro-averaged, the metric is calculated globally by counting the total number of correctly predicted rows.",
-              ).optional(),
-              binaryConfusionMatrixList: z.array(z.object({
-                accuracy: z.number().describe(
-                  "The fraction of predictions given the correct label.",
-                ).optional(),
-                f1Score: z.number().describe(
-                  "The equally weighted average of recall and precision.",
-                ).optional(),
-                falseNegatives: z.string().describe(
-                  "Number of false samples predicted as false.",
-                ).optional(),
-                falsePositives: z.string().describe(
-                  "Number of false samples predicted as true.",
-                ).optional(),
-                positiveClassThreshold: z.number().describe(
-                  "Threshold value used when computing each of the following metric.",
-                ).optional(),
-                precision: z.number().describe(
-                  "The fraction of actual positive predictions that had positive actual labels.",
-                ).optional(),
-                recall: z.number().describe(
-                  "The fraction of actual positive labels that were given a positive prediction.",
-                ).optional(),
-                trueNegatives: z.string().describe(
-                  "Number of true samples predicted as false.",
-                ).optional(),
-                truePositives: z.string().describe(
-                  "Number of true samples predicted as true.",
-                ).optional(),
-              })).describe("Binary confusion matrix at multiple thresholds.")
-                .optional(),
-              negativeLabel: z.string().describe(
-                "Label representing the negative class.",
-              ).optional(),
-              positiveLabel: z.string().describe(
-                "Label representing the positive class.",
-              ).optional(),
-            }).describe(
-              "Evaluation metrics for binary classification/classifier models.",
-            ).optional(),
-            clusteringMetrics: z.object({
-              clusters: z.array(z.object({
-                centroidId: z.string().describe("Centroid id.").optional(),
-                count: z.string().describe(
-                  "Count of training data rows that were assigned to this cluster.",
-                ).optional(),
-                featureValues: z.array(z.object({
-                  categoricalValue: z.object({
-                    categoryCounts: z.array(z.object({
-                      category: z.string().describe("The name of category.")
-                        .optional(),
-                      count: z.string().describe(
-                        "The count of training samples matching the category within the cluster.",
-                      ).optional(),
-                    })).describe(
-                      'Counts of all categories for the categorical feature. If there are more than ten categories, we return top ten (by count) and return one more CategoryCount with category "_OTHER_" and count as aggregate counts of remaining categories.',
-                    ).optional(),
-                  }).describe("Representative value of a categorical feature.")
-                    .optional(),
-                  featureColumn: z.string().describe("The feature column name.")
-                    .optional(),
-                  numericalValue: z.number().describe(
-                    "The numerical feature value. This is the centroid value for this feature.",
-                  ).optional(),
-                })).describe(
-                  "Values of highly variant features for this cluster.",
-                ).optional(),
-              })).describe("Information for all clusters.").optional(),
-              daviesBouldinIndex: z.number().describe("Davies-Bouldin index.")
-                .optional(),
-              meanSquaredDistance: z.number().describe(
-                "Mean of squared distances between each sample to its cluster centroid.",
-              ).optional(),
-            }).describe("Evaluation metrics for clustering models.").optional(),
-            dimensionalityReductionMetrics: z.object({
-              totalExplainedVarianceRatio: z.number().describe(
-                "Total percentage of variance explained by the selected principal components.",
-              ).optional(),
-            }).describe(
-              "Model evaluation metrics for dimensionality reduction models.",
-            ).optional(),
-            multiClassClassificationMetrics: z.object({
-              aggregateClassificationMetrics: z.object({
-                accuracy: z.number().describe(
-                  "Accuracy is the fraction of predictions given the correct label. For multiclass this is a micro-averaged metric.",
-                ).optional(),
-                f1Score: z.number().describe(
-                  "The F1 score is an average of recall and precision. For multiclass this is a macro-averaged metric.",
-                ).optional(),
-                logLoss: z.number().describe(
-                  "Logarithmic Loss. For multiclass this is a macro-averaged metric.",
-                ).optional(),
-                precision: z.number().describe(
-                  "Precision is the fraction of actual positive predictions that had positive actual labels. For multiclass this is a macro-averaged metric treating each class as a binary classifier.",
-                ).optional(),
-                recall: z.number().describe(
-                  "Recall is the fraction of actual positive labels that were given a positive prediction. For multiclass this is a macro-averaged metric.",
-                ).optional(),
-                rocAuc: z.number().describe(
-                  "Area Under a ROC Curve. For multiclass this is a macro-averaged metric.",
-                ).optional(),
-                threshold: z.number().describe(
-                  "Threshold at which the metrics are computed. For binary classification models this is the positive class threshold. For multi-class classification models this is the confidence threshold.",
-                ).optional(),
-              }).describe(
-                "Aggregate metrics for classification/classifier models. For multi-class models, the metrics are either macro-averaged or micro-averaged. When macro-averaged, the metrics are calculated for each label and then an unweighted average is taken of those values. When micro-averaged, the metric is calculated globally by counting the total number of correctly predicted rows.",
-              ).optional(),
-              confusionMatrixList: z.array(z.object({
-                confidenceThreshold: z.number().describe(
-                  "Confidence threshold used when computing the entries of the confusion matrix.",
-                ).optional(),
-                rows: z.array(z.object({
-                  actualLabel: z.string().describe(
-                    "The original label of this row.",
-                  ).optional(),
-                  entries: z.array(z.object({
-                    itemCount: z.string().describe(
-                      "Number of items being predicted as this label.",
-                    ).optional(),
-                    predictedLabel: z.string().describe(
-                      "The predicted label. For confidence_threshold > 0, we will also add an entry indicating the number of items under the confidence threshold.",
-                    ).optional(),
-                  })).describe("Info describing predicted label distribution.")
-                    .optional(),
-                })).describe("One row per actual label.").optional(),
-              })).describe("Confusion matrix at different thresholds.")
-                .optional(),
-            }).describe(
-              "Evaluation metrics for multi-class classification/classifier models.",
-            ).optional(),
-            rankingMetrics: z.object({
-              averageRank: z.number().describe(
-                "Determines the goodness of a ranking by computing the percentile rank from the predicted confidence and dividing it by the original rank.",
-              ).optional(),
-              meanAveragePrecision: z.number().describe(
-                "Calculates a precision per user for all the items by ranking them and then averages all the precisions across all the users.",
-              ).optional(),
-              meanSquaredError: z.number().describe(
-                "Similar to the mean squared error computed in regression and explicit recommendation models except instead of computing the rating directly, the output from evaluate is computed against a preference which is 1 or 0 depending on if the rating exists or not.",
-              ).optional(),
-              normalizedDiscountedCumulativeGain: z.number().describe(
-                "A metric to determine the goodness of a ranking calculated from the predicted confidence by comparing it to an ideal rank measured by the original ratings.",
-              ).optional(),
-            }).describe(
-              "Evaluation metrics used by weighted-ALS models specified by feedback_type=implicit.",
-            ).optional(),
-            regressionMetrics: z.object({
-              meanAbsoluteError: z.number().describe("Mean absolute error.")
-                .optional(),
-              meanSquaredError: z.number().describe("Mean squared error.")
-                .optional(),
-              meanSquaredLogError: z.number().describe(
-                "Mean squared log error.",
-              ).optional(),
-              medianAbsoluteError: z.number().describe("Median absolute error.")
-                .optional(),
-              rSquared: z.number().describe(
-                "R^2 score. This corresponds to r2_score in ML.EVALUATE.",
-              ).optional(),
-            }).describe(
-              "Evaluation metrics for regression and explicit feedback type matrix factorization models.",
-            ).optional(),
-          }).describe(
+          hparamTuningEvaluationMetrics: z.unknown().describe(
             "Evaluation metrics of a model. These are either computed on all training data or just the eval data based on whether eval data was used during training. These are not present for imported models.",
           ).optional(),
-          hparams: z.object({
-            activationFn: z.string().describe(
-              "Activation function of the neural nets.",
-            ).optional(),
-            adjustStepChanges: z.boolean().describe(
-              "If true, detect step changes and make data adjustment in the input time series.",
-            ).optional(),
-            approxGlobalFeatureContrib: z.boolean().describe(
-              "Whether to use approximate feature contribution method in XGBoost model explanation for global explain.",
-            ).optional(),
-            autoArima: z.boolean().describe(
-              "Whether to enable auto ARIMA or not.",
-            ).optional(),
-            autoArimaMaxOrder: z.string().describe(
-              "The max value of the sum of non-seasonal p and q.",
-            ).optional(),
-            autoArimaMinOrder: z.string().describe(
-              "The min value of the sum of non-seasonal p and q.",
-            ).optional(),
-            autoClassWeights: z.boolean().describe(
-              "Whether to calculate class weights automatically based on the popularity of each label.",
-            ).optional(),
-            batchSize: z.string().describe("Batch size for dnn models.")
-              .optional(),
-            boosterType: z.enum(["BOOSTER_TYPE_UNSPECIFIED", "GBTREE", "DART"])
-              .describe("Booster type for boosted tree models.").optional(),
-            budgetHours: z.number().describe(
-              "Budget in hours for AutoML training.",
-            ).optional(),
-            calculatePValues: z.boolean().describe(
-              "Whether or not p-value test should be computed for this model. Only available for linear and logistic regression models.",
-            ).optional(),
-            categoryEncodingMethod: z.enum([
-              "ENCODING_METHOD_UNSPECIFIED",
-              "ONE_HOT_ENCODING",
-              "LABEL_ENCODING",
-              "DUMMY_ENCODING",
-            ]).describe("Categorical feature encoding method.").optional(),
-            cleanSpikesAndDips: z.boolean().describe(
-              "If true, clean spikes and dips in the input time series.",
-            ).optional(),
-            colorSpace: z.enum([
-              "COLOR_SPACE_UNSPECIFIED",
-              "RGB",
-              "HSV",
-              "YIQ",
-              "YUV",
-              "GRAYSCALE",
-            ]).describe(
-              "Enums for color space, used for processing images in Object Table. See more details at https://www.tensorflow.org/io/tutorials/colorspace.",
-            ).optional(),
-            colsampleBylevel: z.number().describe(
-              "Subsample ratio of columns for each level for boosted tree models.",
-            ).optional(),
-            colsampleBynode: z.number().describe(
-              "Subsample ratio of columns for each node(split) for boosted tree models.",
-            ).optional(),
-            colsampleBytree: z.number().describe(
-              "Subsample ratio of columns when constructing each tree for boosted tree models.",
-            ).optional(),
-            contributionMetric: z.string().describe(
-              "The contribution metric. Applies to contribution analysis models. Allowed formats supported are for summable and summable ratio contribution metrics. These include expressions such as `SUM(x)` or `SUM(x)/SUM(y)`, where x and y are column names from the base table.",
-            ).optional(),
-            dartNormalizeType: z.enum([
-              "DART_NORMALIZE_TYPE_UNSPECIFIED",
-              "TREE",
-              "FOREST",
-            ]).describe(
-              "Type of normalization algorithm for boosted tree models using dart booster.",
-            ).optional(),
-            dataFrequency: z.enum([
-              "DATA_FREQUENCY_UNSPECIFIED",
-              "AUTO_FREQUENCY",
-              "YEARLY",
-              "QUARTERLY",
-              "MONTHLY",
-              "WEEKLY",
-              "DAILY",
-              "HOURLY",
-              "PER_MINUTE",
-            ]).describe("The data frequency of a time series.").optional(),
-            dataSplitColumn: z.string().describe(
-              "The column to split data with. This column won't be used as a feature. 1. When data_split_method is CUSTOM, the corresponding column should be boolean. The rows with true value tag are eval data, and the false are training data. 2. When data_split_method is SEQ, the first DATA_SPLIT_EVAL_FRACTION rows (from smallest to largest) in the corresponding column are used as training data, and the rest are eval data. It respects the order in Orderable data types: https://cloud.google.com/bigquery/docs/reference/standard-sql/data-types#data_type_properties",
-            ).optional(),
-            dataSplitEvalFraction: z.number().describe(
-              "The fraction of evaluation data over the whole input data. The rest of data will be used as training data. The format should be double. Accurate to two decimal places. Default value is 0.2.",
-            ).optional(),
-            dataSplitMethod: z.enum([
-              "DATA_SPLIT_METHOD_UNSPECIFIED",
-              "RANDOM",
-              "CUSTOM",
-              "SEQUENTIAL",
-              "NO_SPLIT",
-              "AUTO_SPLIT",
-            ]).describe(
-              "The data split type for training and evaluation, e.g. RANDOM.",
-            ).optional(),
-            decomposeTimeSeries: z.boolean().describe(
-              "If true, perform decompose time series and save the results.",
-            ).optional(),
-            dimensionIdColumns: z.array(z.string()).describe(
-              "Optional. Names of the columns to slice on. Applies to contribution analysis models.",
-            ).optional(),
-            distanceType: z.enum([
-              "DISTANCE_TYPE_UNSPECIFIED",
-              "EUCLIDEAN",
-              "COSINE",
-            ]).describe("Distance type for clustering models.").optional(),
-            dropout: z.number().describe("Dropout probability for dnn models.")
-              .optional(),
-            earlyStop: z.boolean().describe(
-              "Whether to stop early when the loss doesn't improve significantly any more (compared to min_relative_progress). Used only for iterative training algorithms.",
-            ).optional(),
-            enableGlobalExplain: z.boolean().describe(
-              "If true, enable global explanation during training.",
-            ).optional(),
-            endpointIdleTtl: z.string().describe(
-              "The idle TTL of the endpoint before the resources get destroyed. The default value is 6.5 hours.",
-            ).optional(),
-            feedbackType: z.enum([
-              "FEEDBACK_TYPE_UNSPECIFIED",
-              "IMPLICIT",
-              "EXPLICIT",
-            ]).describe(
-              "Feedback type that specifies which algorithm to run for matrix factorization.",
-            ).optional(),
-            fitIntercept: z.boolean().describe(
-              "Whether the model should include intercept during model training.",
-            ).optional(),
-            forecastLimitLowerBound: z.number().describe(
-              "The forecast limit lower bound that was used during ARIMA model training with limits. To see more details of the algorithm: https://otexts.com/fpp2/limits.html",
-            ).optional(),
-            forecastLimitUpperBound: z.number().describe(
-              "The forecast limit upper bound that was used during ARIMA model training with limits.",
-            ).optional(),
-            hiddenUnits: z.array(z.string()).describe(
-              "Hidden units for dnn models.",
-            ).optional(),
-            holidayRegion: z.enum([
-              "HOLIDAY_REGION_UNSPECIFIED",
-              "GLOBAL",
-              "NA",
-              "JAPAC",
-              "EMEA",
-              "LAC",
-              "AE",
-              "AR",
-              "AT",
-              "AU",
-              "BE",
-              "BR",
-              "CA",
-              "CH",
-              "CL",
-              "CN",
-              "CO",
-              "CS",
-              "CZ",
-              "DE",
-              "DK",
-              "DZ",
-              "EC",
-              "EE",
-              "EG",
-              "ES",
-              "FI",
-              "FR",
-              "GB",
-              "GR",
-              "HK",
-              "HU",
-              "ID",
-              "IE",
-              "IL",
-              "IN",
-              "IR",
-              "IT",
-              "JP",
-              "KR",
-              "LV",
-              "MA",
-              "MX",
-              "MY",
-              "NG",
-              "NL",
-              "NO",
-              "NZ",
-              "PE",
-              "PH",
-              "PK",
-              "PL",
-              "PT",
-              "RO",
-              "RS",
-              "RU",
-              "SA",
-              "SE",
-              "SG",
-              "SI",
-              "SK",
-              "TH",
-              "TR",
-              "TW",
-              "UA",
-              "US",
-              "VE",
-              "VN",
-              "ZA",
-            ]).describe(
-              "The geographical region based on which the holidays are considered in time series modeling. If a valid value is specified, then holiday effects modeling is enabled.",
-            ).optional(),
-            holidayRegions: z.array(
-              z.enum([
-                "HOLIDAY_REGION_UNSPECIFIED",
-                "GLOBAL",
-                "NA",
-                "JAPAC",
-                "EMEA",
-                "LAC",
-                "AE",
-                "AR",
-                "AT",
-                "AU",
-                "BE",
-                "BR",
-                "CA",
-                "CH",
-                "CL",
-                "CN",
-                "CO",
-                "CS",
-                "CZ",
-                "DE",
-                "DK",
-                "DZ",
-                "EC",
-                "EE",
-                "EG",
-                "ES",
-                "FI",
-                "FR",
-                "GB",
-                "GR",
-                "HK",
-                "HU",
-                "ID",
-                "IE",
-                "IL",
-                "IN",
-                "IR",
-                "IT",
-                "JP",
-                "KR",
-                "LV",
-                "MA",
-                "MX",
-                "MY",
-                "NG",
-                "NL",
-                "NO",
-                "NZ",
-                "PE",
-                "PH",
-                "PK",
-                "PL",
-                "PT",
-                "RO",
-                "RS",
-                "RU",
-                "SA",
-                "SE",
-                "SG",
-                "SI",
-                "SK",
-                "TH",
-                "TR",
-                "TW",
-                "UA",
-                "US",
-                "VE",
-                "VN",
-                "ZA",
-              ]),
-            ).describe(
-              "A list of geographical regions that are used for time series modeling.",
-            ).optional(),
-            horizon: z.string().describe(
-              "The number of periods ahead that need to be forecasted.",
-            ).optional(),
-            hparamTuningObjectives: z.array(
-              z.enum([
-                "HPARAM_TUNING_OBJECTIVE_UNSPECIFIED",
-                "MEAN_ABSOLUTE_ERROR",
-                "MEAN_SQUARED_ERROR",
-                "MEAN_SQUARED_LOG_ERROR",
-                "MEDIAN_ABSOLUTE_ERROR",
-                "R_SQUARED",
-                "EXPLAINED_VARIANCE",
-                "PRECISION",
-                "RECALL",
-                "ACCURACY",
-                "F1_SCORE",
-                "LOG_LOSS",
-                "ROC_AUC",
-                "DAVIES_BOULDIN_INDEX",
-                "MEAN_AVERAGE_PRECISION",
-                "NORMALIZED_DISCOUNTED_CUMULATIVE_GAIN",
-                "AVERAGE_RANK",
-              ]),
-            ).describe(
-              "The target evaluation metrics to optimize the hyperparameters for.",
-            ).optional(),
-            huggingFaceModelId: z.string().describe(
-              "The id of a Hugging Face model. For example, `google/gemma-2-2b-it`.",
-            ).optional(),
-            includeDrift: z.boolean().describe(
-              "Include drift when fitting an ARIMA model.",
-            ).optional(),
-            initialLearnRate: z.number().describe(
-              "Specifies the initial learning rate for the line search learn rate strategy.",
-            ).optional(),
-            inputLabelColumns: z.array(z.string()).describe(
-              "Name of input label columns in training data.",
-            ).optional(),
-            instanceWeightColumn: z.string().describe(
-              "Name of the instance weight column for training data. This column isn't be used as a feature.",
-            ).optional(),
-            integratedGradientsNumSteps: z.string().describe(
-              "Number of integral steps for the integrated gradients explain method.",
-            ).optional(),
-            isTestColumn: z.string().describe(
-              "Name of the column used to determine the rows corresponding to control and test. Applies to contribution analysis models.",
-            ).optional(),
-            itemColumn: z.string().describe(
-              "Item column specified for matrix factorization models.",
-            ).optional(),
-            kmeansInitializationColumn: z.string().describe(
-              "The column used to provide the initial centroids for kmeans algorithm when kmeans_initialization_method is CUSTOM.",
-            ).optional(),
-            kmeansInitializationMethod: z.enum([
-              "KMEANS_INITIALIZATION_METHOD_UNSPECIFIED",
-              "RANDOM",
-              "CUSTOM",
-              "KMEANS_PLUS_PLUS",
-            ]).describe(
-              "The method used to initialize the centroids for kmeans algorithm.",
-            ).optional(),
-            l1RegActivation: z.number().describe(
-              "L1 regularization coefficient to activations.",
-            ).optional(),
-            l1Regularization: z.number().describe(
-              "L1 regularization coefficient.",
-            ).optional(),
-            l2Regularization: z.number().describe(
-              "L2 regularization coefficient.",
-            ).optional(),
-            labelClassWeights: z.record(z.string(), z.number()).describe(
-              "Weights associated with each label class, for rebalancing the training data. Only applicable for classification models.",
-            ).optional(),
-            learnRate: z.number().describe(
-              "Learning rate in training. Used only for iterative training algorithms.",
-            ).optional(),
-            learnRateStrategy: z.enum([
-              "LEARN_RATE_STRATEGY_UNSPECIFIED",
-              "LINE_SEARCH",
-              "CONSTANT",
-            ]).describe(
-              "The strategy to determine learn rate for the current iteration.",
-            ).optional(),
-            lossType: z.enum([
-              "LOSS_TYPE_UNSPECIFIED",
-              "MEAN_SQUARED_LOSS",
-              "MEAN_LOG_LOSS",
-            ]).describe("Type of loss function used during training run.")
-              .optional(),
-            machineType: z.string().describe(
-              "The type of the machine used to deploy and serve the model.",
-            ).optional(),
-            maxIterations: z.string().describe(
-              "The maximum number of iterations in training. Used only for iterative training algorithms.",
-            ).optional(),
-            maxParallelTrials: z.string().describe(
-              "Maximum number of trials to run in parallel.",
-            ).optional(),
-            maxReplicaCount: z.string().describe(
-              "The maximum number of machine replicas that will be deployed on an endpoint. The default value is equal to min_replica_count.",
-            ).optional(),
-            maxTimeSeriesLength: z.string().describe(
-              "The maximum number of time points in a time series that can be used in modeling the trend component of the time series. Don't use this option with the `timeSeriesLengthFraction` or `minTimeSeriesLength` options.",
-            ).optional(),
-            maxTreeDepth: z.string().describe(
-              "Maximum depth of a tree for boosted tree models.",
-            ).optional(),
-            minAprioriSupport: z.number().describe(
-              "The apriori support minimum. Applies to contribution analysis models.",
-            ).optional(),
-            minRelativeProgress: z.number().describe(
-              "When early_stop is true, stops training when accuracy improvement is less than 'min_relative_progress'. Used only for iterative training algorithms.",
-            ).optional(),
-            minReplicaCount: z.string().describe(
-              "The minimum number of machine replicas that will be always deployed on an endpoint. This value must be greater than or equal to 1. The default value is 1.",
-            ).optional(),
-            minSplitLoss: z.number().describe(
-              "Minimum split loss for boosted tree models.",
-            ).optional(),
-            minTimeSeriesLength: z.string().describe(
-              "The minimum number of time points in a time series that are used in modeling the trend component of the time series. If you use this option you must also set the `timeSeriesLengthFraction` option. This training option ensures that enough time points are available when you use `timeSeriesLengthFraction` in trend modeling. This is particularly important when forecasting multiple time series in a single query using `timeSeriesIdColumn`. If the total number of time points is less than the `minTimeSeriesLength` value, then the query uses all available time points.",
-            ).optional(),
-            minTreeChildWeight: z.string().describe(
-              "Minimum sum of instance weight needed in a child for boosted tree models.",
-            ).optional(),
-            modelGardenModelName: z.string().describe(
-              "The name of a Vertex model garden publisher model. Format is `publishers/{publisher}/models/{model}@{optional_version_id}`.",
-            ).optional(),
-            modelRegistry: z.enum(["MODEL_REGISTRY_UNSPECIFIED", "VERTEX_AI"])
-              .describe("The model registry.").optional(),
-            modelUri: z.string().describe(
-              "Google Cloud Storage URI from which the model was imported. Only applicable for imported models.",
-            ).optional(),
-            nonSeasonalOrder: z.object({
-              d: z.string().describe("Order of the differencing part.")
-                .optional(),
-              p: z.string().describe("Order of the autoregressive part.")
-                .optional(),
-              q: z.string().describe("Order of the moving-average part.")
-                .optional(),
-            }).describe(
-              "Arima order, can be used for both non-seasonal and seasonal parts.",
-            ).optional(),
-            numClusters: z.string().describe(
-              "Number of clusters for clustering models.",
-            ).optional(),
-            numFactors: z.string().describe(
-              "Num factors specified for matrix factorization models.",
-            ).optional(),
-            numParallelTree: z.string().describe(
-              "Number of parallel trees constructed during each iteration for boosted tree models.",
-            ).optional(),
-            numPrincipalComponents: z.string().describe(
-              "Number of principal components to keep in the PCA model. Must be <= the number of features.",
-            ).optional(),
-            numTrials: z.string().describe(
-              "Number of trials to run this hyperparameter tuning job.",
-            ).optional(),
-            optimizationStrategy: z.enum([
-              "OPTIMIZATION_STRATEGY_UNSPECIFIED",
-              "BATCH_GRADIENT_DESCENT",
-              "NORMAL_EQUATION",
-            ]).describe(
-              "Optimization strategy for training linear regression models.",
-            ).optional(),
-            optimizer: z.string().describe(
-              "Optimizer used for training the neural nets.",
-            ).optional(),
-            pcaExplainedVarianceRatio: z.number().describe(
-              "The minimum ratio of cumulative explained variance that needs to be given by the PCA model.",
-            ).optional(),
-            pcaSolver: z.enum(["UNSPECIFIED", "FULL", "RANDOMIZED", "AUTO"])
-              .describe("The solver for PCA.").optional(),
-            reservationAffinityKey: z.string().describe(
-              "Corresponds to the label key of a reservation resource used by Vertex AI. To target a SPECIFIC_RESERVATION by name, use `compute.googleapis.com/reservation-name` as the key and specify the name of your reservation as its value.",
-            ).optional(),
-            reservationAffinityType: z.enum([
-              "RESERVATION_AFFINITY_TYPE_UNSPECIFIED",
-              "NO_RESERVATION",
-              "ANY_RESERVATION",
-              "SPECIFIC_RESERVATION",
-            ]).describe(
-              "Specifies the reservation affinity type used to configure a Vertex AI resource. The default value is `NO_RESERVATION`.",
-            ).optional(),
-            reservationAffinityValues: z.array(z.string()).describe(
-              "Corresponds to the label values of a reservation resource used by Vertex AI. This must be the full resource name of the reservation or reservation block.",
-            ).optional(),
-            sampledShapleyNumPaths: z.string().describe(
-              "Number of paths for the sampled Shapley explain method.",
-            ).optional(),
-            scaleFeatures: z.boolean().describe(
-              "If true, scale the feature values by dividing the feature standard deviation. Currently only apply to PCA.",
-            ).optional(),
-            standardizeFeatures: z.boolean().describe(
-              "Whether to standardize numerical features. Default to true.",
-            ).optional(),
-            subsample: z.number().describe(
-              "Subsample fraction of the training data to grow tree to prevent overfitting for boosted tree models.",
-            ).optional(),
-            tfVersion: z.string().describe(
-              "Based on the selected TF version, the corresponding docker image is used to train external models.",
-            ).optional(),
-            timeSeriesDataColumn: z.string().describe(
-              "Column to be designated as time series data for ARIMA model.",
-            ).optional(),
-            timeSeriesIdColumn: z.string().describe(
-              "The time series id column that was used during ARIMA model training.",
-            ).optional(),
-            timeSeriesIdColumns: z.array(z.string()).describe(
-              "The time series id columns that were used during ARIMA model training.",
-            ).optional(),
-            timeSeriesLengthFraction: z.number().describe(
-              "The fraction of the interpolated length of the time series that's used to model the time series trend component. All of the time points of the time series are used to model the non-trend component. This training option accelerates modeling training without sacrificing much forecasting accuracy. You can use this option with `minTimeSeriesLength` but not with `maxTimeSeriesLength`.",
-            ).optional(),
-            timeSeriesTimestampColumn: z.string().describe(
-              "Column to be designated as time series timestamp for ARIMA model.",
-            ).optional(),
-            treeMethod: z.enum([
-              "TREE_METHOD_UNSPECIFIED",
-              "AUTO",
-              "EXACT",
-              "APPROX",
-              "HIST",
-            ]).describe("Tree construction algorithm for boosted tree models.")
-              .optional(),
-            trendSmoothingWindowSize: z.string().describe(
-              "Smoothing window size for the trend component. When a positive value is specified, a center moving average smoothing is applied on the history trend. When the smoothing window is out of the boundary at the beginning or the end of the trend, the first element or the last element is padded to fill the smoothing window before the average is applied.",
-            ).optional(),
-            userColumn: z.string().describe(
-              "User column specified for matrix factorization models.",
-            ).optional(),
-            vertexAiModelVersionAliases: z.array(z.string()).describe(
-              "The version aliases to apply in Vertex AI model registry. Always overwrite if the version aliases exists in a existing model.",
-            ).optional(),
-            walsAlpha: z.number().describe(
-              "Hyperparameter for matrix factoration when implicit feedback type is specified.",
-            ).optional(),
-            warmStart: z.boolean().describe(
-              "Whether to train a model from the last checkpoint.",
-            ).optional(),
-            xgboostVersion: z.string().describe(
-              "User-selected XGBoost versions for training of XGBoost models.",
-            ).optional(),
-          }).describe("Options used in model training.").optional(),
-          startTimeMs: z.string().describe("Starting time of the trial.")
+          hparams: z.unknown().describe("Options used in model training.")
             .optional(),
-          status: z.enum([
-            "TRIAL_STATUS_UNSPECIFIED",
-            "NOT_STARTED",
-            "RUNNING",
-            "SUCCEEDED",
-            "FAILED",
-            "INFEASIBLE",
-            "STOPPED_EARLY",
-          ]).describe("The status of the trial.").optional(),
-          trainingLoss: z.number().describe(
+          startTimeMs: z.unknown().describe("Starting time of the trial.")
+            .optional(),
+          status: z.unknown().describe("The status of the trial.").optional(),
+          trainingLoss: z.unknown().describe(
             "Loss computed on the training data at the end of trial.",
           ).optional(),
-          trialId: z.string().describe("1-based index of the trial.")
+          trialId: z.unknown().describe("1-based index of the trial.")
             .optional(),
         })).describe(
           "Output only. Trials of a [hyperparameter tuning job](https://cloud.google.com/bigquery-ml/docs/reference/standard-sql/bigqueryml-syntax-hp-tuning-overview) sorted by trial_id.",
         ).optional(),
         iterationResults: z.array(z.object({
-          arimaResult: z.object({
-            arimaModelInfo: z.array(z.object({
-              arimaCoefficients: z.object({
-                autoRegressiveCoefficients: z.array(z.number()).describe(
-                  "Auto-regressive coefficients, an array of double.",
-                ).optional(),
-                interceptCoefficient: z.number().describe(
-                  "Intercept coefficient, just a double not an array.",
-                ).optional(),
-                movingAverageCoefficients: z.array(z.number()).describe(
-                  "Moving-average coefficients, an array of double.",
-                ).optional(),
-              }).describe("Arima coefficients.").optional(),
-              arimaFittingMetrics: z.object({
-                aic: z.number().describe("AIC.").optional(),
-                logLikelihood: z.number().describe("Log-likelihood.")
-                  .optional(),
-                variance: z.number().describe("Variance.").optional(),
-              }).describe("ARIMA model fitting metrics.").optional(),
-              hasDrift: z.boolean().describe(
-                "Whether Arima model fitted with drift or not. It is always false when d is not 1.",
-              ).optional(),
-              hasHolidayEffect: z.boolean().describe(
-                "If true, holiday_effect is a part of time series decomposition result.",
-              ).optional(),
-              hasSpikesAndDips: z.boolean().describe(
-                "If true, spikes_and_dips is a part of time series decomposition result.",
-              ).optional(),
-              hasStepChanges: z.boolean().describe(
-                "If true, step_changes is a part of time series decomposition result.",
-              ).optional(),
-              nonSeasonalOrder: z.object({
-                d: z.string().describe("Order of the differencing part.")
-                  .optional(),
-                p: z.string().describe("Order of the autoregressive part.")
-                  .optional(),
-                q: z.string().describe("Order of the moving-average part.")
-                  .optional(),
-              }).describe(
-                "Arima order, can be used for both non-seasonal and seasonal parts.",
-              ).optional(),
-              seasonalPeriods: z.array(
-                z.enum([
-                  "SEASONAL_PERIOD_TYPE_UNSPECIFIED",
-                  "NO_SEASONALITY",
-                  "DAILY",
-                  "WEEKLY",
-                  "MONTHLY",
-                  "QUARTERLY",
-                  "YEARLY",
-                  "HOURLY",
-                ]),
-              ).describe(
-                "Seasonal periods. Repeated because multiple periods are supported for one time series.",
-              ).optional(),
-              timeSeriesId: z.string().describe(
-                "The time_series_id value for this time series. It will be one of the unique values from the time_series_id_column specified during ARIMA model training. Only present when time_series_id_column training option was used.",
-              ).optional(),
-              timeSeriesIds: z.array(z.string()).describe(
-                "The tuple of time_series_ids identifying this time series. It will be one of the unique tuples of values present in the time_series_id_columns specified during ARIMA model training. Only present when time_series_id_columns training option was used and the order of values here are same as the order of time_series_id_columns.",
-              ).optional(),
-            })).describe(
-              "This message is repeated because there are multiple arima models fitted in auto-arima. For non-auto-arima model, its size is one.",
-            ).optional(),
-            seasonalPeriods: z.array(
-              z.enum([
-                "SEASONAL_PERIOD_TYPE_UNSPECIFIED",
-                "NO_SEASONALITY",
-                "DAILY",
-                "WEEKLY",
-                "MONTHLY",
-                "QUARTERLY",
-                "YEARLY",
-                "HOURLY",
-              ]),
-            ).describe(
-              "Seasonal periods. Repeated because multiple periods are supported for one time series.",
-            ).optional(),
-          }).describe(
+          arimaResult: z.unknown().describe(
             "(Auto-)arima fitting result. Wrap everything in ArimaResult for easier refactoring if we want to use model-specific iteration results.",
           ).optional(),
-          clusterInfos: z.array(z.object({
-            centroidId: z.string().describe("Centroid id.").optional(),
-            clusterRadius: z.number().describe(
-              "Cluster radius, the average distance from centroid to each point assigned to the cluster.",
-            ).optional(),
-            clusterSize: z.string().describe(
-              "Cluster size, the total number of points assigned to the cluster.",
-            ).optional(),
-          })).describe("Information about top clusters for clustering models.")
-            .optional(),
-          durationMs: z.string().describe(
+          clusterInfos: z.unknown().describe(
+            "Information about top clusters for clustering models.",
+          ).optional(),
+          durationMs: z.unknown().describe(
             "Time taken to run the iteration in milliseconds.",
           ).optional(),
-          evalLoss: z.number().describe(
+          evalLoss: z.unknown().describe(
             "Loss computed on the eval data at the end of iteration.",
           ).optional(),
-          index: z.number().int().describe("Index of the iteration, 0 based.")
+          index: z.unknown().describe("Index of the iteration, 0 based.")
             .optional(),
-          learnRate: z.number().describe("Learn rate used for this iteration.")
+          learnRate: z.unknown().describe("Learn rate used for this iteration.")
             .optional(),
-          principalComponentInfos: z.array(z.object({
-            cumulativeExplainedVarianceRatio: z.number().describe(
-              "The explained_variance is pre-ordered in the descending order to compute the cumulative explained variance ratio.",
-            ).optional(),
-            explainedVariance: z.number().describe(
-              "Explained variance by this principal component, which is simply the eigenvalue.",
-            ).optional(),
-            explainedVarianceRatio: z.number().describe(
-              "Explained_variance over the total explained variance.",
-            ).optional(),
-            principalComponentId: z.string().describe(
-              "Id of the principal component.",
-            ).optional(),
-          })).describe("The information of the principal components.")
-            .optional(),
-          trainingLoss: z.number().describe(
+          principalComponentInfos: z.unknown().describe(
+            "The information of the principal components.",
+          ).optional(),
+          trainingLoss: z.unknown().describe(
             "Loss computed on the training data at the end of iteration.",
           ).optional(),
         })).describe(
@@ -7640,68 +3996,32 @@ const InputsSchema = z.object({
           "Output only. Average execution ms of previous runs. Indicates the job ran slow compared to previous executions. To find previous executions, use INFORMATION_SCHEMA tables and filter jobs with same query hash.",
         ).optional(),
         stagePerformanceChangeInsights: z.array(z.object({
-          inputDataChange: z.object({
-            recordsReadDiffPercentage: z.number().describe(
-              "Output only. Records read difference percentage compared to a previous run.",
-            ).optional(),
-          }).describe("Details about the input data change insight.")
-            .optional(),
-          stageId: z.string().describe(
+          inputDataChange: z.unknown().describe(
+            "Details about the input data change insight.",
+          ).optional(),
+          stageId: z.unknown().describe(
             "Output only. The stage id that the insight mapped to.",
           ).optional(),
         })).describe(
           "Output only. Query stage performance insights compared to previous runs, for diagnosing performance regression.",
         ).optional(),
         stagePerformanceStandaloneInsights: z.array(z.object({
-          biEngineReasons: z.array(z.object({
-            code: z.enum([
-              "CODE_UNSPECIFIED",
-              "NO_RESERVATION",
-              "INSUFFICIENT_RESERVATION",
-              "UNSUPPORTED_SQL_TEXT",
-              "INPUT_TOO_LARGE",
-              "OTHER_REASON",
-              "TABLE_EXCLUDED",
-            ]).describe(
-              "Output only. High-level BI Engine reason for partial or disabled acceleration",
-            ).optional(),
-            message: z.string().describe(
-              "Output only. Free form human-readable reason for partial or disabled acceleration.",
-            ).optional(),
-          })).describe(
+          biEngineReasons: z.unknown().describe(
             "Output only. If present, the stage had the following reasons for being disqualified from BI Engine execution.",
           ).optional(),
-          highCardinalityJoins: z.array(z.object({
-            leftRows: z.string().describe(
-              "Output only. Count of left input rows.",
-            ).optional(),
-            outputRows: z.string().describe(
-              "Output only. Count of the output rows.",
-            ).optional(),
-            rightRows: z.string().describe(
-              "Output only. Count of right input rows.",
-            ).optional(),
-            stepIndex: z.number().int().describe(
-              "Output only. The index of the join operator in the ExplainQueryStep lists.",
-            ).optional(),
-          })).describe("Output only. High cardinality joins in the stage.")
-            .optional(),
-          insufficientShuffleQuota: z.boolean().describe(
+          highCardinalityJoins: z.unknown().describe(
+            "Output only. High cardinality joins in the stage.",
+          ).optional(),
+          insufficientShuffleQuota: z.unknown().describe(
             "Output only. True if the stage has insufficient shuffle quota.",
           ).optional(),
-          partitionSkew: z.object({
-            skewSources: z.array(z.object({
-              stageId: z.string().describe(
-                "Output only. Stage id of the skew source stage.",
-              ).optional(),
-            })).describe(
-              "Output only. Source stages which produce skewed data.",
-            ).optional(),
-          }).describe("Partition skew detailed information.").optional(),
-          slotContention: z.boolean().describe(
+          partitionSkew: z.unknown().describe(
+            "Partition skew detailed information.",
+          ).optional(),
+          slotContention: z.unknown().describe(
             "Output only. True if the stage has a slot contention issue.",
           ).optional(),
-          stageId: z.string().describe(
+          stageId: z.unknown().describe(
             "Output only. The stage id that the insight mapped to.",
           ).optional(),
         })).describe(
@@ -7739,7 +4059,7 @@ const InputsSchema = z.object({
         ).optional(),
         id: z.string().describe("Unique ID for the stage within the plan.")
           .optional(),
-        inputStages: z.array(z.string()).describe(
+        inputStages: z.array(z.unknown()).describe(
           "IDs for stages that are inputs to this stage.",
         ).optional(),
         name: z.string().describe("Human-readable name for the stage.")
@@ -7778,13 +4098,7 @@ const InputsSchema = z.object({
         ).optional(),
         status: z.string().describe("Current status for this stage.")
           .optional(),
-        steps: z.array(z.object({
-          kind: z.string().describe("Machine-readable operation type.")
-            .optional(),
-          substeps: z.array(z.string()).describe(
-            "Human-readable description of the step(s).",
-          ).optional(),
-        })).describe(
+        steps: z.array(z.unknown()).describe(
           "List of operations within the stage in dependency order (approximately chronological).",
         ).optional(),
         waitMsAvg: z.string().describe(
@@ -7860,93 +4174,56 @@ const InputsSchema = z.object({
       ).optional(),
       schema: z.object({
         fields: z.array(z.object({
-          categories: z.object({
-            names: z.array(z.string()).describe("Deprecated.").optional(),
-          }).describe("Deprecated.").optional(),
-          collation: z.string().describe(
+          categories: z.unknown().describe("Deprecated.").optional(),
+          collation: z.unknown().describe(
             "Optional. Field collation can be set only when the type of field is STRING. The following values are supported: * 'und:ci': undetermined locale, case insensitive. * '': empty string. Default to case-sensitive behavior.",
           ).optional(),
-          dataPolicies: z.array(z.object({
-            name: z.string().describe(
-              "Data policy resource name in the form of projects/project_id/locations/location_id/dataPolicies/data_policy_id.",
-            ).optional(),
-          })).describe(
+          dataPolicies: z.unknown().describe(
             "Optional. Data policies attached to this field, used for field-level access control.",
           ).optional(),
-          defaultValueExpression: z.string().describe(
+          defaultValueExpression: z.unknown().describe(
             "Optional. A SQL expression to specify the [default value] (https://cloud.google.com/bigquery/docs/default-values) for this field.",
           ).optional(),
-          description: z.string().describe(
+          description: z.unknown().describe(
             "Optional. The field description. The maximum length is 1,024 characters.",
           ).optional(),
-          fields: z.array(z.string()).describe(
+          fields: z.unknown().describe(
             "Optional. Describes the nested schema fields if the type property is set to RECORD.",
           ).optional(),
-          foreignTypeDefinition: z.string().describe(
+          foreignTypeDefinition: z.unknown().describe(
             "Optional. Definition of the foreign data type. Only valid for top-level schema fields (not nested fields). If the type is FOREIGN, this field is required.",
           ).optional(),
-          generatedColumn: z.object({
-            generatedExpressionInfo: z.object({
-              asynchronous: z.boolean().describe(
-                "Optional. Whether the column generation is done asynchronously.",
-              ).optional(),
-              generationExpression: z.string().describe(
-                "Optional. The generation expression (e.g. AI.EMBED(...)) used to generated the field.",
-              ).optional(),
-              stored: z.boolean().describe(
-                "Optional. Whether the generated column is stored in the table.",
-              ).optional(),
-            }).describe(
-              "Definition of the expression used to generate the field.",
-            ).optional(),
-            generatedMode: z.enum([
-              "GENERATED_MODE_UNSPECIFIED",
-              "GENERATED_ALWAYS",
-              "GENERATED_BY_DEFAULT",
-            ]).describe(
-              "Optional. Dictates when system generated values are used to populate the field.",
-            ).optional(),
-          }).describe(
+          generatedColumn: z.unknown().describe(
             "Optional. Definition of how values are generated for the field. Only valid for top-level schema fields (not nested fields).",
           ).optional(),
-          maxLength: z.string().describe(
+          maxLength: z.unknown().describe(
             'Optional. Maximum length of values of this field for STRINGS or BYTES. If max_length is not specified, no maximum length constraint is imposed on this field. If type = "STRING", then max_length represents the maximum UTF-8 length of strings in this field. If type = "BYTES", then max_length represents the maximum number of bytes in this field. It is invalid to set this field if type ≠ "STRING" and ≠ "BYTES".',
           ).optional(),
-          mode: z.string().describe(
+          mode: z.unknown().describe(
             "Optional. The field mode. Possible values include NULLABLE, REQUIRED and REPEATED. The default value is NULLABLE.",
           ).optional(),
-          name: z.string().describe(
+          name: z.unknown().describe(
             "Required. The field name. The name must contain only letters (a-z, A-Z), numbers (0-9), or underscores (_), and must start with a letter or underscore. The maximum length is 300 characters.",
           ).optional(),
-          policyTags: z.object({
-            names: z.array(z.string()).describe(
-              'A list of policy tag resource names. For example, "projects/1/locations/eu/taxonomies/2/policyTags/3". At most 1 policy tag is currently allowed.',
-            ).optional(),
-          }).describe(
+          policyTags: z.unknown().describe(
             "Optional. The policy tags attached to this field, used for field-level access control. If not set, defaults to empty policy_tags.",
           ).optional(),
-          precision: z.string().describe(
+          precision: z.unknown().describe(
             'Optional. Precision (maximum number of total digits in base 10) and scale (maximum number of digits in the fractional part in base 10) constraints for values of this field for NUMERIC or BIGNUMERIC. It is invalid to set precision or scale if type ≠ "NUMERIC" and ≠ "BIGNUMERIC". If precision and scale are not specified, no value range constraint is imposed on this field insofar as values are permitted by the type. Values of this NUMERIC or BIGNUMERIC field must be in this range when: * Precision (P) and scale (S) are specified: [-10P-S + 10-S, 10P-S - 10-S] * Precision (P) is specified but not scale (and thus scale is interpreted to be equal to zero): [-10P + 1, 10P - 1]. Acceptable values for precision and scale if both are specified: * If type = "NUMERIC": 1 ≤ precision - scale ≤ 29 and 0 ≤ scale ≤ 9. * If type = "BIGNUMERIC": 1 ≤ precision - scale ≤ 38 and 0 ≤ scale ≤ 38. Acceptable values for precision if only precision is specified but not scale (and thus scale is interpreted to be equal to zero): * If type = "NUMERIC": 1 ≤ precision ≤ 29. * If type = "BIGNUMERIC": 1 ≤ precision ≤ 38. If scale is specified but not precision, then it is invalid.',
           ).optional(),
-          rangeElementType: z.object({
-            type: z.string().describe(
-              "Required. The type of a field element. For more information, see TableFieldSchema.type.",
-            ).optional(),
-          }).describe("Represents the type of a field element.").optional(),
-          roundingMode: z.enum([
-            "ROUNDING_MODE_UNSPECIFIED",
-            "ROUND_HALF_AWAY_FROM_ZERO",
-            "ROUND_HALF_EVEN",
-          ]).describe(
+          rangeElementType: z.unknown().describe(
+            "Represents the type of a field element.",
+          ).optional(),
+          roundingMode: z.unknown().describe(
             "Optional. Specifies the rounding mode to be used when storing values of NUMERIC and BIGNUMERIC type.",
           ).optional(),
-          scale: z.string().describe(
+          scale: z.unknown().describe(
             "Optional. See documentation for precision.",
           ).optional(),
-          timestampPrecision: z.string().describe(
+          timestampPrecision: z.unknown().describe(
             "Optional. Precision (maximum number of total digits in base 10) for seconds of TIMESTAMP type. Possible values include: * 6 (Default, for TIMESTAMP type with microsecond precision) * 12 (For TIMESTAMP type with picosecond precision)",
           ).optional(),
-          type: z.string().describe(
+          type: z.unknown().describe(
             "Required. The field data type. Possible values include: * STRING * BYTES * INTEGER (or INT64) * FLOAT (or FLOAT64) * BOOLEAN (or BOOL) * TIMESTAMP * DATE * TIME * DATETIME * GEOGRAPHY * NUMERIC * BIGNUMERIC * JSON * RECORD (or STRUCT) * RANGE Use of RECORD/STRUCT indicates that the field contains a nested schema.",
           ).optional(),
         })).describe("Describes the fields in a table.").optional(),
@@ -7960,69 +4237,26 @@ const InputsSchema = z.object({
       }).describe("Schema of a table").optional(),
       searchStatistics: z.object({
         indexPruningStats: z.array(z.object({
-          baseTable: z.object({
-            datasetId: z.string().describe(
-              "Required. The ID of the dataset containing this table.",
-            ).optional(),
-            projectId: z.string().describe(
-              "Required. The ID of the project containing this table.",
-            ).optional(),
-            tableId: z.string().describe(
-              "Required. The ID of the table. The ID can contain Unicode characters in category L (letter), M (mark), N (number), Pc (connector, including underscore), Pd (dash), and Zs (space). For more information, see [General Category](https://wikipedia.org/wiki/Unicode_character_property#General_Category). The maximum length is 1,024 characters. Certain operations allow suffixing of the table ID with a partition decorator, such as `sample_table$20190123`.",
-            ).optional(),
-          }).optional(),
-          indexId: z.string().describe("The index id.").optional(),
-          postIndexPruningParallelInputCount: z.string().describe(
+          baseTable: z.unknown().optional(),
+          indexId: z.unknown().describe("The index id.").optional(),
+          postIndexPruningParallelInputCount: z.unknown().describe(
             "The number of parallel inputs after index pruning.",
           ).optional(),
-          preIndexPruningParallelInputCount: z.string().describe(
+          preIndexPruningParallelInputCount: z.unknown().describe(
             "The number of parallel inputs before index pruning.",
           ).optional(),
         })).describe(
           "Search index pruning statistics, one for each base table that has a search index. If a base table does not have a search index or the index does not help with pruning on the base table, then there is no pruning statistics for that table.",
         ).optional(),
         indexUnusedReasons: z.array(z.object({
-          baseTable: z.object({
-            datasetId: z.string().describe(
-              "Required. The ID of the dataset containing this table.",
-            ).optional(),
-            projectId: z.string().describe(
-              "Required. The ID of the project containing this table.",
-            ).optional(),
-            tableId: z.string().describe(
-              "Required. The ID of the table. The ID can contain Unicode characters in category L (letter), M (mark), N (number), Pc (connector, including underscore), Pd (dash), and Zs (space). For more information, see [General Category](https://wikipedia.org/wiki/Unicode_character_property#General_Category). The maximum length is 1,024 characters. Certain operations allow suffixing of the table ID with a partition decorator, such as `sample_table$20190123`.",
-            ).optional(),
-          }).optional(),
-          code: z.enum([
-            "CODE_UNSPECIFIED",
-            "INDEX_CONFIG_NOT_AVAILABLE",
-            "PENDING_INDEX_CREATION",
-            "BASE_TABLE_TRUNCATED",
-            "INDEX_CONFIG_MODIFIED",
-            "TIME_TRAVEL_QUERY",
-            "NO_PRUNING_POWER",
-            "UNINDEXED_SEARCH_FIELDS",
-            "UNSUPPORTED_SEARCH_PATTERN",
-            "OPTIMIZED_WITH_MATERIALIZED_VIEW",
-            "SECURED_BY_DATA_MASKING",
-            "MISMATCHED_TEXT_ANALYZER",
-            "BASE_TABLE_TOO_SMALL",
-            "BASE_TABLE_TOO_LARGE",
-            "ESTIMATED_PERFORMANCE_GAIN_TOO_LOW",
-            "COLUMN_METADATA_INDEX_NOT_USED",
-            "NOT_SUPPORTED_IN_STANDARD_EDITION",
-            "INDEX_SUPPRESSED_BY_FUNCTION_OPTION",
-            "QUERY_CACHE_HIT",
-            "STALE_INDEX",
-            "INTERNAL_ERROR",
-            "OTHER_REASON",
-          ]).describe(
+          baseTable: z.unknown().optional(),
+          code: z.unknown().describe(
             "Specifies the high-level reason for the scenario when no search index was used.",
           ).optional(),
-          indexName: z.string().describe(
+          indexName: z.unknown().describe(
             "Specifies the name of the unused search index, if available.",
           ).optional(),
-          message: z.string().describe(
+          message: z.unknown().describe(
             "Free form human-readable reason for the scenario when no search index was used.",
           ).optional(),
         })).describe(
@@ -8119,47 +4353,31 @@ const InputsSchema = z.object({
           "Optional. If unset, this is a positional parameter. Otherwise, should be unique within a query.",
         ).optional(),
         parameterType: z.object({
-          arrayType: z.string().describe(
+          arrayType: z.unknown().describe(
             "Circular reference to QueryParameterType",
           ).optional(),
-          rangeElementType: z.string().describe(
+          rangeElementType: z.unknown().describe(
             "Circular reference to QueryParameterType",
           ).optional(),
-          structTypes: z.array(z.object({
-            description: z.string().describe(
-              "Optional. Human-oriented description of the field.",
-            ).optional(),
-            name: z.string().describe("Optional. The name of this field.")
-              .optional(),
-            type: z.string().describe(
-              "Circular reference to QueryParameterType",
-            ).optional(),
-          })).describe(
+          structTypes: z.unknown().describe(
             "Optional. The types of the fields of this struct, in order, if this is a struct.",
           ).optional(),
-          timestampPrecision: z.string().describe(
+          timestampPrecision: z.unknown().describe(
             "Optional. Precision (maximum number of total digits in base 10) for seconds of TIMESTAMP type. Possible values include: * 6 (Default, for TIMESTAMP type with microsecond precision) * 12 (For TIMESTAMP type with picosecond precision)",
           ).optional(),
-          type: z.string().describe(
+          type: z.unknown().describe(
             "Required. The top level type of this field.",
           ).optional(),
         }).describe("The type of a query parameter.").optional(),
         parameterValue: z.object({
-          arrayValues: z.array(z.string()).describe(
+          arrayValues: z.unknown().describe(
             "Optional. The array values, if this is an array type.",
           ).optional(),
-          rangeValue: z.object({
-            end: z.string().describe(
-              "Circular reference to QueryParameterValue",
-            ).optional(),
-            start: z.string().describe(
-              "Circular reference to QueryParameterValue",
-            ).optional(),
-          }).describe("Represents the value of a range.").optional(),
-          structValues: z.record(z.string(), z.string()).describe(
-            "The struct field values.",
-          ).optional(),
-          value: z.string().describe(
+          rangeValue: z.unknown().describe("Represents the value of a range.")
+            .optional(),
+          structValues: z.unknown().describe("The struct field values.")
+            .optional(),
+          value: z.unknown().describe(
             "Optional. The value of this value, if a simple scalar type.",
           ).optional(),
         }).describe("The value of a query parameter.").optional(),
@@ -8168,47 +4386,14 @@ const InputsSchema = z.object({
       ).optional(),
       vectorSearchStatistics: z.object({
         indexUnusedReasons: z.array(z.object({
-          baseTable: z.object({
-            datasetId: z.string().describe(
-              "Required. The ID of the dataset containing this table.",
-            ).optional(),
-            projectId: z.string().describe(
-              "Required. The ID of the project containing this table.",
-            ).optional(),
-            tableId: z.string().describe(
-              "Required. The ID of the table. The ID can contain Unicode characters in category L (letter), M (mark), N (number), Pc (connector, including underscore), Pd (dash), and Zs (space). For more information, see [General Category](https://wikipedia.org/wiki/Unicode_character_property#General_Category). The maximum length is 1,024 characters. Certain operations allow suffixing of the table ID with a partition decorator, such as `sample_table$20190123`.",
-            ).optional(),
-          }).optional(),
-          code: z.enum([
-            "CODE_UNSPECIFIED",
-            "INDEX_CONFIG_NOT_AVAILABLE",
-            "PENDING_INDEX_CREATION",
-            "BASE_TABLE_TRUNCATED",
-            "INDEX_CONFIG_MODIFIED",
-            "TIME_TRAVEL_QUERY",
-            "NO_PRUNING_POWER",
-            "UNINDEXED_SEARCH_FIELDS",
-            "UNSUPPORTED_SEARCH_PATTERN",
-            "OPTIMIZED_WITH_MATERIALIZED_VIEW",
-            "SECURED_BY_DATA_MASKING",
-            "MISMATCHED_TEXT_ANALYZER",
-            "BASE_TABLE_TOO_SMALL",
-            "BASE_TABLE_TOO_LARGE",
-            "ESTIMATED_PERFORMANCE_GAIN_TOO_LOW",
-            "COLUMN_METADATA_INDEX_NOT_USED",
-            "NOT_SUPPORTED_IN_STANDARD_EDITION",
-            "INDEX_SUPPRESSED_BY_FUNCTION_OPTION",
-            "QUERY_CACHE_HIT",
-            "STALE_INDEX",
-            "INTERNAL_ERROR",
-            "OTHER_REASON",
-          ]).describe(
+          baseTable: z.unknown().optional(),
+          code: z.unknown().describe(
             "Specifies the high-level reason for the scenario when no search index was used.",
           ).optional(),
-          indexName: z.string().describe(
+          indexName: z.unknown().describe(
             "Specifies the name of the unused search index, if available.",
           ).optional(),
-          message: z.string().describe(
+          message: z.unknown().describe(
             "Free form human-readable reason for the scenario when no search index was used.",
           ).optional(),
         })).describe(
@@ -8221,40 +4406,13 @@ const InputsSchema = z.object({
           "FULLY_USED",
         ]).describe("Specifies the index usage mode for the query.").optional(),
         storedColumnsUsages: z.array(z.object({
-          baseTable: z.object({
-            datasetId: z.string().describe(
-              "Required. The ID of the dataset containing this table.",
-            ).optional(),
-            projectId: z.string().describe(
-              "Required. The ID of the project containing this table.",
-            ).optional(),
-            tableId: z.string().describe(
-              "Required. The ID of the table. The ID can contain Unicode characters in category L (letter), M (mark), N (number), Pc (connector, including underscore), Pd (dash), and Zs (space). For more information, see [General Category](https://wikipedia.org/wiki/Unicode_character_property#General_Category). The maximum length is 1,024 characters. Certain operations allow suffixing of the table ID with a partition decorator, such as `sample_table$20190123`.",
-            ).optional(),
-          }).optional(),
-          isQueryAccelerated: z.boolean().describe(
+          baseTable: z.unknown().optional(),
+          isQueryAccelerated: z.unknown().describe(
             "Specifies whether the query was accelerated with stored columns.",
           ).optional(),
-          storedColumnsUnusedReasons: z.array(z.object({
-            code: z.enum([
-              "CODE_UNSPECIFIED",
-              "STORED_COLUMNS_COVER_INSUFFICIENT",
-              "BASE_TABLE_HAS_RLS",
-              "BASE_TABLE_HAS_CLS",
-              "UNSUPPORTED_PREFILTER",
-              "INTERNAL_ERROR",
-              "OTHER_REASON",
-            ]).describe(
-              "Specifies the high-level reason for the unused scenario, each reason must have a code associated.",
-            ).optional(),
-            message: z.string().describe(
-              "Specifies the detailed description for the scenario.",
-            ).optional(),
-            uncoveredColumns: z.array(z.string()).describe(
-              "Specifies which columns were not covered by the stored columns for the specified code up to 20 columns. This is populated when the code is STORED_COLUMNS_COVER_INSUFFICIENT and BASE_TABLE_HAS_CLS.",
-            ).optional(),
-          })).describe("If stored columns were not used, explain why.")
-            .optional(),
+          storedColumnsUnusedReasons: z.unknown().describe(
+            "If stored columns were not used, explain why.",
+          ).optional(),
         })).describe(
           "Specifies the usage of stored columns in the query when stored columns are used in the query.",
         ).optional(),
@@ -8373,7 +4531,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/bigquery/jobs",
-  version: "2026.04.03.3",
+  version: "2026.04.04.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -8397,6 +4555,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.3",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.04.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

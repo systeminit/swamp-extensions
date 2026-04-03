@@ -251,7 +251,7 @@ const GlobalArgsSchema = z.object({
     ).optional(),
     metalLbConfig: z.object({
       addressPools: z.array(z.object({
-        addresses: z.array(z.string()).describe(
+        addresses: z.array(z.unknown()).describe(
           "Required. The addresses that are part of this pool. Each address must be either in the CIDR form (1.2.3.0/24) or range form (1.2.3.1-1.2.3.5).",
         ).optional(),
         avoidBuggyIps: z.boolean().describe(
@@ -279,14 +279,7 @@ const GlobalArgsSchema = z.object({
         gateway: z.string().describe(
           "The network gateway used by the VMware user cluster.",
         ).optional(),
-        ips: z.array(z.object({
-          hostname: z.string().describe(
-            "Hostname of the machine. VM's name will be used if this field is empty.",
-          ).optional(),
-          ip: z.string().describe(
-            "IP could be an IP address (like 1.2.3.4) or a CIDR (like 1.2.3.0/24).",
-          ).optional(),
-        })).describe(
+        ips: z.array(z.unknown()).describe(
           "The node's network configurations used by the VMware user cluster.",
         ).optional(),
         netmask: z.string().describe(
@@ -328,10 +321,10 @@ const GlobalArgsSchema = z.object({
           "The network gateway used by the VMware user cluster.",
         ).optional(),
         ips: z.array(z.object({
-          hostname: z.string().describe(
+          hostname: z.unknown().describe(
             "Hostname of the machine. VM's name will be used if this field is empty.",
           ).optional(),
-          ip: z.string().describe(
+          ip: z.unknown().describe(
             "IP could be an IP address (like 1.2.3.4) or a CIDR (like 1.2.3.0/24).",
           ).optional(),
         })).describe(
@@ -369,14 +362,7 @@ const GlobalArgsSchema = z.object({
         gateway: z.string().describe(
           "The network gateway used by the VMware user cluster.",
         ).optional(),
-        ips: z.array(z.object({
-          hostname: z.string().describe(
-            "Hostname of the machine. VM's name will be used if this field is empty.",
-          ).optional(),
-          ip: z.string().describe(
-            "IP could be an IP address (like 1.2.3.4) or a CIDR (like 1.2.3.0/24).",
-          ).optional(),
-        })).describe(
+        ips: z.array(z.unknown()).describe(
           "The node's network configurations used by the VMware user cluster.",
         ).optional(),
         netmask: z.string().describe(
@@ -592,7 +578,7 @@ const StateSchema = z.object({
     }),
     metalLbConfig: z.object({
       addressPools: z.array(z.object({
-        addresses: z.array(z.string()),
+        addresses: z.array(z.unknown()),
         avoidBuggyIps: z.boolean(),
         manualAssign: z.boolean(),
         pool: z.string(),
@@ -603,10 +589,7 @@ const StateSchema = z.object({
       group: z.string(),
       ipBlocks: z.array(z.object({
         gateway: z.string(),
-        ips: z.array(z.object({
-          hostname: z.string(),
-          ip: z.string(),
-        })),
+        ips: z.array(z.unknown()),
         netmask: z.string(),
       })),
       masterIp: z.string(),
@@ -625,8 +608,8 @@ const StateSchema = z.object({
       controlPlaneIpBlock: z.object({
         gateway: z.string(),
         ips: z.array(z.object({
-          hostname: z.string(),
-          ip: z.string(),
+          hostname: z.unknown(),
+          ip: z.unknown(),
         })),
         netmask: z.string(),
       }),
@@ -644,10 +627,7 @@ const StateSchema = z.object({
     staticIpConfig: z.object({
       ipBlocks: z.array(z.object({
         gateway: z.string(),
-        ips: z.array(z.object({
-          hostname: z.string(),
-          ip: z.string(),
-        })),
+        ips: z.array(z.unknown()),
         netmask: z.string(),
       })),
     }),
@@ -838,7 +818,7 @@ const InputsSchema = z.object({
     ).optional(),
     metalLbConfig: z.object({
       addressPools: z.array(z.object({
-        addresses: z.array(z.string()).describe(
+        addresses: z.array(z.unknown()).describe(
           "Required. The addresses that are part of this pool. Each address must be either in the CIDR form (1.2.3.0/24) or range form (1.2.3.1-1.2.3.5).",
         ).optional(),
         avoidBuggyIps: z.boolean().describe(
@@ -866,14 +846,7 @@ const InputsSchema = z.object({
         gateway: z.string().describe(
           "The network gateway used by the VMware user cluster.",
         ).optional(),
-        ips: z.array(z.object({
-          hostname: z.string().describe(
-            "Hostname of the machine. VM's name will be used if this field is empty.",
-          ).optional(),
-          ip: z.string().describe(
-            "IP could be an IP address (like 1.2.3.4) or a CIDR (like 1.2.3.0/24).",
-          ).optional(),
-        })).describe(
+        ips: z.array(z.unknown()).describe(
           "The node's network configurations used by the VMware user cluster.",
         ).optional(),
         netmask: z.string().describe(
@@ -915,10 +888,10 @@ const InputsSchema = z.object({
           "The network gateway used by the VMware user cluster.",
         ).optional(),
         ips: z.array(z.object({
-          hostname: z.string().describe(
+          hostname: z.unknown().describe(
             "Hostname of the machine. VM's name will be used if this field is empty.",
           ).optional(),
-          ip: z.string().describe(
+          ip: z.unknown().describe(
             "IP could be an IP address (like 1.2.3.4) or a CIDR (like 1.2.3.0/24).",
           ).optional(),
         })).describe(
@@ -956,14 +929,7 @@ const InputsSchema = z.object({
         gateway: z.string().describe(
           "The network gateway used by the VMware user cluster.",
         ).optional(),
-        ips: z.array(z.object({
-          hostname: z.string().describe(
-            "Hostname of the machine. VM's name will be used if this field is empty.",
-          ).optional(),
-          ip: z.string().describe(
-            "IP could be an IP address (like 1.2.3.4) or a CIDR (like 1.2.3.0/24).",
-          ).optional(),
-        })).describe(
+        ips: z.array(z.unknown()).describe(
           "The node's network configurations used by the VMware user cluster.",
         ).optional(),
         netmask: z.string().describe(
@@ -1120,7 +1086,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/gkeonprem/vmwareclusters",
-  version: "2026.04.03.3",
+  version: "2026.04.04.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -1144,6 +1110,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.3",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.04.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

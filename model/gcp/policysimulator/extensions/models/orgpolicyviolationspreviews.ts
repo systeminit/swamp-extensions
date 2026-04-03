@@ -71,21 +71,13 @@ const GlobalArgsSchema = z.object({
         displayName: z.string().describe(
           "One line display name for the UI. The max length of the display_name is 200 characters.",
         ).optional(),
-        methodTypes: z.array(
-          z.enum([
-            "METHOD_TYPE_UNSPECIFIED",
-            "CREATE",
-            "UPDATE",
-            "DELETE",
-            "REMOVE_GRANT",
-            "GOVERN_TAGS",
-          ]),
-        ).describe("All the operations being applied for this constraint.")
-          .optional(),
+        methodTypes: z.array(z.unknown()).describe(
+          "All the operations being applied for this constraint.",
+        ).optional(),
         name: z.string().describe(
           "Immutable. Name of the constraint. This is unique within the organization. Format of the name should be * `organizations/{organization_id}/customConstraints/{custom_constraint_id}` Example: `organizations/123/customConstraints/custom.createOnlyE2TypeVms` The max length is 71 characters and the minimum length is 1. Note that the prefix `organizations/{organization_id}/customConstraints/custom.` is not counted.",
         ).optional(),
-        resourceTypes: z.array(z.string()).describe(
+        resourceTypes: z.array(z.unknown()).describe(
           "Immutable. The resource instance type on which this policy applies. Format will be of the form: `/` Example: * `compute.googleapis.com/Instance`.",
         ).optional(),
         updateTime: z.string().describe(
@@ -103,123 +95,29 @@ const GlobalArgsSchema = z.object({
     policies: z.array(z.object({
       policy: z.object({
         alternate: z.object({
-          launch: z.string().describe(
+          launch: z.unknown().describe(
             "Reference to the launch that will be used while audit logging and to control the launch. Should be set only in the alternate policy.",
           ).optional(),
-          spec: z.object({
-            etag: z.string().describe(
-              "An opaque tag indicating the current version of the policySpec, used for concurrency control. This field is ignored if used in a `CreatePolicy` request. When the policy is returned from either a `GetPolicy` or a `ListPolicies` request, this entity tag (ETag) indicates the version of the current policySpec to use when executing a read-modify-write loop. When the policy is returned from a `GetEffectivePolicy` request, the ETag will be unset.",
-            ).optional(),
-            inheritFromParent: z.boolean().describe(
-              "Determines the inheritance behavior for this policy. If `inherit_from_parent` is true, policy rules set higher up in the hierarchy (up to the closest root) are inherited and present in the effective policy. If it is false, then no rules are inherited, and this policy becomes the new root for evaluation. This field can be set only for policies that configure list constraints.",
-            ).optional(),
-            reset: z.boolean().describe(
-              "Ignores policies set above this resource and restores the `constraint_default` enforcement behavior of the specific constraint at this resource. This field can be set in policies for either list or boolean constraints. If set, `rules` must be empty and `inherit_from_parent` must be set to false.",
-            ).optional(),
-            rules: z.array(z.object({
-              allowAll: z.boolean().describe(
-                "Setting this to true means that all values are allowed. This field can be set only in policies for list constraints.",
-              ).optional(),
-              condition: z.object({
-                description: z.string().describe(
-                  "Optional. Description of the expression. This is a longer text which describes the expression, e.g. when hovered over it in a UI.",
-                ).optional(),
-                expression: z.string().describe(
-                  "Textual representation of an expression in Common Expression Language syntax.",
-                ).optional(),
-                location: z.string().describe(
-                  "Optional. String indicating the location of the expression for error reporting, e.g. a file name and a position in the file.",
-                ).optional(),
-                title: z.string().describe(
-                  "Optional. Title for the expression, i.e. a short string describing its purpose. This can be used e.g. in UIs which allow to enter the expression.",
-                ).optional(),
-              }).describe(
-                'Represents a textual expression in the Common Expression Language (CEL) syntax. CEL is a C-like expression language. The syntax and semantics of CEL are documented at https://github.com/google/cel-spec. Example (Comparison): title: "Summary size limit" description: "Determines if a summary is less than 100 chars" expression: "document.summary.size() < 100" Example (Equality): title: "Requestor is owner" description: "Determines if requestor is the document owner" expression: "document.owner == request.auth.claims.email" Example (Logic): title: "Public documents" description: "Determine whether the document should be publicly visible" expression: "document.type!= \'private\' && document.type!= \'internal\'" Example (Data Manipulation): title: "Notification string" description: "Create a notification string with a timestamp." expression: "\'New message received at \' + string(document.create_time)" The exact variables and functions that may be referenced within an expression are determined by the service that evaluates it. See the service documentation for additional information.',
-              ).optional(),
-              denyAll: z.boolean().describe(
-                "Setting this to true means that all values are denied. This field can be set only in policies for list constraints.",
-              ).optional(),
-              enforce: z.boolean().describe(
-                "If `true`, then the policy is enforced. If `false`, then any configuration is acceptable. This field can be set in policies for boolean constraints, custom constraints and managed constraints.",
-              ).optional(),
-              parameters: z.record(z.string(), z.string()).describe(
-                'Optional. Required for managed constraints if parameters are defined. Passes parameter values when policy enforcement is enabled. Ensure that parameter value types match those defined in the constraint definition. For example: ` { "allowedLocations": ["us-east1", "us-west1"], "allowAll": true } `',
-              ).optional(),
-              values: z.object({
-                allowedValues: z.array(z.string()).describe(
-                  "List of values allowed at this resource.",
-                ).optional(),
-                deniedValues: z.array(z.string()).describe(
-                  "List of values denied at this resource.",
-                ).optional(),
-              }).describe(
-                'A message that holds specific allowed and denied values. This message can define specific values and subtrees of the Resource Manager resource hierarchy (`Organizations`, `Folders`, `Projects`) that are allowed or denied. This is achieved by using the `under:` and optional `is:` prefixes. The `under:` prefix is used to denote resource subtree values. The `is:` prefix is used to denote specific values, and is required only if the value contains a ":". Values prefixed with "is:" are treated the same as values with no prefix. Ancestry subtrees must be in one of the following formats: - `projects/` (for example, `projects/tokyo-rain-123`) - `folders/` (for example, `folders/1234`) - `organizations/` (for example, `organizations/1234`) The `supports_under` field of the associated `Constraint` defines whether ancestry prefixes can be used.',
-              ).optional(),
-            })).describe(
-              "In policies for boolean constraints, the following requirements apply: - There must be exactly one policy rule where a condition is unset. - Boolean policy rules with conditions must set `enforced` to the opposite of the policy rule without a condition. - During policy evaluation, policy rules with conditions that are true for a target resource take precedence.",
-            ).optional(),
-            updateTime: z.string().describe(
-              "Output only. The time stamp this was previously updated. This represents the last time a call to `CreatePolicy` or `UpdatePolicy` was made for that policy.",
-            ).optional(),
-          }).describe(
+          spec: z.unknown().describe(
             "Defines a Google Cloud policy specification that is used to specify constraints for configurations of Google Cloud resources.",
           ).optional(),
         }).describe(
           "Similar to PolicySpec but with an extra 'launch' field for launch reference. The PolicySpec here is specific for dry-run.",
         ).optional(),
         dryRunSpec: z.object({
-          etag: z.string().describe(
+          etag: z.unknown().describe(
             "An opaque tag indicating the current version of the policySpec, used for concurrency control. This field is ignored if used in a `CreatePolicy` request. When the policy is returned from either a `GetPolicy` or a `ListPolicies` request, this entity tag (ETag) indicates the version of the current policySpec to use when executing a read-modify-write loop. When the policy is returned from a `GetEffectivePolicy` request, the ETag will be unset.",
           ).optional(),
-          inheritFromParent: z.boolean().describe(
+          inheritFromParent: z.unknown().describe(
             "Determines the inheritance behavior for this policy. If `inherit_from_parent` is true, policy rules set higher up in the hierarchy (up to the closest root) are inherited and present in the effective policy. If it is false, then no rules are inherited, and this policy becomes the new root for evaluation. This field can be set only for policies that configure list constraints.",
           ).optional(),
-          reset: z.boolean().describe(
+          reset: z.unknown().describe(
             "Ignores policies set above this resource and restores the `constraint_default` enforcement behavior of the specific constraint at this resource. This field can be set in policies for either list or boolean constraints. If set, `rules` must be empty and `inherit_from_parent` must be set to false.",
           ).optional(),
-          rules: z.array(z.object({
-            allowAll: z.boolean().describe(
-              "Setting this to true means that all values are allowed. This field can be set only in policies for list constraints.",
-            ).optional(),
-            condition: z.object({
-              description: z.string().describe(
-                "Optional. Description of the expression. This is a longer text which describes the expression, e.g. when hovered over it in a UI.",
-              ).optional(),
-              expression: z.string().describe(
-                "Textual representation of an expression in Common Expression Language syntax.",
-              ).optional(),
-              location: z.string().describe(
-                "Optional. String indicating the location of the expression for error reporting, e.g. a file name and a position in the file.",
-              ).optional(),
-              title: z.string().describe(
-                "Optional. Title for the expression, i.e. a short string describing its purpose. This can be used e.g. in UIs which allow to enter the expression.",
-              ).optional(),
-            }).describe(
-              'Represents a textual expression in the Common Expression Language (CEL) syntax. CEL is a C-like expression language. The syntax and semantics of CEL are documented at https://github.com/google/cel-spec. Example (Comparison): title: "Summary size limit" description: "Determines if a summary is less than 100 chars" expression: "document.summary.size() < 100" Example (Equality): title: "Requestor is owner" description: "Determines if requestor is the document owner" expression: "document.owner == request.auth.claims.email" Example (Logic): title: "Public documents" description: "Determine whether the document should be publicly visible" expression: "document.type!= \'private\' && document.type!= \'internal\'" Example (Data Manipulation): title: "Notification string" description: "Create a notification string with a timestamp." expression: "\'New message received at \' + string(document.create_time)" The exact variables and functions that may be referenced within an expression are determined by the service that evaluates it. See the service documentation for additional information.',
-            ).optional(),
-            denyAll: z.boolean().describe(
-              "Setting this to true means that all values are denied. This field can be set only in policies for list constraints.",
-            ).optional(),
-            enforce: z.boolean().describe(
-              "If `true`, then the policy is enforced. If `false`, then any configuration is acceptable. This field can be set in policies for boolean constraints, custom constraints and managed constraints.",
-            ).optional(),
-            parameters: z.record(z.string(), z.string()).describe(
-              'Optional. Required for managed constraints if parameters are defined. Passes parameter values when policy enforcement is enabled. Ensure that parameter value types match those defined in the constraint definition. For example: ` { "allowedLocations": ["us-east1", "us-west1"], "allowAll": true } `',
-            ).optional(),
-            values: z.object({
-              allowedValues: z.array(z.string()).describe(
-                "List of values allowed at this resource.",
-              ).optional(),
-              deniedValues: z.array(z.string()).describe(
-                "List of values denied at this resource.",
-              ).optional(),
-            }).describe(
-              'A message that holds specific allowed and denied values. This message can define specific values and subtrees of the Resource Manager resource hierarchy (`Organizations`, `Folders`, `Projects`) that are allowed or denied. This is achieved by using the `under:` and optional `is:` prefixes. The `under:` prefix is used to denote resource subtree values. The `is:` prefix is used to denote specific values, and is required only if the value contains a ":". Values prefixed with "is:" are treated the same as values with no prefix. Ancestry subtrees must be in one of the following formats: - `projects/` (for example, `projects/tokyo-rain-123`) - `folders/` (for example, `folders/1234`) - `organizations/` (for example, `organizations/1234`) The `supports_under` field of the associated `Constraint` defines whether ancestry prefixes can be used.',
-            ).optional(),
-          })).describe(
+          rules: z.unknown().describe(
             "In policies for boolean constraints, the following requirements apply: - There must be exactly one policy rule where a condition is unset. - Boolean policy rules with conditions must set `enforced` to the opposite of the policy rule without a condition. - During policy evaluation, policy rules with conditions that are true for a target resource take precedence.",
           ).optional(),
-          updateTime: z.string().describe(
+          updateTime: z.unknown().describe(
             "Output only. The time stamp this was previously updated. This represents the last time a call to `CreatePolicy` or `UpdatePolicy` was made for that policy.",
           ).optional(),
         }).describe(
@@ -232,58 +130,19 @@ const GlobalArgsSchema = z.object({
           "Immutable. The resource name of the policy. Must be one of the following forms, where `constraint_name` is the name of the constraint that this policy configures: * `projects/{project_number}/policies/{constraint_name}` * `folders/{folder_id}/policies/{constraint_name}` * `organizations/{organization_id}/policies/{constraint_name}` For example, `projects/123/policies/compute.disableSerialPortAccess`. Note: `projects/{project_id}/policies/{constraint_name}` is also an acceptable name for API requests, but responses will return the name using the equivalent project number.",
         ).optional(),
         spec: z.object({
-          etag: z.string().describe(
+          etag: z.unknown().describe(
             "An opaque tag indicating the current version of the policySpec, used for concurrency control. This field is ignored if used in a `CreatePolicy` request. When the policy is returned from either a `GetPolicy` or a `ListPolicies` request, this entity tag (ETag) indicates the version of the current policySpec to use when executing a read-modify-write loop. When the policy is returned from a `GetEffectivePolicy` request, the ETag will be unset.",
           ).optional(),
-          inheritFromParent: z.boolean().describe(
+          inheritFromParent: z.unknown().describe(
             "Determines the inheritance behavior for this policy. If `inherit_from_parent` is true, policy rules set higher up in the hierarchy (up to the closest root) are inherited and present in the effective policy. If it is false, then no rules are inherited, and this policy becomes the new root for evaluation. This field can be set only for policies that configure list constraints.",
           ).optional(),
-          reset: z.boolean().describe(
+          reset: z.unknown().describe(
             "Ignores policies set above this resource and restores the `constraint_default` enforcement behavior of the specific constraint at this resource. This field can be set in policies for either list or boolean constraints. If set, `rules` must be empty and `inherit_from_parent` must be set to false.",
           ).optional(),
-          rules: z.array(z.object({
-            allowAll: z.boolean().describe(
-              "Setting this to true means that all values are allowed. This field can be set only in policies for list constraints.",
-            ).optional(),
-            condition: z.object({
-              description: z.string().describe(
-                "Optional. Description of the expression. This is a longer text which describes the expression, e.g. when hovered over it in a UI.",
-              ).optional(),
-              expression: z.string().describe(
-                "Textual representation of an expression in Common Expression Language syntax.",
-              ).optional(),
-              location: z.string().describe(
-                "Optional. String indicating the location of the expression for error reporting, e.g. a file name and a position in the file.",
-              ).optional(),
-              title: z.string().describe(
-                "Optional. Title for the expression, i.e. a short string describing its purpose. This can be used e.g. in UIs which allow to enter the expression.",
-              ).optional(),
-            }).describe(
-              'Represents a textual expression in the Common Expression Language (CEL) syntax. CEL is a C-like expression language. The syntax and semantics of CEL are documented at https://github.com/google/cel-spec. Example (Comparison): title: "Summary size limit" description: "Determines if a summary is less than 100 chars" expression: "document.summary.size() < 100" Example (Equality): title: "Requestor is owner" description: "Determines if requestor is the document owner" expression: "document.owner == request.auth.claims.email" Example (Logic): title: "Public documents" description: "Determine whether the document should be publicly visible" expression: "document.type!= \'private\' && document.type!= \'internal\'" Example (Data Manipulation): title: "Notification string" description: "Create a notification string with a timestamp." expression: "\'New message received at \' + string(document.create_time)" The exact variables and functions that may be referenced within an expression are determined by the service that evaluates it. See the service documentation for additional information.',
-            ).optional(),
-            denyAll: z.boolean().describe(
-              "Setting this to true means that all values are denied. This field can be set only in policies for list constraints.",
-            ).optional(),
-            enforce: z.boolean().describe(
-              "If `true`, then the policy is enforced. If `false`, then any configuration is acceptable. This field can be set in policies for boolean constraints, custom constraints and managed constraints.",
-            ).optional(),
-            parameters: z.record(z.string(), z.string()).describe(
-              'Optional. Required for managed constraints if parameters are defined. Passes parameter values when policy enforcement is enabled. Ensure that parameter value types match those defined in the constraint definition. For example: ` { "allowedLocations": ["us-east1", "us-west1"], "allowAll": true } `',
-            ).optional(),
-            values: z.object({
-              allowedValues: z.array(z.string()).describe(
-                "List of values allowed at this resource.",
-              ).optional(),
-              deniedValues: z.array(z.string()).describe(
-                "List of values denied at this resource.",
-              ).optional(),
-            }).describe(
-              'A message that holds specific allowed and denied values. This message can define specific values and subtrees of the Resource Manager resource hierarchy (`Organizations`, `Folders`, `Projects`) that are allowed or denied. This is achieved by using the `under:` and optional `is:` prefixes. The `under:` prefix is used to denote resource subtree values. The `is:` prefix is used to denote specific values, and is required only if the value contains a ":". Values prefixed with "is:" are treated the same as values with no prefix. Ancestry subtrees must be in one of the following formats: - `projects/` (for example, `projects/tokyo-rain-123`) - `folders/` (for example, `folders/1234`) - `organizations/` (for example, `organizations/1234`) The `supports_under` field of the associated `Constraint` defines whether ancestry prefixes can be used.',
-            ).optional(),
-          })).describe(
+          rules: z.unknown().describe(
             "In policies for boolean constraints, the following requirements apply: - There must be exactly one policy rule where a condition is unset. - Boolean policy rules with conditions must set `enforced` to the opposite of the policy rule without a condition. - During policy evaluation, policy rules with conditions that are true for a target resource take precedence.",
           ).optional(),
-          updateTime: z.string().describe(
+          updateTime: z.unknown().describe(
             "Output only. The time stamp this was previously updated. This represents the last time a call to `CreatePolicy` or `UpdatePolicy` was made for that policy.",
           ).optional(),
         }).describe(
@@ -337,9 +196,9 @@ const StateSchema = z.object({
         condition: z.string(),
         description: z.string(),
         displayName: z.string(),
-        methodTypes: z.array(z.string()),
+        methodTypes: z.array(z.unknown()),
         name: z.string(),
-        resourceTypes: z.array(z.string()),
+        resourceTypes: z.array(z.unknown()),
         updateTime: z.string(),
       }),
       customConstraintParent: z.string(),
@@ -347,75 +206,24 @@ const StateSchema = z.object({
     policies: z.array(z.object({
       policy: z.object({
         alternate: z.object({
-          launch: z.string(),
-          spec: z.object({
-            etag: z.string(),
-            inheritFromParent: z.boolean(),
-            reset: z.boolean(),
-            rules: z.array(z.object({
-              allowAll: z.boolean(),
-              condition: z.object({
-                description: z.string(),
-                expression: z.string(),
-                location: z.string(),
-                title: z.string(),
-              }),
-              denyAll: z.boolean(),
-              enforce: z.boolean(),
-              parameters: z.record(z.string(), z.unknown()),
-              values: z.object({
-                allowedValues: z.array(z.string()),
-                deniedValues: z.array(z.string()),
-              }),
-            })),
-            updateTime: z.string(),
-          }),
+          launch: z.unknown(),
+          spec: z.unknown(),
         }),
         dryRunSpec: z.object({
-          etag: z.string(),
-          inheritFromParent: z.boolean(),
-          reset: z.boolean(),
-          rules: z.array(z.object({
-            allowAll: z.boolean(),
-            condition: z.object({
-              description: z.string(),
-              expression: z.string(),
-              location: z.string(),
-              title: z.string(),
-            }),
-            denyAll: z.boolean(),
-            enforce: z.boolean(),
-            parameters: z.record(z.string(), z.unknown()),
-            values: z.object({
-              allowedValues: z.array(z.string()),
-              deniedValues: z.array(z.string()),
-            }),
-          })),
-          updateTime: z.string(),
+          etag: z.unknown(),
+          inheritFromParent: z.unknown(),
+          reset: z.unknown(),
+          rules: z.unknown(),
+          updateTime: z.unknown(),
         }),
         etag: z.string(),
         name: z.string(),
         spec: z.object({
-          etag: z.string(),
-          inheritFromParent: z.boolean(),
-          reset: z.boolean(),
-          rules: z.array(z.object({
-            allowAll: z.boolean(),
-            condition: z.object({
-              description: z.string(),
-              expression: z.string(),
-              location: z.string(),
-              title: z.string(),
-            }),
-            denyAll: z.boolean(),
-            enforce: z.boolean(),
-            parameters: z.record(z.string(), z.unknown()),
-            values: z.object({
-              allowedValues: z.array(z.string()),
-              deniedValues: z.array(z.string()),
-            }),
-          })),
-          updateTime: z.string(),
+          etag: z.unknown(),
+          inheritFromParent: z.unknown(),
+          reset: z.unknown(),
+          rules: z.unknown(),
+          updateTime: z.unknown(),
         }),
       }),
       policyParent: z.string(),
@@ -450,21 +258,13 @@ const InputsSchema = z.object({
         displayName: z.string().describe(
           "One line display name for the UI. The max length of the display_name is 200 characters.",
         ).optional(),
-        methodTypes: z.array(
-          z.enum([
-            "METHOD_TYPE_UNSPECIFIED",
-            "CREATE",
-            "UPDATE",
-            "DELETE",
-            "REMOVE_GRANT",
-            "GOVERN_TAGS",
-          ]),
-        ).describe("All the operations being applied for this constraint.")
-          .optional(),
+        methodTypes: z.array(z.unknown()).describe(
+          "All the operations being applied for this constraint.",
+        ).optional(),
         name: z.string().describe(
           "Immutable. Name of the constraint. This is unique within the organization. Format of the name should be * `organizations/{organization_id}/customConstraints/{custom_constraint_id}` Example: `organizations/123/customConstraints/custom.createOnlyE2TypeVms` The max length is 71 characters and the minimum length is 1. Note that the prefix `organizations/{organization_id}/customConstraints/custom.` is not counted.",
         ).optional(),
-        resourceTypes: z.array(z.string()).describe(
+        resourceTypes: z.array(z.unknown()).describe(
           "Immutable. The resource instance type on which this policy applies. Format will be of the form: `/` Example: * `compute.googleapis.com/Instance`.",
         ).optional(),
         updateTime: z.string().describe(
@@ -482,123 +282,29 @@ const InputsSchema = z.object({
     policies: z.array(z.object({
       policy: z.object({
         alternate: z.object({
-          launch: z.string().describe(
+          launch: z.unknown().describe(
             "Reference to the launch that will be used while audit logging and to control the launch. Should be set only in the alternate policy.",
           ).optional(),
-          spec: z.object({
-            etag: z.string().describe(
-              "An opaque tag indicating the current version of the policySpec, used for concurrency control. This field is ignored if used in a `CreatePolicy` request. When the policy is returned from either a `GetPolicy` or a `ListPolicies` request, this entity tag (ETag) indicates the version of the current policySpec to use when executing a read-modify-write loop. When the policy is returned from a `GetEffectivePolicy` request, the ETag will be unset.",
-            ).optional(),
-            inheritFromParent: z.boolean().describe(
-              "Determines the inheritance behavior for this policy. If `inherit_from_parent` is true, policy rules set higher up in the hierarchy (up to the closest root) are inherited and present in the effective policy. If it is false, then no rules are inherited, and this policy becomes the new root for evaluation. This field can be set only for policies that configure list constraints.",
-            ).optional(),
-            reset: z.boolean().describe(
-              "Ignores policies set above this resource and restores the `constraint_default` enforcement behavior of the specific constraint at this resource. This field can be set in policies for either list or boolean constraints. If set, `rules` must be empty and `inherit_from_parent` must be set to false.",
-            ).optional(),
-            rules: z.array(z.object({
-              allowAll: z.boolean().describe(
-                "Setting this to true means that all values are allowed. This field can be set only in policies for list constraints.",
-              ).optional(),
-              condition: z.object({
-                description: z.string().describe(
-                  "Optional. Description of the expression. This is a longer text which describes the expression, e.g. when hovered over it in a UI.",
-                ).optional(),
-                expression: z.string().describe(
-                  "Textual representation of an expression in Common Expression Language syntax.",
-                ).optional(),
-                location: z.string().describe(
-                  "Optional. String indicating the location of the expression for error reporting, e.g. a file name and a position in the file.",
-                ).optional(),
-                title: z.string().describe(
-                  "Optional. Title for the expression, i.e. a short string describing its purpose. This can be used e.g. in UIs which allow to enter the expression.",
-                ).optional(),
-              }).describe(
-                'Represents a textual expression in the Common Expression Language (CEL) syntax. CEL is a C-like expression language. The syntax and semantics of CEL are documented at https://github.com/google/cel-spec. Example (Comparison): title: "Summary size limit" description: "Determines if a summary is less than 100 chars" expression: "document.summary.size() < 100" Example (Equality): title: "Requestor is owner" description: "Determines if requestor is the document owner" expression: "document.owner == request.auth.claims.email" Example (Logic): title: "Public documents" description: "Determine whether the document should be publicly visible" expression: "document.type!= \'private\' && document.type!= \'internal\'" Example (Data Manipulation): title: "Notification string" description: "Create a notification string with a timestamp." expression: "\'New message received at \' + string(document.create_time)" The exact variables and functions that may be referenced within an expression are determined by the service that evaluates it. See the service documentation for additional information.',
-              ).optional(),
-              denyAll: z.boolean().describe(
-                "Setting this to true means that all values are denied. This field can be set only in policies for list constraints.",
-              ).optional(),
-              enforce: z.boolean().describe(
-                "If `true`, then the policy is enforced. If `false`, then any configuration is acceptable. This field can be set in policies for boolean constraints, custom constraints and managed constraints.",
-              ).optional(),
-              parameters: z.record(z.string(), z.string()).describe(
-                'Optional. Required for managed constraints if parameters are defined. Passes parameter values when policy enforcement is enabled. Ensure that parameter value types match those defined in the constraint definition. For example: ` { "allowedLocations": ["us-east1", "us-west1"], "allowAll": true } `',
-              ).optional(),
-              values: z.object({
-                allowedValues: z.array(z.string()).describe(
-                  "List of values allowed at this resource.",
-                ).optional(),
-                deniedValues: z.array(z.string()).describe(
-                  "List of values denied at this resource.",
-                ).optional(),
-              }).describe(
-                'A message that holds specific allowed and denied values. This message can define specific values and subtrees of the Resource Manager resource hierarchy (`Organizations`, `Folders`, `Projects`) that are allowed or denied. This is achieved by using the `under:` and optional `is:` prefixes. The `under:` prefix is used to denote resource subtree values. The `is:` prefix is used to denote specific values, and is required only if the value contains a ":". Values prefixed with "is:" are treated the same as values with no prefix. Ancestry subtrees must be in one of the following formats: - `projects/` (for example, `projects/tokyo-rain-123`) - `folders/` (for example, `folders/1234`) - `organizations/` (for example, `organizations/1234`) The `supports_under` field of the associated `Constraint` defines whether ancestry prefixes can be used.',
-              ).optional(),
-            })).describe(
-              "In policies for boolean constraints, the following requirements apply: - There must be exactly one policy rule where a condition is unset. - Boolean policy rules with conditions must set `enforced` to the opposite of the policy rule without a condition. - During policy evaluation, policy rules with conditions that are true for a target resource take precedence.",
-            ).optional(),
-            updateTime: z.string().describe(
-              "Output only. The time stamp this was previously updated. This represents the last time a call to `CreatePolicy` or `UpdatePolicy` was made for that policy.",
-            ).optional(),
-          }).describe(
+          spec: z.unknown().describe(
             "Defines a Google Cloud policy specification that is used to specify constraints for configurations of Google Cloud resources.",
           ).optional(),
         }).describe(
           "Similar to PolicySpec but with an extra 'launch' field for launch reference. The PolicySpec here is specific for dry-run.",
         ).optional(),
         dryRunSpec: z.object({
-          etag: z.string().describe(
+          etag: z.unknown().describe(
             "An opaque tag indicating the current version of the policySpec, used for concurrency control. This field is ignored if used in a `CreatePolicy` request. When the policy is returned from either a `GetPolicy` or a `ListPolicies` request, this entity tag (ETag) indicates the version of the current policySpec to use when executing a read-modify-write loop. When the policy is returned from a `GetEffectivePolicy` request, the ETag will be unset.",
           ).optional(),
-          inheritFromParent: z.boolean().describe(
+          inheritFromParent: z.unknown().describe(
             "Determines the inheritance behavior for this policy. If `inherit_from_parent` is true, policy rules set higher up in the hierarchy (up to the closest root) are inherited and present in the effective policy. If it is false, then no rules are inherited, and this policy becomes the new root for evaluation. This field can be set only for policies that configure list constraints.",
           ).optional(),
-          reset: z.boolean().describe(
+          reset: z.unknown().describe(
             "Ignores policies set above this resource and restores the `constraint_default` enforcement behavior of the specific constraint at this resource. This field can be set in policies for either list or boolean constraints. If set, `rules` must be empty and `inherit_from_parent` must be set to false.",
           ).optional(),
-          rules: z.array(z.object({
-            allowAll: z.boolean().describe(
-              "Setting this to true means that all values are allowed. This field can be set only in policies for list constraints.",
-            ).optional(),
-            condition: z.object({
-              description: z.string().describe(
-                "Optional. Description of the expression. This is a longer text which describes the expression, e.g. when hovered over it in a UI.",
-              ).optional(),
-              expression: z.string().describe(
-                "Textual representation of an expression in Common Expression Language syntax.",
-              ).optional(),
-              location: z.string().describe(
-                "Optional. String indicating the location of the expression for error reporting, e.g. a file name and a position in the file.",
-              ).optional(),
-              title: z.string().describe(
-                "Optional. Title for the expression, i.e. a short string describing its purpose. This can be used e.g. in UIs which allow to enter the expression.",
-              ).optional(),
-            }).describe(
-              'Represents a textual expression in the Common Expression Language (CEL) syntax. CEL is a C-like expression language. The syntax and semantics of CEL are documented at https://github.com/google/cel-spec. Example (Comparison): title: "Summary size limit" description: "Determines if a summary is less than 100 chars" expression: "document.summary.size() < 100" Example (Equality): title: "Requestor is owner" description: "Determines if requestor is the document owner" expression: "document.owner == request.auth.claims.email" Example (Logic): title: "Public documents" description: "Determine whether the document should be publicly visible" expression: "document.type!= \'private\' && document.type!= \'internal\'" Example (Data Manipulation): title: "Notification string" description: "Create a notification string with a timestamp." expression: "\'New message received at \' + string(document.create_time)" The exact variables and functions that may be referenced within an expression are determined by the service that evaluates it. See the service documentation for additional information.',
-            ).optional(),
-            denyAll: z.boolean().describe(
-              "Setting this to true means that all values are denied. This field can be set only in policies for list constraints.",
-            ).optional(),
-            enforce: z.boolean().describe(
-              "If `true`, then the policy is enforced. If `false`, then any configuration is acceptable. This field can be set in policies for boolean constraints, custom constraints and managed constraints.",
-            ).optional(),
-            parameters: z.record(z.string(), z.string()).describe(
-              'Optional. Required for managed constraints if parameters are defined. Passes parameter values when policy enforcement is enabled. Ensure that parameter value types match those defined in the constraint definition. For example: ` { "allowedLocations": ["us-east1", "us-west1"], "allowAll": true } `',
-            ).optional(),
-            values: z.object({
-              allowedValues: z.array(z.string()).describe(
-                "List of values allowed at this resource.",
-              ).optional(),
-              deniedValues: z.array(z.string()).describe(
-                "List of values denied at this resource.",
-              ).optional(),
-            }).describe(
-              'A message that holds specific allowed and denied values. This message can define specific values and subtrees of the Resource Manager resource hierarchy (`Organizations`, `Folders`, `Projects`) that are allowed or denied. This is achieved by using the `under:` and optional `is:` prefixes. The `under:` prefix is used to denote resource subtree values. The `is:` prefix is used to denote specific values, and is required only if the value contains a ":". Values prefixed with "is:" are treated the same as values with no prefix. Ancestry subtrees must be in one of the following formats: - `projects/` (for example, `projects/tokyo-rain-123`) - `folders/` (for example, `folders/1234`) - `organizations/` (for example, `organizations/1234`) The `supports_under` field of the associated `Constraint` defines whether ancestry prefixes can be used.',
-            ).optional(),
-          })).describe(
+          rules: z.unknown().describe(
             "In policies for boolean constraints, the following requirements apply: - There must be exactly one policy rule where a condition is unset. - Boolean policy rules with conditions must set `enforced` to the opposite of the policy rule without a condition. - During policy evaluation, policy rules with conditions that are true for a target resource take precedence.",
           ).optional(),
-          updateTime: z.string().describe(
+          updateTime: z.unknown().describe(
             "Output only. The time stamp this was previously updated. This represents the last time a call to `CreatePolicy` or `UpdatePolicy` was made for that policy.",
           ).optional(),
         }).describe(
@@ -611,58 +317,19 @@ const InputsSchema = z.object({
           "Immutable. The resource name of the policy. Must be one of the following forms, where `constraint_name` is the name of the constraint that this policy configures: * `projects/{project_number}/policies/{constraint_name}` * `folders/{folder_id}/policies/{constraint_name}` * `organizations/{organization_id}/policies/{constraint_name}` For example, `projects/123/policies/compute.disableSerialPortAccess`. Note: `projects/{project_id}/policies/{constraint_name}` is also an acceptable name for API requests, but responses will return the name using the equivalent project number.",
         ).optional(),
         spec: z.object({
-          etag: z.string().describe(
+          etag: z.unknown().describe(
             "An opaque tag indicating the current version of the policySpec, used for concurrency control. This field is ignored if used in a `CreatePolicy` request. When the policy is returned from either a `GetPolicy` or a `ListPolicies` request, this entity tag (ETag) indicates the version of the current policySpec to use when executing a read-modify-write loop. When the policy is returned from a `GetEffectivePolicy` request, the ETag will be unset.",
           ).optional(),
-          inheritFromParent: z.boolean().describe(
+          inheritFromParent: z.unknown().describe(
             "Determines the inheritance behavior for this policy. If `inherit_from_parent` is true, policy rules set higher up in the hierarchy (up to the closest root) are inherited and present in the effective policy. If it is false, then no rules are inherited, and this policy becomes the new root for evaluation. This field can be set only for policies that configure list constraints.",
           ).optional(),
-          reset: z.boolean().describe(
+          reset: z.unknown().describe(
             "Ignores policies set above this resource and restores the `constraint_default` enforcement behavior of the specific constraint at this resource. This field can be set in policies for either list or boolean constraints. If set, `rules` must be empty and `inherit_from_parent` must be set to false.",
           ).optional(),
-          rules: z.array(z.object({
-            allowAll: z.boolean().describe(
-              "Setting this to true means that all values are allowed. This field can be set only in policies for list constraints.",
-            ).optional(),
-            condition: z.object({
-              description: z.string().describe(
-                "Optional. Description of the expression. This is a longer text which describes the expression, e.g. when hovered over it in a UI.",
-              ).optional(),
-              expression: z.string().describe(
-                "Textual representation of an expression in Common Expression Language syntax.",
-              ).optional(),
-              location: z.string().describe(
-                "Optional. String indicating the location of the expression for error reporting, e.g. a file name and a position in the file.",
-              ).optional(),
-              title: z.string().describe(
-                "Optional. Title for the expression, i.e. a short string describing its purpose. This can be used e.g. in UIs which allow to enter the expression.",
-              ).optional(),
-            }).describe(
-              'Represents a textual expression in the Common Expression Language (CEL) syntax. CEL is a C-like expression language. The syntax and semantics of CEL are documented at https://github.com/google/cel-spec. Example (Comparison): title: "Summary size limit" description: "Determines if a summary is less than 100 chars" expression: "document.summary.size() < 100" Example (Equality): title: "Requestor is owner" description: "Determines if requestor is the document owner" expression: "document.owner == request.auth.claims.email" Example (Logic): title: "Public documents" description: "Determine whether the document should be publicly visible" expression: "document.type!= \'private\' && document.type!= \'internal\'" Example (Data Manipulation): title: "Notification string" description: "Create a notification string with a timestamp." expression: "\'New message received at \' + string(document.create_time)" The exact variables and functions that may be referenced within an expression are determined by the service that evaluates it. See the service documentation for additional information.',
-            ).optional(),
-            denyAll: z.boolean().describe(
-              "Setting this to true means that all values are denied. This field can be set only in policies for list constraints.",
-            ).optional(),
-            enforce: z.boolean().describe(
-              "If `true`, then the policy is enforced. If `false`, then any configuration is acceptable. This field can be set in policies for boolean constraints, custom constraints and managed constraints.",
-            ).optional(),
-            parameters: z.record(z.string(), z.string()).describe(
-              'Optional. Required for managed constraints if parameters are defined. Passes parameter values when policy enforcement is enabled. Ensure that parameter value types match those defined in the constraint definition. For example: ` { "allowedLocations": ["us-east1", "us-west1"], "allowAll": true } `',
-            ).optional(),
-            values: z.object({
-              allowedValues: z.array(z.string()).describe(
-                "List of values allowed at this resource.",
-              ).optional(),
-              deniedValues: z.array(z.string()).describe(
-                "List of values denied at this resource.",
-              ).optional(),
-            }).describe(
-              'A message that holds specific allowed and denied values. This message can define specific values and subtrees of the Resource Manager resource hierarchy (`Organizations`, `Folders`, `Projects`) that are allowed or denied. This is achieved by using the `under:` and optional `is:` prefixes. The `under:` prefix is used to denote resource subtree values. The `is:` prefix is used to denote specific values, and is required only if the value contains a ":". Values prefixed with "is:" are treated the same as values with no prefix. Ancestry subtrees must be in one of the following formats: - `projects/` (for example, `projects/tokyo-rain-123`) - `folders/` (for example, `folders/1234`) - `organizations/` (for example, `organizations/1234`) The `supports_under` field of the associated `Constraint` defines whether ancestry prefixes can be used.',
-            ).optional(),
-          })).describe(
+          rules: z.unknown().describe(
             "In policies for boolean constraints, the following requirements apply: - There must be exactly one policy rule where a condition is unset. - Boolean policy rules with conditions must set `enforced` to the opposite of the policy rule without a condition. - During policy evaluation, policy rules with conditions that are true for a target resource take precedence.",
           ).optional(),
-          updateTime: z.string().describe(
+          updateTime: z.unknown().describe(
             "Output only. The time stamp this was previously updated. This represents the last time a call to `CreatePolicy` or `UpdatePolicy` was made for that policy.",
           ).optional(),
         }).describe(
@@ -707,7 +374,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/policysimulator/orgpolicyviolationspreviews",
-  version: "2026.04.03.3",
+  version: "2026.04.04.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -731,6 +398,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.3",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.04.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

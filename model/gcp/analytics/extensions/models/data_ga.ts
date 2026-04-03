@@ -91,7 +91,7 @@ const StateSchema = z.object({
     })),
     rows: z.array(z.object({
       c: z.array(z.object({
-        v: z.string(),
+        v: z.unknown(),
       })),
     })),
   }).optional(),
@@ -137,7 +137,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/analytics/data-ga",
-  version: "2026.04.03.3",
+  version: "2026.04.04.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -161,6 +161,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.3",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.04.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

@@ -95,65 +95,29 @@ const GlobalArgsSchema = z.object({
         "Name of an instance template used to create VMs. Named the field as 'instance_template' instead of 'template' to avoid C++ keyword conflict. Batch only supports global instance templates from the same project as the job. You can specify the global instance template as a full or partial URL.",
       ).optional(),
       policy: z.object({
-        accelerators: z.array(z.object({
-          count: z.string().describe("The number of accelerators of this type.")
-            .optional(),
-          driverVersion: z.string().describe(
-            'Optional. The NVIDIA GPU driver version that should be installed for this type. You can define the specific driver version such as "470.103.01", following the driver version requirements in https://cloud.google.com/compute/docs/gpus/install-drivers-gpu#minimum-driver. Batch will install the specific accelerator driver if qualified.',
-          ).optional(),
-          installGpuDrivers: z.boolean().describe(
-            "Deprecated: please use instances[0].install_gpu_drivers instead.",
-          ).optional(),
-          type: z.string().describe(
-            'The accelerator type. For example, "nvidia-tesla-t4". See `gcloud compute accelerator-types list`.',
-          ).optional(),
-        })).describe("The accelerators attached to each VM instance.")
-          .optional(),
+        accelerators: z.array(z.unknown()).describe(
+          "The accelerators attached to each VM instance.",
+        ).optional(),
         bootDisk: z.object({
-          diskInterface: z.string().describe(
+          diskInterface: z.unknown().describe(
             'Local SSDs are available through both "SCSI" and "NVMe" interfaces. If not indicated, "NVMe" will be the default one for local ssds. This field is ignored for persistent disks as the interface is chosen automatically. See https://cloud.google.com/compute/docs/disks/persistent-disks#choose_an_interface.',
           ).optional(),
-          image: z.string().describe(
+          image: z.unknown().describe(
             "URL for a VM image to use as the data source for this disk. For example, the following are all valid URLs: * Specify the image by its family name: projects/{project}/global/images/family/{image_family} * Specify the image version: projects/{project}/global/images/{image_version} You can also use Batch customized image in short names. The following image values are supported for a boot disk: * `batch-debian`: use Batch Debian images. * `batch-cos`: use Batch Container-Optimized images. * `batch-hpc-rocky`: use Batch HPC Rocky Linux images.",
           ).optional(),
-          sizeGb: z.string().describe(
+          sizeGb: z.unknown().describe(
             "Disk size in GB. **Non-Boot Disk**: If the `type` specifies a persistent disk, this field is ignored if `data_source` is set as `image` or `snapshot`. If the `type` specifies a local SSD, this field should be a multiple of 375 GB, otherwise, the final size will be the next greater multiple of 375 GB. **Boot Disk**: Batch will calculate the boot disk size based on source image and task requirements if you do not speicify the size. If both this field and the `boot_disk_mib` field in task spec's `compute_resource` are defined, Batch will only honor this field. Also, this field should be no smaller than the source disk's size when the `data_source` is set as `snapshot` or `image`. For example, if you set an image as the `data_source` field and the image's default disk size 30 GB, you can only use this field to make the disk larger or equal to 30 GB.",
           ).optional(),
-          snapshot: z.string().describe(
+          snapshot: z.unknown().describe(
             "Name of a snapshot used as the data source. Snapshot is not supported as boot disk now.",
           ).optional(),
-          type: z.string().describe(
+          type: z.unknown().describe(
             'Disk type as shown in `gcloud compute disk-types list`. For example, local SSD uses type "local-ssd". Persistent disks and boot disks use "pd-balanced", "pd-extreme", "pd-ssd" or "pd-standard". If not specified, "pd-standard" will be used as the default type for non-boot disks, "pd-balanced" will be used as the default type for boot disks.',
           ).optional(),
         }).describe(
           "A new persistent disk or a local ssd. A VM can only have one local SSD setting but multiple local SSD partitions. See https://cloud.google.com/compute/docs/disks#pdspecs and https://cloud.google.com/compute/docs/disks#localssds.",
         ).optional(),
-        disks: z.array(z.object({
-          deviceName: z.string().describe(
-            "Device name that the guest operating system will see. It is used by Runnable.volumes field to mount disks. So please specify the device_name if you want Batch to help mount the disk, and it should match the device_name field in volumes.",
-          ).optional(),
-          existingDisk: z.string().describe("Name of an existing PD.")
-            .optional(),
-          newDisk: z.object({
-            diskInterface: z.string().describe(
-              'Local SSDs are available through both "SCSI" and "NVMe" interfaces. If not indicated, "NVMe" will be the default one for local ssds. This field is ignored for persistent disks as the interface is chosen automatically. See https://cloud.google.com/compute/docs/disks/persistent-disks#choose_an_interface.',
-            ).optional(),
-            image: z.string().describe(
-              "URL for a VM image to use as the data source for this disk. For example, the following are all valid URLs: * Specify the image by its family name: projects/{project}/global/images/family/{image_family} * Specify the image version: projects/{project}/global/images/{image_version} You can also use Batch customized image in short names. The following image values are supported for a boot disk: * `batch-debian`: use Batch Debian images. * `batch-cos`: use Batch Container-Optimized images. * `batch-hpc-rocky`: use Batch HPC Rocky Linux images.",
-            ).optional(),
-            sizeGb: z.string().describe(
-              "Disk size in GB. **Non-Boot Disk**: If the `type` specifies a persistent disk, this field is ignored if `data_source` is set as `image` or `snapshot`. If the `type` specifies a local SSD, this field should be a multiple of 375 GB, otherwise, the final size will be the next greater multiple of 375 GB. **Boot Disk**: Batch will calculate the boot disk size based on source image and task requirements if you do not speicify the size. If both this field and the `boot_disk_mib` field in task spec's `compute_resource` are defined, Batch will only honor this field. Also, this field should be no smaller than the source disk's size when the `data_source` is set as `snapshot` or `image`. For example, if you set an image as the `data_source` field and the image's default disk size 30 GB, you can only use this field to make the disk larger or equal to 30 GB.",
-            ).optional(),
-            snapshot: z.string().describe(
-              "Name of a snapshot used as the data source. Snapshot is not supported as boot disk now.",
-            ).optional(),
-            type: z.string().describe(
-              'Disk type as shown in `gcloud compute disk-types list`. For example, local SSD uses type "local-ssd". Persistent disks and boot disks use "pd-balanced", "pd-extreme", "pd-ssd" or "pd-standard". If not specified, "pd-standard" will be used as the default type for non-boot disks, "pd-balanced" will be used as the default type for boot disks.',
-            ).optional(),
-          }).describe(
-            "A new persistent disk or a local ssd. A VM can only have one local SSD setting but multiple local SSD partitions. See https://cloud.google.com/compute/docs/disks#pdspecs and https://cloud.google.com/compute/docs/disks#localssds.",
-          ).optional(),
-        })).describe(
+        disks: z.array(z.unknown()).describe(
           "Non-boot disks to be attached for each VM created by this InstancePolicy. New disks will be deleted when the VM is deleted. A non-boot disk is a disk that can be of a device with a file system or a raw storage drive that is not ready for data storage and accessing.",
         ).optional(),
         machineType: z.string().describe("The Compute Engine machine type.")
@@ -326,36 +290,15 @@ const GlobalArgsSchema = z.object({
           "Count of task in each state in the TaskGroup. The map key is task state name.",
         ).optional(),
         instances: z.array(z.object({
-          bootDisk: z.object({
-            diskInterface: z.string().describe(
-              'Local SSDs are available through both "SCSI" and "NVMe" interfaces. If not indicated, "NVMe" will be the default one for local ssds. This field is ignored for persistent disks as the interface is chosen automatically. See https://cloud.google.com/compute/docs/disks/persistent-disks#choose_an_interface.',
-            ).optional(),
-            image: z.string().describe(
-              "URL for a VM image to use as the data source for this disk. For example, the following are all valid URLs: * Specify the image by its family name: projects/{project}/global/images/family/{image_family} * Specify the image version: projects/{project}/global/images/{image_version} You can also use Batch customized image in short names. The following image values are supported for a boot disk: * `batch-debian`: use Batch Debian images. * `batch-cos`: use Batch Container-Optimized images. * `batch-hpc-rocky`: use Batch HPC Rocky Linux images.",
-            ).optional(),
-            sizeGb: z.string().describe(
-              "Disk size in GB. **Non-Boot Disk**: If the `type` specifies a persistent disk, this field is ignored if `data_source` is set as `image` or `snapshot`. If the `type` specifies a local SSD, this field should be a multiple of 375 GB, otherwise, the final size will be the next greater multiple of 375 GB. **Boot Disk**: Batch will calculate the boot disk size based on source image and task requirements if you do not speicify the size. If both this field and the `boot_disk_mib` field in task spec's `compute_resource` are defined, Batch will only honor this field. Also, this field should be no smaller than the source disk's size when the `data_source` is set as `snapshot` or `image`. For example, if you set an image as the `data_source` field and the image's default disk size 30 GB, you can only use this field to make the disk larger or equal to 30 GB.",
-            ).optional(),
-            snapshot: z.string().describe(
-              "Name of a snapshot used as the data source. Snapshot is not supported as boot disk now.",
-            ).optional(),
-            type: z.string().describe(
-              'Disk type as shown in `gcloud compute disk-types list`. For example, local SSD uses type "local-ssd". Persistent disks and boot disks use "pd-balanced", "pd-extreme", "pd-ssd" or "pd-standard". If not specified, "pd-standard" will be used as the default type for non-boot disks, "pd-balanced" will be used as the default type for boot disks.',
-            ).optional(),
-          }).describe(
+          bootDisk: z.unknown().describe(
             "A new persistent disk or a local ssd. A VM can only have one local SSD setting but multiple local SSD partitions. See https://cloud.google.com/compute/docs/disks#pdspecs and https://cloud.google.com/compute/docs/disks#localssds.",
           ).optional(),
-          machineType: z.string().describe("The Compute Engine machine type.")
+          machineType: z.unknown().describe("The Compute Engine machine type.")
             .optional(),
-          provisioningModel: z.enum([
-            "PROVISIONING_MODEL_UNSPECIFIED",
-            "STANDARD",
-            "SPOT",
-            "PREEMPTIBLE",
-            "RESERVATION_BOUND",
-            "FLEX_START",
-          ]).describe("The VM instance provisioning model.").optional(),
-          taskPack: z.string().describe(
+          provisioningModel: z.unknown().describe(
+            "The VM instance provisioning model.",
+          ).optional(),
+          taskPack: z.unknown().describe(
             "The max number of tasks can be assigned to this instance type.",
           ).optional(),
         })).describe("Status of instances allocated for the TaskGroup.")
@@ -396,17 +339,17 @@ const GlobalArgsSchema = z.object({
     ).optional(),
     taskEnvironments: z.array(z.object({
       encryptedVariables: z.object({
-        cipherText: z.string().describe(
+        cipherText: z.unknown().describe(
           "The value of the cipherText response from the `encrypt` method.",
         ).optional(),
-        keyName: z.string().describe(
+        keyName: z.unknown().describe(
           "The name of the KMS key that will be used to decrypt the cipher text.",
         ).optional(),
       }).optional(),
-      secretVariables: z.record(z.string(), z.string()).describe(
+      secretVariables: z.record(z.string(), z.unknown()).describe(
         "A map of environment variable names to Secret Manager secret names. The VM will access the named secrets to set the value of each environment variable.",
       ).optional(),
-      variables: z.record(z.string(), z.string()).describe(
+      variables: z.record(z.string(), z.unknown()).describe(
         "A map of environment variable names to values.",
       ).optional(),
     })).describe(
@@ -428,17 +371,17 @@ const GlobalArgsSchema = z.object({
       ).optional(),
       environment: z.object({
         encryptedVariables: z.object({
-          cipherText: z.string().describe(
+          cipherText: z.unknown().describe(
             "The value of the cipherText response from the `encrypt` method.",
           ).optional(),
-          keyName: z.string().describe(
+          keyName: z.unknown().describe(
             "The name of the KMS key that will be used to decrypt the cipher text.",
           ).optional(),
         }).optional(),
-        secretVariables: z.record(z.string(), z.string()).describe(
+        secretVariables: z.record(z.string(), z.unknown()).describe(
           "A map of environment variable names to Secret Manager secret names. The VM will access the named secrets to set the value of each environment variable.",
         ).optional(),
-        variables: z.record(z.string(), z.string()).describe(
+        variables: z.record(z.string(), z.unknown()).describe(
           "A map of environment variable names to values.",
         ).optional(),
       }).describe(
@@ -448,16 +391,12 @@ const GlobalArgsSchema = z.object({
         "Deprecated: please use environment(non-plural) instead.",
       ).optional(),
       lifecyclePolicies: z.array(z.object({
-        action: z.enum(["ACTION_UNSPECIFIED", "RETRY_TASK", "FAIL_TASK"])
-          .describe(
-            "Action to execute when ActionCondition is true. When RETRY_TASK is specified, we will retry failed tasks if we notice any exit code match and fail tasks if no match is found. Likewise, when FAIL_TASK is specified, we will fail tasks if we notice any exit code match and retry tasks if no match is found.",
-          ).optional(),
-        actionCondition: z.object({
-          exitCodes: z.array(z.number().int()).describe(
-            "Exit codes of a task execution. If there are more than 1 exit codes, when task executes with any of the exit code in the list, the condition is met and the action will be executed.",
-          ).optional(),
-        }).describe("Conditions for actions to deal with task failures.")
-          .optional(),
+        action: z.unknown().describe(
+          "Action to execute when ActionCondition is true. When RETRY_TASK is specified, we will retry failed tasks if we notice any exit code match and fail tasks if no match is found. Likewise, when FAIL_TASK is specified, we will fail tasks if we notice any exit code match and retry tasks if no match is found.",
+        ).optional(),
+        actionCondition: z.unknown().describe(
+          "Conditions for actions to deal with task failures.",
+        ).optional(),
       })).describe(
         "Lifecycle management schema when any task in a task group is failed. Currently we only support one lifecycle policy. When the lifecycle policy condition is met, the action in the policy will execute. If task execution result does not meet with the defined lifecycle policy, we consider it as the default policy. Default policy means if the exit code is 0, exit task. If task ends with non-zero exit code, retry the task with max_retry_count.",
       ).optional(),
@@ -468,108 +407,44 @@ const GlobalArgsSchema = z.object({
         "Maximum duration the task should run before being automatically retried (if enabled) or automatically failed. Format the value of this field as a time limit in seconds followed by `s`—for example, `3600s` for 1 hour. The field accepts any value between 0 and the maximum listed for the `Duration` field type at https://protobuf.dev/reference/protobuf/google.protobuf/#duration; however, the actual maximum run time for a job will be limited to the maximum run time for a job listed at https://cloud.google.com/batch/quotas#max-job-duration.",
       ).optional(),
       runnables: z.array(z.object({
-        alwaysRun: z.boolean().describe(
+        alwaysRun: z.unknown().describe(
           "By default, after a Runnable fails, no further Runnable are executed. This flag indicates that this Runnable must be run even if the Task has already failed. This is useful for Runnables that copy output files off of the VM or for debugging. The always_run flag does not override the Task's overall max_run_duration. If the max_run_duration has expired then no further Runnables will execute, not even always_run Runnables.",
         ).optional(),
-        background: z.boolean().describe(
+        background: z.unknown().describe(
           "Normally, a runnable that doesn't exit causes its task to fail. However, you can set this field to `true` to configure a background runnable. Background runnables are allowed continue running in the background while the task executes subsequent runnables. For example, background runnables are useful for providing services to other runnables or providing debugging-support tools like SSH servers. Specifically, background runnables are killed automatically (if they have not already exited) a short time after all foreground runnables have completed. Even though this is likely to result in a non-zero exit status for the background runnable, these automatic kills are not treated as task failures.",
         ).optional(),
-        barrier: z.object({
-          name: z.string().describe(
-            "Barriers are identified by their index in runnable list. Names are not required, but if present should be an identifier.",
-          ).optional(),
-        }).describe(
+        barrier: z.unknown().describe(
           "A barrier runnable automatically blocks the execution of subsequent runnables until all the tasks in the task group reach the barrier.",
         ).optional(),
-        container: z.object({
-          blockExternalNetwork: z.boolean().describe(
-            "If set to true, external network access to and from container will be blocked, containers that are with block_external_network as true can still communicate with each other, network cannot be specified in the `container.options` field.",
-          ).optional(),
-          commands: z.array(z.string()).describe(
-            "Required for some container images. Overrides the `CMD` specified in the container. If there is an `ENTRYPOINT` (either in the container image or with the `entrypoint` field below) then these commands are appended as arguments to the `ENTRYPOINT`.",
-          ).optional(),
-          enableImageStreaming: z.boolean().describe(
-            "Optional. If set to true, this container runnable uses Image streaming. Use Image streaming to allow the runnable to initialize without waiting for the entire container image to download, which can significantly reduce startup time for large container images. When `enableImageStreaming` is set to true, the container runtime is [containerd](https://containerd.io/) instead of Docker. Additionally, this container runnable only supports the following `container` subfields: `imageUri`, `commands[]`, `entrypoint`, and `volumes[]`; any other `container` subfields are ignored. For more information about the requirements and limitations for using Image streaming with Batch, see the [`image-streaming` sample on GitHub](https://github.com/GoogleCloudPlatform/batch-samples/tree/main/api-samples/image-streaming).",
-          ).optional(),
-          entrypoint: z.string().describe(
-            "Required for some container images. Overrides the `ENTRYPOINT` specified in the container.",
-          ).optional(),
-          imageUri: z.string().describe(
-            "Required. The URI to pull the container image from.",
-          ).optional(),
-          options: z.string().describe(
-            "Required for some container images. Arbitrary additional options to include in the `docker run` command when running this container—for example, `--network host`. For the `--volume` option, use the `volumes` field for the container.",
-          ).optional(),
-          password: z.string().describe(
-            "Required if the container image is from a private Docker registry. The password to login to the Docker registry that contains the image. For security, it is strongly recommended to specify an encrypted password by using a Secret Manager secret: `projects/*/secrets/*/versions/*`. Warning: If you specify the password using plain text, you risk the password being exposed to any users who can view the job or its logs. To avoid this risk, specify a secret that contains the password instead. Learn more about [Secret Manager](https://cloud.google.com/secret-manager/docs/) and [using Secret Manager with Batch](https://cloud.google.com/batch/docs/create-run-job-secret-manager).",
-          ).optional(),
-          username: z.string().describe(
-            "Required if the container image is from a private Docker registry. The username to login to the Docker registry that contains the image. You can either specify the username directly by using plain text or specify an encrypted username by using a Secret Manager secret: `projects/*/secrets/*/versions/*`. However, using a secret is recommended for enhanced security. Caution: If you specify the username using plain text, you risk the username being exposed to any users who can view the job or its logs. To avoid this risk, specify a secret that contains the username instead. Learn more about [Secret Manager](https://cloud.google.com/secret-manager/docs/) and [using Secret Manager with Batch](https://cloud.google.com/batch/docs/create-run-job-secret-manager).",
-          ).optional(),
-          volumes: z.array(z.string()).describe(
-            "Volumes to mount (bind mount) from the host machine files or directories into the container, formatted to match `--volume` option for the `docker run` command—for example, `/foo:/bar` or `/foo:/bar:ro`. If the `TaskSpec.Volumes` field is specified but this field is not, Batch will mount each volume from the host machine to the container with the same mount path by default. In this case, the default mount option for containers will be read-only (`ro`) for existing persistent disks and read-write (`rw`) for other volume types, regardless of the original mount options specified in `TaskSpec.Volumes`. If you need different mount settings, you can explicitly configure them in this field.",
-          ).optional(),
-        }).describe("Container runnable.").optional(),
-        displayName: z.string().describe(
+        container: z.unknown().describe("Container runnable.").optional(),
+        displayName: z.unknown().describe(
           "Optional. DisplayName is an optional field that can be provided by the caller. If provided, it will be used in logs and other outputs to identify the script, making it easier for users to understand the logs. If not provided the index of the runnable will be used for outputs.",
         ).optional(),
-        environment: z.object({
-          encryptedVariables: z.object({
-            cipherText: z.string().describe(
-              "The value of the cipherText response from the `encrypt` method.",
-            ).optional(),
-            keyName: z.string().describe(
-              "The name of the KMS key that will be used to decrypt the cipher text.",
-            ).optional(),
-          }).optional(),
-          secretVariables: z.record(z.string(), z.string()).describe(
-            "A map of environment variable names to Secret Manager secret names. The VM will access the named secrets to set the value of each environment variable.",
-          ).optional(),
-          variables: z.record(z.string(), z.string()).describe(
-            "A map of environment variable names to values.",
-          ).optional(),
-        }).describe(
+        environment: z.unknown().describe(
           "An Environment describes a collection of environment variables to set when executing Tasks.",
         ).optional(),
-        ignoreExitStatus: z.boolean().describe(
+        ignoreExitStatus: z.unknown().describe(
           "Normally, a runnable that returns a non-zero exit status fails and causes the task to fail. However, you can set this field to `true` to allow the task to continue executing its other runnables even if this runnable fails.",
         ).optional(),
-        labels: z.record(z.string(), z.string()).describe(
-          "Labels for this Runnable.",
-        ).optional(),
-        script: z.object({
-          path: z.string().describe(
-            "The path to a script file that is accessible from the host VM(s). Unless the script file supports the default `#!/bin/sh` shell interpreter, you must specify an interpreter by including a [shebang line](https://en.wikipedia.org/wiki/Shebang_(Unix) as the first line of the file. For example, to execute the script using bash, include `#!/bin/bash` as the first line of the file. Alternatively, to execute the script using Python3, include `#!/usr/bin/env python3` as the first line of the file.",
-          ).optional(),
-          text: z.string().describe(
-            "The text for a script. Unless the script text supports the default `#!/bin/sh` shell interpreter, you must specify an interpreter by including a [shebang line](https://en.wikipedia.org/wiki/Shebang_(Unix) at the beginning of the text. For example, to execute the script using bash, include `#!/bin/bash\\n` at the beginning of the text. Alternatively, to execute the script using Python3, include `#!/usr/bin/env python3\\n` at the beginning of the text.",
-          ).optional(),
-        }).describe("Script runnable.").optional(),
-        timeout: z.string().describe("Timeout for this Runnable.").optional(),
+        labels: z.unknown().describe("Labels for this Runnable.").optional(),
+        script: z.unknown().describe("Script runnable.").optional(),
+        timeout: z.unknown().describe("Timeout for this Runnable.").optional(),
       })).describe(
         "Required. The sequence of one or more runnables (executable scripts, executable containers, and/or barriers) for each task in this task group to run. Each task runs this list of runnables in order. For a task to succeed, all of its script and container runnables each must meet at least one of the following conditions: + The runnable exited with a zero status. + The runnable didn't finish, but you enabled its `background` subfield. + The runnable exited with a non-zero status, but you enabled its `ignore_exit_status` subfield.",
       ).optional(),
       volumes: z.array(z.object({
-        deviceName: z.string().describe(
+        deviceName: z.unknown().describe(
           "Device name of an attached disk volume, which should align with a device_name specified by job.allocation_policy.instances[0].policy.disks[i].device_name or defined by the given instance template in job.allocation_policy.instances[0].instance_template.",
         ).optional(),
-        gcs: z.object({
-          remotePath: z.string().describe(
-            "Remote path, either a bucket name or a subdirectory of a bucket, e.g.: bucket_name, bucket_name/subdirectory/",
-          ).optional(),
-        }).describe("Represents a Google Cloud Storage volume.").optional(),
-        mountOptions: z.array(z.string()).describe(
+        gcs: z.unknown().describe("Represents a Google Cloud Storage volume.")
+          .optional(),
+        mountOptions: z.unknown().describe(
           "Mount options vary based on the type of storage volume: * For a Cloud Storage bucket, all the mount options provided by the [`gcsfuse` tool](https://cloud.google.com/storage/docs/gcsfuse-cli) are supported. * For an existing persistent disk, all mount options provided by the [`mount` command](https://man7.org/linux/man-pages/man8/mount.8.html) except writing are supported. This is due to restrictions of [multi-writer mode](https://cloud.google.com/compute/docs/disks/sharing-disks-between-vms). * For any other disk or a Network File System (NFS), all the mount options provided by the `mount` command are supported.",
         ).optional(),
-        mountPath: z.string().describe(
+        mountPath: z.unknown().describe(
           "The mount path for the volume, e.g. /mnt/disks/share.",
         ).optional(),
-        nfs: z.object({
-          remotePath: z.string().describe(
-            'Remote source path exported from the NFS, e.g., "/share".',
-          ).optional(),
-          server: z.string().describe("The IP address of the NFS.").optional(),
-        }).describe("Represents an NFS volume.").optional(),
+        nfs: z.unknown().describe("Represents an NFS volume.").optional(),
       })).describe("Volumes to mount before running Tasks using this TaskSpec.")
         .optional(),
     }).describe("Spec of a task").optional(),
@@ -595,30 +470,15 @@ const StateSchema = z.object({
       installOpsAgent: z.boolean(),
       instanceTemplate: z.string(),
       policy: z.object({
-        accelerators: z.array(z.object({
-          count: z.string(),
-          driverVersion: z.string(),
-          installGpuDrivers: z.boolean(),
-          type: z.string(),
-        })),
+        accelerators: z.array(z.unknown()),
         bootDisk: z.object({
-          diskInterface: z.string(),
-          image: z.string(),
-          sizeGb: z.string(),
-          snapshot: z.string(),
-          type: z.string(),
+          diskInterface: z.unknown(),
+          image: z.unknown(),
+          sizeGb: z.unknown(),
+          snapshot: z.unknown(),
+          type: z.unknown(),
         }),
-        disks: z.array(z.object({
-          deviceName: z.string(),
-          existingDisk: z.string(),
-          newDisk: z.object({
-            diskInterface: z.string(),
-            image: z.string(),
-            sizeGb: z.string(),
-            snapshot: z.string(),
-            type: z.string(),
-          }),
-        })),
+        disks: z.array(z.unknown()),
         machineType: z.string(),
         minCpuPlatform: z.string(),
         provisioningModel: z.string(),
@@ -690,8 +550,8 @@ const StateSchema = z.object({
     taskCountPerNode: z.string(),
     taskEnvironments: z.array(z.object({
       encryptedVariables: z.object({
-        cipherText: z.string(),
-        keyName: z.string(),
+        cipherText: z.unknown(),
+        keyName: z.unknown(),
       }),
       secretVariables: z.record(z.string(), z.unknown()),
       variables: z.record(z.string(), z.unknown()),
@@ -704,66 +564,37 @@ const StateSchema = z.object({
       }),
       environment: z.object({
         encryptedVariables: z.object({
-          cipherText: z.string(),
-          keyName: z.string(),
+          cipherText: z.unknown(),
+          keyName: z.unknown(),
         }),
         secretVariables: z.record(z.string(), z.unknown()),
         variables: z.record(z.string(), z.unknown()),
       }),
       environments: z.record(z.string(), z.unknown()),
       lifecyclePolicies: z.array(z.object({
-        action: z.string(),
-        actionCondition: z.object({
-          exitCodes: z.array(z.number()),
-        }),
+        action: z.unknown(),
+        actionCondition: z.unknown(),
       })),
       maxRetryCount: z.number(),
       maxRunDuration: z.string(),
       runnables: z.array(z.object({
-        alwaysRun: z.boolean(),
-        background: z.boolean(),
-        barrier: z.object({
-          name: z.string(),
-        }),
-        container: z.object({
-          blockExternalNetwork: z.boolean(),
-          commands: z.array(z.string()),
-          enableImageStreaming: z.boolean(),
-          entrypoint: z.string(),
-          imageUri: z.string(),
-          options: z.string(),
-          password: z.string(),
-          username: z.string(),
-          volumes: z.array(z.string()),
-        }),
-        displayName: z.string(),
-        environment: z.object({
-          encryptedVariables: z.object({
-            cipherText: z.string(),
-            keyName: z.string(),
-          }),
-          secretVariables: z.record(z.string(), z.unknown()),
-          variables: z.record(z.string(), z.unknown()),
-        }),
-        ignoreExitStatus: z.boolean(),
-        labels: z.record(z.string(), z.unknown()),
-        script: z.object({
-          path: z.string(),
-          text: z.string(),
-        }),
-        timeout: z.string(),
+        alwaysRun: z.unknown(),
+        background: z.unknown(),
+        barrier: z.unknown(),
+        container: z.unknown(),
+        displayName: z.unknown(),
+        environment: z.unknown(),
+        ignoreExitStatus: z.unknown(),
+        labels: z.unknown(),
+        script: z.unknown(),
+        timeout: z.unknown(),
       })),
       volumes: z.array(z.object({
-        deviceName: z.string(),
-        gcs: z.object({
-          remotePath: z.string(),
-        }),
-        mountOptions: z.array(z.string()),
-        mountPath: z.string(),
-        nfs: z.object({
-          remotePath: z.string(),
-          server: z.string(),
-        }),
+        deviceName: z.unknown(),
+        gcs: z.unknown(),
+        mountOptions: z.unknown(),
+        mountPath: z.unknown(),
+        nfs: z.unknown(),
       })),
     }),
   })).optional(),
@@ -790,65 +621,29 @@ const InputsSchema = z.object({
         "Name of an instance template used to create VMs. Named the field as 'instance_template' instead of 'template' to avoid C++ keyword conflict. Batch only supports global instance templates from the same project as the job. You can specify the global instance template as a full or partial URL.",
       ).optional(),
       policy: z.object({
-        accelerators: z.array(z.object({
-          count: z.string().describe("The number of accelerators of this type.")
-            .optional(),
-          driverVersion: z.string().describe(
-            'Optional. The NVIDIA GPU driver version that should be installed for this type. You can define the specific driver version such as "470.103.01", following the driver version requirements in https://cloud.google.com/compute/docs/gpus/install-drivers-gpu#minimum-driver. Batch will install the specific accelerator driver if qualified.',
-          ).optional(),
-          installGpuDrivers: z.boolean().describe(
-            "Deprecated: please use instances[0].install_gpu_drivers instead.",
-          ).optional(),
-          type: z.string().describe(
-            'The accelerator type. For example, "nvidia-tesla-t4". See `gcloud compute accelerator-types list`.',
-          ).optional(),
-        })).describe("The accelerators attached to each VM instance.")
-          .optional(),
+        accelerators: z.array(z.unknown()).describe(
+          "The accelerators attached to each VM instance.",
+        ).optional(),
         bootDisk: z.object({
-          diskInterface: z.string().describe(
+          diskInterface: z.unknown().describe(
             'Local SSDs are available through both "SCSI" and "NVMe" interfaces. If not indicated, "NVMe" will be the default one for local ssds. This field is ignored for persistent disks as the interface is chosen automatically. See https://cloud.google.com/compute/docs/disks/persistent-disks#choose_an_interface.',
           ).optional(),
-          image: z.string().describe(
+          image: z.unknown().describe(
             "URL for a VM image to use as the data source for this disk. For example, the following are all valid URLs: * Specify the image by its family name: projects/{project}/global/images/family/{image_family} * Specify the image version: projects/{project}/global/images/{image_version} You can also use Batch customized image in short names. The following image values are supported for a boot disk: * `batch-debian`: use Batch Debian images. * `batch-cos`: use Batch Container-Optimized images. * `batch-hpc-rocky`: use Batch HPC Rocky Linux images.",
           ).optional(),
-          sizeGb: z.string().describe(
+          sizeGb: z.unknown().describe(
             "Disk size in GB. **Non-Boot Disk**: If the `type` specifies a persistent disk, this field is ignored if `data_source` is set as `image` or `snapshot`. If the `type` specifies a local SSD, this field should be a multiple of 375 GB, otherwise, the final size will be the next greater multiple of 375 GB. **Boot Disk**: Batch will calculate the boot disk size based on source image and task requirements if you do not speicify the size. If both this field and the `boot_disk_mib` field in task spec's `compute_resource` are defined, Batch will only honor this field. Also, this field should be no smaller than the source disk's size when the `data_source` is set as `snapshot` or `image`. For example, if you set an image as the `data_source` field and the image's default disk size 30 GB, you can only use this field to make the disk larger or equal to 30 GB.",
           ).optional(),
-          snapshot: z.string().describe(
+          snapshot: z.unknown().describe(
             "Name of a snapshot used as the data source. Snapshot is not supported as boot disk now.",
           ).optional(),
-          type: z.string().describe(
+          type: z.unknown().describe(
             'Disk type as shown in `gcloud compute disk-types list`. For example, local SSD uses type "local-ssd". Persistent disks and boot disks use "pd-balanced", "pd-extreme", "pd-ssd" or "pd-standard". If not specified, "pd-standard" will be used as the default type for non-boot disks, "pd-balanced" will be used as the default type for boot disks.',
           ).optional(),
         }).describe(
           "A new persistent disk or a local ssd. A VM can only have one local SSD setting but multiple local SSD partitions. See https://cloud.google.com/compute/docs/disks#pdspecs and https://cloud.google.com/compute/docs/disks#localssds.",
         ).optional(),
-        disks: z.array(z.object({
-          deviceName: z.string().describe(
-            "Device name that the guest operating system will see. It is used by Runnable.volumes field to mount disks. So please specify the device_name if you want Batch to help mount the disk, and it should match the device_name field in volumes.",
-          ).optional(),
-          existingDisk: z.string().describe("Name of an existing PD.")
-            .optional(),
-          newDisk: z.object({
-            diskInterface: z.string().describe(
-              'Local SSDs are available through both "SCSI" and "NVMe" interfaces. If not indicated, "NVMe" will be the default one for local ssds. This field is ignored for persistent disks as the interface is chosen automatically. See https://cloud.google.com/compute/docs/disks/persistent-disks#choose_an_interface.',
-            ).optional(),
-            image: z.string().describe(
-              "URL for a VM image to use as the data source for this disk. For example, the following are all valid URLs: * Specify the image by its family name: projects/{project}/global/images/family/{image_family} * Specify the image version: projects/{project}/global/images/{image_version} You can also use Batch customized image in short names. The following image values are supported for a boot disk: * `batch-debian`: use Batch Debian images. * `batch-cos`: use Batch Container-Optimized images. * `batch-hpc-rocky`: use Batch HPC Rocky Linux images.",
-            ).optional(),
-            sizeGb: z.string().describe(
-              "Disk size in GB. **Non-Boot Disk**: If the `type` specifies a persistent disk, this field is ignored if `data_source` is set as `image` or `snapshot`. If the `type` specifies a local SSD, this field should be a multiple of 375 GB, otherwise, the final size will be the next greater multiple of 375 GB. **Boot Disk**: Batch will calculate the boot disk size based on source image and task requirements if you do not speicify the size. If both this field and the `boot_disk_mib` field in task spec's `compute_resource` are defined, Batch will only honor this field. Also, this field should be no smaller than the source disk's size when the `data_source` is set as `snapshot` or `image`. For example, if you set an image as the `data_source` field and the image's default disk size 30 GB, you can only use this field to make the disk larger or equal to 30 GB.",
-            ).optional(),
-            snapshot: z.string().describe(
-              "Name of a snapshot used as the data source. Snapshot is not supported as boot disk now.",
-            ).optional(),
-            type: z.string().describe(
-              'Disk type as shown in `gcloud compute disk-types list`. For example, local SSD uses type "local-ssd". Persistent disks and boot disks use "pd-balanced", "pd-extreme", "pd-ssd" or "pd-standard". If not specified, "pd-standard" will be used as the default type for non-boot disks, "pd-balanced" will be used as the default type for boot disks.',
-            ).optional(),
-          }).describe(
-            "A new persistent disk or a local ssd. A VM can only have one local SSD setting but multiple local SSD partitions. See https://cloud.google.com/compute/docs/disks#pdspecs and https://cloud.google.com/compute/docs/disks#localssds.",
-          ).optional(),
-        })).describe(
+        disks: z.array(z.unknown()).describe(
           "Non-boot disks to be attached for each VM created by this InstancePolicy. New disks will be deleted when the VM is deleted. A non-boot disk is a disk that can be of a device with a file system or a raw storage drive that is not ready for data storage and accessing.",
         ).optional(),
         machineType: z.string().describe("The Compute Engine machine type.")
@@ -1021,36 +816,15 @@ const InputsSchema = z.object({
           "Count of task in each state in the TaskGroup. The map key is task state name.",
         ).optional(),
         instances: z.array(z.object({
-          bootDisk: z.object({
-            diskInterface: z.string().describe(
-              'Local SSDs are available through both "SCSI" and "NVMe" interfaces. If not indicated, "NVMe" will be the default one for local ssds. This field is ignored for persistent disks as the interface is chosen automatically. See https://cloud.google.com/compute/docs/disks/persistent-disks#choose_an_interface.',
-            ).optional(),
-            image: z.string().describe(
-              "URL for a VM image to use as the data source for this disk. For example, the following are all valid URLs: * Specify the image by its family name: projects/{project}/global/images/family/{image_family} * Specify the image version: projects/{project}/global/images/{image_version} You can also use Batch customized image in short names. The following image values are supported for a boot disk: * `batch-debian`: use Batch Debian images. * `batch-cos`: use Batch Container-Optimized images. * `batch-hpc-rocky`: use Batch HPC Rocky Linux images.",
-            ).optional(),
-            sizeGb: z.string().describe(
-              "Disk size in GB. **Non-Boot Disk**: If the `type` specifies a persistent disk, this field is ignored if `data_source` is set as `image` or `snapshot`. If the `type` specifies a local SSD, this field should be a multiple of 375 GB, otherwise, the final size will be the next greater multiple of 375 GB. **Boot Disk**: Batch will calculate the boot disk size based on source image and task requirements if you do not speicify the size. If both this field and the `boot_disk_mib` field in task spec's `compute_resource` are defined, Batch will only honor this field. Also, this field should be no smaller than the source disk's size when the `data_source` is set as `snapshot` or `image`. For example, if you set an image as the `data_source` field and the image's default disk size 30 GB, you can only use this field to make the disk larger or equal to 30 GB.",
-            ).optional(),
-            snapshot: z.string().describe(
-              "Name of a snapshot used as the data source. Snapshot is not supported as boot disk now.",
-            ).optional(),
-            type: z.string().describe(
-              'Disk type as shown in `gcloud compute disk-types list`. For example, local SSD uses type "local-ssd". Persistent disks and boot disks use "pd-balanced", "pd-extreme", "pd-ssd" or "pd-standard". If not specified, "pd-standard" will be used as the default type for non-boot disks, "pd-balanced" will be used as the default type for boot disks.',
-            ).optional(),
-          }).describe(
+          bootDisk: z.unknown().describe(
             "A new persistent disk or a local ssd. A VM can only have one local SSD setting but multiple local SSD partitions. See https://cloud.google.com/compute/docs/disks#pdspecs and https://cloud.google.com/compute/docs/disks#localssds.",
           ).optional(),
-          machineType: z.string().describe("The Compute Engine machine type.")
+          machineType: z.unknown().describe("The Compute Engine machine type.")
             .optional(),
-          provisioningModel: z.enum([
-            "PROVISIONING_MODEL_UNSPECIFIED",
-            "STANDARD",
-            "SPOT",
-            "PREEMPTIBLE",
-            "RESERVATION_BOUND",
-            "FLEX_START",
-          ]).describe("The VM instance provisioning model.").optional(),
-          taskPack: z.string().describe(
+          provisioningModel: z.unknown().describe(
+            "The VM instance provisioning model.",
+          ).optional(),
+          taskPack: z.unknown().describe(
             "The max number of tasks can be assigned to this instance type.",
           ).optional(),
         })).describe("Status of instances allocated for the TaskGroup.")
@@ -1091,17 +865,17 @@ const InputsSchema = z.object({
     ).optional(),
     taskEnvironments: z.array(z.object({
       encryptedVariables: z.object({
-        cipherText: z.string().describe(
+        cipherText: z.unknown().describe(
           "The value of the cipherText response from the `encrypt` method.",
         ).optional(),
-        keyName: z.string().describe(
+        keyName: z.unknown().describe(
           "The name of the KMS key that will be used to decrypt the cipher text.",
         ).optional(),
       }).optional(),
-      secretVariables: z.record(z.string(), z.string()).describe(
+      secretVariables: z.record(z.string(), z.unknown()).describe(
         "A map of environment variable names to Secret Manager secret names. The VM will access the named secrets to set the value of each environment variable.",
       ).optional(),
-      variables: z.record(z.string(), z.string()).describe(
+      variables: z.record(z.string(), z.unknown()).describe(
         "A map of environment variable names to values.",
       ).optional(),
     })).describe(
@@ -1123,17 +897,17 @@ const InputsSchema = z.object({
       ).optional(),
       environment: z.object({
         encryptedVariables: z.object({
-          cipherText: z.string().describe(
+          cipherText: z.unknown().describe(
             "The value of the cipherText response from the `encrypt` method.",
           ).optional(),
-          keyName: z.string().describe(
+          keyName: z.unknown().describe(
             "The name of the KMS key that will be used to decrypt the cipher text.",
           ).optional(),
         }).optional(),
-        secretVariables: z.record(z.string(), z.string()).describe(
+        secretVariables: z.record(z.string(), z.unknown()).describe(
           "A map of environment variable names to Secret Manager secret names. The VM will access the named secrets to set the value of each environment variable.",
         ).optional(),
-        variables: z.record(z.string(), z.string()).describe(
+        variables: z.record(z.string(), z.unknown()).describe(
           "A map of environment variable names to values.",
         ).optional(),
       }).describe(
@@ -1143,16 +917,12 @@ const InputsSchema = z.object({
         "Deprecated: please use environment(non-plural) instead.",
       ).optional(),
       lifecyclePolicies: z.array(z.object({
-        action: z.enum(["ACTION_UNSPECIFIED", "RETRY_TASK", "FAIL_TASK"])
-          .describe(
-            "Action to execute when ActionCondition is true. When RETRY_TASK is specified, we will retry failed tasks if we notice any exit code match and fail tasks if no match is found. Likewise, when FAIL_TASK is specified, we will fail tasks if we notice any exit code match and retry tasks if no match is found.",
-          ).optional(),
-        actionCondition: z.object({
-          exitCodes: z.array(z.number().int()).describe(
-            "Exit codes of a task execution. If there are more than 1 exit codes, when task executes with any of the exit code in the list, the condition is met and the action will be executed.",
-          ).optional(),
-        }).describe("Conditions for actions to deal with task failures.")
-          .optional(),
+        action: z.unknown().describe(
+          "Action to execute when ActionCondition is true. When RETRY_TASK is specified, we will retry failed tasks if we notice any exit code match and fail tasks if no match is found. Likewise, when FAIL_TASK is specified, we will fail tasks if we notice any exit code match and retry tasks if no match is found.",
+        ).optional(),
+        actionCondition: z.unknown().describe(
+          "Conditions for actions to deal with task failures.",
+        ).optional(),
       })).describe(
         "Lifecycle management schema when any task in a task group is failed. Currently we only support one lifecycle policy. When the lifecycle policy condition is met, the action in the policy will execute. If task execution result does not meet with the defined lifecycle policy, we consider it as the default policy. Default policy means if the exit code is 0, exit task. If task ends with non-zero exit code, retry the task with max_retry_count.",
       ).optional(),
@@ -1163,108 +933,44 @@ const InputsSchema = z.object({
         "Maximum duration the task should run before being automatically retried (if enabled) or automatically failed. Format the value of this field as a time limit in seconds followed by `s`—for example, `3600s` for 1 hour. The field accepts any value between 0 and the maximum listed for the `Duration` field type at https://protobuf.dev/reference/protobuf/google.protobuf/#duration; however, the actual maximum run time for a job will be limited to the maximum run time for a job listed at https://cloud.google.com/batch/quotas#max-job-duration.",
       ).optional(),
       runnables: z.array(z.object({
-        alwaysRun: z.boolean().describe(
+        alwaysRun: z.unknown().describe(
           "By default, after a Runnable fails, no further Runnable are executed. This flag indicates that this Runnable must be run even if the Task has already failed. This is useful for Runnables that copy output files off of the VM or for debugging. The always_run flag does not override the Task's overall max_run_duration. If the max_run_duration has expired then no further Runnables will execute, not even always_run Runnables.",
         ).optional(),
-        background: z.boolean().describe(
+        background: z.unknown().describe(
           "Normally, a runnable that doesn't exit causes its task to fail. However, you can set this field to `true` to configure a background runnable. Background runnables are allowed continue running in the background while the task executes subsequent runnables. For example, background runnables are useful for providing services to other runnables or providing debugging-support tools like SSH servers. Specifically, background runnables are killed automatically (if they have not already exited) a short time after all foreground runnables have completed. Even though this is likely to result in a non-zero exit status for the background runnable, these automatic kills are not treated as task failures.",
         ).optional(),
-        barrier: z.object({
-          name: z.string().describe(
-            "Barriers are identified by their index in runnable list. Names are not required, but if present should be an identifier.",
-          ).optional(),
-        }).describe(
+        barrier: z.unknown().describe(
           "A barrier runnable automatically blocks the execution of subsequent runnables until all the tasks in the task group reach the barrier.",
         ).optional(),
-        container: z.object({
-          blockExternalNetwork: z.boolean().describe(
-            "If set to true, external network access to and from container will be blocked, containers that are with block_external_network as true can still communicate with each other, network cannot be specified in the `container.options` field.",
-          ).optional(),
-          commands: z.array(z.string()).describe(
-            "Required for some container images. Overrides the `CMD` specified in the container. If there is an `ENTRYPOINT` (either in the container image or with the `entrypoint` field below) then these commands are appended as arguments to the `ENTRYPOINT`.",
-          ).optional(),
-          enableImageStreaming: z.boolean().describe(
-            "Optional. If set to true, this container runnable uses Image streaming. Use Image streaming to allow the runnable to initialize without waiting for the entire container image to download, which can significantly reduce startup time for large container images. When `enableImageStreaming` is set to true, the container runtime is [containerd](https://containerd.io/) instead of Docker. Additionally, this container runnable only supports the following `container` subfields: `imageUri`, `commands[]`, `entrypoint`, and `volumes[]`; any other `container` subfields are ignored. For more information about the requirements and limitations for using Image streaming with Batch, see the [`image-streaming` sample on GitHub](https://github.com/GoogleCloudPlatform/batch-samples/tree/main/api-samples/image-streaming).",
-          ).optional(),
-          entrypoint: z.string().describe(
-            "Required for some container images. Overrides the `ENTRYPOINT` specified in the container.",
-          ).optional(),
-          imageUri: z.string().describe(
-            "Required. The URI to pull the container image from.",
-          ).optional(),
-          options: z.string().describe(
-            "Required for some container images. Arbitrary additional options to include in the `docker run` command when running this container—for example, `--network host`. For the `--volume` option, use the `volumes` field for the container.",
-          ).optional(),
-          password: z.string().describe(
-            "Required if the container image is from a private Docker registry. The password to login to the Docker registry that contains the image. For security, it is strongly recommended to specify an encrypted password by using a Secret Manager secret: `projects/*/secrets/*/versions/*`. Warning: If you specify the password using plain text, you risk the password being exposed to any users who can view the job or its logs. To avoid this risk, specify a secret that contains the password instead. Learn more about [Secret Manager](https://cloud.google.com/secret-manager/docs/) and [using Secret Manager with Batch](https://cloud.google.com/batch/docs/create-run-job-secret-manager).",
-          ).optional(),
-          username: z.string().describe(
-            "Required if the container image is from a private Docker registry. The username to login to the Docker registry that contains the image. You can either specify the username directly by using plain text or specify an encrypted username by using a Secret Manager secret: `projects/*/secrets/*/versions/*`. However, using a secret is recommended for enhanced security. Caution: If you specify the username using plain text, you risk the username being exposed to any users who can view the job or its logs. To avoid this risk, specify a secret that contains the username instead. Learn more about [Secret Manager](https://cloud.google.com/secret-manager/docs/) and [using Secret Manager with Batch](https://cloud.google.com/batch/docs/create-run-job-secret-manager).",
-          ).optional(),
-          volumes: z.array(z.string()).describe(
-            "Volumes to mount (bind mount) from the host machine files or directories into the container, formatted to match `--volume` option for the `docker run` command—for example, `/foo:/bar` or `/foo:/bar:ro`. If the `TaskSpec.Volumes` field is specified but this field is not, Batch will mount each volume from the host machine to the container with the same mount path by default. In this case, the default mount option for containers will be read-only (`ro`) for existing persistent disks and read-write (`rw`) for other volume types, regardless of the original mount options specified in `TaskSpec.Volumes`. If you need different mount settings, you can explicitly configure them in this field.",
-          ).optional(),
-        }).describe("Container runnable.").optional(),
-        displayName: z.string().describe(
+        container: z.unknown().describe("Container runnable.").optional(),
+        displayName: z.unknown().describe(
           "Optional. DisplayName is an optional field that can be provided by the caller. If provided, it will be used in logs and other outputs to identify the script, making it easier for users to understand the logs. If not provided the index of the runnable will be used for outputs.",
         ).optional(),
-        environment: z.object({
-          encryptedVariables: z.object({
-            cipherText: z.string().describe(
-              "The value of the cipherText response from the `encrypt` method.",
-            ).optional(),
-            keyName: z.string().describe(
-              "The name of the KMS key that will be used to decrypt the cipher text.",
-            ).optional(),
-          }).optional(),
-          secretVariables: z.record(z.string(), z.string()).describe(
-            "A map of environment variable names to Secret Manager secret names. The VM will access the named secrets to set the value of each environment variable.",
-          ).optional(),
-          variables: z.record(z.string(), z.string()).describe(
-            "A map of environment variable names to values.",
-          ).optional(),
-        }).describe(
+        environment: z.unknown().describe(
           "An Environment describes a collection of environment variables to set when executing Tasks.",
         ).optional(),
-        ignoreExitStatus: z.boolean().describe(
+        ignoreExitStatus: z.unknown().describe(
           "Normally, a runnable that returns a non-zero exit status fails and causes the task to fail. However, you can set this field to `true` to allow the task to continue executing its other runnables even if this runnable fails.",
         ).optional(),
-        labels: z.record(z.string(), z.string()).describe(
-          "Labels for this Runnable.",
-        ).optional(),
-        script: z.object({
-          path: z.string().describe(
-            "The path to a script file that is accessible from the host VM(s). Unless the script file supports the default `#!/bin/sh` shell interpreter, you must specify an interpreter by including a [shebang line](https://en.wikipedia.org/wiki/Shebang_(Unix) as the first line of the file. For example, to execute the script using bash, include `#!/bin/bash` as the first line of the file. Alternatively, to execute the script using Python3, include `#!/usr/bin/env python3` as the first line of the file.",
-          ).optional(),
-          text: z.string().describe(
-            "The text for a script. Unless the script text supports the default `#!/bin/sh` shell interpreter, you must specify an interpreter by including a [shebang line](https://en.wikipedia.org/wiki/Shebang_(Unix) at the beginning of the text. For example, to execute the script using bash, include `#!/bin/bash\\n` at the beginning of the text. Alternatively, to execute the script using Python3, include `#!/usr/bin/env python3\\n` at the beginning of the text.",
-          ).optional(),
-        }).describe("Script runnable.").optional(),
-        timeout: z.string().describe("Timeout for this Runnable.").optional(),
+        labels: z.unknown().describe("Labels for this Runnable.").optional(),
+        script: z.unknown().describe("Script runnable.").optional(),
+        timeout: z.unknown().describe("Timeout for this Runnable.").optional(),
       })).describe(
         "Required. The sequence of one or more runnables (executable scripts, executable containers, and/or barriers) for each task in this task group to run. Each task runs this list of runnables in order. For a task to succeed, all of its script and container runnables each must meet at least one of the following conditions: + The runnable exited with a zero status. + The runnable didn't finish, but you enabled its `background` subfield. + The runnable exited with a non-zero status, but you enabled its `ignore_exit_status` subfield.",
       ).optional(),
       volumes: z.array(z.object({
-        deviceName: z.string().describe(
+        deviceName: z.unknown().describe(
           "Device name of an attached disk volume, which should align with a device_name specified by job.allocation_policy.instances[0].policy.disks[i].device_name or defined by the given instance template in job.allocation_policy.instances[0].instance_template.",
         ).optional(),
-        gcs: z.object({
-          remotePath: z.string().describe(
-            "Remote path, either a bucket name or a subdirectory of a bucket, e.g.: bucket_name, bucket_name/subdirectory/",
-          ).optional(),
-        }).describe("Represents a Google Cloud Storage volume.").optional(),
-        mountOptions: z.array(z.string()).describe(
+        gcs: z.unknown().describe("Represents a Google Cloud Storage volume.")
+          .optional(),
+        mountOptions: z.unknown().describe(
           "Mount options vary based on the type of storage volume: * For a Cloud Storage bucket, all the mount options provided by the [`gcsfuse` tool](https://cloud.google.com/storage/docs/gcsfuse-cli) are supported. * For an existing persistent disk, all mount options provided by the [`mount` command](https://man7.org/linux/man-pages/man8/mount.8.html) except writing are supported. This is due to restrictions of [multi-writer mode](https://cloud.google.com/compute/docs/disks/sharing-disks-between-vms). * For any other disk or a Network File System (NFS), all the mount options provided by the `mount` command are supported.",
         ).optional(),
-        mountPath: z.string().describe(
+        mountPath: z.unknown().describe(
           "The mount path for the volume, e.g. /mnt/disks/share.",
         ).optional(),
-        nfs: z.object({
-          remotePath: z.string().describe(
-            'Remote source path exported from the NFS, e.g., "/share".',
-          ).optional(),
-          server: z.string().describe("The IP address of the NFS.").optional(),
-        }).describe("Represents an NFS volume.").optional(),
+        nfs: z.unknown().describe("Represents an NFS volume.").optional(),
       })).describe("Volumes to mount before running Tasks using this TaskSpec.")
         .optional(),
     }).describe("Spec of a task").optional(),
@@ -1284,7 +990,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/batch/jobs",
-  version: "2026.04.03.3",
+  version: "2026.04.04.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -1308,6 +1014,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.3",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.04.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

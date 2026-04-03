@@ -192,8 +192,8 @@ const GlobalArgsSchema = z.object({
     pollDetails: z.object({
       metadata: z.object({
         options: z.array(z.object({
-          optionText: z.string().optional(),
-          tally: z.string().optional(),
+          optionText: z.unknown().optional(),
+          tally: z.unknown().optional(),
         })).describe(
           "The options will be returned in the order that is displayed in 1P",
         ).optional(),
@@ -354,8 +354,8 @@ const StateSchema = z.object({
     pollDetails: z.object({
       metadata: z.object({
         options: z.array(z.object({
-          optionText: z.string(),
-          tally: z.string(),
+          optionText: z.unknown(),
+          tally: z.unknown(),
         })),
         questionText: z.string(),
       }),
@@ -513,8 +513,8 @@ const InputsSchema = z.object({
     pollDetails: z.object({
       metadata: z.object({
         options: z.array(z.object({
-          optionText: z.string().optional(),
-          tally: z.string().optional(),
+          optionText: z.unknown().optional(),
+          tally: z.unknown().optional(),
         })).describe(
           "The options will be returned in the order that is displayed in 1P",
         ).optional(),
@@ -615,7 +615,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/youtube/livechatmessages",
-  version: "2026.04.03.3",
+  version: "2026.04.04.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -639,6 +639,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.3",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.04.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

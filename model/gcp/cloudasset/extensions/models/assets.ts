@@ -60,28 +60,19 @@ const StateSchema = z.object({
       combiningFunction: z.string(),
       conditions: z.array(z.object({
         devicePolicy: z.object({
-          allowedDeviceManagementLevels: z.array(z.string()),
-          allowedEncryptionStatuses: z.array(z.string()),
-          osConstraints: z.array(z.object({
-            minimumVersion: z.string(),
-            osType: z.string(),
-            requireVerifiedChromeOs: z.boolean(),
-          })),
-          requireAdminApproval: z.boolean(),
-          requireCorpOwned: z.boolean(),
-          requireScreenlock: z.boolean(),
+          allowedDeviceManagementLevels: z.unknown(),
+          allowedEncryptionStatuses: z.unknown(),
+          osConstraints: z.unknown(),
+          requireAdminApproval: z.unknown(),
+          requireCorpOwned: z.unknown(),
+          requireScreenlock: z.unknown(),
         }),
-        ipSubnetworks: z.array(z.string()),
-        members: z.array(z.string()),
+        ipSubnetworks: z.array(z.unknown()),
+        members: z.array(z.unknown()),
         negate: z.boolean(),
-        regions: z.array(z.string()),
-        requiredAccessLevels: z.array(z.string()),
-        vpcNetworkSources: z.array(z.object({
-          vpcSubnetwork: z.object({
-            network: z.string(),
-            vpcIpSubnetworks: z.array(z.string()),
-          }),
-        })),
+        regions: z.array(z.unknown()),
+        requiredAccessLevels: z.array(z.unknown()),
+        vpcNetworkSources: z.array(z.unknown()),
       })),
     }),
     custom: z.object({
@@ -112,8 +103,8 @@ const StateSchema = z.object({
   iamPolicy: z.object({
     auditConfigs: z.array(z.object({
       auditLogConfigs: z.array(z.object({
-        exemptedMembers: z.array(z.string()),
-        logType: z.string(),
+        exemptedMembers: z.unknown(),
+        logType: z.unknown(),
       })),
       service: z.string(),
     })),
@@ -201,47 +192,29 @@ const StateSchema = z.object({
       accessLevels: z.array(z.string()),
       egressPolicies: z.array(z.object({
         egressFrom: z.object({
-          identities: z.array(z.string()),
-          identityType: z.string(),
-          sourceRestriction: z.string(),
-          sources: z.array(z.object({
-            accessLevel: z.string(),
-            resource: z.string(),
-          })),
+          identities: z.unknown(),
+          identityType: z.unknown(),
+          sourceRestriction: z.unknown(),
+          sources: z.unknown(),
         }),
         egressTo: z.object({
-          externalResources: z.array(z.string()),
-          operations: z.array(z.object({
-            methodSelectors: z.array(z.object({
-              method: z.string(),
-              permission: z.string(),
-            })),
-            serviceName: z.string(),
-          })),
-          resources: z.array(z.string()),
-          roles: z.array(z.string()),
+          externalResources: z.unknown(),
+          operations: z.unknown(),
+          resources: z.unknown(),
+          roles: z.unknown(),
         }),
         title: z.string(),
       })),
       ingressPolicies: z.array(z.object({
         ingressFrom: z.object({
-          identities: z.array(z.string()),
-          identityType: z.string(),
-          sources: z.array(z.object({
-            accessLevel: z.string(),
-            resource: z.string(),
-          })),
+          identities: z.unknown(),
+          identityType: z.unknown(),
+          sources: z.unknown(),
         }),
         ingressTo: z.object({
-          operations: z.array(z.object({
-            methodSelectors: z.array(z.object({
-              method: z.string(),
-              permission: z.string(),
-            })),
-            serviceName: z.string(),
-          })),
-          resources: z.array(z.string()),
-          roles: z.array(z.string()),
+          operations: z.unknown(),
+          resources: z.unknown(),
+          roles: z.unknown(),
         }),
         title: z.string(),
       })),
@@ -256,47 +229,29 @@ const StateSchema = z.object({
       accessLevels: z.array(z.string()),
       egressPolicies: z.array(z.object({
         egressFrom: z.object({
-          identities: z.array(z.string()),
-          identityType: z.string(),
-          sourceRestriction: z.string(),
-          sources: z.array(z.object({
-            accessLevel: z.string(),
-            resource: z.string(),
-          })),
+          identities: z.unknown(),
+          identityType: z.unknown(),
+          sourceRestriction: z.unknown(),
+          sources: z.unknown(),
         }),
         egressTo: z.object({
-          externalResources: z.array(z.string()),
-          operations: z.array(z.object({
-            methodSelectors: z.array(z.object({
-              method: z.string(),
-              permission: z.string(),
-            })),
-            serviceName: z.string(),
-          })),
-          resources: z.array(z.string()),
-          roles: z.array(z.string()),
+          externalResources: z.unknown(),
+          operations: z.unknown(),
+          resources: z.unknown(),
+          roles: z.unknown(),
         }),
         title: z.string(),
       })),
       ingressPolicies: z.array(z.object({
         ingressFrom: z.object({
-          identities: z.array(z.string()),
-          identityType: z.string(),
-          sources: z.array(z.object({
-            accessLevel: z.string(),
-            resource: z.string(),
-          })),
+          identities: z.unknown(),
+          identityType: z.unknown(),
+          sources: z.unknown(),
         }),
         ingressTo: z.object({
-          operations: z.array(z.object({
-            methodSelectors: z.array(z.object({
-              method: z.string(),
-              permission: z.string(),
-            })),
-            serviceName: z.string(),
-          })),
-          resources: z.array(z.string()),
-          roles: z.array(z.string()),
+          operations: z.unknown(),
+          resources: z.unknown(),
+          roles: z.unknown(),
         }),
         title: z.string(),
       })),
@@ -324,7 +279,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/cloudasset/assets",
-  version: "2026.04.03.3",
+  version: "2026.04.04.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -348,6 +303,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.3",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.04.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

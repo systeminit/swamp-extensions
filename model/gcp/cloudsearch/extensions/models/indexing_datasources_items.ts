@@ -123,9 +123,9 @@ const StateSchema = z.object({
       principal: z.object({
         groupResourceName: z.string(),
         gsuitePrincipal: z.object({
-          gsuiteDomain: z.boolean(),
-          gsuiteGroupEmail: z.string(),
-          gsuiteUserEmail: z.string(),
+          gsuiteDomain: z.unknown(),
+          gsuiteGroupEmail: z.unknown(),
+          gsuiteUserEmail: z.unknown(),
         }),
         userResourceName: z.string(),
       }),
@@ -150,8 +150,8 @@ const StateSchema = z.object({
       code: z.string(),
       errorMessage: z.string(),
       fieldViolations: z.array(z.object({
-        description: z.string(),
-        field: z.string(),
+        description: z.unknown(),
+        field: z.unknown(),
       })),
     })),
     repositoryErrors: z.array(z.object({
@@ -166,33 +166,29 @@ const StateSchema = z.object({
       properties: z.array(z.object({
         booleanValue: z.boolean(),
         dateValues: z.object({
-          values: z.array(z.object({
-            day: z.number(),
-            month: z.number(),
-            year: z.number(),
-          })),
+          values: z.unknown(),
         }),
         doubleValues: z.object({
-          values: z.array(z.number()),
+          values: z.unknown(),
         }),
         enumValues: z.object({
-          values: z.array(z.string()),
+          values: z.unknown(),
         }),
         htmlValues: z.object({
-          values: z.array(z.string()),
+          values: z.unknown(),
         }),
         integerValues: z.object({
-          values: z.array(z.string()),
+          values: z.unknown(),
         }),
         name: z.string(),
         objectValues: z.object({
-          values: z.array(z.string()),
+          values: z.unknown(),
         }),
         textValues: z.object({
-          values: z.array(z.string()),
+          values: z.unknown(),
         }),
         timestampValues: z.object({
-          values: z.array(z.string()),
+          values: z.unknown(),
         }),
       })),
     }),
@@ -208,7 +204,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/cloudsearch/indexing-datasources-items",
-  version: "2026.04.03.3",
+  version: "2026.04.04.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -232,6 +228,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.3",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.04.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

@@ -145,13 +145,13 @@ const StateSchema = z.object({
     availabilitySla: z.object({
       effectiveSla: z.string(),
       intendedSlaBlockers: z.array(z.object({
-        attachments: z.array(z.string()),
+        attachments: z.array(z.unknown()),
         blockerType: z.string(),
         documentationLink: z.string(),
         explanation: z.string(),
-        metros: z.array(z.string()),
-        regions: z.array(z.string()),
-        zones: z.array(z.string()),
+        metros: z.array(z.unknown()),
+        regions: z.array(z.unknown()),
+        zones: z.array(z.unknown()),
       })),
     }),
   }).optional(),
@@ -167,14 +167,8 @@ const StateSchema = z.object({
   logicalStructure: z.object({
     regions: z.array(z.object({
       metros: z.array(z.object({
-        facilities: z.array(z.object({
-          facility: z.string(),
-          zones: z.array(z.object({
-            attachments: z.array(z.string()),
-            zone: z.string(),
-          })),
-        })),
-        metro: z.string(),
+        facilities: z.unknown(),
+        metro: z.unknown(),
       })),
       region: z.string(),
     })),
@@ -221,7 +215,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/compute/interconnectattachmentgroups",
-  version: "2026.04.03.3",
+  version: "2026.04.04.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -245,6 +239,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.3",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.04.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

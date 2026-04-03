@@ -255,13 +255,13 @@ const GlobalArgsSchema = z.object({
           "The minimum number of virtual CPUs this instance will consume when running on a sole-tenant node. Ignored if no node_affinites are configured.",
         ).optional(),
         nodeAffinities: z.array(z.object({
-          key: z.string().describe(
+          key: z.unknown().describe(
             "The label key of Node resource to reference.",
           ).optional(),
-          operator: z.enum(["OPERATOR_UNSPECIFIED", "IN", "NOT_IN"]).describe(
+          operator: z.unknown().describe(
             "The operator to use for the node resources specified in the `values` parameter.",
           ).optional(),
-          values: z.array(z.string()).describe(
+          values: z.unknown().describe(
             "Corresponds to the label values of Node resource.",
           ).optional(),
         })).describe(
@@ -398,7 +398,7 @@ const GlobalArgsSchema = z.object({
         operator: z.enum(["OPERATOR_UNSPECIFIED", "IN", "NOT_IN"]).describe(
           "The operator to use for the node resources specified in the `values` parameter.",
         ).optional(),
-        values: z.array(z.string()).describe(
+        values: z.array(z.unknown()).describe(
           "Corresponds to the label values of Node resource.",
         ).optional(),
       })).describe(
@@ -581,9 +581,9 @@ const GlobalArgsSchema = z.object({
         "The warning code.",
       ).optional(),
       helpLinks: z.array(z.object({
-        description: z.string().describe("Describes what the link offers.")
+        description: z.unknown().describe("Describes what the link offers.")
           .optional(),
-        url: z.string().describe("The URL of the link.").optional(),
+        url: z.unknown().describe("The URL of the link.").optional(),
       })).describe(
         "Output only. URL(s) pointing to additional information on handling the current warning.",
       ).optional(),
@@ -723,9 +723,9 @@ const GlobalArgsSchema = z.object({
         "The warning code.",
       ).optional(),
       helpLinks: z.array(z.object({
-        description: z.string().describe("Describes what the link offers.")
+        description: z.unknown().describe("Describes what the link offers.")
           .optional(),
-        url: z.string().describe("The URL of the link.").optional(),
+        url: z.unknown().describe("The URL of the link.").optional(),
       })).describe(
         "Output only. URL(s) pointing to additional information on handling the current warning.",
       ).optional(),
@@ -872,9 +872,9 @@ const StateSchema = z.object({
       computeScheduling: z.object({
         minNodeCpus: z.number(),
         nodeAffinities: z.array(z.object({
-          key: z.string(),
-          operator: z.string(),
-          values: z.array(z.string()),
+          key: z.unknown(),
+          operator: z.unknown(),
+          values: z.unknown(),
         })),
         onHostMaintenance: z.string(),
         restartType: z.string(),
@@ -920,7 +920,7 @@ const StateSchema = z.object({
       nodeAffinities: z.array(z.object({
         key: z.string(),
         operator: z.string(),
-        values: z.array(z.string()),
+        values: z.array(z.unknown()),
       })),
       onHostMaintenance: z.string(),
       restartType: z.string(),
@@ -986,8 +986,8 @@ const StateSchema = z.object({
       }),
       code: z.string(),
       helpLinks: z.array(z.object({
-        description: z.string(),
-        url: z.string(),
+        description: z.unknown(),
+        url: z.unknown(),
       })),
       warningMessage: z.object({
         locale: z.string(),
@@ -1045,8 +1045,8 @@ const StateSchema = z.object({
       }),
       code: z.string(),
       helpLinks: z.array(z.object({
-        description: z.string(),
-        url: z.string(),
+        description: z.unknown(),
+        url: z.unknown(),
       })),
       warningMessage: z.object({
         locale: z.string(),
@@ -1066,8 +1066,8 @@ const StateSchema = z.object({
   recentCloneJobs: z.array(z.object({
     computeEngineDisksTargetDetails: z.object({
       disks: z.array(z.object({
-        diskUri: z.string(),
-        sourceDiskNumber: z.number(),
+        diskUri: z.unknown(),
+        sourceDiskNumber: z.unknown(),
       })),
       disksTargetDetails: z.object({}),
       vmTargetDetails: z.object({
@@ -1076,8 +1076,8 @@ const StateSchema = z.object({
     }),
     computeEngineTargetDetails: z.object({
       adaptationModifiers: z.array(z.object({
-        modifier: z.string(),
-        value: z.string(),
+        modifier: z.unknown(),
+        value: z.unknown(),
       })),
       additionalLicenses: z.array(z.string()),
       appliedLicense: z.object({
@@ -1088,11 +1088,7 @@ const StateSchema = z.object({
       bootOption: z.string(),
       computeScheduling: z.object({
         minNodeCpus: z.number(),
-        nodeAffinities: z.array(z.object({
-          key: z.string(),
-          operator: z.string(),
-          values: z.array(z.string()),
-        })),
+        nodeAffinities: z.array(z.unknown()),
         onHostMaintenance: z.string(),
         restartType: z.string(),
       }),
@@ -1110,11 +1106,11 @@ const StateSchema = z.object({
       machineTypeSeries: z.string(),
       metadata: z.record(z.string(), z.unknown()),
       networkInterfaces: z.array(z.object({
-        externalIp: z.string(),
-        internalIp: z.string(),
-        network: z.string(),
-        networkTier: z.string(),
-        subnetwork: z.string(),
+        externalIp: z.unknown(),
+        internalIp: z.unknown(),
+        network: z.unknown(),
+        networkTier: z.unknown(),
+        subnetwork: z.unknown(),
       })),
       networkTags: z.array(z.string()),
       project: z.string(),
@@ -1145,8 +1141,8 @@ const StateSchema = z.object({
   recentCutoverJobs: z.array(z.object({
     computeEngineDisksTargetDetails: z.object({
       disks: z.array(z.object({
-        diskUri: z.string(),
-        sourceDiskNumber: z.number(),
+        diskUri: z.unknown(),
+        sourceDiskNumber: z.unknown(),
       })),
       disksTargetDetails: z.object({}),
       vmTargetDetails: z.object({
@@ -1155,8 +1151,8 @@ const StateSchema = z.object({
     }),
     computeEngineTargetDetails: z.object({
       adaptationModifiers: z.array(z.object({
-        modifier: z.string(),
-        value: z.string(),
+        modifier: z.unknown(),
+        value: z.unknown(),
       })),
       additionalLicenses: z.array(z.string()),
       appliedLicense: z.object({
@@ -1167,11 +1163,7 @@ const StateSchema = z.object({
       bootOption: z.string(),
       computeScheduling: z.object({
         minNodeCpus: z.number(),
-        nodeAffinities: z.array(z.object({
-          key: z.string(),
-          operator: z.string(),
-          values: z.array(z.string()),
-        })),
+        nodeAffinities: z.array(z.unknown()),
         onHostMaintenance: z.string(),
         restartType: z.string(),
       }),
@@ -1189,11 +1181,11 @@ const StateSchema = z.object({
       machineTypeSeries: z.string(),
       metadata: z.record(z.string(), z.unknown()),
       networkInterfaces: z.array(z.object({
-        externalIp: z.string(),
-        internalIp: z.string(),
-        network: z.string(),
-        networkTier: z.string(),
-        subnetwork: z.string(),
+        externalIp: z.unknown(),
+        internalIp: z.unknown(),
+        network: z.unknown(),
+        networkTier: z.unknown(),
+        subnetwork: z.unknown(),
       })),
       networkTags: z.array(z.string()),
       project: z.string(),
@@ -1218,90 +1210,30 @@ const StateSchema = z.object({
     steps: z.array(z.object({
       endTime: z.string(),
       finalSync: z.object({
-        cycleNumber: z.number(),
-        endTime: z.string(),
-        error: z.object({
-          code: z.number(),
-          details: z.array(z.record(z.string(), z.unknown())),
-          message: z.string(),
-        }),
-        name: z.string(),
-        progressPercent: z.number(),
-        startTime: z.string(),
-        state: z.string(),
-        steps: z.array(z.object({
-          endTime: z.string(),
-          initializingReplication: z.object({}),
-          postProcessing: z.object({}),
-          replicating: z.object({
-            lastThirtyMinutesAverageBytesPerSecond: z.string(),
-            lastTwoMinutesAverageBytesPerSecond: z.string(),
-            replicatedBytes: z.string(),
-            totalBytes: z.string(),
-          }),
-          startTime: z.string(),
-        })),
-        totalPauseDuration: z.string(),
-        warnings: z.array(z.object({
-          actionItem: z.object({
-            locale: z.string(),
-            message: z.string(),
-          }),
-          code: z.string(),
-          helpLinks: z.array(z.object({
-            description: z.string(),
-            url: z.string(),
-          })),
-          warningMessage: z.object({
-            locale: z.string(),
-            message: z.string(),
-          }),
-          warningTime: z.string(),
-        })),
+        cycleNumber: z.unknown(),
+        endTime: z.unknown(),
+        error: z.unknown(),
+        name: z.unknown(),
+        progressPercent: z.unknown(),
+        startTime: z.unknown(),
+        state: z.unknown(),
+        steps: z.unknown(),
+        totalPauseDuration: z.unknown(),
+        warnings: z.unknown(),
       }),
       instantiatingMigratedVm: z.object({}),
       preparingVmDisks: z.object({}),
       previousReplicationCycle: z.object({
-        cycleNumber: z.number(),
-        endTime: z.string(),
-        error: z.object({
-          code: z.number(),
-          details: z.array(z.record(z.string(), z.unknown())),
-          message: z.string(),
-        }),
-        name: z.string(),
-        progressPercent: z.number(),
-        startTime: z.string(),
-        state: z.string(),
-        steps: z.array(z.object({
-          endTime: z.string(),
-          initializingReplication: z.object({}),
-          postProcessing: z.object({}),
-          replicating: z.object({
-            lastThirtyMinutesAverageBytesPerSecond: z.string(),
-            lastTwoMinutesAverageBytesPerSecond: z.string(),
-            replicatedBytes: z.string(),
-            totalBytes: z.string(),
-          }),
-          startTime: z.string(),
-        })),
-        totalPauseDuration: z.string(),
-        warnings: z.array(z.object({
-          actionItem: z.object({
-            locale: z.string(),
-            message: z.string(),
-          }),
-          code: z.string(),
-          helpLinks: z.array(z.object({
-            description: z.string(),
-            url: z.string(),
-          })),
-          warningMessage: z.object({
-            locale: z.string(),
-            message: z.string(),
-          }),
-          warningTime: z.string(),
-        })),
+        cycleNumber: z.unknown(),
+        endTime: z.unknown(),
+        error: z.unknown(),
+        name: z.unknown(),
+        progressPercent: z.unknown(),
+        startTime: z.unknown(),
+        state: z.unknown(),
+        steps: z.unknown(),
+        totalPauseDuration: z.unknown(),
+        warnings: z.unknown(),
       }),
       shuttingDownSourceVm: z.object({}),
       startTime: z.string(),
@@ -1487,13 +1419,13 @@ const InputsSchema = z.object({
           "The minimum number of virtual CPUs this instance will consume when running on a sole-tenant node. Ignored if no node_affinites are configured.",
         ).optional(),
         nodeAffinities: z.array(z.object({
-          key: z.string().describe(
+          key: z.unknown().describe(
             "The label key of Node resource to reference.",
           ).optional(),
-          operator: z.enum(["OPERATOR_UNSPECIFIED", "IN", "NOT_IN"]).describe(
+          operator: z.unknown().describe(
             "The operator to use for the node resources specified in the `values` parameter.",
           ).optional(),
-          values: z.array(z.string()).describe(
+          values: z.unknown().describe(
             "Corresponds to the label values of Node resource.",
           ).optional(),
         })).describe(
@@ -1630,7 +1562,7 @@ const InputsSchema = z.object({
         operator: z.enum(["OPERATOR_UNSPECIFIED", "IN", "NOT_IN"]).describe(
           "The operator to use for the node resources specified in the `values` parameter.",
         ).optional(),
-        values: z.array(z.string()).describe(
+        values: z.array(z.unknown()).describe(
           "Corresponds to the label values of Node resource.",
         ).optional(),
       })).describe(
@@ -1813,9 +1745,9 @@ const InputsSchema = z.object({
         "The warning code.",
       ).optional(),
       helpLinks: z.array(z.object({
-        description: z.string().describe("Describes what the link offers.")
+        description: z.unknown().describe("Describes what the link offers.")
           .optional(),
-        url: z.string().describe("The URL of the link.").optional(),
+        url: z.unknown().describe("The URL of the link.").optional(),
       })).describe(
         "Output only. URL(s) pointing to additional information on handling the current warning.",
       ).optional(),
@@ -1955,9 +1887,9 @@ const InputsSchema = z.object({
         "The warning code.",
       ).optional(),
       helpLinks: z.array(z.object({
-        description: z.string().describe("Describes what the link offers.")
+        description: z.unknown().describe("Describes what the link offers.")
           .optional(),
-        url: z.string().describe("The URL of the link.").optional(),
+        url: z.unknown().describe("The URL of the link.").optional(),
       })).describe(
         "Output only. URL(s) pointing to additional information on handling the current warning.",
       ).optional(),
@@ -2046,7 +1978,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/vmmigration/sources-migratingvms",
-  version: "2026.04.03.3",
+  version: "2026.04.04.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -2070,6 +2002,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.3",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.04.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

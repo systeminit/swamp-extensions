@@ -213,67 +213,26 @@ const GlobalArgsSchema = z.object({
         "Output only. Timestamp when the DeployedModel was created.",
       ).optional(),
       dedicatedResources: z.object({
-        autoscalingMetricSpecs: z.array(z.object({
-          metricName: z.string().describe(
-            "Required. The resource metric name. Supported metrics: * For Online Prediction: * `aiplatform.googleapis.com/prediction/online/accelerator/duty_cycle` * `aiplatform.googleapis.com/prediction/online/cpu/utilization` * `aiplatform.googleapis.com/prediction/online/request_count` * `pubsub.googleapis.com/subscription/num_undelivered_messages` * `prometheus.googleapis.com/vertex_dcgm_fi_dev_gpu_util` * `prometheus.googleapis.com/vertex_vllm_gpu_cache_usage_perc` * `prometheus.googleapis.com/vertex_vllm_num_requests_waiting`",
-          ).optional(),
-          target: z.number().int().describe(
-            "The target resource utilization in percentage (1% - 100%) for the given metric; once the real usage deviates from the target by a certain percentage, the machine replicas change. The default value is 60 (representing 60%) if not provided.",
-          ).optional(),
-        })).describe(
+        autoscalingMetricSpecs: z.array(z.unknown()).describe(
           "Immutable. The metric specifications that overrides a resource utilization metric (CPU utilization, accelerator's duty cycle, and so on) target value (default to 60 if not set). At most one entry is allowed per metric. If machine_spec.accelerator_count is above 0, the autoscaling will be based on both CPU utilization and accelerator's duty cycle metrics and scale up when either metrics exceeds its target value while scale down if both metrics are under their target value. The default target value is 60 for both metrics. If machine_spec.accelerator_count is 0, the autoscaling will be based on CPU utilization metric only with default target value 60 if not explicitly set. For example, in the case of Online Prediction, if you want to override target CPU utilization to 80, you should set autoscaling_metric_specs.metric_name to `aiplatform.googleapis.com/prediction/online/cpu/utilization` and autoscaling_metric_specs.target to `80`.",
         ).optional(),
         machineSpec: z.object({
-          acceleratorCount: z.number().int().describe(
+          acceleratorCount: z.unknown().describe(
             "The number of accelerators to attach to the machine. For accelerator optimized machine types (https://cloud.google.com/compute/docs/accelerator-optimized-machines), One may set the accelerator_count from 1 to N for machine with N GPUs. If accelerator_count is less than or equal to N / 2, Vertex will co-schedule the replicas of the model into the same VM to save cost. For example, if the machine type is a3-highgpu-8g, which has 8 H100 GPUs, one can set accelerator_count to 1 to 8. If accelerator_count is 1, 2, 3, or 4, Vertex will co-schedule 8, 4, 2, or 2 replicas of the model into the same VM to save cost. When co-scheduling, CPU, memory and storage on the VM will be distributed to replicas on the VM. For example, one can expect a co-scheduled replica requesting 2 GPUs out of a 8-GPU VM will receive 25% of the CPU, memory and storage of the VM. Note that the feature is not compatible with multihost_gpu_node_count. When multihost_gpu_node_count is set, the co-scheduling will not be enabled.",
           ).optional(),
-          acceleratorType: z.enum([
-            "ACCELERATOR_TYPE_UNSPECIFIED",
-            "NVIDIA_TESLA_K80",
-            "NVIDIA_TESLA_P100",
-            "NVIDIA_TESLA_V100",
-            "NVIDIA_TESLA_P4",
-            "NVIDIA_TESLA_T4",
-            "NVIDIA_TESLA_A100",
-            "NVIDIA_A100_80GB",
-            "NVIDIA_L4",
-            "NVIDIA_H100_80GB",
-            "NVIDIA_H100_MEGA_80GB",
-            "NVIDIA_H200_141GB",
-            "NVIDIA_B200",
-            "NVIDIA_GB200",
-            "NVIDIA_RTX_PRO_6000",
-            "TPU_V2",
-            "TPU_V3",
-            "TPU_V4_POD",
-            "TPU_V5_LITEPOD",
-          ]).describe(
+          acceleratorType: z.unknown().describe(
             "Immutable. The type of accelerator(s) that may be attached to the machine as per accelerator_count.",
           ).optional(),
-          gpuPartitionSize: z.string().describe(
+          gpuPartitionSize: z.unknown().describe(
             'Optional. Immutable. The Nvidia GPU partition size. When specified, the requested accelerators will be partitioned into smaller GPU partitions. For example, if the request is for 8 units of NVIDIA A100 GPUs, and gpu_partition_size="1g.10gb", the service will create 8 * 7 = 56 partitioned MIG instances. The partition size must be a value supported by the requested accelerator. Refer to [Nvidia GPU Partitioning](https://cloud.google.com/kubernetes-engine/docs/how-to/gpus-multi#multi-instance_gpu_partitions) for the available partition sizes. If set, the accelerator_count should be set to 1.',
           ).optional(),
-          machineType: z.string().describe(
+          machineType: z.unknown().describe(
             "Immutable. The type of the machine. See the [list of machine types supported for prediction](https://cloud.google.com/vertex-ai/docs/predictions/configure-compute#machine-types) See the [list of machine types supported for custom training](https://cloud.google.com/vertex-ai/docs/training/configure-compute#machine-types). For DeployedModel this field is optional, and the default value is `n1-standard-2`. For BatchPredictionJob or as part of WorkerPoolSpec this field is required.",
           ).optional(),
-          reservationAffinity: z.object({
-            key: z.string().describe(
-              "Optional. Corresponds to the label key of a reservation resource. To target a SPECIFIC_RESERVATION by name, use `compute.googleapis.com/reservation-name` as the key and specify the name of your reservation as its value.",
-            ).optional(),
-            reservationAffinityType: z.enum([
-              "TYPE_UNSPECIFIED",
-              "NO_RESERVATION",
-              "ANY_RESERVATION",
-              "SPECIFIC_RESERVATION",
-            ]).describe("Required. Specifies the reservation affinity type.")
-              .optional(),
-            values: z.array(z.string()).describe(
-              "Optional. Corresponds to the label values of a reservation resource. This must be the full resource name of the reservation or reservation block.",
-            ).optional(),
-          }).describe(
+          reservationAffinity: z.unknown().describe(
             "A ReservationAffinity can be used to configure a Vertex AI resource (e.g., a DeployedModel) to draw its Compute Engine resources from a Shared Reservation, or exclusively from on-demand capacity.",
           ).optional(),
-          tpuTopology: z.string().describe(
+          tpuTopology: z.unknown().describe(
             'Immutable. The topology of the TPUs. Corresponds to the TPU topologies available from GKE. (Example: tpu_topology: "2x2x1").',
           ).optional(),
         }).describe("Specification of a single machine.").optional(),
@@ -306,257 +265,38 @@ const GlobalArgsSchema = z.object({
       ).optional(),
       explanationSpec: z.object({
         metadata: z.object({
-          featureAttributionsSchemaUri: z.string().describe(
+          featureAttributionsSchemaUri: z.unknown().describe(
             "Points to a YAML file stored on Google Cloud Storage describing the format of the feature attributions. The schema is defined as an OpenAPI 3.0.2 [Schema Object](https://github.com/OAI/OpenAPI-Specification/blob/main/versions/3.0.2.md#schemaObject). AutoML tabular Models always have this field populated by Vertex AI. Note: The URI given on output may be different, including the URI scheme, than the one given on input. The output URI will point to a location where the user only has a read access.",
           ).optional(),
-          inputs: z.record(
-            z.string(),
-            z.object({
-              denseShapeTensorName: z.string().describe(
-                "Specifies the shape of the values of the input if the input is a sparse representation. Refer to Tensorflow documentation for more details: https://www.tensorflow.org/api_docs/python/tf/sparse/SparseTensor.",
-              ).optional(),
-              encodedBaselines: z.array(z.string()).describe(
-                "A list of baselines for the encoded tensor. The shape of each baseline should match the shape of the encoded tensor. If a scalar is provided, Vertex AI broadcasts to the same shape as the encoded tensor.",
-              ).optional(),
-              encodedTensorName: z.string().describe(
-                "Encoded tensor is a transformation of the input tensor. Must be provided if choosing Integrated Gradients attribution or XRAI attribution and the input tensor is not differentiable. An encoded tensor is generated if the input tensor is encoded by a lookup table.",
-              ).optional(),
-              encoding: z.enum([
-                "ENCODING_UNSPECIFIED",
-                "IDENTITY",
-                "BAG_OF_FEATURES",
-                "BAG_OF_FEATURES_SPARSE",
-                "INDICATOR",
-                "COMBINED_EMBEDDING",
-                "CONCAT_EMBEDDING",
-              ]).describe(
-                "Defines how the feature is encoded into the input tensor. Defaults to IDENTITY.",
-              ).optional(),
-              featureValueDomain: z.object({
-                maxValue: z.number().describe(
-                  "The maximum permissible value for this feature.",
-                ).optional(),
-                minValue: z.number().describe(
-                  "The minimum permissible value for this feature.",
-                ).optional(),
-                originalMean: z.number().describe(
-                  "If this input feature has been normalized to a mean value of 0, the original_mean specifies the mean value of the domain prior to normalization.",
-                ).optional(),
-                originalStddev: z.number().describe(
-                  "If this input feature has been normalized to a standard deviation of 1.0, the original_stddev specifies the standard deviation of the domain prior to normalization.",
-                ).optional(),
-              }).describe(
-                "Domain details of the input feature value. Provides numeric information about the feature, such as its range (min, max). If the feature has been pre-processed, for example with z-scoring, then it provides information about how to recover the original feature. For example, if the input feature is an image and it has been pre-processed to obtain 0-mean and stddev = 1 values, then original_mean, and original_stddev refer to the mean and stddev of the original feature (e.g. image tensor) from which input feature (with mean = 0 and stddev = 1) was obtained.",
-              ).optional(),
-              groupName: z.string().describe(
-                "Name of the group that the input belongs to. Features with the same group name will be treated as one feature when computing attributions. Features grouped together can have different shapes in value. If provided, there will be one single attribution generated in Attribution.feature_attributions, keyed by the group name.",
-              ).optional(),
-              indexFeatureMapping: z.array(z.string()).describe(
-                "A list of feature names for each index in the input tensor. Required when the input InputMetadata.encoding is BAG_OF_FEATURES, BAG_OF_FEATURES_SPARSE, INDICATOR.",
-              ).optional(),
-              indicesTensorName: z.string().describe(
-                "Specifies the index of the values of the input tensor. Required when the input tensor is a sparse representation. Refer to Tensorflow documentation for more details: https://www.tensorflow.org/api_docs/python/tf/sparse/SparseTensor.",
-              ).optional(),
-              inputBaselines: z.array(z.string()).describe(
-                "Baseline inputs for this feature. If no baseline is specified, Vertex AI chooses the baseline for this feature. If multiple baselines are specified, Vertex AI returns the average attributions across them in Attribution.feature_attributions. For Vertex AI-provided Tensorflow images (both 1.x and 2.x), the shape of each baseline must match the shape of the input tensor. If a scalar is provided, we broadcast to the same shape as the input tensor. For custom images, the element of the baselines must be in the same format as the feature's input in the instance[]. The schema of any single instance may be specified via Endpoint's DeployedModels' Model's PredictSchemata's instance_schema_uri.",
-              ).optional(),
-              inputTensorName: z.string().describe(
-                "Name of the input tensor for this feature. Required and is only applicable to Vertex AI-provided images for Tensorflow.",
-              ).optional(),
-              modality: z.string().describe(
-                "Modality of the feature. Valid values are: numeric, image. Defaults to numeric.",
-              ).optional(),
-              visualization: z.object({
-                clipPercentLowerbound: z.number().describe(
-                  "Excludes attributions below the specified percentile, from the highlighted areas. Defaults to 62.",
-                ).optional(),
-                clipPercentUpperbound: z.number().describe(
-                  "Excludes attributions above the specified percentile from the highlighted areas. Using the clip_percent_upperbound and clip_percent_lowerbound together can be useful for filtering out noise and making it easier to see areas of strong attribution. Defaults to 99.9.",
-                ).optional(),
-                colorMap: z.enum([
-                  "COLOR_MAP_UNSPECIFIED",
-                  "PINK_GREEN",
-                  "VIRIDIS",
-                  "RED",
-                  "GREEN",
-                  "RED_GREEN",
-                  "PINK_WHITE_GREEN",
-                ]).describe(
-                  "The color scheme used for the highlighted areas. Defaults to PINK_GREEN for Integrated Gradients attribution, which shows positive attributions in green and negative in pink. Defaults to VIRIDIS for XRAI attribution, which highlights the most influential regions in yellow and the least influential in blue.",
-                ).optional(),
-                overlayType: z.enum([
-                  "OVERLAY_TYPE_UNSPECIFIED",
-                  "NONE",
-                  "ORIGINAL",
-                  "GRAYSCALE",
-                  "MASK_BLACK",
-                ]).describe(
-                  "How the original image is displayed in the visualization. Adjusting the overlay can help increase visual clarity if the original image makes it difficult to view the visualization. Defaults to NONE.",
-                ).optional(),
-                polarity: z.enum([
-                  "POLARITY_UNSPECIFIED",
-                  "POSITIVE",
-                  "NEGATIVE",
-                  "BOTH",
-                ]).describe(
-                  "Whether to only highlight pixels with positive contributions, negative or both. Defaults to POSITIVE.",
-                ).optional(),
-                type: z.enum(["TYPE_UNSPECIFIED", "PIXELS", "OUTLINES"])
-                  .describe(
-                    "Type of the image visualization. Only applicable to Integrated Gradients attribution. OUTLINES shows regions of attribution, while PIXELS shows per-pixel attribution. Defaults to OUTLINES.",
-                  ).optional(),
-              }).describe("Visualization configurations for image explanation.")
-                .optional(),
-            }),
-          ).describe(
+          inputs: z.unknown().describe(
             "Required. Map from feature names to feature input metadata. Keys are the name of the features. Values are the specification of the feature. An empty InputMetadata is valid. It describes a text feature which has the name specified as the key in ExplanationMetadata.inputs. The baseline of the empty feature is chosen by Vertex AI. For Vertex AI-provided Tensorflow images, the key can be any friendly name of the feature. Once specified, featureAttributions are keyed by this key (if not grouped with another feature). For custom images, the key must match with the key in instance.",
           ).optional(),
-          latentSpaceSource: z.string().describe(
+          latentSpaceSource: z.unknown().describe(
             "Name of the source to generate embeddings for example based explanations.",
           ).optional(),
-          outputs: z.record(
-            z.string(),
-            z.object({
-              displayNameMappingKey: z.string().describe(
-                "Specify a field name in the prediction to look for the display name. Use this if the prediction contains the display names for the outputs. The display names in the prediction must have the same shape of the outputs, so that it can be located by Attribution.output_index for a specific output.",
-              ).optional(),
-              indexDisplayNameMapping: z.string().describe(
-                "Static mapping between the index and display name. Use this if the outputs are a deterministic n-dimensional array, e.g. a list of scores of all the classes in a pre-defined order for a multi-classification Model. It's not feasible if the outputs are non-deterministic, e.g. the Model produces top-k classes or sort the outputs by their values. The shape of the value must be an n-dimensional array of strings. The number of dimensions must match that of the outputs to be explained. The Attribution.output_display_name is populated by locating in the mapping with Attribution.output_index.",
-              ).optional(),
-              outputTensorName: z.string().describe(
-                "Name of the output tensor. Required and is only applicable to Vertex AI provided images for Tensorflow.",
-              ).optional(),
-            }),
-          ).describe(
+          outputs: z.unknown().describe(
             "Required. Map from output names to output metadata. For Vertex AI-provided Tensorflow images, keys can be any user defined string that consists of any UTF-8 characters. For custom images, keys are the name of the output field in the prediction to be explained. Currently only one key is allowed.",
           ).optional(),
         }).describe(
           "Metadata describing the Model's input and output for explanation.",
         ).optional(),
         parameters: z.object({
-          examples: z.object({
-            exampleGcsSource: z.object({
-              dataFormat: z.enum(["DATA_FORMAT_UNSPECIFIED", "JSONL"]).describe(
-                "The format in which instances are given, if not specified, assume it's JSONL format. Currently only JSONL format is supported.",
-              ).optional(),
-              gcsSource: z.object({
-                uris: z.array(z.string()).describe(
-                  "Required. Google Cloud Storage URI(-s) to the input file(s). May contain wildcards. For more information on wildcards, see https://cloud.google.com/storage/docs/wildcards.",
-                ).optional(),
-              }).describe(
-                "The Google Cloud Storage location for the input content.",
-              ).optional(),
-            }).describe("The Cloud Storage input instances.").optional(),
-            nearestNeighborSearchConfig: z.string().describe(
-              "The full configuration for the generated index, the semantics are the same as metadata and should match [NearestNeighborSearchConfig](https://cloud.google.com/vertex-ai/docs/explainable-ai/configuring-explanations-example-based#nearest-neighbor-search-config).",
-            ).optional(),
-            neighborCount: z.number().int().describe(
-              "The number of neighbors to return when querying for examples.",
-            ).optional(),
-            presets: z.object({
-              modality: z.enum([
-                "MODALITY_UNSPECIFIED",
-                "IMAGE",
-                "TEXT",
-                "TABULAR",
-              ]).describe(
-                "The modality of the uploaded model, which automatically configures the distance measurement and feature normalization for the underlying example index and queries. If your model does not precisely fit one of these types, it is okay to choose the closest type.",
-              ).optional(),
-              query: z.enum(["PRECISE", "FAST"]).describe(
-                "Preset option controlling parameters for speed-precision trade-off when querying for examples. If omitted, defaults to `PRECISE`.",
-              ).optional(),
-            }).describe("Preset configuration for example-based explanations")
-              .optional(),
-          }).describe(
+          examples: z.unknown().describe(
             "Example-based explainability that returns the nearest neighbors from the provided dataset.",
           ).optional(),
-          integratedGradientsAttribution: z.object({
-            blurBaselineConfig: z.object({
-              maxBlurSigma: z.number().describe(
-                "The standard deviation of the blur kernel for the blurred baseline. The same blurring parameter is used for both the height and the width dimension. If not set, the method defaults to the zero (i.e. black for images) baseline.",
-              ).optional(),
-            }).describe(
-              "Config for blur baseline. When enabled, a linear path from the maximally blurred image to the input image is created. Using a blurred baseline instead of zero (black image) is motivated by the BlurIG approach explained here: https://arxiv.org/abs/2004.03383",
-            ).optional(),
-            smoothGradConfig: z.object({
-              featureNoiseSigma: z.object({
-                noiseSigma: z.array(z.object({
-                  name: z.string().describe(
-                    "The name of the input feature for which noise sigma is provided. The features are defined in explanation metadata inputs.",
-                  ).optional(),
-                  sigma: z.number().describe(
-                    "This represents the standard deviation of the Gaussian kernel that will be used to add noise to the feature prior to computing gradients. Similar to noise_sigma but represents the noise added to the current feature. Defaults to 0.1.",
-                  ).optional(),
-                })).describe(
-                  "Noise sigma per feature. No noise is added to features that are not set.",
-                ).optional(),
-              }).describe(
-                "Noise sigma by features. Noise sigma represents the standard deviation of the gaussian kernel that will be used to add noise to interpolated inputs prior to computing gradients.",
-              ).optional(),
-              noiseSigma: z.number().describe(
-                "This is a single float value and will be used to add noise to all the features. Use this field when all features are normalized to have the same distribution: scale to range [0, 1], [-1, 1] or z-scoring, where features are normalized to have 0-mean and 1-variance. Learn more about [normalization](https://developers.google.com/machine-learning/data-prep/transform/normalization). For best results the recommended value is about 10% - 20% of the standard deviation of the input feature. Refer to section 3.2 of the SmoothGrad paper: https://arxiv.org/pdf/1706.03825.pdf. Defaults to 0.1. If the distribution is different per feature, set feature_noise_sigma instead for each feature.",
-              ).optional(),
-              noisySampleCount: z.number().int().describe(
-                "The number of gradient samples to use for approximation. The higher this number, the more accurate the gradient is, but the runtime complexity increases by this factor as well. Valid range of its value is [1, 50]. Defaults to 3.",
-              ).optional(),
-            }).describe(
-              "Config for SmoothGrad approximation of gradients. When enabled, the gradients are approximated by averaging the gradients from noisy samples in the vicinity of the inputs. Adding noise can help improve the computed gradients. Refer to this paper for more details: https://arxiv.org/pdf/1706.03825.pdf",
-            ).optional(),
-            stepCount: z.number().int().describe(
-              "Required. The number of steps for approximating the path integral. A good value to start is 50 and gradually increase until the sum to diff property is within the desired error range. Valid range of its value is [1, 100], inclusively.",
-            ).optional(),
-          }).describe(
+          integratedGradientsAttribution: z.unknown().describe(
             "An attribution method that computes the Aumann-Shapley value taking advantage of the model's fully differentiable structure. Refer to this paper for more details: https://arxiv.org/abs/1703.01365",
           ).optional(),
-          outputIndices: z.array(z.string()).describe(
+          outputIndices: z.unknown().describe(
             "If populated, only returns attributions that have output_index contained in output_indices. It must be an ndarray of integers, with the same shape of the output it's explaining. If not populated, returns attributions for top_k indices of outputs. If neither top_k nor output_indices is populated, returns the argmax index of the outputs. Only applicable to Models that predict multiple outputs (e,g, multi-class Models that predict multiple classes).",
           ).optional(),
-          sampledShapleyAttribution: z.object({
-            pathCount: z.number().int().describe(
-              "Required. The number of feature permutations to consider when approximating the Shapley values. Valid range of its value is [1, 50], inclusively.",
-            ).optional(),
-          }).describe(
+          sampledShapleyAttribution: z.unknown().describe(
             "An attribution method that approximates Shapley values for features that contribute to the label being predicted. A sampling strategy is used to approximate the value rather than considering all subsets of features.",
           ).optional(),
-          topK: z.number().int().describe(
+          topK: z.unknown().describe(
             "If populated, returns attributions for top K indices of outputs (defaults to 1). Only applies to Models that predicts more than one outputs (e,g, multi-class Models). When set to -1, returns explanations for all outputs.",
           ).optional(),
-          xraiAttribution: z.object({
-            blurBaselineConfig: z.object({
-              maxBlurSigma: z.number().describe(
-                "The standard deviation of the blur kernel for the blurred baseline. The same blurring parameter is used for both the height and the width dimension. If not set, the method defaults to the zero (i.e. black for images) baseline.",
-              ).optional(),
-            }).describe(
-              "Config for blur baseline. When enabled, a linear path from the maximally blurred image to the input image is created. Using a blurred baseline instead of zero (black image) is motivated by the BlurIG approach explained here: https://arxiv.org/abs/2004.03383",
-            ).optional(),
-            smoothGradConfig: z.object({
-              featureNoiseSigma: z.object({
-                noiseSigma: z.array(z.object({
-                  name: z.string().describe(
-                    "The name of the input feature for which noise sigma is provided. The features are defined in explanation metadata inputs.",
-                  ).optional(),
-                  sigma: z.number().describe(
-                    "This represents the standard deviation of the Gaussian kernel that will be used to add noise to the feature prior to computing gradients. Similar to noise_sigma but represents the noise added to the current feature. Defaults to 0.1.",
-                  ).optional(),
-                })).describe(
-                  "Noise sigma per feature. No noise is added to features that are not set.",
-                ).optional(),
-              }).describe(
-                "Noise sigma by features. Noise sigma represents the standard deviation of the gaussian kernel that will be used to add noise to interpolated inputs prior to computing gradients.",
-              ).optional(),
-              noiseSigma: z.number().describe(
-                "This is a single float value and will be used to add noise to all the features. Use this field when all features are normalized to have the same distribution: scale to range [0, 1], [-1, 1] or z-scoring, where features are normalized to have 0-mean and 1-variance. Learn more about [normalization](https://developers.google.com/machine-learning/data-prep/transform/normalization). For best results the recommended value is about 10% - 20% of the standard deviation of the input feature. Refer to section 3.2 of the SmoothGrad paper: https://arxiv.org/pdf/1706.03825.pdf. Defaults to 0.1. If the distribution is different per feature, set feature_noise_sigma instead for each feature.",
-              ).optional(),
-              noisySampleCount: z.number().int().describe(
-                "The number of gradient samples to use for approximation. The higher this number, the more accurate the gradient is, but the runtime complexity increases by this factor as well. Valid range of its value is [1, 50]. Defaults to 3.",
-              ).optional(),
-            }).describe(
-              "Config for SmoothGrad approximation of gradients. When enabled, the gradients are approximated by averaging the gradients from noisy samples in the vicinity of the inputs. Adding noise can help improve the computed gradients. Refer to this paper for more details: https://arxiv.org/pdf/1706.03825.pdf",
-            ).optional(),
-            stepCount: z.number().int().describe(
-              "Required. The number of steps for approximating the path integral. A good value to start is 50 and gradually increase until the sum to diff property is met within the desired error range. Valid range of its value is [1, 100], inclusively.",
-            ).optional(),
-          }).describe(
+          xraiAttribution: z.unknown().describe(
             "An explanation method that redistributes Integrated Gradients attributions to segmented regions, taking advantage of the model's fully differentiable structure. Refer to this paper for more details: https://arxiv.org/abs/1906.02825 Supported only by image Models.",
           ).optional(),
         }).describe(
@@ -604,14 +344,14 @@ const GlobalArgsSchema = z.object({
       ).optional(),
       speculativeDecodingSpec: z.object({
         draftModelSpeculation: z.object({
-          draftModel: z.string().describe(
+          draftModel: z.unknown().describe(
             "Required. The resource name of the draft model.",
           ).optional(),
         }).describe(
           "Draft model speculation works by using the smaller model to generate candidate tokens for speculative decoding.",
         ).optional(),
         ngramSpeculation: z.object({
-          ngramSize: z.number().int().describe(
+          ngramSize: z.unknown().describe(
             "The number of last N input tokens used as ngram to search/match against the previous prompt sequence. This is equal to the N in N-Gram. The default value is 3 if not specified.",
           ).optional(),
         }).describe(
@@ -767,8 +507,8 @@ const StateSchema = z.object({
     createTime: z.string(),
     dedicatedResources: z.object({
       autoscalingMetricSpecs: z.array(z.object({
-        metricName: z.string(),
-        target: z.number(),
+        metricName: z.unknown(),
+        target: z.unknown(),
       })),
       machineSpec: z.object({
         acceleratorCount: z.number(),
@@ -776,9 +516,9 @@ const StateSchema = z.object({
         gpuPartitionSize: z.string(),
         machineType: z.string(),
         reservationAffinity: z.object({
-          key: z.string(),
-          reservationAffinityType: z.string(),
-          values: z.array(z.string()),
+          key: z.unknown(),
+          reservationAffinityType: z.unknown(),
+          values: z.unknown(),
         }),
         tpuTopology: z.string(),
       }),
@@ -800,55 +540,25 @@ const StateSchema = z.object({
       }),
       parameters: z.object({
         examples: z.object({
-          exampleGcsSource: z.object({
-            dataFormat: z.string(),
-            gcsSource: z.object({
-              uris: z.array(z.string()),
-            }),
-          }),
-          nearestNeighborSearchConfig: z.string(),
-          neighborCount: z.number(),
-          presets: z.object({
-            modality: z.string(),
-            query: z.string(),
-          }),
+          exampleGcsSource: z.unknown(),
+          nearestNeighborSearchConfig: z.unknown(),
+          neighborCount: z.unknown(),
+          presets: z.unknown(),
         }),
         integratedGradientsAttribution: z.object({
-          blurBaselineConfig: z.object({
-            maxBlurSigma: z.number(),
-          }),
-          smoothGradConfig: z.object({
-            featureNoiseSigma: z.object({
-              noiseSigma: z.array(z.object({
-                name: z.string(),
-                sigma: z.number(),
-              })),
-            }),
-            noiseSigma: z.number(),
-            noisySampleCount: z.number(),
-          }),
-          stepCount: z.number(),
+          blurBaselineConfig: z.unknown(),
+          smoothGradConfig: z.unknown(),
+          stepCount: z.unknown(),
         }),
-        outputIndices: z.array(z.string()),
+        outputIndices: z.array(z.unknown()),
         sampledShapleyAttribution: z.object({
-          pathCount: z.number(),
+          pathCount: z.unknown(),
         }),
         topK: z.number(),
         xraiAttribution: z.object({
-          blurBaselineConfig: z.object({
-            maxBlurSigma: z.number(),
-          }),
-          smoothGradConfig: z.object({
-            featureNoiseSigma: z.object({
-              noiseSigma: z.array(z.object({
-                name: z.string(),
-                sigma: z.number(),
-              })),
-            }),
-            noiseSigma: z.number(),
-            noisySampleCount: z.number(),
-          }),
-          stepCount: z.number(),
+          blurBaselineConfig: z.unknown(),
+          smoothGradConfig: z.unknown(),
+          stepCount: z.unknown(),
         }),
       }),
     }),
@@ -1060,67 +770,26 @@ const InputsSchema = z.object({
         "Output only. Timestamp when the DeployedModel was created.",
       ).optional(),
       dedicatedResources: z.object({
-        autoscalingMetricSpecs: z.array(z.object({
-          metricName: z.string().describe(
-            "Required. The resource metric name. Supported metrics: * For Online Prediction: * `aiplatform.googleapis.com/prediction/online/accelerator/duty_cycle` * `aiplatform.googleapis.com/prediction/online/cpu/utilization` * `aiplatform.googleapis.com/prediction/online/request_count` * `pubsub.googleapis.com/subscription/num_undelivered_messages` * `prometheus.googleapis.com/vertex_dcgm_fi_dev_gpu_util` * `prometheus.googleapis.com/vertex_vllm_gpu_cache_usage_perc` * `prometheus.googleapis.com/vertex_vllm_num_requests_waiting`",
-          ).optional(),
-          target: z.number().int().describe(
-            "The target resource utilization in percentage (1% - 100%) for the given metric; once the real usage deviates from the target by a certain percentage, the machine replicas change. The default value is 60 (representing 60%) if not provided.",
-          ).optional(),
-        })).describe(
+        autoscalingMetricSpecs: z.array(z.unknown()).describe(
           "Immutable. The metric specifications that overrides a resource utilization metric (CPU utilization, accelerator's duty cycle, and so on) target value (default to 60 if not set). At most one entry is allowed per metric. If machine_spec.accelerator_count is above 0, the autoscaling will be based on both CPU utilization and accelerator's duty cycle metrics and scale up when either metrics exceeds its target value while scale down if both metrics are under their target value. The default target value is 60 for both metrics. If machine_spec.accelerator_count is 0, the autoscaling will be based on CPU utilization metric only with default target value 60 if not explicitly set. For example, in the case of Online Prediction, if you want to override target CPU utilization to 80, you should set autoscaling_metric_specs.metric_name to `aiplatform.googleapis.com/prediction/online/cpu/utilization` and autoscaling_metric_specs.target to `80`.",
         ).optional(),
         machineSpec: z.object({
-          acceleratorCount: z.number().int().describe(
+          acceleratorCount: z.unknown().describe(
             "The number of accelerators to attach to the machine. For accelerator optimized machine types (https://cloud.google.com/compute/docs/accelerator-optimized-machines), One may set the accelerator_count from 1 to N for machine with N GPUs. If accelerator_count is less than or equal to N / 2, Vertex will co-schedule the replicas of the model into the same VM to save cost. For example, if the machine type is a3-highgpu-8g, which has 8 H100 GPUs, one can set accelerator_count to 1 to 8. If accelerator_count is 1, 2, 3, or 4, Vertex will co-schedule 8, 4, 2, or 2 replicas of the model into the same VM to save cost. When co-scheduling, CPU, memory and storage on the VM will be distributed to replicas on the VM. For example, one can expect a co-scheduled replica requesting 2 GPUs out of a 8-GPU VM will receive 25% of the CPU, memory and storage of the VM. Note that the feature is not compatible with multihost_gpu_node_count. When multihost_gpu_node_count is set, the co-scheduling will not be enabled.",
           ).optional(),
-          acceleratorType: z.enum([
-            "ACCELERATOR_TYPE_UNSPECIFIED",
-            "NVIDIA_TESLA_K80",
-            "NVIDIA_TESLA_P100",
-            "NVIDIA_TESLA_V100",
-            "NVIDIA_TESLA_P4",
-            "NVIDIA_TESLA_T4",
-            "NVIDIA_TESLA_A100",
-            "NVIDIA_A100_80GB",
-            "NVIDIA_L4",
-            "NVIDIA_H100_80GB",
-            "NVIDIA_H100_MEGA_80GB",
-            "NVIDIA_H200_141GB",
-            "NVIDIA_B200",
-            "NVIDIA_GB200",
-            "NVIDIA_RTX_PRO_6000",
-            "TPU_V2",
-            "TPU_V3",
-            "TPU_V4_POD",
-            "TPU_V5_LITEPOD",
-          ]).describe(
+          acceleratorType: z.unknown().describe(
             "Immutable. The type of accelerator(s) that may be attached to the machine as per accelerator_count.",
           ).optional(),
-          gpuPartitionSize: z.string().describe(
+          gpuPartitionSize: z.unknown().describe(
             'Optional. Immutable. The Nvidia GPU partition size. When specified, the requested accelerators will be partitioned into smaller GPU partitions. For example, if the request is for 8 units of NVIDIA A100 GPUs, and gpu_partition_size="1g.10gb", the service will create 8 * 7 = 56 partitioned MIG instances. The partition size must be a value supported by the requested accelerator. Refer to [Nvidia GPU Partitioning](https://cloud.google.com/kubernetes-engine/docs/how-to/gpus-multi#multi-instance_gpu_partitions) for the available partition sizes. If set, the accelerator_count should be set to 1.',
           ).optional(),
-          machineType: z.string().describe(
+          machineType: z.unknown().describe(
             "Immutable. The type of the machine. See the [list of machine types supported for prediction](https://cloud.google.com/vertex-ai/docs/predictions/configure-compute#machine-types) See the [list of machine types supported for custom training](https://cloud.google.com/vertex-ai/docs/training/configure-compute#machine-types). For DeployedModel this field is optional, and the default value is `n1-standard-2`. For BatchPredictionJob or as part of WorkerPoolSpec this field is required.",
           ).optional(),
-          reservationAffinity: z.object({
-            key: z.string().describe(
-              "Optional. Corresponds to the label key of a reservation resource. To target a SPECIFIC_RESERVATION by name, use `compute.googleapis.com/reservation-name` as the key and specify the name of your reservation as its value.",
-            ).optional(),
-            reservationAffinityType: z.enum([
-              "TYPE_UNSPECIFIED",
-              "NO_RESERVATION",
-              "ANY_RESERVATION",
-              "SPECIFIC_RESERVATION",
-            ]).describe("Required. Specifies the reservation affinity type.")
-              .optional(),
-            values: z.array(z.string()).describe(
-              "Optional. Corresponds to the label values of a reservation resource. This must be the full resource name of the reservation or reservation block.",
-            ).optional(),
-          }).describe(
+          reservationAffinity: z.unknown().describe(
             "A ReservationAffinity can be used to configure a Vertex AI resource (e.g., a DeployedModel) to draw its Compute Engine resources from a Shared Reservation, or exclusively from on-demand capacity.",
           ).optional(),
-          tpuTopology: z.string().describe(
+          tpuTopology: z.unknown().describe(
             'Immutable. The topology of the TPUs. Corresponds to the TPU topologies available from GKE. (Example: tpu_topology: "2x2x1").',
           ).optional(),
         }).describe("Specification of a single machine.").optional(),
@@ -1153,257 +822,38 @@ const InputsSchema = z.object({
       ).optional(),
       explanationSpec: z.object({
         metadata: z.object({
-          featureAttributionsSchemaUri: z.string().describe(
+          featureAttributionsSchemaUri: z.unknown().describe(
             "Points to a YAML file stored on Google Cloud Storage describing the format of the feature attributions. The schema is defined as an OpenAPI 3.0.2 [Schema Object](https://github.com/OAI/OpenAPI-Specification/blob/main/versions/3.0.2.md#schemaObject). AutoML tabular Models always have this field populated by Vertex AI. Note: The URI given on output may be different, including the URI scheme, than the one given on input. The output URI will point to a location where the user only has a read access.",
           ).optional(),
-          inputs: z.record(
-            z.string(),
-            z.object({
-              denseShapeTensorName: z.string().describe(
-                "Specifies the shape of the values of the input if the input is a sparse representation. Refer to Tensorflow documentation for more details: https://www.tensorflow.org/api_docs/python/tf/sparse/SparseTensor.",
-              ).optional(),
-              encodedBaselines: z.array(z.string()).describe(
-                "A list of baselines for the encoded tensor. The shape of each baseline should match the shape of the encoded tensor. If a scalar is provided, Vertex AI broadcasts to the same shape as the encoded tensor.",
-              ).optional(),
-              encodedTensorName: z.string().describe(
-                "Encoded tensor is a transformation of the input tensor. Must be provided if choosing Integrated Gradients attribution or XRAI attribution and the input tensor is not differentiable. An encoded tensor is generated if the input tensor is encoded by a lookup table.",
-              ).optional(),
-              encoding: z.enum([
-                "ENCODING_UNSPECIFIED",
-                "IDENTITY",
-                "BAG_OF_FEATURES",
-                "BAG_OF_FEATURES_SPARSE",
-                "INDICATOR",
-                "COMBINED_EMBEDDING",
-                "CONCAT_EMBEDDING",
-              ]).describe(
-                "Defines how the feature is encoded into the input tensor. Defaults to IDENTITY.",
-              ).optional(),
-              featureValueDomain: z.object({
-                maxValue: z.number().describe(
-                  "The maximum permissible value for this feature.",
-                ).optional(),
-                minValue: z.number().describe(
-                  "The minimum permissible value for this feature.",
-                ).optional(),
-                originalMean: z.number().describe(
-                  "If this input feature has been normalized to a mean value of 0, the original_mean specifies the mean value of the domain prior to normalization.",
-                ).optional(),
-                originalStddev: z.number().describe(
-                  "If this input feature has been normalized to a standard deviation of 1.0, the original_stddev specifies the standard deviation of the domain prior to normalization.",
-                ).optional(),
-              }).describe(
-                "Domain details of the input feature value. Provides numeric information about the feature, such as its range (min, max). If the feature has been pre-processed, for example with z-scoring, then it provides information about how to recover the original feature. For example, if the input feature is an image and it has been pre-processed to obtain 0-mean and stddev = 1 values, then original_mean, and original_stddev refer to the mean and stddev of the original feature (e.g. image tensor) from which input feature (with mean = 0 and stddev = 1) was obtained.",
-              ).optional(),
-              groupName: z.string().describe(
-                "Name of the group that the input belongs to. Features with the same group name will be treated as one feature when computing attributions. Features grouped together can have different shapes in value. If provided, there will be one single attribution generated in Attribution.feature_attributions, keyed by the group name.",
-              ).optional(),
-              indexFeatureMapping: z.array(z.string()).describe(
-                "A list of feature names for each index in the input tensor. Required when the input InputMetadata.encoding is BAG_OF_FEATURES, BAG_OF_FEATURES_SPARSE, INDICATOR.",
-              ).optional(),
-              indicesTensorName: z.string().describe(
-                "Specifies the index of the values of the input tensor. Required when the input tensor is a sparse representation. Refer to Tensorflow documentation for more details: https://www.tensorflow.org/api_docs/python/tf/sparse/SparseTensor.",
-              ).optional(),
-              inputBaselines: z.array(z.string()).describe(
-                "Baseline inputs for this feature. If no baseline is specified, Vertex AI chooses the baseline for this feature. If multiple baselines are specified, Vertex AI returns the average attributions across them in Attribution.feature_attributions. For Vertex AI-provided Tensorflow images (both 1.x and 2.x), the shape of each baseline must match the shape of the input tensor. If a scalar is provided, we broadcast to the same shape as the input tensor. For custom images, the element of the baselines must be in the same format as the feature's input in the instance[]. The schema of any single instance may be specified via Endpoint's DeployedModels' Model's PredictSchemata's instance_schema_uri.",
-              ).optional(),
-              inputTensorName: z.string().describe(
-                "Name of the input tensor for this feature. Required and is only applicable to Vertex AI-provided images for Tensorflow.",
-              ).optional(),
-              modality: z.string().describe(
-                "Modality of the feature. Valid values are: numeric, image. Defaults to numeric.",
-              ).optional(),
-              visualization: z.object({
-                clipPercentLowerbound: z.number().describe(
-                  "Excludes attributions below the specified percentile, from the highlighted areas. Defaults to 62.",
-                ).optional(),
-                clipPercentUpperbound: z.number().describe(
-                  "Excludes attributions above the specified percentile from the highlighted areas. Using the clip_percent_upperbound and clip_percent_lowerbound together can be useful for filtering out noise and making it easier to see areas of strong attribution. Defaults to 99.9.",
-                ).optional(),
-                colorMap: z.enum([
-                  "COLOR_MAP_UNSPECIFIED",
-                  "PINK_GREEN",
-                  "VIRIDIS",
-                  "RED",
-                  "GREEN",
-                  "RED_GREEN",
-                  "PINK_WHITE_GREEN",
-                ]).describe(
-                  "The color scheme used for the highlighted areas. Defaults to PINK_GREEN for Integrated Gradients attribution, which shows positive attributions in green and negative in pink. Defaults to VIRIDIS for XRAI attribution, which highlights the most influential regions in yellow and the least influential in blue.",
-                ).optional(),
-                overlayType: z.enum([
-                  "OVERLAY_TYPE_UNSPECIFIED",
-                  "NONE",
-                  "ORIGINAL",
-                  "GRAYSCALE",
-                  "MASK_BLACK",
-                ]).describe(
-                  "How the original image is displayed in the visualization. Adjusting the overlay can help increase visual clarity if the original image makes it difficult to view the visualization. Defaults to NONE.",
-                ).optional(),
-                polarity: z.enum([
-                  "POLARITY_UNSPECIFIED",
-                  "POSITIVE",
-                  "NEGATIVE",
-                  "BOTH",
-                ]).describe(
-                  "Whether to only highlight pixels with positive contributions, negative or both. Defaults to POSITIVE.",
-                ).optional(),
-                type: z.enum(["TYPE_UNSPECIFIED", "PIXELS", "OUTLINES"])
-                  .describe(
-                    "Type of the image visualization. Only applicable to Integrated Gradients attribution. OUTLINES shows regions of attribution, while PIXELS shows per-pixel attribution. Defaults to OUTLINES.",
-                  ).optional(),
-              }).describe("Visualization configurations for image explanation.")
-                .optional(),
-            }),
-          ).describe(
+          inputs: z.unknown().describe(
             "Required. Map from feature names to feature input metadata. Keys are the name of the features. Values are the specification of the feature. An empty InputMetadata is valid. It describes a text feature which has the name specified as the key in ExplanationMetadata.inputs. The baseline of the empty feature is chosen by Vertex AI. For Vertex AI-provided Tensorflow images, the key can be any friendly name of the feature. Once specified, featureAttributions are keyed by this key (if not grouped with another feature). For custom images, the key must match with the key in instance.",
           ).optional(),
-          latentSpaceSource: z.string().describe(
+          latentSpaceSource: z.unknown().describe(
             "Name of the source to generate embeddings for example based explanations.",
           ).optional(),
-          outputs: z.record(
-            z.string(),
-            z.object({
-              displayNameMappingKey: z.string().describe(
-                "Specify a field name in the prediction to look for the display name. Use this if the prediction contains the display names for the outputs. The display names in the prediction must have the same shape of the outputs, so that it can be located by Attribution.output_index for a specific output.",
-              ).optional(),
-              indexDisplayNameMapping: z.string().describe(
-                "Static mapping between the index and display name. Use this if the outputs are a deterministic n-dimensional array, e.g. a list of scores of all the classes in a pre-defined order for a multi-classification Model. It's not feasible if the outputs are non-deterministic, e.g. the Model produces top-k classes or sort the outputs by their values. The shape of the value must be an n-dimensional array of strings. The number of dimensions must match that of the outputs to be explained. The Attribution.output_display_name is populated by locating in the mapping with Attribution.output_index.",
-              ).optional(),
-              outputTensorName: z.string().describe(
-                "Name of the output tensor. Required and is only applicable to Vertex AI provided images for Tensorflow.",
-              ).optional(),
-            }),
-          ).describe(
+          outputs: z.unknown().describe(
             "Required. Map from output names to output metadata. For Vertex AI-provided Tensorflow images, keys can be any user defined string that consists of any UTF-8 characters. For custom images, keys are the name of the output field in the prediction to be explained. Currently only one key is allowed.",
           ).optional(),
         }).describe(
           "Metadata describing the Model's input and output for explanation.",
         ).optional(),
         parameters: z.object({
-          examples: z.object({
-            exampleGcsSource: z.object({
-              dataFormat: z.enum(["DATA_FORMAT_UNSPECIFIED", "JSONL"]).describe(
-                "The format in which instances are given, if not specified, assume it's JSONL format. Currently only JSONL format is supported.",
-              ).optional(),
-              gcsSource: z.object({
-                uris: z.array(z.string()).describe(
-                  "Required. Google Cloud Storage URI(-s) to the input file(s). May contain wildcards. For more information on wildcards, see https://cloud.google.com/storage/docs/wildcards.",
-                ).optional(),
-              }).describe(
-                "The Google Cloud Storage location for the input content.",
-              ).optional(),
-            }).describe("The Cloud Storage input instances.").optional(),
-            nearestNeighborSearchConfig: z.string().describe(
-              "The full configuration for the generated index, the semantics are the same as metadata and should match [NearestNeighborSearchConfig](https://cloud.google.com/vertex-ai/docs/explainable-ai/configuring-explanations-example-based#nearest-neighbor-search-config).",
-            ).optional(),
-            neighborCount: z.number().int().describe(
-              "The number of neighbors to return when querying for examples.",
-            ).optional(),
-            presets: z.object({
-              modality: z.enum([
-                "MODALITY_UNSPECIFIED",
-                "IMAGE",
-                "TEXT",
-                "TABULAR",
-              ]).describe(
-                "The modality of the uploaded model, which automatically configures the distance measurement and feature normalization for the underlying example index and queries. If your model does not precisely fit one of these types, it is okay to choose the closest type.",
-              ).optional(),
-              query: z.enum(["PRECISE", "FAST"]).describe(
-                "Preset option controlling parameters for speed-precision trade-off when querying for examples. If omitted, defaults to `PRECISE`.",
-              ).optional(),
-            }).describe("Preset configuration for example-based explanations")
-              .optional(),
-          }).describe(
+          examples: z.unknown().describe(
             "Example-based explainability that returns the nearest neighbors from the provided dataset.",
           ).optional(),
-          integratedGradientsAttribution: z.object({
-            blurBaselineConfig: z.object({
-              maxBlurSigma: z.number().describe(
-                "The standard deviation of the blur kernel for the blurred baseline. The same blurring parameter is used for both the height and the width dimension. If not set, the method defaults to the zero (i.e. black for images) baseline.",
-              ).optional(),
-            }).describe(
-              "Config for blur baseline. When enabled, a linear path from the maximally blurred image to the input image is created. Using a blurred baseline instead of zero (black image) is motivated by the BlurIG approach explained here: https://arxiv.org/abs/2004.03383",
-            ).optional(),
-            smoothGradConfig: z.object({
-              featureNoiseSigma: z.object({
-                noiseSigma: z.array(z.object({
-                  name: z.string().describe(
-                    "The name of the input feature for which noise sigma is provided. The features are defined in explanation metadata inputs.",
-                  ).optional(),
-                  sigma: z.number().describe(
-                    "This represents the standard deviation of the Gaussian kernel that will be used to add noise to the feature prior to computing gradients. Similar to noise_sigma but represents the noise added to the current feature. Defaults to 0.1.",
-                  ).optional(),
-                })).describe(
-                  "Noise sigma per feature. No noise is added to features that are not set.",
-                ).optional(),
-              }).describe(
-                "Noise sigma by features. Noise sigma represents the standard deviation of the gaussian kernel that will be used to add noise to interpolated inputs prior to computing gradients.",
-              ).optional(),
-              noiseSigma: z.number().describe(
-                "This is a single float value and will be used to add noise to all the features. Use this field when all features are normalized to have the same distribution: scale to range [0, 1], [-1, 1] or z-scoring, where features are normalized to have 0-mean and 1-variance. Learn more about [normalization](https://developers.google.com/machine-learning/data-prep/transform/normalization). For best results the recommended value is about 10% - 20% of the standard deviation of the input feature. Refer to section 3.2 of the SmoothGrad paper: https://arxiv.org/pdf/1706.03825.pdf. Defaults to 0.1. If the distribution is different per feature, set feature_noise_sigma instead for each feature.",
-              ).optional(),
-              noisySampleCount: z.number().int().describe(
-                "The number of gradient samples to use for approximation. The higher this number, the more accurate the gradient is, but the runtime complexity increases by this factor as well. Valid range of its value is [1, 50]. Defaults to 3.",
-              ).optional(),
-            }).describe(
-              "Config for SmoothGrad approximation of gradients. When enabled, the gradients are approximated by averaging the gradients from noisy samples in the vicinity of the inputs. Adding noise can help improve the computed gradients. Refer to this paper for more details: https://arxiv.org/pdf/1706.03825.pdf",
-            ).optional(),
-            stepCount: z.number().int().describe(
-              "Required. The number of steps for approximating the path integral. A good value to start is 50 and gradually increase until the sum to diff property is within the desired error range. Valid range of its value is [1, 100], inclusively.",
-            ).optional(),
-          }).describe(
+          integratedGradientsAttribution: z.unknown().describe(
             "An attribution method that computes the Aumann-Shapley value taking advantage of the model's fully differentiable structure. Refer to this paper for more details: https://arxiv.org/abs/1703.01365",
           ).optional(),
-          outputIndices: z.array(z.string()).describe(
+          outputIndices: z.unknown().describe(
             "If populated, only returns attributions that have output_index contained in output_indices. It must be an ndarray of integers, with the same shape of the output it's explaining. If not populated, returns attributions for top_k indices of outputs. If neither top_k nor output_indices is populated, returns the argmax index of the outputs. Only applicable to Models that predict multiple outputs (e,g, multi-class Models that predict multiple classes).",
           ).optional(),
-          sampledShapleyAttribution: z.object({
-            pathCount: z.number().int().describe(
-              "Required. The number of feature permutations to consider when approximating the Shapley values. Valid range of its value is [1, 50], inclusively.",
-            ).optional(),
-          }).describe(
+          sampledShapleyAttribution: z.unknown().describe(
             "An attribution method that approximates Shapley values for features that contribute to the label being predicted. A sampling strategy is used to approximate the value rather than considering all subsets of features.",
           ).optional(),
-          topK: z.number().int().describe(
+          topK: z.unknown().describe(
             "If populated, returns attributions for top K indices of outputs (defaults to 1). Only applies to Models that predicts more than one outputs (e,g, multi-class Models). When set to -1, returns explanations for all outputs.",
           ).optional(),
-          xraiAttribution: z.object({
-            blurBaselineConfig: z.object({
-              maxBlurSigma: z.number().describe(
-                "The standard deviation of the blur kernel for the blurred baseline. The same blurring parameter is used for both the height and the width dimension. If not set, the method defaults to the zero (i.e. black for images) baseline.",
-              ).optional(),
-            }).describe(
-              "Config for blur baseline. When enabled, a linear path from the maximally blurred image to the input image is created. Using a blurred baseline instead of zero (black image) is motivated by the BlurIG approach explained here: https://arxiv.org/abs/2004.03383",
-            ).optional(),
-            smoothGradConfig: z.object({
-              featureNoiseSigma: z.object({
-                noiseSigma: z.array(z.object({
-                  name: z.string().describe(
-                    "The name of the input feature for which noise sigma is provided. The features are defined in explanation metadata inputs.",
-                  ).optional(),
-                  sigma: z.number().describe(
-                    "This represents the standard deviation of the Gaussian kernel that will be used to add noise to the feature prior to computing gradients. Similar to noise_sigma but represents the noise added to the current feature. Defaults to 0.1.",
-                  ).optional(),
-                })).describe(
-                  "Noise sigma per feature. No noise is added to features that are not set.",
-                ).optional(),
-              }).describe(
-                "Noise sigma by features. Noise sigma represents the standard deviation of the gaussian kernel that will be used to add noise to interpolated inputs prior to computing gradients.",
-              ).optional(),
-              noiseSigma: z.number().describe(
-                "This is a single float value and will be used to add noise to all the features. Use this field when all features are normalized to have the same distribution: scale to range [0, 1], [-1, 1] or z-scoring, where features are normalized to have 0-mean and 1-variance. Learn more about [normalization](https://developers.google.com/machine-learning/data-prep/transform/normalization). For best results the recommended value is about 10% - 20% of the standard deviation of the input feature. Refer to section 3.2 of the SmoothGrad paper: https://arxiv.org/pdf/1706.03825.pdf. Defaults to 0.1. If the distribution is different per feature, set feature_noise_sigma instead for each feature.",
-              ).optional(),
-              noisySampleCount: z.number().int().describe(
-                "The number of gradient samples to use for approximation. The higher this number, the more accurate the gradient is, but the runtime complexity increases by this factor as well. Valid range of its value is [1, 50]. Defaults to 3.",
-              ).optional(),
-            }).describe(
-              "Config for SmoothGrad approximation of gradients. When enabled, the gradients are approximated by averaging the gradients from noisy samples in the vicinity of the inputs. Adding noise can help improve the computed gradients. Refer to this paper for more details: https://arxiv.org/pdf/1706.03825.pdf",
-            ).optional(),
-            stepCount: z.number().int().describe(
-              "Required. The number of steps for approximating the path integral. A good value to start is 50 and gradually increase until the sum to diff property is met within the desired error range. Valid range of its value is [1, 100], inclusively.",
-            ).optional(),
-          }).describe(
+          xraiAttribution: z.unknown().describe(
             "An explanation method that redistributes Integrated Gradients attributions to segmented regions, taking advantage of the model's fully differentiable structure. Refer to this paper for more details: https://arxiv.org/abs/1906.02825 Supported only by image Models.",
           ).optional(),
         }).describe(
@@ -1451,14 +901,14 @@ const InputsSchema = z.object({
       ).optional(),
       speculativeDecodingSpec: z.object({
         draftModelSpeculation: z.object({
-          draftModel: z.string().describe(
+          draftModel: z.unknown().describe(
             "Required. The resource name of the draft model.",
           ).optional(),
         }).describe(
           "Draft model speculation works by using the smaller model to generate candidate tokens for speculative decoding.",
         ).optional(),
         ngramSpeculation: z.object({
-          ngramSize: z.number().int().describe(
+          ngramSize: z.unknown().describe(
             "The number of last N input tokens used as ngram to search/match against the previous prompt sequence. This is equal to the N in N-Gram. The default value is 3 if not specified.",
           ).optional(),
         }).describe(
@@ -1600,7 +1050,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/aiplatform/endpoints",
-  version: "2026.04.03.3",
+  version: "2026.04.04.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -1624,6 +1074,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.3",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.04.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

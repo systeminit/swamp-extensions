@@ -142,29 +142,7 @@ const GlobalArgsSchema = z.object({
           "The province, territory, or regional state of the subject.",
         ).optional(),
         rdnSequence: z.array(z.object({
-          attributes: z.array(z.object({
-            objectId: z.object({
-              objectIdPath: z.array(z.number().int()).describe(
-                "Required. The parts of an OID path. The most significant parts of the path come first.",
-              ).optional(),
-            }).describe(
-              "An ObjectId specifies an object identifier (OID). These provide context and describe types in ASN.1 messages.",
-            ).optional(),
-            type: z.enum([
-              "ATTRIBUTE_TYPE_UNSPECIFIED",
-              "COMMON_NAME",
-              "COUNTRY_CODE",
-              "ORGANIZATION",
-              "ORGANIZATIONAL_UNIT",
-              "LOCALITY",
-              "PROVINCE",
-              "STREET_ADDRESS",
-              "POSTAL_CODE",
-            ]).describe("The attribute type of the attribute and value pair.")
-              .optional(),
-            value: z.string().describe("The value for the attribute type.")
-              .optional(),
-          })).describe(
+          attributes: z.unknown().describe(
             "Attributes describes the attribute value assertions in the RDN.",
           ).optional(),
         })).describe(
@@ -177,17 +155,13 @@ const GlobalArgsSchema = z.object({
       ).optional(),
       subjectAltName: z.object({
         customSans: z.array(z.object({
-          critical: z.boolean().describe(
+          critical: z.unknown().describe(
             "Optional. Indicates whether or not this extension is critical (i.e., if the client does not know how to handle this extension, the client should consider this to be an error).",
           ).optional(),
-          objectId: z.object({
-            objectIdPath: z.array(z.number().int()).describe(
-              "Required. The parts of an OID path. The most significant parts of the path come first.",
-            ).optional(),
-          }).describe(
+          objectId: z.unknown().describe(
             "An ObjectId specifies an object identifier (OID). These provide context and describe types in ASN.1 messages.",
           ).optional(),
-          value: z.string().describe(
+          value: z.unknown().describe(
             "Required. The value of this X.509 extension.",
           ).optional(),
         })).describe(
@@ -223,7 +197,7 @@ const GlobalArgsSchema = z.object({
           "Optional. Indicates whether or not this extension is critical (i.e., if the client does not know how to handle this extension, the client should consider this to be an error).",
         ).optional(),
         objectId: z.object({
-          objectIdPath: z.array(z.number().int()).describe(
+          objectIdPath: z.unknown().describe(
             "Required. The parts of an OID path. The most significant parts of the path come first.",
           ).optional(),
         }).describe(
@@ -301,7 +275,7 @@ const GlobalArgsSchema = z.object({
           "KeyUsage.ExtendedKeyUsageOptions has fields that correspond to certain common OIDs that could be specified as an extended key usage value.",
         ).optional(),
         unknownExtendedKeyUsages: z.array(z.object({
-          objectIdPath: z.array(z.number().int()).describe(
+          objectIdPath: z.unknown().describe(
             "Required. The parts of an OID path. The most significant parts of the path come first.",
           ).optional(),
         })).describe(
@@ -342,7 +316,7 @@ const GlobalArgsSchema = z.object({
         "Describes the X.509 name constraints extension, per https://tools.ietf.org/html/rfc5280#section-4.2.1.10",
       ).optional(),
       policyIds: z.array(z.object({
-        objectIdPath: z.array(z.number().int()).describe(
+        objectIdPath: z.array(z.unknown()).describe(
           "Required. The parts of an OID path. The most significant parts of the path come first.",
         ).optional(),
       })).describe(
@@ -455,29 +429,15 @@ const StateSchema = z.object({
         organizationalUnit: z.string(),
         postalCode: z.string(),
         province: z.string(),
-        rdnSequence: z.array(z.object({
-          attributes: z.array(z.object({
-            objectId: z.object({
-              objectIdPath: z.array(z.number()),
-            }),
-            type: z.string(),
-            value: z.string(),
-          })),
-        })),
+        rdnSequence: z.array(z.unknown()),
         streetAddress: z.string(),
       }),
       subjectAltName: z.object({
-        customSans: z.array(z.object({
-          critical: z.boolean(),
-          objectId: z.object({
-            objectIdPath: z.array(z.number()),
-          }),
-          value: z.string(),
-        })),
-        dnsNames: z.array(z.string()),
-        emailAddresses: z.array(z.string()),
-        ipAddresses: z.array(z.string()),
-        uris: z.array(z.string()),
+        customSans: z.array(z.unknown()),
+        dnsNames: z.array(z.unknown()),
+        emailAddresses: z.array(z.unknown()),
+        ipAddresses: z.array(z.unknown()),
+        uris: z.array(z.unknown()),
       }),
     }),
     subjectKeyId: z.object({
@@ -486,11 +446,9 @@ const StateSchema = z.object({
     tbsCertificateDigest: z.string(),
     x509Description: z.object({
       additionalExtensions: z.array(z.object({
-        critical: z.boolean(),
-        objectId: z.object({
-          objectIdPath: z.array(z.number()),
-        }),
-        value: z.string(),
+        critical: z.unknown(),
+        objectId: z.unknown(),
+        value: z.unknown(),
       })),
       aiaOcspServers: z.array(z.string()),
       caOptions: z.object({
@@ -499,41 +457,39 @@ const StateSchema = z.object({
       }),
       keyUsage: z.object({
         baseKeyUsage: z.object({
-          certSign: z.boolean(),
-          contentCommitment: z.boolean(),
-          crlSign: z.boolean(),
-          dataEncipherment: z.boolean(),
-          decipherOnly: z.boolean(),
-          digitalSignature: z.boolean(),
-          encipherOnly: z.boolean(),
-          keyAgreement: z.boolean(),
-          keyEncipherment: z.boolean(),
+          certSign: z.unknown(),
+          contentCommitment: z.unknown(),
+          crlSign: z.unknown(),
+          dataEncipherment: z.unknown(),
+          decipherOnly: z.unknown(),
+          digitalSignature: z.unknown(),
+          encipherOnly: z.unknown(),
+          keyAgreement: z.unknown(),
+          keyEncipherment: z.unknown(),
         }),
         extendedKeyUsage: z.object({
-          clientAuth: z.boolean(),
-          codeSigning: z.boolean(),
-          emailProtection: z.boolean(),
-          ocspSigning: z.boolean(),
-          serverAuth: z.boolean(),
-          timeStamping: z.boolean(),
+          clientAuth: z.unknown(),
+          codeSigning: z.unknown(),
+          emailProtection: z.unknown(),
+          ocspSigning: z.unknown(),
+          serverAuth: z.unknown(),
+          timeStamping: z.unknown(),
         }),
-        unknownExtendedKeyUsages: z.array(z.object({
-          objectIdPath: z.array(z.number()),
-        })),
+        unknownExtendedKeyUsages: z.array(z.unknown()),
       }),
       nameConstraints: z.object({
         critical: z.boolean(),
-        excludedDnsNames: z.array(z.string()),
-        excludedEmailAddresses: z.array(z.string()),
-        excludedIpRanges: z.array(z.string()),
-        excludedUris: z.array(z.string()),
-        permittedDnsNames: z.array(z.string()),
-        permittedEmailAddresses: z.array(z.string()),
-        permittedIpRanges: z.array(z.string()),
-        permittedUris: z.array(z.string()),
+        excludedDnsNames: z.array(z.unknown()),
+        excludedEmailAddresses: z.array(z.unknown()),
+        excludedIpRanges: z.array(z.unknown()),
+        excludedUris: z.array(z.unknown()),
+        permittedDnsNames: z.array(z.unknown()),
+        permittedEmailAddresses: z.array(z.unknown()),
+        permittedIpRanges: z.array(z.unknown()),
+        permittedUris: z.array(z.unknown()),
       }),
       policyIds: z.array(z.object({
-        objectIdPath: z.array(z.number()),
+        objectIdPath: z.unknown(),
       })),
     }),
   })).optional(),
@@ -552,23 +508,15 @@ const StateSchema = z.object({
         postalCode: z.string(),
         province: z.string(),
         rdnSequence: z.array(z.object({
-          attributes: z.array(z.object({
-            objectId: z.object({
-              objectIdPath: z.array(z.number()),
-            }),
-            type: z.string(),
-            value: z.string(),
-          })),
+          attributes: z.unknown(),
         })),
         streetAddress: z.string(),
       }),
       subjectAltName: z.object({
         customSans: z.array(z.object({
-          critical: z.boolean(),
-          objectId: z.object({
-            objectIdPath: z.array(z.number()),
-          }),
-          value: z.string(),
+          critical: z.unknown(),
+          objectId: z.unknown(),
+          value: z.unknown(),
         })),
         dnsNames: z.array(z.string()),
         emailAddresses: z.array(z.string()),
@@ -583,7 +531,7 @@ const StateSchema = z.object({
       additionalExtensions: z.array(z.object({
         critical: z.boolean(),
         objectId: z.object({
-          objectIdPath: z.array(z.number()),
+          objectIdPath: z.unknown(),
         }),
         value: z.string(),
       })),
@@ -613,7 +561,7 @@ const StateSchema = z.object({
           timeStamping: z.boolean(),
         }),
         unknownExtendedKeyUsages: z.array(z.object({
-          objectIdPath: z.array(z.number()),
+          objectIdPath: z.unknown(),
         })),
       }),
       nameConstraints: z.object({
@@ -628,7 +576,7 @@ const StateSchema = z.object({
         permittedUris: z.array(z.string()),
       }),
       policyIds: z.array(z.object({
-        objectIdPath: z.array(z.number()),
+        objectIdPath: z.array(z.unknown()),
       })),
     }),
   }).optional(),
@@ -702,29 +650,7 @@ const InputsSchema = z.object({
           "The province, territory, or regional state of the subject.",
         ).optional(),
         rdnSequence: z.array(z.object({
-          attributes: z.array(z.object({
-            objectId: z.object({
-              objectIdPath: z.array(z.number().int()).describe(
-                "Required. The parts of an OID path. The most significant parts of the path come first.",
-              ).optional(),
-            }).describe(
-              "An ObjectId specifies an object identifier (OID). These provide context and describe types in ASN.1 messages.",
-            ).optional(),
-            type: z.enum([
-              "ATTRIBUTE_TYPE_UNSPECIFIED",
-              "COMMON_NAME",
-              "COUNTRY_CODE",
-              "ORGANIZATION",
-              "ORGANIZATIONAL_UNIT",
-              "LOCALITY",
-              "PROVINCE",
-              "STREET_ADDRESS",
-              "POSTAL_CODE",
-            ]).describe("The attribute type of the attribute and value pair.")
-              .optional(),
-            value: z.string().describe("The value for the attribute type.")
-              .optional(),
-          })).describe(
+          attributes: z.unknown().describe(
             "Attributes describes the attribute value assertions in the RDN.",
           ).optional(),
         })).describe(
@@ -737,17 +663,13 @@ const InputsSchema = z.object({
       ).optional(),
       subjectAltName: z.object({
         customSans: z.array(z.object({
-          critical: z.boolean().describe(
+          critical: z.unknown().describe(
             "Optional. Indicates whether or not this extension is critical (i.e., if the client does not know how to handle this extension, the client should consider this to be an error).",
           ).optional(),
-          objectId: z.object({
-            objectIdPath: z.array(z.number().int()).describe(
-              "Required. The parts of an OID path. The most significant parts of the path come first.",
-            ).optional(),
-          }).describe(
+          objectId: z.unknown().describe(
             "An ObjectId specifies an object identifier (OID). These provide context and describe types in ASN.1 messages.",
           ).optional(),
-          value: z.string().describe(
+          value: z.unknown().describe(
             "Required. The value of this X.509 extension.",
           ).optional(),
         })).describe(
@@ -783,7 +705,7 @@ const InputsSchema = z.object({
           "Optional. Indicates whether or not this extension is critical (i.e., if the client does not know how to handle this extension, the client should consider this to be an error).",
         ).optional(),
         objectId: z.object({
-          objectIdPath: z.array(z.number().int()).describe(
+          objectIdPath: z.unknown().describe(
             "Required. The parts of an OID path. The most significant parts of the path come first.",
           ).optional(),
         }).describe(
@@ -861,7 +783,7 @@ const InputsSchema = z.object({
           "KeyUsage.ExtendedKeyUsageOptions has fields that correspond to certain common OIDs that could be specified as an extended key usage value.",
         ).optional(),
         unknownExtendedKeyUsages: z.array(z.object({
-          objectIdPath: z.array(z.number().int()).describe(
+          objectIdPath: z.unknown().describe(
             "Required. The parts of an OID path. The most significant parts of the path come first.",
           ).optional(),
         })).describe(
@@ -902,7 +824,7 @@ const InputsSchema = z.object({
         "Describes the X.509 name constraints extension, per https://tools.ietf.org/html/rfc5280#section-4.2.1.10",
       ).optional(),
       policyIds: z.array(z.object({
-        objectIdPath: z.array(z.number().int()).describe(
+        objectIdPath: z.array(z.unknown()).describe(
           "Required. The parts of an OID path. The most significant parts of the path come first.",
         ).optional(),
       })).describe(
@@ -986,7 +908,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/privateca/capools-certificateauthorities",
-  version: "2026.04.03.3",
+  version: "2026.04.04.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -1010,6 +932,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.3",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.04.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

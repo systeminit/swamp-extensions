@@ -297,44 +297,9 @@ const GlobalArgsSchema = z.object({
         "Required. The Data Store where the boosting configuration is applied. Full resource name of DataStore, such as projects/{project}/locations/{location}/collections/{collection}/dataStores/{dataStore}.",
       ).optional(),
       spec: z.array(z.object({
-        conditionBoostSpecs: z.array(z.object({
-          boost: z.number().describe(
-            "Optional. Strength of the boost, which should be in [-1, 1]. Negative boost means demotion. Default is 0.0. Setting to 1.0 gives the suggestions a big promotion. However, it does not necessarily mean that the top result will be a boosted suggestion. Setting to -1.0 gives the suggestions a big demotion. However, other suggestions that are relevant might still be shown. Setting to 0.0 means no boost applied. The boosting condition is ignored.",
-          ).optional(),
-          boostControlSpec: z.object({
-            attributeType: z.enum([
-              "ATTRIBUTE_TYPE_UNSPECIFIED",
-              "NUMERICAL",
-              "FRESHNESS",
-            ]).describe(
-              "Optional. The attribute type to be used to determine the boost amount. The attribute value can be derived from the field value of the specified field_name. In the case of numerical it is straightforward i.e. attribute_value = numerical_field_value. In the case of freshness however, attribute_value = (time.now() - datetime_field_value).",
-            ).optional(),
-            controlPoints: z.array(z.object({
-              attributeValue: z.string().describe(
-                "Optional. Can be one of: 1. The numerical field value. 2. The duration spec for freshness: The value must be formatted as an XSD `dayTimeDuration` value (a restricted subset of an ISO 8601 duration value). The pattern for this is: `nDnM]`.",
-              ).optional(),
-              boostAmount: z.number().describe(
-                "Optional. The value between -1 to 1 by which to boost the score if the attribute_value evaluates to the value specified above.",
-              ).optional(),
-            })).describe(
-              "Optional. The control points used to define the curve. The monotonic function (defined through the interpolation_type above) passes through the control points listed here.",
-            ).optional(),
-            fieldName: z.string().describe(
-              "Optional. The name of the field whose value will be used to determine the boost amount.",
-            ).optional(),
-            interpolationType: z.enum([
-              "INTERPOLATION_TYPE_UNSPECIFIED",
-              "LINEAR",
-            ]).describe(
-              "Optional. The interpolation type to be applied to connect the control points listed below.",
-            ).optional(),
-          }).describe(
-            "Specification for custom ranking based on customer specified attribute value. It provides more controls for customized ranking than the simple (condition, boost) combination above.",
-          ).optional(),
-          condition: z.string().describe(
-            'Required. An expression which specifies a boost condition. The syntax is the same as filter expression syntax. Currently, the only supported condition is a list of BCP-47 lang codes. Example: To boost suggestions in languages en or fr: (lang_code: ANY("en", "fr"))',
-          ).optional(),
-        })).describe("Required. A list of boosting specifications.").optional(),
+        conditionBoostSpecs: z.unknown().describe(
+          "Required. A list of boosting specifications.",
+        ).optional(),
       })).describe("Required. A list of boosting specifications.").optional(),
     })).describe("Optional. Boost specification to boost certain documents.")
       .optional(),
@@ -388,41 +353,22 @@ const GlobalArgsSchema = z.object({
     engineSource: z.object({
       dataStoreSources: z.array(z.object({
         dataStore: z.object({
-          connectorConfig: z.object({
-            collection: z.string().describe(
-              "Resource name of the collection the data store belongs to.",
-            ).optional(),
-            collectionDisplayName: z.string().describe(
-              "Display name of the collection the data store belongs to.",
-            ).optional(),
-            dataSource: z.string().describe(
-              "The name of the data source. Example: `salesforce`, `jira`, `confluence`, `bigquery`.",
-            ).optional(),
-          }).describe("The connector config for the data store connection.")
-            .optional(),
-          createTime: z.string().describe(
+          connectorConfig: z.unknown().describe(
+            "The connector config for the data store connection.",
+          ).optional(),
+          createTime: z.unknown().describe(
             "Output only. Timestamp when the data store was created.",
           ).optional(),
-          displayName: z.string().describe(
+          displayName: z.unknown().describe(
             "Output only. The display name of the data store.",
           ).optional(),
-          documentProcessingMode: z.enum([
-            "DOCUMENT_PROCESSING_MODE_UNSPECIFIED",
-            "DOCUMENTS",
-            "CHUNKS",
-          ]).describe(
+          documentProcessingMode: z.unknown().describe(
             "Output only. The document processing mode for the data store connection. Only set for PUBLIC_WEB and UNSTRUCTURED data stores.",
           ).optional(),
-          name: z.string().describe(
+          name: z.unknown().describe(
             "Required. Full resource name of the DataStore. Format: `projects/{project}/locations/{location}/collections/{collection}/dataStores/{dataStore}`",
           ).optional(),
-          type: z.enum([
-            "DATA_STORE_TYPE_UNSPECIFIED",
-            "PUBLIC_WEB",
-            "UNSTRUCTURED",
-            "FAQ",
-            "CONNECTOR",
-          ]).describe(
+          type: z.unknown().describe(
             "Output only. The type of the data store. This field is readonly and populated by the server.",
           ).optional(),
         }).describe("A DataStore resource in Vertex AI Search.").optional(),
@@ -462,10 +408,10 @@ const GlobalArgsSchema = z.object({
           "Optional. Whether the rewriter is disabled.",
         ).optional(),
         modelSettings: z.object({
-          model: z.string().describe(
+          model: z.unknown().describe(
             "Optional. The LLM model that the agent should use. If not set, the agent will inherit the model from its parent agent.",
           ).optional(),
-          temperature: z.number().describe(
+          temperature: z.unknown().describe(
             "Optional. If set, this temperature will be used for the LLM model. Temperature controls the randomness of the model's responses. Lower temperatures produce responses that are more predictable. Higher temperatures produce responses that are more creative.",
           ).optional(),
         }).describe(
@@ -480,10 +426,10 @@ const GlobalArgsSchema = z.object({
           "Optional. Whether summarization is disabled.",
         ).optional(),
         modelSettings: z.object({
-          model: z.string().describe(
+          model: z.unknown().describe(
             "Optional. The LLM model that the agent should use. If not set, the agent will inherit the model from its parent agent.",
           ).optional(),
-          temperature: z.number().describe(
+          temperature: z.unknown().describe(
             "Optional. If set, this temperature will be used for the LLM model. Temperature controls the randomness of the model's responses. Lower temperatures produce responses that are more predictable. Higher temperatures produce responses that are more creative.",
           ).optional(),
         }).describe(
@@ -1074,19 +1020,7 @@ const StateSchema = z.object({
     boostSpecs: z.array(z.object({
       dataStores: z.array(z.string()),
       spec: z.array(z.object({
-        conditionBoostSpecs: z.array(z.object({
-          boost: z.number(),
-          boostControlSpec: z.object({
-            attributeType: z.string(),
-            controlPoints: z.array(z.object({
-              attributeValue: z.string(),
-              boostAmount: z.number(),
-            })),
-            fieldName: z.string(),
-            interpolationType: z.string(),
-          }),
-          condition: z.string(),
-        })),
+        conditionBoostSpecs: z.unknown(),
       })),
     })),
     dataStoreSource: z.object({
@@ -1108,16 +1042,12 @@ const StateSchema = z.object({
     engineSource: z.object({
       dataStoreSources: z.array(z.object({
         dataStore: z.object({
-          connectorConfig: z.object({
-            collection: z.string(),
-            collectionDisplayName: z.string(),
-            dataSource: z.string(),
-          }),
-          createTime: z.string(),
-          displayName: z.string(),
-          documentProcessingMode: z.string(),
-          name: z.string(),
-          type: z.string(),
+          connectorConfig: z.unknown(),
+          createTime: z.unknown(),
+          displayName: z.unknown(),
+          documentProcessingMode: z.unknown(),
+          name: z.unknown(),
+          type: z.unknown(),
         }),
         filter: z.string(),
       })),
@@ -1134,16 +1064,16 @@ const StateSchema = z.object({
       rewriterConfig: z.object({
         disabled: z.boolean(),
         modelSettings: z.object({
-          model: z.string(),
-          temperature: z.number(),
+          model: z.unknown(),
+          temperature: z.unknown(),
         }),
         prompt: z.string(),
       }),
       summarizationConfig: z.object({
         disabled: z.boolean(),
         modelSettings: z.object({
-          model: z.string(),
-          temperature: z.number(),
+          model: z.unknown(),
+          temperature: z.unknown(),
         }),
         prompt: z.string(),
       }),
@@ -1552,44 +1482,9 @@ const InputsSchema = z.object({
         "Required. The Data Store where the boosting configuration is applied. Full resource name of DataStore, such as projects/{project}/locations/{location}/collections/{collection}/dataStores/{dataStore}.",
       ).optional(),
       spec: z.array(z.object({
-        conditionBoostSpecs: z.array(z.object({
-          boost: z.number().describe(
-            "Optional. Strength of the boost, which should be in [-1, 1]. Negative boost means demotion. Default is 0.0. Setting to 1.0 gives the suggestions a big promotion. However, it does not necessarily mean that the top result will be a boosted suggestion. Setting to -1.0 gives the suggestions a big demotion. However, other suggestions that are relevant might still be shown. Setting to 0.0 means no boost applied. The boosting condition is ignored.",
-          ).optional(),
-          boostControlSpec: z.object({
-            attributeType: z.enum([
-              "ATTRIBUTE_TYPE_UNSPECIFIED",
-              "NUMERICAL",
-              "FRESHNESS",
-            ]).describe(
-              "Optional. The attribute type to be used to determine the boost amount. The attribute value can be derived from the field value of the specified field_name. In the case of numerical it is straightforward i.e. attribute_value = numerical_field_value. In the case of freshness however, attribute_value = (time.now() - datetime_field_value).",
-            ).optional(),
-            controlPoints: z.array(z.object({
-              attributeValue: z.string().describe(
-                "Optional. Can be one of: 1. The numerical field value. 2. The duration spec for freshness: The value must be formatted as an XSD `dayTimeDuration` value (a restricted subset of an ISO 8601 duration value). The pattern for this is: `nDnM]`.",
-              ).optional(),
-              boostAmount: z.number().describe(
-                "Optional. The value between -1 to 1 by which to boost the score if the attribute_value evaluates to the value specified above.",
-              ).optional(),
-            })).describe(
-              "Optional. The control points used to define the curve. The monotonic function (defined through the interpolation_type above) passes through the control points listed here.",
-            ).optional(),
-            fieldName: z.string().describe(
-              "Optional. The name of the field whose value will be used to determine the boost amount.",
-            ).optional(),
-            interpolationType: z.enum([
-              "INTERPOLATION_TYPE_UNSPECIFIED",
-              "LINEAR",
-            ]).describe(
-              "Optional. The interpolation type to be applied to connect the control points listed below.",
-            ).optional(),
-          }).describe(
-            "Specification for custom ranking based on customer specified attribute value. It provides more controls for customized ranking than the simple (condition, boost) combination above.",
-          ).optional(),
-          condition: z.string().describe(
-            'Required. An expression which specifies a boost condition. The syntax is the same as filter expression syntax. Currently, the only supported condition is a list of BCP-47 lang codes. Example: To boost suggestions in languages en or fr: (lang_code: ANY("en", "fr"))',
-          ).optional(),
-        })).describe("Required. A list of boosting specifications.").optional(),
+        conditionBoostSpecs: z.unknown().describe(
+          "Required. A list of boosting specifications.",
+        ).optional(),
       })).describe("Required. A list of boosting specifications.").optional(),
     })).describe("Optional. Boost specification to boost certain documents.")
       .optional(),
@@ -1643,41 +1538,22 @@ const InputsSchema = z.object({
     engineSource: z.object({
       dataStoreSources: z.array(z.object({
         dataStore: z.object({
-          connectorConfig: z.object({
-            collection: z.string().describe(
-              "Resource name of the collection the data store belongs to.",
-            ).optional(),
-            collectionDisplayName: z.string().describe(
-              "Display name of the collection the data store belongs to.",
-            ).optional(),
-            dataSource: z.string().describe(
-              "The name of the data source. Example: `salesforce`, `jira`, `confluence`, `bigquery`.",
-            ).optional(),
-          }).describe("The connector config for the data store connection.")
-            .optional(),
-          createTime: z.string().describe(
+          connectorConfig: z.unknown().describe(
+            "The connector config for the data store connection.",
+          ).optional(),
+          createTime: z.unknown().describe(
             "Output only. Timestamp when the data store was created.",
           ).optional(),
-          displayName: z.string().describe(
+          displayName: z.unknown().describe(
             "Output only. The display name of the data store.",
           ).optional(),
-          documentProcessingMode: z.enum([
-            "DOCUMENT_PROCESSING_MODE_UNSPECIFIED",
-            "DOCUMENTS",
-            "CHUNKS",
-          ]).describe(
+          documentProcessingMode: z.unknown().describe(
             "Output only. The document processing mode for the data store connection. Only set for PUBLIC_WEB and UNSTRUCTURED data stores.",
           ).optional(),
-          name: z.string().describe(
+          name: z.unknown().describe(
             "Required. Full resource name of the DataStore. Format: `projects/{project}/locations/{location}/collections/{collection}/dataStores/{dataStore}`",
           ).optional(),
-          type: z.enum([
-            "DATA_STORE_TYPE_UNSPECIFIED",
-            "PUBLIC_WEB",
-            "UNSTRUCTURED",
-            "FAQ",
-            "CONNECTOR",
-          ]).describe(
+          type: z.unknown().describe(
             "Output only. The type of the data store. This field is readonly and populated by the server.",
           ).optional(),
         }).describe("A DataStore resource in Vertex AI Search.").optional(),
@@ -1717,10 +1593,10 @@ const InputsSchema = z.object({
           "Optional. Whether the rewriter is disabled.",
         ).optional(),
         modelSettings: z.object({
-          model: z.string().describe(
+          model: z.unknown().describe(
             "Optional. The LLM model that the agent should use. If not set, the agent will inherit the model from its parent agent.",
           ).optional(),
-          temperature: z.number().describe(
+          temperature: z.unknown().describe(
             "Optional. If set, this temperature will be used for the LLM model. Temperature controls the randomness of the model's responses. Lower temperatures produce responses that are more predictable. Higher temperatures produce responses that are more creative.",
           ).optional(),
         }).describe(
@@ -1735,10 +1611,10 @@ const InputsSchema = z.object({
           "Optional. Whether summarization is disabled.",
         ).optional(),
         modelSettings: z.object({
-          model: z.string().describe(
+          model: z.unknown().describe(
             "Optional. The LLM model that the agent should use. If not set, the agent will inherit the model from its parent agent.",
           ).optional(),
-          temperature: z.number().describe(
+          temperature: z.unknown().describe(
             "Optional. If set, this temperature will be used for the LLM model. Temperature controls the randomness of the model's responses. Lower temperatures produce responses that are more predictable. Higher temperatures produce responses that are more creative.",
           ).optional(),
         }).describe(
@@ -2250,7 +2126,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/ces/apps-tools",
-  version: "2026.04.03.3",
+  version: "2026.04.04.1",
   upgrades: [
     {
       toVersion: "2026.04.01.2",
@@ -2274,6 +2150,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.3",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.04.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

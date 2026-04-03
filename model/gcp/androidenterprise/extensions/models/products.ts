@@ -51,7 +51,7 @@ const StateSchema = z.object({
         type: z.string(),
         valueBool: z.boolean(),
         valueInteger: z.number(),
-        valueMultiselect: z.array(z.string()),
+        valueMultiselect: z.array(z.unknown()),
         valueString: z.string(),
       }),
       description: z.string(),
@@ -114,7 +114,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/androidenterprise/products",
-  version: "2026.04.03.3",
+  version: "2026.04.04.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -138,6 +138,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.3",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.04.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

@@ -115,9 +115,9 @@ const StateSchema = z.object({
         apiKeyString: z.string(),
       }),
       channels: z.array(z.object({
-        channelId: z.string(),
-        endTime: z.string(),
-        startTime: z.string(),
+        channelId: z.unknown(),
+        endTime: z.unknown(),
+        startTime: z.unknown(),
       })),
     })),
   }).optional(),
@@ -136,7 +136,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/aiplatform/ragcorpora-ragfiles",
-  version: "2026.04.03.3",
+  version: "2026.04.04.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -160,6 +160,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.3",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.04.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

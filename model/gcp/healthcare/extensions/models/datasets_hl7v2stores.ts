@@ -107,48 +107,10 @@ const GlobalArgsSchema = z.object({
         "Optional. Flag to ignore all min_occurs restrictions in the schema. This means that incoming messages can omit any group, segment, field, component, or subcomponent.",
       ).optional(),
       schemas: z.array(z.object({
-        messageSchemaConfigs: z.record(
-          z.string(),
-          z.object({
-            choice: z.boolean().describe(
-              "True indicates that this is a choice group, meaning that only one of its segments can exist in a given message.",
-            ).optional(),
-            maxOccurs: z.number().int().describe(
-              "The maximum number of times this group can be repeated. 0 or -1 means unbounded.",
-            ).optional(),
-            members: z.array(z.object({
-              group: z.string().describe("Circular reference to SchemaGroup")
-                .optional(),
-              segment: z.object({
-                maxOccurs: z.number().int().describe(
-                  "The maximum number of times this segment can be present in this group. 0 or -1 means unbounded.",
-                ).optional(),
-                minOccurs: z.number().int().describe(
-                  "The minimum number of times this segment can be present in this group.",
-                ).optional(),
-                type: z.string().describe(
-                  'The Segment type. For example, "PID".',
-                ).optional(),
-              }).describe("An HL7v2 Segment.").optional(),
-            })).describe("Nested groups and/or segments.").optional(),
-            minOccurs: z.number().int().describe(
-              "The minimum number of times this group must be present/repeated.",
-            ).optional(),
-            name: z.string().describe(
-              'The name of this group. For example, "ORDER_DETAIL".',
-            ).optional(),
-          }),
-        ).describe(
+        messageSchemaConfigs: z.record(z.string(), z.unknown()).describe(
           "Map from each HL7v2 message type and trigger event pair, such as ADT_A04, to its schema configuration root group.",
         ).optional(),
-        version: z.array(z.object({
-          mshField: z.string().describe(
-            'The field to extract from the MSH segment. For example, "3.1" or "18[1].1".',
-          ).optional(),
-          value: z.string().describe(
-            'The value to match with the field. For example, "My Application Name" or "2.3".',
-          ).optional(),
-        })).describe(
+        version: z.array(z.unknown()).describe(
           "Each VersionSource is tested and only if they all match is the schema used for the message.",
         ).optional(),
       })).describe(
@@ -162,45 +124,9 @@ const GlobalArgsSchema = z.object({
         "Optional. Determines how messages that fail to parse are handled.",
       ).optional(),
       types: z.array(z.object({
-        type: z.array(z.object({
-          fields: z.array(z.object({
-            maxOccurs: z.number().int().describe(
-              "The maximum number of times this field can be repeated. 0 or -1 means unbounded.",
-            ).optional(),
-            minOccurs: z.number().int().describe(
-              "The minimum number of times this field must be present/repeated.",
-            ).optional(),
-            name: z.string().describe(
-              'The name of the field. For example, "PID-1" or just "1".',
-            ).optional(),
-            table: z.string().describe(
-              'The HL7v2 table this field refers to. For example, PID-15 (Patient\'s Primary Language) usually refers to table "0296".',
-            ).optional(),
-            type: z.string().describe(
-              "The type of this field. A Type with this name must be defined in an Hl7TypesConfig.",
-            ).optional(),
-          })).describe("The (sub) fields this type has (if not primitive).")
-            .optional(),
-          name: z.string().describe(
-            'The name of this type. This would be the segment or datatype name. For example, "PID" or "XPN".',
-          ).optional(),
-          primitive: z.enum([
-            "PRIMITIVE_UNSPECIFIED",
-            "STRING",
-            "VARIES",
-            "UNESCAPED_STRING",
-          ]).describe(
-            "If this is a primitive type then this field is the type of the primitive For example, STRING. Leave unspecified for composite types.",
-          ).optional(),
-        })).describe("The HL7v2 type definitions.").optional(),
-        version: z.array(z.object({
-          mshField: z.string().describe(
-            'The field to extract from the MSH segment. For example, "3.1" or "18[1].1".',
-          ).optional(),
-          value: z.string().describe(
-            'The value to match with the field. For example, "My Application Name" or "2.3".',
-          ).optional(),
-        })).describe(
+        type: z.array(z.unknown()).describe("The HL7v2 type definitions.")
+          .optional(),
+        version: z.array(z.unknown()).describe(
           "The version selectors that this config applies to. A message must match ALL version sources to apply.",
         ).optional(),
       })).describe(
@@ -250,28 +176,12 @@ const StateSchema = z.object({
       ignoreMinOccurs: z.boolean(),
       schemas: z.array(z.object({
         messageSchemaConfigs: z.record(z.string(), z.unknown()),
-        version: z.array(z.object({
-          mshField: z.string(),
-          value: z.string(),
-        })),
+        version: z.array(z.unknown()),
       })),
       schematizedParsingType: z.string(),
       types: z.array(z.object({
-        type: z.array(z.object({
-          fields: z.array(z.object({
-            maxOccurs: z.number(),
-            minOccurs: z.number(),
-            name: z.string(),
-            table: z.string(),
-            type: z.string(),
-          })),
-          name: z.string(),
-          primitive: z.string(),
-        })),
-        version: z.array(z.object({
-          mshField: z.string(),
-          value: z.string(),
-        })),
+        type: z.array(z.unknown()),
+        version: z.array(z.unknown()),
       })),
       unexpectedSegmentHandling: z.string(),
     }),
@@ -309,48 +219,10 @@ const InputsSchema = z.object({
         "Optional. Flag to ignore all min_occurs restrictions in the schema. This means that incoming messages can omit any group, segment, field, component, or subcomponent.",
       ).optional(),
       schemas: z.array(z.object({
-        messageSchemaConfigs: z.record(
-          z.string(),
-          z.object({
-            choice: z.boolean().describe(
-              "True indicates that this is a choice group, meaning that only one of its segments can exist in a given message.",
-            ).optional(),
-            maxOccurs: z.number().int().describe(
-              "The maximum number of times this group can be repeated. 0 or -1 means unbounded.",
-            ).optional(),
-            members: z.array(z.object({
-              group: z.string().describe("Circular reference to SchemaGroup")
-                .optional(),
-              segment: z.object({
-                maxOccurs: z.number().int().describe(
-                  "The maximum number of times this segment can be present in this group. 0 or -1 means unbounded.",
-                ).optional(),
-                minOccurs: z.number().int().describe(
-                  "The minimum number of times this segment can be present in this group.",
-                ).optional(),
-                type: z.string().describe(
-                  'The Segment type. For example, "PID".',
-                ).optional(),
-              }).describe("An HL7v2 Segment.").optional(),
-            })).describe("Nested groups and/or segments.").optional(),
-            minOccurs: z.number().int().describe(
-              "The minimum number of times this group must be present/repeated.",
-            ).optional(),
-            name: z.string().describe(
-              'The name of this group. For example, "ORDER_DETAIL".',
-            ).optional(),
-          }),
-        ).describe(
+        messageSchemaConfigs: z.record(z.string(), z.unknown()).describe(
           "Map from each HL7v2 message type and trigger event pair, such as ADT_A04, to its schema configuration root group.",
         ).optional(),
-        version: z.array(z.object({
-          mshField: z.string().describe(
-            'The field to extract from the MSH segment. For example, "3.1" or "18[1].1".',
-          ).optional(),
-          value: z.string().describe(
-            'The value to match with the field. For example, "My Application Name" or "2.3".',
-          ).optional(),
-        })).describe(
+        version: z.array(z.unknown()).describe(
           "Each VersionSource is tested and only if they all match is the schema used for the message.",
         ).optional(),
       })).describe(
@@ -364,45 +236,9 @@ const InputsSchema = z.object({
         "Optional. Determines how messages that fail to parse are handled.",
       ).optional(),
       types: z.array(z.object({
-        type: z.array(z.object({
-          fields: z.array(z.object({
-            maxOccurs: z.number().int().describe(
-              "The maximum number of times this field can be repeated. 0 or -1 means unbounded.",
-            ).optional(),
-            minOccurs: z.number().int().describe(
-              "The minimum number of times this field must be present/repeated.",
-            ).optional(),
-            name: z.string().describe(
-              'The name of the field. For example, "PID-1" or just "1".',
-            ).optional(),
-            table: z.string().describe(
-              'The HL7v2 table this field refers to. For example, PID-15 (Patient\'s Primary Language) usually refers to table "0296".',
-            ).optional(),
-            type: z.string().describe(
-              "The type of this field. A Type with this name must be defined in an Hl7TypesConfig.",
-            ).optional(),
-          })).describe("The (sub) fields this type has (if not primitive).")
-            .optional(),
-          name: z.string().describe(
-            'The name of this type. This would be the segment or datatype name. For example, "PID" or "XPN".',
-          ).optional(),
-          primitive: z.enum([
-            "PRIMITIVE_UNSPECIFIED",
-            "STRING",
-            "VARIES",
-            "UNESCAPED_STRING",
-          ]).describe(
-            "If this is a primitive type then this field is the type of the primitive For example, STRING. Leave unspecified for composite types.",
-          ).optional(),
-        })).describe("The HL7v2 type definitions.").optional(),
-        version: z.array(z.object({
-          mshField: z.string().describe(
-            'The field to extract from the MSH segment. For example, "3.1" or "18[1].1".',
-          ).optional(),
-          value: z.string().describe(
-            'The value to match with the field. For example, "My Application Name" or "2.3".',
-          ).optional(),
-        })).describe(
+        type: z.array(z.unknown()).describe("The HL7v2 type definitions.")
+          .optional(),
+        version: z.array(z.unknown()).describe(
           "The version selectors that this config applies to. A message must match ALL version sources to apply.",
         ).optional(),
       })).describe(
@@ -441,7 +277,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/healthcare/datasets-hl7v2stores",
-  version: "2026.04.03.3",
+  version: "2026.04.04.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -465,6 +301,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.3",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.04.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

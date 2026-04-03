@@ -191,10 +191,10 @@ const GlobalArgsSchema = z.object({
           "Optional. A single IPv4 or IPv6 address used as the destination IP address for ingress packets that match on a VLAN tag, but do not match a more specific inner VLAN tag. Unset field (null-value) indicates both VLAN tags are required to be mapped. Otherwise, defaultApplianceIpAddress is used.",
         ).optional(),
         innerVlanToApplianceMappings: z.array(z.object({
-          innerApplianceIpAddress: z.string().describe(
+          innerApplianceIpAddress: z.unknown().describe(
             "Required in this object. A single IPv4 or IPv6 address used as the destination IP address for ingress packets that match on both VLAN tags.",
           ).optional(),
-          innerVlanTags: z.array(z.string()).describe(
+          innerVlanTags: z.unknown().describe(
             'Required in this object. Used to match the inner VLAN tag on the packet. Each entry can be a single number or a range of numbers in the range of 1 to 4094, e.g., ["1", "4001-4094"] is valid. Non-empty and Non-overlapping VLAN tag ranges are enforced, and violating operations will be rejected. The inner VLAN tags must have an ethertype value of 0x8100.',
           ).optional(),
         })).describe(
@@ -424,10 +424,10 @@ const InputsSchema = z.object({
           "Optional. A single IPv4 or IPv6 address used as the destination IP address for ingress packets that match on a VLAN tag, but do not match a more specific inner VLAN tag. Unset field (null-value) indicates both VLAN tags are required to be mapped. Otherwise, defaultApplianceIpAddress is used.",
         ).optional(),
         innerVlanToApplianceMappings: z.array(z.object({
-          innerApplianceIpAddress: z.string().describe(
+          innerApplianceIpAddress: z.unknown().describe(
             "Required in this object. A single IPv4 or IPv6 address used as the destination IP address for ingress packets that match on both VLAN tags.",
           ).optional(),
-          innerVlanTags: z.array(z.string()).describe(
+          innerVlanTags: z.unknown().describe(
             'Required in this object. Used to match the inner VLAN tag on the packet. Each entry can be a single number or a range of numbers in the range of 1 to 4094, e.g., ["1", "4001-4094"] is valid. Non-empty and Non-overlapping VLAN tag ranges are enforced, and violating operations will be rejected. The inner VLAN tags must have an ethertype value of 0x8100.',
           ).optional(),
         })).describe(
@@ -519,7 +519,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/compute/interconnectattachments",
-  version: "2026.04.03.3",
+  version: "2026.04.04.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -543,6 +543,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.3",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.04.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

@@ -105,28 +105,11 @@ const GlobalArgsSchema = z.object({
     lastUpdateTime: z.string().optional(),
     versionMetrics: z.array(z.object({
       metrics: z.array(z.object({
-        confidenceInterval: z.object({
-          confidenceLevel: z.number().optional(),
-          lowerBound: z.number().optional(),
-          ratio: z.number().optional(),
-          upperBound: z.number().optional(),
-        }).optional(),
-        count: z.number().optional(),
-        countType: z.enum([
-          "COUNT_TYPE_UNSPECIFIED",
-          "TOTAL_NO_MATCH_COUNT",
-          "TOTAL_TURN_COUNT",
-          "AVERAGE_TURN_COUNT",
-        ]).optional(),
-        ratio: z.number().optional(),
-        type: z.enum([
-          "METRIC_UNSPECIFIED",
-          "CONTAINED_SESSION_NO_CALLBACK_RATE",
-          "LIVE_AGENT_HANDOFF_RATE",
-          "CALLBACK_SESSION_RATE",
-          "ABANDONED_SESSION_RATE",
-          "SESSION_END_RATE",
-        ]).optional(),
+        confidenceInterval: z.unknown().optional(),
+        count: z.unknown().optional(),
+        countType: z.unknown().optional(),
+        ratio: z.unknown().optional(),
+        type: z.unknown().optional(),
       })).optional(),
       sessionCount: z.number().int().optional(),
       version: z.string().optional(),
@@ -159,9 +142,9 @@ const GlobalArgsSchema = z.object({
     updateTime: z.string().optional(),
     versionVariants: z.object({
       variants: z.array(z.object({
-        isControlGroup: z.boolean().optional(),
-        trafficAllocation: z.number().optional(),
-        version: z.string().optional(),
+        isControlGroup: z.unknown().optional(),
+        trafficAllocation: z.unknown().optional(),
+        version: z.unknown().optional(),
       })).optional(),
     }).optional(),
   })).optional(),
@@ -192,16 +175,11 @@ const StateSchema = z.object({
     lastUpdateTime: z.string(),
     versionMetrics: z.array(z.object({
       metrics: z.array(z.object({
-        confidenceInterval: z.object({
-          confidenceLevel: z.number(),
-          lowerBound: z.number(),
-          ratio: z.number(),
-          upperBound: z.number(),
-        }),
-        count: z.number(),
-        countType: z.string(),
-        ratio: z.number(),
-        type: z.string(),
+        confidenceInterval: z.unknown(),
+        count: z.unknown(),
+        countType: z.unknown(),
+        ratio: z.unknown(),
+        type: z.unknown(),
       })),
       sessionCount: z.number(),
       version: z.string(),
@@ -228,9 +206,9 @@ const StateSchema = z.object({
     updateTime: z.string(),
     versionVariants: z.object({
       variants: z.array(z.object({
-        isControlGroup: z.boolean(),
-        trafficAllocation: z.number(),
-        version: z.string(),
+        isControlGroup: z.unknown(),
+        trafficAllocation: z.unknown(),
+        version: z.unknown(),
       })),
     }),
   })).optional(),
@@ -260,28 +238,11 @@ const InputsSchema = z.object({
     lastUpdateTime: z.string().optional(),
     versionMetrics: z.array(z.object({
       metrics: z.array(z.object({
-        confidenceInterval: z.object({
-          confidenceLevel: z.number().optional(),
-          lowerBound: z.number().optional(),
-          ratio: z.number().optional(),
-          upperBound: z.number().optional(),
-        }).optional(),
-        count: z.number().optional(),
-        countType: z.enum([
-          "COUNT_TYPE_UNSPECIFIED",
-          "TOTAL_NO_MATCH_COUNT",
-          "TOTAL_TURN_COUNT",
-          "AVERAGE_TURN_COUNT",
-        ]).optional(),
-        ratio: z.number().optional(),
-        type: z.enum([
-          "METRIC_UNSPECIFIED",
-          "CONTAINED_SESSION_NO_CALLBACK_RATE",
-          "LIVE_AGENT_HANDOFF_RATE",
-          "CALLBACK_SESSION_RATE",
-          "ABANDONED_SESSION_RATE",
-          "SESSION_END_RATE",
-        ]).optional(),
+        confidenceInterval: z.unknown().optional(),
+        count: z.unknown().optional(),
+        countType: z.unknown().optional(),
+        ratio: z.unknown().optional(),
+        type: z.unknown().optional(),
       })).optional(),
       sessionCount: z.number().int().optional(),
       version: z.string().optional(),
@@ -314,9 +275,9 @@ const InputsSchema = z.object({
     updateTime: z.string().optional(),
     versionVariants: z.object({
       variants: z.array(z.object({
-        isControlGroup: z.boolean().optional(),
-        trafficAllocation: z.number().optional(),
-        version: z.string().optional(),
+        isControlGroup: z.unknown().optional(),
+        trafficAllocation: z.unknown().optional(),
+        version: z.unknown().optional(),
       })).optional(),
     }).optional(),
   })).optional(),
@@ -327,7 +288,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/dialogflow/agents-environments-experiments",
-  version: "2026.04.03.3",
+  version: "2026.04.04.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -351,6 +312,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.3",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.04.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

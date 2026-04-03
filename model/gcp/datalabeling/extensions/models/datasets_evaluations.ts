@@ -47,19 +47,8 @@ const StateSchema = z.object({
     classificationMetrics: z.object({
       confusionMatrix: z.object({
         row: z.array(z.object({
-          annotationSpec: z.object({
-            description: z.string(),
-            displayName: z.string(),
-            index: z.number(),
-          }),
-          entries: z.array(z.object({
-            annotationSpec: z.object({
-              description: z.string(),
-              displayName: z.string(),
-              index: z.number(),
-            }),
-            itemCount: z.number(),
-          })),
+          annotationSpec: z.unknown(),
+          entries: z.unknown(),
         })),
       }),
       prCurve: z.object({
@@ -70,16 +59,16 @@ const StateSchema = z.object({
         }),
         areaUnderCurve: z.number(),
         confidenceMetricsEntries: z.array(z.object({
-          confidenceThreshold: z.number(),
-          f1Score: z.number(),
-          f1ScoreAt1: z.number(),
-          f1ScoreAt5: z.number(),
-          precision: z.number(),
-          precisionAt1: z.number(),
-          precisionAt5: z.number(),
-          recall: z.number(),
-          recallAt1: z.number(),
-          recallAt5: z.number(),
+          confidenceThreshold: z.unknown(),
+          f1Score: z.unknown(),
+          f1ScoreAt1: z.unknown(),
+          f1ScoreAt5: z.unknown(),
+          precision: z.unknown(),
+          precisionAt1: z.unknown(),
+          precisionAt5: z.unknown(),
+          recall: z.unknown(),
+          recallAt1: z.unknown(),
+          recallAt5: z.unknown(),
         })),
         meanAveragePrecision: z.number(),
       }),
@@ -93,16 +82,16 @@ const StateSchema = z.object({
         }),
         areaUnderCurve: z.number(),
         confidenceMetricsEntries: z.array(z.object({
-          confidenceThreshold: z.number(),
-          f1Score: z.number(),
-          f1ScoreAt1: z.number(),
-          f1ScoreAt5: z.number(),
-          precision: z.number(),
-          precisionAt1: z.number(),
-          precisionAt5: z.number(),
-          recall: z.number(),
-          recallAt1: z.number(),
-          recallAt5: z.number(),
+          confidenceThreshold: z.unknown(),
+          f1Score: z.unknown(),
+          f1ScoreAt1: z.unknown(),
+          f1ScoreAt5: z.unknown(),
+          precision: z.unknown(),
+          precisionAt1: z.unknown(),
+          precisionAt5: z.unknown(),
+          recall: z.unknown(),
+          recallAt1: z.unknown(),
+          recallAt5: z.unknown(),
         })),
         meanAveragePrecision: z.number(),
       }),
@@ -119,7 +108,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/datalabeling/datasets-evaluations",
-  version: "2026.04.03.3",
+  version: "2026.04.04.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -143,6 +132,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.3",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.04.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

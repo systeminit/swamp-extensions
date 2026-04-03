@@ -200,14 +200,7 @@ const GlobalArgsSchema = z.object({
         "Optional. A list of the type and count of accelerator cards attached to the instance.",
       ).optional(),
       boostConfigs: z.array(z.object({
-        accelerators: z.array(z.object({
-          count: z.number().int().describe(
-            "Optional. Number of accelerator cards exposed to the instance.",
-          ).optional(),
-          type: z.string().describe(
-            'Optional. Type of accelerator resource to attach to the instance, for example, `"nvidia-tesla-p100"`.',
-          ).optional(),
-        })).describe(
+        accelerators: z.array(z.unknown()).describe(
           "Optional. A list of the type and count of accelerator cards attached to the boost instance. Defaults to `none`.",
         ).optional(),
         bootDiskSizeGb: z.number().int().describe(
@@ -413,10 +406,7 @@ const StateSchema = z.object({
         type: z.string(),
       })),
       boostConfigs: z.array(z.object({
-        accelerators: z.array(z.object({
-          count: z.number(),
-          type: z.string(),
-        })),
+        accelerators: z.array(z.unknown()),
         bootDiskSizeGb: z.number(),
         enableNestedVirtualization: z.boolean(),
         id: z.string(),
@@ -571,14 +561,7 @@ const InputsSchema = z.object({
         "Optional. A list of the type and count of accelerator cards attached to the instance.",
       ).optional(),
       boostConfigs: z.array(z.object({
-        accelerators: z.array(z.object({
-          count: z.number().int().describe(
-            "Optional. Number of accelerator cards exposed to the instance.",
-          ).optional(),
-          type: z.string().describe(
-            'Optional. Type of accelerator resource to attach to the instance, for example, `"nvidia-tesla-p100"`.',
-          ).optional(),
-        })).describe(
+        accelerators: z.array(z.unknown()).describe(
           "Optional. A list of the type and count of accelerator cards attached to the boost instance. Defaults to `none`.",
         ).optional(),
         bootDiskSizeGb: z.number().int().describe(
@@ -739,7 +722,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/workstations/workstationclusters-workstationconfigs",
-  version: "2026.04.03.3",
+  version: "2026.04.04.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -773,6 +756,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.3",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.04.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

@@ -49,13 +49,13 @@ const StateSchema = z.object({
     name: z.string(),
     parts: z.array(z.object({
       data: z.object({
-        data: z.record(z.string(), z.unknown()),
+        data: z.unknown(),
       }),
       file: z.object({
-        fileWithBytes: z.string(),
-        fileWithUri: z.string(),
-        mimeType: z.string(),
-        name: z.string(),
+        fileWithBytes: z.unknown(),
+        fileWithUri: z.unknown(),
+        mimeType: z.unknown(),
+        name: z.unknown(),
       }),
       metadata: z.record(z.string(), z.unknown()),
       text: z.string(),
@@ -65,13 +65,13 @@ const StateSchema = z.object({
   history: z.array(z.object({
     content: z.array(z.object({
       data: z.object({
-        data: z.record(z.string(), z.unknown()),
+        data: z.unknown(),
       }),
       file: z.object({
-        fileWithBytes: z.string(),
-        fileWithUri: z.string(),
-        mimeType: z.string(),
-        name: z.string(),
+        fileWithBytes: z.unknown(),
+        fileWithUri: z.unknown(),
+        mimeType: z.unknown(),
+        name: z.unknown(),
       }),
       metadata: z.record(z.string(), z.unknown()),
       text: z.string(),
@@ -89,13 +89,13 @@ const StateSchema = z.object({
     message: z.object({
       content: z.array(z.object({
         data: z.object({
-          data: z.record(z.string(), z.unknown()),
+          data: z.unknown(),
         }),
         file: z.object({
-          fileWithBytes: z.string(),
-          fileWithUri: z.string(),
-          mimeType: z.string(),
-          name: z.string(),
+          fileWithBytes: z.unknown(),
+          fileWithUri: z.unknown(),
+          mimeType: z.unknown(),
+          name: z.unknown(),
         }),
         metadata: z.record(z.string(), z.unknown()),
         text: z.string(),
@@ -120,7 +120,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/workspaceevents/tasks",
-  version: "2026.04.03.3",
+  version: "2026.04.04.1",
   upgrades: [
     {
       toVersion: "2026.04.01.2",
@@ -144,6 +144,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.3",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.04.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

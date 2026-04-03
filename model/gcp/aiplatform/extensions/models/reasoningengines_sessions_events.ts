@@ -76,30 +76,12 @@ const StateSchema = z.object({
       functionCall: z.object({
         args: z.record(z.string(), z.unknown()),
         name: z.string(),
-        partialArgs: z.array(z.object({
-          boolValue: z.boolean(),
-          jsonPath: z.string(),
-          nullValue: z.string(),
-          numberValue: z.number(),
-          stringValue: z.string(),
-          willContinue: z.boolean(),
-        })),
+        partialArgs: z.array(z.unknown()),
         willContinue: z.boolean(),
       }),
       functionResponse: z.object({
         name: z.string(),
-        parts: z.array(z.object({
-          fileData: z.object({
-            displayName: z.string(),
-            fileUri: z.string(),
-            mimeType: z.string(),
-          }),
-          inlineData: z.object({
-            data: z.string(),
-            displayName: z.string(),
-            mimeType: z.string(),
-          }),
-        })),
+        parts: z.array(z.unknown()),
         response: z.record(z.string(), z.unknown()),
         scheduling: z.string(),
       }),
@@ -131,57 +113,41 @@ const StateSchema = z.object({
       googleMapsWidgetContextToken: z.string(),
       groundingChunks: z.array(z.object({
         image: z.object({
-          domain: z.string(),
-          imageUri: z.string(),
-          sourceUri: z.string(),
-          title: z.string(),
+          domain: z.unknown(),
+          imageUri: z.unknown(),
+          sourceUri: z.unknown(),
+          title: z.unknown(),
         }),
         maps: z.object({
-          placeAnswerSources: z.object({
-            reviewSnippets: z.array(z.object({
-              googleMapsUri: z.string(),
-              reviewId: z.string(),
-              title: z.string(),
-            })),
-          }),
-          placeId: z.string(),
-          route: z.object({
-            distanceMeters: z.number(),
-            duration: z.string(),
-            encodedPolyline: z.string(),
-          }),
-          text: z.string(),
-          title: z.string(),
-          uri: z.string(),
+          placeAnswerSources: z.unknown(),
+          placeId: z.unknown(),
+          route: z.unknown(),
+          text: z.unknown(),
+          title: z.unknown(),
+          uri: z.unknown(),
         }),
         retrievedContext: z.object({
-          documentName: z.string(),
-          ragChunk: z.object({
-            pageSpan: z.object({
-              firstPage: z.number(),
-              lastPage: z.number(),
-            }),
-            text: z.string(),
-          }),
-          text: z.string(),
-          title: z.string(),
-          uri: z.string(),
+          documentName: z.unknown(),
+          ragChunk: z.unknown(),
+          text: z.unknown(),
+          title: z.unknown(),
+          uri: z.unknown(),
         }),
         web: z.object({
-          domain: z.string(),
-          title: z.string(),
-          uri: z.string(),
+          domain: z.unknown(),
+          title: z.unknown(),
+          uri: z.unknown(),
         }),
       })),
       groundingSupports: z.array(z.object({
-        confidenceScores: z.array(z.number()),
-        groundingChunkIndices: z.array(z.number()),
-        renderedParts: z.array(z.number()),
+        confidenceScores: z.array(z.unknown()),
+        groundingChunkIndices: z.array(z.unknown()),
+        renderedParts: z.array(z.unknown()),
         segment: z.object({
-          endIndex: z.number(),
-          partIndex: z.number(),
-          startIndex: z.number(),
-          text: z.string(),
+          endIndex: z.unknown(),
+          partIndex: z.unknown(),
+          startIndex: z.unknown(),
+          text: z.unknown(),
         }),
       })),
       imageSearchQueries: z.array(z.string()),
@@ -228,7 +194,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/aiplatform/reasoningengines-sessions-events",
-  version: "2026.04.03.3",
+  version: "2026.04.04.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -252,6 +218,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.3",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.04.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

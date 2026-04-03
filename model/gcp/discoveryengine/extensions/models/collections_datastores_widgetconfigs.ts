@@ -320,10 +320,10 @@ const GlobalArgsSchema = z.object({
   uiSettings: z.object({
     dataStoreUiConfigs: z.array(z.object({
       facetField: z.array(z.object({
-        displayName: z.string().describe(
+        displayName: z.unknown().describe(
           "Optional. The field name that end users will see.",
         ).optional(),
-        field: z.string().describe(
+        field: z.unknown().describe(
           "Required. Registered field name. The format is `field.abc`.",
         ).optional(),
       })).describe(
@@ -332,14 +332,13 @@ const GlobalArgsSchema = z.object({
       fieldsUiComponentsMap: z.record(
         z.string(),
         z.object({
-          deviceVisibility: z.array(
-            z.enum(["DEVICE_VISIBILITY_UNSPECIFIED", "MOBILE", "DESKTOP"]),
-          ).describe("The field visibility on different types of devices.")
-            .optional(),
-          displayTemplate: z.string().describe(
+          deviceVisibility: z.unknown().describe(
+            "The field visibility on different types of devices.",
+          ).optional(),
+          displayTemplate: z.unknown().describe(
             'The template to customize how the field is displayed. An example value would be a string that looks like: "Price: {value}".',
           ).optional(),
-          field: z.string().describe(
+          field: z.unknown().describe(
             "Required. Registered field name. The format is `field.abc`.",
           ).optional(),
         }),
@@ -582,8 +581,8 @@ const StateSchema = z.object({
   uiSettings: z.object({
     dataStoreUiConfigs: z.array(z.object({
       facetField: z.array(z.object({
-        displayName: z.string(),
-        field: z.string(),
+        displayName: z.unknown(),
+        field: z.unknown(),
       })),
       fieldsUiComponentsMap: z.record(z.string(), z.unknown()),
       id: z.string(),
@@ -886,10 +885,10 @@ const InputsSchema = z.object({
   uiSettings: z.object({
     dataStoreUiConfigs: z.array(z.object({
       facetField: z.array(z.object({
-        displayName: z.string().describe(
+        displayName: z.unknown().describe(
           "Optional. The field name that end users will see.",
         ).optional(),
-        field: z.string().describe(
+        field: z.unknown().describe(
           "Required. Registered field name. The format is `field.abc`.",
         ).optional(),
       })).describe(
@@ -898,14 +897,13 @@ const InputsSchema = z.object({
       fieldsUiComponentsMap: z.record(
         z.string(),
         z.object({
-          deviceVisibility: z.array(
-            z.enum(["DEVICE_VISIBILITY_UNSPECIFIED", "MOBILE", "DESKTOP"]),
-          ).describe("The field visibility on different types of devices.")
-            .optional(),
-          displayTemplate: z.string().describe(
+          deviceVisibility: z.unknown().describe(
+            "The field visibility on different types of devices.",
+          ).optional(),
+          displayTemplate: z.unknown().describe(
             'The template to customize how the field is displayed. An example value would be a string that looks like: "Price: {value}".',
           ).optional(),
-          field: z.string().describe(
+          field: z.unknown().describe(
             "Required. Registered field name. The format is `field.abc`.",
           ).optional(),
         }),
@@ -1020,7 +1018,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/discoveryengine/collections-datastores-widgetconfigs",
-  version: "2026.04.03.3",
+  version: "2026.04.04.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -1044,6 +1042,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.3",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.04.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

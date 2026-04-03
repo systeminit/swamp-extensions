@@ -77,7 +77,7 @@ const StateSchema = z.object({
         freeTrialDetails: z.object({}),
         introductoryPriceDetails: z.object({}),
         prorationPeriodDetails: z.object({
-          originalOfferPhase: z.string(),
+          originalOfferPhase: z.unknown(),
         }),
       }),
       servicePeriodEndTime: z.string(),
@@ -106,14 +106,14 @@ const StateSchema = z.object({
       processTime: z.string(),
       refundDetails: z.object({
         tax: z.object({
-          currencyCode: z.string(),
-          nanos: z.number(),
-          units: z.string(),
+          currencyCode: z.unknown(),
+          nanos: z.unknown(),
+          units: z.unknown(),
         }),
         total: z.object({
-          currencyCode: z.string(),
-          nanos: z.number(),
-          units: z.string(),
+          currencyCode: z.unknown(),
+          nanos: z.unknown(),
+          units: z.unknown(),
         }),
       }),
       state: z.string(),
@@ -172,7 +172,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/androidpublisher/orders",
-  version: "2026.04.03.3",
+  version: "2026.04.04.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -196,6 +196,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.3",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.04.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

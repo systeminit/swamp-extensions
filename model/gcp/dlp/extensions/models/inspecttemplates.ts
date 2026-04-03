@@ -97,62 +97,14 @@ const GlobalArgsSchema = z.object({
         z.enum(["CONTENT_UNSPECIFIED", "CONTENT_TEXT", "CONTENT_IMAGE"]),
       ).describe("Deprecated and unused.").optional(),
       customInfoTypes: z.array(z.object({
-        detectionRules: z.array(z.object({
-          hotwordRule: z.object({
-            hotwordRegex: z.object({
-              groupIndexes: z.array(z.number().int()).describe(
-                "The index of the submatch to extract as findings. When not specified, the entire match is returned. No more than 3 may be included.",
-              ).optional(),
-              pattern: z.string().describe(
-                "Pattern defining the regular expression. Its syntax (https://github.com/google/re2/wiki/Syntax) can be found under the google/re2 repository on GitHub.",
-              ).optional(),
-            }).describe("Message defining a custom regular expression.")
-              .optional(),
-            likelihoodAdjustment: z.object({
-              fixedLikelihood: z.enum([
-                "LIKELIHOOD_UNSPECIFIED",
-                "VERY_UNLIKELY",
-                "UNLIKELY",
-                "POSSIBLE",
-                "LIKELY",
-                "VERY_LIKELY",
-              ]).describe("Set the likelihood of a finding to a fixed value.")
-                .optional(),
-              relativeLikelihood: z.number().int().describe(
-                "Increase or decrease the likelihood by the specified number of levels. For example, if a finding would be `POSSIBLE` without the detection rule and `relative_likelihood` is 1, then it is upgraded to `LIKELY`, while a value of -1 would downgrade it to `UNLIKELY`. Likelihood may never drop below `VERY_UNLIKELY` or exceed `VERY_LIKELY`, so applying an adjustment of 1 followed by an adjustment of -1 when base likelihood is `VERY_LIKELY` will result in a final likelihood of `LIKELY`.",
-              ).optional(),
-            }).describe(
-              "Message for specifying an adjustment to the likelihood of a finding as part of a detection rule.",
-            ).optional(),
-            proximity: z.object({
-              windowAfter: z.number().int().describe(
-                "Number of characters after the finding to consider.",
-              ).optional(),
-              windowBefore: z.number().int().describe(
-                "Number of characters before the finding to consider. For tabular data, if you want to modify the likelihood of an entire column of findngs, set this to 1. For more information, see [Hotword example: Set the match likelihood of a table column] (https://cloud.google.com/sensitive-data-protection/docs/creating-custom-infotypes-likelihood#match-column-values).",
-              ).optional(),
-            }).describe(
-              "Message for specifying a window around a finding to apply a detection rule.",
-            ).optional(),
-          }).describe(
-            "The rule that adjusts the likelihood of findings within a certain proximity of hotwords.",
-          ).optional(),
-        })).describe(
+        detectionRules: z.array(z.unknown()).describe(
           "Set of detection rules to apply to all findings of this CustomInfoType. Rules are applied in the order that they are specified. Only supported for the `dictionary`, `regex`, and `stored_type` CustomInfoTypes.",
         ).optional(),
         dictionary: z.object({
-          cloudStoragePath: z.object({
-            path: z.string().describe(
-              "A URL representing a file or path (no wildcards) in Cloud Storage. Example: `gs://[BUCKET_NAME]/dictionary.txt`",
-            ).optional(),
-          }).describe(
+          cloudStoragePath: z.unknown().describe(
             "Message representing a single file or path in Cloud Storage.",
           ).optional(),
-          wordList: z.object({
-            words: z.array(z.string()).describe(
-              "Words or phrases defining the dictionary. The dictionary must contain at least one phrase and every phrase must contain at least 2 characters that are letters or digits. [required]",
-            ).optional(),
-          }).describe(
+          wordList: z.unknown().describe(
             "Message defining a list of words or phrases to search for in the data.",
           ).optional(),
         }).describe(
@@ -165,22 +117,13 @@ const GlobalArgsSchema = z.object({
           "If set to EXCLUSION_TYPE_EXCLUDE this infoType will not cause a finding to be returned. It still can be used for rules matching. Only supported for the `dictionary`, `regex`, and `stored_type` CustomInfoTypes.",
         ).optional(),
         infoType: z.object({
-          name: z.string().describe(
+          name: z.unknown().describe(
             "Name of the information type. Either a name of your choosing when creating a CustomInfoType, or one of the names listed at https://cloud.google.com/sensitive-data-protection/docs/infotypes-reference when specifying a built-in type. When sending Cloud DLP results to Data Catalog, infoType names should conform to the pattern `[A-Za-z0-9$_-]{1,64}`.",
           ).optional(),
-          sensitivityScore: z.object({
-            score: z.enum([
-              "SENSITIVITY_SCORE_UNSPECIFIED",
-              "SENSITIVITY_LOW",
-              "SENSITIVITY_UNKNOWN",
-              "SENSITIVITY_MODERATE",
-              "SENSITIVITY_HIGH",
-            ]).describe("The sensitivity score applied to the resource.")
-              .optional(),
-          }).describe(
+          sensitivityScore: z.unknown().describe(
             "Score is calculated from of all elements in the data profile. A higher level means the data is more sensitive.",
           ).optional(),
-          version: z.string().describe(
+          version: z.unknown().describe(
             "Optional version name for this InfoType.",
           ).optional(),
         }).describe("Type of information detected by the API.").optional(),
@@ -195,40 +138,35 @@ const GlobalArgsSchema = z.object({
           "Likelihood to return for this CustomInfoType. This base value can be altered by a detection rule if the finding meets the criteria specified by the rule. Defaults to `VERY_LIKELY` if not specified.",
         ).optional(),
         metadataKeyValueExpression: z.object({
-          keyRegex: z.string().describe(
+          keyRegex: z.unknown().describe(
             "The regular expression for the key. Key should be non-empty.",
           ).optional(),
-          valueRegex: z.string().describe(
+          valueRegex: z.unknown().describe(
             "The regular expression for the value. Value should be non-empty.",
           ).optional(),
         }).describe(
           "Configuration for a custom infoType that detects key-value pairs in the metadata matching the specified regular expressions.",
         ).optional(),
         regex: z.object({
-          groupIndexes: z.array(z.number().int()).describe(
+          groupIndexes: z.unknown().describe(
             "The index of the submatch to extract as findings. When not specified, the entire match is returned. No more than 3 may be included.",
           ).optional(),
-          pattern: z.string().describe(
+          pattern: z.unknown().describe(
             "Pattern defining the regular expression. Its syntax (https://github.com/google/re2/wiki/Syntax) can be found under the google/re2 repository on GitHub.",
           ).optional(),
         }).describe("Message defining a custom regular expression.").optional(),
         sensitivityScore: z.object({
-          score: z.enum([
-            "SENSITIVITY_SCORE_UNSPECIFIED",
-            "SENSITIVITY_LOW",
-            "SENSITIVITY_UNKNOWN",
-            "SENSITIVITY_MODERATE",
-            "SENSITIVITY_HIGH",
-          ]).describe("The sensitivity score applied to the resource.")
-            .optional(),
+          score: z.unknown().describe(
+            "The sensitivity score applied to the resource.",
+          ).optional(),
         }).describe(
           "Score is calculated from of all elements in the data profile. A higher level means the data is more sensitive.",
         ).optional(),
         storedType: z.object({
-          createTime: z.string().describe(
+          createTime: z.unknown().describe(
             "Timestamp indicating when the version of the `StoredInfoType` used for inspection was created. Output-only field, populated by the system.",
           ).optional(),
-          name: z.string().describe(
+          name: z.unknown().describe(
             "Resource name of the requested `StoredInfoType`, for example `organizations/433245324/storedInfoTypes/432452342` or `projects/project-id/storedInfoTypes/432452342`.",
           ).optional(),
         }).describe("A reference to a StoredInfoType to use with scanning.")
@@ -250,14 +188,9 @@ const GlobalArgsSchema = z.object({
           "Name of the information type. Either a name of your choosing when creating a CustomInfoType, or one of the names listed at https://cloud.google.com/sensitive-data-protection/docs/infotypes-reference when specifying a built-in type. When sending Cloud DLP results to Data Catalog, infoType names should conform to the pattern `[A-Za-z0-9$_-]{1,64}`.",
         ).optional(),
         sensitivityScore: z.object({
-          score: z.enum([
-            "SENSITIVITY_SCORE_UNSPECIFIED",
-            "SENSITIVITY_LOW",
-            "SENSITIVITY_UNKNOWN",
-            "SENSITIVITY_MODERATE",
-            "SENSITIVITY_HIGH",
-          ]).describe("The sensitivity score applied to the resource.")
-            .optional(),
+          score: z.unknown().describe(
+            "The sensitivity score applied to the resource.",
+          ).optional(),
         }).describe(
           "Score is calculated from of all elements in the data profile. A higher level means the data is more sensitive.",
         ).optional(),
@@ -268,27 +201,10 @@ const GlobalArgsSchema = z.object({
       ).optional(),
       limits: z.object({
         maxFindingsPerInfoType: z.array(z.object({
-          infoType: z.object({
-            name: z.string().describe(
-              "Name of the information type. Either a name of your choosing when creating a CustomInfoType, or one of the names listed at https://cloud.google.com/sensitive-data-protection/docs/infotypes-reference when specifying a built-in type. When sending Cloud DLP results to Data Catalog, infoType names should conform to the pattern `[A-Za-z0-9$_-]{1,64}`.",
-            ).optional(),
-            sensitivityScore: z.object({
-              score: z.enum([
-                "SENSITIVITY_SCORE_UNSPECIFIED",
-                "SENSITIVITY_LOW",
-                "SENSITIVITY_UNKNOWN",
-                "SENSITIVITY_MODERATE",
-                "SENSITIVITY_HIGH",
-              ]).describe("The sensitivity score applied to the resource.")
-                .optional(),
-            }).describe(
-              "Score is calculated from of all elements in the data profile. A higher level means the data is more sensitive.",
-            ).optional(),
-            version: z.string().describe(
-              "Optional version name for this InfoType.",
-            ).optional(),
-          }).describe("Type of information detected by the API.").optional(),
-          maxFindings: z.number().int().describe(
+          infoType: z.unknown().describe(
+            "Type of information detected by the API.",
+          ).optional(),
+          maxFindings: z.unknown().describe(
             "Max findings limit for the given infoType.",
           ).optional(),
         })).describe(
@@ -315,22 +231,13 @@ const GlobalArgsSchema = z.object({
       ).optional(),
       minLikelihoodPerInfoType: z.array(z.object({
         infoType: z.object({
-          name: z.string().describe(
+          name: z.unknown().describe(
             "Name of the information type. Either a name of your choosing when creating a CustomInfoType, or one of the names listed at https://cloud.google.com/sensitive-data-protection/docs/infotypes-reference when specifying a built-in type. When sending Cloud DLP results to Data Catalog, infoType names should conform to the pattern `[A-Za-z0-9$_-]{1,64}`.",
           ).optional(),
-          sensitivityScore: z.object({
-            score: z.enum([
-              "SENSITIVITY_SCORE_UNSPECIFIED",
-              "SENSITIVITY_LOW",
-              "SENSITIVITY_UNKNOWN",
-              "SENSITIVITY_MODERATE",
-              "SENSITIVITY_HIGH",
-            ]).describe("The sensitivity score applied to the resource.")
-              .optional(),
-          }).describe(
+          sensitivityScore: z.unknown().describe(
             "Score is calculated from of all elements in the data profile. A higher level means the data is more sensitive.",
           ).optional(),
-          version: z.string().describe(
+          version: z.unknown().describe(
             "Optional version name for this InfoType.",
           ).optional(),
         }).describe("Type of information detected by the API.").optional(),
@@ -348,307 +255,10 @@ const GlobalArgsSchema = z.object({
         "Minimum likelihood per infotype. For each infotype, a user can specify a minimum likelihood. The system only returns a finding if its likelihood is above this threshold. If this field is not set, the system uses the InspectConfig min_likelihood.",
       ).optional(),
       ruleSet: z.array(z.object({
-        infoTypes: z.array(z.object({
-          name: z.string().describe(
-            "Name of the information type. Either a name of your choosing when creating a CustomInfoType, or one of the names listed at https://cloud.google.com/sensitive-data-protection/docs/infotypes-reference when specifying a built-in type. When sending Cloud DLP results to Data Catalog, infoType names should conform to the pattern `[A-Za-z0-9$_-]{1,64}`.",
-          ).optional(),
-          sensitivityScore: z.object({
-            score: z.enum([
-              "SENSITIVITY_SCORE_UNSPECIFIED",
-              "SENSITIVITY_LOW",
-              "SENSITIVITY_UNKNOWN",
-              "SENSITIVITY_MODERATE",
-              "SENSITIVITY_HIGH",
-            ]).describe("The sensitivity score applied to the resource.")
-              .optional(),
-          }).describe(
-            "Score is calculated from of all elements in the data profile. A higher level means the data is more sensitive.",
-          ).optional(),
-          version: z.string().describe(
-            "Optional version name for this InfoType.",
-          ).optional(),
-        })).describe("List of infoTypes this rule set is applied to.")
-          .optional(),
-        rules: z.array(z.object({
-          adjustmentRule: z.object({
-            adjustByImageFindings: z.object({
-              imageContainmentType: z.object({
-                encloses: z.object({}).describe(
-                  "Defines a condition where one bounding box encloses another.",
-                ).optional(),
-                fullyInside: z.object({}).describe(
-                  "Defines a condition where one bounding box is fully inside another.",
-                ).optional(),
-                overlaps: z.object({}).describe(
-                  "Defines a condition for overlapping bounding boxes.",
-                ).optional(),
-              }).describe(
-                "Specifies the relationship between bounding boxes for image findings.",
-              ).optional(),
-              infoTypes: z.array(z.object({
-                name: z.string().describe(
-                  "Name of the information type. Either a name of your choosing when creating a CustomInfoType, or one of the names listed at https://cloud.google.com/sensitive-data-protection/docs/infotypes-reference when specifying a built-in type. When sending Cloud DLP results to Data Catalog, infoType names should conform to the pattern `[A-Za-z0-9$_-]{1,64}`.",
-                ).optional(),
-                sensitivityScore: z.object({
-                  score: z.enum([
-                    "SENSITIVITY_SCORE_UNSPECIFIED",
-                    "SENSITIVITY_LOW",
-                    "SENSITIVITY_UNKNOWN",
-                    "SENSITIVITY_MODERATE",
-                    "SENSITIVITY_HIGH",
-                  ]).describe("The sensitivity score applied to the resource.")
-                    .optional(),
-                }).describe(
-                  "Score is calculated from of all elements in the data profile. A higher level means the data is more sensitive.",
-                ).optional(),
-                version: z.string().describe(
-                  "Optional version name for this InfoType.",
-                ).optional(),
-              })).describe(
-                "A list of image-supported infoTypes—excluding [document infoTypes](https://cloud.google.com/sensitive-data-protection/docs/infotypes-reference#documents)—to be used as context for the adjustment rule. Sensitive Data Protection adjusts the likelihood of an image finding if its bounding box has the specified spatial relationship (defined by `image_containment_type`) with a finding of an infoType in this list. For example, you can create a rule to adjust the likelihood of a `US_PASSPORT` finding if it is enclosed by a finding of `OBJECT_TYPE/PERSON/PASSPORT`. To configure this, set `US_PASSPORT` in `InspectionRuleSet.info_types`. Add an `adjustment_rule` with an `adjust_by_image_findings.info_types` that contains `OBJECT_TYPE/PERSON/PASSPORT` and `image_containment_type` set to `encloses`. In this case, the likelihood of the `US_PASSPORT` finding is adjusted, but the likelihood of the `OBJECT_TYPE/PERSON/PASSPORT` finding is not.",
-              ).optional(),
-              minLikelihood: z.enum([
-                "LIKELIHOOD_UNSPECIFIED",
-                "VERY_UNLIKELY",
-                "UNLIKELY",
-                "POSSIBLE",
-                "LIKELY",
-                "VERY_LIKELY",
-              ]).describe(
-                "Required. Minimum likelihood of the `adjust_by_image_findings.info_types` finding. If the likelihood is lower than this value, Sensitive Data Protection doesn't adjust the likelihood of the `InspectionRuleSet.info_types` finding.",
-              ).optional(),
-            }).describe(
-              "AdjustmentRule condition for image findings. This rule is silently ignored if the content being inspected is not an image.",
-            ).optional(),
-            adjustByMatchingInfoTypes: z.object({
-              infoTypes: z.array(z.object({
-                name: z.string().describe(
-                  "Name of the information type. Either a name of your choosing when creating a CustomInfoType, or one of the names listed at https://cloud.google.com/sensitive-data-protection/docs/infotypes-reference when specifying a built-in type. When sending Cloud DLP results to Data Catalog, infoType names should conform to the pattern `[A-Za-z0-9$_-]{1,64}`.",
-                ).optional(),
-                sensitivityScore: z.object({
-                  score: z.enum([
-                    "SENSITIVITY_SCORE_UNSPECIFIED",
-                    "SENSITIVITY_LOW",
-                    "SENSITIVITY_UNKNOWN",
-                    "SENSITIVITY_MODERATE",
-                    "SENSITIVITY_HIGH",
-                  ]).describe("The sensitivity score applied to the resource.")
-                    .optional(),
-                }).describe(
-                  "Score is calculated from of all elements in the data profile. A higher level means the data is more sensitive.",
-                ).optional(),
-                version: z.string().describe(
-                  "Optional version name for this InfoType.",
-                ).optional(),
-              })).describe(
-                "Sensitive Data Protection adjusts the likelihood of a finding if that finding also matches one of these infoTypes. For example, you can create a rule to adjust the likelihood of a `PHONE_NUMBER` finding if the string is found within a document that is classified as `DOCUMENT_TYPE/HR/RESUME`. To configure this, set `PHONE_NUMBER` in `InspectionRuleSet.info_types`. Add an `adjustment_rule` with an `adjust_by_matching_info_types.info_types` that contains `DOCUMENT_TYPE/HR/RESUME`. In this case, the likelihood of the `PHONE_NUMBER` finding is adjusted, but the likelihood of the `DOCUMENT_TYPE/HR/RESUME` finding is not.",
-              ).optional(),
-              matchingType: z.enum([
-                "MATCHING_TYPE_UNSPECIFIED",
-                "MATCHING_TYPE_FULL_MATCH",
-                "MATCHING_TYPE_PARTIAL_MATCH",
-                "MATCHING_TYPE_INVERSE_MATCH",
-                "MATCHING_TYPE_RULE_SPECIFIC",
-              ]).describe(
-                "How the adjustment rule is applied. Only `MATCHING_TYPE_PARTIAL_MATCH` is supported: - Partial match: adjusts the findings of infoTypes specified in the inspection rule when they have a nonempty intersection with a finding of an infoType specified in this adjustment rule.",
-              ).optional(),
-              minLikelihood: z.enum([
-                "LIKELIHOOD_UNSPECIFIED",
-                "VERY_UNLIKELY",
-                "UNLIKELY",
-                "POSSIBLE",
-                "LIKELY",
-                "VERY_LIKELY",
-              ]).describe(
-                "Required. Minimum likelihood of the `adjust_by_matching_info_types.info_types` finding. If the likelihood is lower than this value, Sensitive Data Protection doesn't adjust the likelihood of the `InspectionRuleSet.info_types` finding.",
-              ).optional(),
-            }).describe("AdjustmentRule condition for matching infoTypes.")
-              .optional(),
-            likelihoodAdjustment: z.object({
-              fixedLikelihood: z.enum([
-                "LIKELIHOOD_UNSPECIFIED",
-                "VERY_UNLIKELY",
-                "UNLIKELY",
-                "POSSIBLE",
-                "LIKELY",
-                "VERY_LIKELY",
-              ]).describe("Set the likelihood of a finding to a fixed value.")
-                .optional(),
-              relativeLikelihood: z.number().int().describe(
-                "Increase or decrease the likelihood by the specified number of levels. For example, if a finding would be `POSSIBLE` without the detection rule and `relative_likelihood` is 1, then it is upgraded to `LIKELY`, while a value of -1 would downgrade it to `UNLIKELY`. Likelihood may never drop below `VERY_UNLIKELY` or exceed `VERY_LIKELY`, so applying an adjustment of 1 followed by an adjustment of -1 when base likelihood is `VERY_LIKELY` will result in a final likelihood of `LIKELY`.",
-              ).optional(),
-            }).describe(
-              "Message for specifying an adjustment to the likelihood of a finding as part of a detection rule.",
-            ).optional(),
-          }).describe(
-            "Rule that specifies conditions when a certain infoType's finding details should be adjusted.",
-          ).optional(),
-          exclusionRule: z.object({
-            dictionary: z.object({
-              cloudStoragePath: z.object({
-                path: z.string().describe(
-                  "A URL representing a file or path (no wildcards) in Cloud Storage. Example: `gs://[BUCKET_NAME]/dictionary.txt`",
-                ).optional(),
-              }).describe(
-                "Message representing a single file or path in Cloud Storage.",
-              ).optional(),
-              wordList: z.object({
-                words: z.array(z.string()).describe(
-                  "Words or phrases defining the dictionary. The dictionary must contain at least one phrase and every phrase must contain at least 2 characters that are letters or digits. [required]",
-                ).optional(),
-              }).describe(
-                "Message defining a list of words or phrases to search for in the data.",
-              ).optional(),
-            }).describe(
-              'Custom information type based on a dictionary of words or phrases. This can be used to match sensitive information specific to the data, such as a list of employee IDs or job titles. Dictionary words are case-insensitive and all characters other than letters and digits in the unicode [Basic Multilingual Plane](https://en.wikipedia.org/wiki/Plane_%28Unicode%29#Basic_Multilingual_Plane) will be replaced with whitespace when scanning for matches, so the dictionary phrase "Sam Johnson" will match all three phrases "sam johnson", "Sam, Johnson", and "Sam (Johnson)". Additionally, the characters surrounding any match must be of a different type than the adjacent characters within the word, so letters must be next to non-letters and digits next to non-digits. For example, the dictionary word "jen" will match the first three letters of the text "jen123" but will return no matches for "jennifer". Dictionary words containing a large number of characters that are not letters or digits may result in unexpected findings because such characters are treated as whitespace. The [limits](https://cloud.google.com/sensitive-data-protection/limits) page contains details about the size limits of dictionaries. For dictionaries that do not fit within these constraints, consider using `LargeCustomDictionaryConfig` in the `StoredInfoType` API.',
-            ).optional(),
-            excludeByHotword: z.object({
-              hotwordRegex: z.object({
-                groupIndexes: z.array(z.number().int()).describe(
-                  "The index of the submatch to extract as findings. When not specified, the entire match is returned. No more than 3 may be included.",
-                ).optional(),
-                pattern: z.string().describe(
-                  "Pattern defining the regular expression. Its syntax (https://github.com/google/re2/wiki/Syntax) can be found under the google/re2 repository on GitHub.",
-                ).optional(),
-              }).describe("Message defining a custom regular expression.")
-                .optional(),
-              proximity: z.object({
-                windowAfter: z.number().int().describe(
-                  "Number of characters after the finding to consider.",
-                ).optional(),
-                windowBefore: z.number().int().describe(
-                  "Number of characters before the finding to consider. For tabular data, if you want to modify the likelihood of an entire column of findngs, set this to 1. For more information, see [Hotword example: Set the match likelihood of a table column] (https://cloud.google.com/sensitive-data-protection/docs/creating-custom-infotypes-likelihood#match-column-values).",
-                ).optional(),
-              }).describe(
-                "Message for specifying a window around a finding to apply a detection rule.",
-              ).optional(),
-            }).describe(
-              "The rule to exclude findings based on a hotword. For record inspection of tables, column names are considered hotwords. An example of this is to exclude a finding if it belongs to a BigQuery column that matches a specific pattern.",
-            ).optional(),
-            excludeByImageFindings: z.object({
-              imageContainmentType: z.object({
-                encloses: z.object({}).describe(
-                  "Defines a condition where one bounding box encloses another.",
-                ).optional(),
-                fullyInside: z.object({}).describe(
-                  "Defines a condition where one bounding box is fully inside another.",
-                ).optional(),
-                overlaps: z.object({}).describe(
-                  "Defines a condition for overlapping bounding boxes.",
-                ).optional(),
-              }).describe(
-                "Specifies the relationship between bounding boxes for image findings.",
-              ).optional(),
-              infoTypes: z.array(z.object({
-                name: z.string().describe(
-                  "Name of the information type. Either a name of your choosing when creating a CustomInfoType, or one of the names listed at https://cloud.google.com/sensitive-data-protection/docs/infotypes-reference when specifying a built-in type. When sending Cloud DLP results to Data Catalog, infoType names should conform to the pattern `[A-Za-z0-9$_-]{1,64}`.",
-                ).optional(),
-                sensitivityScore: z.object({
-                  score: z.enum([
-                    "SENSITIVITY_SCORE_UNSPECIFIED",
-                    "SENSITIVITY_LOW",
-                    "SENSITIVITY_UNKNOWN",
-                    "SENSITIVITY_MODERATE",
-                    "SENSITIVITY_HIGH",
-                  ]).describe("The sensitivity score applied to the resource.")
-                    .optional(),
-                }).describe(
-                  "Score is calculated from of all elements in the data profile. A higher level means the data is more sensitive.",
-                ).optional(),
-                version: z.string().describe(
-                  "Optional version name for this InfoType.",
-                ).optional(),
-              })).describe(
-                "A list of image-supported infoTypes—excluding [document infoTypes](https://cloud.google.com/sensitive-data-protection/docs/infotypes-reference#documents)—to be used as context for the exclusion rule. A finding is excluded if its bounding box has the specified spatial relationship (defined by `image_containment_type`) with a finding of an infoType in this list. For example, if `InspectionRuleSet.info_types` includes `OBJECT_TYPE/PERSON` and this `exclusion_rule` specifies `info_types` as `OBJECT_TYPE/PERSON/PASSPORT` with `image_containment_type` set to `encloses`, then `OBJECT_TYPE/PERSON` findings will be excluded if they are fully contained within the bounding box of an `OBJECT_TYPE/PERSON/PASSPORT` finding.",
-              ).optional(),
-            }).describe(
-              "The rule to exclude image findings based on spatial relationships with other image findings. For example, exclude an image finding if it overlaps with another image finding. This rule is silently ignored if the content being inspected is not an image.",
-            ).optional(),
-            excludeInfoTypes: z.object({
-              infoTypes: z.array(z.object({
-                name: z.string().describe(
-                  "Name of the information type. Either a name of your choosing when creating a CustomInfoType, or one of the names listed at https://cloud.google.com/sensitive-data-protection/docs/infotypes-reference when specifying a built-in type. When sending Cloud DLP results to Data Catalog, infoType names should conform to the pattern `[A-Za-z0-9$_-]{1,64}`.",
-                ).optional(),
-                sensitivityScore: z.object({
-                  score: z.enum([
-                    "SENSITIVITY_SCORE_UNSPECIFIED",
-                    "SENSITIVITY_LOW",
-                    "SENSITIVITY_UNKNOWN",
-                    "SENSITIVITY_MODERATE",
-                    "SENSITIVITY_HIGH",
-                  ]).describe("The sensitivity score applied to the resource.")
-                    .optional(),
-                }).describe(
-                  "Score is calculated from of all elements in the data profile. A higher level means the data is more sensitive.",
-                ).optional(),
-                version: z.string().describe(
-                  "Optional version name for this InfoType.",
-                ).optional(),
-              })).describe(
-                'InfoType list in ExclusionRule rule drops a finding when it overlaps or contained within with a finding of an infoType from this list. For example, for `InspectionRuleSet.info_types` containing "PHONE_NUMBER"` and `exclusion_rule` containing `exclude_info_types.info_types` with "EMAIL_ADDRESS" the phone number findings are dropped if they overlap with EMAIL_ADDRESS finding. That leads to "555-222-2222@example.org" to generate only a single finding, namely email address.',
-              ).optional(),
-            }).describe("List of excluded infoTypes.").optional(),
-            matchingType: z.enum([
-              "MATCHING_TYPE_UNSPECIFIED",
-              "MATCHING_TYPE_FULL_MATCH",
-              "MATCHING_TYPE_PARTIAL_MATCH",
-              "MATCHING_TYPE_INVERSE_MATCH",
-              "MATCHING_TYPE_RULE_SPECIFIC",
-            ]).describe(
-              "How the rule is applied, see MatchingType documentation for details.",
-            ).optional(),
-            regex: z.object({
-              groupIndexes: z.array(z.number().int()).describe(
-                "The index of the submatch to extract as findings. When not specified, the entire match is returned. No more than 3 may be included.",
-              ).optional(),
-              pattern: z.string().describe(
-                "Pattern defining the regular expression. Its syntax (https://github.com/google/re2/wiki/Syntax) can be found under the google/re2 repository on GitHub.",
-              ).optional(),
-            }).describe("Message defining a custom regular expression.")
-              .optional(),
-          }).describe(
-            "The rule that specifies conditions when findings of infoTypes specified in `InspectionRuleSet` are removed from results.",
-          ).optional(),
-          hotwordRule: z.object({
-            hotwordRegex: z.object({
-              groupIndexes: z.array(z.number().int()).describe(
-                "The index of the submatch to extract as findings. When not specified, the entire match is returned. No more than 3 may be included.",
-              ).optional(),
-              pattern: z.string().describe(
-                "Pattern defining the regular expression. Its syntax (https://github.com/google/re2/wiki/Syntax) can be found under the google/re2 repository on GitHub.",
-              ).optional(),
-            }).describe("Message defining a custom regular expression.")
-              .optional(),
-            likelihoodAdjustment: z.object({
-              fixedLikelihood: z.enum([
-                "LIKELIHOOD_UNSPECIFIED",
-                "VERY_UNLIKELY",
-                "UNLIKELY",
-                "POSSIBLE",
-                "LIKELY",
-                "VERY_LIKELY",
-              ]).describe("Set the likelihood of a finding to a fixed value.")
-                .optional(),
-              relativeLikelihood: z.number().int().describe(
-                "Increase or decrease the likelihood by the specified number of levels. For example, if a finding would be `POSSIBLE` without the detection rule and `relative_likelihood` is 1, then it is upgraded to `LIKELY`, while a value of -1 would downgrade it to `UNLIKELY`. Likelihood may never drop below `VERY_UNLIKELY` or exceed `VERY_LIKELY`, so applying an adjustment of 1 followed by an adjustment of -1 when base likelihood is `VERY_LIKELY` will result in a final likelihood of `LIKELY`.",
-              ).optional(),
-            }).describe(
-              "Message for specifying an adjustment to the likelihood of a finding as part of a detection rule.",
-            ).optional(),
-            proximity: z.object({
-              windowAfter: z.number().int().describe(
-                "Number of characters after the finding to consider.",
-              ).optional(),
-              windowBefore: z.number().int().describe(
-                "Number of characters before the finding to consider. For tabular data, if you want to modify the likelihood of an entire column of findngs, set this to 1. For more information, see [Hotword example: Set the match likelihood of a table column] (https://cloud.google.com/sensitive-data-protection/docs/creating-custom-infotypes-likelihood#match-column-values).",
-              ).optional(),
-            }).describe(
-              "Message for specifying a window around a finding to apply a detection rule.",
-            ).optional(),
-          }).describe(
-            "The rule that adjusts the likelihood of findings within a certain proximity of hotwords.",
-          ).optional(),
-        })).describe(
+        infoTypes: z.array(z.unknown()).describe(
+          "List of infoTypes this rule set is applied to.",
+        ).optional(),
+        rules: z.array(z.unknown()).describe(
           "Set of rules to be applied to infoTypes. The rules are applied in order.",
         ).optional(),
       })).describe(
@@ -686,34 +296,21 @@ const StateSchema = z.object({
     contentOptions: z.array(z.string()),
     customInfoTypes: z.array(z.object({
       detectionRules: z.array(z.object({
-        hotwordRule: z.object({
-          hotwordRegex: z.object({
-            groupIndexes: z.array(z.number()),
-            pattern: z.string(),
-          }),
-          likelihoodAdjustment: z.object({
-            fixedLikelihood: z.string(),
-            relativeLikelihood: z.number(),
-          }),
-          proximity: z.object({
-            windowAfter: z.number(),
-            windowBefore: z.number(),
-          }),
-        }),
+        hotwordRule: z.unknown(),
       })),
       dictionary: z.object({
         cloudStoragePath: z.object({
-          path: z.string(),
+          path: z.unknown(),
         }),
         wordList: z.object({
-          words: z.array(z.string()),
+          words: z.unknown(),
         }),
       }),
       exclusionType: z.string(),
       infoType: z.object({
         name: z.string(),
         sensitivityScore: z.object({
-          score: z.string(),
+          score: z.unknown(),
         }),
         version: z.string(),
       }),
@@ -723,7 +320,7 @@ const StateSchema = z.object({
         valueRegex: z.string(),
       }),
       regex: z.object({
-        groupIndexes: z.array(z.number()),
+        groupIndexes: z.array(z.unknown()),
         pattern: z.string(),
       }),
       sensitivityScore: z.object({
@@ -747,11 +344,9 @@ const StateSchema = z.object({
     limits: z.object({
       maxFindingsPerInfoType: z.array(z.object({
         infoType: z.object({
-          name: z.string(),
-          sensitivityScore: z.object({
-            score: z.string(),
-          }),
-          version: z.string(),
+          name: z.unknown(),
+          sensitivityScore: z.unknown(),
+          version: z.unknown(),
         }),
         maxFindings: z.number(),
       })),
@@ -763,7 +358,7 @@ const StateSchema = z.object({
       infoType: z.object({
         name: z.string(),
         sensitivityScore: z.object({
-          score: z.string(),
+          score: z.unknown(),
         }),
         version: z.string(),
       }),
@@ -771,107 +366,14 @@ const StateSchema = z.object({
     })),
     ruleSet: z.array(z.object({
       infoTypes: z.array(z.object({
-        name: z.string(),
-        sensitivityScore: z.object({
-          score: z.string(),
-        }),
-        version: z.string(),
+        name: z.unknown(),
+        sensitivityScore: z.unknown(),
+        version: z.unknown(),
       })),
       rules: z.array(z.object({
-        adjustmentRule: z.object({
-          adjustByImageFindings: z.object({
-            imageContainmentType: z.object({
-              encloses: z.object({}),
-              fullyInside: z.object({}),
-              overlaps: z.object({}),
-            }),
-            infoTypes: z.array(z.object({
-              name: z.string(),
-              sensitivityScore: z.object({
-                score: z.string(),
-              }),
-              version: z.string(),
-            })),
-            minLikelihood: z.string(),
-          }),
-          adjustByMatchingInfoTypes: z.object({
-            infoTypes: z.array(z.object({
-              name: z.string(),
-              sensitivityScore: z.object({
-                score: z.string(),
-              }),
-              version: z.string(),
-            })),
-            matchingType: z.string(),
-            minLikelihood: z.string(),
-          }),
-          likelihoodAdjustment: z.object({
-            fixedLikelihood: z.string(),
-            relativeLikelihood: z.number(),
-          }),
-        }),
-        exclusionRule: z.object({
-          dictionary: z.object({
-            cloudStoragePath: z.object({
-              path: z.string(),
-            }),
-            wordList: z.object({
-              words: z.array(z.string()),
-            }),
-          }),
-          excludeByHotword: z.object({
-            hotwordRegex: z.object({
-              groupIndexes: z.array(z.number()),
-              pattern: z.string(),
-            }),
-            proximity: z.object({
-              windowAfter: z.number(),
-              windowBefore: z.number(),
-            }),
-          }),
-          excludeByImageFindings: z.object({
-            imageContainmentType: z.object({
-              encloses: z.object({}),
-              fullyInside: z.object({}),
-              overlaps: z.object({}),
-            }),
-            infoTypes: z.array(z.object({
-              name: z.string(),
-              sensitivityScore: z.object({
-                score: z.string(),
-              }),
-              version: z.string(),
-            })),
-          }),
-          excludeInfoTypes: z.object({
-            infoTypes: z.array(z.object({
-              name: z.string(),
-              sensitivityScore: z.object({
-                score: z.string(),
-              }),
-              version: z.string(),
-            })),
-          }),
-          matchingType: z.string(),
-          regex: z.object({
-            groupIndexes: z.array(z.number()),
-            pattern: z.string(),
-          }),
-        }),
-        hotwordRule: z.object({
-          hotwordRegex: z.object({
-            groupIndexes: z.array(z.number()),
-            pattern: z.string(),
-          }),
-          likelihoodAdjustment: z.object({
-            fixedLikelihood: z.string(),
-            relativeLikelihood: z.number(),
-          }),
-          proximity: z.object({
-            windowAfter: z.number(),
-            windowBefore: z.number(),
-          }),
-        }),
+        adjustmentRule: z.unknown(),
+        exclusionRule: z.unknown(),
+        hotwordRule: z.unknown(),
       })),
     })),
   }).optional(),
@@ -896,62 +398,14 @@ const InputsSchema = z.object({
         z.enum(["CONTENT_UNSPECIFIED", "CONTENT_TEXT", "CONTENT_IMAGE"]),
       ).describe("Deprecated and unused.").optional(),
       customInfoTypes: z.array(z.object({
-        detectionRules: z.array(z.object({
-          hotwordRule: z.object({
-            hotwordRegex: z.object({
-              groupIndexes: z.array(z.number().int()).describe(
-                "The index of the submatch to extract as findings. When not specified, the entire match is returned. No more than 3 may be included.",
-              ).optional(),
-              pattern: z.string().describe(
-                "Pattern defining the regular expression. Its syntax (https://github.com/google/re2/wiki/Syntax) can be found under the google/re2 repository on GitHub.",
-              ).optional(),
-            }).describe("Message defining a custom regular expression.")
-              .optional(),
-            likelihoodAdjustment: z.object({
-              fixedLikelihood: z.enum([
-                "LIKELIHOOD_UNSPECIFIED",
-                "VERY_UNLIKELY",
-                "UNLIKELY",
-                "POSSIBLE",
-                "LIKELY",
-                "VERY_LIKELY",
-              ]).describe("Set the likelihood of a finding to a fixed value.")
-                .optional(),
-              relativeLikelihood: z.number().int().describe(
-                "Increase or decrease the likelihood by the specified number of levels. For example, if a finding would be `POSSIBLE` without the detection rule and `relative_likelihood` is 1, then it is upgraded to `LIKELY`, while a value of -1 would downgrade it to `UNLIKELY`. Likelihood may never drop below `VERY_UNLIKELY` or exceed `VERY_LIKELY`, so applying an adjustment of 1 followed by an adjustment of -1 when base likelihood is `VERY_LIKELY` will result in a final likelihood of `LIKELY`.",
-              ).optional(),
-            }).describe(
-              "Message for specifying an adjustment to the likelihood of a finding as part of a detection rule.",
-            ).optional(),
-            proximity: z.object({
-              windowAfter: z.number().int().describe(
-                "Number of characters after the finding to consider.",
-              ).optional(),
-              windowBefore: z.number().int().describe(
-                "Number of characters before the finding to consider. For tabular data, if you want to modify the likelihood of an entire column of findngs, set this to 1. For more information, see [Hotword example: Set the match likelihood of a table column] (https://cloud.google.com/sensitive-data-protection/docs/creating-custom-infotypes-likelihood#match-column-values).",
-              ).optional(),
-            }).describe(
-              "Message for specifying a window around a finding to apply a detection rule.",
-            ).optional(),
-          }).describe(
-            "The rule that adjusts the likelihood of findings within a certain proximity of hotwords.",
-          ).optional(),
-        })).describe(
+        detectionRules: z.array(z.unknown()).describe(
           "Set of detection rules to apply to all findings of this CustomInfoType. Rules are applied in the order that they are specified. Only supported for the `dictionary`, `regex`, and `stored_type` CustomInfoTypes.",
         ).optional(),
         dictionary: z.object({
-          cloudStoragePath: z.object({
-            path: z.string().describe(
-              "A URL representing a file or path (no wildcards) in Cloud Storage. Example: `gs://[BUCKET_NAME]/dictionary.txt`",
-            ).optional(),
-          }).describe(
+          cloudStoragePath: z.unknown().describe(
             "Message representing a single file or path in Cloud Storage.",
           ).optional(),
-          wordList: z.object({
-            words: z.array(z.string()).describe(
-              "Words or phrases defining the dictionary. The dictionary must contain at least one phrase and every phrase must contain at least 2 characters that are letters or digits. [required]",
-            ).optional(),
-          }).describe(
+          wordList: z.unknown().describe(
             "Message defining a list of words or phrases to search for in the data.",
           ).optional(),
         }).describe(
@@ -964,22 +418,13 @@ const InputsSchema = z.object({
           "If set to EXCLUSION_TYPE_EXCLUDE this infoType will not cause a finding to be returned. It still can be used for rules matching. Only supported for the `dictionary`, `regex`, and `stored_type` CustomInfoTypes.",
         ).optional(),
         infoType: z.object({
-          name: z.string().describe(
+          name: z.unknown().describe(
             "Name of the information type. Either a name of your choosing when creating a CustomInfoType, or one of the names listed at https://cloud.google.com/sensitive-data-protection/docs/infotypes-reference when specifying a built-in type. When sending Cloud DLP results to Data Catalog, infoType names should conform to the pattern `[A-Za-z0-9$_-]{1,64}`.",
           ).optional(),
-          sensitivityScore: z.object({
-            score: z.enum([
-              "SENSITIVITY_SCORE_UNSPECIFIED",
-              "SENSITIVITY_LOW",
-              "SENSITIVITY_UNKNOWN",
-              "SENSITIVITY_MODERATE",
-              "SENSITIVITY_HIGH",
-            ]).describe("The sensitivity score applied to the resource.")
-              .optional(),
-          }).describe(
+          sensitivityScore: z.unknown().describe(
             "Score is calculated from of all elements in the data profile. A higher level means the data is more sensitive.",
           ).optional(),
-          version: z.string().describe(
+          version: z.unknown().describe(
             "Optional version name for this InfoType.",
           ).optional(),
         }).describe("Type of information detected by the API.").optional(),
@@ -994,40 +439,35 @@ const InputsSchema = z.object({
           "Likelihood to return for this CustomInfoType. This base value can be altered by a detection rule if the finding meets the criteria specified by the rule. Defaults to `VERY_LIKELY` if not specified.",
         ).optional(),
         metadataKeyValueExpression: z.object({
-          keyRegex: z.string().describe(
+          keyRegex: z.unknown().describe(
             "The regular expression for the key. Key should be non-empty.",
           ).optional(),
-          valueRegex: z.string().describe(
+          valueRegex: z.unknown().describe(
             "The regular expression for the value. Value should be non-empty.",
           ).optional(),
         }).describe(
           "Configuration for a custom infoType that detects key-value pairs in the metadata matching the specified regular expressions.",
         ).optional(),
         regex: z.object({
-          groupIndexes: z.array(z.number().int()).describe(
+          groupIndexes: z.unknown().describe(
             "The index of the submatch to extract as findings. When not specified, the entire match is returned. No more than 3 may be included.",
           ).optional(),
-          pattern: z.string().describe(
+          pattern: z.unknown().describe(
             "Pattern defining the regular expression. Its syntax (https://github.com/google/re2/wiki/Syntax) can be found under the google/re2 repository on GitHub.",
           ).optional(),
         }).describe("Message defining a custom regular expression.").optional(),
         sensitivityScore: z.object({
-          score: z.enum([
-            "SENSITIVITY_SCORE_UNSPECIFIED",
-            "SENSITIVITY_LOW",
-            "SENSITIVITY_UNKNOWN",
-            "SENSITIVITY_MODERATE",
-            "SENSITIVITY_HIGH",
-          ]).describe("The sensitivity score applied to the resource.")
-            .optional(),
+          score: z.unknown().describe(
+            "The sensitivity score applied to the resource.",
+          ).optional(),
         }).describe(
           "Score is calculated from of all elements in the data profile. A higher level means the data is more sensitive.",
         ).optional(),
         storedType: z.object({
-          createTime: z.string().describe(
+          createTime: z.unknown().describe(
             "Timestamp indicating when the version of the `StoredInfoType` used for inspection was created. Output-only field, populated by the system.",
           ).optional(),
-          name: z.string().describe(
+          name: z.unknown().describe(
             "Resource name of the requested `StoredInfoType`, for example `organizations/433245324/storedInfoTypes/432452342` or `projects/project-id/storedInfoTypes/432452342`.",
           ).optional(),
         }).describe("A reference to a StoredInfoType to use with scanning.")
@@ -1049,14 +489,9 @@ const InputsSchema = z.object({
           "Name of the information type. Either a name of your choosing when creating a CustomInfoType, or one of the names listed at https://cloud.google.com/sensitive-data-protection/docs/infotypes-reference when specifying a built-in type. When sending Cloud DLP results to Data Catalog, infoType names should conform to the pattern `[A-Za-z0-9$_-]{1,64}`.",
         ).optional(),
         sensitivityScore: z.object({
-          score: z.enum([
-            "SENSITIVITY_SCORE_UNSPECIFIED",
-            "SENSITIVITY_LOW",
-            "SENSITIVITY_UNKNOWN",
-            "SENSITIVITY_MODERATE",
-            "SENSITIVITY_HIGH",
-          ]).describe("The sensitivity score applied to the resource.")
-            .optional(),
+          score: z.unknown().describe(
+            "The sensitivity score applied to the resource.",
+          ).optional(),
         }).describe(
           "Score is calculated from of all elements in the data profile. A higher level means the data is more sensitive.",
         ).optional(),
@@ -1067,27 +502,10 @@ const InputsSchema = z.object({
       ).optional(),
       limits: z.object({
         maxFindingsPerInfoType: z.array(z.object({
-          infoType: z.object({
-            name: z.string().describe(
-              "Name of the information type. Either a name of your choosing when creating a CustomInfoType, or one of the names listed at https://cloud.google.com/sensitive-data-protection/docs/infotypes-reference when specifying a built-in type. When sending Cloud DLP results to Data Catalog, infoType names should conform to the pattern `[A-Za-z0-9$_-]{1,64}`.",
-            ).optional(),
-            sensitivityScore: z.object({
-              score: z.enum([
-                "SENSITIVITY_SCORE_UNSPECIFIED",
-                "SENSITIVITY_LOW",
-                "SENSITIVITY_UNKNOWN",
-                "SENSITIVITY_MODERATE",
-                "SENSITIVITY_HIGH",
-              ]).describe("The sensitivity score applied to the resource.")
-                .optional(),
-            }).describe(
-              "Score is calculated from of all elements in the data profile. A higher level means the data is more sensitive.",
-            ).optional(),
-            version: z.string().describe(
-              "Optional version name for this InfoType.",
-            ).optional(),
-          }).describe("Type of information detected by the API.").optional(),
-          maxFindings: z.number().int().describe(
+          infoType: z.unknown().describe(
+            "Type of information detected by the API.",
+          ).optional(),
+          maxFindings: z.unknown().describe(
             "Max findings limit for the given infoType.",
           ).optional(),
         })).describe(
@@ -1114,22 +532,13 @@ const InputsSchema = z.object({
       ).optional(),
       minLikelihoodPerInfoType: z.array(z.object({
         infoType: z.object({
-          name: z.string().describe(
+          name: z.unknown().describe(
             "Name of the information type. Either a name of your choosing when creating a CustomInfoType, or one of the names listed at https://cloud.google.com/sensitive-data-protection/docs/infotypes-reference when specifying a built-in type. When sending Cloud DLP results to Data Catalog, infoType names should conform to the pattern `[A-Za-z0-9$_-]{1,64}`.",
           ).optional(),
-          sensitivityScore: z.object({
-            score: z.enum([
-              "SENSITIVITY_SCORE_UNSPECIFIED",
-              "SENSITIVITY_LOW",
-              "SENSITIVITY_UNKNOWN",
-              "SENSITIVITY_MODERATE",
-              "SENSITIVITY_HIGH",
-            ]).describe("The sensitivity score applied to the resource.")
-              .optional(),
-          }).describe(
+          sensitivityScore: z.unknown().describe(
             "Score is calculated from of all elements in the data profile. A higher level means the data is more sensitive.",
           ).optional(),
-          version: z.string().describe(
+          version: z.unknown().describe(
             "Optional version name for this InfoType.",
           ).optional(),
         }).describe("Type of information detected by the API.").optional(),
@@ -1147,307 +556,10 @@ const InputsSchema = z.object({
         "Minimum likelihood per infotype. For each infotype, a user can specify a minimum likelihood. The system only returns a finding if its likelihood is above this threshold. If this field is not set, the system uses the InspectConfig min_likelihood.",
       ).optional(),
       ruleSet: z.array(z.object({
-        infoTypes: z.array(z.object({
-          name: z.string().describe(
-            "Name of the information type. Either a name of your choosing when creating a CustomInfoType, or one of the names listed at https://cloud.google.com/sensitive-data-protection/docs/infotypes-reference when specifying a built-in type. When sending Cloud DLP results to Data Catalog, infoType names should conform to the pattern `[A-Za-z0-9$_-]{1,64}`.",
-          ).optional(),
-          sensitivityScore: z.object({
-            score: z.enum([
-              "SENSITIVITY_SCORE_UNSPECIFIED",
-              "SENSITIVITY_LOW",
-              "SENSITIVITY_UNKNOWN",
-              "SENSITIVITY_MODERATE",
-              "SENSITIVITY_HIGH",
-            ]).describe("The sensitivity score applied to the resource.")
-              .optional(),
-          }).describe(
-            "Score is calculated from of all elements in the data profile. A higher level means the data is more sensitive.",
-          ).optional(),
-          version: z.string().describe(
-            "Optional version name for this InfoType.",
-          ).optional(),
-        })).describe("List of infoTypes this rule set is applied to.")
-          .optional(),
-        rules: z.array(z.object({
-          adjustmentRule: z.object({
-            adjustByImageFindings: z.object({
-              imageContainmentType: z.object({
-                encloses: z.object({}).describe(
-                  "Defines a condition where one bounding box encloses another.",
-                ).optional(),
-                fullyInside: z.object({}).describe(
-                  "Defines a condition where one bounding box is fully inside another.",
-                ).optional(),
-                overlaps: z.object({}).describe(
-                  "Defines a condition for overlapping bounding boxes.",
-                ).optional(),
-              }).describe(
-                "Specifies the relationship between bounding boxes for image findings.",
-              ).optional(),
-              infoTypes: z.array(z.object({
-                name: z.string().describe(
-                  "Name of the information type. Either a name of your choosing when creating a CustomInfoType, or one of the names listed at https://cloud.google.com/sensitive-data-protection/docs/infotypes-reference when specifying a built-in type. When sending Cloud DLP results to Data Catalog, infoType names should conform to the pattern `[A-Za-z0-9$_-]{1,64}`.",
-                ).optional(),
-                sensitivityScore: z.object({
-                  score: z.enum([
-                    "SENSITIVITY_SCORE_UNSPECIFIED",
-                    "SENSITIVITY_LOW",
-                    "SENSITIVITY_UNKNOWN",
-                    "SENSITIVITY_MODERATE",
-                    "SENSITIVITY_HIGH",
-                  ]).describe("The sensitivity score applied to the resource.")
-                    .optional(),
-                }).describe(
-                  "Score is calculated from of all elements in the data profile. A higher level means the data is more sensitive.",
-                ).optional(),
-                version: z.string().describe(
-                  "Optional version name for this InfoType.",
-                ).optional(),
-              })).describe(
-                "A list of image-supported infoTypes—excluding [document infoTypes](https://cloud.google.com/sensitive-data-protection/docs/infotypes-reference#documents)—to be used as context for the adjustment rule. Sensitive Data Protection adjusts the likelihood of an image finding if its bounding box has the specified spatial relationship (defined by `image_containment_type`) with a finding of an infoType in this list. For example, you can create a rule to adjust the likelihood of a `US_PASSPORT` finding if it is enclosed by a finding of `OBJECT_TYPE/PERSON/PASSPORT`. To configure this, set `US_PASSPORT` in `InspectionRuleSet.info_types`. Add an `adjustment_rule` with an `adjust_by_image_findings.info_types` that contains `OBJECT_TYPE/PERSON/PASSPORT` and `image_containment_type` set to `encloses`. In this case, the likelihood of the `US_PASSPORT` finding is adjusted, but the likelihood of the `OBJECT_TYPE/PERSON/PASSPORT` finding is not.",
-              ).optional(),
-              minLikelihood: z.enum([
-                "LIKELIHOOD_UNSPECIFIED",
-                "VERY_UNLIKELY",
-                "UNLIKELY",
-                "POSSIBLE",
-                "LIKELY",
-                "VERY_LIKELY",
-              ]).describe(
-                "Required. Minimum likelihood of the `adjust_by_image_findings.info_types` finding. If the likelihood is lower than this value, Sensitive Data Protection doesn't adjust the likelihood of the `InspectionRuleSet.info_types` finding.",
-              ).optional(),
-            }).describe(
-              "AdjustmentRule condition for image findings. This rule is silently ignored if the content being inspected is not an image.",
-            ).optional(),
-            adjustByMatchingInfoTypes: z.object({
-              infoTypes: z.array(z.object({
-                name: z.string().describe(
-                  "Name of the information type. Either a name of your choosing when creating a CustomInfoType, or one of the names listed at https://cloud.google.com/sensitive-data-protection/docs/infotypes-reference when specifying a built-in type. When sending Cloud DLP results to Data Catalog, infoType names should conform to the pattern `[A-Za-z0-9$_-]{1,64}`.",
-                ).optional(),
-                sensitivityScore: z.object({
-                  score: z.enum([
-                    "SENSITIVITY_SCORE_UNSPECIFIED",
-                    "SENSITIVITY_LOW",
-                    "SENSITIVITY_UNKNOWN",
-                    "SENSITIVITY_MODERATE",
-                    "SENSITIVITY_HIGH",
-                  ]).describe("The sensitivity score applied to the resource.")
-                    .optional(),
-                }).describe(
-                  "Score is calculated from of all elements in the data profile. A higher level means the data is more sensitive.",
-                ).optional(),
-                version: z.string().describe(
-                  "Optional version name for this InfoType.",
-                ).optional(),
-              })).describe(
-                "Sensitive Data Protection adjusts the likelihood of a finding if that finding also matches one of these infoTypes. For example, you can create a rule to adjust the likelihood of a `PHONE_NUMBER` finding if the string is found within a document that is classified as `DOCUMENT_TYPE/HR/RESUME`. To configure this, set `PHONE_NUMBER` in `InspectionRuleSet.info_types`. Add an `adjustment_rule` with an `adjust_by_matching_info_types.info_types` that contains `DOCUMENT_TYPE/HR/RESUME`. In this case, the likelihood of the `PHONE_NUMBER` finding is adjusted, but the likelihood of the `DOCUMENT_TYPE/HR/RESUME` finding is not.",
-              ).optional(),
-              matchingType: z.enum([
-                "MATCHING_TYPE_UNSPECIFIED",
-                "MATCHING_TYPE_FULL_MATCH",
-                "MATCHING_TYPE_PARTIAL_MATCH",
-                "MATCHING_TYPE_INVERSE_MATCH",
-                "MATCHING_TYPE_RULE_SPECIFIC",
-              ]).describe(
-                "How the adjustment rule is applied. Only `MATCHING_TYPE_PARTIAL_MATCH` is supported: - Partial match: adjusts the findings of infoTypes specified in the inspection rule when they have a nonempty intersection with a finding of an infoType specified in this adjustment rule.",
-              ).optional(),
-              minLikelihood: z.enum([
-                "LIKELIHOOD_UNSPECIFIED",
-                "VERY_UNLIKELY",
-                "UNLIKELY",
-                "POSSIBLE",
-                "LIKELY",
-                "VERY_LIKELY",
-              ]).describe(
-                "Required. Minimum likelihood of the `adjust_by_matching_info_types.info_types` finding. If the likelihood is lower than this value, Sensitive Data Protection doesn't adjust the likelihood of the `InspectionRuleSet.info_types` finding.",
-              ).optional(),
-            }).describe("AdjustmentRule condition for matching infoTypes.")
-              .optional(),
-            likelihoodAdjustment: z.object({
-              fixedLikelihood: z.enum([
-                "LIKELIHOOD_UNSPECIFIED",
-                "VERY_UNLIKELY",
-                "UNLIKELY",
-                "POSSIBLE",
-                "LIKELY",
-                "VERY_LIKELY",
-              ]).describe("Set the likelihood of a finding to a fixed value.")
-                .optional(),
-              relativeLikelihood: z.number().int().describe(
-                "Increase or decrease the likelihood by the specified number of levels. For example, if a finding would be `POSSIBLE` without the detection rule and `relative_likelihood` is 1, then it is upgraded to `LIKELY`, while a value of -1 would downgrade it to `UNLIKELY`. Likelihood may never drop below `VERY_UNLIKELY` or exceed `VERY_LIKELY`, so applying an adjustment of 1 followed by an adjustment of -1 when base likelihood is `VERY_LIKELY` will result in a final likelihood of `LIKELY`.",
-              ).optional(),
-            }).describe(
-              "Message for specifying an adjustment to the likelihood of a finding as part of a detection rule.",
-            ).optional(),
-          }).describe(
-            "Rule that specifies conditions when a certain infoType's finding details should be adjusted.",
-          ).optional(),
-          exclusionRule: z.object({
-            dictionary: z.object({
-              cloudStoragePath: z.object({
-                path: z.string().describe(
-                  "A URL representing a file or path (no wildcards) in Cloud Storage. Example: `gs://[BUCKET_NAME]/dictionary.txt`",
-                ).optional(),
-              }).describe(
-                "Message representing a single file or path in Cloud Storage.",
-              ).optional(),
-              wordList: z.object({
-                words: z.array(z.string()).describe(
-                  "Words or phrases defining the dictionary. The dictionary must contain at least one phrase and every phrase must contain at least 2 characters that are letters or digits. [required]",
-                ).optional(),
-              }).describe(
-                "Message defining a list of words or phrases to search for in the data.",
-              ).optional(),
-            }).describe(
-              'Custom information type based on a dictionary of words or phrases. This can be used to match sensitive information specific to the data, such as a list of employee IDs or job titles. Dictionary words are case-insensitive and all characters other than letters and digits in the unicode [Basic Multilingual Plane](https://en.wikipedia.org/wiki/Plane_%28Unicode%29#Basic_Multilingual_Plane) will be replaced with whitespace when scanning for matches, so the dictionary phrase "Sam Johnson" will match all three phrases "sam johnson", "Sam, Johnson", and "Sam (Johnson)". Additionally, the characters surrounding any match must be of a different type than the adjacent characters within the word, so letters must be next to non-letters and digits next to non-digits. For example, the dictionary word "jen" will match the first three letters of the text "jen123" but will return no matches for "jennifer". Dictionary words containing a large number of characters that are not letters or digits may result in unexpected findings because such characters are treated as whitespace. The [limits](https://cloud.google.com/sensitive-data-protection/limits) page contains details about the size limits of dictionaries. For dictionaries that do not fit within these constraints, consider using `LargeCustomDictionaryConfig` in the `StoredInfoType` API.',
-            ).optional(),
-            excludeByHotword: z.object({
-              hotwordRegex: z.object({
-                groupIndexes: z.array(z.number().int()).describe(
-                  "The index of the submatch to extract as findings. When not specified, the entire match is returned. No more than 3 may be included.",
-                ).optional(),
-                pattern: z.string().describe(
-                  "Pattern defining the regular expression. Its syntax (https://github.com/google/re2/wiki/Syntax) can be found under the google/re2 repository on GitHub.",
-                ).optional(),
-              }).describe("Message defining a custom regular expression.")
-                .optional(),
-              proximity: z.object({
-                windowAfter: z.number().int().describe(
-                  "Number of characters after the finding to consider.",
-                ).optional(),
-                windowBefore: z.number().int().describe(
-                  "Number of characters before the finding to consider. For tabular data, if you want to modify the likelihood of an entire column of findngs, set this to 1. For more information, see [Hotword example: Set the match likelihood of a table column] (https://cloud.google.com/sensitive-data-protection/docs/creating-custom-infotypes-likelihood#match-column-values).",
-                ).optional(),
-              }).describe(
-                "Message for specifying a window around a finding to apply a detection rule.",
-              ).optional(),
-            }).describe(
-              "The rule to exclude findings based on a hotword. For record inspection of tables, column names are considered hotwords. An example of this is to exclude a finding if it belongs to a BigQuery column that matches a specific pattern.",
-            ).optional(),
-            excludeByImageFindings: z.object({
-              imageContainmentType: z.object({
-                encloses: z.object({}).describe(
-                  "Defines a condition where one bounding box encloses another.",
-                ).optional(),
-                fullyInside: z.object({}).describe(
-                  "Defines a condition where one bounding box is fully inside another.",
-                ).optional(),
-                overlaps: z.object({}).describe(
-                  "Defines a condition for overlapping bounding boxes.",
-                ).optional(),
-              }).describe(
-                "Specifies the relationship between bounding boxes for image findings.",
-              ).optional(),
-              infoTypes: z.array(z.object({
-                name: z.string().describe(
-                  "Name of the information type. Either a name of your choosing when creating a CustomInfoType, or one of the names listed at https://cloud.google.com/sensitive-data-protection/docs/infotypes-reference when specifying a built-in type. When sending Cloud DLP results to Data Catalog, infoType names should conform to the pattern `[A-Za-z0-9$_-]{1,64}`.",
-                ).optional(),
-                sensitivityScore: z.object({
-                  score: z.enum([
-                    "SENSITIVITY_SCORE_UNSPECIFIED",
-                    "SENSITIVITY_LOW",
-                    "SENSITIVITY_UNKNOWN",
-                    "SENSITIVITY_MODERATE",
-                    "SENSITIVITY_HIGH",
-                  ]).describe("The sensitivity score applied to the resource.")
-                    .optional(),
-                }).describe(
-                  "Score is calculated from of all elements in the data profile. A higher level means the data is more sensitive.",
-                ).optional(),
-                version: z.string().describe(
-                  "Optional version name for this InfoType.",
-                ).optional(),
-              })).describe(
-                "A list of image-supported infoTypes—excluding [document infoTypes](https://cloud.google.com/sensitive-data-protection/docs/infotypes-reference#documents)—to be used as context for the exclusion rule. A finding is excluded if its bounding box has the specified spatial relationship (defined by `image_containment_type`) with a finding of an infoType in this list. For example, if `InspectionRuleSet.info_types` includes `OBJECT_TYPE/PERSON` and this `exclusion_rule` specifies `info_types` as `OBJECT_TYPE/PERSON/PASSPORT` with `image_containment_type` set to `encloses`, then `OBJECT_TYPE/PERSON` findings will be excluded if they are fully contained within the bounding box of an `OBJECT_TYPE/PERSON/PASSPORT` finding.",
-              ).optional(),
-            }).describe(
-              "The rule to exclude image findings based on spatial relationships with other image findings. For example, exclude an image finding if it overlaps with another image finding. This rule is silently ignored if the content being inspected is not an image.",
-            ).optional(),
-            excludeInfoTypes: z.object({
-              infoTypes: z.array(z.object({
-                name: z.string().describe(
-                  "Name of the information type. Either a name of your choosing when creating a CustomInfoType, or one of the names listed at https://cloud.google.com/sensitive-data-protection/docs/infotypes-reference when specifying a built-in type. When sending Cloud DLP results to Data Catalog, infoType names should conform to the pattern `[A-Za-z0-9$_-]{1,64}`.",
-                ).optional(),
-                sensitivityScore: z.object({
-                  score: z.enum([
-                    "SENSITIVITY_SCORE_UNSPECIFIED",
-                    "SENSITIVITY_LOW",
-                    "SENSITIVITY_UNKNOWN",
-                    "SENSITIVITY_MODERATE",
-                    "SENSITIVITY_HIGH",
-                  ]).describe("The sensitivity score applied to the resource.")
-                    .optional(),
-                }).describe(
-                  "Score is calculated from of all elements in the data profile. A higher level means the data is more sensitive.",
-                ).optional(),
-                version: z.string().describe(
-                  "Optional version name for this InfoType.",
-                ).optional(),
-              })).describe(
-                'InfoType list in ExclusionRule rule drops a finding when it overlaps or contained within with a finding of an infoType from this list. For example, for `InspectionRuleSet.info_types` containing "PHONE_NUMBER"` and `exclusion_rule` containing `exclude_info_types.info_types` with "EMAIL_ADDRESS" the phone number findings are dropped if they overlap with EMAIL_ADDRESS finding. That leads to "555-222-2222@example.org" to generate only a single finding, namely email address.',
-              ).optional(),
-            }).describe("List of excluded infoTypes.").optional(),
-            matchingType: z.enum([
-              "MATCHING_TYPE_UNSPECIFIED",
-              "MATCHING_TYPE_FULL_MATCH",
-              "MATCHING_TYPE_PARTIAL_MATCH",
-              "MATCHING_TYPE_INVERSE_MATCH",
-              "MATCHING_TYPE_RULE_SPECIFIC",
-            ]).describe(
-              "How the rule is applied, see MatchingType documentation for details.",
-            ).optional(),
-            regex: z.object({
-              groupIndexes: z.array(z.number().int()).describe(
-                "The index of the submatch to extract as findings. When not specified, the entire match is returned. No more than 3 may be included.",
-              ).optional(),
-              pattern: z.string().describe(
-                "Pattern defining the regular expression. Its syntax (https://github.com/google/re2/wiki/Syntax) can be found under the google/re2 repository on GitHub.",
-              ).optional(),
-            }).describe("Message defining a custom regular expression.")
-              .optional(),
-          }).describe(
-            "The rule that specifies conditions when findings of infoTypes specified in `InspectionRuleSet` are removed from results.",
-          ).optional(),
-          hotwordRule: z.object({
-            hotwordRegex: z.object({
-              groupIndexes: z.array(z.number().int()).describe(
-                "The index of the submatch to extract as findings. When not specified, the entire match is returned. No more than 3 may be included.",
-              ).optional(),
-              pattern: z.string().describe(
-                "Pattern defining the regular expression. Its syntax (https://github.com/google/re2/wiki/Syntax) can be found under the google/re2 repository on GitHub.",
-              ).optional(),
-            }).describe("Message defining a custom regular expression.")
-              .optional(),
-            likelihoodAdjustment: z.object({
-              fixedLikelihood: z.enum([
-                "LIKELIHOOD_UNSPECIFIED",
-                "VERY_UNLIKELY",
-                "UNLIKELY",
-                "POSSIBLE",
-                "LIKELY",
-                "VERY_LIKELY",
-              ]).describe("Set the likelihood of a finding to a fixed value.")
-                .optional(),
-              relativeLikelihood: z.number().int().describe(
-                "Increase or decrease the likelihood by the specified number of levels. For example, if a finding would be `POSSIBLE` without the detection rule and `relative_likelihood` is 1, then it is upgraded to `LIKELY`, while a value of -1 would downgrade it to `UNLIKELY`. Likelihood may never drop below `VERY_UNLIKELY` or exceed `VERY_LIKELY`, so applying an adjustment of 1 followed by an adjustment of -1 when base likelihood is `VERY_LIKELY` will result in a final likelihood of `LIKELY`.",
-              ).optional(),
-            }).describe(
-              "Message for specifying an adjustment to the likelihood of a finding as part of a detection rule.",
-            ).optional(),
-            proximity: z.object({
-              windowAfter: z.number().int().describe(
-                "Number of characters after the finding to consider.",
-              ).optional(),
-              windowBefore: z.number().int().describe(
-                "Number of characters before the finding to consider. For tabular data, if you want to modify the likelihood of an entire column of findngs, set this to 1. For more information, see [Hotword example: Set the match likelihood of a table column] (https://cloud.google.com/sensitive-data-protection/docs/creating-custom-infotypes-likelihood#match-column-values).",
-              ).optional(),
-            }).describe(
-              "Message for specifying a window around a finding to apply a detection rule.",
-            ).optional(),
-          }).describe(
-            "The rule that adjusts the likelihood of findings within a certain proximity of hotwords.",
-          ).optional(),
-        })).describe(
+        infoTypes: z.array(z.unknown()).describe(
+          "List of infoTypes this rule set is applied to.",
+        ).optional(),
+        rules: z.array(z.unknown()).describe(
           "Set of rules to be applied to infoTypes. The rules are applied in order.",
         ).optional(),
       })).describe(
@@ -1479,7 +591,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/dlp/inspecttemplates",
-  version: "2026.04.03.3",
+  version: "2026.04.04.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -1503,6 +615,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.3",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.04.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

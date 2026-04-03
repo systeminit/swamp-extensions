@@ -54,97 +54,31 @@ const StateSchema = z.object({
       baseline: z.object({
         accessState: z.string(),
         errors: z.array(z.object({
-          code: z.number(),
-          details: z.array(z.record(z.string(), z.unknown())),
-          message: z.string(),
+          code: z.unknown(),
+          details: z.unknown(),
+          message: z.unknown(),
         })),
         policies: z.array(z.object({
-          access: z.string(),
-          bindingExplanations: z.array(z.object({
-            access: z.string(),
-            condition: z.object({
-              description: z.string(),
-              expression: z.string(),
-              location: z.string(),
-              title: z.string(),
-            }),
-            memberships: z.record(z.string(), z.unknown()),
-            relevance: z.string(),
-            role: z.string(),
-            rolePermission: z.string(),
-            rolePermissionRelevance: z.string(),
-          })),
-          fullResourceName: z.string(),
-          policy: z.object({
-            auditConfigs: z.array(z.object({
-              auditLogConfigs: z.array(z.object({
-                exemptedMembers: z.array(z.string()),
-                logType: z.string(),
-              })),
-              service: z.string(),
-            })),
-            bindings: z.array(z.object({
-              condition: z.object({
-                description: z.string(),
-                expression: z.string(),
-                location: z.string(),
-                title: z.string(),
-              }),
-              members: z.array(z.string()),
-              role: z.string(),
-            })),
-            etag: z.string(),
-            version: z.number(),
-          }),
-          relevance: z.string(),
+          access: z.unknown(),
+          bindingExplanations: z.unknown(),
+          fullResourceName: z.unknown(),
+          policy: z.unknown(),
+          relevance: z.unknown(),
         })),
       }),
       simulated: z.object({
         accessState: z.string(),
         errors: z.array(z.object({
-          code: z.number(),
-          details: z.array(z.record(z.string(), z.unknown())),
-          message: z.string(),
+          code: z.unknown(),
+          details: z.unknown(),
+          message: z.unknown(),
         })),
         policies: z.array(z.object({
-          access: z.string(),
-          bindingExplanations: z.array(z.object({
-            access: z.string(),
-            condition: z.object({
-              description: z.string(),
-              expression: z.string(),
-              location: z.string(),
-              title: z.string(),
-            }),
-            memberships: z.record(z.string(), z.unknown()),
-            relevance: z.string(),
-            role: z.string(),
-            rolePermission: z.string(),
-            rolePermissionRelevance: z.string(),
-          })),
-          fullResourceName: z.string(),
-          policy: z.object({
-            auditConfigs: z.array(z.object({
-              auditLogConfigs: z.array(z.object({
-                exemptedMembers: z.array(z.string()),
-                logType: z.string(),
-              })),
-              service: z.string(),
-            })),
-            bindings: z.array(z.object({
-              condition: z.object({
-                description: z.string(),
-                expression: z.string(),
-                location: z.string(),
-                title: z.string(),
-              }),
-              members: z.array(z.string()),
-              role: z.string(),
-            })),
-            etag: z.string(),
-            version: z.number(),
-          }),
-          relevance: z.string(),
+          access: z.unknown(),
+          bindingExplanations: z.unknown(),
+          fullResourceName: z.unknown(),
+          policy: z.unknown(),
+          relevance: z.unknown(),
         })),
       }),
     }),
@@ -174,7 +108,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/policysimulator/replays-results",
-  version: "2026.04.03.3",
+  version: "2026.04.04.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -198,6 +132,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.3",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.04.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

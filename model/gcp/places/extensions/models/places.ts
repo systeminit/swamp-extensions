@@ -110,9 +110,9 @@ const StateSchema = z.object({
     periods: z.array(z.object({
       close: z.object({
         date: z.object({
-          day: z.number(),
-          month: z.number(),
-          year: z.number(),
+          day: z.unknown(),
+          month: z.unknown(),
+          year: z.unknown(),
         }),
         day: z.number(),
         hour: z.number(),
@@ -121,9 +121,9 @@ const StateSchema = z.object({
       }),
       open: z.object({
         date: z.object({
-          day: z.number(),
-          month: z.number(),
-          year: z.number(),
+          day: z.unknown(),
+          month: z.unknown(),
+          year: z.unknown(),
         }),
         day: z.number(),
         hour: z.number(),
@@ -147,34 +147,26 @@ const StateSchema = z.object({
     openNow: z.boolean(),
     periods: z.array(z.object({
       close: z.object({
-        date: z.object({
-          day: z.number(),
-          month: z.number(),
-          year: z.number(),
-        }),
-        day: z.number(),
-        hour: z.number(),
-        minute: z.number(),
-        truncated: z.boolean(),
+        date: z.unknown(),
+        day: z.unknown(),
+        hour: z.unknown(),
+        minute: z.unknown(),
+        truncated: z.unknown(),
       }),
       open: z.object({
-        date: z.object({
-          day: z.number(),
-          month: z.number(),
-          year: z.number(),
-        }),
-        day: z.number(),
-        hour: z.number(),
-        minute: z.number(),
-        truncated: z.boolean(),
+        date: z.unknown(),
+        day: z.unknown(),
+        hour: z.unknown(),
+        minute: z.unknown(),
+        truncated: z.unknown(),
       }),
     })),
     secondaryHoursType: z.string(),
     specialDays: z.array(z.object({
       date: z.object({
-        day: z.number(),
-        month: z.number(),
-        year: z.number(),
+        day: z.unknown(),
+        month: z.unknown(),
+        year: z.unknown(),
       }),
     })),
     weekdayDescriptions: z.array(z.string()),
@@ -385,9 +377,9 @@ const StateSchema = z.object({
     periods: z.array(z.object({
       close: z.object({
         date: z.object({
-          day: z.number(),
-          month: z.number(),
-          year: z.number(),
+          day: z.unknown(),
+          month: z.unknown(),
+          year: z.unknown(),
         }),
         day: z.number(),
         hour: z.number(),
@@ -396,9 +388,9 @@ const StateSchema = z.object({
       }),
       open: z.object({
         date: z.object({
-          day: z.number(),
-          month: z.number(),
-          year: z.number(),
+          day: z.unknown(),
+          month: z.unknown(),
+          year: z.unknown(),
         }),
         day: z.number(),
         hour: z.number(),
@@ -422,34 +414,26 @@ const StateSchema = z.object({
     openNow: z.boolean(),
     periods: z.array(z.object({
       close: z.object({
-        date: z.object({
-          day: z.number(),
-          month: z.number(),
-          year: z.number(),
-        }),
-        day: z.number(),
-        hour: z.number(),
-        minute: z.number(),
-        truncated: z.boolean(),
+        date: z.unknown(),
+        day: z.unknown(),
+        hour: z.unknown(),
+        minute: z.unknown(),
+        truncated: z.unknown(),
       }),
       open: z.object({
-        date: z.object({
-          day: z.number(),
-          month: z.number(),
-          year: z.number(),
-        }),
-        day: z.number(),
-        hour: z.number(),
-        minute: z.number(),
-        truncated: z.boolean(),
+        date: z.unknown(),
+        day: z.unknown(),
+        hour: z.unknown(),
+        minute: z.unknown(),
+        truncated: z.unknown(),
       }),
     })),
     secondaryHoursType: z.string(),
     specialDays: z.array(z.object({
       date: z.object({
-        day: z.number(),
-        month: z.number(),
-        year: z.number(),
+        day: z.unknown(),
+        month: z.unknown(),
+        year: z.unknown(),
       }),
     })),
     weekdayDescriptions: z.array(z.string()),
@@ -538,7 +522,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/places/places",
-  version: "2026.04.03.3",
+  version: "2026.04.04.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -562,6 +546,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.3",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.04.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

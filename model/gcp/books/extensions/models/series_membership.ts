@@ -84,8 +84,8 @@ const StateSchema = z.object({
     kind: z.string(),
     layerInfo: z.object({
       layers: z.array(z.object({
-        layerId: z.string(),
-        volumeAnnotationsVersion: z.string(),
+        layerId: z.unknown(),
+        volumeAnnotationsVersion: z.unknown(),
       })),
     }),
     recommendedInfo: z.object({
@@ -100,20 +100,11 @@ const StateSchema = z.object({
         currencyCode: z.string(),
       }),
       offers: z.array(z.object({
-        finskyOfferType: z.number(),
-        giftable: z.boolean(),
-        listPrice: z.object({
-          amountInMicros: z.number(),
-          currencyCode: z.string(),
-        }),
-        rentalDuration: z.object({
-          count: z.number(),
-          unit: z.string(),
-        }),
-        retailPrice: z.object({
-          amountInMicros: z.number(),
-          currencyCode: z.string(),
-        }),
+        finskyOfferType: z.unknown(),
+        giftable: z.unknown(),
+        listPrice: z.unknown(),
+        rentalDuration: z.unknown(),
+        retailPrice: z.unknown(),
       })),
       onSaleDate: z.string(),
       retailPrice: z.object({
@@ -165,7 +156,7 @@ const StateSchema = z.object({
       rentalState: z.string(),
       review: z.object({
         author: z.object({
-          displayName: z.string(),
+          displayName: z.unknown(),
         }),
         content: z.string(),
         date: z.string(),
@@ -173,9 +164,9 @@ const StateSchema = z.object({
         kind: z.string(),
         rating: z.string(),
         source: z.object({
-          description: z.string(),
-          extraDescription: z.string(),
-          url: z.string(),
+          description: z.unknown(),
+          extraDescription: z.unknown(),
+          url: z.unknown(),
         }),
         title: z.string(),
         type: z.string(),
@@ -209,8 +200,8 @@ const StateSchema = z.object({
         thumbnail: z.string(),
       }),
       industryIdentifiers: z.array(z.object({
-        identifier: z.string(),
-        type: z.string(),
+        identifier: z.unknown(),
+        type: z.unknown(),
       })),
       infoLink: z.string(),
       language: z.string(),
@@ -238,15 +229,7 @@ const StateSchema = z.object({
         bookDisplayNumber: z.string(),
         kind: z.string(),
         shortSeriesBookTitle: z.string(),
-        volumeSeries: z.array(z.object({
-          issue: z.array(z.object({
-            issueDisplayNumber: z.string(),
-            issueOrderNumber: z.number(),
-          })),
-          orderNumber: z.number(),
-          seriesBookType: z.string(),
-          seriesId: z.string(),
-        })),
+        volumeSeries: z.array(z.unknown()),
       }),
       subtitle: z.string(),
       title: z.string(),
@@ -263,7 +246,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/books/series-membership",
-  version: "2026.04.03.3",
+  version: "2026.04.04.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -287,6 +270,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.3",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.04.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

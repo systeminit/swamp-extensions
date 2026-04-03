@@ -118,11 +118,7 @@ const GlobalArgsSchema = z.object({
       ).optional(),
       type: z.object({
         enumType: z.object({
-          allowedValues: z.array(z.object({
-            displayName: z.string().describe(
-              "Required. The display name of the enum value. Must not be an empty string. The name must contain only Unicode letters, numbers (0-9), underscores (_), dashes (-), spaces (), and can't start or end with spaces. The maximum length is 200 characters.",
-            ).optional(),
-          })).describe(
+          allowedValues: z.array(z.unknown()).describe(
             "The set of allowed values for this enum. This set must not be empty and can include up to 100 allowed values. The display names of the values in this set must not be empty and must be case-insensitively unique within this set. The order of items in this set is preserved. This field can be used to create, remove, and reorder enum values. To rename enum values, use the `RenameTagTemplateFieldEnumValue` method.",
           ).optional(),
         }).optional(),
@@ -193,11 +189,7 @@ const InputsSchema = z.object({
       ).optional(),
       type: z.object({
         enumType: z.object({
-          allowedValues: z.array(z.object({
-            displayName: z.string().describe(
-              "Required. The display name of the enum value. Must not be an empty string. The name must contain only Unicode letters, numbers (0-9), underscores (_), dashes (-), spaces (), and can't start or end with spaces. The maximum length is 200 characters.",
-            ).optional(),
-          })).describe(
+          allowedValues: z.array(z.unknown()).describe(
             "The set of allowed values for this enum. This set must not be empty and can include up to 100 allowed values. The display names of the values in this set must not be empty and must be case-insensitively unique within this set. The order of items in this set is preserved. This field can be used to create, remove, and reorder enum values. To rename enum values, use the `RenameTagTemplateFieldEnumValue` method.",
           ).optional(),
         }).optional(),
@@ -231,7 +223,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/datacatalog/tagtemplates",
-  version: "2026.04.03.3",
+  version: "2026.04.04.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -255,6 +247,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.3",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.04.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

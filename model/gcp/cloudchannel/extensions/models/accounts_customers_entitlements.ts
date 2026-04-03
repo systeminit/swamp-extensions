@@ -117,7 +117,7 @@ const GlobalArgsSchema = z.object({
           .optional(),
         int64Value: z.string().describe("Represents an int64 value.")
           .optional(),
-        protoValue: z.record(z.string(), z.string()).describe(
+        protoValue: z.record(z.string(), z.unknown()).describe(
           "Represents an 'Any' proto value.",
         ).optional(),
         stringValue: z.string().describe("Represents a string value.")
@@ -300,7 +300,7 @@ const InputsSchema = z.object({
           .optional(),
         int64Value: z.string().describe("Represents an int64 value.")
           .optional(),
-        protoValue: z.record(z.string(), z.string()).describe(
+        protoValue: z.record(z.string(), z.unknown()).describe(
           "Represents an 'Any' proto value.",
         ).optional(),
         stringValue: z.string().describe("Represents a string value.")
@@ -368,7 +368,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/cloudchannel/accounts-customers-entitlements",
-  version: "2026.04.03.3",
+  version: "2026.04.04.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -392,6 +392,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.3",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.04.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

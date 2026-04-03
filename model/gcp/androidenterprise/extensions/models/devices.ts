@@ -135,23 +135,7 @@ const GlobalArgsSchema = z.object({
     ).optional(),
     productPolicy: z.array(z.object({
       autoInstallPolicy: z.object({
-        autoInstallConstraint: z.array(z.object({
-          chargingStateConstraint: z.enum([
-            "chargingStateConstraintUnspecified",
-            "chargingNotRequired",
-            "chargingRequired",
-          ]).describe("Charging state constraint.").optional(),
-          deviceIdleStateConstraint: z.enum([
-            "deviceIdleStateConstraintUnspecified",
-            "deviceIdleNotRequired",
-            "deviceIdleRequired",
-          ]).describe("Device idle state constraint.").optional(),
-          networkTypeConstraint: z.enum([
-            "networkTypeConstraintUnspecified",
-            "anyNetwork",
-            "unmeteredNetwork",
-          ]).describe("Network type constraint.").optional(),
-        })).describe(
+        autoInstallConstraint: z.array(z.unknown()).describe(
           "The constraints for auto-installing the app. You can specify a maximum of one constraint.",
         ).optional(),
         autoInstallMode: z.enum([
@@ -178,58 +162,25 @@ const GlobalArgsSchema = z.object({
         "The auto-update mode for the product. When autoUpdateMode is used, it always takes precedence over the user's choice. So when a user makes changes to the device settings manually, these changes are ignored.",
       ).optional(),
       enterpriseAuthenticationAppLinkConfigs: z.array(z.object({
-        uri: z.string().describe("An authentication url.").optional(),
+        uri: z.unknown().describe("An authentication url.").optional(),
       })).describe(
         "An authentication URL configuration for the authenticator app of an identity provider. This helps to launch the identity provider's authenticator app during the authentication happening in a private app using Android WebView. Authenticator app should already be the default handler for the authentication url on the device.",
       ).optional(),
       managedConfiguration: z.object({
         configurationVariables: z.object({
-          mcmId: z.string().describe(
+          mcmId: z.unknown().describe(
             "The ID of the managed configurations settings.",
           ).optional(),
-          variableSet: z.array(z.object({
-            placeholder: z.string().describe(
-              "The placeholder string; defined by EMM.",
-            ).optional(),
-            userValue: z.string().describe(
-              "The value of the placeholder, specific to the user.",
-            ).optional(),
-          })).describe("The variable set that is attributed to the user.")
-            .optional(),
+          variableSet: z.unknown().describe(
+            "The variable set that is attributed to the user.",
+          ).optional(),
         }).describe(
           "A configuration variables resource contains the managed configuration settings ID to be applied to a single user, as well as the variable set that is attributed to the user. The variable set will be used to replace placeholders in the managed configuration settings.",
         ).optional(),
         kind: z.string().describe("Deprecated.").optional(),
-        managedProperty: z.array(z.object({
-          key: z.string().describe(
-            "The unique key that identifies the property.",
-          ).optional(),
-          valueBool: z.boolean().describe(
-            "The boolean value - this will only be present if type of the property is bool.",
-          ).optional(),
-          valueBundle: z.object({
-            managedProperty: z.array(z.string()).describe(
-              "The list of managed properties.",
-            ).optional(),
-          }).describe("A bundle of managed properties.").optional(),
-          valueBundleArray: z.array(z.object({
-            managedProperty: z.array(z.string()).describe(
-              "The list of managed properties.",
-            ).optional(),
-          })).describe(
-            "The list of bundles of properties - this will only be present if type of the property is bundle_array.",
-          ).optional(),
-          valueInteger: z.number().int().describe(
-            "The integer value - this will only be present if type of the property is integer.",
-          ).optional(),
-          valueString: z.string().describe(
-            "The string value - this will only be present if type of the property is string, choice or hidden.",
-          ).optional(),
-          valueStringArray: z.array(z.string()).describe(
-            "The list of string values - this will only be present if type of the property is multiselect.",
-          ).optional(),
-        })).describe("The set of managed properties for this configuration.")
-          .optional(),
+        managedProperty: z.array(z.unknown()).describe(
+          "The set of managed properties for this configuration.",
+        ).optional(),
         productId: z.string().describe(
           'The ID of the product that the managed configuration is for, e.g. "app:com.google.android.gm".',
         ).optional(),
@@ -255,20 +206,19 @@ const GlobalArgsSchema = z.object({
   report: z.object({
     appState: z.array(z.object({
       keyedAppState: z.array(z.object({
-        data: z.string().describe(
+        data: z.unknown().describe(
           "Additional field intended for machine-readable data. For example, a number or JSON object. To prevent XSS, we recommend removing any HTML from the data before displaying it.",
         ).optional(),
-        key: z.string().describe(
+        key: z.unknown().describe(
           "Key indicating what the app is providing a state for. The content of the key is set by the app's developer. To prevent XSS, we recommend removing any HTML from the key before displaying it. This field will always be present.",
         ).optional(),
-        message: z.string().describe(
+        message: z.unknown().describe(
           "Free-form, human-readable message describing the app state. For example, an error message. To prevent XSS, we recommend removing any HTML from the message before displaying it.",
         ).optional(),
-        severity: z.enum(["severityUnknown", "severityInfo", "severityError"])
-          .describe(
-            "Severity of the app state. This field will always be present.",
-          ).optional(),
-        stateTimestampMillis: z.string().describe(
+        severity: z.unknown().describe(
+          "Severity of the app state. This field will always be present.",
+        ).optional(),
+        stateTimestampMillis: z.unknown().describe(
           "Timestamp of when the app set the state in milliseconds since epoch. This field will always be present.",
         ).optional(),
       })).describe(
@@ -311,41 +261,22 @@ const StateSchema = z.object({
     productAvailabilityPolicy: z.string(),
     productPolicy: z.array(z.object({
       autoInstallPolicy: z.object({
-        autoInstallConstraint: z.array(z.object({
-          chargingStateConstraint: z.string(),
-          deviceIdleStateConstraint: z.string(),
-          networkTypeConstraint: z.string(),
-        })),
+        autoInstallConstraint: z.array(z.unknown()),
         autoInstallMode: z.string(),
         autoInstallPriority: z.number(),
         minimumVersionCode: z.number(),
       }),
       autoUpdateMode: z.string(),
       enterpriseAuthenticationAppLinkConfigs: z.array(z.object({
-        uri: z.string(),
+        uri: z.unknown(),
       })),
       managedConfiguration: z.object({
         configurationVariables: z.object({
-          mcmId: z.string(),
-          variableSet: z.array(z.object({
-            placeholder: z.string(),
-            userValue: z.string(),
-          })),
+          mcmId: z.unknown(),
+          variableSet: z.unknown(),
         }),
         kind: z.string(),
-        managedProperty: z.array(z.object({
-          key: z.string(),
-          valueBool: z.boolean(),
-          valueBundle: z.object({
-            managedProperty: z.array(z.string()),
-          }),
-          valueBundleArray: z.array(z.object({
-            managedProperty: z.array(z.string()),
-          })),
-          valueInteger: z.number(),
-          valueString: z.string(),
-          valueStringArray: z.array(z.string()),
-        })),
+        managedProperty: z.array(z.unknown()),
         productId: z.string(),
       }),
       productId: z.string(),
@@ -357,11 +288,11 @@ const StateSchema = z.object({
   report: z.object({
     appState: z.array(z.object({
       keyedAppState: z.array(z.object({
-        data: z.string(),
-        key: z.string(),
-        message: z.string(),
-        severity: z.string(),
-        stateTimestampMillis: z.string(),
+        data: z.unknown(),
+        key: z.unknown(),
+        message: z.unknown(),
+        severity: z.unknown(),
+        stateTimestampMillis: z.unknown(),
       })),
       packageName: z.string(),
     })),
@@ -437,23 +368,7 @@ const InputsSchema = z.object({
     ).optional(),
     productPolicy: z.array(z.object({
       autoInstallPolicy: z.object({
-        autoInstallConstraint: z.array(z.object({
-          chargingStateConstraint: z.enum([
-            "chargingStateConstraintUnspecified",
-            "chargingNotRequired",
-            "chargingRequired",
-          ]).describe("Charging state constraint.").optional(),
-          deviceIdleStateConstraint: z.enum([
-            "deviceIdleStateConstraintUnspecified",
-            "deviceIdleNotRequired",
-            "deviceIdleRequired",
-          ]).describe("Device idle state constraint.").optional(),
-          networkTypeConstraint: z.enum([
-            "networkTypeConstraintUnspecified",
-            "anyNetwork",
-            "unmeteredNetwork",
-          ]).describe("Network type constraint.").optional(),
-        })).describe(
+        autoInstallConstraint: z.array(z.unknown()).describe(
           "The constraints for auto-installing the app. You can specify a maximum of one constraint.",
         ).optional(),
         autoInstallMode: z.enum([
@@ -480,58 +395,25 @@ const InputsSchema = z.object({
         "The auto-update mode for the product. When autoUpdateMode is used, it always takes precedence over the user's choice. So when a user makes changes to the device settings manually, these changes are ignored.",
       ).optional(),
       enterpriseAuthenticationAppLinkConfigs: z.array(z.object({
-        uri: z.string().describe("An authentication url.").optional(),
+        uri: z.unknown().describe("An authentication url.").optional(),
       })).describe(
         "An authentication URL configuration for the authenticator app of an identity provider. This helps to launch the identity provider's authenticator app during the authentication happening in a private app using Android WebView. Authenticator app should already be the default handler for the authentication url on the device.",
       ).optional(),
       managedConfiguration: z.object({
         configurationVariables: z.object({
-          mcmId: z.string().describe(
+          mcmId: z.unknown().describe(
             "The ID of the managed configurations settings.",
           ).optional(),
-          variableSet: z.array(z.object({
-            placeholder: z.string().describe(
-              "The placeholder string; defined by EMM.",
-            ).optional(),
-            userValue: z.string().describe(
-              "The value of the placeholder, specific to the user.",
-            ).optional(),
-          })).describe("The variable set that is attributed to the user.")
-            .optional(),
+          variableSet: z.unknown().describe(
+            "The variable set that is attributed to the user.",
+          ).optional(),
         }).describe(
           "A configuration variables resource contains the managed configuration settings ID to be applied to a single user, as well as the variable set that is attributed to the user. The variable set will be used to replace placeholders in the managed configuration settings.",
         ).optional(),
         kind: z.string().describe("Deprecated.").optional(),
-        managedProperty: z.array(z.object({
-          key: z.string().describe(
-            "The unique key that identifies the property.",
-          ).optional(),
-          valueBool: z.boolean().describe(
-            "The boolean value - this will only be present if type of the property is bool.",
-          ).optional(),
-          valueBundle: z.object({
-            managedProperty: z.array(z.string()).describe(
-              "The list of managed properties.",
-            ).optional(),
-          }).describe("A bundle of managed properties.").optional(),
-          valueBundleArray: z.array(z.object({
-            managedProperty: z.array(z.string()).describe(
-              "The list of managed properties.",
-            ).optional(),
-          })).describe(
-            "The list of bundles of properties - this will only be present if type of the property is bundle_array.",
-          ).optional(),
-          valueInteger: z.number().int().describe(
-            "The integer value - this will only be present if type of the property is integer.",
-          ).optional(),
-          valueString: z.string().describe(
-            "The string value - this will only be present if type of the property is string, choice or hidden.",
-          ).optional(),
-          valueStringArray: z.array(z.string()).describe(
-            "The list of string values - this will only be present if type of the property is multiselect.",
-          ).optional(),
-        })).describe("The set of managed properties for this configuration.")
-          .optional(),
+        managedProperty: z.array(z.unknown()).describe(
+          "The set of managed properties for this configuration.",
+        ).optional(),
         productId: z.string().describe(
           'The ID of the product that the managed configuration is for, e.g. "app:com.google.android.gm".',
         ).optional(),
@@ -557,20 +439,19 @@ const InputsSchema = z.object({
   report: z.object({
     appState: z.array(z.object({
       keyedAppState: z.array(z.object({
-        data: z.string().describe(
+        data: z.unknown().describe(
           "Additional field intended for machine-readable data. For example, a number or JSON object. To prevent XSS, we recommend removing any HTML from the data before displaying it.",
         ).optional(),
-        key: z.string().describe(
+        key: z.unknown().describe(
           "Key indicating what the app is providing a state for. The content of the key is set by the app's developer. To prevent XSS, we recommend removing any HTML from the key before displaying it. This field will always be present.",
         ).optional(),
-        message: z.string().describe(
+        message: z.unknown().describe(
           "Free-form, human-readable message describing the app state. For example, an error message. To prevent XSS, we recommend removing any HTML from the message before displaying it.",
         ).optional(),
-        severity: z.enum(["severityUnknown", "severityInfo", "severityError"])
-          .describe(
-            "Severity of the app state. This field will always be present.",
-          ).optional(),
-        stateTimestampMillis: z.string().describe(
+        severity: z.unknown().describe(
+          "Severity of the app state. This field will always be present.",
+        ).optional(),
+        stateTimestampMillis: z.unknown().describe(
           "Timestamp of when the app set the state in milliseconds since epoch. This field will always be present.",
         ).optional(),
       })).describe(
@@ -597,7 +478,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/androidenterprise/devices",
-  version: "2026.04.03.3",
+  version: "2026.04.04.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -621,6 +502,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.3",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.04.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

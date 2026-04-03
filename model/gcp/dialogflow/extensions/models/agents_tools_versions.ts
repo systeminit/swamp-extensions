@@ -119,7 +119,7 @@ const GlobalArgsSchema = z.object({
             "OAUTH_GRANT_TYPE_UNSPECIFIED",
             "CLIENT_CREDENTIAL",
           ]).optional(),
-          scopes: z.array(z.string()).optional(),
+          scopes: z.array(z.unknown()).optional(),
           secretVersionForClientSecret: z.string().optional(),
           tokenEndpoint: z.string().optional(),
         }).optional(),
@@ -140,8 +140,8 @@ const GlobalArgsSchema = z.object({
       textSchema: z.string().optional(),
       tlsConfig: z.object({
         caCerts: z.array(z.object({
-          cert: z.string().optional(),
-          displayName: z.string().optional(),
+          cert: z.unknown().optional(),
+          displayName: z.unknown().optional(),
         })).optional(),
       }).optional(),
     }).optional(),
@@ -193,7 +193,7 @@ const StateSchema = z.object({
           clientId: z.string(),
           clientSecret: z.string(),
           oauthGrantType: z.string(),
-          scopes: z.array(z.string()),
+          scopes: z.array(z.unknown()),
           secretVersionForClientSecret: z.string(),
           tokenEndpoint: z.string(),
         }),
@@ -210,8 +210,8 @@ const StateSchema = z.object({
       textSchema: z.string(),
       tlsConfig: z.object({
         caCerts: z.array(z.object({
-          cert: z.string(),
-          displayName: z.string(),
+          cert: z.unknown(),
+          displayName: z.unknown(),
         })),
       }),
     }),
@@ -274,7 +274,7 @@ const InputsSchema = z.object({
             "OAUTH_GRANT_TYPE_UNSPECIFIED",
             "CLIENT_CREDENTIAL",
           ]).optional(),
-          scopes: z.array(z.string()).optional(),
+          scopes: z.array(z.unknown()).optional(),
           secretVersionForClientSecret: z.string().optional(),
           tokenEndpoint: z.string().optional(),
         }).optional(),
@@ -295,8 +295,8 @@ const InputsSchema = z.object({
       textSchema: z.string().optional(),
       tlsConfig: z.object({
         caCerts: z.array(z.object({
-          cert: z.string().optional(),
-          displayName: z.string().optional(),
+          cert: z.unknown().optional(),
+          displayName: z.unknown().optional(),
         })).optional(),
       }).optional(),
     }).optional(),
@@ -314,7 +314,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/dialogflow/agents-tools-versions",
-  version: "2026.04.03.3",
+  version: "2026.04.04.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -338,6 +338,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.3",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.04.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

@@ -216,22 +216,13 @@ const GlobalArgsSchema = z.object({
       }).describe("Time window specified for hourly operations.").optional(),
       weeklySchedule: z.object({
         dayOfWeeks: z.array(z.object({
-          day: z.enum([
-            "FRIDAY",
-            "INVALID",
-            "MONDAY",
-            "SATURDAY",
-            "SUNDAY",
-            "THURSDAY",
-            "TUESDAY",
-            "WEDNESDAY",
-          ]).describe(
+          day: z.unknown().describe(
             "Defines a schedule that runs on specific days of the week. Specify one or more days. The following options are available: MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY, SATURDAY, SUNDAY.",
           ).optional(),
-          duration: z.string().describe(
+          duration: z.unknown().describe(
             "Output only. [Output only] Duration of the time window, automatically chosen to be smallest possible in the given scenario.",
           ).optional(),
-          startTime: z.string().describe(
+          startTime: z.unknown().describe(
             'Time within the window to start the operations. It must be in format "HH:MM", where HH: [00-23] and MM: [00-00] GMT.',
           ).optional(),
         })).describe("Up to 7 intervals/windows, one for each day of the week.")
@@ -330,9 +321,9 @@ const StateSchema = z.object({
       }),
       weeklySchedule: z.object({
         dayOfWeeks: z.array(z.object({
-          day: z.string(),
-          duration: z.string(),
-          startTime: z.string(),
+          day: z.unknown(),
+          duration: z.unknown(),
+          startTime: z.unknown(),
         })),
       }),
     }),
@@ -445,22 +436,13 @@ const InputsSchema = z.object({
       }).describe("Time window specified for hourly operations.").optional(),
       weeklySchedule: z.object({
         dayOfWeeks: z.array(z.object({
-          day: z.enum([
-            "FRIDAY",
-            "INVALID",
-            "MONDAY",
-            "SATURDAY",
-            "SUNDAY",
-            "THURSDAY",
-            "TUESDAY",
-            "WEDNESDAY",
-          ]).describe(
+          day: z.unknown().describe(
             "Defines a schedule that runs on specific days of the week. Specify one or more days. The following options are available: MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY, SATURDAY, SUNDAY.",
           ).optional(),
-          duration: z.string().describe(
+          duration: z.unknown().describe(
             "Output only. [Output only] Duration of the time window, automatically chosen to be smallest possible in the given scenario.",
           ).optional(),
-          startTime: z.string().describe(
+          startTime: z.unknown().describe(
             'Time within the window to start the operations. It must be in format "HH:MM", where HH: [00-23] and MM: [00-00] GMT.',
           ).optional(),
         })).describe("Up to 7 intervals/windows, one for each day of the week.")
@@ -510,7 +492,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/compute/resourcepolicies",
-  version: "2026.04.03.3",
+  version: "2026.04.04.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -534,6 +516,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.3",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.04.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

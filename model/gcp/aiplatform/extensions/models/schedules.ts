@@ -127,17 +127,13 @@ const GlobalArgsSchema = z.object({
             "Immutable. The type of the machine. See the [list of machine types supported for prediction](https://cloud.google.com/vertex-ai/docs/predictions/configure-compute#machine-types) See the [list of machine types supported for custom training](https://cloud.google.com/vertex-ai/docs/training/configure-compute#machine-types). For DeployedModel this field is optional, and the default value is `n1-standard-2`. For BatchPredictionJob or as part of WorkerPoolSpec this field is required.",
           ).optional(),
           reservationAffinity: z.object({
-            key: z.string().describe(
+            key: z.unknown().describe(
               "Optional. Corresponds to the label key of a reservation resource. To target a SPECIFIC_RESERVATION by name, use `compute.googleapis.com/reservation-name` as the key and specify the name of your reservation as its value.",
             ).optional(),
-            reservationAffinityType: z.enum([
-              "TYPE_UNSPECIFIED",
-              "NO_RESERVATION",
-              "ANY_RESERVATION",
-              "SPECIFIC_RESERVATION",
-            ]).describe("Required. Specifies the reservation affinity type.")
-              .optional(),
-            values: z.array(z.string()).describe(
+            reservationAffinityType: z.unknown().describe(
+              "Required. Specifies the reservation affinity type.",
+            ).optional(),
+            values: z.unknown().describe(
               "Optional. Corresponds to the label values of a reservation resource. This must be the full resource name of the reservation or reservation block.",
             ).optional(),
           }).describe(
@@ -248,7 +244,7 @@ const GlobalArgsSchema = z.object({
         code: z.number().int().describe(
           "The status code, which should be an enum value of google.rpc.Code.",
         ).optional(),
-        details: z.array(z.record(z.string(), z.string())).describe(
+        details: z.array(z.record(z.string(), z.unknown())).describe(
           "A list of messages that carry the error details. There is a common set of message types for APIs to use.",
         ).optional(),
         message: z.string().describe(
@@ -298,7 +294,7 @@ const GlobalArgsSchema = z.object({
         code: z.number().int().describe(
           "The status code, which should be an enum value of google.rpc.Code.",
         ).optional(),
-        details: z.array(z.record(z.string(), z.string())).describe(
+        details: z.array(z.record(z.string(), z.unknown())).describe(
           "A list of messages that carry the error details. There is a common set of message types for APIs to use.",
         ).optional(),
         message: z.string().describe(
@@ -320,16 +316,16 @@ const GlobalArgsSchema = z.object({
           etag: z.string().describe(
             'An eTag used to perform consistent read-modify-write updates. If not set, a blind "overwrite" update happens.',
           ).optional(),
-          labels: z.record(z.string(), z.string()).describe(
+          labels: z.record(z.string(), z.unknown()).describe(
             "The labels with user-defined metadata to organize your Contexts. Label keys and values can be no longer than 64 characters (Unicode codepoints), can only contain lowercase letters, numeric characters, underscores and dashes. International characters are allowed. No more than 64 user labels can be associated with one Context (System labels are excluded).",
           ).optional(),
-          metadata: z.record(z.string(), z.string()).describe(
+          metadata: z.record(z.string(), z.unknown()).describe(
             "Properties of the Context. Top level metadata keys' heading and trailing spaces will be trimmed. The size of this field should not exceed 200KB.",
           ).optional(),
           name: z.string().describe(
             "Immutable. The resource name of the Context.",
           ).optional(),
-          parentContexts: z.array(z.string()).describe(
+          parentContexts: z.array(z.unknown()).describe(
             "Output only. A list of resource names of Contexts that are parents of this Context. A Context may have at most 10 parent_contexts.",
           ).optional(),
           schemaTitle: z.string().describe(
@@ -354,16 +350,16 @@ const GlobalArgsSchema = z.object({
           etag: z.string().describe(
             'An eTag used to perform consistent read-modify-write updates. If not set, a blind "overwrite" update happens.',
           ).optional(),
-          labels: z.record(z.string(), z.string()).describe(
+          labels: z.record(z.string(), z.unknown()).describe(
             "The labels with user-defined metadata to organize your Contexts. Label keys and values can be no longer than 64 characters (Unicode codepoints), can only contain lowercase letters, numeric characters, underscores and dashes. International characters are allowed. No more than 64 user labels can be associated with one Context (System labels are excluded).",
           ).optional(),
-          metadata: z.record(z.string(), z.string()).describe(
+          metadata: z.record(z.string(), z.unknown()).describe(
             "Properties of the Context. Top level metadata keys' heading and trailing spaces will be trimmed. The size of this field should not exceed 200KB.",
           ).optional(),
           name: z.string().describe(
             "Immutable. The resource name of the Context.",
           ).optional(),
-          parentContexts: z.array(z.string()).describe(
+          parentContexts: z.array(z.unknown()).describe(
             "Output only. A list of resource names of Contexts that are parents of this Context. A Context may have at most 10 parent_contexts.",
           ).optional(),
           schemaTitle: z.string().describe(
@@ -377,238 +373,41 @@ const GlobalArgsSchema = z.object({
           ).optional(),
         }).describe("Instance of a general context.").optional(),
         taskDetails: z.array(z.object({
-          createTime: z.string().describe("Output only. Task create time.")
+          createTime: z.unknown().describe("Output only. Task create time.")
             .optional(),
-          endTime: z.string().describe("Output only. Task end time.")
+          endTime: z.unknown().describe("Output only. Task end time.")
             .optional(),
-          error: z.object({
-            code: z.number().int().describe(
-              "The status code, which should be an enum value of google.rpc.Code.",
-            ).optional(),
-            details: z.array(z.record(z.string(), z.string())).describe(
-              "A list of messages that carry the error details. There is a common set of message types for APIs to use.",
-            ).optional(),
-            message: z.string().describe(
-              "A developer-facing error message, which should be in English. Any user-facing error message should be localized and sent in the google.rpc.Status.details field, or localized by the client.",
-            ).optional(),
-          }).describe(
+          error: z.unknown().describe(
             "The `Status` type defines a logical error model that is suitable for different programming environments, including REST APIs and RPC APIs. It is used by [gRPC](https://github.com/grpc). Each `Status` message contains three pieces of data: error code, error message, and error details. You can find out more about this error model and how to work with it in the [API Design Guide](https://cloud.google.com/apis/design/errors).",
           ).optional(),
-          execution: z.object({
-            createTime: z.string().describe(
-              "Output only. Timestamp when this Execution was created.",
-            ).optional(),
-            description: z.string().describe("Description of the Execution")
-              .optional(),
-            displayName: z.string().describe(
-              "User provided display name of the Execution. May be up to 128 Unicode characters.",
-            ).optional(),
-            etag: z.string().describe(
-              'An eTag used to perform consistent read-modify-write updates. If not set, a blind "overwrite" update happens.',
-            ).optional(),
-            labels: z.record(z.string(), z.string()).describe(
-              "The labels with user-defined metadata to organize your Executions. Label keys and values can be no longer than 64 characters (Unicode codepoints), can only contain lowercase letters, numeric characters, underscores and dashes. International characters are allowed. No more than 64 user labels can be associated with one Execution (System labels are excluded).",
-            ).optional(),
-            metadata: z.record(z.string(), z.string()).describe(
-              "Properties of the Execution. Top level metadata keys' heading and trailing spaces will be trimmed. The size of this field should not exceed 200KB.",
-            ).optional(),
-            name: z.string().describe(
-              "Output only. The resource name of the Execution.",
-            ).optional(),
-            schemaTitle: z.string().describe(
-              "The title of the schema describing the metadata. Schema title and version is expected to be registered in earlier Create Schema calls. And both are used together as unique identifiers to identify schemas within the local metadata store.",
-            ).optional(),
-            schemaVersion: z.string().describe(
-              "The version of the schema in `schema_title` to use. Schema title and version is expected to be registered in earlier Create Schema calls. And both are used together as unique identifiers to identify schemas within the local metadata store.",
-            ).optional(),
-            state: z.enum([
-              "STATE_UNSPECIFIED",
-              "NEW",
-              "RUNNING",
-              "COMPLETE",
-              "FAILED",
-              "CACHED",
-              "CANCELLED",
-            ]).describe(
-              "The state of this Execution. This is a property of the Execution, and does not imply or capture any ongoing process. This property is managed by clients (such as Vertex AI Pipelines) and the system does not prescribe or check the validity of state transitions.",
-            ).optional(),
-            updateTime: z.string().describe(
-              "Output only. Timestamp when this Execution was last updated.",
-            ).optional(),
-          }).describe("Instance of a general execution.").optional(),
-          executorDetail: z.object({
-            containerDetail: z.object({
-              failedMainJobs: z.array(z.string()).describe(
-                "Output only. The names of the previously failed CustomJob for the main container executions. The list includes the all attempts in chronological order.",
-              ).optional(),
-              failedPreCachingCheckJobs: z.array(z.string()).describe(
-                "Output only. The names of the previously failed CustomJob for the pre-caching-check container executions. This job will be available if the PipelineJob.pipeline_spec specifies the `pre_caching_check` hook in the lifecycle events. The list includes the all attempts in chronological order.",
-              ).optional(),
-              mainJob: z.string().describe(
-                "Output only. The name of the CustomJob for the main container execution.",
-              ).optional(),
-              preCachingCheckJob: z.string().describe(
-                "Output only. The name of the CustomJob for the pre-caching-check container execution. This job will be available if the PipelineJob.pipeline_spec specifies the `pre_caching_check` hook in the lifecycle events.",
-              ).optional(),
-            }).describe(
-              "The detail of a container execution. It contains the job names of the lifecycle of a container execution.",
-            ).optional(),
-            customJobDetail: z.object({
-              failedJobs: z.array(z.string()).describe(
-                "Output only. The names of the previously failed CustomJob. The list includes the all attempts in chronological order.",
-              ).optional(),
-              job: z.string().describe(
-                "Output only. The name of the CustomJob.",
-              ).optional(),
-            }).describe("The detailed info for a custom job executor.")
-              .optional(),
-          }).describe("The runtime detail of a pipeline executor.").optional(),
-          inputs: z.record(
-            z.string(),
-            z.object({
-              artifacts: z.array(z.object({
-                createTime: z.string().describe(
-                  "Output only. Timestamp when this Artifact was created.",
-                ).optional(),
-                description: z.string().describe("Description of the Artifact")
-                  .optional(),
-                displayName: z.string().describe(
-                  "User provided display name of the Artifact. May be up to 128 Unicode characters.",
-                ).optional(),
-                etag: z.string().describe(
-                  'An eTag used to perform consistent read-modify-write updates. If not set, a blind "overwrite" update happens.',
-                ).optional(),
-                labels: z.record(z.string(), z.string()).describe(
-                  "The labels with user-defined metadata to organize your Artifacts. Label keys and values can be no longer than 64 characters (Unicode codepoints), can only contain lowercase letters, numeric characters, underscores and dashes. International characters are allowed. No more than 64 user labels can be associated with one Artifact (System labels are excluded).",
-                ).optional(),
-                metadata: z.record(z.string(), z.string()).describe(
-                  "Properties of the Artifact. Top level metadata keys' heading and trailing spaces will be trimmed. The size of this field should not exceed 200KB.",
-                ).optional(),
-                name: z.string().describe(
-                  "Output only. The resource name of the Artifact.",
-                ).optional(),
-                schemaTitle: z.string().describe(
-                  "The title of the schema describing the metadata. Schema title and version is expected to be registered in earlier Create Schema calls. And both are used together as unique identifiers to identify schemas within the local metadata store.",
-                ).optional(),
-                schemaVersion: z.string().describe(
-                  "The version of the schema in schema_name to use. Schema title and version is expected to be registered in earlier Create Schema calls. And both are used together as unique identifiers to identify schemas within the local metadata store.",
-                ).optional(),
-                state: z.enum(["STATE_UNSPECIFIED", "PENDING", "LIVE"])
-                  .describe(
-                    "The state of this Artifact. This is a property of the Artifact, and does not imply or capture any ongoing process. This property is managed by clients (such as Vertex AI Pipelines), and the system does not prescribe or check the validity of state transitions.",
-                  ).optional(),
-                updateTime: z.string().describe(
-                  "Output only. Timestamp when this Artifact was last updated.",
-                ).optional(),
-                uri: z.string().describe(
-                  "The uniform resource identifier of the artifact file. May be empty if there is no actual artifact file.",
-                ).optional(),
-              })).describe("Output only. A list of artifact metadata.")
-                .optional(),
-            }),
-          ).describe("Output only. The runtime input artifacts of the task.")
+          execution: z.unknown().describe("Instance of a general execution.")
             .optional(),
-          outputs: z.record(
-            z.string(),
-            z.object({
-              artifacts: z.array(z.object({
-                createTime: z.string().describe(
-                  "Output only. Timestamp when this Artifact was created.",
-                ).optional(),
-                description: z.string().describe("Description of the Artifact")
-                  .optional(),
-                displayName: z.string().describe(
-                  "User provided display name of the Artifact. May be up to 128 Unicode characters.",
-                ).optional(),
-                etag: z.string().describe(
-                  'An eTag used to perform consistent read-modify-write updates. If not set, a blind "overwrite" update happens.',
-                ).optional(),
-                labels: z.record(z.string(), z.string()).describe(
-                  "The labels with user-defined metadata to organize your Artifacts. Label keys and values can be no longer than 64 characters (Unicode codepoints), can only contain lowercase letters, numeric characters, underscores and dashes. International characters are allowed. No more than 64 user labels can be associated with one Artifact (System labels are excluded).",
-                ).optional(),
-                metadata: z.record(z.string(), z.string()).describe(
-                  "Properties of the Artifact. Top level metadata keys' heading and trailing spaces will be trimmed. The size of this field should not exceed 200KB.",
-                ).optional(),
-                name: z.string().describe(
-                  "Output only. The resource name of the Artifact.",
-                ).optional(),
-                schemaTitle: z.string().describe(
-                  "The title of the schema describing the metadata. Schema title and version is expected to be registered in earlier Create Schema calls. And both are used together as unique identifiers to identify schemas within the local metadata store.",
-                ).optional(),
-                schemaVersion: z.string().describe(
-                  "The version of the schema in schema_name to use. Schema title and version is expected to be registered in earlier Create Schema calls. And both are used together as unique identifiers to identify schemas within the local metadata store.",
-                ).optional(),
-                state: z.enum(["STATE_UNSPECIFIED", "PENDING", "LIVE"])
-                  .describe(
-                    "The state of this Artifact. This is a property of the Artifact, and does not imply or capture any ongoing process. This property is managed by clients (such as Vertex AI Pipelines), and the system does not prescribe or check the validity of state transitions.",
-                  ).optional(),
-                updateTime: z.string().describe(
-                  "Output only. Timestamp when this Artifact was last updated.",
-                ).optional(),
-                uri: z.string().describe(
-                  "The uniform resource identifier of the artifact file. May be empty if there is no actual artifact file.",
-                ).optional(),
-              })).describe("Output only. A list of artifact metadata.")
-                .optional(),
-            }),
-          ).describe("Output only. The runtime output artifacts of the task.")
-            .optional(),
-          parentTaskId: z.string().describe(
+          executorDetail: z.unknown().describe(
+            "The runtime detail of a pipeline executor.",
+          ).optional(),
+          inputs: z.unknown().describe(
+            "Output only. The runtime input artifacts of the task.",
+          ).optional(),
+          outputs: z.unknown().describe(
+            "Output only. The runtime output artifacts of the task.",
+          ).optional(),
+          parentTaskId: z.unknown().describe(
             "Output only. The id of the parent task if the task is within a component scope. Empty if the task is at the root level.",
           ).optional(),
-          pipelineTaskStatus: z.array(z.object({
-            error: z.object({
-              code: z.number().int().describe(
-                "The status code, which should be an enum value of google.rpc.Code.",
-              ).optional(),
-              details: z.array(z.record(z.string(), z.string())).describe(
-                "A list of messages that carry the error details. There is a common set of message types for APIs to use.",
-              ).optional(),
-              message: z.string().describe(
-                "A developer-facing error message, which should be in English. Any user-facing error message should be localized and sent in the google.rpc.Status.details field, or localized by the client.",
-              ).optional(),
-            }).describe(
-              "The `Status` type defines a logical error model that is suitable for different programming environments, including REST APIs and RPC APIs. It is used by [gRPC](https://github.com/grpc). Each `Status` message contains three pieces of data: error code, error message, and error details. You can find out more about this error model and how to work with it in the [API Design Guide](https://cloud.google.com/apis/design/errors).",
-            ).optional(),
-            state: z.enum([
-              "STATE_UNSPECIFIED",
-              "PENDING",
-              "RUNNING",
-              "SUCCEEDED",
-              "CANCEL_PENDING",
-              "CANCELLING",
-              "CANCELLED",
-              "FAILED",
-              "SKIPPED",
-              "NOT_TRIGGERED",
-            ]).describe("Output only. The state of the task.").optional(),
-            updateTime: z.string().describe(
-              "Output only. Update time of this status.",
-            ).optional(),
-          })).describe(
+          pipelineTaskStatus: z.unknown().describe(
             "Output only. A list of task status. This field keeps a record of task status evolving over time.",
           ).optional(),
-          startTime: z.string().describe("Output only. Task start time.")
+          startTime: z.unknown().describe("Output only. Task start time.")
             .optional(),
-          state: z.enum([
-            "STATE_UNSPECIFIED",
-            "PENDING",
-            "RUNNING",
-            "SUCCEEDED",
-            "CANCEL_PENDING",
-            "CANCELLING",
-            "CANCELLED",
-            "FAILED",
-            "SKIPPED",
-            "NOT_TRIGGERED",
-          ]).describe("Output only. State of the task.").optional(),
-          taskId: z.string().describe(
+          state: z.unknown().describe("Output only. State of the task.")
+            .optional(),
+          taskId: z.unknown().describe(
             "Output only. The system generated ID of the task.",
           ).optional(),
-          taskName: z.string().describe(
+          taskName: z.unknown().describe(
             "Output only. The user specified name of the task that is defined in pipeline_spec.",
           ).optional(),
-          taskUniqueName: z.string().describe(
+          taskUniqueName: z.unknown().describe(
             'Output only. The unique name of a task. This field is used by rerun pipeline job. Console UI and Vertex AI SDK will support triggering pipeline job reruns. The name is constructed by concatenating all the parent tasks name with the task name. For example, if a task named "child_task" has a parent task named "parent_task_1" and parent task 1 has a parent task named "parent_task_2", the task unique name will be "parent_task_2.parent_task_1.child_task".',
           ).optional(),
         })).describe(
@@ -632,13 +431,13 @@ const GlobalArgsSchema = z.object({
       ).optional(),
       pscInterfaceConfig: z.object({
         dnsPeeringConfigs: z.array(z.object({
-          domain: z.string().describe(
+          domain: z.unknown().describe(
             'Required. The DNS name suffix of the zone being peered to, e.g., "my-internal-domain.corp.". Must end with a dot.',
           ).optional(),
-          targetNetwork: z.string().describe(
+          targetNetwork: z.unknown().describe(
             "Required. The VPC network name in the target_project where the DNS zone specified by 'domain' is visible.",
           ).optional(),
-          targetProject: z.string().describe(
+          targetProject: z.unknown().describe(
             "Required. The project ID hosting the Cloud DNS managed zone that contains the 'domain'. The Vertex AI Service Agent requires the dns.peer role on this project.",
           ).optional(),
         })).describe(
@@ -665,7 +464,7 @@ const GlobalArgsSchema = z.object({
         inputArtifacts: z.record(
           z.string(),
           z.object({
-            artifactId: z.string().describe(
+            artifactId: z.unknown().describe(
               "Artifact resource id from MLMD. Which is the last portion of an artifact resource name: `projects/{project}/locations/{location}/metadataStores/default/artifacts/{artifact_id}`. The artifact must stay within the same project, location and default metadatastore as the pipeline.",
             ).optional(),
           }),
@@ -678,9 +477,9 @@ const GlobalArgsSchema = z.object({
         parameters: z.record(
           z.string(),
           z.object({
-            doubleValue: z.number().describe("A double value.").optional(),
-            intValue: z.string().describe("An integer value.").optional(),
-            stringValue: z.string().describe("A string value.").optional(),
+            doubleValue: z.unknown().describe("A double value.").optional(),
+            intValue: z.unknown().describe("An integer value.").optional(),
+            stringValue: z.unknown().describe("A string value.").optional(),
           }),
         ).describe(
           "Deprecated. Use RuntimeConfig.parameter_values instead. The runtime parameters of the PipelineJob. The parameters will be passed into PipelineJob.pipeline_spec to replace the placeholders at runtime. This field is used by pipelines built using `PipelineJob.pipeline_spec.schema_version` 2.0.0 or lower, such as pipelines built using Kubeflow Pipelines SDK 1.8 or lower.",
@@ -772,9 +571,9 @@ const StateSchema = z.object({
           gpuPartitionSize: z.string(),
           machineType: z.string(),
           reservationAffinity: z.object({
-            key: z.string(),
-            reservationAffinityType: z.string(),
-            values: z.array(z.string()),
+            key: z.unknown(),
+            reservationAffinityType: z.unknown(),
+            values: z.unknown(),
           }),
           tpuTopology: z.string(),
         }),
@@ -847,7 +646,7 @@ const StateSchema = z.object({
           labels: z.record(z.string(), z.unknown()),
           metadata: z.record(z.string(), z.unknown()),
           name: z.string(),
-          parentContexts: z.array(z.string()),
+          parentContexts: z.array(z.unknown()),
           schemaTitle: z.string(),
           schemaVersion: z.string(),
           updateTime: z.string(),
@@ -860,61 +659,26 @@ const StateSchema = z.object({
           labels: z.record(z.string(), z.unknown()),
           metadata: z.record(z.string(), z.unknown()),
           name: z.string(),
-          parentContexts: z.array(z.string()),
+          parentContexts: z.array(z.unknown()),
           schemaTitle: z.string(),
           schemaVersion: z.string(),
           updateTime: z.string(),
         }),
         taskDetails: z.array(z.object({
-          createTime: z.string(),
-          endTime: z.string(),
-          error: z.object({
-            code: z.number(),
-            details: z.array(z.record(z.string(), z.unknown())),
-            message: z.string(),
-          }),
-          execution: z.object({
-            createTime: z.string(),
-            description: z.string(),
-            displayName: z.string(),
-            etag: z.string(),
-            labels: z.record(z.string(), z.unknown()),
-            metadata: z.record(z.string(), z.unknown()),
-            name: z.string(),
-            schemaTitle: z.string(),
-            schemaVersion: z.string(),
-            state: z.string(),
-            updateTime: z.string(),
-          }),
-          executorDetail: z.object({
-            containerDetail: z.object({
-              failedMainJobs: z.array(z.string()),
-              failedPreCachingCheckJobs: z.array(z.string()),
-              mainJob: z.string(),
-              preCachingCheckJob: z.string(),
-            }),
-            customJobDetail: z.object({
-              failedJobs: z.array(z.string()),
-              job: z.string(),
-            }),
-          }),
-          inputs: z.record(z.string(), z.unknown()),
-          outputs: z.record(z.string(), z.unknown()),
-          parentTaskId: z.string(),
-          pipelineTaskStatus: z.array(z.object({
-            error: z.object({
-              code: z.number(),
-              details: z.array(z.record(z.string(), z.unknown())),
-              message: z.string(),
-            }),
-            state: z.string(),
-            updateTime: z.string(),
-          })),
-          startTime: z.string(),
-          state: z.string(),
-          taskId: z.string(),
-          taskName: z.string(),
-          taskUniqueName: z.string(),
+          createTime: z.unknown(),
+          endTime: z.unknown(),
+          error: z.unknown(),
+          execution: z.unknown(),
+          executorDetail: z.unknown(),
+          inputs: z.unknown(),
+          outputs: z.unknown(),
+          parentTaskId: z.unknown(),
+          pipelineTaskStatus: z.unknown(),
+          startTime: z.unknown(),
+          state: z.unknown(),
+          taskId: z.unknown(),
+          taskName: z.unknown(),
+          taskUniqueName: z.unknown(),
         })),
       }),
       labels: z.record(z.string(), z.unknown()),
@@ -924,9 +688,9 @@ const StateSchema = z.object({
       preflightValidations: z.boolean(),
       pscInterfaceConfig: z.object({
         dnsPeeringConfigs: z.array(z.object({
-          domain: z.string(),
-          targetNetwork: z.string(),
-          targetProject: z.string(),
+          domain: z.unknown(),
+          targetNetwork: z.unknown(),
+          targetProject: z.unknown(),
         })),
         networkAttachment: z.string(),
       }),
@@ -1017,17 +781,13 @@ const InputsSchema = z.object({
             "Immutable. The type of the machine. See the [list of machine types supported for prediction](https://cloud.google.com/vertex-ai/docs/predictions/configure-compute#machine-types) See the [list of machine types supported for custom training](https://cloud.google.com/vertex-ai/docs/training/configure-compute#machine-types). For DeployedModel this field is optional, and the default value is `n1-standard-2`. For BatchPredictionJob or as part of WorkerPoolSpec this field is required.",
           ).optional(),
           reservationAffinity: z.object({
-            key: z.string().describe(
+            key: z.unknown().describe(
               "Optional. Corresponds to the label key of a reservation resource. To target a SPECIFIC_RESERVATION by name, use `compute.googleapis.com/reservation-name` as the key and specify the name of your reservation as its value.",
             ).optional(),
-            reservationAffinityType: z.enum([
-              "TYPE_UNSPECIFIED",
-              "NO_RESERVATION",
-              "ANY_RESERVATION",
-              "SPECIFIC_RESERVATION",
-            ]).describe("Required. Specifies the reservation affinity type.")
-              .optional(),
-            values: z.array(z.string()).describe(
+            reservationAffinityType: z.unknown().describe(
+              "Required. Specifies the reservation affinity type.",
+            ).optional(),
+            values: z.unknown().describe(
               "Optional. Corresponds to the label values of a reservation resource. This must be the full resource name of the reservation or reservation block.",
             ).optional(),
           }).describe(
@@ -1138,7 +898,7 @@ const InputsSchema = z.object({
         code: z.number().int().describe(
           "The status code, which should be an enum value of google.rpc.Code.",
         ).optional(),
-        details: z.array(z.record(z.string(), z.string())).describe(
+        details: z.array(z.record(z.string(), z.unknown())).describe(
           "A list of messages that carry the error details. There is a common set of message types for APIs to use.",
         ).optional(),
         message: z.string().describe(
@@ -1188,7 +948,7 @@ const InputsSchema = z.object({
         code: z.number().int().describe(
           "The status code, which should be an enum value of google.rpc.Code.",
         ).optional(),
-        details: z.array(z.record(z.string(), z.string())).describe(
+        details: z.array(z.record(z.string(), z.unknown())).describe(
           "A list of messages that carry the error details. There is a common set of message types for APIs to use.",
         ).optional(),
         message: z.string().describe(
@@ -1210,16 +970,16 @@ const InputsSchema = z.object({
           etag: z.string().describe(
             'An eTag used to perform consistent read-modify-write updates. If not set, a blind "overwrite" update happens.',
           ).optional(),
-          labels: z.record(z.string(), z.string()).describe(
+          labels: z.record(z.string(), z.unknown()).describe(
             "The labels with user-defined metadata to organize your Contexts. Label keys and values can be no longer than 64 characters (Unicode codepoints), can only contain lowercase letters, numeric characters, underscores and dashes. International characters are allowed. No more than 64 user labels can be associated with one Context (System labels are excluded).",
           ).optional(),
-          metadata: z.record(z.string(), z.string()).describe(
+          metadata: z.record(z.string(), z.unknown()).describe(
             "Properties of the Context. Top level metadata keys' heading and trailing spaces will be trimmed. The size of this field should not exceed 200KB.",
           ).optional(),
           name: z.string().describe(
             "Immutable. The resource name of the Context.",
           ).optional(),
-          parentContexts: z.array(z.string()).describe(
+          parentContexts: z.array(z.unknown()).describe(
             "Output only. A list of resource names of Contexts that are parents of this Context. A Context may have at most 10 parent_contexts.",
           ).optional(),
           schemaTitle: z.string().describe(
@@ -1244,16 +1004,16 @@ const InputsSchema = z.object({
           etag: z.string().describe(
             'An eTag used to perform consistent read-modify-write updates. If not set, a blind "overwrite" update happens.',
           ).optional(),
-          labels: z.record(z.string(), z.string()).describe(
+          labels: z.record(z.string(), z.unknown()).describe(
             "The labels with user-defined metadata to organize your Contexts. Label keys and values can be no longer than 64 characters (Unicode codepoints), can only contain lowercase letters, numeric characters, underscores and dashes. International characters are allowed. No more than 64 user labels can be associated with one Context (System labels are excluded).",
           ).optional(),
-          metadata: z.record(z.string(), z.string()).describe(
+          metadata: z.record(z.string(), z.unknown()).describe(
             "Properties of the Context. Top level metadata keys' heading and trailing spaces will be trimmed. The size of this field should not exceed 200KB.",
           ).optional(),
           name: z.string().describe(
             "Immutable. The resource name of the Context.",
           ).optional(),
-          parentContexts: z.array(z.string()).describe(
+          parentContexts: z.array(z.unknown()).describe(
             "Output only. A list of resource names of Contexts that are parents of this Context. A Context may have at most 10 parent_contexts.",
           ).optional(),
           schemaTitle: z.string().describe(
@@ -1267,238 +1027,41 @@ const InputsSchema = z.object({
           ).optional(),
         }).describe("Instance of a general context.").optional(),
         taskDetails: z.array(z.object({
-          createTime: z.string().describe("Output only. Task create time.")
+          createTime: z.unknown().describe("Output only. Task create time.")
             .optional(),
-          endTime: z.string().describe("Output only. Task end time.")
+          endTime: z.unknown().describe("Output only. Task end time.")
             .optional(),
-          error: z.object({
-            code: z.number().int().describe(
-              "The status code, which should be an enum value of google.rpc.Code.",
-            ).optional(),
-            details: z.array(z.record(z.string(), z.string())).describe(
-              "A list of messages that carry the error details. There is a common set of message types for APIs to use.",
-            ).optional(),
-            message: z.string().describe(
-              "A developer-facing error message, which should be in English. Any user-facing error message should be localized and sent in the google.rpc.Status.details field, or localized by the client.",
-            ).optional(),
-          }).describe(
+          error: z.unknown().describe(
             "The `Status` type defines a logical error model that is suitable for different programming environments, including REST APIs and RPC APIs. It is used by [gRPC](https://github.com/grpc). Each `Status` message contains three pieces of data: error code, error message, and error details. You can find out more about this error model and how to work with it in the [API Design Guide](https://cloud.google.com/apis/design/errors).",
           ).optional(),
-          execution: z.object({
-            createTime: z.string().describe(
-              "Output only. Timestamp when this Execution was created.",
-            ).optional(),
-            description: z.string().describe("Description of the Execution")
-              .optional(),
-            displayName: z.string().describe(
-              "User provided display name of the Execution. May be up to 128 Unicode characters.",
-            ).optional(),
-            etag: z.string().describe(
-              'An eTag used to perform consistent read-modify-write updates. If not set, a blind "overwrite" update happens.',
-            ).optional(),
-            labels: z.record(z.string(), z.string()).describe(
-              "The labels with user-defined metadata to organize your Executions. Label keys and values can be no longer than 64 characters (Unicode codepoints), can only contain lowercase letters, numeric characters, underscores and dashes. International characters are allowed. No more than 64 user labels can be associated with one Execution (System labels are excluded).",
-            ).optional(),
-            metadata: z.record(z.string(), z.string()).describe(
-              "Properties of the Execution. Top level metadata keys' heading and trailing spaces will be trimmed. The size of this field should not exceed 200KB.",
-            ).optional(),
-            name: z.string().describe(
-              "Output only. The resource name of the Execution.",
-            ).optional(),
-            schemaTitle: z.string().describe(
-              "The title of the schema describing the metadata. Schema title and version is expected to be registered in earlier Create Schema calls. And both are used together as unique identifiers to identify schemas within the local metadata store.",
-            ).optional(),
-            schemaVersion: z.string().describe(
-              "The version of the schema in `schema_title` to use. Schema title and version is expected to be registered in earlier Create Schema calls. And both are used together as unique identifiers to identify schemas within the local metadata store.",
-            ).optional(),
-            state: z.enum([
-              "STATE_UNSPECIFIED",
-              "NEW",
-              "RUNNING",
-              "COMPLETE",
-              "FAILED",
-              "CACHED",
-              "CANCELLED",
-            ]).describe(
-              "The state of this Execution. This is a property of the Execution, and does not imply or capture any ongoing process. This property is managed by clients (such as Vertex AI Pipelines) and the system does not prescribe or check the validity of state transitions.",
-            ).optional(),
-            updateTime: z.string().describe(
-              "Output only. Timestamp when this Execution was last updated.",
-            ).optional(),
-          }).describe("Instance of a general execution.").optional(),
-          executorDetail: z.object({
-            containerDetail: z.object({
-              failedMainJobs: z.array(z.string()).describe(
-                "Output only. The names of the previously failed CustomJob for the main container executions. The list includes the all attempts in chronological order.",
-              ).optional(),
-              failedPreCachingCheckJobs: z.array(z.string()).describe(
-                "Output only. The names of the previously failed CustomJob for the pre-caching-check container executions. This job will be available if the PipelineJob.pipeline_spec specifies the `pre_caching_check` hook in the lifecycle events. The list includes the all attempts in chronological order.",
-              ).optional(),
-              mainJob: z.string().describe(
-                "Output only. The name of the CustomJob for the main container execution.",
-              ).optional(),
-              preCachingCheckJob: z.string().describe(
-                "Output only. The name of the CustomJob for the pre-caching-check container execution. This job will be available if the PipelineJob.pipeline_spec specifies the `pre_caching_check` hook in the lifecycle events.",
-              ).optional(),
-            }).describe(
-              "The detail of a container execution. It contains the job names of the lifecycle of a container execution.",
-            ).optional(),
-            customJobDetail: z.object({
-              failedJobs: z.array(z.string()).describe(
-                "Output only. The names of the previously failed CustomJob. The list includes the all attempts in chronological order.",
-              ).optional(),
-              job: z.string().describe(
-                "Output only. The name of the CustomJob.",
-              ).optional(),
-            }).describe("The detailed info for a custom job executor.")
-              .optional(),
-          }).describe("The runtime detail of a pipeline executor.").optional(),
-          inputs: z.record(
-            z.string(),
-            z.object({
-              artifacts: z.array(z.object({
-                createTime: z.string().describe(
-                  "Output only. Timestamp when this Artifact was created.",
-                ).optional(),
-                description: z.string().describe("Description of the Artifact")
-                  .optional(),
-                displayName: z.string().describe(
-                  "User provided display name of the Artifact. May be up to 128 Unicode characters.",
-                ).optional(),
-                etag: z.string().describe(
-                  'An eTag used to perform consistent read-modify-write updates. If not set, a blind "overwrite" update happens.',
-                ).optional(),
-                labels: z.record(z.string(), z.string()).describe(
-                  "The labels with user-defined metadata to organize your Artifacts. Label keys and values can be no longer than 64 characters (Unicode codepoints), can only contain lowercase letters, numeric characters, underscores and dashes. International characters are allowed. No more than 64 user labels can be associated with one Artifact (System labels are excluded).",
-                ).optional(),
-                metadata: z.record(z.string(), z.string()).describe(
-                  "Properties of the Artifact. Top level metadata keys' heading and trailing spaces will be trimmed. The size of this field should not exceed 200KB.",
-                ).optional(),
-                name: z.string().describe(
-                  "Output only. The resource name of the Artifact.",
-                ).optional(),
-                schemaTitle: z.string().describe(
-                  "The title of the schema describing the metadata. Schema title and version is expected to be registered in earlier Create Schema calls. And both are used together as unique identifiers to identify schemas within the local metadata store.",
-                ).optional(),
-                schemaVersion: z.string().describe(
-                  "The version of the schema in schema_name to use. Schema title and version is expected to be registered in earlier Create Schema calls. And both are used together as unique identifiers to identify schemas within the local metadata store.",
-                ).optional(),
-                state: z.enum(["STATE_UNSPECIFIED", "PENDING", "LIVE"])
-                  .describe(
-                    "The state of this Artifact. This is a property of the Artifact, and does not imply or capture any ongoing process. This property is managed by clients (such as Vertex AI Pipelines), and the system does not prescribe or check the validity of state transitions.",
-                  ).optional(),
-                updateTime: z.string().describe(
-                  "Output only. Timestamp when this Artifact was last updated.",
-                ).optional(),
-                uri: z.string().describe(
-                  "The uniform resource identifier of the artifact file. May be empty if there is no actual artifact file.",
-                ).optional(),
-              })).describe("Output only. A list of artifact metadata.")
-                .optional(),
-            }),
-          ).describe("Output only. The runtime input artifacts of the task.")
+          execution: z.unknown().describe("Instance of a general execution.")
             .optional(),
-          outputs: z.record(
-            z.string(),
-            z.object({
-              artifacts: z.array(z.object({
-                createTime: z.string().describe(
-                  "Output only. Timestamp when this Artifact was created.",
-                ).optional(),
-                description: z.string().describe("Description of the Artifact")
-                  .optional(),
-                displayName: z.string().describe(
-                  "User provided display name of the Artifact. May be up to 128 Unicode characters.",
-                ).optional(),
-                etag: z.string().describe(
-                  'An eTag used to perform consistent read-modify-write updates. If not set, a blind "overwrite" update happens.',
-                ).optional(),
-                labels: z.record(z.string(), z.string()).describe(
-                  "The labels with user-defined metadata to organize your Artifacts. Label keys and values can be no longer than 64 characters (Unicode codepoints), can only contain lowercase letters, numeric characters, underscores and dashes. International characters are allowed. No more than 64 user labels can be associated with one Artifact (System labels are excluded).",
-                ).optional(),
-                metadata: z.record(z.string(), z.string()).describe(
-                  "Properties of the Artifact. Top level metadata keys' heading and trailing spaces will be trimmed. The size of this field should not exceed 200KB.",
-                ).optional(),
-                name: z.string().describe(
-                  "Output only. The resource name of the Artifact.",
-                ).optional(),
-                schemaTitle: z.string().describe(
-                  "The title of the schema describing the metadata. Schema title and version is expected to be registered in earlier Create Schema calls. And both are used together as unique identifiers to identify schemas within the local metadata store.",
-                ).optional(),
-                schemaVersion: z.string().describe(
-                  "The version of the schema in schema_name to use. Schema title and version is expected to be registered in earlier Create Schema calls. And both are used together as unique identifiers to identify schemas within the local metadata store.",
-                ).optional(),
-                state: z.enum(["STATE_UNSPECIFIED", "PENDING", "LIVE"])
-                  .describe(
-                    "The state of this Artifact. This is a property of the Artifact, and does not imply or capture any ongoing process. This property is managed by clients (such as Vertex AI Pipelines), and the system does not prescribe or check the validity of state transitions.",
-                  ).optional(),
-                updateTime: z.string().describe(
-                  "Output only. Timestamp when this Artifact was last updated.",
-                ).optional(),
-                uri: z.string().describe(
-                  "The uniform resource identifier of the artifact file. May be empty if there is no actual artifact file.",
-                ).optional(),
-              })).describe("Output only. A list of artifact metadata.")
-                .optional(),
-            }),
-          ).describe("Output only. The runtime output artifacts of the task.")
-            .optional(),
-          parentTaskId: z.string().describe(
+          executorDetail: z.unknown().describe(
+            "The runtime detail of a pipeline executor.",
+          ).optional(),
+          inputs: z.unknown().describe(
+            "Output only. The runtime input artifacts of the task.",
+          ).optional(),
+          outputs: z.unknown().describe(
+            "Output only. The runtime output artifacts of the task.",
+          ).optional(),
+          parentTaskId: z.unknown().describe(
             "Output only. The id of the parent task if the task is within a component scope. Empty if the task is at the root level.",
           ).optional(),
-          pipelineTaskStatus: z.array(z.object({
-            error: z.object({
-              code: z.number().int().describe(
-                "The status code, which should be an enum value of google.rpc.Code.",
-              ).optional(),
-              details: z.array(z.record(z.string(), z.string())).describe(
-                "A list of messages that carry the error details. There is a common set of message types for APIs to use.",
-              ).optional(),
-              message: z.string().describe(
-                "A developer-facing error message, which should be in English. Any user-facing error message should be localized and sent in the google.rpc.Status.details field, or localized by the client.",
-              ).optional(),
-            }).describe(
-              "The `Status` type defines a logical error model that is suitable for different programming environments, including REST APIs and RPC APIs. It is used by [gRPC](https://github.com/grpc). Each `Status` message contains three pieces of data: error code, error message, and error details. You can find out more about this error model and how to work with it in the [API Design Guide](https://cloud.google.com/apis/design/errors).",
-            ).optional(),
-            state: z.enum([
-              "STATE_UNSPECIFIED",
-              "PENDING",
-              "RUNNING",
-              "SUCCEEDED",
-              "CANCEL_PENDING",
-              "CANCELLING",
-              "CANCELLED",
-              "FAILED",
-              "SKIPPED",
-              "NOT_TRIGGERED",
-            ]).describe("Output only. The state of the task.").optional(),
-            updateTime: z.string().describe(
-              "Output only. Update time of this status.",
-            ).optional(),
-          })).describe(
+          pipelineTaskStatus: z.unknown().describe(
             "Output only. A list of task status. This field keeps a record of task status evolving over time.",
           ).optional(),
-          startTime: z.string().describe("Output only. Task start time.")
+          startTime: z.unknown().describe("Output only. Task start time.")
             .optional(),
-          state: z.enum([
-            "STATE_UNSPECIFIED",
-            "PENDING",
-            "RUNNING",
-            "SUCCEEDED",
-            "CANCEL_PENDING",
-            "CANCELLING",
-            "CANCELLED",
-            "FAILED",
-            "SKIPPED",
-            "NOT_TRIGGERED",
-          ]).describe("Output only. State of the task.").optional(),
-          taskId: z.string().describe(
+          state: z.unknown().describe("Output only. State of the task.")
+            .optional(),
+          taskId: z.unknown().describe(
             "Output only. The system generated ID of the task.",
           ).optional(),
-          taskName: z.string().describe(
+          taskName: z.unknown().describe(
             "Output only. The user specified name of the task that is defined in pipeline_spec.",
           ).optional(),
-          taskUniqueName: z.string().describe(
+          taskUniqueName: z.unknown().describe(
             'Output only. The unique name of a task. This field is used by rerun pipeline job. Console UI and Vertex AI SDK will support triggering pipeline job reruns. The name is constructed by concatenating all the parent tasks name with the task name. For example, if a task named "child_task" has a parent task named "parent_task_1" and parent task 1 has a parent task named "parent_task_2", the task unique name will be "parent_task_2.parent_task_1.child_task".',
           ).optional(),
         })).describe(
@@ -1522,13 +1085,13 @@ const InputsSchema = z.object({
       ).optional(),
       pscInterfaceConfig: z.object({
         dnsPeeringConfigs: z.array(z.object({
-          domain: z.string().describe(
+          domain: z.unknown().describe(
             'Required. The DNS name suffix of the zone being peered to, e.g., "my-internal-domain.corp.". Must end with a dot.',
           ).optional(),
-          targetNetwork: z.string().describe(
+          targetNetwork: z.unknown().describe(
             "Required. The VPC network name in the target_project where the DNS zone specified by 'domain' is visible.",
           ).optional(),
-          targetProject: z.string().describe(
+          targetProject: z.unknown().describe(
             "Required. The project ID hosting the Cloud DNS managed zone that contains the 'domain'. The Vertex AI Service Agent requires the dns.peer role on this project.",
           ).optional(),
         })).describe(
@@ -1555,7 +1118,7 @@ const InputsSchema = z.object({
         inputArtifacts: z.record(
           z.string(),
           z.object({
-            artifactId: z.string().describe(
+            artifactId: z.unknown().describe(
               "Artifact resource id from MLMD. Which is the last portion of an artifact resource name: `projects/{project}/locations/{location}/metadataStores/default/artifacts/{artifact_id}`. The artifact must stay within the same project, location and default metadatastore as the pipeline.",
             ).optional(),
           }),
@@ -1568,9 +1131,9 @@ const InputsSchema = z.object({
         parameters: z.record(
           z.string(),
           z.object({
-            doubleValue: z.number().describe("A double value.").optional(),
-            intValue: z.string().describe("An integer value.").optional(),
-            stringValue: z.string().describe("A string value.").optional(),
+            doubleValue: z.unknown().describe("A double value.").optional(),
+            intValue: z.unknown().describe("An integer value.").optional(),
+            stringValue: z.unknown().describe("A string value.").optional(),
           }),
         ).describe(
           "Deprecated. Use RuntimeConfig.parameter_values instead. The runtime parameters of the PipelineJob. The parameters will be passed into PipelineJob.pipeline_spec to replace the placeholders at runtime. This field is used by pipelines built using `PipelineJob.pipeline_spec.schema_version` 2.0.0 or lower, such as pipelines built using Kubeflow Pipelines SDK 1.8 or lower.",
@@ -1651,7 +1214,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/aiplatform/schedules",
-  version: "2026.04.03.3",
+  version: "2026.04.04.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -1675,6 +1238,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.3",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.04.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

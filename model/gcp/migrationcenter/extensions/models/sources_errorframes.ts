@@ -60,51 +60,51 @@ const StateSchema = z.object({
       manualUniqueId: z.string(),
       mysql: z.object({
         plugins: z.array(z.object({
-          enabled: z.boolean(),
-          plugin: z.string(),
-          version: z.string(),
+          enabled: z.unknown(),
+          plugin: z.unknown(),
+          version: z.unknown(),
         })),
         properties: z.array(z.object({
-          enabled: z.boolean(),
-          numericValue: z.string(),
-          property: z.string(),
+          enabled: z.unknown(),
+          numericValue: z.unknown(),
+          property: z.unknown(),
         })),
         resourceGroupsCount: z.number(),
         variables: z.array(z.object({
-          category: z.string(),
-          value: z.string(),
-          variable: z.string(),
+          category: z.unknown(),
+          value: z.unknown(),
+          variable: z.unknown(),
         })),
       }),
       postgresql: z.object({
         properties: z.array(z.object({
-          enabled: z.boolean(),
-          numericValue: z.string(),
-          property: z.string(),
+          enabled: z.unknown(),
+          numericValue: z.unknown(),
+          property: z.unknown(),
         })),
         settings: z.array(z.object({
-          boolValue: z.boolean(),
-          intValue: z.string(),
-          realValue: z.number(),
-          setting: z.string(),
-          source: z.string(),
-          stringValue: z.string(),
-          unit: z.string(),
+          boolValue: z.unknown(),
+          intValue: z.unknown(),
+          realValue: z.unknown(),
+          setting: z.unknown(),
+          source: z.unknown(),
+          stringValue: z.unknown(),
+          unit: z.unknown(),
         })),
       }),
       sqlServer: z.object({
         features: z.array(z.object({
-          enabled: z.boolean(),
-          featureName: z.string(),
+          enabled: z.unknown(),
+          featureName: z.unknown(),
         })),
         serverFlags: z.array(z.object({
-          serverFlagName: z.string(),
-          value: z.string(),
-          valueInUse: z.string(),
+          serverFlagName: z.unknown(),
+          value: z.unknown(),
+          valueInUse: z.unknown(),
         })),
         traceFlags: z.array(z.object({
-          scope: z.string(),
-          traceFlagName: z.string(),
+          scope: z.unknown(),
+          traceFlagName: z.unknown(),
         })),
       }),
       topology: z.object({
@@ -113,13 +113,9 @@ const StateSchema = z.object({
         diskAllocatedBytes: z.string(),
         diskUsedBytes: z.string(),
         instances: z.array(z.object({
-          instanceName: z.string(),
-          network: z.object({
-            hostNames: z.array(z.string()),
-            ipAddresses: z.array(z.string()),
-            primaryMacAddress: z.string(),
-          }),
-          role: z.string(),
+          instanceName: z.unknown(),
+          network: z.unknown(),
+          role: z.unknown(),
         })),
         memoryBytes: z.string(),
         memoryLimitBytes: z.string(),
@@ -137,26 +133,16 @@ const StateSchema = z.object({
       }),
       schemas: z.array(z.object({
         mysql: z.object({
-          storageEngines: z.array(z.object({
-            encryptedTableCount: z.number(),
-            engine: z.string(),
-            tableCount: z.number(),
-          })),
+          storageEngines: z.unknown(),
         }),
-        objects: z.array(z.object({
-          category: z.string(),
-          count: z.string(),
-        })),
+        objects: z.array(z.unknown()),
         postgresql: z.object({
-          foreignTablesCount: z.number(),
-          postgresqlExtensions: z.array(z.object({
-            extension: z.string(),
-            version: z.string(),
-          })),
+          foreignTablesCount: z.unknown(),
+          postgresqlExtensions: z.unknown(),
         }),
         schemaName: z.string(),
         sqlServer: z.object({
-          clrObjectCount: z.number(),
+          clrObjectCount: z.unknown(),
         }),
         tablesSizeBytes: z.string(),
       })),
@@ -169,9 +155,9 @@ const StateSchema = z.object({
           id: z.string(),
           manufacturer: z.string(),
           releaseDate: z.object({
-            day: z.number(),
-            month: z.number(),
-            year: z.number(),
+            day: z.unknown(),
+            month: z.unknown(),
+            year: z.unknown(),
           }),
           smbiosUuid: z.string(),
           version: z.string(),
@@ -190,45 +176,13 @@ const StateSchema = z.object({
       diskPartitions: z.object({
         freeSpaceBytes: z.string(),
         partitions: z.object({
-          entries: z.array(z.object({
-            capacityBytes: z.string(),
-            fileSystem: z.string(),
-            freeBytes: z.string(),
-            mountPoint: z.string(),
-            subPartitions: z.string(),
-            type: z.string(),
-            uuid: z.string(),
-          })),
+          entries: z.array(z.unknown()),
         }),
         totalCapacityBytes: z.string(),
       }),
       disks: z.object({
         disks: z.object({
-          entries: z.array(z.object({
-            capacityBytes: z.string(),
-            diskLabel: z.string(),
-            diskLabelType: z.string(),
-            freeBytes: z.string(),
-            hwAddress: z.string(),
-            interfaceType: z.string(),
-            partitions: z.object({
-              entries: z.array(z.object({
-                capacityBytes: z.string(),
-                fileSystem: z.string(),
-                freeBytes: z.string(),
-                mountPoint: z.string(),
-                subPartitions: z.string(),
-                type: z.string(),
-                uuid: z.string(),
-              })),
-            }),
-            vmware: z.object({
-              backingType: z.string(),
-              rdmCompatibility: z.string(),
-              shared: z.boolean(),
-              vmdkMode: z.string(),
-            }),
-          })),
+          entries: z.array(z.unknown()),
         }),
         totalCapacityBytes: z.string(),
         totalFreeBytes: z.string(),
@@ -236,27 +190,14 @@ const StateSchema = z.object({
       guestOs: z.object({
         config: z.object({
           fstab: z.object({
-            entries: z.array(z.object({
-              file: z.string(),
-              freq: z.number(),
-              mntops: z.string(),
-              passno: z.number(),
-              spec: z.string(),
-              vfstype: z.string(),
-            })),
+            entries: z.unknown(),
           }),
           hosts: z.object({
-            entries: z.array(z.object({
-              hostNames: z.array(z.string()),
-              ip: z.string(),
-            })),
+            entries: z.unknown(),
           }),
           issue: z.string(),
           nfsExports: z.object({
-            entries: z.array(z.object({
-              exportDirectory: z.string(),
-              hosts: z.array(z.string()),
-            })),
+            entries: z.unknown(),
           }),
           selinuxMode: z.string(),
         }),
@@ -265,58 +206,22 @@ const StateSchema = z.object({
         runtime: z.object({
           domain: z.string(),
           installedApps: z.object({
-            entries: z.array(z.object({
-              applicationName: z.string(),
-              installTime: z.string(),
-              licenses: z.array(z.string()),
-              path: z.string(),
-              vendor: z.string(),
-              version: z.string(),
-            })),
+            entries: z.unknown(),
           }),
           lastBootTime: z.string(),
           machineName: z.string(),
           network: z.object({
-            connections: z.object({
-              entries: z.array(z.object({
-                localIpAddress: z.string(),
-                localPort: z.number(),
-                pid: z.string(),
-                processName: z.string(),
-                protocol: z.string(),
-                remoteIpAddress: z.string(),
-                remotePort: z.number(),
-                state: z.string(),
-              })),
-            }),
-            scanTime: z.string(),
+            connections: z.unknown(),
+            scanTime: z.unknown(),
           }),
           openFileList: z.object({
-            entries: z.array(z.object({
-              command: z.string(),
-              filePath: z.string(),
-              fileType: z.string(),
-              user: z.string(),
-            })),
+            entries: z.unknown(),
           }),
           processes: z.object({
-            entries: z.array(z.object({
-              attributes: z.record(z.string(), z.unknown()),
-              cmdline: z.string(),
-              exePath: z.string(),
-              pid: z.string(),
-              user: z.string(),
-            })),
+            entries: z.unknown(),
           }),
           services: z.object({
-            entries: z.array(z.object({
-              cmdline: z.string(),
-              exePath: z.string(),
-              pid: z.string(),
-              serviceName: z.string(),
-              startMode: z.string(),
-              state: z.string(),
-            })),
+            entries: z.unknown(),
           }),
         }),
         version: z.string(),
@@ -325,19 +230,7 @@ const StateSchema = z.object({
       memoryMb: z.number(),
       network: z.object({
         adapters: z.object({
-          entries: z.array(z.object({
-            adapterType: z.string(),
-            addresses: z.object({
-              entries: z.array(z.object({
-                assignment: z.string(),
-                bcast: z.string(),
-                fqdn: z.string(),
-                ipAddress: z.string(),
-                subnetMask: z.string(),
-              })),
-            }),
-            macAddress: z.string(),
-          })),
+          entries: z.array(z.unknown()),
         }),
         defaultGateway: z.string(),
         primaryIpAddress: z.string(),
@@ -415,7 +308,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/migrationcenter/sources-errorframes",
-  version: "2026.04.03.3",
+  version: "2026.04.04.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -439,6 +332,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.3",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.04.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

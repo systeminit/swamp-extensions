@@ -122,9 +122,9 @@ const GlobalArgsSchema = z.object({
     }).describe("Routing policy information.").optional(),
     external: z.object({
       endpoints: z.array(z.object({
-        hostname: z.string().describe("Required. Hostname of the endpoint.")
+        hostname: z.unknown().describe("Required. Hostname of the endpoint.")
           .optional(),
-        port: z.number().int().describe("Required. Port of the endpoint.")
+        port: z.unknown().describe("Required. Port of the endpoint.")
           .optional(),
       })).describe("Required. List of the endpoints to forward traffic to.")
         .optional(),
@@ -143,23 +143,13 @@ const GlobalArgsSchema = z.object({
       ).optional(),
       contextualHeaders: z.object({
         deviceInfo: z.object({
-          outputType: z.enum([
-            "OUTPUT_TYPE_UNSPECIFIED",
-            "PROTOBUF",
-            "JSON",
-            "NONE",
-          ]).describe(
+          outputType: z.unknown().describe(
             "Optional. The output type details for the delegated device.",
           ).optional(),
         }).describe("The delegated device information configuration.")
           .optional(),
         groupInfo: z.object({
-          outputType: z.enum([
-            "OUTPUT_TYPE_UNSPECIFIED",
-            "PROTOBUF",
-            "JSON",
-            "NONE",
-          ]).describe(
+          outputType: z.unknown().describe(
             "Optional. The output type of the delegated group information.",
           ).optional(),
         }).describe("The delegated group configuration details.").optional(),
@@ -171,12 +161,9 @@ const GlobalArgsSchema = z.object({
         ]).describe("Optional. Default output type for all enabled headers.")
           .optional(),
         userInfo: z.object({
-          outputType: z.enum([
-            "OUTPUT_TYPE_UNSPECIFIED",
-            "PROTOBUF",
-            "JSON",
-            "NONE",
-          ]).describe("Optional. The delegated user's information.").optional(),
+          outputType: z.unknown().describe(
+            "Optional. The delegated user's information.",
+          ).optional(),
         }).describe("The configuration information for the delegated user.")
           .optional(),
       }).describe("Contextual headers configuration.").optional(),
@@ -216,8 +203,8 @@ const StateSchema = z.object({
     }),
     external: z.object({
       endpoints: z.array(z.object({
-        hostname: z.string(),
-        port: z.number(),
+        hostname: z.unknown(),
+        port: z.unknown(),
       })),
     }),
     network: z.object({
@@ -228,14 +215,14 @@ const StateSchema = z.object({
       clientIp: z.boolean(),
       contextualHeaders: z.object({
         deviceInfo: z.object({
-          outputType: z.string(),
+          outputType: z.unknown(),
         }),
         groupInfo: z.object({
-          outputType: z.string(),
+          outputType: z.unknown(),
         }),
         outputType: z.string(),
         userInfo: z.object({
-          outputType: z.string(),
+          outputType: z.unknown(),
         }),
       }),
       gatewayIdentity: z.string(),
@@ -270,9 +257,9 @@ const InputsSchema = z.object({
     }).describe("Routing policy information.").optional(),
     external: z.object({
       endpoints: z.array(z.object({
-        hostname: z.string().describe("Required. Hostname of the endpoint.")
+        hostname: z.unknown().describe("Required. Hostname of the endpoint.")
           .optional(),
-        port: z.number().int().describe("Required. Port of the endpoint.")
+        port: z.unknown().describe("Required. Port of the endpoint.")
           .optional(),
       })).describe("Required. List of the endpoints to forward traffic to.")
         .optional(),
@@ -291,23 +278,13 @@ const InputsSchema = z.object({
       ).optional(),
       contextualHeaders: z.object({
         deviceInfo: z.object({
-          outputType: z.enum([
-            "OUTPUT_TYPE_UNSPECIFIED",
-            "PROTOBUF",
-            "JSON",
-            "NONE",
-          ]).describe(
+          outputType: z.unknown().describe(
             "Optional. The output type details for the delegated device.",
           ).optional(),
         }).describe("The delegated device information configuration.")
           .optional(),
         groupInfo: z.object({
-          outputType: z.enum([
-            "OUTPUT_TYPE_UNSPECIFIED",
-            "PROTOBUF",
-            "JSON",
-            "NONE",
-          ]).describe(
+          outputType: z.unknown().describe(
             "Optional. The output type of the delegated group information.",
           ).optional(),
         }).describe("The delegated group configuration details.").optional(),
@@ -319,12 +296,9 @@ const InputsSchema = z.object({
         ]).describe("Optional. Default output type for all enabled headers.")
           .optional(),
         userInfo: z.object({
-          outputType: z.enum([
-            "OUTPUT_TYPE_UNSPECIFIED",
-            "PROTOBUF",
-            "JSON",
-            "NONE",
-          ]).describe("Optional. The delegated user's information.").optional(),
+          outputType: z.unknown().describe(
+            "Optional. The delegated user's information.",
+          ).optional(),
         }).describe("The configuration information for the delegated user.")
           .optional(),
       }).describe("Contextual headers configuration.").optional(),
@@ -350,7 +324,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/beyondcorp/securitygateways-applications",
-  version: "2026.04.03.3",
+  version: "2026.04.04.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -374,6 +348,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.3",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.04.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

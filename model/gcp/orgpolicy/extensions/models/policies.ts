@@ -106,16 +106,16 @@ const GlobalArgsSchema = z.object({
           "Setting this to true means that all values are allowed. This field can be set only in policies for list constraints.",
         ).optional(),
         condition: z.object({
-          description: z.string().describe(
+          description: z.unknown().describe(
             "Optional. Description of the expression. This is a longer text which describes the expression, e.g. when hovered over it in a UI.",
           ).optional(),
-          expression: z.string().describe(
+          expression: z.unknown().describe(
             "Textual representation of an expression in Common Expression Language syntax.",
           ).optional(),
-          location: z.string().describe(
+          location: z.unknown().describe(
             "Optional. String indicating the location of the expression for error reporting, e.g. a file name and a position in the file.",
           ).optional(),
-          title: z.string().describe(
+          title: z.unknown().describe(
             "Optional. Title for the expression, i.e. a short string describing its purpose. This can be used e.g. in UIs which allow to enter the expression.",
           ).optional(),
         }).describe(
@@ -127,14 +127,14 @@ const GlobalArgsSchema = z.object({
         enforce: z.boolean().describe(
           "If `true`, then the policy is enforced. If `false`, then any configuration is acceptable. This field can be set in policies for boolean constraints, custom constraints and managed constraints.",
         ).optional(),
-        parameters: z.record(z.string(), z.string()).describe(
+        parameters: z.record(z.string(), z.unknown()).describe(
           'Optional. Required for managed constraints if parameters are defined. Passes parameter values when policy enforcement is enabled. Ensure that parameter value types match those defined in the constraint definition. For example: ` { "allowedLocations": ["us-east1", "us-west1"], "allowAll": true } `',
         ).optional(),
         values: z.object({
-          allowedValues: z.array(z.string()).describe(
+          allowedValues: z.unknown().describe(
             "List of values allowed at this resource.",
           ).optional(),
-          deniedValues: z.array(z.string()).describe(
+          deniedValues: z.unknown().describe(
             "List of values denied at this resource.",
           ).optional(),
         }).describe(
@@ -192,10 +192,10 @@ const GlobalArgsSchema = z.object({
         'Optional. Required for managed constraints if parameters are defined. Passes parameter values when policy enforcement is enabled. Ensure that parameter value types match those defined in the constraint definition. For example: ` { "allowedLocations": ["us-east1", "us-west1"], "allowAll": true } `',
       ).optional(),
       values: z.object({
-        allowedValues: z.array(z.string()).describe(
+        allowedValues: z.array(z.unknown()).describe(
           "List of values allowed at this resource.",
         ).optional(),
-        deniedValues: z.array(z.string()).describe(
+        deniedValues: z.array(z.unknown()).describe(
           "List of values denied at this resource.",
         ).optional(),
       }).describe(
@@ -253,10 +253,10 @@ const GlobalArgsSchema = z.object({
         'Optional. Required for managed constraints if parameters are defined. Passes parameter values when policy enforcement is enabled. Ensure that parameter value types match those defined in the constraint definition. For example: ` { "allowedLocations": ["us-east1", "us-west1"], "allowAll": true } `',
       ).optional(),
       values: z.object({
-        allowedValues: z.array(z.string()).describe(
+        allowedValues: z.array(z.unknown()).describe(
           "List of values allowed at this resource.",
         ).optional(),
-        deniedValues: z.array(z.string()).describe(
+        deniedValues: z.array(z.unknown()).describe(
           "List of values denied at this resource.",
         ).optional(),
       }).describe(
@@ -286,17 +286,17 @@ const StateSchema = z.object({
       rules: z.array(z.object({
         allowAll: z.boolean(),
         condition: z.object({
-          description: z.string(),
-          expression: z.string(),
-          location: z.string(),
-          title: z.string(),
+          description: z.unknown(),
+          expression: z.unknown(),
+          location: z.unknown(),
+          title: z.unknown(),
         }),
         denyAll: z.boolean(),
         enforce: z.boolean(),
         parameters: z.record(z.string(), z.unknown()),
         values: z.object({
-          allowedValues: z.array(z.string()),
-          deniedValues: z.array(z.string()),
+          allowedValues: z.unknown(),
+          deniedValues: z.unknown(),
         }),
       })),
       updateTime: z.string(),
@@ -318,8 +318,8 @@ const StateSchema = z.object({
       enforce: z.boolean(),
       parameters: z.record(z.string(), z.unknown()),
       values: z.object({
-        allowedValues: z.array(z.string()),
-        deniedValues: z.array(z.string()),
+        allowedValues: z.array(z.unknown()),
+        deniedValues: z.array(z.unknown()),
       }),
     })),
     updateTime: z.string(),
@@ -342,8 +342,8 @@ const StateSchema = z.object({
       enforce: z.boolean(),
       parameters: z.record(z.string(), z.unknown()),
       values: z.object({
-        allowedValues: z.array(z.string()),
-        deniedValues: z.array(z.string()),
+        allowedValues: z.array(z.unknown()),
+        deniedValues: z.array(z.unknown()),
       }),
     })),
     updateTime: z.string(),
@@ -372,16 +372,16 @@ const InputsSchema = z.object({
           "Setting this to true means that all values are allowed. This field can be set only in policies for list constraints.",
         ).optional(),
         condition: z.object({
-          description: z.string().describe(
+          description: z.unknown().describe(
             "Optional. Description of the expression. This is a longer text which describes the expression, e.g. when hovered over it in a UI.",
           ).optional(),
-          expression: z.string().describe(
+          expression: z.unknown().describe(
             "Textual representation of an expression in Common Expression Language syntax.",
           ).optional(),
-          location: z.string().describe(
+          location: z.unknown().describe(
             "Optional. String indicating the location of the expression for error reporting, e.g. a file name and a position in the file.",
           ).optional(),
-          title: z.string().describe(
+          title: z.unknown().describe(
             "Optional. Title for the expression, i.e. a short string describing its purpose. This can be used e.g. in UIs which allow to enter the expression.",
           ).optional(),
         }).describe(
@@ -393,14 +393,14 @@ const InputsSchema = z.object({
         enforce: z.boolean().describe(
           "If `true`, then the policy is enforced. If `false`, then any configuration is acceptable. This field can be set in policies for boolean constraints, custom constraints and managed constraints.",
         ).optional(),
-        parameters: z.record(z.string(), z.string()).describe(
+        parameters: z.record(z.string(), z.unknown()).describe(
           'Optional. Required for managed constraints if parameters are defined. Passes parameter values when policy enforcement is enabled. Ensure that parameter value types match those defined in the constraint definition. For example: ` { "allowedLocations": ["us-east1", "us-west1"], "allowAll": true } `',
         ).optional(),
         values: z.object({
-          allowedValues: z.array(z.string()).describe(
+          allowedValues: z.unknown().describe(
             "List of values allowed at this resource.",
           ).optional(),
-          deniedValues: z.array(z.string()).describe(
+          deniedValues: z.unknown().describe(
             "List of values denied at this resource.",
           ).optional(),
         }).describe(
@@ -458,10 +458,10 @@ const InputsSchema = z.object({
         'Optional. Required for managed constraints if parameters are defined. Passes parameter values when policy enforcement is enabled. Ensure that parameter value types match those defined in the constraint definition. For example: ` { "allowedLocations": ["us-east1", "us-west1"], "allowAll": true } `',
       ).optional(),
       values: z.object({
-        allowedValues: z.array(z.string()).describe(
+        allowedValues: z.array(z.unknown()).describe(
           "List of values allowed at this resource.",
         ).optional(),
-        deniedValues: z.array(z.string()).describe(
+        deniedValues: z.array(z.unknown()).describe(
           "List of values denied at this resource.",
         ).optional(),
       }).describe(
@@ -519,10 +519,10 @@ const InputsSchema = z.object({
         'Optional. Required for managed constraints if parameters are defined. Passes parameter values when policy enforcement is enabled. Ensure that parameter value types match those defined in the constraint definition. For example: ` { "allowedLocations": ["us-east1", "us-west1"], "allowAll": true } `',
       ).optional(),
       values: z.object({
-        allowedValues: z.array(z.string()).describe(
+        allowedValues: z.array(z.unknown()).describe(
           "List of values allowed at this resource.",
         ).optional(),
-        deniedValues: z.array(z.string()).describe(
+        deniedValues: z.array(z.unknown()).describe(
           "List of values denied at this resource.",
         ).optional(),
       }).describe(
@@ -544,7 +544,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/orgpolicy/policies",
-  version: "2026.04.03.3",
+  version: "2026.04.04.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -568,6 +568,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.3",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.04.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

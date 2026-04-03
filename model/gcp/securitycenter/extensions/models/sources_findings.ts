@@ -397,8 +397,8 @@ const GlobalArgsSchema = z.object({
         "Category of the framework associated with the finding. E.g. Security Benchmark, or Assured Workloads",
       ).optional(),
       controls: z.array(z.object({
-        controlName: z.string().describe("Name of the Control").optional(),
-        displayName: z.string().describe(
+        controlName: z.unknown().describe("Name of the Control").optional(),
+        displayName: z.unknown().describe(
           "Display name of the control. For example, AU-02.",
         ).optional(),
       })).describe("The controls associated with the framework.").optional(),
@@ -807,14 +807,7 @@ const GlobalArgsSchema = z.object({
     signatures: z.array(z.object({
       memoryHashSignature: z.object({
         binaryFamily: z.string().describe("The binary family.").optional(),
-        detections: z.array(z.object({
-          binary: z.string().describe(
-            "The name of the binary associated with the memory hash signature detection.",
-          ).optional(),
-          percentPagesMatched: z.number().describe(
-            "The percentage of memory page hashes in the signature that were matched.",
-          ).optional(),
-        })).describe(
+        detections: z.array(z.unknown()).describe(
           "The list of memory hash detections contributing to the binary family match.",
         ).optional(),
       }).describe("A signature corresponding to memory page hashes.")
@@ -841,10 +834,7 @@ const GlobalArgsSchema = z.object({
   ipRules: z.object({
     allowed: z.object({
       ipRules: z.array(z.object({
-        portRanges: z.array(z.object({
-          max: z.string().describe("Maximum port value.").optional(),
-          min: z.string().describe("Minimum port value.").optional(),
-        })).describe(
+        portRanges: z.array(z.unknown()).describe(
           "Optional. An optional list of ports to which this rule applies. This field is only applicable for the UDP or (S)TCP protocols. Each entry must be either an integer or a range including a min and max port number.",
         ).optional(),
         protocol: z.string().describe(
@@ -854,10 +844,7 @@ const GlobalArgsSchema = z.object({
     }).describe("Allowed IP rule.").optional(),
     denied: z.object({
       ipRules: z.array(z.object({
-        portRanges: z.array(z.object({
-          max: z.string().describe("Maximum port value.").optional(),
-          min: z.string().describe("Minimum port value.").optional(),
-        })).describe(
+        portRanges: z.array(z.unknown()).describe(
           "Optional. An optional list of ports to which this rule applies. This field is only applicable for the UDP or (S)TCP protocols. Each entry must be either an integer or a range including a min and max port number.",
         ).optional(),
         protocol: z.string().describe(
@@ -961,14 +948,10 @@ const GlobalArgsSchema = z.object({
         ns: z.string().describe("Role namespace.").optional(),
       }).describe("Kubernetes Role or ClusterRole.").optional(),
       subjects: z.array(z.object({
-        kind: z.enum([
-          "AUTH_TYPE_UNSPECIFIED",
-          "USER",
-          "SERVICEACCOUNT",
-          "GROUP",
-        ]).describe("Authentication type for the subject.").optional(),
-        name: z.string().describe("Name for the subject.").optional(),
-        ns: z.string().describe("Namespace for the subject.").optional(),
+        kind: z.unknown().describe("Authentication type for the subject.")
+          .optional(),
+        name: z.unknown().describe("Name for the subject.").optional(),
+        ns: z.unknown().describe("Namespace for the subject.").optional(),
       })).describe(
         "Represents one or more subjects that are bound to the role. Not always available for PATCH requests.",
       ).optional(),
@@ -978,7 +961,7 @@ const GlobalArgsSchema = z.object({
     nodePools: z.array(z.object({
       name: z.string().describe("Kubernetes node pool name.").optional(),
       nodes: z.array(z.object({
-        name: z.string().describe(
+        name: z.unknown().describe(
           "[Full resource name](https://google.aip.dev/122#full-resource-names) of the Compute Engine VM running the cluster node.",
         ).optional(),
       })).describe("Nodes associated with the finding.").optional(),
@@ -994,21 +977,17 @@ const GlobalArgsSchema = z.object({
     ).optional(),
     objects: z.array(z.object({
       containers: z.array(z.object({
-        createTime: z.string().describe(
+        createTime: z.unknown().describe(
           "The time that the container was created.",
         ).optional(),
-        imageId: z.string().describe(
+        imageId: z.unknown().describe(
           "Optional container image ID, if provided by the container runtime. Uniquely identifies the container image launched using a container image digest.",
         ).optional(),
-        labels: z.array(z.object({
-          name: z.string().describe("Name of the label.").optional(),
-          value: z.string().describe(
-            "Value that corresponds to the label's name.",
-          ).optional(),
-        })).describe("Container labels, as provided by the container runtime.")
-          .optional(),
-        name: z.string().describe("Name of the container.").optional(),
-        uri: z.string().describe(
+        labels: z.unknown().describe(
+          "Container labels, as provided by the container runtime.",
+        ).optional(),
+        name: z.unknown().describe("Name of the container.").optional(),
+        uri: z.unknown().describe(
           "Container image URI provided when configuring a pod or container. This string can identify a container image version using mutable tags.",
         ).optional(),
       })).describe("Pod containers associated with this finding, if any.")
@@ -1027,28 +1006,24 @@ const GlobalArgsSchema = z.object({
     })).describe("Kubernetes objects related to the finding.").optional(),
     pods: z.array(z.object({
       containers: z.array(z.object({
-        createTime: z.string().describe(
+        createTime: z.unknown().describe(
           "The time that the container was created.",
         ).optional(),
-        imageId: z.string().describe(
+        imageId: z.unknown().describe(
           "Optional container image ID, if provided by the container runtime. Uniquely identifies the container image launched using a container image digest.",
         ).optional(),
-        labels: z.array(z.object({
-          name: z.string().describe("Name of the label.").optional(),
-          value: z.string().describe(
-            "Value that corresponds to the label's name.",
-          ).optional(),
-        })).describe("Container labels, as provided by the container runtime.")
-          .optional(),
-        name: z.string().describe("Name of the container.").optional(),
-        uri: z.string().describe(
+        labels: z.unknown().describe(
+          "Container labels, as provided by the container runtime.",
+        ).optional(),
+        name: z.unknown().describe("Name of the container.").optional(),
+        uri: z.unknown().describe(
           "Container image URI provided when configuring a pod or container. This string can identify a container image version using mutable tags.",
         ).optional(),
       })).describe("Pod containers associated with this finding, if any.")
         .optional(),
       labels: z.array(z.object({
-        name: z.string().describe("Name of the label.").optional(),
-        value: z.string().describe(
+        name: z.unknown().describe("Name of the label.").optional(),
+        value: z.unknown().describe(
           "Value that corresponds to the label's name.",
         ).optional(),
       })).describe(
@@ -1546,14 +1521,7 @@ const GlobalArgsSchema = z.object({
         "The length in bytes of the file prefix that was hashed. If hashed_size == size, any hashes reported represent the entire file.",
       ).optional(),
       operations: z.array(z.object({
-        type: z.enum([
-          "OPERATION_TYPE_UNSPECIFIED",
-          "OPEN",
-          "READ",
-          "RENAME",
-          "WRITE",
-          "EXECUTE",
-        ]).describe("The type of the operation").optional(),
+        type: z.unknown().describe("The type of the operation").optional(),
       })).describe("Operation(s) performed on a file.").optional(),
       partiallyHashed: z.boolean().describe(
         "True when the hash covers only a prefix of the file.",
@@ -1584,10 +1552,10 @@ const GlobalArgsSchema = z.object({
         "Prefix of the file contents as a JSON-encoded string.",
       ).optional(),
       diskPath: z.object({
-        partitionUuid: z.string().describe(
+        partitionUuid: z.unknown().describe(
           "UUID of the partition (format https://wiki.archlinux.org/title/persistent_block_device_naming#by-uuid)",
         ).optional(),
-        relativePath: z.string().describe(
+        relativePath: z.unknown().describe(
           "Relative path of the file in the partition as a JSON encoded string. Example: /home/user1/executable_file.sh",
         ).optional(),
       }).describe(
@@ -1601,16 +1569,9 @@ const GlobalArgsSchema = z.object({
       hashedSize: z.string().describe(
         "The length in bytes of the file prefix that was hashed. If hashed_size == size, any hashes reported represent the entire file.",
       ).optional(),
-      operations: z.array(z.object({
-        type: z.enum([
-          "OPERATION_TYPE_UNSPECIFIED",
-          "OPEN",
-          "READ",
-          "RENAME",
-          "WRITE",
-          "EXECUTE",
-        ]).describe("The type of the operation").optional(),
-      })).describe("Operation(s) performed on a file.").optional(),
+      operations: z.array(z.unknown()).describe(
+        "Operation(s) performed on a file.",
+      ).optional(),
       partiallyHashed: z.boolean().describe(
         "True when the hash covers only a prefix of the file.",
       ).optional(),
@@ -1651,14 +1612,7 @@ const GlobalArgsSchema = z.object({
         "The length in bytes of the file prefix that was hashed. If hashed_size == size, any hashes reported represent the entire file.",
       ).optional(),
       operations: z.array(z.object({
-        type: z.enum([
-          "OPERATION_TYPE_UNSPECIFIED",
-          "OPEN",
-          "READ",
-          "RENAME",
-          "WRITE",
-          "EXECUTE",
-        ]).describe("The type of the operation").optional(),
+        type: z.unknown().describe("The type of the operation").optional(),
       })).describe("Operation(s) performed on a file.").optional(),
       partiallyHashed: z.boolean().describe(
         "True when the hash covers only a prefix of the file.",
@@ -1922,9 +1876,9 @@ const GlobalArgsSchema = z.object({
     cwes: z.array(z.object({
       id: z.string().describe("The CWE identifier, e.g. CWE-94").optional(),
       references: z.array(z.object({
-        source: z.string().describe("Source of the reference e.g. NVD")
+        source: z.unknown().describe("Source of the reference e.g. NVD")
           .optional(),
-        uri: z.string().describe(
+        uri: z.unknown().describe(
           "Uri for the mentioned source e.g. https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2021-34527.",
         ).optional(),
       })).describe(
@@ -2089,7 +2043,7 @@ const StateSchema = z.object({
       infoTypes: z.array(z.object({
         name: z.string(),
         sensitivityScore: z.object({
-          score: z.string(),
+          score: z.unknown(),
         }),
         version: z.string(),
       })),
@@ -2110,11 +2064,8 @@ const StateSchema = z.object({
       }),
       cloudControlDeploymentNames: z.array(z.string()),
       frameworks: z.array(z.object({
-        category: z.array(z.string()),
-        controls: z.array(z.object({
-          controlName: z.string(),
-          displayName: z.string(),
-        })),
+        category: z.array(z.unknown()),
+        controls: z.array(z.unknown()),
         displayName: z.string(),
         name: z.string(),
         type: z.string(),
@@ -2137,8 +2088,8 @@ const StateSchema = z.object({
       createTime: z.string(),
       imageId: z.string(),
       labels: z.array(z.object({
-        name: z.string(),
-        value: z.string(),
+        name: z.unknown(),
+        value: z.unknown(),
       })),
       name: z.string(),
       uri: z.string(),
@@ -2186,11 +2137,11 @@ const StateSchema = z.object({
     eventTime: z.string(),
     exfiltration: z.object({
       sources: z.array(z.object({
-        components: z.array(z.string()),
+        components: z.array(z.unknown()),
         name: z.string(),
       })),
       targets: z.array(z.object({
-        components: z.array(z.string()),
+        components: z.array(z.unknown()),
         name: z.string(),
       })),
       totalExfiltratedBytes: z.string(),
@@ -2220,7 +2171,7 @@ const StateSchema = z.object({
       fileLoadState: z.string(),
       hashedSize: z.string(),
       operations: z.array(z.object({
-        type: z.string(),
+        type: z.unknown(),
       })),
       partiallyHashed: z.boolean(),
       path: z.string(),
@@ -2242,15 +2193,12 @@ const StateSchema = z.object({
       ipAddresses: z.array(z.string()),
       signatures: z.array(z.object({
         memoryHashSignature: z.object({
-          binaryFamily: z.string(),
-          detections: z.array(z.object({
-            binary: z.string(),
-            percentPagesMatched: z.number(),
-          })),
+          binaryFamily: z.unknown(),
+          detections: z.unknown(),
         }),
         signatureType: z.string(),
         yaraRuleSignature: z.object({
-          yaraRule: z.string(),
+          yaraRule: z.unknown(),
         }),
       })),
       uris: z.array(z.string()),
@@ -2258,20 +2206,14 @@ const StateSchema = z.object({
     ipRules: z.object({
       allowed: z.object({
         ipRules: z.array(z.object({
-          portRanges: z.array(z.object({
-            max: z.string(),
-            min: z.string(),
-          })),
-          protocol: z.string(),
+          portRanges: z.unknown(),
+          protocol: z.unknown(),
         })),
       }),
       denied: z.object({
         ipRules: z.array(z.object({
-          portRanges: z.array(z.object({
-            max: z.string(),
-            min: z.string(),
-          })),
-          protocol: z.string(),
+          portRanges: z.unknown(),
+          protocol: z.unknown(),
         })),
       }),
       destinationIpRanges: z.array(z.string()),
@@ -2310,56 +2252,29 @@ const StateSchema = z.object({
         name: z.string(),
         ns: z.string(),
         role: z.object({
-          kind: z.string(),
-          name: z.string(),
-          ns: z.string(),
+          kind: z.unknown(),
+          name: z.unknown(),
+          ns: z.unknown(),
         }),
-        subjects: z.array(z.object({
-          kind: z.string(),
-          name: z.string(),
-          ns: z.string(),
-        })),
+        subjects: z.array(z.unknown()),
       })),
       nodePools: z.array(z.object({
         name: z.string(),
-        nodes: z.array(z.object({
-          name: z.string(),
-        })),
+        nodes: z.array(z.unknown()),
       })),
       nodes: z.array(z.object({
         name: z.string(),
       })),
       objects: z.array(z.object({
-        containers: z.array(z.object({
-          createTime: z.string(),
-          imageId: z.string(),
-          labels: z.array(z.object({
-            name: z.string(),
-            value: z.string(),
-          })),
-          name: z.string(),
-          uri: z.string(),
-        })),
+        containers: z.array(z.unknown()),
         group: z.string(),
         kind: z.string(),
         name: z.string(),
         ns: z.string(),
       })),
       pods: z.array(z.object({
-        containers: z.array(z.object({
-          createTime: z.string(),
-          imageId: z.string(),
-          labels: z.array(z.object({
-            name: z.string(),
-            value: z.string(),
-          })),
-          name: z.string(),
-          uri: z.string(),
-        })),
-        labels: z.array(z.object({
-          name: z.string(),
-          value: z.string(),
-        })),
+        containers: z.array(z.unknown()),
+        labels: z.array(z.unknown()),
         name: z.string(),
         ns: z.string(),
       })),
@@ -2429,39 +2344,32 @@ const StateSchema = z.object({
       binary: z.object({
         contents: z.string(),
         diskPath: z.object({
-          partitionUuid: z.string(),
-          relativePath: z.string(),
+          partitionUuid: z.unknown(),
+          relativePath: z.unknown(),
         }),
         fileLoadState: z.string(),
         hashedSize: z.string(),
-        operations: z.array(z.object({
-          type: z.string(),
-        })),
+        operations: z.array(z.unknown()),
         partiallyHashed: z.boolean(),
         path: z.string(),
         sha256: z.string(),
         size: z.string(),
       }),
       envVariables: z.array(z.object({
-        name: z.string(),
-        val: z.string(),
+        name: z.unknown(),
+        val: z.unknown(),
       })),
       envVariablesTruncated: z.boolean(),
       libraries: z.array(z.object({
-        contents: z.string(),
-        diskPath: z.object({
-          partitionUuid: z.string(),
-          relativePath: z.string(),
-        }),
-        fileLoadState: z.string(),
-        hashedSize: z.string(),
-        operations: z.array(z.object({
-          type: z.string(),
-        })),
-        partiallyHashed: z.boolean(),
-        path: z.string(),
-        sha256: z.string(),
-        size: z.string(),
+        contents: z.unknown(),
+        diskPath: z.unknown(),
+        fileLoadState: z.unknown(),
+        hashedSize: z.unknown(),
+        operations: z.unknown(),
+        partiallyHashed: z.unknown(),
+        path: z.unknown(),
+        sha256: z.unknown(),
+        size: z.unknown(),
       })),
       name: z.string(),
       parentPid: z.string(),
@@ -2469,14 +2377,12 @@ const StateSchema = z.object({
       script: z.object({
         contents: z.string(),
         diskPath: z.object({
-          partitionUuid: z.string(),
-          relativePath: z.string(),
+          partitionUuid: z.unknown(),
+          relativePath: z.unknown(),
         }),
         fileLoadState: z.string(),
         hashedSize: z.string(),
-        operations: z.array(z.object({
-          type: z.string(),
-        })),
+        operations: z.array(z.unknown()),
         partiallyHashed: z.boolean(),
         path: z.string(),
         sha256: z.string(),
@@ -2555,18 +2461,15 @@ const StateSchema = z.object({
         impact: z.string(),
         observedInTheWild: z.boolean(),
         references: z.array(z.object({
-          source: z.string(),
-          uri: z.string(),
+          source: z.unknown(),
+          uri: z.unknown(),
         })),
         upstreamFixAvailable: z.boolean(),
         zeroDay: z.boolean(),
       }),
       cwes: z.array(z.object({
         id: z.string(),
-        references: z.array(z.object({
-          source: z.string(),
-          uri: z.string(),
-        })),
+        references: z.array(z.unknown()),
       })),
       fixedPackage: z.object({
         cpeUri: z.string(),
@@ -2593,19 +2496,19 @@ const StateSchema = z.object({
     adcApplication: z.object({
       attributes: z.object({
         businessOwners: z.array(z.object({
-          email: z.string(),
+          email: z.unknown(),
         })),
         criticality: z.object({
           type: z.string(),
         }),
         developerOwners: z.array(z.object({
-          email: z.string(),
+          email: z.unknown(),
         })),
         environment: z.object({
           type: z.string(),
         }),
         operatorOwners: z.array(z.object({
-          email: z.string(),
+          email: z.unknown(),
         })),
       }),
       name: z.string(),
@@ -2619,19 +2522,19 @@ const StateSchema = z.object({
     application: z.object({
       attributes: z.object({
         businessOwners: z.array(z.object({
-          email: z.string(),
+          email: z.unknown(),
         })),
         criticality: z.object({
           type: z.string(),
         }),
         developerOwners: z.array(z.object({
-          email: z.string(),
+          email: z.unknown(),
         })),
         environment: z.object({
           type: z.string(),
         }),
         operatorOwners: z.array(z.object({
-          email: z.string(),
+          email: z.unknown(),
         })),
       }),
       name: z.string(),
@@ -3025,8 +2928,8 @@ const InputsSchema = z.object({
         "Category of the framework associated with the finding. E.g. Security Benchmark, or Assured Workloads",
       ).optional(),
       controls: z.array(z.object({
-        controlName: z.string().describe("Name of the Control").optional(),
-        displayName: z.string().describe(
+        controlName: z.unknown().describe("Name of the Control").optional(),
+        displayName: z.unknown().describe(
           "Display name of the control. For example, AU-02.",
         ).optional(),
       })).describe("The controls associated with the framework.").optional(),
@@ -3435,14 +3338,7 @@ const InputsSchema = z.object({
     signatures: z.array(z.object({
       memoryHashSignature: z.object({
         binaryFamily: z.string().describe("The binary family.").optional(),
-        detections: z.array(z.object({
-          binary: z.string().describe(
-            "The name of the binary associated with the memory hash signature detection.",
-          ).optional(),
-          percentPagesMatched: z.number().describe(
-            "The percentage of memory page hashes in the signature that were matched.",
-          ).optional(),
-        })).describe(
+        detections: z.array(z.unknown()).describe(
           "The list of memory hash detections contributing to the binary family match.",
         ).optional(),
       }).describe("A signature corresponding to memory page hashes.")
@@ -3469,10 +3365,7 @@ const InputsSchema = z.object({
   ipRules: z.object({
     allowed: z.object({
       ipRules: z.array(z.object({
-        portRanges: z.array(z.object({
-          max: z.string().describe("Maximum port value.").optional(),
-          min: z.string().describe("Minimum port value.").optional(),
-        })).describe(
+        portRanges: z.array(z.unknown()).describe(
           "Optional. An optional list of ports to which this rule applies. This field is only applicable for the UDP or (S)TCP protocols. Each entry must be either an integer or a range including a min and max port number.",
         ).optional(),
         protocol: z.string().describe(
@@ -3482,10 +3375,7 @@ const InputsSchema = z.object({
     }).describe("Allowed IP rule.").optional(),
     denied: z.object({
       ipRules: z.array(z.object({
-        portRanges: z.array(z.object({
-          max: z.string().describe("Maximum port value.").optional(),
-          min: z.string().describe("Minimum port value.").optional(),
-        })).describe(
+        portRanges: z.array(z.unknown()).describe(
           "Optional. An optional list of ports to which this rule applies. This field is only applicable for the UDP or (S)TCP protocols. Each entry must be either an integer or a range including a min and max port number.",
         ).optional(),
         protocol: z.string().describe(
@@ -3589,14 +3479,10 @@ const InputsSchema = z.object({
         ns: z.string().describe("Role namespace.").optional(),
       }).describe("Kubernetes Role or ClusterRole.").optional(),
       subjects: z.array(z.object({
-        kind: z.enum([
-          "AUTH_TYPE_UNSPECIFIED",
-          "USER",
-          "SERVICEACCOUNT",
-          "GROUP",
-        ]).describe("Authentication type for the subject.").optional(),
-        name: z.string().describe("Name for the subject.").optional(),
-        ns: z.string().describe("Namespace for the subject.").optional(),
+        kind: z.unknown().describe("Authentication type for the subject.")
+          .optional(),
+        name: z.unknown().describe("Name for the subject.").optional(),
+        ns: z.unknown().describe("Namespace for the subject.").optional(),
       })).describe(
         "Represents one or more subjects that are bound to the role. Not always available for PATCH requests.",
       ).optional(),
@@ -3606,7 +3492,7 @@ const InputsSchema = z.object({
     nodePools: z.array(z.object({
       name: z.string().describe("Kubernetes node pool name.").optional(),
       nodes: z.array(z.object({
-        name: z.string().describe(
+        name: z.unknown().describe(
           "[Full resource name](https://google.aip.dev/122#full-resource-names) of the Compute Engine VM running the cluster node.",
         ).optional(),
       })).describe("Nodes associated with the finding.").optional(),
@@ -3622,21 +3508,17 @@ const InputsSchema = z.object({
     ).optional(),
     objects: z.array(z.object({
       containers: z.array(z.object({
-        createTime: z.string().describe(
+        createTime: z.unknown().describe(
           "The time that the container was created.",
         ).optional(),
-        imageId: z.string().describe(
+        imageId: z.unknown().describe(
           "Optional container image ID, if provided by the container runtime. Uniquely identifies the container image launched using a container image digest.",
         ).optional(),
-        labels: z.array(z.object({
-          name: z.string().describe("Name of the label.").optional(),
-          value: z.string().describe(
-            "Value that corresponds to the label's name.",
-          ).optional(),
-        })).describe("Container labels, as provided by the container runtime.")
-          .optional(),
-        name: z.string().describe("Name of the container.").optional(),
-        uri: z.string().describe(
+        labels: z.unknown().describe(
+          "Container labels, as provided by the container runtime.",
+        ).optional(),
+        name: z.unknown().describe("Name of the container.").optional(),
+        uri: z.unknown().describe(
           "Container image URI provided when configuring a pod or container. This string can identify a container image version using mutable tags.",
         ).optional(),
       })).describe("Pod containers associated with this finding, if any.")
@@ -3655,28 +3537,24 @@ const InputsSchema = z.object({
     })).describe("Kubernetes objects related to the finding.").optional(),
     pods: z.array(z.object({
       containers: z.array(z.object({
-        createTime: z.string().describe(
+        createTime: z.unknown().describe(
           "The time that the container was created.",
         ).optional(),
-        imageId: z.string().describe(
+        imageId: z.unknown().describe(
           "Optional container image ID, if provided by the container runtime. Uniquely identifies the container image launched using a container image digest.",
         ).optional(),
-        labels: z.array(z.object({
-          name: z.string().describe("Name of the label.").optional(),
-          value: z.string().describe(
-            "Value that corresponds to the label's name.",
-          ).optional(),
-        })).describe("Container labels, as provided by the container runtime.")
-          .optional(),
-        name: z.string().describe("Name of the container.").optional(),
-        uri: z.string().describe(
+        labels: z.unknown().describe(
+          "Container labels, as provided by the container runtime.",
+        ).optional(),
+        name: z.unknown().describe("Name of the container.").optional(),
+        uri: z.unknown().describe(
           "Container image URI provided when configuring a pod or container. This string can identify a container image version using mutable tags.",
         ).optional(),
       })).describe("Pod containers associated with this finding, if any.")
         .optional(),
       labels: z.array(z.object({
-        name: z.string().describe("Name of the label.").optional(),
-        value: z.string().describe(
+        name: z.unknown().describe("Name of the label.").optional(),
+        value: z.unknown().describe(
           "Value that corresponds to the label's name.",
         ).optional(),
       })).describe(
@@ -4174,14 +4052,7 @@ const InputsSchema = z.object({
         "The length in bytes of the file prefix that was hashed. If hashed_size == size, any hashes reported represent the entire file.",
       ).optional(),
       operations: z.array(z.object({
-        type: z.enum([
-          "OPERATION_TYPE_UNSPECIFIED",
-          "OPEN",
-          "READ",
-          "RENAME",
-          "WRITE",
-          "EXECUTE",
-        ]).describe("The type of the operation").optional(),
+        type: z.unknown().describe("The type of the operation").optional(),
       })).describe("Operation(s) performed on a file.").optional(),
       partiallyHashed: z.boolean().describe(
         "True when the hash covers only a prefix of the file.",
@@ -4212,10 +4083,10 @@ const InputsSchema = z.object({
         "Prefix of the file contents as a JSON-encoded string.",
       ).optional(),
       diskPath: z.object({
-        partitionUuid: z.string().describe(
+        partitionUuid: z.unknown().describe(
           "UUID of the partition (format https://wiki.archlinux.org/title/persistent_block_device_naming#by-uuid)",
         ).optional(),
-        relativePath: z.string().describe(
+        relativePath: z.unknown().describe(
           "Relative path of the file in the partition as a JSON encoded string. Example: /home/user1/executable_file.sh",
         ).optional(),
       }).describe(
@@ -4229,16 +4100,9 @@ const InputsSchema = z.object({
       hashedSize: z.string().describe(
         "The length in bytes of the file prefix that was hashed. If hashed_size == size, any hashes reported represent the entire file.",
       ).optional(),
-      operations: z.array(z.object({
-        type: z.enum([
-          "OPERATION_TYPE_UNSPECIFIED",
-          "OPEN",
-          "READ",
-          "RENAME",
-          "WRITE",
-          "EXECUTE",
-        ]).describe("The type of the operation").optional(),
-      })).describe("Operation(s) performed on a file.").optional(),
+      operations: z.array(z.unknown()).describe(
+        "Operation(s) performed on a file.",
+      ).optional(),
       partiallyHashed: z.boolean().describe(
         "True when the hash covers only a prefix of the file.",
       ).optional(),
@@ -4279,14 +4143,7 @@ const InputsSchema = z.object({
         "The length in bytes of the file prefix that was hashed. If hashed_size == size, any hashes reported represent the entire file.",
       ).optional(),
       operations: z.array(z.object({
-        type: z.enum([
-          "OPERATION_TYPE_UNSPECIFIED",
-          "OPEN",
-          "READ",
-          "RENAME",
-          "WRITE",
-          "EXECUTE",
-        ]).describe("The type of the operation").optional(),
+        type: z.unknown().describe("The type of the operation").optional(),
       })).describe("Operation(s) performed on a file.").optional(),
       partiallyHashed: z.boolean().describe(
         "True when the hash covers only a prefix of the file.",
@@ -4550,9 +4407,9 @@ const InputsSchema = z.object({
     cwes: z.array(z.object({
       id: z.string().describe("The CWE identifier, e.g. CWE-94").optional(),
       references: z.array(z.object({
-        source: z.string().describe("Source of the reference e.g. NVD")
+        source: z.unknown().describe("Source of the reference e.g. NVD")
           .optional(),
-        uri: z.string().describe(
+        uri: z.unknown().describe(
           "Uri for the mentioned source e.g. https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2021-34527.",
         ).optional(),
       })).describe(
@@ -4612,7 +4469,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/securitycenter/sources-findings",
-  version: "2026.04.03.3",
+  version: "2026.04.04.1",
   upgrades: [
     {
       toVersion: "2026.03.31.1",
@@ -4654,6 +4511,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.3",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.04.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

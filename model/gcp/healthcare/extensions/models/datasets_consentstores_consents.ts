@@ -117,7 +117,7 @@ const GlobalArgsSchema = z.object({
       attributeDefinitionId: z.string().describe(
         "Indicates the name of an attribute defined in the consent store.",
       ).optional(),
-      values: z.array(z.string()).describe(
+      values: z.array(z.unknown()).describe(
         'Required. The value of the attribute. Must be an acceptable value as defined in the consent store. For example, if the consent store defines "data type" with acceptable values "questionnaire" and "step-count", when the attribute name is data type, this field must contain one of those values.',
       ).optional(),
     })).describe(
@@ -159,7 +159,7 @@ const StateSchema = z.object({
     }),
     resourceAttributes: z.array(z.object({
       attributeDefinitionId: z.string(),
-      values: z.array(z.string()),
+      values: z.array(z.unknown()),
     })),
   })).optional(),
   revisionCreateTime: z.string().optional(),
@@ -205,7 +205,7 @@ const InputsSchema = z.object({
       attributeDefinitionId: z.string().describe(
         "Indicates the name of an attribute defined in the consent store.",
       ).optional(),
-      values: z.array(z.string()).describe(
+      values: z.array(z.unknown()).describe(
         'Required. The value of the attribute. Must be an acceptable value as defined in the consent store. For example, if the consent store defines "data type" with acceptable values "questionnaire" and "step-count", when the attribute name is data type, this field must contain one of those values.',
       ).optional(),
     })).describe(
@@ -235,7 +235,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/healthcare/datasets-consentstores-consents",
-  version: "2026.04.03.3",
+  version: "2026.04.04.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -259,6 +259,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.3",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.04.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

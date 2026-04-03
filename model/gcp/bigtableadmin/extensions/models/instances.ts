@@ -87,20 +87,20 @@ const GlobalArgsSchema = z.object({
       clusterConfig: z.object({
         clusterAutoscalingConfig: z.object({
           autoscalingLimits: z.object({
-            maxServeNodes: z.number().int().describe(
+            maxServeNodes: z.unknown().describe(
               "Required. Maximum number of nodes to scale up to.",
             ).optional(),
-            minServeNodes: z.number().int().describe(
+            minServeNodes: z.unknown().describe(
               "Required. Minimum number of nodes to scale down to.",
             ).optional(),
           }).describe(
             "Limits for the number of nodes a Cluster can autoscale up/down to.",
           ).optional(),
           autoscalingTargets: z.object({
-            cpuUtilizationPercent: z.number().int().describe(
+            cpuUtilizationPercent: z.unknown().describe(
               "The cpu utilization that the Autoscaler should be trying to achieve. This number is on a scale from 0 (no utilization) to 100 (total utilization), and is limited between 10 and 80, otherwise it will return INVALID_ARGUMENT error.",
             ).optional(),
-            storageUtilizationGibPerNode: z.number().int().describe(
+            storageUtilizationGibPerNode: z.unknown().describe(
               "The storage utilization that the Autoscaler should be trying to achieve. This number is limited between 2560 (2.5TiB) and 5120 (5TiB) for a SSD cluster and between 8192 (8TiB) and 16384 (16TiB) for an HDD cluster, otherwise it will return INVALID_ARGUMENT error. If this value is set to 0, it will be treated as if it were set to the default value: 2560 for SSD, 8192 for HDD.",
             ).optional(),
           }).describe(
@@ -236,20 +236,20 @@ const InputsSchema = z.object({
       clusterConfig: z.object({
         clusterAutoscalingConfig: z.object({
           autoscalingLimits: z.object({
-            maxServeNodes: z.number().int().describe(
+            maxServeNodes: z.unknown().describe(
               "Required. Maximum number of nodes to scale up to.",
             ).optional(),
-            minServeNodes: z.number().int().describe(
+            minServeNodes: z.unknown().describe(
               "Required. Minimum number of nodes to scale down to.",
             ).optional(),
           }).describe(
             "Limits for the number of nodes a Cluster can autoscale up/down to.",
           ).optional(),
           autoscalingTargets: z.object({
-            cpuUtilizationPercent: z.number().int().describe(
+            cpuUtilizationPercent: z.unknown().describe(
               "The cpu utilization that the Autoscaler should be trying to achieve. This number is on a scale from 0 (no utilization) to 100 (total utilization), and is limited between 10 and 80, otherwise it will return INVALID_ARGUMENT error.",
             ).optional(),
-            storageUtilizationGibPerNode: z.number().int().describe(
+            storageUtilizationGibPerNode: z.unknown().describe(
               "The storage utilization that the Autoscaler should be trying to achieve. This number is limited between 2560 (2.5TiB) and 5120 (5TiB) for a SSD cluster and between 8192 (8TiB) and 16384 (16TiB) for an HDD cluster, otherwise it will return INVALID_ARGUMENT error. If this value is set to 0, it will be treated as if it were set to the default value: 2560 for SSD, 8192 for HDD.",
             ).optional(),
           }).describe(
@@ -365,7 +365,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/bigtableadmin/instances",
-  version: "2026.04.03.3",
+  version: "2026.04.04.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -389,6 +389,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.3",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.04.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

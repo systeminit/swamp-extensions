@@ -178,20 +178,13 @@ const GlobalArgsSchema = z.object({
     ).optional(),
     workerPoolSpecs: z.array(z.object({
       containerSpec: z.object({
-        args: z.array(z.string()).describe(
+        args: z.array(z.unknown()).describe(
           "The arguments to be passed when starting the container.",
         ).optional(),
-        command: z.array(z.string()).describe(
+        command: z.array(z.unknown()).describe(
           "The command to be invoked when the container is started. It overrides the entrypoint instruction in Dockerfile when provided.",
         ).optional(),
-        env: z.array(z.object({
-          name: z.string().describe(
-            "Required. Name of the environment variable. Must be a valid C identifier.",
-          ).optional(),
-          value: z.string().describe(
-            "Required. Variables that reference a $(VAR_NAME) are expanded using the previous defined environment variables in the container and any service environment variables. If a variable cannot be resolved, the reference in the input string will be unchanged. The $(VAR_NAME) syntax can be escaped with a double $$, ie: $$(VAR_NAME). Escaped references will never be expanded, regardless of whether the variable exists or not.",
-          ).optional(),
-        })).describe(
+        env: z.array(z.unknown()).describe(
           "Environment variables to be passed to the container. Maximum limit is 100.",
         ).optional(),
         imageUri: z.string().describe(
@@ -207,16 +200,16 @@ const GlobalArgsSchema = z.object({
         ).optional(),
       }).describe("Represents the spec of disk options.").optional(),
       lustreMounts: z.array(z.object({
-        filesystem: z.string().describe(
+        filesystem: z.unknown().describe(
           "Required. The name of the Lustre filesystem.",
         ).optional(),
-        instanceIp: z.string().describe(
+        instanceIp: z.unknown().describe(
           "Required. IP address of the Lustre instance.",
         ).optional(),
-        mountPoint: z.string().describe(
+        mountPoint: z.unknown().describe(
           "Required. Destination mount path. The Lustre file system will be mounted for the user under /mnt/lustre/",
         ).optional(),
-        volumeHandle: z.string().describe(
+        volumeHandle: z.unknown().describe(
           "Required. The unique identifier of the Lustre volume.",
         ).optional(),
       })).describe("Optional. List of Lustre mounts.").optional(),
@@ -254,17 +247,13 @@ const GlobalArgsSchema = z.object({
           "Immutable. The type of the machine. See the [list of machine types supported for prediction](https://cloud.google.com/vertex-ai/docs/predictions/configure-compute#machine-types) See the [list of machine types supported for custom training](https://cloud.google.com/vertex-ai/docs/training/configure-compute#machine-types). For DeployedModel this field is optional, and the default value is `n1-standard-2`. For BatchPredictionJob or as part of WorkerPoolSpec this field is required.",
         ).optional(),
         reservationAffinity: z.object({
-          key: z.string().describe(
+          key: z.unknown().describe(
             "Optional. Corresponds to the label key of a reservation resource. To target a SPECIFIC_RESERVATION by name, use `compute.googleapis.com/reservation-name` as the key and specify the name of your reservation as its value.",
           ).optional(),
-          reservationAffinityType: z.enum([
-            "TYPE_UNSPECIFIED",
-            "NO_RESERVATION",
-            "ANY_RESERVATION",
-            "SPECIFIC_RESERVATION",
-          ]).describe("Required. Specifies the reservation affinity type.")
-            .optional(),
-          values: z.array(z.string()).describe(
+          reservationAffinityType: z.unknown().describe(
+            "Required. Specifies the reservation affinity type.",
+          ).optional(),
+          values: z.unknown().describe(
             "Optional. Corresponds to the label values of a reservation resource. This must be the full resource name of the reservation or reservation block.",
           ).optional(),
         }).describe(
@@ -275,33 +264,26 @@ const GlobalArgsSchema = z.object({
         ).optional(),
       }).describe("Specification of a single machine.").optional(),
       nfsMounts: z.array(z.object({
-        mountPoint: z.string().describe(
+        mountPoint: z.unknown().describe(
           "Required. Destination mount path. The NFS will be mounted for the user under /mnt/nfs/",
         ).optional(),
-        path: z.string().describe(
+        path: z.unknown().describe(
           "Required. Source path exported from NFS server. Has to start with '/', and combined with the ip address, it indicates the source mount path in the form of `server:path`",
         ).optional(),
-        server: z.string().describe("Required. IP address of the NFS server.")
+        server: z.unknown().describe("Required. IP address of the NFS server.")
           .optional(),
       })).describe("Optional. List of NFS mount spec.").optional(),
       pythonPackageSpec: z.object({
-        args: z.array(z.string()).describe(
+        args: z.array(z.unknown()).describe(
           "Command line arguments to be passed to the Python task.",
         ).optional(),
-        env: z.array(z.object({
-          name: z.string().describe(
-            "Required. Name of the environment variable. Must be a valid C identifier.",
-          ).optional(),
-          value: z.string().describe(
-            "Required. Variables that reference a $(VAR_NAME) are expanded using the previous defined environment variables in the container and any service environment variables. If a variable cannot be resolved, the reference in the input string will be unchanged. The $(VAR_NAME) syntax can be escaped with a double $$, ie: $$(VAR_NAME). Escaped references will never be expanded, regardless of whether the variable exists or not.",
-          ).optional(),
-        })).describe(
+        env: z.array(z.unknown()).describe(
           "Environment variables to be passed to the python module. Maximum limit is 100.",
         ).optional(),
         executorImageUri: z.string().describe(
           "Required. The URI of a container image in Artifact Registry that will run the provided Python package. Vertex AI provides a wide range of executor images with pre-installed packages to meet users' various use cases. See the list of [pre-built containers for training](https://cloud.google.com/vertex-ai/docs/training/pre-built-containers). You must use an image from this list.",
         ).optional(),
-        packageUris: z.array(z.string()).describe(
+        packageUris: z.array(z.unknown()).describe(
           "Required. The Google Cloud Storage location of the Python package files which are the training program and its dependent packages. The maximum number of package URIs is 100.",
         ).optional(),
         pythonModule: z.string().describe(
@@ -367,12 +349,9 @@ const StateSchema = z.object({
     tensorboard: z.string(),
     workerPoolSpecs: z.array(z.object({
       containerSpec: z.object({
-        args: z.array(z.string()),
-        command: z.array(z.string()),
-        env: z.array(z.object({
-          name: z.string(),
-          value: z.string(),
-        })),
+        args: z.array(z.unknown()),
+        command: z.array(z.unknown()),
+        env: z.array(z.unknown()),
         imageUri: z.string(),
       }),
       diskSpec: z.object({
@@ -380,10 +359,10 @@ const StateSchema = z.object({
         bootDiskType: z.string(),
       }),
       lustreMounts: z.array(z.object({
-        filesystem: z.string(),
-        instanceIp: z.string(),
-        mountPoint: z.string(),
-        volumeHandle: z.string(),
+        filesystem: z.unknown(),
+        instanceIp: z.unknown(),
+        mountPoint: z.unknown(),
+        volumeHandle: z.unknown(),
       })),
       machineSpec: z.object({
         acceleratorCount: z.number(),
@@ -391,25 +370,22 @@ const StateSchema = z.object({
         gpuPartitionSize: z.string(),
         machineType: z.string(),
         reservationAffinity: z.object({
-          key: z.string(),
-          reservationAffinityType: z.string(),
-          values: z.array(z.string()),
+          key: z.unknown(),
+          reservationAffinityType: z.unknown(),
+          values: z.unknown(),
         }),
         tpuTopology: z.string(),
       }),
       nfsMounts: z.array(z.object({
-        mountPoint: z.string(),
-        path: z.string(),
-        server: z.string(),
+        mountPoint: z.unknown(),
+        path: z.unknown(),
+        server: z.unknown(),
       })),
       pythonPackageSpec: z.object({
-        args: z.array(z.string()),
-        env: z.array(z.object({
-          name: z.string(),
-          value: z.string(),
-        })),
+        args: z.array(z.unknown()),
+        env: z.array(z.unknown()),
         executorImageUri: z.string(),
-        packageUris: z.array(z.string()),
+        packageUris: z.array(z.unknown()),
         pythonModule: z.string(),
       }),
       replicaCount: z.string(),
@@ -539,20 +515,13 @@ const InputsSchema = z.object({
     ).optional(),
     workerPoolSpecs: z.array(z.object({
       containerSpec: z.object({
-        args: z.array(z.string()).describe(
+        args: z.array(z.unknown()).describe(
           "The arguments to be passed when starting the container.",
         ).optional(),
-        command: z.array(z.string()).describe(
+        command: z.array(z.unknown()).describe(
           "The command to be invoked when the container is started. It overrides the entrypoint instruction in Dockerfile when provided.",
         ).optional(),
-        env: z.array(z.object({
-          name: z.string().describe(
-            "Required. Name of the environment variable. Must be a valid C identifier.",
-          ).optional(),
-          value: z.string().describe(
-            "Required. Variables that reference a $(VAR_NAME) are expanded using the previous defined environment variables in the container and any service environment variables. If a variable cannot be resolved, the reference in the input string will be unchanged. The $(VAR_NAME) syntax can be escaped with a double $$, ie: $$(VAR_NAME). Escaped references will never be expanded, regardless of whether the variable exists or not.",
-          ).optional(),
-        })).describe(
+        env: z.array(z.unknown()).describe(
           "Environment variables to be passed to the container. Maximum limit is 100.",
         ).optional(),
         imageUri: z.string().describe(
@@ -568,16 +537,16 @@ const InputsSchema = z.object({
         ).optional(),
       }).describe("Represents the spec of disk options.").optional(),
       lustreMounts: z.array(z.object({
-        filesystem: z.string().describe(
+        filesystem: z.unknown().describe(
           "Required. The name of the Lustre filesystem.",
         ).optional(),
-        instanceIp: z.string().describe(
+        instanceIp: z.unknown().describe(
           "Required. IP address of the Lustre instance.",
         ).optional(),
-        mountPoint: z.string().describe(
+        mountPoint: z.unknown().describe(
           "Required. Destination mount path. The Lustre file system will be mounted for the user under /mnt/lustre/",
         ).optional(),
-        volumeHandle: z.string().describe(
+        volumeHandle: z.unknown().describe(
           "Required. The unique identifier of the Lustre volume.",
         ).optional(),
       })).describe("Optional. List of Lustre mounts.").optional(),
@@ -615,17 +584,13 @@ const InputsSchema = z.object({
           "Immutable. The type of the machine. See the [list of machine types supported for prediction](https://cloud.google.com/vertex-ai/docs/predictions/configure-compute#machine-types) See the [list of machine types supported for custom training](https://cloud.google.com/vertex-ai/docs/training/configure-compute#machine-types). For DeployedModel this field is optional, and the default value is `n1-standard-2`. For BatchPredictionJob or as part of WorkerPoolSpec this field is required.",
         ).optional(),
         reservationAffinity: z.object({
-          key: z.string().describe(
+          key: z.unknown().describe(
             "Optional. Corresponds to the label key of a reservation resource. To target a SPECIFIC_RESERVATION by name, use `compute.googleapis.com/reservation-name` as the key and specify the name of your reservation as its value.",
           ).optional(),
-          reservationAffinityType: z.enum([
-            "TYPE_UNSPECIFIED",
-            "NO_RESERVATION",
-            "ANY_RESERVATION",
-            "SPECIFIC_RESERVATION",
-          ]).describe("Required. Specifies the reservation affinity type.")
-            .optional(),
-          values: z.array(z.string()).describe(
+          reservationAffinityType: z.unknown().describe(
+            "Required. Specifies the reservation affinity type.",
+          ).optional(),
+          values: z.unknown().describe(
             "Optional. Corresponds to the label values of a reservation resource. This must be the full resource name of the reservation or reservation block.",
           ).optional(),
         }).describe(
@@ -636,33 +601,26 @@ const InputsSchema = z.object({
         ).optional(),
       }).describe("Specification of a single machine.").optional(),
       nfsMounts: z.array(z.object({
-        mountPoint: z.string().describe(
+        mountPoint: z.unknown().describe(
           "Required. Destination mount path. The NFS will be mounted for the user under /mnt/nfs/",
         ).optional(),
-        path: z.string().describe(
+        path: z.unknown().describe(
           "Required. Source path exported from NFS server. Has to start with '/', and combined with the ip address, it indicates the source mount path in the form of `server:path`",
         ).optional(),
-        server: z.string().describe("Required. IP address of the NFS server.")
+        server: z.unknown().describe("Required. IP address of the NFS server.")
           .optional(),
       })).describe("Optional. List of NFS mount spec.").optional(),
       pythonPackageSpec: z.object({
-        args: z.array(z.string()).describe(
+        args: z.array(z.unknown()).describe(
           "Command line arguments to be passed to the Python task.",
         ).optional(),
-        env: z.array(z.object({
-          name: z.string().describe(
-            "Required. Name of the environment variable. Must be a valid C identifier.",
-          ).optional(),
-          value: z.string().describe(
-            "Required. Variables that reference a $(VAR_NAME) are expanded using the previous defined environment variables in the container and any service environment variables. If a variable cannot be resolved, the reference in the input string will be unchanged. The $(VAR_NAME) syntax can be escaped with a double $$, ie: $$(VAR_NAME). Escaped references will never be expanded, regardless of whether the variable exists or not.",
-          ).optional(),
-        })).describe(
+        env: z.array(z.unknown()).describe(
           "Environment variables to be passed to the python module. Maximum limit is 100.",
         ).optional(),
         executorImageUri: z.string().describe(
           "Required. The URI of a container image in Artifact Registry that will run the provided Python package. Vertex AI provides a wide range of executor images with pre-installed packages to meet users' various use cases. See the list of [pre-built containers for training](https://cloud.google.com/vertex-ai/docs/training/pre-built-containers). You must use an image from this list.",
         ).optional(),
-        packageUris: z.array(z.string()).describe(
+        packageUris: z.array(z.unknown()).describe(
           "Required. The Google Cloud Storage location of the Python package files which are the training program and its dependent packages. The maximum number of package URIs is 100.",
         ).optional(),
         pythonModule: z.string().describe(
@@ -686,7 +644,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/aiplatform/customjobs",
-  version: "2026.04.03.3",
+  version: "2026.04.04.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -710,6 +668,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.3",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.04.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

@@ -110,19 +110,17 @@ const StateSchema = z.object({
       extensionId: z.string(),
       extensionName: z.string(),
       policyData: z.array(z.object({
-        conflicts: z.array(z.object({
-          source: z.string(),
-        })),
-        error: z.string(),
-        name: z.string(),
-        source: z.string(),
-        value: z.string(),
+        conflicts: z.unknown(),
+        error: z.unknown(),
+        name: z.unknown(),
+        source: z.unknown(),
+        value: z.unknown(),
       })),
     })),
     installedBrowserVersion: z.string(),
     policyData: z.array(z.object({
       conflicts: z.array(z.object({
-        source: z.string(),
+        source: z.unknown(),
       })),
       error: z.string(),
       name: z.string(),
@@ -147,7 +145,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/chromemanagement/customers-profiles",
-  version: "2026.04.03.3",
+  version: "2026.04.04.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -171,6 +169,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.3",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.04.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

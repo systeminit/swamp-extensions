@@ -130,23 +130,23 @@ const GlobalArgsSchema = z.object({
           "Target all VMs in the project. If true, no other criteria is permitted.",
         ).optional(),
         exclusionLabels: z.array(z.object({
-          labels: z.record(z.string(), z.string()).describe(
+          labels: z.unknown().describe(
             "Labels are identified by key/value pairs in this map. A VM should contain all the key/value pairs specified in this map to be selected.",
           ).optional(),
         })).describe(
           "List of label sets used for VM exclusion. If the list has more than one label set, the VM is excluded if any of the label sets are applicable for the VM.",
         ).optional(),
         inclusionLabels: z.array(z.object({
-          labels: z.record(z.string(), z.string()).describe(
+          labels: z.unknown().describe(
             "Labels are identified by key/value pairs in this map. A VM should contain all the key/value pairs specified in this map to be selected.",
           ).optional(),
         })).describe(
           "List of label sets used for VM inclusion. If the list has more than one `LabelSet`, the VM is included if any of the label sets are applicable for the VM.",
         ).optional(),
         inventories: z.array(z.object({
-          osShortName: z.string().describe("Required. The OS short name")
+          osShortName: z.unknown().describe("Required. The OS short name")
             .optional(),
-          osVersion: z.string().describe(
+          osVersion: z.unknown().describe(
             "The OS version Prefix matches are supported if asterisk(*) is provided as the last character. For example, to match all versions with a major version of `7`, specify the following value for this field `7.*` An empty string matches all OS versions.",
           ).optional(),
         })).describe(
@@ -170,376 +170,7 @@ const GlobalArgsSchema = z.object({
         ).optional(),
         mode: z.enum(["MODE_UNSPECIFIED", "VALIDATION", "ENFORCEMENT"])
           .describe("Required. Policy mode").optional(),
-        resourceGroups: z.array(z.object({
-          inventoryFilters: z.array(z.object({
-            osShortName: z.string().describe("Required. The OS short name")
-              .optional(),
-            osVersion: z.string().describe(
-              "The OS version Prefix matches are supported if asterisk(*) is provided as the last character. For example, to match all versions with a major version of `7`, specify the following value for this field `7.*` An empty string matches all OS versions.",
-            ).optional(),
-          })).describe(
-            "List of inventory filters for the resource group. The resources in this resource group are applied to the target VM if it satisfies at least one of the following inventory filters. For example, to apply this resource group to VMs running either `RHEL` or `CentOS` operating systems, specify 2 items for the list with following values: inventory_filters[0].os_short_name='rhel' and inventory_filters[1].os_short_name='centos' If the list is empty, this resource group will be applied to the target VM unconditionally.",
-          ).optional(),
-          resources: z.array(z.object({
-            exec: z.object({
-              enforce: z.object({
-                args: z.array(z.string()).describe(
-                  "Optional arguments to pass to the source during execution.",
-                ).optional(),
-                file: z.object({
-                  allowInsecure: z.boolean().describe(
-                    "Defaults to false. When false, files are subject to validations based on the file type: Remote: A checksum must be specified. Cloud Storage: An object generation number must be specified.",
-                  ).optional(),
-                  gcs: z.object({
-                    bucket: z.string().describe(
-                      "Required. Bucket of the Cloud Storage object.",
-                    ).optional(),
-                    generation: z.string().describe(
-                      "Generation number of the Cloud Storage object.",
-                    ).optional(),
-                    object: z.string().describe(
-                      "Required. Name of the Cloud Storage object.",
-                    ).optional(),
-                  }).describe(
-                    "Specifies a file available as a Cloud Storage Object.",
-                  ).optional(),
-                  localPath: z.string().describe(
-                    "A local path within the VM to use.",
-                  ).optional(),
-                  remote: z.object({
-                    sha256Checksum: z.string().describe(
-                      "SHA256 checksum of the remote file.",
-                    ).optional(),
-                    uri: z.string().describe(
-                      "Required. URI from which to fetch the object. It should contain both the protocol and path following the format `{protocol}://{location}`.",
-                    ).optional(),
-                  }).describe("Specifies a file available via some URI.")
-                    .optional(),
-                }).describe("A remote or local file.").optional(),
-                interpreter: z.enum([
-                  "INTERPRETER_UNSPECIFIED",
-                  "NONE",
-                  "SHELL",
-                  "POWERSHELL",
-                ]).describe("Required. The script interpreter to use.")
-                  .optional(),
-                outputFilePath: z.string().describe(
-                  "Only recorded for enforce Exec. Path to an output file (that is created by this Exec) whose content will be recorded in OSPolicyResourceCompliance after a successful run. Absence or failure to read this file will result in this ExecResource being non-compliant. Output file size is limited to 500K bytes.",
-                ).optional(),
-                script: z.string().describe(
-                  "An inline script. The size of the script is limited to 32KiB.",
-                ).optional(),
-              }).describe("A file or script to execute.").optional(),
-              validate: z.object({
-                args: z.array(z.string()).describe(
-                  "Optional arguments to pass to the source during execution.",
-                ).optional(),
-                file: z.object({
-                  allowInsecure: z.boolean().describe(
-                    "Defaults to false. When false, files are subject to validations based on the file type: Remote: A checksum must be specified. Cloud Storage: An object generation number must be specified.",
-                  ).optional(),
-                  gcs: z.object({
-                    bucket: z.string().describe(
-                      "Required. Bucket of the Cloud Storage object.",
-                    ).optional(),
-                    generation: z.string().describe(
-                      "Generation number of the Cloud Storage object.",
-                    ).optional(),
-                    object: z.string().describe(
-                      "Required. Name of the Cloud Storage object.",
-                    ).optional(),
-                  }).describe(
-                    "Specifies a file available as a Cloud Storage Object.",
-                  ).optional(),
-                  localPath: z.string().describe(
-                    "A local path within the VM to use.",
-                  ).optional(),
-                  remote: z.object({
-                    sha256Checksum: z.string().describe(
-                      "SHA256 checksum of the remote file.",
-                    ).optional(),
-                    uri: z.string().describe(
-                      "Required. URI from which to fetch the object. It should contain both the protocol and path following the format `{protocol}://{location}`.",
-                    ).optional(),
-                  }).describe("Specifies a file available via some URI.")
-                    .optional(),
-                }).describe("A remote or local file.").optional(),
-                interpreter: z.enum([
-                  "INTERPRETER_UNSPECIFIED",
-                  "NONE",
-                  "SHELL",
-                  "POWERSHELL",
-                ]).describe("Required. The script interpreter to use.")
-                  .optional(),
-                outputFilePath: z.string().describe(
-                  "Only recorded for enforce Exec. Path to an output file (that is created by this Exec) whose content will be recorded in OSPolicyResourceCompliance after a successful run. Absence or failure to read this file will result in this ExecResource being non-compliant. Output file size is limited to 500K bytes.",
-                ).optional(),
-                script: z.string().describe(
-                  "An inline script. The size of the script is limited to 32KiB.",
-                ).optional(),
-              }).describe("A file or script to execute.").optional(),
-            }).describe(
-              "A resource that allows executing scripts on the VM. The `ExecResource` has 2 stages: `validate` and `enforce` and both stages accept a script as an argument to execute. When the `ExecResource` is applied by the agent, it first executes the script in the `validate` stage. The `validate` stage can signal that the `ExecResource` is already in the desired state by returning an exit code of `100`. If the `ExecResource` is not in the desired state, it should return an exit code of `101`. Any other exit code returned by this stage is considered an error. If the `ExecResource` is not in the desired state based on the exit code from the `validate` stage, the agent proceeds to execute the script from the `enforce` stage. If the `ExecResource` is already in the desired state, the `enforce` stage will not be run. Similar to `validate` stage, the `enforce` stage should return an exit code of `100` to indicate that the resource in now in its desired state. Any other exit code is considered an error. NOTE: An exit code of `100` was chosen over `0` (and `101` vs `1`) to have an explicit indicator of `in desired state`, `not in desired state` and errors. Because, for example, Powershell will always return an exit code of `0` unless an `exit` statement is provided in the script. So, for reasons of consistency and being explicit, exit codes `100` and `101` were chosen.",
-            ).optional(),
-            file: z.object({
-              content: z.string().describe(
-                "A file with this content. The size of the content is limited to 32KiB.",
-              ).optional(),
-              file: z.object({
-                allowInsecure: z.boolean().describe(
-                  "Defaults to false. When false, files are subject to validations based on the file type: Remote: A checksum must be specified. Cloud Storage: An object generation number must be specified.",
-                ).optional(),
-                gcs: z.object({
-                  bucket: z.string().describe(
-                    "Required. Bucket of the Cloud Storage object.",
-                  ).optional(),
-                  generation: z.string().describe(
-                    "Generation number of the Cloud Storage object.",
-                  ).optional(),
-                  object: z.string().describe(
-                    "Required. Name of the Cloud Storage object.",
-                  ).optional(),
-                }).describe(
-                  "Specifies a file available as a Cloud Storage Object.",
-                ).optional(),
-                localPath: z.string().describe(
-                  "A local path within the VM to use.",
-                ).optional(),
-                remote: z.object({
-                  sha256Checksum: z.string().describe(
-                    "SHA256 checksum of the remote file.",
-                  ).optional(),
-                  uri: z.string().describe(
-                    "Required. URI from which to fetch the object. It should contain both the protocol and path following the format `{protocol}://{location}`.",
-                  ).optional(),
-                }).describe("Specifies a file available via some URI.")
-                  .optional(),
-              }).describe("A remote or local file.").optional(),
-              path: z.string().describe(
-                "Required. The absolute path of the file within the VM.",
-              ).optional(),
-              permissions: z.string().describe(
-                "Consists of three octal digits which represent, in order, the permissions of the owner, group, and other users for the file (similarly to the numeric mode used in the linux chmod utility). Each digit represents a three bit number with the 4 bit corresponding to the read permissions, the 2 bit corresponds to the write bit, and the one bit corresponds to the execute permission. Default behavior is 755. Below are some examples of permissions and their associated values: read, write, and execute: 7 read and execute: 5 read and write: 6 read only: 4",
-              ).optional(),
-              state: z.enum([
-                "DESIRED_STATE_UNSPECIFIED",
-                "PRESENT",
-                "ABSENT",
-                "CONTENTS_MATCH",
-              ]).describe("Required. Desired state of the file.").optional(),
-            }).describe("A resource that manages the state of a file.")
-              .optional(),
-            id: z.string().describe(
-              "Required. The id of the resource with the following restrictions: * Must contain only lowercase letters, numbers, and hyphens. * Must start with a letter. * Must be between 1-63 characters. * Must end with a number or a letter. * Must be unique within the OS policy.",
-            ).optional(),
-            pkg: z.object({
-              apt: z.object({
-                name: z.string().describe("Required. Package name.").optional(),
-              }).describe(
-                "A package managed by APT. - install: `apt-get update && apt-get -y install [name]` - remove: `apt-get -y remove [name]`",
-              ).optional(),
-              deb: z.object({
-                pullDeps: z.boolean().describe(
-                  "Whether dependencies should also be installed. - install when false: `dpkg -i package` - install when true: `apt-get update && apt-get -y install package.deb`",
-                ).optional(),
-                source: z.object({
-                  allowInsecure: z.boolean().describe(
-                    "Defaults to false. When false, files are subject to validations based on the file type: Remote: A checksum must be specified. Cloud Storage: An object generation number must be specified.",
-                  ).optional(),
-                  gcs: z.object({
-                    bucket: z.string().describe(
-                      "Required. Bucket of the Cloud Storage object.",
-                    ).optional(),
-                    generation: z.string().describe(
-                      "Generation number of the Cloud Storage object.",
-                    ).optional(),
-                    object: z.string().describe(
-                      "Required. Name of the Cloud Storage object.",
-                    ).optional(),
-                  }).describe(
-                    "Specifies a file available as a Cloud Storage Object.",
-                  ).optional(),
-                  localPath: z.string().describe(
-                    "A local path within the VM to use.",
-                  ).optional(),
-                  remote: z.object({
-                    sha256Checksum: z.string().describe(
-                      "SHA256 checksum of the remote file.",
-                    ).optional(),
-                    uri: z.string().describe(
-                      "Required. URI from which to fetch the object. It should contain both the protocol and path following the format `{protocol}://{location}`.",
-                    ).optional(),
-                  }).describe("Specifies a file available via some URI.")
-                    .optional(),
-                }).describe("A remote or local file.").optional(),
-              }).describe(
-                "A deb package file. dpkg packages only support INSTALLED state.",
-              ).optional(),
-              desiredState: z.enum([
-                "DESIRED_STATE_UNSPECIFIED",
-                "INSTALLED",
-                "REMOVED",
-              ]).describe(
-                "Required. The desired state the agent should maintain for this package.",
-              ).optional(),
-              googet: z.object({
-                name: z.string().describe("Required. Package name.").optional(),
-              }).describe(
-                "A package managed by GooGet. - install: `googet -noconfirm install package` - remove: `googet -noconfirm remove package`",
-              ).optional(),
-              msi: z.object({
-                properties: z.array(z.string()).describe(
-                  "Additional properties to use during installation. This should be in the format of Property=Setting. Appended to the defaults of `ACTION=INSTALL REBOOT=ReallySuppress`.",
-                ).optional(),
-                source: z.object({
-                  allowInsecure: z.boolean().describe(
-                    "Defaults to false. When false, files are subject to validations based on the file type: Remote: A checksum must be specified. Cloud Storage: An object generation number must be specified.",
-                  ).optional(),
-                  gcs: z.object({
-                    bucket: z.string().describe(
-                      "Required. Bucket of the Cloud Storage object.",
-                    ).optional(),
-                    generation: z.string().describe(
-                      "Generation number of the Cloud Storage object.",
-                    ).optional(),
-                    object: z.string().describe(
-                      "Required. Name of the Cloud Storage object.",
-                    ).optional(),
-                  }).describe(
-                    "Specifies a file available as a Cloud Storage Object.",
-                  ).optional(),
-                  localPath: z.string().describe(
-                    "A local path within the VM to use.",
-                  ).optional(),
-                  remote: z.object({
-                    sha256Checksum: z.string().describe(
-                      "SHA256 checksum of the remote file.",
-                    ).optional(),
-                    uri: z.string().describe(
-                      "Required. URI from which to fetch the object. It should contain both the protocol and path following the format `{protocol}://{location}`.",
-                    ).optional(),
-                  }).describe("Specifies a file available via some URI.")
-                    .optional(),
-                }).describe("A remote or local file.").optional(),
-              }).describe(
-                "An MSI package. MSI packages only support INSTALLED state.",
-              ).optional(),
-              rpm: z.object({
-                pullDeps: z.boolean().describe(
-                  "Whether dependencies should also be installed. - install when false: `rpm --upgrade --replacepkgs package.rpm` - install when true: `yum -y install package.rpm` or `zypper -y install package.rpm`",
-                ).optional(),
-                source: z.object({
-                  allowInsecure: z.boolean().describe(
-                    "Defaults to false. When false, files are subject to validations based on the file type: Remote: A checksum must be specified. Cloud Storage: An object generation number must be specified.",
-                  ).optional(),
-                  gcs: z.object({
-                    bucket: z.string().describe(
-                      "Required. Bucket of the Cloud Storage object.",
-                    ).optional(),
-                    generation: z.string().describe(
-                      "Generation number of the Cloud Storage object.",
-                    ).optional(),
-                    object: z.string().describe(
-                      "Required. Name of the Cloud Storage object.",
-                    ).optional(),
-                  }).describe(
-                    "Specifies a file available as a Cloud Storage Object.",
-                  ).optional(),
-                  localPath: z.string().describe(
-                    "A local path within the VM to use.",
-                  ).optional(),
-                  remote: z.object({
-                    sha256Checksum: z.string().describe(
-                      "SHA256 checksum of the remote file.",
-                    ).optional(),
-                    uri: z.string().describe(
-                      "Required. URI from which to fetch the object. It should contain both the protocol and path following the format `{protocol}://{location}`.",
-                    ).optional(),
-                  }).describe("Specifies a file available via some URI.")
-                    .optional(),
-                }).describe("A remote or local file.").optional(),
-              }).describe(
-                "An RPM package file. RPM packages only support INSTALLED state.",
-              ).optional(),
-              yum: z.object({
-                name: z.string().describe("Required. Package name.").optional(),
-              }).describe(
-                "A package managed by YUM. - install: `yum -y install package` - remove: `yum -y remove package`",
-              ).optional(),
-              zypper: z.object({
-                name: z.string().describe("Required. Package name.").optional(),
-              }).describe(
-                "A package managed by Zypper. - install: `zypper -y install package` - remove: `zypper -y rm package`",
-              ).optional(),
-            }).describe("A resource that manages a system package.").optional(),
-            repository: z.object({
-              apt: z.object({
-                archiveType: z.enum([
-                  "ARCHIVE_TYPE_UNSPECIFIED",
-                  "DEB",
-                  "DEB_SRC",
-                ]).describe(
-                  "Required. Type of archive files in this repository.",
-                ).optional(),
-                components: z.array(z.string()).describe(
-                  "Required. List of components for this repository. Must contain at least one item.",
-                ).optional(),
-                distribution: z.string().describe(
-                  "Required. Distribution of this repository.",
-                ).optional(),
-                gpgKey: z.string().describe(
-                  "URI of the key file for this repository. The agent maintains a keyring at `/etc/apt/trusted.gpg.d/osconfig_agent_managed.gpg`.",
-                ).optional(),
-                uri: z.string().describe("Required. URI for this repository.")
-                  .optional(),
-              }).describe(
-                "Represents a single apt package repository. These will be added to a repo file that will be managed at `/etc/apt/sources.list.d/google_osconfig.list`.",
-              ).optional(),
-              goo: z.object({
-                name: z.string().describe(
-                  "Required. The name of the repository.",
-                ).optional(),
-                url: z.string().describe("Required. The url of the repository.")
-                  .optional(),
-              }).describe(
-                "Represents a Goo package repository. These are added to a repo file that is managed at `C:/ProgramData/GooGet/repos/google_osconfig.repo`.",
-              ).optional(),
-              yum: z.object({
-                baseUrl: z.string().describe(
-                  "Required. The location of the repository directory.",
-                ).optional(),
-                displayName: z.string().describe(
-                  "The display name of the repository.",
-                ).optional(),
-                gpgKeys: z.array(z.string()).describe("URIs of GPG keys.")
-                  .optional(),
-                id: z.string().describe(
-                  "Required. A one word, unique name for this repository. This is the `repo id` in the yum config file and also the `display_name` if `display_name` is omitted. This id is also used as the unique identifier when checking for resource conflicts.",
-                ).optional(),
-              }).describe(
-                "Represents a single yum package repository. These are added to a repo file that is managed at `/etc/yum.repos.d/google_osconfig.repo`.",
-              ).optional(),
-              zypper: z.object({
-                baseUrl: z.string().describe(
-                  "Required. The location of the repository directory.",
-                ).optional(),
-                displayName: z.string().describe(
-                  "The display name of the repository.",
-                ).optional(),
-                gpgKeys: z.array(z.string()).describe("URIs of GPG keys.")
-                  .optional(),
-                id: z.string().describe(
-                  "Required. A one word, unique name for this repository. This is the `repo id` in the zypper config file and also the `display_name` if `display_name` is omitted. This id is also used as the unique identifier when checking for GuestPolicy conflicts.",
-                ).optional(),
-              }).describe(
-                "Represents a single zypper package repository. These are added to a repo file that is managed at `/etc/zypp/repos.d/google_osconfig.repo`.",
-              ).optional(),
-            }).describe("A resource that manages a package repository.")
-              .optional(),
-          })).describe(
-            "Required. List of resources configured for this resource group. The resources are executed in the exact order specified here.",
-          ).optional(),
-        })).describe(
+        resourceGroups: z.array(z.unknown()).describe(
           "Required. List of resource groups for the policy. For a particular VM, resource groups are evaluated in the order specified and the first resource group that is applicable is selected and the rest are ignored. If none of the resource groups are applicable for a VM, the VM is considered to be non-compliant w.r.t this policy. This behavior can be toggled by the flag `allow_no_resource_group_match`",
         ).optional(),
       })).describe("Required. List of OS policies to be applied to the VMs.")
@@ -588,15 +219,15 @@ const GlobalArgsSchema = z.object({
   orchestrationScope: z.object({
     selectors: z.array(z.object({
       locationSelector: z.object({
-        includedLocations: z.array(z.string()).describe(
+        includedLocations: z.array(z.unknown()).describe(
           "Optional. Names of the locations in scope. Format: `us-central1-a`",
         ).optional(),
       }).describe("Selector containing locations in scope.").optional(),
       resourceHierarchySelector: z.object({
-        includedFolders: z.array(z.string()).describe(
+        includedFolders: z.array(z.unknown()).describe(
           "Optional. Names of the folders in scope. Format: `folders/{folder_id}`",
         ).optional(),
-        includedProjects: z.array(z.string()).describe(
+        includedProjects: z.array(z.unknown()).describe(
           "Optional. Names of the projects in scope. Format: `projects/{project_number}`",
         ).optional(),
       }).describe(
@@ -614,7 +245,7 @@ const GlobalArgsSchema = z.object({
         code: z.number().int().describe(
           "The status code, which should be an enum value of google.rpc.Code.",
         ).optional(),
-        details: z.array(z.record(z.string(), z.string())).describe(
+        details: z.array(z.record(z.string(), z.unknown())).describe(
           "A list of messages that carry the error details. There is a common set of message types for APIs to use.",
         ).optional(),
         message: z.string().describe(
@@ -657,7 +288,7 @@ const GlobalArgsSchema = z.object({
         code: z.number().int().describe(
           "The status code, which should be an enum value of google.rpc.Code.",
         ).optional(),
-        details: z.array(z.record(z.string(), z.string())).describe(
+        details: z.array(z.record(z.string(), z.unknown())).describe(
           "A list of messages that carry the error details. There is a common set of message types for APIs to use.",
         ).optional(),
         message: z.string().describe(
@@ -727,14 +358,14 @@ const StateSchema = z.object({
       instanceFilter: z.object({
         all: z.boolean(),
         exclusionLabels: z.array(z.object({
-          labels: z.record(z.string(), z.unknown()),
+          labels: z.unknown(),
         })),
         inclusionLabels: z.array(z.object({
-          labels: z.record(z.string(), z.unknown()),
+          labels: z.unknown(),
         })),
         inventories: z.array(z.object({
-          osShortName: z.string(),
-          osVersion: z.string(),
+          osShortName: z.unknown(),
+          osVersion: z.unknown(),
         })),
       }),
       name: z.string(),
@@ -743,162 +374,7 @@ const StateSchema = z.object({
         description: z.string(),
         id: z.string(),
         mode: z.string(),
-        resourceGroups: z.array(z.object({
-          inventoryFilters: z.array(z.object({
-            osShortName: z.string(),
-            osVersion: z.string(),
-          })),
-          resources: z.array(z.object({
-            exec: z.object({
-              enforce: z.object({
-                args: z.array(z.string()),
-                file: z.object({
-                  allowInsecure: z.boolean(),
-                  gcs: z.object({
-                    bucket: z.string(),
-                    generation: z.string(),
-                    object: z.string(),
-                  }),
-                  localPath: z.string(),
-                  remote: z.object({
-                    sha256Checksum: z.string(),
-                    uri: z.string(),
-                  }),
-                }),
-                interpreter: z.string(),
-                outputFilePath: z.string(),
-                script: z.string(),
-              }),
-              validate: z.object({
-                args: z.array(z.string()),
-                file: z.object({
-                  allowInsecure: z.boolean(),
-                  gcs: z.object({
-                    bucket: z.string(),
-                    generation: z.string(),
-                    object: z.string(),
-                  }),
-                  localPath: z.string(),
-                  remote: z.object({
-                    sha256Checksum: z.string(),
-                    uri: z.string(),
-                  }),
-                }),
-                interpreter: z.string(),
-                outputFilePath: z.string(),
-                script: z.string(),
-              }),
-            }),
-            file: z.object({
-              content: z.string(),
-              file: z.object({
-                allowInsecure: z.boolean(),
-                gcs: z.object({
-                  bucket: z.string(),
-                  generation: z.string(),
-                  object: z.string(),
-                }),
-                localPath: z.string(),
-                remote: z.object({
-                  sha256Checksum: z.string(),
-                  uri: z.string(),
-                }),
-              }),
-              path: z.string(),
-              permissions: z.string(),
-              state: z.string(),
-            }),
-            id: z.string(),
-            pkg: z.object({
-              apt: z.object({
-                name: z.string(),
-              }),
-              deb: z.object({
-                pullDeps: z.boolean(),
-                source: z.object({
-                  allowInsecure: z.boolean(),
-                  gcs: z.object({
-                    bucket: z.string(),
-                    generation: z.string(),
-                    object: z.string(),
-                  }),
-                  localPath: z.string(),
-                  remote: z.object({
-                    sha256Checksum: z.string(),
-                    uri: z.string(),
-                  }),
-                }),
-              }),
-              desiredState: z.string(),
-              googet: z.object({
-                name: z.string(),
-              }),
-              msi: z.object({
-                properties: z.array(z.string()),
-                source: z.object({
-                  allowInsecure: z.boolean(),
-                  gcs: z.object({
-                    bucket: z.string(),
-                    generation: z.string(),
-                    object: z.string(),
-                  }),
-                  localPath: z.string(),
-                  remote: z.object({
-                    sha256Checksum: z.string(),
-                    uri: z.string(),
-                  }),
-                }),
-              }),
-              rpm: z.object({
-                pullDeps: z.boolean(),
-                source: z.object({
-                  allowInsecure: z.boolean(),
-                  gcs: z.object({
-                    bucket: z.string(),
-                    generation: z.string(),
-                    object: z.string(),
-                  }),
-                  localPath: z.string(),
-                  remote: z.object({
-                    sha256Checksum: z.string(),
-                    uri: z.string(),
-                  }),
-                }),
-              }),
-              yum: z.object({
-                name: z.string(),
-              }),
-              zypper: z.object({
-                name: z.string(),
-              }),
-            }),
-            repository: z.object({
-              apt: z.object({
-                archiveType: z.string(),
-                components: z.array(z.string()),
-                distribution: z.string(),
-                gpgKey: z.string(),
-                uri: z.string(),
-              }),
-              goo: z.object({
-                name: z.string(),
-                url: z.string(),
-              }),
-              yum: z.object({
-                baseUrl: z.string(),
-                displayName: z.string(),
-                gpgKeys: z.array(z.string()),
-                id: z.string(),
-              }),
-              zypper: z.object({
-                baseUrl: z.string(),
-                displayName: z.string(),
-                gpgKeys: z.array(z.string()),
-                id: z.string(),
-              }),
-            }),
-          })),
-        })),
+        resourceGroups: z.array(z.unknown()),
       })),
       reconciling: z.boolean(),
       revisionCreateTime: z.string(),
@@ -917,11 +393,11 @@ const StateSchema = z.object({
   orchestrationScope: z.object({
     selectors: z.array(z.object({
       locationSelector: z.object({
-        includedLocations: z.array(z.string()),
+        includedLocations: z.array(z.unknown()),
       }),
       resourceHierarchySelector: z.object({
-        includedFolders: z.array(z.string()),
-        includedProjects: z.array(z.string()),
+        includedFolders: z.array(z.unknown()),
+        includedProjects: z.array(z.unknown()),
       }),
     })),
   }).optional(),
@@ -997,23 +473,23 @@ const InputsSchema = z.object({
           "Target all VMs in the project. If true, no other criteria is permitted.",
         ).optional(),
         exclusionLabels: z.array(z.object({
-          labels: z.record(z.string(), z.string()).describe(
+          labels: z.unknown().describe(
             "Labels are identified by key/value pairs in this map. A VM should contain all the key/value pairs specified in this map to be selected.",
           ).optional(),
         })).describe(
           "List of label sets used for VM exclusion. If the list has more than one label set, the VM is excluded if any of the label sets are applicable for the VM.",
         ).optional(),
         inclusionLabels: z.array(z.object({
-          labels: z.record(z.string(), z.string()).describe(
+          labels: z.unknown().describe(
             "Labels are identified by key/value pairs in this map. A VM should contain all the key/value pairs specified in this map to be selected.",
           ).optional(),
         })).describe(
           "List of label sets used for VM inclusion. If the list has more than one `LabelSet`, the VM is included if any of the label sets are applicable for the VM.",
         ).optional(),
         inventories: z.array(z.object({
-          osShortName: z.string().describe("Required. The OS short name")
+          osShortName: z.unknown().describe("Required. The OS short name")
             .optional(),
-          osVersion: z.string().describe(
+          osVersion: z.unknown().describe(
             "The OS version Prefix matches are supported if asterisk(*) is provided as the last character. For example, to match all versions with a major version of `7`, specify the following value for this field `7.*` An empty string matches all OS versions.",
           ).optional(),
         })).describe(
@@ -1037,376 +513,7 @@ const InputsSchema = z.object({
         ).optional(),
         mode: z.enum(["MODE_UNSPECIFIED", "VALIDATION", "ENFORCEMENT"])
           .describe("Required. Policy mode").optional(),
-        resourceGroups: z.array(z.object({
-          inventoryFilters: z.array(z.object({
-            osShortName: z.string().describe("Required. The OS short name")
-              .optional(),
-            osVersion: z.string().describe(
-              "The OS version Prefix matches are supported if asterisk(*) is provided as the last character. For example, to match all versions with a major version of `7`, specify the following value for this field `7.*` An empty string matches all OS versions.",
-            ).optional(),
-          })).describe(
-            "List of inventory filters for the resource group. The resources in this resource group are applied to the target VM if it satisfies at least one of the following inventory filters. For example, to apply this resource group to VMs running either `RHEL` or `CentOS` operating systems, specify 2 items for the list with following values: inventory_filters[0].os_short_name='rhel' and inventory_filters[1].os_short_name='centos' If the list is empty, this resource group will be applied to the target VM unconditionally.",
-          ).optional(),
-          resources: z.array(z.object({
-            exec: z.object({
-              enforce: z.object({
-                args: z.array(z.string()).describe(
-                  "Optional arguments to pass to the source during execution.",
-                ).optional(),
-                file: z.object({
-                  allowInsecure: z.boolean().describe(
-                    "Defaults to false. When false, files are subject to validations based on the file type: Remote: A checksum must be specified. Cloud Storage: An object generation number must be specified.",
-                  ).optional(),
-                  gcs: z.object({
-                    bucket: z.string().describe(
-                      "Required. Bucket of the Cloud Storage object.",
-                    ).optional(),
-                    generation: z.string().describe(
-                      "Generation number of the Cloud Storage object.",
-                    ).optional(),
-                    object: z.string().describe(
-                      "Required. Name of the Cloud Storage object.",
-                    ).optional(),
-                  }).describe(
-                    "Specifies a file available as a Cloud Storage Object.",
-                  ).optional(),
-                  localPath: z.string().describe(
-                    "A local path within the VM to use.",
-                  ).optional(),
-                  remote: z.object({
-                    sha256Checksum: z.string().describe(
-                      "SHA256 checksum of the remote file.",
-                    ).optional(),
-                    uri: z.string().describe(
-                      "Required. URI from which to fetch the object. It should contain both the protocol and path following the format `{protocol}://{location}`.",
-                    ).optional(),
-                  }).describe("Specifies a file available via some URI.")
-                    .optional(),
-                }).describe("A remote or local file.").optional(),
-                interpreter: z.enum([
-                  "INTERPRETER_UNSPECIFIED",
-                  "NONE",
-                  "SHELL",
-                  "POWERSHELL",
-                ]).describe("Required. The script interpreter to use.")
-                  .optional(),
-                outputFilePath: z.string().describe(
-                  "Only recorded for enforce Exec. Path to an output file (that is created by this Exec) whose content will be recorded in OSPolicyResourceCompliance after a successful run. Absence or failure to read this file will result in this ExecResource being non-compliant. Output file size is limited to 500K bytes.",
-                ).optional(),
-                script: z.string().describe(
-                  "An inline script. The size of the script is limited to 32KiB.",
-                ).optional(),
-              }).describe("A file or script to execute.").optional(),
-              validate: z.object({
-                args: z.array(z.string()).describe(
-                  "Optional arguments to pass to the source during execution.",
-                ).optional(),
-                file: z.object({
-                  allowInsecure: z.boolean().describe(
-                    "Defaults to false. When false, files are subject to validations based on the file type: Remote: A checksum must be specified. Cloud Storage: An object generation number must be specified.",
-                  ).optional(),
-                  gcs: z.object({
-                    bucket: z.string().describe(
-                      "Required. Bucket of the Cloud Storage object.",
-                    ).optional(),
-                    generation: z.string().describe(
-                      "Generation number of the Cloud Storage object.",
-                    ).optional(),
-                    object: z.string().describe(
-                      "Required. Name of the Cloud Storage object.",
-                    ).optional(),
-                  }).describe(
-                    "Specifies a file available as a Cloud Storage Object.",
-                  ).optional(),
-                  localPath: z.string().describe(
-                    "A local path within the VM to use.",
-                  ).optional(),
-                  remote: z.object({
-                    sha256Checksum: z.string().describe(
-                      "SHA256 checksum of the remote file.",
-                    ).optional(),
-                    uri: z.string().describe(
-                      "Required. URI from which to fetch the object. It should contain both the protocol and path following the format `{protocol}://{location}`.",
-                    ).optional(),
-                  }).describe("Specifies a file available via some URI.")
-                    .optional(),
-                }).describe("A remote or local file.").optional(),
-                interpreter: z.enum([
-                  "INTERPRETER_UNSPECIFIED",
-                  "NONE",
-                  "SHELL",
-                  "POWERSHELL",
-                ]).describe("Required. The script interpreter to use.")
-                  .optional(),
-                outputFilePath: z.string().describe(
-                  "Only recorded for enforce Exec. Path to an output file (that is created by this Exec) whose content will be recorded in OSPolicyResourceCompliance after a successful run. Absence or failure to read this file will result in this ExecResource being non-compliant. Output file size is limited to 500K bytes.",
-                ).optional(),
-                script: z.string().describe(
-                  "An inline script. The size of the script is limited to 32KiB.",
-                ).optional(),
-              }).describe("A file or script to execute.").optional(),
-            }).describe(
-              "A resource that allows executing scripts on the VM. The `ExecResource` has 2 stages: `validate` and `enforce` and both stages accept a script as an argument to execute. When the `ExecResource` is applied by the agent, it first executes the script in the `validate` stage. The `validate` stage can signal that the `ExecResource` is already in the desired state by returning an exit code of `100`. If the `ExecResource` is not in the desired state, it should return an exit code of `101`. Any other exit code returned by this stage is considered an error. If the `ExecResource` is not in the desired state based on the exit code from the `validate` stage, the agent proceeds to execute the script from the `enforce` stage. If the `ExecResource` is already in the desired state, the `enforce` stage will not be run. Similar to `validate` stage, the `enforce` stage should return an exit code of `100` to indicate that the resource in now in its desired state. Any other exit code is considered an error. NOTE: An exit code of `100` was chosen over `0` (and `101` vs `1`) to have an explicit indicator of `in desired state`, `not in desired state` and errors. Because, for example, Powershell will always return an exit code of `0` unless an `exit` statement is provided in the script. So, for reasons of consistency and being explicit, exit codes `100` and `101` were chosen.",
-            ).optional(),
-            file: z.object({
-              content: z.string().describe(
-                "A file with this content. The size of the content is limited to 32KiB.",
-              ).optional(),
-              file: z.object({
-                allowInsecure: z.boolean().describe(
-                  "Defaults to false. When false, files are subject to validations based on the file type: Remote: A checksum must be specified. Cloud Storage: An object generation number must be specified.",
-                ).optional(),
-                gcs: z.object({
-                  bucket: z.string().describe(
-                    "Required. Bucket of the Cloud Storage object.",
-                  ).optional(),
-                  generation: z.string().describe(
-                    "Generation number of the Cloud Storage object.",
-                  ).optional(),
-                  object: z.string().describe(
-                    "Required. Name of the Cloud Storage object.",
-                  ).optional(),
-                }).describe(
-                  "Specifies a file available as a Cloud Storage Object.",
-                ).optional(),
-                localPath: z.string().describe(
-                  "A local path within the VM to use.",
-                ).optional(),
-                remote: z.object({
-                  sha256Checksum: z.string().describe(
-                    "SHA256 checksum of the remote file.",
-                  ).optional(),
-                  uri: z.string().describe(
-                    "Required. URI from which to fetch the object. It should contain both the protocol and path following the format `{protocol}://{location}`.",
-                  ).optional(),
-                }).describe("Specifies a file available via some URI.")
-                  .optional(),
-              }).describe("A remote or local file.").optional(),
-              path: z.string().describe(
-                "Required. The absolute path of the file within the VM.",
-              ).optional(),
-              permissions: z.string().describe(
-                "Consists of three octal digits which represent, in order, the permissions of the owner, group, and other users for the file (similarly to the numeric mode used in the linux chmod utility). Each digit represents a three bit number with the 4 bit corresponding to the read permissions, the 2 bit corresponds to the write bit, and the one bit corresponds to the execute permission. Default behavior is 755. Below are some examples of permissions and their associated values: read, write, and execute: 7 read and execute: 5 read and write: 6 read only: 4",
-              ).optional(),
-              state: z.enum([
-                "DESIRED_STATE_UNSPECIFIED",
-                "PRESENT",
-                "ABSENT",
-                "CONTENTS_MATCH",
-              ]).describe("Required. Desired state of the file.").optional(),
-            }).describe("A resource that manages the state of a file.")
-              .optional(),
-            id: z.string().describe(
-              "Required. The id of the resource with the following restrictions: * Must contain only lowercase letters, numbers, and hyphens. * Must start with a letter. * Must be between 1-63 characters. * Must end with a number or a letter. * Must be unique within the OS policy.",
-            ).optional(),
-            pkg: z.object({
-              apt: z.object({
-                name: z.string().describe("Required. Package name.").optional(),
-              }).describe(
-                "A package managed by APT. - install: `apt-get update && apt-get -y install [name]` - remove: `apt-get -y remove [name]`",
-              ).optional(),
-              deb: z.object({
-                pullDeps: z.boolean().describe(
-                  "Whether dependencies should also be installed. - install when false: `dpkg -i package` - install when true: `apt-get update && apt-get -y install package.deb`",
-                ).optional(),
-                source: z.object({
-                  allowInsecure: z.boolean().describe(
-                    "Defaults to false. When false, files are subject to validations based on the file type: Remote: A checksum must be specified. Cloud Storage: An object generation number must be specified.",
-                  ).optional(),
-                  gcs: z.object({
-                    bucket: z.string().describe(
-                      "Required. Bucket of the Cloud Storage object.",
-                    ).optional(),
-                    generation: z.string().describe(
-                      "Generation number of the Cloud Storage object.",
-                    ).optional(),
-                    object: z.string().describe(
-                      "Required. Name of the Cloud Storage object.",
-                    ).optional(),
-                  }).describe(
-                    "Specifies a file available as a Cloud Storage Object.",
-                  ).optional(),
-                  localPath: z.string().describe(
-                    "A local path within the VM to use.",
-                  ).optional(),
-                  remote: z.object({
-                    sha256Checksum: z.string().describe(
-                      "SHA256 checksum of the remote file.",
-                    ).optional(),
-                    uri: z.string().describe(
-                      "Required. URI from which to fetch the object. It should contain both the protocol and path following the format `{protocol}://{location}`.",
-                    ).optional(),
-                  }).describe("Specifies a file available via some URI.")
-                    .optional(),
-                }).describe("A remote or local file.").optional(),
-              }).describe(
-                "A deb package file. dpkg packages only support INSTALLED state.",
-              ).optional(),
-              desiredState: z.enum([
-                "DESIRED_STATE_UNSPECIFIED",
-                "INSTALLED",
-                "REMOVED",
-              ]).describe(
-                "Required. The desired state the agent should maintain for this package.",
-              ).optional(),
-              googet: z.object({
-                name: z.string().describe("Required. Package name.").optional(),
-              }).describe(
-                "A package managed by GooGet. - install: `googet -noconfirm install package` - remove: `googet -noconfirm remove package`",
-              ).optional(),
-              msi: z.object({
-                properties: z.array(z.string()).describe(
-                  "Additional properties to use during installation. This should be in the format of Property=Setting. Appended to the defaults of `ACTION=INSTALL REBOOT=ReallySuppress`.",
-                ).optional(),
-                source: z.object({
-                  allowInsecure: z.boolean().describe(
-                    "Defaults to false. When false, files are subject to validations based on the file type: Remote: A checksum must be specified. Cloud Storage: An object generation number must be specified.",
-                  ).optional(),
-                  gcs: z.object({
-                    bucket: z.string().describe(
-                      "Required. Bucket of the Cloud Storage object.",
-                    ).optional(),
-                    generation: z.string().describe(
-                      "Generation number of the Cloud Storage object.",
-                    ).optional(),
-                    object: z.string().describe(
-                      "Required. Name of the Cloud Storage object.",
-                    ).optional(),
-                  }).describe(
-                    "Specifies a file available as a Cloud Storage Object.",
-                  ).optional(),
-                  localPath: z.string().describe(
-                    "A local path within the VM to use.",
-                  ).optional(),
-                  remote: z.object({
-                    sha256Checksum: z.string().describe(
-                      "SHA256 checksum of the remote file.",
-                    ).optional(),
-                    uri: z.string().describe(
-                      "Required. URI from which to fetch the object. It should contain both the protocol and path following the format `{protocol}://{location}`.",
-                    ).optional(),
-                  }).describe("Specifies a file available via some URI.")
-                    .optional(),
-                }).describe("A remote or local file.").optional(),
-              }).describe(
-                "An MSI package. MSI packages only support INSTALLED state.",
-              ).optional(),
-              rpm: z.object({
-                pullDeps: z.boolean().describe(
-                  "Whether dependencies should also be installed. - install when false: `rpm --upgrade --replacepkgs package.rpm` - install when true: `yum -y install package.rpm` or `zypper -y install package.rpm`",
-                ).optional(),
-                source: z.object({
-                  allowInsecure: z.boolean().describe(
-                    "Defaults to false. When false, files are subject to validations based on the file type: Remote: A checksum must be specified. Cloud Storage: An object generation number must be specified.",
-                  ).optional(),
-                  gcs: z.object({
-                    bucket: z.string().describe(
-                      "Required. Bucket of the Cloud Storage object.",
-                    ).optional(),
-                    generation: z.string().describe(
-                      "Generation number of the Cloud Storage object.",
-                    ).optional(),
-                    object: z.string().describe(
-                      "Required. Name of the Cloud Storage object.",
-                    ).optional(),
-                  }).describe(
-                    "Specifies a file available as a Cloud Storage Object.",
-                  ).optional(),
-                  localPath: z.string().describe(
-                    "A local path within the VM to use.",
-                  ).optional(),
-                  remote: z.object({
-                    sha256Checksum: z.string().describe(
-                      "SHA256 checksum of the remote file.",
-                    ).optional(),
-                    uri: z.string().describe(
-                      "Required. URI from which to fetch the object. It should contain both the protocol and path following the format `{protocol}://{location}`.",
-                    ).optional(),
-                  }).describe("Specifies a file available via some URI.")
-                    .optional(),
-                }).describe("A remote or local file.").optional(),
-              }).describe(
-                "An RPM package file. RPM packages only support INSTALLED state.",
-              ).optional(),
-              yum: z.object({
-                name: z.string().describe("Required. Package name.").optional(),
-              }).describe(
-                "A package managed by YUM. - install: `yum -y install package` - remove: `yum -y remove package`",
-              ).optional(),
-              zypper: z.object({
-                name: z.string().describe("Required. Package name.").optional(),
-              }).describe(
-                "A package managed by Zypper. - install: `zypper -y install package` - remove: `zypper -y rm package`",
-              ).optional(),
-            }).describe("A resource that manages a system package.").optional(),
-            repository: z.object({
-              apt: z.object({
-                archiveType: z.enum([
-                  "ARCHIVE_TYPE_UNSPECIFIED",
-                  "DEB",
-                  "DEB_SRC",
-                ]).describe(
-                  "Required. Type of archive files in this repository.",
-                ).optional(),
-                components: z.array(z.string()).describe(
-                  "Required. List of components for this repository. Must contain at least one item.",
-                ).optional(),
-                distribution: z.string().describe(
-                  "Required. Distribution of this repository.",
-                ).optional(),
-                gpgKey: z.string().describe(
-                  "URI of the key file for this repository. The agent maintains a keyring at `/etc/apt/trusted.gpg.d/osconfig_agent_managed.gpg`.",
-                ).optional(),
-                uri: z.string().describe("Required. URI for this repository.")
-                  .optional(),
-              }).describe(
-                "Represents a single apt package repository. These will be added to a repo file that will be managed at `/etc/apt/sources.list.d/google_osconfig.list`.",
-              ).optional(),
-              goo: z.object({
-                name: z.string().describe(
-                  "Required. The name of the repository.",
-                ).optional(),
-                url: z.string().describe("Required. The url of the repository.")
-                  .optional(),
-              }).describe(
-                "Represents a Goo package repository. These are added to a repo file that is managed at `C:/ProgramData/GooGet/repos/google_osconfig.repo`.",
-              ).optional(),
-              yum: z.object({
-                baseUrl: z.string().describe(
-                  "Required. The location of the repository directory.",
-                ).optional(),
-                displayName: z.string().describe(
-                  "The display name of the repository.",
-                ).optional(),
-                gpgKeys: z.array(z.string()).describe("URIs of GPG keys.")
-                  .optional(),
-                id: z.string().describe(
-                  "Required. A one word, unique name for this repository. This is the `repo id` in the yum config file and also the `display_name` if `display_name` is omitted. This id is also used as the unique identifier when checking for resource conflicts.",
-                ).optional(),
-              }).describe(
-                "Represents a single yum package repository. These are added to a repo file that is managed at `/etc/yum.repos.d/google_osconfig.repo`.",
-              ).optional(),
-              zypper: z.object({
-                baseUrl: z.string().describe(
-                  "Required. The location of the repository directory.",
-                ).optional(),
-                displayName: z.string().describe(
-                  "The display name of the repository.",
-                ).optional(),
-                gpgKeys: z.array(z.string()).describe("URIs of GPG keys.")
-                  .optional(),
-                id: z.string().describe(
-                  "Required. A one word, unique name for this repository. This is the `repo id` in the zypper config file and also the `display_name` if `display_name` is omitted. This id is also used as the unique identifier when checking for GuestPolicy conflicts.",
-                ).optional(),
-              }).describe(
-                "Represents a single zypper package repository. These are added to a repo file that is managed at `/etc/zypp/repos.d/google_osconfig.repo`.",
-              ).optional(),
-            }).describe("A resource that manages a package repository.")
-              .optional(),
-          })).describe(
-            "Required. List of resources configured for this resource group. The resources are executed in the exact order specified here.",
-          ).optional(),
-        })).describe(
+        resourceGroups: z.array(z.unknown()).describe(
           "Required. List of resource groups for the policy. For a particular VM, resource groups are evaluated in the order specified and the first resource group that is applicable is selected and the rest are ignored. If none of the resource groups are applicable for a VM, the VM is considered to be non-compliant w.r.t this policy. This behavior can be toggled by the flag `allow_no_resource_group_match`",
         ).optional(),
       })).describe("Required. List of OS policies to be applied to the VMs.")
@@ -1455,15 +562,15 @@ const InputsSchema = z.object({
   orchestrationScope: z.object({
     selectors: z.array(z.object({
       locationSelector: z.object({
-        includedLocations: z.array(z.string()).describe(
+        includedLocations: z.array(z.unknown()).describe(
           "Optional. Names of the locations in scope. Format: `us-central1-a`",
         ).optional(),
       }).describe("Selector containing locations in scope.").optional(),
       resourceHierarchySelector: z.object({
-        includedFolders: z.array(z.string()).describe(
+        includedFolders: z.array(z.unknown()).describe(
           "Optional. Names of the folders in scope. Format: `folders/{folder_id}`",
         ).optional(),
-        includedProjects: z.array(z.string()).describe(
+        includedProjects: z.array(z.unknown()).describe(
           "Optional. Names of the projects in scope. Format: `projects/{project_number}`",
         ).optional(),
       }).describe(
@@ -1481,7 +588,7 @@ const InputsSchema = z.object({
         code: z.number().int().describe(
           "The status code, which should be an enum value of google.rpc.Code.",
         ).optional(),
-        details: z.array(z.record(z.string(), z.string())).describe(
+        details: z.array(z.record(z.string(), z.unknown())).describe(
           "A list of messages that carry the error details. There is a common set of message types for APIs to use.",
         ).optional(),
         message: z.string().describe(
@@ -1524,7 +631,7 @@ const InputsSchema = z.object({
         code: z.number().int().describe(
           "The status code, which should be an enum value of google.rpc.Code.",
         ).optional(),
-        details: z.array(z.record(z.string(), z.string())).describe(
+        details: z.array(z.record(z.string(), z.unknown())).describe(
           "A list of messages that carry the error details. There is a common set of message types for APIs to use.",
         ).optional(),
         message: z.string().describe(
@@ -1579,7 +686,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/osconfig/global-policyorchestrators",
-  version: "2026.04.03.3",
+  version: "2026.04.04.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -1603,6 +710,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.3",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.04.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

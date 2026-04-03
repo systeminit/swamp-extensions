@@ -149,38 +149,10 @@ const GlobalArgsSchema = z.object({
       ).optional(),
       items: z.array(z.object({
         healthCheckedTargets: z.object({
-          externalEndpoints: z.array(z.string()).describe(
+          externalEndpoints: z.unknown().describe(
             "The Internet IP addresses to be health checked. The format matches the format of ResourceRecordSet.rrdata as defined in RFC 1035 (section 5) and RFC 1034 (section 3.6.1)",
           ).optional(),
-          internalLoadBalancers: z.array(z.object({
-            ipAddress: z.string().describe(
-              "The frontend IP address of the load balancer to health check.",
-            ).optional(),
-            ipProtocol: z.enum(["undefined", "tcp", "udp"]).describe(
-              "The protocol of the load balancer to health check.",
-            ).optional(),
-            kind: z.string().optional(),
-            loadBalancerType: z.enum([
-              "none",
-              "globalL7ilb",
-              "regionalL4ilb",
-              "regionalL7ilb",
-            ]).describe(
-              "The type of load balancer specified by this target. This value must match the configuration of the load balancer located at the LoadBalancerTarget's IP address, port, and region. Use the following: - *regionalL4ilb*: for a regional internal passthrough Network Load Balancer. - *regionalL7ilb*: for a regional internal Application Load Balancer. - *globalL7ilb*: for a global internal Application Load Balancer.",
-            ).optional(),
-            networkUrl: z.string().describe(
-              "The fully qualified URL of the network that the load balancer is attached to. This should be formatted like `https://www.googleapis.com/compute/v1/projects/{project}/global/networks/{network}`.",
-            ).optional(),
-            port: z.string().describe(
-              "The configured port of the load balancer.",
-            ).optional(),
-            project: z.string().describe(
-              "The project ID in which the load balancer is located.",
-            ).optional(),
-            region: z.string().describe(
-              "The region in which the load balancer is located.",
-            ).optional(),
-          })).describe(
+          internalLoadBalancers: z.unknown().describe(
             "Configuration for internal load balancers to be health checked.",
           ).optional(),
         }).describe(
@@ -190,8 +162,8 @@ const GlobalArgsSchema = z.object({
         location: z.string().describe(
           'The geo-location granularity is a GCP region. This location string should correspond to a GCP region. e.g. "us-east1", "southamerica-east1", "asia-east1", etc.',
         ).optional(),
-        rrdatas: z.array(z.string()).optional(),
-        signatureRrdatas: z.array(z.string()).describe(
+        rrdatas: z.array(z.unknown()).optional(),
+        signatureRrdatas: z.array(z.unknown()).describe(
           "DNSSEC generated signatures for all the `rrdata` within this item. When using health-checked targets for DNSSEC-enabled zones, you can only use at most one health-checked IP address per item.",
         ).optional(),
       })).describe(
@@ -211,50 +183,15 @@ const GlobalArgsSchema = z.object({
           "Without fencing, if health check fails for all configured items in the current geo bucket, we failover to the next nearest geo bucket. With fencing, if health checking is enabled, as long as some targets in the current geo bucket are healthy, we return only the healthy targets. However, if all targets are unhealthy, we don't failover to the next nearest bucket; instead, we return all the items in the current bucket even when all targets are unhealthy.",
         ).optional(),
         items: z.array(z.object({
-          healthCheckedTargets: z.object({
-            externalEndpoints: z.array(z.string()).describe(
-              "The Internet IP addresses to be health checked. The format matches the format of ResourceRecordSet.rrdata as defined in RFC 1035 (section 5) and RFC 1034 (section 3.6.1)",
-            ).optional(),
-            internalLoadBalancers: z.array(z.object({
-              ipAddress: z.string().describe(
-                "The frontend IP address of the load balancer to health check.",
-              ).optional(),
-              ipProtocol: z.enum(["undefined", "tcp", "udp"]).describe(
-                "The protocol of the load balancer to health check.",
-              ).optional(),
-              kind: z.string().optional(),
-              loadBalancerType: z.enum([
-                "none",
-                "globalL7ilb",
-                "regionalL4ilb",
-                "regionalL7ilb",
-              ]).describe(
-                "The type of load balancer specified by this target. This value must match the configuration of the load balancer located at the LoadBalancerTarget's IP address, port, and region. Use the following: - *regionalL4ilb*: for a regional internal passthrough Network Load Balancer. - *regionalL7ilb*: for a regional internal Application Load Balancer. - *globalL7ilb*: for a global internal Application Load Balancer.",
-              ).optional(),
-              networkUrl: z.string().describe(
-                "The fully qualified URL of the network that the load balancer is attached to. This should be formatted like `https://www.googleapis.com/compute/v1/projects/{project}/global/networks/{network}`.",
-              ).optional(),
-              port: z.string().describe(
-                "The configured port of the load balancer.",
-              ).optional(),
-              project: z.string().describe(
-                "The project ID in which the load balancer is located.",
-              ).optional(),
-              region: z.string().describe(
-                "The region in which the load balancer is located.",
-              ).optional(),
-            })).describe(
-              "Configuration for internal load balancers to be health checked.",
-            ).optional(),
-          }).describe(
+          healthCheckedTargets: z.unknown().describe(
             "HealthCheckTargets describes endpoints to health-check when responding to Routing Policy queries. Only the healthy endpoints will be included in the response. Set either `internal_load_balancer` or `external_endpoints`. Do not set both.",
           ).optional(),
-          kind: z.string().optional(),
-          location: z.string().describe(
+          kind: z.unknown().optional(),
+          location: z.unknown().describe(
             'The geo-location granularity is a GCP region. This location string should correspond to a GCP region. e.g. "us-east1", "southamerica-east1", "asia-east1", etc.',
           ).optional(),
-          rrdatas: z.array(z.string()).optional(),
-          signatureRrdatas: z.array(z.string()).describe(
+          rrdatas: z.unknown().optional(),
+          signatureRrdatas: z.unknown().describe(
             "DNSSEC generated signatures for all the `rrdata` within this item. When using health-checked targets for DNSSEC-enabled zones, you can only use at most one health-checked IP address per item.",
           ).optional(),
         })).describe(
@@ -270,30 +207,26 @@ const GlobalArgsSchema = z.object({
           "The Internet IP addresses to be health checked. The format matches the format of ResourceRecordSet.rrdata as defined in RFC 1035 (section 5) and RFC 1034 (section 3.6.1)",
         ).optional(),
         internalLoadBalancers: z.array(z.object({
-          ipAddress: z.string().describe(
+          ipAddress: z.unknown().describe(
             "The frontend IP address of the load balancer to health check.",
           ).optional(),
-          ipProtocol: z.enum(["undefined", "tcp", "udp"]).describe(
+          ipProtocol: z.unknown().describe(
             "The protocol of the load balancer to health check.",
           ).optional(),
-          kind: z.string().optional(),
-          loadBalancerType: z.enum([
-            "none",
-            "globalL7ilb",
-            "regionalL4ilb",
-            "regionalL7ilb",
-          ]).describe(
+          kind: z.unknown().optional(),
+          loadBalancerType: z.unknown().describe(
             "The type of load balancer specified by this target. This value must match the configuration of the load balancer located at the LoadBalancerTarget's IP address, port, and region. Use the following: - *regionalL4ilb*: for a regional internal passthrough Network Load Balancer. - *regionalL7ilb*: for a regional internal Application Load Balancer. - *globalL7ilb*: for a global internal Application Load Balancer.",
           ).optional(),
-          networkUrl: z.string().describe(
+          networkUrl: z.unknown().describe(
             "The fully qualified URL of the network that the load balancer is attached to. This should be formatted like `https://www.googleapis.com/compute/v1/projects/{project}/global/networks/{network}`.",
           ).optional(),
-          port: z.string().describe("The configured port of the load balancer.")
-            .optional(),
-          project: z.string().describe(
+          port: z.unknown().describe(
+            "The configured port of the load balancer.",
+          ).optional(),
+          project: z.unknown().describe(
             "The project ID in which the load balancer is located.",
           ).optional(),
-          region: z.string().describe(
+          region: z.unknown().describe(
             "The region in which the load balancer is located.",
           ).optional(),
         })).describe(
@@ -311,46 +244,18 @@ const GlobalArgsSchema = z.object({
     wrr: z.object({
       items: z.array(z.object({
         healthCheckedTargets: z.object({
-          externalEndpoints: z.array(z.string()).describe(
+          externalEndpoints: z.unknown().describe(
             "The Internet IP addresses to be health checked. The format matches the format of ResourceRecordSet.rrdata as defined in RFC 1035 (section 5) and RFC 1034 (section 3.6.1)",
           ).optional(),
-          internalLoadBalancers: z.array(z.object({
-            ipAddress: z.string().describe(
-              "The frontend IP address of the load balancer to health check.",
-            ).optional(),
-            ipProtocol: z.enum(["undefined", "tcp", "udp"]).describe(
-              "The protocol of the load balancer to health check.",
-            ).optional(),
-            kind: z.string().optional(),
-            loadBalancerType: z.enum([
-              "none",
-              "globalL7ilb",
-              "regionalL4ilb",
-              "regionalL7ilb",
-            ]).describe(
-              "The type of load balancer specified by this target. This value must match the configuration of the load balancer located at the LoadBalancerTarget's IP address, port, and region. Use the following: - *regionalL4ilb*: for a regional internal passthrough Network Load Balancer. - *regionalL7ilb*: for a regional internal Application Load Balancer. - *globalL7ilb*: for a global internal Application Load Balancer.",
-            ).optional(),
-            networkUrl: z.string().describe(
-              "The fully qualified URL of the network that the load balancer is attached to. This should be formatted like `https://www.googleapis.com/compute/v1/projects/{project}/global/networks/{network}`.",
-            ).optional(),
-            port: z.string().describe(
-              "The configured port of the load balancer.",
-            ).optional(),
-            project: z.string().describe(
-              "The project ID in which the load balancer is located.",
-            ).optional(),
-            region: z.string().describe(
-              "The region in which the load balancer is located.",
-            ).optional(),
-          })).describe(
+          internalLoadBalancers: z.unknown().describe(
             "Configuration for internal load balancers to be health checked.",
           ).optional(),
         }).describe(
           "HealthCheckTargets describes endpoints to health-check when responding to Routing Policy queries. Only the healthy endpoints will be included in the response. Set either `internal_load_balancer` or `external_endpoints`. Do not set both.",
         ).optional(),
         kind: z.string().optional(),
-        rrdatas: z.array(z.string()).optional(),
-        signatureRrdatas: z.array(z.string()).describe(
+        rrdatas: z.array(z.unknown()).optional(),
+        signatureRrdatas: z.array(z.unknown()).describe(
           "DNSSEC generated signatures for all the `rrdata` within this item. When using health-checked targets for DNSSEC-enabled zones, you can only use at most one health-checked IP address per item.",
         ).optional(),
         weight: z.number().describe(
@@ -392,22 +297,13 @@ const StateSchema = z.object({
       enableFencing: z.boolean(),
       items: z.array(z.object({
         healthCheckedTargets: z.object({
-          externalEndpoints: z.array(z.string()),
-          internalLoadBalancers: z.array(z.object({
-            ipAddress: z.string(),
-            ipProtocol: z.string(),
-            kind: z.string(),
-            loadBalancerType: z.string(),
-            networkUrl: z.string(),
-            port: z.string(),
-            project: z.string(),
-            region: z.string(),
-          })),
+          externalEndpoints: z.unknown(),
+          internalLoadBalancers: z.unknown(),
         }),
         kind: z.string(),
         location: z.string(),
-        rrdatas: z.array(z.string()),
-        signatureRrdatas: z.array(z.string()),
+        rrdatas: z.array(z.unknown()),
+        signatureRrdatas: z.array(z.unknown()),
       })),
       kind: z.string(),
     }),
@@ -417,23 +313,11 @@ const StateSchema = z.object({
       backupGeoTargets: z.object({
         enableFencing: z.boolean(),
         items: z.array(z.object({
-          healthCheckedTargets: z.object({
-            externalEndpoints: z.array(z.string()),
-            internalLoadBalancers: z.array(z.object({
-              ipAddress: z.string(),
-              ipProtocol: z.string(),
-              kind: z.string(),
-              loadBalancerType: z.string(),
-              networkUrl: z.string(),
-              port: z.string(),
-              project: z.string(),
-              region: z.string(),
-            })),
-          }),
-          kind: z.string(),
-          location: z.string(),
-          rrdatas: z.array(z.string()),
-          signatureRrdatas: z.array(z.string()),
+          healthCheckedTargets: z.unknown(),
+          kind: z.unknown(),
+          location: z.unknown(),
+          rrdatas: z.unknown(),
+          signatureRrdatas: z.unknown(),
         })),
         kind: z.string(),
       }),
@@ -441,14 +325,14 @@ const StateSchema = z.object({
       primaryTargets: z.object({
         externalEndpoints: z.array(z.string()),
         internalLoadBalancers: z.array(z.object({
-          ipAddress: z.string(),
-          ipProtocol: z.string(),
-          kind: z.string(),
-          loadBalancerType: z.string(),
-          networkUrl: z.string(),
-          port: z.string(),
-          project: z.string(),
-          region: z.string(),
+          ipAddress: z.unknown(),
+          ipProtocol: z.unknown(),
+          kind: z.unknown(),
+          loadBalancerType: z.unknown(),
+          networkUrl: z.unknown(),
+          port: z.unknown(),
+          project: z.unknown(),
+          region: z.unknown(),
         })),
       }),
       trickleTraffic: z.number(),
@@ -456,21 +340,12 @@ const StateSchema = z.object({
     wrr: z.object({
       items: z.array(z.object({
         healthCheckedTargets: z.object({
-          externalEndpoints: z.array(z.string()),
-          internalLoadBalancers: z.array(z.object({
-            ipAddress: z.string(),
-            ipProtocol: z.string(),
-            kind: z.string(),
-            loadBalancerType: z.string(),
-            networkUrl: z.string(),
-            port: z.string(),
-            project: z.string(),
-            region: z.string(),
-          })),
+          externalEndpoints: z.unknown(),
+          internalLoadBalancers: z.unknown(),
         }),
         kind: z.string(),
-        rrdatas: z.array(z.string()),
-        signatureRrdatas: z.array(z.string()),
+        rrdatas: z.array(z.unknown()),
+        signatureRrdatas: z.array(z.unknown()),
         weight: z.number(),
       })),
       kind: z.string(),
@@ -493,38 +368,10 @@ const InputsSchema = z.object({
       ).optional(),
       items: z.array(z.object({
         healthCheckedTargets: z.object({
-          externalEndpoints: z.array(z.string()).describe(
+          externalEndpoints: z.unknown().describe(
             "The Internet IP addresses to be health checked. The format matches the format of ResourceRecordSet.rrdata as defined in RFC 1035 (section 5) and RFC 1034 (section 3.6.1)",
           ).optional(),
-          internalLoadBalancers: z.array(z.object({
-            ipAddress: z.string().describe(
-              "The frontend IP address of the load balancer to health check.",
-            ).optional(),
-            ipProtocol: z.enum(["undefined", "tcp", "udp"]).describe(
-              "The protocol of the load balancer to health check.",
-            ).optional(),
-            kind: z.string().optional(),
-            loadBalancerType: z.enum([
-              "none",
-              "globalL7ilb",
-              "regionalL4ilb",
-              "regionalL7ilb",
-            ]).describe(
-              "The type of load balancer specified by this target. This value must match the configuration of the load balancer located at the LoadBalancerTarget's IP address, port, and region. Use the following: - *regionalL4ilb*: for a regional internal passthrough Network Load Balancer. - *regionalL7ilb*: for a regional internal Application Load Balancer. - *globalL7ilb*: for a global internal Application Load Balancer.",
-            ).optional(),
-            networkUrl: z.string().describe(
-              "The fully qualified URL of the network that the load balancer is attached to. This should be formatted like `https://www.googleapis.com/compute/v1/projects/{project}/global/networks/{network}`.",
-            ).optional(),
-            port: z.string().describe(
-              "The configured port of the load balancer.",
-            ).optional(),
-            project: z.string().describe(
-              "The project ID in which the load balancer is located.",
-            ).optional(),
-            region: z.string().describe(
-              "The region in which the load balancer is located.",
-            ).optional(),
-          })).describe(
+          internalLoadBalancers: z.unknown().describe(
             "Configuration for internal load balancers to be health checked.",
           ).optional(),
         }).describe(
@@ -534,8 +381,8 @@ const InputsSchema = z.object({
         location: z.string().describe(
           'The geo-location granularity is a GCP region. This location string should correspond to a GCP region. e.g. "us-east1", "southamerica-east1", "asia-east1", etc.',
         ).optional(),
-        rrdatas: z.array(z.string()).optional(),
-        signatureRrdatas: z.array(z.string()).describe(
+        rrdatas: z.array(z.unknown()).optional(),
+        signatureRrdatas: z.array(z.unknown()).describe(
           "DNSSEC generated signatures for all the `rrdata` within this item. When using health-checked targets for DNSSEC-enabled zones, you can only use at most one health-checked IP address per item.",
         ).optional(),
       })).describe(
@@ -555,50 +402,15 @@ const InputsSchema = z.object({
           "Without fencing, if health check fails for all configured items in the current geo bucket, we failover to the next nearest geo bucket. With fencing, if health checking is enabled, as long as some targets in the current geo bucket are healthy, we return only the healthy targets. However, if all targets are unhealthy, we don't failover to the next nearest bucket; instead, we return all the items in the current bucket even when all targets are unhealthy.",
         ).optional(),
         items: z.array(z.object({
-          healthCheckedTargets: z.object({
-            externalEndpoints: z.array(z.string()).describe(
-              "The Internet IP addresses to be health checked. The format matches the format of ResourceRecordSet.rrdata as defined in RFC 1035 (section 5) and RFC 1034 (section 3.6.1)",
-            ).optional(),
-            internalLoadBalancers: z.array(z.object({
-              ipAddress: z.string().describe(
-                "The frontend IP address of the load balancer to health check.",
-              ).optional(),
-              ipProtocol: z.enum(["undefined", "tcp", "udp"]).describe(
-                "The protocol of the load balancer to health check.",
-              ).optional(),
-              kind: z.string().optional(),
-              loadBalancerType: z.enum([
-                "none",
-                "globalL7ilb",
-                "regionalL4ilb",
-                "regionalL7ilb",
-              ]).describe(
-                "The type of load balancer specified by this target. This value must match the configuration of the load balancer located at the LoadBalancerTarget's IP address, port, and region. Use the following: - *regionalL4ilb*: for a regional internal passthrough Network Load Balancer. - *regionalL7ilb*: for a regional internal Application Load Balancer. - *globalL7ilb*: for a global internal Application Load Balancer.",
-              ).optional(),
-              networkUrl: z.string().describe(
-                "The fully qualified URL of the network that the load balancer is attached to. This should be formatted like `https://www.googleapis.com/compute/v1/projects/{project}/global/networks/{network}`.",
-              ).optional(),
-              port: z.string().describe(
-                "The configured port of the load balancer.",
-              ).optional(),
-              project: z.string().describe(
-                "The project ID in which the load balancer is located.",
-              ).optional(),
-              region: z.string().describe(
-                "The region in which the load balancer is located.",
-              ).optional(),
-            })).describe(
-              "Configuration for internal load balancers to be health checked.",
-            ).optional(),
-          }).describe(
+          healthCheckedTargets: z.unknown().describe(
             "HealthCheckTargets describes endpoints to health-check when responding to Routing Policy queries. Only the healthy endpoints will be included in the response. Set either `internal_load_balancer` or `external_endpoints`. Do not set both.",
           ).optional(),
-          kind: z.string().optional(),
-          location: z.string().describe(
+          kind: z.unknown().optional(),
+          location: z.unknown().describe(
             'The geo-location granularity is a GCP region. This location string should correspond to a GCP region. e.g. "us-east1", "southamerica-east1", "asia-east1", etc.',
           ).optional(),
-          rrdatas: z.array(z.string()).optional(),
-          signatureRrdatas: z.array(z.string()).describe(
+          rrdatas: z.unknown().optional(),
+          signatureRrdatas: z.unknown().describe(
             "DNSSEC generated signatures for all the `rrdata` within this item. When using health-checked targets for DNSSEC-enabled zones, you can only use at most one health-checked IP address per item.",
           ).optional(),
         })).describe(
@@ -614,30 +426,26 @@ const InputsSchema = z.object({
           "The Internet IP addresses to be health checked. The format matches the format of ResourceRecordSet.rrdata as defined in RFC 1035 (section 5) and RFC 1034 (section 3.6.1)",
         ).optional(),
         internalLoadBalancers: z.array(z.object({
-          ipAddress: z.string().describe(
+          ipAddress: z.unknown().describe(
             "The frontend IP address of the load balancer to health check.",
           ).optional(),
-          ipProtocol: z.enum(["undefined", "tcp", "udp"]).describe(
+          ipProtocol: z.unknown().describe(
             "The protocol of the load balancer to health check.",
           ).optional(),
-          kind: z.string().optional(),
-          loadBalancerType: z.enum([
-            "none",
-            "globalL7ilb",
-            "regionalL4ilb",
-            "regionalL7ilb",
-          ]).describe(
+          kind: z.unknown().optional(),
+          loadBalancerType: z.unknown().describe(
             "The type of load balancer specified by this target. This value must match the configuration of the load balancer located at the LoadBalancerTarget's IP address, port, and region. Use the following: - *regionalL4ilb*: for a regional internal passthrough Network Load Balancer. - *regionalL7ilb*: for a regional internal Application Load Balancer. - *globalL7ilb*: for a global internal Application Load Balancer.",
           ).optional(),
-          networkUrl: z.string().describe(
+          networkUrl: z.unknown().describe(
             "The fully qualified URL of the network that the load balancer is attached to. This should be formatted like `https://www.googleapis.com/compute/v1/projects/{project}/global/networks/{network}`.",
           ).optional(),
-          port: z.string().describe("The configured port of the load balancer.")
-            .optional(),
-          project: z.string().describe(
+          port: z.unknown().describe(
+            "The configured port of the load balancer.",
+          ).optional(),
+          project: z.unknown().describe(
             "The project ID in which the load balancer is located.",
           ).optional(),
-          region: z.string().describe(
+          region: z.unknown().describe(
             "The region in which the load balancer is located.",
           ).optional(),
         })).describe(
@@ -655,46 +463,18 @@ const InputsSchema = z.object({
     wrr: z.object({
       items: z.array(z.object({
         healthCheckedTargets: z.object({
-          externalEndpoints: z.array(z.string()).describe(
+          externalEndpoints: z.unknown().describe(
             "The Internet IP addresses to be health checked. The format matches the format of ResourceRecordSet.rrdata as defined in RFC 1035 (section 5) and RFC 1034 (section 3.6.1)",
           ).optional(),
-          internalLoadBalancers: z.array(z.object({
-            ipAddress: z.string().describe(
-              "The frontend IP address of the load balancer to health check.",
-            ).optional(),
-            ipProtocol: z.enum(["undefined", "tcp", "udp"]).describe(
-              "The protocol of the load balancer to health check.",
-            ).optional(),
-            kind: z.string().optional(),
-            loadBalancerType: z.enum([
-              "none",
-              "globalL7ilb",
-              "regionalL4ilb",
-              "regionalL7ilb",
-            ]).describe(
-              "The type of load balancer specified by this target. This value must match the configuration of the load balancer located at the LoadBalancerTarget's IP address, port, and region. Use the following: - *regionalL4ilb*: for a regional internal passthrough Network Load Balancer. - *regionalL7ilb*: for a regional internal Application Load Balancer. - *globalL7ilb*: for a global internal Application Load Balancer.",
-            ).optional(),
-            networkUrl: z.string().describe(
-              "The fully qualified URL of the network that the load balancer is attached to. This should be formatted like `https://www.googleapis.com/compute/v1/projects/{project}/global/networks/{network}`.",
-            ).optional(),
-            port: z.string().describe(
-              "The configured port of the load balancer.",
-            ).optional(),
-            project: z.string().describe(
-              "The project ID in which the load balancer is located.",
-            ).optional(),
-            region: z.string().describe(
-              "The region in which the load balancer is located.",
-            ).optional(),
-          })).describe(
+          internalLoadBalancers: z.unknown().describe(
             "Configuration for internal load balancers to be health checked.",
           ).optional(),
         }).describe(
           "HealthCheckTargets describes endpoints to health-check when responding to Routing Policy queries. Only the healthy endpoints will be included in the response. Set either `internal_load_balancer` or `external_endpoints`. Do not set both.",
         ).optional(),
         kind: z.string().optional(),
-        rrdatas: z.array(z.string()).optional(),
-        signatureRrdatas: z.array(z.string()).describe(
+        rrdatas: z.array(z.unknown()).optional(),
+        signatureRrdatas: z.array(z.unknown()).describe(
           "DNSSEC generated signatures for all the `rrdata` within this item. When using health-checked targets for DNSSEC-enabled zones, you can only use at most one health-checked IP address per item.",
         ).optional(),
         weight: z.number().describe(
@@ -730,7 +510,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/dns/resourcerecordsets",
-  version: "2026.04.03.3",
+  version: "2026.04.04.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -754,6 +534,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.3",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.04.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

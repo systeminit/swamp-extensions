@@ -198,35 +198,20 @@ const GlobalArgsSchema = z.object({
         ).optional(),
       }).describe("Click-through URL").optional(),
       companionCreativeOverrides: z.array(z.object({
-        clickThroughUrl: z.object({
-          computedClickThroughUrl: z.string().describe(
-            "Read-only convenience field representing the actual URL that will be used for this click-through. The URL is computed as follows: - If defaultLandingPage is enabled then the campaign's default landing page URL is assigned to this field. - If defaultLandingPage is not enabled and a landingPageId is specified then that landing page's URL is assigned to this field. - If neither of the above cases apply, then the customClickThroughUrl is assigned to this field.",
-          ).optional(),
-          customClickThroughUrl: z.string().describe(
-            "Custom click-through URL. Applicable if the defaultLandingPage field is set to false and the landingPageId field is left unset.",
-          ).optional(),
-          defaultLandingPage: z.boolean().describe(
-            "Whether the campaign default landing page is used.",
-          ).optional(),
-          landingPageId: z.string().describe(
-            "ID of the landing page for the click-through URL. Applicable if the defaultLandingPage field is set to false.",
-          ).optional(),
-        }).describe("Click-through URL").optional(),
-        creativeId: z.string().describe(
+        clickThroughUrl: z.unknown().describe("Click-through URL").optional(),
+        creativeId: z.unknown().describe(
           "ID of the creative for this companion click-through override.",
         ).optional(),
       })).describe(
         "Companion creative overrides for this creative assignment. Applicable to video ads.",
       ).optional(),
       creativeGroupAssignments: z.array(z.object({
-        creativeGroupId: z.string().describe(
+        creativeGroupId: z.unknown().describe(
           "ID of the creative group to be assigned.",
         ).optional(),
-        creativeGroupNumber: z.enum([
-          "CREATIVE_GROUP_ONE",
-          "CREATIVE_GROUP_TWO",
-        ]).describe("Creative group number of the creative group assignment.")
-          .optional(),
+        creativeGroupNumber: z.unknown().describe(
+          "Creative group number of the creative group assignment.",
+        ).optional(),
       })).describe(
         "Creative group assignments for this creative assignment. Only one assignment per creative group number is allowed for a maximum of two assignments.",
       ).optional(),
@@ -257,24 +242,11 @@ const GlobalArgsSchema = z.object({
       }).describe("Represents a DimensionValue resource.").optional(),
       endTime: z.string().optional(),
       richMediaExitOverrides: z.array(z.object({
-        clickThroughUrl: z.object({
-          computedClickThroughUrl: z.string().describe(
-            "Read-only convenience field representing the actual URL that will be used for this click-through. The URL is computed as follows: - If defaultLandingPage is enabled then the campaign's default landing page URL is assigned to this field. - If defaultLandingPage is not enabled and a landingPageId is specified then that landing page's URL is assigned to this field. - If neither of the above cases apply, then the customClickThroughUrl is assigned to this field.",
-          ).optional(),
-          customClickThroughUrl: z.string().describe(
-            "Custom click-through URL. Applicable if the defaultLandingPage field is set to false and the landingPageId field is left unset.",
-          ).optional(),
-          defaultLandingPage: z.boolean().describe(
-            "Whether the campaign default landing page is used.",
-          ).optional(),
-          landingPageId: z.string().describe(
-            "ID of the landing page for the click-through URL. Applicable if the defaultLandingPage field is set to false.",
-          ).optional(),
-        }).describe("Click-through URL").optional(),
-        enabled: z.boolean().describe(
+        clickThroughUrl: z.unknown().describe("Click-through URL").optional(),
+        enabled: z.unknown().describe(
           "Whether to use the clickThroughUrl. If false, the creative-level exit will be used.",
         ).optional(),
-        exitId: z.string().describe(
+        exitId: z.unknown().describe(
           "ID for the override to refer to a specific exit in the creative.",
         ).optional(),
       })).describe(
@@ -804,17 +776,12 @@ const StateSchema = z.object({
         landingPageId: z.string(),
       }),
       companionCreativeOverrides: z.array(z.object({
-        clickThroughUrl: z.object({
-          computedClickThroughUrl: z.string(),
-          customClickThroughUrl: z.string(),
-          defaultLandingPage: z.boolean(),
-          landingPageId: z.string(),
-        }),
-        creativeId: z.string(),
+        clickThroughUrl: z.unknown(),
+        creativeId: z.unknown(),
       })),
       creativeGroupAssignments: z.array(z.object({
-        creativeGroupId: z.string(),
-        creativeGroupNumber: z.string(),
+        creativeGroupId: z.unknown(),
+        creativeGroupNumber: z.unknown(),
       })),
       creativeId: z.string(),
       creativeIdDimensionValue: z.object({
@@ -827,14 +794,9 @@ const StateSchema = z.object({
       }),
       endTime: z.string(),
       richMediaExitOverrides: z.array(z.object({
-        clickThroughUrl: z.object({
-          computedClickThroughUrl: z.string(),
-          customClickThroughUrl: z.string(),
-          defaultLandingPage: z.boolean(),
-          landingPageId: z.string(),
-        }),
-        enabled: z.boolean(),
-        exitId: z.string(),
+        clickThroughUrl: z.unknown(),
+        enabled: z.unknown(),
+        exitId: z.unknown(),
       })),
       sequence: z.number(),
       sslCompliant: z.boolean(),
@@ -1155,35 +1117,20 @@ const InputsSchema = z.object({
         ).optional(),
       }).describe("Click-through URL").optional(),
       companionCreativeOverrides: z.array(z.object({
-        clickThroughUrl: z.object({
-          computedClickThroughUrl: z.string().describe(
-            "Read-only convenience field representing the actual URL that will be used for this click-through. The URL is computed as follows: - If defaultLandingPage is enabled then the campaign's default landing page URL is assigned to this field. - If defaultLandingPage is not enabled and a landingPageId is specified then that landing page's URL is assigned to this field. - If neither of the above cases apply, then the customClickThroughUrl is assigned to this field.",
-          ).optional(),
-          customClickThroughUrl: z.string().describe(
-            "Custom click-through URL. Applicable if the defaultLandingPage field is set to false and the landingPageId field is left unset.",
-          ).optional(),
-          defaultLandingPage: z.boolean().describe(
-            "Whether the campaign default landing page is used.",
-          ).optional(),
-          landingPageId: z.string().describe(
-            "ID of the landing page for the click-through URL. Applicable if the defaultLandingPage field is set to false.",
-          ).optional(),
-        }).describe("Click-through URL").optional(),
-        creativeId: z.string().describe(
+        clickThroughUrl: z.unknown().describe("Click-through URL").optional(),
+        creativeId: z.unknown().describe(
           "ID of the creative for this companion click-through override.",
         ).optional(),
       })).describe(
         "Companion creative overrides for this creative assignment. Applicable to video ads.",
       ).optional(),
       creativeGroupAssignments: z.array(z.object({
-        creativeGroupId: z.string().describe(
+        creativeGroupId: z.unknown().describe(
           "ID of the creative group to be assigned.",
         ).optional(),
-        creativeGroupNumber: z.enum([
-          "CREATIVE_GROUP_ONE",
-          "CREATIVE_GROUP_TWO",
-        ]).describe("Creative group number of the creative group assignment.")
-          .optional(),
+        creativeGroupNumber: z.unknown().describe(
+          "Creative group number of the creative group assignment.",
+        ).optional(),
       })).describe(
         "Creative group assignments for this creative assignment. Only one assignment per creative group number is allowed for a maximum of two assignments.",
       ).optional(),
@@ -1214,24 +1161,11 @@ const InputsSchema = z.object({
       }).describe("Represents a DimensionValue resource.").optional(),
       endTime: z.string().optional(),
       richMediaExitOverrides: z.array(z.object({
-        clickThroughUrl: z.object({
-          computedClickThroughUrl: z.string().describe(
-            "Read-only convenience field representing the actual URL that will be used for this click-through. The URL is computed as follows: - If defaultLandingPage is enabled then the campaign's default landing page URL is assigned to this field. - If defaultLandingPage is not enabled and a landingPageId is specified then that landing page's URL is assigned to this field. - If neither of the above cases apply, then the customClickThroughUrl is assigned to this field.",
-          ).optional(),
-          customClickThroughUrl: z.string().describe(
-            "Custom click-through URL. Applicable if the defaultLandingPage field is set to false and the landingPageId field is left unset.",
-          ).optional(),
-          defaultLandingPage: z.boolean().describe(
-            "Whether the campaign default landing page is used.",
-          ).optional(),
-          landingPageId: z.string().describe(
-            "ID of the landing page for the click-through URL. Applicable if the defaultLandingPage field is set to false.",
-          ).optional(),
-        }).describe("Click-through URL").optional(),
-        enabled: z.boolean().describe(
+        clickThroughUrl: z.unknown().describe("Click-through URL").optional(),
+        enabled: z.unknown().describe(
           "Whether to use the clickThroughUrl. If false, the creative-level exit will be used.",
         ).optional(),
-        exitId: z.string().describe(
+        exitId: z.unknown().describe(
           "ID for the override to refer to a specific exit in the creative.",
         ).optional(),
       })).describe(
@@ -1705,7 +1639,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/dfareporting/ads",
-  version: "2026.04.03.3",
+  version: "2026.04.04.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -1729,6 +1663,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.3",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.04.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

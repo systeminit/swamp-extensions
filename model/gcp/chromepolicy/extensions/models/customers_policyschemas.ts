@@ -53,35 +53,32 @@ const StateSchema = z.object({
     enumType: z.array(z.object({
       name: z.string(),
       value: z.array(z.object({
-        name: z.string(),
-        number: z.number(),
+        name: z.unknown(),
+        number: z.unknown(),
       })),
       visibility: z.string(),
     })),
     messageType: z.array(z.object({
       enumType: z.array(z.object({
-        name: z.string(),
-        value: z.array(z.object({
-          name: z.string(),
-          number: z.number(),
-        })),
-        visibility: z.string(),
+        name: z.unknown(),
+        value: z.unknown(),
+        visibility: z.unknown(),
       })),
       field: z.array(z.object({
-        defaultValue: z.string(),
-        jsonName: z.string(),
-        label: z.string(),
-        name: z.string(),
-        number: z.number(),
-        oneofIndex: z.number(),
-        proto3Optional: z.boolean(),
-        type: z.string(),
-        typeName: z.string(),
+        defaultValue: z.unknown(),
+        jsonName: z.unknown(),
+        label: z.unknown(),
+        name: z.unknown(),
+        number: z.unknown(),
+        oneofIndex: z.unknown(),
+        proto3Optional: z.unknown(),
+        type: z.unknown(),
+        typeName: z.unknown(),
       })),
       name: z.string(),
       nestedType: z.array(z.string()),
       oneofDecl: z.array(z.object({
-        name: z.string(),
+        name: z.unknown(),
       })),
       visibility: z.string(),
     })),
@@ -101,7 +98,7 @@ const StateSchema = z.object({
       }),
       uploadedFileConstraints: z.object({
         sizeLimitBytes: z.string(),
-        supportedContentTypes: z.array(z.string()),
+        supportedContentTypes: z.array(z.unknown()),
       }),
     }),
     fieldDependencies: z.array(z.object({
@@ -112,17 +109,14 @@ const StateSchema = z.object({
     inputConstraint: z.string(),
     knownValueDescriptions: z.array(z.object({
       description: z.string(),
-      fieldDependencies: z.array(z.object({
-        sourceField: z.string(),
-        sourceFieldValue: z.string(),
-      })),
+      fieldDependencies: z.array(z.unknown()),
       value: z.string(),
     })),
     name: z.string(),
     nestedFieldDescriptions: z.array(z.string()),
     requiredItems: z.array(z.object({
-      fieldConditions: z.array(z.string()),
-      requiredFields: z.array(z.string()),
+      fieldConditions: z.array(z.unknown()),
+      requiredFields: z.array(z.unknown()),
     })),
   })).optional(),
   name: z.string(),
@@ -161,7 +155,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/chromepolicy/customers-policyschemas",
-  version: "2026.04.03.3",
+  version: "2026.04.04.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -185,6 +179,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.3",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.04.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

@@ -61,14 +61,9 @@ const GlobalArgsSchema = z.object({
         "The source edition string, only valid when syntax is SYNTAX_EDITIONS. This field should be ignored, instead the edition should be inherited from Api. This is similar to Field and EnumValue.",
       ).optional(),
       name: z.string().describe("The simple name of this method.").optional(),
-      options: z.array(z.object({
-        name: z.string().describe(
-          'The option\'s name. For protobuf built-in options (options defined in descriptor.proto), this is the short name. For example, `"map_entry"`. For custom options, it should be the fully-qualified name. For example, `"google.api.http"`.',
-        ).optional(),
-        value: z.record(z.string(), z.string()).describe(
-          "The option's value packed in an Any message. If the value is a primitive, the corresponding wrapper type defined in google/protobuf/wrappers.proto should be used. If the value is an enum, it should be stored as an int32 value using the google.protobuf.Int32Value type.",
-        ).optional(),
-      })).describe("Any metadata attached to the method.").optional(),
+      options: z.array(z.unknown()).describe(
+        "Any metadata attached to the method.",
+      ).optional(),
       requestStreaming: z.boolean().describe(
         "If true, the request is streamed.",
       ).optional(),
@@ -101,7 +96,7 @@ const GlobalArgsSchema = z.object({
       name: z.string().describe(
         'The option\'s name. For protobuf built-in options (options defined in descriptor.proto), this is the short name. For example, `"map_entry"`. For custom options, it should be the fully-qualified name. For example, `"google.api.http"`.',
       ).optional(),
-      value: z.record(z.string(), z.string()).describe(
+      value: z.record(z.string(), z.unknown()).describe(
         "The option's value packed in an Any message. If the value is a primitive, the corresponding wrapper type defined in google/protobuf/wrappers.proto should be used. If the value is an enum, it should be stored as an int32 value using the google.protobuf.Int32Value type.",
       ).optional(),
     })).describe("Any metadata attached to the interface.").optional(),
@@ -124,7 +119,7 @@ const GlobalArgsSchema = z.object({
     kind: z.string().describe("The type of this aspect configuration.")
       .optional(),
     rules: z.array(z.object({
-      config: z.record(z.string(), z.string()).describe(
+      config: z.record(z.string(), z.unknown()).describe(
         "Required. Rules of the configuration. The underlying schema should be defined by Aspect owners as protobuf message under `google/api/configaspects/proto`.",
       ).optional(),
       selector: z.string().describe(
@@ -155,16 +150,16 @@ const GlobalArgsSchema = z.object({
         "URL of the provider's public key set to validate signature of the JWT. See [OpenID Discovery](https://openid.net/specs/openid-connect-discovery-1_0.html#ProviderMetadata). Optional if the key set document: - can be retrieved from [OpenID Discovery](https://openid.net/specs/openid-connect-discovery-1_0.html) of the issuer. - can be inferred from the email domain of the issuer (e.g. a Google service account). Example: https://www.googleapis.com/oauth2/v1/certs",
       ).optional(),
       jwtLocations: z.array(z.object({
-        cookie: z.string().describe(
+        cookie: z.unknown().describe(
           "Specifies cookie name to extract JWT token.",
         ).optional(),
-        header: z.string().describe(
+        header: z.unknown().describe(
           "Specifies HTTP header name to extract JWT token.",
         ).optional(),
-        query: z.string().describe(
+        query: z.unknown().describe(
           "Specifies URL query parameter name to extract JWT token.",
         ).optional(),
-        valuePrefix: z.string().describe(
+        valuePrefix: z.unknown().describe(
           'The value prefix. The value format is "value_prefix{token}" Only applies to "in" header type. Must be empty for "in" query type. If not empty, the header value has to match (case sensitive) this prefix. If not matched, JWT will not be extracted. If matched, JWT will be extracted after the prefix is removed. For example, for "Authorization: Bearer {JWT}", value_prefix="Bearer " with a space at the end.',
         ).optional(),
       })).describe(
@@ -185,10 +180,10 @@ const GlobalArgsSchema = z.object({
         'OAuth scopes are a way to define data and permissions on data. For example, there are scopes defined for "Read-only access to Google Calendar" and "Access to Cloud Platform". Users can consent to a scope for an application, giving it permission to access that data on their behalf. OAuth scope specifications should be fairly coarse grained; a user will need to see and understand the text description of what your scope means. In most cases: use one or at most two OAuth scopes for an entire family of products. If your product has multiple APIs, you should probably be sharing the OAuth scope across all of those APIs. When you need finer grained OAuth consent screens: talk with your product management about how developers will use them in practice. Please note that even though each of the canonical scopes is enough for a request to be accepted and passed to the backend, a request can still fail due to the backend requiring additional scopes or permissions.',
       ).optional(),
       requirements: z.array(z.object({
-        audiences: z.string().describe(
+        audiences: z.unknown().describe(
           'NOTE: This will be deprecated soon, once AuthProvider.audiences is implemented and accepted in all the runtime components. The list of JWT [audiences](https://tools.ietf.org/html/draft-ietf-oauth-json-web-token-32#section-4.1.3). that are allowed to access. A JWT containing any of these audiences will be accepted. When this setting is absent, only JWTs with audience "https://Service_name/API_name" will be accepted. For example, if no audiences are in the setting, LibraryService API will only accept JWTs with the following audience "https://library-example.googleapis.com/google.example.library.v1.LibraryService". Example: audiences: bookstore_android.apps.googleusercontent.com, bookstore_web.apps.googleusercontent.com',
         ).optional(),
-        providerId: z.string().describe(
+        providerId: z.unknown().describe(
           "id from authentication provider. Example: provider_id: bookstore_auth",
         ).optional(),
       })).describe("Requirements for additional authentication providers.")
@@ -288,13 +283,13 @@ const GlobalArgsSchema = z.object({
     ).optional(),
     methodPolicies: z.array(z.object({
       requestPolicies: z.array(z.object({
-        resourcePermission: z.string().describe(
+        resourcePermission: z.unknown().describe(
           'Specifies the required permission(s) for the resource referred to by the field. It requires the field contains a valid resource reference, and the request must pass the permission checks to proceed. For example, "resourcemanager.projects.get".',
         ).optional(),
-        resourceType: z.string().describe(
+        resourceType: z.unknown().describe(
           "Specifies the resource type for the resource referred to by the field.",
         ).optional(),
-        selector: z.string().describe(
+        selector: z.unknown().describe(
           'Selects one or more request or response message fields to apply this `FieldPolicy`. When a `FieldPolicy` is used in proto annotation, the selector must be left as empty. The service config generator will automatically fill the correct value. When a `FieldPolicy` is used in service config, the selector must be a comma-separated string with valid request or response field paths, such as "foo.bar" or "foo.bar,foo.baz".',
         ).optional(),
       })).describe("Policies that are applicable to the request message.")
@@ -405,21 +400,15 @@ const GlobalArgsSchema = z.object({
     enumvalue: z.array(z.object({
       name: z.string().describe("Enum value name.").optional(),
       number: z.number().int().describe("Enum value number.").optional(),
-      options: z.array(z.object({
-        name: z.string().describe(
-          'The option\'s name. For protobuf built-in options (options defined in descriptor.proto), this is the short name. For example, `"map_entry"`. For custom options, it should be the fully-qualified name. For example, `"google.api.http"`.',
-        ).optional(),
-        value: z.record(z.string(), z.string()).describe(
-          "The option's value packed in an Any message. If the value is a primitive, the corresponding wrapper type defined in google/protobuf/wrappers.proto should be used. If the value is an enum, it should be stored as an int32 value using the google.protobuf.Int32Value type.",
-        ).optional(),
-      })).describe("Protocol buffer options.").optional(),
+      options: z.array(z.unknown()).describe("Protocol buffer options.")
+        .optional(),
     })).describe("Enum value definitions.").optional(),
     name: z.string().describe("Enum type name.").optional(),
     options: z.array(z.object({
       name: z.string().describe(
         'The option\'s name. For protobuf built-in options (options defined in descriptor.proto), this is the short name. For example, `"map_entry"`. For custom options, it should be the fully-qualified name. For example, `"google.api.http"`.',
       ).optional(),
-      value: z.record(z.string(), z.string()).describe(
+      value: z.record(z.string(), z.unknown()).describe(
         "The option's value packed in an Any message. If the value is a primitive, the corresponding wrapper type defined in google/protobuf/wrappers.proto should be used. If the value is an enum, it should be stored as an int32 value using the google.protobuf.Int32Value type.",
       ).optional(),
     })).describe("Protocol buffer options.").optional(),
@@ -707,129 +696,77 @@ const GlobalArgsSchema = z.object({
     librarySettings: z.array(z.object({
       cppSettings: z.object({
         common: z.object({
-          destinations: z.array(
-            z.enum([
-              "CLIENT_LIBRARY_DESTINATION_UNSPECIFIED",
-              "GITHUB",
-              "PACKAGE_MANAGER",
-            ]),
-          ).describe(
+          destinations: z.unknown().describe(
             "The destination where API teams want this client library to be published.",
           ).optional(),
-          referenceDocsUri: z.string().describe(
+          referenceDocsUri: z.unknown().describe(
             "Link to automatically generated reference documentation. Example: https://cloud.google.com/nodejs/docs/reference/asset/latest",
           ).optional(),
-          selectiveGapicGeneration: z.object({
-            generateOmittedAsInternal: z.boolean().describe(
-              "Setting this to true indicates to the client generators that methods that would be excluded from the generation should instead be generated in a way that indicates these methods should not be consumed by end users. How this is expressed is up to individual language implementations to decide. Some examples may be: added annotations, obfuscated identifiers, or other language idiomatic patterns.",
-            ).optional(),
-            methods: z.array(z.string()).describe(
-              "An allowlist of the fully qualified names of RPCs that should be included on public client surfaces.",
-            ).optional(),
-          }).describe(
+          selectiveGapicGeneration: z.unknown().describe(
             "This message is used to configure the generation of a subset of the RPCs in a service for client libraries.",
           ).optional(),
         }).describe("Required information for every language.").optional(),
       }).describe("Settings for C++ client libraries.").optional(),
       dotnetSettings: z.object({
         common: z.object({
-          destinations: z.array(
-            z.enum([
-              "CLIENT_LIBRARY_DESTINATION_UNSPECIFIED",
-              "GITHUB",
-              "PACKAGE_MANAGER",
-            ]),
-          ).describe(
+          destinations: z.unknown().describe(
             "The destination where API teams want this client library to be published.",
           ).optional(),
-          referenceDocsUri: z.string().describe(
+          referenceDocsUri: z.unknown().describe(
             "Link to automatically generated reference documentation. Example: https://cloud.google.com/nodejs/docs/reference/asset/latest",
           ).optional(),
-          selectiveGapicGeneration: z.object({
-            generateOmittedAsInternal: z.boolean().describe(
-              "Setting this to true indicates to the client generators that methods that would be excluded from the generation should instead be generated in a way that indicates these methods should not be consumed by end users. How this is expressed is up to individual language implementations to decide. Some examples may be: added annotations, obfuscated identifiers, or other language idiomatic patterns.",
-            ).optional(),
-            methods: z.array(z.string()).describe(
-              "An allowlist of the fully qualified names of RPCs that should be included on public client surfaces.",
-            ).optional(),
-          }).describe(
+          selectiveGapicGeneration: z.unknown().describe(
             "This message is used to configure the generation of a subset of the RPCs in a service for client libraries.",
           ).optional(),
         }).describe("Required information for every language.").optional(),
-        forcedNamespaceAliases: z.array(z.string()).describe(
+        forcedNamespaceAliases: z.array(z.unknown()).describe(
           "Namespaces which must be aliased in snippets due to a known (but non-generator-predictable) naming collision",
         ).optional(),
-        handwrittenSignatures: z.array(z.string()).describe(
+        handwrittenSignatures: z.array(z.unknown()).describe(
           'Method signatures (in the form "service.method(signature)") which are provided separately, so shouldn\'t be generated. Snippets *calling* these methods are still generated, however.',
         ).optional(),
-        ignoredResources: z.array(z.string()).describe(
+        ignoredResources: z.array(z.unknown()).describe(
           'List of full resource types to ignore during generation. This is typically used for API-specific Location resources, which should be handled by the generator as if they were actually the common Location resources. Example entry: "documentai.googleapis.com/Location"',
         ).optional(),
-        renamedResources: z.record(z.string(), z.string()).describe(
+        renamedResources: z.record(z.string(), z.unknown()).describe(
           'Map from full resource types to the effective short name for the resource. This is used when otherwise resource named from different services would cause naming collisions. Example entry: "datalabeling.googleapis.com/Dataset": "DataLabelingDataset"',
         ).optional(),
-        renamedServices: z.record(z.string(), z.string()).describe(
+        renamedServices: z.record(z.string(), z.unknown()).describe(
           "Map from original service names to renamed versions. This is used when the default generated types would cause a naming conflict. (Neither name is fully-qualified.) Example: Subscriber to SubscriberServiceApi.",
         ).optional(),
       }).describe("Settings for Dotnet client libraries.").optional(),
       goSettings: z.object({
         common: z.object({
-          destinations: z.array(
-            z.enum([
-              "CLIENT_LIBRARY_DESTINATION_UNSPECIFIED",
-              "GITHUB",
-              "PACKAGE_MANAGER",
-            ]),
-          ).describe(
+          destinations: z.unknown().describe(
             "The destination where API teams want this client library to be published.",
           ).optional(),
-          referenceDocsUri: z.string().describe(
+          referenceDocsUri: z.unknown().describe(
             "Link to automatically generated reference documentation. Example: https://cloud.google.com/nodejs/docs/reference/asset/latest",
           ).optional(),
-          selectiveGapicGeneration: z.object({
-            generateOmittedAsInternal: z.boolean().describe(
-              "Setting this to true indicates to the client generators that methods that would be excluded from the generation should instead be generated in a way that indicates these methods should not be consumed by end users. How this is expressed is up to individual language implementations to decide. Some examples may be: added annotations, obfuscated identifiers, or other language idiomatic patterns.",
-            ).optional(),
-            methods: z.array(z.string()).describe(
-              "An allowlist of the fully qualified names of RPCs that should be included on public client surfaces.",
-            ).optional(),
-          }).describe(
+          selectiveGapicGeneration: z.unknown().describe(
             "This message is used to configure the generation of a subset of the RPCs in a service for client libraries.",
           ).optional(),
         }).describe("Required information for every language.").optional(),
-        renamedServices: z.record(z.string(), z.string()).describe(
+        renamedServices: z.record(z.string(), z.unknown()).describe(
           "Map of service names to renamed services. Keys are the package relative service names and values are the name to be used for the service client and call options. Example: publishing: go_settings: renamed_services: Publisher: TopicAdmin",
         ).optional(),
       }).describe("Settings for Go client libraries.").optional(),
       javaSettings: z.object({
         common: z.object({
-          destinations: z.array(
-            z.enum([
-              "CLIENT_LIBRARY_DESTINATION_UNSPECIFIED",
-              "GITHUB",
-              "PACKAGE_MANAGER",
-            ]),
-          ).describe(
+          destinations: z.unknown().describe(
             "The destination where API teams want this client library to be published.",
           ).optional(),
-          referenceDocsUri: z.string().describe(
+          referenceDocsUri: z.unknown().describe(
             "Link to automatically generated reference documentation. Example: https://cloud.google.com/nodejs/docs/reference/asset/latest",
           ).optional(),
-          selectiveGapicGeneration: z.object({
-            generateOmittedAsInternal: z.boolean().describe(
-              "Setting this to true indicates to the client generators that methods that would be excluded from the generation should instead be generated in a way that indicates these methods should not be consumed by end users. How this is expressed is up to individual language implementations to decide. Some examples may be: added annotations, obfuscated identifiers, or other language idiomatic patterns.",
-            ).optional(),
-            methods: z.array(z.string()).describe(
-              "An allowlist of the fully qualified names of RPCs that should be included on public client surfaces.",
-            ).optional(),
-          }).describe(
+          selectiveGapicGeneration: z.unknown().describe(
             "This message is used to configure the generation of a subset of the RPCs in a service for client libraries.",
           ).optional(),
         }).describe("Required information for every language.").optional(),
         libraryPackage: z.string().describe(
           'The package name to use in Java. Clobbers the java_package option set in the protobuf. This should be used **only** by APIs who have already set the language_settings.java.package_name" field in gapic.yaml. API teams should use the protobuf java_package option where possible. Example of a YAML configuration:: publishing: library_settings: java_settings: library_package: com.google.cloud.pubsub.v1',
         ).optional(),
-        serviceClassNames: z.record(z.string(), z.string()).describe(
+        serviceClassNames: z.record(z.string(), z.unknown()).describe(
           "Configure the Java class name to use instead of the service's for its corresponding generated GAPIC client. Keys are fully-qualified service names as they appear in the protobuf (including the full the language_settings.java.interface_names\" field in gapic.yaml. API teams should otherwise use the service name as it appears in the protobuf. Example of a YAML configuration:: publishing: java_settings: service_class_names: - google.pubsub.v1.Publisher: TopicAdmin - google.pubsub.v1.Subscriber: SubscriptionAdmin",
         ).optional(),
       }).describe("Settings for Java client libraries.").optional(),
@@ -845,52 +782,26 @@ const GlobalArgsSchema = z.object({
       ]).describe("Launch stage of this version of the API.").optional(),
       nodeSettings: z.object({
         common: z.object({
-          destinations: z.array(
-            z.enum([
-              "CLIENT_LIBRARY_DESTINATION_UNSPECIFIED",
-              "GITHUB",
-              "PACKAGE_MANAGER",
-            ]),
-          ).describe(
+          destinations: z.unknown().describe(
             "The destination where API teams want this client library to be published.",
           ).optional(),
-          referenceDocsUri: z.string().describe(
+          referenceDocsUri: z.unknown().describe(
             "Link to automatically generated reference documentation. Example: https://cloud.google.com/nodejs/docs/reference/asset/latest",
           ).optional(),
-          selectiveGapicGeneration: z.object({
-            generateOmittedAsInternal: z.boolean().describe(
-              "Setting this to true indicates to the client generators that methods that would be excluded from the generation should instead be generated in a way that indicates these methods should not be consumed by end users. How this is expressed is up to individual language implementations to decide. Some examples may be: added annotations, obfuscated identifiers, or other language idiomatic patterns.",
-            ).optional(),
-            methods: z.array(z.string()).describe(
-              "An allowlist of the fully qualified names of RPCs that should be included on public client surfaces.",
-            ).optional(),
-          }).describe(
+          selectiveGapicGeneration: z.unknown().describe(
             "This message is used to configure the generation of a subset of the RPCs in a service for client libraries.",
           ).optional(),
         }).describe("Required information for every language.").optional(),
       }).describe("Settings for Node client libraries.").optional(),
       phpSettings: z.object({
         common: z.object({
-          destinations: z.array(
-            z.enum([
-              "CLIENT_LIBRARY_DESTINATION_UNSPECIFIED",
-              "GITHUB",
-              "PACKAGE_MANAGER",
-            ]),
-          ).describe(
+          destinations: z.unknown().describe(
             "The destination where API teams want this client library to be published.",
           ).optional(),
-          referenceDocsUri: z.string().describe(
+          referenceDocsUri: z.unknown().describe(
             "Link to automatically generated reference documentation. Example: https://cloud.google.com/nodejs/docs/reference/asset/latest",
           ).optional(),
-          selectiveGapicGeneration: z.object({
-            generateOmittedAsInternal: z.boolean().describe(
-              "Setting this to true indicates to the client generators that methods that would be excluded from the generation should instead be generated in a way that indicates these methods should not be consumed by end users. How this is expressed is up to individual language implementations to decide. Some examples may be: added annotations, obfuscated identifiers, or other language idiomatic patterns.",
-            ).optional(),
-            methods: z.array(z.string()).describe(
-              "An allowlist of the fully qualified names of RPCs that should be included on public client surfaces.",
-            ).optional(),
-          }).describe(
+          selectiveGapicGeneration: z.unknown().describe(
             "This message is used to configure the generation of a subset of the RPCs in a service for client libraries.",
           ).optional(),
         }).describe("Required information for every language.").optional(),
@@ -900,37 +811,24 @@ const GlobalArgsSchema = z.object({
       }).describe("Settings for Php client libraries.").optional(),
       pythonSettings: z.object({
         common: z.object({
-          destinations: z.array(
-            z.enum([
-              "CLIENT_LIBRARY_DESTINATION_UNSPECIFIED",
-              "GITHUB",
-              "PACKAGE_MANAGER",
-            ]),
-          ).describe(
+          destinations: z.unknown().describe(
             "The destination where API teams want this client library to be published.",
           ).optional(),
-          referenceDocsUri: z.string().describe(
+          referenceDocsUri: z.unknown().describe(
             "Link to automatically generated reference documentation. Example: https://cloud.google.com/nodejs/docs/reference/asset/latest",
           ).optional(),
-          selectiveGapicGeneration: z.object({
-            generateOmittedAsInternal: z.boolean().describe(
-              "Setting this to true indicates to the client generators that methods that would be excluded from the generation should instead be generated in a way that indicates these methods should not be consumed by end users. How this is expressed is up to individual language implementations to decide. Some examples may be: added annotations, obfuscated identifiers, or other language idiomatic patterns.",
-            ).optional(),
-            methods: z.array(z.string()).describe(
-              "An allowlist of the fully qualified names of RPCs that should be included on public client surfaces.",
-            ).optional(),
-          }).describe(
+          selectiveGapicGeneration: z.unknown().describe(
             "This message is used to configure the generation of a subset of the RPCs in a service for client libraries.",
           ).optional(),
         }).describe("Required information for every language.").optional(),
         experimentalFeatures: z.object({
-          protobufPythonicTypesEnabled: z.boolean().describe(
+          protobufPythonicTypesEnabled: z.unknown().describe(
             "Enables generation of protobuf code using new types that are more Pythonic which are included in `protobuf>=5.29.x`. This feature will be enabled by default 1 month after launching the feature in preview packages.",
           ).optional(),
-          restAsyncIoEnabled: z.boolean().describe(
+          restAsyncIoEnabled: z.unknown().describe(
             "Enables generation of asynchronous REST clients if `rest` transport is enabled. By default, asynchronous REST clients will not be generated. This feature will be enabled by default 1 month after launching the feature in preview packages.",
           ).optional(),
-          unversionedPackageDisabled: z.boolean().describe(
+          unversionedPackageDisabled: z.unknown().describe(
             "Disables generation of an unversioned Python package for this client library. This means that the module names will need to be versioned in import statements. For example `import google.cloud.library_v2` instead of `import google.cloud.library`.",
           ).optional(),
         }).describe(
@@ -942,26 +840,13 @@ const GlobalArgsSchema = z.object({
       ).optional(),
       rubySettings: z.object({
         common: z.object({
-          destinations: z.array(
-            z.enum([
-              "CLIENT_LIBRARY_DESTINATION_UNSPECIFIED",
-              "GITHUB",
-              "PACKAGE_MANAGER",
-            ]),
-          ).describe(
+          destinations: z.unknown().describe(
             "The destination where API teams want this client library to be published.",
           ).optional(),
-          referenceDocsUri: z.string().describe(
+          referenceDocsUri: z.unknown().describe(
             "Link to automatically generated reference documentation. Example: https://cloud.google.com/nodejs/docs/reference/asset/latest",
           ).optional(),
-          selectiveGapicGeneration: z.object({
-            generateOmittedAsInternal: z.boolean().describe(
-              "Setting this to true indicates to the client generators that methods that would be excluded from the generation should instead be generated in a way that indicates these methods should not be consumed by end users. How this is expressed is up to individual language implementations to decide. Some examples may be: added annotations, obfuscated identifiers, or other language idiomatic patterns.",
-            ).optional(),
-            methods: z.array(z.string()).describe(
-              "An allowlist of the fully qualified names of RPCs that should be included on public client surfaces.",
-            ).optional(),
-          }).describe(
+          selectiveGapicGeneration: z.unknown().describe(
             "This message is used to configure the generation of a subset of the RPCs in a service for client libraries.",
           ).optional(),
         }).describe("Required information for every language.").optional(),
@@ -978,46 +863,41 @@ const GlobalArgsSchema = z.object({
       ).optional(),
       batching: z.object({
         batchDescriptor: z.object({
-          batchedField: z.string().describe(
+          batchedField: z.unknown().describe(
             "The repeated field in the request message to be aggregated by batching.",
           ).optional(),
-          discriminatorFields: z.array(z.string()).describe(
+          discriminatorFields: z.unknown().describe(
             "A list of the fields in the request message. Two requests will be batched together only if the values of every field specified in `request_discriminator_fields` is equal between the two requests.",
           ).optional(),
-          subresponseField: z.string().describe(
+          subresponseField: z.unknown().describe(
             "Optional. When present, indicates the field in the response message to be used to demultiplex the response into multiple response messages, in correspondence with the multiple request messages originally batched together.",
           ).optional(),
         }).describe(
           "`BatchingDescriptorProto` specifies the fields of the request message to be used for batching, and, optionally, the fields of the response message to be used for demultiplexing.",
         ).optional(),
         thresholds: z.object({
-          delayThreshold: z.string().describe(
+          delayThreshold: z.unknown().describe(
             "The duration after which a batch should be sent, starting from the addition of the first message to that batch.",
           ).optional(),
-          elementCountLimit: z.number().int().describe(
+          elementCountLimit: z.unknown().describe(
             "The maximum number of elements collected in a batch that could be accepted by server.",
           ).optional(),
-          elementCountThreshold: z.number().int().describe(
+          elementCountThreshold: z.unknown().describe(
             "The number of elements of a field collected into a batch which, if exceeded, causes the batch to be sent.",
           ).optional(),
-          flowControlByteLimit: z.number().int().describe(
+          flowControlByteLimit: z.unknown().describe(
             "The maximum size of data allowed by flow control.",
           ).optional(),
-          flowControlElementLimit: z.number().int().describe(
+          flowControlElementLimit: z.unknown().describe(
             "The maximum number of elements allowed by flow control.",
           ).optional(),
-          flowControlLimitExceededBehavior: z.enum([
-            "UNSET_BEHAVIOR",
-            "THROW_EXCEPTION",
-            "BLOCK",
-            "IGNORE",
-          ]).describe(
+          flowControlLimitExceededBehavior: z.unknown().describe(
             "The behavior to take when the flow control limit is exceeded.",
           ).optional(),
-          requestByteLimit: z.number().int().describe(
+          requestByteLimit: z.unknown().describe(
             "The maximum size of the request that could be accepted by server.",
           ).optional(),
-          requestByteThreshold: z.string().describe(
+          requestByteThreshold: z.unknown().describe(
             "The aggregated size of the batched field which, if exceeded, causes the batch to be sent. This size is computed by aggregating the sizes of the request field to be batched, not of the entire request message.",
           ).optional(),
         }).describe(
@@ -1124,13 +1004,13 @@ const GlobalArgsSchema = z.object({
   systemParameters: z.object({
     rules: z.array(z.object({
       parameters: z.array(z.object({
-        httpHeader: z.string().describe(
+        httpHeader: z.unknown().describe(
           "Define the HTTP header name to use for the parameter. It is case insensitive.",
         ).optional(),
-        name: z.string().describe(
+        name: z.unknown().describe(
           'Define the name of the parameter, such as "api_key". It is case sensitive.',
         ).optional(),
-        urlQueryParameter: z.string().describe(
+        urlQueryParameter: z.unknown().describe(
           "Define the URL query parameter name to use for the parameter. It is case sensitive.",
         ).optional(),
       })).describe(
@@ -1186,14 +1066,8 @@ const GlobalArgsSchema = z.object({
       oneofIndex: z.number().int().describe(
         "The index of the field type in `Type.oneofs`, for message or enumeration types. The first type has index 1; zero means the type is not in the list.",
       ).optional(),
-      options: z.array(z.object({
-        name: z.string().describe(
-          'The option\'s name. For protobuf built-in options (options defined in descriptor.proto), this is the short name. For example, `"map_entry"`. For custom options, it should be the fully-qualified name. For example, `"google.api.http"`.',
-        ).optional(),
-        value: z.record(z.string(), z.string()).describe(
-          "The option's value packed in an Any message. If the value is a primitive, the corresponding wrapper type defined in google/protobuf/wrappers.proto should be used. If the value is an enum, it should be stored as an int32 value using the google.protobuf.Int32Value type.",
-        ).optional(),
-      })).describe("The protocol buffer options.").optional(),
+      options: z.array(z.unknown()).describe("The protocol buffer options.")
+        .optional(),
       packed: z.boolean().describe(
         "Whether to use alternative packed wire representation.",
       ).optional(),
@@ -1209,7 +1083,7 @@ const GlobalArgsSchema = z.object({
       name: z.string().describe(
         'The option\'s name. For protobuf built-in options (options defined in descriptor.proto), this is the short name. For example, `"map_entry"`. For custom options, it should be the fully-qualified name. For example, `"google.api.http"`.',
       ).optional(),
-      value: z.record(z.string(), z.string()).describe(
+      value: z.record(z.string(), z.unknown()).describe(
         "The option's value packed in an Any message. If the value is a primitive, the corresponding wrapper type defined in google/protobuf/wrappers.proto should be used. If the value is an enum, it should be stored as an int32 value using the google.protobuf.Int32Value type.",
       ).optional(),
     })).describe("The protocol buffer options.").optional(),
@@ -1269,14 +1143,8 @@ const GlobalArgsSchema = z.object({
       oneofIndex: z.number().int().describe(
         "The index of the field type in `Type.oneofs`, for message or enumeration types. The first type has index 1; zero means the type is not in the list.",
       ).optional(),
-      options: z.array(z.object({
-        name: z.string().describe(
-          'The option\'s name. For protobuf built-in options (options defined in descriptor.proto), this is the short name. For example, `"map_entry"`. For custom options, it should be the fully-qualified name. For example, `"google.api.http"`.',
-        ).optional(),
-        value: z.record(z.string(), z.string()).describe(
-          "The option's value packed in an Any message. If the value is a primitive, the corresponding wrapper type defined in google/protobuf/wrappers.proto should be used. If the value is an enum, it should be stored as an int32 value using the google.protobuf.Int32Value type.",
-        ).optional(),
-      })).describe("The protocol buffer options.").optional(),
+      options: z.array(z.unknown()).describe("The protocol buffer options.")
+        .optional(),
       packed: z.boolean().describe(
         "Whether to use alternative packed wire representation.",
       ).optional(),
@@ -1292,7 +1160,7 @@ const GlobalArgsSchema = z.object({
       name: z.string().describe(
         'The option\'s name. For protobuf built-in options (options defined in descriptor.proto), this is the short name. For example, `"map_entry"`. For custom options, it should be the fully-qualified name. For example, `"google.api.http"`.',
       ).optional(),
-      value: z.record(z.string(), z.string()).describe(
+      value: z.record(z.string(), z.unknown()).describe(
         "The option's value packed in an Any message. If the value is a primitive, the corresponding wrapper type defined in google/protobuf/wrappers.proto should be used. If the value is an enum, it should be stored as an int32 value using the google.protobuf.Int32Value type.",
       ).optional(),
     })).describe("The protocol buffer options.").optional(),
@@ -1340,10 +1208,7 @@ const StateSchema = z.object({
     methods: z.array(z.object({
       edition: z.string(),
       name: z.string(),
-      options: z.array(z.object({
-        name: z.string(),
-        value: z.record(z.string(), z.unknown()),
-      })),
+      options: z.array(z.unknown()),
       requestStreaming: z.boolean(),
       requestTypeUrl: z.string(),
       responseStreaming: z.boolean(),
@@ -1381,10 +1246,10 @@ const StateSchema = z.object({
       issuer: z.string(),
       jwksUri: z.string(),
       jwtLocations: z.array(z.object({
-        cookie: z.string(),
-        header: z.string(),
-        query: z.string(),
-        valuePrefix: z.string(),
+        cookie: z.unknown(),
+        header: z.unknown(),
+        query: z.unknown(),
+        valuePrefix: z.unknown(),
       })),
     })),
     rules: z.array(z.object({
@@ -1393,8 +1258,8 @@ const StateSchema = z.object({
         canonicalScopes: z.string(),
       }),
       requirements: z.array(z.object({
-        audiences: z.string(),
-        providerId: z.string(),
+        audiences: z.unknown(),
+        providerId: z.unknown(),
       })),
       selector: z.string(),
     })),
@@ -1434,9 +1299,9 @@ const StateSchema = z.object({
     environment: z.string(),
     methodPolicies: z.array(z.object({
       requestPolicies: z.array(z.object({
-        resourcePermission: z.string(),
-        resourceType: z.string(),
-        selector: z.string(),
+        resourcePermission: z.unknown(),
+        resourceType: z.unknown(),
+        selector: z.unknown(),
       })),
       selector: z.string(),
     })),
@@ -1482,10 +1347,7 @@ const StateSchema = z.object({
     enumvalue: z.array(z.object({
       name: z.string(),
       number: z.number(),
-      options: z.array(z.object({
-        name: z.string(),
-        value: z.record(z.string(), z.unknown()),
-      })),
+      options: z.array(z.unknown()),
     })),
     name: z.string(),
     options: z.array(z.object({
@@ -1591,48 +1453,36 @@ const StateSchema = z.object({
     librarySettings: z.array(z.object({
       cppSettings: z.object({
         common: z.object({
-          destinations: z.array(z.string()),
-          referenceDocsUri: z.string(),
-          selectiveGapicGeneration: z.object({
-            generateOmittedAsInternal: z.boolean(),
-            methods: z.array(z.string()),
-          }),
+          destinations: z.unknown(),
+          referenceDocsUri: z.unknown(),
+          selectiveGapicGeneration: z.unknown(),
         }),
       }),
       dotnetSettings: z.object({
         common: z.object({
-          destinations: z.array(z.string()),
-          referenceDocsUri: z.string(),
-          selectiveGapicGeneration: z.object({
-            generateOmittedAsInternal: z.boolean(),
-            methods: z.array(z.string()),
-          }),
+          destinations: z.unknown(),
+          referenceDocsUri: z.unknown(),
+          selectiveGapicGeneration: z.unknown(),
         }),
-        forcedNamespaceAliases: z.array(z.string()),
-        handwrittenSignatures: z.array(z.string()),
-        ignoredResources: z.array(z.string()),
+        forcedNamespaceAliases: z.array(z.unknown()),
+        handwrittenSignatures: z.array(z.unknown()),
+        ignoredResources: z.array(z.unknown()),
         renamedResources: z.record(z.string(), z.unknown()),
         renamedServices: z.record(z.string(), z.unknown()),
       }),
       goSettings: z.object({
         common: z.object({
-          destinations: z.array(z.string()),
-          referenceDocsUri: z.string(),
-          selectiveGapicGeneration: z.object({
-            generateOmittedAsInternal: z.boolean(),
-            methods: z.array(z.string()),
-          }),
+          destinations: z.unknown(),
+          referenceDocsUri: z.unknown(),
+          selectiveGapicGeneration: z.unknown(),
         }),
         renamedServices: z.record(z.string(), z.unknown()),
       }),
       javaSettings: z.object({
         common: z.object({
-          destinations: z.array(z.string()),
-          referenceDocsUri: z.string(),
-          selectiveGapicGeneration: z.object({
-            generateOmittedAsInternal: z.boolean(),
-            methods: z.array(z.string()),
-          }),
+          destinations: z.unknown(),
+          referenceDocsUri: z.unknown(),
+          selectiveGapicGeneration: z.unknown(),
         }),
         libraryPackage: z.string(),
         serviceClassNames: z.record(z.string(), z.unknown()),
@@ -1640,49 +1490,37 @@ const StateSchema = z.object({
       launchStage: z.string(),
       nodeSettings: z.object({
         common: z.object({
-          destinations: z.array(z.string()),
-          referenceDocsUri: z.string(),
-          selectiveGapicGeneration: z.object({
-            generateOmittedAsInternal: z.boolean(),
-            methods: z.array(z.string()),
-          }),
+          destinations: z.unknown(),
+          referenceDocsUri: z.unknown(),
+          selectiveGapicGeneration: z.unknown(),
         }),
       }),
       phpSettings: z.object({
         common: z.object({
-          destinations: z.array(z.string()),
-          referenceDocsUri: z.string(),
-          selectiveGapicGeneration: z.object({
-            generateOmittedAsInternal: z.boolean(),
-            methods: z.array(z.string()),
-          }),
+          destinations: z.unknown(),
+          referenceDocsUri: z.unknown(),
+          selectiveGapicGeneration: z.unknown(),
         }),
         libraryPackage: z.string(),
       }),
       pythonSettings: z.object({
         common: z.object({
-          destinations: z.array(z.string()),
-          referenceDocsUri: z.string(),
-          selectiveGapicGeneration: z.object({
-            generateOmittedAsInternal: z.boolean(),
-            methods: z.array(z.string()),
-          }),
+          destinations: z.unknown(),
+          referenceDocsUri: z.unknown(),
+          selectiveGapicGeneration: z.unknown(),
         }),
         experimentalFeatures: z.object({
-          protobufPythonicTypesEnabled: z.boolean(),
-          restAsyncIoEnabled: z.boolean(),
-          unversionedPackageDisabled: z.boolean(),
+          protobufPythonicTypesEnabled: z.unknown(),
+          restAsyncIoEnabled: z.unknown(),
+          unversionedPackageDisabled: z.unknown(),
         }),
       }),
       restNumericEnums: z.boolean(),
       rubySettings: z.object({
         common: z.object({
-          destinations: z.array(z.string()),
-          referenceDocsUri: z.string(),
-          selectiveGapicGeneration: z.object({
-            generateOmittedAsInternal: z.boolean(),
-            methods: z.array(z.string()),
-          }),
+          destinations: z.unknown(),
+          referenceDocsUri: z.unknown(),
+          selectiveGapicGeneration: z.unknown(),
         }),
       }),
       version: z.string(),
@@ -1691,19 +1529,19 @@ const StateSchema = z.object({
       autoPopulatedFields: z.array(z.string()),
       batching: z.object({
         batchDescriptor: z.object({
-          batchedField: z.string(),
-          discriminatorFields: z.array(z.string()),
-          subresponseField: z.string(),
+          batchedField: z.unknown(),
+          discriminatorFields: z.unknown(),
+          subresponseField: z.unknown(),
         }),
         thresholds: z.object({
-          delayThreshold: z.string(),
-          elementCountLimit: z.number(),
-          elementCountThreshold: z.number(),
-          flowControlByteLimit: z.number(),
-          flowControlElementLimit: z.number(),
-          flowControlLimitExceededBehavior: z.string(),
-          requestByteLimit: z.number(),
-          requestByteThreshold: z.string(),
+          delayThreshold: z.unknown(),
+          elementCountLimit: z.unknown(),
+          elementCountThreshold: z.unknown(),
+          flowControlByteLimit: z.unknown(),
+          flowControlElementLimit: z.unknown(),
+          flowControlLimitExceededBehavior: z.unknown(),
+          requestByteLimit: z.unknown(),
+          requestByteThreshold: z.unknown(),
         }),
       }),
       longRunning: z.object({
@@ -1743,9 +1581,9 @@ const StateSchema = z.object({
   systemParameters: z.object({
     rules: z.array(z.object({
       parameters: z.array(z.object({
-        httpHeader: z.string(),
-        name: z.string(),
-        urlQueryParameter: z.string(),
+        httpHeader: z.unknown(),
+        name: z.unknown(),
+        urlQueryParameter: z.unknown(),
       })),
       selector: z.string(),
     })),
@@ -1760,10 +1598,7 @@ const StateSchema = z.object({
       name: z.string(),
       number: z.number(),
       oneofIndex: z.number(),
-      options: z.array(z.object({
-        name: z.string(),
-        value: z.record(z.string(), z.unknown()),
-      })),
+      options: z.array(z.unknown()),
       packed: z.boolean(),
       typeUrl: z.string(),
     })),
@@ -1789,10 +1624,7 @@ const StateSchema = z.object({
       name: z.string(),
       number: z.number(),
       oneofIndex: z.number(),
-      options: z.array(z.object({
-        name: z.string(),
-        value: z.record(z.string(), z.unknown()),
-      })),
+      options: z.array(z.unknown()),
       packed: z.boolean(),
       typeUrl: z.string(),
     })),
@@ -1830,14 +1662,9 @@ const InputsSchema = z.object({
         "The source edition string, only valid when syntax is SYNTAX_EDITIONS. This field should be ignored, instead the edition should be inherited from Api. This is similar to Field and EnumValue.",
       ).optional(),
       name: z.string().describe("The simple name of this method.").optional(),
-      options: z.array(z.object({
-        name: z.string().describe(
-          'The option\'s name. For protobuf built-in options (options defined in descriptor.proto), this is the short name. For example, `"map_entry"`. For custom options, it should be the fully-qualified name. For example, `"google.api.http"`.',
-        ).optional(),
-        value: z.record(z.string(), z.string()).describe(
-          "The option's value packed in an Any message. If the value is a primitive, the corresponding wrapper type defined in google/protobuf/wrappers.proto should be used. If the value is an enum, it should be stored as an int32 value using the google.protobuf.Int32Value type.",
-        ).optional(),
-      })).describe("Any metadata attached to the method.").optional(),
+      options: z.array(z.unknown()).describe(
+        "Any metadata attached to the method.",
+      ).optional(),
       requestStreaming: z.boolean().describe(
         "If true, the request is streamed.",
       ).optional(),
@@ -1870,7 +1697,7 @@ const InputsSchema = z.object({
       name: z.string().describe(
         'The option\'s name. For protobuf built-in options (options defined in descriptor.proto), this is the short name. For example, `"map_entry"`. For custom options, it should be the fully-qualified name. For example, `"google.api.http"`.',
       ).optional(),
-      value: z.record(z.string(), z.string()).describe(
+      value: z.record(z.string(), z.unknown()).describe(
         "The option's value packed in an Any message. If the value is a primitive, the corresponding wrapper type defined in google/protobuf/wrappers.proto should be used. If the value is an enum, it should be stored as an int32 value using the google.protobuf.Int32Value type.",
       ).optional(),
     })).describe("Any metadata attached to the interface.").optional(),
@@ -1893,7 +1720,7 @@ const InputsSchema = z.object({
     kind: z.string().describe("The type of this aspect configuration.")
       .optional(),
     rules: z.array(z.object({
-      config: z.record(z.string(), z.string()).describe(
+      config: z.record(z.string(), z.unknown()).describe(
         "Required. Rules of the configuration. The underlying schema should be defined by Aspect owners as protobuf message under `google/api/configaspects/proto`.",
       ).optional(),
       selector: z.string().describe(
@@ -1924,16 +1751,16 @@ const InputsSchema = z.object({
         "URL of the provider's public key set to validate signature of the JWT. See [OpenID Discovery](https://openid.net/specs/openid-connect-discovery-1_0.html#ProviderMetadata). Optional if the key set document: - can be retrieved from [OpenID Discovery](https://openid.net/specs/openid-connect-discovery-1_0.html) of the issuer. - can be inferred from the email domain of the issuer (e.g. a Google service account). Example: https://www.googleapis.com/oauth2/v1/certs",
       ).optional(),
       jwtLocations: z.array(z.object({
-        cookie: z.string().describe(
+        cookie: z.unknown().describe(
           "Specifies cookie name to extract JWT token.",
         ).optional(),
-        header: z.string().describe(
+        header: z.unknown().describe(
           "Specifies HTTP header name to extract JWT token.",
         ).optional(),
-        query: z.string().describe(
+        query: z.unknown().describe(
           "Specifies URL query parameter name to extract JWT token.",
         ).optional(),
-        valuePrefix: z.string().describe(
+        valuePrefix: z.unknown().describe(
           'The value prefix. The value format is "value_prefix{token}" Only applies to "in" header type. Must be empty for "in" query type. If not empty, the header value has to match (case sensitive) this prefix. If not matched, JWT will not be extracted. If matched, JWT will be extracted after the prefix is removed. For example, for "Authorization: Bearer {JWT}", value_prefix="Bearer " with a space at the end.',
         ).optional(),
       })).describe(
@@ -1954,10 +1781,10 @@ const InputsSchema = z.object({
         'OAuth scopes are a way to define data and permissions on data. For example, there are scopes defined for "Read-only access to Google Calendar" and "Access to Cloud Platform". Users can consent to a scope for an application, giving it permission to access that data on their behalf. OAuth scope specifications should be fairly coarse grained; a user will need to see and understand the text description of what your scope means. In most cases: use one or at most two OAuth scopes for an entire family of products. If your product has multiple APIs, you should probably be sharing the OAuth scope across all of those APIs. When you need finer grained OAuth consent screens: talk with your product management about how developers will use them in practice. Please note that even though each of the canonical scopes is enough for a request to be accepted and passed to the backend, a request can still fail due to the backend requiring additional scopes or permissions.',
       ).optional(),
       requirements: z.array(z.object({
-        audiences: z.string().describe(
+        audiences: z.unknown().describe(
           'NOTE: This will be deprecated soon, once AuthProvider.audiences is implemented and accepted in all the runtime components. The list of JWT [audiences](https://tools.ietf.org/html/draft-ietf-oauth-json-web-token-32#section-4.1.3). that are allowed to access. A JWT containing any of these audiences will be accepted. When this setting is absent, only JWTs with audience "https://Service_name/API_name" will be accepted. For example, if no audiences are in the setting, LibraryService API will only accept JWTs with the following audience "https://library-example.googleapis.com/google.example.library.v1.LibraryService". Example: audiences: bookstore_android.apps.googleusercontent.com, bookstore_web.apps.googleusercontent.com',
         ).optional(),
-        providerId: z.string().describe(
+        providerId: z.unknown().describe(
           "id from authentication provider. Example: provider_id: bookstore_auth",
         ).optional(),
       })).describe("Requirements for additional authentication providers.")
@@ -2057,13 +1884,13 @@ const InputsSchema = z.object({
     ).optional(),
     methodPolicies: z.array(z.object({
       requestPolicies: z.array(z.object({
-        resourcePermission: z.string().describe(
+        resourcePermission: z.unknown().describe(
           'Specifies the required permission(s) for the resource referred to by the field. It requires the field contains a valid resource reference, and the request must pass the permission checks to proceed. For example, "resourcemanager.projects.get".',
         ).optional(),
-        resourceType: z.string().describe(
+        resourceType: z.unknown().describe(
           "Specifies the resource type for the resource referred to by the field.",
         ).optional(),
-        selector: z.string().describe(
+        selector: z.unknown().describe(
           'Selects one or more request or response message fields to apply this `FieldPolicy`. When a `FieldPolicy` is used in proto annotation, the selector must be left as empty. The service config generator will automatically fill the correct value. When a `FieldPolicy` is used in service config, the selector must be a comma-separated string with valid request or response field paths, such as "foo.bar" or "foo.bar,foo.baz".',
         ).optional(),
       })).describe("Policies that are applicable to the request message.")
@@ -2174,21 +2001,15 @@ const InputsSchema = z.object({
     enumvalue: z.array(z.object({
       name: z.string().describe("Enum value name.").optional(),
       number: z.number().int().describe("Enum value number.").optional(),
-      options: z.array(z.object({
-        name: z.string().describe(
-          'The option\'s name. For protobuf built-in options (options defined in descriptor.proto), this is the short name. For example, `"map_entry"`. For custom options, it should be the fully-qualified name. For example, `"google.api.http"`.',
-        ).optional(),
-        value: z.record(z.string(), z.string()).describe(
-          "The option's value packed in an Any message. If the value is a primitive, the corresponding wrapper type defined in google/protobuf/wrappers.proto should be used. If the value is an enum, it should be stored as an int32 value using the google.protobuf.Int32Value type.",
-        ).optional(),
-      })).describe("Protocol buffer options.").optional(),
+      options: z.array(z.unknown()).describe("Protocol buffer options.")
+        .optional(),
     })).describe("Enum value definitions.").optional(),
     name: z.string().describe("Enum type name.").optional(),
     options: z.array(z.object({
       name: z.string().describe(
         'The option\'s name. For protobuf built-in options (options defined in descriptor.proto), this is the short name. For example, `"map_entry"`. For custom options, it should be the fully-qualified name. For example, `"google.api.http"`.',
       ).optional(),
-      value: z.record(z.string(), z.string()).describe(
+      value: z.record(z.string(), z.unknown()).describe(
         "The option's value packed in an Any message. If the value is a primitive, the corresponding wrapper type defined in google/protobuf/wrappers.proto should be used. If the value is an enum, it should be stored as an int32 value using the google.protobuf.Int32Value type.",
       ).optional(),
     })).describe("Protocol buffer options.").optional(),
@@ -2476,129 +2297,77 @@ const InputsSchema = z.object({
     librarySettings: z.array(z.object({
       cppSettings: z.object({
         common: z.object({
-          destinations: z.array(
-            z.enum([
-              "CLIENT_LIBRARY_DESTINATION_UNSPECIFIED",
-              "GITHUB",
-              "PACKAGE_MANAGER",
-            ]),
-          ).describe(
+          destinations: z.unknown().describe(
             "The destination where API teams want this client library to be published.",
           ).optional(),
-          referenceDocsUri: z.string().describe(
+          referenceDocsUri: z.unknown().describe(
             "Link to automatically generated reference documentation. Example: https://cloud.google.com/nodejs/docs/reference/asset/latest",
           ).optional(),
-          selectiveGapicGeneration: z.object({
-            generateOmittedAsInternal: z.boolean().describe(
-              "Setting this to true indicates to the client generators that methods that would be excluded from the generation should instead be generated in a way that indicates these methods should not be consumed by end users. How this is expressed is up to individual language implementations to decide. Some examples may be: added annotations, obfuscated identifiers, or other language idiomatic patterns.",
-            ).optional(),
-            methods: z.array(z.string()).describe(
-              "An allowlist of the fully qualified names of RPCs that should be included on public client surfaces.",
-            ).optional(),
-          }).describe(
+          selectiveGapicGeneration: z.unknown().describe(
             "This message is used to configure the generation of a subset of the RPCs in a service for client libraries.",
           ).optional(),
         }).describe("Required information for every language.").optional(),
       }).describe("Settings for C++ client libraries.").optional(),
       dotnetSettings: z.object({
         common: z.object({
-          destinations: z.array(
-            z.enum([
-              "CLIENT_LIBRARY_DESTINATION_UNSPECIFIED",
-              "GITHUB",
-              "PACKAGE_MANAGER",
-            ]),
-          ).describe(
+          destinations: z.unknown().describe(
             "The destination where API teams want this client library to be published.",
           ).optional(),
-          referenceDocsUri: z.string().describe(
+          referenceDocsUri: z.unknown().describe(
             "Link to automatically generated reference documentation. Example: https://cloud.google.com/nodejs/docs/reference/asset/latest",
           ).optional(),
-          selectiveGapicGeneration: z.object({
-            generateOmittedAsInternal: z.boolean().describe(
-              "Setting this to true indicates to the client generators that methods that would be excluded from the generation should instead be generated in a way that indicates these methods should not be consumed by end users. How this is expressed is up to individual language implementations to decide. Some examples may be: added annotations, obfuscated identifiers, or other language idiomatic patterns.",
-            ).optional(),
-            methods: z.array(z.string()).describe(
-              "An allowlist of the fully qualified names of RPCs that should be included on public client surfaces.",
-            ).optional(),
-          }).describe(
+          selectiveGapicGeneration: z.unknown().describe(
             "This message is used to configure the generation of a subset of the RPCs in a service for client libraries.",
           ).optional(),
         }).describe("Required information for every language.").optional(),
-        forcedNamespaceAliases: z.array(z.string()).describe(
+        forcedNamespaceAliases: z.array(z.unknown()).describe(
           "Namespaces which must be aliased in snippets due to a known (but non-generator-predictable) naming collision",
         ).optional(),
-        handwrittenSignatures: z.array(z.string()).describe(
+        handwrittenSignatures: z.array(z.unknown()).describe(
           'Method signatures (in the form "service.method(signature)") which are provided separately, so shouldn\'t be generated. Snippets *calling* these methods are still generated, however.',
         ).optional(),
-        ignoredResources: z.array(z.string()).describe(
+        ignoredResources: z.array(z.unknown()).describe(
           'List of full resource types to ignore during generation. This is typically used for API-specific Location resources, which should be handled by the generator as if they were actually the common Location resources. Example entry: "documentai.googleapis.com/Location"',
         ).optional(),
-        renamedResources: z.record(z.string(), z.string()).describe(
+        renamedResources: z.record(z.string(), z.unknown()).describe(
           'Map from full resource types to the effective short name for the resource. This is used when otherwise resource named from different services would cause naming collisions. Example entry: "datalabeling.googleapis.com/Dataset": "DataLabelingDataset"',
         ).optional(),
-        renamedServices: z.record(z.string(), z.string()).describe(
+        renamedServices: z.record(z.string(), z.unknown()).describe(
           "Map from original service names to renamed versions. This is used when the default generated types would cause a naming conflict. (Neither name is fully-qualified.) Example: Subscriber to SubscriberServiceApi.",
         ).optional(),
       }).describe("Settings for Dotnet client libraries.").optional(),
       goSettings: z.object({
         common: z.object({
-          destinations: z.array(
-            z.enum([
-              "CLIENT_LIBRARY_DESTINATION_UNSPECIFIED",
-              "GITHUB",
-              "PACKAGE_MANAGER",
-            ]),
-          ).describe(
+          destinations: z.unknown().describe(
             "The destination where API teams want this client library to be published.",
           ).optional(),
-          referenceDocsUri: z.string().describe(
+          referenceDocsUri: z.unknown().describe(
             "Link to automatically generated reference documentation. Example: https://cloud.google.com/nodejs/docs/reference/asset/latest",
           ).optional(),
-          selectiveGapicGeneration: z.object({
-            generateOmittedAsInternal: z.boolean().describe(
-              "Setting this to true indicates to the client generators that methods that would be excluded from the generation should instead be generated in a way that indicates these methods should not be consumed by end users. How this is expressed is up to individual language implementations to decide. Some examples may be: added annotations, obfuscated identifiers, or other language idiomatic patterns.",
-            ).optional(),
-            methods: z.array(z.string()).describe(
-              "An allowlist of the fully qualified names of RPCs that should be included on public client surfaces.",
-            ).optional(),
-          }).describe(
+          selectiveGapicGeneration: z.unknown().describe(
             "This message is used to configure the generation of a subset of the RPCs in a service for client libraries.",
           ).optional(),
         }).describe("Required information for every language.").optional(),
-        renamedServices: z.record(z.string(), z.string()).describe(
+        renamedServices: z.record(z.string(), z.unknown()).describe(
           "Map of service names to renamed services. Keys are the package relative service names and values are the name to be used for the service client and call options. Example: publishing: go_settings: renamed_services: Publisher: TopicAdmin",
         ).optional(),
       }).describe("Settings for Go client libraries.").optional(),
       javaSettings: z.object({
         common: z.object({
-          destinations: z.array(
-            z.enum([
-              "CLIENT_LIBRARY_DESTINATION_UNSPECIFIED",
-              "GITHUB",
-              "PACKAGE_MANAGER",
-            ]),
-          ).describe(
+          destinations: z.unknown().describe(
             "The destination where API teams want this client library to be published.",
           ).optional(),
-          referenceDocsUri: z.string().describe(
+          referenceDocsUri: z.unknown().describe(
             "Link to automatically generated reference documentation. Example: https://cloud.google.com/nodejs/docs/reference/asset/latest",
           ).optional(),
-          selectiveGapicGeneration: z.object({
-            generateOmittedAsInternal: z.boolean().describe(
-              "Setting this to true indicates to the client generators that methods that would be excluded from the generation should instead be generated in a way that indicates these methods should not be consumed by end users. How this is expressed is up to individual language implementations to decide. Some examples may be: added annotations, obfuscated identifiers, or other language idiomatic patterns.",
-            ).optional(),
-            methods: z.array(z.string()).describe(
-              "An allowlist of the fully qualified names of RPCs that should be included on public client surfaces.",
-            ).optional(),
-          }).describe(
+          selectiveGapicGeneration: z.unknown().describe(
             "This message is used to configure the generation of a subset of the RPCs in a service for client libraries.",
           ).optional(),
         }).describe("Required information for every language.").optional(),
         libraryPackage: z.string().describe(
           'The package name to use in Java. Clobbers the java_package option set in the protobuf. This should be used **only** by APIs who have already set the language_settings.java.package_name" field in gapic.yaml. API teams should use the protobuf java_package option where possible. Example of a YAML configuration:: publishing: library_settings: java_settings: library_package: com.google.cloud.pubsub.v1',
         ).optional(),
-        serviceClassNames: z.record(z.string(), z.string()).describe(
+        serviceClassNames: z.record(z.string(), z.unknown()).describe(
           "Configure the Java class name to use instead of the service's for its corresponding generated GAPIC client. Keys are fully-qualified service names as they appear in the protobuf (including the full the language_settings.java.interface_names\" field in gapic.yaml. API teams should otherwise use the service name as it appears in the protobuf. Example of a YAML configuration:: publishing: java_settings: service_class_names: - google.pubsub.v1.Publisher: TopicAdmin - google.pubsub.v1.Subscriber: SubscriptionAdmin",
         ).optional(),
       }).describe("Settings for Java client libraries.").optional(),
@@ -2614,52 +2383,26 @@ const InputsSchema = z.object({
       ]).describe("Launch stage of this version of the API.").optional(),
       nodeSettings: z.object({
         common: z.object({
-          destinations: z.array(
-            z.enum([
-              "CLIENT_LIBRARY_DESTINATION_UNSPECIFIED",
-              "GITHUB",
-              "PACKAGE_MANAGER",
-            ]),
-          ).describe(
+          destinations: z.unknown().describe(
             "The destination where API teams want this client library to be published.",
           ).optional(),
-          referenceDocsUri: z.string().describe(
+          referenceDocsUri: z.unknown().describe(
             "Link to automatically generated reference documentation. Example: https://cloud.google.com/nodejs/docs/reference/asset/latest",
           ).optional(),
-          selectiveGapicGeneration: z.object({
-            generateOmittedAsInternal: z.boolean().describe(
-              "Setting this to true indicates to the client generators that methods that would be excluded from the generation should instead be generated in a way that indicates these methods should not be consumed by end users. How this is expressed is up to individual language implementations to decide. Some examples may be: added annotations, obfuscated identifiers, or other language idiomatic patterns.",
-            ).optional(),
-            methods: z.array(z.string()).describe(
-              "An allowlist of the fully qualified names of RPCs that should be included on public client surfaces.",
-            ).optional(),
-          }).describe(
+          selectiveGapicGeneration: z.unknown().describe(
             "This message is used to configure the generation of a subset of the RPCs in a service for client libraries.",
           ).optional(),
         }).describe("Required information for every language.").optional(),
       }).describe("Settings for Node client libraries.").optional(),
       phpSettings: z.object({
         common: z.object({
-          destinations: z.array(
-            z.enum([
-              "CLIENT_LIBRARY_DESTINATION_UNSPECIFIED",
-              "GITHUB",
-              "PACKAGE_MANAGER",
-            ]),
-          ).describe(
+          destinations: z.unknown().describe(
             "The destination where API teams want this client library to be published.",
           ).optional(),
-          referenceDocsUri: z.string().describe(
+          referenceDocsUri: z.unknown().describe(
             "Link to automatically generated reference documentation. Example: https://cloud.google.com/nodejs/docs/reference/asset/latest",
           ).optional(),
-          selectiveGapicGeneration: z.object({
-            generateOmittedAsInternal: z.boolean().describe(
-              "Setting this to true indicates to the client generators that methods that would be excluded from the generation should instead be generated in a way that indicates these methods should not be consumed by end users. How this is expressed is up to individual language implementations to decide. Some examples may be: added annotations, obfuscated identifiers, or other language idiomatic patterns.",
-            ).optional(),
-            methods: z.array(z.string()).describe(
-              "An allowlist of the fully qualified names of RPCs that should be included on public client surfaces.",
-            ).optional(),
-          }).describe(
+          selectiveGapicGeneration: z.unknown().describe(
             "This message is used to configure the generation of a subset of the RPCs in a service for client libraries.",
           ).optional(),
         }).describe("Required information for every language.").optional(),
@@ -2669,37 +2412,24 @@ const InputsSchema = z.object({
       }).describe("Settings for Php client libraries.").optional(),
       pythonSettings: z.object({
         common: z.object({
-          destinations: z.array(
-            z.enum([
-              "CLIENT_LIBRARY_DESTINATION_UNSPECIFIED",
-              "GITHUB",
-              "PACKAGE_MANAGER",
-            ]),
-          ).describe(
+          destinations: z.unknown().describe(
             "The destination where API teams want this client library to be published.",
           ).optional(),
-          referenceDocsUri: z.string().describe(
+          referenceDocsUri: z.unknown().describe(
             "Link to automatically generated reference documentation. Example: https://cloud.google.com/nodejs/docs/reference/asset/latest",
           ).optional(),
-          selectiveGapicGeneration: z.object({
-            generateOmittedAsInternal: z.boolean().describe(
-              "Setting this to true indicates to the client generators that methods that would be excluded from the generation should instead be generated in a way that indicates these methods should not be consumed by end users. How this is expressed is up to individual language implementations to decide. Some examples may be: added annotations, obfuscated identifiers, or other language idiomatic patterns.",
-            ).optional(),
-            methods: z.array(z.string()).describe(
-              "An allowlist of the fully qualified names of RPCs that should be included on public client surfaces.",
-            ).optional(),
-          }).describe(
+          selectiveGapicGeneration: z.unknown().describe(
             "This message is used to configure the generation of a subset of the RPCs in a service for client libraries.",
           ).optional(),
         }).describe("Required information for every language.").optional(),
         experimentalFeatures: z.object({
-          protobufPythonicTypesEnabled: z.boolean().describe(
+          protobufPythonicTypesEnabled: z.unknown().describe(
             "Enables generation of protobuf code using new types that are more Pythonic which are included in `protobuf>=5.29.x`. This feature will be enabled by default 1 month after launching the feature in preview packages.",
           ).optional(),
-          restAsyncIoEnabled: z.boolean().describe(
+          restAsyncIoEnabled: z.unknown().describe(
             "Enables generation of asynchronous REST clients if `rest` transport is enabled. By default, asynchronous REST clients will not be generated. This feature will be enabled by default 1 month after launching the feature in preview packages.",
           ).optional(),
-          unversionedPackageDisabled: z.boolean().describe(
+          unversionedPackageDisabled: z.unknown().describe(
             "Disables generation of an unversioned Python package for this client library. This means that the module names will need to be versioned in import statements. For example `import google.cloud.library_v2` instead of `import google.cloud.library`.",
           ).optional(),
         }).describe(
@@ -2711,26 +2441,13 @@ const InputsSchema = z.object({
       ).optional(),
       rubySettings: z.object({
         common: z.object({
-          destinations: z.array(
-            z.enum([
-              "CLIENT_LIBRARY_DESTINATION_UNSPECIFIED",
-              "GITHUB",
-              "PACKAGE_MANAGER",
-            ]),
-          ).describe(
+          destinations: z.unknown().describe(
             "The destination where API teams want this client library to be published.",
           ).optional(),
-          referenceDocsUri: z.string().describe(
+          referenceDocsUri: z.unknown().describe(
             "Link to automatically generated reference documentation. Example: https://cloud.google.com/nodejs/docs/reference/asset/latest",
           ).optional(),
-          selectiveGapicGeneration: z.object({
-            generateOmittedAsInternal: z.boolean().describe(
-              "Setting this to true indicates to the client generators that methods that would be excluded from the generation should instead be generated in a way that indicates these methods should not be consumed by end users. How this is expressed is up to individual language implementations to decide. Some examples may be: added annotations, obfuscated identifiers, or other language idiomatic patterns.",
-            ).optional(),
-            methods: z.array(z.string()).describe(
-              "An allowlist of the fully qualified names of RPCs that should be included on public client surfaces.",
-            ).optional(),
-          }).describe(
+          selectiveGapicGeneration: z.unknown().describe(
             "This message is used to configure the generation of a subset of the RPCs in a service for client libraries.",
           ).optional(),
         }).describe("Required information for every language.").optional(),
@@ -2747,46 +2464,41 @@ const InputsSchema = z.object({
       ).optional(),
       batching: z.object({
         batchDescriptor: z.object({
-          batchedField: z.string().describe(
+          batchedField: z.unknown().describe(
             "The repeated field in the request message to be aggregated by batching.",
           ).optional(),
-          discriminatorFields: z.array(z.string()).describe(
+          discriminatorFields: z.unknown().describe(
             "A list of the fields in the request message. Two requests will be batched together only if the values of every field specified in `request_discriminator_fields` is equal between the two requests.",
           ).optional(),
-          subresponseField: z.string().describe(
+          subresponseField: z.unknown().describe(
             "Optional. When present, indicates the field in the response message to be used to demultiplex the response into multiple response messages, in correspondence with the multiple request messages originally batched together.",
           ).optional(),
         }).describe(
           "`BatchingDescriptorProto` specifies the fields of the request message to be used for batching, and, optionally, the fields of the response message to be used for demultiplexing.",
         ).optional(),
         thresholds: z.object({
-          delayThreshold: z.string().describe(
+          delayThreshold: z.unknown().describe(
             "The duration after which a batch should be sent, starting from the addition of the first message to that batch.",
           ).optional(),
-          elementCountLimit: z.number().int().describe(
+          elementCountLimit: z.unknown().describe(
             "The maximum number of elements collected in a batch that could be accepted by server.",
           ).optional(),
-          elementCountThreshold: z.number().int().describe(
+          elementCountThreshold: z.unknown().describe(
             "The number of elements of a field collected into a batch which, if exceeded, causes the batch to be sent.",
           ).optional(),
-          flowControlByteLimit: z.number().int().describe(
+          flowControlByteLimit: z.unknown().describe(
             "The maximum size of data allowed by flow control.",
           ).optional(),
-          flowControlElementLimit: z.number().int().describe(
+          flowControlElementLimit: z.unknown().describe(
             "The maximum number of elements allowed by flow control.",
           ).optional(),
-          flowControlLimitExceededBehavior: z.enum([
-            "UNSET_BEHAVIOR",
-            "THROW_EXCEPTION",
-            "BLOCK",
-            "IGNORE",
-          ]).describe(
+          flowControlLimitExceededBehavior: z.unknown().describe(
             "The behavior to take when the flow control limit is exceeded.",
           ).optional(),
-          requestByteLimit: z.number().int().describe(
+          requestByteLimit: z.unknown().describe(
             "The maximum size of the request that could be accepted by server.",
           ).optional(),
-          requestByteThreshold: z.string().describe(
+          requestByteThreshold: z.unknown().describe(
             "The aggregated size of the batched field which, if exceeded, causes the batch to be sent. This size is computed by aggregating the sizes of the request field to be batched, not of the entire request message.",
           ).optional(),
         }).describe(
@@ -2893,13 +2605,13 @@ const InputsSchema = z.object({
   systemParameters: z.object({
     rules: z.array(z.object({
       parameters: z.array(z.object({
-        httpHeader: z.string().describe(
+        httpHeader: z.unknown().describe(
           "Define the HTTP header name to use for the parameter. It is case insensitive.",
         ).optional(),
-        name: z.string().describe(
+        name: z.unknown().describe(
           'Define the name of the parameter, such as "api_key". It is case sensitive.',
         ).optional(),
-        urlQueryParameter: z.string().describe(
+        urlQueryParameter: z.unknown().describe(
           "Define the URL query parameter name to use for the parameter. It is case sensitive.",
         ).optional(),
       })).describe(
@@ -2955,14 +2667,8 @@ const InputsSchema = z.object({
       oneofIndex: z.number().int().describe(
         "The index of the field type in `Type.oneofs`, for message or enumeration types. The first type has index 1; zero means the type is not in the list.",
       ).optional(),
-      options: z.array(z.object({
-        name: z.string().describe(
-          'The option\'s name. For protobuf built-in options (options defined in descriptor.proto), this is the short name. For example, `"map_entry"`. For custom options, it should be the fully-qualified name. For example, `"google.api.http"`.',
-        ).optional(),
-        value: z.record(z.string(), z.string()).describe(
-          "The option's value packed in an Any message. If the value is a primitive, the corresponding wrapper type defined in google/protobuf/wrappers.proto should be used. If the value is an enum, it should be stored as an int32 value using the google.protobuf.Int32Value type.",
-        ).optional(),
-      })).describe("The protocol buffer options.").optional(),
+      options: z.array(z.unknown()).describe("The protocol buffer options.")
+        .optional(),
       packed: z.boolean().describe(
         "Whether to use alternative packed wire representation.",
       ).optional(),
@@ -2978,7 +2684,7 @@ const InputsSchema = z.object({
       name: z.string().describe(
         'The option\'s name. For protobuf built-in options (options defined in descriptor.proto), this is the short name. For example, `"map_entry"`. For custom options, it should be the fully-qualified name. For example, `"google.api.http"`.',
       ).optional(),
-      value: z.record(z.string(), z.string()).describe(
+      value: z.record(z.string(), z.unknown()).describe(
         "The option's value packed in an Any message. If the value is a primitive, the corresponding wrapper type defined in google/protobuf/wrappers.proto should be used. If the value is an enum, it should be stored as an int32 value using the google.protobuf.Int32Value type.",
       ).optional(),
     })).describe("The protocol buffer options.").optional(),
@@ -3038,14 +2744,8 @@ const InputsSchema = z.object({
       oneofIndex: z.number().int().describe(
         "The index of the field type in `Type.oneofs`, for message or enumeration types. The first type has index 1; zero means the type is not in the list.",
       ).optional(),
-      options: z.array(z.object({
-        name: z.string().describe(
-          'The option\'s name. For protobuf built-in options (options defined in descriptor.proto), this is the short name. For example, `"map_entry"`. For custom options, it should be the fully-qualified name. For example, `"google.api.http"`.',
-        ).optional(),
-        value: z.record(z.string(), z.string()).describe(
-          "The option's value packed in an Any message. If the value is a primitive, the corresponding wrapper type defined in google/protobuf/wrappers.proto should be used. If the value is an enum, it should be stored as an int32 value using the google.protobuf.Int32Value type.",
-        ).optional(),
-      })).describe("The protocol buffer options.").optional(),
+      options: z.array(z.unknown()).describe("The protocol buffer options.")
+        .optional(),
       packed: z.boolean().describe(
         "Whether to use alternative packed wire representation.",
       ).optional(),
@@ -3061,7 +2761,7 @@ const InputsSchema = z.object({
       name: z.string().describe(
         'The option\'s name. For protobuf built-in options (options defined in descriptor.proto), this is the short name. For example, `"map_entry"`. For custom options, it should be the fully-qualified name. For example, `"google.api.http"`.',
       ).optional(),
-      value: z.record(z.string(), z.string()).describe(
+      value: z.record(z.string(), z.unknown()).describe(
         "The option's value packed in an Any message. If the value is a primitive, the corresponding wrapper type defined in google/protobuf/wrappers.proto should be used. If the value is an enum, it should be stored as an int32 value using the google.protobuf.Int32Value type.",
       ).optional(),
     })).describe("The protocol buffer options.").optional(),
@@ -3105,7 +2805,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/servicemanagement/services-configs",
-  version: "2026.04.03.3",
+  version: "2026.04.04.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -3129,6 +2829,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.3",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.04.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

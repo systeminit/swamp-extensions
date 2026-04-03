@@ -644,8 +644,8 @@ const StateSchema = z.object({
         dailyPercentage: z.number(),
         name: z.string(),
         value: z.object({
-          amount: z.number(),
-          unit: z.string(),
+          amount: z.unknown(),
+          unit: z.unknown(),
         }),
       })),
     }),
@@ -1094,7 +1094,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/manufacturers/accounts-products",
-  version: "2026.04.03.3",
+  version: "2026.04.04.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -1118,6 +1118,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.3",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.04.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

@@ -183,97 +183,52 @@ const GlobalArgsSchema = z.object({
     ).optional(),
     template: z.object({
       containers: z.array(z.object({
-        args: z.array(z.string()).describe(
+        args: z.array(z.unknown()).describe(
           "Arguments to the entrypoint. The docker image's CMD is used if this is not provided.",
         ).optional(),
         baseImageUri: z.string().describe(
           "Base image for this container. Only supported for services. If set, it indicates that the service is enrolled into automatic base image update.",
         ).optional(),
         buildInfo: z.object({
-          functionTarget: z.string().describe(
+          functionTarget: z.unknown().describe(
             "Output only. Entry point of the function when the image is a Cloud Run function.",
           ).optional(),
-          sourceLocation: z.string().describe(
+          sourceLocation: z.unknown().describe(
             "Output only. Source code location of the image.",
           ).optional(),
         }).describe("Build information of the image.").optional(),
-        command: z.array(z.string()).describe(
+        command: z.array(z.unknown()).describe(
           "Entrypoint array. Not executed within a shell. The docker image's ENTRYPOINT is used if this is not provided.",
         ).optional(),
-        dependsOn: z.array(z.string()).describe(
+        dependsOn: z.array(z.unknown()).describe(
           "Names of the containers that must start before this container.",
         ).optional(),
-        env: z.array(z.object({
-          name: z.string().describe(
-            "Required. Name of the environment variable. Must not exceed 32768 characters.",
-          ).optional(),
-          value: z.string().describe(
-            'Literal value of the environment variable. Defaults to "", and the maximum length is 32768 bytes. Variable references are not supported in Cloud Run.',
-          ).optional(),
-          valueSource: z.object({
-            secretKeyRef: z.object({
-              secret: z.string().describe(
-                "Required. The name of the secret in Cloud Secret Manager. Format: {secret_name} if the secret is in the same project. projects/{project}/secrets/{secret_name} if the secret is in a different project.",
-              ).optional(),
-              version: z.string().describe(
-                "The Cloud Secret Manager secret version. Can be 'latest' for the latest version, an integer for a specific version, or a version alias.",
-              ).optional(),
-            }).describe(
-              "SecretEnvVarSource represents a source for the value of an EnvVar.",
-            ).optional(),
-          }).describe(
-            "EnvVarSource represents a source for the value of an EnvVar.",
-          ).optional(),
-        })).describe("List of environment variables to set in the container.")
-          .optional(),
+        env: z.array(z.unknown()).describe(
+          "List of environment variables to set in the container.",
+        ).optional(),
         image: z.string().describe(
           "Required. Name of the container image in Dockerhub, Google Artifact Registry, or Google Container Registry. If the host is not provided, Dockerhub is assumed.",
         ).optional(),
         livenessProbe: z.object({
-          failureThreshold: z.number().int().describe(
+          failureThreshold: z.unknown().describe(
             "Optional. Minimum consecutive failures for the probe to be considered failed after having succeeded. Defaults to 3. Minimum value is 1.",
           ).optional(),
-          grpc: z.object({
-            port: z.number().int().describe(
-              "Optional. Port number of the gRPC service. Number must be in the range 1 to 65535. If not specified, defaults to the exposed port of the container, which is the value of container.ports[0].containerPort.",
-            ).optional(),
-            service: z.string().describe(
-              "Optional. Service is the name of the service to place in the gRPC HealthCheckRequest (see https://github.com/grpc/grpc/blob/master/doc/health-checking.md). If this is not specified, the default behavior is defined by gRPC.",
-            ).optional(),
-          }).describe("GRPCAction describes an action involving a GRPC port.")
-            .optional(),
-          httpGet: z.object({
-            httpHeaders: z.array(z.object({
-              name: z.string().describe("Required. The header field name")
-                .optional(),
-              value: z.string().describe("Optional. The header field value")
-                .optional(),
-            })).describe(
-              "Optional. Custom headers to set in the request. HTTP allows repeated headers.",
-            ).optional(),
-            path: z.string().describe(
-              "Optional. Path to access on the HTTP server. Defaults to '/'.",
-            ).optional(),
-            port: z.number().int().describe(
-              "Optional. Port number to access on the container. Must be in the range 1 to 65535. If not specified, defaults to the exposed port of the container, which is the value of container.ports[0].containerPort.",
-            ).optional(),
-          }).describe(
+          grpc: z.unknown().describe(
+            "GRPCAction describes an action involving a GRPC port.",
+          ).optional(),
+          httpGet: z.unknown().describe(
             "HTTPGetAction describes an action based on HTTP Get requests.",
           ).optional(),
-          initialDelaySeconds: z.number().int().describe(
+          initialDelaySeconds: z.unknown().describe(
             "Optional. Number of seconds after the container has started before the probe is initiated. Defaults to 0 seconds. Minimum value is 0. Maximum value for liveness probe is 3600. Maximum value for startup probe is 240.",
           ).optional(),
-          periodSeconds: z.number().int().describe(
+          periodSeconds: z.unknown().describe(
             "Optional. How often (in seconds) to perform the probe. Default to 10 seconds. Minimum value is 1. Maximum value for liveness probe is 3600. Maximum value for startup probe is 240. Must be greater or equal than timeout_seconds.",
           ).optional(),
-          tcpSocket: z.object({
-            port: z.number().int().describe(
-              "Optional. Port number to access on the container. Must be in the range 1 to 65535. If not specified, defaults to the exposed port of the container, which is the value of container.ports[0].containerPort.",
-            ).optional(),
-          }).describe(
+          tcpSocket: z.unknown().describe(
             "TCPSocketAction describes an action based on opening a socket",
           ).optional(),
-          timeoutSeconds: z.number().int().describe(
+          timeoutSeconds: z.unknown().describe(
             "Optional. Number of seconds after which the probe times out. Defaults to 1 second. Minimum value is 1. Maximum value is 3600. Must be smaller than period_seconds.",
           ).optional(),
         }).describe(
@@ -282,164 +237,80 @@ const GlobalArgsSchema = z.object({
         name: z.string().describe(
           "Name of the container specified as a DNS_LABEL (RFC 1123).",
         ).optional(),
-        ports: z.array(z.object({
-          containerPort: z.number().int().describe(
-            "Port number the container listens on. This must be a valid TCP port number, 0 < container_port < 65536.",
-          ).optional(),
-          name: z.string().describe(
-            'If specified, used to specify which protocol to use. Allowed values are "http1" and "h2c".',
-          ).optional(),
-        })).describe(
+        ports: z.array(z.unknown()).describe(
           "List of ports to expose from the container. Only a single port can be specified. The specified ports must be listening on all interfaces (0.0.0.0) within the container to be accessible. If omitted, a port number will be chosen and passed to the container through the PORT environment variable for the container to listen on.",
         ).optional(),
         readinessProbe: z.object({
-          failureThreshold: z.number().int().describe(
+          failureThreshold: z.unknown().describe(
             "Optional. Minimum consecutive failures for the probe to be considered failed after having succeeded. Defaults to 3. Minimum value is 1.",
           ).optional(),
-          grpc: z.object({
-            port: z.number().int().describe(
-              "Optional. Port number of the gRPC service. Number must be in the range 1 to 65535. If not specified, defaults to the exposed port of the container, which is the value of container.ports[0].containerPort.",
-            ).optional(),
-            service: z.string().describe(
-              "Optional. Service is the name of the service to place in the gRPC HealthCheckRequest (see https://github.com/grpc/grpc/blob/master/doc/health-checking.md). If this is not specified, the default behavior is defined by gRPC.",
-            ).optional(),
-          }).describe("GRPCAction describes an action involving a GRPC port.")
-            .optional(),
-          httpGet: z.object({
-            httpHeaders: z.array(z.object({
-              name: z.string().describe("Required. The header field name")
-                .optional(),
-              value: z.string().describe("Optional. The header field value")
-                .optional(),
-            })).describe(
-              "Optional. Custom headers to set in the request. HTTP allows repeated headers.",
-            ).optional(),
-            path: z.string().describe(
-              "Optional. Path to access on the HTTP server. Defaults to '/'.",
-            ).optional(),
-            port: z.number().int().describe(
-              "Optional. Port number to access on the container. Must be in the range 1 to 65535. If not specified, defaults to the exposed port of the container, which is the value of container.ports[0].containerPort.",
-            ).optional(),
-          }).describe(
+          grpc: z.unknown().describe(
+            "GRPCAction describes an action involving a GRPC port.",
+          ).optional(),
+          httpGet: z.unknown().describe(
             "HTTPGetAction describes an action based on HTTP Get requests.",
           ).optional(),
-          initialDelaySeconds: z.number().int().describe(
+          initialDelaySeconds: z.unknown().describe(
             "Optional. Number of seconds after the container has started before the probe is initiated. Defaults to 0 seconds. Minimum value is 0. Maximum value for liveness probe is 3600. Maximum value for startup probe is 240.",
           ).optional(),
-          periodSeconds: z.number().int().describe(
+          periodSeconds: z.unknown().describe(
             "Optional. How often (in seconds) to perform the probe. Default to 10 seconds. Minimum value is 1. Maximum value for liveness probe is 3600. Maximum value for startup probe is 240. Must be greater or equal than timeout_seconds.",
           ).optional(),
-          tcpSocket: z.object({
-            port: z.number().int().describe(
-              "Optional. Port number to access on the container. Must be in the range 1 to 65535. If not specified, defaults to the exposed port of the container, which is the value of container.ports[0].containerPort.",
-            ).optional(),
-          }).describe(
+          tcpSocket: z.unknown().describe(
             "TCPSocketAction describes an action based on opening a socket",
           ).optional(),
-          timeoutSeconds: z.number().int().describe(
+          timeoutSeconds: z.unknown().describe(
             "Optional. Number of seconds after which the probe times out. Defaults to 1 second. Minimum value is 1. Maximum value is 3600. Must be smaller than period_seconds.",
           ).optional(),
         }).describe(
           "Probe describes a health check to be performed against a container to determine whether it is alive or ready to receive traffic.",
         ).optional(),
         resources: z.object({
-          cpuIdle: z.boolean().describe(
+          cpuIdle: z.unknown().describe(
             "Determines whether CPU is only allocated during requests (true by default). However, if ResourceRequirements is set, the caller must explicitly set this field to true to preserve the default behavior.",
           ).optional(),
-          limits: z.record(z.string(), z.string()).describe(
+          limits: z.unknown().describe(
             "Only `memory`, `cpu` and `nvidia.com/gpu` keys in the map are supported. Notes: * The only supported values for CPU are '1', '2', '4', and '8'. Setting 4 CPU requires at least 2Gi of memory. For more information, go to https://cloud.google.com/run/docs/configuring/cpu. * For supported 'memory' values and syntax, go to https://cloud.google.com/run/docs/configuring/memory-limits * The only supported 'nvidia.com/gpu' value is '1'.",
           ).optional(),
-          startupCpuBoost: z.boolean().describe(
+          startupCpuBoost: z.unknown().describe(
             "Determines whether CPU should be boosted on startup of a new container instance above the requested CPU threshold, this can help reduce cold-start latency.",
           ).optional(),
         }).describe(
           "ResourceRequirements describes the compute resource requirements.",
         ).optional(),
         sourceCode: z.object({
-          cloudStorageSource: z.object({
-            bucket: z.string().describe(
-              "Required. The Cloud Storage bucket name.",
-            ).optional(),
-            generation: z.string().describe(
-              "Optional. The Cloud Storage object generation.",
-            ).optional(),
-            object: z.string().describe(
-              "Required. The Cloud Storage object name.",
-            ).optional(),
-          }).describe("Cloud Storage source.").optional(),
-          inlinedSource: z.object({
-            sources: z.array(z.object({
-              content: z.string().describe(
-                "Required. Input only. Represents the exact, literal, and complete source code of the file. Placeholders like `...` or comments such as `# [rest of code]` should NEVER be used as omission. Every character in this field will be built into the final container. Any omission will result in a broken application.",
-              ).optional(),
-              filename: z.string().describe(
-                'Required. Input only. The file name for the source code. e.g., `"index.js"` or `"node_modules/dependency.js"`. The filename must be less than 255 characters and cannot contain `..`, `./`, `//`, or end with a `/`. Cloud Run will place the files in the container subdirectories, please use relative path to access the file.',
-              ).optional(),
-            })).describe("Required. Input only. The source code.").optional(),
-          }).describe("Inlined source.").optional(),
+          cloudStorageSource: z.unknown().describe("Cloud Storage source.")
+            .optional(),
+          inlinedSource: z.unknown().describe("Inlined source.").optional(),
         }).describe("Source type for the container.").optional(),
         startupProbe: z.object({
-          failureThreshold: z.number().int().describe(
+          failureThreshold: z.unknown().describe(
             "Optional. Minimum consecutive failures for the probe to be considered failed after having succeeded. Defaults to 3. Minimum value is 1.",
           ).optional(),
-          grpc: z.object({
-            port: z.number().int().describe(
-              "Optional. Port number of the gRPC service. Number must be in the range 1 to 65535. If not specified, defaults to the exposed port of the container, which is the value of container.ports[0].containerPort.",
-            ).optional(),
-            service: z.string().describe(
-              "Optional. Service is the name of the service to place in the gRPC HealthCheckRequest (see https://github.com/grpc/grpc/blob/master/doc/health-checking.md). If this is not specified, the default behavior is defined by gRPC.",
-            ).optional(),
-          }).describe("GRPCAction describes an action involving a GRPC port.")
-            .optional(),
-          httpGet: z.object({
-            httpHeaders: z.array(z.object({
-              name: z.string().describe("Required. The header field name")
-                .optional(),
-              value: z.string().describe("Optional. The header field value")
-                .optional(),
-            })).describe(
-              "Optional. Custom headers to set in the request. HTTP allows repeated headers.",
-            ).optional(),
-            path: z.string().describe(
-              "Optional. Path to access on the HTTP server. Defaults to '/'.",
-            ).optional(),
-            port: z.number().int().describe(
-              "Optional. Port number to access on the container. Must be in the range 1 to 65535. If not specified, defaults to the exposed port of the container, which is the value of container.ports[0].containerPort.",
-            ).optional(),
-          }).describe(
+          grpc: z.unknown().describe(
+            "GRPCAction describes an action involving a GRPC port.",
+          ).optional(),
+          httpGet: z.unknown().describe(
             "HTTPGetAction describes an action based on HTTP Get requests.",
           ).optional(),
-          initialDelaySeconds: z.number().int().describe(
+          initialDelaySeconds: z.unknown().describe(
             "Optional. Number of seconds after the container has started before the probe is initiated. Defaults to 0 seconds. Minimum value is 0. Maximum value for liveness probe is 3600. Maximum value for startup probe is 240.",
           ).optional(),
-          periodSeconds: z.number().int().describe(
+          periodSeconds: z.unknown().describe(
             "Optional. How often (in seconds) to perform the probe. Default to 10 seconds. Minimum value is 1. Maximum value for liveness probe is 3600. Maximum value for startup probe is 240. Must be greater or equal than timeout_seconds.",
           ).optional(),
-          tcpSocket: z.object({
-            port: z.number().int().describe(
-              "Optional. Port number to access on the container. Must be in the range 1 to 65535. If not specified, defaults to the exposed port of the container, which is the value of container.ports[0].containerPort.",
-            ).optional(),
-          }).describe(
+          tcpSocket: z.unknown().describe(
             "TCPSocketAction describes an action based on opening a socket",
           ).optional(),
-          timeoutSeconds: z.number().int().describe(
+          timeoutSeconds: z.unknown().describe(
             "Optional. Number of seconds after which the probe times out. Defaults to 1 second. Minimum value is 1. Maximum value is 3600. Must be smaller than period_seconds.",
           ).optional(),
         }).describe(
           "Probe describes a health check to be performed against a container to determine whether it is alive or ready to receive traffic.",
         ).optional(),
-        volumeMounts: z.array(z.object({
-          mountPath: z.string().describe(
-            "Required. Path within the container at which the volume should be mounted. Must not contain ':'. For Cloud SQL volumes, it can be left empty, or must otherwise be `/cloudsql`. All instances defined in the Volume will be available as `/cloudsql/[instance]`. For more information on Cloud SQL volumes, visit https://cloud.google.com/sql/docs/mysql/connect-run",
-          ).optional(),
-          name: z.string().describe(
-            "Required. This must match the Name of a Volume.",
-          ).optional(),
-          subPath: z.string().describe(
-            "Optional. Path within the volume from which the container's volume should be mounted. Defaults to \"\" (volume's root). This field is currently ignored for Secret volumes.",
-          ).optional(),
-        })).describe("Volume to mount into the container's filesystem.")
-          .optional(),
+        volumeMounts: z.array(z.unknown()).describe(
+          "Volume to mount into the container's filesystem.",
+        ).optional(),
         workingDir: z.string().describe(
           "Container's working directory. If not specified, the container runtime's default will be used, which might be configured in the container image.",
         ).optional(),
@@ -475,28 +346,28 @@ const GlobalArgsSchema = z.object({
       ).optional(),
       volumes: z.array(z.object({
         cloudSqlInstance: z.object({
-          instances: z.array(z.string()).describe(
+          instances: z.unknown().describe(
             "A list of Cloud SQL instance connection names. Cloud Run uses these to establish connections to the specified Cloud SQL instances. While the SQL instance name itself is unique within a project, the full connection name requires the location for proper routing. Format: `{project}:{location}:{instance}` Example: `my-project:us-central1:my-instance` You can find this value on the instance's **Overview** page in the Google Cloud console or by using the following `gcloud` command: ` sh gcloud sql instances describe INSTANCE_NAME \\ --format='value(connectionName)' ` Visit https://cloud.google.com/sql/docs/mysql/connect-run for more information on how to connect Cloud SQL and Cloud Run.",
           ).optional(),
         }).describe(
           "Represents a set of Cloud SQL instances. Each one will be available under /cloudsql/[instance]. Visit https://cloud.google.com/sql/docs/mysql/connect-run for more information on how to connect Cloud SQL and Cloud Run.",
         ).optional(),
         emptyDir: z.object({
-          medium: z.enum(["MEDIUM_UNSPECIFIED", "MEMORY", "DISK"]).describe(
+          medium: z.unknown().describe(
             "The medium on which the data is stored. Acceptable values today is only MEMORY or none. When none, the default will currently be backed by memory but could change over time. +optional",
           ).optional(),
-          sizeLimit: z.string().describe(
+          sizeLimit: z.unknown().describe(
             "Limit on the storage usable by this EmptyDir volume. The size limit is also applicable for memory medium. The maximum usage on memory medium EmptyDir would be the minimum value between the SizeLimit specified here and the sum of memory limits of all containers. The default is nil which means that the limit is undefined. More info: https://cloud.google.com/run/docs/configuring/in-memory-volumes#configure-volume. Info in Kubernetes: https://kubernetes.io/docs/concepts/storage/volumes/#emptydir",
           ).optional(),
         }).describe(
           "In memory (tmpfs) ephemeral storage. It is ephemeral in the sense that when the sandbox is taken down, the data is destroyed with it (it does not persist across sandbox runs).",
         ).optional(),
         gcs: z.object({
-          bucket: z.string().describe("Cloud Storage Bucket name.").optional(),
-          mountOptions: z.array(z.string()).describe(
+          bucket: z.unknown().describe("Cloud Storage Bucket name.").optional(),
+          mountOptions: z.unknown().describe(
             'A list of additional flags to pass to the gcsfuse CLI. Options should be specified without the leading "--".',
           ).optional(),
-          readOnly: z.boolean().describe(
+          readOnly: z.unknown().describe(
             "If true, the volume will be mounted as read only for all mounts.",
           ).optional(),
         }).describe(
@@ -504,33 +375,23 @@ const GlobalArgsSchema = z.object({
         ).optional(),
         name: z.string().describe("Required. Volume's name.").optional(),
         nfs: z.object({
-          path: z.string().describe("Path that is exported by the NFS server.")
+          path: z.unknown().describe("Path that is exported by the NFS server.")
             .optional(),
-          readOnly: z.boolean().describe(
+          readOnly: z.unknown().describe(
             "If true, the volume will be mounted as read only for all mounts.",
           ).optional(),
-          server: z.string().describe(
+          server: z.unknown().describe(
             "Hostname or IP address of the NFS server",
           ).optional(),
         }).describe("Represents an NFS mount.").optional(),
         secret: z.object({
-          defaultMode: z.number().int().describe(
+          defaultMode: z.unknown().describe(
             "Integer representation of mode bits to use on created files by default. Must be a value between 0000 and 0777 (octal), defaulting to 0444. Directories within the path are not affected by this setting. Notes * Internally, a umask of 0222 will be applied to any non-zero value. * This is an integer representation of the mode bits. So, the octal integer value should look exactly as the chmod numeric notation with a leading zero. Some examples: for chmod 640 (u=rw,g=r), set to 0640 (octal) or 416 (base-10). For chmod 755 (u=rwx,g=rx,o=rx), set to 0755 (octal) or 493 (base-10). * This might be in conflict with other options that affect the file mode, like fsGroup, and the result can be other mode bits set. This might be in conflict with other options that affect the file mode, like fsGroup, and as a result, other mode bits could be set.",
           ).optional(),
-          items: z.array(z.object({
-            mode: z.number().int().describe(
-              "Integer octal mode bits to use on this file, must be a value between 01 and 0777 (octal). If 0 or not set, the Volume's default mode will be used. Notes * Internally, a umask of 0222 will be applied to any non-zero value. * This is an integer representation of the mode bits. So, the octal integer value should look exactly as the chmod numeric notation with a leading zero. Some examples: for chmod 640 (u=rw,g=r), set to 0640 (octal) or 416 (base-10). For chmod 755 (u=rwx,g=rx,o=rx), set to 0755 (octal) or 493 (base-10). * This might be in conflict with other options that affect the file mode, like fsGroup, and the result can be other mode bits set.",
-            ).optional(),
-            path: z.string().describe(
-              "Required. The relative path of the secret in the container.",
-            ).optional(),
-            version: z.string().describe(
-              "The Cloud Secret Manager secret version. Can be 'latest' for the latest value, or an integer or a secret alias for a specific version.",
-            ).optional(),
-          })).describe(
+          items: z.unknown().describe(
             "If unspecified, the volume will expose a file whose name is the secret, relative to VolumeMount.mount_path + VolumeMount.sub_path. If specified, the key will be used as the version to fetch from Cloud Secret Manager and the path will be the name of the file exposed in the volume. When items are defined, they must specify a path and a version.",
           ).optional(),
-          secret: z.string().describe(
+          secret: z.unknown().describe(
             "Required. The name of the secret in Cloud Secret Manager. Format: {secret} if the secret is in the same project. projects/{project}/secrets/{secret} if the secret is in a different project.",
           ).optional(),
         }).describe(
@@ -551,13 +412,13 @@ const GlobalArgsSchema = z.object({
           "Optional. Traffic VPC egress settings. If not provided, it defaults to PRIVATE_RANGES_ONLY.",
         ).optional(),
         networkInterfaces: z.array(z.object({
-          network: z.string().describe(
+          network: z.unknown().describe(
             "Optional. The VPC network that the Cloud Run resource will be able to send traffic to. At least one of network or subnetwork must be specified. If both network and subnetwork are specified, the given VPC subnetwork must belong to the given VPC network. If network is not specified, it will be looked up from the subnetwork.",
           ).optional(),
-          subnetwork: z.string().describe(
+          subnetwork: z.unknown().describe(
             "Optional. The VPC subnetwork that the Cloud Run resource will get IPs from. At least one of network or subnetwork must be specified. If both network and subnetwork are specified, the given VPC subnetwork must belong to the given VPC network. If subnetwork is not specified, the subnetwork with the same name with the network will be used.",
           ).optional(),
-          tags: z.array(z.string()).describe(
+          tags: z.unknown().describe(
             "Optional. Network tags applied to this Cloud Run resource.",
           ).optional(),
         })).describe(
@@ -698,116 +559,55 @@ const StateSchema = z.object({
     taskCount: z.number(),
     template: z.object({
       containers: z.array(z.object({
-        args: z.array(z.string()),
+        args: z.array(z.unknown()),
         baseImageUri: z.string(),
         buildInfo: z.object({
-          functionTarget: z.string(),
-          sourceLocation: z.string(),
+          functionTarget: z.unknown(),
+          sourceLocation: z.unknown(),
         }),
-        command: z.array(z.string()),
-        dependsOn: z.array(z.string()),
-        env: z.array(z.object({
-          name: z.string(),
-          value: z.string(),
-          valueSource: z.object({
-            secretKeyRef: z.object({
-              secret: z.string(),
-              version: z.string(),
-            }),
-          }),
-        })),
+        command: z.array(z.unknown()),
+        dependsOn: z.array(z.unknown()),
+        env: z.array(z.unknown()),
         image: z.string(),
         livenessProbe: z.object({
-          failureThreshold: z.number(),
-          grpc: z.object({
-            port: z.number(),
-            service: z.string(),
-          }),
-          httpGet: z.object({
-            httpHeaders: z.array(z.object({
-              name: z.string(),
-              value: z.string(),
-            })),
-            path: z.string(),
-            port: z.number(),
-          }),
-          initialDelaySeconds: z.number(),
-          periodSeconds: z.number(),
-          tcpSocket: z.object({
-            port: z.number(),
-          }),
-          timeoutSeconds: z.number(),
+          failureThreshold: z.unknown(),
+          grpc: z.unknown(),
+          httpGet: z.unknown(),
+          initialDelaySeconds: z.unknown(),
+          periodSeconds: z.unknown(),
+          tcpSocket: z.unknown(),
+          timeoutSeconds: z.unknown(),
         }),
         name: z.string(),
-        ports: z.array(z.object({
-          containerPort: z.number(),
-          name: z.string(),
-        })),
+        ports: z.array(z.unknown()),
         readinessProbe: z.object({
-          failureThreshold: z.number(),
-          grpc: z.object({
-            port: z.number(),
-            service: z.string(),
-          }),
-          httpGet: z.object({
-            httpHeaders: z.array(z.object({
-              name: z.string(),
-              value: z.string(),
-            })),
-            path: z.string(),
-            port: z.number(),
-          }),
-          initialDelaySeconds: z.number(),
-          periodSeconds: z.number(),
-          tcpSocket: z.object({
-            port: z.number(),
-          }),
-          timeoutSeconds: z.number(),
+          failureThreshold: z.unknown(),
+          grpc: z.unknown(),
+          httpGet: z.unknown(),
+          initialDelaySeconds: z.unknown(),
+          periodSeconds: z.unknown(),
+          tcpSocket: z.unknown(),
+          timeoutSeconds: z.unknown(),
         }),
         resources: z.object({
-          cpuIdle: z.boolean(),
-          limits: z.record(z.string(), z.unknown()),
-          startupCpuBoost: z.boolean(),
+          cpuIdle: z.unknown(),
+          limits: z.unknown(),
+          startupCpuBoost: z.unknown(),
         }),
         sourceCode: z.object({
-          cloudStorageSource: z.object({
-            bucket: z.string(),
-            generation: z.string(),
-            object: z.string(),
-          }),
-          inlinedSource: z.object({
-            sources: z.array(z.object({
-              content: z.string(),
-              filename: z.string(),
-            })),
-          }),
+          cloudStorageSource: z.unknown(),
+          inlinedSource: z.unknown(),
         }),
         startupProbe: z.object({
-          failureThreshold: z.number(),
-          grpc: z.object({
-            port: z.number(),
-            service: z.string(),
-          }),
-          httpGet: z.object({
-            httpHeaders: z.array(z.object({
-              name: z.string(),
-              value: z.string(),
-            })),
-            path: z.string(),
-            port: z.number(),
-          }),
-          initialDelaySeconds: z.number(),
-          periodSeconds: z.number(),
-          tcpSocket: z.object({
-            port: z.number(),
-          }),
-          timeoutSeconds: z.number(),
+          failureThreshold: z.unknown(),
+          grpc: z.unknown(),
+          httpGet: z.unknown(),
+          initialDelaySeconds: z.unknown(),
+          periodSeconds: z.unknown(),
+          tcpSocket: z.unknown(),
+          timeoutSeconds: z.unknown(),
         }),
-        volumeMounts: z.array(z.object({
-          mountPath: z.string(),
-          name: z.string(),
-          subPath: z.string(),
-        })),
+        volumeMounts: z.array(z.unknown()),
         workingDir: z.string(),
       })),
       encryptionKey: z.string(),
@@ -821,40 +621,36 @@ const StateSchema = z.object({
       timeout: z.string(),
       volumes: z.array(z.object({
         cloudSqlInstance: z.object({
-          instances: z.array(z.string()),
+          instances: z.unknown(),
         }),
         emptyDir: z.object({
-          medium: z.string(),
-          sizeLimit: z.string(),
+          medium: z.unknown(),
+          sizeLimit: z.unknown(),
         }),
         gcs: z.object({
-          bucket: z.string(),
-          mountOptions: z.array(z.string()),
-          readOnly: z.boolean(),
+          bucket: z.unknown(),
+          mountOptions: z.unknown(),
+          readOnly: z.unknown(),
         }),
         name: z.string(),
         nfs: z.object({
-          path: z.string(),
-          readOnly: z.boolean(),
-          server: z.string(),
+          path: z.unknown(),
+          readOnly: z.unknown(),
+          server: z.unknown(),
         }),
         secret: z.object({
-          defaultMode: z.number(),
-          items: z.array(z.object({
-            mode: z.number(),
-            path: z.string(),
-            version: z.string(),
-          })),
-          secret: z.string(),
+          defaultMode: z.unknown(),
+          items: z.unknown(),
+          secret: z.unknown(),
         }),
       })),
       vpcAccess: z.object({
         connector: z.string(),
         egress: z.string(),
         networkInterfaces: z.array(z.object({
-          network: z.string(),
-          subnetwork: z.string(),
-          tags: z.array(z.string()),
+          network: z.unknown(),
+          subnetwork: z.unknown(),
+          tags: z.unknown(),
         })),
       }),
     }),
@@ -960,97 +756,52 @@ const InputsSchema = z.object({
     ).optional(),
     template: z.object({
       containers: z.array(z.object({
-        args: z.array(z.string()).describe(
+        args: z.array(z.unknown()).describe(
           "Arguments to the entrypoint. The docker image's CMD is used if this is not provided.",
         ).optional(),
         baseImageUri: z.string().describe(
           "Base image for this container. Only supported for services. If set, it indicates that the service is enrolled into automatic base image update.",
         ).optional(),
         buildInfo: z.object({
-          functionTarget: z.string().describe(
+          functionTarget: z.unknown().describe(
             "Output only. Entry point of the function when the image is a Cloud Run function.",
           ).optional(),
-          sourceLocation: z.string().describe(
+          sourceLocation: z.unknown().describe(
             "Output only. Source code location of the image.",
           ).optional(),
         }).describe("Build information of the image.").optional(),
-        command: z.array(z.string()).describe(
+        command: z.array(z.unknown()).describe(
           "Entrypoint array. Not executed within a shell. The docker image's ENTRYPOINT is used if this is not provided.",
         ).optional(),
-        dependsOn: z.array(z.string()).describe(
+        dependsOn: z.array(z.unknown()).describe(
           "Names of the containers that must start before this container.",
         ).optional(),
-        env: z.array(z.object({
-          name: z.string().describe(
-            "Required. Name of the environment variable. Must not exceed 32768 characters.",
-          ).optional(),
-          value: z.string().describe(
-            'Literal value of the environment variable. Defaults to "", and the maximum length is 32768 bytes. Variable references are not supported in Cloud Run.',
-          ).optional(),
-          valueSource: z.object({
-            secretKeyRef: z.object({
-              secret: z.string().describe(
-                "Required. The name of the secret in Cloud Secret Manager. Format: {secret_name} if the secret is in the same project. projects/{project}/secrets/{secret_name} if the secret is in a different project.",
-              ).optional(),
-              version: z.string().describe(
-                "The Cloud Secret Manager secret version. Can be 'latest' for the latest version, an integer for a specific version, or a version alias.",
-              ).optional(),
-            }).describe(
-              "SecretEnvVarSource represents a source for the value of an EnvVar.",
-            ).optional(),
-          }).describe(
-            "EnvVarSource represents a source for the value of an EnvVar.",
-          ).optional(),
-        })).describe("List of environment variables to set in the container.")
-          .optional(),
+        env: z.array(z.unknown()).describe(
+          "List of environment variables to set in the container.",
+        ).optional(),
         image: z.string().describe(
           "Required. Name of the container image in Dockerhub, Google Artifact Registry, or Google Container Registry. If the host is not provided, Dockerhub is assumed.",
         ).optional(),
         livenessProbe: z.object({
-          failureThreshold: z.number().int().describe(
+          failureThreshold: z.unknown().describe(
             "Optional. Minimum consecutive failures for the probe to be considered failed after having succeeded. Defaults to 3. Minimum value is 1.",
           ).optional(),
-          grpc: z.object({
-            port: z.number().int().describe(
-              "Optional. Port number of the gRPC service. Number must be in the range 1 to 65535. If not specified, defaults to the exposed port of the container, which is the value of container.ports[0].containerPort.",
-            ).optional(),
-            service: z.string().describe(
-              "Optional. Service is the name of the service to place in the gRPC HealthCheckRequest (see https://github.com/grpc/grpc/blob/master/doc/health-checking.md). If this is not specified, the default behavior is defined by gRPC.",
-            ).optional(),
-          }).describe("GRPCAction describes an action involving a GRPC port.")
-            .optional(),
-          httpGet: z.object({
-            httpHeaders: z.array(z.object({
-              name: z.string().describe("Required. The header field name")
-                .optional(),
-              value: z.string().describe("Optional. The header field value")
-                .optional(),
-            })).describe(
-              "Optional. Custom headers to set in the request. HTTP allows repeated headers.",
-            ).optional(),
-            path: z.string().describe(
-              "Optional. Path to access on the HTTP server. Defaults to '/'.",
-            ).optional(),
-            port: z.number().int().describe(
-              "Optional. Port number to access on the container. Must be in the range 1 to 65535. If not specified, defaults to the exposed port of the container, which is the value of container.ports[0].containerPort.",
-            ).optional(),
-          }).describe(
+          grpc: z.unknown().describe(
+            "GRPCAction describes an action involving a GRPC port.",
+          ).optional(),
+          httpGet: z.unknown().describe(
             "HTTPGetAction describes an action based on HTTP Get requests.",
           ).optional(),
-          initialDelaySeconds: z.number().int().describe(
+          initialDelaySeconds: z.unknown().describe(
             "Optional. Number of seconds after the container has started before the probe is initiated. Defaults to 0 seconds. Minimum value is 0. Maximum value for liveness probe is 3600. Maximum value for startup probe is 240.",
           ).optional(),
-          periodSeconds: z.number().int().describe(
+          periodSeconds: z.unknown().describe(
             "Optional. How often (in seconds) to perform the probe. Default to 10 seconds. Minimum value is 1. Maximum value for liveness probe is 3600. Maximum value for startup probe is 240. Must be greater or equal than timeout_seconds.",
           ).optional(),
-          tcpSocket: z.object({
-            port: z.number().int().describe(
-              "Optional. Port number to access on the container. Must be in the range 1 to 65535. If not specified, defaults to the exposed port of the container, which is the value of container.ports[0].containerPort.",
-            ).optional(),
-          }).describe(
+          tcpSocket: z.unknown().describe(
             "TCPSocketAction describes an action based on opening a socket",
           ).optional(),
-          timeoutSeconds: z.number().int().describe(
+          timeoutSeconds: z.unknown().describe(
             "Optional. Number of seconds after which the probe times out. Defaults to 1 second. Minimum value is 1. Maximum value is 3600. Must be smaller than period_seconds.",
           ).optional(),
         }).describe(
@@ -1059,164 +810,80 @@ const InputsSchema = z.object({
         name: z.string().describe(
           "Name of the container specified as a DNS_LABEL (RFC 1123).",
         ).optional(),
-        ports: z.array(z.object({
-          containerPort: z.number().int().describe(
-            "Port number the container listens on. This must be a valid TCP port number, 0 < container_port < 65536.",
-          ).optional(),
-          name: z.string().describe(
-            'If specified, used to specify which protocol to use. Allowed values are "http1" and "h2c".',
-          ).optional(),
-        })).describe(
+        ports: z.array(z.unknown()).describe(
           "List of ports to expose from the container. Only a single port can be specified. The specified ports must be listening on all interfaces (0.0.0.0) within the container to be accessible. If omitted, a port number will be chosen and passed to the container through the PORT environment variable for the container to listen on.",
         ).optional(),
         readinessProbe: z.object({
-          failureThreshold: z.number().int().describe(
+          failureThreshold: z.unknown().describe(
             "Optional. Minimum consecutive failures for the probe to be considered failed after having succeeded. Defaults to 3. Minimum value is 1.",
           ).optional(),
-          grpc: z.object({
-            port: z.number().int().describe(
-              "Optional. Port number of the gRPC service. Number must be in the range 1 to 65535. If not specified, defaults to the exposed port of the container, which is the value of container.ports[0].containerPort.",
-            ).optional(),
-            service: z.string().describe(
-              "Optional. Service is the name of the service to place in the gRPC HealthCheckRequest (see https://github.com/grpc/grpc/blob/master/doc/health-checking.md). If this is not specified, the default behavior is defined by gRPC.",
-            ).optional(),
-          }).describe("GRPCAction describes an action involving a GRPC port.")
-            .optional(),
-          httpGet: z.object({
-            httpHeaders: z.array(z.object({
-              name: z.string().describe("Required. The header field name")
-                .optional(),
-              value: z.string().describe("Optional. The header field value")
-                .optional(),
-            })).describe(
-              "Optional. Custom headers to set in the request. HTTP allows repeated headers.",
-            ).optional(),
-            path: z.string().describe(
-              "Optional. Path to access on the HTTP server. Defaults to '/'.",
-            ).optional(),
-            port: z.number().int().describe(
-              "Optional. Port number to access on the container. Must be in the range 1 to 65535. If not specified, defaults to the exposed port of the container, which is the value of container.ports[0].containerPort.",
-            ).optional(),
-          }).describe(
+          grpc: z.unknown().describe(
+            "GRPCAction describes an action involving a GRPC port.",
+          ).optional(),
+          httpGet: z.unknown().describe(
             "HTTPGetAction describes an action based on HTTP Get requests.",
           ).optional(),
-          initialDelaySeconds: z.number().int().describe(
+          initialDelaySeconds: z.unknown().describe(
             "Optional. Number of seconds after the container has started before the probe is initiated. Defaults to 0 seconds. Minimum value is 0. Maximum value for liveness probe is 3600. Maximum value for startup probe is 240.",
           ).optional(),
-          periodSeconds: z.number().int().describe(
+          periodSeconds: z.unknown().describe(
             "Optional. How often (in seconds) to perform the probe. Default to 10 seconds. Minimum value is 1. Maximum value for liveness probe is 3600. Maximum value for startup probe is 240. Must be greater or equal than timeout_seconds.",
           ).optional(),
-          tcpSocket: z.object({
-            port: z.number().int().describe(
-              "Optional. Port number to access on the container. Must be in the range 1 to 65535. If not specified, defaults to the exposed port of the container, which is the value of container.ports[0].containerPort.",
-            ).optional(),
-          }).describe(
+          tcpSocket: z.unknown().describe(
             "TCPSocketAction describes an action based on opening a socket",
           ).optional(),
-          timeoutSeconds: z.number().int().describe(
+          timeoutSeconds: z.unknown().describe(
             "Optional. Number of seconds after which the probe times out. Defaults to 1 second. Minimum value is 1. Maximum value is 3600. Must be smaller than period_seconds.",
           ).optional(),
         }).describe(
           "Probe describes a health check to be performed against a container to determine whether it is alive or ready to receive traffic.",
         ).optional(),
         resources: z.object({
-          cpuIdle: z.boolean().describe(
+          cpuIdle: z.unknown().describe(
             "Determines whether CPU is only allocated during requests (true by default). However, if ResourceRequirements is set, the caller must explicitly set this field to true to preserve the default behavior.",
           ).optional(),
-          limits: z.record(z.string(), z.string()).describe(
+          limits: z.unknown().describe(
             "Only `memory`, `cpu` and `nvidia.com/gpu` keys in the map are supported. Notes: * The only supported values for CPU are '1', '2', '4', and '8'. Setting 4 CPU requires at least 2Gi of memory. For more information, go to https://cloud.google.com/run/docs/configuring/cpu. * For supported 'memory' values and syntax, go to https://cloud.google.com/run/docs/configuring/memory-limits * The only supported 'nvidia.com/gpu' value is '1'.",
           ).optional(),
-          startupCpuBoost: z.boolean().describe(
+          startupCpuBoost: z.unknown().describe(
             "Determines whether CPU should be boosted on startup of a new container instance above the requested CPU threshold, this can help reduce cold-start latency.",
           ).optional(),
         }).describe(
           "ResourceRequirements describes the compute resource requirements.",
         ).optional(),
         sourceCode: z.object({
-          cloudStorageSource: z.object({
-            bucket: z.string().describe(
-              "Required. The Cloud Storage bucket name.",
-            ).optional(),
-            generation: z.string().describe(
-              "Optional. The Cloud Storage object generation.",
-            ).optional(),
-            object: z.string().describe(
-              "Required. The Cloud Storage object name.",
-            ).optional(),
-          }).describe("Cloud Storage source.").optional(),
-          inlinedSource: z.object({
-            sources: z.array(z.object({
-              content: z.string().describe(
-                "Required. Input only. Represents the exact, literal, and complete source code of the file. Placeholders like `...` or comments such as `# [rest of code]` should NEVER be used as omission. Every character in this field will be built into the final container. Any omission will result in a broken application.",
-              ).optional(),
-              filename: z.string().describe(
-                'Required. Input only. The file name for the source code. e.g., `"index.js"` or `"node_modules/dependency.js"`. The filename must be less than 255 characters and cannot contain `..`, `./`, `//`, or end with a `/`. Cloud Run will place the files in the container subdirectories, please use relative path to access the file.',
-              ).optional(),
-            })).describe("Required. Input only. The source code.").optional(),
-          }).describe("Inlined source.").optional(),
+          cloudStorageSource: z.unknown().describe("Cloud Storage source.")
+            .optional(),
+          inlinedSource: z.unknown().describe("Inlined source.").optional(),
         }).describe("Source type for the container.").optional(),
         startupProbe: z.object({
-          failureThreshold: z.number().int().describe(
+          failureThreshold: z.unknown().describe(
             "Optional. Minimum consecutive failures for the probe to be considered failed after having succeeded. Defaults to 3. Minimum value is 1.",
           ).optional(),
-          grpc: z.object({
-            port: z.number().int().describe(
-              "Optional. Port number of the gRPC service. Number must be in the range 1 to 65535. If not specified, defaults to the exposed port of the container, which is the value of container.ports[0].containerPort.",
-            ).optional(),
-            service: z.string().describe(
-              "Optional. Service is the name of the service to place in the gRPC HealthCheckRequest (see https://github.com/grpc/grpc/blob/master/doc/health-checking.md). If this is not specified, the default behavior is defined by gRPC.",
-            ).optional(),
-          }).describe("GRPCAction describes an action involving a GRPC port.")
-            .optional(),
-          httpGet: z.object({
-            httpHeaders: z.array(z.object({
-              name: z.string().describe("Required. The header field name")
-                .optional(),
-              value: z.string().describe("Optional. The header field value")
-                .optional(),
-            })).describe(
-              "Optional. Custom headers to set in the request. HTTP allows repeated headers.",
-            ).optional(),
-            path: z.string().describe(
-              "Optional. Path to access on the HTTP server. Defaults to '/'.",
-            ).optional(),
-            port: z.number().int().describe(
-              "Optional. Port number to access on the container. Must be in the range 1 to 65535. If not specified, defaults to the exposed port of the container, which is the value of container.ports[0].containerPort.",
-            ).optional(),
-          }).describe(
+          grpc: z.unknown().describe(
+            "GRPCAction describes an action involving a GRPC port.",
+          ).optional(),
+          httpGet: z.unknown().describe(
             "HTTPGetAction describes an action based on HTTP Get requests.",
           ).optional(),
-          initialDelaySeconds: z.number().int().describe(
+          initialDelaySeconds: z.unknown().describe(
             "Optional. Number of seconds after the container has started before the probe is initiated. Defaults to 0 seconds. Minimum value is 0. Maximum value for liveness probe is 3600. Maximum value for startup probe is 240.",
           ).optional(),
-          periodSeconds: z.number().int().describe(
+          periodSeconds: z.unknown().describe(
             "Optional. How often (in seconds) to perform the probe. Default to 10 seconds. Minimum value is 1. Maximum value for liveness probe is 3600. Maximum value for startup probe is 240. Must be greater or equal than timeout_seconds.",
           ).optional(),
-          tcpSocket: z.object({
-            port: z.number().int().describe(
-              "Optional. Port number to access on the container. Must be in the range 1 to 65535. If not specified, defaults to the exposed port of the container, which is the value of container.ports[0].containerPort.",
-            ).optional(),
-          }).describe(
+          tcpSocket: z.unknown().describe(
             "TCPSocketAction describes an action based on opening a socket",
           ).optional(),
-          timeoutSeconds: z.number().int().describe(
+          timeoutSeconds: z.unknown().describe(
             "Optional. Number of seconds after which the probe times out. Defaults to 1 second. Minimum value is 1. Maximum value is 3600. Must be smaller than period_seconds.",
           ).optional(),
         }).describe(
           "Probe describes a health check to be performed against a container to determine whether it is alive or ready to receive traffic.",
         ).optional(),
-        volumeMounts: z.array(z.object({
-          mountPath: z.string().describe(
-            "Required. Path within the container at which the volume should be mounted. Must not contain ':'. For Cloud SQL volumes, it can be left empty, or must otherwise be `/cloudsql`. All instances defined in the Volume will be available as `/cloudsql/[instance]`. For more information on Cloud SQL volumes, visit https://cloud.google.com/sql/docs/mysql/connect-run",
-          ).optional(),
-          name: z.string().describe(
-            "Required. This must match the Name of a Volume.",
-          ).optional(),
-          subPath: z.string().describe(
-            "Optional. Path within the volume from which the container's volume should be mounted. Defaults to \"\" (volume's root). This field is currently ignored for Secret volumes.",
-          ).optional(),
-        })).describe("Volume to mount into the container's filesystem.")
-          .optional(),
+        volumeMounts: z.array(z.unknown()).describe(
+          "Volume to mount into the container's filesystem.",
+        ).optional(),
         workingDir: z.string().describe(
           "Container's working directory. If not specified, the container runtime's default will be used, which might be configured in the container image.",
         ).optional(),
@@ -1252,28 +919,28 @@ const InputsSchema = z.object({
       ).optional(),
       volumes: z.array(z.object({
         cloudSqlInstance: z.object({
-          instances: z.array(z.string()).describe(
+          instances: z.unknown().describe(
             "A list of Cloud SQL instance connection names. Cloud Run uses these to establish connections to the specified Cloud SQL instances. While the SQL instance name itself is unique within a project, the full connection name requires the location for proper routing. Format: `{project}:{location}:{instance}` Example: `my-project:us-central1:my-instance` You can find this value on the instance's **Overview** page in the Google Cloud console or by using the following `gcloud` command: ` sh gcloud sql instances describe INSTANCE_NAME \\ --format='value(connectionName)' ` Visit https://cloud.google.com/sql/docs/mysql/connect-run for more information on how to connect Cloud SQL and Cloud Run.",
           ).optional(),
         }).describe(
           "Represents a set of Cloud SQL instances. Each one will be available under /cloudsql/[instance]. Visit https://cloud.google.com/sql/docs/mysql/connect-run for more information on how to connect Cloud SQL and Cloud Run.",
         ).optional(),
         emptyDir: z.object({
-          medium: z.enum(["MEDIUM_UNSPECIFIED", "MEMORY", "DISK"]).describe(
+          medium: z.unknown().describe(
             "The medium on which the data is stored. Acceptable values today is only MEMORY or none. When none, the default will currently be backed by memory but could change over time. +optional",
           ).optional(),
-          sizeLimit: z.string().describe(
+          sizeLimit: z.unknown().describe(
             "Limit on the storage usable by this EmptyDir volume. The size limit is also applicable for memory medium. The maximum usage on memory medium EmptyDir would be the minimum value between the SizeLimit specified here and the sum of memory limits of all containers. The default is nil which means that the limit is undefined. More info: https://cloud.google.com/run/docs/configuring/in-memory-volumes#configure-volume. Info in Kubernetes: https://kubernetes.io/docs/concepts/storage/volumes/#emptydir",
           ).optional(),
         }).describe(
           "In memory (tmpfs) ephemeral storage. It is ephemeral in the sense that when the sandbox is taken down, the data is destroyed with it (it does not persist across sandbox runs).",
         ).optional(),
         gcs: z.object({
-          bucket: z.string().describe("Cloud Storage Bucket name.").optional(),
-          mountOptions: z.array(z.string()).describe(
+          bucket: z.unknown().describe("Cloud Storage Bucket name.").optional(),
+          mountOptions: z.unknown().describe(
             'A list of additional flags to pass to the gcsfuse CLI. Options should be specified without the leading "--".',
           ).optional(),
-          readOnly: z.boolean().describe(
+          readOnly: z.unknown().describe(
             "If true, the volume will be mounted as read only for all mounts.",
           ).optional(),
         }).describe(
@@ -1281,33 +948,23 @@ const InputsSchema = z.object({
         ).optional(),
         name: z.string().describe("Required. Volume's name.").optional(),
         nfs: z.object({
-          path: z.string().describe("Path that is exported by the NFS server.")
+          path: z.unknown().describe("Path that is exported by the NFS server.")
             .optional(),
-          readOnly: z.boolean().describe(
+          readOnly: z.unknown().describe(
             "If true, the volume will be mounted as read only for all mounts.",
           ).optional(),
-          server: z.string().describe(
+          server: z.unknown().describe(
             "Hostname or IP address of the NFS server",
           ).optional(),
         }).describe("Represents an NFS mount.").optional(),
         secret: z.object({
-          defaultMode: z.number().int().describe(
+          defaultMode: z.unknown().describe(
             "Integer representation of mode bits to use on created files by default. Must be a value between 0000 and 0777 (octal), defaulting to 0444. Directories within the path are not affected by this setting. Notes * Internally, a umask of 0222 will be applied to any non-zero value. * This is an integer representation of the mode bits. So, the octal integer value should look exactly as the chmod numeric notation with a leading zero. Some examples: for chmod 640 (u=rw,g=r), set to 0640 (octal) or 416 (base-10). For chmod 755 (u=rwx,g=rx,o=rx), set to 0755 (octal) or 493 (base-10). * This might be in conflict with other options that affect the file mode, like fsGroup, and the result can be other mode bits set. This might be in conflict with other options that affect the file mode, like fsGroup, and as a result, other mode bits could be set.",
           ).optional(),
-          items: z.array(z.object({
-            mode: z.number().int().describe(
-              "Integer octal mode bits to use on this file, must be a value between 01 and 0777 (octal). If 0 or not set, the Volume's default mode will be used. Notes * Internally, a umask of 0222 will be applied to any non-zero value. * This is an integer representation of the mode bits. So, the octal integer value should look exactly as the chmod numeric notation with a leading zero. Some examples: for chmod 640 (u=rw,g=r), set to 0640 (octal) or 416 (base-10). For chmod 755 (u=rwx,g=rx,o=rx), set to 0755 (octal) or 493 (base-10). * This might be in conflict with other options that affect the file mode, like fsGroup, and the result can be other mode bits set.",
-            ).optional(),
-            path: z.string().describe(
-              "Required. The relative path of the secret in the container.",
-            ).optional(),
-            version: z.string().describe(
-              "The Cloud Secret Manager secret version. Can be 'latest' for the latest value, or an integer or a secret alias for a specific version.",
-            ).optional(),
-          })).describe(
+          items: z.unknown().describe(
             "If unspecified, the volume will expose a file whose name is the secret, relative to VolumeMount.mount_path + VolumeMount.sub_path. If specified, the key will be used as the version to fetch from Cloud Secret Manager and the path will be the name of the file exposed in the volume. When items are defined, they must specify a path and a version.",
           ).optional(),
-          secret: z.string().describe(
+          secret: z.unknown().describe(
             "Required. The name of the secret in Cloud Secret Manager. Format: {secret} if the secret is in the same project. projects/{project}/secrets/{secret} if the secret is in a different project.",
           ).optional(),
         }).describe(
@@ -1328,13 +985,13 @@ const InputsSchema = z.object({
           "Optional. Traffic VPC egress settings. If not provided, it defaults to PRIVATE_RANGES_ONLY.",
         ).optional(),
         networkInterfaces: z.array(z.object({
-          network: z.string().describe(
+          network: z.unknown().describe(
             "Optional. The VPC network that the Cloud Run resource will be able to send traffic to. At least one of network or subnetwork must be specified. If both network and subnetwork are specified, the given VPC subnetwork must belong to the given VPC network. If network is not specified, it will be looked up from the subnetwork.",
           ).optional(),
-          subnetwork: z.string().describe(
+          subnetwork: z.unknown().describe(
             "Optional. The VPC subnetwork that the Cloud Run resource will get IPs from. At least one of network or subnetwork must be specified. If both network and subnetwork are specified, the given VPC subnetwork must belong to the given VPC network. If subnetwork is not specified, the subnetwork with the same name with the network will be used.",
           ).optional(),
-          tags: z.array(z.string()).describe(
+          tags: z.unknown().describe(
             "Optional. Network tags applied to this Cloud Run resource.",
           ).optional(),
         })).describe(
@@ -1426,7 +1083,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/run/jobs",
-  version: "2026.04.03.3",
+  version: "2026.04.04.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -1450,6 +1107,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.3",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.04.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

@@ -81,38 +81,8 @@ const GlobalArgsSchema = z.object({
   dataSourceRestrictions: z.array(z.object({
     filterOptions: z.array(z.object({
       filter: z.object({
-        compositeFilter: z.object({
-          logicOperator: z.enum(["AND", "OR", "NOT"]).describe(
-            "The logic operator of the sub filter.",
-          ).optional(),
-          subFilters: z.array(z.string()).describe("Sub filters.").optional(),
-        }).optional(),
-        valueFilter: z.object({
-          operatorName: z.string().describe(
-            "The `operator_name` applied to the query, such as *price_greater_than*. The filter can work against both types of filters defined in the schema for your data source: 1. `operator_name`, where the query filters results by the property that matches the value. 2. `greater_than_operator_name` or `less_than_operator_name` in your schema. The query filters the results for the property values that are greater than or less than the supplied value in the query.",
-          ).optional(),
-          value: z.object({
-            booleanValue: z.boolean().optional(),
-            dateValue: z.object({
-              day: z.number().int().describe(
-                "Day of month. Must be from 1 to 31 and valid for the year and month.",
-              ).optional(),
-              month: z.number().int().describe(
-                "Month of date. Must be from 1 to 12.",
-              ).optional(),
-              year: z.number().int().describe(
-                "Year of date. Must be from 1 to 9999.",
-              ).optional(),
-            }).describe(
-              "Represents a whole calendar date, for example a date of birth. The time of day and time zone are either specified elsewhere or are not significant. The date is relative to the [Proleptic Gregorian Calendar](https://en.wikipedia.org/wiki/Proleptic_Gregorian_calendar). The date must be a valid calendar date between the year 1 and 9999.",
-            ).optional(),
-            doubleValue: z.number().optional(),
-            integerValue: z.string().optional(),
-            stringValue: z.string().optional(),
-            timestampValue: z.string().optional(),
-          }).describe("Definition of a single value with generic type.")
-            .optional(),
-        }).optional(),
+        compositeFilter: z.unknown().optional(),
+        valueFilter: z.unknown().optional(),
       }).describe(
         "A generic way of expressing filters in a query, which supports two approaches: **1. Setting a ValueFilter.** The name must match an operator_name defined in the schema for your data source. **2. Setting a CompositeFilter.** The filters are evaluated using the logical operator. The top-level operators can only be either an AND or a NOT. AND can appear only at the top-most level. OR can appear only under a top-level AND.",
       ).optional(),
@@ -243,25 +213,8 @@ const StateSchema = z.object({
   dataSourceRestrictions: z.array(z.object({
     filterOptions: z.array(z.object({
       filter: z.object({
-        compositeFilter: z.object({
-          logicOperator: z.string(),
-          subFilters: z.array(z.string()),
-        }),
-        valueFilter: z.object({
-          operatorName: z.string(),
-          value: z.object({
-            booleanValue: z.boolean(),
-            dateValue: z.object({
-              day: z.number(),
-              month: z.number(),
-              year: z.number(),
-            }),
-            doubleValue: z.number(),
-            integerValue: z.string(),
-            stringValue: z.string(),
-            timestampValue: z.string(),
-          }),
-        }),
+        compositeFilter: z.unknown(),
+        valueFilter: z.unknown(),
       }),
       objectType: z.string(),
     })),
@@ -317,38 +270,8 @@ const InputsSchema = z.object({
   dataSourceRestrictions: z.array(z.object({
     filterOptions: z.array(z.object({
       filter: z.object({
-        compositeFilter: z.object({
-          logicOperator: z.enum(["AND", "OR", "NOT"]).describe(
-            "The logic operator of the sub filter.",
-          ).optional(),
-          subFilters: z.array(z.string()).describe("Sub filters.").optional(),
-        }).optional(),
-        valueFilter: z.object({
-          operatorName: z.string().describe(
-            "The `operator_name` applied to the query, such as *price_greater_than*. The filter can work against both types of filters defined in the schema for your data source: 1. `operator_name`, where the query filters results by the property that matches the value. 2. `greater_than_operator_name` or `less_than_operator_name` in your schema. The query filters the results for the property values that are greater than or less than the supplied value in the query.",
-          ).optional(),
-          value: z.object({
-            booleanValue: z.boolean().optional(),
-            dateValue: z.object({
-              day: z.number().int().describe(
-                "Day of month. Must be from 1 to 31 and valid for the year and month.",
-              ).optional(),
-              month: z.number().int().describe(
-                "Month of date. Must be from 1 to 12.",
-              ).optional(),
-              year: z.number().int().describe(
-                "Year of date. Must be from 1 to 9999.",
-              ).optional(),
-            }).describe(
-              "Represents a whole calendar date, for example a date of birth. The time of day and time zone are either specified elsewhere or are not significant. The date is relative to the [Proleptic Gregorian Calendar](https://en.wikipedia.org/wiki/Proleptic_Gregorian_calendar). The date must be a valid calendar date between the year 1 and 9999.",
-            ).optional(),
-            doubleValue: z.number().optional(),
-            integerValue: z.string().optional(),
-            stringValue: z.string().optional(),
-            timestampValue: z.string().optional(),
-          }).describe("Definition of a single value with generic type.")
-            .optional(),
-        }).optional(),
+        compositeFilter: z.unknown().optional(),
+        valueFilter: z.unknown().optional(),
       }).describe(
         "A generic way of expressing filters in a query, which supports two approaches: **1. Setting a ValueFilter.** The name must match an operator_name defined in the schema for your data source. **2. Setting a CompositeFilter.** The filters are evaluated using the logical operator. The top-level operators can only be either an AND or a NOT. AND can appear only at the top-most level. OR can appear only under a top-level AND.",
       ).optional(),
@@ -477,7 +400,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/cloudsearch/settings-searchapplications",
-  version: "2026.04.03.3",
+  version: "2026.04.04.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -501,6 +424,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.3",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.04.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

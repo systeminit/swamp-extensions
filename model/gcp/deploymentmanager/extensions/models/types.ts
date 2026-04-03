@@ -56,37 +56,13 @@ const StateSchema = z.object({
     endTime: z.string(),
     error: z.object({
       errors: z.array(z.object({
-        arguments: z.array(z.string()),
+        arguments: z.array(z.unknown()),
         code: z.string(),
         debugInfo: z.object({
-          detail: z.string(),
-          stackEntries: z.array(z.string()),
+          detail: z.unknown(),
+          stackEntries: z.unknown(),
         }),
-        errorDetails: z.array(z.object({
-          errorInfo: z.object({
-            domain: z.string(),
-            metadatas: z.record(z.string(), z.unknown()),
-            reason: z.string(),
-          }),
-          help: z.object({
-            links: z.array(z.object({
-              description: z.string(),
-              url: z.string(),
-            })),
-          }),
-          localizedMessage: z.object({
-            locale: z.string(),
-            message: z.string(),
-          }),
-          quotaInfo: z.object({
-            dimensions: z.record(z.string(), z.unknown()),
-            futureLimit: z.number(),
-            limit: z.number(),
-            limitName: z.string(),
-            metricName: z.string(),
-            rolloutStatus: z.string(),
-          }),
-        })),
+        errorDetails: z.array(z.unknown()),
         location: z.string(),
         message: z.string(),
       })),
@@ -133,8 +109,8 @@ const StateSchema = z.object({
     warnings: z.array(z.object({
       code: z.string(),
       data: z.array(z.object({
-        key: z.string(),
-        value: z.string(),
+        key: z.unknown(),
+        value: z.unknown(),
       })),
       message: z.string(),
     })),
@@ -151,7 +127,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/deploymentmanager/types",
-  version: "2026.04.03.3",
+  version: "2026.04.04.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -175,6 +151,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.3",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.04.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

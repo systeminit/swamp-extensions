@@ -56,13 +56,10 @@ const StateSchema = z.object({
       manufacturer: z.string(),
       name: z.string(),
       perVersionInfo: z.array(z.object({
-        deviceCapacity: z.string(),
-        directAccessVersionInfo: z.object({
-          directAccessSupported: z.boolean(),
-          minimumAndroidStudioVersion: z.string(),
-        }),
-        interactiveDeviceAvailabilityEstimate: z.string(),
-        versionId: z.string(),
+        deviceCapacity: z.unknown(),
+        directAccessVersionInfo: z.unknown(),
+        interactiveDeviceAvailabilityEstimate: z.unknown(),
+        versionId: z.unknown(),
       })),
       screenDensity: z.number(),
       screenX: z.number(),
@@ -77,12 +74,12 @@ const StateSchema = z.object({
         id: z.string(),
         name: z.string(),
         region: z.string(),
-        tags: z.array(z.string()),
+        tags: z.array(z.unknown()),
       })),
       orientations: z.array(z.object({
         id: z.string(),
         name: z.string(),
-        tags: z.array(z.string()),
+        tags: z.array(z.unknown()),
       })),
     }),
     versions: z.array(z.object({
@@ -120,8 +117,8 @@ const StateSchema = z.object({
       id: z.string(),
       name: z.string(),
       perVersionInfo: z.array(z.object({
-        deviceCapacity: z.string(),
-        versionId: z.string(),
+        deviceCapacity: z.unknown(),
+        versionId: z.unknown(),
       })),
       screenDensity: z.number(),
       screenX: z.number(),
@@ -134,12 +131,12 @@ const StateSchema = z.object({
         id: z.string(),
         name: z.string(),
         region: z.string(),
-        tags: z.array(z.string()),
+        tags: z.array(z.unknown()),
       })),
       orientations: z.array(z.object({
         id: z.string(),
         name: z.string(),
-        tags: z.array(z.string()),
+        tags: z.array(z.unknown()),
       })),
     }),
     versions: z.array(z.object({
@@ -187,7 +184,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/testing/testenvironmentcatalog",
-  version: "2026.04.03.3",
+  version: "2026.04.04.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -211,6 +208,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.3",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.04.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

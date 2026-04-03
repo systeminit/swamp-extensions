@@ -98,10 +98,10 @@ const GlobalArgsSchema = z.object({
   message: z.object({
     classificationLabelValues: z.array(z.object({
       fields: z.array(z.object({
-        fieldId: z.string().describe(
+        fieldId: z.unknown().describe(
           "Required. The field ID for the Classification Label Value. Maps to the ID field of the Google Drive `Label.Field` object.",
         ).optional(),
-        selection: z.string().describe(
+        selection: z.unknown().describe(
           "Selection choice ID for the selection option. Should only be set if the field type is `SELECTION` in the Google Drive `Label.Field` object. Maps to the id field of the Google Drive `Label.Field.SelectionOptions` resource.",
         ).optional(),
       })).describe("Field values for the given classification label ID.")
@@ -177,8 +177,8 @@ const StateSchema = z.object({
   message: z.object({
     classificationLabelValues: z.array(z.object({
       fields: z.array(z.object({
-        fieldId: z.string(),
-        selection: z.string(),
+        fieldId: z.unknown(),
+        selection: z.unknown(),
       })),
       labelId: z.string(),
     })),
@@ -215,10 +215,10 @@ const InputsSchema = z.object({
   message: z.object({
     classificationLabelValues: z.array(z.object({
       fields: z.array(z.object({
-        fieldId: z.string().describe(
+        fieldId: z.unknown().describe(
           "Required. The field ID for the Classification Label Value. Maps to the ID field of the Google Drive `Label.Field` object.",
         ).optional(),
-        selection: z.string().describe(
+        selection: z.unknown().describe(
           "Selection choice ID for the selection option. Should only be set if the field type is `SELECTION` in the Google Drive `Label.Field` object. Maps to the id field of the Google Drive `Label.Field.SelectionOptions` resource.",
         ).optional(),
       })).describe("Field values for the given classification label ID.")
@@ -291,7 +291,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/gmail/users-drafts",
-  version: "2026.04.03.3",
+  version: "2026.04.04.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -315,6 +315,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.3",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.04.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

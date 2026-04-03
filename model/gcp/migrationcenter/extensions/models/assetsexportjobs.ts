@@ -132,33 +132,14 @@ const StateSchema = z.object({
     result: z.object({
       error: z.object({
         code: z.number(),
-        details: z.array(z.record(z.string(), z.unknown())),
+        details: z.array(z.unknown()),
         message: z.string(),
       }),
       outputFiles: z.object({
-        entries: z.array(z.object({
-          csvOutputFile: z.object({
-            columnsCount: z.number(),
-            rowCount: z.number(),
-            signedUri: z.object({
-              file: z.string(),
-              uri: z.string(),
-            }),
-          }),
-          fileSizeBytes: z.string(),
-          xlsxOutputFile: z.object({
-            signedUri: z.object({
-              file: z.string(),
-              uri: z.string(),
-            }),
-          }),
-        })),
+        entries: z.array(z.unknown()),
       }),
       signedUris: z.object({
-        signedUris: z.array(z.object({
-          file: z.string(),
-          uri: z.string(),
-        })),
+        signedUris: z.array(z.unknown()),
       }),
     }),
     startTime: z.string(),
@@ -214,7 +195,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/migrationcenter/assetsexportjobs",
-  version: "2026.04.03.3",
+  version: "2026.04.04.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -238,6 +219,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.3",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.04.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

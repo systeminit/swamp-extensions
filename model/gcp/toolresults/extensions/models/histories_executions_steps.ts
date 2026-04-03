@@ -175,10 +175,10 @@ const GlobalArgsSchema = z.object({
           "flaky",
         ]).optional(),
         runDuration: z.object({
-          nanos: z.number().int().describe(
+          nanos: z.unknown().describe(
             "Signed fractions of a second at nanosecond resolution of the span of time. Durations less than one second are represented with a 0 `seconds` field and a positive or negative `nanos` field. For durations of one second or more, a non-zero value for the `nanos` field must be of the same sign as the `seconds` field. Must be from -999,999,999 to +999,999,999 inclusive.",
           ).optional(),
-          seconds: z.string().describe(
+          seconds: z.unknown().describe(
             "Signed seconds of the span of time. Must be from -315,576,000,000 to +315,576,000,000 inclusive. Note: these bounds are computed from: 60 sec/min * 60 min/hr * 24 hr/day * 365.25 days/year * 10000 years",
           ).optional(),
         }).describe(
@@ -427,25 +427,25 @@ const GlobalArgsSchema = z.object({
       ).optional(),
       toolOutputs: z.array(z.object({
         creationTime: z.object({
-          nanos: z.number().int().describe(
+          nanos: z.unknown().describe(
             "Non-negative fractions of a second at nanosecond resolution. Negative second values with fractions must still have non-negative nanos values that count forward in time. Must be from 0 to 999,999,999 inclusive.",
           ).optional(),
-          seconds: z.string().describe(
+          seconds: z.unknown().describe(
             "Represents seconds of UTC time since Unix epoch 1970-01-01T00:00:00Z. Must be from 0001-01-01T00:00:00Z to 9999-12-31T23:59:59Z inclusive.",
           ).optional(),
         }).describe(
           'A Timestamp represents a point in time independent of any time zone or local calendar, encoded as a count of seconds and fractions of seconds at nanosecond resolution. The count is relative to an epoch at UTC midnight on January 1, 1970, in the proleptic Gregorian calendar which extends the Gregorian calendar backwards to year one. All minutes are 60 seconds long. Leap seconds are "smeared" so that no leap second table is needed for interpretation, using a [24-hour linear smear](https://developers.google.com/time/smear). The range is from 0001-01-01T00:00:00Z to 9999-12-31T23:59:59.999999999Z. By restricting to that range, we ensure that we can convert to and from [RFC 3339](https://www.ietf.org/rfc/rfc3339.txt) date strings.',
         ).optional(),
         output: z.object({
-          fileUri: z.string().describe(
+          fileUri: z.unknown().describe(
             "The URI of a file stored in Google Cloud Storage. For example: `http://storage.googleapis.com/mybucket/path/to/test.xml` or in Cloud Storage URI format: `gs://mybucket/path/to/test.xml` with version-specific info, `gs://mybucket/path/to/test.xml#1360383693690000` An INVALID_ARGUMENT error will be returned if the URI format is not supported. - In response: always set - In create/update request: always set",
           ).optional(),
         }).describe("A reference to a file.").optional(),
         testCase: z.object({
-          className: z.string().describe("The name of the class.").optional(),
-          name: z.string().describe("The name of the test case. Required.")
+          className: z.unknown().describe("The name of the class.").optional(),
+          name: z.unknown().describe("The name of the test case. Required.")
             .optional(),
-          testSuiteName: z.string().describe(
+          testSuiteName: z.unknown().describe(
             "The name of the test suite to which this test case belongs.",
           ).optional(),
         }).describe(
@@ -479,25 +479,25 @@ const GlobalArgsSchema = z.object({
       ).optional(),
       toolOutputs: z.array(z.object({
         creationTime: z.object({
-          nanos: z.number().int().describe(
+          nanos: z.unknown().describe(
             "Non-negative fractions of a second at nanosecond resolution. Negative second values with fractions must still have non-negative nanos values that count forward in time. Must be from 0 to 999,999,999 inclusive.",
           ).optional(),
-          seconds: z.string().describe(
+          seconds: z.unknown().describe(
             "Represents seconds of UTC time since Unix epoch 1970-01-01T00:00:00Z. Must be from 0001-01-01T00:00:00Z to 9999-12-31T23:59:59Z inclusive.",
           ).optional(),
         }).describe(
           'A Timestamp represents a point in time independent of any time zone or local calendar, encoded as a count of seconds and fractions of seconds at nanosecond resolution. The count is relative to an epoch at UTC midnight on January 1, 1970, in the proleptic Gregorian calendar which extends the Gregorian calendar backwards to year one. All minutes are 60 seconds long. Leap seconds are "smeared" so that no leap second table is needed for interpretation, using a [24-hour linear smear](https://developers.google.com/time/smear). The range is from 0001-01-01T00:00:00Z to 9999-12-31T23:59:59.999999999Z. By restricting to that range, we ensure that we can convert to and from [RFC 3339](https://www.ietf.org/rfc/rfc3339.txt) date strings.',
         ).optional(),
         output: z.object({
-          fileUri: z.string().describe(
+          fileUri: z.unknown().describe(
             "The URI of a file stored in Google Cloud Storage. For example: `http://storage.googleapis.com/mybucket/path/to/test.xml` or in Cloud Storage URI format: `gs://mybucket/path/to/test.xml` with version-specific info, `gs://mybucket/path/to/test.xml#1360383693690000` An INVALID_ARGUMENT error will be returned if the URI format is not supported. - In response: always set - In create/update request: always set",
           ).optional(),
         }).describe("A reference to a file.").optional(),
         testCase: z.object({
-          className: z.string().describe("The name of the class.").optional(),
-          name: z.string().describe("The name of the test case. Required.")
+          className: z.unknown().describe("The name of the class.").optional(),
+          name: z.unknown().describe("The name of the test case. Required.")
             .optional(),
-          testSuiteName: z.string().describe(
+          testSuiteName: z.unknown().describe(
             "The name of the test suite to which this test case belongs.",
           ).optional(),
         }).describe(
@@ -549,8 +549,8 @@ const StateSchema = z.object({
         multistepNumber: z.number(),
         outcomeSummary: z.string(),
         runDuration: z.object({
-          nanos: z.number(),
-          seconds: z.string(),
+          nanos: z.unknown(),
+          seconds: z.unknown(),
         }),
         stepId: z.string(),
       })),
@@ -636,16 +636,16 @@ const StateSchema = z.object({
       })),
       toolOutputs: z.array(z.object({
         creationTime: z.object({
-          nanos: z.number(),
-          seconds: z.string(),
+          nanos: z.unknown(),
+          seconds: z.unknown(),
         }),
         output: z.object({
-          fileUri: z.string(),
+          fileUri: z.unknown(),
         }),
         testCase: z.object({
-          className: z.string(),
-          name: z.string(),
-          testSuiteName: z.string(),
+          className: z.unknown(),
+          name: z.unknown(),
+          testSuiteName: z.unknown(),
         }),
       })),
     }),
@@ -661,16 +661,16 @@ const StateSchema = z.object({
       })),
       toolOutputs: z.array(z.object({
         creationTime: z.object({
-          nanos: z.number(),
-          seconds: z.string(),
+          nanos: z.unknown(),
+          seconds: z.unknown(),
         }),
         output: z.object({
-          fileUri: z.string(),
+          fileUri: z.unknown(),
         }),
         testCase: z.object({
-          className: z.string(),
-          name: z.string(),
-          testSuiteName: z.string(),
+          className: z.unknown(),
+          name: z.unknown(),
+          testSuiteName: z.unknown(),
         }),
       })),
     }),
@@ -746,10 +746,10 @@ const InputsSchema = z.object({
           "flaky",
         ]).optional(),
         runDuration: z.object({
-          nanos: z.number().int().describe(
+          nanos: z.unknown().describe(
             "Signed fractions of a second at nanosecond resolution of the span of time. Durations less than one second are represented with a 0 `seconds` field and a positive or negative `nanos` field. For durations of one second or more, a non-zero value for the `nanos` field must be of the same sign as the `seconds` field. Must be from -999,999,999 to +999,999,999 inclusive.",
           ).optional(),
-          seconds: z.string().describe(
+          seconds: z.unknown().describe(
             "Signed seconds of the span of time. Must be from -315,576,000,000 to +315,576,000,000 inclusive. Note: these bounds are computed from: 60 sec/min * 60 min/hr * 24 hr/day * 365.25 days/year * 10000 years",
           ).optional(),
         }).describe(
@@ -998,25 +998,25 @@ const InputsSchema = z.object({
       ).optional(),
       toolOutputs: z.array(z.object({
         creationTime: z.object({
-          nanos: z.number().int().describe(
+          nanos: z.unknown().describe(
             "Non-negative fractions of a second at nanosecond resolution. Negative second values with fractions must still have non-negative nanos values that count forward in time. Must be from 0 to 999,999,999 inclusive.",
           ).optional(),
-          seconds: z.string().describe(
+          seconds: z.unknown().describe(
             "Represents seconds of UTC time since Unix epoch 1970-01-01T00:00:00Z. Must be from 0001-01-01T00:00:00Z to 9999-12-31T23:59:59Z inclusive.",
           ).optional(),
         }).describe(
           'A Timestamp represents a point in time independent of any time zone or local calendar, encoded as a count of seconds and fractions of seconds at nanosecond resolution. The count is relative to an epoch at UTC midnight on January 1, 1970, in the proleptic Gregorian calendar which extends the Gregorian calendar backwards to year one. All minutes are 60 seconds long. Leap seconds are "smeared" so that no leap second table is needed for interpretation, using a [24-hour linear smear](https://developers.google.com/time/smear). The range is from 0001-01-01T00:00:00Z to 9999-12-31T23:59:59.999999999Z. By restricting to that range, we ensure that we can convert to and from [RFC 3339](https://www.ietf.org/rfc/rfc3339.txt) date strings.',
         ).optional(),
         output: z.object({
-          fileUri: z.string().describe(
+          fileUri: z.unknown().describe(
             "The URI of a file stored in Google Cloud Storage. For example: `http://storage.googleapis.com/mybucket/path/to/test.xml` or in Cloud Storage URI format: `gs://mybucket/path/to/test.xml` with version-specific info, `gs://mybucket/path/to/test.xml#1360383693690000` An INVALID_ARGUMENT error will be returned if the URI format is not supported. - In response: always set - In create/update request: always set",
           ).optional(),
         }).describe("A reference to a file.").optional(),
         testCase: z.object({
-          className: z.string().describe("The name of the class.").optional(),
-          name: z.string().describe("The name of the test case. Required.")
+          className: z.unknown().describe("The name of the class.").optional(),
+          name: z.unknown().describe("The name of the test case. Required.")
             .optional(),
-          testSuiteName: z.string().describe(
+          testSuiteName: z.unknown().describe(
             "The name of the test suite to which this test case belongs.",
           ).optional(),
         }).describe(
@@ -1050,25 +1050,25 @@ const InputsSchema = z.object({
       ).optional(),
       toolOutputs: z.array(z.object({
         creationTime: z.object({
-          nanos: z.number().int().describe(
+          nanos: z.unknown().describe(
             "Non-negative fractions of a second at nanosecond resolution. Negative second values with fractions must still have non-negative nanos values that count forward in time. Must be from 0 to 999,999,999 inclusive.",
           ).optional(),
-          seconds: z.string().describe(
+          seconds: z.unknown().describe(
             "Represents seconds of UTC time since Unix epoch 1970-01-01T00:00:00Z. Must be from 0001-01-01T00:00:00Z to 9999-12-31T23:59:59Z inclusive.",
           ).optional(),
         }).describe(
           'A Timestamp represents a point in time independent of any time zone or local calendar, encoded as a count of seconds and fractions of seconds at nanosecond resolution. The count is relative to an epoch at UTC midnight on January 1, 1970, in the proleptic Gregorian calendar which extends the Gregorian calendar backwards to year one. All minutes are 60 seconds long. Leap seconds are "smeared" so that no leap second table is needed for interpretation, using a [24-hour linear smear](https://developers.google.com/time/smear). The range is from 0001-01-01T00:00:00Z to 9999-12-31T23:59:59.999999999Z. By restricting to that range, we ensure that we can convert to and from [RFC 3339](https://www.ietf.org/rfc/rfc3339.txt) date strings.',
         ).optional(),
         output: z.object({
-          fileUri: z.string().describe(
+          fileUri: z.unknown().describe(
             "The URI of a file stored in Google Cloud Storage. For example: `http://storage.googleapis.com/mybucket/path/to/test.xml` or in Cloud Storage URI format: `gs://mybucket/path/to/test.xml` with version-specific info, `gs://mybucket/path/to/test.xml#1360383693690000` An INVALID_ARGUMENT error will be returned if the URI format is not supported. - In response: always set - In create/update request: always set",
           ).optional(),
         }).describe("A reference to a file.").optional(),
         testCase: z.object({
-          className: z.string().describe("The name of the class.").optional(),
-          name: z.string().describe("The name of the test case. Required.")
+          className: z.unknown().describe("The name of the class.").optional(),
+          name: z.unknown().describe("The name of the test case. Required.")
             .optional(),
-          testSuiteName: z.string().describe(
+          testSuiteName: z.unknown().describe(
             "The name of the test suite to which this test case belongs.",
           ).optional(),
         }).describe(
@@ -1092,7 +1092,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/toolresults/histories-executions-steps",
-  version: "2026.04.03.3",
+  version: "2026.04.04.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -1116,6 +1116,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.3",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.04.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

@@ -101,90 +101,80 @@ const GlobalArgsSchema = z.object({
   messages: z.array(z.object({
     chunks: z.array(z.object({
       agentTransfer: z.object({
-        displayName: z.string().describe(
+        displayName: z.unknown().describe(
           "Output only. Display name of the agent.",
         ).optional(),
-        targetAgent: z.string().describe(
+        targetAgent: z.unknown().describe(
           "Required. The agent to which the conversation is being transferred. The agent will handle the conversation from this point forward. Format: `projects/{project}/locations/{location}/apps/{app}/agents/{agent}`",
         ).optional(),
       }).describe(
         "Represents an event indicating the transfer of a conversation to a different agent.",
       ).optional(),
       blob: z.object({
-        data: z.string().describe("Required. Raw bytes of the blob.")
+        data: z.unknown().describe("Required. Raw bytes of the blob.")
           .optional(),
-        mimeType: z.string().describe(
+        mimeType: z.unknown().describe(
           "Required. The IANA standard MIME type of the source data.",
         ).optional(),
       }).describe("Represents a blob input or output in the conversation.")
         .optional(),
-      defaultVariables: z.record(z.string(), z.string()).describe(
+      defaultVariables: z.record(z.string(), z.unknown()).describe(
         "A struct represents default variables at the start of the conversation, keyed by variable names.",
       ).optional(),
       image: z.object({
-        data: z.string().describe("Required. Raw bytes of the image.")
+        data: z.unknown().describe("Required. Raw bytes of the image.")
           .optional(),
-        mimeType: z.string().describe(
+        mimeType: z.unknown().describe(
           "Required. The IANA standard MIME type of the source data. Supported image types includes: * image/png * image/jpeg * image/webp",
         ).optional(),
       }).describe("Represents an image input or output in the conversation.")
         .optional(),
-      payload: z.record(z.string(), z.string()).describe(
+      payload: z.record(z.string(), z.unknown()).describe(
         "Optional. Custom payload data.",
       ).optional(),
       text: z.string().describe("Optional. Text data.").optional(),
       toolCall: z.object({
-        args: z.record(z.string(), z.string()).describe(
+        args: z.unknown().describe(
           "Optional. The input parameters and values for the tool in JSON object format.",
         ).optional(),
-        displayName: z.string().describe(
+        displayName: z.unknown().describe(
           "Output only. Display name of the tool.",
         ).optional(),
-        id: z.string().describe(
+        id: z.unknown().describe(
           "Optional. The unique identifier of the tool call. If populated, the client should return the execution result with the matching ID in ToolResponse.",
         ).optional(),
-        tool: z.string().describe(
+        tool: z.unknown().describe(
           "Optional. The name of the tool to execute. Format: `projects/{project}/locations/{location}/apps/{app}/tools/{tool}`",
         ).optional(),
-        toolsetTool: z.object({
-          toolId: z.string().describe(
-            "Optional. The tool ID to filter the tools to retrieve the schema for.",
-          ).optional(),
-          toolset: z.string().describe(
-            "Required. The resource name of the Toolset from which this tool is derived. Format: `projects/{project}/locations/{location}/apps/{app}/toolsets/{toolset}`",
-          ).optional(),
-        }).describe("A tool that is created from a toolset.").optional(),
+        toolsetTool: z.unknown().describe(
+          "A tool that is created from a toolset.",
+        ).optional(),
       }).describe(
         "Request for the client or the agent to execute the specified tool.",
       ).optional(),
       toolResponse: z.object({
-        displayName: z.string().describe(
+        displayName: z.unknown().describe(
           "Output only. Display name of the tool.",
         ).optional(),
-        id: z.string().describe(
+        id: z.unknown().describe(
           "Optional. The matching ID of the tool call the response is for.",
         ).optional(),
-        response: z.record(z.string(), z.string()).describe(
+        response: z.unknown().describe(
           'Required. The tool execution result in JSON object format. Use "output" key to specify tool response and "error" key to specify error details (if any). If "output" and "error" keys are not specified, then whole "response" is treated as tool execution result.',
         ).optional(),
-        tool: z.string().describe(
+        tool: z.unknown().describe(
           "Optional. The name of the tool to execute. Format: `projects/{project}/locations/{location}/apps/{app}/tools/{tool}`",
         ).optional(),
-        toolsetTool: z.object({
-          toolId: z.string().describe(
-            "Optional. The tool ID to filter the tools to retrieve the schema for.",
-          ).optional(),
-          toolset: z.string().describe(
-            "Required. The resource name of the Toolset from which this tool is derived. Format: `projects/{project}/locations/{location}/apps/{app}/toolsets/{toolset}`",
-          ).optional(),
-        }).describe("A tool that is created from a toolset.").optional(),
+        toolsetTool: z.unknown().describe(
+          "A tool that is created from a toolset.",
+        ).optional(),
       }).describe(
         "The execution result of a specific tool from the client or the agent.",
       ).optional(),
       transcript: z.string().describe(
         "Optional. Transcript associated with the audio.",
       ).optional(),
-      updatedVariables: z.record(z.string(), z.string()).describe(
+      updatedVariables: z.record(z.string(), z.unknown()).describe(
         "A struct represents variables that were updated in the conversation, keyed by variable names.",
       ).optional(),
     })).describe("Optional. Content of the message as a series of chunks.")
@@ -219,39 +209,33 @@ const StateSchema = z.object({
   messages: z.array(z.object({
     chunks: z.array(z.object({
       agentTransfer: z.object({
-        displayName: z.string(),
-        targetAgent: z.string(),
+        displayName: z.unknown(),
+        targetAgent: z.unknown(),
       }),
       blob: z.object({
-        data: z.string(),
-        mimeType: z.string(),
+        data: z.unknown(),
+        mimeType: z.unknown(),
       }),
       defaultVariables: z.record(z.string(), z.unknown()),
       image: z.object({
-        data: z.string(),
-        mimeType: z.string(),
+        data: z.unknown(),
+        mimeType: z.unknown(),
       }),
       payload: z.record(z.string(), z.unknown()),
       text: z.string(),
       toolCall: z.object({
-        args: z.record(z.string(), z.unknown()),
-        displayName: z.string(),
-        id: z.string(),
-        tool: z.string(),
-        toolsetTool: z.object({
-          toolId: z.string(),
-          toolset: z.string(),
-        }),
+        args: z.unknown(),
+        displayName: z.unknown(),
+        id: z.unknown(),
+        tool: z.unknown(),
+        toolsetTool: z.unknown(),
       }),
       toolResponse: z.object({
-        displayName: z.string(),
-        id: z.string(),
-        response: z.record(z.string(), z.unknown()),
-        tool: z.string(),
-        toolsetTool: z.object({
-          toolId: z.string(),
-          toolset: z.string(),
-        }),
+        displayName: z.unknown(),
+        id: z.unknown(),
+        response: z.unknown(),
+        tool: z.unknown(),
+        toolsetTool: z.unknown(),
       }),
       transcript: z.string(),
       updatedVariables: z.record(z.string(), z.unknown()),
@@ -277,90 +261,80 @@ const InputsSchema = z.object({
   messages: z.array(z.object({
     chunks: z.array(z.object({
       agentTransfer: z.object({
-        displayName: z.string().describe(
+        displayName: z.unknown().describe(
           "Output only. Display name of the agent.",
         ).optional(),
-        targetAgent: z.string().describe(
+        targetAgent: z.unknown().describe(
           "Required. The agent to which the conversation is being transferred. The agent will handle the conversation from this point forward. Format: `projects/{project}/locations/{location}/apps/{app}/agents/{agent}`",
         ).optional(),
       }).describe(
         "Represents an event indicating the transfer of a conversation to a different agent.",
       ).optional(),
       blob: z.object({
-        data: z.string().describe("Required. Raw bytes of the blob.")
+        data: z.unknown().describe("Required. Raw bytes of the blob.")
           .optional(),
-        mimeType: z.string().describe(
+        mimeType: z.unknown().describe(
           "Required. The IANA standard MIME type of the source data.",
         ).optional(),
       }).describe("Represents a blob input or output in the conversation.")
         .optional(),
-      defaultVariables: z.record(z.string(), z.string()).describe(
+      defaultVariables: z.record(z.string(), z.unknown()).describe(
         "A struct represents default variables at the start of the conversation, keyed by variable names.",
       ).optional(),
       image: z.object({
-        data: z.string().describe("Required. Raw bytes of the image.")
+        data: z.unknown().describe("Required. Raw bytes of the image.")
           .optional(),
-        mimeType: z.string().describe(
+        mimeType: z.unknown().describe(
           "Required. The IANA standard MIME type of the source data. Supported image types includes: * image/png * image/jpeg * image/webp",
         ).optional(),
       }).describe("Represents an image input or output in the conversation.")
         .optional(),
-      payload: z.record(z.string(), z.string()).describe(
+      payload: z.record(z.string(), z.unknown()).describe(
         "Optional. Custom payload data.",
       ).optional(),
       text: z.string().describe("Optional. Text data.").optional(),
       toolCall: z.object({
-        args: z.record(z.string(), z.string()).describe(
+        args: z.unknown().describe(
           "Optional. The input parameters and values for the tool in JSON object format.",
         ).optional(),
-        displayName: z.string().describe(
+        displayName: z.unknown().describe(
           "Output only. Display name of the tool.",
         ).optional(),
-        id: z.string().describe(
+        id: z.unknown().describe(
           "Optional. The unique identifier of the tool call. If populated, the client should return the execution result with the matching ID in ToolResponse.",
         ).optional(),
-        tool: z.string().describe(
+        tool: z.unknown().describe(
           "Optional. The name of the tool to execute. Format: `projects/{project}/locations/{location}/apps/{app}/tools/{tool}`",
         ).optional(),
-        toolsetTool: z.object({
-          toolId: z.string().describe(
-            "Optional. The tool ID to filter the tools to retrieve the schema for.",
-          ).optional(),
-          toolset: z.string().describe(
-            "Required. The resource name of the Toolset from which this tool is derived. Format: `projects/{project}/locations/{location}/apps/{app}/toolsets/{toolset}`",
-          ).optional(),
-        }).describe("A tool that is created from a toolset.").optional(),
+        toolsetTool: z.unknown().describe(
+          "A tool that is created from a toolset.",
+        ).optional(),
       }).describe(
         "Request for the client or the agent to execute the specified tool.",
       ).optional(),
       toolResponse: z.object({
-        displayName: z.string().describe(
+        displayName: z.unknown().describe(
           "Output only. Display name of the tool.",
         ).optional(),
-        id: z.string().describe(
+        id: z.unknown().describe(
           "Optional. The matching ID of the tool call the response is for.",
         ).optional(),
-        response: z.record(z.string(), z.string()).describe(
+        response: z.unknown().describe(
           'Required. The tool execution result in JSON object format. Use "output" key to specify tool response and "error" key to specify error details (if any). If "output" and "error" keys are not specified, then whole "response" is treated as tool execution result.',
         ).optional(),
-        tool: z.string().describe(
+        tool: z.unknown().describe(
           "Optional. The name of the tool to execute. Format: `projects/{project}/locations/{location}/apps/{app}/tools/{tool}`",
         ).optional(),
-        toolsetTool: z.object({
-          toolId: z.string().describe(
-            "Optional. The tool ID to filter the tools to retrieve the schema for.",
-          ).optional(),
-          toolset: z.string().describe(
-            "Required. The resource name of the Toolset from which this tool is derived. Format: `projects/{project}/locations/{location}/apps/{app}/toolsets/{toolset}`",
-          ).optional(),
-        }).describe("A tool that is created from a toolset.").optional(),
+        toolsetTool: z.unknown().describe(
+          "A tool that is created from a toolset.",
+        ).optional(),
       }).describe(
         "The execution result of a specific tool from the client or the agent.",
       ).optional(),
       transcript: z.string().describe(
         "Optional. Transcript associated with the audio.",
       ).optional(),
-      updatedVariables: z.record(z.string(), z.string()).describe(
+      updatedVariables: z.record(z.string(), z.unknown()).describe(
         "A struct represents variables that were updated in the conversation, keyed by variable names.",
       ).optional(),
     })).describe("Optional. Content of the message as a series of chunks.")
@@ -387,7 +361,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/ces/apps-examples",
-  version: "2026.04.03.3",
+  version: "2026.04.04.1",
   upgrades: [
     {
       toVersion: "2026.04.01.2",
@@ -411,6 +385,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.3",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.04.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

@@ -61,7 +61,7 @@ const StateSchema = z.object({
         displayName: z.string(),
         id: z.string(),
         image: z.object({
-          url: z.string(),
+          url: z.unknown(),
         }),
         url: z.string(),
       }),
@@ -73,7 +73,7 @@ const StateSchema = z.object({
       etag: z.string(),
       id: z.string(),
       images: z.array(z.object({
-        url: z.string(),
+        url: z.unknown(),
       })),
       kind: z.string(),
       labels: z.array(z.string()),
@@ -86,32 +86,7 @@ const StateSchema = z.object({
       published: z.string(),
       readerComments: z.string(),
       replies: z.object({
-        items: z.array(z.object({
-          author: z.object({
-            displayName: z.string(),
-            id: z.string(),
-            image: z.object({
-              url: z.string(),
-            }),
-            url: z.string(),
-          }),
-          blog: z.object({
-            id: z.string(),
-          }),
-          content: z.string(),
-          id: z.string(),
-          inReplyTo: z.object({
-            id: z.string(),
-          }),
-          kind: z.string(),
-          post: z.object({
-            id: z.string(),
-          }),
-          published: z.string(),
-          selfLink: z.string(),
-          status: z.string(),
-          updated: z.string(),
-        })),
+        items: z.array(z.unknown()),
         selfLink: z.string(),
         totalItems: z.string(),
       }),
@@ -141,7 +116,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/blogger/blogs",
-  version: "2026.04.03.3",
+  version: "2026.04.04.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -165,6 +140,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.3",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.04.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

@@ -242,19 +242,19 @@ const StateSchema = z.object({
     contexts: z.array(z.object({
       all: z.string(),
       appType: z.object({
-        appTypes: z.array(z.string()),
+        appTypes: z.unknown(),
       }),
       auctionType: z.object({
-        auctionTypes: z.array(z.string()),
+        auctionTypes: z.unknown(),
       }),
       location: z.object({
-        geoCriteriaIds: z.array(z.number()),
+        geoCriteriaIds: z.unknown(),
       }),
       platform: z.object({
-        platforms: z.array(z.string()),
+        platforms: z.unknown(),
       }),
       securityType: z.object({
-        securities: z.array(z.string()),
+        securities: z.unknown(),
       }),
     })),
     details: z.array(z.string()),
@@ -307,19 +307,19 @@ const StateSchema = z.object({
     contexts: z.array(z.object({
       all: z.string(),
       appType: z.object({
-        appTypes: z.array(z.string()),
+        appTypes: z.unknown(),
       }),
       auctionType: z.object({
-        auctionTypes: z.array(z.string()),
+        auctionTypes: z.unknown(),
       }),
       location: z.object({
-        geoCriteriaIds: z.array(z.number()),
+        geoCriteriaIds: z.unknown(),
       }),
       platform: z.object({
-        platforms: z.array(z.string()),
+        platforms: z.unknown(),
       }),
       securityType: z.object({
-        securities: z.array(z.string()),
+        securities: z.unknown(),
       }),
     })),
     disapproval: z.object({
@@ -327,7 +327,7 @@ const StateSchema = z.object({
       reason: z.string(),
     }),
     disapprovalReasons: z.array(z.object({
-      details: z.array(z.string()),
+      details: z.array(z.unknown()),
       reason: z.string(),
     })),
     status: z.string(),
@@ -496,7 +496,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/adexchangebuyer2/accounts-creatives",
-  version: "2026.04.03.3",
+  version: "2026.04.04.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -520,6 +520,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.3",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.04.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

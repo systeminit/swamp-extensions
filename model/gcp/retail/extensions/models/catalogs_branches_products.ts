@@ -335,16 +335,16 @@ const StateSchema = z.object({
       priceExpireTime: z.string(),
       priceRange: z.object({
         originalPrice: z.object({
-          exclusiveMaximum: z.number(),
-          exclusiveMinimum: z.number(),
-          maximum: z.number(),
-          minimum: z.number(),
+          exclusiveMaximum: z.unknown(),
+          exclusiveMinimum: z.unknown(),
+          maximum: z.unknown(),
+          minimum: z.unknown(),
         }),
         price: z.object({
-          exclusiveMaximum: z.number(),
-          exclusiveMinimum: z.number(),
-          maximum: z.number(),
-          minimum: z.number(),
+          exclusiveMaximum: z.unknown(),
+          exclusiveMinimum: z.unknown(),
+          maximum: z.unknown(),
+          minimum: z.unknown(),
         }),
       }),
     }),
@@ -411,7 +411,7 @@ const StateSchema = z.object({
     description: z.string(),
     expireTime: z.string(),
     fulfillmentInfo: z.array(z.object({
-      placeIds: z.array(z.string()),
+      placeIds: z.array(z.unknown()),
       type: z.string(),
     })),
     gtin: z.string(),
@@ -424,29 +424,16 @@ const StateSchema = z.object({
     languageCode: z.string(),
     localInventories: z.array(z.object({
       attributes: z.record(z.string(), z.unknown()),
-      fulfillmentTypes: z.array(z.string()),
+      fulfillmentTypes: z.array(z.unknown()),
       placeId: z.string(),
       priceInfo: z.object({
-        cost: z.number(),
-        currencyCode: z.string(),
-        originalPrice: z.number(),
-        price: z.number(),
-        priceEffectiveTime: z.string(),
-        priceExpireTime: z.string(),
-        priceRange: z.object({
-          originalPrice: z.object({
-            exclusiveMaximum: z.number(),
-            exclusiveMinimum: z.number(),
-            maximum: z.number(),
-            minimum: z.number(),
-          }),
-          price: z.object({
-            exclusiveMaximum: z.number(),
-            exclusiveMinimum: z.number(),
-            maximum: z.number(),
-            minimum: z.number(),
-          }),
-        }),
+        cost: z.unknown(),
+        currencyCode: z.unknown(),
+        originalPrice: z.unknown(),
+        price: z.unknown(),
+        priceEffectiveTime: z.unknown(),
+        priceExpireTime: z.unknown(),
+        priceRange: z.unknown(),
       }),
     })),
     materials: z.array(z.string()),
@@ -461,16 +448,16 @@ const StateSchema = z.object({
       priceExpireTime: z.string(),
       priceRange: z.object({
         originalPrice: z.object({
-          exclusiveMaximum: z.number(),
-          exclusiveMinimum: z.number(),
-          maximum: z.number(),
-          minimum: z.number(),
+          exclusiveMaximum: z.unknown(),
+          exclusiveMinimum: z.unknown(),
+          maximum: z.unknown(),
+          minimum: z.unknown(),
         }),
         price: z.object({
-          exclusiveMaximum: z.number(),
-          exclusiveMinimum: z.number(),
-          maximum: z.number(),
-          minimum: z.number(),
+          exclusiveMaximum: z.unknown(),
+          exclusiveMinimum: z.unknown(),
+          maximum: z.unknown(),
+          minimum: z.unknown(),
         }),
       }),
     }),
@@ -701,7 +688,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/retail/catalogs-branches-products",
-  version: "2026.04.03.3",
+  version: "2026.04.04.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -725,6 +712,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.3",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.04.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

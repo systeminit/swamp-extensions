@@ -105,10 +105,10 @@ const GlobalArgsSchema = z.object({
   rules: z.array(z.object({
     action: z.object({
       destinations: z.array(z.object({
-        serviceName: z.string().describe(
+        serviceName: z.unknown().describe(
           "Required. The URL of a BackendService to route traffic to.",
         ).optional(),
-        weight: z.number().int().describe(
+        weight: z.unknown().describe(
           "Optional. Specifies the proportion of requests forwarded to the backend referenced by the service_name field. This is computed as: - weight/Sum(weights in destinations) Weights in all destinations does not need to sum up to 100.",
         ).optional(),
       })).describe(
@@ -121,10 +121,10 @@ const GlobalArgsSchema = z.object({
       "The specifications for routing traffic and applying associated policies.",
     ).optional(),
     matches: z.array(z.object({
-      alpn: z.array(z.string()).describe(
+      alpn: z.array(z.unknown()).describe(
         'Optional. ALPN (Application-Layer Protocol Negotiation) to match against. Examples: "http/1.1", "h2". At least one of sni_host and alpn is required. Up to 5 alpns across all matches can be set.',
       ).optional(),
-      sniHost: z.array(z.string()).describe(
+      sniHost: z.array(z.unknown()).describe(
         "Optional. SNI (server name indicator) to match against. SNI will be matched against all wildcard domains, i.e. `www.example.com` will be first matched against `www.example.com`, then `*.example.com`, then `*.com.` Partial wildcards are not supported, and values like *w.example.com are invalid. At least one of sni_host and alpn is required. Up to 100 sni hosts across all matches can be set.",
       ).optional(),
     })).describe(
@@ -154,14 +154,14 @@ const StateSchema = z.object({
   rules: z.array(z.object({
     action: z.object({
       destinations: z.array(z.object({
-        serviceName: z.string(),
-        weight: z.number(),
+        serviceName: z.unknown(),
+        weight: z.unknown(),
       })),
       idleTimeout: z.string(),
     }),
     matches: z.array(z.object({
-      alpn: z.array(z.string()),
-      sniHost: z.array(z.string()),
+      alpn: z.array(z.unknown()),
+      sniHost: z.array(z.unknown()),
     })),
   })).optional(),
   selfLink: z.string().optional(),
@@ -190,10 +190,10 @@ const InputsSchema = z.object({
   rules: z.array(z.object({
     action: z.object({
       destinations: z.array(z.object({
-        serviceName: z.string().describe(
+        serviceName: z.unknown().describe(
           "Required. The URL of a BackendService to route traffic to.",
         ).optional(),
-        weight: z.number().int().describe(
+        weight: z.unknown().describe(
           "Optional. Specifies the proportion of requests forwarded to the backend referenced by the service_name field. This is computed as: - weight/Sum(weights in destinations) Weights in all destinations does not need to sum up to 100.",
         ).optional(),
       })).describe(
@@ -206,10 +206,10 @@ const InputsSchema = z.object({
       "The specifications for routing traffic and applying associated policies.",
     ).optional(),
     matches: z.array(z.object({
-      alpn: z.array(z.string()).describe(
+      alpn: z.array(z.unknown()).describe(
         'Optional. ALPN (Application-Layer Protocol Negotiation) to match against. Examples: "http/1.1", "h2". At least one of sni_host and alpn is required. Up to 5 alpns across all matches can be set.',
       ).optional(),
-      sniHost: z.array(z.string()).describe(
+      sniHost: z.array(z.unknown()).describe(
         "Optional. SNI (server name indicator) to match against. SNI will be matched against all wildcard domains, i.e. `www.example.com` will be first matched against `www.example.com`, then `*.example.com`, then `*.com.` Partial wildcards are not supported, and values like *w.example.com are invalid. At least one of sni_host and alpn is required. Up to 100 sni hosts across all matches can be set.",
       ).optional(),
     })).describe(
@@ -231,7 +231,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/networkservices/tlsroutes",
-  version: "2026.04.03.3",
+  version: "2026.04.04.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -255,6 +255,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.3",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.04.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

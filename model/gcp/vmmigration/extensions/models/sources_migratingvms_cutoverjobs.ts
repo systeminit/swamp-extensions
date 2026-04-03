@@ -123,7 +123,7 @@ const GlobalArgsSchema = z.object({
         operator: z.enum(["OPERATOR_UNSPECIFIED", "IN", "NOT_IN"]).describe(
           "The operator to use for the node resources specified in the `values` parameter.",
         ).optional(),
-        values: z.array(z.string()).describe(
+        values: z.array(z.unknown()).describe(
           "Corresponds to the label values of Node resource.",
         ).optional(),
       })).describe(
@@ -280,7 +280,7 @@ const StateSchema = z.object({
       nodeAffinities: z.array(z.object({
         key: z.string(),
         operator: z.string(),
-        values: z.array(z.string()),
+        values: z.array(z.unknown()),
       })),
       onHostMaintenance: z.string(),
       restartType: z.string(),
@@ -332,7 +332,7 @@ const StateSchema = z.object({
       endTime: z.string(),
       error: z.object({
         code: z.number(),
-        details: z.array(z.record(z.string(), z.unknown())),
+        details: z.array(z.unknown()),
         message: z.string(),
       }),
       name: z.string(),
@@ -340,33 +340,19 @@ const StateSchema = z.object({
       startTime: z.string(),
       state: z.string(),
       steps: z.array(z.object({
-        endTime: z.string(),
-        initializingReplication: z.object({}),
-        postProcessing: z.object({}),
-        replicating: z.object({
-          lastThirtyMinutesAverageBytesPerSecond: z.string(),
-          lastTwoMinutesAverageBytesPerSecond: z.string(),
-          replicatedBytes: z.string(),
-          totalBytes: z.string(),
-        }),
-        startTime: z.string(),
+        endTime: z.unknown(),
+        initializingReplication: z.unknown(),
+        postProcessing: z.unknown(),
+        replicating: z.unknown(),
+        startTime: z.unknown(),
       })),
       totalPauseDuration: z.string(),
       warnings: z.array(z.object({
-        actionItem: z.object({
-          locale: z.string(),
-          message: z.string(),
-        }),
-        code: z.string(),
-        helpLinks: z.array(z.object({
-          description: z.string(),
-          url: z.string(),
-        })),
-        warningMessage: z.object({
-          locale: z.string(),
-          message: z.string(),
-        }),
-        warningTime: z.string(),
+        actionItem: z.unknown(),
+        code: z.unknown(),
+        helpLinks: z.unknown(),
+        warningMessage: z.unknown(),
+        warningTime: z.unknown(),
       })),
     }),
     instantiatingMigratedVm: z.object({}),
@@ -376,7 +362,7 @@ const StateSchema = z.object({
       endTime: z.string(),
       error: z.object({
         code: z.number(),
-        details: z.array(z.record(z.string(), z.unknown())),
+        details: z.array(z.unknown()),
         message: z.string(),
       }),
       name: z.string(),
@@ -384,33 +370,19 @@ const StateSchema = z.object({
       startTime: z.string(),
       state: z.string(),
       steps: z.array(z.object({
-        endTime: z.string(),
-        initializingReplication: z.object({}),
-        postProcessing: z.object({}),
-        replicating: z.object({
-          lastThirtyMinutesAverageBytesPerSecond: z.string(),
-          lastTwoMinutesAverageBytesPerSecond: z.string(),
-          replicatedBytes: z.string(),
-          totalBytes: z.string(),
-        }),
-        startTime: z.string(),
+        endTime: z.unknown(),
+        initializingReplication: z.unknown(),
+        postProcessing: z.unknown(),
+        replicating: z.unknown(),
+        startTime: z.unknown(),
       })),
       totalPauseDuration: z.string(),
       warnings: z.array(z.object({
-        actionItem: z.object({
-          locale: z.string(),
-          message: z.string(),
-        }),
-        code: z.string(),
-        helpLinks: z.array(z.object({
-          description: z.string(),
-          url: z.string(),
-        })),
-        warningMessage: z.object({
-          locale: z.string(),
-          message: z.string(),
-        }),
-        warningTime: z.string(),
+        actionItem: z.unknown(),
+        code: z.unknown(),
+        helpLinks: z.unknown(),
+        warningMessage: z.unknown(),
+        warningTime: z.unknown(),
       })),
     }),
     shuttingDownSourceVm: z.object({}),
@@ -486,7 +458,7 @@ const InputsSchema = z.object({
         operator: z.enum(["OPERATOR_UNSPECIFIED", "IN", "NOT_IN"]).describe(
           "The operator to use for the node resources specified in the `values` parameter.",
         ).optional(),
-        values: z.array(z.string()).describe(
+        values: z.array(z.unknown()).describe(
           "Corresponds to the label values of Node resource.",
         ).optional(),
       })).describe(
@@ -617,7 +589,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/vmmigration/sources-migratingvms-cutoverjobs",
-  version: "2026.04.03.3",
+  version: "2026.04.04.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -641,6 +613,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.3",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.04.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

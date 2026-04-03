@@ -70,68 +70,19 @@ const GlobalArgsSchema = z.object({
       ]).describe("Immutable. The density configuration of the index.")
         .optional(),
       fields: z.array(z.object({
-        arrayConfig: z.enum(["ARRAY_CONFIG_UNSPECIFIED", "CONTAINS"]).describe(
+        arrayConfig: z.unknown().describe(
           "Indicates that this field supports operations on `array_value`s.",
         ).optional(),
-        fieldPath: z.string().describe(
+        fieldPath: z.unknown().describe(
           "Can be __name__. For single field indexes, this must match the name of the field or may be omitted.",
         ).optional(),
-        order: z.enum(["ORDER_UNSPECIFIED", "ASCENDING", "DESCENDING"])
-          .describe(
-            "Indicates that this field supports ordering by the specified order or comparing using =,!=, , >=.",
-          ).optional(),
-        searchConfig: z.object({
-          geoSpec: z.object({
-            geoJsonIndexingDisabled: z.boolean().describe(
-              "Optional. Disables geoJSON indexing for the field. By default, geoJSON points are indexed.",
-            ).optional(),
-          }).describe(
-            "The specification for how to build a geo search index for a field.",
-          ).optional(),
-          numberSpec: z.object({
-            indexType: z.enum([
-              "NUMBER_INDEX_TYPE_UNSPECIFIED",
-              "FLOAT64",
-              "INT32_LOG_TREE",
-              "INT64_LOG_TREE",
-              "INT32_PREFIX_TREE",
-              "INT64_PREFIX_TREE",
-            ]).describe("Required. How to index the number field value.")
-              .optional(),
-          }).describe(
-            "The specification for how to build a number search index for a field.",
-          ).optional(),
-          textSpec: z.object({
-            indexSpecs: z.array(z.object({
-              indexType: z.enum([
-                "TEXT_INDEX_TYPE_UNSPECIFIED",
-                "TOKENIZED",
-                "NGRAMS",
-                "EXACT_MATCH",
-              ]).describe("Required. How to index the text field value.")
-                .optional(),
-              matchType: z.enum([
-                "TEXT_MATCH_TYPE_UNSPECIFIED",
-                "MATCH_GLOBALLY",
-                "MATCH_FIELD",
-              ]).describe("Required. How to match the text field value.")
-                .optional(),
-            })).describe(
-              "Required. Specifications for how the field should be indexed. Repeated so that the field can be indexed in multiple ways.",
-            ).optional(),
-          }).describe(
-            "The specification for how to build a text search index for a field.",
-          ).optional(),
-        }).describe("The configuration for how to index a field for search.")
-          .optional(),
-        vectorConfig: z.object({
-          dimension: z.number().int().describe(
-            "Required. The vector dimension this configuration applies to. The resulting index will only include vectors of this dimension, and can be used for vector search with the same dimension.",
-          ).optional(),
-          flat: z.object({}).describe(
-            "An index that stores vectors in a flat data structure, and supports exhaustive search.",
-          ).optional(),
-        }).describe(
+        order: z.unknown().describe(
+          "Indicates that this field supports ordering by the specified order or comparing using =,!=, , >=.",
+        ).optional(),
+        searchConfig: z.unknown().describe(
+          "The configuration for how to index a field for search.",
+        ).optional(),
+        vectorConfig: z.unknown().describe(
           "The index configuration to support vector search operations",
         ).optional(),
       })).describe(
@@ -152,7 +103,7 @@ const GlobalArgsSchema = z.object({
         "Indexes with a collection query scope specified allow queries against a collection that is the child of a specific document, specified at query time, and that has the same collection ID. Indexes with a collection group query scope specified allow queries against all collections descended from a specific document, specified at query time, and that have the same collection ID as this index.",
       ).optional(),
       searchIndexOptions: z.object({
-        customPartitionFieldPaths: z.array(z.string()).describe(
+        customPartitionFieldPaths: z.array(z.unknown()).describe(
           "Optional. Custom partition fields to use for the search index. If unspecified, all indexed fields will be in the same default partition. If a search index is created specifying custom partition fields, all search queries using that index will be required to filter on the partition. For indexes with MONGODB_COMPATIBLE_API ApiScope: This must refer to a top level field name.",
         ).optional(),
         textLanguage: z.string().describe(
@@ -203,33 +154,17 @@ const StateSchema = z.object({
       apiScope: z.string(),
       density: z.string(),
       fields: z.array(z.object({
-        arrayConfig: z.string(),
-        fieldPath: z.string(),
-        order: z.string(),
-        searchConfig: z.object({
-          geoSpec: z.object({
-            geoJsonIndexingDisabled: z.boolean(),
-          }),
-          numberSpec: z.object({
-            indexType: z.string(),
-          }),
-          textSpec: z.object({
-            indexSpecs: z.array(z.object({
-              indexType: z.string(),
-              matchType: z.string(),
-            })),
-          }),
-        }),
-        vectorConfig: z.object({
-          dimension: z.number(),
-          flat: z.object({}),
-        }),
+        arrayConfig: z.unknown(),
+        fieldPath: z.unknown(),
+        order: z.unknown(),
+        searchConfig: z.unknown(),
+        vectorConfig: z.unknown(),
       })),
       multikey: z.boolean(),
       name: z.string(),
       queryScope: z.string(),
       searchIndexOptions: z.object({
-        customPartitionFieldPaths: z.array(z.string()),
+        customPartitionFieldPaths: z.array(z.unknown()),
         textLanguage: z.string(),
         textLanguageOverrideFieldPath: z.string(),
       }),
@@ -268,68 +203,19 @@ const InputsSchema = z.object({
       ]).describe("Immutable. The density configuration of the index.")
         .optional(),
       fields: z.array(z.object({
-        arrayConfig: z.enum(["ARRAY_CONFIG_UNSPECIFIED", "CONTAINS"]).describe(
+        arrayConfig: z.unknown().describe(
           "Indicates that this field supports operations on `array_value`s.",
         ).optional(),
-        fieldPath: z.string().describe(
+        fieldPath: z.unknown().describe(
           "Can be __name__. For single field indexes, this must match the name of the field or may be omitted.",
         ).optional(),
-        order: z.enum(["ORDER_UNSPECIFIED", "ASCENDING", "DESCENDING"])
-          .describe(
-            "Indicates that this field supports ordering by the specified order or comparing using =,!=, , >=.",
-          ).optional(),
-        searchConfig: z.object({
-          geoSpec: z.object({
-            geoJsonIndexingDisabled: z.boolean().describe(
-              "Optional. Disables geoJSON indexing for the field. By default, geoJSON points are indexed.",
-            ).optional(),
-          }).describe(
-            "The specification for how to build a geo search index for a field.",
-          ).optional(),
-          numberSpec: z.object({
-            indexType: z.enum([
-              "NUMBER_INDEX_TYPE_UNSPECIFIED",
-              "FLOAT64",
-              "INT32_LOG_TREE",
-              "INT64_LOG_TREE",
-              "INT32_PREFIX_TREE",
-              "INT64_PREFIX_TREE",
-            ]).describe("Required. How to index the number field value.")
-              .optional(),
-          }).describe(
-            "The specification for how to build a number search index for a field.",
-          ).optional(),
-          textSpec: z.object({
-            indexSpecs: z.array(z.object({
-              indexType: z.enum([
-                "TEXT_INDEX_TYPE_UNSPECIFIED",
-                "TOKENIZED",
-                "NGRAMS",
-                "EXACT_MATCH",
-              ]).describe("Required. How to index the text field value.")
-                .optional(),
-              matchType: z.enum([
-                "TEXT_MATCH_TYPE_UNSPECIFIED",
-                "MATCH_GLOBALLY",
-                "MATCH_FIELD",
-              ]).describe("Required. How to match the text field value.")
-                .optional(),
-            })).describe(
-              "Required. Specifications for how the field should be indexed. Repeated so that the field can be indexed in multiple ways.",
-            ).optional(),
-          }).describe(
-            "The specification for how to build a text search index for a field.",
-          ).optional(),
-        }).describe("The configuration for how to index a field for search.")
-          .optional(),
-        vectorConfig: z.object({
-          dimension: z.number().int().describe(
-            "Required. The vector dimension this configuration applies to. The resulting index will only include vectors of this dimension, and can be used for vector search with the same dimension.",
-          ).optional(),
-          flat: z.object({}).describe(
-            "An index that stores vectors in a flat data structure, and supports exhaustive search.",
-          ).optional(),
-        }).describe(
+        order: z.unknown().describe(
+          "Indicates that this field supports ordering by the specified order or comparing using =,!=, , >=.",
+        ).optional(),
+        searchConfig: z.unknown().describe(
+          "The configuration for how to index a field for search.",
+        ).optional(),
+        vectorConfig: z.unknown().describe(
           "The index configuration to support vector search operations",
         ).optional(),
       })).describe(
@@ -350,7 +236,7 @@ const InputsSchema = z.object({
         "Indexes with a collection query scope specified allow queries against a collection that is the child of a specific document, specified at query time, and that has the same collection ID. Indexes with a collection group query scope specified allow queries against all collections descended from a specific document, specified at query time, and that have the same collection ID as this index.",
       ).optional(),
       searchIndexOptions: z.object({
-        customPartitionFieldPaths: z.array(z.string()).describe(
+        customPartitionFieldPaths: z.array(z.unknown()).describe(
           "Optional. Custom partition fields to use for the search index. If unspecified, all indexed fields will be in the same default partition. If a search index is created specifying custom partition fields, all search queries using that index will be required to filter on the partition. For indexes with MONGODB_COMPATIBLE_API ApiScope: This must refer to a top level field name.",
         ).optional(),
         textLanguage: z.string().describe(
@@ -396,7 +282,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/firestore/databases-collectiongroups-fields",
-  version: "2026.04.03.3",
+  version: "2026.04.04.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -420,6 +306,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.3",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.04.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

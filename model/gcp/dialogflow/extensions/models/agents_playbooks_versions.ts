@@ -69,55 +69,37 @@ const GlobalArgsSchema = z.object({
   examples: z.array(z.object({
     actions: z.array(z.object({
       agentUtterance: z.object({
-        text: z.string().optional(),
+        text: z.unknown().optional(),
       }).optional(),
       flowInvocation: z.object({
-        displayName: z.string().optional(),
-        flow: z.string().optional(),
-        flowState: z.enum([
-          "OUTPUT_STATE_UNSPECIFIED",
-          "OUTPUT_STATE_OK",
-          "OUTPUT_STATE_CANCELLED",
-          "OUTPUT_STATE_FAILED",
-          "OUTPUT_STATE_ESCALATED",
-          "OUTPUT_STATE_PENDING",
-        ]).optional(),
+        displayName: z.unknown().optional(),
+        flow: z.unknown().optional(),
+        flowState: z.unknown().optional(),
       }).optional(),
       flowTransition: z.object({
-        displayName: z.string().optional(),
-        flow: z.string().optional(),
+        displayName: z.unknown().optional(),
+        flow: z.unknown().optional(),
       }).optional(),
       playbookInvocation: z.object({
-        displayName: z.string().optional(),
-        playbook: z.string().optional(),
-        playbookInput: z.object({
-          precedingConversationSummary: z.string().optional(),
-        }).optional(),
-        playbookOutput: z.object({
-          executionSummary: z.string().optional(),
-        }).optional(),
-        playbookState: z.enum([
-          "OUTPUT_STATE_UNSPECIFIED",
-          "OUTPUT_STATE_OK",
-          "OUTPUT_STATE_CANCELLED",
-          "OUTPUT_STATE_FAILED",
-          "OUTPUT_STATE_ESCALATED",
-          "OUTPUT_STATE_PENDING",
-        ]).optional(),
+        displayName: z.unknown().optional(),
+        playbook: z.unknown().optional(),
+        playbookInput: z.unknown().optional(),
+        playbookOutput: z.unknown().optional(),
+        playbookState: z.unknown().optional(),
       }).optional(),
       playbookTransition: z.object({
-        displayName: z.string().optional(),
-        playbook: z.string().optional(),
+        displayName: z.unknown().optional(),
+        playbook: z.unknown().optional(),
       }).optional(),
       toolUse: z.object({
-        action: z.string().optional(),
-        displayName: z.string().optional(),
-        inputActionParameters: z.record(z.string(), z.string()).optional(),
-        outputActionParameters: z.record(z.string(), z.string()).optional(),
-        tool: z.string().optional(),
+        action: z.unknown().optional(),
+        displayName: z.unknown().optional(),
+        inputActionParameters: z.unknown().optional(),
+        outputActionParameters: z.unknown().optional(),
+        tool: z.unknown().optional(),
       }).optional(),
       userUtterance: z.object({
-        text: z.string().optional(),
+        text: z.unknown().optional(),
       }).optional(),
     })).optional(),
     conversationState: z.enum([
@@ -155,289 +137,29 @@ const GlobalArgsSchema = z.object({
         condition: z.string().optional(),
         event: z.string().optional(),
         fulfillment: z.object({
-          advancedSettings: z.object({
-            audioExportGcsDestination: z.object({
-              uri: z.string().optional(),
-            }).optional(),
-            dtmfSettings: z.object({
-              enabled: z.boolean().optional(),
-              endpointingTimeoutDuration: z.string().optional(),
-              finishDigit: z.string().optional(),
-              interdigitTimeoutDuration: z.string().optional(),
-              maxDigits: z.number().int().optional(),
-            }).optional(),
-            loggingSettings: z.object({
-              enableConsentBasedRedaction: z.boolean().optional(),
-              enableInteractionLogging: z.boolean().optional(),
-              enableStackdriverLogging: z.boolean().optional(),
-            }).optional(),
-            speechSettings: z.object({
-              endpointerSensitivity: z.number().int().optional(),
-              models: z.record(z.string(), z.string()).optional(),
-              noSpeechTimeout: z.string().optional(),
-              useTimeoutBasedEndpointing: z.boolean().optional(),
-            }).optional(),
-          }).optional(),
-          conditionalCases: z.array(z.object({
-            cases: z.array(z.object({
-              caseContent: z.array(z.object({
-                additionalCases: z.string().describe(
-                  "Circular reference to GoogleCloudDialogflowCxV3FulfillmentConditionalCases",
-                ).optional(),
-                message: z.object({
-                  channel: z.string().optional(),
-                  conversationSuccess: z.object({
-                    metadata: z.record(z.string(), z.string()).optional(),
-                  }).optional(),
-                  endInteraction: z.object({}).optional(),
-                  knowledgeInfoCard: z.object({}).optional(),
-                  liveAgentHandoff: z.object({
-                    metadata: z.record(z.string(), z.string()).optional(),
-                  }).optional(),
-                  mixedAudio: z.object({
-                    segments: z.array(z.object({
-                      allowPlaybackInterruption: z.boolean().optional(),
-                      audio: z.string().optional(),
-                      uri: z.string().optional(),
-                    })).optional(),
-                  }).optional(),
-                  outputAudioText: z.object({
-                    allowPlaybackInterruption: z.boolean().optional(),
-                    ssml: z.string().optional(),
-                    text: z.string().optional(),
-                  }).optional(),
-                  payload: z.record(z.string(), z.string()).optional(),
-                  playAudio: z.object({
-                    allowPlaybackInterruption: z.boolean().optional(),
-                    audioUri: z.string().optional(),
-                  }).optional(),
-                  responseType: z.enum([
-                    "RESPONSE_TYPE_UNSPECIFIED",
-                    "ENTRY_PROMPT",
-                    "PARAMETER_PROMPT",
-                    "HANDLER_PROMPT",
-                  ]).optional(),
-                  telephonyTransferCall: z.object({
-                    phoneNumber: z.string().optional(),
-                  }).optional(),
-                  text: z.object({
-                    allowPlaybackInterruption: z.boolean().optional(),
-                    text: z.array(z.string()).optional(),
-                  }).optional(),
-                  toolCall: z.object({
-                    action: z.string().optional(),
-                    inputParameters: z.record(z.string(), z.string())
-                      .optional(),
-                    tool: z.string().optional(),
-                  }).optional(),
-                }).optional(),
-              })).optional(),
-              condition: z.string().optional(),
-            })).optional(),
-          })).optional(),
-          enableGenerativeFallback: z.boolean().optional(),
-          generators: z.array(z.object({
-            generator: z.string().optional(),
-            inputParameters: z.record(z.string(), z.string()).optional(),
-            outputParameter: z.string().optional(),
-          })).optional(),
-          messages: z.array(z.object({
-            channel: z.string().optional(),
-            conversationSuccess: z.object({
-              metadata: z.record(z.string(), z.string()).optional(),
-            }).optional(),
-            endInteraction: z.object({}).optional(),
-            knowledgeInfoCard: z.object({}).optional(),
-            liveAgentHandoff: z.object({
-              metadata: z.record(z.string(), z.string()).optional(),
-            }).optional(),
-            mixedAudio: z.object({
-              segments: z.array(z.object({
-                allowPlaybackInterruption: z.boolean().optional(),
-                audio: z.string().optional(),
-                uri: z.string().optional(),
-              })).optional(),
-            }).optional(),
-            outputAudioText: z.object({
-              allowPlaybackInterruption: z.boolean().optional(),
-              ssml: z.string().optional(),
-              text: z.string().optional(),
-            }).optional(),
-            payload: z.record(z.string(), z.string()).optional(),
-            playAudio: z.object({
-              allowPlaybackInterruption: z.boolean().optional(),
-              audioUri: z.string().optional(),
-            }).optional(),
-            responseType: z.enum([
-              "RESPONSE_TYPE_UNSPECIFIED",
-              "ENTRY_PROMPT",
-              "PARAMETER_PROMPT",
-              "HANDLER_PROMPT",
-            ]).optional(),
-            telephonyTransferCall: z.object({
-              phoneNumber: z.string().optional(),
-            }).optional(),
-            text: z.object({
-              allowPlaybackInterruption: z.boolean().optional(),
-              text: z.array(z.string()).optional(),
-            }).optional(),
-            toolCall: z.object({
-              action: z.string().optional(),
-              inputParameters: z.record(z.string(), z.string()).optional(),
-              tool: z.string().optional(),
-            }).optional(),
-          })).optional(),
-          returnPartialResponses: z.boolean().optional(),
-          setParameterActions: z.array(z.object({
-            parameter: z.string().optional(),
-            value: z.string().optional(),
-          })).optional(),
-          tag: z.string().optional(),
-          webhook: z.string().optional(),
+          advancedSettings: z.unknown().optional(),
+          conditionalCases: z.unknown().optional(),
+          enableGenerativeFallback: z.unknown().optional(),
+          generators: z.unknown().optional(),
+          messages: z.unknown().optional(),
+          returnPartialResponses: z.unknown().optional(),
+          setParameterActions: z.unknown().optional(),
+          tag: z.unknown().optional(),
+          webhook: z.unknown().optional(),
         }).optional(),
       }).optional(),
       lifecycleHandler: z.object({
         condition: z.string().optional(),
         fulfillment: z.object({
-          advancedSettings: z.object({
-            audioExportGcsDestination: z.object({
-              uri: z.string().optional(),
-            }).optional(),
-            dtmfSettings: z.object({
-              enabled: z.boolean().optional(),
-              endpointingTimeoutDuration: z.string().optional(),
-              finishDigit: z.string().optional(),
-              interdigitTimeoutDuration: z.string().optional(),
-              maxDigits: z.number().int().optional(),
-            }).optional(),
-            loggingSettings: z.object({
-              enableConsentBasedRedaction: z.boolean().optional(),
-              enableInteractionLogging: z.boolean().optional(),
-              enableStackdriverLogging: z.boolean().optional(),
-            }).optional(),
-            speechSettings: z.object({
-              endpointerSensitivity: z.number().int().optional(),
-              models: z.record(z.string(), z.string()).optional(),
-              noSpeechTimeout: z.string().optional(),
-              useTimeoutBasedEndpointing: z.boolean().optional(),
-            }).optional(),
-          }).optional(),
-          conditionalCases: z.array(z.object({
-            cases: z.array(z.object({
-              caseContent: z.array(z.object({
-                additionalCases: z.string().describe(
-                  "Circular reference to GoogleCloudDialogflowCxV3FulfillmentConditionalCases",
-                ).optional(),
-                message: z.object({
-                  channel: z.string().optional(),
-                  conversationSuccess: z.object({
-                    metadata: z.record(z.string(), z.string()).optional(),
-                  }).optional(),
-                  endInteraction: z.object({}).optional(),
-                  knowledgeInfoCard: z.object({}).optional(),
-                  liveAgentHandoff: z.object({
-                    metadata: z.record(z.string(), z.string()).optional(),
-                  }).optional(),
-                  mixedAudio: z.object({
-                    segments: z.array(z.object({
-                      allowPlaybackInterruption: z.boolean().optional(),
-                      audio: z.string().optional(),
-                      uri: z.string().optional(),
-                    })).optional(),
-                  }).optional(),
-                  outputAudioText: z.object({
-                    allowPlaybackInterruption: z.boolean().optional(),
-                    ssml: z.string().optional(),
-                    text: z.string().optional(),
-                  }).optional(),
-                  payload: z.record(z.string(), z.string()).optional(),
-                  playAudio: z.object({
-                    allowPlaybackInterruption: z.boolean().optional(),
-                    audioUri: z.string().optional(),
-                  }).optional(),
-                  responseType: z.enum([
-                    "RESPONSE_TYPE_UNSPECIFIED",
-                    "ENTRY_PROMPT",
-                    "PARAMETER_PROMPT",
-                    "HANDLER_PROMPT",
-                  ]).optional(),
-                  telephonyTransferCall: z.object({
-                    phoneNumber: z.string().optional(),
-                  }).optional(),
-                  text: z.object({
-                    allowPlaybackInterruption: z.boolean().optional(),
-                    text: z.array(z.string()).optional(),
-                  }).optional(),
-                  toolCall: z.object({
-                    action: z.string().optional(),
-                    inputParameters: z.record(z.string(), z.string())
-                      .optional(),
-                    tool: z.string().optional(),
-                  }).optional(),
-                }).optional(),
-              })).optional(),
-              condition: z.string().optional(),
-            })).optional(),
-          })).optional(),
-          enableGenerativeFallback: z.boolean().optional(),
-          generators: z.array(z.object({
-            generator: z.string().optional(),
-            inputParameters: z.record(z.string(), z.string()).optional(),
-            outputParameter: z.string().optional(),
-          })).optional(),
-          messages: z.array(z.object({
-            channel: z.string().optional(),
-            conversationSuccess: z.object({
-              metadata: z.record(z.string(), z.string()).optional(),
-            }).optional(),
-            endInteraction: z.object({}).optional(),
-            knowledgeInfoCard: z.object({}).optional(),
-            liveAgentHandoff: z.object({
-              metadata: z.record(z.string(), z.string()).optional(),
-            }).optional(),
-            mixedAudio: z.object({
-              segments: z.array(z.object({
-                allowPlaybackInterruption: z.boolean().optional(),
-                audio: z.string().optional(),
-                uri: z.string().optional(),
-              })).optional(),
-            }).optional(),
-            outputAudioText: z.object({
-              allowPlaybackInterruption: z.boolean().optional(),
-              ssml: z.string().optional(),
-              text: z.string().optional(),
-            }).optional(),
-            payload: z.record(z.string(), z.string()).optional(),
-            playAudio: z.object({
-              allowPlaybackInterruption: z.boolean().optional(),
-              audioUri: z.string().optional(),
-            }).optional(),
-            responseType: z.enum([
-              "RESPONSE_TYPE_UNSPECIFIED",
-              "ENTRY_PROMPT",
-              "PARAMETER_PROMPT",
-              "HANDLER_PROMPT",
-            ]).optional(),
-            telephonyTransferCall: z.object({
-              phoneNumber: z.string().optional(),
-            }).optional(),
-            text: z.object({
-              allowPlaybackInterruption: z.boolean().optional(),
-              text: z.array(z.string()).optional(),
-            }).optional(),
-            toolCall: z.object({
-              action: z.string().optional(),
-              inputParameters: z.record(z.string(), z.string()).optional(),
-              tool: z.string().optional(),
-            }).optional(),
-          })).optional(),
-          returnPartialResponses: z.boolean().optional(),
-          setParameterActions: z.array(z.object({
-            parameter: z.string().optional(),
-            value: z.string().optional(),
-          })).optional(),
-          tag: z.string().optional(),
-          webhook: z.string().optional(),
+          advancedSettings: z.unknown().optional(),
+          conditionalCases: z.unknown().optional(),
+          enableGenerativeFallback: z.unknown().optional(),
+          generators: z.unknown().optional(),
+          messages: z.unknown().optional(),
+          returnPartialResponses: z.unknown().optional(),
+          setParameterActions: z.unknown().optional(),
+          tag: z.unknown().optional(),
+          webhook: z.unknown().optional(),
         }).optional(),
         lifecycleStage: z.string().optional(),
       }).optional(),
@@ -457,27 +179,21 @@ const GlobalArgsSchema = z.object({
       ]).optional(),
       typeSchema: z.object({
         inlineSchema: z.object({
-          items: z.string().describe(
+          items: z.unknown().describe(
             "Circular reference to GoogleCloudDialogflowCxV3TypeSchema",
           ).optional(),
-          type: z.enum([
-            "DATA_TYPE_UNSPECIFIED",
-            "STRING",
-            "NUMBER",
-            "BOOLEAN",
-            "ARRAY",
-          ]).optional(),
+          type: z.unknown().optional(),
         }).optional(),
         schemaReference: z.object({
-          schema: z.string().optional(),
-          tool: z.string().optional(),
+          schema: z.unknown().optional(),
+          tool: z.unknown().optional(),
         }).optional(),
       }).optional(),
     })).optional(),
     instruction: z.object({
       guidelines: z.string().optional(),
       steps: z.array(z.object({
-        steps: z.array(z.string()).optional(),
+        steps: z.array(z.unknown()).optional(),
         text: z.string().optional(),
       })).optional(),
     }).optional(),
@@ -500,20 +216,14 @@ const GlobalArgsSchema = z.object({
       ]).optional(),
       typeSchema: z.object({
         inlineSchema: z.object({
-          items: z.string().describe(
+          items: z.unknown().describe(
             "Circular reference to GoogleCloudDialogflowCxV3TypeSchema",
           ).optional(),
-          type: z.enum([
-            "DATA_TYPE_UNSPECIFIED",
-            "STRING",
-            "NUMBER",
-            "BOOLEAN",
-            "ARRAY",
-          ]).optional(),
+          type: z.unknown().optional(),
         }).optional(),
         schemaReference: z.object({
-          schema: z.string().optional(),
-          tool: z.string().optional(),
+          schema: z.unknown().optional(),
+          tool: z.unknown().optional(),
         }).optional(),
       }).optional(),
     })).optional(),
@@ -536,41 +246,37 @@ const StateSchema = z.object({
   examples: z.array(z.object({
     actions: z.array(z.object({
       agentUtterance: z.object({
-        text: z.string(),
+        text: z.unknown(),
       }),
       flowInvocation: z.object({
-        displayName: z.string(),
-        flow: z.string(),
-        flowState: z.string(),
+        displayName: z.unknown(),
+        flow: z.unknown(),
+        flowState: z.unknown(),
       }),
       flowTransition: z.object({
-        displayName: z.string(),
-        flow: z.string(),
+        displayName: z.unknown(),
+        flow: z.unknown(),
       }),
       playbookInvocation: z.object({
-        displayName: z.string(),
-        playbook: z.string(),
-        playbookInput: z.object({
-          precedingConversationSummary: z.string(),
-        }),
-        playbookOutput: z.object({
-          executionSummary: z.string(),
-        }),
-        playbookState: z.string(),
+        displayName: z.unknown(),
+        playbook: z.unknown(),
+        playbookInput: z.unknown(),
+        playbookOutput: z.unknown(),
+        playbookState: z.unknown(),
       }),
       playbookTransition: z.object({
-        displayName: z.string(),
-        playbook: z.string(),
+        displayName: z.unknown(),
+        playbook: z.unknown(),
       }),
       toolUse: z.object({
-        action: z.string(),
-        displayName: z.string(),
-        inputActionParameters: z.record(z.string(), z.unknown()),
-        outputActionParameters: z.record(z.string(), z.unknown()),
-        tool: z.string(),
+        action: z.unknown(),
+        displayName: z.unknown(),
+        inputActionParameters: z.unknown(),
+        outputActionParameters: z.unknown(),
+        tool: z.unknown(),
       }),
       userUtterance: z.object({
-        text: z.string(),
+        text: z.unknown(),
       }),
     })),
     conversationState: z.string(),
@@ -601,263 +307,29 @@ const StateSchema = z.object({
         condition: z.string(),
         event: z.string(),
         fulfillment: z.object({
-          advancedSettings: z.object({
-            audioExportGcsDestination: z.object({
-              uri: z.string(),
-            }),
-            dtmfSettings: z.object({
-              enabled: z.boolean(),
-              endpointingTimeoutDuration: z.string(),
-              finishDigit: z.string(),
-              interdigitTimeoutDuration: z.string(),
-              maxDigits: z.number(),
-            }),
-            loggingSettings: z.object({
-              enableConsentBasedRedaction: z.boolean(),
-              enableInteractionLogging: z.boolean(),
-              enableStackdriverLogging: z.boolean(),
-            }),
-            speechSettings: z.object({
-              endpointerSensitivity: z.number(),
-              models: z.record(z.string(), z.unknown()),
-              noSpeechTimeout: z.string(),
-              useTimeoutBasedEndpointing: z.boolean(),
-            }),
-          }),
-          conditionalCases: z.array(z.object({
-            cases: z.array(z.object({
-              caseContent: z.array(z.object({
-                additionalCases: z.string(),
-                message: z.object({
-                  channel: z.string(),
-                  conversationSuccess: z.object({
-                    metadata: z.record(z.string(), z.unknown()),
-                  }),
-                  endInteraction: z.object({}),
-                  knowledgeInfoCard: z.object({}),
-                  liveAgentHandoff: z.object({
-                    metadata: z.record(z.string(), z.unknown()),
-                  }),
-                  mixedAudio: z.object({
-                    segments: z.array(z.object({
-                      allowPlaybackInterruption: z.boolean(),
-                      audio: z.string(),
-                      uri: z.string(),
-                    })),
-                  }),
-                  outputAudioText: z.object({
-                    allowPlaybackInterruption: z.boolean(),
-                    ssml: z.string(),
-                    text: z.string(),
-                  }),
-                  payload: z.record(z.string(), z.unknown()),
-                  playAudio: z.object({
-                    allowPlaybackInterruption: z.boolean(),
-                    audioUri: z.string(),
-                  }),
-                  responseType: z.string(),
-                  telephonyTransferCall: z.object({
-                    phoneNumber: z.string(),
-                  }),
-                  text: z.object({
-                    allowPlaybackInterruption: z.boolean(),
-                    text: z.array(z.string()),
-                  }),
-                  toolCall: z.object({
-                    action: z.string(),
-                    inputParameters: z.record(z.string(), z.unknown()),
-                    tool: z.string(),
-                  }),
-                }),
-              })),
-              condition: z.string(),
-            })),
-          })),
-          enableGenerativeFallback: z.boolean(),
-          generators: z.array(z.object({
-            generator: z.string(),
-            inputParameters: z.record(z.string(), z.unknown()),
-            outputParameter: z.string(),
-          })),
-          messages: z.array(z.object({
-            channel: z.string(),
-            conversationSuccess: z.object({
-              metadata: z.record(z.string(), z.unknown()),
-            }),
-            endInteraction: z.object({}),
-            knowledgeInfoCard: z.object({}),
-            liveAgentHandoff: z.object({
-              metadata: z.record(z.string(), z.unknown()),
-            }),
-            mixedAudio: z.object({
-              segments: z.array(z.object({
-                allowPlaybackInterruption: z.boolean(),
-                audio: z.string(),
-                uri: z.string(),
-              })),
-            }),
-            outputAudioText: z.object({
-              allowPlaybackInterruption: z.boolean(),
-              ssml: z.string(),
-              text: z.string(),
-            }),
-            payload: z.record(z.string(), z.unknown()),
-            playAudio: z.object({
-              allowPlaybackInterruption: z.boolean(),
-              audioUri: z.string(),
-            }),
-            responseType: z.string(),
-            telephonyTransferCall: z.object({
-              phoneNumber: z.string(),
-            }),
-            text: z.object({
-              allowPlaybackInterruption: z.boolean(),
-              text: z.array(z.string()),
-            }),
-            toolCall: z.object({
-              action: z.string(),
-              inputParameters: z.record(z.string(), z.unknown()),
-              tool: z.string(),
-            }),
-          })),
-          returnPartialResponses: z.boolean(),
-          setParameterActions: z.array(z.object({
-            parameter: z.string(),
-            value: z.string(),
-          })),
-          tag: z.string(),
-          webhook: z.string(),
+          advancedSettings: z.unknown(),
+          conditionalCases: z.unknown(),
+          enableGenerativeFallback: z.unknown(),
+          generators: z.unknown(),
+          messages: z.unknown(),
+          returnPartialResponses: z.unknown(),
+          setParameterActions: z.unknown(),
+          tag: z.unknown(),
+          webhook: z.unknown(),
         }),
       }),
       lifecycleHandler: z.object({
         condition: z.string(),
         fulfillment: z.object({
-          advancedSettings: z.object({
-            audioExportGcsDestination: z.object({
-              uri: z.string(),
-            }),
-            dtmfSettings: z.object({
-              enabled: z.boolean(),
-              endpointingTimeoutDuration: z.string(),
-              finishDigit: z.string(),
-              interdigitTimeoutDuration: z.string(),
-              maxDigits: z.number(),
-            }),
-            loggingSettings: z.object({
-              enableConsentBasedRedaction: z.boolean(),
-              enableInteractionLogging: z.boolean(),
-              enableStackdriverLogging: z.boolean(),
-            }),
-            speechSettings: z.object({
-              endpointerSensitivity: z.number(),
-              models: z.record(z.string(), z.unknown()),
-              noSpeechTimeout: z.string(),
-              useTimeoutBasedEndpointing: z.boolean(),
-            }),
-          }),
-          conditionalCases: z.array(z.object({
-            cases: z.array(z.object({
-              caseContent: z.array(z.object({
-                additionalCases: z.string(),
-                message: z.object({
-                  channel: z.string(),
-                  conversationSuccess: z.object({
-                    metadata: z.record(z.string(), z.unknown()),
-                  }),
-                  endInteraction: z.object({}),
-                  knowledgeInfoCard: z.object({}),
-                  liveAgentHandoff: z.object({
-                    metadata: z.record(z.string(), z.unknown()),
-                  }),
-                  mixedAudio: z.object({
-                    segments: z.array(z.object({
-                      allowPlaybackInterruption: z.boolean(),
-                      audio: z.string(),
-                      uri: z.string(),
-                    })),
-                  }),
-                  outputAudioText: z.object({
-                    allowPlaybackInterruption: z.boolean(),
-                    ssml: z.string(),
-                    text: z.string(),
-                  }),
-                  payload: z.record(z.string(), z.unknown()),
-                  playAudio: z.object({
-                    allowPlaybackInterruption: z.boolean(),
-                    audioUri: z.string(),
-                  }),
-                  responseType: z.string(),
-                  telephonyTransferCall: z.object({
-                    phoneNumber: z.string(),
-                  }),
-                  text: z.object({
-                    allowPlaybackInterruption: z.boolean(),
-                    text: z.array(z.string()),
-                  }),
-                  toolCall: z.object({
-                    action: z.string(),
-                    inputParameters: z.record(z.string(), z.unknown()),
-                    tool: z.string(),
-                  }),
-                }),
-              })),
-              condition: z.string(),
-            })),
-          })),
-          enableGenerativeFallback: z.boolean(),
-          generators: z.array(z.object({
-            generator: z.string(),
-            inputParameters: z.record(z.string(), z.unknown()),
-            outputParameter: z.string(),
-          })),
-          messages: z.array(z.object({
-            channel: z.string(),
-            conversationSuccess: z.object({
-              metadata: z.record(z.string(), z.unknown()),
-            }),
-            endInteraction: z.object({}),
-            knowledgeInfoCard: z.object({}),
-            liveAgentHandoff: z.object({
-              metadata: z.record(z.string(), z.unknown()),
-            }),
-            mixedAudio: z.object({
-              segments: z.array(z.object({
-                allowPlaybackInterruption: z.boolean(),
-                audio: z.string(),
-                uri: z.string(),
-              })),
-            }),
-            outputAudioText: z.object({
-              allowPlaybackInterruption: z.boolean(),
-              ssml: z.string(),
-              text: z.string(),
-            }),
-            payload: z.record(z.string(), z.unknown()),
-            playAudio: z.object({
-              allowPlaybackInterruption: z.boolean(),
-              audioUri: z.string(),
-            }),
-            responseType: z.string(),
-            telephonyTransferCall: z.object({
-              phoneNumber: z.string(),
-            }),
-            text: z.object({
-              allowPlaybackInterruption: z.boolean(),
-              text: z.array(z.string()),
-            }),
-            toolCall: z.object({
-              action: z.string(),
-              inputParameters: z.record(z.string(), z.unknown()),
-              tool: z.string(),
-            }),
-          })),
-          returnPartialResponses: z.boolean(),
-          setParameterActions: z.array(z.object({
-            parameter: z.string(),
-            value: z.string(),
-          })),
-          tag: z.string(),
-          webhook: z.string(),
+          advancedSettings: z.unknown(),
+          conditionalCases: z.unknown(),
+          enableGenerativeFallback: z.unknown(),
+          generators: z.unknown(),
+          messages: z.unknown(),
+          returnPartialResponses: z.unknown(),
+          setParameterActions: z.unknown(),
+          tag: z.unknown(),
+          webhook: z.unknown(),
         }),
         lifecycleStage: z.string(),
       }),
@@ -869,19 +341,19 @@ const StateSchema = z.object({
       type: z.string(),
       typeSchema: z.object({
         inlineSchema: z.object({
-          items: z.string(),
-          type: z.string(),
+          items: z.unknown(),
+          type: z.unknown(),
         }),
         schemaReference: z.object({
-          schema: z.string(),
-          tool: z.string(),
+          schema: z.unknown(),
+          tool: z.unknown(),
         }),
       }),
     })),
     instruction: z.object({
       guidelines: z.string(),
       steps: z.array(z.object({
-        steps: z.array(z.string()),
+        steps: z.array(z.unknown()),
         text: z.string(),
       })),
     }),
@@ -896,12 +368,12 @@ const StateSchema = z.object({
       type: z.string(),
       typeSchema: z.object({
         inlineSchema: z.object({
-          items: z.string(),
-          type: z.string(),
+          items: z.unknown(),
+          type: z.unknown(),
         }),
         schemaReference: z.object({
-          schema: z.string(),
-          tool: z.string(),
+          schema: z.unknown(),
+          tool: z.unknown(),
         }),
       }),
     })),
@@ -922,55 +394,37 @@ const InputsSchema = z.object({
   examples: z.array(z.object({
     actions: z.array(z.object({
       agentUtterance: z.object({
-        text: z.string().optional(),
+        text: z.unknown().optional(),
       }).optional(),
       flowInvocation: z.object({
-        displayName: z.string().optional(),
-        flow: z.string().optional(),
-        flowState: z.enum([
-          "OUTPUT_STATE_UNSPECIFIED",
-          "OUTPUT_STATE_OK",
-          "OUTPUT_STATE_CANCELLED",
-          "OUTPUT_STATE_FAILED",
-          "OUTPUT_STATE_ESCALATED",
-          "OUTPUT_STATE_PENDING",
-        ]).optional(),
+        displayName: z.unknown().optional(),
+        flow: z.unknown().optional(),
+        flowState: z.unknown().optional(),
       }).optional(),
       flowTransition: z.object({
-        displayName: z.string().optional(),
-        flow: z.string().optional(),
+        displayName: z.unknown().optional(),
+        flow: z.unknown().optional(),
       }).optional(),
       playbookInvocation: z.object({
-        displayName: z.string().optional(),
-        playbook: z.string().optional(),
-        playbookInput: z.object({
-          precedingConversationSummary: z.string().optional(),
-        }).optional(),
-        playbookOutput: z.object({
-          executionSummary: z.string().optional(),
-        }).optional(),
-        playbookState: z.enum([
-          "OUTPUT_STATE_UNSPECIFIED",
-          "OUTPUT_STATE_OK",
-          "OUTPUT_STATE_CANCELLED",
-          "OUTPUT_STATE_FAILED",
-          "OUTPUT_STATE_ESCALATED",
-          "OUTPUT_STATE_PENDING",
-        ]).optional(),
+        displayName: z.unknown().optional(),
+        playbook: z.unknown().optional(),
+        playbookInput: z.unknown().optional(),
+        playbookOutput: z.unknown().optional(),
+        playbookState: z.unknown().optional(),
       }).optional(),
       playbookTransition: z.object({
-        displayName: z.string().optional(),
-        playbook: z.string().optional(),
+        displayName: z.unknown().optional(),
+        playbook: z.unknown().optional(),
       }).optional(),
       toolUse: z.object({
-        action: z.string().optional(),
-        displayName: z.string().optional(),
-        inputActionParameters: z.record(z.string(), z.string()).optional(),
-        outputActionParameters: z.record(z.string(), z.string()).optional(),
-        tool: z.string().optional(),
+        action: z.unknown().optional(),
+        displayName: z.unknown().optional(),
+        inputActionParameters: z.unknown().optional(),
+        outputActionParameters: z.unknown().optional(),
+        tool: z.unknown().optional(),
       }).optional(),
       userUtterance: z.object({
-        text: z.string().optional(),
+        text: z.unknown().optional(),
       }).optional(),
     })).optional(),
     conversationState: z.enum([
@@ -1008,289 +462,29 @@ const InputsSchema = z.object({
         condition: z.string().optional(),
         event: z.string().optional(),
         fulfillment: z.object({
-          advancedSettings: z.object({
-            audioExportGcsDestination: z.object({
-              uri: z.string().optional(),
-            }).optional(),
-            dtmfSettings: z.object({
-              enabled: z.boolean().optional(),
-              endpointingTimeoutDuration: z.string().optional(),
-              finishDigit: z.string().optional(),
-              interdigitTimeoutDuration: z.string().optional(),
-              maxDigits: z.number().int().optional(),
-            }).optional(),
-            loggingSettings: z.object({
-              enableConsentBasedRedaction: z.boolean().optional(),
-              enableInteractionLogging: z.boolean().optional(),
-              enableStackdriverLogging: z.boolean().optional(),
-            }).optional(),
-            speechSettings: z.object({
-              endpointerSensitivity: z.number().int().optional(),
-              models: z.record(z.string(), z.string()).optional(),
-              noSpeechTimeout: z.string().optional(),
-              useTimeoutBasedEndpointing: z.boolean().optional(),
-            }).optional(),
-          }).optional(),
-          conditionalCases: z.array(z.object({
-            cases: z.array(z.object({
-              caseContent: z.array(z.object({
-                additionalCases: z.string().describe(
-                  "Circular reference to GoogleCloudDialogflowCxV3FulfillmentConditionalCases",
-                ).optional(),
-                message: z.object({
-                  channel: z.string().optional(),
-                  conversationSuccess: z.object({
-                    metadata: z.record(z.string(), z.string()).optional(),
-                  }).optional(),
-                  endInteraction: z.object({}).optional(),
-                  knowledgeInfoCard: z.object({}).optional(),
-                  liveAgentHandoff: z.object({
-                    metadata: z.record(z.string(), z.string()).optional(),
-                  }).optional(),
-                  mixedAudio: z.object({
-                    segments: z.array(z.object({
-                      allowPlaybackInterruption: z.boolean().optional(),
-                      audio: z.string().optional(),
-                      uri: z.string().optional(),
-                    })).optional(),
-                  }).optional(),
-                  outputAudioText: z.object({
-                    allowPlaybackInterruption: z.boolean().optional(),
-                    ssml: z.string().optional(),
-                    text: z.string().optional(),
-                  }).optional(),
-                  payload: z.record(z.string(), z.string()).optional(),
-                  playAudio: z.object({
-                    allowPlaybackInterruption: z.boolean().optional(),
-                    audioUri: z.string().optional(),
-                  }).optional(),
-                  responseType: z.enum([
-                    "RESPONSE_TYPE_UNSPECIFIED",
-                    "ENTRY_PROMPT",
-                    "PARAMETER_PROMPT",
-                    "HANDLER_PROMPT",
-                  ]).optional(),
-                  telephonyTransferCall: z.object({
-                    phoneNumber: z.string().optional(),
-                  }).optional(),
-                  text: z.object({
-                    allowPlaybackInterruption: z.boolean().optional(),
-                    text: z.array(z.string()).optional(),
-                  }).optional(),
-                  toolCall: z.object({
-                    action: z.string().optional(),
-                    inputParameters: z.record(z.string(), z.string())
-                      .optional(),
-                    tool: z.string().optional(),
-                  }).optional(),
-                }).optional(),
-              })).optional(),
-              condition: z.string().optional(),
-            })).optional(),
-          })).optional(),
-          enableGenerativeFallback: z.boolean().optional(),
-          generators: z.array(z.object({
-            generator: z.string().optional(),
-            inputParameters: z.record(z.string(), z.string()).optional(),
-            outputParameter: z.string().optional(),
-          })).optional(),
-          messages: z.array(z.object({
-            channel: z.string().optional(),
-            conversationSuccess: z.object({
-              metadata: z.record(z.string(), z.string()).optional(),
-            }).optional(),
-            endInteraction: z.object({}).optional(),
-            knowledgeInfoCard: z.object({}).optional(),
-            liveAgentHandoff: z.object({
-              metadata: z.record(z.string(), z.string()).optional(),
-            }).optional(),
-            mixedAudio: z.object({
-              segments: z.array(z.object({
-                allowPlaybackInterruption: z.boolean().optional(),
-                audio: z.string().optional(),
-                uri: z.string().optional(),
-              })).optional(),
-            }).optional(),
-            outputAudioText: z.object({
-              allowPlaybackInterruption: z.boolean().optional(),
-              ssml: z.string().optional(),
-              text: z.string().optional(),
-            }).optional(),
-            payload: z.record(z.string(), z.string()).optional(),
-            playAudio: z.object({
-              allowPlaybackInterruption: z.boolean().optional(),
-              audioUri: z.string().optional(),
-            }).optional(),
-            responseType: z.enum([
-              "RESPONSE_TYPE_UNSPECIFIED",
-              "ENTRY_PROMPT",
-              "PARAMETER_PROMPT",
-              "HANDLER_PROMPT",
-            ]).optional(),
-            telephonyTransferCall: z.object({
-              phoneNumber: z.string().optional(),
-            }).optional(),
-            text: z.object({
-              allowPlaybackInterruption: z.boolean().optional(),
-              text: z.array(z.string()).optional(),
-            }).optional(),
-            toolCall: z.object({
-              action: z.string().optional(),
-              inputParameters: z.record(z.string(), z.string()).optional(),
-              tool: z.string().optional(),
-            }).optional(),
-          })).optional(),
-          returnPartialResponses: z.boolean().optional(),
-          setParameterActions: z.array(z.object({
-            parameter: z.string().optional(),
-            value: z.string().optional(),
-          })).optional(),
-          tag: z.string().optional(),
-          webhook: z.string().optional(),
+          advancedSettings: z.unknown().optional(),
+          conditionalCases: z.unknown().optional(),
+          enableGenerativeFallback: z.unknown().optional(),
+          generators: z.unknown().optional(),
+          messages: z.unknown().optional(),
+          returnPartialResponses: z.unknown().optional(),
+          setParameterActions: z.unknown().optional(),
+          tag: z.unknown().optional(),
+          webhook: z.unknown().optional(),
         }).optional(),
       }).optional(),
       lifecycleHandler: z.object({
         condition: z.string().optional(),
         fulfillment: z.object({
-          advancedSettings: z.object({
-            audioExportGcsDestination: z.object({
-              uri: z.string().optional(),
-            }).optional(),
-            dtmfSettings: z.object({
-              enabled: z.boolean().optional(),
-              endpointingTimeoutDuration: z.string().optional(),
-              finishDigit: z.string().optional(),
-              interdigitTimeoutDuration: z.string().optional(),
-              maxDigits: z.number().int().optional(),
-            }).optional(),
-            loggingSettings: z.object({
-              enableConsentBasedRedaction: z.boolean().optional(),
-              enableInteractionLogging: z.boolean().optional(),
-              enableStackdriverLogging: z.boolean().optional(),
-            }).optional(),
-            speechSettings: z.object({
-              endpointerSensitivity: z.number().int().optional(),
-              models: z.record(z.string(), z.string()).optional(),
-              noSpeechTimeout: z.string().optional(),
-              useTimeoutBasedEndpointing: z.boolean().optional(),
-            }).optional(),
-          }).optional(),
-          conditionalCases: z.array(z.object({
-            cases: z.array(z.object({
-              caseContent: z.array(z.object({
-                additionalCases: z.string().describe(
-                  "Circular reference to GoogleCloudDialogflowCxV3FulfillmentConditionalCases",
-                ).optional(),
-                message: z.object({
-                  channel: z.string().optional(),
-                  conversationSuccess: z.object({
-                    metadata: z.record(z.string(), z.string()).optional(),
-                  }).optional(),
-                  endInteraction: z.object({}).optional(),
-                  knowledgeInfoCard: z.object({}).optional(),
-                  liveAgentHandoff: z.object({
-                    metadata: z.record(z.string(), z.string()).optional(),
-                  }).optional(),
-                  mixedAudio: z.object({
-                    segments: z.array(z.object({
-                      allowPlaybackInterruption: z.boolean().optional(),
-                      audio: z.string().optional(),
-                      uri: z.string().optional(),
-                    })).optional(),
-                  }).optional(),
-                  outputAudioText: z.object({
-                    allowPlaybackInterruption: z.boolean().optional(),
-                    ssml: z.string().optional(),
-                    text: z.string().optional(),
-                  }).optional(),
-                  payload: z.record(z.string(), z.string()).optional(),
-                  playAudio: z.object({
-                    allowPlaybackInterruption: z.boolean().optional(),
-                    audioUri: z.string().optional(),
-                  }).optional(),
-                  responseType: z.enum([
-                    "RESPONSE_TYPE_UNSPECIFIED",
-                    "ENTRY_PROMPT",
-                    "PARAMETER_PROMPT",
-                    "HANDLER_PROMPT",
-                  ]).optional(),
-                  telephonyTransferCall: z.object({
-                    phoneNumber: z.string().optional(),
-                  }).optional(),
-                  text: z.object({
-                    allowPlaybackInterruption: z.boolean().optional(),
-                    text: z.array(z.string()).optional(),
-                  }).optional(),
-                  toolCall: z.object({
-                    action: z.string().optional(),
-                    inputParameters: z.record(z.string(), z.string())
-                      .optional(),
-                    tool: z.string().optional(),
-                  }).optional(),
-                }).optional(),
-              })).optional(),
-              condition: z.string().optional(),
-            })).optional(),
-          })).optional(),
-          enableGenerativeFallback: z.boolean().optional(),
-          generators: z.array(z.object({
-            generator: z.string().optional(),
-            inputParameters: z.record(z.string(), z.string()).optional(),
-            outputParameter: z.string().optional(),
-          })).optional(),
-          messages: z.array(z.object({
-            channel: z.string().optional(),
-            conversationSuccess: z.object({
-              metadata: z.record(z.string(), z.string()).optional(),
-            }).optional(),
-            endInteraction: z.object({}).optional(),
-            knowledgeInfoCard: z.object({}).optional(),
-            liveAgentHandoff: z.object({
-              metadata: z.record(z.string(), z.string()).optional(),
-            }).optional(),
-            mixedAudio: z.object({
-              segments: z.array(z.object({
-                allowPlaybackInterruption: z.boolean().optional(),
-                audio: z.string().optional(),
-                uri: z.string().optional(),
-              })).optional(),
-            }).optional(),
-            outputAudioText: z.object({
-              allowPlaybackInterruption: z.boolean().optional(),
-              ssml: z.string().optional(),
-              text: z.string().optional(),
-            }).optional(),
-            payload: z.record(z.string(), z.string()).optional(),
-            playAudio: z.object({
-              allowPlaybackInterruption: z.boolean().optional(),
-              audioUri: z.string().optional(),
-            }).optional(),
-            responseType: z.enum([
-              "RESPONSE_TYPE_UNSPECIFIED",
-              "ENTRY_PROMPT",
-              "PARAMETER_PROMPT",
-              "HANDLER_PROMPT",
-            ]).optional(),
-            telephonyTransferCall: z.object({
-              phoneNumber: z.string().optional(),
-            }).optional(),
-            text: z.object({
-              allowPlaybackInterruption: z.boolean().optional(),
-              text: z.array(z.string()).optional(),
-            }).optional(),
-            toolCall: z.object({
-              action: z.string().optional(),
-              inputParameters: z.record(z.string(), z.string()).optional(),
-              tool: z.string().optional(),
-            }).optional(),
-          })).optional(),
-          returnPartialResponses: z.boolean().optional(),
-          setParameterActions: z.array(z.object({
-            parameter: z.string().optional(),
-            value: z.string().optional(),
-          })).optional(),
-          tag: z.string().optional(),
-          webhook: z.string().optional(),
+          advancedSettings: z.unknown().optional(),
+          conditionalCases: z.unknown().optional(),
+          enableGenerativeFallback: z.unknown().optional(),
+          generators: z.unknown().optional(),
+          messages: z.unknown().optional(),
+          returnPartialResponses: z.unknown().optional(),
+          setParameterActions: z.unknown().optional(),
+          tag: z.unknown().optional(),
+          webhook: z.unknown().optional(),
         }).optional(),
         lifecycleStage: z.string().optional(),
       }).optional(),
@@ -1310,27 +504,21 @@ const InputsSchema = z.object({
       ]).optional(),
       typeSchema: z.object({
         inlineSchema: z.object({
-          items: z.string().describe(
+          items: z.unknown().describe(
             "Circular reference to GoogleCloudDialogflowCxV3TypeSchema",
           ).optional(),
-          type: z.enum([
-            "DATA_TYPE_UNSPECIFIED",
-            "STRING",
-            "NUMBER",
-            "BOOLEAN",
-            "ARRAY",
-          ]).optional(),
+          type: z.unknown().optional(),
         }).optional(),
         schemaReference: z.object({
-          schema: z.string().optional(),
-          tool: z.string().optional(),
+          schema: z.unknown().optional(),
+          tool: z.unknown().optional(),
         }).optional(),
       }).optional(),
     })).optional(),
     instruction: z.object({
       guidelines: z.string().optional(),
       steps: z.array(z.object({
-        steps: z.array(z.string()).optional(),
+        steps: z.array(z.unknown()).optional(),
         text: z.string().optional(),
       })).optional(),
     }).optional(),
@@ -1353,20 +541,14 @@ const InputsSchema = z.object({
       ]).optional(),
       typeSchema: z.object({
         inlineSchema: z.object({
-          items: z.string().describe(
+          items: z.unknown().describe(
             "Circular reference to GoogleCloudDialogflowCxV3TypeSchema",
           ).optional(),
-          type: z.enum([
-            "DATA_TYPE_UNSPECIFIED",
-            "STRING",
-            "NUMBER",
-            "BOOLEAN",
-            "ARRAY",
-          ]).optional(),
+          type: z.unknown().optional(),
         }).optional(),
         schemaReference: z.object({
-          schema: z.string().optional(),
-          tool: z.string().optional(),
+          schema: z.unknown().optional(),
+          tool: z.unknown().optional(),
         }).optional(),
       }).optional(),
     })).optional(),
@@ -1386,7 +568,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/dialogflow/agents-playbooks-versions",
-  version: "2026.04.03.3",
+  version: "2026.04.04.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -1410,6 +592,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.3",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.04.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

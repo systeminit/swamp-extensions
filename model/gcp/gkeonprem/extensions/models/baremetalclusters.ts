@@ -175,10 +175,10 @@ const GlobalArgsSchema = z.object({
           'The labels assigned to nodes of this node pool. An object containing a list of key/value pairs. Example: { "name": "wrench", "mass": "1.3kg", "count": "3" }.',
         ).optional(),
         nodeConfigs: z.array(z.object({
-          labels: z.record(z.string(), z.string()).describe(
+          labels: z.unknown().describe(
             'The labels assigned to this node. An object containing a list of key/value pairs. The labels here, unioned with the labels set on BareMetalNodePoolConfig are the set of labels that will be applied to the node. If there are any conflicts, the BareMetalNodeConfig labels take precedence. Example: { "name": "wrench", "mass": "1.3kg", "count": "3" }.',
           ).optional(),
-          nodeIp: z.string().describe(
+          nodeIp: z.unknown().describe(
             "The default IPv4 address for SSH access and Kubernetes node. Example: 192.168.0.1",
           ).optional(),
         })).describe(
@@ -188,15 +188,10 @@ const GlobalArgsSchema = z.object({
           .describe("Specifies the nodes operating system (default: LINUX).")
           .optional(),
         taints: z.array(z.object({
-          effect: z.enum([
-            "EFFECT_UNSPECIFIED",
-            "NO_SCHEDULE",
-            "PREFER_NO_SCHEDULE",
-            "NO_EXECUTE",
-          ]).describe("The taint effect.").optional(),
-          key: z.string().describe("Key associated with the effect.")
+          effect: z.unknown().describe("The taint effect.").optional(),
+          key: z.unknown().describe("Key associated with the effect.")
             .optional(),
-          value: z.string().describe("Value associated with the effect.")
+          value: z.unknown().describe("Value associated with the effect.")
             .optional(),
         })).describe("The initial taints assigned to nodes of this node pool.")
           .optional(),
@@ -219,7 +214,7 @@ const GlobalArgsSchema = z.object({
   loadBalancer: z.object({
     bgpLbConfig: z.object({
       addressPools: z.array(z.object({
-        addresses: z.array(z.string()).describe(
+        addresses: z.array(z.unknown()).describe(
           "Required. The addresses that are part of this pool. Each address must be either in the CIDR form (1.2.3.0/24) or range form (1.2.3.1-1.2.3.5).",
         ).optional(),
         avoidBuggyIps: z.boolean().describe(
@@ -240,7 +235,7 @@ const GlobalArgsSchema = z.object({
         asn: z.string().describe(
           "Required. BGP autonomous system number (ASN) for the network that contains the external peer device.",
         ).optional(),
-        controlPlaneNodes: z.array(z.string()).describe(
+        controlPlaneNodes: z.array(z.unknown()).describe(
           "The IP address of the control plane node that connects to the external peer. If you don't specify any control plane nodes, all control plane nodes can connect to the external peer. If you specify one or more IP addresses, only the nodes specified participate in peering sessions.",
         ).optional(),
         ipAddress: z.string().describe(
@@ -252,46 +247,28 @@ const GlobalArgsSchema = z.object({
       loadBalancerNodePoolConfig: z.object({
         nodePoolConfig: z.object({
           kubeletConfig: z.object({
-            registryBurst: z.number().int().describe(
+            registryBurst: z.unknown().describe(
               "The maximum size of bursty pulls, temporarily allows pulls to burst to this number, while still not exceeding registry_pull_qps. The value must not be a negative number. Updating this field may impact scalability by changing the amount of traffic produced by image pulls. Defaults to 10.",
             ).optional(),
-            registryPullQps: z.number().int().describe(
+            registryPullQps: z.unknown().describe(
               "The limit of registry pulls per second. Setting this value to 0 means no limit. Updating this field may impact scalability by changing the amount of traffic produced by image pulls. Defaults to 5.",
             ).optional(),
-            serializeImagePullsDisabled: z.boolean().describe(
+            serializeImagePullsDisabled: z.unknown().describe(
               "Prevents the Kubelet from pulling multiple images at a time. We recommend *not* changing the default value on nodes that run docker daemon with version < 1.9 or an Another Union File System (Aufs) storage backend. Issue https://github.com/kubernetes/kubernetes/issues/10959 has more details.",
             ).optional(),
           }).describe(
             "KubeletConfig defines the modifiable kubelet configurations for bare metal machines. Note: this list includes fields supported in GKE (see https://cloud.google.com/kubernetes-engine/docs/how-to/node-system-config#kubelet-options).",
           ).optional(),
-          labels: z.record(z.string(), z.string()).describe(
+          labels: z.record(z.string(), z.unknown()).describe(
             'The labels assigned to nodes of this node pool. An object containing a list of key/value pairs. Example: { "name": "wrench", "mass": "1.3kg", "count": "3" }.',
           ).optional(),
-          nodeConfigs: z.array(z.object({
-            labels: z.record(z.string(), z.string()).describe(
-              'The labels assigned to this node. An object containing a list of key/value pairs. The labels here, unioned with the labels set on BareMetalNodePoolConfig are the set of labels that will be applied to the node. If there are any conflicts, the BareMetalNodeConfig labels take precedence. Example: { "name": "wrench", "mass": "1.3kg", "count": "3" }.',
-            ).optional(),
-            nodeIp: z.string().describe(
-              "The default IPv4 address for SSH access and Kubernetes node. Example: 192.168.0.1",
-            ).optional(),
-          })).describe(
+          nodeConfigs: z.array(z.unknown()).describe(
             "Required. The list of machine addresses in the bare metal node pool.",
           ).optional(),
           operatingSystem: z.enum(["OPERATING_SYSTEM_UNSPECIFIED", "LINUX"])
             .describe("Specifies the nodes operating system (default: LINUX).")
             .optional(),
-          taints: z.array(z.object({
-            effect: z.enum([
-              "EFFECT_UNSPECIFIED",
-              "NO_SCHEDULE",
-              "PREFER_NO_SCHEDULE",
-              "NO_EXECUTE",
-            ]).describe("The taint effect.").optional(),
-            key: z.string().describe("Key associated with the effect.")
-              .optional(),
-            value: z.string().describe("Value associated with the effect.")
-              .optional(),
-          })).describe(
+          taints: z.array(z.unknown()).describe(
             "The initial taints assigned to nodes of this node pool.",
           ).optional(),
         }).describe(
@@ -310,7 +287,7 @@ const GlobalArgsSchema = z.object({
     ).optional(),
     metalLbConfig: z.object({
       addressPools: z.array(z.object({
-        addresses: z.array(z.string()).describe(
+        addresses: z.array(z.unknown()).describe(
           "Required. The addresses that are part of this pool. Each address must be either in the CIDR form (1.2.3.0/24) or range form (1.2.3.1-1.2.3.5).",
         ).optional(),
         avoidBuggyIps: z.boolean().describe(
@@ -327,46 +304,28 @@ const GlobalArgsSchema = z.object({
       loadBalancerNodePoolConfig: z.object({
         nodePoolConfig: z.object({
           kubeletConfig: z.object({
-            registryBurst: z.number().int().describe(
+            registryBurst: z.unknown().describe(
               "The maximum size of bursty pulls, temporarily allows pulls to burst to this number, while still not exceeding registry_pull_qps. The value must not be a negative number. Updating this field may impact scalability by changing the amount of traffic produced by image pulls. Defaults to 10.",
             ).optional(),
-            registryPullQps: z.number().int().describe(
+            registryPullQps: z.unknown().describe(
               "The limit of registry pulls per second. Setting this value to 0 means no limit. Updating this field may impact scalability by changing the amount of traffic produced by image pulls. Defaults to 5.",
             ).optional(),
-            serializeImagePullsDisabled: z.boolean().describe(
+            serializeImagePullsDisabled: z.unknown().describe(
               "Prevents the Kubelet from pulling multiple images at a time. We recommend *not* changing the default value on nodes that run docker daemon with version < 1.9 or an Another Union File System (Aufs) storage backend. Issue https://github.com/kubernetes/kubernetes/issues/10959 has more details.",
             ).optional(),
           }).describe(
             "KubeletConfig defines the modifiable kubelet configurations for bare metal machines. Note: this list includes fields supported in GKE (see https://cloud.google.com/kubernetes-engine/docs/how-to/node-system-config#kubelet-options).",
           ).optional(),
-          labels: z.record(z.string(), z.string()).describe(
+          labels: z.record(z.string(), z.unknown()).describe(
             'The labels assigned to nodes of this node pool. An object containing a list of key/value pairs. Example: { "name": "wrench", "mass": "1.3kg", "count": "3" }.',
           ).optional(),
-          nodeConfigs: z.array(z.object({
-            labels: z.record(z.string(), z.string()).describe(
-              'The labels assigned to this node. An object containing a list of key/value pairs. The labels here, unioned with the labels set on BareMetalNodePoolConfig are the set of labels that will be applied to the node. If there are any conflicts, the BareMetalNodeConfig labels take precedence. Example: { "name": "wrench", "mass": "1.3kg", "count": "3" }.',
-            ).optional(),
-            nodeIp: z.string().describe(
-              "The default IPv4 address for SSH access and Kubernetes node. Example: 192.168.0.1",
-            ).optional(),
-          })).describe(
+          nodeConfigs: z.array(z.unknown()).describe(
             "Required. The list of machine addresses in the bare metal node pool.",
           ).optional(),
           operatingSystem: z.enum(["OPERATING_SYSTEM_UNSPECIFIED", "LINUX"])
             .describe("Specifies the nodes operating system (default: LINUX).")
             .optional(),
-          taints: z.array(z.object({
-            effect: z.enum([
-              "EFFECT_UNSPECIFIED",
-              "NO_SCHEDULE",
-              "PREFER_NO_SCHEDULE",
-              "NO_EXECUTE",
-            ]).describe("The taint effect.").optional(),
-            key: z.string().describe("Key associated with the effect.")
-              .optional(),
-            value: z.string().describe("Value associated with the effect.")
-              .optional(),
-          })).describe(
+          taints: z.array(z.unknown()).describe(
             "The initial taints assigned to nodes of this node pool.",
           ).optional(),
         }).describe(
@@ -640,14 +599,14 @@ const StateSchema = z.object({
         }),
         labels: z.record(z.string(), z.unknown()),
         nodeConfigs: z.array(z.object({
-          labels: z.record(z.string(), z.unknown()),
-          nodeIp: z.string(),
+          labels: z.unknown(),
+          nodeIp: z.unknown(),
         })),
         operatingSystem: z.string(),
         taints: z.array(z.object({
-          effect: z.string(),
-          key: z.string(),
-          value: z.string(),
+          effect: z.unknown(),
+          key: z.unknown(),
+          value: z.unknown(),
         })),
       }),
     }),
@@ -663,7 +622,7 @@ const StateSchema = z.object({
   loadBalancer: z.object({
     bgpLbConfig: z.object({
       addressPools: z.array(z.object({
-        addresses: z.array(z.string()),
+        addresses: z.array(z.unknown()),
         avoidBuggyIps: z.boolean(),
         manualAssign: z.boolean(),
         pool: z.string(),
@@ -671,27 +630,20 @@ const StateSchema = z.object({
       asn: z.string(),
       bgpPeerConfigs: z.array(z.object({
         asn: z.string(),
-        controlPlaneNodes: z.array(z.string()),
+        controlPlaneNodes: z.array(z.unknown()),
         ipAddress: z.string(),
       })),
       loadBalancerNodePoolConfig: z.object({
         nodePoolConfig: z.object({
           kubeletConfig: z.object({
-            registryBurst: z.number(),
-            registryPullQps: z.number(),
-            serializeImagePullsDisabled: z.boolean(),
+            registryBurst: z.unknown(),
+            registryPullQps: z.unknown(),
+            serializeImagePullsDisabled: z.unknown(),
           }),
           labels: z.record(z.string(), z.unknown()),
-          nodeConfigs: z.array(z.object({
-            labels: z.record(z.string(), z.unknown()),
-            nodeIp: z.string(),
-          })),
+          nodeConfigs: z.array(z.unknown()),
           operatingSystem: z.string(),
-          taints: z.array(z.object({
-            effect: z.string(),
-            key: z.string(),
-            value: z.string(),
-          })),
+          taints: z.array(z.unknown()),
         }),
       }),
     }),
@@ -700,7 +652,7 @@ const StateSchema = z.object({
     }),
     metalLbConfig: z.object({
       addressPools: z.array(z.object({
-        addresses: z.array(z.string()),
+        addresses: z.array(z.unknown()),
         avoidBuggyIps: z.boolean(),
         manualAssign: z.boolean(),
         pool: z.string(),
@@ -708,21 +660,14 @@ const StateSchema = z.object({
       loadBalancerNodePoolConfig: z.object({
         nodePoolConfig: z.object({
           kubeletConfig: z.object({
-            registryBurst: z.number(),
-            registryPullQps: z.number(),
-            serializeImagePullsDisabled: z.boolean(),
+            registryBurst: z.unknown(),
+            registryPullQps: z.unknown(),
+            serializeImagePullsDisabled: z.unknown(),
           }),
           labels: z.record(z.string(), z.unknown()),
-          nodeConfigs: z.array(z.object({
-            labels: z.record(z.string(), z.unknown()),
-            nodeIp: z.string(),
-          })),
+          nodeConfigs: z.array(z.unknown()),
           operatingSystem: z.string(),
-          taints: z.array(z.object({
-            effect: z.string(),
-            key: z.string(),
-            value: z.string(),
-          })),
+          taints: z.array(z.unknown()),
         }),
       }),
     }),
@@ -896,10 +841,10 @@ const InputsSchema = z.object({
           'The labels assigned to nodes of this node pool. An object containing a list of key/value pairs. Example: { "name": "wrench", "mass": "1.3kg", "count": "3" }.',
         ).optional(),
         nodeConfigs: z.array(z.object({
-          labels: z.record(z.string(), z.string()).describe(
+          labels: z.unknown().describe(
             'The labels assigned to this node. An object containing a list of key/value pairs. The labels here, unioned with the labels set on BareMetalNodePoolConfig are the set of labels that will be applied to the node. If there are any conflicts, the BareMetalNodeConfig labels take precedence. Example: { "name": "wrench", "mass": "1.3kg", "count": "3" }.',
           ).optional(),
-          nodeIp: z.string().describe(
+          nodeIp: z.unknown().describe(
             "The default IPv4 address for SSH access and Kubernetes node. Example: 192.168.0.1",
           ).optional(),
         })).describe(
@@ -909,15 +854,10 @@ const InputsSchema = z.object({
           .describe("Specifies the nodes operating system (default: LINUX).")
           .optional(),
         taints: z.array(z.object({
-          effect: z.enum([
-            "EFFECT_UNSPECIFIED",
-            "NO_SCHEDULE",
-            "PREFER_NO_SCHEDULE",
-            "NO_EXECUTE",
-          ]).describe("The taint effect.").optional(),
-          key: z.string().describe("Key associated with the effect.")
+          effect: z.unknown().describe("The taint effect.").optional(),
+          key: z.unknown().describe("Key associated with the effect.")
             .optional(),
-          value: z.string().describe("Value associated with the effect.")
+          value: z.unknown().describe("Value associated with the effect.")
             .optional(),
         })).describe("The initial taints assigned to nodes of this node pool.")
           .optional(),
@@ -940,7 +880,7 @@ const InputsSchema = z.object({
   loadBalancer: z.object({
     bgpLbConfig: z.object({
       addressPools: z.array(z.object({
-        addresses: z.array(z.string()).describe(
+        addresses: z.array(z.unknown()).describe(
           "Required. The addresses that are part of this pool. Each address must be either in the CIDR form (1.2.3.0/24) or range form (1.2.3.1-1.2.3.5).",
         ).optional(),
         avoidBuggyIps: z.boolean().describe(
@@ -961,7 +901,7 @@ const InputsSchema = z.object({
         asn: z.string().describe(
           "Required. BGP autonomous system number (ASN) for the network that contains the external peer device.",
         ).optional(),
-        controlPlaneNodes: z.array(z.string()).describe(
+        controlPlaneNodes: z.array(z.unknown()).describe(
           "The IP address of the control plane node that connects to the external peer. If you don't specify any control plane nodes, all control plane nodes can connect to the external peer. If you specify one or more IP addresses, only the nodes specified participate in peering sessions.",
         ).optional(),
         ipAddress: z.string().describe(
@@ -973,46 +913,28 @@ const InputsSchema = z.object({
       loadBalancerNodePoolConfig: z.object({
         nodePoolConfig: z.object({
           kubeletConfig: z.object({
-            registryBurst: z.number().int().describe(
+            registryBurst: z.unknown().describe(
               "The maximum size of bursty pulls, temporarily allows pulls to burst to this number, while still not exceeding registry_pull_qps. The value must not be a negative number. Updating this field may impact scalability by changing the amount of traffic produced by image pulls. Defaults to 10.",
             ).optional(),
-            registryPullQps: z.number().int().describe(
+            registryPullQps: z.unknown().describe(
               "The limit of registry pulls per second. Setting this value to 0 means no limit. Updating this field may impact scalability by changing the amount of traffic produced by image pulls. Defaults to 5.",
             ).optional(),
-            serializeImagePullsDisabled: z.boolean().describe(
+            serializeImagePullsDisabled: z.unknown().describe(
               "Prevents the Kubelet from pulling multiple images at a time. We recommend *not* changing the default value on nodes that run docker daemon with version < 1.9 or an Another Union File System (Aufs) storage backend. Issue https://github.com/kubernetes/kubernetes/issues/10959 has more details.",
             ).optional(),
           }).describe(
             "KubeletConfig defines the modifiable kubelet configurations for bare metal machines. Note: this list includes fields supported in GKE (see https://cloud.google.com/kubernetes-engine/docs/how-to/node-system-config#kubelet-options).",
           ).optional(),
-          labels: z.record(z.string(), z.string()).describe(
+          labels: z.record(z.string(), z.unknown()).describe(
             'The labels assigned to nodes of this node pool. An object containing a list of key/value pairs. Example: { "name": "wrench", "mass": "1.3kg", "count": "3" }.',
           ).optional(),
-          nodeConfigs: z.array(z.object({
-            labels: z.record(z.string(), z.string()).describe(
-              'The labels assigned to this node. An object containing a list of key/value pairs. The labels here, unioned with the labels set on BareMetalNodePoolConfig are the set of labels that will be applied to the node. If there are any conflicts, the BareMetalNodeConfig labels take precedence. Example: { "name": "wrench", "mass": "1.3kg", "count": "3" }.',
-            ).optional(),
-            nodeIp: z.string().describe(
-              "The default IPv4 address for SSH access and Kubernetes node. Example: 192.168.0.1",
-            ).optional(),
-          })).describe(
+          nodeConfigs: z.array(z.unknown()).describe(
             "Required. The list of machine addresses in the bare metal node pool.",
           ).optional(),
           operatingSystem: z.enum(["OPERATING_SYSTEM_UNSPECIFIED", "LINUX"])
             .describe("Specifies the nodes operating system (default: LINUX).")
             .optional(),
-          taints: z.array(z.object({
-            effect: z.enum([
-              "EFFECT_UNSPECIFIED",
-              "NO_SCHEDULE",
-              "PREFER_NO_SCHEDULE",
-              "NO_EXECUTE",
-            ]).describe("The taint effect.").optional(),
-            key: z.string().describe("Key associated with the effect.")
-              .optional(),
-            value: z.string().describe("Value associated with the effect.")
-              .optional(),
-          })).describe(
+          taints: z.array(z.unknown()).describe(
             "The initial taints assigned to nodes of this node pool.",
           ).optional(),
         }).describe(
@@ -1031,7 +953,7 @@ const InputsSchema = z.object({
     ).optional(),
     metalLbConfig: z.object({
       addressPools: z.array(z.object({
-        addresses: z.array(z.string()).describe(
+        addresses: z.array(z.unknown()).describe(
           "Required. The addresses that are part of this pool. Each address must be either in the CIDR form (1.2.3.0/24) or range form (1.2.3.1-1.2.3.5).",
         ).optional(),
         avoidBuggyIps: z.boolean().describe(
@@ -1048,46 +970,28 @@ const InputsSchema = z.object({
       loadBalancerNodePoolConfig: z.object({
         nodePoolConfig: z.object({
           kubeletConfig: z.object({
-            registryBurst: z.number().int().describe(
+            registryBurst: z.unknown().describe(
               "The maximum size of bursty pulls, temporarily allows pulls to burst to this number, while still not exceeding registry_pull_qps. The value must not be a negative number. Updating this field may impact scalability by changing the amount of traffic produced by image pulls. Defaults to 10.",
             ).optional(),
-            registryPullQps: z.number().int().describe(
+            registryPullQps: z.unknown().describe(
               "The limit of registry pulls per second. Setting this value to 0 means no limit. Updating this field may impact scalability by changing the amount of traffic produced by image pulls. Defaults to 5.",
             ).optional(),
-            serializeImagePullsDisabled: z.boolean().describe(
+            serializeImagePullsDisabled: z.unknown().describe(
               "Prevents the Kubelet from pulling multiple images at a time. We recommend *not* changing the default value on nodes that run docker daemon with version < 1.9 or an Another Union File System (Aufs) storage backend. Issue https://github.com/kubernetes/kubernetes/issues/10959 has more details.",
             ).optional(),
           }).describe(
             "KubeletConfig defines the modifiable kubelet configurations for bare metal machines. Note: this list includes fields supported in GKE (see https://cloud.google.com/kubernetes-engine/docs/how-to/node-system-config#kubelet-options).",
           ).optional(),
-          labels: z.record(z.string(), z.string()).describe(
+          labels: z.record(z.string(), z.unknown()).describe(
             'The labels assigned to nodes of this node pool. An object containing a list of key/value pairs. Example: { "name": "wrench", "mass": "1.3kg", "count": "3" }.',
           ).optional(),
-          nodeConfigs: z.array(z.object({
-            labels: z.record(z.string(), z.string()).describe(
-              'The labels assigned to this node. An object containing a list of key/value pairs. The labels here, unioned with the labels set on BareMetalNodePoolConfig are the set of labels that will be applied to the node. If there are any conflicts, the BareMetalNodeConfig labels take precedence. Example: { "name": "wrench", "mass": "1.3kg", "count": "3" }.',
-            ).optional(),
-            nodeIp: z.string().describe(
-              "The default IPv4 address for SSH access and Kubernetes node. Example: 192.168.0.1",
-            ).optional(),
-          })).describe(
+          nodeConfigs: z.array(z.unknown()).describe(
             "Required. The list of machine addresses in the bare metal node pool.",
           ).optional(),
           operatingSystem: z.enum(["OPERATING_SYSTEM_UNSPECIFIED", "LINUX"])
             .describe("Specifies the nodes operating system (default: LINUX).")
             .optional(),
-          taints: z.array(z.object({
-            effect: z.enum([
-              "EFFECT_UNSPECIFIED",
-              "NO_SCHEDULE",
-              "PREFER_NO_SCHEDULE",
-              "NO_EXECUTE",
-            ]).describe("The taint effect.").optional(),
-            key: z.string().describe("Key associated with the effect.")
-              .optional(),
-            value: z.string().describe("Value associated with the effect.")
-              .optional(),
-          })).describe(
+          taints: z.array(z.unknown()).describe(
             "The initial taints assigned to nodes of this node pool.",
           ).optional(),
         }).describe(
@@ -1338,7 +1242,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/gkeonprem/baremetalclusters",
-  version: "2026.04.03.3",
+  version: "2026.04.04.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -1362,6 +1266,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.3",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.04.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

@@ -137,13 +137,13 @@ const GlobalArgsSchema = z.object({
       nullValue: z.enum(["NULL_VALUE"]).describe("A null value.").optional(),
       pipelineValue: z.object({
         stages: z.array(z.object({
-          args: z.array(z.string()).describe(
+          args: z.unknown().describe(
             "Optional. Ordered list of arguments the given stage expects.",
           ).optional(),
-          name: z.string().describe(
+          name: z.unknown().describe(
             "Required. The name of the stage to evaluate. **Requires:** * must be in snake case (lower case with underscore separator).",
           ).optional(),
-          options: z.record(z.string(), z.string()).describe(
+          options: z.unknown().describe(
             "Optional. Optional named arguments that certain functions may support.",
           ).optional(),
         })).describe("Required. Ordered list of stages to evaluate.")
@@ -237,13 +237,13 @@ const InputsSchema = z.object({
       nullValue: z.enum(["NULL_VALUE"]).describe("A null value.").optional(),
       pipelineValue: z.object({
         stages: z.array(z.object({
-          args: z.array(z.string()).describe(
+          args: z.unknown().describe(
             "Optional. Ordered list of arguments the given stage expects.",
           ).optional(),
-          name: z.string().describe(
+          name: z.unknown().describe(
             "Required. The name of the stage to evaluate. **Requires:** * must be in snake case (lower case with underscore separator).",
           ).optional(),
-          options: z.record(z.string(), z.string()).describe(
+          options: z.unknown().describe(
             "Optional. Optional named arguments that certain functions may support.",
           ).optional(),
         })).describe("Required. Ordered list of stages to evaluate.")
@@ -280,7 +280,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/firestore/databases-documents",
-  version: "2026.04.03.3",
+  version: "2026.04.04.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -304,6 +304,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.3",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.04.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

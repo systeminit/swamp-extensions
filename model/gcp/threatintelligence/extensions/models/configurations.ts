@@ -61,36 +61,36 @@ const StateSchema = z.object({
       })),
       contactInfo: z.array(z.object({
         address: z.string(),
-        citationIds: z.array(z.string()),
+        citationIds: z.array(z.unknown()),
         email: z.string(),
         label: z.string(),
         other: z.string(),
         phone: z.string(),
       })),
       executives: z.array(z.object({
-        citationIds: z.array(z.string()),
+        citationIds: z.array(z.unknown()),
         name: z.string(),
         title: z.string(),
       })),
       industries: z.array(z.object({
-        citationIds: z.array(z.string()),
+        citationIds: z.array(z.unknown()),
         industry: z.string(),
       })),
       locations: z.array(z.object({
         address: z.string(),
         brand: z.string(),
-        citationIds: z.array(z.string()),
+        citationIds: z.array(z.unknown()),
         facilityType: z.string(),
       })),
       org: z.string(),
       orgSummary: z.string(),
       parentCompanies: z.array(z.object({
-        citationIds: z.array(z.string()),
+        citationIds: z.array(z.unknown()),
         company: z.string(),
       })),
       products: z.array(z.object({
         brand: z.string(),
-        citationIds: z.array(z.string()),
+        citationIds: z.array(z.unknown()),
         product: z.string(),
       })),
       securityConsiderations: z.object({
@@ -99,57 +99,57 @@ const StateSchema = z.object({
       }),
       summary: z.object({
         areaServed: z.object({
-          citationIds: z.array(z.string()),
+          citationIds: z.array(z.unknown()),
           value: z.string(),
         }),
         brands: z.object({
-          citationIds: z.array(z.string()),
+          citationIds: z.array(z.unknown()),
           value: z.string(),
         }),
         entityType: z.object({
-          citationIds: z.array(z.string()),
+          citationIds: z.array(z.unknown()),
           value: z.string(),
         }),
         founded: z.object({
-          citationIds: z.array(z.string()),
+          citationIds: z.array(z.unknown()),
           value: z.string(),
         }),
         headquarters: z.object({
-          citationIds: z.array(z.string()),
+          citationIds: z.array(z.unknown()),
           value: z.string(),
         }),
         industry: z.object({
-          citationIds: z.array(z.string()),
+          citationIds: z.array(z.unknown()),
           value: z.string(),
         }),
         keyPeopleSummary: z.object({
-          citationIds: z.array(z.string()),
+          citationIds: z.array(z.unknown()),
           value: z.string(),
         }),
         parentCompany: z.object({
-          citationIds: z.array(z.string()),
+          citationIds: z.array(z.unknown()),
           value: z.string(),
         }),
         primaryWebsite: z.object({
-          citationIds: z.array(z.string()),
+          citationIds: z.array(z.unknown()),
           value: z.string(),
         }),
         productsSummary: z.object({
-          citationIds: z.array(z.string()),
+          citationIds: z.array(z.unknown()),
           value: z.string(),
         }),
         servicesSummary: z.object({
-          citationIds: z.array(z.string()),
+          citationIds: z.array(z.unknown()),
           value: z.string(),
         }),
         title: z.object({
-          citationIds: z.array(z.string()),
+          citationIds: z.array(z.unknown()),
           value: z.string(),
         }),
       }),
       technologyPresence: z.string(),
       webPresences: z.array(z.object({
-        citationIds: z.array(z.string()),
+        citationIds: z.array(z.unknown()),
         domain: z.string(),
       })),
     }),
@@ -173,7 +173,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/threatintelligence/configurations",
-  version: "2026.04.03.3",
+  version: "2026.04.04.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -197,6 +197,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.3",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.04.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

@@ -41,50 +41,9 @@ const StateSchema = z.object({
       message: z.string(),
       metric: z.string(),
       resource: z.object({
-        instanceProperties: z.object({
-          instanceNumber: z.string(),
-          machineType: z.string(),
-          roles: z.array(z.string()),
-          sapInstanceProperties: z.object({
-            agentStates: z.object({
-              availableVersion: z.string(),
-              hanaMonitoring: z.object({
-                iamPermissions: z.array(z.object({
-                  granted: z.boolean(),
-                  name: z.string(),
-                })),
-                state: z.string(),
-              }),
-              installedVersion: z.string(),
-              isFullyEnabled: z.boolean(),
-              processMetrics: z.object({
-                iamPermissions: z.array(z.object({
-                  granted: z.boolean(),
-                  name: z.string(),
-                })),
-                state: z.string(),
-              }),
-              systemDiscovery: z.object({
-                iamPermissions: z.array(z.object({
-                  granted: z.boolean(),
-                  name: z.string(),
-                })),
-                state: z.string(),
-              }),
-            }),
-            numbers: z.array(z.string()),
-          }),
-          status: z.string(),
-          upcomingMaintenanceEvent: z.object({
-            endTime: z.string(),
-            maintenanceStatus: z.string(),
-            onHostMaintenance: z.string(),
-            startTime: z.string(),
-            type: z.string(),
-          }),
-        }),
-        kind: z.string(),
-        name: z.string(),
+        instanceProperties: z.unknown(),
+        kind: z.unknown(),
+        name: z.unknown(),
       }),
       source: z.string(),
       state: z.string(),
@@ -104,7 +63,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/workloadmanager/discoveredprofiles-health",
-  version: "2026.04.03.3",
+  version: "2026.04.04.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -128,6 +87,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.3",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.04.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

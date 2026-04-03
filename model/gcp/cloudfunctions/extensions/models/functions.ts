@@ -351,10 +351,10 @@ const GlobalArgsSchema = z.object({
         "Name of the secret in secret manager (not the full resource name).",
       ).optional(),
       versions: z.array(z.object({
-        path: z.string().describe(
+        path: z.unknown().describe(
           "Relative path of the file under the mount path where the secret value for this version will be fetched and made available. For example, setting the mount_path as '/etc/secrets' and path as `secret_foo` would mount the secret value file at `/etc/secrets/secret_foo`.",
         ).optional(),
-        version: z.string().describe(
+        version: z.unknown().describe(
           "Version of the secret (version number or the string 'latest'). It is preferable to use `latest` version with secret volumes as secret value changes are reflected immediately.",
         ).optional(),
       })).describe(
@@ -591,7 +591,7 @@ const GlobalArgsSchema = z.object({
         subnetwork: z.string().describe(
           "Optional. The name of the VPC subnetwork that the Cloud Function resource will get IPs from. Specify either a VPC network or a subnet, or both. If both network and subnetwork are specified, the given VPC subnetwork must belong to the given VPC network. If subnetwork is not specified, the subnetwork with the same name with the network will be used.",
         ).optional(),
-        tags: z.array(z.string()).describe(
+        tags: z.array(z.unknown()).describe(
           "Optional. Network tags applied to this Cloud Function resource.",
         ).optional(),
       })).describe(
@@ -643,14 +643,7 @@ const GlobalArgsSchema = z.object({
         secret: z.string().describe(
           "Name of the secret in secret manager (not the full resource name).",
         ).optional(),
-        versions: z.array(z.object({
-          path: z.string().describe(
-            "Relative path of the file under the mount path where the secret value for this version will be fetched and made available. For example, setting the mount_path as '/etc/secrets' and path as `secret_foo` would mount the secret value file at `/etc/secrets/secret_foo`.",
-          ).optional(),
-          version: z.string().describe(
-            "Version of the secret (version number or the string 'latest'). It is preferable to use `latest` version with secret volumes as secret value changes are reflected immediately.",
-          ).optional(),
-        })).describe(
+        versions: z.array(z.unknown()).describe(
           "List of secret versions to mount for this secret. If empty, the `latest` version of the secret will be made available in a file named after the secret under the mount point.",
         ).optional(),
       })).describe("Secret volumes configuration.").optional(),
@@ -813,8 +806,8 @@ const StateSchema = z.object({
       projectId: z.string(),
       secret: z.string(),
       versions: z.array(z.object({
-        path: z.string(),
-        version: z.string(),
+        path: z.unknown(),
+        version: z.unknown(),
       })),
     })),
     securityLevel: z.string(),
@@ -906,7 +899,7 @@ const StateSchema = z.object({
       directVpcNetworkInterface: z.array(z.object({
         network: z.string(),
         subnetwork: z.string(),
-        tags: z.array(z.string()),
+        tags: z.array(z.unknown()),
       })),
       environmentVariables: z.record(z.string(), z.unknown()),
       ingressSettings: z.string(),
@@ -924,10 +917,7 @@ const StateSchema = z.object({
         mountPath: z.string(),
         projectId: z.string(),
         secret: z.string(),
-        versions: z.array(z.object({
-          path: z.string(),
-          version: z.string(),
-        })),
+        versions: z.array(z.unknown()),
       })),
       securityLevel: z.string(),
       service: z.string(),
@@ -1206,10 +1196,10 @@ const InputsSchema = z.object({
         "Name of the secret in secret manager (not the full resource name).",
       ).optional(),
       versions: z.array(z.object({
-        path: z.string().describe(
+        path: z.unknown().describe(
           "Relative path of the file under the mount path where the secret value for this version will be fetched and made available. For example, setting the mount_path as '/etc/secrets' and path as `secret_foo` would mount the secret value file at `/etc/secrets/secret_foo`.",
         ).optional(),
-        version: z.string().describe(
+        version: z.unknown().describe(
           "Version of the secret (version number or the string 'latest'). It is preferable to use `latest` version with secret volumes as secret value changes are reflected immediately.",
         ).optional(),
       })).describe(
@@ -1446,7 +1436,7 @@ const InputsSchema = z.object({
         subnetwork: z.string().describe(
           "Optional. The name of the VPC subnetwork that the Cloud Function resource will get IPs from. Specify either a VPC network or a subnet, or both. If both network and subnetwork are specified, the given VPC subnetwork must belong to the given VPC network. If subnetwork is not specified, the subnetwork with the same name with the network will be used.",
         ).optional(),
-        tags: z.array(z.string()).describe(
+        tags: z.array(z.unknown()).describe(
           "Optional. Network tags applied to this Cloud Function resource.",
         ).optional(),
       })).describe(
@@ -1498,14 +1488,7 @@ const InputsSchema = z.object({
         secret: z.string().describe(
           "Name of the secret in secret manager (not the full resource name).",
         ).optional(),
-        versions: z.array(z.object({
-          path: z.string().describe(
-            "Relative path of the file under the mount path where the secret value for this version will be fetched and made available. For example, setting the mount_path as '/etc/secrets' and path as `secret_foo` would mount the secret value file at `/etc/secrets/secret_foo`.",
-          ).optional(),
-          version: z.string().describe(
-            "Version of the secret (version number or the string 'latest'). It is preferable to use `latest` version with secret volumes as secret value changes are reflected immediately.",
-          ).optional(),
-        })).describe(
+        versions: z.array(z.unknown()).describe(
           "List of secret versions to mount for this secret. If empty, the `latest` version of the secret will be made available in a file named after the secret under the mount point.",
         ).optional(),
       })).describe("Secret volumes configuration.").optional(),
@@ -1569,7 +1552,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/cloudfunctions/functions",
-  version: "2026.04.03.3",
+  version: "2026.04.04.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -1593,6 +1576,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.3",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.04.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

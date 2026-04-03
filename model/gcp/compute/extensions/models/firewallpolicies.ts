@@ -161,10 +161,10 @@ const GlobalArgsSchema = z.object({
         "Names of Network Threat Intelligence lists. The IPs in these lists will be matched against traffic destination.",
       ).optional(),
       layer4Configs: z.array(z.object({
-        ipProtocol: z.string().describe(
+        ipProtocol: z.unknown().describe(
           "The IP protocol to which this rule applies. The protocol type is required when creating a firewall rule. This value can either be one of the following well known protocol strings (tcp,udp, icmp, esp,ah, ipip, sctp), or the IP protocol number.",
         ).optional(),
-        ports: z.array(z.string()).describe(
+        ports: z.unknown().describe(
           'An optional list of ports to which this rule applies. This field is only applicable for UDP or TCP protocol. Each entry must be either an integer or a range. If not specified, this rule applies to connections through any port. Example inputs include: ["22"],["80","443"], and ["12345-12349"].',
         ).optional(),
       })).describe(
@@ -204,10 +204,10 @@ const GlobalArgsSchema = z.object({
         'Region codes whose IP addresses will be used to match for source of traffic. Should be specified as 2 letter country code defined as per ISO 3166 alpha-2 country codes. ex."US" Maximum number of source region codes allowed is 5000.',
       ).optional(),
       srcSecureTags: z.array(z.object({
-        name: z.string().regex(new RegExp("tagValues/[0-9]+")).describe(
+        name: z.unknown().describe(
           "Name of the secure tag, created with TagManager's TagValue API.",
         ).optional(),
-        state: z.enum(["EFFECTIVE", "INEFFECTIVE"]).describe(
+        state: z.unknown().describe(
           "Output only. [Output Only] State of the secure tag, either `EFFECTIVE` or `INEFFECTIVE`. A secure tag is `INEFFECTIVE` when it is deleted or its network is deleted.",
         ).optional(),
       })).describe(
@@ -309,10 +309,10 @@ const GlobalArgsSchema = z.object({
         "Names of Network Threat Intelligence lists. The IPs in these lists will be matched against traffic destination.",
       ).optional(),
       layer4Configs: z.array(z.object({
-        ipProtocol: z.string().describe(
+        ipProtocol: z.unknown().describe(
           "The IP protocol to which this rule applies. The protocol type is required when creating a firewall rule. This value can either be one of the following well known protocol strings (tcp,udp, icmp, esp,ah, ipip, sctp), or the IP protocol number.",
         ).optional(),
-        ports: z.array(z.string()).describe(
+        ports: z.unknown().describe(
           'An optional list of ports to which this rule applies. This field is only applicable for UDP or TCP protocol. Each entry must be either an integer or a range. If not specified, this rule applies to connections through any port. Example inputs include: ["22"],["80","443"], and ["12345-12349"].',
         ).optional(),
       })).describe(
@@ -352,10 +352,10 @@ const GlobalArgsSchema = z.object({
         'Region codes whose IP addresses will be used to match for source of traffic. Should be specified as 2 letter country code defined as per ISO 3166 alpha-2 country codes. ex."US" Maximum number of source region codes allowed is 5000.',
       ).optional(),
       srcSecureTags: z.array(z.object({
-        name: z.string().regex(new RegExp("tagValues/[0-9]+")).describe(
+        name: z.unknown().describe(
           "Name of the secure tag, created with TagManager's TagValue API.",
         ).optional(),
-        state: z.enum(["EFFECTIVE", "INEFFECTIVE"]).describe(
+        state: z.unknown().describe(
           "Output only. [Output Only] State of the secure tag, either `EFFECTIVE` or `INEFFECTIVE`. A secure tag is `INEFFECTIVE` when it is deleted or its network is deleted.",
         ).optional(),
       })).describe(
@@ -444,8 +444,8 @@ const StateSchema = z.object({
       destRegionCodes: z.array(z.string()),
       destThreatIntelligences: z.array(z.string()),
       layer4Configs: z.array(z.object({
-        ipProtocol: z.string(),
-        ports: z.array(z.string()),
+        ipProtocol: z.unknown(),
+        ports: z.unknown(),
       })),
       srcAddressGroups: z.array(z.string()),
       srcFqdns: z.array(z.string()),
@@ -455,8 +455,8 @@ const StateSchema = z.object({
       srcNetworks: z.array(z.string()),
       srcRegionCodes: z.array(z.string()),
       srcSecureTags: z.array(z.object({
-        name: z.string(),
-        state: z.string(),
+        name: z.unknown(),
+        state: z.unknown(),
       })),
       srcThreatIntelligences: z.array(z.string()),
     }),
@@ -492,8 +492,8 @@ const StateSchema = z.object({
       destRegionCodes: z.array(z.string()),
       destThreatIntelligences: z.array(z.string()),
       layer4Configs: z.array(z.object({
-        ipProtocol: z.string(),
-        ports: z.array(z.string()),
+        ipProtocol: z.unknown(),
+        ports: z.unknown(),
       })),
       srcAddressGroups: z.array(z.string()),
       srcFqdns: z.array(z.string()),
@@ -503,8 +503,8 @@ const StateSchema = z.object({
       srcNetworks: z.array(z.string()),
       srcRegionCodes: z.array(z.string()),
       srcSecureTags: z.array(z.object({
-        name: z.string(),
-        state: z.string(),
+        name: z.unknown(),
+        state: z.unknown(),
       })),
       srcThreatIntelligences: z.array(z.string()),
     }),
@@ -605,10 +605,10 @@ const InputsSchema = z.object({
         "Names of Network Threat Intelligence lists. The IPs in these lists will be matched against traffic destination.",
       ).optional(),
       layer4Configs: z.array(z.object({
-        ipProtocol: z.string().describe(
+        ipProtocol: z.unknown().describe(
           "The IP protocol to which this rule applies. The protocol type is required when creating a firewall rule. This value can either be one of the following well known protocol strings (tcp,udp, icmp, esp,ah, ipip, sctp), or the IP protocol number.",
         ).optional(),
-        ports: z.array(z.string()).describe(
+        ports: z.unknown().describe(
           'An optional list of ports to which this rule applies. This field is only applicable for UDP or TCP protocol. Each entry must be either an integer or a range. If not specified, this rule applies to connections through any port. Example inputs include: ["22"],["80","443"], and ["12345-12349"].',
         ).optional(),
       })).describe(
@@ -648,10 +648,10 @@ const InputsSchema = z.object({
         'Region codes whose IP addresses will be used to match for source of traffic. Should be specified as 2 letter country code defined as per ISO 3166 alpha-2 country codes. ex."US" Maximum number of source region codes allowed is 5000.',
       ).optional(),
       srcSecureTags: z.array(z.object({
-        name: z.string().regex(new RegExp("tagValues/[0-9]+")).describe(
+        name: z.unknown().describe(
           "Name of the secure tag, created with TagManager's TagValue API.",
         ).optional(),
-        state: z.enum(["EFFECTIVE", "INEFFECTIVE"]).describe(
+        state: z.unknown().describe(
           "Output only. [Output Only] State of the secure tag, either `EFFECTIVE` or `INEFFECTIVE`. A secure tag is `INEFFECTIVE` when it is deleted or its network is deleted.",
         ).optional(),
       })).describe(
@@ -753,10 +753,10 @@ const InputsSchema = z.object({
         "Names of Network Threat Intelligence lists. The IPs in these lists will be matched against traffic destination.",
       ).optional(),
       layer4Configs: z.array(z.object({
-        ipProtocol: z.string().describe(
+        ipProtocol: z.unknown().describe(
           "The IP protocol to which this rule applies. The protocol type is required when creating a firewall rule. This value can either be one of the following well known protocol strings (tcp,udp, icmp, esp,ah, ipip, sctp), or the IP protocol number.",
         ).optional(),
-        ports: z.array(z.string()).describe(
+        ports: z.unknown().describe(
           'An optional list of ports to which this rule applies. This field is only applicable for UDP or TCP protocol. Each entry must be either an integer or a range. If not specified, this rule applies to connections through any port. Example inputs include: ["22"],["80","443"], and ["12345-12349"].',
         ).optional(),
       })).describe(
@@ -796,10 +796,10 @@ const InputsSchema = z.object({
         'Region codes whose IP addresses will be used to match for source of traffic. Should be specified as 2 letter country code defined as per ISO 3166 alpha-2 country codes. ex."US" Maximum number of source region codes allowed is 5000.',
       ).optional(),
       srcSecureTags: z.array(z.object({
-        name: z.string().regex(new RegExp("tagValues/[0-9]+")).describe(
+        name: z.unknown().describe(
           "Name of the secure tag, created with TagManager's TagValue API.",
         ).optional(),
-        state: z.enum(["EFFECTIVE", "INEFFECTIVE"]).describe(
+        state: z.unknown().describe(
           "Output only. [Output Only] State of the secure tag, either `EFFECTIVE` or `INEFFECTIVE`. A secure tag is `INEFFECTIVE` when it is deleted or its network is deleted.",
         ).optional(),
       })).describe(
@@ -859,7 +859,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/compute/firewallpolicies",
-  version: "2026.04.03.3",
+  version: "2026.04.04.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -883,6 +883,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.3",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.04.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

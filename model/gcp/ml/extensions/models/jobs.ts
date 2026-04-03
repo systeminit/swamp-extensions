@@ -229,10 +229,10 @@ const GlobalArgsSchema = z.object({
         "Optional. How many training trials should be attempted to optimize the specified hyperparameters. Defaults to one.",
       ).optional(),
       params: z.array(z.object({
-        categoricalValues: z.array(z.string()).describe(
+        categoricalValues: z.array(z.unknown()).describe(
           "Required if type is `CATEGORICAL`. The list of possible categories.",
         ).optional(),
-        discreteValues: z.array(z.number()).describe(
+        discreteValues: z.array(z.unknown()).describe(
           "Required if type is `DISCRETE`. A list of feasible points. The list should be in strictly increasing order. For instance, this parameter might have possible settings of 1.5, 2.5, and 4.0. This list should not contain more than 1,000 values.",
         ).optional(),
         maxValue: z.number().describe(
@@ -529,8 +529,8 @@ const StateSchema = z.object({
       maxParallelTrials: z.number(),
       maxTrials: z.number(),
       params: z.array(z.object({
-        categoricalValues: z.array(z.string()),
-        discreteValues: z.array(z.number()),
+        categoricalValues: z.array(z.unknown()),
+        discreteValues: z.array(z.unknown()),
         maxValue: z.number(),
         minValue: z.number(),
         parameterName: z.string(),
@@ -616,8 +616,8 @@ const StateSchema = z.object({
     isHyperparameterTuningJob: z.boolean(),
     trials: z.array(z.object({
       allMetrics: z.array(z.object({
-        objectiveValue: z.number(),
-        trainingStep: z.string(),
+        objectiveValue: z.unknown(),
+        trainingStep: z.unknown(),
       })),
       builtInAlgorithmOutput: z.object({
         framework: z.string(),
@@ -803,10 +803,10 @@ const InputsSchema = z.object({
         "Optional. How many training trials should be attempted to optimize the specified hyperparameters. Defaults to one.",
       ).optional(),
       params: z.array(z.object({
-        categoricalValues: z.array(z.string()).describe(
+        categoricalValues: z.array(z.unknown()).describe(
           "Required if type is `CATEGORICAL`. The list of possible categories.",
         ).optional(),
-        discreteValues: z.array(z.number()).describe(
+        discreteValues: z.array(z.unknown()).describe(
           "Required if type is `DISCRETE`. A list of feasible points. The list should be in strictly increasing order. For instance, this parameter might have possible settings of 1.5, 2.5, and 4.0. This list should not contain more than 1,000 values.",
         ).optional(),
         maxValue: z.number().describe(
@@ -1044,7 +1044,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/ml/jobs",
-  version: "2026.04.03.3",
+  version: "2026.04.04.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -1068,6 +1068,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.3",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.04.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

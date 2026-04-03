@@ -73,15 +73,15 @@ const StateSchema = z.object({
       baseTypes: z.array(z.string()),
       displayName: z.string(),
       enumValues: z.object({
-        values: z.array(z.string()),
+        values: z.array(z.unknown()),
       }),
       name: z.string(),
       properties: z.array(z.object({
-        displayName: z.string(),
-        method: z.string(),
-        name: z.string(),
-        occurrenceType: z.string(),
-        valueType: z.string(),
+        displayName: z.unknown(),
+        method: z.unknown(),
+        name: z.unknown(),
+        occurrenceType: z.unknown(),
+        valueType: z.unknown(),
       })),
     })),
     metadata: z.object({
@@ -152,7 +152,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/documentai/processors-processorversions",
-  version: "2026.04.03.3",
+  version: "2026.04.04.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -176,6 +176,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.3",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.04.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

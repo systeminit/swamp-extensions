@@ -362,16 +362,16 @@ const GlobalArgsSchema = z.object({
     ).optional(),
     rules: z.array(z.object({
       action: z.object({
-        sourceNatActiveIps: z.array(z.string()).describe(
+        sourceNatActiveIps: z.unknown().describe(
           "A list of URLs of the IP resources used for this NAT rule. These IP addresses must be valid static external IP addresses assigned to the project. This field is used for public NAT.",
         ).optional(),
-        sourceNatActiveRanges: z.array(z.string()).describe(
+        sourceNatActiveRanges: z.unknown().describe(
           "A list of URLs of the subnetworks used as source ranges for this NAT Rule. These subnetworks must have purpose set to PRIVATE_NAT. This field is used for private NAT.",
         ).optional(),
-        sourceNatDrainIps: z.array(z.string()).describe(
+        sourceNatDrainIps: z.unknown().describe(
           "A list of URLs of the IP resources to be drained. These IPs must be valid static external IPs that have been assigned to the NAT. These IPs should be used for updating/patching a NAT rule only. This field is used for public NAT.",
         ).optional(),
-        sourceNatDrainRanges: z.array(z.string()).describe(
+        sourceNatDrainRanges: z.unknown().describe(
           "A list of URLs of subnetworks representing source ranges to be drained. This is only supported on patch/update, and these subnetworks must have previously been used as active ranges in this NAT Rule. This field is used for private NAT.",
         ).optional(),
       }).optional(),
@@ -401,16 +401,10 @@ const GlobalArgsSchema = z.object({
       name: z.string().describe(
         "URL for the subnetwork resource that will use NAT.",
       ).optional(),
-      secondaryIpRangeNames: z.array(z.string()).describe(
+      secondaryIpRangeNames: z.array(z.unknown()).describe(
         'A list of the secondary ranges of the Subnetwork that are allowed to use NAT. This can be populated only if "LIST_OF_SECONDARY_IP_RANGES" is one of the values in source_ip_ranges_to_nat.',
       ).optional(),
-      sourceIpRangesToNat: z.array(
-        z.enum([
-          "ALL_IP_RANGES",
-          "LIST_OF_SECONDARY_IP_RANGES",
-          "PRIMARY_IP_RANGE",
-        ]),
-      ).describe(
+      sourceIpRangesToNat: z.array(z.unknown()).describe(
         'Specify the options for NAT ranges in the Subnetwork. All options of a single value are valid except NAT_IP_RANGE_OPTION_UNSPECIFIED. The only valid option with multiple values is: ["PRIMARY_IP_RANGE", "LIST_OF_SECONDARY_IP_RANGES"] Default: [ALL_IP_RANGES]',
       ).optional(),
     })).describe(
@@ -538,10 +532,10 @@ const StateSchema = z.object({
     natIps: z.array(z.string()),
     rules: z.array(z.object({
       action: z.object({
-        sourceNatActiveIps: z.array(z.string()),
-        sourceNatActiveRanges: z.array(z.string()),
-        sourceNatDrainIps: z.array(z.string()),
-        sourceNatDrainRanges: z.array(z.string()),
+        sourceNatActiveIps: z.unknown(),
+        sourceNatActiveRanges: z.unknown(),
+        sourceNatDrainIps: z.unknown(),
+        sourceNatDrainRanges: z.unknown(),
       }),
       description: z.string(),
       match: z.string(),
@@ -551,8 +545,8 @@ const StateSchema = z.object({
     sourceSubnetworkIpRangesToNat64: z.string(),
     subnetworks: z.array(z.object({
       name: z.string(),
-      secondaryIpRangeNames: z.array(z.string()),
-      sourceIpRangesToNat: z.array(z.string()),
+      secondaryIpRangeNames: z.array(z.unknown()),
+      sourceIpRangesToNat: z.array(z.unknown()),
     })),
     tcpEstablishedIdleTimeoutSec: z.number(),
     tcpTimeWaitTimeoutSec: z.number(),
@@ -813,16 +807,16 @@ const InputsSchema = z.object({
     ).optional(),
     rules: z.array(z.object({
       action: z.object({
-        sourceNatActiveIps: z.array(z.string()).describe(
+        sourceNatActiveIps: z.unknown().describe(
           "A list of URLs of the IP resources used for this NAT rule. These IP addresses must be valid static external IP addresses assigned to the project. This field is used for public NAT.",
         ).optional(),
-        sourceNatActiveRanges: z.array(z.string()).describe(
+        sourceNatActiveRanges: z.unknown().describe(
           "A list of URLs of the subnetworks used as source ranges for this NAT Rule. These subnetworks must have purpose set to PRIVATE_NAT. This field is used for private NAT.",
         ).optional(),
-        sourceNatDrainIps: z.array(z.string()).describe(
+        sourceNatDrainIps: z.unknown().describe(
           "A list of URLs of the IP resources to be drained. These IPs must be valid static external IPs that have been assigned to the NAT. These IPs should be used for updating/patching a NAT rule only. This field is used for public NAT.",
         ).optional(),
-        sourceNatDrainRanges: z.array(z.string()).describe(
+        sourceNatDrainRanges: z.unknown().describe(
           "A list of URLs of subnetworks representing source ranges to be drained. This is only supported on patch/update, and these subnetworks must have previously been used as active ranges in this NAT Rule. This field is used for private NAT.",
         ).optional(),
       }).optional(),
@@ -852,16 +846,10 @@ const InputsSchema = z.object({
       name: z.string().describe(
         "URL for the subnetwork resource that will use NAT.",
       ).optional(),
-      secondaryIpRangeNames: z.array(z.string()).describe(
+      secondaryIpRangeNames: z.array(z.unknown()).describe(
         'A list of the secondary ranges of the Subnetwork that are allowed to use NAT. This can be populated only if "LIST_OF_SECONDARY_IP_RANGES" is one of the values in source_ip_ranges_to_nat.',
       ).optional(),
-      sourceIpRangesToNat: z.array(
-        z.enum([
-          "ALL_IP_RANGES",
-          "LIST_OF_SECONDARY_IP_RANGES",
-          "PRIMARY_IP_RANGE",
-        ]),
-      ).describe(
+      sourceIpRangesToNat: z.array(z.unknown()).describe(
         'Specify the options for NAT ranges in the Subnetwork. All options of a single value are valid except NAT_IP_RANGE_OPTION_UNSPECIFIED. The only valid option with multiple values is: ["PRIMARY_IP_RANGE", "LIST_OF_SECONDARY_IP_RANGES"] Default: [ALL_IP_RANGES]',
       ).optional(),
     })).describe(
@@ -901,7 +889,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/compute/routers",
-  version: "2026.04.03.3",
+  version: "2026.04.04.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -925,6 +913,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.3",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.04.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

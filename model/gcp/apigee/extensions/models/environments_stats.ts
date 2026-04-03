@@ -81,31 +81,25 @@ const GlobalArgsSchema = z.object({
 const StateSchema = z.object({
   environments: z.array(z.object({
     dimensions: z.array(z.object({
-      individualNames: z.array(z.string()),
-      metrics: z.array(z.object({
-        name: z.string(),
-        values: z.array(z.string()),
-      })),
+      individualNames: z.array(z.unknown()),
+      metrics: z.array(z.unknown()),
       name: z.string(),
     })),
     metrics: z.array(z.object({
       name: z.string(),
-      values: z.array(z.string()),
+      values: z.array(z.unknown()),
     })),
     name: z.string(),
   })).optional(),
   hosts: z.array(z.object({
     dimensions: z.array(z.object({
-      individualNames: z.array(z.string()),
-      metrics: z.array(z.object({
-        name: z.string(),
-        values: z.array(z.string()),
-      })),
+      individualNames: z.array(z.unknown()),
+      metrics: z.array(z.unknown()),
       name: z.string(),
     })),
     metrics: z.array(z.object({
       name: z.string(),
-      values: z.array(z.string()),
+      values: z.array(z.unknown()),
     })),
     name: z.string(),
   })).optional(),
@@ -123,7 +117,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/apigee/environments-stats",
-  version: "2026.04.03.3",
+  version: "2026.04.04.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -147,6 +141,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.3",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.04.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

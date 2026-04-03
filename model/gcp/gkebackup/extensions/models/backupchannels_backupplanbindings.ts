@@ -53,8 +53,8 @@ const StateSchema = z.object({
       includeVolumeData: z.boolean(),
       selectedApplications: z.object({
         namespacedNames: z.array(z.object({
-          name: z.string(),
-          namespace: z.string(),
+          name: z.unknown(),
+          namespace: z.unknown(),
         })),
       }),
       selectedNamespaces: z.object({
@@ -91,7 +91,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/gkebackup/backupchannels-backupplanbindings",
-  version: "2026.04.03.3",
+  version: "2026.04.04.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -115,6 +115,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.3",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.04.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

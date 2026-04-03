@@ -57,8 +57,8 @@ const StateSchema = z.object({
           denyAll: z.boolean(),
           enforce: z.boolean(),
           values: z.object({
-            allowedValues: z.array(z.string()),
-            deniedValues: z.array(z.string()),
+            allowedValues: z.unknown(),
+            deniedValues: z.unknown(),
           }),
         }),
       }),
@@ -72,8 +72,8 @@ const StateSchema = z.object({
           denyAll: z.boolean(),
           enforce: z.boolean(),
           values: z.object({
-            allowedValues: z.array(z.string()),
-            deniedValues: z.array(z.string()),
+            allowedValues: z.unknown(),
+            deniedValues: z.unknown(),
           }),
         }),
       }),
@@ -95,7 +95,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/assuredworkloads/workloads-updates",
-  version: "2026.04.03.3",
+  version: "2026.04.04.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -119,6 +119,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.3",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.04.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

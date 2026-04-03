@@ -98,36 +98,12 @@ const StateSchema = z.object({
       auprc: z.number(),
       auprcExact: z.number(),
       confidenceLevelMetrics: z.array(z.object({
-        confidenceLevel: z.number(),
-        metrics: z.object({
-          f1Score: z.number(),
-          falseNegativesCount: z.number(),
-          falsePositivesCount: z.number(),
-          groundTruthDocumentCount: z.number(),
-          groundTruthOccurrencesCount: z.number(),
-          precision: z.number(),
-          predictedDocumentCount: z.number(),
-          predictedOccurrencesCount: z.number(),
-          recall: z.number(),
-          totalDocumentsCount: z.number(),
-          truePositivesCount: z.number(),
-        }),
+        confidenceLevel: z.unknown(),
+        metrics: z.unknown(),
       })),
       confidenceLevelMetricsExact: z.array(z.object({
-        confidenceLevel: z.number(),
-        metrics: z.object({
-          f1Score: z.number(),
-          falseNegativesCount: z.number(),
-          falsePositivesCount: z.number(),
-          groundTruthDocumentCount: z.number(),
-          groundTruthOccurrencesCount: z.number(),
-          precision: z.number(),
-          predictedDocumentCount: z.number(),
-          predictedOccurrencesCount: z.number(),
-          recall: z.number(),
-          totalDocumentsCount: z.number(),
-          truePositivesCount: z.number(),
-        }),
+        confidenceLevel: z.unknown(),
+        metrics: z.unknown(),
       })),
       estimatedCalibrationError: z.number(),
       estimatedCalibrationErrorExact: z.number(),
@@ -155,7 +131,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/documentai/processors-processorversions-evaluations",
-  version: "2026.04.03.3",
+  version: "2026.04.04.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -179,6 +155,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.3",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.04.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

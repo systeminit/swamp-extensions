@@ -501,27 +501,7 @@ const GlobalArgsSchema = z.object({
         apn: z.string().describe(
           "Required. Name of the APN. Policy will be rejected if this field is empty.",
         ).optional(),
-        apnTypes: z.array(
-          z.enum([
-            "APN_TYPE_UNSPECIFIED",
-            "ENTERPRISE",
-            "BIP",
-            "CBS",
-            "DEFAULT",
-            "DUN",
-            "EMERGENCY",
-            "FOTA",
-            "HIPRI",
-            "IA",
-            "IMS",
-            "MCX",
-            "MMS",
-            "RCS",
-            "SUPL",
-            "VSIM",
-            "XCAP",
-          ]),
-        ).describe(
+        apnTypes: z.array(z.unknown()).describe(
           "Required. Usage categories for the APN. Policy will be rejected if this field is empty or contains APN_TYPE_UNSPECIFIED or duplicates. Multiple APN types can be set on fully managed devices. ENTERPRISE is the only allowed APN type on work profiles. A NonComplianceDetail with MANAGEMENT_MODE is reported for any other value on work profiles. APN types that are not supported on the device or management mode will be ignored. If this results in the empty list, the APN setting will be ignored, because apnTypes is a required field. A NonComplianceDetail with INVALID_VALUE is reported if none of the APN types are supported on the device or management mode.",
         ).optional(),
         authType: z.enum([
@@ -559,23 +539,7 @@ const GlobalArgsSchema = z.object({
           "IMSI",
           "SPN",
         ]).describe("Optional. MVNO match type for the APN.").optional(),
-        networkTypes: z.array(
-          z.enum([
-            "NETWORK_TYPE_UNSPECIFIED",
-            "EDGE",
-            "GPRS",
-            "GSM",
-            "HSDPA",
-            "HSPA",
-            "HSPAP",
-            "HSUPA",
-            "IWLAN",
-            "LTE",
-            "NR",
-            "TD_SCDMA",
-            "UMTS",
-          ]),
-        ).describe(
+        networkTypes: z.array(z.unknown()).describe(
           "Optional. Radio technologies (network types) the APN may use. Policy will be rejected if this field contains NETWORK_TYPE_UNSPECIFIED or duplicates.",
         ).optional(),
         numericOperatorId: z.string().describe(
@@ -1591,7 +1555,7 @@ const StateSchema = z.object({
       apnSettings: z.array(z.object({
         alwaysOnSetting: z.string(),
         apn: z.string(),
-        apnTypes: z.array(z.string()),
+        apnTypes: z.array(z.unknown()),
         authType: z.string(),
         carrierId: z.number(),
         displayName: z.string(),
@@ -1601,7 +1565,7 @@ const StateSchema = z.object({
         mtuV4: z.number(),
         mtuV6: z.number(),
         mvnoType: z.string(),
-        networkTypes: z.array(z.string()),
+        networkTypes: z.array(z.unknown()),
         numericOperatorId: z.string(),
         password: z.string(),
         protocol: z.string(),
@@ -2303,27 +2267,7 @@ const InputsSchema = z.object({
         apn: z.string().describe(
           "Required. Name of the APN. Policy will be rejected if this field is empty.",
         ).optional(),
-        apnTypes: z.array(
-          z.enum([
-            "APN_TYPE_UNSPECIFIED",
-            "ENTERPRISE",
-            "BIP",
-            "CBS",
-            "DEFAULT",
-            "DUN",
-            "EMERGENCY",
-            "FOTA",
-            "HIPRI",
-            "IA",
-            "IMS",
-            "MCX",
-            "MMS",
-            "RCS",
-            "SUPL",
-            "VSIM",
-            "XCAP",
-          ]),
-        ).describe(
+        apnTypes: z.array(z.unknown()).describe(
           "Required. Usage categories for the APN. Policy will be rejected if this field is empty or contains APN_TYPE_UNSPECIFIED or duplicates. Multiple APN types can be set on fully managed devices. ENTERPRISE is the only allowed APN type on work profiles. A NonComplianceDetail with MANAGEMENT_MODE is reported for any other value on work profiles. APN types that are not supported on the device or management mode will be ignored. If this results in the empty list, the APN setting will be ignored, because apnTypes is a required field. A NonComplianceDetail with INVALID_VALUE is reported if none of the APN types are supported on the device or management mode.",
         ).optional(),
         authType: z.enum([
@@ -2361,23 +2305,7 @@ const InputsSchema = z.object({
           "IMSI",
           "SPN",
         ]).describe("Optional. MVNO match type for the APN.").optional(),
-        networkTypes: z.array(
-          z.enum([
-            "NETWORK_TYPE_UNSPECIFIED",
-            "EDGE",
-            "GPRS",
-            "GSM",
-            "HSDPA",
-            "HSPA",
-            "HSPAP",
-            "HSUPA",
-            "IWLAN",
-            "LTE",
-            "NR",
-            "TD_SCDMA",
-            "UMTS",
-          ]),
-        ).describe(
+        networkTypes: z.array(z.unknown()).describe(
           "Optional. Radio technologies (network types) the APN may use. Policy will be rejected if this field contains NETWORK_TYPE_UNSPECIFIED or duplicates.",
         ).optional(),
         numericOperatorId: z.string().describe(
@@ -3275,7 +3203,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/androidmanagement/enterprises-policies",
-  version: "2026.04.03.3",
+  version: "2026.04.04.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -3299,6 +3227,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.3",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.04.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

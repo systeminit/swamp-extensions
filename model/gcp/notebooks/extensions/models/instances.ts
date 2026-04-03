@@ -228,7 +228,7 @@ const GlobalArgsSchema = z.object({
     ).optional(),
     networkInterfaces: z.array(z.object({
       accessConfigs: z.array(z.object({
-        externalIp: z.string().describe(
+        externalIp: z.unknown().describe(
           "An external IP address associated with this instance. Specify an unused static external IP address available to the project or leave this field undefined to use an IP from a shared ephemeral IP address pool. If you specify a static external IP address, it must live in the same region as the zone of the instance.",
         ).optional(),
       })).describe(
@@ -364,7 +364,7 @@ const StateSchema = z.object({
     minCpuPlatform: z.string(),
     networkInterfaces: z.array(z.object({
       accessConfigs: z.array(z.object({
-        externalIp: z.string(),
+        externalIp: z.unknown(),
       })),
       network: z.string(),
       nicType: z.string(),
@@ -549,7 +549,7 @@ const InputsSchema = z.object({
     ).optional(),
     networkInterfaces: z.array(z.object({
       accessConfigs: z.array(z.object({
-        externalIp: z.string().describe(
+        externalIp: z.unknown().describe(
           "An external IP address associated with this instance. Specify an unused static external IP address available to the project or leave this field undefined to use an IP from a shared ephemeral IP address pool. If you specify a static external IP address, it must live in the same region as the zone of the instance.",
         ).optional(),
       })).describe(
@@ -643,7 +643,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/notebooks/instances",
-  version: "2026.04.03.3",
+  version: "2026.04.04.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -667,6 +667,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.3",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.04.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

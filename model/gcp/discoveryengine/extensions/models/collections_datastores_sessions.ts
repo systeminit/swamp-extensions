@@ -131,14 +131,13 @@ const GlobalArgsSchema = z.object({
       ).optional(),
       answerText: z.string().describe("The textual answer.").optional(),
       citations: z.array(z.object({
-        endIndex: z.string().describe(
+        endIndex: z.unknown().describe(
           "End of the attributed segment, exclusive. Measured in bytes (UTF-8 unicode). If there are multi-byte characters,such as non-ASCII characters, the index measurement is longer than the string length.",
         ).optional(),
-        sources: z.array(z.object({
-          referenceId: z.string().describe("ID of the citation source.")
-            .optional(),
-        })).describe("Citation sources for the attributed segment.").optional(),
-        startIndex: z.string().describe(
+        sources: z.unknown().describe(
+          "Citation sources for the attributed segment.",
+        ).optional(),
+        startIndex: z.unknown().describe(
           "Index indicates the start of the segment, measured in bytes (UTF-8 unicode). If there are multi-byte characters,such as non-ASCII characters, the index measurement is longer than the string length.",
         ).optional(),
       })).describe("Citations.").optional(),
@@ -151,19 +150,18 @@ const GlobalArgsSchema = z.object({
         "A score in the range of [0, 1] describing how grounded the answer is by the reference chunks.",
       ).optional(),
       groundingSupports: z.array(z.object({
-        endIndex: z.string().describe("Required. End of the claim, exclusive.")
+        endIndex: z.unknown().describe("Required. End of the claim, exclusive.")
           .optional(),
-        groundingCheckRequired: z.boolean().describe(
+        groundingCheckRequired: z.unknown().describe(
           "Indicates that this claim required grounding check. When the system decided this claim didn't require attribution/grounding check, this field is set to false. In that case, no grounding check was done for the claim and therefore `grounding_score`, `sources` is not returned.",
         ).optional(),
-        groundingScore: z.number().describe(
+        groundingScore: z.unknown().describe(
           "A score in the range of [0, 1] describing how grounded is a specific claim by the references. Higher value means that the claim is better supported by the reference chunks.",
         ).optional(),
-        sources: z.array(z.object({
-          referenceId: z.string().describe("ID of the citation source.")
-            .optional(),
-        })).describe("Optional. Citation sources for the claim.").optional(),
-        startIndex: z.string().describe(
+        sources: z.unknown().describe(
+          "Optional. Citation sources for the claim.",
+        ).optional(),
+        startIndex: z.unknown().describe(
           "Required. Index indicates the start of the claim, measured in bytes (UTF-8 unicode).",
         ).optional(),
       })).describe("Optional. Grounding supports.").optional(),
@@ -171,98 +169,38 @@ const GlobalArgsSchema = z.object({
         "Immutable. Fully qualified name `projects/{project}/locations/global/collections/{collection}/engines/{engine}/sessions/*/answers/*`",
       ).optional(),
       queryUnderstandingInfo: z.object({
-        queryClassificationInfo: z.array(z.object({
-          positive: z.boolean().describe("Classification output.").optional(),
-          type: z.enum([
-            "TYPE_UNSPECIFIED",
-            "ADVERSARIAL_QUERY",
-            "NON_ANSWER_SEEKING_QUERY",
-            "JAIL_BREAKING_QUERY",
-            "NON_ANSWER_SEEKING_QUERY_V2",
-            "USER_DEFINED_CLASSIFICATION_QUERY",
-          ]).describe("Query classification type.").optional(),
-        })).describe("Query classification information.").optional(),
+        queryClassificationInfo: z.array(z.unknown()).describe(
+          "Query classification information.",
+        ).optional(),
       }).describe("Query understanding information.").optional(),
       references: z.array(z.object({
-        chunkInfo: z.object({
-          chunk: z.string().describe("Chunk resource name.").optional(),
-          content: z.string().describe("Chunk textual content.").optional(),
-          documentMetadata: z.object({
-            document: z.string().describe("Document resource name.").optional(),
-            pageIdentifier: z.string().describe("Page identifier.").optional(),
-            structData: z.record(z.string(), z.string()).describe(
-              "The structured JSON metadata for the document. It is populated from the struct data from the Chunk in search result.",
-            ).optional(),
-            title: z.string().describe("Title.").optional(),
-            uri: z.string().describe("URI for the document.").optional(),
-          }).describe("Document metadata.").optional(),
-          relevanceScore: z.number().describe(
-            "The relevance of the chunk for a given query. Values range from 0.0 (completely irrelevant) to 1.0 (completely relevant). This value is for informational purpose only. It may change for the same query and chunk at any time due to a model retraining or change in implementation.",
-          ).optional(),
-        }).describe("Chunk information.").optional(),
-        structuredDocumentInfo: z.object({
-          document: z.string().describe("Document resource name.").optional(),
-          structData: z.record(z.string(), z.string()).describe(
-            "Structured search data.",
-          ).optional(),
-          title: z.string().describe("Output only. The title of the document.")
-            .optional(),
-          uri: z.string().describe("Output only. The URI of the document.")
-            .optional(),
-        }).describe("Structured search information.").optional(),
-        unstructuredDocumentInfo: z.object({
-          chunkContents: z.array(z.object({
-            content: z.string().describe("Chunk textual content.").optional(),
-            pageIdentifier: z.string().describe("Page identifier.").optional(),
-            relevanceScore: z.number().describe(
-              "The relevance of the chunk for a given query. Values range from 0.0 (completely irrelevant) to 1.0 (completely relevant). This value is for informational purpose only. It may change for the same query and chunk at any time due to a model retraining or change in implementation.",
-            ).optional(),
-          })).describe(
-            "List of cited chunk contents derived from document content.",
-          ).optional(),
-          document: z.string().describe("Document resource name.").optional(),
-          structData: z.record(z.string(), z.string()).describe(
-            "The structured JSON metadata for the document. It is populated from the struct data from the Chunk in search result.",
-          ).optional(),
-          title: z.string().describe("Title.").optional(),
-          uri: z.string().describe("URI for the document.").optional(),
-        }).describe("Unstructured document information.").optional(),
+        chunkInfo: z.unknown().describe("Chunk information.").optional(),
+        structuredDocumentInfo: z.unknown().describe(
+          "Structured search information.",
+        ).optional(),
+        unstructuredDocumentInfo: z.unknown().describe(
+          "Unstructured document information.",
+        ).optional(),
       })).describe("References.").optional(),
       relatedQuestions: z.array(z.string()).describe(
         "Suggested related questions.",
       ).optional(),
       safetyRatings: z.array(z.object({
-        blocked: z.boolean().describe(
+        blocked: z.unknown().describe(
           "Output only. Indicates whether the content was filtered out because of this rating.",
         ).optional(),
-        category: z.enum([
-          "HARM_CATEGORY_UNSPECIFIED",
-          "HARM_CATEGORY_HATE_SPEECH",
-          "HARM_CATEGORY_DANGEROUS_CONTENT",
-          "HARM_CATEGORY_HARASSMENT",
-          "HARM_CATEGORY_SEXUALLY_EXPLICIT",
-          "HARM_CATEGORY_CIVIC_INTEGRITY",
-        ]).describe("Output only. Harm category.").optional(),
-        probability: z.enum([
-          "HARM_PROBABILITY_UNSPECIFIED",
-          "NEGLIGIBLE",
-          "LOW",
-          "MEDIUM",
-          "HIGH",
-        ]).describe("Output only. Harm probability levels in the content.")
+        category: z.unknown().describe("Output only. Harm category.")
           .optional(),
-        probabilityScore: z.number().describe(
+        probability: z.unknown().describe(
+          "Output only. Harm probability levels in the content.",
+        ).optional(),
+        probabilityScore: z.unknown().describe(
           "Output only. Harm probability score.",
         ).optional(),
-        severity: z.enum([
-          "HARM_SEVERITY_UNSPECIFIED",
-          "HARM_SEVERITY_NEGLIGIBLE",
-          "HARM_SEVERITY_LOW",
-          "HARM_SEVERITY_MEDIUM",
-          "HARM_SEVERITY_HIGH",
-        ]).describe("Output only. Harm severity levels in the content.")
-          .optional(),
-        severityScore: z.number().describe("Output only. Harm severity score.")
+        severity: z.unknown().describe(
+          "Output only. Harm severity levels in the content.",
+        ).optional(),
+        severityScore: z.unknown().describe("Output only. Harm severity score.")
           .optional(),
       })).describe("Optional. Safety ratings.").optional(),
       state: z.enum([
@@ -273,51 +211,11 @@ const GlobalArgsSchema = z.object({
         "STREAMING",
       ]).describe("The state of the answer generation.").optional(),
       steps: z.array(z.object({
-        actions: z.array(z.object({
-          observation: z.object({
-            searchResults: z.array(z.object({
-              chunkInfo: z.array(z.object({
-                chunk: z.string().describe("Chunk resource name.").optional(),
-                content: z.string().describe("Chunk textual content.")
-                  .optional(),
-                relevanceScore: z.number().describe(
-                  "The relevance of the chunk for a given query. Values range from 0.0 (completely irrelevant) to 1.0 (completely relevant). This value is for informational purpose only. It may change for the same query and chunk at any time due to a model retraining or change in implementation.",
-                ).optional(),
-              })).describe(
-                "If citation_type is CHUNK_LEVEL_CITATION and chunk mode is on, populate chunk info.",
-              ).optional(),
-              document: z.string().describe("Document resource name.")
-                .optional(),
-              snippetInfo: z.array(z.object({
-                snippet: z.string().describe("Snippet content.").optional(),
-                snippetStatus: z.string().describe(
-                  "Status of the snippet defined by the search team.",
-                ).optional(),
-              })).describe(
-                "If citation_type is DOCUMENT_LEVEL_CITATION, populate document level snippets.",
-              ).optional(),
-              structData: z.record(z.string(), z.string()).describe(
-                "Data representation. The structured JSON data for the document. It's populated from the struct data from the Document, or the Chunk in search result.",
-              ).optional(),
-              title: z.string().describe("Title.").optional(),
-              uri: z.string().describe("URI for the document.").optional(),
-            })).describe(
-              "Search results observed by the search action, it can be snippets info or chunk info, depending on the citation type set by the user.",
-            ).optional(),
-          }).describe("Observation.").optional(),
-          searchAction: z.object({
-            query: z.string().describe("The query to search.").optional(),
-          }).describe("Search action.").optional(),
-        })).describe("Actions.").optional(),
-        description: z.string().describe("The description of the step.")
+        actions: z.unknown().describe("Actions.").optional(),
+        description: z.unknown().describe("The description of the step.")
           .optional(),
-        state: z.enum([
-          "STATE_UNSPECIFIED",
-          "IN_PROGRESS",
-          "FAILED",
-          "SUCCEEDED",
-        ]).describe("The state of the step.").optional(),
-        thought: z.string().describe("The thought of the step.").optional(),
+        state: z.unknown().describe("The state of the step.").optional(),
+        thought: z.unknown().describe("The thought of the step.").optional(),
       })).describe("Answer generation steps.").optional(),
     }).describe("Defines an answer.").optional(),
     detailedAssistAnswer: z.object({
@@ -329,35 +227,7 @@ const GlobalArgsSchema = z.object({
         ]),
       ).describe("Reasons for not answering the assist call.").optional(),
       customerPolicyEnforcementResult: z.object({
-        policyResults: z.array(z.object({
-          bannedPhraseEnforcementResult: z.object({
-            bannedPhrases: z.array(z.string()).describe(
-              "The banned phrases that were found in the query or the answer.",
-            ).optional(),
-          }).describe(
-            "Customer policy enforcement result for the banned phrase policy.",
-          ).optional(),
-          modelArmorEnforcementResult: z.object({
-            error: z.object({
-              code: z.number().int().describe(
-                "The status code, which should be an enum value of google.rpc.Code.",
-              ).optional(),
-              details: z.array(z.record(z.string(), z.string())).describe(
-                "A list of messages that carry the error details. There is a common set of message types for APIs to use.",
-              ).optional(),
-              message: z.string().describe(
-                "A developer-facing error message, which should be in English. Any user-facing error message should be localized and sent in the google.rpc.Status.details field, or localized by the client.",
-              ).optional(),
-            }).describe(
-              "The `Status` type defines a logical error model that is suitable for different programming environments, including REST APIs and RPC APIs. It is used by [gRPC](https://github.com/grpc). Each `Status` message contains three pieces of data: error code, error message, and error details. You can find out more about this error model and how to work with it in the [API Design Guide](https://cloud.google.com/apis/design/errors).",
-            ).optional(),
-            modelArmorViolation: z.string().describe(
-              "The Model Armor violation that was found.",
-            ).optional(),
-          }).describe(
-            "Customer policy enforcement result for the Model Armor policy.",
-          ).optional(),
-        })).describe(
+        policyResults: z.array(z.unknown()).describe(
           "Customer policy enforcement results. Populated only if the assist call was skipped due to a policy violation. It contains results from those filters that blocked the processing of the query.",
         ).optional(),
         verdict: z.enum(["UNSPECIFIED", "ALLOW", "BLOCK"]).describe(
@@ -370,118 +240,7 @@ const GlobalArgsSchema = z.object({
         "Immutable. Identifier. Resource name of the `AssistAnswer`. Format: `projects/{project}/locations/{location}/collections/{collection}/engines/{engine}/sessions/{session}/assistAnswers/{assist_answer}` This field must be a UTF-8 encoded string with a length limit of 1024 characters.",
       ).optional(),
       replies: z.array(z.object({
-        groundedContent: z.object({
-          citationMetadata: z.object({
-            citations: z.array(z.object({
-              endIndex: z.number().int().describe(
-                "Output only. End index into the content.",
-              ).optional(),
-              license: z.string().describe(
-                "Output only. License of the attribution.",
-              ).optional(),
-              publicationDate: z.object({
-                day: z.number().int().describe(
-                  "Day of a month. Must be from 1 to 31 and valid for the year and month, or 0 to specify a year by itself or a year and month where the day isn't significant.",
-                ).optional(),
-                month: z.number().int().describe(
-                  "Month of a year. Must be from 1 to 12, or 0 to specify a year without a month and day.",
-                ).optional(),
-                year: z.number().int().describe(
-                  "Year of the date. Must be from 1 to 9999, or 0 to specify a date without a year.",
-                ).optional(),
-              }).describe(
-                "Represents a whole or partial calendar date, such as a birthday. The time of day and time zone are either specified elsewhere or are insignificant. The date is relative to the Gregorian Calendar. This can represent one of the following: * A full date, with non-zero year, month, and day values. * A month and day, with a zero year (for example, an anniversary). * A year on its own, with a zero month and a zero day. * A year and month, with a zero day (for example, a credit card expiration date). Related types: * google.type.TimeOfDay * google.type.DateTime * google.protobuf.Timestamp",
-              ).optional(),
-              startIndex: z.number().int().describe(
-                "Output only. Start index into the content.",
-              ).optional(),
-              title: z.string().describe(
-                "Output only. Title of the attribution.",
-              ).optional(),
-              uri: z.string().describe(
-                "Output only. Url reference of the attribution.",
-              ).optional(),
-            })).describe("Output only. List of citations.").optional(),
-          }).describe(
-            "A collection of source attributions for a piece of content.",
-          ).optional(),
-          content: z.object({
-            codeExecutionResult: z.object({
-              outcome: z.enum([
-                "OUTCOME_UNSPECIFIED",
-                "OUTCOME_OK",
-                "OUTCOME_FAILED",
-                "OUTCOME_DEADLINE_EXCEEDED",
-              ]).describe("Required. Outcome of the code execution.")
-                .optional(),
-              output: z.string().describe(
-                "Optional. Contains stdout when code execution is successful, stderr or other description otherwise.",
-              ).optional(),
-            }).describe("Result of executing ExecutableCode.").optional(),
-            executableCode: z.object({
-              code: z.string().describe(
-                "Required. The code content. Currently only supports Python.",
-              ).optional(),
-            }).describe(
-              "Code generated by the model that is meant to be executed by the model.",
-            ).optional(),
-            file: z.object({
-              fileId: z.string().describe("Required. The file ID.").optional(),
-              mimeType: z.string().describe(
-                "Required. The media type (MIME type) of the file.",
-              ).optional(),
-            }).describe("A file, e.g., an audio summary.").optional(),
-            inlineData: z.object({
-              data: z.string().describe("Required. Raw bytes.").optional(),
-              mimeType: z.string().describe(
-                "Required. The media type (MIME type) of the generated data.",
-              ).optional(),
-            }).describe("Inline blob.").optional(),
-            role: z.string().describe(
-              'The producer of the content. Can be "model" or "user".',
-            ).optional(),
-            text: z.string().describe("Inline text.").optional(),
-            thought: z.boolean().describe(
-              "Optional. Indicates if the part is thought from the model.",
-            ).optional(),
-          }).describe("Multi-modal content.").optional(),
-          textGroundingMetadata: z.object({
-            references: z.array(z.object({
-              content: z.string().describe("Referenced text content.")
-                .optional(),
-              documentMetadata: z.object({
-                document: z.string().describe("Document resource name.")
-                  .optional(),
-                domain: z.string().describe(
-                  "Domain name from the document URI. Note that the `uri` field may contain a URL that redirects to the actual website, in which case this will contain the domain name of the target site.",
-                ).optional(),
-                mimeType: z.string().describe(
-                  "The mime type of the document. https://www.iana.org/assignments/media-types/media-types.xhtml.",
-                ).optional(),
-                pageIdentifier: z.string().describe("Page identifier.")
-                  .optional(),
-                title: z.string().describe("Title.").optional(),
-                uri: z.string().describe(
-                  "URI for the document. It may contain a URL that redirects to the actual website.",
-                ).optional(),
-              }).describe("Document metadata.").optional(),
-            })).describe("References for the grounded text.").optional(),
-            segments: z.array(z.object({
-              endIndex: z.string().describe("End of the segment, exclusive.")
-                .optional(),
-              groundingScore: z.number().describe("Score for the segment.")
-                .optional(),
-              referenceIndices: z.array(z.number().int()).describe(
-                "References for the segment.",
-              ).optional(),
-              startIndex: z.string().describe(
-                "Zero-based index indicating the start of the segment, measured in bytes of a UTF-8 string (i.e. characters encoded on multiple bytes have a length of more than one).",
-              ).optional(),
-              text: z.string().describe("The text segment itself.").optional(),
-            })).describe("Grounding information for parts of the text.")
-              .optional(),
-          }).describe("Grounding details for text sources.").optional(),
-        }).describe(
+        groundedContent: z.unknown().describe(
           'A piece of content and possibly its grounding information. Not all content needs grounding. Phrases like "Of course, I will gladly search it for you." do not need grounding.',
         ).optional(),
       })).describe("Replies of the assistant.").optional(),
@@ -524,176 +283,55 @@ const StateSchema = z.object({
       answerSkippedReasons: z.array(z.string()),
       answerText: z.string(),
       citations: z.array(z.object({
-        endIndex: z.string(),
-        sources: z.array(z.object({
-          referenceId: z.string(),
-        })),
-        startIndex: z.string(),
+        endIndex: z.unknown(),
+        sources: z.unknown(),
+        startIndex: z.unknown(),
       })),
       completeTime: z.string(),
       createTime: z.string(),
       groundingScore: z.number(),
       groundingSupports: z.array(z.object({
-        endIndex: z.string(),
-        groundingCheckRequired: z.boolean(),
-        groundingScore: z.number(),
-        sources: z.array(z.object({
-          referenceId: z.string(),
-        })),
-        startIndex: z.string(),
+        endIndex: z.unknown(),
+        groundingCheckRequired: z.unknown(),
+        groundingScore: z.unknown(),
+        sources: z.unknown(),
+        startIndex: z.unknown(),
       })),
       name: z.string(),
       queryUnderstandingInfo: z.object({
-        queryClassificationInfo: z.array(z.object({
-          positive: z.boolean(),
-          type: z.string(),
-        })),
+        queryClassificationInfo: z.array(z.unknown()),
       }),
       references: z.array(z.object({
-        chunkInfo: z.object({
-          chunk: z.string(),
-          content: z.string(),
-          documentMetadata: z.object({
-            document: z.string(),
-            pageIdentifier: z.string(),
-            structData: z.record(z.string(), z.unknown()),
-            title: z.string(),
-            uri: z.string(),
-          }),
-          relevanceScore: z.number(),
-        }),
-        structuredDocumentInfo: z.object({
-          document: z.string(),
-          structData: z.record(z.string(), z.unknown()),
-          title: z.string(),
-          uri: z.string(),
-        }),
-        unstructuredDocumentInfo: z.object({
-          chunkContents: z.array(z.object({
-            content: z.string(),
-            pageIdentifier: z.string(),
-            relevanceScore: z.number(),
-          })),
-          document: z.string(),
-          structData: z.record(z.string(), z.unknown()),
-          title: z.string(),
-          uri: z.string(),
-        }),
+        chunkInfo: z.unknown(),
+        structuredDocumentInfo: z.unknown(),
+        unstructuredDocumentInfo: z.unknown(),
       })),
       relatedQuestions: z.array(z.string()),
       safetyRatings: z.array(z.object({
-        blocked: z.boolean(),
-        category: z.string(),
-        probability: z.string(),
-        probabilityScore: z.number(),
-        severity: z.string(),
-        severityScore: z.number(),
+        blocked: z.unknown(),
+        category: z.unknown(),
+        probability: z.unknown(),
+        probabilityScore: z.unknown(),
+        severity: z.unknown(),
+        severityScore: z.unknown(),
       })),
       state: z.string(),
       steps: z.array(z.object({
-        actions: z.array(z.object({
-          observation: z.object({
-            searchResults: z.array(z.object({
-              chunkInfo: z.array(z.object({
-                chunk: z.string(),
-                content: z.string(),
-                relevanceScore: z.number(),
-              })),
-              document: z.string(),
-              snippetInfo: z.array(z.object({
-                snippet: z.string(),
-                snippetStatus: z.string(),
-              })),
-              structData: z.record(z.string(), z.unknown()),
-              title: z.string(),
-              uri: z.string(),
-            })),
-          }),
-          searchAction: z.object({
-            query: z.string(),
-          }),
-        })),
-        description: z.string(),
-        state: z.string(),
-        thought: z.string(),
+        actions: z.unknown(),
+        description: z.unknown(),
+        state: z.unknown(),
+        thought: z.unknown(),
       })),
     }),
     detailedAssistAnswer: z.object({
       assistSkippedReasons: z.array(z.string()),
       customerPolicyEnforcementResult: z.object({
-        policyResults: z.array(z.object({
-          bannedPhraseEnforcementResult: z.object({
-            bannedPhrases: z.array(z.string()),
-          }),
-          modelArmorEnforcementResult: z.object({
-            error: z.object({
-              code: z.number(),
-              details: z.array(z.record(z.string(), z.unknown())),
-              message: z.string(),
-            }),
-            modelArmorViolation: z.string(),
-          }),
-        })),
+        policyResults: z.array(z.unknown()),
         verdict: z.string(),
       }),
       name: z.string(),
       replies: z.array(z.object({
-        groundedContent: z.object({
-          citationMetadata: z.object({
-            citations: z.array(z.object({
-              endIndex: z.number(),
-              license: z.string(),
-              publicationDate: z.object({
-                day: z.number(),
-                month: z.number(),
-                year: z.number(),
-              }),
-              startIndex: z.number(),
-              title: z.string(),
-              uri: z.string(),
-            })),
-          }),
-          content: z.object({
-            codeExecutionResult: z.object({
-              outcome: z.string(),
-              output: z.string(),
-            }),
-            executableCode: z.object({
-              code: z.string(),
-            }),
-            file: z.object({
-              fileId: z.string(),
-              mimeType: z.string(),
-            }),
-            inlineData: z.object({
-              data: z.string(),
-              mimeType: z.string(),
-            }),
-            role: z.string(),
-            text: z.string(),
-            thought: z.boolean(),
-          }),
-          textGroundingMetadata: z.object({
-            references: z.array(z.object({
-              content: z.string(),
-              documentMetadata: z.object({
-                document: z.string(),
-                domain: z.string(),
-                mimeType: z.string(),
-                pageIdentifier: z.string(),
-                title: z.string(),
-                uri: z.string(),
-              }),
-            })),
-            segments: z.array(z.object({
-              endIndex: z.string(),
-              groundingScore: z.number(),
-              referenceIndices: z.array(z.number()),
-              startIndex: z.string(),
-              text: z.string(),
-            })),
-          }),
-        }),
+        groundedContent: z.unknown(),
       })),
       state: z.string(),
     }),
@@ -749,14 +387,13 @@ const InputsSchema = z.object({
       ).optional(),
       answerText: z.string().describe("The textual answer.").optional(),
       citations: z.array(z.object({
-        endIndex: z.string().describe(
+        endIndex: z.unknown().describe(
           "End of the attributed segment, exclusive. Measured in bytes (UTF-8 unicode). If there are multi-byte characters,such as non-ASCII characters, the index measurement is longer than the string length.",
         ).optional(),
-        sources: z.array(z.object({
-          referenceId: z.string().describe("ID of the citation source.")
-            .optional(),
-        })).describe("Citation sources for the attributed segment.").optional(),
-        startIndex: z.string().describe(
+        sources: z.unknown().describe(
+          "Citation sources for the attributed segment.",
+        ).optional(),
+        startIndex: z.unknown().describe(
           "Index indicates the start of the segment, measured in bytes (UTF-8 unicode). If there are multi-byte characters,such as non-ASCII characters, the index measurement is longer than the string length.",
         ).optional(),
       })).describe("Citations.").optional(),
@@ -769,19 +406,18 @@ const InputsSchema = z.object({
         "A score in the range of [0, 1] describing how grounded the answer is by the reference chunks.",
       ).optional(),
       groundingSupports: z.array(z.object({
-        endIndex: z.string().describe("Required. End of the claim, exclusive.")
+        endIndex: z.unknown().describe("Required. End of the claim, exclusive.")
           .optional(),
-        groundingCheckRequired: z.boolean().describe(
+        groundingCheckRequired: z.unknown().describe(
           "Indicates that this claim required grounding check. When the system decided this claim didn't require attribution/grounding check, this field is set to false. In that case, no grounding check was done for the claim and therefore `grounding_score`, `sources` is not returned.",
         ).optional(),
-        groundingScore: z.number().describe(
+        groundingScore: z.unknown().describe(
           "A score in the range of [0, 1] describing how grounded is a specific claim by the references. Higher value means that the claim is better supported by the reference chunks.",
         ).optional(),
-        sources: z.array(z.object({
-          referenceId: z.string().describe("ID of the citation source.")
-            .optional(),
-        })).describe("Optional. Citation sources for the claim.").optional(),
-        startIndex: z.string().describe(
+        sources: z.unknown().describe(
+          "Optional. Citation sources for the claim.",
+        ).optional(),
+        startIndex: z.unknown().describe(
           "Required. Index indicates the start of the claim, measured in bytes (UTF-8 unicode).",
         ).optional(),
       })).describe("Optional. Grounding supports.").optional(),
@@ -789,98 +425,38 @@ const InputsSchema = z.object({
         "Immutable. Fully qualified name `projects/{project}/locations/global/collections/{collection}/engines/{engine}/sessions/*/answers/*`",
       ).optional(),
       queryUnderstandingInfo: z.object({
-        queryClassificationInfo: z.array(z.object({
-          positive: z.boolean().describe("Classification output.").optional(),
-          type: z.enum([
-            "TYPE_UNSPECIFIED",
-            "ADVERSARIAL_QUERY",
-            "NON_ANSWER_SEEKING_QUERY",
-            "JAIL_BREAKING_QUERY",
-            "NON_ANSWER_SEEKING_QUERY_V2",
-            "USER_DEFINED_CLASSIFICATION_QUERY",
-          ]).describe("Query classification type.").optional(),
-        })).describe("Query classification information.").optional(),
+        queryClassificationInfo: z.array(z.unknown()).describe(
+          "Query classification information.",
+        ).optional(),
       }).describe("Query understanding information.").optional(),
       references: z.array(z.object({
-        chunkInfo: z.object({
-          chunk: z.string().describe("Chunk resource name.").optional(),
-          content: z.string().describe("Chunk textual content.").optional(),
-          documentMetadata: z.object({
-            document: z.string().describe("Document resource name.").optional(),
-            pageIdentifier: z.string().describe("Page identifier.").optional(),
-            structData: z.record(z.string(), z.string()).describe(
-              "The structured JSON metadata for the document. It is populated from the struct data from the Chunk in search result.",
-            ).optional(),
-            title: z.string().describe("Title.").optional(),
-            uri: z.string().describe("URI for the document.").optional(),
-          }).describe("Document metadata.").optional(),
-          relevanceScore: z.number().describe(
-            "The relevance of the chunk for a given query. Values range from 0.0 (completely irrelevant) to 1.0 (completely relevant). This value is for informational purpose only. It may change for the same query and chunk at any time due to a model retraining or change in implementation.",
-          ).optional(),
-        }).describe("Chunk information.").optional(),
-        structuredDocumentInfo: z.object({
-          document: z.string().describe("Document resource name.").optional(),
-          structData: z.record(z.string(), z.string()).describe(
-            "Structured search data.",
-          ).optional(),
-          title: z.string().describe("Output only. The title of the document.")
-            .optional(),
-          uri: z.string().describe("Output only. The URI of the document.")
-            .optional(),
-        }).describe("Structured search information.").optional(),
-        unstructuredDocumentInfo: z.object({
-          chunkContents: z.array(z.object({
-            content: z.string().describe("Chunk textual content.").optional(),
-            pageIdentifier: z.string().describe("Page identifier.").optional(),
-            relevanceScore: z.number().describe(
-              "The relevance of the chunk for a given query. Values range from 0.0 (completely irrelevant) to 1.0 (completely relevant). This value is for informational purpose only. It may change for the same query and chunk at any time due to a model retraining or change in implementation.",
-            ).optional(),
-          })).describe(
-            "List of cited chunk contents derived from document content.",
-          ).optional(),
-          document: z.string().describe("Document resource name.").optional(),
-          structData: z.record(z.string(), z.string()).describe(
-            "The structured JSON metadata for the document. It is populated from the struct data from the Chunk in search result.",
-          ).optional(),
-          title: z.string().describe("Title.").optional(),
-          uri: z.string().describe("URI for the document.").optional(),
-        }).describe("Unstructured document information.").optional(),
+        chunkInfo: z.unknown().describe("Chunk information.").optional(),
+        structuredDocumentInfo: z.unknown().describe(
+          "Structured search information.",
+        ).optional(),
+        unstructuredDocumentInfo: z.unknown().describe(
+          "Unstructured document information.",
+        ).optional(),
       })).describe("References.").optional(),
       relatedQuestions: z.array(z.string()).describe(
         "Suggested related questions.",
       ).optional(),
       safetyRatings: z.array(z.object({
-        blocked: z.boolean().describe(
+        blocked: z.unknown().describe(
           "Output only. Indicates whether the content was filtered out because of this rating.",
         ).optional(),
-        category: z.enum([
-          "HARM_CATEGORY_UNSPECIFIED",
-          "HARM_CATEGORY_HATE_SPEECH",
-          "HARM_CATEGORY_DANGEROUS_CONTENT",
-          "HARM_CATEGORY_HARASSMENT",
-          "HARM_CATEGORY_SEXUALLY_EXPLICIT",
-          "HARM_CATEGORY_CIVIC_INTEGRITY",
-        ]).describe("Output only. Harm category.").optional(),
-        probability: z.enum([
-          "HARM_PROBABILITY_UNSPECIFIED",
-          "NEGLIGIBLE",
-          "LOW",
-          "MEDIUM",
-          "HIGH",
-        ]).describe("Output only. Harm probability levels in the content.")
+        category: z.unknown().describe("Output only. Harm category.")
           .optional(),
-        probabilityScore: z.number().describe(
+        probability: z.unknown().describe(
+          "Output only. Harm probability levels in the content.",
+        ).optional(),
+        probabilityScore: z.unknown().describe(
           "Output only. Harm probability score.",
         ).optional(),
-        severity: z.enum([
-          "HARM_SEVERITY_UNSPECIFIED",
-          "HARM_SEVERITY_NEGLIGIBLE",
-          "HARM_SEVERITY_LOW",
-          "HARM_SEVERITY_MEDIUM",
-          "HARM_SEVERITY_HIGH",
-        ]).describe("Output only. Harm severity levels in the content.")
-          .optional(),
-        severityScore: z.number().describe("Output only. Harm severity score.")
+        severity: z.unknown().describe(
+          "Output only. Harm severity levels in the content.",
+        ).optional(),
+        severityScore: z.unknown().describe("Output only. Harm severity score.")
           .optional(),
       })).describe("Optional. Safety ratings.").optional(),
       state: z.enum([
@@ -891,51 +467,11 @@ const InputsSchema = z.object({
         "STREAMING",
       ]).describe("The state of the answer generation.").optional(),
       steps: z.array(z.object({
-        actions: z.array(z.object({
-          observation: z.object({
-            searchResults: z.array(z.object({
-              chunkInfo: z.array(z.object({
-                chunk: z.string().describe("Chunk resource name.").optional(),
-                content: z.string().describe("Chunk textual content.")
-                  .optional(),
-                relevanceScore: z.number().describe(
-                  "The relevance of the chunk for a given query. Values range from 0.0 (completely irrelevant) to 1.0 (completely relevant). This value is for informational purpose only. It may change for the same query and chunk at any time due to a model retraining or change in implementation.",
-                ).optional(),
-              })).describe(
-                "If citation_type is CHUNK_LEVEL_CITATION and chunk mode is on, populate chunk info.",
-              ).optional(),
-              document: z.string().describe("Document resource name.")
-                .optional(),
-              snippetInfo: z.array(z.object({
-                snippet: z.string().describe("Snippet content.").optional(),
-                snippetStatus: z.string().describe(
-                  "Status of the snippet defined by the search team.",
-                ).optional(),
-              })).describe(
-                "If citation_type is DOCUMENT_LEVEL_CITATION, populate document level snippets.",
-              ).optional(),
-              structData: z.record(z.string(), z.string()).describe(
-                "Data representation. The structured JSON data for the document. It's populated from the struct data from the Document, or the Chunk in search result.",
-              ).optional(),
-              title: z.string().describe("Title.").optional(),
-              uri: z.string().describe("URI for the document.").optional(),
-            })).describe(
-              "Search results observed by the search action, it can be snippets info or chunk info, depending on the citation type set by the user.",
-            ).optional(),
-          }).describe("Observation.").optional(),
-          searchAction: z.object({
-            query: z.string().describe("The query to search.").optional(),
-          }).describe("Search action.").optional(),
-        })).describe("Actions.").optional(),
-        description: z.string().describe("The description of the step.")
+        actions: z.unknown().describe("Actions.").optional(),
+        description: z.unknown().describe("The description of the step.")
           .optional(),
-        state: z.enum([
-          "STATE_UNSPECIFIED",
-          "IN_PROGRESS",
-          "FAILED",
-          "SUCCEEDED",
-        ]).describe("The state of the step.").optional(),
-        thought: z.string().describe("The thought of the step.").optional(),
+        state: z.unknown().describe("The state of the step.").optional(),
+        thought: z.unknown().describe("The thought of the step.").optional(),
       })).describe("Answer generation steps.").optional(),
     }).describe("Defines an answer.").optional(),
     detailedAssistAnswer: z.object({
@@ -947,35 +483,7 @@ const InputsSchema = z.object({
         ]),
       ).describe("Reasons for not answering the assist call.").optional(),
       customerPolicyEnforcementResult: z.object({
-        policyResults: z.array(z.object({
-          bannedPhraseEnforcementResult: z.object({
-            bannedPhrases: z.array(z.string()).describe(
-              "The banned phrases that were found in the query or the answer.",
-            ).optional(),
-          }).describe(
-            "Customer policy enforcement result for the banned phrase policy.",
-          ).optional(),
-          modelArmorEnforcementResult: z.object({
-            error: z.object({
-              code: z.number().int().describe(
-                "The status code, which should be an enum value of google.rpc.Code.",
-              ).optional(),
-              details: z.array(z.record(z.string(), z.string())).describe(
-                "A list of messages that carry the error details. There is a common set of message types for APIs to use.",
-              ).optional(),
-              message: z.string().describe(
-                "A developer-facing error message, which should be in English. Any user-facing error message should be localized and sent in the google.rpc.Status.details field, or localized by the client.",
-              ).optional(),
-            }).describe(
-              "The `Status` type defines a logical error model that is suitable for different programming environments, including REST APIs and RPC APIs. It is used by [gRPC](https://github.com/grpc). Each `Status` message contains three pieces of data: error code, error message, and error details. You can find out more about this error model and how to work with it in the [API Design Guide](https://cloud.google.com/apis/design/errors).",
-            ).optional(),
-            modelArmorViolation: z.string().describe(
-              "The Model Armor violation that was found.",
-            ).optional(),
-          }).describe(
-            "Customer policy enforcement result for the Model Armor policy.",
-          ).optional(),
-        })).describe(
+        policyResults: z.array(z.unknown()).describe(
           "Customer policy enforcement results. Populated only if the assist call was skipped due to a policy violation. It contains results from those filters that blocked the processing of the query.",
         ).optional(),
         verdict: z.enum(["UNSPECIFIED", "ALLOW", "BLOCK"]).describe(
@@ -988,118 +496,7 @@ const InputsSchema = z.object({
         "Immutable. Identifier. Resource name of the `AssistAnswer`. Format: `projects/{project}/locations/{location}/collections/{collection}/engines/{engine}/sessions/{session}/assistAnswers/{assist_answer}` This field must be a UTF-8 encoded string with a length limit of 1024 characters.",
       ).optional(),
       replies: z.array(z.object({
-        groundedContent: z.object({
-          citationMetadata: z.object({
-            citations: z.array(z.object({
-              endIndex: z.number().int().describe(
-                "Output only. End index into the content.",
-              ).optional(),
-              license: z.string().describe(
-                "Output only. License of the attribution.",
-              ).optional(),
-              publicationDate: z.object({
-                day: z.number().int().describe(
-                  "Day of a month. Must be from 1 to 31 and valid for the year and month, or 0 to specify a year by itself or a year and month where the day isn't significant.",
-                ).optional(),
-                month: z.number().int().describe(
-                  "Month of a year. Must be from 1 to 12, or 0 to specify a year without a month and day.",
-                ).optional(),
-                year: z.number().int().describe(
-                  "Year of the date. Must be from 1 to 9999, or 0 to specify a date without a year.",
-                ).optional(),
-              }).describe(
-                "Represents a whole or partial calendar date, such as a birthday. The time of day and time zone are either specified elsewhere or are insignificant. The date is relative to the Gregorian Calendar. This can represent one of the following: * A full date, with non-zero year, month, and day values. * A month and day, with a zero year (for example, an anniversary). * A year on its own, with a zero month and a zero day. * A year and month, with a zero day (for example, a credit card expiration date). Related types: * google.type.TimeOfDay * google.type.DateTime * google.protobuf.Timestamp",
-              ).optional(),
-              startIndex: z.number().int().describe(
-                "Output only. Start index into the content.",
-              ).optional(),
-              title: z.string().describe(
-                "Output only. Title of the attribution.",
-              ).optional(),
-              uri: z.string().describe(
-                "Output only. Url reference of the attribution.",
-              ).optional(),
-            })).describe("Output only. List of citations.").optional(),
-          }).describe(
-            "A collection of source attributions for a piece of content.",
-          ).optional(),
-          content: z.object({
-            codeExecutionResult: z.object({
-              outcome: z.enum([
-                "OUTCOME_UNSPECIFIED",
-                "OUTCOME_OK",
-                "OUTCOME_FAILED",
-                "OUTCOME_DEADLINE_EXCEEDED",
-              ]).describe("Required. Outcome of the code execution.")
-                .optional(),
-              output: z.string().describe(
-                "Optional. Contains stdout when code execution is successful, stderr or other description otherwise.",
-              ).optional(),
-            }).describe("Result of executing ExecutableCode.").optional(),
-            executableCode: z.object({
-              code: z.string().describe(
-                "Required. The code content. Currently only supports Python.",
-              ).optional(),
-            }).describe(
-              "Code generated by the model that is meant to be executed by the model.",
-            ).optional(),
-            file: z.object({
-              fileId: z.string().describe("Required. The file ID.").optional(),
-              mimeType: z.string().describe(
-                "Required. The media type (MIME type) of the file.",
-              ).optional(),
-            }).describe("A file, e.g., an audio summary.").optional(),
-            inlineData: z.object({
-              data: z.string().describe("Required. Raw bytes.").optional(),
-              mimeType: z.string().describe(
-                "Required. The media type (MIME type) of the generated data.",
-              ).optional(),
-            }).describe("Inline blob.").optional(),
-            role: z.string().describe(
-              'The producer of the content. Can be "model" or "user".',
-            ).optional(),
-            text: z.string().describe("Inline text.").optional(),
-            thought: z.boolean().describe(
-              "Optional. Indicates if the part is thought from the model.",
-            ).optional(),
-          }).describe("Multi-modal content.").optional(),
-          textGroundingMetadata: z.object({
-            references: z.array(z.object({
-              content: z.string().describe("Referenced text content.")
-                .optional(),
-              documentMetadata: z.object({
-                document: z.string().describe("Document resource name.")
-                  .optional(),
-                domain: z.string().describe(
-                  "Domain name from the document URI. Note that the `uri` field may contain a URL that redirects to the actual website, in which case this will contain the domain name of the target site.",
-                ).optional(),
-                mimeType: z.string().describe(
-                  "The mime type of the document. https://www.iana.org/assignments/media-types/media-types.xhtml.",
-                ).optional(),
-                pageIdentifier: z.string().describe("Page identifier.")
-                  .optional(),
-                title: z.string().describe("Title.").optional(),
-                uri: z.string().describe(
-                  "URI for the document. It may contain a URL that redirects to the actual website.",
-                ).optional(),
-              }).describe("Document metadata.").optional(),
-            })).describe("References for the grounded text.").optional(),
-            segments: z.array(z.object({
-              endIndex: z.string().describe("End of the segment, exclusive.")
-                .optional(),
-              groundingScore: z.number().describe("Score for the segment.")
-                .optional(),
-              referenceIndices: z.array(z.number().int()).describe(
-                "References for the segment.",
-              ).optional(),
-              startIndex: z.string().describe(
-                "Zero-based index indicating the start of the segment, measured in bytes of a UTF-8 string (i.e. characters encoded on multiple bytes have a length of more than one).",
-              ).optional(),
-              text: z.string().describe("The text segment itself.").optional(),
-            })).describe("Grounding information for parts of the text.")
-              .optional(),
-          }).describe("Grounding details for text sources.").optional(),
-        }).describe(
+        groundedContent: z.unknown().describe(
           'A piece of content and possibly its grounding information. Not all content needs grounding. Phrases like "Of course, I will gladly search it for you." do not need grounding.',
         ).optional(),
       })).describe("Replies of the assistant.").optional(),
@@ -1130,7 +527,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/discoveryengine/collections-datastores-sessions",
-  version: "2026.04.03.3",
+  version: "2026.04.04.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -1154,6 +551,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.3",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.04.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

@@ -130,30 +130,23 @@ const GlobalArgsSchema = z.object({
     advanceRolloutRule: z.object({
       condition: z.object({
         targetsPresentCondition: z.object({
-          missingTargets: z.array(z.string()).describe(
+          missingTargets: z.unknown().describe(
             "The list of Target names that do not exist. For example, `projects/{project_id}/locations/{location_name}/targets/{target_name}`.",
           ).optional(),
-          status: z.boolean().describe(
+          status: z.unknown().describe(
             "True if there aren't any missing Targets.",
           ).optional(),
-          updateTime: z.string().describe(
+          updateTime: z.unknown().describe(
             "Last time the condition was updated.",
           ).optional(),
         }).describe(
           "`TargetsPresentCondition` contains information on any Targets referenced in the Delivery Pipeline that do not actually exist.",
         ).optional(),
         timedPromoteReleaseCondition: z.object({
-          nextPromotionTime: z.string().describe(
+          nextPromotionTime: z.unknown().describe(
             "Output only. When the next scheduled promotion(s) will occur.",
           ).optional(),
-          targetsList: z.array(z.object({
-            destinationTargetId: z.string().describe(
-              "Optional. The destination target ID.",
-            ).optional(),
-            sourceTargetId: z.string().describe(
-              "Optional. The source target ID.",
-            ).optional(),
-          })).describe(
+          targetsList: z.unknown().describe(
             "Output only. A list of targets involved in the upcoming timed promotion(s).",
           ).optional(),
         }).describe(
@@ -177,30 +170,23 @@ const GlobalArgsSchema = z.object({
     promoteReleaseRule: z.object({
       condition: z.object({
         targetsPresentCondition: z.object({
-          missingTargets: z.array(z.string()).describe(
+          missingTargets: z.unknown().describe(
             "The list of Target names that do not exist. For example, `projects/{project_id}/locations/{location_name}/targets/{target_name}`.",
           ).optional(),
-          status: z.boolean().describe(
+          status: z.unknown().describe(
             "True if there aren't any missing Targets.",
           ).optional(),
-          updateTime: z.string().describe(
+          updateTime: z.unknown().describe(
             "Last time the condition was updated.",
           ).optional(),
         }).describe(
           "`TargetsPresentCondition` contains information on any Targets referenced in the Delivery Pipeline that do not actually exist.",
         ).optional(),
         timedPromoteReleaseCondition: z.object({
-          nextPromotionTime: z.string().describe(
+          nextPromotionTime: z.unknown().describe(
             "Output only. When the next scheduled promotion(s) will occur.",
           ).optional(),
-          targetsList: z.array(z.object({
-            destinationTargetId: z.string().describe(
-              "Optional. The destination target ID.",
-            ).optional(),
-            sourceTargetId: z.string().describe(
-              "Optional. The source target ID.",
-            ).optional(),
-          })).describe(
+          targetsList: z.unknown().describe(
             "Output only. A list of targets involved in the upcoming timed promotion(s).",
           ).optional(),
         }).describe(
@@ -227,30 +213,23 @@ const GlobalArgsSchema = z.object({
     repairRolloutRule: z.object({
       condition: z.object({
         targetsPresentCondition: z.object({
-          missingTargets: z.array(z.string()).describe(
+          missingTargets: z.unknown().describe(
             "The list of Target names that do not exist. For example, `projects/{project_id}/locations/{location_name}/targets/{target_name}`.",
           ).optional(),
-          status: z.boolean().describe(
+          status: z.unknown().describe(
             "True if there aren't any missing Targets.",
           ).optional(),
-          updateTime: z.string().describe(
+          updateTime: z.unknown().describe(
             "Last time the condition was updated.",
           ).optional(),
         }).describe(
           "`TargetsPresentCondition` contains information on any Targets referenced in the Delivery Pipeline that do not actually exist.",
         ).optional(),
         timedPromoteReleaseCondition: z.object({
-          nextPromotionTime: z.string().describe(
+          nextPromotionTime: z.unknown().describe(
             "Output only. When the next scheduled promotion(s) will occur.",
           ).optional(),
-          targetsList: z.array(z.object({
-            destinationTargetId: z.string().describe(
-              "Optional. The destination target ID.",
-            ).optional(),
-            sourceTargetId: z.string().describe(
-              "Optional. The source target ID.",
-            ).optional(),
-          })).describe(
+          targetsList: z.unknown().describe(
             "Output only. A list of targets involved in the upcoming timed promotion(s).",
           ).optional(),
         }).describe(
@@ -269,29 +248,8 @@ const GlobalArgsSchema = z.object({
         "Optional. Phases within which jobs are subject to automatic repair actions on failure. Proceeds only after phase name matched any one in the list, or for all phases if unspecified. This value must consist of lower-case letters, numbers, and hyphens, start with a letter and end with a letter or a number, and have a max length of 63 characters. In other words, it must match the following regex: `^[a-z]([a-z0-9-]{0,61}[a-z0-9])?$`.",
       ).optional(),
       repairPhases: z.array(z.object({
-        retry: z.object({
-          attempts: z.string().describe(
-            "Required. Total number of retries. Retry is skipped if set to 0; The minimum value is 1, and the maximum value is 10.",
-          ).optional(),
-          backoffMode: z.enum([
-            "BACKOFF_MODE_UNSPECIFIED",
-            "BACKOFF_MODE_LINEAR",
-            "BACKOFF_MODE_EXPONENTIAL",
-          ]).describe(
-            "Optional. The pattern of how wait time will be increased. Default is linear. Backoff mode will be ignored if `wait` is 0.",
-          ).optional(),
-          wait: z.string().describe(
-            "Optional. How long to wait for the first retry. Default is 0, and the maximum value is 14d.",
-          ).optional(),
-        }).describe("Retries the failed job.").optional(),
-        rollback: z.object({
-          destinationPhase: z.string().describe(
-            "Optional. The starting phase ID for the `Rollout`. If unspecified, the `Rollout` will start in the stable phase.",
-          ).optional(),
-          disableRollbackIfRolloutPending: z.boolean().describe(
-            "Optional. If pending rollout exists on the target, the rollback operation will be aborted.",
-          ).optional(),
-        }).describe("Rolls back a `Rollout`.").optional(),
+        retry: z.unknown().describe("Retries the failed job.").optional(),
+        rollback: z.unknown().describe("Rolls back a `Rollout`.").optional(),
       })).describe(
         "Required. Defines the types of automatic repair phases for failed jobs.",
       ).optional(),
@@ -301,30 +259,23 @@ const GlobalArgsSchema = z.object({
     timedPromoteReleaseRule: z.object({
       condition: z.object({
         targetsPresentCondition: z.object({
-          missingTargets: z.array(z.string()).describe(
+          missingTargets: z.unknown().describe(
             "The list of Target names that do not exist. For example, `projects/{project_id}/locations/{location_name}/targets/{target_name}`.",
           ).optional(),
-          status: z.boolean().describe(
+          status: z.unknown().describe(
             "True if there aren't any missing Targets.",
           ).optional(),
-          updateTime: z.string().describe(
+          updateTime: z.unknown().describe(
             "Last time the condition was updated.",
           ).optional(),
         }).describe(
           "`TargetsPresentCondition` contains information on any Targets referenced in the Delivery Pipeline that do not actually exist.",
         ).optional(),
         timedPromoteReleaseCondition: z.object({
-          nextPromotionTime: z.string().describe(
+          nextPromotionTime: z.unknown().describe(
             "Output only. When the next scheduled promotion(s) will occur.",
           ).optional(),
-          targetsList: z.array(z.object({
-            destinationTargetId: z.string().describe(
-              "Optional. The destination target ID.",
-            ).optional(),
-            sourceTargetId: z.string().describe(
-              "Optional. The source target ID.",
-            ).optional(),
-          })).describe(
+          targetsList: z.unknown().describe(
             "Output only. A list of targets involved in the upcoming timed promotion(s).",
           ).optional(),
         }).describe(
@@ -392,16 +343,13 @@ const StateSchema = z.object({
     advanceRolloutRule: z.object({
       condition: z.object({
         targetsPresentCondition: z.object({
-          missingTargets: z.array(z.string()),
-          status: z.boolean(),
-          updateTime: z.string(),
+          missingTargets: z.unknown(),
+          status: z.unknown(),
+          updateTime: z.unknown(),
         }),
         timedPromoteReleaseCondition: z.object({
-          nextPromotionTime: z.string(),
-          targetsList: z.array(z.object({
-            destinationTargetId: z.string(),
-            sourceTargetId: z.string(),
-          })),
+          nextPromotionTime: z.unknown(),
+          targetsList: z.unknown(),
         }),
       }),
       id: z.string(),
@@ -411,16 +359,13 @@ const StateSchema = z.object({
     promoteReleaseRule: z.object({
       condition: z.object({
         targetsPresentCondition: z.object({
-          missingTargets: z.array(z.string()),
-          status: z.boolean(),
-          updateTime: z.string(),
+          missingTargets: z.unknown(),
+          status: z.unknown(),
+          updateTime: z.unknown(),
         }),
         timedPromoteReleaseCondition: z.object({
-          nextPromotionTime: z.string(),
-          targetsList: z.array(z.object({
-            destinationTargetId: z.string(),
-            sourceTargetId: z.string(),
-          })),
+          nextPromotionTime: z.unknown(),
+          targetsList: z.unknown(),
         }),
       }),
       destinationPhase: z.string(),
@@ -431,46 +376,33 @@ const StateSchema = z.object({
     repairRolloutRule: z.object({
       condition: z.object({
         targetsPresentCondition: z.object({
-          missingTargets: z.array(z.string()),
-          status: z.boolean(),
-          updateTime: z.string(),
+          missingTargets: z.unknown(),
+          status: z.unknown(),
+          updateTime: z.unknown(),
         }),
         timedPromoteReleaseCondition: z.object({
-          nextPromotionTime: z.string(),
-          targetsList: z.array(z.object({
-            destinationTargetId: z.string(),
-            sourceTargetId: z.string(),
-          })),
+          nextPromotionTime: z.unknown(),
+          targetsList: z.unknown(),
         }),
       }),
       id: z.string(),
       jobs: z.array(z.string()),
       phases: z.array(z.string()),
       repairPhases: z.array(z.object({
-        retry: z.object({
-          attempts: z.string(),
-          backoffMode: z.string(),
-          wait: z.string(),
-        }),
-        rollback: z.object({
-          destinationPhase: z.string(),
-          disableRollbackIfRolloutPending: z.boolean(),
-        }),
+        retry: z.unknown(),
+        rollback: z.unknown(),
       })),
     }),
     timedPromoteReleaseRule: z.object({
       condition: z.object({
         targetsPresentCondition: z.object({
-          missingTargets: z.array(z.string()),
-          status: z.boolean(),
-          updateTime: z.string(),
+          missingTargets: z.unknown(),
+          status: z.unknown(),
+          updateTime: z.unknown(),
         }),
         timedPromoteReleaseCondition: z.object({
-          nextPromotionTime: z.string(),
-          targetsList: z.array(z.object({
-            destinationTargetId: z.string(),
-            sourceTargetId: z.string(),
-          })),
+          nextPromotionTime: z.unknown(),
+          targetsList: z.unknown(),
         }),
       }),
       destinationPhase: z.string(),
@@ -509,30 +441,23 @@ const InputsSchema = z.object({
     advanceRolloutRule: z.object({
       condition: z.object({
         targetsPresentCondition: z.object({
-          missingTargets: z.array(z.string()).describe(
+          missingTargets: z.unknown().describe(
             "The list of Target names that do not exist. For example, `projects/{project_id}/locations/{location_name}/targets/{target_name}`.",
           ).optional(),
-          status: z.boolean().describe(
+          status: z.unknown().describe(
             "True if there aren't any missing Targets.",
           ).optional(),
-          updateTime: z.string().describe(
+          updateTime: z.unknown().describe(
             "Last time the condition was updated.",
           ).optional(),
         }).describe(
           "`TargetsPresentCondition` contains information on any Targets referenced in the Delivery Pipeline that do not actually exist.",
         ).optional(),
         timedPromoteReleaseCondition: z.object({
-          nextPromotionTime: z.string().describe(
+          nextPromotionTime: z.unknown().describe(
             "Output only. When the next scheduled promotion(s) will occur.",
           ).optional(),
-          targetsList: z.array(z.object({
-            destinationTargetId: z.string().describe(
-              "Optional. The destination target ID.",
-            ).optional(),
-            sourceTargetId: z.string().describe(
-              "Optional. The source target ID.",
-            ).optional(),
-          })).describe(
+          targetsList: z.unknown().describe(
             "Output only. A list of targets involved in the upcoming timed promotion(s).",
           ).optional(),
         }).describe(
@@ -556,30 +481,23 @@ const InputsSchema = z.object({
     promoteReleaseRule: z.object({
       condition: z.object({
         targetsPresentCondition: z.object({
-          missingTargets: z.array(z.string()).describe(
+          missingTargets: z.unknown().describe(
             "The list of Target names that do not exist. For example, `projects/{project_id}/locations/{location_name}/targets/{target_name}`.",
           ).optional(),
-          status: z.boolean().describe(
+          status: z.unknown().describe(
             "True if there aren't any missing Targets.",
           ).optional(),
-          updateTime: z.string().describe(
+          updateTime: z.unknown().describe(
             "Last time the condition was updated.",
           ).optional(),
         }).describe(
           "`TargetsPresentCondition` contains information on any Targets referenced in the Delivery Pipeline that do not actually exist.",
         ).optional(),
         timedPromoteReleaseCondition: z.object({
-          nextPromotionTime: z.string().describe(
+          nextPromotionTime: z.unknown().describe(
             "Output only. When the next scheduled promotion(s) will occur.",
           ).optional(),
-          targetsList: z.array(z.object({
-            destinationTargetId: z.string().describe(
-              "Optional. The destination target ID.",
-            ).optional(),
-            sourceTargetId: z.string().describe(
-              "Optional. The source target ID.",
-            ).optional(),
-          })).describe(
+          targetsList: z.unknown().describe(
             "Output only. A list of targets involved in the upcoming timed promotion(s).",
           ).optional(),
         }).describe(
@@ -606,30 +524,23 @@ const InputsSchema = z.object({
     repairRolloutRule: z.object({
       condition: z.object({
         targetsPresentCondition: z.object({
-          missingTargets: z.array(z.string()).describe(
+          missingTargets: z.unknown().describe(
             "The list of Target names that do not exist. For example, `projects/{project_id}/locations/{location_name}/targets/{target_name}`.",
           ).optional(),
-          status: z.boolean().describe(
+          status: z.unknown().describe(
             "True if there aren't any missing Targets.",
           ).optional(),
-          updateTime: z.string().describe(
+          updateTime: z.unknown().describe(
             "Last time the condition was updated.",
           ).optional(),
         }).describe(
           "`TargetsPresentCondition` contains information on any Targets referenced in the Delivery Pipeline that do not actually exist.",
         ).optional(),
         timedPromoteReleaseCondition: z.object({
-          nextPromotionTime: z.string().describe(
+          nextPromotionTime: z.unknown().describe(
             "Output only. When the next scheduled promotion(s) will occur.",
           ).optional(),
-          targetsList: z.array(z.object({
-            destinationTargetId: z.string().describe(
-              "Optional. The destination target ID.",
-            ).optional(),
-            sourceTargetId: z.string().describe(
-              "Optional. The source target ID.",
-            ).optional(),
-          })).describe(
+          targetsList: z.unknown().describe(
             "Output only. A list of targets involved in the upcoming timed promotion(s).",
           ).optional(),
         }).describe(
@@ -648,29 +559,8 @@ const InputsSchema = z.object({
         "Optional. Phases within which jobs are subject to automatic repair actions on failure. Proceeds only after phase name matched any one in the list, or for all phases if unspecified. This value must consist of lower-case letters, numbers, and hyphens, start with a letter and end with a letter or a number, and have a max length of 63 characters. In other words, it must match the following regex: `^[a-z]([a-z0-9-]{0,61}[a-z0-9])?$`.",
       ).optional(),
       repairPhases: z.array(z.object({
-        retry: z.object({
-          attempts: z.string().describe(
-            "Required. Total number of retries. Retry is skipped if set to 0; The minimum value is 1, and the maximum value is 10.",
-          ).optional(),
-          backoffMode: z.enum([
-            "BACKOFF_MODE_UNSPECIFIED",
-            "BACKOFF_MODE_LINEAR",
-            "BACKOFF_MODE_EXPONENTIAL",
-          ]).describe(
-            "Optional. The pattern of how wait time will be increased. Default is linear. Backoff mode will be ignored if `wait` is 0.",
-          ).optional(),
-          wait: z.string().describe(
-            "Optional. How long to wait for the first retry. Default is 0, and the maximum value is 14d.",
-          ).optional(),
-        }).describe("Retries the failed job.").optional(),
-        rollback: z.object({
-          destinationPhase: z.string().describe(
-            "Optional. The starting phase ID for the `Rollout`. If unspecified, the `Rollout` will start in the stable phase.",
-          ).optional(),
-          disableRollbackIfRolloutPending: z.boolean().describe(
-            "Optional. If pending rollout exists on the target, the rollback operation will be aborted.",
-          ).optional(),
-        }).describe("Rolls back a `Rollout`.").optional(),
+        retry: z.unknown().describe("Retries the failed job.").optional(),
+        rollback: z.unknown().describe("Rolls back a `Rollout`.").optional(),
       })).describe(
         "Required. Defines the types of automatic repair phases for failed jobs.",
       ).optional(),
@@ -680,30 +570,23 @@ const InputsSchema = z.object({
     timedPromoteReleaseRule: z.object({
       condition: z.object({
         targetsPresentCondition: z.object({
-          missingTargets: z.array(z.string()).describe(
+          missingTargets: z.unknown().describe(
             "The list of Target names that do not exist. For example, `projects/{project_id}/locations/{location_name}/targets/{target_name}`.",
           ).optional(),
-          status: z.boolean().describe(
+          status: z.unknown().describe(
             "True if there aren't any missing Targets.",
           ).optional(),
-          updateTime: z.string().describe(
+          updateTime: z.unknown().describe(
             "Last time the condition was updated.",
           ).optional(),
         }).describe(
           "`TargetsPresentCondition` contains information on any Targets referenced in the Delivery Pipeline that do not actually exist.",
         ).optional(),
         timedPromoteReleaseCondition: z.object({
-          nextPromotionTime: z.string().describe(
+          nextPromotionTime: z.unknown().describe(
             "Output only. When the next scheduled promotion(s) will occur.",
           ).optional(),
-          targetsList: z.array(z.object({
-            destinationTargetId: z.string().describe(
-              "Optional. The destination target ID.",
-            ).optional(),
-            sourceTargetId: z.string().describe(
-              "Optional. The source target ID.",
-            ).optional(),
-          })).describe(
+          targetsList: z.unknown().describe(
             "Output only. A list of targets involved in the upcoming timed promotion(s).",
           ).optional(),
         }).describe(
@@ -762,7 +645,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/clouddeploy/deliverypipelines-automations",
-  version: "2026.04.03.3",
+  version: "2026.04.04.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -786,6 +669,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.3",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.04.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

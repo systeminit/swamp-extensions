@@ -91,20 +91,22 @@ const GlobalArgsSchema = z.object({
     actions: z.array(z.object({
       exportData: z.object({
         profileTable: z.object({
-          datasetId: z.string().describe("Dataset ID of the table.").optional(),
-          projectId: z.string().describe(
+          datasetId: z.unknown().describe("Dataset ID of the table.")
+            .optional(),
+          projectId: z.unknown().describe(
             "The Google Cloud project ID of the project containing the table. If omitted, project ID is inferred from the API call.",
           ).optional(),
-          tableId: z.string().describe("Name of the table.").optional(),
+          tableId: z.unknown().describe("Name of the table.").optional(),
         }).describe(
           "Message defining the location of a BigQuery table. A table is uniquely identified by its project_id, dataset_id, and table_name. Within a query a table is often referenced with a string in the format of: `:.` or `..`.",
         ).optional(),
         sampleFindingsTable: z.object({
-          datasetId: z.string().describe("Dataset ID of the table.").optional(),
-          projectId: z.string().describe(
+          datasetId: z.unknown().describe("Dataset ID of the table.")
+            .optional(),
+          projectId: z.unknown().describe(
             "The Google Cloud project ID of the project containing the table. If omitted, project ID is inferred from the API call.",
           ).optional(),
-          tableId: z.string().describe("Name of the table.").optional(),
+          tableId: z.unknown().describe("Name of the table.").optional(),
         }).describe(
           "Message defining the location of a BigQuery table. A table is uniquely identified by its project_id, dataset_id, and table_name. Within a query a table is often referenced with a string in the format of: `:.` or `..`.",
         ).optional(),
@@ -130,31 +132,7 @@ const GlobalArgsSchema = z.object({
           "The type of event that triggers a Pub/Sub. At most one `PubSubNotification` per EventType is permitted.",
         ).optional(),
         pubsubCondition: z.object({
-          expressions: z.object({
-            conditions: z.array(z.object({
-              minimumRiskScore: z.enum([
-                "PROFILE_SCORE_BUCKET_UNSPECIFIED",
-                "HIGH",
-                "MEDIUM_OR_HIGH",
-              ]).describe(
-                "The minimum data risk score that triggers the condition.",
-              ).optional(),
-              minimumSensitivityScore: z.enum([
-                "PROFILE_SCORE_BUCKET_UNSPECIFIED",
-                "HIGH",
-                "MEDIUM_OR_HIGH",
-              ]).describe(
-                "The minimum sensitivity level that triggers the condition.",
-              ).optional(),
-            })).describe("Conditions to apply to the expression.").optional(),
-            logicalOperator: z.enum([
-              "LOGICAL_OPERATOR_UNSPECIFIED",
-              "OR",
-              "AND",
-            ]).describe(
-              "The operator to apply to the collection of conditions.",
-            ).optional(),
-          }).describe(
+          expressions: z.unknown().describe(
             "An expression, consisting of an operator and conditions.",
           ).optional(),
         }).describe(
@@ -183,35 +161,12 @@ const GlobalArgsSchema = z.object({
         lowerDataRiskToLow: z.boolean().describe(
           "Whether applying a tag to a resource should lower the risk of the profile for that resource. For example, in conjunction with an [IAM deny policy](https://cloud.google.com/iam/docs/deny-overview), you can deny all principals a permission if a tag value is present, mitigating the risk of the resource. This also lowers the data risk of resources at the lower levels of the resource hierarchy. For example, reducing the data risk of a table data profile also reduces the data risk of the constituent column data profiles.",
         ).optional(),
-        profileGenerationsToTag: z.array(
-          z.enum([
-            "PROFILE_GENERATION_UNSPECIFIED",
-            "PROFILE_GENERATION_NEW",
-            "PROFILE_GENERATION_UPDATE",
-          ]),
-        ).describe(
+        profileGenerationsToTag: z.array(z.unknown()).describe(
           "The profile generations for which the tag should be attached to resources. If you attach a tag to only new profiles, then if the sensitivity score of a profile subsequently changes, its tag doesn't change. By default, this field includes only new profiles. To include both new and updated profiles for tagging, this field should explicitly include both `PROFILE_GENERATION_NEW` and `PROFILE_GENERATION_UPDATE`.",
         ).optional(),
-        tagConditions: z.array(z.object({
-          sensitivityScore: z.object({
-            score: z.enum([
-              "SENSITIVITY_SCORE_UNSPECIFIED",
-              "SENSITIVITY_LOW",
-              "SENSITIVITY_UNKNOWN",
-              "SENSITIVITY_MODERATE",
-              "SENSITIVITY_HIGH",
-            ]).describe("The sensitivity score applied to the resource.")
-              .optional(),
-          }).describe(
-            "Score is calculated from of all elements in the data profile. A higher level means the data is more sensitive.",
-          ).optional(),
-          tag: z.object({
-            namespacedValue: z.string().describe(
-              'The namespaced name for the tag value to attach to resources. Must be in the format `{parent_id}/{tag_key_short_name}/{short_name}`, for example, "123456/environment/prod" for an organization parent, or "my-project/environment/prod" for a project parent.',
-            ).optional(),
-          }).describe("A value of a tag.").optional(),
-        })).describe("The tags to associate with different conditions.")
-          .optional(),
+        tagConditions: z.array(z.unknown()).describe(
+          "The tags to associate with different conditions.",
+        ).optional(),
       }).describe(
         "If set, attaches the [tags] (https://cloud.google.com/resource-manager/docs/tags/tags-overview) provided to profiled resources. Tags support [access control](https://cloud.google.com/iam/docs/tags-access-control). You can conditionally grant or deny access to a resource based on whether the resource has a specific tag.",
       ).optional(),
@@ -226,7 +181,7 @@ const GlobalArgsSchema = z.object({
         code: z.number().int().describe(
           "The status code, which should be an enum value of google.rpc.Code.",
         ).optional(),
-        details: z.array(z.record(z.string(), z.string())).describe(
+        details: z.array(z.unknown()).describe(
           "A list of messages that carry the error details. There is a common set of message types for APIs to use.",
         ).optional(),
         message: z.string().describe(
@@ -312,139 +267,47 @@ const GlobalArgsSchema = z.object({
     targets: z.array(z.object({
       bigQueryTarget: z.object({
         cadence: z.object({
-          inspectTemplateModifiedCadence: z.object({
-            frequency: z.enum([
-              "UPDATE_FREQUENCY_UNSPECIFIED",
-              "UPDATE_FREQUENCY_NEVER",
-              "UPDATE_FREQUENCY_DAILY",
-              "UPDATE_FREQUENCY_MONTHLY",
-            ]).describe(
-              "How frequently data profiles can be updated when the template is modified. Defaults to never.",
-            ).optional(),
-          }).describe(
+          inspectTemplateModifiedCadence: z.unknown().describe(
             "The cadence at which to update data profiles when the inspection rules defined by the `InspectTemplate` change.",
           ).optional(),
-          refreshFrequency: z.enum([
-            "UPDATE_FREQUENCY_UNSPECIFIED",
-            "UPDATE_FREQUENCY_NEVER",
-            "UPDATE_FREQUENCY_DAILY",
-            "UPDATE_FREQUENCY_MONTHLY",
-          ]).describe(
+          refreshFrequency: z.unknown().describe(
             "Frequency at which profiles should be updated, regardless of whether the underlying resource has changed. Defaults to never.",
           ).optional(),
-          schemaModifiedCadence: z.object({
-            frequency: z.enum([
-              "UPDATE_FREQUENCY_UNSPECIFIED",
-              "UPDATE_FREQUENCY_NEVER",
-              "UPDATE_FREQUENCY_DAILY",
-              "UPDATE_FREQUENCY_MONTHLY",
-            ]).describe(
-              "How frequently profiles may be updated when schemas are modified. Defaults to monthly.",
-            ).optional(),
-            types: z.array(
-              z.enum([
-                "SCHEMA_MODIFICATION_UNSPECIFIED",
-                "SCHEMA_NEW_COLUMNS",
-                "SCHEMA_REMOVED_COLUMNS",
-              ]),
-            ).describe(
-              "The type of events to consider when deciding if the table's schema has been modified and should have the profile updated. Defaults to NEW_COLUMNS.",
-            ).optional(),
-          }).describe(
+          schemaModifiedCadence: z.unknown().describe(
             "The cadence at which to update data profiles when a schema is modified.",
           ).optional(),
-          tableModifiedCadence: z.object({
-            frequency: z.enum([
-              "UPDATE_FREQUENCY_UNSPECIFIED",
-              "UPDATE_FREQUENCY_NEVER",
-              "UPDATE_FREQUENCY_DAILY",
-              "UPDATE_FREQUENCY_MONTHLY",
-            ]).describe(
-              "How frequently data profiles can be updated when tables are modified. Defaults to never.",
-            ).optional(),
-            types: z.array(
-              z.enum([
-                "TABLE_MODIFICATION_UNSPECIFIED",
-                "TABLE_MODIFIED_TIMESTAMP",
-              ]),
-            ).describe(
-              "The type of events to consider when deciding if the table has been modified and should have the profile updated. Defaults to MODIFIED_TIMESTAMP.",
-            ).optional(),
-          }).describe(
+          tableModifiedCadence: z.unknown().describe(
             "The cadence at which to update data profiles when a table is modified.",
           ).optional(),
         }).describe(
           "What must take place for a profile to be updated and how frequently it should occur. New tables are scanned as quickly as possible depending on system capacity.",
         ).optional(),
         conditions: z.object({
-          createdAfter: z.string().describe(
+          createdAfter: z.unknown().describe(
             "BigQuery table must have been created after this date. Used to avoid backfilling.",
           ).optional(),
-          orConditions: z.object({
-            minAge: z.string().describe(
-              "Minimum age a table must have before Cloud DLP can profile it. Value must be 1 hour or greater.",
-            ).optional(),
-            minRowCount: z.number().int().describe(
-              "Minimum number of rows that should be present before Cloud DLP profiles a table",
-            ).optional(),
-          }).describe(
+          orConditions: z.unknown().describe(
             "There is an OR relationship between these attributes. They are used to determine if a table should be scanned or not in Discovery.",
           ).optional(),
-          typeCollection: z.enum([
-            "BIG_QUERY_COLLECTION_UNSPECIFIED",
-            "BIG_QUERY_COLLECTION_ALL_TYPES",
-            "BIG_QUERY_COLLECTION_ONLY_SUPPORTED_TYPES",
-          ]).describe("Restrict discovery to categories of table types.")
-            .optional(),
-          types: z.object({
-            types: z.array(
-              z.enum([
-                "BIG_QUERY_TABLE_TYPE_UNSPECIFIED",
-                "BIG_QUERY_TABLE_TYPE_TABLE",
-                "BIG_QUERY_TABLE_TYPE_EXTERNAL_BIG_LAKE",
-                "BIG_QUERY_TABLE_TYPE_SNAPSHOT",
-              ]),
-            ).describe("A set of BigQuery table types.").optional(),
-          }).describe("The types of BigQuery tables supported by Cloud DLP.")
-            .optional(),
+          typeCollection: z.unknown().describe(
+            "Restrict discovery to categories of table types.",
+          ).optional(),
+          types: z.unknown().describe(
+            "The types of BigQuery tables supported by Cloud DLP.",
+          ).optional(),
         }).describe(
           "Requirements that must be true before a table is scanned in discovery for the first time. There is an AND relationship between the top-level attributes. Additionally, minimum conditions with an OR relationship that must be met before Cloud DLP scans a table can be set (like a minimum row count or a minimum table age).",
         ).optional(),
         disabled: z.object({}).describe("Do not profile the tables.")
           .optional(),
         filter: z.object({
-          otherTables: z.object({}).describe(
+          otherTables: z.unknown().describe(
             "Catch-all for all other tables not specified by other filters. Should always be last, except for single-table configurations, which will only have a TableReference target.",
           ).optional(),
-          tableReference: z.object({
-            datasetId: z.string().describe("Dataset ID of the table.")
-              .optional(),
-            projectId: z.string().describe(
-              "The Google Cloud project ID of the project containing the table. If omitted, the project ID is inferred from the parent project. This field is required if the parent resource is an organization.",
-            ).optional(),
-            tableId: z.string().describe("Name of the table.").optional(),
-          }).describe(
+          tableReference: z.unknown().describe(
             "Message defining the location of a BigQuery table with the projectId inferred from the parent project.",
           ).optional(),
-          tables: z.object({
-            includeRegexes: z.object({
-              patterns: z.array(z.object({
-                datasetIdRegex: z.string().describe(
-                  "If unset, this property matches all datasets.",
-                ).optional(),
-                projectIdRegex: z.string().describe(
-                  "For organizations, if unset, will match all projects. Has no effect for data profile configurations created within a project.",
-                ).optional(),
-                tableIdRegex: z.string().describe(
-                  "If unset, this property matches all tables.",
-                ).optional(),
-              })).describe(
-                "A single BigQuery regular expression pattern to match against one or more tables, datasets, or projects that contain BigQuery tables.",
-              ).optional(),
-            }).describe(
-              "A collection of regular expressions to determine what tables to match against.",
-            ).optional(),
-          }).describe(
+          tables: z.unknown().describe(
             "Specifies a collection of BigQuery tables. Used for Discovery.",
           ).optional(),
         }).describe(
@@ -455,23 +318,10 @@ const GlobalArgsSchema = z.object({
       ).optional(),
       cloudSqlTarget: z.object({
         conditions: z.object({
-          databaseEngines: z.array(
-            z.enum([
-              "DATABASE_ENGINE_UNSPECIFIED",
-              "ALL_SUPPORTED_DATABASE_ENGINES",
-              "MYSQL",
-              "POSTGRES",
-            ]),
-          ).describe(
+          databaseEngines: z.unknown().describe(
             "Optional. Database engines that should be profiled. Optional. Defaults to ALL_SUPPORTED_DATABASE_ENGINES if unspecified.",
           ).optional(),
-          types: z.array(
-            z.enum([
-              "DATABASE_RESOURCE_TYPE_UNSPECIFIED",
-              "DATABASE_RESOURCE_TYPE_ALL_SUPPORTED_TYPES",
-              "DATABASE_RESOURCE_TYPE_TABLE",
-            ]),
-          ).describe(
+          types: z.unknown().describe(
             "Data profiles will only be generated for the database resource types specified in this field. If not specified, defaults to [DATABASE_RESOURCE_TYPE_ALL_SUPPORTED_TYPES].",
           ).optional(),
         }).describe(
@@ -480,92 +330,26 @@ const GlobalArgsSchema = z.object({
         disabled: z.object({}).describe("Do not profile the tables.")
           .optional(),
         filter: z.object({
-          collection: z.object({
-            includeRegexes: z.object({
-              patterns: z.array(z.object({
-                databaseRegex: z.string().describe(
-                  "Regex to test the database name against. If empty, all databases match.",
-                ).optional(),
-                databaseResourceNameRegex: z.string().describe(
-                  "Regex to test the database resource's name against. An example of a database resource name is a table's name. Other database resource names like view names could be included in the future. If empty, all database resources match.",
-                ).optional(),
-                instanceRegex: z.string().describe(
-                  "Regex to test the instance name against. If empty, all instances match.",
-                ).optional(),
-                projectIdRegex: z.string().describe(
-                  "For organizations, if unset, will match all projects. Has no effect for configurations created within a project.",
-                ).optional(),
-              })).describe(
-                "A group of regular expression patterns to match against one or more database resources. Maximum of 100 entries. The sum of all regular expression's length can't exceed 10 KiB.",
-              ).optional(),
-            }).describe(
-              "A collection of regular expressions to determine what database resources to match against.",
-            ).optional(),
-          }).describe(
+          collection: z.unknown().describe(
             "Match database resources using regex filters. Examples of database resources are tables, views, and stored procedures.",
           ).optional(),
-          databaseResourceReference: z.object({
-            database: z.string().describe(
-              "Required. Name of a database within the instance.",
-            ).optional(),
-            databaseResource: z.string().describe(
-              "Required. Name of a database resource, for example, a table within the database.",
-            ).optional(),
-            instance: z.string().describe(
-              "Required. The instance where this resource is located. For example: Cloud SQL instance ID.",
-            ).optional(),
-            projectId: z.string().describe(
-              "Required. If within a project-level config, then this must match the config's project ID.",
-            ).optional(),
-          }).describe(
+          databaseResourceReference: z.unknown().describe(
             "Identifies a single database resource, like a table within a database.",
           ).optional(),
-          others: z.object({}).describe(
+          others: z.unknown().describe(
             "Match database resources not covered by any other filter.",
           ).optional(),
         }).describe(
           "Determines what tables will have profiles generated within an organization or project. Includes the ability to filter by regular expression patterns on project ID, location, instance, database, and database resource name.",
         ).optional(),
         generationCadence: z.object({
-          inspectTemplateModifiedCadence: z.object({
-            frequency: z.enum([
-              "UPDATE_FREQUENCY_UNSPECIFIED",
-              "UPDATE_FREQUENCY_NEVER",
-              "UPDATE_FREQUENCY_DAILY",
-              "UPDATE_FREQUENCY_MONTHLY",
-            ]).describe(
-              "How frequently data profiles can be updated when the template is modified. Defaults to never.",
-            ).optional(),
-          }).describe(
+          inspectTemplateModifiedCadence: z.unknown().describe(
             "The cadence at which to update data profiles when the inspection rules defined by the `InspectTemplate` change.",
           ).optional(),
-          refreshFrequency: z.enum([
-            "UPDATE_FREQUENCY_UNSPECIFIED",
-            "UPDATE_FREQUENCY_NEVER",
-            "UPDATE_FREQUENCY_DAILY",
-            "UPDATE_FREQUENCY_MONTHLY",
-          ]).describe(
+          refreshFrequency: z.unknown().describe(
             "Data changes (non-schema changes) in Cloud SQL tables can't trigger reprofiling. If you set this field, profiles are refreshed at this frequency regardless of whether the underlying tables have changed. Defaults to never.",
           ).optional(),
-          schemaModifiedCadence: z.object({
-            frequency: z.enum([
-              "UPDATE_FREQUENCY_UNSPECIFIED",
-              "UPDATE_FREQUENCY_NEVER",
-              "UPDATE_FREQUENCY_DAILY",
-              "UPDATE_FREQUENCY_MONTHLY",
-            ]).describe(
-              "Frequency to regenerate data profiles when the schema is modified. Defaults to monthly.",
-            ).optional(),
-            types: z.array(
-              z.enum([
-                "SQL_SCHEMA_MODIFICATION_UNSPECIFIED",
-                "NEW_COLUMNS",
-                "REMOVED_COLUMNS",
-              ]),
-            ).describe(
-              "The types of schema modifications to consider. Defaults to NEW_COLUMNS.",
-            ).optional(),
-          }).describe(
+          schemaModifiedCadence: z.unknown().describe(
             "How frequently to modify the profile when the table's schema is modified.",
           ).optional(),
         }).describe(
@@ -576,39 +360,13 @@ const GlobalArgsSchema = z.object({
       ).optional(),
       cloudStorageTarget: z.object({
         conditions: z.object({
-          cloudStorageConditions: z.object({
-            includedBucketAttributes: z.array(
-              z.enum([
-                "CLOUD_STORAGE_BUCKET_ATTRIBUTE_UNSPECIFIED",
-                "ALL_SUPPORTED_BUCKETS",
-                "AUTOCLASS_DISABLED",
-                "AUTOCLASS_ENABLED",
-              ]),
-            ).describe(
-              "Required. Only objects with the specified attributes will be scanned. Defaults to [ALL_SUPPORTED_BUCKETS] if unset.",
-            ).optional(),
-            includedObjectAttributes: z.array(
-              z.enum([
-                "CLOUD_STORAGE_OBJECT_ATTRIBUTE_UNSPECIFIED",
-                "ALL_SUPPORTED_OBJECTS",
-                "STANDARD",
-                "NEARLINE",
-                "COLDLINE",
-                "ARCHIVE",
-                "REGIONAL",
-                "MULTI_REGIONAL",
-                "DURABLE_REDUCED_AVAILABILITY",
-              ]),
-            ).describe(
-              "Required. Only objects with the specified attributes will be scanned. If an object has one of the specified attributes but is inside an excluded bucket, it will not be scanned. Defaults to [ALL_SUPPORTED_OBJECTS]. A profile will be created even if no objects match the included_object_attributes.",
-            ).optional(),
-          }).describe(
+          cloudStorageConditions: z.unknown().describe(
             "Requirements that must be true before a Cloud Storage bucket or object is scanned in discovery for the first time. There is an AND relationship between the top-level attributes.",
           ).optional(),
-          createdAfter: z.string().describe(
+          createdAfter: z.unknown().describe(
             "Optional. File store must have been created after this date. Used to avoid backfilling.",
           ).optional(),
-          minAge: z.string().describe(
+          minAge: z.unknown().describe(
             "Optional. Minimum age a file store must have. If set, the value must be 1 hour or greater.",
           ).optional(),
         }).describe(
@@ -617,71 +375,23 @@ const GlobalArgsSchema = z.object({
         disabled: z.object({}).describe("Do not profile the tables.")
           .optional(),
         filter: z.object({
-          cloudStorageResourceReference: z.object({
-            bucketName: z.string().describe("Required. The bucket to scan.")
-              .optional(),
-            projectId: z.string().describe(
-              "Required. If within a project-level config, then this must match the config's project id.",
-            ).optional(),
-          }).describe("Identifies a single Cloud Storage bucket.").optional(),
-          collection: z.object({
-            includeRegexes: z.object({
-              patterns: z.array(z.object({
-                cloudStorageRegex: z.object({
-                  bucketNameRegex: z.string().describe(
-                    'Optional. Regex to test the bucket name against. If empty, all buckets match. Example: "marketing2021" or "(marketing)\\d{4}" will both match the bucket gs://marketing2021',
-                  ).optional(),
-                  projectIdRegex: z.string().describe(
-                    "Optional. For organizations, if unset, will match all projects.",
-                  ).optional(),
-                }).describe(
-                  "A pattern to match against one or more file stores. At least one pattern must be specified. Regular expressions use RE2 [syntax](https://github.com/google/re2/wiki/Syntax); a guide can be found under the google/re2 repository on GitHub.",
-                ).optional(),
-              })).describe(
-                "Required. The group of regular expression patterns to match against one or more file stores. Maximum of 100 entries. The sum of all regular expression's length can't exceed 10 KiB.",
-              ).optional(),
-            }).describe(
-              "A collection of regular expressions to determine what file store to match against.",
-            ).optional(),
-            includeTags: z.object({
-              tagFilters: z.array(z.object({
-                namespacedTagKey: z.string().describe(
-                  'The namespaced name for the tag key. Must be in the format `{parent_id}/{tag_key_short_name}`, for example, "123456/sensitive" for an organization parent, or "my-project/sensitive" for a project parent.',
-                ).optional(),
-                namespacedTagValue: z.string().describe(
-                  'The namespaced name for the tag value. Must be in the format `{parent_id}/{tag_key_short_name}/{short_name}`, for example, "123456/environment/prod" for an organization parent, or "my-project/environment/prod" for a project parent.',
-                ).optional(),
-              })).describe(
-                "Required. A resource must match ALL of the specified tag filters to be included in the collection.",
-              ).optional(),
-            }).describe("Tags to match against for filtering.").optional(),
-          }).describe("Match file stores (e.g. buckets) using filters.")
-            .optional(),
-          others: z.object({}).describe(
+          cloudStorageResourceReference: z.unknown().describe(
+            "Identifies a single Cloud Storage bucket.",
+          ).optional(),
+          collection: z.unknown().describe(
+            "Match file stores (e.g. buckets) using filters.",
+          ).optional(),
+          others: z.unknown().describe(
             "Match discovery resources not covered by any other filter.",
           ).optional(),
         }).describe(
           "Determines which buckets will have profiles generated within an organization or project. Includes the ability to filter by regular expression patterns on project ID and bucket name.",
         ).optional(),
         generationCadence: z.object({
-          inspectTemplateModifiedCadence: z.object({
-            frequency: z.enum([
-              "UPDATE_FREQUENCY_UNSPECIFIED",
-              "UPDATE_FREQUENCY_NEVER",
-              "UPDATE_FREQUENCY_DAILY",
-              "UPDATE_FREQUENCY_MONTHLY",
-            ]).describe(
-              "How frequently data profiles can be updated when the template is modified. Defaults to never.",
-            ).optional(),
-          }).describe(
+          inspectTemplateModifiedCadence: z.unknown().describe(
             "The cadence at which to update data profiles when the inspection rules defined by the `InspectTemplate` change.",
           ).optional(),
-          refreshFrequency: z.enum([
-            "UPDATE_FREQUENCY_UNSPECIFIED",
-            "UPDATE_FREQUENCY_NEVER",
-            "UPDATE_FREQUENCY_DAILY",
-            "UPDATE_FREQUENCY_MONTHLY",
-          ]).describe(
+          refreshFrequency: z.unknown().describe(
             "Optional. Data changes in Cloud Storage can't trigger reprofiling. If you set this field, profiles are refreshed at this frequency regardless of whether the underlying buckets have changed. Defaults to never.",
           ).optional(),
         }).describe(
@@ -692,37 +402,17 @@ const GlobalArgsSchema = z.object({
       ).optional(),
       otherCloudTarget: z.object({
         conditions: z.object({
-          amazonS3BucketConditions: z.object({
-            bucketTypes: z.array(
-              z.enum([
-                "TYPE_UNSPECIFIED",
-                "TYPE_ALL_SUPPORTED",
-                "TYPE_GENERAL_PURPOSE",
-              ]),
-            ).describe(
-              "Optional. Bucket types that should be profiled. Optional. Defaults to TYPE_ALL_SUPPORTED if unspecified.",
-            ).optional(),
-            objectStorageClasses: z.array(
-              z.enum([
-                "UNSPECIFIED",
-                "ALL_SUPPORTED_CLASSES",
-                "STANDARD",
-                "STANDARD_INFREQUENT_ACCESS",
-                "GLACIER_INSTANT_RETRIEVAL",
-                "INTELLIGENT_TIERING",
-              ]),
-            ).describe(
-              "Optional. Object classes that should be profiled. Optional. Defaults to ALL_SUPPORTED_CLASSES if unspecified.",
-            ).optional(),
-          }).describe("Amazon S3 bucket conditions.").optional(),
-          minAge: z.string().describe(
+          amazonS3BucketConditions: z.unknown().describe(
+            "Amazon S3 bucket conditions.",
+          ).optional(),
+          minAge: z.unknown().describe(
             "Minimum age a resource must be before Cloud DLP can profile it. Value must be 1 hour or greater.",
           ).optional(),
         }).describe(
           "Requirements that must be true before a resource is profiled for the first time.",
         ).optional(),
         dataSourceType: z.object({
-          dataSource: z.string().describe(
+          dataSource: z.unknown().describe(
             "A string that identifies the type of resource being profiled. Current values: * google/bigquery/table * google/project * google/sql/table * google/gcs/bucket",
           ).optional(),
         }).describe(
@@ -731,63 +421,23 @@ const GlobalArgsSchema = z.object({
         disabled: z.object({}).describe("Do not profile the tables.")
           .optional(),
         filter: z.object({
-          collection: z.object({
-            includeRegexes: z.object({
-              patterns: z.array(z.object({
-                amazonS3BucketRegex: z.object({
-                  awsAccountRegex: z.object({
-                    accountIdRegex: z.string().describe(
-                      "Optional. Regex to test the AWS account ID against. If empty, all accounts match.",
-                    ).optional(),
-                  }).describe("AWS account regex.").optional(),
-                  bucketNameRegex: z.string().describe(
-                    "Optional. Regex to test the bucket name against. If empty, all buckets match.",
-                  ).optional(),
-                }).describe("Amazon S3 bucket regex.").optional(),
-              })).describe(
-                "A group of regular expression patterns to match against one or more resources. Maximum of 100 entries. The sum of all regular expression's length can't exceed 10 KiB.",
-              ).optional(),
-            }).describe(
-              "A collection of regular expressions to determine what resources to match against.",
-            ).optional(),
-          }).describe("Match resources using regex filters.").optional(),
-          others: z.object({}).describe(
+          collection: z.unknown().describe(
+            "Match resources using regex filters.",
+          ).optional(),
+          others: z.unknown().describe(
             "Match discovery resources not covered by any other filter.",
           ).optional(),
-          singleResource: z.object({
-            amazonS3Bucket: z.object({
-              awsAccount: z.object({
-                accountId: z.string().describe("Required. AWS account ID.")
-                  .optional(),
-              }).describe("AWS account.").optional(),
-              bucketName: z.string().describe("Required. The bucket name.")
-                .optional(),
-            }).describe("Amazon S3 bucket.").optional(),
-          }).describe(
+          singleResource: z.unknown().describe(
             "Identifies a single resource, like a single Amazon S3 bucket.",
           ).optional(),
         }).describe(
           "Determines which resources from the other cloud will have profiles generated. Includes the ability to filter by resource names.",
         ).optional(),
         generationCadence: z.object({
-          inspectTemplateModifiedCadence: z.object({
-            frequency: z.enum([
-              "UPDATE_FREQUENCY_UNSPECIFIED",
-              "UPDATE_FREQUENCY_NEVER",
-              "UPDATE_FREQUENCY_DAILY",
-              "UPDATE_FREQUENCY_MONTHLY",
-            ]).describe(
-              "How frequently data profiles can be updated when the template is modified. Defaults to never.",
-            ).optional(),
-          }).describe(
+          inspectTemplateModifiedCadence: z.unknown().describe(
             "The cadence at which to update data profiles when the inspection rules defined by the `InspectTemplate` change.",
           ).optional(),
-          refreshFrequency: z.enum([
-            "UPDATE_FREQUENCY_UNSPECIFIED",
-            "UPDATE_FREQUENCY_NEVER",
-            "UPDATE_FREQUENCY_DAILY",
-            "UPDATE_FREQUENCY_MONTHLY",
-          ]).describe(
+          refreshFrequency: z.unknown().describe(
             "Optional. Frequency to update profiles regardless of whether the underlying resource has changes. Defaults to never.",
           ).optional(),
         }).describe(
@@ -801,10 +451,10 @@ const GlobalArgsSchema = z.object({
       ).optional(),
       vertexDatasetTarget: z.object({
         conditions: z.object({
-          createdAfter: z.string().describe(
+          createdAfter: z.unknown().describe(
             "Vertex AI dataset must have been created after this date. Used to avoid backfilling.",
           ).optional(),
-          minAge: z.string().describe(
+          minAge: z.unknown().describe(
             "Minimum age a Vertex AI dataset must have. If set, the value must be 1 hour or greater.",
           ).optional(),
         }).describe(
@@ -813,52 +463,23 @@ const GlobalArgsSchema = z.object({
         disabled: z.object({}).describe("Do not profile the tables.")
           .optional(),
         filter: z.object({
-          collection: z.object({
-            vertexDatasetRegexes: z.object({
-              patterns: z.array(z.object({
-                projectIdRegex: z.string().describe(
-                  "For organizations, if unset, will match all projects. Has no effect for configurations created within a project.",
-                ).optional(),
-              })).describe(
-                "Required. The group of regular expression patterns to match against one or more datasets. Maximum of 100 entries. The sum of the lengths of all regular expressions can't exceed 10 KiB.",
-              ).optional(),
-            }).describe(
-              "A collection of regular expressions to determine what datasets to match against.",
-            ).optional(),
-          }).describe("Match dataset resources using regex filters.")
-            .optional(),
-          others: z.object({}).describe(
+          collection: z.unknown().describe(
+            "Match dataset resources using regex filters.",
+          ).optional(),
+          others: z.unknown().describe(
             "Match discovery resources not covered by any other filter.",
           ).optional(),
-          vertexDatasetResourceReference: z.object({
-            datasetResourceName: z.string().describe(
-              "Required. The name of the Vertex AI resource. If set within a project-level configuration, the specified resource must be within the project. Examples: * `projects/{project}/locations/{location}/datasets/{dataset}`",
-            ).optional(),
-          }).describe(
+          vertexDatasetResourceReference: z.unknown().describe(
             "Identifies a single Vertex AI resource. Only datasets are supported.",
           ).optional(),
         }).describe(
           "Determines what datasets will have profiles generated within an organization or project. Includes the ability to filter by regular expression patterns on project ID or dataset regex.",
         ).optional(),
         generationCadence: z.object({
-          inspectTemplateModifiedCadence: z.object({
-            frequency: z.enum([
-              "UPDATE_FREQUENCY_UNSPECIFIED",
-              "UPDATE_FREQUENCY_NEVER",
-              "UPDATE_FREQUENCY_DAILY",
-              "UPDATE_FREQUENCY_MONTHLY",
-            ]).describe(
-              "How frequently data profiles can be updated when the template is modified. Defaults to never.",
-            ).optional(),
-          }).describe(
+          inspectTemplateModifiedCadence: z.unknown().describe(
             "The cadence at which to update data profiles when the inspection rules defined by the `InspectTemplate` change.",
           ).optional(),
-          refreshFrequency: z.enum([
-            "UPDATE_FREQUENCY_UNSPECIFIED",
-            "UPDATE_FREQUENCY_NEVER",
-            "UPDATE_FREQUENCY_DAILY",
-            "UPDATE_FREQUENCY_MONTHLY",
-          ]).describe(
+          refreshFrequency: z.unknown().describe(
             "If you set this field, profiles are refreshed at this frequency regardless of whether the underlying datasets have changed. Defaults to never.",
           ).optional(),
         }).describe(
@@ -902,11 +523,8 @@ const StateSchema = z.object({
       event: z.string(),
       pubsubCondition: z.object({
         expressions: z.object({
-          conditions: z.array(z.object({
-            minimumRiskScore: z.string(),
-            minimumSensitivityScore: z.string(),
-          })),
-          logicalOperator: z.string(),
+          conditions: z.unknown(),
+          logicalOperator: z.unknown(),
         }),
       }),
       topic: z.string(),
@@ -920,12 +538,8 @@ const StateSchema = z.object({
       lowerDataRiskToLow: z.boolean(),
       profileGenerationsToTag: z.array(z.string()),
       tagConditions: z.array(z.object({
-        sensitivityScore: z.object({
-          score: z.string(),
-        }),
-        tag: z.object({
-          namespacedValue: z.string(),
-        }),
+        sensitivityScore: z.unknown(),
+        tag: z.unknown(),
       })),
     }),
   })).optional(),
@@ -971,89 +585,76 @@ const StateSchema = z.object({
     bigQueryTarget: z.object({
       cadence: z.object({
         inspectTemplateModifiedCadence: z.object({
-          frequency: z.string(),
+          frequency: z.unknown(),
         }),
         refreshFrequency: z.string(),
         schemaModifiedCadence: z.object({
-          frequency: z.string(),
-          types: z.array(z.string()),
+          frequency: z.unknown(),
+          types: z.unknown(),
         }),
         tableModifiedCadence: z.object({
-          frequency: z.string(),
-          types: z.array(z.string()),
+          frequency: z.unknown(),
+          types: z.unknown(),
         }),
       }),
       conditions: z.object({
         createdAfter: z.string(),
         orConditions: z.object({
-          minAge: z.string(),
-          minRowCount: z.number(),
+          minAge: z.unknown(),
+          minRowCount: z.unknown(),
         }),
         typeCollection: z.string(),
         types: z.object({
-          types: z.array(z.string()),
+          types: z.unknown(),
         }),
       }),
       disabled: z.object({}),
       filter: z.object({
         otherTables: z.object({}),
         tableReference: z.object({
-          datasetId: z.string(),
-          projectId: z.string(),
-          tableId: z.string(),
+          datasetId: z.unknown(),
+          projectId: z.unknown(),
+          tableId: z.unknown(),
         }),
         tables: z.object({
-          includeRegexes: z.object({
-            patterns: z.array(z.object({
-              datasetIdRegex: z.string(),
-              projectIdRegex: z.string(),
-              tableIdRegex: z.string(),
-            })),
-          }),
+          includeRegexes: z.unknown(),
         }),
       }),
     }),
     cloudSqlTarget: z.object({
       conditions: z.object({
-        databaseEngines: z.array(z.string()),
-        types: z.array(z.string()),
+        databaseEngines: z.array(z.unknown()),
+        types: z.array(z.unknown()),
       }),
       disabled: z.object({}),
       filter: z.object({
         collection: z.object({
-          includeRegexes: z.object({
-            patterns: z.array(z.object({
-              databaseRegex: z.string(),
-              databaseResourceNameRegex: z.string(),
-              instanceRegex: z.string(),
-              projectIdRegex: z.string(),
-            })),
-          }),
+          includeRegexes: z.unknown(),
         }),
         databaseResourceReference: z.object({
-          database: z.string(),
-          databaseResource: z.string(),
-          instance: z.string(),
-          projectId: z.string(),
+          database: z.unknown(),
+          databaseResource: z.unknown(),
+          instance: z.unknown(),
+          projectId: z.unknown(),
         }),
         others: z.object({}),
       }),
       generationCadence: z.object({
         inspectTemplateModifiedCadence: z.object({
-          frequency: z.string(),
+          frequency: z.unknown(),
         }),
         refreshFrequency: z.string(),
         schemaModifiedCadence: z.object({
-          frequency: z.string(),
-          types: z.array(z.string()),
+          frequency: z.unknown(),
+          types: z.unknown(),
         }),
       }),
     }),
     cloudStorageTarget: z.object({
       conditions: z.object({
         cloudStorageConditions: z.object({
-          includedBucketAttributes: z.array(z.string()),
-          includedObjectAttributes: z.array(z.string()),
+          includedBucketAttributes: z.unknown(),
+          includedObjectAttributes: z.unknown(),
         }),
         createdAfter: z.string(),
         minAge: z.string(),
@@ -1061,30 +662,18 @@ const StateSchema = z.object({
       disabled: z.object({}),
       filter: z.object({
         cloudStorageResourceReference: z.object({
-          bucketName: z.string(),
-          projectId: z.string(),
+          bucketName: z.unknown(),
+          projectId: z.unknown(),
         }),
         collection: z.object({
-          includeRegexes: z.object({
-            patterns: z.array(z.object({
-              cloudStorageRegex: z.object({
-                bucketNameRegex: z.string(),
-                projectIdRegex: z.string(),
-              }),
-            })),
-          }),
-          includeTags: z.object({
-            tagFilters: z.array(z.object({
-              namespacedTagKey: z.string(),
-              namespacedTagValue: z.string(),
-            })),
-          }),
+          includeRegexes: z.unknown(),
+          includeTags: z.unknown(),
         }),
         others: z.object({}),
       }),
       generationCadence: z.object({
         inspectTemplateModifiedCadence: z.object({
-          frequency: z.string(),
+          frequency: z.unknown(),
         }),
         refreshFrequency: z.string(),
       }),
@@ -1092,8 +681,8 @@ const StateSchema = z.object({
     otherCloudTarget: z.object({
       conditions: z.object({
         amazonS3BucketConditions: z.object({
-          bucketTypes: z.array(z.string()),
-          objectStorageClasses: z.array(z.string()),
+          bucketTypes: z.unknown(),
+          objectStorageClasses: z.unknown(),
         }),
         minAge: z.string(),
       }),
@@ -1103,30 +692,16 @@ const StateSchema = z.object({
       disabled: z.object({}),
       filter: z.object({
         collection: z.object({
-          includeRegexes: z.object({
-            patterns: z.array(z.object({
-              amazonS3BucketRegex: z.object({
-                awsAccountRegex: z.object({
-                  accountIdRegex: z.string(),
-                }),
-                bucketNameRegex: z.string(),
-              }),
-            })),
-          }),
+          includeRegexes: z.unknown(),
         }),
         others: z.object({}),
         singleResource: z.object({
-          amazonS3Bucket: z.object({
-            awsAccount: z.object({
-              accountId: z.string(),
-            }),
-            bucketName: z.string(),
-          }),
+          amazonS3Bucket: z.unknown(),
         }),
       }),
       generationCadence: z.object({
         inspectTemplateModifiedCadence: z.object({
-          frequency: z.string(),
+          frequency: z.unknown(),
         }),
         refreshFrequency: z.string(),
       }),
@@ -1140,20 +715,16 @@ const StateSchema = z.object({
       disabled: z.object({}),
       filter: z.object({
         collection: z.object({
-          vertexDatasetRegexes: z.object({
-            patterns: z.array(z.object({
-              projectIdRegex: z.string(),
-            })),
-          }),
+          vertexDatasetRegexes: z.unknown(),
         }),
         others: z.object({}),
         vertexDatasetResourceReference: z.object({
-          datasetResourceName: z.string(),
+          datasetResourceName: z.unknown(),
         }),
       }),
       generationCadence: z.object({
         inspectTemplateModifiedCadence: z.object({
-          frequency: z.string(),
+          frequency: z.unknown(),
         }),
         refreshFrequency: z.string(),
       }),
@@ -1173,20 +744,22 @@ const InputsSchema = z.object({
     actions: z.array(z.object({
       exportData: z.object({
         profileTable: z.object({
-          datasetId: z.string().describe("Dataset ID of the table.").optional(),
-          projectId: z.string().describe(
+          datasetId: z.unknown().describe("Dataset ID of the table.")
+            .optional(),
+          projectId: z.unknown().describe(
             "The Google Cloud project ID of the project containing the table. If omitted, project ID is inferred from the API call.",
           ).optional(),
-          tableId: z.string().describe("Name of the table.").optional(),
+          tableId: z.unknown().describe("Name of the table.").optional(),
         }).describe(
           "Message defining the location of a BigQuery table. A table is uniquely identified by its project_id, dataset_id, and table_name. Within a query a table is often referenced with a string in the format of: `:.` or `..`.",
         ).optional(),
         sampleFindingsTable: z.object({
-          datasetId: z.string().describe("Dataset ID of the table.").optional(),
-          projectId: z.string().describe(
+          datasetId: z.unknown().describe("Dataset ID of the table.")
+            .optional(),
+          projectId: z.unknown().describe(
             "The Google Cloud project ID of the project containing the table. If omitted, project ID is inferred from the API call.",
           ).optional(),
-          tableId: z.string().describe("Name of the table.").optional(),
+          tableId: z.unknown().describe("Name of the table.").optional(),
         }).describe(
           "Message defining the location of a BigQuery table. A table is uniquely identified by its project_id, dataset_id, and table_name. Within a query a table is often referenced with a string in the format of: `:.` or `..`.",
         ).optional(),
@@ -1212,31 +785,7 @@ const InputsSchema = z.object({
           "The type of event that triggers a Pub/Sub. At most one `PubSubNotification` per EventType is permitted.",
         ).optional(),
         pubsubCondition: z.object({
-          expressions: z.object({
-            conditions: z.array(z.object({
-              minimumRiskScore: z.enum([
-                "PROFILE_SCORE_BUCKET_UNSPECIFIED",
-                "HIGH",
-                "MEDIUM_OR_HIGH",
-              ]).describe(
-                "The minimum data risk score that triggers the condition.",
-              ).optional(),
-              minimumSensitivityScore: z.enum([
-                "PROFILE_SCORE_BUCKET_UNSPECIFIED",
-                "HIGH",
-                "MEDIUM_OR_HIGH",
-              ]).describe(
-                "The minimum sensitivity level that triggers the condition.",
-              ).optional(),
-            })).describe("Conditions to apply to the expression.").optional(),
-            logicalOperator: z.enum([
-              "LOGICAL_OPERATOR_UNSPECIFIED",
-              "OR",
-              "AND",
-            ]).describe(
-              "The operator to apply to the collection of conditions.",
-            ).optional(),
-          }).describe(
+          expressions: z.unknown().describe(
             "An expression, consisting of an operator and conditions.",
           ).optional(),
         }).describe(
@@ -1265,35 +814,12 @@ const InputsSchema = z.object({
         lowerDataRiskToLow: z.boolean().describe(
           "Whether applying a tag to a resource should lower the risk of the profile for that resource. For example, in conjunction with an [IAM deny policy](https://cloud.google.com/iam/docs/deny-overview), you can deny all principals a permission if a tag value is present, mitigating the risk of the resource. This also lowers the data risk of resources at the lower levels of the resource hierarchy. For example, reducing the data risk of a table data profile also reduces the data risk of the constituent column data profiles.",
         ).optional(),
-        profileGenerationsToTag: z.array(
-          z.enum([
-            "PROFILE_GENERATION_UNSPECIFIED",
-            "PROFILE_GENERATION_NEW",
-            "PROFILE_GENERATION_UPDATE",
-          ]),
-        ).describe(
+        profileGenerationsToTag: z.array(z.unknown()).describe(
           "The profile generations for which the tag should be attached to resources. If you attach a tag to only new profiles, then if the sensitivity score of a profile subsequently changes, its tag doesn't change. By default, this field includes only new profiles. To include both new and updated profiles for tagging, this field should explicitly include both `PROFILE_GENERATION_NEW` and `PROFILE_GENERATION_UPDATE`.",
         ).optional(),
-        tagConditions: z.array(z.object({
-          sensitivityScore: z.object({
-            score: z.enum([
-              "SENSITIVITY_SCORE_UNSPECIFIED",
-              "SENSITIVITY_LOW",
-              "SENSITIVITY_UNKNOWN",
-              "SENSITIVITY_MODERATE",
-              "SENSITIVITY_HIGH",
-            ]).describe("The sensitivity score applied to the resource.")
-              .optional(),
-          }).describe(
-            "Score is calculated from of all elements in the data profile. A higher level means the data is more sensitive.",
-          ).optional(),
-          tag: z.object({
-            namespacedValue: z.string().describe(
-              'The namespaced name for the tag value to attach to resources. Must be in the format `{parent_id}/{tag_key_short_name}/{short_name}`, for example, "123456/environment/prod" for an organization parent, or "my-project/environment/prod" for a project parent.',
-            ).optional(),
-          }).describe("A value of a tag.").optional(),
-        })).describe("The tags to associate with different conditions.")
-          .optional(),
+        tagConditions: z.array(z.unknown()).describe(
+          "The tags to associate with different conditions.",
+        ).optional(),
       }).describe(
         "If set, attaches the [tags] (https://cloud.google.com/resource-manager/docs/tags/tags-overview) provided to profiled resources. Tags support [access control](https://cloud.google.com/iam/docs/tags-access-control). You can conditionally grant or deny access to a resource based on whether the resource has a specific tag.",
       ).optional(),
@@ -1308,7 +834,7 @@ const InputsSchema = z.object({
         code: z.number().int().describe(
           "The status code, which should be an enum value of google.rpc.Code.",
         ).optional(),
-        details: z.array(z.record(z.string(), z.string())).describe(
+        details: z.array(z.unknown()).describe(
           "A list of messages that carry the error details. There is a common set of message types for APIs to use.",
         ).optional(),
         message: z.string().describe(
@@ -1394,139 +920,47 @@ const InputsSchema = z.object({
     targets: z.array(z.object({
       bigQueryTarget: z.object({
         cadence: z.object({
-          inspectTemplateModifiedCadence: z.object({
-            frequency: z.enum([
-              "UPDATE_FREQUENCY_UNSPECIFIED",
-              "UPDATE_FREQUENCY_NEVER",
-              "UPDATE_FREQUENCY_DAILY",
-              "UPDATE_FREQUENCY_MONTHLY",
-            ]).describe(
-              "How frequently data profiles can be updated when the template is modified. Defaults to never.",
-            ).optional(),
-          }).describe(
+          inspectTemplateModifiedCadence: z.unknown().describe(
             "The cadence at which to update data profiles when the inspection rules defined by the `InspectTemplate` change.",
           ).optional(),
-          refreshFrequency: z.enum([
-            "UPDATE_FREQUENCY_UNSPECIFIED",
-            "UPDATE_FREQUENCY_NEVER",
-            "UPDATE_FREQUENCY_DAILY",
-            "UPDATE_FREQUENCY_MONTHLY",
-          ]).describe(
+          refreshFrequency: z.unknown().describe(
             "Frequency at which profiles should be updated, regardless of whether the underlying resource has changed. Defaults to never.",
           ).optional(),
-          schemaModifiedCadence: z.object({
-            frequency: z.enum([
-              "UPDATE_FREQUENCY_UNSPECIFIED",
-              "UPDATE_FREQUENCY_NEVER",
-              "UPDATE_FREQUENCY_DAILY",
-              "UPDATE_FREQUENCY_MONTHLY",
-            ]).describe(
-              "How frequently profiles may be updated when schemas are modified. Defaults to monthly.",
-            ).optional(),
-            types: z.array(
-              z.enum([
-                "SCHEMA_MODIFICATION_UNSPECIFIED",
-                "SCHEMA_NEW_COLUMNS",
-                "SCHEMA_REMOVED_COLUMNS",
-              ]),
-            ).describe(
-              "The type of events to consider when deciding if the table's schema has been modified and should have the profile updated. Defaults to NEW_COLUMNS.",
-            ).optional(),
-          }).describe(
+          schemaModifiedCadence: z.unknown().describe(
             "The cadence at which to update data profiles when a schema is modified.",
           ).optional(),
-          tableModifiedCadence: z.object({
-            frequency: z.enum([
-              "UPDATE_FREQUENCY_UNSPECIFIED",
-              "UPDATE_FREQUENCY_NEVER",
-              "UPDATE_FREQUENCY_DAILY",
-              "UPDATE_FREQUENCY_MONTHLY",
-            ]).describe(
-              "How frequently data profiles can be updated when tables are modified. Defaults to never.",
-            ).optional(),
-            types: z.array(
-              z.enum([
-                "TABLE_MODIFICATION_UNSPECIFIED",
-                "TABLE_MODIFIED_TIMESTAMP",
-              ]),
-            ).describe(
-              "The type of events to consider when deciding if the table has been modified and should have the profile updated. Defaults to MODIFIED_TIMESTAMP.",
-            ).optional(),
-          }).describe(
+          tableModifiedCadence: z.unknown().describe(
             "The cadence at which to update data profiles when a table is modified.",
           ).optional(),
         }).describe(
           "What must take place for a profile to be updated and how frequently it should occur. New tables are scanned as quickly as possible depending on system capacity.",
         ).optional(),
         conditions: z.object({
-          createdAfter: z.string().describe(
+          createdAfter: z.unknown().describe(
             "BigQuery table must have been created after this date. Used to avoid backfilling.",
           ).optional(),
-          orConditions: z.object({
-            minAge: z.string().describe(
-              "Minimum age a table must have before Cloud DLP can profile it. Value must be 1 hour or greater.",
-            ).optional(),
-            minRowCount: z.number().int().describe(
-              "Minimum number of rows that should be present before Cloud DLP profiles a table",
-            ).optional(),
-          }).describe(
+          orConditions: z.unknown().describe(
             "There is an OR relationship between these attributes. They are used to determine if a table should be scanned or not in Discovery.",
           ).optional(),
-          typeCollection: z.enum([
-            "BIG_QUERY_COLLECTION_UNSPECIFIED",
-            "BIG_QUERY_COLLECTION_ALL_TYPES",
-            "BIG_QUERY_COLLECTION_ONLY_SUPPORTED_TYPES",
-          ]).describe("Restrict discovery to categories of table types.")
-            .optional(),
-          types: z.object({
-            types: z.array(
-              z.enum([
-                "BIG_QUERY_TABLE_TYPE_UNSPECIFIED",
-                "BIG_QUERY_TABLE_TYPE_TABLE",
-                "BIG_QUERY_TABLE_TYPE_EXTERNAL_BIG_LAKE",
-                "BIG_QUERY_TABLE_TYPE_SNAPSHOT",
-              ]),
-            ).describe("A set of BigQuery table types.").optional(),
-          }).describe("The types of BigQuery tables supported by Cloud DLP.")
-            .optional(),
+          typeCollection: z.unknown().describe(
+            "Restrict discovery to categories of table types.",
+          ).optional(),
+          types: z.unknown().describe(
+            "The types of BigQuery tables supported by Cloud DLP.",
+          ).optional(),
         }).describe(
           "Requirements that must be true before a table is scanned in discovery for the first time. There is an AND relationship between the top-level attributes. Additionally, minimum conditions with an OR relationship that must be met before Cloud DLP scans a table can be set (like a minimum row count or a minimum table age).",
         ).optional(),
         disabled: z.object({}).describe("Do not profile the tables.")
           .optional(),
         filter: z.object({
-          otherTables: z.object({}).describe(
+          otherTables: z.unknown().describe(
             "Catch-all for all other tables not specified by other filters. Should always be last, except for single-table configurations, which will only have a TableReference target.",
           ).optional(),
-          tableReference: z.object({
-            datasetId: z.string().describe("Dataset ID of the table.")
-              .optional(),
-            projectId: z.string().describe(
-              "The Google Cloud project ID of the project containing the table. If omitted, the project ID is inferred from the parent project. This field is required if the parent resource is an organization.",
-            ).optional(),
-            tableId: z.string().describe("Name of the table.").optional(),
-          }).describe(
+          tableReference: z.unknown().describe(
             "Message defining the location of a BigQuery table with the projectId inferred from the parent project.",
           ).optional(),
-          tables: z.object({
-            includeRegexes: z.object({
-              patterns: z.array(z.object({
-                datasetIdRegex: z.string().describe(
-                  "If unset, this property matches all datasets.",
-                ).optional(),
-                projectIdRegex: z.string().describe(
-                  "For organizations, if unset, will match all projects. Has no effect for data profile configurations created within a project.",
-                ).optional(),
-                tableIdRegex: z.string().describe(
-                  "If unset, this property matches all tables.",
-                ).optional(),
-              })).describe(
-                "A single BigQuery regular expression pattern to match against one or more tables, datasets, or projects that contain BigQuery tables.",
-              ).optional(),
-            }).describe(
-              "A collection of regular expressions to determine what tables to match against.",
-            ).optional(),
-          }).describe(
+          tables: z.unknown().describe(
             "Specifies a collection of BigQuery tables. Used for Discovery.",
           ).optional(),
         }).describe(
@@ -1537,23 +971,10 @@ const InputsSchema = z.object({
       ).optional(),
       cloudSqlTarget: z.object({
         conditions: z.object({
-          databaseEngines: z.array(
-            z.enum([
-              "DATABASE_ENGINE_UNSPECIFIED",
-              "ALL_SUPPORTED_DATABASE_ENGINES",
-              "MYSQL",
-              "POSTGRES",
-            ]),
-          ).describe(
+          databaseEngines: z.unknown().describe(
             "Optional. Database engines that should be profiled. Optional. Defaults to ALL_SUPPORTED_DATABASE_ENGINES if unspecified.",
           ).optional(),
-          types: z.array(
-            z.enum([
-              "DATABASE_RESOURCE_TYPE_UNSPECIFIED",
-              "DATABASE_RESOURCE_TYPE_ALL_SUPPORTED_TYPES",
-              "DATABASE_RESOURCE_TYPE_TABLE",
-            ]),
-          ).describe(
+          types: z.unknown().describe(
             "Data profiles will only be generated for the database resource types specified in this field. If not specified, defaults to [DATABASE_RESOURCE_TYPE_ALL_SUPPORTED_TYPES].",
           ).optional(),
         }).describe(
@@ -1562,92 +983,26 @@ const InputsSchema = z.object({
         disabled: z.object({}).describe("Do not profile the tables.")
           .optional(),
         filter: z.object({
-          collection: z.object({
-            includeRegexes: z.object({
-              patterns: z.array(z.object({
-                databaseRegex: z.string().describe(
-                  "Regex to test the database name against. If empty, all databases match.",
-                ).optional(),
-                databaseResourceNameRegex: z.string().describe(
-                  "Regex to test the database resource's name against. An example of a database resource name is a table's name. Other database resource names like view names could be included in the future. If empty, all database resources match.",
-                ).optional(),
-                instanceRegex: z.string().describe(
-                  "Regex to test the instance name against. If empty, all instances match.",
-                ).optional(),
-                projectIdRegex: z.string().describe(
-                  "For organizations, if unset, will match all projects. Has no effect for configurations created within a project.",
-                ).optional(),
-              })).describe(
-                "A group of regular expression patterns to match against one or more database resources. Maximum of 100 entries. The sum of all regular expression's length can't exceed 10 KiB.",
-              ).optional(),
-            }).describe(
-              "A collection of regular expressions to determine what database resources to match against.",
-            ).optional(),
-          }).describe(
+          collection: z.unknown().describe(
             "Match database resources using regex filters. Examples of database resources are tables, views, and stored procedures.",
           ).optional(),
-          databaseResourceReference: z.object({
-            database: z.string().describe(
-              "Required. Name of a database within the instance.",
-            ).optional(),
-            databaseResource: z.string().describe(
-              "Required. Name of a database resource, for example, a table within the database.",
-            ).optional(),
-            instance: z.string().describe(
-              "Required. The instance where this resource is located. For example: Cloud SQL instance ID.",
-            ).optional(),
-            projectId: z.string().describe(
-              "Required. If within a project-level config, then this must match the config's project ID.",
-            ).optional(),
-          }).describe(
+          databaseResourceReference: z.unknown().describe(
             "Identifies a single database resource, like a table within a database.",
           ).optional(),
-          others: z.object({}).describe(
+          others: z.unknown().describe(
             "Match database resources not covered by any other filter.",
           ).optional(),
         }).describe(
           "Determines what tables will have profiles generated within an organization or project. Includes the ability to filter by regular expression patterns on project ID, location, instance, database, and database resource name.",
         ).optional(),
         generationCadence: z.object({
-          inspectTemplateModifiedCadence: z.object({
-            frequency: z.enum([
-              "UPDATE_FREQUENCY_UNSPECIFIED",
-              "UPDATE_FREQUENCY_NEVER",
-              "UPDATE_FREQUENCY_DAILY",
-              "UPDATE_FREQUENCY_MONTHLY",
-            ]).describe(
-              "How frequently data profiles can be updated when the template is modified. Defaults to never.",
-            ).optional(),
-          }).describe(
+          inspectTemplateModifiedCadence: z.unknown().describe(
             "The cadence at which to update data profiles when the inspection rules defined by the `InspectTemplate` change.",
           ).optional(),
-          refreshFrequency: z.enum([
-            "UPDATE_FREQUENCY_UNSPECIFIED",
-            "UPDATE_FREQUENCY_NEVER",
-            "UPDATE_FREQUENCY_DAILY",
-            "UPDATE_FREQUENCY_MONTHLY",
-          ]).describe(
+          refreshFrequency: z.unknown().describe(
             "Data changes (non-schema changes) in Cloud SQL tables can't trigger reprofiling. If you set this field, profiles are refreshed at this frequency regardless of whether the underlying tables have changed. Defaults to never.",
           ).optional(),
-          schemaModifiedCadence: z.object({
-            frequency: z.enum([
-              "UPDATE_FREQUENCY_UNSPECIFIED",
-              "UPDATE_FREQUENCY_NEVER",
-              "UPDATE_FREQUENCY_DAILY",
-              "UPDATE_FREQUENCY_MONTHLY",
-            ]).describe(
-              "Frequency to regenerate data profiles when the schema is modified. Defaults to monthly.",
-            ).optional(),
-            types: z.array(
-              z.enum([
-                "SQL_SCHEMA_MODIFICATION_UNSPECIFIED",
-                "NEW_COLUMNS",
-                "REMOVED_COLUMNS",
-              ]),
-            ).describe(
-              "The types of schema modifications to consider. Defaults to NEW_COLUMNS.",
-            ).optional(),
-          }).describe(
+          schemaModifiedCadence: z.unknown().describe(
             "How frequently to modify the profile when the table's schema is modified.",
           ).optional(),
         }).describe(
@@ -1658,39 +1013,13 @@ const InputsSchema = z.object({
       ).optional(),
       cloudStorageTarget: z.object({
         conditions: z.object({
-          cloudStorageConditions: z.object({
-            includedBucketAttributes: z.array(
-              z.enum([
-                "CLOUD_STORAGE_BUCKET_ATTRIBUTE_UNSPECIFIED",
-                "ALL_SUPPORTED_BUCKETS",
-                "AUTOCLASS_DISABLED",
-                "AUTOCLASS_ENABLED",
-              ]),
-            ).describe(
-              "Required. Only objects with the specified attributes will be scanned. Defaults to [ALL_SUPPORTED_BUCKETS] if unset.",
-            ).optional(),
-            includedObjectAttributes: z.array(
-              z.enum([
-                "CLOUD_STORAGE_OBJECT_ATTRIBUTE_UNSPECIFIED",
-                "ALL_SUPPORTED_OBJECTS",
-                "STANDARD",
-                "NEARLINE",
-                "COLDLINE",
-                "ARCHIVE",
-                "REGIONAL",
-                "MULTI_REGIONAL",
-                "DURABLE_REDUCED_AVAILABILITY",
-              ]),
-            ).describe(
-              "Required. Only objects with the specified attributes will be scanned. If an object has one of the specified attributes but is inside an excluded bucket, it will not be scanned. Defaults to [ALL_SUPPORTED_OBJECTS]. A profile will be created even if no objects match the included_object_attributes.",
-            ).optional(),
-          }).describe(
+          cloudStorageConditions: z.unknown().describe(
             "Requirements that must be true before a Cloud Storage bucket or object is scanned in discovery for the first time. There is an AND relationship between the top-level attributes.",
           ).optional(),
-          createdAfter: z.string().describe(
+          createdAfter: z.unknown().describe(
             "Optional. File store must have been created after this date. Used to avoid backfilling.",
           ).optional(),
-          minAge: z.string().describe(
+          minAge: z.unknown().describe(
             "Optional. Minimum age a file store must have. If set, the value must be 1 hour or greater.",
           ).optional(),
         }).describe(
@@ -1699,71 +1028,23 @@ const InputsSchema = z.object({
         disabled: z.object({}).describe("Do not profile the tables.")
           .optional(),
         filter: z.object({
-          cloudStorageResourceReference: z.object({
-            bucketName: z.string().describe("Required. The bucket to scan.")
-              .optional(),
-            projectId: z.string().describe(
-              "Required. If within a project-level config, then this must match the config's project id.",
-            ).optional(),
-          }).describe("Identifies a single Cloud Storage bucket.").optional(),
-          collection: z.object({
-            includeRegexes: z.object({
-              patterns: z.array(z.object({
-                cloudStorageRegex: z.object({
-                  bucketNameRegex: z.string().describe(
-                    'Optional. Regex to test the bucket name against. If empty, all buckets match. Example: "marketing2021" or "(marketing)\\d{4}" will both match the bucket gs://marketing2021',
-                  ).optional(),
-                  projectIdRegex: z.string().describe(
-                    "Optional. For organizations, if unset, will match all projects.",
-                  ).optional(),
-                }).describe(
-                  "A pattern to match against one or more file stores. At least one pattern must be specified. Regular expressions use RE2 [syntax](https://github.com/google/re2/wiki/Syntax); a guide can be found under the google/re2 repository on GitHub.",
-                ).optional(),
-              })).describe(
-                "Required. The group of regular expression patterns to match against one or more file stores. Maximum of 100 entries. The sum of all regular expression's length can't exceed 10 KiB.",
-              ).optional(),
-            }).describe(
-              "A collection of regular expressions to determine what file store to match against.",
-            ).optional(),
-            includeTags: z.object({
-              tagFilters: z.array(z.object({
-                namespacedTagKey: z.string().describe(
-                  'The namespaced name for the tag key. Must be in the format `{parent_id}/{tag_key_short_name}`, for example, "123456/sensitive" for an organization parent, or "my-project/sensitive" for a project parent.',
-                ).optional(),
-                namespacedTagValue: z.string().describe(
-                  'The namespaced name for the tag value. Must be in the format `{parent_id}/{tag_key_short_name}/{short_name}`, for example, "123456/environment/prod" for an organization parent, or "my-project/environment/prod" for a project parent.',
-                ).optional(),
-              })).describe(
-                "Required. A resource must match ALL of the specified tag filters to be included in the collection.",
-              ).optional(),
-            }).describe("Tags to match against for filtering.").optional(),
-          }).describe("Match file stores (e.g. buckets) using filters.")
-            .optional(),
-          others: z.object({}).describe(
+          cloudStorageResourceReference: z.unknown().describe(
+            "Identifies a single Cloud Storage bucket.",
+          ).optional(),
+          collection: z.unknown().describe(
+            "Match file stores (e.g. buckets) using filters.",
+          ).optional(),
+          others: z.unknown().describe(
             "Match discovery resources not covered by any other filter.",
           ).optional(),
         }).describe(
           "Determines which buckets will have profiles generated within an organization or project. Includes the ability to filter by regular expression patterns on project ID and bucket name.",
         ).optional(),
         generationCadence: z.object({
-          inspectTemplateModifiedCadence: z.object({
-            frequency: z.enum([
-              "UPDATE_FREQUENCY_UNSPECIFIED",
-              "UPDATE_FREQUENCY_NEVER",
-              "UPDATE_FREQUENCY_DAILY",
-              "UPDATE_FREQUENCY_MONTHLY",
-            ]).describe(
-              "How frequently data profiles can be updated when the template is modified. Defaults to never.",
-            ).optional(),
-          }).describe(
+          inspectTemplateModifiedCadence: z.unknown().describe(
             "The cadence at which to update data profiles when the inspection rules defined by the `InspectTemplate` change.",
           ).optional(),
-          refreshFrequency: z.enum([
-            "UPDATE_FREQUENCY_UNSPECIFIED",
-            "UPDATE_FREQUENCY_NEVER",
-            "UPDATE_FREQUENCY_DAILY",
-            "UPDATE_FREQUENCY_MONTHLY",
-          ]).describe(
+          refreshFrequency: z.unknown().describe(
             "Optional. Data changes in Cloud Storage can't trigger reprofiling. If you set this field, profiles are refreshed at this frequency regardless of whether the underlying buckets have changed. Defaults to never.",
           ).optional(),
         }).describe(
@@ -1774,37 +1055,17 @@ const InputsSchema = z.object({
       ).optional(),
       otherCloudTarget: z.object({
         conditions: z.object({
-          amazonS3BucketConditions: z.object({
-            bucketTypes: z.array(
-              z.enum([
-                "TYPE_UNSPECIFIED",
-                "TYPE_ALL_SUPPORTED",
-                "TYPE_GENERAL_PURPOSE",
-              ]),
-            ).describe(
-              "Optional. Bucket types that should be profiled. Optional. Defaults to TYPE_ALL_SUPPORTED if unspecified.",
-            ).optional(),
-            objectStorageClasses: z.array(
-              z.enum([
-                "UNSPECIFIED",
-                "ALL_SUPPORTED_CLASSES",
-                "STANDARD",
-                "STANDARD_INFREQUENT_ACCESS",
-                "GLACIER_INSTANT_RETRIEVAL",
-                "INTELLIGENT_TIERING",
-              ]),
-            ).describe(
-              "Optional. Object classes that should be profiled. Optional. Defaults to ALL_SUPPORTED_CLASSES if unspecified.",
-            ).optional(),
-          }).describe("Amazon S3 bucket conditions.").optional(),
-          minAge: z.string().describe(
+          amazonS3BucketConditions: z.unknown().describe(
+            "Amazon S3 bucket conditions.",
+          ).optional(),
+          minAge: z.unknown().describe(
             "Minimum age a resource must be before Cloud DLP can profile it. Value must be 1 hour or greater.",
           ).optional(),
         }).describe(
           "Requirements that must be true before a resource is profiled for the first time.",
         ).optional(),
         dataSourceType: z.object({
-          dataSource: z.string().describe(
+          dataSource: z.unknown().describe(
             "A string that identifies the type of resource being profiled. Current values: * google/bigquery/table * google/project * google/sql/table * google/gcs/bucket",
           ).optional(),
         }).describe(
@@ -1813,63 +1074,23 @@ const InputsSchema = z.object({
         disabled: z.object({}).describe("Do not profile the tables.")
           .optional(),
         filter: z.object({
-          collection: z.object({
-            includeRegexes: z.object({
-              patterns: z.array(z.object({
-                amazonS3BucketRegex: z.object({
-                  awsAccountRegex: z.object({
-                    accountIdRegex: z.string().describe(
-                      "Optional. Regex to test the AWS account ID against. If empty, all accounts match.",
-                    ).optional(),
-                  }).describe("AWS account regex.").optional(),
-                  bucketNameRegex: z.string().describe(
-                    "Optional. Regex to test the bucket name against. If empty, all buckets match.",
-                  ).optional(),
-                }).describe("Amazon S3 bucket regex.").optional(),
-              })).describe(
-                "A group of regular expression patterns to match against one or more resources. Maximum of 100 entries. The sum of all regular expression's length can't exceed 10 KiB.",
-              ).optional(),
-            }).describe(
-              "A collection of regular expressions to determine what resources to match against.",
-            ).optional(),
-          }).describe("Match resources using regex filters.").optional(),
-          others: z.object({}).describe(
+          collection: z.unknown().describe(
+            "Match resources using regex filters.",
+          ).optional(),
+          others: z.unknown().describe(
             "Match discovery resources not covered by any other filter.",
           ).optional(),
-          singleResource: z.object({
-            amazonS3Bucket: z.object({
-              awsAccount: z.object({
-                accountId: z.string().describe("Required. AWS account ID.")
-                  .optional(),
-              }).describe("AWS account.").optional(),
-              bucketName: z.string().describe("Required. The bucket name.")
-                .optional(),
-            }).describe("Amazon S3 bucket.").optional(),
-          }).describe(
+          singleResource: z.unknown().describe(
             "Identifies a single resource, like a single Amazon S3 bucket.",
           ).optional(),
         }).describe(
           "Determines which resources from the other cloud will have profiles generated. Includes the ability to filter by resource names.",
         ).optional(),
         generationCadence: z.object({
-          inspectTemplateModifiedCadence: z.object({
-            frequency: z.enum([
-              "UPDATE_FREQUENCY_UNSPECIFIED",
-              "UPDATE_FREQUENCY_NEVER",
-              "UPDATE_FREQUENCY_DAILY",
-              "UPDATE_FREQUENCY_MONTHLY",
-            ]).describe(
-              "How frequently data profiles can be updated when the template is modified. Defaults to never.",
-            ).optional(),
-          }).describe(
+          inspectTemplateModifiedCadence: z.unknown().describe(
             "The cadence at which to update data profiles when the inspection rules defined by the `InspectTemplate` change.",
           ).optional(),
-          refreshFrequency: z.enum([
-            "UPDATE_FREQUENCY_UNSPECIFIED",
-            "UPDATE_FREQUENCY_NEVER",
-            "UPDATE_FREQUENCY_DAILY",
-            "UPDATE_FREQUENCY_MONTHLY",
-          ]).describe(
+          refreshFrequency: z.unknown().describe(
             "Optional. Frequency to update profiles regardless of whether the underlying resource has changes. Defaults to never.",
           ).optional(),
         }).describe(
@@ -1883,10 +1104,10 @@ const InputsSchema = z.object({
       ).optional(),
       vertexDatasetTarget: z.object({
         conditions: z.object({
-          createdAfter: z.string().describe(
+          createdAfter: z.unknown().describe(
             "Vertex AI dataset must have been created after this date. Used to avoid backfilling.",
           ).optional(),
-          minAge: z.string().describe(
+          minAge: z.unknown().describe(
             "Minimum age a Vertex AI dataset must have. If set, the value must be 1 hour or greater.",
           ).optional(),
         }).describe(
@@ -1895,52 +1116,23 @@ const InputsSchema = z.object({
         disabled: z.object({}).describe("Do not profile the tables.")
           .optional(),
         filter: z.object({
-          collection: z.object({
-            vertexDatasetRegexes: z.object({
-              patterns: z.array(z.object({
-                projectIdRegex: z.string().describe(
-                  "For organizations, if unset, will match all projects. Has no effect for configurations created within a project.",
-                ).optional(),
-              })).describe(
-                "Required. The group of regular expression patterns to match against one or more datasets. Maximum of 100 entries. The sum of the lengths of all regular expressions can't exceed 10 KiB.",
-              ).optional(),
-            }).describe(
-              "A collection of regular expressions to determine what datasets to match against.",
-            ).optional(),
-          }).describe("Match dataset resources using regex filters.")
-            .optional(),
-          others: z.object({}).describe(
+          collection: z.unknown().describe(
+            "Match dataset resources using regex filters.",
+          ).optional(),
+          others: z.unknown().describe(
             "Match discovery resources not covered by any other filter.",
           ).optional(),
-          vertexDatasetResourceReference: z.object({
-            datasetResourceName: z.string().describe(
-              "Required. The name of the Vertex AI resource. If set within a project-level configuration, the specified resource must be within the project. Examples: * `projects/{project}/locations/{location}/datasets/{dataset}`",
-            ).optional(),
-          }).describe(
+          vertexDatasetResourceReference: z.unknown().describe(
             "Identifies a single Vertex AI resource. Only datasets are supported.",
           ).optional(),
         }).describe(
           "Determines what datasets will have profiles generated within an organization or project. Includes the ability to filter by regular expression patterns on project ID or dataset regex.",
         ).optional(),
         generationCadence: z.object({
-          inspectTemplateModifiedCadence: z.object({
-            frequency: z.enum([
-              "UPDATE_FREQUENCY_UNSPECIFIED",
-              "UPDATE_FREQUENCY_NEVER",
-              "UPDATE_FREQUENCY_DAILY",
-              "UPDATE_FREQUENCY_MONTHLY",
-            ]).describe(
-              "How frequently data profiles can be updated when the template is modified. Defaults to never.",
-            ).optional(),
-          }).describe(
+          inspectTemplateModifiedCadence: z.unknown().describe(
             "The cadence at which to update data profiles when the inspection rules defined by the `InspectTemplate` change.",
           ).optional(),
-          refreshFrequency: z.enum([
-            "UPDATE_FREQUENCY_UNSPECIFIED",
-            "UPDATE_FREQUENCY_NEVER",
-            "UPDATE_FREQUENCY_DAILY",
-            "UPDATE_FREQUENCY_MONTHLY",
-          ]).describe(
+          refreshFrequency: z.unknown().describe(
             "If you set this field, profiles are refreshed at this frequency regardless of whether the underlying datasets have changed. Defaults to never.",
           ).optional(),
         }).describe(
@@ -1967,7 +1159,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/dlp/discoveryconfigs",
-  version: "2026.04.03.3",
+  version: "2026.04.04.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -1991,6 +1183,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.3",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.04.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

@@ -195,13 +195,13 @@ const GlobalArgsSchema = z.object({
         .optional(),
       multiSelectValues: z.object({
         values: z.array(z.object({
-          description: z.string().describe(
+          description: z.unknown().describe(
             "Optional. Description of the option.",
           ).optional(),
-          displayName: z.string().describe(
+          displayName: z.unknown().describe(
             "Required. Display name of the option.",
           ).optional(),
-          id: z.string().describe("Required. Id of the option.").optional(),
+          id: z.unknown().describe("Required. Id of the option.").optional(),
         })).describe(
           "Optional. The config variable value of data type multi select.",
         ).optional(),
@@ -496,13 +496,13 @@ const InputsSchema = z.object({
         .optional(),
       multiSelectValues: z.object({
         values: z.array(z.object({
-          description: z.string().describe(
+          description: z.unknown().describe(
             "Optional. Description of the option.",
           ).optional(),
-          displayName: z.string().describe(
+          displayName: z.unknown().describe(
             "Required. Display name of the option.",
           ).optional(),
-          id: z.string().describe("Required. Id of the option.").optional(),
+          id: z.unknown().describe("Required. Id of the option.").optional(),
         })).describe(
           "Optional. The config variable value of data type multi select.",
         ).optional(),
@@ -624,7 +624,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/apihub/plugins-instances",
-  version: "2026.04.03.3",
+  version: "2026.04.04.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -648,6 +648,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.3",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.04.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

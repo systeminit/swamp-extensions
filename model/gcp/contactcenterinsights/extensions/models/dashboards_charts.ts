@@ -120,38 +120,7 @@ const GlobalArgsSchema = z.object({
           .optional(),
         createTime: z.string().describe("The create time of the conversation.")
           .optional(),
-        messages: z.array(z.object({
-          createTime: z.string().describe(
-            "For user messages, this is the time at which the system received the message. For system messages, this is the time at which the system generated the message.",
-          ).optional(),
-          messageId: z.string().describe("The message id of the message.")
-            .optional(),
-          systemMessage: z.object({
-            chartSpec: z.record(z.string(), z.string()).describe(
-              "Chart spec from LLM",
-            ).optional(),
-            generatedSqlQuery: z.string().describe(
-              "Raw SQL from LLM, before templatization",
-            ).optional(),
-            textOutput: z.object({
-              texts: z.array(z.string()).describe("The parts of the message.")
-                .optional(),
-              type: z.enum([
-                "TYPE_UNSPECIFIED",
-                "THOUGHT",
-                "FINAL_RESPONSE",
-                "PROGRESS",
-              ]).describe("The type of the text message.").optional(),
-            }).describe("A text output message from the system.").optional(),
-          }).describe(
-            "A message from the system in response to the user. This message can also be a message from the user as historical context for multiturn conversations with the system.",
-          ).optional(),
-          userMessage: z.object({
-            text: z.string().describe(
-              "A message from the user that is interacting with the system.",
-            ).optional(),
-          }).describe("The user message.").optional(),
-        })).describe(
+        messages: z.array(z.unknown()).describe(
           "Ordered list of messages, including user inputs and system responses.",
         ).optional(),
         updateTime: z.string().describe("The update time of the conversation.")
@@ -237,21 +206,7 @@ const StateSchema = z.object({
       chartConversations: z.array(z.object({
         conversationId: z.string(),
         createTime: z.string(),
-        messages: z.array(z.object({
-          createTime: z.string(),
-          messageId: z.string(),
-          systemMessage: z.object({
-            chartSpec: z.record(z.string(), z.unknown()),
-            generatedSqlQuery: z.string(),
-            textOutput: z.object({
-              texts: z.array(z.string()),
-              type: z.string(),
-            }),
-          }),
-          userMessage: z.object({
-            text: z.string(),
-          }),
-        })),
+        messages: z.array(z.unknown()),
         updateTime: z.string(),
       })),
       chartSpec: z.record(z.string(), z.unknown()),
@@ -318,38 +273,7 @@ const InputsSchema = z.object({
           .optional(),
         createTime: z.string().describe("The create time of the conversation.")
           .optional(),
-        messages: z.array(z.object({
-          createTime: z.string().describe(
-            "For user messages, this is the time at which the system received the message. For system messages, this is the time at which the system generated the message.",
-          ).optional(),
-          messageId: z.string().describe("The message id of the message.")
-            .optional(),
-          systemMessage: z.object({
-            chartSpec: z.record(z.string(), z.string()).describe(
-              "Chart spec from LLM",
-            ).optional(),
-            generatedSqlQuery: z.string().describe(
-              "Raw SQL from LLM, before templatization",
-            ).optional(),
-            textOutput: z.object({
-              texts: z.array(z.string()).describe("The parts of the message.")
-                .optional(),
-              type: z.enum([
-                "TYPE_UNSPECIFIED",
-                "THOUGHT",
-                "FINAL_RESPONSE",
-                "PROGRESS",
-              ]).describe("The type of the text message.").optional(),
-            }).describe("A text output message from the system.").optional(),
-          }).describe(
-            "A message from the system in response to the user. This message can also be a message from the user as historical context for multiturn conversations with the system.",
-          ).optional(),
-          userMessage: z.object({
-            text: z.string().describe(
-              "A message from the user that is interacting with the system.",
-            ).optional(),
-          }).describe("The user message.").optional(),
-        })).describe(
+        messages: z.array(z.unknown()).describe(
           "Ordered list of messages, including user inputs and system responses.",
         ).optional(),
         updateTime: z.string().describe("The update time of the conversation.")
@@ -419,7 +343,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/contactcenterinsights/dashboards-charts",
-  version: "2026.04.03.3",
+  version: "2026.04.04.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -448,6 +372,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.3",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.04.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

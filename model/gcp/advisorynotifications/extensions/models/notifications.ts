@@ -49,10 +49,8 @@ const StateSchema = z.object({
   messages: z.array(z.object({
     attachments: z.array(z.object({
       csv: z.object({
-        dataRows: z.array(z.object({
-          entries: z.array(z.string()),
-        })),
-        headers: z.array(z.string()),
+        dataRows: z.unknown(),
+        headers: z.unknown(),
       }),
       displayName: z.string(),
     })),
@@ -88,7 +86,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/advisorynotifications/notifications",
-  version: "2026.04.03.3",
+  version: "2026.04.04.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -112,6 +110,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.3",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.04.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

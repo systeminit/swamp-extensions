@@ -152,119 +152,13 @@ const GlobalArgsSchema = z.object({
         "Optional. What invoked the action. If left empty, all invoker types will be restricted.",
       ).optional(),
       timeWindows: z.object({
-        oneTimeWindows: z.array(z.object({
-          endDate: z.object({
-            day: z.number().int().describe(
-              "Day of a month. Must be from 1 to 31 and valid for the year and month, or 0 to specify a year by itself or a year and month where the day isn't significant.",
-            ).optional(),
-            month: z.number().int().describe(
-              "Month of a year. Must be from 1 to 12, or 0 to specify a year without a month and day.",
-            ).optional(),
-            year: z.number().int().describe(
-              "Year of the date. Must be from 1 to 9999, or 0 to specify a date without a year.",
-            ).optional(),
-          }).describe(
-            "Represents a whole or partial calendar date, such as a birthday. The time of day and time zone are either specified elsewhere or are insignificant. The date is relative to the Gregorian Calendar. This can represent one of the following: * A full date, with non-zero year, month, and day values. * A month and day, with a zero year (for example, an anniversary). * A year on its own, with a zero month and a zero day. * A year and month, with a zero day (for example, a credit card expiration date). Related types: * google.type.TimeOfDay * google.type.DateTime * google.protobuf.Timestamp",
-          ).optional(),
-          endTime: z.object({
-            hours: z.number().int().describe(
-              'Hours of a day in 24 hour format. Must be greater than or equal to 0 and typically must be less than or equal to 23. An API may choose to allow the value "24:00:00" for scenarios like business closing time.',
-            ).optional(),
-            minutes: z.number().int().describe(
-              "Minutes of an hour. Must be greater than or equal to 0 and less than or equal to 59.",
-            ).optional(),
-            nanos: z.number().int().describe(
-              "Fractions of seconds, in nanoseconds. Must be greater than or equal to 0 and less than or equal to 999,999,999.",
-            ).optional(),
-            seconds: z.number().int().describe(
-              "Seconds of a minute. Must be greater than or equal to 0 and typically must be less than or equal to 59. An API may allow the value 60 if it allows leap-seconds.",
-            ).optional(),
-          }).describe(
-            "Represents a time of day. The date and time zone are either not significant or are specified elsewhere. An API may choose to allow leap seconds. Related types are google.type.Date and `google.protobuf.Timestamp`.",
-          ).optional(),
-          startDate: z.object({
-            day: z.number().int().describe(
-              "Day of a month. Must be from 1 to 31 and valid for the year and month, or 0 to specify a year by itself or a year and month where the day isn't significant.",
-            ).optional(),
-            month: z.number().int().describe(
-              "Month of a year. Must be from 1 to 12, or 0 to specify a year without a month and day.",
-            ).optional(),
-            year: z.number().int().describe(
-              "Year of the date. Must be from 1 to 9999, or 0 to specify a date without a year.",
-            ).optional(),
-          }).describe(
-            "Represents a whole or partial calendar date, such as a birthday. The time of day and time zone are either specified elsewhere or are insignificant. The date is relative to the Gregorian Calendar. This can represent one of the following: * A full date, with non-zero year, month, and day values. * A month and day, with a zero year (for example, an anniversary). * A year on its own, with a zero month and a zero day. * A year and month, with a zero day (for example, a credit card expiration date). Related types: * google.type.TimeOfDay * google.type.DateTime * google.protobuf.Timestamp",
-          ).optional(),
-          startTime: z.object({
-            hours: z.number().int().describe(
-              'Hours of a day in 24 hour format. Must be greater than or equal to 0 and typically must be less than or equal to 23. An API may choose to allow the value "24:00:00" for scenarios like business closing time.',
-            ).optional(),
-            minutes: z.number().int().describe(
-              "Minutes of an hour. Must be greater than or equal to 0 and less than or equal to 59.",
-            ).optional(),
-            nanos: z.number().int().describe(
-              "Fractions of seconds, in nanoseconds. Must be greater than or equal to 0 and less than or equal to 999,999,999.",
-            ).optional(),
-            seconds: z.number().int().describe(
-              "Seconds of a minute. Must be greater than or equal to 0 and typically must be less than or equal to 59. An API may allow the value 60 if it allows leap-seconds.",
-            ).optional(),
-          }).describe(
-            "Represents a time of day. The date and time zone are either not significant or are specified elsewhere. An API may choose to allow leap seconds. Related types are google.type.Date and `google.protobuf.Timestamp`.",
-          ).optional(),
-        })).describe(
+        oneTimeWindows: z.array(z.unknown()).describe(
           "Optional. One-time windows within which actions are restricted.",
         ).optional(),
         timeZone: z.string().describe(
           "Required. The time zone in IANA format [IANA Time Zone Database](https://www.iana.org/time-zones) (e.g. America/New_York).",
         ).optional(),
-        weeklyWindows: z.array(z.object({
-          daysOfWeek: z.array(
-            z.enum([
-              "DAY_OF_WEEK_UNSPECIFIED",
-              "MONDAY",
-              "TUESDAY",
-              "WEDNESDAY",
-              "THURSDAY",
-              "FRIDAY",
-              "SATURDAY",
-              "SUNDAY",
-            ]),
-          ).describe(
-            "Optional. Days of week. If left empty, all days of the week will be included.",
-          ).optional(),
-          endTime: z.object({
-            hours: z.number().int().describe(
-              'Hours of a day in 24 hour format. Must be greater than or equal to 0 and typically must be less than or equal to 23. An API may choose to allow the value "24:00:00" for scenarios like business closing time.',
-            ).optional(),
-            minutes: z.number().int().describe(
-              "Minutes of an hour. Must be greater than or equal to 0 and less than or equal to 59.",
-            ).optional(),
-            nanos: z.number().int().describe(
-              "Fractions of seconds, in nanoseconds. Must be greater than or equal to 0 and less than or equal to 999,999,999.",
-            ).optional(),
-            seconds: z.number().int().describe(
-              "Seconds of a minute. Must be greater than or equal to 0 and typically must be less than or equal to 59. An API may allow the value 60 if it allows leap-seconds.",
-            ).optional(),
-          }).describe(
-            "Represents a time of day. The date and time zone are either not significant or are specified elsewhere. An API may choose to allow leap seconds. Related types are google.type.Date and `google.protobuf.Timestamp`.",
-          ).optional(),
-          startTime: z.object({
-            hours: z.number().int().describe(
-              'Hours of a day in 24 hour format. Must be greater than or equal to 0 and typically must be less than or equal to 23. An API may choose to allow the value "24:00:00" for scenarios like business closing time.',
-            ).optional(),
-            minutes: z.number().int().describe(
-              "Minutes of an hour. Must be greater than or equal to 0 and less than or equal to 59.",
-            ).optional(),
-            nanos: z.number().int().describe(
-              "Fractions of seconds, in nanoseconds. Must be greater than or equal to 0 and less than or equal to 999,999,999.",
-            ).optional(),
-            seconds: z.number().int().describe(
-              "Seconds of a minute. Must be greater than or equal to 0 and typically must be less than or equal to 59. An API may allow the value 60 if it allows leap-seconds.",
-            ).optional(),
-          }).describe(
-            "Represents a time of day. The date and time zone are either not significant or are specified elsewhere. An API may choose to allow leap seconds. Related types are google.type.Date and `google.protobuf.Timestamp`.",
-          ).optional(),
-        })).describe(
+        weeklyWindows: z.array(z.unknown()).describe(
           "Optional. Recurring weekly windows within which actions are restricted.",
         ).optional(),
       }).describe(
@@ -321,46 +215,9 @@ const StateSchema = z.object({
       id: z.string(),
       invokers: z.array(z.string()),
       timeWindows: z.object({
-        oneTimeWindows: z.array(z.object({
-          endDate: z.object({
-            day: z.number(),
-            month: z.number(),
-            year: z.number(),
-          }),
-          endTime: z.object({
-            hours: z.number(),
-            minutes: z.number(),
-            nanos: z.number(),
-            seconds: z.number(),
-          }),
-          startDate: z.object({
-            day: z.number(),
-            month: z.number(),
-            year: z.number(),
-          }),
-          startTime: z.object({
-            hours: z.number(),
-            minutes: z.number(),
-            nanos: z.number(),
-            seconds: z.number(),
-          }),
-        })),
+        oneTimeWindows: z.array(z.unknown()),
         timeZone: z.string(),
-        weeklyWindows: z.array(z.object({
-          daysOfWeek: z.array(z.string()),
-          endTime: z.object({
-            hours: z.number(),
-            minutes: z.number(),
-            nanos: z.number(),
-            seconds: z.number(),
-          }),
-          startTime: z.object({
-            hours: z.number(),
-            minutes: z.number(),
-            nanos: z.number(),
-            seconds: z.number(),
-          }),
-        })),
+        weeklyWindows: z.array(z.unknown()),
       }),
     }),
   })).optional(),
@@ -418,119 +275,13 @@ const InputsSchema = z.object({
         "Optional. What invoked the action. If left empty, all invoker types will be restricted.",
       ).optional(),
       timeWindows: z.object({
-        oneTimeWindows: z.array(z.object({
-          endDate: z.object({
-            day: z.number().int().describe(
-              "Day of a month. Must be from 1 to 31 and valid for the year and month, or 0 to specify a year by itself or a year and month where the day isn't significant.",
-            ).optional(),
-            month: z.number().int().describe(
-              "Month of a year. Must be from 1 to 12, or 0 to specify a year without a month and day.",
-            ).optional(),
-            year: z.number().int().describe(
-              "Year of the date. Must be from 1 to 9999, or 0 to specify a date without a year.",
-            ).optional(),
-          }).describe(
-            "Represents a whole or partial calendar date, such as a birthday. The time of day and time zone are either specified elsewhere or are insignificant. The date is relative to the Gregorian Calendar. This can represent one of the following: * A full date, with non-zero year, month, and day values. * A month and day, with a zero year (for example, an anniversary). * A year on its own, with a zero month and a zero day. * A year and month, with a zero day (for example, a credit card expiration date). Related types: * google.type.TimeOfDay * google.type.DateTime * google.protobuf.Timestamp",
-          ).optional(),
-          endTime: z.object({
-            hours: z.number().int().describe(
-              'Hours of a day in 24 hour format. Must be greater than or equal to 0 and typically must be less than or equal to 23. An API may choose to allow the value "24:00:00" for scenarios like business closing time.',
-            ).optional(),
-            minutes: z.number().int().describe(
-              "Minutes of an hour. Must be greater than or equal to 0 and less than or equal to 59.",
-            ).optional(),
-            nanos: z.number().int().describe(
-              "Fractions of seconds, in nanoseconds. Must be greater than or equal to 0 and less than or equal to 999,999,999.",
-            ).optional(),
-            seconds: z.number().int().describe(
-              "Seconds of a minute. Must be greater than or equal to 0 and typically must be less than or equal to 59. An API may allow the value 60 if it allows leap-seconds.",
-            ).optional(),
-          }).describe(
-            "Represents a time of day. The date and time zone are either not significant or are specified elsewhere. An API may choose to allow leap seconds. Related types are google.type.Date and `google.protobuf.Timestamp`.",
-          ).optional(),
-          startDate: z.object({
-            day: z.number().int().describe(
-              "Day of a month. Must be from 1 to 31 and valid for the year and month, or 0 to specify a year by itself or a year and month where the day isn't significant.",
-            ).optional(),
-            month: z.number().int().describe(
-              "Month of a year. Must be from 1 to 12, or 0 to specify a year without a month and day.",
-            ).optional(),
-            year: z.number().int().describe(
-              "Year of the date. Must be from 1 to 9999, or 0 to specify a date without a year.",
-            ).optional(),
-          }).describe(
-            "Represents a whole or partial calendar date, such as a birthday. The time of day and time zone are either specified elsewhere or are insignificant. The date is relative to the Gregorian Calendar. This can represent one of the following: * A full date, with non-zero year, month, and day values. * A month and day, with a zero year (for example, an anniversary). * A year on its own, with a zero month and a zero day. * A year and month, with a zero day (for example, a credit card expiration date). Related types: * google.type.TimeOfDay * google.type.DateTime * google.protobuf.Timestamp",
-          ).optional(),
-          startTime: z.object({
-            hours: z.number().int().describe(
-              'Hours of a day in 24 hour format. Must be greater than or equal to 0 and typically must be less than or equal to 23. An API may choose to allow the value "24:00:00" for scenarios like business closing time.',
-            ).optional(),
-            minutes: z.number().int().describe(
-              "Minutes of an hour. Must be greater than or equal to 0 and less than or equal to 59.",
-            ).optional(),
-            nanos: z.number().int().describe(
-              "Fractions of seconds, in nanoseconds. Must be greater than or equal to 0 and less than or equal to 999,999,999.",
-            ).optional(),
-            seconds: z.number().int().describe(
-              "Seconds of a minute. Must be greater than or equal to 0 and typically must be less than or equal to 59. An API may allow the value 60 if it allows leap-seconds.",
-            ).optional(),
-          }).describe(
-            "Represents a time of day. The date and time zone are either not significant or are specified elsewhere. An API may choose to allow leap seconds. Related types are google.type.Date and `google.protobuf.Timestamp`.",
-          ).optional(),
-        })).describe(
+        oneTimeWindows: z.array(z.unknown()).describe(
           "Optional. One-time windows within which actions are restricted.",
         ).optional(),
         timeZone: z.string().describe(
           "Required. The time zone in IANA format [IANA Time Zone Database](https://www.iana.org/time-zones) (e.g. America/New_York).",
         ).optional(),
-        weeklyWindows: z.array(z.object({
-          daysOfWeek: z.array(
-            z.enum([
-              "DAY_OF_WEEK_UNSPECIFIED",
-              "MONDAY",
-              "TUESDAY",
-              "WEDNESDAY",
-              "THURSDAY",
-              "FRIDAY",
-              "SATURDAY",
-              "SUNDAY",
-            ]),
-          ).describe(
-            "Optional. Days of week. If left empty, all days of the week will be included.",
-          ).optional(),
-          endTime: z.object({
-            hours: z.number().int().describe(
-              'Hours of a day in 24 hour format. Must be greater than or equal to 0 and typically must be less than or equal to 23. An API may choose to allow the value "24:00:00" for scenarios like business closing time.',
-            ).optional(),
-            minutes: z.number().int().describe(
-              "Minutes of an hour. Must be greater than or equal to 0 and less than or equal to 59.",
-            ).optional(),
-            nanos: z.number().int().describe(
-              "Fractions of seconds, in nanoseconds. Must be greater than or equal to 0 and less than or equal to 999,999,999.",
-            ).optional(),
-            seconds: z.number().int().describe(
-              "Seconds of a minute. Must be greater than or equal to 0 and typically must be less than or equal to 59. An API may allow the value 60 if it allows leap-seconds.",
-            ).optional(),
-          }).describe(
-            "Represents a time of day. The date and time zone are either not significant or are specified elsewhere. An API may choose to allow leap seconds. Related types are google.type.Date and `google.protobuf.Timestamp`.",
-          ).optional(),
-          startTime: z.object({
-            hours: z.number().int().describe(
-              'Hours of a day in 24 hour format. Must be greater than or equal to 0 and typically must be less than or equal to 23. An API may choose to allow the value "24:00:00" for scenarios like business closing time.',
-            ).optional(),
-            minutes: z.number().int().describe(
-              "Minutes of an hour. Must be greater than or equal to 0 and less than or equal to 59.",
-            ).optional(),
-            nanos: z.number().int().describe(
-              "Fractions of seconds, in nanoseconds. Must be greater than or equal to 0 and less than or equal to 999,999,999.",
-            ).optional(),
-            seconds: z.number().int().describe(
-              "Seconds of a minute. Must be greater than or equal to 0 and typically must be less than or equal to 59. An API may allow the value 60 if it allows leap-seconds.",
-            ).optional(),
-          }).describe(
-            "Represents a time of day. The date and time zone are either not significant or are specified elsewhere. An API may choose to allow leap seconds. Related types are google.type.Date and `google.protobuf.Timestamp`.",
-          ).optional(),
-        })).describe(
+        weeklyWindows: z.array(z.unknown()).describe(
           "Optional. Recurring weekly windows within which actions are restricted.",
         ).optional(),
       }).describe(
@@ -576,7 +327,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/clouddeploy/deploypolicies",
-  version: "2026.04.03.3",
+  version: "2026.04.04.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -600,6 +351,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.3",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.04.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

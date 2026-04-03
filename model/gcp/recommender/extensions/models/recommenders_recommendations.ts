@@ -78,18 +78,16 @@ const StateSchema = z.object({
   content: z.object({
     operationGroups: z.array(z.object({
       operations: z.array(z.object({
-        action: z.string(),
-        path: z.string(),
-        pathFilters: z.record(z.string(), z.unknown()),
-        pathValueMatchers: z.record(z.string(), z.unknown()),
-        resource: z.string(),
-        resourceType: z.string(),
-        sourcePath: z.string(),
-        sourceResource: z.string(),
-        value: z.string(),
-        valueMatcher: z.object({
-          matchesPattern: z.string(),
-        }),
+        action: z.unknown(),
+        path: z.unknown(),
+        pathFilters: z.unknown(),
+        pathValueMatchers: z.unknown(),
+        resource: z.unknown(),
+        resourceType: z.unknown(),
+        sourcePath: z.unknown(),
+        sourceResource: z.unknown(),
+        value: z.unknown(),
+        valueMatcher: z.unknown(),
       })),
     })),
     overview: z.record(z.string(), z.unknown()),
@@ -147,7 +145,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/recommender/recommenders-recommendations",
-  version: "2026.04.03.3",
+  version: "2026.04.04.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -171,6 +169,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.3",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.04.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

@@ -382,13 +382,13 @@ const GlobalArgsSchema = z.object({
         matchesPattern: z.string().describe(
           'A regular expression that satisfies the RE2 syntax. This condition is satisfied when the name of the object matches the RE2 pattern. Note: This feature is currently in the "Early Access" launch stage and is only available to a whitelisted set of users; that means that this feature may be changed in backward-incompatible ways and that it is not guaranteed to be released.',
         ).optional(),
-        matchesPrefix: z.array(z.string()).describe(
+        matchesPrefix: z.array(z.unknown()).describe(
           "List of object name prefixes. This condition will be satisfied when at least one of the prefixes exactly matches the beginning of the object name.",
         ).optional(),
-        matchesStorageClass: z.array(z.string()).describe(
+        matchesStorageClass: z.array(z.unknown()).describe(
           "Objects having any of the storage classes specified by this condition will be matched. Values include MULTI_REGIONAL, REGIONAL, NEARLINE, COLDLINE, ARCHIVE, STANDARD, and DURABLE_REDUCED_AVAILABILITY.",
         ).optional(),
-        matchesSuffix: z.array(z.string()).describe(
+        matchesSuffix: z.array(z.unknown()).describe(
           "List of object name suffixes. This condition will be satisfied when at least one of the suffixes exactly matches the end of the object name.",
         ).optional(),
         noncurrentTimeBefore: z.string().describe(
@@ -625,9 +625,9 @@ const StateSchema = z.object({
         daysSinceNoncurrentTime: z.number(),
         isLive: z.boolean(),
         matchesPattern: z.string(),
-        matchesPrefix: z.array(z.string()),
-        matchesStorageClass: z.array(z.string()),
-        matchesSuffix: z.array(z.string()),
+        matchesPrefix: z.array(z.unknown()),
+        matchesStorageClass: z.array(z.unknown()),
+        matchesSuffix: z.array(z.unknown()),
         noncurrentTimeBefore: z.string(),
         numNewerVersions: z.number(),
       }),
@@ -924,13 +924,13 @@ const InputsSchema = z.object({
         matchesPattern: z.string().describe(
           'A regular expression that satisfies the RE2 syntax. This condition is satisfied when the name of the object matches the RE2 pattern. Note: This feature is currently in the "Early Access" launch stage and is only available to a whitelisted set of users; that means that this feature may be changed in backward-incompatible ways and that it is not guaranteed to be released.',
         ).optional(),
-        matchesPrefix: z.array(z.string()).describe(
+        matchesPrefix: z.array(z.unknown()).describe(
           "List of object name prefixes. This condition will be satisfied when at least one of the prefixes exactly matches the beginning of the object name.",
         ).optional(),
-        matchesStorageClass: z.array(z.string()).describe(
+        matchesStorageClass: z.array(z.unknown()).describe(
           "Objects having any of the storage classes specified by this condition will be matched. Values include MULTI_REGIONAL, REGIONAL, NEARLINE, COLDLINE, ARCHIVE, STANDARD, and DURABLE_REDUCED_AVAILABILITY.",
         ).optional(),
-        matchesSuffix: z.array(z.string()).describe(
+        matchesSuffix: z.array(z.unknown()).describe(
           "List of object name suffixes. This condition will be satisfied when at least one of the suffixes exactly matches the end of the object name.",
         ).optional(),
         noncurrentTimeBefore: z.string().describe(
@@ -1054,7 +1054,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/storage/buckets",
-  version: "2026.04.03.3",
+  version: "2026.04.04.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -1078,6 +1078,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.3",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.04.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

@@ -122,37 +122,28 @@ const GlobalArgsSchema = z.object({
       ).optional(),
       troubleshooting: z.object({
         cname: z.object({
-          expectedData: z.string().describe(
+          expectedData: z.unknown().describe(
             "Output only. The expected value of the CNAME record for the domain, equals to `dns_resource_record.data` in the corresponding `DnsAuthorization`.",
           ).optional(),
-          name: z.string().describe(
+          name: z.unknown().describe(
             "Output only. The name of the CNAME record for the domain, equals to `dns_resource_record.name` in the corresponding `DnsAuthorization`.",
           ).optional(),
-          resolvedData: z.array(z.string()).describe(
+          resolvedData: z.unknown().describe(
             "Output only. The resolved CNAME chain. Empty list if the CNAME record for `CNAME.name` is not found. Otherwise the first item is the value of the CNAME record for `CNAME.name`. If the CNAME chain is longer, the second item is the value of the CNAME record for the first item, and so on.",
           ).optional(),
         }).describe("CNAME troubleshooting information.").optional(),
         ips: z.object({
-          resolved: z.array(z.string()).describe(
+          resolved: z.unknown().describe(
             "Output only. The list of IP addresses resolved from the domain's A/AAAA records. Can contain both ipv4 and ipv6 addresses.",
           ).optional(),
-          serving: z.array(z.string()).describe(
+          serving: z.unknown().describe(
             "Output only. The list of IP addresses, where the certificate is attached and port 443 is open.",
           ).optional(),
-          servingOnAltPorts: z.array(z.string()).describe(
+          servingOnAltPorts: z.unknown().describe(
             "Output only. The list of IP addresses, where the certificate is attached, but port 443 is not open.",
           ).optional(),
         }).describe("IPs troubleshooting information.").optional(),
-        issues: z.array(
-          z.enum([
-            "ISSUE_UNSPECIFIED",
-            "CNAME_MISMATCH",
-            "RESOLVED_TO_NOT_SERVING",
-            "RESOLVED_TO_SERVING_ON_ALT_PORTS",
-            "NO_RESOLVED_IPS",
-            "CERTIFICATE_NOT_ATTACHED",
-          ]),
-        ).describe(
+        issues: z.array(z.unknown()).describe(
           "Output only. The list of issues discovered during the authorization attempt.",
         ).optional(),
       }).describe("Troubleshooting information for the authorization attempt.")
@@ -246,16 +237,16 @@ const StateSchema = z.object({
       state: z.string(),
       troubleshooting: z.object({
         cname: z.object({
-          expectedData: z.string(),
-          name: z.string(),
-          resolvedData: z.array(z.string()),
+          expectedData: z.unknown(),
+          name: z.unknown(),
+          resolvedData: z.unknown(),
         }),
         ips: z.object({
-          resolved: z.array(z.string()),
-          serving: z.array(z.string()),
-          servingOnAltPorts: z.array(z.string()),
+          resolved: z.unknown(),
+          serving: z.unknown(),
+          servingOnAltPorts: z.unknown(),
         }),
-        issues: z.array(z.string()),
+        issues: z.array(z.unknown()),
       }),
     })),
     dnsAuthorizations: z.array(z.string()),
@@ -327,37 +318,28 @@ const InputsSchema = z.object({
       ).optional(),
       troubleshooting: z.object({
         cname: z.object({
-          expectedData: z.string().describe(
+          expectedData: z.unknown().describe(
             "Output only. The expected value of the CNAME record for the domain, equals to `dns_resource_record.data` in the corresponding `DnsAuthorization`.",
           ).optional(),
-          name: z.string().describe(
+          name: z.unknown().describe(
             "Output only. The name of the CNAME record for the domain, equals to `dns_resource_record.name` in the corresponding `DnsAuthorization`.",
           ).optional(),
-          resolvedData: z.array(z.string()).describe(
+          resolvedData: z.unknown().describe(
             "Output only. The resolved CNAME chain. Empty list if the CNAME record for `CNAME.name` is not found. Otherwise the first item is the value of the CNAME record for `CNAME.name`. If the CNAME chain is longer, the second item is the value of the CNAME record for the first item, and so on.",
           ).optional(),
         }).describe("CNAME troubleshooting information.").optional(),
         ips: z.object({
-          resolved: z.array(z.string()).describe(
+          resolved: z.unknown().describe(
             "Output only. The list of IP addresses resolved from the domain's A/AAAA records. Can contain both ipv4 and ipv6 addresses.",
           ).optional(),
-          serving: z.array(z.string()).describe(
+          serving: z.unknown().describe(
             "Output only. The list of IP addresses, where the certificate is attached and port 443 is open.",
           ).optional(),
-          servingOnAltPorts: z.array(z.string()).describe(
+          servingOnAltPorts: z.unknown().describe(
             "Output only. The list of IP addresses, where the certificate is attached, but port 443 is not open.",
           ).optional(),
         }).describe("IPs troubleshooting information.").optional(),
-        issues: z.array(
-          z.enum([
-            "ISSUE_UNSPECIFIED",
-            "CNAME_MISMATCH",
-            "RESOLVED_TO_NOT_SERVING",
-            "RESOLVED_TO_SERVING_ON_ALT_PORTS",
-            "NO_RESOLVED_IPS",
-            "CERTIFICATE_NOT_ATTACHED",
-          ]),
-        ).describe(
+        issues: z.array(z.unknown()).describe(
           "Output only. The list of issues discovered during the authorization attempt.",
         ).optional(),
       }).describe("Troubleshooting information for the authorization attempt.")
@@ -439,7 +421,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/certificatemanager/certificates",
-  version: "2026.04.03.3",
+  version: "2026.04.04.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -463,6 +445,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.3",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.04.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

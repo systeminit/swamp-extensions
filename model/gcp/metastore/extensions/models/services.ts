@@ -116,17 +116,7 @@ const GlobalArgsSchema = z.object({
           "Optional. A mapping of Hive metastore configuration key-value pairs to apply to the auxiliary Hive metastore (configured in hive-site.xml) in addition to the primary version's overrides. If keys are present in both the auxiliary version's overrides and the primary version's overrides, the value from the auxiliary version's overrides takes precedence.",
         ).optional(),
         networkConfig: z.object({
-          consumers: z.array(z.object({
-            endpointLocation: z.string().describe(
-              "Output only. The location of the endpoint URI. Format: projects/{project}/locations/{location}.",
-            ).optional(),
-            endpointUri: z.string().describe(
-              "Output only. The URI of the endpoint used to access the metastore service.",
-            ).optional(),
-            subnetwork: z.string().describe(
-              "Immutable. The subnetwork of the customer project from which an IP address is reserved and used as the Dataproc Metastore service's endpoint. It is accessible to hosts in the subnet and to all hosts in a subnet in the same region and same network. There must be at least one IP address available in the subnet's primary range. The subnet is specified in the following form:projects/{project_number}/regions/{region_id}/subnetworks/{subnetwork_id}",
-            ).optional(),
-          })).describe(
+          consumers: z.array(z.unknown()).describe(
             "Immutable. The consumer-side network configuration for the Dataproc Metastore instance.",
           ).optional(),
         }).describe("Network configuration for the Dataproc Metastore service.")
@@ -492,17 +482,7 @@ const InputsSchema = z.object({
           "Optional. A mapping of Hive metastore configuration key-value pairs to apply to the auxiliary Hive metastore (configured in hive-site.xml) in addition to the primary version's overrides. If keys are present in both the auxiliary version's overrides and the primary version's overrides, the value from the auxiliary version's overrides takes precedence.",
         ).optional(),
         networkConfig: z.object({
-          consumers: z.array(z.object({
-            endpointLocation: z.string().describe(
-              "Output only. The location of the endpoint URI. Format: projects/{project}/locations/{location}.",
-            ).optional(),
-            endpointUri: z.string().describe(
-              "Output only. The URI of the endpoint used to access the metastore service.",
-            ).optional(),
-            subnetwork: z.string().describe(
-              "Immutable. The subnetwork of the customer project from which an IP address is reserved and used as the Dataproc Metastore service's endpoint. It is accessible to hosts in the subnet and to all hosts in a subnet in the same region and same network. There must be at least one IP address available in the subnet's primary range. The subnet is specified in the following form:projects/{project_number}/regions/{region_id}/subnetworks/{subnetwork_id}",
-            ).optional(),
-          })).describe(
+          consumers: z.array(z.unknown()).describe(
             "Immutable. The consumer-side network configuration for the Dataproc Metastore instance.",
           ).optional(),
         }).describe("Network configuration for the Dataproc Metastore service.")
@@ -750,7 +730,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/metastore/services",
-  version: "2026.04.03.3",
+  version: "2026.04.04.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -774,6 +754,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.3",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.04.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

@@ -131,13 +131,8 @@ const GlobalArgsSchema = z.object({
         "Circular reference to StandardSqlDataType",
       ).optional(),
       structType: z.object({
-        fields: z.array(z.object({
-          name: z.string().describe(
-            "Optional. The name of this field. Can be absent for struct fields.",
-          ).optional(),
-          type: z.string().describe("Circular reference to StandardSqlDataType")
-            .optional(),
-        })).describe("Fields within the struct.").optional(),
+        fields: z.array(z.unknown()).describe("Fields within the struct.")
+          .optional(),
       }).describe("The representation of a SQL STRUCT type.").optional(),
       typeKind: z.enum([
         "TYPE_KIND_UNSPECIFIED",
@@ -289,8 +284,7 @@ const GlobalArgsSchema = z.object({
           "Circular reference to StandardSqlDataType",
         ).optional(),
         structType: z.object({
-          fields: z.array(z.string()).describe("Fields within the struct.")
-            .optional(),
+          fields: z.unknown().describe("Fields within the struct.").optional(),
         }).describe("The representation of a SQL STRUCT type.").optional(),
         typeKind: z.enum([
           "TYPE_KIND_UNSPECIFIED",
@@ -427,10 +421,7 @@ const StateSchema = z.object({
       arrayElementType: z.string(),
       rangeElementType: z.string(),
       structType: z.object({
-        fields: z.array(z.object({
-          name: z.string(),
-          type: z.string(),
-        })),
+        fields: z.array(z.unknown()),
       }),
       typeKind: z.string(),
     }),
@@ -483,7 +474,7 @@ const StateSchema = z.object({
         arrayElementType: z.string(),
         rangeElementType: z.string(),
         structType: z.object({
-          fields: z.array(z.string()),
+          fields: z.unknown(),
         }),
         typeKind: z.string(),
       }),
@@ -540,13 +531,8 @@ const InputsSchema = z.object({
         "Circular reference to StandardSqlDataType",
       ).optional(),
       structType: z.object({
-        fields: z.array(z.object({
-          name: z.string().describe(
-            "Optional. The name of this field. Can be absent for struct fields.",
-          ).optional(),
-          type: z.string().describe("Circular reference to StandardSqlDataType")
-            .optional(),
-        })).describe("Fields within the struct.").optional(),
+        fields: z.array(z.unknown()).describe("Fields within the struct.")
+          .optional(),
       }).describe("The representation of a SQL STRUCT type.").optional(),
       typeKind: z.enum([
         "TYPE_KIND_UNSPECIFIED",
@@ -698,8 +684,7 @@ const InputsSchema = z.object({
           "Circular reference to StandardSqlDataType",
         ).optional(),
         structType: z.object({
-          fields: z.array(z.string()).describe("Fields within the struct.")
-            .optional(),
+          fields: z.unknown().describe("Fields within the struct.").optional(),
         }).describe("The representation of a SQL STRUCT type.").optional(),
         typeKind: z.enum([
           "TYPE_KIND_UNSPECIFIED",
@@ -832,7 +817,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/bigquery/routines",
-  version: "2026.04.03.3",
+  version: "2026.04.04.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -856,6 +841,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.3",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.04.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

@@ -40,31 +40,11 @@ const StateSchema = z.object({
     id: z.string(),
     results: z.array(z.object({
       ActionResult: z.string(),
-      accessList: z.array(z.object({
-        Get: z.object({
-          name: z.string(),
-          value: z.string(),
-        }),
-        Remove: z.object({
-          name: z.string(),
-          success: z.boolean(),
-        }),
-        Set: z.object({
-          name: z.string(),
-          success: z.boolean(),
-          value: z.string(),
-        }),
-      })),
+      accessList: z.array(z.unknown()),
       content: z.string(),
-      headers: z.array(z.object({
-        name: z.string(),
-        value: z.string(),
-      })),
+      headers: z.array(z.unknown()),
       properties: z.object({
-        property: z.array(z.object({
-          name: z.string(),
-          value: z.string(),
-        })),
+        property: z.unknown(),
       }),
       reasonPhrase: z.string(),
       statusCode: z.string(),
@@ -83,7 +63,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/apigee/environments-apis-revisions-debugsessions-data",
-  version: "2026.04.03.3",
+  version: "2026.04.04.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -107,6 +87,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.3",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.04.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

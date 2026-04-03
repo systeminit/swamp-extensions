@@ -170,22 +170,18 @@ const GlobalArgsSchema = z.object({
     sourceObjectsConfig: z.object({
       objectConfigs: z.array(z.object({
         objectIdentifier: z.object({
-          database: z.string().describe(
+          database: z.unknown().describe(
             "Optional. The database name. This will be required only if the object uses a database name as part of its unique identifier.",
           ).optional(),
-          schema: z.string().describe(
+          schema: z.unknown().describe(
             "Optional. The schema name. This will be required only if the object uses a schema name as part of its unique identifier.",
           ).optional(),
-          table: z.string().describe(
+          table: z.unknown().describe(
             "Optional. The table name. This will be required only if the object is a level below database or schema.",
           ).optional(),
-          type: z.enum([
-            "MIGRATION_JOB_OBJECT_TYPE_UNSPECIFIED",
-            "DATABASE",
-            "SCHEMA",
-            "TABLE",
-          ]).describe("Required. The type of the migration job object.")
-            .optional(),
+          type: z.unknown().describe(
+            "Required. The type of the migration job object.",
+          ).optional(),
         }).describe("An identifier for the Migration Job Object.").optional(),
       })).describe("Optional. The list of the objects to be migrated.")
         .optional(),
@@ -458,10 +454,10 @@ const StateSchema = z.object({
     sourceObjectsConfig: z.object({
       objectConfigs: z.array(z.object({
         objectIdentifier: z.object({
-          database: z.string(),
-          schema: z.string(),
-          table: z.string(),
-          type: z.string(),
+          database: z.unknown(),
+          schema: z.unknown(),
+          table: z.unknown(),
+          type: z.unknown(),
         }),
       })),
       objectsSelectionType: z.string(),
@@ -627,22 +623,18 @@ const InputsSchema = z.object({
     sourceObjectsConfig: z.object({
       objectConfigs: z.array(z.object({
         objectIdentifier: z.object({
-          database: z.string().describe(
+          database: z.unknown().describe(
             "Optional. The database name. This will be required only if the object uses a database name as part of its unique identifier.",
           ).optional(),
-          schema: z.string().describe(
+          schema: z.unknown().describe(
             "Optional. The schema name. This will be required only if the object uses a schema name as part of its unique identifier.",
           ).optional(),
-          table: z.string().describe(
+          table: z.unknown().describe(
             "Optional. The table name. This will be required only if the object is a level below database or schema.",
           ).optional(),
-          type: z.enum([
-            "MIGRATION_JOB_OBJECT_TYPE_UNSPECIFIED",
-            "DATABASE",
-            "SCHEMA",
-            "TABLE",
-          ]).describe("Required. The type of the migration job object.")
-            .optional(),
+          type: z.unknown().describe(
+            "Required. The type of the migration job object.",
+          ).optional(),
         }).describe("An identifier for the Migration Job Object.").optional(),
       })).describe("Optional. The list of the objects to be migrated.")
         .optional(),
@@ -882,7 +874,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/datamigration/migrationjobs",
-  version: "2026.04.03.3",
+  version: "2026.04.04.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -906,6 +898,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.3",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.04.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },
