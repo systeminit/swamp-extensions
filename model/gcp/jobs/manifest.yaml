@@ -1,7 +1,7 @@
 # Auto-generated manifest. Re-generate with the appropriate deno task.
 manifestVersion: 1
 name: "@swamp/gcp/jobs"
-version: "2026.04.02.2"
+version: "2026.04.03.1"
 description: "Google Cloud jobs infrastructure models"
 labels:
   - gcp
@@ -9,6 +9,8 @@ labels:
   - jobs
   - cloud
   - infrastructure
+releaseNotes: |
+  - Updated: tenants, tenants_companies, tenants_jobs
 models:
   - tenants.ts
   - tenants_companies.ts

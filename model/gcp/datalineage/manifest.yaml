@@ -1,7 +1,7 @@
 # Auto-generated manifest. Re-generate with the appropriate deno task.
 manifestVersion: 1
 name: "@swamp/gcp/datalineage"
-version: "2026.04.02.2"
+version: "2026.04.03.1"
 description: "Google Cloud datalineage infrastructure models"
 labels:
   - gcp
@@ -9,6 +9,8 @@ labels:
   - datalineage
   - cloud
   - infrastructure
+releaseNotes: |
+  - Updated: config, processes, processes_runs, processes_runs_lineageevents
 models:
   - config.ts
   - processes.ts

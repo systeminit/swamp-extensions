@@ -576,7 +576,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/clouddeploy/deploypolicies",
-  version: "2026.04.02.2",
+  version: "2026.04.03.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -588,8 +588,12 @@ export const model = {
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },
+    {
+      toVersion: "2026.04.03.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
   ],
-
   globalArguments: GlobalArgsSchema,
   inputsSchema: InputsSchema,
   resources: {

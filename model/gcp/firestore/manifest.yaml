@@ -1,7 +1,7 @@
 # Auto-generated manifest. Re-generate with the appropriate deno task.
 manifestVersion: 1
 name: "@swamp/gcp/firestore"
-version: "2026.04.02.2"
+version: "2026.04.03.1"
 description: "Google Cloud firestore infrastructure models"
 labels:
   - gcp
@@ -9,6 +9,8 @@ labels:
   - firestore
   - cloud
   - infrastructure
+releaseNotes: |
+  - Updated: databases, databases_backupschedules, databases_collectiongroups_fields, databases_collectiongroups_indexes, databases_documents, databases_usercreds, locations, backups
 models:
   - backups.ts
   - databases.ts

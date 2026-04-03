@@ -106,6 +106,7 @@ const GlobalArgsSchema = z.object({
     "AUTH_MODE_UNSPECIFIED",
     "AUTH_MODE_IAM_AUTH",
     "AUTH_MODE_DISABLED",
+    "AUTH_MODE_TOKEN_AUTH",
   ]).describe(
     "Optional. The authorization mode of the Redis cluster. If not provided, auth feature is disabled for the cluster.",
   ).optional(),
@@ -672,6 +673,7 @@ const InputsSchema = z.object({
     "AUTH_MODE_UNSPECIFIED",
     "AUTH_MODE_IAM_AUTH",
     "AUTH_MODE_DISABLED",
+    "AUTH_MODE_TOKEN_AUTH",
   ]).describe(
     "Optional. The authorization mode of the Redis cluster. If not provided, auth feature is disabled for the cluster.",
   ).optional(),
@@ -1060,7 +1062,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/redis/clusters",
-  version: "2026.04.02.2",
+  version: "2026.04.03.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -1072,8 +1074,12 @@ export const model = {
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },
+    {
+      toVersion: "2026.04.03.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
   ],
-
   globalArguments: GlobalArgsSchema,
   inputsSchema: InputsSchema,
   resources: {
@@ -1427,6 +1433,47 @@ export const model = {
           }
           throw error;
         }
+      },
+    },
+    add_token_auth_user: {
+      description: "add token auth user",
+      arguments: z.object({
+        tokenAuthUser: z.any().optional(),
+      }),
+      execute: async (args: Record<string, unknown>, context: any) => {
+        const g = context.globalArgs;
+        const projectId = await getProjectId();
+        const params: Record<string, string> = { project: projectId };
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          g.name?.toString() ?? "current",
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        params["cluster"] = existing["name"]?.toString() ??
+          g["name"]?.toString() ?? "";
+        const body: Record<string, unknown> = {};
+        if (args["tokenAuthUser"] !== undefined) {
+          body["tokenAuthUser"] = args["tokenAuthUser"];
+        }
+        const result = await createResource(
+          BASE_URL,
+          {
+            "id": "redis.projects.locations.clusters.addTokenAuthUser",
+            "path": "v1/{+cluster}:addTokenAuthUser",
+            "httpMethod": "POST",
+            "parameterOrder": ["cluster"],
+            "parameters": {
+              "cluster": { "location": "path", "required": true },
+            },
+          },
+          params,
+          body,
+        );
+        return { result };
       },
     },
     backup: {

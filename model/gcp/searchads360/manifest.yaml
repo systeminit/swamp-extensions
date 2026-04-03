@@ -1,7 +1,7 @@
 # Auto-generated manifest. Re-generate with the appropriate deno task.
 manifestVersion: 1
 name: "@swamp/gcp/searchads360"
-version: "2026.04.02.2"
+version: "2026.04.03.1"
 description: "Google Cloud searchads360 infrastructure models"
 labels:
   - gcp
@@ -9,6 +9,8 @@ labels:
   - searchads360
   - cloud
   - infrastructure
+releaseNotes: |
+  - Updated: customers_customcolumns, searchads360fields
 models:
   - customers_customcolumns.ts
   - searchads360fields.ts

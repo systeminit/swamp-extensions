@@ -180,7 +180,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/eventarc/enrollments",
-  version: "2026.04.02.2",
+  version: "2026.04.03.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -192,8 +192,29 @@ export const model = {
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },
+    {
+      toVersion: "2026.04.03.1",
+      description:
+        "Removed: createTime, etag, uid, updateTime, type, version, upgrades, globalArguments, inputsSchema, resources, methods",
+      upgradeAttributes: (old: Record<string, unknown>) => {
+        const {
+          createTime: _createTime,
+          etag: _etag,
+          uid: _uid,
+          updateTime: _updateTime,
+          type: _type,
+          version: _version,
+          upgrades: _upgrades,
+          globalArguments: _globalArguments,
+          inputsSchema: _inputsSchema,
+          resources: _resources,
+          methods: _methods,
+          ...rest
+        } = old;
+        return rest;
+      },
+    },
   ],
-
   globalArguments: GlobalArgsSchema,
   inputsSchema: InputsSchema,
   resources: {

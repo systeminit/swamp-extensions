@@ -1,7 +1,7 @@
 # Auto-generated manifest. Re-generate with the appropriate deno task.
 manifestVersion: 1
 name: "@swamp/gcp/workspaceevents"
-version: "2026.04.02.2"
+version: "2026.04.03.1"
 description: "Google Cloud workspaceevents infrastructure models"
 labels:
   - gcp
@@ -10,7 +10,7 @@ labels:
   - cloud
   - infrastructure
 releaseNotes: |
-  - Updated: subscriptions
+  - Updated: subscriptions, tasks, tasks_pushnotificationconfigs
 models:
   - subscriptions.ts
   - tasks.ts
