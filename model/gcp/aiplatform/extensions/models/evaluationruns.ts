@@ -7600,7 +7600,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/aiplatform/evaluationruns",
-  version: "2026.04.03.1",
+  version: "2026.04.03.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -7614,6 +7614,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.03.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },
@@ -7680,7 +7685,8 @@ export const model = {
             }
             : undefined,
         ) as StateData;
-        const instanceName = (result.name ?? g.name)?.toString() ?? "current";
+        const instanceName = ((result.name ?? g.name)?.toString() ?? "current")
+          .replace(/[\/\\]/g, "_").replace(/\.\./, "_");
         const handle = await context.writeResource(
           "state",
           instanceName,
@@ -7707,8 +7713,11 @@ export const model = {
           GET_CONFIG,
           params,
         ) as StateData;
-        const instanceName = (result.name ?? g.name)?.toString() ??
-          args.identifier;
+        const instanceName =
+          ((result.name ?? g.name)?.toString() ?? args.identifier).replace(
+            /[\/\\]/g,
+            "_",
+          ).replace(/\.\./, "_");
         const handle = await context.writeResource(
           "state",
           instanceName,
@@ -7735,7 +7744,10 @@ export const model = {
           DELETE_CONFIG,
           params,
         );
-        const instanceName = g.name?.toString() ?? args.identifier;
+        const instanceName = (g.name?.toString() ?? args.identifier).replace(
+          /[\/\\]/g,
+          "_",
+        ).replace(/\.\./, "_");
         const handle = await context.writeResource("state", instanceName, {
           identifier: args.identifier,
           existed,
@@ -7751,7 +7763,10 @@ export const model = {
       execute: async (_args: Record<string, never>, context: any) => {
         const g = context.globalArgs;
         const projectId = await getProjectId();
-        const instanceName = g.name?.toString() ?? "current";
+        const instanceName = (g.name?.toString() ?? "current").replace(
+          /[\/\\]/g,
+          "_",
+        ).replace(/\.\./, "_");
         const content = await context.dataRepository.getContent(
           context.modelType,
           context.modelId,

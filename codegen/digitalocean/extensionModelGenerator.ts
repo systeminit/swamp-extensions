@@ -7,6 +7,7 @@ import type {
   DigitalOceanResource,
   DigitalOceanSubResourceMethod,
 } from "./pipeline.ts";
+import { wrapWithSanitize } from "../shared/instanceName.ts";
 
 // DigitalOcean regions for z.enum generation
 const DO_REGIONS = [
@@ -218,7 +219,9 @@ export function generateDigitalOceanExtensionModel(
   }
   lines.push(`        const g = context.globalArgs;`);
   lines.push(
-    `        const instanceName = g.${namingField}?.toString() ?? "current";`,
+    `        const instanceName = ${
+      wrapWithSanitize(`g.${namingField}?.toString() ?? "current"`)
+    };`,
   );
 
   // checkExists: error if resource already exists
@@ -302,11 +305,19 @@ export function generateDigitalOceanExtensionModel(
   );
   if (isSyntheticName) {
     lines.push(
-      `        const instanceName = context.globalArgs.${namingField}?.toString() ?? args.${idArg.argName}.toString();`,
+      `        const instanceName = ${
+        wrapWithSanitize(
+          `context.globalArgs.${namingField}?.toString() ?? args.${idArg.argName}.toString()`,
+        )
+      };`,
     );
   } else {
     lines.push(
-      `        const instanceName = result.${namingField}?.toString() ?? args.${idArg.argName}.toString();`,
+      `        const instanceName = ${
+        wrapWithSanitize(
+          `result.${namingField}?.toString() ?? args.${idArg.argName}.toString()`,
+        )
+      };`,
     );
   }
   lines.push(
@@ -337,7 +348,9 @@ export function generateDigitalOceanExtensionModel(
     }
     lines.push(`        const g = context.globalArgs;`);
     lines.push(
-      `        const instanceName = g.${namingField}?.toString() ?? "current";`,
+      `        const instanceName = ${
+        wrapWithSanitize(`g.${namingField}?.toString() ?? "current"`)
+      };`,
     );
     lines.push(
       `        const content = await context.dataRepository.getContent(`,
@@ -405,7 +418,11 @@ export function generateDigitalOceanExtensionModel(
       `        const { existed } = await remove("${endpoint}", args.${idArg.argName});`,
     );
     lines.push(
-      `        const instanceName = context.globalArgs.${namingField}?.toString() ?? args.${idArg.argName}.toString();`,
+      `        const instanceName = ${
+        wrapWithSanitize(
+          `context.globalArgs.${namingField}?.toString() ?? args.${idArg.argName}.toString()`,
+        )
+      };`,
     );
     lines.push(
       `        const handle = await context.writeResource("state", instanceName, {`,
@@ -433,7 +450,9 @@ export function generateDigitalOceanExtensionModel(
   );
   lines.push(`        const g = context.globalArgs;`);
   lines.push(
-    `        const instanceName = g.${namingField}?.toString() ?? "current";`,
+    `        const instanceName = ${
+      wrapWithSanitize(`g.${namingField}?.toString() ?? "current"`)
+    };`,
   );
   lines.push(
     `        const content = await context.dataRepository.getContent(`,
@@ -821,11 +840,19 @@ function generateSubResourceMethod(
   );
   if (isSyntheticName) {
     lines.push(
-      `        const instanceName = context.globalArgs.${namingField}?.toString() ?? args.${idArg.argName}.toString();`,
+      `        const instanceName = ${
+        wrapWithSanitize(
+          `context.globalArgs.${namingField}?.toString() ?? args.${idArg.argName}.toString()`,
+        )
+      };`,
     );
   } else {
     lines.push(
-      `        const instanceName = result.${namingField}?.toString() ?? args.${idArg.argName}.toString();`,
+      `        const instanceName = ${
+        wrapWithSanitize(
+          `result.${namingField}?.toString() ?? args.${idArg.argName}.toString()`,
+        )
+      };`,
     );
   }
   lines.push(

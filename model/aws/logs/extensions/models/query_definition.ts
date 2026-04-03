@@ -12,6 +12,19 @@ import {
   updateResource,
 } from "./_lib/aws.ts";
 
+export const QueryParameterSchema = z.object({
+  Name: z.string().max(128).regex(new RegExp("^[a-zA-Z_][a-zA-Z0-9_]*$"))
+    .describe(
+      "The name of the query parameter. A query parameter name must start with a letter or underscore, and contain only letters, digits, and underscores.",
+    ),
+  DefaultValue: z.string().max(1024).describe(
+    "The default value to use for this query parameter if no value is supplied at execution time.",
+  ).optional(),
+  Description: z.string().max(512).describe(
+    "A description of the query parameter that explains its purpose or expected values.",
+  ).optional(),
+});
+
 const GlobalArgsSchema = z.object({
   name: z.string().describe(
     "Instance name for this resource (used as the unique identifier in the factory pattern)",
@@ -30,6 +43,9 @@ const GlobalArgsSchema = z.object({
   QueryLanguage: z.enum(["CWLI", "SQL", "PPL"]).describe(
     "Query language of the query string. Possible values are CWLI, SQL, PPL, with CWLI being the default.",
   ).optional(),
+  Parameters: z.array(QueryParameterSchema).describe(
+    "Use this parameter to include specific query parameters as part of your query definition. Query parameters are supported only for Logs Insights QL queries. Query parameters allow you to use placeholder variables in your query string that are substituted with values at execution time. Use the {{parameterName}} syntax in your query string to reference a parameter.",
+  ).optional(),
 });
 
 const StateSchema = z.object({
@@ -38,6 +54,7 @@ const StateSchema = z.object({
   LogGroupNames: z.array(z.string()).optional(),
   QueryDefinitionId: z.string(),
   QueryLanguage: z.string().optional(),
+  Parameters: z.array(QueryParameterSchema).optional(),
 }).passthrough();
 
 type StateData = z.infer<typeof StateSchema>;
@@ -58,15 +75,23 @@ const InputsSchema = z.object({
   QueryLanguage: z.enum(["CWLI", "SQL", "PPL"]).describe(
     "Query language of the query string. Possible values are CWLI, SQL, PPL, with CWLI being the default.",
   ).optional(),
+  Parameters: z.array(QueryParameterSchema).describe(
+    "Use this parameter to include specific query parameters as part of your query definition. Query parameters are supported only for Logs Insights QL queries. Query parameters allow you to use placeholder variables in your query string that are substituted with values at execution time. Use the {{parameterName}} syntax in your query string to reference a parameter.",
+  ).optional(),
 });
 
 export const model = {
   type: "@swamp/aws/logs/query-definition",
-  version: "2026.04.01.1",
+  version: "2026.04.03.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
       description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.03.1",
+      description: "Added: Parameters",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },
   ],
@@ -95,7 +120,10 @@ export const model = {
           "AWS::Logs::QueryDefinition",
           desiredState,
         ) as StateData;
-        const instanceName = g.name?.toString() ?? "current";
+        const instanceName = (g.name?.toString() ?? "current").replace(
+          /[\/\\]/g,
+          "_",
+        ).replace(/\.\./, "_");
         const handle = await context.writeResource(
           "state",
           instanceName,
@@ -116,8 +144,11 @@ export const model = {
           "AWS::Logs::QueryDefinition",
           args.identifier,
         ) as StateData;
-        const instanceName = context.globalArgs.name?.toString() ??
-          args.identifier;
+        const instanceName =
+          (context.globalArgs.name?.toString() ?? args.identifier).replace(
+            /[\/\\]/g,
+            "_",
+          ).replace(/\.\./, "_");
         const handle = await context.writeResource(
           "state",
           instanceName,
@@ -131,7 +162,10 @@ export const model = {
       arguments: z.object({}),
       execute: async (_args: Record<string, never>, context: any) => {
         const g = context.globalArgs;
-        const instanceName = g.name?.toString() ?? "current";
+        const instanceName = (g.name?.toString() ?? "current").replace(
+          /[\/\\]/g,
+          "_",
+        ).replace(/\.\./, "_");
         const content = await context.dataRepository.getContent(
           context.modelType,
           context.modelId,
@@ -180,8 +214,11 @@ export const model = {
           "AWS::Logs::QueryDefinition",
           args.identifier,
         );
-        const instanceName = context.globalArgs.name?.toString() ??
-          args.identifier;
+        const instanceName =
+          (context.globalArgs.name?.toString() ?? args.identifier).replace(
+            /[\/\\]/g,
+            "_",
+          ).replace(/\.\./, "_");
         const handle = await context.writeResource("state", instanceName, {
           identifier: args.identifier,
           existed,
@@ -196,7 +233,10 @@ export const model = {
       arguments: z.object({}),
       execute: async (_args: Record<string, never>, context: any) => {
         const g = context.globalArgs;
-        const instanceName = g.name?.toString() ?? "current";
+        const instanceName = (g.name?.toString() ?? "current").replace(
+          /[\/\\]/g,
+          "_",
+        ).replace(/\.\./, "_");
         const content = await context.dataRepository.getContent(
           context.modelType,
           context.modelId,

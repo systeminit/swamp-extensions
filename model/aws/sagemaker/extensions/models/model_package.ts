@@ -721,10 +721,15 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/aws/sagemaker/model-package",
-  version: "2026.04.01.2",
+  version: "2026.04.03.1",
   upgrades: [
     {
       toVersion: "2026.04.01.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.03.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },
@@ -754,7 +759,10 @@ export const model = {
           "AWS::SageMaker::ModelPackage",
           desiredState,
         ) as StateData;
-        const instanceName = g.name?.toString() ?? "current";
+        const instanceName = (g.name?.toString() ?? "current").replace(
+          /[\/\\]/g,
+          "_",
+        ).replace(/\.\./, "_");
         const handle = await context.writeResource(
           "state",
           instanceName,
@@ -775,8 +783,11 @@ export const model = {
           "AWS::SageMaker::ModelPackage",
           args.identifier,
         ) as StateData;
-        const instanceName = context.globalArgs.name?.toString() ??
-          args.identifier;
+        const instanceName =
+          (context.globalArgs.name?.toString() ?? args.identifier).replace(
+            /[\/\\]/g,
+            "_",
+          ).replace(/\.\./, "_");
         const handle = await context.writeResource(
           "state",
           instanceName,
@@ -790,7 +801,10 @@ export const model = {
       arguments: z.object({}),
       execute: async (_args: Record<string, never>, context: any) => {
         const g = context.globalArgs;
-        const instanceName = g.name?.toString() ?? "current";
+        const instanceName = (g.name?.toString() ?? "current").replace(
+          /[\/\\]/g,
+          "_",
+        ).replace(/\.\./, "_");
         const content = await context.dataRepository.getContent(
           context.modelType,
           context.modelId,
@@ -854,8 +868,11 @@ export const model = {
           "AWS::SageMaker::ModelPackage",
           args.identifier,
         );
-        const instanceName = context.globalArgs.name?.toString() ??
-          args.identifier;
+        const instanceName =
+          (context.globalArgs.name?.toString() ?? args.identifier).replace(
+            /[\/\\]/g,
+            "_",
+          ).replace(/\.\./, "_");
         const handle = await context.writeResource("state", instanceName, {
           identifier: args.identifier,
           existed,
@@ -870,7 +887,10 @@ export const model = {
       arguments: z.object({}),
       execute: async (_args: Record<string, never>, context: any) => {
         const g = context.globalArgs;
-        const instanceName = g.name?.toString() ?? "current";
+        const instanceName = (g.name?.toString() ?? "current").replace(
+          /[\/\\]/g,
+          "_",
+        ).replace(/\.\./, "_");
         const content = await context.dataRepository.getContent(
           context.modelType,
           context.modelId,

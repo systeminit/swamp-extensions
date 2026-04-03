@@ -81,10 +81,15 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/digitalocean/byoip-prefix",
-  version: "2026.03.27.1",
+  version: "2026.04.03.1",
   upgrades: [
     {
       toVersion: "2026.03.27.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.03.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },
@@ -105,7 +110,10 @@ export const model = {
       arguments: z.object({}),
       execute: async (_args: Record<string, never>, context: any) => {
         const g = context.globalArgs;
-        const instanceName = g.name?.toString() ?? "current";
+        const instanceName = (g.name?.toString() ?? "current").replace(
+          /[\/\\]/g,
+          "_",
+        ).replace(/\.\./, "_");
         const body: Record<string, unknown> = {};
         if (g.prefix !== undefined) body.prefix = g.prefix;
         if (g.region !== undefined) body.region = g.region;
@@ -129,8 +137,11 @@ export const model = {
           "/v2/byoip_prefixes",
           args.id,
         ) as ResourceData;
-        const instanceName = context.globalArgs.name?.toString() ??
-          args.id.toString();
+        const instanceName =
+          (context.globalArgs.name?.toString() ?? args.id.toString()).replace(
+            /[\/\\]/g,
+            "_",
+          ).replace(/\.\./, "_");
         const handle = await context.writeResource(
           "state",
           instanceName,
@@ -144,7 +155,10 @@ export const model = {
       arguments: z.object({}),
       execute: async (_args: Record<string, never>, context: any) => {
         const g = context.globalArgs;
-        const instanceName = g.name?.toString() ?? "current";
+        const instanceName = (g.name?.toString() ?? "current").replace(
+          /[\/\\]/g,
+          "_",
+        ).replace(/\.\./, "_");
         const content = await context.dataRepository.getContent(
           context.modelType,
           context.modelId,
@@ -175,8 +189,11 @@ export const model = {
       }),
       execute: async (args: { id: string }, context: any) => {
         const { existed } = await remove("/v2/byoip_prefixes", args.id);
-        const instanceName = context.globalArgs.name?.toString() ??
-          args.id.toString();
+        const instanceName =
+          (context.globalArgs.name?.toString() ?? args.id.toString()).replace(
+            /[\/\\]/g,
+            "_",
+          ).replace(/\.\./, "_");
         const handle = await context.writeResource("state", instanceName, {
           id: args.id,
           existed,
@@ -191,7 +208,10 @@ export const model = {
       arguments: z.object({}),
       execute: async (_args: Record<string, never>, context: any) => {
         const g = context.globalArgs;
-        const instanceName = g.name?.toString() ?? "current";
+        const instanceName = (g.name?.toString() ?? "current").replace(
+          /[\/\\]/g,
+          "_",
+        ).replace(/\.\./, "_");
         const content = await context.dataRepository.getContent(
           context.modelType,
           context.modelId,

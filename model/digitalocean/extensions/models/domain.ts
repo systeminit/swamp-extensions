@@ -31,7 +31,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/digitalocean/domain",
-  version: "2026.03.27.2",
+  version: "2026.04.03.1",
   upgrades: [
     {
       toVersion: "2026.03.27.1",
@@ -40,6 +40,11 @@ export const model = {
     },
     {
       toVersion: "2026.03.27.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.03.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },
@@ -64,7 +69,10 @@ export const model = {
       }),
       execute: async (args: { checkExists?: boolean }, context: any) => {
         const g = context.globalArgs;
-        const instanceName = g.name?.toString() ?? "current";
+        const instanceName = (g.name?.toString() ?? "current").replace(
+          /[\/\\]/g,
+          "_",
+        ).replace(/\.\./, "_");
         if (args.checkExists) {
           const existing = await tryRead("/v2/domains", g.name);
           if (existing) {
@@ -90,7 +98,8 @@ export const model = {
       }),
       execute: async (args: { name: string }, context: any) => {
         const result = await read("/v2/domains", args.name) as ResourceData;
-        const instanceName = result.name?.toString() ?? args.name.toString();
+        const instanceName = (result.name?.toString() ?? args.name.toString())
+          .replace(/[\/\\]/g, "_").replace(/\.\./, "_");
         const handle = await context.writeResource(
           "state",
           instanceName,
@@ -106,8 +115,11 @@ export const model = {
       }),
       execute: async (args: { name: string }, context: any) => {
         const { existed } = await remove("/v2/domains", args.name);
-        const instanceName = context.globalArgs.name?.toString() ??
-          args.name.toString();
+        const instanceName =
+          (context.globalArgs.name?.toString() ?? args.name.toString()).replace(
+            /[\/\\]/g,
+            "_",
+          ).replace(/\.\./, "_");
         const handle = await context.writeResource("state", instanceName, {
           name: args.name,
           existed,
@@ -122,7 +134,10 @@ export const model = {
       arguments: z.object({}),
       execute: async (_args: Record<string, never>, context: any) => {
         const g = context.globalArgs;
-        const instanceName = g.name?.toString() ?? "current";
+        const instanceName = (g.name?.toString() ?? "current").replace(
+          /[\/\\]/g,
+          "_",
+        ).replace(/\.\./, "_");
         const content = await context.dataRepository.getContent(
           context.modelType,
           context.modelId,

@@ -2,6 +2,7 @@
 // Each file exports `const model = { ... }` using the swamp extension model pattern.
 
 import type { HetznerProperty, HetznerResource } from "./pipeline.ts";
+import { wrapWithSanitize } from "../shared/instanceName.ts";
 
 export interface ExtensionModelInput {
   /** Resource definition from the pipeline */
@@ -136,7 +137,9 @@ export function generateHetznerExtensionModel(
     `        const result = await create("${endpoint}", body) as ResourceData;`,
   );
   lines.push(
-    `        const instanceName = g.${namingField}?.toString() ?? "current";`,
+    `        const instanceName = ${
+      wrapWithSanitize(`g.${namingField}?.toString() ?? "current"`)
+    };`,
   );
   lines.push(
     `        const handle = await context.writeResource("state", instanceName, result);`,
@@ -159,11 +162,19 @@ export function generateHetznerExtensionModel(
   );
   if (isSyntheticName) {
     lines.push(
-      `        const instanceName = context.globalArgs.${namingField}?.toString() ?? args.id.toString();`,
+      `        const instanceName = ${
+        wrapWithSanitize(
+          `context.globalArgs.${namingField}?.toString() ?? args.id.toString()`,
+        )
+      };`,
     );
   } else {
     lines.push(
-      `        const instanceName = result.${namingField}?.toString() ?? args.id.toString();`,
+      `        const instanceName = ${
+        wrapWithSanitize(
+          `result.${namingField}?.toString() ?? args.id.toString()`,
+        )
+      };`,
     );
   }
   lines.push(
@@ -185,7 +196,9 @@ export function generateHetznerExtensionModel(
     );
     lines.push(`        const g = context.globalArgs;`);
     lines.push(
-      `        const instanceName = g.${namingField}?.toString() ?? "current";`,
+      `        const instanceName = ${
+        wrapWithSanitize(`g.${namingField}?.toString() ?? "current"`)
+      };`,
     );
     lines.push(
       `        const content = await context.dataRepository.getContent(`,
@@ -233,7 +246,11 @@ export function generateHetznerExtensionModel(
       `        const { existed } = await remove("${endpoint}", args.id);`,
     );
     lines.push(
-      `        const instanceName = context.globalArgs.${namingField}?.toString() ?? args.id.toString();`,
+      `        const instanceName = ${
+        wrapWithSanitize(
+          `context.globalArgs.${namingField}?.toString() ?? args.id.toString()`,
+        )
+      };`,
     );
     lines.push(
       `        const handle = await context.writeResource("state", instanceName, {`,
@@ -261,7 +278,9 @@ export function generateHetznerExtensionModel(
   );
   lines.push(`        const g = context.globalArgs;`);
   lines.push(
-    `        const instanceName = g.${namingField}?.toString() ?? "current";`,
+    `        const instanceName = ${
+      wrapWithSanitize(`g.${namingField}?.toString() ?? "current"`)
+    };`,
   );
   lines.push(
     `        const content = await context.dataRepository.getContent(`,

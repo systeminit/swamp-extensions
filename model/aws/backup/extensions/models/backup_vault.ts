@@ -66,10 +66,15 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/aws/backup/backup-vault",
-  version: "2026.04.01.1",
+  version: "2026.04.03.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.03.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },
@@ -99,8 +104,8 @@ export const model = {
           desiredState,
         ) as StateData;
         const instanceName =
-          (result.BackupVaultName ?? g.BackupVaultName)?.toString() ??
-            "current";
+          ((result.BackupVaultName ?? g.BackupVaultName)?.toString() ??
+            "current").replace(/[\/\\]/g, "_").replace(/\.\./, "_");
         const handle = await context.writeResource(
           "state",
           instanceName,
@@ -122,8 +127,11 @@ export const model = {
           args.identifier,
         ) as StateData;
         const instanceName =
-          (result.BackupVaultName ?? context.globalArgs.BackupVaultName)
-            ?.toString() ?? args.identifier;
+          ((result.BackupVaultName ?? context.globalArgs.BackupVaultName)
+            ?.toString() ?? args.identifier).replace(/[\/\\]/g, "_").replace(
+              /\.\./,
+              "_",
+            );
         const handle = await context.writeResource(
           "state",
           instanceName,
@@ -137,7 +145,8 @@ export const model = {
       arguments: z.object({}),
       execute: async (_args: Record<string, never>, context: any) => {
         const g = context.globalArgs;
-        const instanceName = g.BackupVaultName?.toString() ?? "current";
+        const instanceName = (g.BackupVaultName?.toString() ?? "current")
+          .replace(/[\/\\]/g, "_").replace(/\.\./, "_");
         const content = await context.dataRepository.getContent(
           context.modelType,
           context.modelId,
@@ -186,8 +195,9 @@ export const model = {
           "AWS::Backup::BackupVault",
           args.identifier,
         );
-        const instanceName = context.globalArgs.BackupVaultName?.toString() ??
-          args.identifier;
+        const instanceName =
+          (context.globalArgs.BackupVaultName?.toString() ?? args.identifier)
+            .replace(/[\/\\]/g, "_").replace(/\.\./, "_");
         const handle = await context.writeResource("state", instanceName, {
           identifier: args.identifier,
           existed,
@@ -202,7 +212,8 @@ export const model = {
       arguments: z.object({}),
       execute: async (_args: Record<string, never>, context: any) => {
         const g = context.globalArgs;
-        const instanceName = g.BackupVaultName?.toString() ?? "current";
+        const instanceName = (g.BackupVaultName?.toString() ?? "current")
+          .replace(/[\/\\]/g, "_").replace(/\.\./, "_");
         const content = await context.dataRepository.getContent(
           context.modelType,
           context.modelId,

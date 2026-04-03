@@ -90,10 +90,15 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/aws/ssm/resource-data-sync",
-  version: "2026.04.01.1",
+  version: "2026.04.03.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.03.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },
@@ -122,8 +127,11 @@ export const model = {
           "AWS::SSM::ResourceDataSync",
           desiredState,
         ) as StateData;
-        const instanceName = (result.SyncName ?? g.SyncName)?.toString() ??
-          "current";
+        const instanceName =
+          ((result.SyncName ?? g.SyncName)?.toString() ?? "current").replace(
+            /[\/\\]/g,
+            "_",
+          ).replace(/\.\./, "_");
         const handle = await context.writeResource(
           "state",
           instanceName,
@@ -145,8 +153,8 @@ export const model = {
           args.identifier,
         ) as StateData;
         const instanceName =
-          (result.SyncName ?? context.globalArgs.SyncName)?.toString() ??
-            args.identifier;
+          ((result.SyncName ?? context.globalArgs.SyncName)?.toString() ??
+            args.identifier).replace(/[\/\\]/g, "_").replace(/\.\./, "_");
         const handle = await context.writeResource(
           "state",
           instanceName,
@@ -160,7 +168,10 @@ export const model = {
       arguments: z.object({}),
       execute: async (_args: Record<string, never>, context: any) => {
         const g = context.globalArgs;
-        const instanceName = g.SyncName?.toString() ?? "current";
+        const instanceName = (g.SyncName?.toString() ?? "current").replace(
+          /[\/\\]/g,
+          "_",
+        ).replace(/\.\./, "_");
         const content = await context.dataRepository.getContent(
           context.modelType,
           context.modelId,
@@ -218,8 +229,11 @@ export const model = {
           "AWS::SSM::ResourceDataSync",
           args.identifier,
         );
-        const instanceName = context.globalArgs.SyncName?.toString() ??
-          args.identifier;
+        const instanceName =
+          (context.globalArgs.SyncName?.toString() ?? args.identifier).replace(
+            /[\/\\]/g,
+            "_",
+          ).replace(/\.\./, "_");
         const handle = await context.writeResource("state", instanceName, {
           identifier: args.identifier,
           existed,
@@ -234,7 +248,10 @@ export const model = {
       arguments: z.object({}),
       execute: async (_args: Record<string, never>, context: any) => {
         const g = context.globalArgs;
-        const instanceName = g.SyncName?.toString() ?? "current";
+        const instanceName = (g.SyncName?.toString() ?? "current").replace(
+          /[\/\\]/g,
+          "_",
+        ).replace(/\.\./, "_");
         const content = await context.dataRepository.getContent(
           context.modelType,
           context.modelId,

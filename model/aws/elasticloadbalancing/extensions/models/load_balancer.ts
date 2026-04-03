@@ -300,7 +300,14 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/aws/elasticloadbalancing/load-balancer",
-  version: "2026.04.03.1",
+  version: "2026.04.03.2",
+  upgrades: [
+    {
+      toVersion: "2026.04.03.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+  ],
   globalArguments: GlobalArgsSchema,
   inputsSchema: InputsSchema,
   resources: {
@@ -326,8 +333,8 @@ export const model = {
           desiredState,
         ) as StateData;
         const instanceName =
-          (result.LoadBalancerName ?? g.LoadBalancerName)?.toString() ??
-            "current";
+          ((result.LoadBalancerName ?? g.LoadBalancerName)?.toString() ??
+            "current").replace(/[\/\\]/g, "_").replace(/\.\./, "_");
         const handle = await context.writeResource(
           "state",
           instanceName,
@@ -349,8 +356,11 @@ export const model = {
           args.identifier,
         ) as StateData;
         const instanceName =
-          (result.LoadBalancerName ?? context.globalArgs.LoadBalancerName)
-            ?.toString() ?? args.identifier;
+          ((result.LoadBalancerName ?? context.globalArgs.LoadBalancerName)
+            ?.toString() ?? args.identifier).replace(/[\/\\]/g, "_").replace(
+              /\.\./,
+              "_",
+            );
         const handle = await context.writeResource(
           "state",
           instanceName,
@@ -364,7 +374,8 @@ export const model = {
       arguments: z.object({}),
       execute: async (_args: Record<string, never>, context: any) => {
         const g = context.globalArgs;
-        const instanceName = g.LoadBalancerName?.toString() ?? "current";
+        const instanceName = (g.LoadBalancerName?.toString() ?? "current")
+          .replace(/[\/\\]/g, "_").replace(/\.\./, "_");
         const content = await context.dataRepository.getContent(
           context.modelType,
           context.modelId,
@@ -413,8 +424,9 @@ export const model = {
           "AWS::ElasticLoadBalancing::LoadBalancer",
           args.identifier,
         );
-        const instanceName = context.globalArgs.LoadBalancerName?.toString() ??
-          args.identifier;
+        const instanceName =
+          (context.globalArgs.LoadBalancerName?.toString() ?? args.identifier)
+            .replace(/[\/\\]/g, "_").replace(/\.\./, "_");
         const handle = await context.writeResource("state", instanceName, {
           identifier: args.identifier,
           existed,
@@ -429,7 +441,8 @@ export const model = {
       arguments: z.object({}),
       execute: async (_args: Record<string, never>, context: any) => {
         const g = context.globalArgs;
-        const instanceName = g.LoadBalancerName?.toString() ?? "current";
+        const instanceName = (g.LoadBalancerName?.toString() ?? "current")
+          .replace(/[\/\\]/g, "_").replace(/\.\./, "_");
         const content = await context.dataRepository.getContent(
           context.modelType,
           context.modelId,

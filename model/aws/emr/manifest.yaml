@@ -1,13 +1,15 @@
 # Auto-generated manifest. Re-generate with the appropriate deno task.
 manifestVersion: 1
 name: "@swamp/aws/emr"
-version: "2026.04.01.1"
+version: "2026.04.03.1"
 description: "AWS EMR infrastructure models"
 labels:
   - aws
   - emr
   - cloud
   - infrastructure
+releaseNotes: |
+  - Updated: security_configuration, step, studio, studio_session_mapping, walworkspace
 models:
   - security_configuration.ts
   - step.ts
