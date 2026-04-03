@@ -106,7 +106,9 @@ export function stripUpgradesBlock(content: string): string {
     i++;
   }
 
-  // Include the trailing comma and newline if present
+  // Include the trailing comma, newline, and any blank lines after the block.
+  // deno fmt may insert blank lines after multi-entry arrays; stripping them
+  // prevents phantom diffs in version change detection.
   let end = i;
   while (
     end < content.length && (content[end] === "," || content[end] === " ")
@@ -114,6 +116,10 @@ export function stripUpgradesBlock(content: string): string {
     end++;
   }
   if (end < content.length && content[end] === "\n") {
+    end++;
+  }
+  // Strip any additional blank lines that follow
+  while (end < content.length && content[end] === "\n") {
     end++;
   }
 
