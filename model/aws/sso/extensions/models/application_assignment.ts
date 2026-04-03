@@ -17,7 +17,7 @@ const GlobalArgsSchema = z.object({
   ),
   ApplicationArn: z.string().min(10).max(1224).regex(
     new RegExp(
-      "arn:(aws|aws-us-gov|aws-cn|aws-iso|aws-iso-b):sso::\\d{12}:application/(sso)?ins-[a-zA-Z0-9-.]{16}/apl-[a-zA-Z0-9]{16}",
+      "arn:aws(-[a-z]{1,5}){0,3}:sso::\\d{12}:application/(sso)?ins-[a-zA-Z0-9-.]{16}/apl-[a-zA-Z0-9]{16}",
     ),
   ).describe("The ARN of the application."),
   PrincipalType: z.enum(["USER", "GROUP"]).describe(
@@ -44,7 +44,7 @@ const InputsSchema = z.object({
   name: z.string().optional(),
   ApplicationArn: z.string().min(10).max(1224).regex(
     new RegExp(
-      "arn:(aws|aws-us-gov|aws-cn|aws-iso|aws-iso-b):sso::\\d{12}:application/(sso)?ins-[a-zA-Z0-9-.]{16}/apl-[a-zA-Z0-9]{16}",
+      "arn:aws(-[a-z]{1,5}){0,3}:sso::\\d{12}:application/(sso)?ins-[a-zA-Z0-9-.]{16}/apl-[a-zA-Z0-9]{16}",
     ),
   ).describe("The ARN of the application.").optional(),
   PrincipalType: z.enum(["USER", "GROUP"]).describe(
@@ -61,10 +61,15 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/aws/sso/application-assignment",
-  version: "2026.04.01.1",
+  version: "2026.04.03.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.03.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

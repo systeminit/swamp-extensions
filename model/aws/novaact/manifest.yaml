@@ -1,0 +1,17 @@
+# Auto-generated manifest. Re-generate with the appropriate deno task.
+manifestVersion: 1
+name: "@swamp/aws/novaact"
+version: "2026.04.03.1"
+description: "AWS NOVAACT infrastructure models"
+labels:
+  - aws
+  - novaact
+  - cloud
+  - infrastructure
+releaseNotes: |
+  - Added: workflow_definition
+models:
+  - workflow_definition.ts
+additionalFiles:
+  - LICENSE.txt
+  - README.md

@@ -236,6 +236,21 @@ export const TagSchema = z.object({
   ),
 });
 
+export const SortAttributeSchema = z.object({
+  Name: z.string().min(1).max(255).describe(
+    "The name of the attribute to sort by.",
+  ),
+  Order: z.enum(["ASC", "DESC"]).describe(
+    "The sort order for the attribute (ascending or descending).",
+  ),
+  DataType: z.enum(["STRING", "NUMBER", "DATE"]).describe(
+    "The data type of the sort attribute (e.g., string, number, date).",
+  ).optional(),
+  Type: z.enum(["PROFILE", "CALCULATED"]).describe(
+    "The type of attribute (e.g., profile, calculated).",
+  ).optional(),
+});
+
 const GlobalArgsSchema = z.object({
   name: z.string().describe(
     "Instance name for this resource (used as the unique identifier in the factory pattern)",
@@ -265,6 +280,12 @@ const GlobalArgsSchema = z.object({
   Tags: z.array(TagSchema).describe(
     "The tags used to organize, track, or control access for this resource.",
   ).optional(),
+  SegmentSort: z.object({
+    Attributes: z.array(SortAttributeSchema).describe(
+      "A list of attributes used to sort the segments and their ordering preferences.",
+    ),
+  }).describe("The segment sort configuration for ordering segment results.")
+    .optional(),
 });
 
 const StateSchema = z.object({
@@ -281,6 +302,9 @@ const StateSchema = z.object({
   SegmentDefinitionArn: z.string().optional(),
   SegmentType: z.string().optional(),
   Tags: z.array(TagSchema).optional(),
+  SegmentSort: z.object({
+    Attributes: z.array(SortAttributeSchema),
+  }).optional(),
 }).passthrough();
 
 type StateData = z.infer<typeof StateSchema>;
@@ -312,15 +336,26 @@ const InputsSchema = z.object({
   Tags: z.array(TagSchema).describe(
     "The tags used to organize, track, or control access for this resource.",
   ).optional(),
+  SegmentSort: z.object({
+    Attributes: z.array(SortAttributeSchema).describe(
+      "A list of attributes used to sort the segments and their ordering preferences.",
+    ).optional(),
+  }).describe("The segment sort configuration for ordering segment results.")
+    .optional(),
 });
 
 export const model = {
   type: "@swamp/aws/customerprofiles/segment-definition",
-  version: "2026.04.01.1",
+  version: "2026.04.03.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
       description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.03.1",
+      description: "Added: SegmentSort",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },
   ],

@@ -331,6 +331,7 @@ const StateSchema = z.object({
   SourceDbClusterResourceId: z.string().optional(),
   SourceRegion: z.string().optional(),
   StorageEncrypted: z.boolean().optional(),
+  StorageEncryptionType: z.string().optional(),
   StorageThroughput: z.number().optional(),
   StorageType: z.string().optional(),
   Tags: z.array(TagSchema).optional(),
@@ -562,10 +563,15 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/aws/rds/dbcluster",
-  version: "2026.04.01.1",
+  version: "2026.04.03.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.03.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

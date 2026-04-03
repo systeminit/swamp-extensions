@@ -34,8 +34,13 @@ export const CodeSchema = z.object({
 
 export const CodeConfigurationSchema = z.object({
   Code: CodeSchema.describe("Object represents source code from zip file"),
-  Runtime: z.enum(["PYTHON_3_10", "PYTHON_3_11", "PYTHON_3_12", "PYTHON_3_13"])
-    .describe("Managed runtime types"),
+  Runtime: z.enum([
+    "PYTHON_3_10",
+    "PYTHON_3_11",
+    "PYTHON_3_12",
+    "PYTHON_3_13",
+    "PYTHON_3_14",
+  ]).describe("Managed runtime types"),
   EntryPoint: z.array(z.string()).describe("List of entry points"),
 });
 
@@ -117,7 +122,7 @@ const GlobalArgsSchema = z.object({
       "Network mode configuration for VPC",
     ).optional(),
   }).describe("Network access configuration for the Agent"),
-  ProtocolConfiguration: z.enum(["MCP", "HTTP", "A2A"]).describe(
+  ProtocolConfiguration: z.enum(["MCP", "HTTP", "A2A", "AGUI"]).describe(
     "Protocol configuration for the agent runtime",
   ).optional(),
   EnvironmentVariables: z.record(z.string(), z.string().max(2048)).describe(
@@ -221,7 +226,7 @@ const InputsSchema = z.object({
       "Network mode configuration for VPC",
     ).optional(),
   }).describe("Network access configuration for the Agent").optional(),
-  ProtocolConfiguration: z.enum(["MCP", "HTTP", "A2A"]).describe(
+  ProtocolConfiguration: z.enum(["MCP", "HTTP", "A2A", "AGUI"]).describe(
     "Protocol configuration for the agent runtime",
   ).optional(),
   EnvironmentVariables: z.record(z.string(), z.string().max(2048)).describe(
@@ -264,10 +269,15 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/aws/bedrockagentcore/runtime",
-  version: "2026.04.01.1",
+  version: "2026.04.03.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.03.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

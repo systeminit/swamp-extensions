@@ -80,6 +80,23 @@ export const LlmAsAJudgeEvaluatorConfigSchema = z.object({
   ),
 });
 
+export const LambdaEvaluatorConfigSchema = z.object({
+  LambdaArn: z.string().regex(
+    new RegExp(
+      "^arn:(aws[a-zA-Z-]*)?:lambda:([a-z]{2}(-gov)?-[a-z]+-\\d{1}):(\\d{12}):function:([a-zA-Z0-9-_.]+)(:(\\$LATEST|[a-zA-Z0-9-_]+))?$",
+    ),
+  ).describe("The ARN of the Lambda function used for evaluation."),
+  LambdaTimeoutInSeconds: z.number().int().min(1).max(300).describe(
+    "The timeout in seconds for the Lambda function invocation.",
+  ).optional(),
+});
+
+export const CodeBasedEvaluatorConfigSchema = z.object({
+  LambdaConfig: LambdaEvaluatorConfigSchema.describe(
+    "The Lambda function configuration for code-based evaluation.",
+  ),
+});
+
 export const TagSchema = z.object({
   Key: z.string().min(1).max(128),
   Value: z.string().min(0).max(256),
@@ -97,7 +114,10 @@ const GlobalArgsSchema = z.object({
   EvaluatorConfig: z.object({
     LlmAsAJudge: LlmAsAJudgeEvaluatorConfigSchema.describe(
       "The configuration for LLM-as-a-Judge evaluation.",
-    ),
+    ).optional(),
+    CodeBased: CodeBasedEvaluatorConfigSchema.describe(
+      "The configuration for code-based evaluation using a Lambda function.",
+    ).optional(),
   }).describe("The configuration for the evaluator."),
   Level: z.enum(["TOOL_CALL", "TRACE", "SESSION"]).describe(
     "The evaluation level that determines the scope of evaluation.",
@@ -114,6 +134,7 @@ const StateSchema = z.object({
   Description: z.string().optional(),
   EvaluatorConfig: z.object({
     LlmAsAJudge: LlmAsAJudgeEvaluatorConfigSchema,
+    CodeBased: CodeBasedEvaluatorConfigSchema,
   }).optional(),
   Level: z.string().optional(),
   Status: z.string().optional(),
@@ -136,6 +157,9 @@ const InputsSchema = z.object({
     LlmAsAJudge: LlmAsAJudgeEvaluatorConfigSchema.describe(
       "The configuration for LLM-as-a-Judge evaluation.",
     ).optional(),
+    CodeBased: CodeBasedEvaluatorConfigSchema.describe(
+      "The configuration for code-based evaluation using a Lambda function.",
+    ).optional(),
   }).describe("The configuration for the evaluator.").optional(),
   Level: z.enum(["TOOL_CALL", "TRACE", "SESSION"]).describe(
     "The evaluation level that determines the scope of evaluation.",
@@ -147,10 +171,15 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/aws/bedrockagentcore/evaluator",
-  version: "2026.04.01.1",
+  version: "2026.04.03.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.03.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },
