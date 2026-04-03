@@ -28,7 +28,9 @@ const GlobalArgsSchema = z.object({
   Description: z.string().describe("The description of the code interpreter.")
     .optional(),
   ExecutionRoleArn: z.string().regex(
-    new RegExp("^arn:aws(-[a-z]+)*:iam::[0-9]{12}:role/.+$"),
+    new RegExp(
+      "^arn:(aws(?:-cn|-us-gov|-iso(?:-[bef])?)?):iam::[0-9]{12}:role/.+$",
+    ),
   ).describe(
     "The ARN of the IAM role that the code interpreter uses to access resources.",
   ).optional(),
@@ -70,7 +72,9 @@ const InputsSchema = z.object({
   Description: z.string().describe("The description of the code interpreter.")
     .optional(),
   ExecutionRoleArn: z.string().regex(
-    new RegExp("^arn:aws(-[a-z]+)*:iam::[0-9]{12}:role/.+$"),
+    new RegExp(
+      "^arn:(aws(?:-cn|-us-gov|-iso(?:-[bef])?)?):iam::[0-9]{12}:role/.+$",
+    ),
   ).describe(
     "The ARN of the IAM role that the code interpreter uses to access resources.",
   ).optional(),
@@ -89,10 +93,15 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/aws/bedrockagentcore/code-interpreter-custom",
-  version: "2026.04.01.1",
+  version: "2026.04.03.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.03.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

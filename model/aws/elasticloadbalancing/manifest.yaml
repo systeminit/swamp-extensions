@@ -1,0 +1,17 @@
+# Auto-generated manifest. Re-generate with the appropriate deno task.
+manifestVersion: 1
+name: "@swamp/aws/elasticloadbalancing"
+version: "2026.04.03.1"
+description: "AWS ELASTICLOADBALANCING infrastructure models"
+labels:
+  - aws
+  - elasticloadbalancing
+  - cloud
+  - infrastructure
+releaseNotes: |
+  - Added: load_balancer
+models:
+  - load_balancer.ts
+additionalFiles:
+  - LICENSE.txt
+  - README.md

@@ -1,7 +1,7 @@
 # Auto-generated manifest. Re-generate with the appropriate deno task.
 manifestVersion: 1
 name: "@swamp/aws/ecs"
-version: "2026.04.01.2"
+version: "2026.04.03.1"
 description: "AWS ECS infrastructure models"
 labels:
   - aws
@@ -9,11 +9,14 @@ labels:
   - cloud
   - infrastructure
 releaseNotes: |
+  - Added: daemon, daemon_task_definition
   - Updated: capacity_provider
 models:
   - capacity_provider.ts
   - cluster.ts
   - cluster_capacity_provider_associations.ts
+  - daemon.ts
+  - daemon_task_definition.ts
   - express_gateway_service.ts
   - primary_task_set.ts
   - service.ts

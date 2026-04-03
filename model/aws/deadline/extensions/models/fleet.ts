@@ -35,6 +35,12 @@ export const FleetAttributeCapabilitySchema = z.object({
   ),
 });
 
+export const CustomerManagedAutoScalingConfigurationSchema = z.object({
+  StandbyWorkerCount: z.number().int().min(0).max(2147483647).optional(),
+  WorkerIdleDurationSeconds: z.number().int().min(0).max(2147483647).optional(),
+  ScaleOutWorkersPerMinute: z.number().int().min(1).max(2147483647).optional(),
+});
+
 export const VCpuCountRangeSchema = z.object({
   Min: z.number().int().min(1).max(10000),
   Max: z.number().int().min(1).max(10000).optional(),
@@ -69,6 +75,8 @@ export const CustomerManagedWorkerCapabilitiesSchema = z.object({
 
 export const CustomerManagedFleetConfigurationSchema = z.object({
   Mode: z.enum(["NO_SCALING", "EVENT_BASED_AUTO_SCALING"]),
+  AutoScalingConfiguration: CustomerManagedAutoScalingConfigurationSchema
+    .optional(),
   WorkerCapabilities: CustomerManagedWorkerCapabilitiesSchema,
   StorageProfileId: z.string().regex(new RegExp("^sp-[0-9a-f]{32}$"))
     .optional(),
@@ -115,11 +123,19 @@ export const VpcConfigurationSchema = z.object({
   ResourceConfigurationArns: z.array(z.string().min(1).max(2048)).optional(),
 });
 
+export const ServiceManagedEc2AutoScalingConfigurationSchema = z.object({
+  StandbyWorkerCount: z.number().int().min(0).max(2147483647).optional(),
+  WorkerIdleDurationSeconds: z.number().int().min(0).max(86400).optional(),
+  ScaleOutWorkersPerMinute: z.number().int().min(1).max(2147483647).optional(),
+});
+
 export const ServiceManagedEc2FleetConfigurationSchema = z.object({
   InstanceCapabilities: ServiceManagedEc2InstanceCapabilitiesSchema,
   InstanceMarketOptions: ServiceManagedEc2InstanceMarketOptionsSchema,
   VpcConfiguration: VpcConfigurationSchema.optional(),
   StorageProfileId: z.string().regex(new RegExp("^sp-[0-9a-f]{32}$"))
+    .optional(),
+  AutoScalingConfiguration: ServiceManagedEc2AutoScalingConfigurationSchema
     .optional(),
 });
 
@@ -223,10 +239,15 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/aws/deadline/fleet",
-  version: "2026.04.01.1",
+  version: "2026.04.03.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.03.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

@@ -25,6 +25,13 @@ export const SemanticMemoryStrategySchema = z.object({
       ),
     ),
   ).describe("List of namespaces for memory strategy").optional(),
+  NamespaceTemplates: z.array(
+    z.string().regex(
+      new RegExp(
+        "^[a-zA-Z0-9\\-_/]*(\\{(actorId|sessionId|memoryStrategyId)\\}[a-zA-Z0-9\\-_/]*)*$",
+      ),
+    ),
+  ).describe("List of namespaces for memory strategy").optional(),
   StrategyId: z.string().min(12).regex(
     new RegExp("^[a-zA-Z][a-zA-Z0-9-_]{0,99}-[a-zA-Z0-9]{10}$"),
   ).describe("Unique identifier for the memory strategy").optional(),
@@ -57,6 +64,13 @@ export const SummaryMemoryStrategySchema = z.object({
       ),
     ),
   ).describe("List of namespaces for memory strategy").optional(),
+  NamespaceTemplates: z.array(
+    z.string().regex(
+      new RegExp(
+        "^[a-zA-Z0-9\\-_/]*(\\{(actorId|sessionId|memoryStrategyId)\\}[a-zA-Z0-9\\-_/]*)*$",
+      ),
+    ),
+  ).describe("List of namespaces for memory strategy").optional(),
   StrategyId: z.string().min(12).regex(
     new RegExp("^[a-zA-Z][a-zA-Z0-9-_]{0,99}-[a-zA-Z0-9]{10}$"),
   ).describe("Unique identifier for the memory strategy").optional(),
@@ -83,6 +97,13 @@ export const UserPreferenceMemoryStrategySchema = z.object({
   Description: z.string().describe("Description of the Memory resource")
     .optional(),
   Namespaces: z.array(
+    z.string().regex(
+      new RegExp(
+        "^[a-zA-Z0-9\\-_/]*(\\{(actorId|sessionId|memoryStrategyId)\\}[a-zA-Z0-9\\-_/]*)*$",
+      ),
+    ),
+  ).describe("List of namespaces for memory strategy").optional(),
+  NamespaceTemplates: z.array(
     z.string().regex(
       new RegExp(
         "^[a-zA-Z0-9\\-_/]*(\\{(actorId|sessionId|memoryStrategyId)\\}[a-zA-Z0-9\\-_/]*)*$",
@@ -184,7 +205,7 @@ export const TriggerConditionInputSchema = z.object({
 export const InvocationConfigurationInputSchema = z.object({
   TopicArn: z.string().regex(
     new RegExp(
-      "^arn:aws:[a-z0-9-\\.]{0,63}:[a-z0-9-\\.]{0,63}:[a-z0-9-\\.]{0,63}:[^/].{0,1023}$",
+      "^arn:(aws(?:-cn|-us-gov|-iso(?:-[bef])?)?):[a-z0-9-\\.]{0,63}:[a-z0-9-\\.]{0,63}:[a-z0-9-\\.]{0,63}:[^/].{0,1023}$",
     ),
   ).describe("ARN format").optional(),
   PayloadDeliveryBucketName: z.string().regex(
@@ -224,6 +245,13 @@ export const EpisodicOverrideReflectionConfigurationInputSchema = z.object({
       ),
     ),
   ).describe("List of namespaces for memory strategy").optional(),
+  NamespaceTemplates: z.array(
+    z.string().regex(
+      new RegExp(
+        "^[a-zA-Z0-9\\-_/]*(\\{(actorId|sessionId|memoryStrategyId)\\}[a-zA-Z0-9\\-_/]*)*$",
+      ),
+    ),
+  ).describe("List of namespaces for memory strategy").optional(),
 });
 
 export const EpisodicOverrideSchema = z.object({
@@ -248,6 +276,13 @@ export const CustomMemoryStrategySchema = z.object({
   Description: z.string().describe("Description of the Memory resource")
     .optional(),
   Namespaces: z.array(
+    z.string().regex(
+      new RegExp(
+        "^[a-zA-Z0-9\\-_/]*(\\{(actorId|sessionId|memoryStrategyId)\\}[a-zA-Z0-9\\-_/]*)*$",
+      ),
+    ),
+  ).describe("List of namespaces for memory strategy").optional(),
+  NamespaceTemplates: z.array(
     z.string().regex(
       new RegExp(
         "^[a-zA-Z0-9\\-_/]*(\\{(actorId|sessionId|memoryStrategyId)\\}[a-zA-Z0-9\\-_/]*)*$",
@@ -281,7 +316,14 @@ export const EpisodicReflectionConfigurationInputSchema = z.object({
         "^[a-zA-Z0-9\\-_/]*(\\{(actorId|sessionId|memoryStrategyId)\\}[a-zA-Z0-9\\-_/]*)*$",
       ),
     ),
-  ).describe("List of namespaces for memory strategy"),
+  ).describe("List of namespaces for memory strategy").optional(),
+  NamespaceTemplates: z.array(
+    z.string().regex(
+      new RegExp(
+        "^[a-zA-Z0-9\\-_/]*(\\{(actorId|sessionId|memoryStrategyId)\\}[a-zA-Z0-9\\-_/]*)*$",
+      ),
+    ),
+  ).describe("List of namespaces for memory strategy").optional(),
 });
 
 export const EpisodicMemoryStrategySchema = z.object({
@@ -291,6 +333,13 @@ export const EpisodicMemoryStrategySchema = z.object({
   Description: z.string().describe("Description of the Memory resource")
     .optional(),
   Namespaces: z.array(
+    z.string().regex(
+      new RegExp(
+        "^[a-zA-Z0-9\\-_/]*(\\{(actorId|sessionId|memoryStrategyId)\\}[a-zA-Z0-9\\-_/]*)*$",
+      ),
+    ),
+  ).describe("List of namespaces for memory strategy").optional(),
+  NamespaceTemplates: z.array(
     z.string().regex(
       new RegExp(
         "^[a-zA-Z0-9\\-_/]*(\\{(actorId|sessionId|memoryStrategyId)\\}[a-zA-Z0-9\\-_/]*)*$",
@@ -336,7 +385,7 @@ export const ContentConfigurationSchema = z.object({
 export const KinesisResourceSchema = z.object({
   DataStreamArn: z.string().regex(
     new RegExp(
-      "^arn:aws:[a-z0-9-\\.]{0,63}:[a-z0-9-\\.]{0,63}:[a-z0-9-\\.]{0,63}:[^/].{0,1023}$",
+      "^arn:(aws(?:-cn|-us-gov|-iso(?:-[bef])?)?):[a-z0-9-\\.]{0,63}:[a-z0-9-\\.]{0,63}:[a-z0-9-\\.]{0,63}:[^/].{0,1023}$",
     ),
   ).describe("ARN format"),
   ContentConfigurations: z.array(ContentConfigurationSchema),
@@ -357,12 +406,12 @@ const GlobalArgsSchema = z.object({
     .optional(),
   EncryptionKeyArn: z.string().regex(
     new RegExp(
-      "^arn:aws:[a-z0-9-\\.]{0,63}:[a-z0-9-\\.]{0,63}:[a-z0-9-\\.]{0,63}:[^/].{0,1023}$",
+      "^arn:(aws(?:-cn|-us-gov|-iso(?:-[bef])?)?):[a-z0-9-\\.]{0,63}:[a-z0-9-\\.]{0,63}:[a-z0-9-\\.]{0,63}:[^/].{0,1023}$",
     ),
   ).describe("ARN format").optional(),
   MemoryExecutionRoleArn: z.string().regex(
     new RegExp(
-      "^arn:aws:[a-z0-9-\\.]{0,63}:[a-z0-9-\\.]{0,63}:[a-z0-9-\\.]{0,63}:[^/].{0,1023}$",
+      "^arn:(aws(?:-cn|-us-gov|-iso(?:-[bef])?)?):[a-z0-9-\\.]{0,63}:[a-z0-9-\\.]{0,63}:[a-z0-9-\\.]{0,63}:[^/].{0,1023}$",
     ),
   ).describe("ARN format").optional(),
   EventExpiryDuration: z.number().int().min(3).max(365).describe(
@@ -410,12 +459,12 @@ const InputsSchema = z.object({
     .optional(),
   EncryptionKeyArn: z.string().regex(
     new RegExp(
-      "^arn:aws:[a-z0-9-\\.]{0,63}:[a-z0-9-\\.]{0,63}:[a-z0-9-\\.]{0,63}:[^/].{0,1023}$",
+      "^arn:(aws(?:-cn|-us-gov|-iso(?:-[bef])?)?):[a-z0-9-\\.]{0,63}:[a-z0-9-\\.]{0,63}:[a-z0-9-\\.]{0,63}:[^/].{0,1023}$",
     ),
   ).describe("ARN format").optional(),
   MemoryExecutionRoleArn: z.string().regex(
     new RegExp(
-      "^arn:aws:[a-z0-9-\\.]{0,63}:[a-z0-9-\\.]{0,63}:[a-z0-9-\\.]{0,63}:[^/].{0,1023}$",
+      "^arn:(aws(?:-cn|-us-gov|-iso(?:-[bef])?)?):[a-z0-9-\\.]{0,63}:[a-z0-9-\\.]{0,63}:[a-z0-9-\\.]{0,63}:[^/].{0,1023}$",
     ),
   ).describe("ARN format").optional(),
   EventExpiryDuration: z.number().int().min(3).max(365).describe(
@@ -435,10 +484,15 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/aws/bedrockagentcore/memory",
-  version: "2026.04.01.1",
+  version: "2026.04.03.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.03.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

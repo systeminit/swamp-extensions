@@ -48,7 +48,9 @@ const GlobalArgsSchema = z.object({
     Enabled: z.boolean().optional(),
   }).describe("Browser signing configuration.").optional(),
   ExecutionRoleArn: z.string().regex(
-    new RegExp("^arn:aws(-[a-z]+)*:iam::[0-9]{12}:role/.+$"),
+    new RegExp(
+      "^arn:(aws(?:-cn|-us-gov|-iso(?:-[bef])?)?):iam::[0-9]{12}:role/.+$",
+    ),
   ).describe(
     "The Amazon Resource Name (ARN) of the IAM role that the browser uses to access resources.",
   ).optional(),
@@ -105,7 +107,9 @@ const InputsSchema = z.object({
     Enabled: z.boolean().optional(),
   }).describe("Browser signing configuration.").optional(),
   ExecutionRoleArn: z.string().regex(
-    new RegExp("^arn:aws(-[a-z]+)*:iam::[0-9]{12}:role/.+$"),
+    new RegExp(
+      "^arn:(aws(?:-cn|-us-gov|-iso(?:-[bef])?)?):iam::[0-9]{12}:role/.+$",
+    ),
   ).describe(
     "The Amazon Resource Name (ARN) of the IAM role that the browser uses to access resources.",
   ).optional(),
@@ -117,10 +121,15 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/aws/bedrockagentcore/browser-custom",
-  version: "2026.04.01.1",
+  version: "2026.04.03.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.03.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },
