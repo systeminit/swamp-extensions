@@ -49,7 +49,7 @@ Deno.test("wrapWithSanitize - wraps expression with replace chain", () => {
   const result = wrapWithSanitize(`g.Name?.toString() ?? "current"`);
   assertEquals(
     result,
-    `(g.Name?.toString() ?? "current").replace(/[\\/\\\\]/g, "_").replace(/\\.\\./, "_")`,
+    `(g.Name?.toString() ?? "current").replace(/[\\/\\\\]/g, "_").replace(/\\.\\./g, "_").replace(/\\0/g, "")`,
   );
 });
 
@@ -60,6 +60,10 @@ Deno.test("wrapWithSanitize - generated code matches runtime behavior", () => {
     "/environments/foo/bar",
     "foo\\bar\\baz",
     "foo..bar",
+    "foo....bar",
+    "a..b..c",
+    "foo\0bar",
+    "/foo\\bar..baz\0qux",
     "arn:aws:ssm:us-east-1:123:parameter/path/name",
     "my-parameter",
     "current",

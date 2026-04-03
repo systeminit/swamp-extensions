@@ -290,7 +290,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/baremetalsolution/networks",
-  version: "2026.04.03.2",
+  version: "2026.04.03.3",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -309,6 +309,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.03.3",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },
@@ -346,7 +351,7 @@ export const model = {
           ((result.name ?? g.name)?.toString() ?? args.identifier).replace(
             /[\/\\]/g,
             "_",
-          ).replace(/\.\./, "_");
+          ).replace(/\.\./g, "_").replace(/\0/g, "");
         const handle = await context.writeResource(
           "state",
           instanceName,
@@ -364,7 +369,7 @@ export const model = {
         const instanceName = (g.name?.toString() ?? "current").replace(
           /[\/\\]/g,
           "_",
-        ).replace(/\.\./, "_");
+        ).replace(/\.\./g, "_").replace(/\0/g, "");
         const content = await context.dataRepository.getContent(
           context.modelType,
           context.modelId,
@@ -438,7 +443,7 @@ export const model = {
         const instanceName = (g.name?.toString() ?? "current").replace(
           /[\/\\]/g,
           "_",
-        ).replace(/\.\./, "_");
+        ).replace(/\.\./g, "_").replace(/\0/g, "");
         const content = await context.dataRepository.getContent(
           context.modelType,
           context.modelId,

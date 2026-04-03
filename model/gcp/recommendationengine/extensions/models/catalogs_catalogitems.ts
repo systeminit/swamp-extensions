@@ -337,7 +337,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/recommendationengine/catalogs-catalogitems",
-  version: "2026.04.03.2",
+  version: "2026.04.03.3",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -369,6 +369,24 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.2",
+      description:
+        "Removed: type, version, upgrades, globalArguments, inputsSchema, resources, methods",
+      upgradeAttributes: (old: Record<string, unknown>) => {
+        const {
+          type: _type,
+          version: _version,
+          upgrades: _upgrades,
+          globalArguments: _globalArguments,
+          inputsSchema: _inputsSchema,
+          resources: _resources,
+          methods: _methods,
+          ...rest
+        } = old;
+        return rest;
+      },
+    },
+    {
+      toVersion: "2026.04.03.3",
       description:
         "Removed: type, version, upgrades, globalArguments, inputsSchema, resources, methods",
       upgradeAttributes: (old: Record<string, unknown>) => {
@@ -444,7 +462,7 @@ export const model = {
         const instanceName = (g.name?.toString() ?? "current").replace(
           /[\/\\]/g,
           "_",
-        ).replace(/\.\./, "_");
+        ).replace(/\.\./g, "_").replace(/\0/g, "");
         const handle = await context.writeResource(
           "state",
           instanceName,
@@ -474,7 +492,7 @@ export const model = {
         const instanceName = (g.name?.toString() ?? args.identifier).replace(
           /[\/\\]/g,
           "_",
-        ).replace(/\.\./, "_");
+        ).replace(/\.\./g, "_").replace(/\0/g, "");
         const handle = await context.writeResource(
           "state",
           instanceName,
@@ -492,7 +510,7 @@ export const model = {
         const instanceName = (g.name?.toString() ?? "current").replace(
           /[\/\\]/g,
           "_",
-        ).replace(/\.\./, "_");
+        ).replace(/\.\./g, "_").replace(/\0/g, "");
         const content = await context.dataRepository.getContent(
           context.modelType,
           context.modelId,
@@ -573,7 +591,7 @@ export const model = {
         const instanceName = (g.name?.toString() ?? args.identifier).replace(
           /[\/\\]/g,
           "_",
-        ).replace(/\.\./, "_");
+        ).replace(/\.\./g, "_").replace(/\0/g, "");
         const handle = await context.writeResource("state", instanceName, {
           identifier: args.identifier,
           existed,
@@ -592,7 +610,7 @@ export const model = {
         const instanceName = (g.name?.toString() ?? "current").replace(
           /[\/\\]/g,
           "_",
-        ).replace(/\.\./, "_");
+        ).replace(/\.\./g, "_").replace(/\0/g, "");
         const content = await context.dataRepository.getContent(
           context.modelType,
           context.modelId,

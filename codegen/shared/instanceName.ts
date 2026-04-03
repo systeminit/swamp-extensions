@@ -21,8 +21,8 @@ export function sanitizeInstanceName(name: string): string {
  * Example:
  *   wrapWithSanitize(`(result.Name ?? g.Name)?.toString() ?? "current"`)
  * produces:
- *   `((result.Name ?? g.Name)?.toString() ?? "current").replace(/[\\/\\\\]/g, "_").replace(/\\.\\./g, "_")`
+ *   `((result.Name ?? g.Name)?.toString() ?? "current").replace(/[\\/\\\\]/g, "_").replace(/\\.\\./g, "_").replace(/\\0/g, "")`
  */
 export function wrapWithSanitize(expr: string): string {
-  return `(${expr}).replace(/[\\/\\\\]/g, "_").replace(/\\.\\./, "_")`;
+  return `(${expr}).replace(/[\\/\\\\]/g, "_").replace(/\\.\\./g, "_").replace(/\\0/g, "")`;
 }

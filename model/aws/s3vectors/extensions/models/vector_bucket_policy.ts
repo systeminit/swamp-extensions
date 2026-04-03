@@ -46,7 +46,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/aws/s3vectors/vector-bucket-policy",
-  version: "2026.04.03.1",
+  version: "2026.04.03.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -55,6 +55,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.03.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },
@@ -85,7 +90,10 @@ export const model = {
         ) as StateData;
         const instanceName =
           ((result.VectorBucketArn ?? g.VectorBucketArn)?.toString() ??
-            "current").replace(/[\/\\]/g, "_").replace(/\.\./, "_");
+            "current").replace(/[\/\\]/g, "_").replace(/\.\./g, "_").replace(
+              /\0/g,
+              "",
+            );
         const handle = await context.writeResource(
           "state",
           instanceName,
@@ -109,9 +117,9 @@ export const model = {
         const instanceName =
           ((result.VectorBucketArn ?? context.globalArgs.VectorBucketArn)
             ?.toString() ?? args.identifier).replace(/[\/\\]/g, "_").replace(
-              /\.\./,
+              /\.\./g,
               "_",
-            );
+            ).replace(/\0/g, "");
         const handle = await context.writeResource(
           "state",
           instanceName,
@@ -126,7 +134,7 @@ export const model = {
       execute: async (_args: Record<string, never>, context: any) => {
         const g = context.globalArgs;
         const instanceName = (g.VectorBucketArn?.toString() ?? "current")
-          .replace(/[\/\\]/g, "_").replace(/\.\./, "_");
+          .replace(/[\/\\]/g, "_").replace(/\.\./g, "_").replace(/\0/g, "");
         const content = await context.dataRepository.getContent(
           context.modelType,
           context.modelId,
@@ -177,7 +185,7 @@ export const model = {
         );
         const instanceName =
           (context.globalArgs.VectorBucketArn?.toString() ?? args.identifier)
-            .replace(/[\/\\]/g, "_").replace(/\.\./, "_");
+            .replace(/[\/\\]/g, "_").replace(/\.\./g, "_").replace(/\0/g, "");
         const handle = await context.writeResource("state", instanceName, {
           identifier: args.identifier,
           existed,
@@ -193,7 +201,7 @@ export const model = {
       execute: async (_args: Record<string, never>, context: any) => {
         const g = context.globalArgs;
         const instanceName = (g.VectorBucketArn?.toString() ?? "current")
-          .replace(/[\/\\]/g, "_").replace(/\.\./, "_");
+          .replace(/[\/\\]/g, "_").replace(/\.\./g, "_").replace(/\0/g, "");
         const content = await context.dataRepository.getContent(
           context.modelType,
           context.modelId,
