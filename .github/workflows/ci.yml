@@ -13,8 +13,10 @@ jobs:
     permissions:
       contents: read
     outputs:
-      extensions: ${{ steps.filter.outputs.extensions }}
+      vaults: ${{ steps.filter.outputs.vaults }}
+      datastores: ${{ steps.filter.outputs.datastores }}
       codegen: ${{ steps.filter.outputs.codegen }}
+      models: ${{ steps.filter.outputs.models }}
       ci: ${{ steps.filter.outputs.ci }}
     steps:
       - name: Checkout code
@@ -25,17 +27,22 @@ jobs:
         id: filter
         with:
           filters: |
-            extensions:
+            vaults:
               - 'vault/**'
+            datastores:
               - 'datastore/**'
             codegen:
               - 'codegen/**'
+            models:
+              - 'model/**'
             ci:
               - '.github/workflows/**'
               - 'scripts/**'
 
   vault-check:
     name: vault/${{ matrix.vault }} - ${{ matrix.task }}
+    needs: [changes]
+    if: needs.changes.outputs.vaults == 'true'
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -66,6 +73,8 @@ jobs:
 
   vault-lockfile:
     name: vault/${{ matrix.vault }} - lockfile up to date
+    needs: [changes]
+    if: needs.changes.outputs.vaults == 'true'
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -86,6 +95,8 @@ jobs:
 
   datastore-check:
     name: datastore/${{ matrix.datastore }} - ${{ matrix.task }}
+    needs: [changes]
+    if: needs.changes.outputs.datastores == 'true'
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -116,6 +127,8 @@ jobs:
 
   datastore-lockfile:
     name: datastore/${{ matrix.datastore }} - lockfile up to date
+    needs: [changes]
+    if: needs.changes.outputs.datastores == 'true'
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -136,6 +149,8 @@ jobs:
 
   model-check:
     name: model/${{ matrix.model }} - ${{ matrix.task }}
+    needs: [changes]
+    if: needs.changes.outputs.models == 'true' || needs.changes.outputs.codegen == 'true'
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -164,6 +179,8 @@ jobs:
 
   model-lockfile:
     name: model/${{ matrix.model }} - lockfile up to date
+    needs: [changes]
+    if: needs.changes.outputs.models == 'true' || needs.changes.outputs.codegen == 'true'
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -184,6 +201,8 @@ jobs:
 
   aws-check:
     name: aws models - ${{ matrix.task }}
+    needs: [changes]
+    if: needs.changes.outputs.models == 'true' || needs.changes.outputs.codegen == 'true'
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -210,6 +229,8 @@ jobs:
 
   aws-lockfile:
     name: aws models - lockfiles up to date
+    needs: [changes]
+    if: needs.changes.outputs.models == 'true' || needs.changes.outputs.codegen == 'true'
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -233,6 +254,8 @@ jobs:
 
   gcp-check:
     name: gcp models - ${{ matrix.task }}
+    needs: [changes]
+    if: needs.changes.outputs.models == 'true' || needs.changes.outputs.codegen == 'true'
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -259,6 +282,8 @@ jobs:
 
   gcp-lockfile:
     name: gcp models - lockfiles up to date
+    needs: [changes]
+    if: needs.changes.outputs.models == 'true' || needs.changes.outputs.codegen == 'true'
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -282,6 +307,8 @@ jobs:
 
   codegen-check:
     name: codegen - ${{ matrix.task }}
+    needs: [changes]
+    if: needs.changes.outputs.codegen == 'true'
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -309,6 +336,8 @@ jobs:
 
   codegen-lockfile:
     name: codegen - lockfile up to date
+    needs: [changes]
+    if: needs.changes.outputs.codegen == 'true'
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -325,6 +354,8 @@ jobs:
 
   codegen-verify:
     name: codegen - verify Hetzner/DigitalOcean output is up to date
+    needs: [changes]
+    if: needs.changes.outputs.models == 'true' || needs.changes.outputs.codegen == 'true'
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -394,6 +425,7 @@ jobs:
     name: Claude Code Review
     needs:
       [
+        changes,
         vault-check,
         vault-lockfile,
         datastore-check,
@@ -415,7 +447,7 @@ jobs:
       contents: read
       pull-requests: write
     if: |
-      success() &&
+      !failure() && !cancelled() &&
       github.event_name == 'pull_request' &&
       github.event.pull_request.draft == false
     concurrency:
@@ -553,10 +585,10 @@ jobs:
       contents: read
       pull-requests: write
     if: |
-      success() &&
+      !failure() && !cancelled() &&
       github.event_name == 'pull_request' &&
       github.event.pull_request.draft == false &&
-      (needs.changes.outputs.extensions == 'true' || needs.changes.outputs.codegen == 'true')
+      (needs.changes.outputs.vaults == 'true' || needs.changes.outputs.datastores == 'true' || needs.changes.outputs.codegen == 'true')
     concurrency:
       group: claude-adversarial-review-${{ github.event.pull_request.number }}
       cancel-in-progress: true
@@ -713,7 +745,7 @@ jobs:
       contents: read
       pull-requests: write
     if: |
-      success() &&
+      !failure() && !cancelled() &&
       github.event_name == 'pull_request' &&
       github.event.pull_request.draft == false &&
       needs.changes.outputs.ci == 'true'
