@@ -1,0 +1,755 @@
+export const snapshot = {};
+
+snapshot[`generateHetznerExtensionModel - all handlers, natural name 1`] = `
+'// Auto-generated extension model for @swamp/hetzner-cloud/servers
+// Do not edit manually. Re-generate with: deno task generate:hetzner
+
+// deno-lint-ignore-file no-explicit-any
+
+import { z } from "zod";
+import { create, read, tryRead, remove, update } from "./_lib/hetzner.ts";
+
+const GlobalArgsSchema = z.object({
+  name: z.string().describe("Name of the server"),
+  server_type: z.string().describe("ID or name of the server type"),
+  image: z.string().describe("ID or name of the image"),
+});
+
+const ResourceSchema = z.object({
+  id: z.number(),
+  name: z.string().optional(),
+  status: z.string().optional(),
+  server_type: z.object({
+    id: z.number().optional(),
+    name: z.string().optional(),
+  }).optional(),
+  public_net: z.object({
+    ipv4: z.object({
+    ip: z.string().optional(),
+  }).optional(),
+  }).optional(),
+}).passthrough();
+
+type ResourceData = z.infer<typeof ResourceSchema>;
+
+const InputsSchema = z.object({
+  name: z.string().optional(),
+  server_type: z.string().optional(),
+  image: z.string().optional(),
+});
+
+export const model = {
+  type: "@swamp/hetzner-cloud/servers",
+  version: "2026.01.01.1",
+  globalArguments: GlobalArgsSchema,
+  inputsSchema: InputsSchema,
+  resources: {
+    state: {
+      description: "Server resource state",
+      schema: ResourceSchema,
+      lifetime: "infinite",
+      garbageCollection: 10,
+    },
+  },
+  methods: {
+    create: {
+      description: "Create a server",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const body: Record<string, unknown> = {};
+        if (g.name !== undefined) body.name = g.name;
+        if (g.server_type !== undefined) body.server_type = g.server_type;
+        if (g.image !== undefined) body.image = g.image;
+        const result = await create("/servers", body) as ResourceData;
+        const instanceName = (g.name?.toString() ?? "current").replace(/[\\\\/\\\\\\\\]/g, "_").replace(/\\\\.\\\\./g, "_").replace(/\\\\0/g, "");
+        const handle = await context.writeResource("state", instanceName, result);
+        return { dataHandles: [handle] };
+      },
+    },
+    get: {
+      description: "Get a server",
+      arguments: z.object({ id: z.number().int().describe("The ID of the server") }),
+      execute: async (args: { id: number }, context: any) => {
+        const result = await read("/servers", args.id) as ResourceData;
+        const instanceName = (result.name?.toString() ?? args.id.toString()).replace(/[\\\\/\\\\\\\\]/g, "_").replace(/\\\\.\\\\./g, "_").replace(/\\\\0/g, "");
+        const handle = await context.writeResource("state", instanceName, result);
+        return { dataHandles: [handle] };
+      },
+    },
+    update: {
+      description: "Update server attributes",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const instanceName = (g.name?.toString() ?? "current").replace(/[\\\\/\\\\\\\\]/g, "_").replace(/\\\\.\\\\./g, "_").replace(/\\\\0/g, "");
+        const content = await context.dataRepository.getContent(
+          context.modelType, context.modelId, instanceName,
+        );
+        if (!content) throw new Error("No data found - run create first");
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        const body: Record<string, unknown> = {};
+        if (g.name !== undefined) body.name = g.name;
+        const result = await update("/servers", existing.id, body) as ResourceData;
+        const handle = await context.writeResource("state", instanceName, result);
+        return { dataHandles: [handle] };
+      },
+    },
+    delete: {
+      description: "Delete the server",
+      arguments: z.object({ id: z.number().int().describe("The ID of the server") }),
+      execute: async (args: { id: number }, context: any) => {
+        const { existed } = await remove("/servers", args.id);
+        const instanceName = (context.globalArgs.name?.toString() ?? args.id.toString()).replace(/[\\\\/\\\\\\\\]/g, "_").replace(/\\\\.\\\\./g, "_").replace(/\\\\0/g, "");
+        const handle = await context.writeResource("state", instanceName, {
+          id: args.id,
+          existed,
+          status: existed ? "deleted" : "not_found",
+          deletedAt: new Date().toISOString(),
+        });
+        return { dataHandles: [handle] };
+      },
+    },
+    sync: {
+      description: "Sync server state from Hetzner",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const instanceName = (g.name?.toString() ?? "current").replace(/[\\\\/\\\\\\\\]/g, "_").replace(/\\\\.\\\\./g, "_").replace(/\\\\0/g, "");
+        const content = await context.dataRepository.getContent(
+          context.modelType, context.modelId, instanceName,
+        );
+        if (!content) throw new Error("No data found - run create or get first");
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        const result = await tryRead("/servers", existing.id) as ResourceData | null;
+        if (result) {
+          const handle = await context.writeResource("state", instanceName, result);
+          return { dataHandles: [handle] };
+        }
+        const handle = await context.writeResource("state", instanceName, {
+          id: existing.id,
+          status: "not_found",
+          syncedAt: new Date().toISOString(),
+        });
+        return { dataHandles: [handle] };
+      },
+    },
+  },
+};
+'
+`;
+
+snapshot[`generateHetznerExtensionModel - read-only (no update, no delete) 1`] = `
+'// Auto-generated extension model for @swamp/hetzner-cloud/zones
+// Do not edit manually. Re-generate with: deno task generate:hetzner
+
+// deno-lint-ignore-file no-explicit-any
+
+import { z } from "zod";
+import { create, read, tryRead } from "./_lib/hetzner.ts";
+
+const GlobalArgsSchema = z.object({
+  name: z.string().describe("Zone name"),
+  ttl: z.number().int().describe("TTL").optional(),
+});
+
+const ResourceSchema = z.object({
+  id: z.number(),
+  name: z.string().optional(),
+  ttl: z.number().optional(),
+  status: z.string().optional(),
+}).passthrough();
+
+type ResourceData = z.infer<typeof ResourceSchema>;
+
+const InputsSchema = z.object({
+  name: z.string().optional(),
+  ttl: z.number().int().optional(),
+});
+
+export const model = {
+  type: "@swamp/hetzner-cloud/zones",
+  version: "2026.01.01.1",
+  globalArguments: GlobalArgsSchema,
+  inputsSchema: InputsSchema,
+  resources: {
+    state: {
+      description: "Zone resource state",
+      schema: ResourceSchema,
+      lifetime: "infinite",
+      garbageCollection: 10,
+    },
+  },
+  methods: {
+    create: {
+      description: "Create a zone",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const body: Record<string, unknown> = {};
+        if (g.name !== undefined) body.name = g.name;
+        if (g.ttl !== undefined) body.ttl = g.ttl;
+        const result = await create("/zones", body) as ResourceData;
+        const instanceName = (g.name?.toString() ?? "current").replace(/[\\\\/\\\\\\\\]/g, "_").replace(/\\\\.\\\\./g, "_").replace(/\\\\0/g, "");
+        const handle = await context.writeResource("state", instanceName, result);
+        return { dataHandles: [handle] };
+      },
+    },
+    get: {
+      description: "Get a zone",
+      arguments: z.object({ id: z.number().int().describe("The ID of the zone") }),
+      execute: async (args: { id: number }, context: any) => {
+        const result = await read("/zones", args.id) as ResourceData;
+        const instanceName = (result.name?.toString() ?? args.id.toString()).replace(/[\\\\/\\\\\\\\]/g, "_").replace(/\\\\.\\\\./g, "_").replace(/\\\\0/g, "");
+        const handle = await context.writeResource("state", instanceName, result);
+        return { dataHandles: [handle] };
+      },
+    },
+    sync: {
+      description: "Sync zone state from Hetzner",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const instanceName = (g.name?.toString() ?? "current").replace(/[\\\\/\\\\\\\\]/g, "_").replace(/\\\\.\\\\./g, "_").replace(/\\\\0/g, "");
+        const content = await context.dataRepository.getContent(
+          context.modelType, context.modelId, instanceName,
+        );
+        if (!content) throw new Error("No data found - run create or get first");
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        const result = await tryRead("/zones", existing.id) as ResourceData | null;
+        if (result) {
+          const handle = await context.writeResource("state", instanceName, result);
+          return { dataHandles: [handle] };
+        }
+        const handle = await context.writeResource("state", instanceName, {
+          id: existing.id,
+          status: "not_found",
+          syncedAt: new Date().toISOString(),
+        });
+        return { dataHandles: [handle] };
+      },
+    },
+  },
+};
+'
+`;
+
+snapshot[`generateHetznerExtensionModel - synthetic name 1`] = `
+'// Auto-generated extension model for @swamp/hetzner-cloud/primary-ips
+// Do not edit manually. Re-generate with: deno task generate:hetzner
+
+// deno-lint-ignore-file no-explicit-any
+
+import { z } from "zod";
+import { create, read, tryRead, remove } from "./_lib/hetzner.ts";
+
+const GlobalArgsSchema = z.object({
+  name: z.string().describe("Instance name for this resource (used as the unique identifier in the factory pattern)"),
+  type: z.enum(["ipv4", "ipv6"]).describe("IP type (ipv4 or ipv6)"),
+  datacenter: z.string().describe("Datacenter name").optional(),
+  assignee_type: z.string().describe("Resource type (server)"),
+});
+
+const ResourceSchema = z.object({
+  id: z.number(),
+  ip: z.string().optional(),
+  type: z.string().optional(),
+  datacenter: z.object({
+    id: z.number().optional(),
+    name: z.string().optional(),
+  }).optional(),
+}).passthrough();
+
+type ResourceData = z.infer<typeof ResourceSchema>;
+
+const InputsSchema = z.object({
+  name: z.string().optional(),
+  type: z.enum(["ipv4", "ipv6"]).optional(),
+  datacenter: z.string().optional(),
+  assignee_type: z.string().optional(),
+});
+
+export const model = {
+  type: "@swamp/hetzner-cloud/primary-ips",
+  version: "2026.01.01.1",
+  globalArguments: GlobalArgsSchema,
+  inputsSchema: InputsSchema,
+  resources: {
+    state: {
+      description: "Primary ip resource state",
+      schema: ResourceSchema,
+      lifetime: "infinite",
+      garbageCollection: 10,
+    },
+  },
+  methods: {
+    create: {
+      description: "Create a primary ip",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const body: Record<string, unknown> = {};
+        if (g.type !== undefined) body.type = g.type;
+        if (g.datacenter !== undefined) body.datacenter = g.datacenter;
+        if (g.assignee_type !== undefined) body.assignee_type = g.assignee_type;
+        const result = await create("/primary_ips", body) as ResourceData;
+        const instanceName = (g.name?.toString() ?? "current").replace(/[\\\\/\\\\\\\\]/g, "_").replace(/\\\\.\\\\./g, "_").replace(/\\\\0/g, "");
+        const handle = await context.writeResource("state", instanceName, result);
+        return { dataHandles: [handle] };
+      },
+    },
+    get: {
+      description: "Get a primary ip",
+      arguments: z.object({ id: z.number().int().describe("The ID of the primary ip") }),
+      execute: async (args: { id: number }, context: any) => {
+        const result = await read("/primary_ips", args.id) as ResourceData;
+        const instanceName = (context.globalArgs.name?.toString() ?? args.id.toString()).replace(/[\\\\/\\\\\\\\]/g, "_").replace(/\\\\.\\\\./g, "_").replace(/\\\\0/g, "");
+        const handle = await context.writeResource("state", instanceName, result);
+        return { dataHandles: [handle] };
+      },
+    },
+    delete: {
+      description: "Delete the primary ip",
+      arguments: z.object({ id: z.number().int().describe("The ID of the primary ip") }),
+      execute: async (args: { id: number }, context: any) => {
+        const { existed } = await remove("/primary_ips", args.id);
+        const instanceName = (context.globalArgs.name?.toString() ?? args.id.toString()).replace(/[\\\\/\\\\\\\\]/g, "_").replace(/\\\\.\\\\./g, "_").replace(/\\\\0/g, "");
+        const handle = await context.writeResource("state", instanceName, {
+          id: args.id,
+          existed,
+          status: existed ? "deleted" : "not_found",
+          deletedAt: new Date().toISOString(),
+        });
+        return { dataHandles: [handle] };
+      },
+    },
+    sync: {
+      description: "Sync primary ip state from Hetzner",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const instanceName = (g.name?.toString() ?? "current").replace(/[\\\\/\\\\\\\\]/g, "_").replace(/\\\\.\\\\./g, "_").replace(/\\\\0/g, "");
+        const content = await context.dataRepository.getContent(
+          context.modelType, context.modelId, instanceName,
+        );
+        if (!content) throw new Error("No data found - run create or get first");
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        const result = await tryRead("/primary_ips", existing.id) as ResourceData | null;
+        if (result) {
+          const handle = await context.writeResource("state", instanceName, result);
+          return { dataHandles: [handle] };
+        }
+        const handle = await context.writeResource("state", instanceName, {
+          id: existing.id,
+          status: "not_found",
+          syncedAt: new Date().toISOString(),
+        });
+        return { dataHandles: [handle] };
+      },
+    },
+  },
+};
+'
+`;
+
+snapshot[`generateHetznerExtensionModel - label-based naming 1`] = `
+'// Auto-generated extension model for @swamp/hetzner-cloud/placement-groups
+// Do not edit manually. Re-generate with: deno task generate:hetzner
+
+// deno-lint-ignore-file no-explicit-any
+
+import { z } from "zod";
+import { create, read, tryRead, remove, update } from "./_lib/hetzner.ts";
+
+const GlobalArgsSchema = z.object({
+  label: z.string().describe("User-defined label"),
+  type: z.string().describe("Placement group type"),
+});
+
+const ResourceSchema = z.object({
+  id: z.number(),
+  label: z.string().optional(),
+  type: z.string().optional(),
+}).passthrough();
+
+type ResourceData = z.infer<typeof ResourceSchema>;
+
+const InputsSchema = z.object({
+  label: z.string().optional(),
+  type: z.string().optional(),
+});
+
+export const model = {
+  type: "@swamp/hetzner-cloud/placement-groups",
+  version: "2026.01.01.1",
+  globalArguments: GlobalArgsSchema,
+  inputsSchema: InputsSchema,
+  resources: {
+    state: {
+      description: "Placement group resource state",
+      schema: ResourceSchema,
+      lifetime: "infinite",
+      garbageCollection: 10,
+    },
+  },
+  methods: {
+    create: {
+      description: "Create a placement group",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const body: Record<string, unknown> = {};
+        if (g.label !== undefined) body.label = g.label;
+        if (g.type !== undefined) body.type = g.type;
+        const result = await create("/placement_groups", body) as ResourceData;
+        const instanceName = (g.label?.toString() ?? "current").replace(/[\\\\/\\\\\\\\]/g, "_").replace(/\\\\.\\\\./g, "_").replace(/\\\\0/g, "");
+        const handle = await context.writeResource("state", instanceName, result);
+        return { dataHandles: [handle] };
+      },
+    },
+    get: {
+      description: "Get a placement group",
+      arguments: z.object({ id: z.number().int().describe("The ID of the placement group") }),
+      execute: async (args: { id: number }, context: any) => {
+        const result = await read("/placement_groups", args.id) as ResourceData;
+        const instanceName = (result.label?.toString() ?? args.id.toString()).replace(/[\\\\/\\\\\\\\]/g, "_").replace(/\\\\.\\\\./g, "_").replace(/\\\\0/g, "");
+        const handle = await context.writeResource("state", instanceName, result);
+        return { dataHandles: [handle] };
+      },
+    },
+    update: {
+      description: "Update placement group attributes",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const instanceName = (g.label?.toString() ?? "current").replace(/[\\\\/\\\\\\\\]/g, "_").replace(/\\\\.\\\\./g, "_").replace(/\\\\0/g, "");
+        const content = await context.dataRepository.getContent(
+          context.modelType, context.modelId, instanceName,
+        );
+        if (!content) throw new Error("No data found - run create first");
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        const body: Record<string, unknown> = {};
+        if (g.label !== undefined) body.label = g.label;
+        const result = await update("/placement_groups", existing.id, body) as ResourceData;
+        const handle = await context.writeResource("state", instanceName, result);
+        return { dataHandles: [handle] };
+      },
+    },
+    delete: {
+      description: "Delete the placement group",
+      arguments: z.object({ id: z.number().int().describe("The ID of the placement group") }),
+      execute: async (args: { id: number }, context: any) => {
+        const { existed } = await remove("/placement_groups", args.id);
+        const instanceName = (context.globalArgs.label?.toString() ?? args.id.toString()).replace(/[\\\\/\\\\\\\\]/g, "_").replace(/\\\\.\\\\./g, "_").replace(/\\\\0/g, "");
+        const handle = await context.writeResource("state", instanceName, {
+          id: args.id,
+          existed,
+          status: existed ? "deleted" : "not_found",
+          deletedAt: new Date().toISOString(),
+        });
+        return { dataHandles: [handle] };
+      },
+    },
+    sync: {
+      description: "Sync placement group state from Hetzner",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const instanceName = (g.label?.toString() ?? "current").replace(/[\\\\/\\\\\\\\]/g, "_").replace(/\\\\.\\\\./g, "_").replace(/\\\\0/g, "");
+        const content = await context.dataRepository.getContent(
+          context.modelType, context.modelId, instanceName,
+        );
+        if (!content) throw new Error("No data found - run create or get first");
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        const result = await tryRead("/placement_groups", existing.id) as ResourceData | null;
+        if (result) {
+          const handle = await context.writeResource("state", instanceName, result);
+          return { dataHandles: [handle] };
+        }
+        const handle = await context.writeResource("state", instanceName, {
+          id: existing.id,
+          status: "not_found",
+          syncedAt: new Date().toISOString(),
+        });
+        return { dataHandles: [handle] };
+      },
+    },
+  },
+};
+'
+`;
+
+snapshot[`generateHetznerExtensionModel - with upgrades block 1`] = `
+'// Auto-generated extension model for @swamp/hetzner-cloud/ssh-keys
+// Do not edit manually. Re-generate with: deno task generate:hetzner
+
+// deno-lint-ignore-file no-explicit-any
+
+import { z } from "zod";
+import { create, read, tryRead, remove, update } from "./_lib/hetzner.ts";
+
+const GlobalArgsSchema = z.object({
+  name: z.string().describe("Name of the SSH key"),
+  public_key: z.string().describe("Public key"),
+});
+
+const ResourceSchema = z.object({
+  id: z.number(),
+  name: z.string().optional(),
+  public_key: z.string().optional(),
+  fingerprint: z.string().optional(),
+}).passthrough();
+
+type ResourceData = z.infer<typeof ResourceSchema>;
+
+const InputsSchema = z.object({
+  name: z.string().optional(),
+  public_key: z.string().optional(),
+});
+
+export const model = {
+  type: "@swamp/hetzner-cloud/ssh-keys",
+  version: "2026.01.02.1",
+  upgrades: [
+    {
+      toVersion: "2026.01.02.1",
+      description: "Removed: labels",
+      upgradeAttributes: (old: Record<string, unknown>) => {
+        const { labels: _labels, ...rest } = old;
+        return rest;
+      },
+    },
+  ],
+  globalArguments: GlobalArgsSchema,
+  inputsSchema: InputsSchema,
+  resources: {
+    state: {
+      description: "Ssh key resource state",
+      schema: ResourceSchema,
+      lifetime: "infinite",
+      garbageCollection: 10,
+    },
+  },
+  methods: {
+    create: {
+      description: "Create a ssh key",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const body: Record<string, unknown> = {};
+        if (g.name !== undefined) body.name = g.name;
+        if (g.public_key !== undefined) body.public_key = g.public_key;
+        const result = await create("/ssh_keys", body) as ResourceData;
+        const instanceName = (g.name?.toString() ?? "current").replace(/[\\\\/\\\\\\\\]/g, "_").replace(/\\\\.\\\\./g, "_").replace(/\\\\0/g, "");
+        const handle = await context.writeResource("state", instanceName, result);
+        return { dataHandles: [handle] };
+      },
+    },
+    get: {
+      description: "Get a ssh key",
+      arguments: z.object({ id: z.number().int().describe("The ID of the ssh key") }),
+      execute: async (args: { id: number }, context: any) => {
+        const result = await read("/ssh_keys", args.id) as ResourceData;
+        const instanceName = (result.name?.toString() ?? args.id.toString()).replace(/[\\\\/\\\\\\\\]/g, "_").replace(/\\\\.\\\\./g, "_").replace(/\\\\0/g, "");
+        const handle = await context.writeResource("state", instanceName, result);
+        return { dataHandles: [handle] };
+      },
+    },
+    update: {
+      description: "Update ssh key attributes",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const instanceName = (g.name?.toString() ?? "current").replace(/[\\\\/\\\\\\\\]/g, "_").replace(/\\\\.\\\\./g, "_").replace(/\\\\0/g, "");
+        const content = await context.dataRepository.getContent(
+          context.modelType, context.modelId, instanceName,
+        );
+        if (!content) throw new Error("No data found - run create first");
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        const body: Record<string, unknown> = {};
+        if (g.name !== undefined) body.name = g.name;
+        const result = await update("/ssh_keys", existing.id, body) as ResourceData;
+        const handle = await context.writeResource("state", instanceName, result);
+        return { dataHandles: [handle] };
+      },
+    },
+    delete: {
+      description: "Delete the ssh key",
+      arguments: z.object({ id: z.number().int().describe("The ID of the ssh key") }),
+      execute: async (args: { id: number }, context: any) => {
+        const { existed } = await remove("/ssh_keys", args.id);
+        const instanceName = (context.globalArgs.name?.toString() ?? args.id.toString()).replace(/[\\\\/\\\\\\\\]/g, "_").replace(/\\\\.\\\\./g, "_").replace(/\\\\0/g, "");
+        const handle = await context.writeResource("state", instanceName, {
+          id: args.id,
+          existed,
+          status: existed ? "deleted" : "not_found",
+          deletedAt: new Date().toISOString(),
+        });
+        return { dataHandles: [handle] };
+      },
+    },
+    sync: {
+      description: "Sync ssh key state from Hetzner",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const instanceName = (g.name?.toString() ?? "current").replace(/[\\\\/\\\\\\\\]/g, "_").replace(/\\\\.\\\\./g, "_").replace(/\\\\0/g, "");
+        const content = await context.dataRepository.getContent(
+          context.modelType, context.modelId, instanceName,
+        );
+        if (!content) throw new Error("No data found - run create or get first");
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        const result = await tryRead("/ssh_keys", existing.id) as ResourceData | null;
+        if (result) {
+          const handle = await context.writeResource("state", instanceName, result);
+          return { dataHandles: [handle] };
+        }
+        const handle = await context.writeResource("state", instanceName, {
+          id: existing.id,
+          status: "not_found",
+          syncedAt: new Date().toISOString(),
+        });
+        return { dataHandles: [handle] };
+      },
+    },
+  },
+};
+'
+`;
+
+snapshot[`generateHetznerExtensionModel - properties with enums and constraints 1`] = `
+'// Auto-generated extension model for @swamp/hetzner-cloud/firewalls
+// Do not edit manually. Re-generate with: deno task generate:hetzner
+
+// deno-lint-ignore-file no-explicit-any
+
+import { z } from "zod";
+import { create, read, tryRead, remove, update } from "./_lib/hetzner.ts";
+
+const GlobalArgsSchema = z.object({
+  name: z.string().max(128).describe("Firewall name"),
+  rules: z.array(z.object({
+    direction: z.enum(["in", "out"]),
+    protocol: z.enum(["tcp", "udp", "icmp", "esp", "gre"]),
+    port: z.string().optional(),
+  })).describe("Array of rules").optional(),
+});
+
+const ResourceSchema = z.object({
+  id: z.number(),
+  name: z.string().optional(),
+  rules: z.array(z.object({
+    direction: z.string().optional(),
+    protocol: z.string().optional(),
+  })).optional(),
+}).passthrough();
+
+type ResourceData = z.infer<typeof ResourceSchema>;
+
+const InputsSchema = z.object({
+  name: z.string().max(128).optional(),
+  rules: z.array(z.object({
+    direction: z.enum(["in", "out"]),
+    protocol: z.enum(["tcp", "udp", "icmp", "esp", "gre"]),
+    port: z.string().optional(),
+  })).optional(),
+});
+
+export const model = {
+  type: "@swamp/hetzner-cloud/firewalls",
+  version: "2026.01.01.1",
+  globalArguments: GlobalArgsSchema,
+  inputsSchema: InputsSchema,
+  resources: {
+    state: {
+      description: "Firewall resource state",
+      schema: ResourceSchema,
+      lifetime: "infinite",
+      garbageCollection: 10,
+    },
+  },
+  methods: {
+    create: {
+      description: "Create a firewall",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const body: Record<string, unknown> = {};
+        if (g.name !== undefined) body.name = g.name;
+        if (g.rules !== undefined) body.rules = g.rules;
+        const result = await create("/firewalls", body) as ResourceData;
+        const instanceName = (g.name?.toString() ?? "current").replace(/[\\\\/\\\\\\\\]/g, "_").replace(/\\\\.\\\\./g, "_").replace(/\\\\0/g, "");
+        const handle = await context.writeResource("state", instanceName, result);
+        return { dataHandles: [handle] };
+      },
+    },
+    get: {
+      description: "Get a firewall",
+      arguments: z.object({ id: z.number().int().describe("The ID of the firewall") }),
+      execute: async (args: { id: number }, context: any) => {
+        const result = await read("/firewalls", args.id) as ResourceData;
+        const instanceName = (result.name?.toString() ?? args.id.toString()).replace(/[\\\\/\\\\\\\\]/g, "_").replace(/\\\\.\\\\./g, "_").replace(/\\\\0/g, "");
+        const handle = await context.writeResource("state", instanceName, result);
+        return { dataHandles: [handle] };
+      },
+    },
+    update: {
+      description: "Update firewall attributes",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const instanceName = (g.name?.toString() ?? "current").replace(/[\\\\/\\\\\\\\]/g, "_").replace(/\\\\.\\\\./g, "_").replace(/\\\\0/g, "");
+        const content = await context.dataRepository.getContent(
+          context.modelType, context.modelId, instanceName,
+        );
+        if (!content) throw new Error("No data found - run create first");
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        const body: Record<string, unknown> = {};
+        const result = await update("/firewalls", existing.id, body) as ResourceData;
+        const handle = await context.writeResource("state", instanceName, result);
+        return { dataHandles: [handle] };
+      },
+    },
+    delete: {
+      description: "Delete the firewall",
+      arguments: z.object({ id: z.number().int().describe("The ID of the firewall") }),
+      execute: async (args: { id: number }, context: any) => {
+        const { existed } = await remove("/firewalls", args.id);
+        const instanceName = (context.globalArgs.name?.toString() ?? args.id.toString()).replace(/[\\\\/\\\\\\\\]/g, "_").replace(/\\\\.\\\\./g, "_").replace(/\\\\0/g, "");
+        const handle = await context.writeResource("state", instanceName, {
+          id: args.id,
+          existed,
+          status: existed ? "deleted" : "not_found",
+          deletedAt: new Date().toISOString(),
+        });
+        return { dataHandles: [handle] };
+      },
+    },
+    sync: {
+      description: "Sync firewall state from Hetzner",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const instanceName = (g.name?.toString() ?? "current").replace(/[\\\\/\\\\\\\\]/g, "_").replace(/\\\\.\\\\./g, "_").replace(/\\\\0/g, "");
+        const content = await context.dataRepository.getContent(
+          context.modelType, context.modelId, instanceName,
+        );
+        if (!content) throw new Error("No data found - run create or get first");
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        const result = await tryRead("/firewalls", existing.id) as ResourceData | null;
+        if (result) {
+          const handle = await context.writeResource("state", instanceName, result);
+          return { dataHandles: [handle] };
+        }
+        const handle = await context.writeResource("state", instanceName, {
+          id: existing.id,
+          status: "not_found",
+          syncedAt: new Date().toISOString(),
+        });
+        return { dataHandles: [handle] };
+      },
+    },
+  },
+};
+'
+`;

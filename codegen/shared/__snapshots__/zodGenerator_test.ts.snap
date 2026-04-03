@@ -1,0 +1,121 @@
+export const snapshot = {};
+
+snapshot[`generateZodSchemas - simple string property (required) 1`] = `
+{
+  extractedSchemas: [],
+  inputSchemaBody: "  Name: z.string(),",
+  resourceSchemaBody: "  Name: z.string().optional(),",
+}
+`;
+
+snapshot[`generateZodSchemas - string with enum 1`] = `
+{
+  extractedSchemas: [],
+  inputSchemaBody: '  Status: z.enum(["ACTIVE", "INACTIVE", "PENDING"]),',
+  resourceSchemaBody: "  Status: z.string().optional(),",
+}
+`;
+
+snapshot[`generateZodSchemas - string with constraints 1`] = `
+{
+  extractedSchemas: [],
+  inputSchemaBody: '  BucketName: z.string().min(3).max(63).regex(new RegExp("^[a-z0-9][a-z0-9.-]*[a-z0-9]\$")),',
+  resourceSchemaBody: "  BucketName: z.string().optional(),",
+}
+`;
+
+snapshot[`generateZodSchemas - number with min/max 1`] = `
+{
+  extractedSchemas: [],
+  inputSchemaBody: "  Port: z.number().min(1).max(65535),",
+  resourceSchemaBody: "  Port: z.number().optional(),",
+}
+`;
+
+snapshot[`generateZodSchemas - integer property 1`] = `
+{
+  extractedSchemas: [],
+  inputSchemaBody: "  Count: z.number().int().min(0).max(100),",
+  resourceSchemaBody: "  Count: z.number().optional(),",
+}
+`;
+
+snapshot[`generateZodSchemas - boolean property 1`] = `
+{
+  extractedSchemas: [],
+  inputSchemaBody: "  Enabled: z.boolean(),",
+  resourceSchemaBody: "  Enabled: z.boolean().optional(),",
+}
+`;
+
+snapshot[`generateZodSchemas - array of strings 1`] = `
+{
+  extractedSchemas: [],
+  inputSchemaBody: "  Tags: z.array(z.string()),",
+  resourceSchemaBody: "  Tags: z.array(z.string()).optional(),",
+}
+`;
+
+snapshot[`generateZodSchemas - nested object 1`] = `
+{
+  extractedSchemas: [],
+  inputSchemaBody: "  Config: z.object({
+  Memory: z.number().int().optional(),
+  Cpu: z.number().optional(),
+}),",
+  resourceSchemaBody: "  Config: z.object({
+    Memory: z.number(),
+    Cpu: z.number(),
+  }).optional(),",
+}
+`;
+
+snapshot[`generateZodSchemas - required vs optional fields 1`] = `
+{
+  extractedSchemas: [],
+  inputSchemaBody: "  Name: z.string(),
+  Description: z.string().optional(),
+  Priority: z.number().int().optional(),",
+  resourceSchemaBody: "  Name: z.string().optional(),
+  Description: z.string().optional(),
+  Priority: z.number().optional(),",
+}
+`;
+
+snapshot[`generateZodSchemas - property with description 1`] = `
+{
+  extractedSchemas: [],
+  inputSchemaBody: '  RoleName: z.string().describe("The name of the IAM role"),',
+  resourceSchemaBody: "  RoleName: z.string().optional(),",
+}
+`;
+
+snapshot[`generateZodSchemas - domain full fidelity vs resource simplified 1`] = `
+{
+  extractedSchemas: [],
+  inputSchemaBody: '  Name: z.string().min(1).max(128).regex(new RegExp("^[a-zA-Z0-9_-]+\$")).describe("The resource name"),
+  Port: z.number().int().min(1).max(65535),
+  Protocol: z.enum(["TCP", "UDP", "HTTP"]).optional(),',
+  resourceSchemaBody: "  Id: z.string(),
+  Name: z.string().optional(),
+  Port: z.number().optional(),
+  Protocol: z.string().optional(),
+  Arn: z.string().optional(),",
+}
+`;
+
+snapshot[`generateZodSchemas - extracted schemas from titled nested objects 1`] = `
+{
+  extractedSchemas: [
+    {
+      declaration: "export const BlockDeviceMappingSchema = z.object({
+  DeviceName: z.string().optional(),
+  VolumeSize: z.number().int().optional(),
+});",
+      name: "BlockDeviceMappingSchema",
+    },
+  ],
+  inputSchemaBody: "  Mappings: z.array(BlockDeviceMappingSchema),",
+  resourceSchemaBody: "  Mappings: z.array(BlockDeviceMappingSchema).optional(),",
+}
+`;
