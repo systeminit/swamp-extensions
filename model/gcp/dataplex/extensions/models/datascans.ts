@@ -194,6 +194,15 @@ const GlobalArgsSchema = z.object({
           "Optional. Whether to disable the inference of data types for JSON data. If true, all columns are registered as their primitive types (strings, number, or boolean).",
         ).optional(),
       }).describe("Describes JSON data format.").optional(),
+      unstructuredDataOptions: z.object({
+        entityInferenceEnabled: z.boolean().describe(
+          "Optional. Deprecated: Use semantic_inference_enabled instead. Specifies whether deeper entity inference over the objects' contents using GenAI is enabled.",
+        ).optional(),
+        semanticInferenceEnabled: z.boolean().describe(
+          "Optional. Specifies whether deeper semantic inference over the objects' contents using GenAI is enabled.",
+        ).optional(),
+      }).describe("Describes options for unstructured data discovery.")
+        .optional(),
     }).describe("Configurations related to Cloud Storage as the data source.")
       .optional(),
   }).describe("Spec for a data discovery scan.").optional(),
@@ -240,24 +249,6 @@ const GlobalArgsSchema = z.object({
         ).optional(),
       })).describe(
         "Output only. Relationships suggesting how tables in the dataset are related to each other, based on their schema.",
-      ).optional(),
-      tableResults: z.array(z.object({
-        name: z.string().describe(
-          "Output only. The service-qualified full resource name of the cloud resource. Ex: //bigquery.googleapis.com/projects/PROJECT_ID/datasets/DATASET_ID/tables/TABLE_ID",
-        ).optional(),
-        overview: z.string().describe(
-          "Output only. Generated description of the table.",
-        ).optional(),
-        queries: z.array(z.unknown()).describe(
-          "Output only. Sample SQL queries for the table.",
-        ).optional(),
-        schema: z.object({
-          fields: z.unknown().describe("Output only. The list of columns.")
-            .optional(),
-        }).describe("Schema of the table with generated metadata of columns.")
-          .optional(),
-      })).describe(
-        "Output only. Generated table and column descriptions for each table in the dataset.",
       ).optional(),
     }).describe("Insights for a dataset resource.").optional(),
     tableResult: z.object({
@@ -397,6 +388,9 @@ const GlobalArgsSchema = z.object({
       ).optional(),
     }).describe(
       "The specification for fields to include or exclude in data profile scan.",
+    ).optional(),
+    mode: z.enum(["MODE_UNSPECIFIED", "STANDARD", "LIGHTWEIGHT"]).describe(
+      "Optional. The execution mode for the profile scan.",
     ).optional(),
     postScanActions: z.object({
       bigqueryExport: z.object({
@@ -804,6 +798,18 @@ const GlobalArgsSchema = z.object({
   displayName: z.string().describe(
     "Optional. User friendly display name. Must be between 1-256 characters.",
   ).optional(),
+  executionIdentity: z.object({
+    dataplexServiceAgent: z.object({}).describe(
+      "The Dataplex service agent associated with the user's project.",
+    ).optional(),
+    serviceAccount: z.object({
+      email: z.string().describe(
+        "Required. Service account email. The datascan will execute with this service account's credentials. The user calling this API must have permissions to act as this service account. Dataplex service agent must be granted iam.serviceAccounts.getAccessToken permission on this service account, for example, through the iam.serviceAccountTokenCreator role.",
+      ).optional(),
+    }).describe("The service account").optional(),
+    userCredential: z.object({}).describe("The credential of the calling user.")
+      .optional(),
+  }).describe("The identity to run the datascan.").optional(),
   executionSpec: z.object({
     field: z.string().describe(
       "Immutable. The unnested field (of type Date or Timestamp) that contains values which monotonically increase over time.If not specified, a data scan will run for all data in the table.",
@@ -889,6 +895,10 @@ const StateSchema = z.object({
         encoding: z.string(),
         typeInferenceDisabled: z.boolean(),
       }),
+      unstructuredDataOptions: z.object({
+        entityInferenceEnabled: z.boolean(),
+        semanticInferenceEnabled: z.boolean(),
+      }),
     }),
   }).optional(),
   dataDocumentationResult: z.object({
@@ -909,14 +919,6 @@ const StateSchema = z.object({
         }),
         sources: z.array(z.unknown()),
         type: z.string(),
-      })),
-      tableResults: z.array(z.object({
-        name: z.string(),
-        overview: z.string(),
-        queries: z.array(z.unknown()),
-        schema: z.object({
-          fields: z.unknown(),
-        }),
       })),
     }),
     tableResult: z.object({
@@ -981,6 +983,7 @@ const StateSchema = z.object({
     includeFields: z.object({
       fieldNames: z.array(z.string()),
     }),
+    mode: z.string(),
     postScanActions: z.object({
       bigqueryExport: z.object({
         resultsTable: z.string(),
@@ -1150,6 +1153,13 @@ const StateSchema = z.object({
   }).optional(),
   description: z.string().optional(),
   displayName: z.string().optional(),
+  executionIdentity: z.object({
+    dataplexServiceAgent: z.object({}),
+    serviceAccount: z.object({
+      email: z.string(),
+    }),
+    userCredential: z.object({}),
+  }).optional(),
   executionSpec: z.object({
     field: z.string(),
     trigger: z.object({
@@ -1271,6 +1281,15 @@ const InputsSchema = z.object({
           "Optional. Whether to disable the inference of data types for JSON data. If true, all columns are registered as their primitive types (strings, number, or boolean).",
         ).optional(),
       }).describe("Describes JSON data format.").optional(),
+      unstructuredDataOptions: z.object({
+        entityInferenceEnabled: z.boolean().describe(
+          "Optional. Deprecated: Use semantic_inference_enabled instead. Specifies whether deeper entity inference over the objects' contents using GenAI is enabled.",
+        ).optional(),
+        semanticInferenceEnabled: z.boolean().describe(
+          "Optional. Specifies whether deeper semantic inference over the objects' contents using GenAI is enabled.",
+        ).optional(),
+      }).describe("Describes options for unstructured data discovery.")
+        .optional(),
     }).describe("Configurations related to Cloud Storage as the data source.")
       .optional(),
   }).describe("Spec for a data discovery scan.").optional(),
@@ -1317,24 +1336,6 @@ const InputsSchema = z.object({
         ).optional(),
       })).describe(
         "Output only. Relationships suggesting how tables in the dataset are related to each other, based on their schema.",
-      ).optional(),
-      tableResults: z.array(z.object({
-        name: z.string().describe(
-          "Output only. The service-qualified full resource name of the cloud resource. Ex: //bigquery.googleapis.com/projects/PROJECT_ID/datasets/DATASET_ID/tables/TABLE_ID",
-        ).optional(),
-        overview: z.string().describe(
-          "Output only. Generated description of the table.",
-        ).optional(),
-        queries: z.array(z.unknown()).describe(
-          "Output only. Sample SQL queries for the table.",
-        ).optional(),
-        schema: z.object({
-          fields: z.unknown().describe("Output only. The list of columns.")
-            .optional(),
-        }).describe("Schema of the table with generated metadata of columns.")
-          .optional(),
-      })).describe(
-        "Output only. Generated table and column descriptions for each table in the dataset.",
       ).optional(),
     }).describe("Insights for a dataset resource.").optional(),
     tableResult: z.object({
@@ -1474,6 +1475,9 @@ const InputsSchema = z.object({
       ).optional(),
     }).describe(
       "The specification for fields to include or exclude in data profile scan.",
+    ).optional(),
+    mode: z.enum(["MODE_UNSPECIFIED", "STANDARD", "LIGHTWEIGHT"]).describe(
+      "Optional. The execution mode for the profile scan.",
     ).optional(),
     postScanActions: z.object({
       bigqueryExport: z.object({
@@ -1881,6 +1885,18 @@ const InputsSchema = z.object({
   displayName: z.string().describe(
     "Optional. User friendly display name. Must be between 1-256 characters.",
   ).optional(),
+  executionIdentity: z.object({
+    dataplexServiceAgent: z.object({}).describe(
+      "The Dataplex service agent associated with the user's project.",
+    ).optional(),
+    serviceAccount: z.object({
+      email: z.string().describe(
+        "Required. Service account email. The datascan will execute with this service account's credentials. The user calling this API must have permissions to act as this service account. Dataplex service agent must be granted iam.serviceAccounts.getAccessToken permission on this service account, for example, through the iam.serviceAccountTokenCreator role.",
+      ).optional(),
+    }).describe("The service account").optional(),
+    userCredential: z.object({}).describe("The credential of the calling user.")
+      .optional(),
+  }).describe("The identity to run the datascan.").optional(),
   executionSpec: z.object({
     field: z.string().describe(
       "Immutable. The unnested field (of type Date or Timestamp) that contains values which monotonically increase over time.If not specified, a data scan will run for all data in the table.",
@@ -1924,7 +1940,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/dataplex/datascans",
-  version: "2026.04.04.1",
+  version: "2026.04.04.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -1964,6 +1980,11 @@ export const model = {
     {
       toVersion: "2026.04.04.1",
       description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.04.2",
+      description: "Added: executionIdentity",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },
   ],
@@ -2022,6 +2043,9 @@ export const model = {
         }
         if (g["displayName"] !== undefined) {
           body["displayName"] = g["displayName"];
+        }
+        if (g["executionIdentity"] !== undefined) {
+          body["executionIdentity"] = g["executionIdentity"];
         }
         if (g["executionSpec"] !== undefined) {
           body["executionSpec"] = g["executionSpec"];
@@ -2152,6 +2176,9 @@ export const model = {
         }
         if (g["displayName"] !== undefined) {
           body["displayName"] = g["displayName"];
+        }
+        if (g["executionIdentity"] !== undefined) {
+          body["executionIdentity"] = g["executionIdentity"];
         }
         if (g["executionSpec"] !== undefined) {
           body["executionSpec"] = g["executionSpec"];
