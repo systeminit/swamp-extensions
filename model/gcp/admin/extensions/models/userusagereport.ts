@@ -78,7 +78,7 @@ const StateSchema = z.object({
       boolValue: z.boolean(),
       datetimeValue: z.string(),
       intValue: z.string(),
-      msgValue: z.array(z.record(z.string(), z.unknown())),
+      msgValue: z.array(z.unknown()),
       name: z.string(),
       stringValue: z.string(),
     })),
@@ -101,7 +101,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/admin/userusagereport",
-  version: "2026.04.03.3",
+  version: "2026.04.04.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -125,6 +125,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.3",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.04.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

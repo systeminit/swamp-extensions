@@ -122,7 +122,7 @@ const GlobalArgsSchema = z.object({
         operator: z.enum(["OPERATOR_UNSPECIFIED", "IN", "NOT_IN"]).describe(
           "The operator to use for the node resources specified in the `values` parameter.",
         ).optional(),
-        values: z.array(z.string()).describe(
+        values: z.array(z.unknown()).describe(
           "Corresponds to the label values of Node resource.",
         ).optional(),
       })).describe(
@@ -279,7 +279,7 @@ const StateSchema = z.object({
       nodeAffinities: z.array(z.object({
         key: z.string(),
         operator: z.string(),
-        values: z.array(z.string()),
+        values: z.array(z.unknown()),
       })),
       onHostMaintenance: z.string(),
       restartType: z.string(),
@@ -399,7 +399,7 @@ const InputsSchema = z.object({
         operator: z.enum(["OPERATOR_UNSPECIFIED", "IN", "NOT_IN"]).describe(
           "The operator to use for the node resources specified in the `values` parameter.",
         ).optional(),
-        values: z.array(z.string()).describe(
+        values: z.array(z.unknown()).describe(
           "Corresponds to the label values of Node resource.",
         ).optional(),
       })).describe(
@@ -530,7 +530,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/vmmigration/sources-migratingvms-clonejobs",
-  version: "2026.04.03.3",
+  version: "2026.04.04.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -554,6 +554,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.3",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.04.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

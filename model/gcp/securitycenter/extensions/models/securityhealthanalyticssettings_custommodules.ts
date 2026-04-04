@@ -100,16 +100,16 @@ const GlobalArgsSchema = z.object({
         name: z.string().describe("Name of the property for the custom output.")
           .optional(),
         valueExpression: z.object({
-          description: z.string().describe(
+          description: z.unknown().describe(
             "Optional. Description of the expression. This is a longer text which describes the expression, e.g. when hovered over it in a UI.",
           ).optional(),
-          expression: z.string().describe(
+          expression: z.unknown().describe(
             "Textual representation of an expression in Common Expression Language syntax.",
           ).optional(),
-          location: z.string().describe(
+          location: z.unknown().describe(
             "Optional. String indicating the location of the expression for error reporting, e.g. a file name and a position in the file.",
           ).optional(),
-          title: z.string().describe(
+          title: z.unknown().describe(
             "Optional. Title for the expression, i.e. a short string describing its purpose. This can be used e.g. in UIs which allow to enter the expression.",
           ).optional(),
         }).describe(
@@ -183,10 +183,10 @@ const StateSchema = z.object({
       properties: z.array(z.object({
         name: z.string(),
         valueExpression: z.object({
-          description: z.string(),
-          expression: z.string(),
-          location: z.string(),
-          title: z.string(),
+          description: z.unknown(),
+          expression: z.unknown(),
+          location: z.unknown(),
+          title: z.unknown(),
         }),
       })),
     }),
@@ -225,16 +225,16 @@ const InputsSchema = z.object({
         name: z.string().describe("Name of the property for the custom output.")
           .optional(),
         valueExpression: z.object({
-          description: z.string().describe(
+          description: z.unknown().describe(
             "Optional. Description of the expression. This is a longer text which describes the expression, e.g. when hovered over it in a UI.",
           ).optional(),
-          expression: z.string().describe(
+          expression: z.unknown().describe(
             "Textual representation of an expression in Common Expression Language syntax.",
           ).optional(),
-          location: z.string().describe(
+          location: z.unknown().describe(
             "Optional. String indicating the location of the expression for error reporting, e.g. a file name and a position in the file.",
           ).optional(),
-          title: z.string().describe(
+          title: z.unknown().describe(
             "Optional. Title for the expression, i.e. a short string describing its purpose. This can be used e.g. in UIs which allow to enter the expression.",
           ).optional(),
         }).describe(
@@ -303,7 +303,7 @@ const InputsSchema = z.object({
 export const model = {
   type:
     "@swamp/gcp/securitycenter/securityhealthanalyticssettings-custommodules",
-  version: "2026.04.03.3",
+  version: "2026.04.04.1",
   upgrades: [
     {
       toVersion: "2026.04.01.2",
@@ -327,6 +327,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.3",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.04.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

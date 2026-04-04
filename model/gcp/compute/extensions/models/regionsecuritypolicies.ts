@@ -149,16 +149,7 @@ const GlobalArgsSchema = z.object({
           .describe(
             "The name must be 1-63 characters long, and comply withRFC1035. The name must be unique within the security policy.",
           ).optional(),
-        trafficGranularityConfigs: z.array(z.object({
-          enableEachUniqueValue: z.boolean().describe(
-            "If enabled, traffic matching each unique value for the specified type constitutes a separate traffic unit. It can only be set to true if `value` is empty.",
-          ).optional(),
-          type: z.enum(["HTTP_HEADER_HOST", "HTTP_PATH", "UNSPECIFIED_TYPE"])
-            .describe("Type of this configuration.").optional(),
-          value: z.string().describe(
-            "Requests that match this value constitute a granular traffic unit.",
-          ).optional(),
-        })).describe(
+        trafficGranularityConfigs: z.array(z.unknown()).describe(
           "Configuration options for enabling Adaptive Protection to operate on specified granular traffic units.",
         ).optional(),
       })).describe(
@@ -244,9 +235,9 @@ const GlobalArgsSchema = z.object({
     ).optional(),
     headerAction: z.object({
       requestHeadersToAdds: z.array(z.object({
-        headerName: z.string().describe("The name of the header to set.")
+        headerName: z.unknown().describe("The name of the header to set.")
           .optional(),
-        headerValue: z.string().describe(
+        headerValue: z.unknown().describe(
           "The value to set the named header to.",
         ).optional(),
       })).describe(
@@ -258,7 +249,7 @@ const GlobalArgsSchema = z.object({
     ).optional(),
     match: z.object({
       config: z.object({
-        srcIpRanges: z.array(z.string()).describe(
+        srcIpRanges: z.array(z.unknown()).describe(
           "CIDR IP address range. Maximum number of src_ip_ranges allowed is 10.",
         ).optional(),
       }).optional(),
@@ -280,10 +271,10 @@ const GlobalArgsSchema = z.object({
       ).optional(),
       exprOptions: z.object({
         recaptchaOptions: z.object({
-          actionTokenSiteKeys: z.array(z.string()).describe(
+          actionTokenSiteKeys: z.unknown().describe(
             "A list of site keys to be used during the validation of reCAPTCHA action-tokens. The provided site keys need to be created from reCAPTCHA API under the same project where the security policy is created.",
           ).optional(),
-          sessionTokenSiteKeys: z.array(z.string()).describe(
+          sessionTokenSiteKeys: z.unknown().describe(
             "A list of site keys to be used during the validation of reCAPTCHA session-tokens. The provided site keys need to be created from reCAPTCHA API under the same project where the security policy is created.",
           ).optional(),
         }).optional(),
@@ -317,10 +308,10 @@ const GlobalArgsSchema = z.object({
         "Two-letter ISO 3166-1 alpha-2 country code associated with the source IP address.",
       ).optional(),
       userDefinedFields: z.array(z.object({
-        name: z.string().describe(
+        name: z.unknown().describe(
           "Name of the user-defined field, as given in the definition.",
         ).optional(),
-        values: z.array(z.string()).describe(
+        values: z.unknown().describe(
           'Matching values of the field. Each element can be a 32-bit unsigned decimal or hexadecimal (starting with "0x") number (e.g. "64") or range (e.g. "0x400-0x7ff").',
         ).optional(),
       })).describe(
@@ -331,58 +322,22 @@ const GlobalArgsSchema = z.object({
     ).optional(),
     preconfiguredWafConfig: z.object({
       exclusions: z.array(z.object({
-        requestCookiesToExclude: z.array(z.object({
-          op: z.enum([
-            "CONTAINS",
-            "ENDS_WITH",
-            "EQUALS",
-            "EQUALS_ANY",
-            "STARTS_WITH",
-          ]).describe("The match operator for the field.").optional(),
-          val: z.string().describe("The value of the field.").optional(),
-        })).describe(
+        requestCookiesToExclude: z.unknown().describe(
           "A list of request cookie names whose value will be excluded from inspection during preconfigured WAF evaluation.",
         ).optional(),
-        requestHeadersToExclude: z.array(z.object({
-          op: z.enum([
-            "CONTAINS",
-            "ENDS_WITH",
-            "EQUALS",
-            "EQUALS_ANY",
-            "STARTS_WITH",
-          ]).describe("The match operator for the field.").optional(),
-          val: z.string().describe("The value of the field.").optional(),
-        })).describe(
+        requestHeadersToExclude: z.unknown().describe(
           "A list of request header names whose value will be excluded from inspection during preconfigured WAF evaluation.",
         ).optional(),
-        requestQueryParamsToExclude: z.array(z.object({
-          op: z.enum([
-            "CONTAINS",
-            "ENDS_WITH",
-            "EQUALS",
-            "EQUALS_ANY",
-            "STARTS_WITH",
-          ]).describe("The match operator for the field.").optional(),
-          val: z.string().describe("The value of the field.").optional(),
-        })).describe(
+        requestQueryParamsToExclude: z.unknown().describe(
           "A list of request query parameter names whose value will be excluded from inspection during preconfigured WAF evaluation. Note that the parameter can be in the query string or in the POST body.",
         ).optional(),
-        requestUrisToExclude: z.array(z.object({
-          op: z.enum([
-            "CONTAINS",
-            "ENDS_WITH",
-            "EQUALS",
-            "EQUALS_ANY",
-            "STARTS_WITH",
-          ]).describe("The match operator for the field.").optional(),
-          val: z.string().describe("The value of the field.").optional(),
-        })).describe(
+        requestUrisToExclude: z.unknown().describe(
           "A list of request URIs from the request line to be excluded from inspection during preconfigured WAF evaluation. When specifying this field, the query or fragment part should be excluded.",
         ).optional(),
-        targetRuleIds: z.array(z.string()).describe(
+        targetRuleIds: z.unknown().describe(
           "A list of target rule IDs under the WAF rule set to apply the preconfigured WAF exclusion. If omitted, it refers to all the rule IDs under the WAF rule set.",
         ).optional(),
-        targetRuleSet: z.string().describe(
+        targetRuleSet: z.unknown().describe(
           "Target WAF rule set to apply the preconfigured WAF exclusion.",
         ).optional(),
       })).describe(
@@ -426,22 +381,10 @@ const GlobalArgsSchema = z.object({
         'Determines the key to enforce the rate_limit_threshold on. Possible values are: - ALL: A single rate limit threshold is applied to all the requests matching this rule. This is the default value if "enforceOnKey" is not configured. - IP: The source IP address of the request is the key. Each IP has this limit enforced separately. - HTTP_HEADER: The value of the HTTP header whose name is configured under "enforceOnKeyName". The key value is truncated to the first 128 bytes of the header value. If no such header is present in the request, the key type defaults toALL. - XFF_IP: The first IP address (i.e. the originating client IP address) specified in the list of IPs under X-Forwarded-For HTTP header. If no such header is present or the value is not a valid IP, the key defaults to the source IP address of the request i.e. key type IP. - HTTP_COOKIE: The value of the HTTP cookie whose name is configured under "enforceOnKeyName". The key value is truncated to the first 128 bytes of the cookie value. If no such cookie is present in the request, the key type defaults toALL. - HTTP_PATH: The URL path of the HTTP request. The key value is truncated to the first 128 bytes. - SNI: Server name indication in the TLS session of the HTTPS request. The key value is truncated to the first 128 bytes. The key type defaults to ALL on a HTTP session. - REGION_CODE: The country/region from which the request originates. - TLS_JA3_FINGERPRINT: JA3 TLS/SSL fingerprint if the client connects using HTTPS, HTTP/2 or HTTP/3. If not available, the key type defaults to ALL. - USER_IP: The IP address of the originating client, which is resolved based on "userIpRequestHeaders" configured with the security policy. If there is no "userIpRequestHeaders" configuration or an IP address cannot be resolved from it, the key type defaults toIP. - TLS_JA4_FINGERPRINT: JA4 TLS/SSL fingerprint if the client connects using HTTPS, HTTP/2 or HTTP/3. If not available, the key type defaults to ALL. For "fairshare" action, this value is limited to ALL i.e. a single rate limit threshold is enforced for all the requests matching the rule.',
       ).optional(),
       enforceOnKeyConfigs: z.array(z.object({
-        enforceOnKeyName: z.string().describe(
+        enforceOnKeyName: z.unknown().describe(
           "Rate limit key name applicable only for the following key types: HTTP_HEADER -- Name of the HTTP header whose value is taken as the key value. HTTP_COOKIE -- Name of the HTTP cookie whose value is taken as the key value.",
         ).optional(),
-        enforceOnKeyType: z.enum([
-          "ALL",
-          "HTTP_COOKIE",
-          "HTTP_HEADER",
-          "HTTP_PATH",
-          "IP",
-          "REGION_CODE",
-          "SNI",
-          "TLS_JA3_FINGERPRINT",
-          "TLS_JA4_FINGERPRINT",
-          "USER_IP",
-          "XFF_IP",
-        ]).describe(
+        enforceOnKeyType: z.unknown().describe(
           'Determines the key to enforce the rate_limit_threshold on. Possible values are: - ALL: A single rate limit threshold is applied to all the requests matching this rule. This is the default value if "enforceOnKeyConfigs" is not configured. - IP: The source IP address of the request is the key. Each IP has this limit enforced separately. - HTTP_HEADER: The value of the HTTP header whose name is configured under "enforceOnKeyName". The key value is truncated to the first 128 bytes of the header value. If no such header is present in the request, the key type defaults toALL. - XFF_IP: The first IP address (i.e. the originating client IP address) specified in the list of IPs under X-Forwarded-For HTTP header. If no such header is present or the value is not a valid IP, the key defaults to the source IP address of the request i.e. key type IP. - HTTP_COOKIE: The value of the HTTP cookie whose name is configured under "enforceOnKeyName". The key value is truncated to the first 128 bytes of the cookie value. If no such cookie is present in the request, the key type defaults toALL. - HTTP_PATH: The URL path of the HTTP request. The key value is truncated to the first 128 bytes. - SNI: Server name indication in the TLS session of the HTTPS request. The key value is truncated to the first 128 bytes. The key type defaults to ALL on a HTTP session. - REGION_CODE: The country/region from which the request originates. - TLS_JA3_FINGERPRINT: JA3 TLS/SSL fingerprint if the client connects using HTTPS, HTTP/2 or HTTP/3. If not available, the key type defaults to ALL. - USER_IP: The IP address of the originating client, which is resolved based on "userIpRequestHeaders" configured with the security policy. If there is no "userIpRequestHeaders" configuration or an IP address cannot be resolved from it, the key type defaults toIP. - TLS_JA4_FINGERPRINT: JA4 TLS/SSL fingerprint if the client connects using HTTPS, HTTP/2 or HTTP/3. If not available, the key type defaults to ALL.',
         ).optional(),
       })).describe(
@@ -527,11 +470,7 @@ const StateSchema = z.object({
         detectionLoadThreshold: z.number(),
         detectionRelativeToBaselineQps: z.number(),
         name: z.string(),
-        trafficGranularityConfigs: z.array(z.object({
-          enableEachUniqueValue: z.boolean(),
-          type: z.string(),
-          value: z.string(),
-        })),
+        trafficGranularityConfigs: z.array(z.unknown()),
       })),
     }),
   }).optional(),
@@ -574,14 +513,14 @@ const StateSchema = z.object({
     description: z.string(),
     headerAction: z.object({
       requestHeadersToAdds: z.array(z.object({
-        headerName: z.string(),
-        headerValue: z.string(),
+        headerName: z.unknown(),
+        headerValue: z.unknown(),
       })),
     }),
     kind: z.string(),
     match: z.object({
       config: z.object({
-        srcIpRanges: z.array(z.string()),
+        srcIpRanges: z.array(z.unknown()),
       }),
       expr: z.object({
         description: z.string(),
@@ -591,8 +530,8 @@ const StateSchema = z.object({
       }),
       exprOptions: z.object({
         recaptchaOptions: z.object({
-          actionTokenSiteKeys: z.array(z.string()),
-          sessionTokenSiteKeys: z.array(z.string()),
+          actionTokenSiteKeys: z.unknown(),
+          sessionTokenSiteKeys: z.unknown(),
         }),
       }),
       versionedExpr: z.string(),
@@ -606,30 +545,18 @@ const StateSchema = z.object({
       srcPorts: z.array(z.string()),
       srcRegionCodes: z.array(z.string()),
       userDefinedFields: z.array(z.object({
-        name: z.string(),
-        values: z.array(z.string()),
+        name: z.unknown(),
+        values: z.unknown(),
       })),
     }),
     preconfiguredWafConfig: z.object({
       exclusions: z.array(z.object({
-        requestCookiesToExclude: z.array(z.object({
-          op: z.string(),
-          val: z.string(),
-        })),
-        requestHeadersToExclude: z.array(z.object({
-          op: z.string(),
-          val: z.string(),
-        })),
-        requestQueryParamsToExclude: z.array(z.object({
-          op: z.string(),
-          val: z.string(),
-        })),
-        requestUrisToExclude: z.array(z.object({
-          op: z.string(),
-          val: z.string(),
-        })),
-        targetRuleIds: z.array(z.string()),
-        targetRuleSet: z.string(),
+        requestCookiesToExclude: z.unknown(),
+        requestHeadersToExclude: z.unknown(),
+        requestQueryParamsToExclude: z.unknown(),
+        requestUrisToExclude: z.unknown(),
+        targetRuleIds: z.unknown(),
+        targetRuleSet: z.unknown(),
       })),
     }),
     preview: z.boolean(),
@@ -643,8 +570,8 @@ const StateSchema = z.object({
       conformAction: z.string(),
       enforceOnKey: z.string(),
       enforceOnKeyConfigs: z.array(z.object({
-        enforceOnKeyName: z.string(),
-        enforceOnKeyType: z.string(),
+        enforceOnKeyName: z.unknown(),
+        enforceOnKeyType: z.unknown(),
       })),
       enforceOnKeyName: z.string(),
       exceedAction: z.string(),
@@ -697,16 +624,7 @@ const InputsSchema = z.object({
           .describe(
             "The name must be 1-63 characters long, and comply withRFC1035. The name must be unique within the security policy.",
           ).optional(),
-        trafficGranularityConfigs: z.array(z.object({
-          enableEachUniqueValue: z.boolean().describe(
-            "If enabled, traffic matching each unique value for the specified type constitutes a separate traffic unit. It can only be set to true if `value` is empty.",
-          ).optional(),
-          type: z.enum(["HTTP_HEADER_HOST", "HTTP_PATH", "UNSPECIFIED_TYPE"])
-            .describe("Type of this configuration.").optional(),
-          value: z.string().describe(
-            "Requests that match this value constitute a granular traffic unit.",
-          ).optional(),
-        })).describe(
+        trafficGranularityConfigs: z.array(z.unknown()).describe(
           "Configuration options for enabling Adaptive Protection to operate on specified granular traffic units.",
         ).optional(),
       })).describe(
@@ -792,9 +710,9 @@ const InputsSchema = z.object({
     ).optional(),
     headerAction: z.object({
       requestHeadersToAdds: z.array(z.object({
-        headerName: z.string().describe("The name of the header to set.")
+        headerName: z.unknown().describe("The name of the header to set.")
           .optional(),
-        headerValue: z.string().describe(
+        headerValue: z.unknown().describe(
           "The value to set the named header to.",
         ).optional(),
       })).describe(
@@ -806,7 +724,7 @@ const InputsSchema = z.object({
     ).optional(),
     match: z.object({
       config: z.object({
-        srcIpRanges: z.array(z.string()).describe(
+        srcIpRanges: z.array(z.unknown()).describe(
           "CIDR IP address range. Maximum number of src_ip_ranges allowed is 10.",
         ).optional(),
       }).optional(),
@@ -828,10 +746,10 @@ const InputsSchema = z.object({
       ).optional(),
       exprOptions: z.object({
         recaptchaOptions: z.object({
-          actionTokenSiteKeys: z.array(z.string()).describe(
+          actionTokenSiteKeys: z.unknown().describe(
             "A list of site keys to be used during the validation of reCAPTCHA action-tokens. The provided site keys need to be created from reCAPTCHA API under the same project where the security policy is created.",
           ).optional(),
-          sessionTokenSiteKeys: z.array(z.string()).describe(
+          sessionTokenSiteKeys: z.unknown().describe(
             "A list of site keys to be used during the validation of reCAPTCHA session-tokens. The provided site keys need to be created from reCAPTCHA API under the same project where the security policy is created.",
           ).optional(),
         }).optional(),
@@ -865,10 +783,10 @@ const InputsSchema = z.object({
         "Two-letter ISO 3166-1 alpha-2 country code associated with the source IP address.",
       ).optional(),
       userDefinedFields: z.array(z.object({
-        name: z.string().describe(
+        name: z.unknown().describe(
           "Name of the user-defined field, as given in the definition.",
         ).optional(),
-        values: z.array(z.string()).describe(
+        values: z.unknown().describe(
           'Matching values of the field. Each element can be a 32-bit unsigned decimal or hexadecimal (starting with "0x") number (e.g. "64") or range (e.g. "0x400-0x7ff").',
         ).optional(),
       })).describe(
@@ -879,58 +797,22 @@ const InputsSchema = z.object({
     ).optional(),
     preconfiguredWafConfig: z.object({
       exclusions: z.array(z.object({
-        requestCookiesToExclude: z.array(z.object({
-          op: z.enum([
-            "CONTAINS",
-            "ENDS_WITH",
-            "EQUALS",
-            "EQUALS_ANY",
-            "STARTS_WITH",
-          ]).describe("The match operator for the field.").optional(),
-          val: z.string().describe("The value of the field.").optional(),
-        })).describe(
+        requestCookiesToExclude: z.unknown().describe(
           "A list of request cookie names whose value will be excluded from inspection during preconfigured WAF evaluation.",
         ).optional(),
-        requestHeadersToExclude: z.array(z.object({
-          op: z.enum([
-            "CONTAINS",
-            "ENDS_WITH",
-            "EQUALS",
-            "EQUALS_ANY",
-            "STARTS_WITH",
-          ]).describe("The match operator for the field.").optional(),
-          val: z.string().describe("The value of the field.").optional(),
-        })).describe(
+        requestHeadersToExclude: z.unknown().describe(
           "A list of request header names whose value will be excluded from inspection during preconfigured WAF evaluation.",
         ).optional(),
-        requestQueryParamsToExclude: z.array(z.object({
-          op: z.enum([
-            "CONTAINS",
-            "ENDS_WITH",
-            "EQUALS",
-            "EQUALS_ANY",
-            "STARTS_WITH",
-          ]).describe("The match operator for the field.").optional(),
-          val: z.string().describe("The value of the field.").optional(),
-        })).describe(
+        requestQueryParamsToExclude: z.unknown().describe(
           "A list of request query parameter names whose value will be excluded from inspection during preconfigured WAF evaluation. Note that the parameter can be in the query string or in the POST body.",
         ).optional(),
-        requestUrisToExclude: z.array(z.object({
-          op: z.enum([
-            "CONTAINS",
-            "ENDS_WITH",
-            "EQUALS",
-            "EQUALS_ANY",
-            "STARTS_WITH",
-          ]).describe("The match operator for the field.").optional(),
-          val: z.string().describe("The value of the field.").optional(),
-        })).describe(
+        requestUrisToExclude: z.unknown().describe(
           "A list of request URIs from the request line to be excluded from inspection during preconfigured WAF evaluation. When specifying this field, the query or fragment part should be excluded.",
         ).optional(),
-        targetRuleIds: z.array(z.string()).describe(
+        targetRuleIds: z.unknown().describe(
           "A list of target rule IDs under the WAF rule set to apply the preconfigured WAF exclusion. If omitted, it refers to all the rule IDs under the WAF rule set.",
         ).optional(),
-        targetRuleSet: z.string().describe(
+        targetRuleSet: z.unknown().describe(
           "Target WAF rule set to apply the preconfigured WAF exclusion.",
         ).optional(),
       })).describe(
@@ -974,22 +856,10 @@ const InputsSchema = z.object({
         'Determines the key to enforce the rate_limit_threshold on. Possible values are: - ALL: A single rate limit threshold is applied to all the requests matching this rule. This is the default value if "enforceOnKey" is not configured. - IP: The source IP address of the request is the key. Each IP has this limit enforced separately. - HTTP_HEADER: The value of the HTTP header whose name is configured under "enforceOnKeyName". The key value is truncated to the first 128 bytes of the header value. If no such header is present in the request, the key type defaults toALL. - XFF_IP: The first IP address (i.e. the originating client IP address) specified in the list of IPs under X-Forwarded-For HTTP header. If no such header is present or the value is not a valid IP, the key defaults to the source IP address of the request i.e. key type IP. - HTTP_COOKIE: The value of the HTTP cookie whose name is configured under "enforceOnKeyName". The key value is truncated to the first 128 bytes of the cookie value. If no such cookie is present in the request, the key type defaults toALL. - HTTP_PATH: The URL path of the HTTP request. The key value is truncated to the first 128 bytes. - SNI: Server name indication in the TLS session of the HTTPS request. The key value is truncated to the first 128 bytes. The key type defaults to ALL on a HTTP session. - REGION_CODE: The country/region from which the request originates. - TLS_JA3_FINGERPRINT: JA3 TLS/SSL fingerprint if the client connects using HTTPS, HTTP/2 or HTTP/3. If not available, the key type defaults to ALL. - USER_IP: The IP address of the originating client, which is resolved based on "userIpRequestHeaders" configured with the security policy. If there is no "userIpRequestHeaders" configuration or an IP address cannot be resolved from it, the key type defaults toIP. - TLS_JA4_FINGERPRINT: JA4 TLS/SSL fingerprint if the client connects using HTTPS, HTTP/2 or HTTP/3. If not available, the key type defaults to ALL. For "fairshare" action, this value is limited to ALL i.e. a single rate limit threshold is enforced for all the requests matching the rule.',
       ).optional(),
       enforceOnKeyConfigs: z.array(z.object({
-        enforceOnKeyName: z.string().describe(
+        enforceOnKeyName: z.unknown().describe(
           "Rate limit key name applicable only for the following key types: HTTP_HEADER -- Name of the HTTP header whose value is taken as the key value. HTTP_COOKIE -- Name of the HTTP cookie whose value is taken as the key value.",
         ).optional(),
-        enforceOnKeyType: z.enum([
-          "ALL",
-          "HTTP_COOKIE",
-          "HTTP_HEADER",
-          "HTTP_PATH",
-          "IP",
-          "REGION_CODE",
-          "SNI",
-          "TLS_JA3_FINGERPRINT",
-          "TLS_JA4_FINGERPRINT",
-          "USER_IP",
-          "XFF_IP",
-        ]).describe(
+        enforceOnKeyType: z.unknown().describe(
           'Determines the key to enforce the rate_limit_threshold on. Possible values are: - ALL: A single rate limit threshold is applied to all the requests matching this rule. This is the default value if "enforceOnKeyConfigs" is not configured. - IP: The source IP address of the request is the key. Each IP has this limit enforced separately. - HTTP_HEADER: The value of the HTTP header whose name is configured under "enforceOnKeyName". The key value is truncated to the first 128 bytes of the header value. If no such header is present in the request, the key type defaults toALL. - XFF_IP: The first IP address (i.e. the originating client IP address) specified in the list of IPs under X-Forwarded-For HTTP header. If no such header is present or the value is not a valid IP, the key defaults to the source IP address of the request i.e. key type IP. - HTTP_COOKIE: The value of the HTTP cookie whose name is configured under "enforceOnKeyName". The key value is truncated to the first 128 bytes of the cookie value. If no such cookie is present in the request, the key type defaults toALL. - HTTP_PATH: The URL path of the HTTP request. The key value is truncated to the first 128 bytes. - SNI: Server name indication in the TLS session of the HTTPS request. The key value is truncated to the first 128 bytes. The key type defaults to ALL on a HTTP session. - REGION_CODE: The country/region from which the request originates. - TLS_JA3_FINGERPRINT: JA3 TLS/SSL fingerprint if the client connects using HTTPS, HTTP/2 or HTTP/3. If not available, the key type defaults to ALL. - USER_IP: The IP address of the originating client, which is resolved based on "userIpRequestHeaders" configured with the security policy. If there is no "userIpRequestHeaders" configuration or an IP address cannot be resolved from it, the key type defaults toIP. - TLS_JA4_FINGERPRINT: JA4 TLS/SSL fingerprint if the client connects using HTTPS, HTTP/2 or HTTP/3. If not available, the key type defaults to ALL.',
         ).optional(),
       })).describe(
@@ -1063,7 +933,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/compute/regionsecuritypolicies",
-  version: "2026.04.03.3",
+  version: "2026.04.04.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -1087,6 +957,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.3",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.04.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

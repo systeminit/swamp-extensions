@@ -71,10 +71,7 @@ const StateSchema = z.object({
   id: z.string(),
   messages: z.array(z.object({
     classificationLabelValues: z.array(z.object({
-      fields: z.array(z.object({
-        fieldId: z.string(),
-        selection: z.string(),
-      })),
+      fields: z.array(z.unknown()),
       labelId: z.string(),
     })),
     historyId: z.string(),
@@ -89,8 +86,8 @@ const StateSchema = z.object({
       }),
       filename: z.string(),
       headers: z.array(z.object({
-        name: z.string(),
-        value: z.string(),
+        name: z.unknown(),
+        value: z.unknown(),
       })),
       mimeType: z.string(),
       partId: z.string(),
@@ -112,7 +109,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/gmail/users-threads",
-  version: "2026.04.03.3",
+  version: "2026.04.04.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -136,6 +133,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.3",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.04.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

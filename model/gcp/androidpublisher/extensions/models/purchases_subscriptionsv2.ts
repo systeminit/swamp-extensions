@@ -74,9 +74,9 @@ const StateSchema = z.object({
       priceChangeDetails: z.object({
         expectedNewPriceChargeTime: z.string(),
         newPrice: z.object({
-          currencyCode: z.string(),
-          nanos: z.number(),
-          units: z.string(),
+          currencyCode: z.unknown(),
+          nanos: z.unknown(),
+          units: z.unknown(),
         }),
         priceChangeMode: z.string(),
         priceChangeState: z.string(),
@@ -84,9 +84,9 @@ const StateSchema = z.object({
       priceStepUpConsentDetails: z.object({
         consentDeadlineTime: z.string(),
         newPrice: z.object({
-          currencyCode: z.string(),
-          nanos: z.number(),
-          units: z.string(),
+          currencyCode: z.unknown(),
+          nanos: z.unknown(),
+          units: z.unknown(),
         }),
         state: z.string(),
       }),
@@ -165,7 +165,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/androidpublisher/purchases-subscriptionsv2",
-  version: "2026.04.03.3",
+  version: "2026.04.04.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -189,6 +189,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.3",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.04.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

@@ -108,40 +108,28 @@ const GlobalArgsSchema = z.object({
     ).optional(),
     listPopulationClauses: z.array(z.object({
       terms: z.array(z.object({
-        contains: z.boolean().describe(
+        contains: z.unknown().describe(
           "Will be true if the term should check if the user is in the list and false if the term should check if the user is not in the list. This field is only relevant when type is set to LIST_MEMBERSHIP_TERM. False by default.",
         ).optional(),
-        negation: z.boolean().describe(
+        negation: z.unknown().describe(
           "Whether to negate the comparison result of this term during rule evaluation. This field is only relevant when type is left unset or set to CUSTOM_VARIABLE_TERM or REFERRER_TERM.",
         ).optional(),
-        operator: z.enum([
-          "NUM_EQUALS",
-          "NUM_LESS_THAN",
-          "NUM_LESS_THAN_EQUAL",
-          "NUM_GREATER_THAN",
-          "NUM_GREATER_THAN_EQUAL",
-          "STRING_EQUALS",
-          "STRING_CONTAINS",
-        ]).describe(
+        operator: z.unknown().describe(
           "Comparison operator of this term. This field is only relevant when type is left unset or set to CUSTOM_VARIABLE_TERM or REFERRER_TERM.",
         ).optional(),
-        remarketingListId: z.string().describe(
+        remarketingListId: z.unknown().describe(
           "ID of the list in question. This field is only relevant when type is set to LIST_MEMBERSHIP_TERM.",
         ).optional(),
-        type: z.enum([
-          "CUSTOM_VARIABLE_TERM",
-          "LIST_MEMBERSHIP_TERM",
-          "REFERRER_TERM",
-        ]).describe(
+        type: z.unknown().describe(
           "List population term type determines the applicable fields in this object. If left unset or set to CUSTOM_VARIABLE_TERM, then variableName, variableFriendlyName, operator, value, and negation are applicable. If set to LIST_MEMBERSHIP_TERM then remarketingListId and contains are applicable. If set to REFERRER_TERM then operator, value, and negation are applicable.",
         ).optional(),
-        value: z.string().describe(
+        value: z.unknown().describe(
           "Literal to compare the variable to. This field is only relevant when type is left unset or set to CUSTOM_VARIABLE_TERM or REFERRER_TERM.",
         ).optional(),
-        variableFriendlyName: z.string().describe(
+        variableFriendlyName: z.unknown().describe(
           "Friendly name of this term's variable. This is a read-only, auto-generated field. This field is only relevant when type is left unset or set to CUSTOM_VARIABLE_TERM.",
         ).optional(),
-        variableName: z.string().describe(
+        variableName: z.unknown().describe(
           "Name of the variable (U1, U2, etc.) being compared in this term. This field is only relevant when type is set to null, CUSTOM_VARIABLE_TERM or REFERRER_TERM.",
         ).optional(),
       })).describe(
@@ -200,14 +188,14 @@ const StateSchema = z.object({
     floodlightActivityName: z.string(),
     listPopulationClauses: z.array(z.object({
       terms: z.array(z.object({
-        contains: z.boolean(),
-        negation: z.boolean(),
-        operator: z.string(),
-        remarketingListId: z.string(),
-        type: z.string(),
-        value: z.string(),
-        variableFriendlyName: z.string(),
-        variableName: z.string(),
+        contains: z.unknown(),
+        negation: z.unknown(),
+        operator: z.unknown(),
+        remarketingListId: z.unknown(),
+        type: z.unknown(),
+        value: z.unknown(),
+        variableFriendlyName: z.unknown(),
+        variableName: z.unknown(),
       })),
     })),
   }).optional(),
@@ -263,40 +251,28 @@ const InputsSchema = z.object({
     ).optional(),
     listPopulationClauses: z.array(z.object({
       terms: z.array(z.object({
-        contains: z.boolean().describe(
+        contains: z.unknown().describe(
           "Will be true if the term should check if the user is in the list and false if the term should check if the user is not in the list. This field is only relevant when type is set to LIST_MEMBERSHIP_TERM. False by default.",
         ).optional(),
-        negation: z.boolean().describe(
+        negation: z.unknown().describe(
           "Whether to negate the comparison result of this term during rule evaluation. This field is only relevant when type is left unset or set to CUSTOM_VARIABLE_TERM or REFERRER_TERM.",
         ).optional(),
-        operator: z.enum([
-          "NUM_EQUALS",
-          "NUM_LESS_THAN",
-          "NUM_LESS_THAN_EQUAL",
-          "NUM_GREATER_THAN",
-          "NUM_GREATER_THAN_EQUAL",
-          "STRING_EQUALS",
-          "STRING_CONTAINS",
-        ]).describe(
+        operator: z.unknown().describe(
           "Comparison operator of this term. This field is only relevant when type is left unset or set to CUSTOM_VARIABLE_TERM or REFERRER_TERM.",
         ).optional(),
-        remarketingListId: z.string().describe(
+        remarketingListId: z.unknown().describe(
           "ID of the list in question. This field is only relevant when type is set to LIST_MEMBERSHIP_TERM.",
         ).optional(),
-        type: z.enum([
-          "CUSTOM_VARIABLE_TERM",
-          "LIST_MEMBERSHIP_TERM",
-          "REFERRER_TERM",
-        ]).describe(
+        type: z.unknown().describe(
           "List population term type determines the applicable fields in this object. If left unset or set to CUSTOM_VARIABLE_TERM, then variableName, variableFriendlyName, operator, value, and negation are applicable. If set to LIST_MEMBERSHIP_TERM then remarketingListId and contains are applicable. If set to REFERRER_TERM then operator, value, and negation are applicable.",
         ).optional(),
-        value: z.string().describe(
+        value: z.unknown().describe(
           "Literal to compare the variable to. This field is only relevant when type is left unset or set to CUSTOM_VARIABLE_TERM or REFERRER_TERM.",
         ).optional(),
-        variableFriendlyName: z.string().describe(
+        variableFriendlyName: z.unknown().describe(
           "Friendly name of this term's variable. This is a read-only, auto-generated field. This field is only relevant when type is left unset or set to CUSTOM_VARIABLE_TERM.",
         ).optional(),
-        variableName: z.string().describe(
+        variableName: z.unknown().describe(
           "Name of the variable (U1, U2, etc.) being compared in this term. This field is only relevant when type is set to null, CUSTOM_VARIABLE_TERM or REFERRER_TERM.",
         ).optional(),
       })).describe(
@@ -336,7 +312,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/dfareporting/remarketinglists",
-  version: "2026.04.03.3",
+  version: "2026.04.04.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -360,6 +336,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.3",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.04.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

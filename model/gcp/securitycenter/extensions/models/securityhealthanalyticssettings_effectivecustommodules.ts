@@ -49,10 +49,10 @@ const StateSchema = z.object({
       properties: z.array(z.object({
         name: z.string(),
         valueExpression: z.object({
-          description: z.string(),
-          expression: z.string(),
-          location: z.string(),
-          title: z.string(),
+          description: z.unknown(),
+          expression: z.unknown(),
+          location: z.unknown(),
+          title: z.unknown(),
         }),
       })),
     }),
@@ -86,7 +86,7 @@ const InputsSchema = z.object({
 export const model = {
   type:
     "@swamp/gcp/securitycenter/securityhealthanalyticssettings-effectivecustommodules",
-  version: "2026.04.03.3",
+  version: "2026.04.04.1",
   upgrades: [
     {
       toVersion: "2026.04.01.2",
@@ -110,6 +110,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.3",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.04.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

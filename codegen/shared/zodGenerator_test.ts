@@ -342,7 +342,63 @@ Deno.test("generateZodSchemas - extracted schemas from titled nested objects", a
 });
 
 // ---------------------------------------------------------------------------
-// 13. Unit test: JSON type coerced to string
+// 13. Unit test: maxDepth truncates deeply nested schemas
+// ---------------------------------------------------------------------------
+
+Deno.test("generateZodSchemas - maxDepth truncates at specified depth", () => {
+  // Build a 4-level deep schema: top → level1 → level2 → level3
+  const props: Record<string, CfProperty> = {
+    top: {
+      type: "object",
+      properties: {
+        level1: {
+          type: "object",
+          properties: {
+            level2: {
+              type: "object",
+              properties: {
+                level3: { type: "string" },
+              },
+            },
+          },
+        },
+      },
+    },
+  };
+  const cfSchema = makeCfSchema({
+    properties: props,
+    required: ["top"],
+  });
+
+  // With maxDepth: 2, depth 0 (top) and depth 1 (level1) are generated,
+  // but depth 2 (level2) should be z.unknown()
+  const result = generateZodSchemas(
+    props,
+    props,
+    cfSchema,
+    makeOnlyProperties(),
+    { maxDepth: 2 },
+  );
+
+  // Input schema should contain level1 but level2 should be z.unknown()
+  assertEquals(result.inputSchemaBody.includes("level1"), true);
+  assertEquals(result.inputSchemaBody.includes("z.unknown()"), true);
+  // level3 should NOT appear since it's beyond maxDepth
+  assertEquals(result.inputSchemaBody.includes("level3"), false);
+
+  // Without maxDepth, level3 should appear
+  const fullResult = generateZodSchemas(
+    props,
+    props,
+    cfSchema,
+    makeOnlyProperties(),
+  );
+  assertEquals(fullResult.inputSchemaBody.includes("level3"), true);
+  assertEquals(fullResult.inputSchemaBody.includes("z.unknown()"), false);
+});
+
+// ---------------------------------------------------------------------------
+// 14. Unit test: JSON type coerced to string
 // ---------------------------------------------------------------------------
 
 Deno.test("generateZodSchemas - json type coerced to string", () => {

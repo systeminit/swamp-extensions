@@ -46,6 +46,12 @@ interface WidenedCfProperty {
   defName?: string;
 }
 
+export interface ZodGeneratorOptions {
+  /** Maximum recursion depth for nested schemas. Beyond this depth, z.unknown() is emitted.
+   *  When undefined (default), there is no limit. */
+  maxDepth?: number;
+}
+
 /**
  * Generate Zod schemas from domain and resource properties.
  */
@@ -54,9 +60,11 @@ export function generateZodSchemas(
   resourceValueProperties: Record<string, CfProperty>,
   cfSchema: CfSchema,
   onlyProperties: OnlyProperties,
+  options?: ZodGeneratorOptions,
 ): ZodGeneratorResult {
   const extractedSchemas: ExtractedSchema[] = [];
   const seenTitles = new Set<string>();
+  const maxDepth = options?.maxDepth;
 
   // Generate input schema body (domain properties)
   const inputLines: string[] = [];
@@ -72,6 +80,7 @@ export function generateZodSchemas(
       0,
       extractedSchemas,
       seenTitles,
+      maxDepth,
     );
     const desc = getDescription(normalized);
     let line = `  ${name}: ${expression}`;
@@ -101,6 +110,7 @@ export function generateZodSchemas(
       0,
       extractedSchemas,
       seenTitles,
+      maxDepth,
     );
     let line = `  ${name}: ${expression}`;
     if (!isPrimaryId) {
@@ -141,7 +151,12 @@ function generateZodForProperty(
   depth: number,
   extractedSchemas: ExtractedSchema[],
   seenTitles: Set<string>,
+  maxDepth?: number,
 ): { expression: string } {
+  if (maxDepth !== undefined && depth >= maxDepth) {
+    return { expression: "z.unknown()" };
+  }
+
   const prop = cfProp as WidenedCfProperty;
 
   const type = prop.type;
@@ -225,6 +240,7 @@ function generateZodForProperty(
         depth + 1,
         extractedSchemas,
         seenTitles,
+        maxDepth,
       );
       return { expression: `z.array(${itemResult.expression})` };
     }
@@ -236,6 +252,7 @@ function generateZodForProperty(
         depth,
         extractedSchemas,
         seenTitles,
+        maxDepth,
       );
     }
 
@@ -255,6 +272,7 @@ function generateZodForProperty(
               depth,
               extractedSchemas,
               seenTitles,
+              maxDepth,
             );
           }
         }
@@ -266,6 +284,7 @@ function generateZodForProperty(
             depth,
             extractedSchemas,
             seenTitles,
+            maxDepth,
           );
         }
         return { expression: "z.unknown()" };
@@ -285,7 +304,12 @@ function generateSimplifiedZodForProperty(
   depth: number,
   extractedSchemas: ExtractedSchema[],
   seenTitles: Set<string>,
+  maxDepth?: number,
 ): { expression: string } {
+  if (maxDepth !== undefined && depth >= maxDepth) {
+    return { expression: "z.unknown()" };
+  }
+
   const prop = cfProp as WidenedCfProperty;
   const type = prop.type;
 
@@ -315,6 +339,7 @@ function generateSimplifiedZodForProperty(
         depth + 1,
         extractedSchemas,
         seenTitles,
+        maxDepth,
       );
       return { expression: `z.array(${itemResult.expression})` };
     }
@@ -352,6 +377,7 @@ function generateSimplifiedZodForProperty(
             depth + 1,
             extractedSchemas,
             seenTitles,
+            maxDepth,
           );
           // Use 4 spaces for nested object children to distinguish from top-level
           lines.push(`    ${childName}: ${childResult.expression},`);
@@ -374,6 +400,7 @@ function generateSimplifiedZodForProperty(
               depth,
               extractedSchemas,
               seenTitles,
+              maxDepth,
             );
           }
         }
@@ -384,6 +411,7 @@ function generateSimplifiedZodForProperty(
             depth,
             extractedSchemas,
             seenTitles,
+            maxDepth,
           );
         }
         return { expression: "z.unknown()" };
@@ -399,6 +427,7 @@ function generateObjectZod(
   depth: number,
   extractedSchemas: ExtractedSchema[],
   seenTitles: Set<string>,
+  maxDepth?: number,
 ): { expression: string } {
   // patternProperties or additionalProperties with no regular properties → z.record()
   if (
@@ -419,6 +448,7 @@ function generateObjectZod(
             depth + 1,
             extractedSchemas,
             seenTitles,
+            maxDepth,
           );
           valueSchema = result.expression;
         }
@@ -438,6 +468,7 @@ function generateObjectZod(
           depth + 1,
           extractedSchemas,
           seenTitles,
+          maxDepth,
         );
         valueSchema = result.expression;
       }
@@ -474,6 +505,7 @@ function generateObjectZod(
         depth + 1,
         extractedSchemas,
         seenTitles,
+        maxDepth,
       );
 
       const declaration =
@@ -492,6 +524,7 @@ function generateObjectZod(
       depth + 1,
       extractedSchemas,
       seenTitles,
+      maxDepth,
     );
     return { expression: `z.object({\n${body}\n})` };
   }
@@ -506,6 +539,7 @@ function generateObjectBody(
   depth: number,
   extractedSchemas: ExtractedSchema[],
   seenTitles: Set<string>,
+  maxDepth?: number,
 ): string {
   const requiredSet = new Set(requiredFields);
   const lines: string[] = [];
@@ -521,6 +555,7 @@ function generateObjectBody(
       depth,
       extractedSchemas,
       seenTitles,
+      maxDepth,
     );
 
     const isRequired = requiredSet.has(childName);

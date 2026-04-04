@@ -117,27 +117,13 @@ const GlobalArgsSchema = z.object({
       z.string(),
       z.object({
         encryptionInfo: z.array(z.object({
-          encryptionStatus: z.object({
-            code: z.number().int().describe(
-              "The status code, which should be an enum value of google.rpc.Code.",
-            ).optional(),
-            details: z.array(z.record(z.string(), z.string())).describe(
-              "A list of messages that carry the error details. There is a common set of message types for APIs to use.",
-            ).optional(),
-            message: z.string().describe(
-              "A developer-facing error message, which should be in English. Any user-facing error message should be localized and sent in the google.rpc.Status.details field, or localized by the client.",
-            ).optional(),
-          }).describe(
+          encryptionStatus: z.unknown().describe(
             "The `Status` type defines a logical error model that is suitable for different programming environments, including REST APIs and RPC APIs. It is used by [gRPC](https://github.com/grpc). Each `Status` message contains three pieces of data: error code, error message, and error details. You can find out more about this error model and how to work with it in the [API Design Guide](https://cloud.google.com/apis/design/errors).",
           ).optional(),
-          encryptionType: z.enum([
-            "ENCRYPTION_TYPE_UNSPECIFIED",
-            "GOOGLE_DEFAULT_ENCRYPTION",
-            "CUSTOMER_MANAGED_ENCRYPTION",
-          ]).describe(
+          encryptionType: z.unknown().describe(
             "Output only. The type of encryption used to protect this resource.",
           ).optional(),
-          kmsKeyVersion: z.string().describe(
+          kmsKeyVersion: z.unknown().describe(
             "Output only. The version of the Cloud KMS key specified in the parent cluster that is in use for the data underlying this table.",
           ).optional(),
         })).describe(
@@ -162,7 +148,7 @@ const GlobalArgsSchema = z.object({
       z.object({
         gcRule: z.object({
           intersection: z.object({
-            rules: z.array(z.string()).describe(
+            rules: z.unknown().describe(
               "Only delete cells which would be deleted by every element of `rules`.",
             ).optional(),
           }).describe(
@@ -175,7 +161,7 @@ const GlobalArgsSchema = z.object({
             "Delete all cells in a column except the most recent N.",
           ).optional(),
           union: z.object({
-            rules: z.array(z.string()).describe(
+            rules: z.unknown().describe(
               "Delete cells which would be deleted by any element of `rules`.",
             ).optional(),
           }).describe(
@@ -199,49 +185,42 @@ const GlobalArgsSchema = z.object({
         ).optional(),
         valueType: z.object({
           aggregateType: z.object({
-            hllppUniqueCount: z.object({}).describe(
+            hllppUniqueCount: z.unknown().describe(
               "Computes an approximate unique count over the input values. When using raw data as input, be careful to use a consistent encoding. Otherwise the same value encoded differently could count more than once, or two distinct values could count as identical. Input: Any, or omit for Raw State: TBD Special state conversions: `Int64` (the unique count estimate)",
             ).optional(),
-            inputType: z.string().describe("Circular reference to Type")
+            inputType: z.unknown().describe("Circular reference to Type")
               .optional(),
-            max: z.object({}).describe(
+            max: z.unknown().describe(
               "Computes the max of the input values. Allowed input: `Int64` State: same as input",
             ).optional(),
-            min: z.object({}).describe(
+            min: z.unknown().describe(
               "Computes the min of the input values. Allowed input: `Int64` State: same as input",
             ).optional(),
-            stateType: z.string().describe("Circular reference to Type")
+            stateType: z.unknown().describe("Circular reference to Type")
               .optional(),
-            sum: z.object({}).describe(
+            sum: z.unknown().describe(
               "Computes the sum of the input values. Allowed input: `Int64` State: same as input",
             ).optional(),
           }).describe(
             "A value that combines incremental updates into a summarized value. Data is never directly written or read using type `Aggregate`. Writes provide either the `input_type` or `state_type`, and reads always return the `state_type`.",
           ).optional(),
           arrayType: z.object({
-            elementType: z.string().describe("Circular reference to Type")
+            elementType: z.unknown().describe("Circular reference to Type")
               .optional(),
           }).describe(
             "An ordered list of elements of a given type. Values of type `Array` are stored in `Value.array_value`.",
           ).optional(),
           boolType: z.object({
-            encoding: z.object({}).describe(
+            encoding: z.unknown().describe(
               "Defines rules used to convert to or from lower level types.",
             ).optional(),
           }).describe(
             "bool Values of type `Bool` are stored in `Value.bool_value`.",
           ).optional(),
           bytesType: z.object({
-            encoding: z.object({
-              raw: z.object({
-                escapeNulls: z.boolean().describe(
-                  'If set, allows NULL values to be encoded as the empty string "". The actual empty string, or any value which only contains the null byte `0x00`, has one more null byte appended.',
-                ).optional(),
-              }).describe(
-                "Leaves the value as-is. Sorted mode: all values are supported. Distinct mode: all values are supported.",
-              ).optional(),
-            }).describe("Rules used to convert to or from lower level types.")
-              .optional(),
+            encoding: z.unknown().describe(
+              "Rules used to convert to or from lower level types.",
+            ).optional(),
           }).describe(
             "Bytes Values of type `Bytes` are stored in `Value.bytes_value`.",
           ).optional(),
@@ -249,10 +228,10 @@ const GlobalArgsSchema = z.object({
             "Date Values of type `Date` are stored in `Value.date_value`.",
           ).optional(),
           enumType: z.object({
-            enumName: z.string().describe(
+            enumName: z.unknown().describe(
               'The fully qualified name of the protobuf enum message, including package. In the format of "foo.bar.EnumMessage".',
             ).optional(),
-            schemaBundleId: z.string().describe(
+            schemaBundleId: z.unknown().describe(
               "The ID of the schema bundle that this enum is defined in.",
             ).optional(),
           }).describe(
@@ -268,139 +247,58 @@ const GlobalArgsSchema = z.object({
             "A geography type, representing a point or region on Earth. The value is stored in `Value.bytes_value` as Well-Known Binary (WKB) bytes.",
           ).optional(),
           int32Type: z.object({
-            encoding: z.object({
-              bigEndianBytes: z.object({}).describe(
-                "Encodes the value as a 4-byte big-endian two's complement value. Sorted mode: non-negative values are supported. Distinct mode: all values are supported. Compatible with: - BigQuery `BINARY` encoding - HBase `Bytes.toBytes` - Java `ByteBuffer.putInt()` with `ByteOrder.BIG_ENDIAN`",
-              ).optional(),
-              orderedCodeBytes: z.object({}).describe(
-                "Encodes the value in a variable length binary format of up to 5 bytes. Values that are closer to zero use fewer bytes. Sorted mode: all values are supported. Distinct mode: all values are supported.",
-              ).optional(),
-            }).describe("Rules used to convert to or from lower level types.")
-              .optional(),
+            encoding: z.unknown().describe(
+              "Rules used to convert to or from lower level types.",
+            ).optional(),
           }).describe(
             "Int32 Values of type `Int32` are stored in `Value.int_value`.",
           ).optional(),
           int64Type: z.object({
-            encoding: z.object({
-              bigEndianBytes: z.object({
-                bytesType: z.object({
-                  encoding: z.object({
-                    raw: z.object({
-                      escapeNulls: z.boolean().describe(
-                        'If set, allows NULL values to be encoded as the empty string "". The actual empty string, or any value which only contains the null byte `0x00`, has one more null byte appended.',
-                      ).optional(),
-                    }).describe(
-                      "Leaves the value as-is. Sorted mode: all values are supported. Distinct mode: all values are supported.",
-                    ).optional(),
-                  }).describe(
-                    "Rules used to convert to or from lower level types.",
-                  ).optional(),
-                }).describe(
-                  "Bytes Values of type `Bytes` are stored in `Value.bytes_value`.",
-                ).optional(),
-              }).describe(
-                "Encodes the value as an 8-byte big-endian two's complement value. Sorted mode: non-negative values are supported. Distinct mode: all values are supported. Compatible with: - BigQuery `BINARY` encoding - HBase `Bytes.toBytes` - Java `ByteBuffer.putLong()` with `ByteOrder.BIG_ENDIAN`",
-              ).optional(),
-              orderedCodeBytes: z.object({}).describe(
-                "Encodes the value in a variable length binary format of up to 10 bytes. Values that are closer to zero use fewer bytes. Sorted mode: all values are supported. Distinct mode: all values are supported.",
-              ).optional(),
-            }).describe("Rules used to convert to or from lower level types.")
-              .optional(),
+            encoding: z.unknown().describe(
+              "Rules used to convert to or from lower level types.",
+            ).optional(),
           }).describe(
             "Int64 Values of type `Int64` are stored in `Value.int_value`.",
           ).optional(),
           mapType: z.object({
-            keyType: z.string().describe("Circular reference to Type")
+            keyType: z.unknown().describe("Circular reference to Type")
               .optional(),
-            valueType: z.string().describe("Circular reference to Type")
+            valueType: z.unknown().describe("Circular reference to Type")
               .optional(),
           }).describe(
             "A mapping of keys to values of a given type. Values of type `Map` are stored in a `Value.array_value` where each entry is another `Value.array_value` with two elements (the key and the value, in that order). Normally encoded Map values won't have repeated keys, however, clients are expected to handle the case in which they do. If the same key appears multiple times, the _last_ value takes precedence.",
           ).optional(),
           protoType: z.object({
-            messageName: z.string().describe(
+            messageName: z.unknown().describe(
               'The fully qualified name of the protobuf message, including package. In the format of "foo.bar.Message".',
             ).optional(),
-            schemaBundleId: z.string().describe(
+            schemaBundleId: z.unknown().describe(
               "The ID of the schema bundle that this proto is defined in.",
             ).optional(),
           }).describe(
             "A protobuf message type. Values of type `Proto` are stored in `Value.bytes_value`.",
           ).optional(),
           stringType: z.object({
-            encoding: z.object({
-              utf8Bytes: z.object({
-                nullEscapeChar: z.string().describe(
-                  'Single-character escape sequence used to support NULL values. If set, allows NULL values to be encoded as the empty string "". The actual empty string, or any value where every character equals `null_escape_char`, has one more `null_escape_char` appended. If `null_escape_char` is set and does not equal the ASCII null character `0x00`, then the encoding will not support sorted mode..',
-                ).optional(),
-              }).describe(
-                "UTF-8 encoding. Sorted mode: - All values are supported. - Code point order is preserved. Distinct mode: all values are supported. Compatible with: - BigQuery `TEXT` encoding - HBase `Bytes.toBytes` - Java `String#getBytes(StandardCharsets.UTF_8)`",
-              ).optional(),
-              utf8Raw: z.object({}).describe(
-                "Deprecated: prefer the equivalent `Utf8Bytes`.",
-              ).optional(),
-            }).describe("Rules used to convert to or from lower level types.")
-              .optional(),
+            encoding: z.unknown().describe(
+              "Rules used to convert to or from lower level types.",
+            ).optional(),
           }).describe(
             "String Values of type `String` are stored in `Value.string_value`.",
           ).optional(),
           structType: z.object({
-            encoding: z.object({
-              delimitedBytes: z.object({
-                delimiter: z.string().describe(
-                  "Byte sequence used to delimit concatenated fields. The delimiter must contain at least 1 character and at most 50 characters.",
-                ).optional(),
-              }).describe(
-                "Fields are encoded independently and concatenated with a configurable `delimiter` in between. A struct with no fields defined is encoded as a single `delimiter`. Sorted mode: - Fields are encoded in sorted mode. - Encoded field values must not contain any bytes <= `delimiter[0]` - Element-wise order is preserved: `A < B` if `A[0] < B[0]`, or if `A[0] == B[0] && A[1] < B[1]`, etc. Strict prefixes sort first. - This encoding does not support `DESC` field ordering. Distinct mode: - Fields are encoded in distinct mode. - Encoded field values must not contain `delimiter[0]`.",
-              ).optional(),
-              orderedCodeBytes: z.object({}).describe(
-                'Fields are encoded independently, then escaped and delimited by appling the following rules in order: - While the last remaining field is `ASC` or `UNSPECIFIED`, and encodes to the empty string "", remove it. - In each remaining field, replace all null bytes `0x00` with the fixed byte pair `{0x00, 0xFF}`. - If any remaining field encodes to the empty string "", replace it with the fixed byte pair `{0x00, 0x00}`. - Append the fixed byte pair `{0x00, 0x01}` to each remaining field, except for the last remaining field if it is `ASC`. - Bitwise negate all `DESC` fields. - Concatenate the results, or emit the fixed byte pair `{0x00, 0x00}` if there are no remaining fields to concatenate. Examples: ` - STRUCT() -> "\\00\\00" - STRUCT("") -> "\\00\\00" - STRUCT("", "") -> "\\00\\00" - STRUCT("", "B") -> "\\00\\00" + "\\00\\01" + "B" - STRUCT("A", "") -> "A" - STRUCT("", "B", "") -> "\\00\\00" + "\\00\\01" + "B" - STRUCT("A", "", "C") -> "A" + "\\00\\01" + "\\00\\00" + "\\00\\01" + "C" ` Examples for struct with `DESC` fields: ` - STRUCT("" DESC) -> "\\xFF\\xFF" + "\\xFF\\xFE" - STRUCT("" DESC, "") -> "\\xFF\\xFF" + "\\xFF\\xFE" - STRUCT("" DESC, "", "") -> "\\xFF\\xFF" + "\\xFF\\xFE" - STRUCT("" DESC, "A") -> "\\xFF\\xFF" + "\\xFF\\xFE" + "A" - STRUCT("A", "" DESC, "") -> "A" + "\\00\\01" + "\\xFF\\xFF" + "\\xFF\\xFE" - STRUCT("", "A" DESC) -> "\\x00\\x00" + "\\x00\\x01" + "\\xBE" + "\\xFF\\xFE" ` Since null bytes are always escaped, this encoding can cause size blowup for encodings like `Int64.BigEndianBytes` that are likely to produce many such bytes. Sorted mode: - Fields are encoded in sorted mode. - All values supported by the field encodings are allowed. - Fields with unset or `UNSPECIFIED` order are treated as `ASC`. - Element-wise order is preserved: `A < B` if `A[0] < B[0]`, or if `A[0] == B[0] && A[1] < B[1]`, etc. Strict prefixes sort first. Distinct mode: - Fields are encoded in distinct mode. - All values supported by the field encodings are allowed.',
-              ).optional(),
-              singleton: z.object({}).describe(
-                "Uses the encoding of `fields[0].type` as-is. Only valid if `fields.size == 1`. This encoding does not support `DESC` field ordering.",
-              ).optional(),
-            }).describe("Rules used to convert to or from lower level types.")
-              .optional(),
-            fields: z.array(z.object({
-              fieldName: z.string().describe(
-                "The field name (optional). Fields without a `field_name` are considered anonymous and cannot be referenced by name.",
-              ).optional(),
-              type: z.string().describe("Circular reference to Type")
-                .optional(),
-            })).describe("The names and types of the fields in this struct.")
-              .optional(),
+            encoding: z.unknown().describe(
+              "Rules used to convert to or from lower level types.",
+            ).optional(),
+            fields: z.unknown().describe(
+              "The names and types of the fields in this struct.",
+            ).optional(),
           }).describe(
             "A structured data value, consisting of fields which map to dynamically typed values. Values of type `Struct` are stored in `Value.array_value` where entries are in the same order and number as `field_types`.",
           ).optional(),
           timestampType: z.object({
-            encoding: z.object({
-              unixMicrosInt64: z.object({
-                bigEndianBytes: z.object({
-                  bytesType: z.object({
-                    encoding: z.object({
-                      raw: z.object({
-                        escapeNulls: z.boolean().describe(
-                          'If set, allows NULL values to be encoded as the empty string "". The actual empty string, or any value which only contains the null byte `0x00`, has one more null byte appended.',
-                        ).optional(),
-                      }).describe(
-                        "Leaves the value as-is. Sorted mode: all values are supported. Distinct mode: all values are supported.",
-                      ).optional(),
-                    }).describe(
-                      "Rules used to convert to or from lower level types.",
-                    ).optional(),
-                  }).describe(
-                    "Bytes Values of type `Bytes` are stored in `Value.bytes_value`.",
-                  ).optional(),
-                }).describe(
-                  "Encodes the value as an 8-byte big-endian two's complement value. Sorted mode: non-negative values are supported. Distinct mode: all values are supported. Compatible with: - BigQuery `BINARY` encoding - HBase `Bytes.toBytes` - Java `ByteBuffer.putLong()` with `ByteOrder.BIG_ENDIAN`",
-                ).optional(),
-                orderedCodeBytes: z.object({}).describe(
-                  "Encodes the value in a variable length binary format of up to 10 bytes. Values that are closer to zero use fewer bytes. Sorted mode: all values are supported. Distinct mode: all values are supported.",
-                ).optional(),
-              }).describe("Rules used to convert to or from lower level types.")
-                .optional(),
-            }).describe("Rules used to convert to or from lower level types.")
-              .optional(),
+            encoding: z.unknown().describe(
+              "Rules used to convert to or from lower level types.",
+            ).optional(),
           }).describe(
             "Timestamp Values of type `Timestamp` are stored in `Value.timestamp_value`.",
           ).optional(),
@@ -463,185 +361,52 @@ const GlobalArgsSchema = z.object({
           "The field name (optional). Fields without a `field_name` are considered anonymous and cannot be referenced by name.",
         ).optional(),
         type: z.object({
-          aggregateType: z.object({
-            hllppUniqueCount: z.object({}).describe(
-              "Computes an approximate unique count over the input values. When using raw data as input, be careful to use a consistent encoding. Otherwise the same value encoded differently could count more than once, or two distinct values could count as identical. Input: Any, or omit for Raw State: TBD Special state conversions: `Int64` (the unique count estimate)",
-            ).optional(),
-            inputType: z.string().describe("Circular reference to Type")
-              .optional(),
-            max: z.object({}).describe(
-              "Computes the max of the input values. Allowed input: `Int64` State: same as input",
-            ).optional(),
-            min: z.object({}).describe(
-              "Computes the min of the input values. Allowed input: `Int64` State: same as input",
-            ).optional(),
-            stateType: z.string().describe("Circular reference to Type")
-              .optional(),
-            sum: z.object({}).describe(
-              "Computes the sum of the input values. Allowed input: `Int64` State: same as input",
-            ).optional(),
-          }).describe(
+          aggregateType: z.unknown().describe(
             "A value that combines incremental updates into a summarized value. Data is never directly written or read using type `Aggregate`. Writes provide either the `input_type` or `state_type`, and reads always return the `state_type`.",
           ).optional(),
-          arrayType: z.object({
-            elementType: z.string().describe("Circular reference to Type")
-              .optional(),
-          }).describe(
+          arrayType: z.unknown().describe(
             "An ordered list of elements of a given type. Values of type `Array` are stored in `Value.array_value`.",
           ).optional(),
-          boolType: z.object({
-            encoding: z.object({}).describe(
-              "Defines rules used to convert to or from lower level types.",
-            ).optional(),
-          }).describe(
+          boolType: z.unknown().describe(
             "bool Values of type `Bool` are stored in `Value.bool_value`.",
           ).optional(),
-          bytesType: z.object({
-            encoding: z.object({
-              raw: z.object({
-                escapeNulls: z.boolean().describe(
-                  'If set, allows NULL values to be encoded as the empty string "". The actual empty string, or any value which only contains the null byte `0x00`, has one more null byte appended.',
-                ).optional(),
-              }).describe(
-                "Leaves the value as-is. Sorted mode: all values are supported. Distinct mode: all values are supported.",
-              ).optional(),
-            }).describe("Rules used to convert to or from lower level types.")
-              .optional(),
-          }).describe(
+          bytesType: z.unknown().describe(
             "Bytes Values of type `Bytes` are stored in `Value.bytes_value`.",
           ).optional(),
-          dateType: z.object({}).describe(
+          dateType: z.unknown().describe(
             "Date Values of type `Date` are stored in `Value.date_value`.",
           ).optional(),
-          enumType: z.object({
-            enumName: z.string().describe(
-              'The fully qualified name of the protobuf enum message, including package. In the format of "foo.bar.EnumMessage".',
-            ).optional(),
-            schemaBundleId: z.string().describe(
-              "The ID of the schema bundle that this enum is defined in.",
-            ).optional(),
-          }).describe(
+          enumType: z.unknown().describe(
             "A protobuf enum type. Values of type `Enum` are stored in `Value.int_value`.",
           ).optional(),
-          float32Type: z.object({}).describe(
+          float32Type: z.unknown().describe(
             "Float32 Values of type `Float32` are stored in `Value.float_value`.",
           ).optional(),
-          float64Type: z.object({}).describe(
+          float64Type: z.unknown().describe(
             "Float64 Values of type `Float64` are stored in `Value.float_value`.",
           ).optional(),
-          geographyType: z.object({}).describe(
+          geographyType: z.unknown().describe(
             "A geography type, representing a point or region on Earth. The value is stored in `Value.bytes_value` as Well-Known Binary (WKB) bytes.",
           ).optional(),
-          int32Type: z.object({
-            encoding: z.object({
-              bigEndianBytes: z.object({}).describe(
-                "Encodes the value as a 4-byte big-endian two's complement value. Sorted mode: non-negative values are supported. Distinct mode: all values are supported. Compatible with: - BigQuery `BINARY` encoding - HBase `Bytes.toBytes` - Java `ByteBuffer.putInt()` with `ByteOrder.BIG_ENDIAN`",
-              ).optional(),
-              orderedCodeBytes: z.object({}).describe(
-                "Encodes the value in a variable length binary format of up to 5 bytes. Values that are closer to zero use fewer bytes. Sorted mode: all values are supported. Distinct mode: all values are supported.",
-              ).optional(),
-            }).describe("Rules used to convert to or from lower level types.")
-              .optional(),
-          }).describe(
+          int32Type: z.unknown().describe(
             "Int32 Values of type `Int32` are stored in `Value.int_value`.",
           ).optional(),
-          int64Type: z.object({
-            encoding: z.object({
-              bigEndianBytes: z.object({
-                bytesType: z.object({
-                  encoding: z.object({
-                    raw: z.object({
-                      escapeNulls: z.boolean().describe(
-                        'If set, allows NULL values to be encoded as the empty string "". The actual empty string, or any value which only contains the null byte `0x00`, has one more null byte appended.',
-                      ).optional(),
-                    }).describe(
-                      "Leaves the value as-is. Sorted mode: all values are supported. Distinct mode: all values are supported.",
-                    ).optional(),
-                  }).describe(
-                    "Rules used to convert to or from lower level types.",
-                  ).optional(),
-                }).describe(
-                  "Bytes Values of type `Bytes` are stored in `Value.bytes_value`.",
-                ).optional(),
-              }).describe(
-                "Encodes the value as an 8-byte big-endian two's complement value. Sorted mode: non-negative values are supported. Distinct mode: all values are supported. Compatible with: - BigQuery `BINARY` encoding - HBase `Bytes.toBytes` - Java `ByteBuffer.putLong()` with `ByteOrder.BIG_ENDIAN`",
-              ).optional(),
-              orderedCodeBytes: z.object({}).describe(
-                "Encodes the value in a variable length binary format of up to 10 bytes. Values that are closer to zero use fewer bytes. Sorted mode: all values are supported. Distinct mode: all values are supported.",
-              ).optional(),
-            }).describe("Rules used to convert to or from lower level types.")
-              .optional(),
-          }).describe(
+          int64Type: z.unknown().describe(
             "Int64 Values of type `Int64` are stored in `Value.int_value`.",
           ).optional(),
-          mapType: z.object({
-            keyType: z.string().describe("Circular reference to Type")
-              .optional(),
-            valueType: z.string().describe("Circular reference to Type")
-              .optional(),
-          }).describe(
+          mapType: z.unknown().describe(
             "A mapping of keys to values of a given type. Values of type `Map` are stored in a `Value.array_value` where each entry is another `Value.array_value` with two elements (the key and the value, in that order). Normally encoded Map values won't have repeated keys, however, clients are expected to handle the case in which they do. If the same key appears multiple times, the _last_ value takes precedence.",
           ).optional(),
-          protoType: z.object({
-            messageName: z.string().describe(
-              'The fully qualified name of the protobuf message, including package. In the format of "foo.bar.Message".',
-            ).optional(),
-            schemaBundleId: z.string().describe(
-              "The ID of the schema bundle that this proto is defined in.",
-            ).optional(),
-          }).describe(
+          protoType: z.unknown().describe(
             "A protobuf message type. Values of type `Proto` are stored in `Value.bytes_value`.",
           ).optional(),
-          stringType: z.object({
-            encoding: z.object({
-              utf8Bytes: z.object({
-                nullEscapeChar: z.string().describe(
-                  'Single-character escape sequence used to support NULL values. If set, allows NULL values to be encoded as the empty string "". The actual empty string, or any value where every character equals `null_escape_char`, has one more `null_escape_char` appended. If `null_escape_char` is set and does not equal the ASCII null character `0x00`, then the encoding will not support sorted mode..',
-                ).optional(),
-              }).describe(
-                "UTF-8 encoding. Sorted mode: - All values are supported. - Code point order is preserved. Distinct mode: all values are supported. Compatible with: - BigQuery `TEXT` encoding - HBase `Bytes.toBytes` - Java `String#getBytes(StandardCharsets.UTF_8)`",
-              ).optional(),
-              utf8Raw: z.object({}).describe(
-                "Deprecated: prefer the equivalent `Utf8Bytes`.",
-              ).optional(),
-            }).describe("Rules used to convert to or from lower level types.")
-              .optional(),
-          }).describe(
+          stringType: z.unknown().describe(
             "String Values of type `String` are stored in `Value.string_value`.",
           ).optional(),
-          structType: z.string().describe(
+          structType: z.unknown().describe(
             "Circular reference to GoogleBigtableAdminV2TypeStruct",
           ).optional(),
-          timestampType: z.object({
-            encoding: z.object({
-              unixMicrosInt64: z.object({
-                bigEndianBytes: z.object({
-                  bytesType: z.object({
-                    encoding: z.object({
-                      raw: z.object({
-                        escapeNulls: z.boolean().describe(
-                          'If set, allows NULL values to be encoded as the empty string "". The actual empty string, or any value which only contains the null byte `0x00`, has one more null byte appended.',
-                        ).optional(),
-                      }).describe(
-                        "Leaves the value as-is. Sorted mode: all values are supported. Distinct mode: all values are supported.",
-                      ).optional(),
-                    }).describe(
-                      "Rules used to convert to or from lower level types.",
-                    ).optional(),
-                  }).describe(
-                    "Bytes Values of type `Bytes` are stored in `Value.bytes_value`.",
-                  ).optional(),
-                }).describe(
-                  "Encodes the value as an 8-byte big-endian two's complement value. Sorted mode: non-negative values are supported. Distinct mode: all values are supported. Compatible with: - BigQuery `BINARY` encoding - HBase `Bytes.toBytes` - Java `ByteBuffer.putLong()` with `ByteOrder.BIG_ENDIAN`",
-                ).optional(),
-                orderedCodeBytes: z.object({}).describe(
-                  "Encodes the value in a variable length binary format of up to 10 bytes. Values that are closer to zero use fewer bytes. Sorted mode: all values are supported. Distinct mode: all values are supported.",
-                ).optional(),
-              }).describe("Rules used to convert to or from lower level types.")
-                .optional(),
-            }).describe("Rules used to convert to or from lower level types.")
-              .optional(),
-          }).describe(
+          timestampType: z.unknown().describe(
             "Timestamp Values of type `Timestamp` are stored in `Value.timestamp_value`.",
           ).optional(),
         }).describe(
@@ -704,13 +469,13 @@ const GlobalArgsSchema = z.object({
     z.object({
       encryptionInfo: z.array(z.object({
         encryptionStatus: z.object({
-          code: z.number().int().describe(
+          code: z.unknown().describe(
             "The status code, which should be an enum value of google.rpc.Code.",
           ).optional(),
-          details: z.array(z.record(z.string(), z.string())).describe(
+          details: z.unknown().describe(
             "A list of messages that carry the error details. There is a common set of message types for APIs to use.",
           ).optional(),
-          message: z.string().describe(
+          message: z.unknown().describe(
             "A developer-facing error message, which should be in English. Any user-facing error message should be localized and sent in the google.rpc.Status.details field, or localized by the client.",
           ).optional(),
         }).describe(
@@ -748,7 +513,7 @@ const GlobalArgsSchema = z.object({
     z.object({
       gcRule: z.object({
         intersection: z.object({
-          rules: z.array(z.string()).describe(
+          rules: z.array(z.unknown()).describe(
             "Only delete cells which would be deleted by every element of `rules`.",
           ).optional(),
         }).describe(
@@ -761,7 +526,7 @@ const GlobalArgsSchema = z.object({
           "Delete all cells in a column except the most recent N.",
         ).optional(),
         union: z.object({
-          rules: z.array(z.string()).describe(
+          rules: z.array(z.unknown()).describe(
             "Delete cells which would be deleted by any element of `rules`.",
           ).optional(),
         }).describe(
@@ -819,11 +584,7 @@ const GlobalArgsSchema = z.object({
         ).optional(),
         bytesType: z.object({
           encoding: z.object({
-            raw: z.object({
-              escapeNulls: z.boolean().describe(
-                'If set, allows NULL values to be encoded as the empty string "". The actual empty string, or any value which only contains the null byte `0x00`, has one more null byte appended.',
-              ).optional(),
-            }).describe(
+            raw: z.unknown().describe(
               "Leaves the value as-is. Sorted mode: all values are supported. Distinct mode: all values are supported.",
             ).optional(),
           }).describe("Rules used to convert to or from lower level types.")
@@ -855,10 +616,10 @@ const GlobalArgsSchema = z.object({
         ).optional(),
         int32Type: z.object({
           encoding: z.object({
-            bigEndianBytes: z.object({}).describe(
+            bigEndianBytes: z.unknown().describe(
               "Encodes the value as a 4-byte big-endian two's complement value. Sorted mode: non-negative values are supported. Distinct mode: all values are supported. Compatible with: - BigQuery `BINARY` encoding - HBase `Bytes.toBytes` - Java `ByteBuffer.putInt()` with `ByteOrder.BIG_ENDIAN`",
             ).optional(),
-            orderedCodeBytes: z.object({}).describe(
+            orderedCodeBytes: z.unknown().describe(
               "Encodes the value in a variable length binary format of up to 5 bytes. Values that are closer to zero use fewer bytes. Sorted mode: all values are supported. Distinct mode: all values are supported.",
             ).optional(),
           }).describe("Rules used to convert to or from lower level types.")
@@ -868,26 +629,10 @@ const GlobalArgsSchema = z.object({
         ).optional(),
         int64Type: z.object({
           encoding: z.object({
-            bigEndianBytes: z.object({
-              bytesType: z.object({
-                encoding: z.object({
-                  raw: z.object({
-                    escapeNulls: z.boolean().describe(
-                      'If set, allows NULL values to be encoded as the empty string "". The actual empty string, or any value which only contains the null byte `0x00`, has one more null byte appended.',
-                    ).optional(),
-                  }).describe(
-                    "Leaves the value as-is. Sorted mode: all values are supported. Distinct mode: all values are supported.",
-                  ).optional(),
-                }).describe(
-                  "Rules used to convert to or from lower level types.",
-                ).optional(),
-              }).describe(
-                "Bytes Values of type `Bytes` are stored in `Value.bytes_value`.",
-              ).optional(),
-            }).describe(
+            bigEndianBytes: z.unknown().describe(
               "Encodes the value as an 8-byte big-endian two's complement value. Sorted mode: non-negative values are supported. Distinct mode: all values are supported. Compatible with: - BigQuery `BINARY` encoding - HBase `Bytes.toBytes` - Java `ByteBuffer.putLong()` with `ByteOrder.BIG_ENDIAN`",
             ).optional(),
-            orderedCodeBytes: z.object({}).describe(
+            orderedCodeBytes: z.unknown().describe(
               "Encodes the value in a variable length binary format of up to 10 bytes. Values that are closer to zero use fewer bytes. Sorted mode: all values are supported. Distinct mode: all values are supported.",
             ).optional(),
           }).describe("Rules used to convert to or from lower level types.")
@@ -914,14 +659,10 @@ const GlobalArgsSchema = z.object({
         ).optional(),
         stringType: z.object({
           encoding: z.object({
-            utf8Bytes: z.object({
-              nullEscapeChar: z.string().describe(
-                'Single-character escape sequence used to support NULL values. If set, allows NULL values to be encoded as the empty string "". The actual empty string, or any value where every character equals `null_escape_char`, has one more `null_escape_char` appended. If `null_escape_char` is set and does not equal the ASCII null character `0x00`, then the encoding will not support sorted mode..',
-              ).optional(),
-            }).describe(
+            utf8Bytes: z.unknown().describe(
               "UTF-8 encoding. Sorted mode: - All values are supported. - Code point order is preserved. Distinct mode: all values are supported. Compatible with: - BigQuery `TEXT` encoding - HBase `Bytes.toBytes` - Java `String#getBytes(StandardCharsets.UTF_8)`",
             ).optional(),
-            utf8Raw: z.object({}).describe(
+            utf8Raw: z.unknown().describe(
               "Deprecated: prefer the equivalent `Utf8Bytes`.",
             ).optional(),
           }).describe("Rules used to convert to or from lower level types.")
@@ -931,58 +672,28 @@ const GlobalArgsSchema = z.object({
         ).optional(),
         structType: z.object({
           encoding: z.object({
-            delimitedBytes: z.object({
-              delimiter: z.string().describe(
-                "Byte sequence used to delimit concatenated fields. The delimiter must contain at least 1 character and at most 50 characters.",
-              ).optional(),
-            }).describe(
+            delimitedBytes: z.unknown().describe(
               "Fields are encoded independently and concatenated with a configurable `delimiter` in between. A struct with no fields defined is encoded as a single `delimiter`. Sorted mode: - Fields are encoded in sorted mode. - Encoded field values must not contain any bytes <= `delimiter[0]` - Element-wise order is preserved: `A < B` if `A[0] < B[0]`, or if `A[0] == B[0] && A[1] < B[1]`, etc. Strict prefixes sort first. - This encoding does not support `DESC` field ordering. Distinct mode: - Fields are encoded in distinct mode. - Encoded field values must not contain `delimiter[0]`.",
             ).optional(),
-            orderedCodeBytes: z.object({}).describe(
+            orderedCodeBytes: z.unknown().describe(
               'Fields are encoded independently, then escaped and delimited by appling the following rules in order: - While the last remaining field is `ASC` or `UNSPECIFIED`, and encodes to the empty string "", remove it. - In each remaining field, replace all null bytes `0x00` with the fixed byte pair `{0x00, 0xFF}`. - If any remaining field encodes to the empty string "", replace it with the fixed byte pair `{0x00, 0x00}`. - Append the fixed byte pair `{0x00, 0x01}` to each remaining field, except for the last remaining field if it is `ASC`. - Bitwise negate all `DESC` fields. - Concatenate the results, or emit the fixed byte pair `{0x00, 0x00}` if there are no remaining fields to concatenate. Examples: ` - STRUCT() -> "\\00\\00" - STRUCT("") -> "\\00\\00" - STRUCT("", "") -> "\\00\\00" - STRUCT("", "B") -> "\\00\\00" + "\\00\\01" + "B" - STRUCT("A", "") -> "A" - STRUCT("", "B", "") -> "\\00\\00" + "\\00\\01" + "B" - STRUCT("A", "", "C") -> "A" + "\\00\\01" + "\\00\\00" + "\\00\\01" + "C" ` Examples for struct with `DESC` fields: ` - STRUCT("" DESC) -> "\\xFF\\xFF" + "\\xFF\\xFE" - STRUCT("" DESC, "") -> "\\xFF\\xFF" + "\\xFF\\xFE" - STRUCT("" DESC, "", "") -> "\\xFF\\xFF" + "\\xFF\\xFE" - STRUCT("" DESC, "A") -> "\\xFF\\xFF" + "\\xFF\\xFE" + "A" - STRUCT("A", "" DESC, "") -> "A" + "\\00\\01" + "\\xFF\\xFF" + "\\xFF\\xFE" - STRUCT("", "A" DESC) -> "\\x00\\x00" + "\\x00\\x01" + "\\xBE" + "\\xFF\\xFE" ` Since null bytes are always escaped, this encoding can cause size blowup for encodings like `Int64.BigEndianBytes` that are likely to produce many such bytes. Sorted mode: - Fields are encoded in sorted mode. - All values supported by the field encodings are allowed. - Fields with unset or `UNSPECIFIED` order are treated as `ASC`. - Element-wise order is preserved: `A < B` if `A[0] < B[0]`, or if `A[0] == B[0] && A[1] < B[1]`, etc. Strict prefixes sort first. Distinct mode: - Fields are encoded in distinct mode. - All values supported by the field encodings are allowed.',
             ).optional(),
-            singleton: z.object({}).describe(
+            singleton: z.unknown().describe(
               "Uses the encoding of `fields[0].type` as-is. Only valid if `fields.size == 1`. This encoding does not support `DESC` field ordering.",
             ).optional(),
           }).describe("Rules used to convert to or from lower level types.")
             .optional(),
-          fields: z.array(z.object({
-            fieldName: z.string().describe(
-              "The field name (optional). Fields without a `field_name` are considered anonymous and cannot be referenced by name.",
-            ).optional(),
-            type: z.string().describe("Circular reference to Type").optional(),
-          })).describe("The names and types of the fields in this struct.")
-            .optional(),
+          fields: z.array(z.unknown()).describe(
+            "The names and types of the fields in this struct.",
+          ).optional(),
         }).describe(
           "A structured data value, consisting of fields which map to dynamically typed values. Values of type `Struct` are stored in `Value.array_value` where entries are in the same order and number as `field_types`.",
         ).optional(),
         timestampType: z.object({
           encoding: z.object({
-            unixMicrosInt64: z.object({
-              bigEndianBytes: z.object({
-                bytesType: z.object({
-                  encoding: z.object({
-                    raw: z.object({
-                      escapeNulls: z.boolean().describe(
-                        'If set, allows NULL values to be encoded as the empty string "". The actual empty string, or any value which only contains the null byte `0x00`, has one more null byte appended.',
-                      ).optional(),
-                    }).describe(
-                      "Leaves the value as-is. Sorted mode: all values are supported. Distinct mode: all values are supported.",
-                    ).optional(),
-                  }).describe(
-                    "Rules used to convert to or from lower level types.",
-                  ).optional(),
-                }).describe(
-                  "Bytes Values of type `Bytes` are stored in `Value.bytes_value`.",
-                ).optional(),
-              }).describe(
-                "Encodes the value as an 8-byte big-endian two's complement value. Sorted mode: non-negative values are supported. Distinct mode: all values are supported. Compatible with: - BigQuery `BINARY` encoding - HBase `Bytes.toBytes` - Java `ByteBuffer.putLong()` with `ByteOrder.BIG_ENDIAN`",
-              ).optional(),
-              orderedCodeBytes: z.object({}).describe(
-                "Encodes the value in a variable length binary format of up to 10 bytes. Values that are closer to zero use fewer bytes. Sorted mode: all values are supported. Distinct mode: all values are supported.",
-              ).optional(),
-            }).describe("Rules used to convert to or from lower level types.")
-              .optional(),
+            unixMicrosInt64: z.unknown().describe(
+              "Rules used to convert to or from lower level types.",
+            ).optional(),
           }).describe("Rules used to convert to or from lower level types.")
             .optional(),
         }).describe(
@@ -1048,49 +759,42 @@ const GlobalArgsSchema = z.object({
       ).optional(),
       type: z.object({
         aggregateType: z.object({
-          hllppUniqueCount: z.object({}).describe(
+          hllppUniqueCount: z.unknown().describe(
             "Computes an approximate unique count over the input values. When using raw data as input, be careful to use a consistent encoding. Otherwise the same value encoded differently could count more than once, or two distinct values could count as identical. Input: Any, or omit for Raw State: TBD Special state conversions: `Int64` (the unique count estimate)",
           ).optional(),
-          inputType: z.string().describe("Circular reference to Type")
+          inputType: z.unknown().describe("Circular reference to Type")
             .optional(),
-          max: z.object({}).describe(
+          max: z.unknown().describe(
             "Computes the max of the input values. Allowed input: `Int64` State: same as input",
           ).optional(),
-          min: z.object({}).describe(
+          min: z.unknown().describe(
             "Computes the min of the input values. Allowed input: `Int64` State: same as input",
           ).optional(),
-          stateType: z.string().describe("Circular reference to Type")
+          stateType: z.unknown().describe("Circular reference to Type")
             .optional(),
-          sum: z.object({}).describe(
+          sum: z.unknown().describe(
             "Computes the sum of the input values. Allowed input: `Int64` State: same as input",
           ).optional(),
         }).describe(
           "A value that combines incremental updates into a summarized value. Data is never directly written or read using type `Aggregate`. Writes provide either the `input_type` or `state_type`, and reads always return the `state_type`.",
         ).optional(),
         arrayType: z.object({
-          elementType: z.string().describe("Circular reference to Type")
+          elementType: z.unknown().describe("Circular reference to Type")
             .optional(),
         }).describe(
           "An ordered list of elements of a given type. Values of type `Array` are stored in `Value.array_value`.",
         ).optional(),
         boolType: z.object({
-          encoding: z.object({}).describe(
+          encoding: z.unknown().describe(
             "Defines rules used to convert to or from lower level types.",
           ).optional(),
         }).describe(
           "bool Values of type `Bool` are stored in `Value.bool_value`.",
         ).optional(),
         bytesType: z.object({
-          encoding: z.object({
-            raw: z.object({
-              escapeNulls: z.boolean().describe(
-                'If set, allows NULL values to be encoded as the empty string "". The actual empty string, or any value which only contains the null byte `0x00`, has one more null byte appended.',
-              ).optional(),
-            }).describe(
-              "Leaves the value as-is. Sorted mode: all values are supported. Distinct mode: all values are supported.",
-            ).optional(),
-          }).describe("Rules used to convert to or from lower level types.")
-            .optional(),
+          encoding: z.unknown().describe(
+            "Rules used to convert to or from lower level types.",
+          ).optional(),
         }).describe(
           "Bytes Values of type `Bytes` are stored in `Value.bytes_value`.",
         ).optional(),
@@ -1098,10 +802,10 @@ const GlobalArgsSchema = z.object({
           "Date Values of type `Date` are stored in `Value.date_value`.",
         ).optional(),
         enumType: z.object({
-          enumName: z.string().describe(
+          enumName: z.unknown().describe(
             'The fully qualified name of the protobuf enum message, including package. In the format of "foo.bar.EnumMessage".',
           ).optional(),
-          schemaBundleId: z.string().describe(
+          schemaBundleId: z.unknown().describe(
             "The ID of the schema bundle that this enum is defined in.",
           ).optional(),
         }).describe(
@@ -1117,78 +821,41 @@ const GlobalArgsSchema = z.object({
           "A geography type, representing a point or region on Earth. The value is stored in `Value.bytes_value` as Well-Known Binary (WKB) bytes.",
         ).optional(),
         int32Type: z.object({
-          encoding: z.object({
-            bigEndianBytes: z.object({}).describe(
-              "Encodes the value as a 4-byte big-endian two's complement value. Sorted mode: non-negative values are supported. Distinct mode: all values are supported. Compatible with: - BigQuery `BINARY` encoding - HBase `Bytes.toBytes` - Java `ByteBuffer.putInt()` with `ByteOrder.BIG_ENDIAN`",
-            ).optional(),
-            orderedCodeBytes: z.object({}).describe(
-              "Encodes the value in a variable length binary format of up to 5 bytes. Values that are closer to zero use fewer bytes. Sorted mode: all values are supported. Distinct mode: all values are supported.",
-            ).optional(),
-          }).describe("Rules used to convert to or from lower level types.")
-            .optional(),
+          encoding: z.unknown().describe(
+            "Rules used to convert to or from lower level types.",
+          ).optional(),
         }).describe(
           "Int32 Values of type `Int32` are stored in `Value.int_value`.",
         ).optional(),
         int64Type: z.object({
-          encoding: z.object({
-            bigEndianBytes: z.object({
-              bytesType: z.object({
-                encoding: z.object({
-                  raw: z.object({
-                    escapeNulls: z.boolean().describe(
-                      'If set, allows NULL values to be encoded as the empty string "". The actual empty string, or any value which only contains the null byte `0x00`, has one more null byte appended.',
-                    ).optional(),
-                  }).describe(
-                    "Leaves the value as-is. Sorted mode: all values are supported. Distinct mode: all values are supported.",
-                  ).optional(),
-                }).describe(
-                  "Rules used to convert to or from lower level types.",
-                ).optional(),
-              }).describe(
-                "Bytes Values of type `Bytes` are stored in `Value.bytes_value`.",
-              ).optional(),
-            }).describe(
-              "Encodes the value as an 8-byte big-endian two's complement value. Sorted mode: non-negative values are supported. Distinct mode: all values are supported. Compatible with: - BigQuery `BINARY` encoding - HBase `Bytes.toBytes` - Java `ByteBuffer.putLong()` with `ByteOrder.BIG_ENDIAN`",
-            ).optional(),
-            orderedCodeBytes: z.object({}).describe(
-              "Encodes the value in a variable length binary format of up to 10 bytes. Values that are closer to zero use fewer bytes. Sorted mode: all values are supported. Distinct mode: all values are supported.",
-            ).optional(),
-          }).describe("Rules used to convert to or from lower level types.")
-            .optional(),
+          encoding: z.unknown().describe(
+            "Rules used to convert to or from lower level types.",
+          ).optional(),
         }).describe(
           "Int64 Values of type `Int64` are stored in `Value.int_value`.",
         ).optional(),
         mapType: z.object({
-          keyType: z.string().describe("Circular reference to Type").optional(),
-          valueType: z.string().describe("Circular reference to Type")
+          keyType: z.unknown().describe("Circular reference to Type")
+            .optional(),
+          valueType: z.unknown().describe("Circular reference to Type")
             .optional(),
         }).describe(
           "A mapping of keys to values of a given type. Values of type `Map` are stored in a `Value.array_value` where each entry is another `Value.array_value` with two elements (the key and the value, in that order). Normally encoded Map values won't have repeated keys, however, clients are expected to handle the case in which they do. If the same key appears multiple times, the _last_ value takes precedence.",
         ).optional(),
         protoType: z.object({
-          messageName: z.string().describe(
+          messageName: z.unknown().describe(
             'The fully qualified name of the protobuf message, including package. In the format of "foo.bar.Message".',
           ).optional(),
-          schemaBundleId: z.string().describe(
+          schemaBundleId: z.unknown().describe(
             "The ID of the schema bundle that this proto is defined in.",
           ).optional(),
         }).describe(
           "A protobuf message type. Values of type `Proto` are stored in `Value.bytes_value`.",
         ).optional(),
         stringType: z.object({
-          encoding: z.object({
-            utf8Bytes: z.object({
-              nullEscapeChar: z.string().describe(
-                'Single-character escape sequence used to support NULL values. If set, allows NULL values to be encoded as the empty string "". The actual empty string, or any value where every character equals `null_escape_char`, has one more `null_escape_char` appended. If `null_escape_char` is set and does not equal the ASCII null character `0x00`, then the encoding will not support sorted mode..',
-              ).optional(),
-            }).describe(
-              "UTF-8 encoding. Sorted mode: - All values are supported. - Code point order is preserved. Distinct mode: all values are supported. Compatible with: - BigQuery `TEXT` encoding - HBase `Bytes.toBytes` - Java `String#getBytes(StandardCharsets.UTF_8)`",
-            ).optional(),
-            utf8Raw: z.object({}).describe(
-              "Deprecated: prefer the equivalent `Utf8Bytes`.",
-            ).optional(),
-          }).describe("Rules used to convert to or from lower level types.")
-            .optional(),
+          encoding: z.unknown().describe(
+            "Rules used to convert to or from lower level types.",
+          ).optional(),
         }).describe(
           "String Values of type `String` are stored in `Value.string_value`.",
         ).optional(),
@@ -1196,34 +863,9 @@ const GlobalArgsSchema = z.object({
           "Circular reference to GoogleBigtableAdminV2TypeStruct",
         ).optional(),
         timestampType: z.object({
-          encoding: z.object({
-            unixMicrosInt64: z.object({
-              bigEndianBytes: z.object({
-                bytesType: z.object({
-                  encoding: z.object({
-                    raw: z.object({
-                      escapeNulls: z.boolean().describe(
-                        'If set, allows NULL values to be encoded as the empty string "". The actual empty string, or any value which only contains the null byte `0x00`, has one more null byte appended.',
-                      ).optional(),
-                    }).describe(
-                      "Leaves the value as-is. Sorted mode: all values are supported. Distinct mode: all values are supported.",
-                    ).optional(),
-                  }).describe(
-                    "Rules used to convert to or from lower level types.",
-                  ).optional(),
-                }).describe(
-                  "Bytes Values of type `Bytes` are stored in `Value.bytes_value`.",
-                ).optional(),
-              }).describe(
-                "Encodes the value as an 8-byte big-endian two's complement value. Sorted mode: non-negative values are supported. Distinct mode: all values are supported. Compatible with: - BigQuery `BINARY` encoding - HBase `Bytes.toBytes` - Java `ByteBuffer.putLong()` with `ByteOrder.BIG_ENDIAN`",
-              ).optional(),
-              orderedCodeBytes: z.object({}).describe(
-                "Encodes the value in a variable length binary format of up to 10 bytes. Values that are closer to zero use fewer bytes. Sorted mode: all values are supported. Distinct mode: all values are supported.",
-              ).optional(),
-            }).describe("Rules used to convert to or from lower level types.")
-              .optional(),
-          }).describe("Rules used to convert to or from lower level types.")
-            .optional(),
+          encoding: z.unknown().describe(
+            "Rules used to convert to or from lower level types.",
+          ).optional(),
         }).describe(
           "Timestamp Values of type `Timestamp` are stored in `Value.timestamp_value`.",
         ).optional(),
@@ -1300,86 +942,50 @@ const StateSchema = z.object({
       fieldName: z.string(),
       type: z.object({
         aggregateType: z.object({
-          hllppUniqueCount: z.object({}),
-          inputType: z.string(),
-          max: z.object({}),
-          min: z.object({}),
-          stateType: z.string(),
-          sum: z.object({}),
+          hllppUniqueCount: z.unknown(),
+          inputType: z.unknown(),
+          max: z.unknown(),
+          min: z.unknown(),
+          stateType: z.unknown(),
+          sum: z.unknown(),
         }),
         arrayType: z.object({
-          elementType: z.string(),
+          elementType: z.unknown(),
         }),
         boolType: z.object({
-          encoding: z.object({}),
+          encoding: z.unknown(),
         }),
         bytesType: z.object({
-          encoding: z.object({
-            raw: z.object({
-              escapeNulls: z.boolean(),
-            }),
-          }),
+          encoding: z.unknown(),
         }),
         dateType: z.object({}),
         enumType: z.object({
-          enumName: z.string(),
-          schemaBundleId: z.string(),
+          enumName: z.unknown(),
+          schemaBundleId: z.unknown(),
         }),
         float32Type: z.object({}),
         float64Type: z.object({}),
         geographyType: z.object({}),
         int32Type: z.object({
-          encoding: z.object({
-            bigEndianBytes: z.object({}),
-            orderedCodeBytes: z.object({}),
-          }),
+          encoding: z.unknown(),
         }),
         int64Type: z.object({
-          encoding: z.object({
-            bigEndianBytes: z.object({
-              bytesType: z.object({
-                encoding: z.object({
-                  raw: z.object({
-                    escapeNulls: z.boolean(),
-                  }),
-                }),
-              }),
-            }),
-            orderedCodeBytes: z.object({}),
-          }),
+          encoding: z.unknown(),
         }),
         mapType: z.object({
-          keyType: z.string(),
-          valueType: z.string(),
+          keyType: z.unknown(),
+          valueType: z.unknown(),
         }),
         protoType: z.object({
-          messageName: z.string(),
-          schemaBundleId: z.string(),
+          messageName: z.unknown(),
+          schemaBundleId: z.unknown(),
         }),
         stringType: z.object({
-          encoding: z.object({
-            utf8Bytes: z.object({
-              nullEscapeChar: z.string(),
-            }),
-            utf8Raw: z.object({}),
-          }),
+          encoding: z.unknown(),
         }),
         structType: z.string(),
         timestampType: z.object({
-          encoding: z.object({
-            unixMicrosInt64: z.object({
-              bigEndianBytes: z.object({
-                bytesType: z.object({
-                  encoding: z.object({
-                    raw: z.object({
-                      escapeNulls: z.boolean(),
-                    }),
-                  }),
-                }),
-              }),
-              orderedCodeBytes: z.object({}),
-            }),
-          }),
+          encoding: z.unknown(),
         }),
       }),
     })),
@@ -1427,27 +1033,13 @@ const InputsSchema = z.object({
       z.string(),
       z.object({
         encryptionInfo: z.array(z.object({
-          encryptionStatus: z.object({
-            code: z.number().int().describe(
-              "The status code, which should be an enum value of google.rpc.Code.",
-            ).optional(),
-            details: z.array(z.record(z.string(), z.string())).describe(
-              "A list of messages that carry the error details. There is a common set of message types for APIs to use.",
-            ).optional(),
-            message: z.string().describe(
-              "A developer-facing error message, which should be in English. Any user-facing error message should be localized and sent in the google.rpc.Status.details field, or localized by the client.",
-            ).optional(),
-          }).describe(
+          encryptionStatus: z.unknown().describe(
             "The `Status` type defines a logical error model that is suitable for different programming environments, including REST APIs and RPC APIs. It is used by [gRPC](https://github.com/grpc). Each `Status` message contains three pieces of data: error code, error message, and error details. You can find out more about this error model and how to work with it in the [API Design Guide](https://cloud.google.com/apis/design/errors).",
           ).optional(),
-          encryptionType: z.enum([
-            "ENCRYPTION_TYPE_UNSPECIFIED",
-            "GOOGLE_DEFAULT_ENCRYPTION",
-            "CUSTOMER_MANAGED_ENCRYPTION",
-          ]).describe(
+          encryptionType: z.unknown().describe(
             "Output only. The type of encryption used to protect this resource.",
           ).optional(),
-          kmsKeyVersion: z.string().describe(
+          kmsKeyVersion: z.unknown().describe(
             "Output only. The version of the Cloud KMS key specified in the parent cluster that is in use for the data underlying this table.",
           ).optional(),
         })).describe(
@@ -1472,7 +1064,7 @@ const InputsSchema = z.object({
       z.object({
         gcRule: z.object({
           intersection: z.object({
-            rules: z.array(z.string()).describe(
+            rules: z.unknown().describe(
               "Only delete cells which would be deleted by every element of `rules`.",
             ).optional(),
           }).describe(
@@ -1485,7 +1077,7 @@ const InputsSchema = z.object({
             "Delete all cells in a column except the most recent N.",
           ).optional(),
           union: z.object({
-            rules: z.array(z.string()).describe(
+            rules: z.unknown().describe(
               "Delete cells which would be deleted by any element of `rules`.",
             ).optional(),
           }).describe(
@@ -1509,49 +1101,42 @@ const InputsSchema = z.object({
         ).optional(),
         valueType: z.object({
           aggregateType: z.object({
-            hllppUniqueCount: z.object({}).describe(
+            hllppUniqueCount: z.unknown().describe(
               "Computes an approximate unique count over the input values. When using raw data as input, be careful to use a consistent encoding. Otherwise the same value encoded differently could count more than once, or two distinct values could count as identical. Input: Any, or omit for Raw State: TBD Special state conversions: `Int64` (the unique count estimate)",
             ).optional(),
-            inputType: z.string().describe("Circular reference to Type")
+            inputType: z.unknown().describe("Circular reference to Type")
               .optional(),
-            max: z.object({}).describe(
+            max: z.unknown().describe(
               "Computes the max of the input values. Allowed input: `Int64` State: same as input",
             ).optional(),
-            min: z.object({}).describe(
+            min: z.unknown().describe(
               "Computes the min of the input values. Allowed input: `Int64` State: same as input",
             ).optional(),
-            stateType: z.string().describe("Circular reference to Type")
+            stateType: z.unknown().describe("Circular reference to Type")
               .optional(),
-            sum: z.object({}).describe(
+            sum: z.unknown().describe(
               "Computes the sum of the input values. Allowed input: `Int64` State: same as input",
             ).optional(),
           }).describe(
             "A value that combines incremental updates into a summarized value. Data is never directly written or read using type `Aggregate`. Writes provide either the `input_type` or `state_type`, and reads always return the `state_type`.",
           ).optional(),
           arrayType: z.object({
-            elementType: z.string().describe("Circular reference to Type")
+            elementType: z.unknown().describe("Circular reference to Type")
               .optional(),
           }).describe(
             "An ordered list of elements of a given type. Values of type `Array` are stored in `Value.array_value`.",
           ).optional(),
           boolType: z.object({
-            encoding: z.object({}).describe(
+            encoding: z.unknown().describe(
               "Defines rules used to convert to or from lower level types.",
             ).optional(),
           }).describe(
             "bool Values of type `Bool` are stored in `Value.bool_value`.",
           ).optional(),
           bytesType: z.object({
-            encoding: z.object({
-              raw: z.object({
-                escapeNulls: z.boolean().describe(
-                  'If set, allows NULL values to be encoded as the empty string "". The actual empty string, or any value which only contains the null byte `0x00`, has one more null byte appended.',
-                ).optional(),
-              }).describe(
-                "Leaves the value as-is. Sorted mode: all values are supported. Distinct mode: all values are supported.",
-              ).optional(),
-            }).describe("Rules used to convert to or from lower level types.")
-              .optional(),
+            encoding: z.unknown().describe(
+              "Rules used to convert to or from lower level types.",
+            ).optional(),
           }).describe(
             "Bytes Values of type `Bytes` are stored in `Value.bytes_value`.",
           ).optional(),
@@ -1559,10 +1144,10 @@ const InputsSchema = z.object({
             "Date Values of type `Date` are stored in `Value.date_value`.",
           ).optional(),
           enumType: z.object({
-            enumName: z.string().describe(
+            enumName: z.unknown().describe(
               'The fully qualified name of the protobuf enum message, including package. In the format of "foo.bar.EnumMessage".',
             ).optional(),
-            schemaBundleId: z.string().describe(
+            schemaBundleId: z.unknown().describe(
               "The ID of the schema bundle that this enum is defined in.",
             ).optional(),
           }).describe(
@@ -1578,139 +1163,58 @@ const InputsSchema = z.object({
             "A geography type, representing a point or region on Earth. The value is stored in `Value.bytes_value` as Well-Known Binary (WKB) bytes.",
           ).optional(),
           int32Type: z.object({
-            encoding: z.object({
-              bigEndianBytes: z.object({}).describe(
-                "Encodes the value as a 4-byte big-endian two's complement value. Sorted mode: non-negative values are supported. Distinct mode: all values are supported. Compatible with: - BigQuery `BINARY` encoding - HBase `Bytes.toBytes` - Java `ByteBuffer.putInt()` with `ByteOrder.BIG_ENDIAN`",
-              ).optional(),
-              orderedCodeBytes: z.object({}).describe(
-                "Encodes the value in a variable length binary format of up to 5 bytes. Values that are closer to zero use fewer bytes. Sorted mode: all values are supported. Distinct mode: all values are supported.",
-              ).optional(),
-            }).describe("Rules used to convert to or from lower level types.")
-              .optional(),
+            encoding: z.unknown().describe(
+              "Rules used to convert to or from lower level types.",
+            ).optional(),
           }).describe(
             "Int32 Values of type `Int32` are stored in `Value.int_value`.",
           ).optional(),
           int64Type: z.object({
-            encoding: z.object({
-              bigEndianBytes: z.object({
-                bytesType: z.object({
-                  encoding: z.object({
-                    raw: z.object({
-                      escapeNulls: z.boolean().describe(
-                        'If set, allows NULL values to be encoded as the empty string "". The actual empty string, or any value which only contains the null byte `0x00`, has one more null byte appended.',
-                      ).optional(),
-                    }).describe(
-                      "Leaves the value as-is. Sorted mode: all values are supported. Distinct mode: all values are supported.",
-                    ).optional(),
-                  }).describe(
-                    "Rules used to convert to or from lower level types.",
-                  ).optional(),
-                }).describe(
-                  "Bytes Values of type `Bytes` are stored in `Value.bytes_value`.",
-                ).optional(),
-              }).describe(
-                "Encodes the value as an 8-byte big-endian two's complement value. Sorted mode: non-negative values are supported. Distinct mode: all values are supported. Compatible with: - BigQuery `BINARY` encoding - HBase `Bytes.toBytes` - Java `ByteBuffer.putLong()` with `ByteOrder.BIG_ENDIAN`",
-              ).optional(),
-              orderedCodeBytes: z.object({}).describe(
-                "Encodes the value in a variable length binary format of up to 10 bytes. Values that are closer to zero use fewer bytes. Sorted mode: all values are supported. Distinct mode: all values are supported.",
-              ).optional(),
-            }).describe("Rules used to convert to or from lower level types.")
-              .optional(),
+            encoding: z.unknown().describe(
+              "Rules used to convert to or from lower level types.",
+            ).optional(),
           }).describe(
             "Int64 Values of type `Int64` are stored in `Value.int_value`.",
           ).optional(),
           mapType: z.object({
-            keyType: z.string().describe("Circular reference to Type")
+            keyType: z.unknown().describe("Circular reference to Type")
               .optional(),
-            valueType: z.string().describe("Circular reference to Type")
+            valueType: z.unknown().describe("Circular reference to Type")
               .optional(),
           }).describe(
             "A mapping of keys to values of a given type. Values of type `Map` are stored in a `Value.array_value` where each entry is another `Value.array_value` with two elements (the key and the value, in that order). Normally encoded Map values won't have repeated keys, however, clients are expected to handle the case in which they do. If the same key appears multiple times, the _last_ value takes precedence.",
           ).optional(),
           protoType: z.object({
-            messageName: z.string().describe(
+            messageName: z.unknown().describe(
               'The fully qualified name of the protobuf message, including package. In the format of "foo.bar.Message".',
             ).optional(),
-            schemaBundleId: z.string().describe(
+            schemaBundleId: z.unknown().describe(
               "The ID of the schema bundle that this proto is defined in.",
             ).optional(),
           }).describe(
             "A protobuf message type. Values of type `Proto` are stored in `Value.bytes_value`.",
           ).optional(),
           stringType: z.object({
-            encoding: z.object({
-              utf8Bytes: z.object({
-                nullEscapeChar: z.string().describe(
-                  'Single-character escape sequence used to support NULL values. If set, allows NULL values to be encoded as the empty string "". The actual empty string, or any value where every character equals `null_escape_char`, has one more `null_escape_char` appended. If `null_escape_char` is set and does not equal the ASCII null character `0x00`, then the encoding will not support sorted mode..',
-                ).optional(),
-              }).describe(
-                "UTF-8 encoding. Sorted mode: - All values are supported. - Code point order is preserved. Distinct mode: all values are supported. Compatible with: - BigQuery `TEXT` encoding - HBase `Bytes.toBytes` - Java `String#getBytes(StandardCharsets.UTF_8)`",
-              ).optional(),
-              utf8Raw: z.object({}).describe(
-                "Deprecated: prefer the equivalent `Utf8Bytes`.",
-              ).optional(),
-            }).describe("Rules used to convert to or from lower level types.")
-              .optional(),
+            encoding: z.unknown().describe(
+              "Rules used to convert to or from lower level types.",
+            ).optional(),
           }).describe(
             "String Values of type `String` are stored in `Value.string_value`.",
           ).optional(),
           structType: z.object({
-            encoding: z.object({
-              delimitedBytes: z.object({
-                delimiter: z.string().describe(
-                  "Byte sequence used to delimit concatenated fields. The delimiter must contain at least 1 character and at most 50 characters.",
-                ).optional(),
-              }).describe(
-                "Fields are encoded independently and concatenated with a configurable `delimiter` in between. A struct with no fields defined is encoded as a single `delimiter`. Sorted mode: - Fields are encoded in sorted mode. - Encoded field values must not contain any bytes <= `delimiter[0]` - Element-wise order is preserved: `A < B` if `A[0] < B[0]`, or if `A[0] == B[0] && A[1] < B[1]`, etc. Strict prefixes sort first. - This encoding does not support `DESC` field ordering. Distinct mode: - Fields are encoded in distinct mode. - Encoded field values must not contain `delimiter[0]`.",
-              ).optional(),
-              orderedCodeBytes: z.object({}).describe(
-                'Fields are encoded independently, then escaped and delimited by appling the following rules in order: - While the last remaining field is `ASC` or `UNSPECIFIED`, and encodes to the empty string "", remove it. - In each remaining field, replace all null bytes `0x00` with the fixed byte pair `{0x00, 0xFF}`. - If any remaining field encodes to the empty string "", replace it with the fixed byte pair `{0x00, 0x00}`. - Append the fixed byte pair `{0x00, 0x01}` to each remaining field, except for the last remaining field if it is `ASC`. - Bitwise negate all `DESC` fields. - Concatenate the results, or emit the fixed byte pair `{0x00, 0x00}` if there are no remaining fields to concatenate. Examples: ` - STRUCT() -> "\\00\\00" - STRUCT("") -> "\\00\\00" - STRUCT("", "") -> "\\00\\00" - STRUCT("", "B") -> "\\00\\00" + "\\00\\01" + "B" - STRUCT("A", "") -> "A" - STRUCT("", "B", "") -> "\\00\\00" + "\\00\\01" + "B" - STRUCT("A", "", "C") -> "A" + "\\00\\01" + "\\00\\00" + "\\00\\01" + "C" ` Examples for struct with `DESC` fields: ` - STRUCT("" DESC) -> "\\xFF\\xFF" + "\\xFF\\xFE" - STRUCT("" DESC, "") -> "\\xFF\\xFF" + "\\xFF\\xFE" - STRUCT("" DESC, "", "") -> "\\xFF\\xFF" + "\\xFF\\xFE" - STRUCT("" DESC, "A") -> "\\xFF\\xFF" + "\\xFF\\xFE" + "A" - STRUCT("A", "" DESC, "") -> "A" + "\\00\\01" + "\\xFF\\xFF" + "\\xFF\\xFE" - STRUCT("", "A" DESC) -> "\\x00\\x00" + "\\x00\\x01" + "\\xBE" + "\\xFF\\xFE" ` Since null bytes are always escaped, this encoding can cause size blowup for encodings like `Int64.BigEndianBytes` that are likely to produce many such bytes. Sorted mode: - Fields are encoded in sorted mode. - All values supported by the field encodings are allowed. - Fields with unset or `UNSPECIFIED` order are treated as `ASC`. - Element-wise order is preserved: `A < B` if `A[0] < B[0]`, or if `A[0] == B[0] && A[1] < B[1]`, etc. Strict prefixes sort first. Distinct mode: - Fields are encoded in distinct mode. - All values supported by the field encodings are allowed.',
-              ).optional(),
-              singleton: z.object({}).describe(
-                "Uses the encoding of `fields[0].type` as-is. Only valid if `fields.size == 1`. This encoding does not support `DESC` field ordering.",
-              ).optional(),
-            }).describe("Rules used to convert to or from lower level types.")
-              .optional(),
-            fields: z.array(z.object({
-              fieldName: z.string().describe(
-                "The field name (optional). Fields without a `field_name` are considered anonymous and cannot be referenced by name.",
-              ).optional(),
-              type: z.string().describe("Circular reference to Type")
-                .optional(),
-            })).describe("The names and types of the fields in this struct.")
-              .optional(),
+            encoding: z.unknown().describe(
+              "Rules used to convert to or from lower level types.",
+            ).optional(),
+            fields: z.unknown().describe(
+              "The names and types of the fields in this struct.",
+            ).optional(),
           }).describe(
             "A structured data value, consisting of fields which map to dynamically typed values. Values of type `Struct` are stored in `Value.array_value` where entries are in the same order and number as `field_types`.",
           ).optional(),
           timestampType: z.object({
-            encoding: z.object({
-              unixMicrosInt64: z.object({
-                bigEndianBytes: z.object({
-                  bytesType: z.object({
-                    encoding: z.object({
-                      raw: z.object({
-                        escapeNulls: z.boolean().describe(
-                          'If set, allows NULL values to be encoded as the empty string "". The actual empty string, or any value which only contains the null byte `0x00`, has one more null byte appended.',
-                        ).optional(),
-                      }).describe(
-                        "Leaves the value as-is. Sorted mode: all values are supported. Distinct mode: all values are supported.",
-                      ).optional(),
-                    }).describe(
-                      "Rules used to convert to or from lower level types.",
-                    ).optional(),
-                  }).describe(
-                    "Bytes Values of type `Bytes` are stored in `Value.bytes_value`.",
-                  ).optional(),
-                }).describe(
-                  "Encodes the value as an 8-byte big-endian two's complement value. Sorted mode: non-negative values are supported. Distinct mode: all values are supported. Compatible with: - BigQuery `BINARY` encoding - HBase `Bytes.toBytes` - Java `ByteBuffer.putLong()` with `ByteOrder.BIG_ENDIAN`",
-                ).optional(),
-                orderedCodeBytes: z.object({}).describe(
-                  "Encodes the value in a variable length binary format of up to 10 bytes. Values that are closer to zero use fewer bytes. Sorted mode: all values are supported. Distinct mode: all values are supported.",
-                ).optional(),
-              }).describe("Rules used to convert to or from lower level types.")
-                .optional(),
-            }).describe("Rules used to convert to or from lower level types.")
-              .optional(),
+            encoding: z.unknown().describe(
+              "Rules used to convert to or from lower level types.",
+            ).optional(),
           }).describe(
             "Timestamp Values of type `Timestamp` are stored in `Value.timestamp_value`.",
           ).optional(),
@@ -1773,185 +1277,52 @@ const InputsSchema = z.object({
           "The field name (optional). Fields without a `field_name` are considered anonymous and cannot be referenced by name.",
         ).optional(),
         type: z.object({
-          aggregateType: z.object({
-            hllppUniqueCount: z.object({}).describe(
-              "Computes an approximate unique count over the input values. When using raw data as input, be careful to use a consistent encoding. Otherwise the same value encoded differently could count more than once, or two distinct values could count as identical. Input: Any, or omit for Raw State: TBD Special state conversions: `Int64` (the unique count estimate)",
-            ).optional(),
-            inputType: z.string().describe("Circular reference to Type")
-              .optional(),
-            max: z.object({}).describe(
-              "Computes the max of the input values. Allowed input: `Int64` State: same as input",
-            ).optional(),
-            min: z.object({}).describe(
-              "Computes the min of the input values. Allowed input: `Int64` State: same as input",
-            ).optional(),
-            stateType: z.string().describe("Circular reference to Type")
-              .optional(),
-            sum: z.object({}).describe(
-              "Computes the sum of the input values. Allowed input: `Int64` State: same as input",
-            ).optional(),
-          }).describe(
+          aggregateType: z.unknown().describe(
             "A value that combines incremental updates into a summarized value. Data is never directly written or read using type `Aggregate`. Writes provide either the `input_type` or `state_type`, and reads always return the `state_type`.",
           ).optional(),
-          arrayType: z.object({
-            elementType: z.string().describe("Circular reference to Type")
-              .optional(),
-          }).describe(
+          arrayType: z.unknown().describe(
             "An ordered list of elements of a given type. Values of type `Array` are stored in `Value.array_value`.",
           ).optional(),
-          boolType: z.object({
-            encoding: z.object({}).describe(
-              "Defines rules used to convert to or from lower level types.",
-            ).optional(),
-          }).describe(
+          boolType: z.unknown().describe(
             "bool Values of type `Bool` are stored in `Value.bool_value`.",
           ).optional(),
-          bytesType: z.object({
-            encoding: z.object({
-              raw: z.object({
-                escapeNulls: z.boolean().describe(
-                  'If set, allows NULL values to be encoded as the empty string "". The actual empty string, or any value which only contains the null byte `0x00`, has one more null byte appended.',
-                ).optional(),
-              }).describe(
-                "Leaves the value as-is. Sorted mode: all values are supported. Distinct mode: all values are supported.",
-              ).optional(),
-            }).describe("Rules used to convert to or from lower level types.")
-              .optional(),
-          }).describe(
+          bytesType: z.unknown().describe(
             "Bytes Values of type `Bytes` are stored in `Value.bytes_value`.",
           ).optional(),
-          dateType: z.object({}).describe(
+          dateType: z.unknown().describe(
             "Date Values of type `Date` are stored in `Value.date_value`.",
           ).optional(),
-          enumType: z.object({
-            enumName: z.string().describe(
-              'The fully qualified name of the protobuf enum message, including package. In the format of "foo.bar.EnumMessage".',
-            ).optional(),
-            schemaBundleId: z.string().describe(
-              "The ID of the schema bundle that this enum is defined in.",
-            ).optional(),
-          }).describe(
+          enumType: z.unknown().describe(
             "A protobuf enum type. Values of type `Enum` are stored in `Value.int_value`.",
           ).optional(),
-          float32Type: z.object({}).describe(
+          float32Type: z.unknown().describe(
             "Float32 Values of type `Float32` are stored in `Value.float_value`.",
           ).optional(),
-          float64Type: z.object({}).describe(
+          float64Type: z.unknown().describe(
             "Float64 Values of type `Float64` are stored in `Value.float_value`.",
           ).optional(),
-          geographyType: z.object({}).describe(
+          geographyType: z.unknown().describe(
             "A geography type, representing a point or region on Earth. The value is stored in `Value.bytes_value` as Well-Known Binary (WKB) bytes.",
           ).optional(),
-          int32Type: z.object({
-            encoding: z.object({
-              bigEndianBytes: z.object({}).describe(
-                "Encodes the value as a 4-byte big-endian two's complement value. Sorted mode: non-negative values are supported. Distinct mode: all values are supported. Compatible with: - BigQuery `BINARY` encoding - HBase `Bytes.toBytes` - Java `ByteBuffer.putInt()` with `ByteOrder.BIG_ENDIAN`",
-              ).optional(),
-              orderedCodeBytes: z.object({}).describe(
-                "Encodes the value in a variable length binary format of up to 5 bytes. Values that are closer to zero use fewer bytes. Sorted mode: all values are supported. Distinct mode: all values are supported.",
-              ).optional(),
-            }).describe("Rules used to convert to or from lower level types.")
-              .optional(),
-          }).describe(
+          int32Type: z.unknown().describe(
             "Int32 Values of type `Int32` are stored in `Value.int_value`.",
           ).optional(),
-          int64Type: z.object({
-            encoding: z.object({
-              bigEndianBytes: z.object({
-                bytesType: z.object({
-                  encoding: z.object({
-                    raw: z.object({
-                      escapeNulls: z.boolean().describe(
-                        'If set, allows NULL values to be encoded as the empty string "". The actual empty string, or any value which only contains the null byte `0x00`, has one more null byte appended.',
-                      ).optional(),
-                    }).describe(
-                      "Leaves the value as-is. Sorted mode: all values are supported. Distinct mode: all values are supported.",
-                    ).optional(),
-                  }).describe(
-                    "Rules used to convert to or from lower level types.",
-                  ).optional(),
-                }).describe(
-                  "Bytes Values of type `Bytes` are stored in `Value.bytes_value`.",
-                ).optional(),
-              }).describe(
-                "Encodes the value as an 8-byte big-endian two's complement value. Sorted mode: non-negative values are supported. Distinct mode: all values are supported. Compatible with: - BigQuery `BINARY` encoding - HBase `Bytes.toBytes` - Java `ByteBuffer.putLong()` with `ByteOrder.BIG_ENDIAN`",
-              ).optional(),
-              orderedCodeBytes: z.object({}).describe(
-                "Encodes the value in a variable length binary format of up to 10 bytes. Values that are closer to zero use fewer bytes. Sorted mode: all values are supported. Distinct mode: all values are supported.",
-              ).optional(),
-            }).describe("Rules used to convert to or from lower level types.")
-              .optional(),
-          }).describe(
+          int64Type: z.unknown().describe(
             "Int64 Values of type `Int64` are stored in `Value.int_value`.",
           ).optional(),
-          mapType: z.object({
-            keyType: z.string().describe("Circular reference to Type")
-              .optional(),
-            valueType: z.string().describe("Circular reference to Type")
-              .optional(),
-          }).describe(
+          mapType: z.unknown().describe(
             "A mapping of keys to values of a given type. Values of type `Map` are stored in a `Value.array_value` where each entry is another `Value.array_value` with two elements (the key and the value, in that order). Normally encoded Map values won't have repeated keys, however, clients are expected to handle the case in which they do. If the same key appears multiple times, the _last_ value takes precedence.",
           ).optional(),
-          protoType: z.object({
-            messageName: z.string().describe(
-              'The fully qualified name of the protobuf message, including package. In the format of "foo.bar.Message".',
-            ).optional(),
-            schemaBundleId: z.string().describe(
-              "The ID of the schema bundle that this proto is defined in.",
-            ).optional(),
-          }).describe(
+          protoType: z.unknown().describe(
             "A protobuf message type. Values of type `Proto` are stored in `Value.bytes_value`.",
           ).optional(),
-          stringType: z.object({
-            encoding: z.object({
-              utf8Bytes: z.object({
-                nullEscapeChar: z.string().describe(
-                  'Single-character escape sequence used to support NULL values. If set, allows NULL values to be encoded as the empty string "". The actual empty string, or any value where every character equals `null_escape_char`, has one more `null_escape_char` appended. If `null_escape_char` is set and does not equal the ASCII null character `0x00`, then the encoding will not support sorted mode..',
-                ).optional(),
-              }).describe(
-                "UTF-8 encoding. Sorted mode: - All values are supported. - Code point order is preserved. Distinct mode: all values are supported. Compatible with: - BigQuery `TEXT` encoding - HBase `Bytes.toBytes` - Java `String#getBytes(StandardCharsets.UTF_8)`",
-              ).optional(),
-              utf8Raw: z.object({}).describe(
-                "Deprecated: prefer the equivalent `Utf8Bytes`.",
-              ).optional(),
-            }).describe("Rules used to convert to or from lower level types.")
-              .optional(),
-          }).describe(
+          stringType: z.unknown().describe(
             "String Values of type `String` are stored in `Value.string_value`.",
           ).optional(),
-          structType: z.string().describe(
+          structType: z.unknown().describe(
             "Circular reference to GoogleBigtableAdminV2TypeStruct",
           ).optional(),
-          timestampType: z.object({
-            encoding: z.object({
-              unixMicrosInt64: z.object({
-                bigEndianBytes: z.object({
-                  bytesType: z.object({
-                    encoding: z.object({
-                      raw: z.object({
-                        escapeNulls: z.boolean().describe(
-                          'If set, allows NULL values to be encoded as the empty string "". The actual empty string, or any value which only contains the null byte `0x00`, has one more null byte appended.',
-                        ).optional(),
-                      }).describe(
-                        "Leaves the value as-is. Sorted mode: all values are supported. Distinct mode: all values are supported.",
-                      ).optional(),
-                    }).describe(
-                      "Rules used to convert to or from lower level types.",
-                    ).optional(),
-                  }).describe(
-                    "Bytes Values of type `Bytes` are stored in `Value.bytes_value`.",
-                  ).optional(),
-                }).describe(
-                  "Encodes the value as an 8-byte big-endian two's complement value. Sorted mode: non-negative values are supported. Distinct mode: all values are supported. Compatible with: - BigQuery `BINARY` encoding - HBase `Bytes.toBytes` - Java `ByteBuffer.putLong()` with `ByteOrder.BIG_ENDIAN`",
-                ).optional(),
-                orderedCodeBytes: z.object({}).describe(
-                  "Encodes the value in a variable length binary format of up to 10 bytes. Values that are closer to zero use fewer bytes. Sorted mode: all values are supported. Distinct mode: all values are supported.",
-                ).optional(),
-              }).describe("Rules used to convert to or from lower level types.")
-                .optional(),
-            }).describe("Rules used to convert to or from lower level types.")
-              .optional(),
-          }).describe(
+          timestampType: z.unknown().describe(
             "Timestamp Values of type `Timestamp` are stored in `Value.timestamp_value`.",
           ).optional(),
         }).describe(
@@ -2014,13 +1385,13 @@ const InputsSchema = z.object({
     z.object({
       encryptionInfo: z.array(z.object({
         encryptionStatus: z.object({
-          code: z.number().int().describe(
+          code: z.unknown().describe(
             "The status code, which should be an enum value of google.rpc.Code.",
           ).optional(),
-          details: z.array(z.record(z.string(), z.string())).describe(
+          details: z.unknown().describe(
             "A list of messages that carry the error details. There is a common set of message types for APIs to use.",
           ).optional(),
-          message: z.string().describe(
+          message: z.unknown().describe(
             "A developer-facing error message, which should be in English. Any user-facing error message should be localized and sent in the google.rpc.Status.details field, or localized by the client.",
           ).optional(),
         }).describe(
@@ -2058,7 +1429,7 @@ const InputsSchema = z.object({
     z.object({
       gcRule: z.object({
         intersection: z.object({
-          rules: z.array(z.string()).describe(
+          rules: z.array(z.unknown()).describe(
             "Only delete cells which would be deleted by every element of `rules`.",
           ).optional(),
         }).describe(
@@ -2071,7 +1442,7 @@ const InputsSchema = z.object({
           "Delete all cells in a column except the most recent N.",
         ).optional(),
         union: z.object({
-          rules: z.array(z.string()).describe(
+          rules: z.array(z.unknown()).describe(
             "Delete cells which would be deleted by any element of `rules`.",
           ).optional(),
         }).describe(
@@ -2129,11 +1500,7 @@ const InputsSchema = z.object({
         ).optional(),
         bytesType: z.object({
           encoding: z.object({
-            raw: z.object({
-              escapeNulls: z.boolean().describe(
-                'If set, allows NULL values to be encoded as the empty string "". The actual empty string, or any value which only contains the null byte `0x00`, has one more null byte appended.',
-              ).optional(),
-            }).describe(
+            raw: z.unknown().describe(
               "Leaves the value as-is. Sorted mode: all values are supported. Distinct mode: all values are supported.",
             ).optional(),
           }).describe("Rules used to convert to or from lower level types.")
@@ -2165,10 +1532,10 @@ const InputsSchema = z.object({
         ).optional(),
         int32Type: z.object({
           encoding: z.object({
-            bigEndianBytes: z.object({}).describe(
+            bigEndianBytes: z.unknown().describe(
               "Encodes the value as a 4-byte big-endian two's complement value. Sorted mode: non-negative values are supported. Distinct mode: all values are supported. Compatible with: - BigQuery `BINARY` encoding - HBase `Bytes.toBytes` - Java `ByteBuffer.putInt()` with `ByteOrder.BIG_ENDIAN`",
             ).optional(),
-            orderedCodeBytes: z.object({}).describe(
+            orderedCodeBytes: z.unknown().describe(
               "Encodes the value in a variable length binary format of up to 5 bytes. Values that are closer to zero use fewer bytes. Sorted mode: all values are supported. Distinct mode: all values are supported.",
             ).optional(),
           }).describe("Rules used to convert to or from lower level types.")
@@ -2178,26 +1545,10 @@ const InputsSchema = z.object({
         ).optional(),
         int64Type: z.object({
           encoding: z.object({
-            bigEndianBytes: z.object({
-              bytesType: z.object({
-                encoding: z.object({
-                  raw: z.object({
-                    escapeNulls: z.boolean().describe(
-                      'If set, allows NULL values to be encoded as the empty string "". The actual empty string, or any value which only contains the null byte `0x00`, has one more null byte appended.',
-                    ).optional(),
-                  }).describe(
-                    "Leaves the value as-is. Sorted mode: all values are supported. Distinct mode: all values are supported.",
-                  ).optional(),
-                }).describe(
-                  "Rules used to convert to or from lower level types.",
-                ).optional(),
-              }).describe(
-                "Bytes Values of type `Bytes` are stored in `Value.bytes_value`.",
-              ).optional(),
-            }).describe(
+            bigEndianBytes: z.unknown().describe(
               "Encodes the value as an 8-byte big-endian two's complement value. Sorted mode: non-negative values are supported. Distinct mode: all values are supported. Compatible with: - BigQuery `BINARY` encoding - HBase `Bytes.toBytes` - Java `ByteBuffer.putLong()` with `ByteOrder.BIG_ENDIAN`",
             ).optional(),
-            orderedCodeBytes: z.object({}).describe(
+            orderedCodeBytes: z.unknown().describe(
               "Encodes the value in a variable length binary format of up to 10 bytes. Values that are closer to zero use fewer bytes. Sorted mode: all values are supported. Distinct mode: all values are supported.",
             ).optional(),
           }).describe("Rules used to convert to or from lower level types.")
@@ -2224,14 +1575,10 @@ const InputsSchema = z.object({
         ).optional(),
         stringType: z.object({
           encoding: z.object({
-            utf8Bytes: z.object({
-              nullEscapeChar: z.string().describe(
-                'Single-character escape sequence used to support NULL values. If set, allows NULL values to be encoded as the empty string "". The actual empty string, or any value where every character equals `null_escape_char`, has one more `null_escape_char` appended. If `null_escape_char` is set and does not equal the ASCII null character `0x00`, then the encoding will not support sorted mode..',
-              ).optional(),
-            }).describe(
+            utf8Bytes: z.unknown().describe(
               "UTF-8 encoding. Sorted mode: - All values are supported. - Code point order is preserved. Distinct mode: all values are supported. Compatible with: - BigQuery `TEXT` encoding - HBase `Bytes.toBytes` - Java `String#getBytes(StandardCharsets.UTF_8)`",
             ).optional(),
-            utf8Raw: z.object({}).describe(
+            utf8Raw: z.unknown().describe(
               "Deprecated: prefer the equivalent `Utf8Bytes`.",
             ).optional(),
           }).describe("Rules used to convert to or from lower level types.")
@@ -2241,58 +1588,28 @@ const InputsSchema = z.object({
         ).optional(),
         structType: z.object({
           encoding: z.object({
-            delimitedBytes: z.object({
-              delimiter: z.string().describe(
-                "Byte sequence used to delimit concatenated fields. The delimiter must contain at least 1 character and at most 50 characters.",
-              ).optional(),
-            }).describe(
+            delimitedBytes: z.unknown().describe(
               "Fields are encoded independently and concatenated with a configurable `delimiter` in between. A struct with no fields defined is encoded as a single `delimiter`. Sorted mode: - Fields are encoded in sorted mode. - Encoded field values must not contain any bytes <= `delimiter[0]` - Element-wise order is preserved: `A < B` if `A[0] < B[0]`, or if `A[0] == B[0] && A[1] < B[1]`, etc. Strict prefixes sort first. - This encoding does not support `DESC` field ordering. Distinct mode: - Fields are encoded in distinct mode. - Encoded field values must not contain `delimiter[0]`.",
             ).optional(),
-            orderedCodeBytes: z.object({}).describe(
+            orderedCodeBytes: z.unknown().describe(
               'Fields are encoded independently, then escaped and delimited by appling the following rules in order: - While the last remaining field is `ASC` or `UNSPECIFIED`, and encodes to the empty string "", remove it. - In each remaining field, replace all null bytes `0x00` with the fixed byte pair `{0x00, 0xFF}`. - If any remaining field encodes to the empty string "", replace it with the fixed byte pair `{0x00, 0x00}`. - Append the fixed byte pair `{0x00, 0x01}` to each remaining field, except for the last remaining field if it is `ASC`. - Bitwise negate all `DESC` fields. - Concatenate the results, or emit the fixed byte pair `{0x00, 0x00}` if there are no remaining fields to concatenate. Examples: ` - STRUCT() -> "\\00\\00" - STRUCT("") -> "\\00\\00" - STRUCT("", "") -> "\\00\\00" - STRUCT("", "B") -> "\\00\\00" + "\\00\\01" + "B" - STRUCT("A", "") -> "A" - STRUCT("", "B", "") -> "\\00\\00" + "\\00\\01" + "B" - STRUCT("A", "", "C") -> "A" + "\\00\\01" + "\\00\\00" + "\\00\\01" + "C" ` Examples for struct with `DESC` fields: ` - STRUCT("" DESC) -> "\\xFF\\xFF" + "\\xFF\\xFE" - STRUCT("" DESC, "") -> "\\xFF\\xFF" + "\\xFF\\xFE" - STRUCT("" DESC, "", "") -> "\\xFF\\xFF" + "\\xFF\\xFE" - STRUCT("" DESC, "A") -> "\\xFF\\xFF" + "\\xFF\\xFE" + "A" - STRUCT("A", "" DESC, "") -> "A" + "\\00\\01" + "\\xFF\\xFF" + "\\xFF\\xFE" - STRUCT("", "A" DESC) -> "\\x00\\x00" + "\\x00\\x01" + "\\xBE" + "\\xFF\\xFE" ` Since null bytes are always escaped, this encoding can cause size blowup for encodings like `Int64.BigEndianBytes` that are likely to produce many such bytes. Sorted mode: - Fields are encoded in sorted mode. - All values supported by the field encodings are allowed. - Fields with unset or `UNSPECIFIED` order are treated as `ASC`. - Element-wise order is preserved: `A < B` if `A[0] < B[0]`, or if `A[0] == B[0] && A[1] < B[1]`, etc. Strict prefixes sort first. Distinct mode: - Fields are encoded in distinct mode. - All values supported by the field encodings are allowed.',
             ).optional(),
-            singleton: z.object({}).describe(
+            singleton: z.unknown().describe(
               "Uses the encoding of `fields[0].type` as-is. Only valid if `fields.size == 1`. This encoding does not support `DESC` field ordering.",
             ).optional(),
           }).describe("Rules used to convert to or from lower level types.")
             .optional(),
-          fields: z.array(z.object({
-            fieldName: z.string().describe(
-              "The field name (optional). Fields without a `field_name` are considered anonymous and cannot be referenced by name.",
-            ).optional(),
-            type: z.string().describe("Circular reference to Type").optional(),
-          })).describe("The names and types of the fields in this struct.")
-            .optional(),
+          fields: z.array(z.unknown()).describe(
+            "The names and types of the fields in this struct.",
+          ).optional(),
         }).describe(
           "A structured data value, consisting of fields which map to dynamically typed values. Values of type `Struct` are stored in `Value.array_value` where entries are in the same order and number as `field_types`.",
         ).optional(),
         timestampType: z.object({
           encoding: z.object({
-            unixMicrosInt64: z.object({
-              bigEndianBytes: z.object({
-                bytesType: z.object({
-                  encoding: z.object({
-                    raw: z.object({
-                      escapeNulls: z.boolean().describe(
-                        'If set, allows NULL values to be encoded as the empty string "". The actual empty string, or any value which only contains the null byte `0x00`, has one more null byte appended.',
-                      ).optional(),
-                    }).describe(
-                      "Leaves the value as-is. Sorted mode: all values are supported. Distinct mode: all values are supported.",
-                    ).optional(),
-                  }).describe(
-                    "Rules used to convert to or from lower level types.",
-                  ).optional(),
-                }).describe(
-                  "Bytes Values of type `Bytes` are stored in `Value.bytes_value`.",
-                ).optional(),
-              }).describe(
-                "Encodes the value as an 8-byte big-endian two's complement value. Sorted mode: non-negative values are supported. Distinct mode: all values are supported. Compatible with: - BigQuery `BINARY` encoding - HBase `Bytes.toBytes` - Java `ByteBuffer.putLong()` with `ByteOrder.BIG_ENDIAN`",
-              ).optional(),
-              orderedCodeBytes: z.object({}).describe(
-                "Encodes the value in a variable length binary format of up to 10 bytes. Values that are closer to zero use fewer bytes. Sorted mode: all values are supported. Distinct mode: all values are supported.",
-              ).optional(),
-            }).describe("Rules used to convert to or from lower level types.")
-              .optional(),
+            unixMicrosInt64: z.unknown().describe(
+              "Rules used to convert to or from lower level types.",
+            ).optional(),
           }).describe("Rules used to convert to or from lower level types.")
             .optional(),
         }).describe(
@@ -2358,49 +1675,42 @@ const InputsSchema = z.object({
       ).optional(),
       type: z.object({
         aggregateType: z.object({
-          hllppUniqueCount: z.object({}).describe(
+          hllppUniqueCount: z.unknown().describe(
             "Computes an approximate unique count over the input values. When using raw data as input, be careful to use a consistent encoding. Otherwise the same value encoded differently could count more than once, or two distinct values could count as identical. Input: Any, or omit for Raw State: TBD Special state conversions: `Int64` (the unique count estimate)",
           ).optional(),
-          inputType: z.string().describe("Circular reference to Type")
+          inputType: z.unknown().describe("Circular reference to Type")
             .optional(),
-          max: z.object({}).describe(
+          max: z.unknown().describe(
             "Computes the max of the input values. Allowed input: `Int64` State: same as input",
           ).optional(),
-          min: z.object({}).describe(
+          min: z.unknown().describe(
             "Computes the min of the input values. Allowed input: `Int64` State: same as input",
           ).optional(),
-          stateType: z.string().describe("Circular reference to Type")
+          stateType: z.unknown().describe("Circular reference to Type")
             .optional(),
-          sum: z.object({}).describe(
+          sum: z.unknown().describe(
             "Computes the sum of the input values. Allowed input: `Int64` State: same as input",
           ).optional(),
         }).describe(
           "A value that combines incremental updates into a summarized value. Data is never directly written or read using type `Aggregate`. Writes provide either the `input_type` or `state_type`, and reads always return the `state_type`.",
         ).optional(),
         arrayType: z.object({
-          elementType: z.string().describe("Circular reference to Type")
+          elementType: z.unknown().describe("Circular reference to Type")
             .optional(),
         }).describe(
           "An ordered list of elements of a given type. Values of type `Array` are stored in `Value.array_value`.",
         ).optional(),
         boolType: z.object({
-          encoding: z.object({}).describe(
+          encoding: z.unknown().describe(
             "Defines rules used to convert to or from lower level types.",
           ).optional(),
         }).describe(
           "bool Values of type `Bool` are stored in `Value.bool_value`.",
         ).optional(),
         bytesType: z.object({
-          encoding: z.object({
-            raw: z.object({
-              escapeNulls: z.boolean().describe(
-                'If set, allows NULL values to be encoded as the empty string "". The actual empty string, or any value which only contains the null byte `0x00`, has one more null byte appended.',
-              ).optional(),
-            }).describe(
-              "Leaves the value as-is. Sorted mode: all values are supported. Distinct mode: all values are supported.",
-            ).optional(),
-          }).describe("Rules used to convert to or from lower level types.")
-            .optional(),
+          encoding: z.unknown().describe(
+            "Rules used to convert to or from lower level types.",
+          ).optional(),
         }).describe(
           "Bytes Values of type `Bytes` are stored in `Value.bytes_value`.",
         ).optional(),
@@ -2408,10 +1718,10 @@ const InputsSchema = z.object({
           "Date Values of type `Date` are stored in `Value.date_value`.",
         ).optional(),
         enumType: z.object({
-          enumName: z.string().describe(
+          enumName: z.unknown().describe(
             'The fully qualified name of the protobuf enum message, including package. In the format of "foo.bar.EnumMessage".',
           ).optional(),
-          schemaBundleId: z.string().describe(
+          schemaBundleId: z.unknown().describe(
             "The ID of the schema bundle that this enum is defined in.",
           ).optional(),
         }).describe(
@@ -2427,78 +1737,41 @@ const InputsSchema = z.object({
           "A geography type, representing a point or region on Earth. The value is stored in `Value.bytes_value` as Well-Known Binary (WKB) bytes.",
         ).optional(),
         int32Type: z.object({
-          encoding: z.object({
-            bigEndianBytes: z.object({}).describe(
-              "Encodes the value as a 4-byte big-endian two's complement value. Sorted mode: non-negative values are supported. Distinct mode: all values are supported. Compatible with: - BigQuery `BINARY` encoding - HBase `Bytes.toBytes` - Java `ByteBuffer.putInt()` with `ByteOrder.BIG_ENDIAN`",
-            ).optional(),
-            orderedCodeBytes: z.object({}).describe(
-              "Encodes the value in a variable length binary format of up to 5 bytes. Values that are closer to zero use fewer bytes. Sorted mode: all values are supported. Distinct mode: all values are supported.",
-            ).optional(),
-          }).describe("Rules used to convert to or from lower level types.")
-            .optional(),
+          encoding: z.unknown().describe(
+            "Rules used to convert to or from lower level types.",
+          ).optional(),
         }).describe(
           "Int32 Values of type `Int32` are stored in `Value.int_value`.",
         ).optional(),
         int64Type: z.object({
-          encoding: z.object({
-            bigEndianBytes: z.object({
-              bytesType: z.object({
-                encoding: z.object({
-                  raw: z.object({
-                    escapeNulls: z.boolean().describe(
-                      'If set, allows NULL values to be encoded as the empty string "". The actual empty string, or any value which only contains the null byte `0x00`, has one more null byte appended.',
-                    ).optional(),
-                  }).describe(
-                    "Leaves the value as-is. Sorted mode: all values are supported. Distinct mode: all values are supported.",
-                  ).optional(),
-                }).describe(
-                  "Rules used to convert to or from lower level types.",
-                ).optional(),
-              }).describe(
-                "Bytes Values of type `Bytes` are stored in `Value.bytes_value`.",
-              ).optional(),
-            }).describe(
-              "Encodes the value as an 8-byte big-endian two's complement value. Sorted mode: non-negative values are supported. Distinct mode: all values are supported. Compatible with: - BigQuery `BINARY` encoding - HBase `Bytes.toBytes` - Java `ByteBuffer.putLong()` with `ByteOrder.BIG_ENDIAN`",
-            ).optional(),
-            orderedCodeBytes: z.object({}).describe(
-              "Encodes the value in a variable length binary format of up to 10 bytes. Values that are closer to zero use fewer bytes. Sorted mode: all values are supported. Distinct mode: all values are supported.",
-            ).optional(),
-          }).describe("Rules used to convert to or from lower level types.")
-            .optional(),
+          encoding: z.unknown().describe(
+            "Rules used to convert to or from lower level types.",
+          ).optional(),
         }).describe(
           "Int64 Values of type `Int64` are stored in `Value.int_value`.",
         ).optional(),
         mapType: z.object({
-          keyType: z.string().describe("Circular reference to Type").optional(),
-          valueType: z.string().describe("Circular reference to Type")
+          keyType: z.unknown().describe("Circular reference to Type")
+            .optional(),
+          valueType: z.unknown().describe("Circular reference to Type")
             .optional(),
         }).describe(
           "A mapping of keys to values of a given type. Values of type `Map` are stored in a `Value.array_value` where each entry is another `Value.array_value` with two elements (the key and the value, in that order). Normally encoded Map values won't have repeated keys, however, clients are expected to handle the case in which they do. If the same key appears multiple times, the _last_ value takes precedence.",
         ).optional(),
         protoType: z.object({
-          messageName: z.string().describe(
+          messageName: z.unknown().describe(
             'The fully qualified name of the protobuf message, including package. In the format of "foo.bar.Message".',
           ).optional(),
-          schemaBundleId: z.string().describe(
+          schemaBundleId: z.unknown().describe(
             "The ID of the schema bundle that this proto is defined in.",
           ).optional(),
         }).describe(
           "A protobuf message type. Values of type `Proto` are stored in `Value.bytes_value`.",
         ).optional(),
         stringType: z.object({
-          encoding: z.object({
-            utf8Bytes: z.object({
-              nullEscapeChar: z.string().describe(
-                'Single-character escape sequence used to support NULL values. If set, allows NULL values to be encoded as the empty string "". The actual empty string, or any value where every character equals `null_escape_char`, has one more `null_escape_char` appended. If `null_escape_char` is set and does not equal the ASCII null character `0x00`, then the encoding will not support sorted mode..',
-              ).optional(),
-            }).describe(
-              "UTF-8 encoding. Sorted mode: - All values are supported. - Code point order is preserved. Distinct mode: all values are supported. Compatible with: - BigQuery `TEXT` encoding - HBase `Bytes.toBytes` - Java `String#getBytes(StandardCharsets.UTF_8)`",
-            ).optional(),
-            utf8Raw: z.object({}).describe(
-              "Deprecated: prefer the equivalent `Utf8Bytes`.",
-            ).optional(),
-          }).describe("Rules used to convert to or from lower level types.")
-            .optional(),
+          encoding: z.unknown().describe(
+            "Rules used to convert to or from lower level types.",
+          ).optional(),
         }).describe(
           "String Values of type `String` are stored in `Value.string_value`.",
         ).optional(),
@@ -2506,34 +1779,9 @@ const InputsSchema = z.object({
           "Circular reference to GoogleBigtableAdminV2TypeStruct",
         ).optional(),
         timestampType: z.object({
-          encoding: z.object({
-            unixMicrosInt64: z.object({
-              bigEndianBytes: z.object({
-                bytesType: z.object({
-                  encoding: z.object({
-                    raw: z.object({
-                      escapeNulls: z.boolean().describe(
-                        'If set, allows NULL values to be encoded as the empty string "". The actual empty string, or any value which only contains the null byte `0x00`, has one more null byte appended.',
-                      ).optional(),
-                    }).describe(
-                      "Leaves the value as-is. Sorted mode: all values are supported. Distinct mode: all values are supported.",
-                    ).optional(),
-                  }).describe(
-                    "Rules used to convert to or from lower level types.",
-                  ).optional(),
-                }).describe(
-                  "Bytes Values of type `Bytes` are stored in `Value.bytes_value`.",
-                ).optional(),
-              }).describe(
-                "Encodes the value as an 8-byte big-endian two's complement value. Sorted mode: non-negative values are supported. Distinct mode: all values are supported. Compatible with: - BigQuery `BINARY` encoding - HBase `Bytes.toBytes` - Java `ByteBuffer.putLong()` with `ByteOrder.BIG_ENDIAN`",
-              ).optional(),
-              orderedCodeBytes: z.object({}).describe(
-                "Encodes the value in a variable length binary format of up to 10 bytes. Values that are closer to zero use fewer bytes. Sorted mode: all values are supported. Distinct mode: all values are supported.",
-              ).optional(),
-            }).describe("Rules used to convert to or from lower level types.")
-              .optional(),
-          }).describe("Rules used to convert to or from lower level types.")
-            .optional(),
+          encoding: z.unknown().describe(
+            "Rules used to convert to or from lower level types.",
+          ).optional(),
         }).describe(
           "Timestamp Values of type `Timestamp` are stored in `Value.timestamp_value`.",
         ).optional(),
@@ -2576,7 +1824,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/bigtableadmin/instances-tables",
-  version: "2026.04.03.3",
+  version: "2026.04.04.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -2605,6 +1853,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.3",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.04.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

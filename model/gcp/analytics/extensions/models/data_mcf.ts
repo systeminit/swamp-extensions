@@ -101,8 +101,8 @@ const StateSchema = z.object({
   }).optional(),
   rows: z.array(z.array(z.object({
     conversionPathValue: z.array(z.object({
-      interactionType: z.string(),
-      nodeValue: z.string(),
+      interactionType: z.unknown(),
+      nodeValue: z.unknown(),
     })),
     primitiveValue: z.string(),
   }))).optional(),
@@ -121,7 +121,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/analytics/data-mcf",
-  version: "2026.04.03.3",
+  version: "2026.04.04.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -145,6 +145,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.3",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.04.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

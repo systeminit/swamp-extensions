@@ -124,7 +124,7 @@ const GlobalArgsSchema = z.object({
         "Output only. A map of instance short name to machine type. The key is the short name of the Compute Engine instance, and the value is the full machine-type name (e.g., 'n1-standard-16'). See Machine types for more information on valid machine type strings.",
       ).optional(),
       instanceSelectionList: z.array(z.object({
-        machineTypes: z.array(z.string()).describe(
+        machineTypes: z.array(z.unknown()).describe(
           'Optional. Full machine-type names, e.g. "n1-standard-16".',
         ).optional(),
         rank: z.number().int().describe(
@@ -263,7 +263,7 @@ const StateSchema = z.object({
     instanceFlexibilityPolicy: z.object({
       instanceMachineTypes: z.record(z.string(), z.unknown()),
       instanceSelectionList: z.array(z.object({
-        machineTypes: z.array(z.string()),
+        machineTypes: z.array(z.unknown()),
         rank: z.number(),
       })),
       instanceSelectionResults: z.array(z.object({
@@ -369,7 +369,7 @@ const InputsSchema = z.object({
         "Output only. A map of instance short name to machine type. The key is the short name of the Compute Engine instance, and the value is the full machine-type name (e.g., 'n1-standard-16'). See Machine types for more information on valid machine type strings.",
       ).optional(),
       instanceSelectionList: z.array(z.object({
-        machineTypes: z.array(z.string()).describe(
+        machineTypes: z.array(z.unknown()).describe(
           'Optional. Full machine-type names, e.g. "n1-standard-16".',
         ).optional(),
         rank: z.number().int().describe(
@@ -484,7 +484,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/dataproc/clusters-nodegroups",
-  version: "2026.04.03.3",
+  version: "2026.04.04.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -508,6 +508,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.3",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.04.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

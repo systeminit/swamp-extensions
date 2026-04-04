@@ -64,13 +64,8 @@ const GlobalArgsSchema = z.object({
           "Output only. A URI from which you can download the image; this is valid only for a limited time.",
         ).optional(),
         properties: z.object({
-          alignment: z.enum([
-            "ALIGNMENT_UNSPECIFIED",
-            "LEFT",
-            "RIGHT",
-            "CENTER",
-          ]).describe("Position of the media.").optional(),
-          width: z.number().int().describe(
+          alignment: z.unknown().describe("Position of the media.").optional(),
+          width: z.unknown().describe(
             "The width of the media in pixels. When the media is displayed, it is scaled to the smaller of this value or the width of the displayed form. The original aspect ratio of the media is preserved. If a width is not specified when the media is added to the form, it is set to the width of the media source. Width must be between 0 and 740, inclusive. Setting width to 0 or unspecified is only permitted when updating the media source.",
           ).optional(),
         }).describe("Properties of the media.").optional(),
@@ -88,56 +83,14 @@ const GlobalArgsSchema = z.object({
     questionGroupItem: z.object({
       grid: z.object({
         columns: z.object({
-          options: z.array(z.object({
-            goToAction: z.enum([
-              "GO_TO_ACTION_UNSPECIFIED",
-              "NEXT_SECTION",
-              "RESTART_FORM",
-              "SUBMIT_FORM",
-            ]).describe("Section navigation type.").optional(),
-            goToSectionId: z.string().describe(
-              "Item ID of section header to go to.",
-            ).optional(),
-            image: z.object({
-              altText: z.string().describe(
-                "A description of the image that is shown on hover and read by screenreaders.",
-              ).optional(),
-              contentUri: z.string().describe(
-                "Output only. A URI from which you can download the image; this is valid only for a limited time.",
-              ).optional(),
-              properties: z.object({
-                alignment: z.enum([
-                  "ALIGNMENT_UNSPECIFIED",
-                  "LEFT",
-                  "RIGHT",
-                  "CENTER",
-                ]).describe("Position of the media.").optional(),
-                width: z.number().int().describe(
-                  "The width of the media in pixels. When the media is displayed, it is scaled to the smaller of this value or the width of the displayed form. The original aspect ratio of the media is preserved. If a width is not specified when the media is added to the form, it is set to the width of the media source. Width must be between 0 and 740, inclusive. Setting width to 0 or unspecified is only permitted when updating the media source.",
-                ).optional(),
-              }).describe("Properties of the media.").optional(),
-              sourceUri: z.string().describe(
-                "Input only. The source URI is the URI used to insert the image. The source URI can be empty when fetched.",
-              ).optional(),
-            }).describe("Data representing an image.").optional(),
-            isOther: z.boolean().describe(
-              'Whether the option is "other". Currently only applies to `RADIO` and `CHECKBOX` choice types, but is not allowed in a QuestionGroupItem.',
-            ).optional(),
-            value: z.string().describe(
-              "Required. The choice as presented to the user.",
-            ).optional(),
-          })).describe(
+          options: z.unknown().describe(
             "Required. List of options that a respondent must choose from.",
           ).optional(),
-          shuffle: z.boolean().describe(
+          shuffle: z.unknown().describe(
             "Whether the options should be displayed in random order for different instances of the quiz. This is often used to prevent cheating by respondents who might be looking at another respondent's screen, or to address bias in a survey that might be introduced by always putting the same options first or last.",
           ).optional(),
-          type: z.enum([
-            "CHOICE_TYPE_UNSPECIFIED",
-            "RADIO",
-            "CHECKBOX",
-            "DROP_DOWN",
-          ]).describe("Required. The type of choice question.").optional(),
+          type: z.unknown().describe("Required. The type of choice question.")
+            .optional(),
         }).describe("A radio/checkbox/dropdown question.").optional(),
         shuffleQuestions: z.boolean().describe(
           "If `true`, the questions are randomly ordered. In other words, the rows appear in a different order for every respondent.",
@@ -153,13 +106,8 @@ const GlobalArgsSchema = z.object({
           "Output only. A URI from which you can download the image; this is valid only for a limited time.",
         ).optional(),
         properties: z.object({
-          alignment: z.enum([
-            "ALIGNMENT_UNSPECIFIED",
-            "LEFT",
-            "RIGHT",
-            "CENTER",
-          ]).describe("Position of the media.").optional(),
-          width: z.number().int().describe(
+          alignment: z.unknown().describe("Position of the media.").optional(),
+          width: z.unknown().describe(
             "The width of the media in pixels. When the media is displayed, it is scaled to the smaller of this value or the width of the displayed form. The original aspect ratio of the media is preserved. If a width is not specified when the media is added to the form, it is set to the width of the media source. Width must be between 0 and 740, inclusive. Setting width to 0 or unspecified is only permitted when updating the media source.",
           ).optional(),
         }).describe("Properties of the media.").optional(),
@@ -168,234 +116,34 @@ const GlobalArgsSchema = z.object({
         ).optional(),
       }).describe("Data representing an image.").optional(),
       questions: z.array(z.object({
-        choiceQuestion: z.object({
-          options: z.array(z.object({
-            goToAction: z.enum([
-              "GO_TO_ACTION_UNSPECIFIED",
-              "NEXT_SECTION",
-              "RESTART_FORM",
-              "SUBMIT_FORM",
-            ]).describe("Section navigation type.").optional(),
-            goToSectionId: z.string().describe(
-              "Item ID of section header to go to.",
-            ).optional(),
-            image: z.object({
-              altText: z.string().describe(
-                "A description of the image that is shown on hover and read by screenreaders.",
-              ).optional(),
-              contentUri: z.string().describe(
-                "Output only. A URI from which you can download the image; this is valid only for a limited time.",
-              ).optional(),
-              properties: z.object({
-                alignment: z.enum([
-                  "ALIGNMENT_UNSPECIFIED",
-                  "LEFT",
-                  "RIGHT",
-                  "CENTER",
-                ]).describe("Position of the media.").optional(),
-                width: z.number().int().describe(
-                  "The width of the media in pixels. When the media is displayed, it is scaled to the smaller of this value or the width of the displayed form. The original aspect ratio of the media is preserved. If a width is not specified when the media is added to the form, it is set to the width of the media source. Width must be between 0 and 740, inclusive. Setting width to 0 or unspecified is only permitted when updating the media source.",
-                ).optional(),
-              }).describe("Properties of the media.").optional(),
-              sourceUri: z.string().describe(
-                "Input only. The source URI is the URI used to insert the image. The source URI can be empty when fetched.",
-              ).optional(),
-            }).describe("Data representing an image.").optional(),
-            isOther: z.boolean().describe(
-              'Whether the option is "other". Currently only applies to `RADIO` and `CHECKBOX` choice types, but is not allowed in a QuestionGroupItem.',
-            ).optional(),
-            value: z.string().describe(
-              "Required. The choice as presented to the user.",
-            ).optional(),
-          })).describe(
-            "Required. List of options that a respondent must choose from.",
-          ).optional(),
-          shuffle: z.boolean().describe(
-            "Whether the options should be displayed in random order for different instances of the quiz. This is often used to prevent cheating by respondents who might be looking at another respondent's screen, or to address bias in a survey that might be introduced by always putting the same options first or last.",
-          ).optional(),
-          type: z.enum([
-            "CHOICE_TYPE_UNSPECIFIED",
-            "RADIO",
-            "CHECKBOX",
-            "DROP_DOWN",
-          ]).describe("Required. The type of choice question.").optional(),
-        }).describe("A radio/checkbox/dropdown question.").optional(),
-        dateQuestion: z.object({
-          includeTime: z.boolean().describe(
-            "Whether to include the time as part of the question.",
-          ).optional(),
-          includeYear: z.boolean().describe(
-            "Whether to include the year as part of the question.",
-          ).optional(),
-        }).describe(
+        choiceQuestion: z.unknown().describe(
+          "A radio/checkbox/dropdown question.",
+        ).optional(),
+        dateQuestion: z.unknown().describe(
           "A date question. Date questions default to just month + day.",
         ).optional(),
-        fileUploadQuestion: z.object({
-          folderId: z.string().describe(
-            "Required. The ID of the Drive folder where uploaded files are stored.",
-          ).optional(),
-          maxFileSize: z.string().describe(
-            "Maximum number of bytes allowed for any single file uploaded to this question.",
-          ).optional(),
-          maxFiles: z.number().int().describe(
-            "Maximum number of files that can be uploaded for this question in a single response.",
-          ).optional(),
-          types: z.array(
-            z.enum([
-              "FILE_TYPE_UNSPECIFIED",
-              "ANY",
-              "DOCUMENT",
-              "PRESENTATION",
-              "SPREADSHEET",
-              "DRAWING",
-              "PDF",
-              "IMAGE",
-              "VIDEO",
-              "AUDIO",
-            ]),
-          ).describe("File types accepted by this question.").optional(),
-        }).describe(
+        fileUploadQuestion: z.unknown().describe(
           "A file upload question. The API currently does not support creating file upload questions.",
         ).optional(),
-        grading: z.object({
-          correctAnswers: z.object({
-            answers: z.array(z.object({
-              value: z.string().describe(
-                "Required. The correct answer value. See the documentation for TextAnswer.value for details on how various value types are formatted.",
-              ).optional(),
-            })).describe(
-              "A list of correct answers. A quiz response can be automatically graded based on these answers. For single-valued questions, a response is marked correct if it matches any value in this list (in other words, multiple correct answers are possible). For multiple-valued (`CHECKBOX`) questions, a response is marked correct if it contains exactly the values in this list.",
-            ).optional(),
-          }).describe("The answer key for a question.").optional(),
-          generalFeedback: z.object({
-            material: z.array(z.object({
-              link: z.object({
-                displayText: z.string().describe(
-                  "Required. Display text for the URI.",
-                ).optional(),
-                uri: z.string().describe("Required. The URI.").optional(),
-              }).describe("Link for text.").optional(),
-              video: z.object({
-                displayText: z.string().describe(
-                  "Required. The display text for the link.",
-                ).optional(),
-                youtubeUri: z.string().describe("The URI of a YouTube video.")
-                  .optional(),
-              }).describe("Link to a video.").optional(),
-            })).describe(
-              "Additional information provided as part of the feedback, often used to point the respondent to more reading and resources.",
-            ).optional(),
-            text: z.string().describe(
-              "Required. The main text of the feedback.",
-            ).optional(),
-          }).describe(
-            "Feedback for a respondent about their response to a question.",
-          ).optional(),
-          pointValue: z.number().int().describe(
-            "Required. The maximum number of points a respondent can automatically get for a correct answer. This must not be negative.",
-          ).optional(),
-          whenRight: z.object({
-            material: z.array(z.object({
-              link: z.object({
-                displayText: z.string().describe(
-                  "Required. Display text for the URI.",
-                ).optional(),
-                uri: z.string().describe("Required. The URI.").optional(),
-              }).describe("Link for text.").optional(),
-              video: z.object({
-                displayText: z.string().describe(
-                  "Required. The display text for the link.",
-                ).optional(),
-                youtubeUri: z.string().describe("The URI of a YouTube video.")
-                  .optional(),
-              }).describe("Link to a video.").optional(),
-            })).describe(
-              "Additional information provided as part of the feedback, often used to point the respondent to more reading and resources.",
-            ).optional(),
-            text: z.string().describe(
-              "Required. The main text of the feedback.",
-            ).optional(),
-          }).describe(
-            "Feedback for a respondent about their response to a question.",
-          ).optional(),
-          whenWrong: z.object({
-            material: z.array(z.object({
-              link: z.object({
-                displayText: z.string().describe(
-                  "Required. Display text for the URI.",
-                ).optional(),
-                uri: z.string().describe("Required. The URI.").optional(),
-              }).describe("Link for text.").optional(),
-              video: z.object({
-                displayText: z.string().describe(
-                  "Required. The display text for the link.",
-                ).optional(),
-                youtubeUri: z.string().describe("The URI of a YouTube video.")
-                  .optional(),
-              }).describe("Link to a video.").optional(),
-            })).describe(
-              "Additional information provided as part of the feedback, often used to point the respondent to more reading and resources.",
-            ).optional(),
-            text: z.string().describe(
-              "Required. The main text of the feedback.",
-            ).optional(),
-          }).describe(
-            "Feedback for a respondent about their response to a question.",
-          ).optional(),
-        }).describe("Grading for a single question").optional(),
-        questionId: z.string().describe(
+        grading: z.unknown().describe("Grading for a single question")
+          .optional(),
+        questionId: z.unknown().describe(
           "Read only. The question ID. On creation, it can be provided but the ID must not be already used in the form. If not provided, a new ID is assigned.",
         ).optional(),
-        ratingQuestion: z.object({
-          iconType: z.enum([
-            "RATING_ICON_TYPE_UNSPECIFIED",
-            "STAR",
-            "HEART",
-            "THUMB_UP",
-          ]).describe("Required. The icon type to use for the rating.")
-            .optional(),
-          ratingScaleLevel: z.number().int().describe(
-            "Required. The rating scale level of the rating question.",
-          ).optional(),
-        }).describe(
+        ratingQuestion: z.unknown().describe(
           "A rating question. The user has a range of icons to choose from.",
         ).optional(),
-        required: z.boolean().describe(
+        required: z.unknown().describe(
           "Whether the question must be answered in order for a respondent to submit their response.",
         ).optional(),
-        rowQuestion: z.object({
-          title: z.string().describe(
-            "Required. The title for the single row in the QuestionGroupItem.",
-          ).optional(),
-        }).describe(
+        rowQuestion: z.unknown().describe(
           "Configuration for a question that is part of a question group.",
         ).optional(),
-        scaleQuestion: z.object({
-          high: z.number().int().describe(
-            "Required. The highest possible value for the scale.",
-          ).optional(),
-          highLabel: z.string().describe(
-            "The label to display describing the highest point on the scale.",
-          ).optional(),
-          low: z.number().int().describe(
-            "Required. The lowest possible value for the scale.",
-          ).optional(),
-          lowLabel: z.string().describe(
-            "The label to display describing the lowest point on the scale.",
-          ).optional(),
-        }).describe(
+        scaleQuestion: z.unknown().describe(
           "A scale question. The user has a range of numeric values to choose from.",
         ).optional(),
-        textQuestion: z.object({
-          paragraph: z.boolean().describe(
-            "Whether the question is a paragraph question or not. If not, the question is a short text question.",
-          ).optional(),
-        }).describe("A text-based question.").optional(),
-        timeQuestion: z.object({
-          duration: z.boolean().describe(
-            "`true` if the question is about an elapsed time. Otherwise it is about a time of day.",
-          ).optional(),
-        }).describe("A time question.").optional(),
+        textQuestion: z.unknown().describe("A text-based question.").optional(),
+        timeQuestion: z.unknown().describe("A time question.").optional(),
       })).describe(
         "Required. A list of questions that belong in this question group. A question must only belong to one group. The `kind` of the group may affect what types of questions are allowed.",
       ).optional(),
@@ -411,13 +159,8 @@ const GlobalArgsSchema = z.object({
           "Output only. A URI from which you can download the image; this is valid only for a limited time.",
         ).optional(),
         properties: z.object({
-          alignment: z.enum([
-            "ALIGNMENT_UNSPECIFIED",
-            "LEFT",
-            "RIGHT",
-            "CENTER",
-          ]).describe("Position of the media.").optional(),
-          width: z.number().int().describe(
+          alignment: z.unknown().describe("Position of the media.").optional(),
+          width: z.unknown().describe(
             "The width of the media in pixels. When the media is displayed, it is scaled to the smaller of this value or the width of the displayed form. The original aspect ratio of the media is preserved. If a width is not specified when the media is added to the form, it is set to the width of the media source. Width must be between 0 and 740, inclusive. Setting width to 0 or unspecified is only permitted when updating the media source.",
           ).optional(),
         }).describe("Properties of the media.").optional(),
@@ -427,177 +170,53 @@ const GlobalArgsSchema = z.object({
       }).describe("Data representing an image.").optional(),
       question: z.object({
         choiceQuestion: z.object({
-          options: z.array(z.object({
-            goToAction: z.enum([
-              "GO_TO_ACTION_UNSPECIFIED",
-              "NEXT_SECTION",
-              "RESTART_FORM",
-              "SUBMIT_FORM",
-            ]).describe("Section navigation type.").optional(),
-            goToSectionId: z.string().describe(
-              "Item ID of section header to go to.",
-            ).optional(),
-            image: z.object({
-              altText: z.string().describe(
-                "A description of the image that is shown on hover and read by screenreaders.",
-              ).optional(),
-              contentUri: z.string().describe(
-                "Output only. A URI from which you can download the image; this is valid only for a limited time.",
-              ).optional(),
-              properties: z.object({
-                alignment: z.enum([
-                  "ALIGNMENT_UNSPECIFIED",
-                  "LEFT",
-                  "RIGHT",
-                  "CENTER",
-                ]).describe("Position of the media.").optional(),
-                width: z.number().int().describe(
-                  "The width of the media in pixels. When the media is displayed, it is scaled to the smaller of this value or the width of the displayed form. The original aspect ratio of the media is preserved. If a width is not specified when the media is added to the form, it is set to the width of the media source. Width must be between 0 and 740, inclusive. Setting width to 0 or unspecified is only permitted when updating the media source.",
-                ).optional(),
-              }).describe("Properties of the media.").optional(),
-              sourceUri: z.string().describe(
-                "Input only. The source URI is the URI used to insert the image. The source URI can be empty when fetched.",
-              ).optional(),
-            }).describe("Data representing an image.").optional(),
-            isOther: z.boolean().describe(
-              'Whether the option is "other". Currently only applies to `RADIO` and `CHECKBOX` choice types, but is not allowed in a QuestionGroupItem.',
-            ).optional(),
-            value: z.string().describe(
-              "Required. The choice as presented to the user.",
-            ).optional(),
-          })).describe(
+          options: z.unknown().describe(
             "Required. List of options that a respondent must choose from.",
           ).optional(),
-          shuffle: z.boolean().describe(
+          shuffle: z.unknown().describe(
             "Whether the options should be displayed in random order for different instances of the quiz. This is often used to prevent cheating by respondents who might be looking at another respondent's screen, or to address bias in a survey that might be introduced by always putting the same options first or last.",
           ).optional(),
-          type: z.enum([
-            "CHOICE_TYPE_UNSPECIFIED",
-            "RADIO",
-            "CHECKBOX",
-            "DROP_DOWN",
-          ]).describe("Required. The type of choice question.").optional(),
+          type: z.unknown().describe("Required. The type of choice question.")
+            .optional(),
         }).describe("A radio/checkbox/dropdown question.").optional(),
         dateQuestion: z.object({
-          includeTime: z.boolean().describe(
+          includeTime: z.unknown().describe(
             "Whether to include the time as part of the question.",
           ).optional(),
-          includeYear: z.boolean().describe(
+          includeYear: z.unknown().describe(
             "Whether to include the year as part of the question.",
           ).optional(),
         }).describe(
           "A date question. Date questions default to just month + day.",
         ).optional(),
         fileUploadQuestion: z.object({
-          folderId: z.string().describe(
+          folderId: z.unknown().describe(
             "Required. The ID of the Drive folder where uploaded files are stored.",
           ).optional(),
-          maxFileSize: z.string().describe(
+          maxFileSize: z.unknown().describe(
             "Maximum number of bytes allowed for any single file uploaded to this question.",
           ).optional(),
-          maxFiles: z.number().int().describe(
+          maxFiles: z.unknown().describe(
             "Maximum number of files that can be uploaded for this question in a single response.",
           ).optional(),
-          types: z.array(
-            z.enum([
-              "FILE_TYPE_UNSPECIFIED",
-              "ANY",
-              "DOCUMENT",
-              "PRESENTATION",
-              "SPREADSHEET",
-              "DRAWING",
-              "PDF",
-              "IMAGE",
-              "VIDEO",
-              "AUDIO",
-            ]),
-          ).describe("File types accepted by this question.").optional(),
+          types: z.unknown().describe("File types accepted by this question.")
+            .optional(),
         }).describe(
           "A file upload question. The API currently does not support creating file upload questions.",
         ).optional(),
         grading: z.object({
-          correctAnswers: z.object({
-            answers: z.array(z.object({
-              value: z.string().describe(
-                "Required. The correct answer value. See the documentation for TextAnswer.value for details on how various value types are formatted.",
-              ).optional(),
-            })).describe(
-              "A list of correct answers. A quiz response can be automatically graded based on these answers. For single-valued questions, a response is marked correct if it matches any value in this list (in other words, multiple correct answers are possible). For multiple-valued (`CHECKBOX`) questions, a response is marked correct if it contains exactly the values in this list.",
-            ).optional(),
-          }).describe("The answer key for a question.").optional(),
-          generalFeedback: z.object({
-            material: z.array(z.object({
-              link: z.object({
-                displayText: z.string().describe(
-                  "Required. Display text for the URI.",
-                ).optional(),
-                uri: z.string().describe("Required. The URI.").optional(),
-              }).describe("Link for text.").optional(),
-              video: z.object({
-                displayText: z.string().describe(
-                  "Required. The display text for the link.",
-                ).optional(),
-                youtubeUri: z.string().describe("The URI of a YouTube video.")
-                  .optional(),
-              }).describe("Link to a video.").optional(),
-            })).describe(
-              "Additional information provided as part of the feedback, often used to point the respondent to more reading and resources.",
-            ).optional(),
-            text: z.string().describe(
-              "Required. The main text of the feedback.",
-            ).optional(),
-          }).describe(
+          correctAnswers: z.unknown().describe("The answer key for a question.")
+            .optional(),
+          generalFeedback: z.unknown().describe(
             "Feedback for a respondent about their response to a question.",
           ).optional(),
-          pointValue: z.number().int().describe(
+          pointValue: z.unknown().describe(
             "Required. The maximum number of points a respondent can automatically get for a correct answer. This must not be negative.",
           ).optional(),
-          whenRight: z.object({
-            material: z.array(z.object({
-              link: z.object({
-                displayText: z.string().describe(
-                  "Required. Display text for the URI.",
-                ).optional(),
-                uri: z.string().describe("Required. The URI.").optional(),
-              }).describe("Link for text.").optional(),
-              video: z.object({
-                displayText: z.string().describe(
-                  "Required. The display text for the link.",
-                ).optional(),
-                youtubeUri: z.string().describe("The URI of a YouTube video.")
-                  .optional(),
-              }).describe("Link to a video.").optional(),
-            })).describe(
-              "Additional information provided as part of the feedback, often used to point the respondent to more reading and resources.",
-            ).optional(),
-            text: z.string().describe(
-              "Required. The main text of the feedback.",
-            ).optional(),
-          }).describe(
+          whenRight: z.unknown().describe(
             "Feedback for a respondent about their response to a question.",
           ).optional(),
-          whenWrong: z.object({
-            material: z.array(z.object({
-              link: z.object({
-                displayText: z.string().describe(
-                  "Required. Display text for the URI.",
-                ).optional(),
-                uri: z.string().describe("Required. The URI.").optional(),
-              }).describe("Link for text.").optional(),
-              video: z.object({
-                displayText: z.string().describe(
-                  "Required. The display text for the link.",
-                ).optional(),
-                youtubeUri: z.string().describe("The URI of a YouTube video.")
-                  .optional(),
-              }).describe("Link to a video.").optional(),
-            })).describe(
-              "Additional information provided as part of the feedback, often used to point the respondent to more reading and resources.",
-            ).optional(),
-            text: z.string().describe(
-              "Required. The main text of the feedback.",
-            ).optional(),
-          }).describe(
+          whenWrong: z.unknown().describe(
             "Feedback for a respondent about their response to a question.",
           ).optional(),
         }).describe("Grading for a single question").optional(),
@@ -605,14 +224,10 @@ const GlobalArgsSchema = z.object({
           "Read only. The question ID. On creation, it can be provided but the ID must not be already used in the form. If not provided, a new ID is assigned.",
         ).optional(),
         ratingQuestion: z.object({
-          iconType: z.enum([
-            "RATING_ICON_TYPE_UNSPECIFIED",
-            "STAR",
-            "HEART",
-            "THUMB_UP",
-          ]).describe("Required. The icon type to use for the rating.")
-            .optional(),
-          ratingScaleLevel: z.number().int().describe(
+          iconType: z.unknown().describe(
+            "Required. The icon type to use for the rating.",
+          ).optional(),
+          ratingScaleLevel: z.unknown().describe(
             "Required. The rating scale level of the rating question.",
           ).optional(),
         }).describe(
@@ -622,35 +237,35 @@ const GlobalArgsSchema = z.object({
           "Whether the question must be answered in order for a respondent to submit their response.",
         ).optional(),
         rowQuestion: z.object({
-          title: z.string().describe(
+          title: z.unknown().describe(
             "Required. The title for the single row in the QuestionGroupItem.",
           ).optional(),
         }).describe(
           "Configuration for a question that is part of a question group.",
         ).optional(),
         scaleQuestion: z.object({
-          high: z.number().int().describe(
+          high: z.unknown().describe(
             "Required. The highest possible value for the scale.",
           ).optional(),
-          highLabel: z.string().describe(
+          highLabel: z.unknown().describe(
             "The label to display describing the highest point on the scale.",
           ).optional(),
-          low: z.number().int().describe(
+          low: z.unknown().describe(
             "Required. The lowest possible value for the scale.",
           ).optional(),
-          lowLabel: z.string().describe(
+          lowLabel: z.unknown().describe(
             "The label to display describing the lowest point on the scale.",
           ).optional(),
         }).describe(
           "A scale question. The user has a range of numeric values to choose from.",
         ).optional(),
         textQuestion: z.object({
-          paragraph: z.boolean().describe(
+          paragraph: z.unknown().describe(
             "Whether the question is a paragraph question or not. If not, the question is a short text question.",
           ).optional(),
         }).describe("A text-based question.").optional(),
         timeQuestion: z.object({
-          duration: z.boolean().describe(
+          duration: z.unknown().describe(
             "`true` if the question is about an elapsed time. Otherwise it is about a time of day.",
           ).optional(),
         }).describe("A time question.").optional(),
@@ -665,13 +280,8 @@ const GlobalArgsSchema = z.object({
         .optional(),
       video: z.object({
         properties: z.object({
-          alignment: z.enum([
-            "ALIGNMENT_UNSPECIFIED",
-            "LEFT",
-            "RIGHT",
-            "CENTER",
-          ]).describe("Position of the media.").optional(),
-          width: z.number().int().describe(
+          alignment: z.unknown().describe("Position of the media.").optional(),
+          width: z.unknown().describe(
             "The width of the media in pixels. When the media is displayed, it is scaled to the smaller of this value or the width of the displayed form. The original aspect ratio of the media is preserved. If a width is not specified when the media is added to the form, it is set to the width of the media source. Width must be between 0 and 740, inclusive. Setting width to 0 or unspecified is only permitted when updating the media source.",
           ).optional(),
         }).describe("Properties of the media.").optional(),
@@ -727,8 +337,8 @@ const StateSchema = z.object({
         altText: z.string(),
         contentUri: z.string(),
         properties: z.object({
-          alignment: z.string(),
-          width: z.number(),
+          alignment: z.unknown(),
+          width: z.unknown(),
         }),
         sourceUri: z.string(),
       }),
@@ -738,23 +348,9 @@ const StateSchema = z.object({
     questionGroupItem: z.object({
       grid: z.object({
         columns: z.object({
-          options: z.array(z.object({
-            goToAction: z.string(),
-            goToSectionId: z.string(),
-            image: z.object({
-              altText: z.string(),
-              contentUri: z.string(),
-              properties: z.object({
-                alignment: z.string(),
-                width: z.number(),
-              }),
-              sourceUri: z.string(),
-            }),
-            isOther: z.boolean(),
-            value: z.string(),
-          })),
-          shuffle: z.boolean(),
-          type: z.string(),
+          options: z.unknown(),
+          shuffle: z.unknown(),
+          type: z.unknown(),
         }),
         shuffleQuestions: z.boolean(),
       }),
@@ -762,109 +358,23 @@ const StateSchema = z.object({
         altText: z.string(),
         contentUri: z.string(),
         properties: z.object({
-          alignment: z.string(),
-          width: z.number(),
+          alignment: z.unknown(),
+          width: z.unknown(),
         }),
         sourceUri: z.string(),
       }),
       questions: z.array(z.object({
-        choiceQuestion: z.object({
-          options: z.array(z.object({
-            goToAction: z.string(),
-            goToSectionId: z.string(),
-            image: z.object({
-              altText: z.string(),
-              contentUri: z.string(),
-              properties: z.object({
-                alignment: z.string(),
-                width: z.number(),
-              }),
-              sourceUri: z.string(),
-            }),
-            isOther: z.boolean(),
-            value: z.string(),
-          })),
-          shuffle: z.boolean(),
-          type: z.string(),
-        }),
-        dateQuestion: z.object({
-          includeTime: z.boolean(),
-          includeYear: z.boolean(),
-        }),
-        fileUploadQuestion: z.object({
-          folderId: z.string(),
-          maxFileSize: z.string(),
-          maxFiles: z.number(),
-          types: z.array(z.string()),
-        }),
-        grading: z.object({
-          correctAnswers: z.object({
-            answers: z.array(z.object({
-              value: z.string(),
-            })),
-          }),
-          generalFeedback: z.object({
-            material: z.array(z.object({
-              link: z.object({
-                displayText: z.string(),
-                uri: z.string(),
-              }),
-              video: z.object({
-                displayText: z.string(),
-                youtubeUri: z.string(),
-              }),
-            })),
-            text: z.string(),
-          }),
-          pointValue: z.number(),
-          whenRight: z.object({
-            material: z.array(z.object({
-              link: z.object({
-                displayText: z.string(),
-                uri: z.string(),
-              }),
-              video: z.object({
-                displayText: z.string(),
-                youtubeUri: z.string(),
-              }),
-            })),
-            text: z.string(),
-          }),
-          whenWrong: z.object({
-            material: z.array(z.object({
-              link: z.object({
-                displayText: z.string(),
-                uri: z.string(),
-              }),
-              video: z.object({
-                displayText: z.string(),
-                youtubeUri: z.string(),
-              }),
-            })),
-            text: z.string(),
-          }),
-        }),
-        questionId: z.string(),
-        ratingQuestion: z.object({
-          iconType: z.string(),
-          ratingScaleLevel: z.number(),
-        }),
-        required: z.boolean(),
-        rowQuestion: z.object({
-          title: z.string(),
-        }),
-        scaleQuestion: z.object({
-          high: z.number(),
-          highLabel: z.string(),
-          low: z.number(),
-          lowLabel: z.string(),
-        }),
-        textQuestion: z.object({
-          paragraph: z.boolean(),
-        }),
-        timeQuestion: z.object({
-          duration: z.boolean(),
-        }),
+        choiceQuestion: z.unknown(),
+        dateQuestion: z.unknown(),
+        fileUploadQuestion: z.unknown(),
+        grading: z.unknown(),
+        questionId: z.unknown(),
+        ratingQuestion: z.unknown(),
+        required: z.unknown(),
+        rowQuestion: z.unknown(),
+        scaleQuestion: z.unknown(),
+        textQuestion: z.unknown(),
+        timeQuestion: z.unknown(),
       })),
     }),
     questionItem: z.object({
@@ -872,108 +382,54 @@ const StateSchema = z.object({
         altText: z.string(),
         contentUri: z.string(),
         properties: z.object({
-          alignment: z.string(),
-          width: z.number(),
+          alignment: z.unknown(),
+          width: z.unknown(),
         }),
         sourceUri: z.string(),
       }),
       question: z.object({
         choiceQuestion: z.object({
-          options: z.array(z.object({
-            goToAction: z.string(),
-            goToSectionId: z.string(),
-            image: z.object({
-              altText: z.string(),
-              contentUri: z.string(),
-              properties: z.object({
-                alignment: z.string(),
-                width: z.number(),
-              }),
-              sourceUri: z.string(),
-            }),
-            isOther: z.boolean(),
-            value: z.string(),
-          })),
-          shuffle: z.boolean(),
-          type: z.string(),
+          options: z.unknown(),
+          shuffle: z.unknown(),
+          type: z.unknown(),
         }),
         dateQuestion: z.object({
-          includeTime: z.boolean(),
-          includeYear: z.boolean(),
+          includeTime: z.unknown(),
+          includeYear: z.unknown(),
         }),
         fileUploadQuestion: z.object({
-          folderId: z.string(),
-          maxFileSize: z.string(),
-          maxFiles: z.number(),
-          types: z.array(z.string()),
+          folderId: z.unknown(),
+          maxFileSize: z.unknown(),
+          maxFiles: z.unknown(),
+          types: z.unknown(),
         }),
         grading: z.object({
-          correctAnswers: z.object({
-            answers: z.array(z.object({
-              value: z.string(),
-            })),
-          }),
-          generalFeedback: z.object({
-            material: z.array(z.object({
-              link: z.object({
-                displayText: z.string(),
-                uri: z.string(),
-              }),
-              video: z.object({
-                displayText: z.string(),
-                youtubeUri: z.string(),
-              }),
-            })),
-            text: z.string(),
-          }),
-          pointValue: z.number(),
-          whenRight: z.object({
-            material: z.array(z.object({
-              link: z.object({
-                displayText: z.string(),
-                uri: z.string(),
-              }),
-              video: z.object({
-                displayText: z.string(),
-                youtubeUri: z.string(),
-              }),
-            })),
-            text: z.string(),
-          }),
-          whenWrong: z.object({
-            material: z.array(z.object({
-              link: z.object({
-                displayText: z.string(),
-                uri: z.string(),
-              }),
-              video: z.object({
-                displayText: z.string(),
-                youtubeUri: z.string(),
-              }),
-            })),
-            text: z.string(),
-          }),
+          correctAnswers: z.unknown(),
+          generalFeedback: z.unknown(),
+          pointValue: z.unknown(),
+          whenRight: z.unknown(),
+          whenWrong: z.unknown(),
         }),
         questionId: z.string(),
         ratingQuestion: z.object({
-          iconType: z.string(),
-          ratingScaleLevel: z.number(),
+          iconType: z.unknown(),
+          ratingScaleLevel: z.unknown(),
         }),
         required: z.boolean(),
         rowQuestion: z.object({
-          title: z.string(),
+          title: z.unknown(),
         }),
         scaleQuestion: z.object({
-          high: z.number(),
-          highLabel: z.string(),
-          low: z.number(),
-          lowLabel: z.string(),
+          high: z.unknown(),
+          highLabel: z.unknown(),
+          low: z.unknown(),
+          lowLabel: z.unknown(),
         }),
         textQuestion: z.object({
-          paragraph: z.boolean(),
+          paragraph: z.unknown(),
         }),
         timeQuestion: z.object({
-          duration: z.boolean(),
+          duration: z.unknown(),
         }),
       }),
     }),
@@ -983,8 +439,8 @@ const StateSchema = z.object({
       caption: z.string(),
       video: z.object({
         properties: z.object({
-          alignment: z.string(),
-          width: z.number(),
+          alignment: z.unknown(),
+          width: z.unknown(),
         }),
         youtubeUri: z.string(),
       }),
@@ -1031,13 +487,8 @@ const InputsSchema = z.object({
           "Output only. A URI from which you can download the image; this is valid only for a limited time.",
         ).optional(),
         properties: z.object({
-          alignment: z.enum([
-            "ALIGNMENT_UNSPECIFIED",
-            "LEFT",
-            "RIGHT",
-            "CENTER",
-          ]).describe("Position of the media.").optional(),
-          width: z.number().int().describe(
+          alignment: z.unknown().describe("Position of the media.").optional(),
+          width: z.unknown().describe(
             "The width of the media in pixels. When the media is displayed, it is scaled to the smaller of this value or the width of the displayed form. The original aspect ratio of the media is preserved. If a width is not specified when the media is added to the form, it is set to the width of the media source. Width must be between 0 and 740, inclusive. Setting width to 0 or unspecified is only permitted when updating the media source.",
           ).optional(),
         }).describe("Properties of the media.").optional(),
@@ -1055,56 +506,14 @@ const InputsSchema = z.object({
     questionGroupItem: z.object({
       grid: z.object({
         columns: z.object({
-          options: z.array(z.object({
-            goToAction: z.enum([
-              "GO_TO_ACTION_UNSPECIFIED",
-              "NEXT_SECTION",
-              "RESTART_FORM",
-              "SUBMIT_FORM",
-            ]).describe("Section navigation type.").optional(),
-            goToSectionId: z.string().describe(
-              "Item ID of section header to go to.",
-            ).optional(),
-            image: z.object({
-              altText: z.string().describe(
-                "A description of the image that is shown on hover and read by screenreaders.",
-              ).optional(),
-              contentUri: z.string().describe(
-                "Output only. A URI from which you can download the image; this is valid only for a limited time.",
-              ).optional(),
-              properties: z.object({
-                alignment: z.enum([
-                  "ALIGNMENT_UNSPECIFIED",
-                  "LEFT",
-                  "RIGHT",
-                  "CENTER",
-                ]).describe("Position of the media.").optional(),
-                width: z.number().int().describe(
-                  "The width of the media in pixels. When the media is displayed, it is scaled to the smaller of this value or the width of the displayed form. The original aspect ratio of the media is preserved. If a width is not specified when the media is added to the form, it is set to the width of the media source. Width must be between 0 and 740, inclusive. Setting width to 0 or unspecified is only permitted when updating the media source.",
-                ).optional(),
-              }).describe("Properties of the media.").optional(),
-              sourceUri: z.string().describe(
-                "Input only. The source URI is the URI used to insert the image. The source URI can be empty when fetched.",
-              ).optional(),
-            }).describe("Data representing an image.").optional(),
-            isOther: z.boolean().describe(
-              'Whether the option is "other". Currently only applies to `RADIO` and `CHECKBOX` choice types, but is not allowed in a QuestionGroupItem.',
-            ).optional(),
-            value: z.string().describe(
-              "Required. The choice as presented to the user.",
-            ).optional(),
-          })).describe(
+          options: z.unknown().describe(
             "Required. List of options that a respondent must choose from.",
           ).optional(),
-          shuffle: z.boolean().describe(
+          shuffle: z.unknown().describe(
             "Whether the options should be displayed in random order for different instances of the quiz. This is often used to prevent cheating by respondents who might be looking at another respondent's screen, or to address bias in a survey that might be introduced by always putting the same options first or last.",
           ).optional(),
-          type: z.enum([
-            "CHOICE_TYPE_UNSPECIFIED",
-            "RADIO",
-            "CHECKBOX",
-            "DROP_DOWN",
-          ]).describe("Required. The type of choice question.").optional(),
+          type: z.unknown().describe("Required. The type of choice question.")
+            .optional(),
         }).describe("A radio/checkbox/dropdown question.").optional(),
         shuffleQuestions: z.boolean().describe(
           "If `true`, the questions are randomly ordered. In other words, the rows appear in a different order for every respondent.",
@@ -1120,13 +529,8 @@ const InputsSchema = z.object({
           "Output only. A URI from which you can download the image; this is valid only for a limited time.",
         ).optional(),
         properties: z.object({
-          alignment: z.enum([
-            "ALIGNMENT_UNSPECIFIED",
-            "LEFT",
-            "RIGHT",
-            "CENTER",
-          ]).describe("Position of the media.").optional(),
-          width: z.number().int().describe(
+          alignment: z.unknown().describe("Position of the media.").optional(),
+          width: z.unknown().describe(
             "The width of the media in pixels. When the media is displayed, it is scaled to the smaller of this value or the width of the displayed form. The original aspect ratio of the media is preserved. If a width is not specified when the media is added to the form, it is set to the width of the media source. Width must be between 0 and 740, inclusive. Setting width to 0 or unspecified is only permitted when updating the media source.",
           ).optional(),
         }).describe("Properties of the media.").optional(),
@@ -1135,234 +539,34 @@ const InputsSchema = z.object({
         ).optional(),
       }).describe("Data representing an image.").optional(),
       questions: z.array(z.object({
-        choiceQuestion: z.object({
-          options: z.array(z.object({
-            goToAction: z.enum([
-              "GO_TO_ACTION_UNSPECIFIED",
-              "NEXT_SECTION",
-              "RESTART_FORM",
-              "SUBMIT_FORM",
-            ]).describe("Section navigation type.").optional(),
-            goToSectionId: z.string().describe(
-              "Item ID of section header to go to.",
-            ).optional(),
-            image: z.object({
-              altText: z.string().describe(
-                "A description of the image that is shown on hover and read by screenreaders.",
-              ).optional(),
-              contentUri: z.string().describe(
-                "Output only. A URI from which you can download the image; this is valid only for a limited time.",
-              ).optional(),
-              properties: z.object({
-                alignment: z.enum([
-                  "ALIGNMENT_UNSPECIFIED",
-                  "LEFT",
-                  "RIGHT",
-                  "CENTER",
-                ]).describe("Position of the media.").optional(),
-                width: z.number().int().describe(
-                  "The width of the media in pixels. When the media is displayed, it is scaled to the smaller of this value or the width of the displayed form. The original aspect ratio of the media is preserved. If a width is not specified when the media is added to the form, it is set to the width of the media source. Width must be between 0 and 740, inclusive. Setting width to 0 or unspecified is only permitted when updating the media source.",
-                ).optional(),
-              }).describe("Properties of the media.").optional(),
-              sourceUri: z.string().describe(
-                "Input only. The source URI is the URI used to insert the image. The source URI can be empty when fetched.",
-              ).optional(),
-            }).describe("Data representing an image.").optional(),
-            isOther: z.boolean().describe(
-              'Whether the option is "other". Currently only applies to `RADIO` and `CHECKBOX` choice types, but is not allowed in a QuestionGroupItem.',
-            ).optional(),
-            value: z.string().describe(
-              "Required. The choice as presented to the user.",
-            ).optional(),
-          })).describe(
-            "Required. List of options that a respondent must choose from.",
-          ).optional(),
-          shuffle: z.boolean().describe(
-            "Whether the options should be displayed in random order for different instances of the quiz. This is often used to prevent cheating by respondents who might be looking at another respondent's screen, or to address bias in a survey that might be introduced by always putting the same options first or last.",
-          ).optional(),
-          type: z.enum([
-            "CHOICE_TYPE_UNSPECIFIED",
-            "RADIO",
-            "CHECKBOX",
-            "DROP_DOWN",
-          ]).describe("Required. The type of choice question.").optional(),
-        }).describe("A radio/checkbox/dropdown question.").optional(),
-        dateQuestion: z.object({
-          includeTime: z.boolean().describe(
-            "Whether to include the time as part of the question.",
-          ).optional(),
-          includeYear: z.boolean().describe(
-            "Whether to include the year as part of the question.",
-          ).optional(),
-        }).describe(
+        choiceQuestion: z.unknown().describe(
+          "A radio/checkbox/dropdown question.",
+        ).optional(),
+        dateQuestion: z.unknown().describe(
           "A date question. Date questions default to just month + day.",
         ).optional(),
-        fileUploadQuestion: z.object({
-          folderId: z.string().describe(
-            "Required. The ID of the Drive folder where uploaded files are stored.",
-          ).optional(),
-          maxFileSize: z.string().describe(
-            "Maximum number of bytes allowed for any single file uploaded to this question.",
-          ).optional(),
-          maxFiles: z.number().int().describe(
-            "Maximum number of files that can be uploaded for this question in a single response.",
-          ).optional(),
-          types: z.array(
-            z.enum([
-              "FILE_TYPE_UNSPECIFIED",
-              "ANY",
-              "DOCUMENT",
-              "PRESENTATION",
-              "SPREADSHEET",
-              "DRAWING",
-              "PDF",
-              "IMAGE",
-              "VIDEO",
-              "AUDIO",
-            ]),
-          ).describe("File types accepted by this question.").optional(),
-        }).describe(
+        fileUploadQuestion: z.unknown().describe(
           "A file upload question. The API currently does not support creating file upload questions.",
         ).optional(),
-        grading: z.object({
-          correctAnswers: z.object({
-            answers: z.array(z.object({
-              value: z.string().describe(
-                "Required. The correct answer value. See the documentation for TextAnswer.value for details on how various value types are formatted.",
-              ).optional(),
-            })).describe(
-              "A list of correct answers. A quiz response can be automatically graded based on these answers. For single-valued questions, a response is marked correct if it matches any value in this list (in other words, multiple correct answers are possible). For multiple-valued (`CHECKBOX`) questions, a response is marked correct if it contains exactly the values in this list.",
-            ).optional(),
-          }).describe("The answer key for a question.").optional(),
-          generalFeedback: z.object({
-            material: z.array(z.object({
-              link: z.object({
-                displayText: z.string().describe(
-                  "Required. Display text for the URI.",
-                ).optional(),
-                uri: z.string().describe("Required. The URI.").optional(),
-              }).describe("Link for text.").optional(),
-              video: z.object({
-                displayText: z.string().describe(
-                  "Required. The display text for the link.",
-                ).optional(),
-                youtubeUri: z.string().describe("The URI of a YouTube video.")
-                  .optional(),
-              }).describe("Link to a video.").optional(),
-            })).describe(
-              "Additional information provided as part of the feedback, often used to point the respondent to more reading and resources.",
-            ).optional(),
-            text: z.string().describe(
-              "Required. The main text of the feedback.",
-            ).optional(),
-          }).describe(
-            "Feedback for a respondent about their response to a question.",
-          ).optional(),
-          pointValue: z.number().int().describe(
-            "Required. The maximum number of points a respondent can automatically get for a correct answer. This must not be negative.",
-          ).optional(),
-          whenRight: z.object({
-            material: z.array(z.object({
-              link: z.object({
-                displayText: z.string().describe(
-                  "Required. Display text for the URI.",
-                ).optional(),
-                uri: z.string().describe("Required. The URI.").optional(),
-              }).describe("Link for text.").optional(),
-              video: z.object({
-                displayText: z.string().describe(
-                  "Required. The display text for the link.",
-                ).optional(),
-                youtubeUri: z.string().describe("The URI of a YouTube video.")
-                  .optional(),
-              }).describe("Link to a video.").optional(),
-            })).describe(
-              "Additional information provided as part of the feedback, often used to point the respondent to more reading and resources.",
-            ).optional(),
-            text: z.string().describe(
-              "Required. The main text of the feedback.",
-            ).optional(),
-          }).describe(
-            "Feedback for a respondent about their response to a question.",
-          ).optional(),
-          whenWrong: z.object({
-            material: z.array(z.object({
-              link: z.object({
-                displayText: z.string().describe(
-                  "Required. Display text for the URI.",
-                ).optional(),
-                uri: z.string().describe("Required. The URI.").optional(),
-              }).describe("Link for text.").optional(),
-              video: z.object({
-                displayText: z.string().describe(
-                  "Required. The display text for the link.",
-                ).optional(),
-                youtubeUri: z.string().describe("The URI of a YouTube video.")
-                  .optional(),
-              }).describe("Link to a video.").optional(),
-            })).describe(
-              "Additional information provided as part of the feedback, often used to point the respondent to more reading and resources.",
-            ).optional(),
-            text: z.string().describe(
-              "Required. The main text of the feedback.",
-            ).optional(),
-          }).describe(
-            "Feedback for a respondent about their response to a question.",
-          ).optional(),
-        }).describe("Grading for a single question").optional(),
-        questionId: z.string().describe(
+        grading: z.unknown().describe("Grading for a single question")
+          .optional(),
+        questionId: z.unknown().describe(
           "Read only. The question ID. On creation, it can be provided but the ID must not be already used in the form. If not provided, a new ID is assigned.",
         ).optional(),
-        ratingQuestion: z.object({
-          iconType: z.enum([
-            "RATING_ICON_TYPE_UNSPECIFIED",
-            "STAR",
-            "HEART",
-            "THUMB_UP",
-          ]).describe("Required. The icon type to use for the rating.")
-            .optional(),
-          ratingScaleLevel: z.number().int().describe(
-            "Required. The rating scale level of the rating question.",
-          ).optional(),
-        }).describe(
+        ratingQuestion: z.unknown().describe(
           "A rating question. The user has a range of icons to choose from.",
         ).optional(),
-        required: z.boolean().describe(
+        required: z.unknown().describe(
           "Whether the question must be answered in order for a respondent to submit their response.",
         ).optional(),
-        rowQuestion: z.object({
-          title: z.string().describe(
-            "Required. The title for the single row in the QuestionGroupItem.",
-          ).optional(),
-        }).describe(
+        rowQuestion: z.unknown().describe(
           "Configuration for a question that is part of a question group.",
         ).optional(),
-        scaleQuestion: z.object({
-          high: z.number().int().describe(
-            "Required. The highest possible value for the scale.",
-          ).optional(),
-          highLabel: z.string().describe(
-            "The label to display describing the highest point on the scale.",
-          ).optional(),
-          low: z.number().int().describe(
-            "Required. The lowest possible value for the scale.",
-          ).optional(),
-          lowLabel: z.string().describe(
-            "The label to display describing the lowest point on the scale.",
-          ).optional(),
-        }).describe(
+        scaleQuestion: z.unknown().describe(
           "A scale question. The user has a range of numeric values to choose from.",
         ).optional(),
-        textQuestion: z.object({
-          paragraph: z.boolean().describe(
-            "Whether the question is a paragraph question or not. If not, the question is a short text question.",
-          ).optional(),
-        }).describe("A text-based question.").optional(),
-        timeQuestion: z.object({
-          duration: z.boolean().describe(
-            "`true` if the question is about an elapsed time. Otherwise it is about a time of day.",
-          ).optional(),
-        }).describe("A time question.").optional(),
+        textQuestion: z.unknown().describe("A text-based question.").optional(),
+        timeQuestion: z.unknown().describe("A time question.").optional(),
       })).describe(
         "Required. A list of questions that belong in this question group. A question must only belong to one group. The `kind` of the group may affect what types of questions are allowed.",
       ).optional(),
@@ -1378,13 +582,8 @@ const InputsSchema = z.object({
           "Output only. A URI from which you can download the image; this is valid only for a limited time.",
         ).optional(),
         properties: z.object({
-          alignment: z.enum([
-            "ALIGNMENT_UNSPECIFIED",
-            "LEFT",
-            "RIGHT",
-            "CENTER",
-          ]).describe("Position of the media.").optional(),
-          width: z.number().int().describe(
+          alignment: z.unknown().describe("Position of the media.").optional(),
+          width: z.unknown().describe(
             "The width of the media in pixels. When the media is displayed, it is scaled to the smaller of this value or the width of the displayed form. The original aspect ratio of the media is preserved. If a width is not specified when the media is added to the form, it is set to the width of the media source. Width must be between 0 and 740, inclusive. Setting width to 0 or unspecified is only permitted when updating the media source.",
           ).optional(),
         }).describe("Properties of the media.").optional(),
@@ -1394,177 +593,53 @@ const InputsSchema = z.object({
       }).describe("Data representing an image.").optional(),
       question: z.object({
         choiceQuestion: z.object({
-          options: z.array(z.object({
-            goToAction: z.enum([
-              "GO_TO_ACTION_UNSPECIFIED",
-              "NEXT_SECTION",
-              "RESTART_FORM",
-              "SUBMIT_FORM",
-            ]).describe("Section navigation type.").optional(),
-            goToSectionId: z.string().describe(
-              "Item ID of section header to go to.",
-            ).optional(),
-            image: z.object({
-              altText: z.string().describe(
-                "A description of the image that is shown on hover and read by screenreaders.",
-              ).optional(),
-              contentUri: z.string().describe(
-                "Output only. A URI from which you can download the image; this is valid only for a limited time.",
-              ).optional(),
-              properties: z.object({
-                alignment: z.enum([
-                  "ALIGNMENT_UNSPECIFIED",
-                  "LEFT",
-                  "RIGHT",
-                  "CENTER",
-                ]).describe("Position of the media.").optional(),
-                width: z.number().int().describe(
-                  "The width of the media in pixels. When the media is displayed, it is scaled to the smaller of this value or the width of the displayed form. The original aspect ratio of the media is preserved. If a width is not specified when the media is added to the form, it is set to the width of the media source. Width must be between 0 and 740, inclusive. Setting width to 0 or unspecified is only permitted when updating the media source.",
-                ).optional(),
-              }).describe("Properties of the media.").optional(),
-              sourceUri: z.string().describe(
-                "Input only. The source URI is the URI used to insert the image. The source URI can be empty when fetched.",
-              ).optional(),
-            }).describe("Data representing an image.").optional(),
-            isOther: z.boolean().describe(
-              'Whether the option is "other". Currently only applies to `RADIO` and `CHECKBOX` choice types, but is not allowed in a QuestionGroupItem.',
-            ).optional(),
-            value: z.string().describe(
-              "Required. The choice as presented to the user.",
-            ).optional(),
-          })).describe(
+          options: z.unknown().describe(
             "Required. List of options that a respondent must choose from.",
           ).optional(),
-          shuffle: z.boolean().describe(
+          shuffle: z.unknown().describe(
             "Whether the options should be displayed in random order for different instances of the quiz. This is often used to prevent cheating by respondents who might be looking at another respondent's screen, or to address bias in a survey that might be introduced by always putting the same options first or last.",
           ).optional(),
-          type: z.enum([
-            "CHOICE_TYPE_UNSPECIFIED",
-            "RADIO",
-            "CHECKBOX",
-            "DROP_DOWN",
-          ]).describe("Required. The type of choice question.").optional(),
+          type: z.unknown().describe("Required. The type of choice question.")
+            .optional(),
         }).describe("A radio/checkbox/dropdown question.").optional(),
         dateQuestion: z.object({
-          includeTime: z.boolean().describe(
+          includeTime: z.unknown().describe(
             "Whether to include the time as part of the question.",
           ).optional(),
-          includeYear: z.boolean().describe(
+          includeYear: z.unknown().describe(
             "Whether to include the year as part of the question.",
           ).optional(),
         }).describe(
           "A date question. Date questions default to just month + day.",
         ).optional(),
         fileUploadQuestion: z.object({
-          folderId: z.string().describe(
+          folderId: z.unknown().describe(
             "Required. The ID of the Drive folder where uploaded files are stored.",
           ).optional(),
-          maxFileSize: z.string().describe(
+          maxFileSize: z.unknown().describe(
             "Maximum number of bytes allowed for any single file uploaded to this question.",
           ).optional(),
-          maxFiles: z.number().int().describe(
+          maxFiles: z.unknown().describe(
             "Maximum number of files that can be uploaded for this question in a single response.",
           ).optional(),
-          types: z.array(
-            z.enum([
-              "FILE_TYPE_UNSPECIFIED",
-              "ANY",
-              "DOCUMENT",
-              "PRESENTATION",
-              "SPREADSHEET",
-              "DRAWING",
-              "PDF",
-              "IMAGE",
-              "VIDEO",
-              "AUDIO",
-            ]),
-          ).describe("File types accepted by this question.").optional(),
+          types: z.unknown().describe("File types accepted by this question.")
+            .optional(),
         }).describe(
           "A file upload question. The API currently does not support creating file upload questions.",
         ).optional(),
         grading: z.object({
-          correctAnswers: z.object({
-            answers: z.array(z.object({
-              value: z.string().describe(
-                "Required. The correct answer value. See the documentation for TextAnswer.value for details on how various value types are formatted.",
-              ).optional(),
-            })).describe(
-              "A list of correct answers. A quiz response can be automatically graded based on these answers. For single-valued questions, a response is marked correct if it matches any value in this list (in other words, multiple correct answers are possible). For multiple-valued (`CHECKBOX`) questions, a response is marked correct if it contains exactly the values in this list.",
-            ).optional(),
-          }).describe("The answer key for a question.").optional(),
-          generalFeedback: z.object({
-            material: z.array(z.object({
-              link: z.object({
-                displayText: z.string().describe(
-                  "Required. Display text for the URI.",
-                ).optional(),
-                uri: z.string().describe("Required. The URI.").optional(),
-              }).describe("Link for text.").optional(),
-              video: z.object({
-                displayText: z.string().describe(
-                  "Required. The display text for the link.",
-                ).optional(),
-                youtubeUri: z.string().describe("The URI of a YouTube video.")
-                  .optional(),
-              }).describe("Link to a video.").optional(),
-            })).describe(
-              "Additional information provided as part of the feedback, often used to point the respondent to more reading and resources.",
-            ).optional(),
-            text: z.string().describe(
-              "Required. The main text of the feedback.",
-            ).optional(),
-          }).describe(
+          correctAnswers: z.unknown().describe("The answer key for a question.")
+            .optional(),
+          generalFeedback: z.unknown().describe(
             "Feedback for a respondent about their response to a question.",
           ).optional(),
-          pointValue: z.number().int().describe(
+          pointValue: z.unknown().describe(
             "Required. The maximum number of points a respondent can automatically get for a correct answer. This must not be negative.",
           ).optional(),
-          whenRight: z.object({
-            material: z.array(z.object({
-              link: z.object({
-                displayText: z.string().describe(
-                  "Required. Display text for the URI.",
-                ).optional(),
-                uri: z.string().describe("Required. The URI.").optional(),
-              }).describe("Link for text.").optional(),
-              video: z.object({
-                displayText: z.string().describe(
-                  "Required. The display text for the link.",
-                ).optional(),
-                youtubeUri: z.string().describe("The URI of a YouTube video.")
-                  .optional(),
-              }).describe("Link to a video.").optional(),
-            })).describe(
-              "Additional information provided as part of the feedback, often used to point the respondent to more reading and resources.",
-            ).optional(),
-            text: z.string().describe(
-              "Required. The main text of the feedback.",
-            ).optional(),
-          }).describe(
+          whenRight: z.unknown().describe(
             "Feedback for a respondent about their response to a question.",
           ).optional(),
-          whenWrong: z.object({
-            material: z.array(z.object({
-              link: z.object({
-                displayText: z.string().describe(
-                  "Required. Display text for the URI.",
-                ).optional(),
-                uri: z.string().describe("Required. The URI.").optional(),
-              }).describe("Link for text.").optional(),
-              video: z.object({
-                displayText: z.string().describe(
-                  "Required. The display text for the link.",
-                ).optional(),
-                youtubeUri: z.string().describe("The URI of a YouTube video.")
-                  .optional(),
-              }).describe("Link to a video.").optional(),
-            })).describe(
-              "Additional information provided as part of the feedback, often used to point the respondent to more reading and resources.",
-            ).optional(),
-            text: z.string().describe(
-              "Required. The main text of the feedback.",
-            ).optional(),
-          }).describe(
+          whenWrong: z.unknown().describe(
             "Feedback for a respondent about their response to a question.",
           ).optional(),
         }).describe("Grading for a single question").optional(),
@@ -1572,14 +647,10 @@ const InputsSchema = z.object({
           "Read only. The question ID. On creation, it can be provided but the ID must not be already used in the form. If not provided, a new ID is assigned.",
         ).optional(),
         ratingQuestion: z.object({
-          iconType: z.enum([
-            "RATING_ICON_TYPE_UNSPECIFIED",
-            "STAR",
-            "HEART",
-            "THUMB_UP",
-          ]).describe("Required. The icon type to use for the rating.")
-            .optional(),
-          ratingScaleLevel: z.number().int().describe(
+          iconType: z.unknown().describe(
+            "Required. The icon type to use for the rating.",
+          ).optional(),
+          ratingScaleLevel: z.unknown().describe(
             "Required. The rating scale level of the rating question.",
           ).optional(),
         }).describe(
@@ -1589,35 +660,35 @@ const InputsSchema = z.object({
           "Whether the question must be answered in order for a respondent to submit their response.",
         ).optional(),
         rowQuestion: z.object({
-          title: z.string().describe(
+          title: z.unknown().describe(
             "Required. The title for the single row in the QuestionGroupItem.",
           ).optional(),
         }).describe(
           "Configuration for a question that is part of a question group.",
         ).optional(),
         scaleQuestion: z.object({
-          high: z.number().int().describe(
+          high: z.unknown().describe(
             "Required. The highest possible value for the scale.",
           ).optional(),
-          highLabel: z.string().describe(
+          highLabel: z.unknown().describe(
             "The label to display describing the highest point on the scale.",
           ).optional(),
-          low: z.number().int().describe(
+          low: z.unknown().describe(
             "Required. The lowest possible value for the scale.",
           ).optional(),
-          lowLabel: z.string().describe(
+          lowLabel: z.unknown().describe(
             "The label to display describing the lowest point on the scale.",
           ).optional(),
         }).describe(
           "A scale question. The user has a range of numeric values to choose from.",
         ).optional(),
         textQuestion: z.object({
-          paragraph: z.boolean().describe(
+          paragraph: z.unknown().describe(
             "Whether the question is a paragraph question or not. If not, the question is a short text question.",
           ).optional(),
         }).describe("A text-based question.").optional(),
         timeQuestion: z.object({
-          duration: z.boolean().describe(
+          duration: z.unknown().describe(
             "`true` if the question is about an elapsed time. Otherwise it is about a time of day.",
           ).optional(),
         }).describe("A time question.").optional(),
@@ -1632,13 +703,8 @@ const InputsSchema = z.object({
         .optional(),
       video: z.object({
         properties: z.object({
-          alignment: z.enum([
-            "ALIGNMENT_UNSPECIFIED",
-            "LEFT",
-            "RIGHT",
-            "CENTER",
-          ]).describe("Position of the media.").optional(),
-          width: z.number().int().describe(
+          alignment: z.unknown().describe("Position of the media.").optional(),
+          width: z.unknown().describe(
             "The width of the media in pixels. When the media is displayed, it is scaled to the smaller of this value or the width of the displayed form. The original aspect ratio of the media is preserved. If a width is not specified when the media is added to the form, it is set to the width of the media source. Width must be between 0 and 740, inclusive. Setting width to 0 or unspecified is only permitted when updating the media source.",
           ).optional(),
         }).describe("Properties of the media.").optional(),
@@ -1682,7 +748,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/forms/forms",
-  version: "2026.04.03.3",
+  version: "2026.04.04.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -1706,6 +772,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.3",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.04.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

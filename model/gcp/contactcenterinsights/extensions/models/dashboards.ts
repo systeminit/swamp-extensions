@@ -159,11 +159,7 @@ const GlobalArgsSchema = z.object({
     widgets: z.array(z.object({
       chart: z.object({
         action: z.object({
-          redirectAction: z.object({
-            relativePath: z.string().describe(
-              "The relative path to redirect to.",
-            ).optional(),
-          }).describe(
+          redirectAction: z.unknown().describe(
             "The redirect action to be taken when the chart is clicked.",
           ).optional(),
         }).describe("The action to be taken when the chart is clicked.")
@@ -189,104 +185,22 @@ const GlobalArgsSchema = z.object({
         createTime: z.string().describe("Output only. Chart create time.")
           .optional(),
         dataSource: z.object({
-          generativeInsights: z.object({
-            chartCheckpoint: z.object({
-              revisionId: z.string().describe("The revision id of the chart.")
-                .optional(),
-              sessionId: z.string().describe("The session id of the chart.")
-                .optional(),
-            }).describe("The current chart checkpoint state.").optional(),
-            chartConversations: z.array(z.object({
-              conversationId: z.string().describe(
-                "The conversation id of the chart.",
-              ).optional(),
-              createTime: z.string().describe(
-                "The create time of the conversation.",
-              ).optional(),
-              messages: z.array(z.object({
-                createTime: z.string().describe(
-                  "For user messages, this is the time at which the system received the message. For system messages, this is the time at which the system generated the message.",
-                ).optional(),
-                messageId: z.string().describe("The message id of the message.")
-                  .optional(),
-                systemMessage: z.object({
-                  chartSpec: z.record(z.string(), z.string()).describe(
-                    "Chart spec from LLM",
-                  ).optional(),
-                  generatedSqlQuery: z.string().describe(
-                    "Raw SQL from LLM, before templatization",
-                  ).optional(),
-                  textOutput: z.object({
-                    texts: z.array(z.string()).describe(
-                      "The parts of the message.",
-                    ).optional(),
-                    type: z.enum([
-                      "TYPE_UNSPECIFIED",
-                      "THOUGHT",
-                      "FINAL_RESPONSE",
-                      "PROGRESS",
-                    ]).describe("The type of the text message.").optional(),
-                  }).describe("A text output message from the system.")
-                    .optional(),
-                }).describe(
-                  "A message from the system in response to the user. This message can also be a message from the user as historical context for multiturn conversations with the system.",
-                ).optional(),
-                userMessage: z.object({
-                  text: z.string().describe(
-                    "A message from the user that is interacting with the system.",
-                  ).optional(),
-                }).describe("The user message.").optional(),
-              })).describe(
-                "Ordered list of messages, including user inputs and system responses.",
-              ).optional(),
-              updateTime: z.string().describe(
-                "The update time of the conversation.",
-              ).optional(),
-            })).describe(
-              "Output only. The chart conversations used to generate the chart.",
-            ).optional(),
-            chartSpec: z.record(z.string(), z.string()).describe(
-              "Chart spec for the chart.",
-            ).optional(),
-            request: z.record(z.string(), z.string()).optional(),
-            sqlComparisonKey: z.string().describe(
-              "Optional. For charts with comparison, this key will determine the metric that will be compared between the current and another dataset.",
-            ).optional(),
-            sqlQuery: z.string().describe(
-              "SQL query used to generate the chart.",
-            ).optional(),
-          }).describe(
+          generativeInsights: z.unknown().describe(
             "Request that use natural language query to generate the chart.",
           ).optional(),
-          queryMetrics: z.object({
-            request: z.record(z.string(), z.string()).optional(),
-          }).describe("Request data that use the existing QueryMetrics.")
-            .optional(),
+          queryMetrics: z.unknown().describe(
+            "Request data that use the existing QueryMetrics.",
+          ).optional(),
         }).describe(
           "The request data for visualizing the dataset in the chart.",
         ).optional(),
         dateRangeConfig: z.object({
-          absoluteDateRange: z.object({
-            endTime: z.string().describe(
-              "Required. The end time of the time window.",
-            ).optional(),
-            startTime: z.string().describe(
-              "Required. The start time of the time window.",
-            ).optional(),
-          }).describe("A time window for querying conversations.").optional(),
-          relativeDateRange: z.object({
-            quantity: z.string().describe(
-              "Required. The quantity of units in the past.",
-            ).optional(),
-            unit: z.enum([
-              "TIME_UNIT_UNSPECIFIED",
-              "DAY",
-              "WEEK",
-              "MONTH",
-              "QUARTER",
-              "YEAR",
-            ]).describe("Required. The unit of time.").optional(),
-          }).describe("Relative date range configuration.").optional(),
+          absoluteDateRange: z.unknown().describe(
+            "A time window for querying conversations.",
+          ).optional(),
+          relativeDateRange: z.unknown().describe(
+            "Relative date range configuration.",
+          ).optional(),
         }).describe("Date range configuration for dashboard charts.")
           .optional(),
         description: z.string().describe("Chart description").optional(),
@@ -370,57 +284,18 @@ const StateSchema = z.object({
     widgets: z.array(z.object({
       chart: z.object({
         action: z.object({
-          redirectAction: z.object({
-            relativePath: z.string(),
-          }),
+          redirectAction: z.unknown(),
         }),
         chartType: z.string(),
         chartVisualizationType: z.string(),
         createTime: z.string(),
         dataSource: z.object({
-          generativeInsights: z.object({
-            chartCheckpoint: z.object({
-              revisionId: z.string(),
-              sessionId: z.string(),
-            }),
-            chartConversations: z.array(z.object({
-              conversationId: z.string(),
-              createTime: z.string(),
-              messages: z.array(z.object({
-                createTime: z.string(),
-                messageId: z.string(),
-                systemMessage: z.object({
-                  chartSpec: z.record(z.string(), z.unknown()),
-                  generatedSqlQuery: z.string(),
-                  textOutput: z.object({
-                    texts: z.array(z.string()),
-                    type: z.string(),
-                  }),
-                }),
-                userMessage: z.object({
-                  text: z.string(),
-                }),
-              })),
-              updateTime: z.string(),
-            })),
-            chartSpec: z.record(z.string(), z.unknown()),
-            request: z.record(z.string(), z.unknown()),
-            sqlComparisonKey: z.string(),
-            sqlQuery: z.string(),
-          }),
-          queryMetrics: z.object({
-            request: z.record(z.string(), z.unknown()),
-          }),
+          generativeInsights: z.unknown(),
+          queryMetrics: z.unknown(),
         }),
         dateRangeConfig: z.object({
-          absoluteDateRange: z.object({
-            endTime: z.string(),
-            startTime: z.string(),
-          }),
-          relativeDateRange: z.object({
-            quantity: z.string(),
-            unit: z.string(),
-          }),
+          absoluteDateRange: z.unknown(),
+          relativeDateRange: z.unknown(),
         }),
         description: z.string(),
         displayName: z.string(),
@@ -514,11 +389,7 @@ const InputsSchema = z.object({
     widgets: z.array(z.object({
       chart: z.object({
         action: z.object({
-          redirectAction: z.object({
-            relativePath: z.string().describe(
-              "The relative path to redirect to.",
-            ).optional(),
-          }).describe(
+          redirectAction: z.unknown().describe(
             "The redirect action to be taken when the chart is clicked.",
           ).optional(),
         }).describe("The action to be taken when the chart is clicked.")
@@ -544,104 +415,22 @@ const InputsSchema = z.object({
         createTime: z.string().describe("Output only. Chart create time.")
           .optional(),
         dataSource: z.object({
-          generativeInsights: z.object({
-            chartCheckpoint: z.object({
-              revisionId: z.string().describe("The revision id of the chart.")
-                .optional(),
-              sessionId: z.string().describe("The session id of the chart.")
-                .optional(),
-            }).describe("The current chart checkpoint state.").optional(),
-            chartConversations: z.array(z.object({
-              conversationId: z.string().describe(
-                "The conversation id of the chart.",
-              ).optional(),
-              createTime: z.string().describe(
-                "The create time of the conversation.",
-              ).optional(),
-              messages: z.array(z.object({
-                createTime: z.string().describe(
-                  "For user messages, this is the time at which the system received the message. For system messages, this is the time at which the system generated the message.",
-                ).optional(),
-                messageId: z.string().describe("The message id of the message.")
-                  .optional(),
-                systemMessage: z.object({
-                  chartSpec: z.record(z.string(), z.string()).describe(
-                    "Chart spec from LLM",
-                  ).optional(),
-                  generatedSqlQuery: z.string().describe(
-                    "Raw SQL from LLM, before templatization",
-                  ).optional(),
-                  textOutput: z.object({
-                    texts: z.array(z.string()).describe(
-                      "The parts of the message.",
-                    ).optional(),
-                    type: z.enum([
-                      "TYPE_UNSPECIFIED",
-                      "THOUGHT",
-                      "FINAL_RESPONSE",
-                      "PROGRESS",
-                    ]).describe("The type of the text message.").optional(),
-                  }).describe("A text output message from the system.")
-                    .optional(),
-                }).describe(
-                  "A message from the system in response to the user. This message can also be a message from the user as historical context for multiturn conversations with the system.",
-                ).optional(),
-                userMessage: z.object({
-                  text: z.string().describe(
-                    "A message from the user that is interacting with the system.",
-                  ).optional(),
-                }).describe("The user message.").optional(),
-              })).describe(
-                "Ordered list of messages, including user inputs and system responses.",
-              ).optional(),
-              updateTime: z.string().describe(
-                "The update time of the conversation.",
-              ).optional(),
-            })).describe(
-              "Output only. The chart conversations used to generate the chart.",
-            ).optional(),
-            chartSpec: z.record(z.string(), z.string()).describe(
-              "Chart spec for the chart.",
-            ).optional(),
-            request: z.record(z.string(), z.string()).optional(),
-            sqlComparisonKey: z.string().describe(
-              "Optional. For charts with comparison, this key will determine the metric that will be compared between the current and another dataset.",
-            ).optional(),
-            sqlQuery: z.string().describe(
-              "SQL query used to generate the chart.",
-            ).optional(),
-          }).describe(
+          generativeInsights: z.unknown().describe(
             "Request that use natural language query to generate the chart.",
           ).optional(),
-          queryMetrics: z.object({
-            request: z.record(z.string(), z.string()).optional(),
-          }).describe("Request data that use the existing QueryMetrics.")
-            .optional(),
+          queryMetrics: z.unknown().describe(
+            "Request data that use the existing QueryMetrics.",
+          ).optional(),
         }).describe(
           "The request data for visualizing the dataset in the chart.",
         ).optional(),
         dateRangeConfig: z.object({
-          absoluteDateRange: z.object({
-            endTime: z.string().describe(
-              "Required. The end time of the time window.",
-            ).optional(),
-            startTime: z.string().describe(
-              "Required. The start time of the time window.",
-            ).optional(),
-          }).describe("A time window for querying conversations.").optional(),
-          relativeDateRange: z.object({
-            quantity: z.string().describe(
-              "Required. The quantity of units in the past.",
-            ).optional(),
-            unit: z.enum([
-              "TIME_UNIT_UNSPECIFIED",
-              "DAY",
-              "WEEK",
-              "MONTH",
-              "QUARTER",
-              "YEAR",
-            ]).describe("Required. The unit of time.").optional(),
-          }).describe("Relative date range configuration.").optional(),
+          absoluteDateRange: z.unknown().describe(
+            "A time window for querying conversations.",
+          ).optional(),
+          relativeDateRange: z.unknown().describe(
+            "Relative date range configuration.",
+          ).optional(),
         }).describe("Date range configuration for dashboard charts.")
           .optional(),
         description: z.string().describe("Chart description").optional(),
@@ -691,7 +480,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/contactcenterinsights/dashboards",
-  version: "2026.04.03.3",
+  version: "2026.04.04.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -720,6 +509,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.3",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.04.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

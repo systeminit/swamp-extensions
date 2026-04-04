@@ -199,64 +199,7 @@ const GlobalArgsSchema = z.object({
     }).describe("Contains the element of the dynamic feed.").optional(),
     feedIngestionStatus: z.object({
       ingestionErrorRecords: z.array(z.object({
-        errors: z.array(z.object({
-          fieldId: z.number().int().describe(
-            "Output only. The ID of the field.",
-          ).optional(),
-          fieldName: z.string().describe("Output only. The name of the field.")
-            .optional(),
-          fieldValues: z.array(z.string()).describe(
-            "Output only. The list of values of the field.",
-          ).optional(),
-          ingestionError: z.enum([
-            "UNKNOWN_PARSING_ERROR",
-            "MISSING_ID",
-            "MISSING_REPORTING_LABEL",
-            "EMPTY_VALUE",
-            "ASSET_DOWNLOAD_ERROR",
-            "ID_TOO_LONG",
-            "DUPLICATE_ID",
-            "PARSING_ERROR",
-            "COUNTRY_PARSING_ERROR",
-            "LONG_PARSING_ERROR",
-            "BOOL_PARSING_ERROR",
-            "EXPANDED_URL_PARSING_ERROR",
-            "FLOAT_PARSING_ERROR",
-            "DATETIME_PARSING_ERROR",
-            "INVALID_PREFERENCE_VALUE",
-            "GEO_NOT_FOUND_ERROR",
-            "GEO_PARSING_ERROR",
-            "GEO_PROXIMITY_TARGETING_MULTIPLE_LOCATION_ERROR",
-            "POSTAL_CODE_PARSING_ERROR",
-            "METRO_CODE_PARSING_ERROR",
-            "DATETIME_WITHOUT_TIMEZONE_PARSING_ERROR",
-            "WEIGHT_PARSING_ERROR",
-            "CREATIVE_DIMENSION_PARSING_ERROR",
-            "MULTIVALUE_ID",
-            "ENDTIME_BEFORE_STARTTIME",
-            "INVALID_ASSET_LIBRARY_HANDLE",
-            "INVALID_ASSET_LIBRARY_VIDEO_HANDLE",
-            "INVALID_ASSET_LIBRARY_DIRECTORY_HANDLE",
-            "DYNAMIC_TARGETING_KEY_NOT_DEFINED_FOR_ADVERTISER",
-            "USERLIST_ID_NOT_ACCESSIBLE_FOR_ADVERTISER",
-            "ENDTIME_PASSED",
-            "ENDTIME_TOO_SOON",
-            "TEXT_ASSET_REFERENCE",
-            "IMAGE_ASSET_SCS_REFERENCE",
-            "AIRPORT_GEO_TARGET",
-            "CANONICAL_NAME_QUERY_MISMATCH",
-            "NO_DEFAULT_ROW",
-            "NO_ACTIVE_DEFAULT_ROW",
-            "NO_DEFAULT_ROW_IN_DATE_RANGE",
-            "NO_ACTIVE_DEFAULT_ROW_IN_DATE_RANGE",
-            "PAYLOAD_LIMIT_EXCEEDED",
-            "SSL_NOT_COMPLIANT",
-          ]).describe("Output only. The ingestion error of the field.")
-            .optional(),
-          isError: z.boolean().describe(
-            "Output only. Incidcates whether the field has error or warning.",
-          ).optional(),
-        })).describe(
+        errors: z.array(z.unknown()).describe(
           "Output only. The list of field errors of the ingestion error record.",
         ).optional(),
         recordId: z.string().describe(
@@ -484,59 +427,17 @@ const GlobalArgsSchema = z.object({
   feedIngestionStatus: z.object({
     ingestionErrorRecords: z.array(z.object({
       errors: z.array(z.object({
-        fieldId: z.number().int().describe("Output only. The ID of the field.")
+        fieldId: z.unknown().describe("Output only. The ID of the field.")
           .optional(),
-        fieldName: z.string().describe("Output only. The name of the field.")
+        fieldName: z.unknown().describe("Output only. The name of the field.")
           .optional(),
-        fieldValues: z.array(z.string()).describe(
+        fieldValues: z.unknown().describe(
           "Output only. The list of values of the field.",
         ).optional(),
-        ingestionError: z.enum([
-          "UNKNOWN_PARSING_ERROR",
-          "MISSING_ID",
-          "MISSING_REPORTING_LABEL",
-          "EMPTY_VALUE",
-          "ASSET_DOWNLOAD_ERROR",
-          "ID_TOO_LONG",
-          "DUPLICATE_ID",
-          "PARSING_ERROR",
-          "COUNTRY_PARSING_ERROR",
-          "LONG_PARSING_ERROR",
-          "BOOL_PARSING_ERROR",
-          "EXPANDED_URL_PARSING_ERROR",
-          "FLOAT_PARSING_ERROR",
-          "DATETIME_PARSING_ERROR",
-          "INVALID_PREFERENCE_VALUE",
-          "GEO_NOT_FOUND_ERROR",
-          "GEO_PARSING_ERROR",
-          "GEO_PROXIMITY_TARGETING_MULTIPLE_LOCATION_ERROR",
-          "POSTAL_CODE_PARSING_ERROR",
-          "METRO_CODE_PARSING_ERROR",
-          "DATETIME_WITHOUT_TIMEZONE_PARSING_ERROR",
-          "WEIGHT_PARSING_ERROR",
-          "CREATIVE_DIMENSION_PARSING_ERROR",
-          "MULTIVALUE_ID",
-          "ENDTIME_BEFORE_STARTTIME",
-          "INVALID_ASSET_LIBRARY_HANDLE",
-          "INVALID_ASSET_LIBRARY_VIDEO_HANDLE",
-          "INVALID_ASSET_LIBRARY_DIRECTORY_HANDLE",
-          "DYNAMIC_TARGETING_KEY_NOT_DEFINED_FOR_ADVERTISER",
-          "USERLIST_ID_NOT_ACCESSIBLE_FOR_ADVERTISER",
-          "ENDTIME_PASSED",
-          "ENDTIME_TOO_SOON",
-          "TEXT_ASSET_REFERENCE",
-          "IMAGE_ASSET_SCS_REFERENCE",
-          "AIRPORT_GEO_TARGET",
-          "CANONICAL_NAME_QUERY_MISMATCH",
-          "NO_DEFAULT_ROW",
-          "NO_ACTIVE_DEFAULT_ROW",
-          "NO_DEFAULT_ROW_IN_DATE_RANGE",
-          "NO_ACTIVE_DEFAULT_ROW_IN_DATE_RANGE",
-          "PAYLOAD_LIMIT_EXCEEDED",
-          "SSL_NOT_COMPLIANT",
-        ]).describe("Output only. The ingestion error of the field.")
-          .optional(),
-        isError: z.boolean().describe(
+        ingestionError: z.unknown().describe(
+          "Output only. The ingestion error of the field.",
+        ).optional(),
+        isError: z.unknown().describe(
           "Output only. Incidcates whether the field has error or warning.",
         ).optional(),
       })).describe(
@@ -665,11 +566,11 @@ const StateSchema = z.object({
   feedIngestionStatus: z.object({
     ingestionErrorRecords: z.array(z.object({
       errors: z.array(z.object({
-        fieldId: z.number(),
-        fieldName: z.string(),
-        fieldValues: z.array(z.string()),
-        ingestionError: z.string(),
-        isError: z.boolean(),
+        fieldId: z.unknown(),
+        fieldName: z.unknown(),
+        fieldValues: z.unknown(),
+        ingestionError: z.unknown(),
+        isError: z.unknown(),
       })),
       recordId: z.string(),
     })),
@@ -851,64 +752,7 @@ const InputsSchema = z.object({
     }).describe("Contains the element of the dynamic feed.").optional(),
     feedIngestionStatus: z.object({
       ingestionErrorRecords: z.array(z.object({
-        errors: z.array(z.object({
-          fieldId: z.number().int().describe(
-            "Output only. The ID of the field.",
-          ).optional(),
-          fieldName: z.string().describe("Output only. The name of the field.")
-            .optional(),
-          fieldValues: z.array(z.string()).describe(
-            "Output only. The list of values of the field.",
-          ).optional(),
-          ingestionError: z.enum([
-            "UNKNOWN_PARSING_ERROR",
-            "MISSING_ID",
-            "MISSING_REPORTING_LABEL",
-            "EMPTY_VALUE",
-            "ASSET_DOWNLOAD_ERROR",
-            "ID_TOO_LONG",
-            "DUPLICATE_ID",
-            "PARSING_ERROR",
-            "COUNTRY_PARSING_ERROR",
-            "LONG_PARSING_ERROR",
-            "BOOL_PARSING_ERROR",
-            "EXPANDED_URL_PARSING_ERROR",
-            "FLOAT_PARSING_ERROR",
-            "DATETIME_PARSING_ERROR",
-            "INVALID_PREFERENCE_VALUE",
-            "GEO_NOT_FOUND_ERROR",
-            "GEO_PARSING_ERROR",
-            "GEO_PROXIMITY_TARGETING_MULTIPLE_LOCATION_ERROR",
-            "POSTAL_CODE_PARSING_ERROR",
-            "METRO_CODE_PARSING_ERROR",
-            "DATETIME_WITHOUT_TIMEZONE_PARSING_ERROR",
-            "WEIGHT_PARSING_ERROR",
-            "CREATIVE_DIMENSION_PARSING_ERROR",
-            "MULTIVALUE_ID",
-            "ENDTIME_BEFORE_STARTTIME",
-            "INVALID_ASSET_LIBRARY_HANDLE",
-            "INVALID_ASSET_LIBRARY_VIDEO_HANDLE",
-            "INVALID_ASSET_LIBRARY_DIRECTORY_HANDLE",
-            "DYNAMIC_TARGETING_KEY_NOT_DEFINED_FOR_ADVERTISER",
-            "USERLIST_ID_NOT_ACCESSIBLE_FOR_ADVERTISER",
-            "ENDTIME_PASSED",
-            "ENDTIME_TOO_SOON",
-            "TEXT_ASSET_REFERENCE",
-            "IMAGE_ASSET_SCS_REFERENCE",
-            "AIRPORT_GEO_TARGET",
-            "CANONICAL_NAME_QUERY_MISMATCH",
-            "NO_DEFAULT_ROW",
-            "NO_ACTIVE_DEFAULT_ROW",
-            "NO_DEFAULT_ROW_IN_DATE_RANGE",
-            "NO_ACTIVE_DEFAULT_ROW_IN_DATE_RANGE",
-            "PAYLOAD_LIMIT_EXCEEDED",
-            "SSL_NOT_COMPLIANT",
-          ]).describe("Output only. The ingestion error of the field.")
-            .optional(),
-          isError: z.boolean().describe(
-            "Output only. Incidcates whether the field has error or warning.",
-          ).optional(),
-        })).describe(
+        errors: z.array(z.unknown()).describe(
           "Output only. The list of field errors of the ingestion error record.",
         ).optional(),
         recordId: z.string().describe(
@@ -1136,59 +980,17 @@ const InputsSchema = z.object({
   feedIngestionStatus: z.object({
     ingestionErrorRecords: z.array(z.object({
       errors: z.array(z.object({
-        fieldId: z.number().int().describe("Output only. The ID of the field.")
+        fieldId: z.unknown().describe("Output only. The ID of the field.")
           .optional(),
-        fieldName: z.string().describe("Output only. The name of the field.")
+        fieldName: z.unknown().describe("Output only. The name of the field.")
           .optional(),
-        fieldValues: z.array(z.string()).describe(
+        fieldValues: z.unknown().describe(
           "Output only. The list of values of the field.",
         ).optional(),
-        ingestionError: z.enum([
-          "UNKNOWN_PARSING_ERROR",
-          "MISSING_ID",
-          "MISSING_REPORTING_LABEL",
-          "EMPTY_VALUE",
-          "ASSET_DOWNLOAD_ERROR",
-          "ID_TOO_LONG",
-          "DUPLICATE_ID",
-          "PARSING_ERROR",
-          "COUNTRY_PARSING_ERROR",
-          "LONG_PARSING_ERROR",
-          "BOOL_PARSING_ERROR",
-          "EXPANDED_URL_PARSING_ERROR",
-          "FLOAT_PARSING_ERROR",
-          "DATETIME_PARSING_ERROR",
-          "INVALID_PREFERENCE_VALUE",
-          "GEO_NOT_FOUND_ERROR",
-          "GEO_PARSING_ERROR",
-          "GEO_PROXIMITY_TARGETING_MULTIPLE_LOCATION_ERROR",
-          "POSTAL_CODE_PARSING_ERROR",
-          "METRO_CODE_PARSING_ERROR",
-          "DATETIME_WITHOUT_TIMEZONE_PARSING_ERROR",
-          "WEIGHT_PARSING_ERROR",
-          "CREATIVE_DIMENSION_PARSING_ERROR",
-          "MULTIVALUE_ID",
-          "ENDTIME_BEFORE_STARTTIME",
-          "INVALID_ASSET_LIBRARY_HANDLE",
-          "INVALID_ASSET_LIBRARY_VIDEO_HANDLE",
-          "INVALID_ASSET_LIBRARY_DIRECTORY_HANDLE",
-          "DYNAMIC_TARGETING_KEY_NOT_DEFINED_FOR_ADVERTISER",
-          "USERLIST_ID_NOT_ACCESSIBLE_FOR_ADVERTISER",
-          "ENDTIME_PASSED",
-          "ENDTIME_TOO_SOON",
-          "TEXT_ASSET_REFERENCE",
-          "IMAGE_ASSET_SCS_REFERENCE",
-          "AIRPORT_GEO_TARGET",
-          "CANONICAL_NAME_QUERY_MISMATCH",
-          "NO_DEFAULT_ROW",
-          "NO_ACTIVE_DEFAULT_ROW",
-          "NO_DEFAULT_ROW_IN_DATE_RANGE",
-          "NO_ACTIVE_DEFAULT_ROW_IN_DATE_RANGE",
-          "PAYLOAD_LIMIT_EXCEEDED",
-          "SSL_NOT_COMPLIANT",
-        ]).describe("Output only. The ingestion error of the field.")
-          .optional(),
-        isError: z.boolean().describe(
+        ingestionError: z.unknown().describe(
+          "Output only. The ingestion error of the field.",
+        ).optional(),
+        isError: z.unknown().describe(
           "Output only. Incidcates whether the field has error or warning.",
         ).optional(),
       })).describe(
@@ -1267,7 +1069,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/dfareporting/dynamicfeeds",
-  version: "2026.04.03.3",
+  version: "2026.04.04.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -1291,6 +1093,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.3",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.04.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

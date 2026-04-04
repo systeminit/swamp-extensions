@@ -227,33 +227,7 @@ const GlobalArgsSchema = z.object({
     }).describe("Options for external data sources.").optional(),
     bigtableOptions: z.object({
       columnFamilies: z.array(z.object({
-        columns: z.array(z.object({
-          encoding: z.string().describe(
-            "Optional. The encoding of the values when the type is not STRING. Acceptable encoding values are: TEXT - indicates values are alphanumeric text strings. BINARY - indicates values are encoded using HBase Bytes.toBytes family of functions. PROTO_BINARY - indicates values are encoded using serialized proto messages. This can only be used in combination with JSON type. 'encoding' can also be set at the column family level. However, the setting at this level takes precedence if 'encoding' is set at both levels.",
-          ).optional(),
-          fieldName: z.string().describe(
-            "Optional. If the qualifier is not a valid BigQuery field identifier i.e. does not match a-zA-Z*, a valid identifier must be provided as the column field name and is used as field name in queries.",
-          ).optional(),
-          onlyReadLatest: z.boolean().describe(
-            "Optional. If this is set, only the latest version of value in this column are exposed. 'onlyReadLatest' can also be set at the column family level. However, the setting at this level takes precedence if 'onlyReadLatest' is set at both levels.",
-          ).optional(),
-          protoConfig: z.object({
-            protoMessageName: z.string().describe(
-              'Optional. The fully qualified proto message name of the protobuf. In the format of "foo.bar.Message".',
-            ).optional(),
-            schemaBundleId: z.string().describe(
-              "Optional. The ID of the Bigtable SchemaBundle resource associated with this protobuf. The ID should be referred to within the parent table, e.g., `foo` rather than `projects/{project}/instances/{instance}/tables/{table}/schemaBundles/foo`. See [more details on Bigtable SchemaBundles](https://docs.cloud.google.com/bigtable/docs/create-manage-protobuf-schemas).",
-            ).optional(),
-          }).describe("Information related to a Bigtable protobuf column.")
-            .optional(),
-          qualifierEncoded: z.string().describe(
-            "[Required] Qualifier of the column. Columns in the parent column family that has this exact qualifier are exposed as `.` field. If the qualifier is valid UTF-8 string, it can be specified in the qualifier_string field. Otherwise, a base-64 encoded value must be set to qualifier_encoded. The column field name is the same as the column qualifier. However, if the qualifier is not a valid BigQuery field identifier i.e. does not match a-zA-Z*, a valid identifier must be provided as field_name.",
-          ).optional(),
-          qualifierString: z.string().describe("Qualifier string.").optional(),
-          type: z.string().describe(
-            "Optional. The type to convert the value in cells of this column. The values are expected to be encoded using HBase Bytes.toBytes function when using the BINARY encoding value. Following BigQuery types are allowed (case-sensitive): * BYTES * STRING * INTEGER * FLOAT * BOOLEAN * JSON Default type is BYTES. 'type' can also be set at the column family level. However, the setting at this level takes precedence if 'type' is set at both levels.",
-          ).optional(),
-        })).describe(
+        columns: z.array(z.unknown()).describe(
           "Optional. Lists of columns that should be exposed as individual fields as opposed to a list of (column name, value) pairs. All columns whose qualifier matches a qualifier in this list can be accessed as `.`. Other columns can be accessed as a list through the `.Column` field.",
         ).optional(),
         encoding: z.string().describe(
@@ -265,10 +239,10 @@ const GlobalArgsSchema = z.object({
           "Optional. If this is set only the latest version of value are exposed for all columns in this column family. This can be overridden for a specific column by listing that column in 'columns' and specifying a different setting for that column.",
         ).optional(),
         protoConfig: z.object({
-          protoMessageName: z.string().describe(
+          protoMessageName: z.unknown().describe(
             'Optional. The fully qualified proto message name of the protobuf. In the format of "foo.bar.Message".',
           ).optional(),
-          schemaBundleId: z.string().describe(
+          schemaBundleId: z.unknown().describe(
             "Optional. The ID of the Bigtable SchemaBundle resource associated with this protobuf. The ID should be referred to within the parent table, e.g., `foo` rather than `projects/{project}/instances/{instance}/tables/{table}/schemaBundles/foo`. See [more details on Bigtable SchemaBundles](https://docs.cloud.google.com/bigtable/docs/create-manage-protobuf-schemas).",
           ).optional(),
         }).describe("Information related to a Bigtable protobuf column.")
@@ -419,16 +393,12 @@ const GlobalArgsSchema = z.object({
     schema: z.object({
       fields: z.array(z.object({
         categories: z.object({
-          names: z.array(z.string()).describe("Deprecated.").optional(),
+          names: z.unknown().describe("Deprecated.").optional(),
         }).describe("Deprecated.").optional(),
         collation: z.string().describe(
           "Optional. Field collation can be set only when the type of field is STRING. The following values are supported: * 'und:ci': undetermined locale, case insensitive. * '': empty string. Default to case-sensitive behavior.",
         ).optional(),
-        dataPolicies: z.array(z.object({
-          name: z.string().describe(
-            "Data policy resource name in the form of projects/project_id/locations/location_id/dataPolicies/data_policy_id.",
-          ).optional(),
-        })).describe(
+        dataPolicies: z.array(z.unknown()).describe(
           "Optional. Data policies attached to this field, used for field-level access control.",
         ).optional(),
         defaultValueExpression: z.string().describe(
@@ -437,31 +407,17 @@ const GlobalArgsSchema = z.object({
         description: z.string().describe(
           "Optional. The field description. The maximum length is 1,024 characters.",
         ).optional(),
-        fields: z.array(z.string()).describe(
+        fields: z.array(z.unknown()).describe(
           "Optional. Describes the nested schema fields if the type property is set to RECORD.",
         ).optional(),
         foreignTypeDefinition: z.string().describe(
           "Optional. Definition of the foreign data type. Only valid for top-level schema fields (not nested fields). If the type is FOREIGN, this field is required.",
         ).optional(),
         generatedColumn: z.object({
-          generatedExpressionInfo: z.object({
-            asynchronous: z.boolean().describe(
-              "Optional. Whether the column generation is done asynchronously.",
-            ).optional(),
-            generationExpression: z.string().describe(
-              "Optional. The generation expression (e.g. AI.EMBED(...)) used to generated the field.",
-            ).optional(),
-            stored: z.boolean().describe(
-              "Optional. Whether the generated column is stored in the table.",
-            ).optional(),
-          }).describe(
+          generatedExpressionInfo: z.unknown().describe(
             "Definition of the expression used to generate the field.",
           ).optional(),
-          generatedMode: z.enum([
-            "GENERATED_MODE_UNSPECIFIED",
-            "GENERATED_ALWAYS",
-            "GENERATED_BY_DEFAULT",
-          ]).describe(
+          generatedMode: z.unknown().describe(
             "Optional. Dictates when system generated values are used to populate the field.",
           ).optional(),
         }).describe(
@@ -477,7 +433,7 @@ const GlobalArgsSchema = z.object({
           "Required. The field name. The name must contain only letters (a-z, A-Z), numbers (0-9), or underscores (_), and must start with a letter or underscore. The maximum length is 300 characters.",
         ).optional(),
         policyTags: z.object({
-          names: z.array(z.string()).describe(
+          names: z.unknown().describe(
             'A list of policy tag resource names. For example, "projects/1/locations/eu/taxonomies/2/policyTags/3". At most 1 policy tag is currently allowed.',
           ).optional(),
         }).describe(
@@ -487,7 +443,7 @@ const GlobalArgsSchema = z.object({
           'Optional. Precision (maximum number of total digits in base 10) and scale (maximum number of digits in the fractional part in base 10) constraints for values of this field for NUMERIC or BIGNUMERIC. It is invalid to set precision or scale if type ≠ "NUMERIC" and ≠ "BIGNUMERIC". If precision and scale are not specified, no value range constraint is imposed on this field insofar as values are permitted by the type. Values of this NUMERIC or BIGNUMERIC field must be in this range when: * Precision (P) and scale (S) are specified: [-10P-S + 10-S, 10P-S - 10-S] * Precision (P) is specified but not scale (and thus scale is interpreted to be equal to zero): [-10P + 1, 10P - 1]. Acceptable values for precision and scale if both are specified: * If type = "NUMERIC": 1 ≤ precision - scale ≤ 29 and 0 ≤ scale ≤ 9. * If type = "BIGNUMERIC": 1 ≤ precision - scale ≤ 38 and 0 ≤ scale ≤ 38. Acceptable values for precision if only precision is specified but not scale (and thus scale is interpreted to be equal to zero): * If type = "NUMERIC": 1 ≤ precision ≤ 29. * If type = "BIGNUMERIC": 1 ≤ precision ≤ 38. If scale is specified but not precision, then it is invalid.',
         ).optional(),
         rangeElementType: z.object({
-          type: z.string().describe(
+          type: z.unknown().describe(
             "Required. The type of a field element. For more information, see TableFieldSchema.type.",
           ).optional(),
         }).describe("Represents the type of a field element.").optional(),
@@ -598,11 +554,11 @@ const GlobalArgsSchema = z.object({
     }).describe("Deprecated.").optional(),
     trainingRuns: z.array(z.object({
       iterationResults: z.array(z.object({
-        durationMs: z.string().describe("Deprecated.").optional(),
-        evalLoss: z.number().describe("Deprecated.").optional(),
-        index: z.number().int().describe("Deprecated.").optional(),
-        learnRate: z.number().describe("Deprecated.").optional(),
-        trainingLoss: z.number().describe("Deprecated.").optional(),
+        durationMs: z.unknown().describe("Deprecated.").optional(),
+        evalLoss: z.unknown().describe("Deprecated.").optional(),
+        index: z.unknown().describe("Deprecated.").optional(),
+        learnRate: z.unknown().describe("Deprecated.").optional(),
+        trainingLoss: z.unknown().describe("Deprecated.").optional(),
       })).describe("Deprecated.").optional(),
       startTime: z.string().describe("Deprecated.").optional(),
       state: z.string().describe("Deprecated.").optional(),
@@ -660,13 +616,13 @@ const GlobalArgsSchema = z.object({
   schema: z.object({
     fields: z.array(z.object({
       categories: z.object({
-        names: z.array(z.string()).describe("Deprecated.").optional(),
+        names: z.array(z.unknown()).describe("Deprecated.").optional(),
       }).describe("Deprecated.").optional(),
       collation: z.string().describe(
         "Optional. Field collation can be set only when the type of field is STRING. The following values are supported: * 'und:ci': undetermined locale, case insensitive. * '': empty string. Default to case-sensitive behavior.",
       ).optional(),
       dataPolicies: z.array(z.object({
-        name: z.string().describe(
+        name: z.unknown().describe(
           "Data policy resource name in the form of projects/project_id/locations/location_id/dataPolicies/data_policy_id.",
         ).optional(),
       })).describe(
@@ -686,13 +642,13 @@ const GlobalArgsSchema = z.object({
       ).optional(),
       generatedColumn: z.object({
         generatedExpressionInfo: z.object({
-          asynchronous: z.boolean().describe(
+          asynchronous: z.unknown().describe(
             "Optional. Whether the column generation is done asynchronously.",
           ).optional(),
-          generationExpression: z.string().describe(
+          generationExpression: z.unknown().describe(
             "Optional. The generation expression (e.g. AI.EMBED(...)) used to generated the field.",
           ).optional(),
-          stored: z.boolean().describe(
+          stored: z.unknown().describe(
             "Optional. Whether the generated column is stored in the table.",
           ).optional(),
         }).describe("Definition of the expression used to generate the field.")
@@ -717,7 +673,7 @@ const GlobalArgsSchema = z.object({
         "Required. The field name. The name must contain only letters (a-z, A-Z), numbers (0-9), or underscores (_), and must start with a letter or underscore. The maximum length is 300 characters.",
       ).optional(),
       policyTags: z.object({
-        names: z.array(z.string()).describe(
+        names: z.array(z.unknown()).describe(
           'A list of policy tag resource names. For example, "projects/1/locations/eu/taxonomies/2/policyTags/3". At most 1 policy tag is currently allowed.',
         ).optional(),
       }).describe(
@@ -786,10 +742,10 @@ const GlobalArgsSchema = z.object({
   tableConstraints: z.object({
     foreignKeys: z.array(z.object({
       columnReferences: z.array(z.object({
-        referencedColumn: z.string().describe(
+        referencedColumn: z.unknown().describe(
           "Required. The column in the primary key that are referenced by the referencing_column.",
         ).optional(),
-        referencingColumn: z.string().describe(
+        referencingColumn: z.unknown().describe(
           "Required. The column that composes the foreign key.",
         ).optional(),
       })).describe("Required. The columns that compose the foreign key.")
@@ -1017,24 +973,13 @@ const StateSchema = z.object({
     }),
     bigtableOptions: z.object({
       columnFamilies: z.array(z.object({
-        columns: z.array(z.object({
-          encoding: z.string(),
-          fieldName: z.string(),
-          onlyReadLatest: z.boolean(),
-          protoConfig: z.object({
-            protoMessageName: z.string(),
-            schemaBundleId: z.string(),
-          }),
-          qualifierEncoded: z.string(),
-          qualifierString: z.string(),
-          type: z.string(),
-        })),
+        columns: z.array(z.unknown()),
         encoding: z.string(),
         familyId: z.string(),
         onlyReadLatest: z.boolean(),
         protoConfig: z.object({
-          protoMessageName: z.string(),
-          schemaBundleId: z.string(),
+          protoMessageName: z.unknown(),
+          schemaBundleId: z.unknown(),
         }),
         type: z.string(),
       })),
@@ -1087,33 +1032,27 @@ const StateSchema = z.object({
     schema: z.object({
       fields: z.array(z.object({
         categories: z.object({
-          names: z.array(z.string()),
+          names: z.unknown(),
         }),
         collation: z.string(),
-        dataPolicies: z.array(z.object({
-          name: z.string(),
-        })),
+        dataPolicies: z.array(z.unknown()),
         defaultValueExpression: z.string(),
         description: z.string(),
-        fields: z.array(z.string()),
+        fields: z.array(z.unknown()),
         foreignTypeDefinition: z.string(),
         generatedColumn: z.object({
-          generatedExpressionInfo: z.object({
-            asynchronous: z.boolean(),
-            generationExpression: z.string(),
-            stored: z.boolean(),
-          }),
-          generatedMode: z.string(),
+          generatedExpressionInfo: z.unknown(),
+          generatedMode: z.unknown(),
         }),
         maxLength: z.string(),
         mode: z.string(),
         name: z.string(),
         policyTags: z.object({
-          names: z.array(z.string()),
+          names: z.unknown(),
         }),
         precision: z.string(),
         rangeElementType: z.object({
-          type: z.string(),
+          type: z.unknown(),
         }),
         roundingMode: z.string(),
         scale: z.string(),
@@ -1164,11 +1103,11 @@ const StateSchema = z.object({
     }),
     trainingRuns: z.array(z.object({
       iterationResults: z.array(z.object({
-        durationMs: z.string(),
-        evalLoss: z.number(),
-        index: z.number(),
-        learnRate: z.number(),
-        trainingLoss: z.number(),
+        durationMs: z.unknown(),
+        evalLoss: z.unknown(),
+        index: z.unknown(),
+        learnRate: z.unknown(),
+        trainingLoss: z.unknown(),
       })),
       startTime: z.string(),
       state: z.string(),
@@ -1224,11 +1163,11 @@ const StateSchema = z.object({
   schema: z.object({
     fields: z.array(z.object({
       categories: z.object({
-        names: z.array(z.string()),
+        names: z.array(z.unknown()),
       }),
       collation: z.string(),
       dataPolicies: z.array(z.object({
-        name: z.string(),
+        name: z.unknown(),
       })),
       defaultValueExpression: z.string(),
       description: z.string(),
@@ -1236,9 +1175,9 @@ const StateSchema = z.object({
       foreignTypeDefinition: z.string(),
       generatedColumn: z.object({
         generatedExpressionInfo: z.object({
-          asynchronous: z.boolean(),
-          generationExpression: z.string(),
-          stored: z.boolean(),
+          asynchronous: z.unknown(),
+          generationExpression: z.unknown(),
+          stored: z.unknown(),
         }),
         generatedMode: z.string(),
       }),
@@ -1246,7 +1185,7 @@ const StateSchema = z.object({
       mode: z.string(),
       name: z.string(),
       policyTags: z.object({
-        names: z.array(z.string()),
+        names: z.array(z.unknown()),
       }),
       precision: z.string(),
       rangeElementType: z.object({
@@ -1278,8 +1217,8 @@ const StateSchema = z.object({
   tableConstraints: z.object({
     foreignKeys: z.array(z.object({
       columnReferences: z.array(z.object({
-        referencedColumn: z.string(),
-        referencingColumn: z.string(),
+        referencedColumn: z.unknown(),
+        referencingColumn: z.unknown(),
       })),
       name: z.string(),
       referencedTable: z.object({
@@ -1463,33 +1402,7 @@ const InputsSchema = z.object({
     }).describe("Options for external data sources.").optional(),
     bigtableOptions: z.object({
       columnFamilies: z.array(z.object({
-        columns: z.array(z.object({
-          encoding: z.string().describe(
-            "Optional. The encoding of the values when the type is not STRING. Acceptable encoding values are: TEXT - indicates values are alphanumeric text strings. BINARY - indicates values are encoded using HBase Bytes.toBytes family of functions. PROTO_BINARY - indicates values are encoded using serialized proto messages. This can only be used in combination with JSON type. 'encoding' can also be set at the column family level. However, the setting at this level takes precedence if 'encoding' is set at both levels.",
-          ).optional(),
-          fieldName: z.string().describe(
-            "Optional. If the qualifier is not a valid BigQuery field identifier i.e. does not match a-zA-Z*, a valid identifier must be provided as the column field name and is used as field name in queries.",
-          ).optional(),
-          onlyReadLatest: z.boolean().describe(
-            "Optional. If this is set, only the latest version of value in this column are exposed. 'onlyReadLatest' can also be set at the column family level. However, the setting at this level takes precedence if 'onlyReadLatest' is set at both levels.",
-          ).optional(),
-          protoConfig: z.object({
-            protoMessageName: z.string().describe(
-              'Optional. The fully qualified proto message name of the protobuf. In the format of "foo.bar.Message".',
-            ).optional(),
-            schemaBundleId: z.string().describe(
-              "Optional. The ID of the Bigtable SchemaBundle resource associated with this protobuf. The ID should be referred to within the parent table, e.g., `foo` rather than `projects/{project}/instances/{instance}/tables/{table}/schemaBundles/foo`. See [more details on Bigtable SchemaBundles](https://docs.cloud.google.com/bigtable/docs/create-manage-protobuf-schemas).",
-            ).optional(),
-          }).describe("Information related to a Bigtable protobuf column.")
-            .optional(),
-          qualifierEncoded: z.string().describe(
-            "[Required] Qualifier of the column. Columns in the parent column family that has this exact qualifier are exposed as `.` field. If the qualifier is valid UTF-8 string, it can be specified in the qualifier_string field. Otherwise, a base-64 encoded value must be set to qualifier_encoded. The column field name is the same as the column qualifier. However, if the qualifier is not a valid BigQuery field identifier i.e. does not match a-zA-Z*, a valid identifier must be provided as field_name.",
-          ).optional(),
-          qualifierString: z.string().describe("Qualifier string.").optional(),
-          type: z.string().describe(
-            "Optional. The type to convert the value in cells of this column. The values are expected to be encoded using HBase Bytes.toBytes function when using the BINARY encoding value. Following BigQuery types are allowed (case-sensitive): * BYTES * STRING * INTEGER * FLOAT * BOOLEAN * JSON Default type is BYTES. 'type' can also be set at the column family level. However, the setting at this level takes precedence if 'type' is set at both levels.",
-          ).optional(),
-        })).describe(
+        columns: z.array(z.unknown()).describe(
           "Optional. Lists of columns that should be exposed as individual fields as opposed to a list of (column name, value) pairs. All columns whose qualifier matches a qualifier in this list can be accessed as `.`. Other columns can be accessed as a list through the `.Column` field.",
         ).optional(),
         encoding: z.string().describe(
@@ -1501,10 +1414,10 @@ const InputsSchema = z.object({
           "Optional. If this is set only the latest version of value are exposed for all columns in this column family. This can be overridden for a specific column by listing that column in 'columns' and specifying a different setting for that column.",
         ).optional(),
         protoConfig: z.object({
-          protoMessageName: z.string().describe(
+          protoMessageName: z.unknown().describe(
             'Optional. The fully qualified proto message name of the protobuf. In the format of "foo.bar.Message".',
           ).optional(),
-          schemaBundleId: z.string().describe(
+          schemaBundleId: z.unknown().describe(
             "Optional. The ID of the Bigtable SchemaBundle resource associated with this protobuf. The ID should be referred to within the parent table, e.g., `foo` rather than `projects/{project}/instances/{instance}/tables/{table}/schemaBundles/foo`. See [more details on Bigtable SchemaBundles](https://docs.cloud.google.com/bigtable/docs/create-manage-protobuf-schemas).",
           ).optional(),
         }).describe("Information related to a Bigtable protobuf column.")
@@ -1655,16 +1568,12 @@ const InputsSchema = z.object({
     schema: z.object({
       fields: z.array(z.object({
         categories: z.object({
-          names: z.array(z.string()).describe("Deprecated.").optional(),
+          names: z.unknown().describe("Deprecated.").optional(),
         }).describe("Deprecated.").optional(),
         collation: z.string().describe(
           "Optional. Field collation can be set only when the type of field is STRING. The following values are supported: * 'und:ci': undetermined locale, case insensitive. * '': empty string. Default to case-sensitive behavior.",
         ).optional(),
-        dataPolicies: z.array(z.object({
-          name: z.string().describe(
-            "Data policy resource name in the form of projects/project_id/locations/location_id/dataPolicies/data_policy_id.",
-          ).optional(),
-        })).describe(
+        dataPolicies: z.array(z.unknown()).describe(
           "Optional. Data policies attached to this field, used for field-level access control.",
         ).optional(),
         defaultValueExpression: z.string().describe(
@@ -1673,31 +1582,17 @@ const InputsSchema = z.object({
         description: z.string().describe(
           "Optional. The field description. The maximum length is 1,024 characters.",
         ).optional(),
-        fields: z.array(z.string()).describe(
+        fields: z.array(z.unknown()).describe(
           "Optional. Describes the nested schema fields if the type property is set to RECORD.",
         ).optional(),
         foreignTypeDefinition: z.string().describe(
           "Optional. Definition of the foreign data type. Only valid for top-level schema fields (not nested fields). If the type is FOREIGN, this field is required.",
         ).optional(),
         generatedColumn: z.object({
-          generatedExpressionInfo: z.object({
-            asynchronous: z.boolean().describe(
-              "Optional. Whether the column generation is done asynchronously.",
-            ).optional(),
-            generationExpression: z.string().describe(
-              "Optional. The generation expression (e.g. AI.EMBED(...)) used to generated the field.",
-            ).optional(),
-            stored: z.boolean().describe(
-              "Optional. Whether the generated column is stored in the table.",
-            ).optional(),
-          }).describe(
+          generatedExpressionInfo: z.unknown().describe(
             "Definition of the expression used to generate the field.",
           ).optional(),
-          generatedMode: z.enum([
-            "GENERATED_MODE_UNSPECIFIED",
-            "GENERATED_ALWAYS",
-            "GENERATED_BY_DEFAULT",
-          ]).describe(
+          generatedMode: z.unknown().describe(
             "Optional. Dictates when system generated values are used to populate the field.",
           ).optional(),
         }).describe(
@@ -1713,7 +1608,7 @@ const InputsSchema = z.object({
           "Required. The field name. The name must contain only letters (a-z, A-Z), numbers (0-9), or underscores (_), and must start with a letter or underscore. The maximum length is 300 characters.",
         ).optional(),
         policyTags: z.object({
-          names: z.array(z.string()).describe(
+          names: z.unknown().describe(
             'A list of policy tag resource names. For example, "projects/1/locations/eu/taxonomies/2/policyTags/3". At most 1 policy tag is currently allowed.',
           ).optional(),
         }).describe(
@@ -1723,7 +1618,7 @@ const InputsSchema = z.object({
           'Optional. Precision (maximum number of total digits in base 10) and scale (maximum number of digits in the fractional part in base 10) constraints for values of this field for NUMERIC or BIGNUMERIC. It is invalid to set precision or scale if type ≠ "NUMERIC" and ≠ "BIGNUMERIC". If precision and scale are not specified, no value range constraint is imposed on this field insofar as values are permitted by the type. Values of this NUMERIC or BIGNUMERIC field must be in this range when: * Precision (P) and scale (S) are specified: [-10P-S + 10-S, 10P-S - 10-S] * Precision (P) is specified but not scale (and thus scale is interpreted to be equal to zero): [-10P + 1, 10P - 1]. Acceptable values for precision and scale if both are specified: * If type = "NUMERIC": 1 ≤ precision - scale ≤ 29 and 0 ≤ scale ≤ 9. * If type = "BIGNUMERIC": 1 ≤ precision - scale ≤ 38 and 0 ≤ scale ≤ 38. Acceptable values for precision if only precision is specified but not scale (and thus scale is interpreted to be equal to zero): * If type = "NUMERIC": 1 ≤ precision ≤ 29. * If type = "BIGNUMERIC": 1 ≤ precision ≤ 38. If scale is specified but not precision, then it is invalid.',
         ).optional(),
         rangeElementType: z.object({
-          type: z.string().describe(
+          type: z.unknown().describe(
             "Required. The type of a field element. For more information, see TableFieldSchema.type.",
           ).optional(),
         }).describe("Represents the type of a field element.").optional(),
@@ -1834,11 +1729,11 @@ const InputsSchema = z.object({
     }).describe("Deprecated.").optional(),
     trainingRuns: z.array(z.object({
       iterationResults: z.array(z.object({
-        durationMs: z.string().describe("Deprecated.").optional(),
-        evalLoss: z.number().describe("Deprecated.").optional(),
-        index: z.number().int().describe("Deprecated.").optional(),
-        learnRate: z.number().describe("Deprecated.").optional(),
-        trainingLoss: z.number().describe("Deprecated.").optional(),
+        durationMs: z.unknown().describe("Deprecated.").optional(),
+        evalLoss: z.unknown().describe("Deprecated.").optional(),
+        index: z.unknown().describe("Deprecated.").optional(),
+        learnRate: z.unknown().describe("Deprecated.").optional(),
+        trainingLoss: z.unknown().describe("Deprecated.").optional(),
       })).describe("Deprecated.").optional(),
       startTime: z.string().describe("Deprecated.").optional(),
       state: z.string().describe("Deprecated.").optional(),
@@ -1896,13 +1791,13 @@ const InputsSchema = z.object({
   schema: z.object({
     fields: z.array(z.object({
       categories: z.object({
-        names: z.array(z.string()).describe("Deprecated.").optional(),
+        names: z.array(z.unknown()).describe("Deprecated.").optional(),
       }).describe("Deprecated.").optional(),
       collation: z.string().describe(
         "Optional. Field collation can be set only when the type of field is STRING. The following values are supported: * 'und:ci': undetermined locale, case insensitive. * '': empty string. Default to case-sensitive behavior.",
       ).optional(),
       dataPolicies: z.array(z.object({
-        name: z.string().describe(
+        name: z.unknown().describe(
           "Data policy resource name in the form of projects/project_id/locations/location_id/dataPolicies/data_policy_id.",
         ).optional(),
       })).describe(
@@ -1922,13 +1817,13 @@ const InputsSchema = z.object({
       ).optional(),
       generatedColumn: z.object({
         generatedExpressionInfo: z.object({
-          asynchronous: z.boolean().describe(
+          asynchronous: z.unknown().describe(
             "Optional. Whether the column generation is done asynchronously.",
           ).optional(),
-          generationExpression: z.string().describe(
+          generationExpression: z.unknown().describe(
             "Optional. The generation expression (e.g. AI.EMBED(...)) used to generated the field.",
           ).optional(),
-          stored: z.boolean().describe(
+          stored: z.unknown().describe(
             "Optional. Whether the generated column is stored in the table.",
           ).optional(),
         }).describe("Definition of the expression used to generate the field.")
@@ -1953,7 +1848,7 @@ const InputsSchema = z.object({
         "Required. The field name. The name must contain only letters (a-z, A-Z), numbers (0-9), or underscores (_), and must start with a letter or underscore. The maximum length is 300 characters.",
       ).optional(),
       policyTags: z.object({
-        names: z.array(z.string()).describe(
+        names: z.array(z.unknown()).describe(
           'A list of policy tag resource names. For example, "projects/1/locations/eu/taxonomies/2/policyTags/3". At most 1 policy tag is currently allowed.',
         ).optional(),
       }).describe(
@@ -2022,10 +1917,10 @@ const InputsSchema = z.object({
   tableConstraints: z.object({
     foreignKeys: z.array(z.object({
       columnReferences: z.array(z.object({
-        referencedColumn: z.string().describe(
+        referencedColumn: z.unknown().describe(
           "Required. The column in the primary key that are referenced by the referencing_column.",
         ).optional(),
-        referencingColumn: z.string().describe(
+        referencingColumn: z.unknown().describe(
           "Required. The column that composes the foreign key.",
         ).optional(),
       })).describe("Required. The columns that compose the foreign key.")
@@ -2208,7 +2103,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/bigquery/tables",
-  version: "2026.04.03.3",
+  version: "2026.04.04.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -2232,6 +2127,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.3",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.04.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

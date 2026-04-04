@@ -120,144 +120,26 @@ const GlobalArgsSchema = z.object({
   httpRules: z.array(z.object({
     from: z.object({
       notSources: z.array(z.object({
-        ipBlocks: z.array(z.object({
-          length: z.number().int().describe(
-            "Required. The length of the address range.",
-          ).optional(),
-          prefix: z.string().describe("Required. The address prefix.")
-            .optional(),
-        })).describe(
+        ipBlocks: z.unknown().describe(
           "Optional. A list of IP addresses or IP address ranges to match against the source IP address of the request. Limited to 10 ip_blocks per Authorization Policy",
         ).optional(),
-        principals: z.array(z.object({
-          principal: z.object({
-            contains: z.string().describe(
-              "The input string must have the substring specified here. Note: empty contains match is not allowed, please use regex instead. Examples: * abc matches the value xyz.abc.def",
-            ).optional(),
-            exact: z.string().describe(
-              "The input string must match exactly the string specified here. Examples: * abc only matches the value abc.",
-            ).optional(),
-            ignoreCase: z.boolean().describe(
-              "If true, indicates the exact/prefix/suffix/contains matching should be case insensitive. For example, the matcher data will match both input string Data and data if set to true.",
-            ).optional(),
-            prefix: z.string().describe(
-              "The input string must have the prefix specified here. Note: empty prefix is not allowed, please use regex instead. Examples: * abc matches the value abc.xyz",
-            ).optional(),
-            suffix: z.string().describe(
-              "The input string must have the suffix specified here. Note: empty prefix is not allowed, please use regex instead. Examples: * abc matches the value xyz.abc",
-            ).optional(),
-          }).describe("Determines how a string value should be matched.")
-            .optional(),
-          principalSelector: z.enum([
-            "PRINCIPAL_SELECTOR_UNSPECIFIED",
-            "CLIENT_CERT_URI_SAN",
-            "CLIENT_CERT_DNS_NAME_SAN",
-            "CLIENT_CERT_COMMON_NAME",
-          ]).describe(
-            "Optional. An enum to decide what principal value the principal rule will match against. If not specified, the PrincipalSelector is CLIENT_CERT_URI_SAN.",
-          ).optional(),
-        })).describe(
+        principals: z.unknown().describe(
           "Optional. A list of identities derived from the client's certificate. This field will not match on a request unless frontend mutual TLS is enabled for the forwarding rule or Gateway and the client certificate has been successfully validated by mTLS. Each identity is a string whose value is matched against a list of URI SANs, DNS Name SANs, or the common name in the client's certificate. A match happens when any principal matches with the rule. Limited to 50 principals per Authorization Policy for regional internal Application Load Balancers, regional external Application Load Balancers, cross-region internal Application Load Balancers, and Cloud Service Mesh. This field is not supported for global external Application Load Balancers.",
         ).optional(),
-        resources: z.array(z.object({
-          iamServiceAccount: z.object({
-            contains: z.string().describe(
-              "The input string must have the substring specified here. Note: empty contains match is not allowed, please use regex instead. Examples: * abc matches the value xyz.abc.def",
-            ).optional(),
-            exact: z.string().describe(
-              "The input string must match exactly the string specified here. Examples: * abc only matches the value abc.",
-            ).optional(),
-            ignoreCase: z.boolean().describe(
-              "If true, indicates the exact/prefix/suffix/contains matching should be case insensitive. For example, the matcher data will match both input string Data and data if set to true.",
-            ).optional(),
-            prefix: z.string().describe(
-              "The input string must have the prefix specified here. Note: empty prefix is not allowed, please use regex instead. Examples: * abc matches the value abc.xyz",
-            ).optional(),
-            suffix: z.string().describe(
-              "The input string must have the suffix specified here. Note: empty prefix is not allowed, please use regex instead. Examples: * abc matches the value xyz.abc",
-            ).optional(),
-          }).describe("Determines how a string value should be matched.")
-            .optional(),
-          tagValueIdSet: z.object({
-            ids: z.array(z.string()).describe(
-              "Required. A list of resource tag value permanent IDs to match against the resource manager tags value associated with the source VM of a request. The match follows AND semantics which means all the ids must match. Limited to 5 ids in the Tag value id set.",
-            ).optional(),
-          }).describe(
-            "Describes a set of resource tag value permanent IDs to match against the resource manager tags value associated with the source VM of a request.",
-          ).optional(),
-        })).describe(
+        resources: z.unknown().describe(
           "Optional. A list of resources to match against the resource of the source VM of a request. Limited to 10 resources per Authorization Policy.",
         ).optional(),
       })).describe(
         "Optional. Describes the negated properties of request sources. Matches requests from sources that do not match the criteria specified in this field. At least one of sources or notSources must be specified.",
       ).optional(),
       sources: z.array(z.object({
-        ipBlocks: z.array(z.object({
-          length: z.number().int().describe(
-            "Required. The length of the address range.",
-          ).optional(),
-          prefix: z.string().describe("Required. The address prefix.")
-            .optional(),
-        })).describe(
+        ipBlocks: z.unknown().describe(
           "Optional. A list of IP addresses or IP address ranges to match against the source IP address of the request. Limited to 10 ip_blocks per Authorization Policy",
         ).optional(),
-        principals: z.array(z.object({
-          principal: z.object({
-            contains: z.string().describe(
-              "The input string must have the substring specified here. Note: empty contains match is not allowed, please use regex instead. Examples: * abc matches the value xyz.abc.def",
-            ).optional(),
-            exact: z.string().describe(
-              "The input string must match exactly the string specified here. Examples: * abc only matches the value abc.",
-            ).optional(),
-            ignoreCase: z.boolean().describe(
-              "If true, indicates the exact/prefix/suffix/contains matching should be case insensitive. For example, the matcher data will match both input string Data and data if set to true.",
-            ).optional(),
-            prefix: z.string().describe(
-              "The input string must have the prefix specified here. Note: empty prefix is not allowed, please use regex instead. Examples: * abc matches the value abc.xyz",
-            ).optional(),
-            suffix: z.string().describe(
-              "The input string must have the suffix specified here. Note: empty prefix is not allowed, please use regex instead. Examples: * abc matches the value xyz.abc",
-            ).optional(),
-          }).describe("Determines how a string value should be matched.")
-            .optional(),
-          principalSelector: z.enum([
-            "PRINCIPAL_SELECTOR_UNSPECIFIED",
-            "CLIENT_CERT_URI_SAN",
-            "CLIENT_CERT_DNS_NAME_SAN",
-            "CLIENT_CERT_COMMON_NAME",
-          ]).describe(
-            "Optional. An enum to decide what principal value the principal rule will match against. If not specified, the PrincipalSelector is CLIENT_CERT_URI_SAN.",
-          ).optional(),
-        })).describe(
+        principals: z.unknown().describe(
           "Optional. A list of identities derived from the client's certificate. This field will not match on a request unless frontend mutual TLS is enabled for the forwarding rule or Gateway and the client certificate has been successfully validated by mTLS. Each identity is a string whose value is matched against a list of URI SANs, DNS Name SANs, or the common name in the client's certificate. A match happens when any principal matches with the rule. Limited to 50 principals per Authorization Policy for regional internal Application Load Balancers, regional external Application Load Balancers, cross-region internal Application Load Balancers, and Cloud Service Mesh. This field is not supported for global external Application Load Balancers.",
         ).optional(),
-        resources: z.array(z.object({
-          iamServiceAccount: z.object({
-            contains: z.string().describe(
-              "The input string must have the substring specified here. Note: empty contains match is not allowed, please use regex instead. Examples: * abc matches the value xyz.abc.def",
-            ).optional(),
-            exact: z.string().describe(
-              "The input string must match exactly the string specified here. Examples: * abc only matches the value abc.",
-            ).optional(),
-            ignoreCase: z.boolean().describe(
-              "If true, indicates the exact/prefix/suffix/contains matching should be case insensitive. For example, the matcher data will match both input string Data and data if set to true.",
-            ).optional(),
-            prefix: z.string().describe(
-              "The input string must have the prefix specified here. Note: empty prefix is not allowed, please use regex instead. Examples: * abc matches the value abc.xyz",
-            ).optional(),
-            suffix: z.string().describe(
-              "The input string must have the suffix specified here. Note: empty prefix is not allowed, please use regex instead. Examples: * abc matches the value xyz.abc",
-            ).optional(),
-          }).describe("Determines how a string value should be matched.")
-            .optional(),
-          tagValueIdSet: z.object({
-            ids: z.array(z.string()).describe(
-              "Required. A list of resource tag value permanent IDs to match against the resource manager tags value associated with the source VM of a request. The match follows AND semantics which means all the ids must match. Limited to 5 ids in the Tag value id set.",
-            ).optional(),
-          }).describe(
-            "Describes a set of resource tag value permanent IDs to match against the resource manager tags value associated with the source VM of a request.",
-          ).optional(),
-        })).describe(
+        resources: z.unknown().describe(
           "Optional. A list of resources to match against the resource of the source VM of a request. Limited to 10 resources per Authorization Policy.",
         ).optional(),
       })).describe(
@@ -267,220 +149,38 @@ const GlobalArgsSchema = z.object({
       .optional(),
     to: z.object({
       notOperations: z.array(z.object({
-        headerSet: z.object({
-          headers: z.array(z.object({
-            name: z.string().describe(
-              "Optional. Specifies the name of the header in the request.",
-            ).optional(),
-            value: z.object({
-              contains: z.string().describe(
-                "The input string must have the substring specified here. Note: empty contains match is not allowed, please use regex instead. Examples: * abc matches the value xyz.abc.def",
-              ).optional(),
-              exact: z.string().describe(
-                "The input string must match exactly the string specified here. Examples: * abc only matches the value abc.",
-              ).optional(),
-              ignoreCase: z.boolean().describe(
-                "If true, indicates the exact/prefix/suffix/contains matching should be case insensitive. For example, the matcher data will match both input string Data and data if set to true.",
-              ).optional(),
-              prefix: z.string().describe(
-                "The input string must have the prefix specified here. Note: empty prefix is not allowed, please use regex instead. Examples: * abc matches the value abc.xyz",
-              ).optional(),
-              suffix: z.string().describe(
-                "The input string must have the suffix specified here. Note: empty prefix is not allowed, please use regex instead. Examples: * abc matches the value xyz.abc",
-              ).optional(),
-            }).describe("Determines how a string value should be matched.")
-              .optional(),
-          })).describe(
-            "Required. A list of headers to match against in http header. The match can be one of exact, prefix, suffix, or contains (substring match). The match follows AND semantics which means all the headers must match. Matches are always case sensitive unless the ignoreCase is set. Limited to 10 headers per Authorization Policy.",
-          ).optional(),
-        }).describe("Describes a set of HTTP headers to match against.")
-          .optional(),
-        hosts: z.array(z.object({
-          contains: z.string().describe(
-            "The input string must have the substring specified here. Note: empty contains match is not allowed, please use regex instead. Examples: * abc matches the value xyz.abc.def",
-          ).optional(),
-          exact: z.string().describe(
-            "The input string must match exactly the string specified here. Examples: * abc only matches the value abc.",
-          ).optional(),
-          ignoreCase: z.boolean().describe(
-            "If true, indicates the exact/prefix/suffix/contains matching should be case insensitive. For example, the matcher data will match both input string Data and data if set to true.",
-          ).optional(),
-          prefix: z.string().describe(
-            "The input string must have the prefix specified here. Note: empty prefix is not allowed, please use regex instead. Examples: * abc matches the value abc.xyz",
-          ).optional(),
-          suffix: z.string().describe(
-            "The input string must have the suffix specified here. Note: empty prefix is not allowed, please use regex instead. Examples: * abc matches the value xyz.abc",
-          ).optional(),
-        })).describe(
+        headerSet: z.unknown().describe(
+          "Describes a set of HTTP headers to match against.",
+        ).optional(),
+        hosts: z.unknown().describe(
           "Optional. A list of HTTP Hosts to match against. The match can be one of exact, prefix, suffix, or contains (substring match). Matches are always case sensitive unless the ignoreCase is set. Limited to 10 hosts per Authorization Policy.",
         ).optional(),
-        mcp: z.object({
-          baseProtocolMethodsOption: z.enum([
-            "BASE_PROTOCOL_METHODS_OPTION_UNSPECIFIED",
-            "SKIP_BASE_PROTOCOL_METHODS",
-            "MATCH_BASE_PROTOCOL_METHODS",
-          ]).describe(
-            "Optional. If specified, matches on the MCP protocol’s non-access specific methods namely: * initialize * completion/ * logging/ * notifications/ * ping Defaults to SKIP_BASE_PROTOCOL_METHODS if not specified.",
-          ).optional(),
-          methods: z.array(z.object({
-            name: z.string().describe(
-              "Required. The MCP method to match against. Allowed values are as follows: 1. `tools`, `prompts`, `resources` - these will match against all sub methods under the respective methods. 2. `prompts/list`, `tools/list`, `resources/list`, `resources/templates/list` 3. `prompts/get`, `tools/call`, `resources/subscribe`, `resources/unsubscribe`, `resources/read` Params cannot be specified for categories 1 and 2.",
-            ).optional(),
-            params: z.array(z.object({
-              contains: z.string().describe(
-                "The input string must have the substring specified here. Note: empty contains match is not allowed, please use regex instead. Examples: * abc matches the value xyz.abc.def",
-              ).optional(),
-              exact: z.string().describe(
-                "The input string must match exactly the string specified here. Examples: * abc only matches the value abc.",
-              ).optional(),
-              ignoreCase: z.boolean().describe(
-                "If true, indicates the exact/prefix/suffix/contains matching should be case insensitive. For example, the matcher data will match both input string Data and data if set to true.",
-              ).optional(),
-              prefix: z.string().describe(
-                "The input string must have the prefix specified here. Note: empty prefix is not allowed, please use regex instead. Examples: * abc matches the value abc.xyz",
-              ).optional(),
-              suffix: z.string().describe(
-                "The input string must have the suffix specified here. Note: empty prefix is not allowed, please use regex instead. Examples: * abc matches the value xyz.abc",
-              ).optional(),
-            })).describe(
-              "Optional. A list of MCP method parameters to match against. The match can be one of exact, prefix, suffix, or contains (substring match). Matches are always case sensitive unless the ignoreCase is set. Limited to 10 MCP method parameters per Authorization Policy.",
-            ).optional(),
-          })).describe(
-            "Optional. A list of MCP methods and associated parameters to match on. It is recommended to use this field to match on tools, prompts and resource accesses while setting the baseProtocolMethodsOption to MATCH_BASE_PROTOCOL_METHODS to match on all the other MCP protocol methods. Limited to 10 MCP methods per Authorization Policy.",
-          ).optional(),
-        }).describe(
+        mcp: z.unknown().describe(
           "Describes a set of MCP protocol attributes to match against for a given MCP request.",
         ).optional(),
-        methods: z.array(z.string()).describe(
+        methods: z.unknown().describe(
           "Optional. A list of HTTP methods to match against. Each entry must be a valid HTTP method name (GET, PUT, POST, HEAD, PATCH, DELETE, OPTIONS). It only allows exact match and is always case sensitive. Limited to 10 methods per Authorization Policy.",
         ).optional(),
-        paths: z.array(z.object({
-          contains: z.string().describe(
-            "The input string must have the substring specified here. Note: empty contains match is not allowed, please use regex instead. Examples: * abc matches the value xyz.abc.def",
-          ).optional(),
-          exact: z.string().describe(
-            "The input string must match exactly the string specified here. Examples: * abc only matches the value abc.",
-          ).optional(),
-          ignoreCase: z.boolean().describe(
-            "If true, indicates the exact/prefix/suffix/contains matching should be case insensitive. For example, the matcher data will match both input string Data and data if set to true.",
-          ).optional(),
-          prefix: z.string().describe(
-            "The input string must have the prefix specified here. Note: empty prefix is not allowed, please use regex instead. Examples: * abc matches the value abc.xyz",
-          ).optional(),
-          suffix: z.string().describe(
-            "The input string must have the suffix specified here. Note: empty prefix is not allowed, please use regex instead. Examples: * abc matches the value xyz.abc",
-          ).optional(),
-        })).describe(
+        paths: z.unknown().describe(
           "Optional. A list of paths to match against. The match can be one of exact, prefix, suffix, or contains (substring match). Matches are always case sensitive unless the ignoreCase is set. Limited to 10 paths per Authorization Policy. Note that this path match includes the query parameters. For gRPC services, this should be a fully-qualified name of the form /package.service/method.",
         ).optional(),
       })).describe(
         "Optional. Describes the negated properties of the targets of a request. Matches requests for operations that do not match the criteria specified in this field. At least one of operations or notOperations must be specified.",
       ).optional(),
       operations: z.array(z.object({
-        headerSet: z.object({
-          headers: z.array(z.object({
-            name: z.string().describe(
-              "Optional. Specifies the name of the header in the request.",
-            ).optional(),
-            value: z.object({
-              contains: z.string().describe(
-                "The input string must have the substring specified here. Note: empty contains match is not allowed, please use regex instead. Examples: * abc matches the value xyz.abc.def",
-              ).optional(),
-              exact: z.string().describe(
-                "The input string must match exactly the string specified here. Examples: * abc only matches the value abc.",
-              ).optional(),
-              ignoreCase: z.boolean().describe(
-                "If true, indicates the exact/prefix/suffix/contains matching should be case insensitive. For example, the matcher data will match both input string Data and data if set to true.",
-              ).optional(),
-              prefix: z.string().describe(
-                "The input string must have the prefix specified here. Note: empty prefix is not allowed, please use regex instead. Examples: * abc matches the value abc.xyz",
-              ).optional(),
-              suffix: z.string().describe(
-                "The input string must have the suffix specified here. Note: empty prefix is not allowed, please use regex instead. Examples: * abc matches the value xyz.abc",
-              ).optional(),
-            }).describe("Determines how a string value should be matched.")
-              .optional(),
-          })).describe(
-            "Required. A list of headers to match against in http header. The match can be one of exact, prefix, suffix, or contains (substring match). The match follows AND semantics which means all the headers must match. Matches are always case sensitive unless the ignoreCase is set. Limited to 10 headers per Authorization Policy.",
-          ).optional(),
-        }).describe("Describes a set of HTTP headers to match against.")
-          .optional(),
-        hosts: z.array(z.object({
-          contains: z.string().describe(
-            "The input string must have the substring specified here. Note: empty contains match is not allowed, please use regex instead. Examples: * abc matches the value xyz.abc.def",
-          ).optional(),
-          exact: z.string().describe(
-            "The input string must match exactly the string specified here. Examples: * abc only matches the value abc.",
-          ).optional(),
-          ignoreCase: z.boolean().describe(
-            "If true, indicates the exact/prefix/suffix/contains matching should be case insensitive. For example, the matcher data will match both input string Data and data if set to true.",
-          ).optional(),
-          prefix: z.string().describe(
-            "The input string must have the prefix specified here. Note: empty prefix is not allowed, please use regex instead. Examples: * abc matches the value abc.xyz",
-          ).optional(),
-          suffix: z.string().describe(
-            "The input string must have the suffix specified here. Note: empty prefix is not allowed, please use regex instead. Examples: * abc matches the value xyz.abc",
-          ).optional(),
-        })).describe(
+        headerSet: z.unknown().describe(
+          "Describes a set of HTTP headers to match against.",
+        ).optional(),
+        hosts: z.unknown().describe(
           "Optional. A list of HTTP Hosts to match against. The match can be one of exact, prefix, suffix, or contains (substring match). Matches are always case sensitive unless the ignoreCase is set. Limited to 10 hosts per Authorization Policy.",
         ).optional(),
-        mcp: z.object({
-          baseProtocolMethodsOption: z.enum([
-            "BASE_PROTOCOL_METHODS_OPTION_UNSPECIFIED",
-            "SKIP_BASE_PROTOCOL_METHODS",
-            "MATCH_BASE_PROTOCOL_METHODS",
-          ]).describe(
-            "Optional. If specified, matches on the MCP protocol’s non-access specific methods namely: * initialize * completion/ * logging/ * notifications/ * ping Defaults to SKIP_BASE_PROTOCOL_METHODS if not specified.",
-          ).optional(),
-          methods: z.array(z.object({
-            name: z.string().describe(
-              "Required. The MCP method to match against. Allowed values are as follows: 1. `tools`, `prompts`, `resources` - these will match against all sub methods under the respective methods. 2. `prompts/list`, `tools/list`, `resources/list`, `resources/templates/list` 3. `prompts/get`, `tools/call`, `resources/subscribe`, `resources/unsubscribe`, `resources/read` Params cannot be specified for categories 1 and 2.",
-            ).optional(),
-            params: z.array(z.object({
-              contains: z.string().describe(
-                "The input string must have the substring specified here. Note: empty contains match is not allowed, please use regex instead. Examples: * abc matches the value xyz.abc.def",
-              ).optional(),
-              exact: z.string().describe(
-                "The input string must match exactly the string specified here. Examples: * abc only matches the value abc.",
-              ).optional(),
-              ignoreCase: z.boolean().describe(
-                "If true, indicates the exact/prefix/suffix/contains matching should be case insensitive. For example, the matcher data will match both input string Data and data if set to true.",
-              ).optional(),
-              prefix: z.string().describe(
-                "The input string must have the prefix specified here. Note: empty prefix is not allowed, please use regex instead. Examples: * abc matches the value abc.xyz",
-              ).optional(),
-              suffix: z.string().describe(
-                "The input string must have the suffix specified here. Note: empty prefix is not allowed, please use regex instead. Examples: * abc matches the value xyz.abc",
-              ).optional(),
-            })).describe(
-              "Optional. A list of MCP method parameters to match against. The match can be one of exact, prefix, suffix, or contains (substring match). Matches are always case sensitive unless the ignoreCase is set. Limited to 10 MCP method parameters per Authorization Policy.",
-            ).optional(),
-          })).describe(
-            "Optional. A list of MCP methods and associated parameters to match on. It is recommended to use this field to match on tools, prompts and resource accesses while setting the baseProtocolMethodsOption to MATCH_BASE_PROTOCOL_METHODS to match on all the other MCP protocol methods. Limited to 10 MCP methods per Authorization Policy.",
-          ).optional(),
-        }).describe(
+        mcp: z.unknown().describe(
           "Describes a set of MCP protocol attributes to match against for a given MCP request.",
         ).optional(),
-        methods: z.array(z.string()).describe(
+        methods: z.unknown().describe(
           "Optional. A list of HTTP methods to match against. Each entry must be a valid HTTP method name (GET, PUT, POST, HEAD, PATCH, DELETE, OPTIONS). It only allows exact match and is always case sensitive. Limited to 10 methods per Authorization Policy.",
         ).optional(),
-        paths: z.array(z.object({
-          contains: z.string().describe(
-            "The input string must have the substring specified here. Note: empty contains match is not allowed, please use regex instead. Examples: * abc matches the value xyz.abc.def",
-          ).optional(),
-          exact: z.string().describe(
-            "The input string must match exactly the string specified here. Examples: * abc only matches the value abc.",
-          ).optional(),
-          ignoreCase: z.boolean().describe(
-            "If true, indicates the exact/prefix/suffix/contains matching should be case insensitive. For example, the matcher data will match both input string Data and data if set to true.",
-          ).optional(),
-          prefix: z.string().describe(
-            "The input string must have the prefix specified here. Note: empty prefix is not allowed, please use regex instead. Examples: * abc matches the value abc.xyz",
-          ).optional(),
-          suffix: z.string().describe(
-            "The input string must have the suffix specified here. Note: empty prefix is not allowed, please use regex instead. Examples: * abc matches the value xyz.abc",
-          ).optional(),
-        })).describe(
+        paths: z.unknown().describe(
           "Optional. A list of paths to match against. The match can be one of exact, prefix, suffix, or contains (substring match). Matches are always case sensitive unless the ignoreCase is set. Limited to 10 paths per Authorization Policy. Note that this path match includes the query parameters. For gRPC services, this should be a fully-qualified name of the form /package.service/method.",
         ).optional(),
       })).describe(
@@ -546,146 +246,30 @@ const StateSchema = z.object({
   httpRules: z.array(z.object({
     from: z.object({
       notSources: z.array(z.object({
-        ipBlocks: z.array(z.object({
-          length: z.number(),
-          prefix: z.string(),
-        })),
-        principals: z.array(z.object({
-          principal: z.object({
-            contains: z.string(),
-            exact: z.string(),
-            ignoreCase: z.boolean(),
-            prefix: z.string(),
-            suffix: z.string(),
-          }),
-          principalSelector: z.string(),
-        })),
-        resources: z.array(z.object({
-          iamServiceAccount: z.object({
-            contains: z.string(),
-            exact: z.string(),
-            ignoreCase: z.boolean(),
-            prefix: z.string(),
-            suffix: z.string(),
-          }),
-          tagValueIdSet: z.object({
-            ids: z.array(z.string()),
-          }),
-        })),
+        ipBlocks: z.unknown(),
+        principals: z.unknown(),
+        resources: z.unknown(),
       })),
       sources: z.array(z.object({
-        ipBlocks: z.array(z.object({
-          length: z.number(),
-          prefix: z.string(),
-        })),
-        principals: z.array(z.object({
-          principal: z.object({
-            contains: z.string(),
-            exact: z.string(),
-            ignoreCase: z.boolean(),
-            prefix: z.string(),
-            suffix: z.string(),
-          }),
-          principalSelector: z.string(),
-        })),
-        resources: z.array(z.object({
-          iamServiceAccount: z.object({
-            contains: z.string(),
-            exact: z.string(),
-            ignoreCase: z.boolean(),
-            prefix: z.string(),
-            suffix: z.string(),
-          }),
-          tagValueIdSet: z.object({
-            ids: z.array(z.string()),
-          }),
-        })),
+        ipBlocks: z.unknown(),
+        principals: z.unknown(),
+        resources: z.unknown(),
       })),
     }),
     to: z.object({
       notOperations: z.array(z.object({
-        headerSet: z.object({
-          headers: z.array(z.object({
-            name: z.string(),
-            value: z.object({
-              contains: z.string(),
-              exact: z.string(),
-              ignoreCase: z.boolean(),
-              prefix: z.string(),
-              suffix: z.string(),
-            }),
-          })),
-        }),
-        hosts: z.array(z.object({
-          contains: z.string(),
-          exact: z.string(),
-          ignoreCase: z.boolean(),
-          prefix: z.string(),
-          suffix: z.string(),
-        })),
-        mcp: z.object({
-          baseProtocolMethodsOption: z.string(),
-          methods: z.array(z.object({
-            name: z.string(),
-            params: z.array(z.object({
-              contains: z.string(),
-              exact: z.string(),
-              ignoreCase: z.boolean(),
-              prefix: z.string(),
-              suffix: z.string(),
-            })),
-          })),
-        }),
-        methods: z.array(z.string()),
-        paths: z.array(z.object({
-          contains: z.string(),
-          exact: z.string(),
-          ignoreCase: z.boolean(),
-          prefix: z.string(),
-          suffix: z.string(),
-        })),
+        headerSet: z.unknown(),
+        hosts: z.unknown(),
+        mcp: z.unknown(),
+        methods: z.unknown(),
+        paths: z.unknown(),
       })),
       operations: z.array(z.object({
-        headerSet: z.object({
-          headers: z.array(z.object({
-            name: z.string(),
-            value: z.object({
-              contains: z.string(),
-              exact: z.string(),
-              ignoreCase: z.boolean(),
-              prefix: z.string(),
-              suffix: z.string(),
-            }),
-          })),
-        }),
-        hosts: z.array(z.object({
-          contains: z.string(),
-          exact: z.string(),
-          ignoreCase: z.boolean(),
-          prefix: z.string(),
-          suffix: z.string(),
-        })),
-        mcp: z.object({
-          baseProtocolMethodsOption: z.string(),
-          methods: z.array(z.object({
-            name: z.string(),
-            params: z.array(z.object({
-              contains: z.string(),
-              exact: z.string(),
-              ignoreCase: z.boolean(),
-              prefix: z.string(),
-              suffix: z.string(),
-            })),
-          })),
-        }),
-        methods: z.array(z.string()),
-        paths: z.array(z.object({
-          contains: z.string(),
-          exact: z.string(),
-          ignoreCase: z.boolean(),
-          prefix: z.string(),
-          suffix: z.string(),
-        })),
+        headerSet: z.unknown(),
+        hosts: z.unknown(),
+        mcp: z.unknown(),
+        methods: z.unknown(),
+        paths: z.unknown(),
       })),
     }),
     when: z.string(),
@@ -727,144 +311,26 @@ const InputsSchema = z.object({
   httpRules: z.array(z.object({
     from: z.object({
       notSources: z.array(z.object({
-        ipBlocks: z.array(z.object({
-          length: z.number().int().describe(
-            "Required. The length of the address range.",
-          ).optional(),
-          prefix: z.string().describe("Required. The address prefix.")
-            .optional(),
-        })).describe(
+        ipBlocks: z.unknown().describe(
           "Optional. A list of IP addresses or IP address ranges to match against the source IP address of the request. Limited to 10 ip_blocks per Authorization Policy",
         ).optional(),
-        principals: z.array(z.object({
-          principal: z.object({
-            contains: z.string().describe(
-              "The input string must have the substring specified here. Note: empty contains match is not allowed, please use regex instead. Examples: * abc matches the value xyz.abc.def",
-            ).optional(),
-            exact: z.string().describe(
-              "The input string must match exactly the string specified here. Examples: * abc only matches the value abc.",
-            ).optional(),
-            ignoreCase: z.boolean().describe(
-              "If true, indicates the exact/prefix/suffix/contains matching should be case insensitive. For example, the matcher data will match both input string Data and data if set to true.",
-            ).optional(),
-            prefix: z.string().describe(
-              "The input string must have the prefix specified here. Note: empty prefix is not allowed, please use regex instead. Examples: * abc matches the value abc.xyz",
-            ).optional(),
-            suffix: z.string().describe(
-              "The input string must have the suffix specified here. Note: empty prefix is not allowed, please use regex instead. Examples: * abc matches the value xyz.abc",
-            ).optional(),
-          }).describe("Determines how a string value should be matched.")
-            .optional(),
-          principalSelector: z.enum([
-            "PRINCIPAL_SELECTOR_UNSPECIFIED",
-            "CLIENT_CERT_URI_SAN",
-            "CLIENT_CERT_DNS_NAME_SAN",
-            "CLIENT_CERT_COMMON_NAME",
-          ]).describe(
-            "Optional. An enum to decide what principal value the principal rule will match against. If not specified, the PrincipalSelector is CLIENT_CERT_URI_SAN.",
-          ).optional(),
-        })).describe(
+        principals: z.unknown().describe(
           "Optional. A list of identities derived from the client's certificate. This field will not match on a request unless frontend mutual TLS is enabled for the forwarding rule or Gateway and the client certificate has been successfully validated by mTLS. Each identity is a string whose value is matched against a list of URI SANs, DNS Name SANs, or the common name in the client's certificate. A match happens when any principal matches with the rule. Limited to 50 principals per Authorization Policy for regional internal Application Load Balancers, regional external Application Load Balancers, cross-region internal Application Load Balancers, and Cloud Service Mesh. This field is not supported for global external Application Load Balancers.",
         ).optional(),
-        resources: z.array(z.object({
-          iamServiceAccount: z.object({
-            contains: z.string().describe(
-              "The input string must have the substring specified here. Note: empty contains match is not allowed, please use regex instead. Examples: * abc matches the value xyz.abc.def",
-            ).optional(),
-            exact: z.string().describe(
-              "The input string must match exactly the string specified here. Examples: * abc only matches the value abc.",
-            ).optional(),
-            ignoreCase: z.boolean().describe(
-              "If true, indicates the exact/prefix/suffix/contains matching should be case insensitive. For example, the matcher data will match both input string Data and data if set to true.",
-            ).optional(),
-            prefix: z.string().describe(
-              "The input string must have the prefix specified here. Note: empty prefix is not allowed, please use regex instead. Examples: * abc matches the value abc.xyz",
-            ).optional(),
-            suffix: z.string().describe(
-              "The input string must have the suffix specified here. Note: empty prefix is not allowed, please use regex instead. Examples: * abc matches the value xyz.abc",
-            ).optional(),
-          }).describe("Determines how a string value should be matched.")
-            .optional(),
-          tagValueIdSet: z.object({
-            ids: z.array(z.string()).describe(
-              "Required. A list of resource tag value permanent IDs to match against the resource manager tags value associated with the source VM of a request. The match follows AND semantics which means all the ids must match. Limited to 5 ids in the Tag value id set.",
-            ).optional(),
-          }).describe(
-            "Describes a set of resource tag value permanent IDs to match against the resource manager tags value associated with the source VM of a request.",
-          ).optional(),
-        })).describe(
+        resources: z.unknown().describe(
           "Optional. A list of resources to match against the resource of the source VM of a request. Limited to 10 resources per Authorization Policy.",
         ).optional(),
       })).describe(
         "Optional. Describes the negated properties of request sources. Matches requests from sources that do not match the criteria specified in this field. At least one of sources or notSources must be specified.",
       ).optional(),
       sources: z.array(z.object({
-        ipBlocks: z.array(z.object({
-          length: z.number().int().describe(
-            "Required. The length of the address range.",
-          ).optional(),
-          prefix: z.string().describe("Required. The address prefix.")
-            .optional(),
-        })).describe(
+        ipBlocks: z.unknown().describe(
           "Optional. A list of IP addresses or IP address ranges to match against the source IP address of the request. Limited to 10 ip_blocks per Authorization Policy",
         ).optional(),
-        principals: z.array(z.object({
-          principal: z.object({
-            contains: z.string().describe(
-              "The input string must have the substring specified here. Note: empty contains match is not allowed, please use regex instead. Examples: * abc matches the value xyz.abc.def",
-            ).optional(),
-            exact: z.string().describe(
-              "The input string must match exactly the string specified here. Examples: * abc only matches the value abc.",
-            ).optional(),
-            ignoreCase: z.boolean().describe(
-              "If true, indicates the exact/prefix/suffix/contains matching should be case insensitive. For example, the matcher data will match both input string Data and data if set to true.",
-            ).optional(),
-            prefix: z.string().describe(
-              "The input string must have the prefix specified here. Note: empty prefix is not allowed, please use regex instead. Examples: * abc matches the value abc.xyz",
-            ).optional(),
-            suffix: z.string().describe(
-              "The input string must have the suffix specified here. Note: empty prefix is not allowed, please use regex instead. Examples: * abc matches the value xyz.abc",
-            ).optional(),
-          }).describe("Determines how a string value should be matched.")
-            .optional(),
-          principalSelector: z.enum([
-            "PRINCIPAL_SELECTOR_UNSPECIFIED",
-            "CLIENT_CERT_URI_SAN",
-            "CLIENT_CERT_DNS_NAME_SAN",
-            "CLIENT_CERT_COMMON_NAME",
-          ]).describe(
-            "Optional. An enum to decide what principal value the principal rule will match against. If not specified, the PrincipalSelector is CLIENT_CERT_URI_SAN.",
-          ).optional(),
-        })).describe(
+        principals: z.unknown().describe(
           "Optional. A list of identities derived from the client's certificate. This field will not match on a request unless frontend mutual TLS is enabled for the forwarding rule or Gateway and the client certificate has been successfully validated by mTLS. Each identity is a string whose value is matched against a list of URI SANs, DNS Name SANs, or the common name in the client's certificate. A match happens when any principal matches with the rule. Limited to 50 principals per Authorization Policy for regional internal Application Load Balancers, regional external Application Load Balancers, cross-region internal Application Load Balancers, and Cloud Service Mesh. This field is not supported for global external Application Load Balancers.",
         ).optional(),
-        resources: z.array(z.object({
-          iamServiceAccount: z.object({
-            contains: z.string().describe(
-              "The input string must have the substring specified here. Note: empty contains match is not allowed, please use regex instead. Examples: * abc matches the value xyz.abc.def",
-            ).optional(),
-            exact: z.string().describe(
-              "The input string must match exactly the string specified here. Examples: * abc only matches the value abc.",
-            ).optional(),
-            ignoreCase: z.boolean().describe(
-              "If true, indicates the exact/prefix/suffix/contains matching should be case insensitive. For example, the matcher data will match both input string Data and data if set to true.",
-            ).optional(),
-            prefix: z.string().describe(
-              "The input string must have the prefix specified here. Note: empty prefix is not allowed, please use regex instead. Examples: * abc matches the value abc.xyz",
-            ).optional(),
-            suffix: z.string().describe(
-              "The input string must have the suffix specified here. Note: empty prefix is not allowed, please use regex instead. Examples: * abc matches the value xyz.abc",
-            ).optional(),
-          }).describe("Determines how a string value should be matched.")
-            .optional(),
-          tagValueIdSet: z.object({
-            ids: z.array(z.string()).describe(
-              "Required. A list of resource tag value permanent IDs to match against the resource manager tags value associated with the source VM of a request. The match follows AND semantics which means all the ids must match. Limited to 5 ids in the Tag value id set.",
-            ).optional(),
-          }).describe(
-            "Describes a set of resource tag value permanent IDs to match against the resource manager tags value associated with the source VM of a request.",
-          ).optional(),
-        })).describe(
+        resources: z.unknown().describe(
           "Optional. A list of resources to match against the resource of the source VM of a request. Limited to 10 resources per Authorization Policy.",
         ).optional(),
       })).describe(
@@ -874,220 +340,38 @@ const InputsSchema = z.object({
       .optional(),
     to: z.object({
       notOperations: z.array(z.object({
-        headerSet: z.object({
-          headers: z.array(z.object({
-            name: z.string().describe(
-              "Optional. Specifies the name of the header in the request.",
-            ).optional(),
-            value: z.object({
-              contains: z.string().describe(
-                "The input string must have the substring specified here. Note: empty contains match is not allowed, please use regex instead. Examples: * abc matches the value xyz.abc.def",
-              ).optional(),
-              exact: z.string().describe(
-                "The input string must match exactly the string specified here. Examples: * abc only matches the value abc.",
-              ).optional(),
-              ignoreCase: z.boolean().describe(
-                "If true, indicates the exact/prefix/suffix/contains matching should be case insensitive. For example, the matcher data will match both input string Data and data if set to true.",
-              ).optional(),
-              prefix: z.string().describe(
-                "The input string must have the prefix specified here. Note: empty prefix is not allowed, please use regex instead. Examples: * abc matches the value abc.xyz",
-              ).optional(),
-              suffix: z.string().describe(
-                "The input string must have the suffix specified here. Note: empty prefix is not allowed, please use regex instead. Examples: * abc matches the value xyz.abc",
-              ).optional(),
-            }).describe("Determines how a string value should be matched.")
-              .optional(),
-          })).describe(
-            "Required. A list of headers to match against in http header. The match can be one of exact, prefix, suffix, or contains (substring match). The match follows AND semantics which means all the headers must match. Matches are always case sensitive unless the ignoreCase is set. Limited to 10 headers per Authorization Policy.",
-          ).optional(),
-        }).describe("Describes a set of HTTP headers to match against.")
-          .optional(),
-        hosts: z.array(z.object({
-          contains: z.string().describe(
-            "The input string must have the substring specified here. Note: empty contains match is not allowed, please use regex instead. Examples: * abc matches the value xyz.abc.def",
-          ).optional(),
-          exact: z.string().describe(
-            "The input string must match exactly the string specified here. Examples: * abc only matches the value abc.",
-          ).optional(),
-          ignoreCase: z.boolean().describe(
-            "If true, indicates the exact/prefix/suffix/contains matching should be case insensitive. For example, the matcher data will match both input string Data and data if set to true.",
-          ).optional(),
-          prefix: z.string().describe(
-            "The input string must have the prefix specified here. Note: empty prefix is not allowed, please use regex instead. Examples: * abc matches the value abc.xyz",
-          ).optional(),
-          suffix: z.string().describe(
-            "The input string must have the suffix specified here. Note: empty prefix is not allowed, please use regex instead. Examples: * abc matches the value xyz.abc",
-          ).optional(),
-        })).describe(
+        headerSet: z.unknown().describe(
+          "Describes a set of HTTP headers to match against.",
+        ).optional(),
+        hosts: z.unknown().describe(
           "Optional. A list of HTTP Hosts to match against. The match can be one of exact, prefix, suffix, or contains (substring match). Matches are always case sensitive unless the ignoreCase is set. Limited to 10 hosts per Authorization Policy.",
         ).optional(),
-        mcp: z.object({
-          baseProtocolMethodsOption: z.enum([
-            "BASE_PROTOCOL_METHODS_OPTION_UNSPECIFIED",
-            "SKIP_BASE_PROTOCOL_METHODS",
-            "MATCH_BASE_PROTOCOL_METHODS",
-          ]).describe(
-            "Optional. If specified, matches on the MCP protocol’s non-access specific methods namely: * initialize * completion/ * logging/ * notifications/ * ping Defaults to SKIP_BASE_PROTOCOL_METHODS if not specified.",
-          ).optional(),
-          methods: z.array(z.object({
-            name: z.string().describe(
-              "Required. The MCP method to match against. Allowed values are as follows: 1. `tools`, `prompts`, `resources` - these will match against all sub methods under the respective methods. 2. `prompts/list`, `tools/list`, `resources/list`, `resources/templates/list` 3. `prompts/get`, `tools/call`, `resources/subscribe`, `resources/unsubscribe`, `resources/read` Params cannot be specified for categories 1 and 2.",
-            ).optional(),
-            params: z.array(z.object({
-              contains: z.string().describe(
-                "The input string must have the substring specified here. Note: empty contains match is not allowed, please use regex instead. Examples: * abc matches the value xyz.abc.def",
-              ).optional(),
-              exact: z.string().describe(
-                "The input string must match exactly the string specified here. Examples: * abc only matches the value abc.",
-              ).optional(),
-              ignoreCase: z.boolean().describe(
-                "If true, indicates the exact/prefix/suffix/contains matching should be case insensitive. For example, the matcher data will match both input string Data and data if set to true.",
-              ).optional(),
-              prefix: z.string().describe(
-                "The input string must have the prefix specified here. Note: empty prefix is not allowed, please use regex instead. Examples: * abc matches the value abc.xyz",
-              ).optional(),
-              suffix: z.string().describe(
-                "The input string must have the suffix specified here. Note: empty prefix is not allowed, please use regex instead. Examples: * abc matches the value xyz.abc",
-              ).optional(),
-            })).describe(
-              "Optional. A list of MCP method parameters to match against. The match can be one of exact, prefix, suffix, or contains (substring match). Matches are always case sensitive unless the ignoreCase is set. Limited to 10 MCP method parameters per Authorization Policy.",
-            ).optional(),
-          })).describe(
-            "Optional. A list of MCP methods and associated parameters to match on. It is recommended to use this field to match on tools, prompts and resource accesses while setting the baseProtocolMethodsOption to MATCH_BASE_PROTOCOL_METHODS to match on all the other MCP protocol methods. Limited to 10 MCP methods per Authorization Policy.",
-          ).optional(),
-        }).describe(
+        mcp: z.unknown().describe(
           "Describes a set of MCP protocol attributes to match against for a given MCP request.",
         ).optional(),
-        methods: z.array(z.string()).describe(
+        methods: z.unknown().describe(
           "Optional. A list of HTTP methods to match against. Each entry must be a valid HTTP method name (GET, PUT, POST, HEAD, PATCH, DELETE, OPTIONS). It only allows exact match and is always case sensitive. Limited to 10 methods per Authorization Policy.",
         ).optional(),
-        paths: z.array(z.object({
-          contains: z.string().describe(
-            "The input string must have the substring specified here. Note: empty contains match is not allowed, please use regex instead. Examples: * abc matches the value xyz.abc.def",
-          ).optional(),
-          exact: z.string().describe(
-            "The input string must match exactly the string specified here. Examples: * abc only matches the value abc.",
-          ).optional(),
-          ignoreCase: z.boolean().describe(
-            "If true, indicates the exact/prefix/suffix/contains matching should be case insensitive. For example, the matcher data will match both input string Data and data if set to true.",
-          ).optional(),
-          prefix: z.string().describe(
-            "The input string must have the prefix specified here. Note: empty prefix is not allowed, please use regex instead. Examples: * abc matches the value abc.xyz",
-          ).optional(),
-          suffix: z.string().describe(
-            "The input string must have the suffix specified here. Note: empty prefix is not allowed, please use regex instead. Examples: * abc matches the value xyz.abc",
-          ).optional(),
-        })).describe(
+        paths: z.unknown().describe(
           "Optional. A list of paths to match against. The match can be one of exact, prefix, suffix, or contains (substring match). Matches are always case sensitive unless the ignoreCase is set. Limited to 10 paths per Authorization Policy. Note that this path match includes the query parameters. For gRPC services, this should be a fully-qualified name of the form /package.service/method.",
         ).optional(),
       })).describe(
         "Optional. Describes the negated properties of the targets of a request. Matches requests for operations that do not match the criteria specified in this field. At least one of operations or notOperations must be specified.",
       ).optional(),
       operations: z.array(z.object({
-        headerSet: z.object({
-          headers: z.array(z.object({
-            name: z.string().describe(
-              "Optional. Specifies the name of the header in the request.",
-            ).optional(),
-            value: z.object({
-              contains: z.string().describe(
-                "The input string must have the substring specified here. Note: empty contains match is not allowed, please use regex instead. Examples: * abc matches the value xyz.abc.def",
-              ).optional(),
-              exact: z.string().describe(
-                "The input string must match exactly the string specified here. Examples: * abc only matches the value abc.",
-              ).optional(),
-              ignoreCase: z.boolean().describe(
-                "If true, indicates the exact/prefix/suffix/contains matching should be case insensitive. For example, the matcher data will match both input string Data and data if set to true.",
-              ).optional(),
-              prefix: z.string().describe(
-                "The input string must have the prefix specified here. Note: empty prefix is not allowed, please use regex instead. Examples: * abc matches the value abc.xyz",
-              ).optional(),
-              suffix: z.string().describe(
-                "The input string must have the suffix specified here. Note: empty prefix is not allowed, please use regex instead. Examples: * abc matches the value xyz.abc",
-              ).optional(),
-            }).describe("Determines how a string value should be matched.")
-              .optional(),
-          })).describe(
-            "Required. A list of headers to match against in http header. The match can be one of exact, prefix, suffix, or contains (substring match). The match follows AND semantics which means all the headers must match. Matches are always case sensitive unless the ignoreCase is set. Limited to 10 headers per Authorization Policy.",
-          ).optional(),
-        }).describe("Describes a set of HTTP headers to match against.")
-          .optional(),
-        hosts: z.array(z.object({
-          contains: z.string().describe(
-            "The input string must have the substring specified here. Note: empty contains match is not allowed, please use regex instead. Examples: * abc matches the value xyz.abc.def",
-          ).optional(),
-          exact: z.string().describe(
-            "The input string must match exactly the string specified here. Examples: * abc only matches the value abc.",
-          ).optional(),
-          ignoreCase: z.boolean().describe(
-            "If true, indicates the exact/prefix/suffix/contains matching should be case insensitive. For example, the matcher data will match both input string Data and data if set to true.",
-          ).optional(),
-          prefix: z.string().describe(
-            "The input string must have the prefix specified here. Note: empty prefix is not allowed, please use regex instead. Examples: * abc matches the value abc.xyz",
-          ).optional(),
-          suffix: z.string().describe(
-            "The input string must have the suffix specified here. Note: empty prefix is not allowed, please use regex instead. Examples: * abc matches the value xyz.abc",
-          ).optional(),
-        })).describe(
+        headerSet: z.unknown().describe(
+          "Describes a set of HTTP headers to match against.",
+        ).optional(),
+        hosts: z.unknown().describe(
           "Optional. A list of HTTP Hosts to match against. The match can be one of exact, prefix, suffix, or contains (substring match). Matches are always case sensitive unless the ignoreCase is set. Limited to 10 hosts per Authorization Policy.",
         ).optional(),
-        mcp: z.object({
-          baseProtocolMethodsOption: z.enum([
-            "BASE_PROTOCOL_METHODS_OPTION_UNSPECIFIED",
-            "SKIP_BASE_PROTOCOL_METHODS",
-            "MATCH_BASE_PROTOCOL_METHODS",
-          ]).describe(
-            "Optional. If specified, matches on the MCP protocol’s non-access specific methods namely: * initialize * completion/ * logging/ * notifications/ * ping Defaults to SKIP_BASE_PROTOCOL_METHODS if not specified.",
-          ).optional(),
-          methods: z.array(z.object({
-            name: z.string().describe(
-              "Required. The MCP method to match against. Allowed values are as follows: 1. `tools`, `prompts`, `resources` - these will match against all sub methods under the respective methods. 2. `prompts/list`, `tools/list`, `resources/list`, `resources/templates/list` 3. `prompts/get`, `tools/call`, `resources/subscribe`, `resources/unsubscribe`, `resources/read` Params cannot be specified for categories 1 and 2.",
-            ).optional(),
-            params: z.array(z.object({
-              contains: z.string().describe(
-                "The input string must have the substring specified here. Note: empty contains match is not allowed, please use regex instead. Examples: * abc matches the value xyz.abc.def",
-              ).optional(),
-              exact: z.string().describe(
-                "The input string must match exactly the string specified here. Examples: * abc only matches the value abc.",
-              ).optional(),
-              ignoreCase: z.boolean().describe(
-                "If true, indicates the exact/prefix/suffix/contains matching should be case insensitive. For example, the matcher data will match both input string Data and data if set to true.",
-              ).optional(),
-              prefix: z.string().describe(
-                "The input string must have the prefix specified here. Note: empty prefix is not allowed, please use regex instead. Examples: * abc matches the value abc.xyz",
-              ).optional(),
-              suffix: z.string().describe(
-                "The input string must have the suffix specified here. Note: empty prefix is not allowed, please use regex instead. Examples: * abc matches the value xyz.abc",
-              ).optional(),
-            })).describe(
-              "Optional. A list of MCP method parameters to match against. The match can be one of exact, prefix, suffix, or contains (substring match). Matches are always case sensitive unless the ignoreCase is set. Limited to 10 MCP method parameters per Authorization Policy.",
-            ).optional(),
-          })).describe(
-            "Optional. A list of MCP methods and associated parameters to match on. It is recommended to use this field to match on tools, prompts and resource accesses while setting the baseProtocolMethodsOption to MATCH_BASE_PROTOCOL_METHODS to match on all the other MCP protocol methods. Limited to 10 MCP methods per Authorization Policy.",
-          ).optional(),
-        }).describe(
+        mcp: z.unknown().describe(
           "Describes a set of MCP protocol attributes to match against for a given MCP request.",
         ).optional(),
-        methods: z.array(z.string()).describe(
+        methods: z.unknown().describe(
           "Optional. A list of HTTP methods to match against. Each entry must be a valid HTTP method name (GET, PUT, POST, HEAD, PATCH, DELETE, OPTIONS). It only allows exact match and is always case sensitive. Limited to 10 methods per Authorization Policy.",
         ).optional(),
-        paths: z.array(z.object({
-          contains: z.string().describe(
-            "The input string must have the substring specified here. Note: empty contains match is not allowed, please use regex instead. Examples: * abc matches the value xyz.abc.def",
-          ).optional(),
-          exact: z.string().describe(
-            "The input string must match exactly the string specified here. Examples: * abc only matches the value abc.",
-          ).optional(),
-          ignoreCase: z.boolean().describe(
-            "If true, indicates the exact/prefix/suffix/contains matching should be case insensitive. For example, the matcher data will match both input string Data and data if set to true.",
-          ).optional(),
-          prefix: z.string().describe(
-            "The input string must have the prefix specified here. Note: empty prefix is not allowed, please use regex instead. Examples: * abc matches the value abc.xyz",
-          ).optional(),
-          suffix: z.string().describe(
-            "The input string must have the suffix specified here. Note: empty prefix is not allowed, please use regex instead. Examples: * abc matches the value xyz.abc",
-          ).optional(),
-        })).describe(
+        paths: z.unknown().describe(
           "Optional. A list of paths to match against. The match can be one of exact, prefix, suffix, or contains (substring match). Matches are always case sensitive unless the ignoreCase is set. Limited to 10 paths per Authorization Policy. Note that this path match includes the query parameters. For gRPC services, this should be a fully-qualified name of the form /package.service/method.",
         ).optional(),
       })).describe(
@@ -1142,7 +426,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/networksecurity/authzpolicies",
-  version: "2026.04.03.3",
+  version: "2026.04.04.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -1176,6 +460,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.3",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.04.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

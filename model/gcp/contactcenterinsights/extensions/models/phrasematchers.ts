@@ -96,12 +96,9 @@ const GlobalArgsSchema = z.object({
   phraseMatchRuleGroups: z.array(z.object({
     phraseMatchRules: z.array(z.object({
       config: z.object({
-        exactMatchConfig: z.object({
-          caseSensitive: z.boolean().describe(
-            "Whether to consider case sensitivity when performing an exact match.",
-          ).optional(),
-        }).describe("Exact match configuration.").optional(),
-        regexMatchConfig: z.object({}).describe("Regex match configuration.")
+        exactMatchConfig: z.unknown().describe("Exact match configuration.")
+          .optional(),
+        regexMatchConfig: z.unknown().describe("Regex match configuration.")
           .optional(),
       }).describe("Configuration information of a phrase match rule.")
         .optional(),
@@ -149,10 +146,8 @@ const StateSchema = z.object({
   phraseMatchRuleGroups: z.array(z.object({
     phraseMatchRules: z.array(z.object({
       config: z.object({
-        exactMatchConfig: z.object({
-          caseSensitive: z.boolean(),
-        }),
-        regexMatchConfig: z.object({}),
+        exactMatchConfig: z.unknown(),
+        regexMatchConfig: z.unknown(),
       }),
       negated: z.boolean(),
       query: z.string(),
@@ -182,12 +177,9 @@ const InputsSchema = z.object({
   phraseMatchRuleGroups: z.array(z.object({
     phraseMatchRules: z.array(z.object({
       config: z.object({
-        exactMatchConfig: z.object({
-          caseSensitive: z.boolean().describe(
-            "Whether to consider case sensitivity when performing an exact match.",
-          ).optional(),
-        }).describe("Exact match configuration.").optional(),
-        regexMatchConfig: z.object({}).describe("Regex match configuration.")
+        exactMatchConfig: z.unknown().describe("Exact match configuration.")
+          .optional(),
+        regexMatchConfig: z.unknown().describe("Regex match configuration.")
           .optional(),
       }).describe("Configuration information of a phrase match rule.")
         .optional(),
@@ -229,7 +221,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/contactcenterinsights/phrasematchers",
-  version: "2026.04.03.3",
+  version: "2026.04.04.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -253,6 +245,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.3",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.04.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

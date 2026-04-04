@@ -94,7 +94,7 @@ const GlobalArgsSchema = z.object({
       ).optional(),
       snippet: z.object({
         authorChannelId: z.object({
-          value: z.string().describe("The id of the author's YouTube channel.")
+          value: z.unknown().describe("The id of the author's YouTube channel.")
             .optional(),
         }).describe("Contains the id of the author's YouTube channel, if any.")
           .optional(),
@@ -259,7 +259,7 @@ const StateSchema = z.object({
       kind: z.string(),
       snippet: z.object({
         authorChannelId: z.object({
-          value: z.string(),
+          value: z.unknown(),
         }),
         authorChannelUrl: z.string(),
         authorDisplayName: z.string(),
@@ -332,7 +332,7 @@ const InputsSchema = z.object({
       ).optional(),
       snippet: z.object({
         authorChannelId: z.object({
-          value: z.string().describe("The id of the author's YouTube channel.")
+          value: z.unknown().describe("The id of the author's YouTube channel.")
             .optional(),
         }).describe("Contains the id of the author's YouTube channel, if any.")
           .optional(),
@@ -488,7 +488,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/youtube/commentthreads",
-  version: "2026.04.03.3",
+  version: "2026.04.04.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -512,6 +512,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.3",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.04.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

@@ -184,7 +184,7 @@ const GlobalArgsSchema = z.object({
         "The display-name for the property, used for front-end.",
       ).optional(),
       enumTypeOptions: z.object({
-        possibleValues: z.array(z.string()).describe(
+        possibleValues: z.array(z.unknown()).describe(
           "Required. List of possible enum values.",
         ).optional(),
         validationCheckDisabled: z.boolean().describe(
@@ -220,7 +220,7 @@ const GlobalArgsSchema = z.object({
         "Required. The name of the metadata property. Must be unique within a document schema and is case insensitive. Names must be non-blank, start with a letter, and can contain alphanumeric characters and: /,:, -, _, and.",
       ).optional(),
       propertyTypeOptions: z.object({
-        propertyDefinitions: z.array(z.string()).describe(
+        propertyDefinitions: z.array(z.unknown()).describe(
           "Required. List of property definitions.",
         ).optional(),
       }).describe("Configurations for a nested structured data property.")
@@ -236,8 +236,8 @@ const GlobalArgsSchema = z.object({
       ]).describe("The retrieval importance of the property during search.")
         .optional(),
       schemaSources: z.array(z.object({
-        name: z.string().describe("The schema name in the source.").optional(),
-        processorType: z.string().describe("The Doc AI processor type name.")
+        name: z.unknown().describe("The schema name in the source.").optional(),
+        processorType: z.unknown().describe("The Doc AI processor type name.")
           .optional(),
       })).describe(
         "The mapping information between this property to another schema source.",
@@ -401,7 +401,7 @@ const InputsSchema = z.object({
         "The display-name for the property, used for front-end.",
       ).optional(),
       enumTypeOptions: z.object({
-        possibleValues: z.array(z.string()).describe(
+        possibleValues: z.array(z.unknown()).describe(
           "Required. List of possible enum values.",
         ).optional(),
         validationCheckDisabled: z.boolean().describe(
@@ -437,7 +437,7 @@ const InputsSchema = z.object({
         "Required. The name of the metadata property. Must be unique within a document schema and is case insensitive. Names must be non-blank, start with a letter, and can contain alphanumeric characters and: /,:, -, _, and.",
       ).optional(),
       propertyTypeOptions: z.object({
-        propertyDefinitions: z.array(z.string()).describe(
+        propertyDefinitions: z.array(z.unknown()).describe(
           "Required. List of property definitions.",
         ).optional(),
       }).describe("Configurations for a nested structured data property.")
@@ -453,8 +453,8 @@ const InputsSchema = z.object({
       ]).describe("The retrieval importance of the property during search.")
         .optional(),
       schemaSources: z.array(z.object({
-        name: z.string().describe("The schema name in the source.").optional(),
-        processorType: z.string().describe("The Doc AI processor type name.")
+        name: z.unknown().describe("The schema name in the source.").optional(),
+        processorType: z.unknown().describe("The Doc AI processor type name.")
           .optional(),
       })).describe(
         "The mapping information between this property to another schema source.",
@@ -478,7 +478,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/contentwarehouse/documentschemas",
-  version: "2026.04.03.3",
+  version: "2026.04.04.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -502,6 +502,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.3",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.04.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

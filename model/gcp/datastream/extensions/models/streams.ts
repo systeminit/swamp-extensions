@@ -114,111 +114,37 @@ const GlobalArgsSchema = z.object({
   backfillAll: z.object({
     mongodbExcludedObjects: z.object({
       databases: z.array(z.object({
-        collections: z.array(z.object({
-          collection: z.string().describe("The collection name.").optional(),
-          fields: z.array(z.object({
-            field: z.string().describe("The field name.").optional(),
-          })).describe("Fields in the collection.").optional(),
-        })).describe("Collections in the database.").optional(),
+        collections: z.array(z.unknown()).describe(
+          "Collections in the database.",
+        ).optional(),
         database: z.string().describe("The database name.").optional(),
       })).describe("MongoDB databases in the cluster.").optional(),
     }).describe("MongoDB Cluster structure.").optional(),
     mysqlExcludedObjects: z.object({
       mysqlDatabases: z.array(z.object({
         database: z.string().describe("The database name.").optional(),
-        mysqlTables: z.array(z.object({
-          mysqlColumns: z.array(z.object({
-            collation: z.string().describe("Column collation.").optional(),
-            column: z.string().describe("The column name.").optional(),
-            dataType: z.string().describe(
-              "The MySQL data type. Full data types list can be found here: https://dev.mysql.com/doc/refman/8.0/en/data-types.html",
-            ).optional(),
-            length: z.number().int().describe("Column length.").optional(),
-            nullable: z.boolean().describe(
-              "Whether or not the column can accept a null value.",
-            ).optional(),
-            ordinalPosition: z.number().int().describe(
-              "The ordinal position of the column in the table.",
-            ).optional(),
-            precision: z.number().int().describe("Column precision.")
-              .optional(),
-            primaryKey: z.boolean().describe(
-              "Whether or not the column represents a primary key.",
-            ).optional(),
-            scale: z.number().int().describe("Column scale.").optional(),
-          })).describe(
-            "MySQL columns in the database. When unspecified as part of include/exclude objects, includes/excludes everything.",
-          ).optional(),
-          table: z.string().describe("The table name.").optional(),
-        })).describe("Tables in the database.").optional(),
+        mysqlTables: z.array(z.unknown()).describe("Tables in the database.")
+          .optional(),
       })).describe("Mysql databases on the server").optional(),
     }).describe("MySQL database structure").optional(),
     oracleExcludedObjects: z.object({
       oracleSchemas: z.array(z.object({
-        oracleTables: z.array(z.object({
-          oracleColumns: z.array(z.object({
-            column: z.string().describe("The column name.").optional(),
-            dataType: z.string().describe("The Oracle data type.").optional(),
-            encoding: z.string().describe("Column encoding.").optional(),
-            length: z.number().int().describe("Column length.").optional(),
-            nullable: z.boolean().describe(
-              "Whether or not the column can accept a null value.",
-            ).optional(),
-            ordinalPosition: z.number().int().describe(
-              "The ordinal position of the column in the table.",
-            ).optional(),
-            precision: z.number().int().describe("Column precision.")
-              .optional(),
-            primaryKey: z.boolean().describe(
-              "Whether or not the column represents a primary key.",
-            ).optional(),
-            scale: z.number().int().describe("Column scale.").optional(),
-          })).describe(
-            "Oracle columns in the schema. When unspecified as part of include/exclude objects, includes/excludes everything.",
-          ).optional(),
-          table: z.string().describe("The table name.").optional(),
-        })).describe("Tables in the schema.").optional(),
+        oracleTables: z.array(z.unknown()).describe("Tables in the schema.")
+          .optional(),
         schema: z.string().describe("The schema name.").optional(),
       })).describe("Oracle schemas/databases in the database server.")
         .optional(),
     }).describe("Oracle database structure.").optional(),
     postgresqlExcludedObjects: z.object({
       postgresqlSchemas: z.array(z.object({
-        postgresqlTables: z.array(z.object({
-          postgresqlColumns: z.array(z.object({
-            column: z.string().describe("The column name.").optional(),
-            dataType: z.string().describe("The PostgreSQL data type.")
-              .optional(),
-            length: z.number().int().describe("Column length.").optional(),
-            nullable: z.boolean().describe(
-              "Whether or not the column can accept a null value.",
-            ).optional(),
-            ordinalPosition: z.number().int().describe(
-              "The ordinal position of the column in the table.",
-            ).optional(),
-            precision: z.number().int().describe("Column precision.")
-              .optional(),
-            primaryKey: z.boolean().describe(
-              "Whether or not the column represents a primary key.",
-            ).optional(),
-            scale: z.number().int().describe("Column scale.").optional(),
-          })).describe(
-            "PostgreSQL columns in the schema. When unspecified as part of include/exclude objects, includes/excludes everything.",
-          ).optional(),
-          table: z.string().describe("The table name.").optional(),
-        })).describe("Tables in the schema.").optional(),
+        postgresqlTables: z.array(z.unknown()).describe("Tables in the schema.")
+          .optional(),
         schema: z.string().describe("The schema name.").optional(),
       })).describe("PostgreSQL schemas in the database server.").optional(),
     }).describe("PostgreSQL database structure.").optional(),
     salesforceExcludedObjects: z.object({
       objects: z.array(z.object({
-        fields: z.array(z.object({
-          dataType: z.string().describe("The data type.").optional(),
-          name: z.string().describe("The field name.").optional(),
-          nillable: z.boolean().describe(
-            "Indicates whether the field can accept nil values.",
-          ).optional(),
-        })).describe(
+        fields: z.array(z.unknown()).describe(
           "Salesforce fields. When unspecified as part of include objects, includes everything, when unspecified as part of exclude objects, excludes nothing.",
         ).optional(),
         objectName: z.string().describe("The object name.").optional(),
@@ -227,49 +153,16 @@ const GlobalArgsSchema = z.object({
     spannerExcludedObjects: z.object({
       schemas: z.array(z.object({
         schema: z.string().describe("Required. The schema name.").optional(),
-        tables: z.array(z.object({
-          columns: z.array(z.object({
-            column: z.string().describe("Required. The column name.")
-              .optional(),
-            dataType: z.string().describe("Optional. Spanner data type.")
-              .optional(),
-            isPrimaryKey: z.boolean().describe(
-              "Optional. Whether or not the column is a primary key.",
-            ).optional(),
-            ordinalPosition: z.string().describe(
-              "Optional. The ordinal position of the column in the table.",
-            ).optional(),
-          })).describe("Optional. Spanner columns in the table.").optional(),
-          table: z.string().describe("Required. The table name.").optional(),
-        })).describe("Optional. Spanner tables in the schema.").optional(),
+        tables: z.array(z.unknown()).describe(
+          "Optional. Spanner tables in the schema.",
+        ).optional(),
       })).describe("Optional. Spanner schemas in the database.").optional(),
     }).describe("Spanner database structure.").optional(),
     sqlServerExcludedObjects: z.object({
       schemas: z.array(z.object({
         schema: z.string().describe("The schema name.").optional(),
-        tables: z.array(z.object({
-          columns: z.array(z.object({
-            column: z.string().describe("The column name.").optional(),
-            dataType: z.string().describe("The SQLServer data type.")
-              .optional(),
-            length: z.number().int().describe("Column length.").optional(),
-            nullable: z.boolean().describe(
-              "Whether or not the column can accept a null value.",
-            ).optional(),
-            ordinalPosition: z.number().int().describe(
-              "The ordinal position of the column in the table.",
-            ).optional(),
-            precision: z.number().int().describe("Column precision.")
-              .optional(),
-            primaryKey: z.boolean().describe(
-              "Whether or not the column represents a primary key.",
-            ).optional(),
-            scale: z.number().int().describe("Column scale.").optional(),
-          })).describe(
-            "SQLServer columns in the schema. When unspecified as part of include/exclude objects, includes/excludes everything.",
-          ).optional(),
-          table: z.string().describe("The table name.").optional(),
-        })).describe("Tables in the schema.").optional(),
+        tables: z.array(z.unknown()).describe("Tables in the schema.")
+          .optional(),
       })).describe("SQLServer schemas in the database server.").optional(),
     }).describe("SQLServer database structure.").optional(),
   }).describe(
@@ -368,51 +261,21 @@ const GlobalArgsSchema = z.object({
   ruleSets: z.array(z.object({
     customizationRules: z.array(z.object({
       bigqueryClustering: z.object({
-        columns: z.array(z.string()).describe(
+        columns: z.unknown().describe(
           "Required. Column names to set as clustering columns.",
         ).optional(),
       }).describe("BigQuery clustering configuration.").optional(),
       bigqueryPartitioning: z.object({
-        ingestionTimePartition: z.object({
-          partitioningTimeGranularity: z.enum([
-            "PARTITIONING_TIME_GRANULARITY_UNSPECIFIED",
-            "PARTITIONING_TIME_GRANULARITY_HOUR",
-            "PARTITIONING_TIME_GRANULARITY_DAY",
-            "PARTITIONING_TIME_GRANULARITY_MONTH",
-            "PARTITIONING_TIME_GRANULARITY_YEAR",
-          ]).describe("Optional. Partition granularity").optional(),
-        }).describe(
+        ingestionTimePartition: z.unknown().describe(
           "Ingestion time partitioning. see https://cloud.google.com/bigquery/docs/partitioned-tables#ingestion_time",
         ).optional(),
-        integerRangePartition: z.object({
-          column: z.string().describe("Required. The partitioning column.")
-            .optional(),
-          end: z.string().describe(
-            "Required. The ending value for range partitioning (exclusive).",
-          ).optional(),
-          interval: z.string().describe(
-            "Required. The interval of each range within the partition.",
-          ).optional(),
-          start: z.string().describe(
-            "Required. The starting value for range partitioning (inclusive).",
-          ).optional(),
-        }).describe(
+        integerRangePartition: z.unknown().describe(
           "Integer range partitioning. see https://cloud.google.com/bigquery/docs/partitioned-tables#integer_range",
         ).optional(),
-        requirePartitionFilter: z.boolean().describe(
+        requirePartitionFilter: z.unknown().describe(
           "Optional. If true, queries over the table require a partition filter.",
         ).optional(),
-        timeUnitPartition: z.object({
-          column: z.string().describe("Required. The partitioning column.")
-            .optional(),
-          partitioningTimeGranularity: z.enum([
-            "PARTITIONING_TIME_GRANULARITY_UNSPECIFIED",
-            "PARTITIONING_TIME_GRANULARITY_HOUR",
-            "PARTITIONING_TIME_GRANULARITY_DAY",
-            "PARTITIONING_TIME_GRANULARITY_MONTH",
-            "PARTITIONING_TIME_GRANULARITY_YEAR",
-          ]).describe("Optional. Partition granularity.").optional(),
-        }).describe(
+        timeUnitPartition: z.unknown().describe(
           "Time unit column partitioning. see https://cloud.google.com/bigquery/docs/partitioned-tables#date_timestamp_partitioned_tables",
         ).optional(),
       }).describe("BigQuery partitioning configuration.").optional(),
@@ -420,35 +283,35 @@ const GlobalArgsSchema = z.object({
     objectFilter: z.object({
       sourceObjectIdentifier: z.object({
         mongodbIdentifier: z.object({
-          collection: z.string().describe("Required. The collection name.")
+          collection: z.unknown().describe("Required. The collection name.")
             .optional(),
-          database: z.string().describe("Required. The database name.")
+          database: z.unknown().describe("Required. The database name.")
             .optional(),
         }).describe("MongoDB data source object identifier.").optional(),
         mysqlIdentifier: z.object({
-          database: z.string().describe("Required. The database name.")
+          database: z.unknown().describe("Required. The database name.")
             .optional(),
-          table: z.string().describe("Required. The table name.").optional(),
+          table: z.unknown().describe("Required. The table name.").optional(),
         }).describe("Mysql data source object identifier.").optional(),
         oracleIdentifier: z.object({
-          schema: z.string().describe("Required. The schema name.").optional(),
-          table: z.string().describe("Required. The table name.").optional(),
+          schema: z.unknown().describe("Required. The schema name.").optional(),
+          table: z.unknown().describe("Required. The table name.").optional(),
         }).describe("Oracle data source object identifier.").optional(),
         postgresqlIdentifier: z.object({
-          schema: z.string().describe("Required. The schema name.").optional(),
-          table: z.string().describe("Required. The table name.").optional(),
+          schema: z.unknown().describe("Required. The schema name.").optional(),
+          table: z.unknown().describe("Required. The table name.").optional(),
         }).describe("PostgreSQL data source object identifier.").optional(),
         salesforceIdentifier: z.object({
-          objectName: z.string().describe("Required. The object name.")
+          objectName: z.unknown().describe("Required. The object name.")
             .optional(),
         }).describe("Salesforce data source object identifier.").optional(),
         spannerIdentifier: z.object({
-          schema: z.string().describe("Optional. The schema name.").optional(),
-          table: z.string().describe("Required. The table name.").optional(),
+          schema: z.unknown().describe("Optional. The schema name.").optional(),
+          table: z.unknown().describe("Required. The table name.").optional(),
         }).describe("Spanner data source object identifier.").optional(),
         sqlServerIdentifier: z.object({
-          schema: z.string().describe("Required. The schema name.").optional(),
-          table: z.string().describe("Required. The table name.").optional(),
+          schema: z.unknown().describe("Required. The schema name.").optional(),
+          table: z.unknown().describe("Required. The table name.").optional(),
         }).describe("SQLServer data source object identifier.").optional(),
       }).describe("Represents an identifier of an object in the data source.")
         .optional(),
@@ -458,24 +321,16 @@ const GlobalArgsSchema = z.object({
     mongodbSourceConfig: z.object({
       excludeObjects: z.object({
         databases: z.array(z.object({
-          collections: z.array(z.object({
-            collection: z.string().describe("The collection name.").optional(),
-            fields: z.array(z.object({
-              field: z.string().describe("The field name.").optional(),
-            })).describe("Fields in the collection.").optional(),
-          })).describe("Collections in the database.").optional(),
-          database: z.string().describe("The database name.").optional(),
+          collections: z.unknown().describe("Collections in the database.")
+            .optional(),
+          database: z.unknown().describe("The database name.").optional(),
         })).describe("MongoDB databases in the cluster.").optional(),
       }).describe("MongoDB Cluster structure.").optional(),
       includeObjects: z.object({
         databases: z.array(z.object({
-          collections: z.array(z.object({
-            collection: z.string().describe("The collection name.").optional(),
-            fields: z.array(z.object({
-              field: z.string().describe("The field name.").optional(),
-            })).describe("Fields in the collection.").optional(),
-          })).describe("Collections in the database.").optional(),
-          database: z.string().describe("The database name.").optional(),
+          collections: z.unknown().describe("Collections in the database.")
+            .optional(),
+          database: z.unknown().describe("The database name.").optional(),
         })).describe("MongoDB databases in the cluster.").optional(),
       }).describe("MongoDB Cluster structure.").optional(),
       jsonMode: z.enum(["MONGODB_JSON_MODE_UNSPECIFIED", "STRICT", "CANONICAL"])
@@ -492,63 +347,17 @@ const GlobalArgsSchema = z.object({
       ).optional(),
       excludeObjects: z.object({
         mysqlDatabases: z.array(z.object({
-          database: z.string().describe("The database name.").optional(),
-          mysqlTables: z.array(z.object({
-            mysqlColumns: z.array(z.object({
-              collation: z.string().describe("Column collation.").optional(),
-              column: z.string().describe("The column name.").optional(),
-              dataType: z.string().describe(
-                "The MySQL data type. Full data types list can be found here: https://dev.mysql.com/doc/refman/8.0/en/data-types.html",
-              ).optional(),
-              length: z.number().int().describe("Column length.").optional(),
-              nullable: z.boolean().describe(
-                "Whether or not the column can accept a null value.",
-              ).optional(),
-              ordinalPosition: z.number().int().describe(
-                "The ordinal position of the column in the table.",
-              ).optional(),
-              precision: z.number().int().describe("Column precision.")
-                .optional(),
-              primaryKey: z.boolean().describe(
-                "Whether or not the column represents a primary key.",
-              ).optional(),
-              scale: z.number().int().describe("Column scale.").optional(),
-            })).describe(
-              "MySQL columns in the database. When unspecified as part of include/exclude objects, includes/excludes everything.",
-            ).optional(),
-            table: z.string().describe("The table name.").optional(),
-          })).describe("Tables in the database.").optional(),
+          database: z.unknown().describe("The database name.").optional(),
+          mysqlTables: z.unknown().describe("Tables in the database.")
+            .optional(),
         })).describe("Mysql databases on the server").optional(),
       }).describe("MySQL database structure").optional(),
       gtid: z.object({}).describe("Use GTID based replication.").optional(),
       includeObjects: z.object({
         mysqlDatabases: z.array(z.object({
-          database: z.string().describe("The database name.").optional(),
-          mysqlTables: z.array(z.object({
-            mysqlColumns: z.array(z.object({
-              collation: z.string().describe("Column collation.").optional(),
-              column: z.string().describe("The column name.").optional(),
-              dataType: z.string().describe(
-                "The MySQL data type. Full data types list can be found here: https://dev.mysql.com/doc/refman/8.0/en/data-types.html",
-              ).optional(),
-              length: z.number().int().describe("Column length.").optional(),
-              nullable: z.boolean().describe(
-                "Whether or not the column can accept a null value.",
-              ).optional(),
-              ordinalPosition: z.number().int().describe(
-                "The ordinal position of the column in the table.",
-              ).optional(),
-              precision: z.number().int().describe("Column precision.")
-                .optional(),
-              primaryKey: z.boolean().describe(
-                "Whether or not the column represents a primary key.",
-              ).optional(),
-              scale: z.number().int().describe("Column scale.").optional(),
-            })).describe(
-              "MySQL columns in the database. When unspecified as part of include/exclude objects, includes/excludes everything.",
-            ).optional(),
-            table: z.string().describe("The table name.").optional(),
-          })).describe("Tables in the database.").optional(),
+          database: z.unknown().describe("The database name.").optional(),
+          mysqlTables: z.unknown().describe("Tables in the database.")
+            .optional(),
         })).describe("Mysql databases on the server").optional(),
       }).describe("MySQL database structure").optional(),
       maxConcurrentBackfillTasks: z.number().int().describe(
@@ -581,59 +390,17 @@ const GlobalArgsSchema = z.object({
       ).optional(),
       excludeObjects: z.object({
         oracleSchemas: z.array(z.object({
-          oracleTables: z.array(z.object({
-            oracleColumns: z.array(z.object({
-              column: z.string().describe("The column name.").optional(),
-              dataType: z.string().describe("The Oracle data type.").optional(),
-              encoding: z.string().describe("Column encoding.").optional(),
-              length: z.number().int().describe("Column length.").optional(),
-              nullable: z.boolean().describe(
-                "Whether or not the column can accept a null value.",
-              ).optional(),
-              ordinalPosition: z.number().int().describe(
-                "The ordinal position of the column in the table.",
-              ).optional(),
-              precision: z.number().int().describe("Column precision.")
-                .optional(),
-              primaryKey: z.boolean().describe(
-                "Whether or not the column represents a primary key.",
-              ).optional(),
-              scale: z.number().int().describe("Column scale.").optional(),
-            })).describe(
-              "Oracle columns in the schema. When unspecified as part of include/exclude objects, includes/excludes everything.",
-            ).optional(),
-            table: z.string().describe("The table name.").optional(),
-          })).describe("Tables in the schema.").optional(),
-          schema: z.string().describe("The schema name.").optional(),
+          oracleTables: z.unknown().describe("Tables in the schema.")
+            .optional(),
+          schema: z.unknown().describe("The schema name.").optional(),
         })).describe("Oracle schemas/databases in the database server.")
           .optional(),
       }).describe("Oracle database structure.").optional(),
       includeObjects: z.object({
         oracleSchemas: z.array(z.object({
-          oracleTables: z.array(z.object({
-            oracleColumns: z.array(z.object({
-              column: z.string().describe("The column name.").optional(),
-              dataType: z.string().describe("The Oracle data type.").optional(),
-              encoding: z.string().describe("Column encoding.").optional(),
-              length: z.number().int().describe("Column length.").optional(),
-              nullable: z.boolean().describe(
-                "Whether or not the column can accept a null value.",
-              ).optional(),
-              ordinalPosition: z.number().int().describe(
-                "The ordinal position of the column in the table.",
-              ).optional(),
-              precision: z.number().int().describe("Column precision.")
-                .optional(),
-              primaryKey: z.boolean().describe(
-                "Whether or not the column represents a primary key.",
-              ).optional(),
-              scale: z.number().int().describe("Column scale.").optional(),
-            })).describe(
-              "Oracle columns in the schema. When unspecified as part of include/exclude objects, includes/excludes everything.",
-            ).optional(),
-            table: z.string().describe("The table name.").optional(),
-          })).describe("Tables in the schema.").optional(),
-          schema: z.string().describe("The schema name.").optional(),
+          oracleTables: z.unknown().describe("Tables in the schema.")
+            .optional(),
+          schema: z.unknown().describe("The schema name.").optional(),
         })).describe("Oracle schemas/databases in the database server.")
           .optional(),
       }).describe("Oracle database structure.").optional(),
@@ -654,58 +421,16 @@ const GlobalArgsSchema = z.object({
     postgresqlSourceConfig: z.object({
       excludeObjects: z.object({
         postgresqlSchemas: z.array(z.object({
-          postgresqlTables: z.array(z.object({
-            postgresqlColumns: z.array(z.object({
-              column: z.string().describe("The column name.").optional(),
-              dataType: z.string().describe("The PostgreSQL data type.")
-                .optional(),
-              length: z.number().int().describe("Column length.").optional(),
-              nullable: z.boolean().describe(
-                "Whether or not the column can accept a null value.",
-              ).optional(),
-              ordinalPosition: z.number().int().describe(
-                "The ordinal position of the column in the table.",
-              ).optional(),
-              precision: z.number().int().describe("Column precision.")
-                .optional(),
-              primaryKey: z.boolean().describe(
-                "Whether or not the column represents a primary key.",
-              ).optional(),
-              scale: z.number().int().describe("Column scale.").optional(),
-            })).describe(
-              "PostgreSQL columns in the schema. When unspecified as part of include/exclude objects, includes/excludes everything.",
-            ).optional(),
-            table: z.string().describe("The table name.").optional(),
-          })).describe("Tables in the schema.").optional(),
-          schema: z.string().describe("The schema name.").optional(),
+          postgresqlTables: z.unknown().describe("Tables in the schema.")
+            .optional(),
+          schema: z.unknown().describe("The schema name.").optional(),
         })).describe("PostgreSQL schemas in the database server.").optional(),
       }).describe("PostgreSQL database structure.").optional(),
       includeObjects: z.object({
         postgresqlSchemas: z.array(z.object({
-          postgresqlTables: z.array(z.object({
-            postgresqlColumns: z.array(z.object({
-              column: z.string().describe("The column name.").optional(),
-              dataType: z.string().describe("The PostgreSQL data type.")
-                .optional(),
-              length: z.number().int().describe("Column length.").optional(),
-              nullable: z.boolean().describe(
-                "Whether or not the column can accept a null value.",
-              ).optional(),
-              ordinalPosition: z.number().int().describe(
-                "The ordinal position of the column in the table.",
-              ).optional(),
-              precision: z.number().int().describe("Column precision.")
-                .optional(),
-              primaryKey: z.boolean().describe(
-                "Whether or not the column represents a primary key.",
-              ).optional(),
-              scale: z.number().int().describe("Column scale.").optional(),
-            })).describe(
-              "PostgreSQL columns in the schema. When unspecified as part of include/exclude objects, includes/excludes everything.",
-            ).optional(),
-            table: z.string().describe("The table name.").optional(),
-          })).describe("Tables in the schema.").optional(),
-          schema: z.string().describe("The schema name.").optional(),
+          postgresqlTables: z.unknown().describe("Tables in the schema.")
+            .optional(),
+          schema: z.unknown().describe("The schema name.").optional(),
         })).describe("PostgreSQL schemas in the database server.").optional(),
       }).describe("PostgreSQL database structure.").optional(),
       maxConcurrentBackfillTasks: z.number().int().describe(
@@ -722,30 +447,18 @@ const GlobalArgsSchema = z.object({
     salesforceSourceConfig: z.object({
       excludeObjects: z.object({
         objects: z.array(z.object({
-          fields: z.array(z.object({
-            dataType: z.string().describe("The data type.").optional(),
-            name: z.string().describe("The field name.").optional(),
-            nillable: z.boolean().describe(
-              "Indicates whether the field can accept nil values.",
-            ).optional(),
-          })).describe(
+          fields: z.unknown().describe(
             "Salesforce fields. When unspecified as part of include objects, includes everything, when unspecified as part of exclude objects, excludes nothing.",
           ).optional(),
-          objectName: z.string().describe("The object name.").optional(),
+          objectName: z.unknown().describe("The object name.").optional(),
         })).describe("Salesforce objects in the database server.").optional(),
       }).describe("Salesforce organization structure.").optional(),
       includeObjects: z.object({
         objects: z.array(z.object({
-          fields: z.array(z.object({
-            dataType: z.string().describe("The data type.").optional(),
-            name: z.string().describe("The field name.").optional(),
-            nillable: z.boolean().describe(
-              "Indicates whether the field can accept nil values.",
-            ).optional(),
-          })).describe(
+          fields: z.unknown().describe(
             "Salesforce fields. When unspecified as part of include objects, includes everything, when unspecified as part of exclude objects, excludes nothing.",
           ).optional(),
-          objectName: z.string().describe("The object name.").optional(),
+          objectName: z.unknown().describe("The object name.").optional(),
         })).describe("Salesforce objects in the database server.").optional(),
       }).describe("Salesforce organization structure.").optional(),
       pollingInterval: z.string().describe(
@@ -765,22 +478,10 @@ const GlobalArgsSchema = z.object({
       ).optional(),
       excludeObjects: z.object({
         schemas: z.array(z.object({
-          schema: z.string().describe("Required. The schema name.").optional(),
-          tables: z.array(z.object({
-            columns: z.array(z.object({
-              column: z.string().describe("Required. The column name.")
-                .optional(),
-              dataType: z.string().describe("Optional. Spanner data type.")
-                .optional(),
-              isPrimaryKey: z.boolean().describe(
-                "Optional. Whether or not the column is a primary key.",
-              ).optional(),
-              ordinalPosition: z.string().describe(
-                "Optional. The ordinal position of the column in the table.",
-              ).optional(),
-            })).describe("Optional. Spanner columns in the table.").optional(),
-            table: z.string().describe("Required. The table name.").optional(),
-          })).describe("Optional. Spanner tables in the schema.").optional(),
+          schema: z.unknown().describe("Required. The schema name.").optional(),
+          tables: z.unknown().describe(
+            "Optional. Spanner tables in the schema.",
+          ).optional(),
         })).describe("Optional. Spanner schemas in the database.").optional(),
       }).describe("Spanner database structure.").optional(),
       fgacRole: z.string().describe(
@@ -788,22 +489,10 @@ const GlobalArgsSchema = z.object({
       ).optional(),
       includeObjects: z.object({
         schemas: z.array(z.object({
-          schema: z.string().describe("Required. The schema name.").optional(),
-          tables: z.array(z.object({
-            columns: z.array(z.object({
-              column: z.string().describe("Required. The column name.")
-                .optional(),
-              dataType: z.string().describe("Optional. Spanner data type.")
-                .optional(),
-              isPrimaryKey: z.boolean().describe(
-                "Optional. Whether or not the column is a primary key.",
-              ).optional(),
-              ordinalPosition: z.string().describe(
-                "Optional. The ordinal position of the column in the table.",
-              ).optional(),
-            })).describe("Optional. Spanner columns in the table.").optional(),
-            table: z.string().describe("Required. The table name.").optional(),
-          })).describe("Optional. Spanner tables in the schema.").optional(),
+          schema: z.unknown().describe("Required. The schema name.").optional(),
+          tables: z.unknown().describe(
+            "Optional. Spanner tables in the schema.",
+          ).optional(),
         })).describe("Optional. Spanner schemas in the database.").optional(),
       }).describe("Spanner database structure.").optional(),
       maxConcurrentBackfillTasks: z.number().int().describe(
@@ -827,58 +516,14 @@ const GlobalArgsSchema = z.object({
       ).optional(),
       excludeObjects: z.object({
         schemas: z.array(z.object({
-          schema: z.string().describe("The schema name.").optional(),
-          tables: z.array(z.object({
-            columns: z.array(z.object({
-              column: z.string().describe("The column name.").optional(),
-              dataType: z.string().describe("The SQLServer data type.")
-                .optional(),
-              length: z.number().int().describe("Column length.").optional(),
-              nullable: z.boolean().describe(
-                "Whether or not the column can accept a null value.",
-              ).optional(),
-              ordinalPosition: z.number().int().describe(
-                "The ordinal position of the column in the table.",
-              ).optional(),
-              precision: z.number().int().describe("Column precision.")
-                .optional(),
-              primaryKey: z.boolean().describe(
-                "Whether or not the column represents a primary key.",
-              ).optional(),
-              scale: z.number().int().describe("Column scale.").optional(),
-            })).describe(
-              "SQLServer columns in the schema. When unspecified as part of include/exclude objects, includes/excludes everything.",
-            ).optional(),
-            table: z.string().describe("The table name.").optional(),
-          })).describe("Tables in the schema.").optional(),
+          schema: z.unknown().describe("The schema name.").optional(),
+          tables: z.unknown().describe("Tables in the schema.").optional(),
         })).describe("SQLServer schemas in the database server.").optional(),
       }).describe("SQLServer database structure.").optional(),
       includeObjects: z.object({
         schemas: z.array(z.object({
-          schema: z.string().describe("The schema name.").optional(),
-          tables: z.array(z.object({
-            columns: z.array(z.object({
-              column: z.string().describe("The column name.").optional(),
-              dataType: z.string().describe("The SQLServer data type.")
-                .optional(),
-              length: z.number().int().describe("Column length.").optional(),
-              nullable: z.boolean().describe(
-                "Whether or not the column can accept a null value.",
-              ).optional(),
-              ordinalPosition: z.number().int().describe(
-                "The ordinal position of the column in the table.",
-              ).optional(),
-              precision: z.number().int().describe("Column precision.")
-                .optional(),
-              primaryKey: z.boolean().describe(
-                "Whether or not the column represents a primary key.",
-              ).optional(),
-              scale: z.number().int().describe("Column scale.").optional(),
-            })).describe(
-              "SQLServer columns in the schema. When unspecified as part of include/exclude objects, includes/excludes everything.",
-            ).optional(),
-            table: z.string().describe("The table name.").optional(),
-          })).describe("Tables in the schema.").optional(),
+          schema: z.unknown().describe("The schema name.").optional(),
+          tables: z.unknown().describe("Tables in the schema.").optional(),
         })).describe("SQLServer schemas in the database server.").optional(),
       }).describe("SQLServer database structure.").optional(),
       maxConcurrentBackfillTasks: z.number().int().describe(
@@ -920,111 +565,44 @@ const StateSchema = z.object({
   backfillAll: z.object({
     mongodbExcludedObjects: z.object({
       databases: z.array(z.object({
-        collections: z.array(z.object({
-          collection: z.string(),
-          fields: z.array(z.object({
-            field: z.string(),
-          })),
-        })),
+        collections: z.array(z.unknown()),
         database: z.string(),
       })),
     }),
     mysqlExcludedObjects: z.object({
       mysqlDatabases: z.array(z.object({
         database: z.string(),
-        mysqlTables: z.array(z.object({
-          mysqlColumns: z.array(z.object({
-            collation: z.string(),
-            column: z.string(),
-            dataType: z.string(),
-            length: z.number(),
-            nullable: z.boolean(),
-            ordinalPosition: z.number(),
-            precision: z.number(),
-            primaryKey: z.boolean(),
-            scale: z.number(),
-          })),
-          table: z.string(),
-        })),
+        mysqlTables: z.array(z.unknown()),
       })),
     }),
     oracleExcludedObjects: z.object({
       oracleSchemas: z.array(z.object({
-        oracleTables: z.array(z.object({
-          oracleColumns: z.array(z.object({
-            column: z.string(),
-            dataType: z.string(),
-            encoding: z.string(),
-            length: z.number(),
-            nullable: z.boolean(),
-            ordinalPosition: z.number(),
-            precision: z.number(),
-            primaryKey: z.boolean(),
-            scale: z.number(),
-          })),
-          table: z.string(),
-        })),
+        oracleTables: z.array(z.unknown()),
         schema: z.string(),
       })),
     }),
     postgresqlExcludedObjects: z.object({
       postgresqlSchemas: z.array(z.object({
-        postgresqlTables: z.array(z.object({
-          postgresqlColumns: z.array(z.object({
-            column: z.string(),
-            dataType: z.string(),
-            length: z.number(),
-            nullable: z.boolean(),
-            ordinalPosition: z.number(),
-            precision: z.number(),
-            primaryKey: z.boolean(),
-            scale: z.number(),
-          })),
-          table: z.string(),
-        })),
+        postgresqlTables: z.array(z.unknown()),
         schema: z.string(),
       })),
     }),
     salesforceExcludedObjects: z.object({
       objects: z.array(z.object({
-        fields: z.array(z.object({
-          dataType: z.string(),
-          name: z.string(),
-          nillable: z.boolean(),
-        })),
+        fields: z.array(z.unknown()),
         objectName: z.string(),
       })),
     }),
     spannerExcludedObjects: z.object({
       schemas: z.array(z.object({
         schema: z.string(),
-        tables: z.array(z.object({
-          columns: z.array(z.object({
-            column: z.string(),
-            dataType: z.string(),
-            isPrimaryKey: z.boolean(),
-            ordinalPosition: z.string(),
-          })),
-          table: z.string(),
-        })),
+        tables: z.array(z.unknown()),
       })),
     }),
     sqlServerExcludedObjects: z.object({
       schemas: z.array(z.object({
         schema: z.string(),
-        tables: z.array(z.object({
-          columns: z.array(z.object({
-            column: z.string(),
-            dataType: z.string(),
-            length: z.number(),
-            nullable: z.boolean(),
-            ordinalPosition: z.number(),
-            precision: z.number(),
-            primaryKey: z.boolean(),
-            scale: z.number(),
-          })),
-          table: z.string(),
-        })),
+        tables: z.array(z.unknown()),
       })),
     }),
   }).optional(),
@@ -1081,53 +659,43 @@ const StateSchema = z.object({
   ruleSets: z.array(z.object({
     customizationRules: z.array(z.object({
       bigqueryClustering: z.object({
-        columns: z.array(z.string()),
+        columns: z.unknown(),
       }),
       bigqueryPartitioning: z.object({
-        ingestionTimePartition: z.object({
-          partitioningTimeGranularity: z.string(),
-        }),
-        integerRangePartition: z.object({
-          column: z.string(),
-          end: z.string(),
-          interval: z.string(),
-          start: z.string(),
-        }),
-        requirePartitionFilter: z.boolean(),
-        timeUnitPartition: z.object({
-          column: z.string(),
-          partitioningTimeGranularity: z.string(),
-        }),
+        ingestionTimePartition: z.unknown(),
+        integerRangePartition: z.unknown(),
+        requirePartitionFilter: z.unknown(),
+        timeUnitPartition: z.unknown(),
       }),
     })),
     objectFilter: z.object({
       sourceObjectIdentifier: z.object({
         mongodbIdentifier: z.object({
-          collection: z.string(),
-          database: z.string(),
+          collection: z.unknown(),
+          database: z.unknown(),
         }),
         mysqlIdentifier: z.object({
-          database: z.string(),
-          table: z.string(),
+          database: z.unknown(),
+          table: z.unknown(),
         }),
         oracleIdentifier: z.object({
-          schema: z.string(),
-          table: z.string(),
+          schema: z.unknown(),
+          table: z.unknown(),
         }),
         postgresqlIdentifier: z.object({
-          schema: z.string(),
-          table: z.string(),
+          schema: z.unknown(),
+          table: z.unknown(),
         }),
         salesforceIdentifier: z.object({
-          objectName: z.string(),
+          objectName: z.unknown(),
         }),
         spannerIdentifier: z.object({
-          schema: z.string(),
-          table: z.string(),
+          schema: z.unknown(),
+          table: z.unknown(),
         }),
         sqlServerIdentifier: z.object({
-          schema: z.string(),
-          table: z.string(),
+          schema: z.unknown(),
+          table: z.unknown(),
         }),
       }),
     }),
@@ -1138,24 +706,14 @@ const StateSchema = z.object({
     mongodbSourceConfig: z.object({
       excludeObjects: z.object({
         databases: z.array(z.object({
-          collections: z.array(z.object({
-            collection: z.string(),
-            fields: z.array(z.object({
-              field: z.string(),
-            })),
-          })),
-          database: z.string(),
+          collections: z.unknown(),
+          database: z.unknown(),
         })),
       }),
       includeObjects: z.object({
         databases: z.array(z.object({
-          collections: z.array(z.object({
-            collection: z.string(),
-            fields: z.array(z.object({
-              field: z.string(),
-            })),
-          })),
-          database: z.string(),
+          collections: z.unknown(),
+          database: z.unknown(),
         })),
       }),
       jsonMode: z.string(),
@@ -1165,41 +723,15 @@ const StateSchema = z.object({
       binaryLogPosition: z.object({}),
       excludeObjects: z.object({
         mysqlDatabases: z.array(z.object({
-          database: z.string(),
-          mysqlTables: z.array(z.object({
-            mysqlColumns: z.array(z.object({
-              collation: z.string(),
-              column: z.string(),
-              dataType: z.string(),
-              length: z.number(),
-              nullable: z.boolean(),
-              ordinalPosition: z.number(),
-              precision: z.number(),
-              primaryKey: z.boolean(),
-              scale: z.number(),
-            })),
-            table: z.string(),
-          })),
+          database: z.unknown(),
+          mysqlTables: z.unknown(),
         })),
       }),
       gtid: z.object({}),
       includeObjects: z.object({
         mysqlDatabases: z.array(z.object({
-          database: z.string(),
-          mysqlTables: z.array(z.object({
-            mysqlColumns: z.array(z.object({
-              collation: z.string(),
-              column: z.string(),
-              dataType: z.string(),
-              length: z.number(),
-              nullable: z.boolean(),
-              ordinalPosition: z.number(),
-              precision: z.number(),
-              primaryKey: z.boolean(),
-              scale: z.number(),
-            })),
-            table: z.string(),
-          })),
+          database: z.unknown(),
+          mysqlTables: z.unknown(),
         })),
       }),
       maxConcurrentBackfillTasks: z.number(),
@@ -1216,40 +748,14 @@ const StateSchema = z.object({
       dropLargeObjects: z.object({}),
       excludeObjects: z.object({
         oracleSchemas: z.array(z.object({
-          oracleTables: z.array(z.object({
-            oracleColumns: z.array(z.object({
-              column: z.string(),
-              dataType: z.string(),
-              encoding: z.string(),
-              length: z.number(),
-              nullable: z.boolean(),
-              ordinalPosition: z.number(),
-              precision: z.number(),
-              primaryKey: z.boolean(),
-              scale: z.number(),
-            })),
-            table: z.string(),
-          })),
-          schema: z.string(),
+          oracleTables: z.unknown(),
+          schema: z.unknown(),
         })),
       }),
       includeObjects: z.object({
         oracleSchemas: z.array(z.object({
-          oracleTables: z.array(z.object({
-            oracleColumns: z.array(z.object({
-              column: z.string(),
-              dataType: z.string(),
-              encoding: z.string(),
-              length: z.number(),
-              nullable: z.boolean(),
-              ordinalPosition: z.number(),
-              precision: z.number(),
-              primaryKey: z.boolean(),
-              scale: z.number(),
-            })),
-            table: z.string(),
-          })),
-          schema: z.string(),
+          oracleTables: z.unknown(),
+          schema: z.unknown(),
         })),
       }),
       logMiner: z.object({}),
@@ -1260,38 +766,14 @@ const StateSchema = z.object({
     postgresqlSourceConfig: z.object({
       excludeObjects: z.object({
         postgresqlSchemas: z.array(z.object({
-          postgresqlTables: z.array(z.object({
-            postgresqlColumns: z.array(z.object({
-              column: z.string(),
-              dataType: z.string(),
-              length: z.number(),
-              nullable: z.boolean(),
-              ordinalPosition: z.number(),
-              precision: z.number(),
-              primaryKey: z.boolean(),
-              scale: z.number(),
-            })),
-            table: z.string(),
-          })),
-          schema: z.string(),
+          postgresqlTables: z.unknown(),
+          schema: z.unknown(),
         })),
       }),
       includeObjects: z.object({
         postgresqlSchemas: z.array(z.object({
-          postgresqlTables: z.array(z.object({
-            postgresqlColumns: z.array(z.object({
-              column: z.string(),
-              dataType: z.string(),
-              length: z.number(),
-              nullable: z.boolean(),
-              ordinalPosition: z.number(),
-              precision: z.number(),
-              primaryKey: z.boolean(),
-              scale: z.number(),
-            })),
-            table: z.string(),
-          })),
-          schema: z.string(),
+          postgresqlTables: z.unknown(),
+          schema: z.unknown(),
         })),
       }),
       maxConcurrentBackfillTasks: z.number(),
@@ -1301,22 +783,14 @@ const StateSchema = z.object({
     salesforceSourceConfig: z.object({
       excludeObjects: z.object({
         objects: z.array(z.object({
-          fields: z.array(z.object({
-            dataType: z.string(),
-            name: z.string(),
-            nillable: z.boolean(),
-          })),
-          objectName: z.string(),
+          fields: z.unknown(),
+          objectName: z.unknown(),
         })),
       }),
       includeObjects: z.object({
         objects: z.array(z.object({
-          fields: z.array(z.object({
-            dataType: z.string(),
-            name: z.string(),
-            nillable: z.boolean(),
-          })),
-          objectName: z.string(),
+          fields: z.unknown(),
+          objectName: z.unknown(),
         })),
       }),
       pollingInterval: z.string(),
@@ -1327,31 +801,15 @@ const StateSchema = z.object({
       changeStreamName: z.string(),
       excludeObjects: z.object({
         schemas: z.array(z.object({
-          schema: z.string(),
-          tables: z.array(z.object({
-            columns: z.array(z.object({
-              column: z.string(),
-              dataType: z.string(),
-              isPrimaryKey: z.boolean(),
-              ordinalPosition: z.string(),
-            })),
-            table: z.string(),
-          })),
+          schema: z.unknown(),
+          tables: z.unknown(),
         })),
       }),
       fgacRole: z.string(),
       includeObjects: z.object({
         schemas: z.array(z.object({
-          schema: z.string(),
-          tables: z.array(z.object({
-            columns: z.array(z.object({
-              column: z.string(),
-              dataType: z.string(),
-              isPrimaryKey: z.boolean(),
-              ordinalPosition: z.string(),
-            })),
-            table: z.string(),
-          })),
+          schema: z.unknown(),
+          tables: z.unknown(),
         })),
       }),
       maxConcurrentBackfillTasks: z.number(),
@@ -1362,38 +820,14 @@ const StateSchema = z.object({
       changeTables: z.object({}),
       excludeObjects: z.object({
         schemas: z.array(z.object({
-          schema: z.string(),
-          tables: z.array(z.object({
-            columns: z.array(z.object({
-              column: z.string(),
-              dataType: z.string(),
-              length: z.number(),
-              nullable: z.boolean(),
-              ordinalPosition: z.number(),
-              precision: z.number(),
-              primaryKey: z.boolean(),
-              scale: z.number(),
-            })),
-            table: z.string(),
-          })),
+          schema: z.unknown(),
+          tables: z.unknown(),
         })),
       }),
       includeObjects: z.object({
         schemas: z.array(z.object({
-          schema: z.string(),
-          tables: z.array(z.object({
-            columns: z.array(z.object({
-              column: z.string(),
-              dataType: z.string(),
-              length: z.number(),
-              nullable: z.boolean(),
-              ordinalPosition: z.number(),
-              precision: z.number(),
-              primaryKey: z.boolean(),
-              scale: z.number(),
-            })),
-            table: z.string(),
-          })),
+          schema: z.unknown(),
+          tables: z.unknown(),
         })),
       }),
       maxConcurrentBackfillTasks: z.number(),
@@ -1412,111 +846,37 @@ const InputsSchema = z.object({
   backfillAll: z.object({
     mongodbExcludedObjects: z.object({
       databases: z.array(z.object({
-        collections: z.array(z.object({
-          collection: z.string().describe("The collection name.").optional(),
-          fields: z.array(z.object({
-            field: z.string().describe("The field name.").optional(),
-          })).describe("Fields in the collection.").optional(),
-        })).describe("Collections in the database.").optional(),
+        collections: z.array(z.unknown()).describe(
+          "Collections in the database.",
+        ).optional(),
         database: z.string().describe("The database name.").optional(),
       })).describe("MongoDB databases in the cluster.").optional(),
     }).describe("MongoDB Cluster structure.").optional(),
     mysqlExcludedObjects: z.object({
       mysqlDatabases: z.array(z.object({
         database: z.string().describe("The database name.").optional(),
-        mysqlTables: z.array(z.object({
-          mysqlColumns: z.array(z.object({
-            collation: z.string().describe("Column collation.").optional(),
-            column: z.string().describe("The column name.").optional(),
-            dataType: z.string().describe(
-              "The MySQL data type. Full data types list can be found here: https://dev.mysql.com/doc/refman/8.0/en/data-types.html",
-            ).optional(),
-            length: z.number().int().describe("Column length.").optional(),
-            nullable: z.boolean().describe(
-              "Whether or not the column can accept a null value.",
-            ).optional(),
-            ordinalPosition: z.number().int().describe(
-              "The ordinal position of the column in the table.",
-            ).optional(),
-            precision: z.number().int().describe("Column precision.")
-              .optional(),
-            primaryKey: z.boolean().describe(
-              "Whether or not the column represents a primary key.",
-            ).optional(),
-            scale: z.number().int().describe("Column scale.").optional(),
-          })).describe(
-            "MySQL columns in the database. When unspecified as part of include/exclude objects, includes/excludes everything.",
-          ).optional(),
-          table: z.string().describe("The table name.").optional(),
-        })).describe("Tables in the database.").optional(),
+        mysqlTables: z.array(z.unknown()).describe("Tables in the database.")
+          .optional(),
       })).describe("Mysql databases on the server").optional(),
     }).describe("MySQL database structure").optional(),
     oracleExcludedObjects: z.object({
       oracleSchemas: z.array(z.object({
-        oracleTables: z.array(z.object({
-          oracleColumns: z.array(z.object({
-            column: z.string().describe("The column name.").optional(),
-            dataType: z.string().describe("The Oracle data type.").optional(),
-            encoding: z.string().describe("Column encoding.").optional(),
-            length: z.number().int().describe("Column length.").optional(),
-            nullable: z.boolean().describe(
-              "Whether or not the column can accept a null value.",
-            ).optional(),
-            ordinalPosition: z.number().int().describe(
-              "The ordinal position of the column in the table.",
-            ).optional(),
-            precision: z.number().int().describe("Column precision.")
-              .optional(),
-            primaryKey: z.boolean().describe(
-              "Whether or not the column represents a primary key.",
-            ).optional(),
-            scale: z.number().int().describe("Column scale.").optional(),
-          })).describe(
-            "Oracle columns in the schema. When unspecified as part of include/exclude objects, includes/excludes everything.",
-          ).optional(),
-          table: z.string().describe("The table name.").optional(),
-        })).describe("Tables in the schema.").optional(),
+        oracleTables: z.array(z.unknown()).describe("Tables in the schema.")
+          .optional(),
         schema: z.string().describe("The schema name.").optional(),
       })).describe("Oracle schemas/databases in the database server.")
         .optional(),
     }).describe("Oracle database structure.").optional(),
     postgresqlExcludedObjects: z.object({
       postgresqlSchemas: z.array(z.object({
-        postgresqlTables: z.array(z.object({
-          postgresqlColumns: z.array(z.object({
-            column: z.string().describe("The column name.").optional(),
-            dataType: z.string().describe("The PostgreSQL data type.")
-              .optional(),
-            length: z.number().int().describe("Column length.").optional(),
-            nullable: z.boolean().describe(
-              "Whether or not the column can accept a null value.",
-            ).optional(),
-            ordinalPosition: z.number().int().describe(
-              "The ordinal position of the column in the table.",
-            ).optional(),
-            precision: z.number().int().describe("Column precision.")
-              .optional(),
-            primaryKey: z.boolean().describe(
-              "Whether or not the column represents a primary key.",
-            ).optional(),
-            scale: z.number().int().describe("Column scale.").optional(),
-          })).describe(
-            "PostgreSQL columns in the schema. When unspecified as part of include/exclude objects, includes/excludes everything.",
-          ).optional(),
-          table: z.string().describe("The table name.").optional(),
-        })).describe("Tables in the schema.").optional(),
+        postgresqlTables: z.array(z.unknown()).describe("Tables in the schema.")
+          .optional(),
         schema: z.string().describe("The schema name.").optional(),
       })).describe("PostgreSQL schemas in the database server.").optional(),
     }).describe("PostgreSQL database structure.").optional(),
     salesforceExcludedObjects: z.object({
       objects: z.array(z.object({
-        fields: z.array(z.object({
-          dataType: z.string().describe("The data type.").optional(),
-          name: z.string().describe("The field name.").optional(),
-          nillable: z.boolean().describe(
-            "Indicates whether the field can accept nil values.",
-          ).optional(),
-        })).describe(
+        fields: z.array(z.unknown()).describe(
           "Salesforce fields. When unspecified as part of include objects, includes everything, when unspecified as part of exclude objects, excludes nothing.",
         ).optional(),
         objectName: z.string().describe("The object name.").optional(),
@@ -1525,49 +885,16 @@ const InputsSchema = z.object({
     spannerExcludedObjects: z.object({
       schemas: z.array(z.object({
         schema: z.string().describe("Required. The schema name.").optional(),
-        tables: z.array(z.object({
-          columns: z.array(z.object({
-            column: z.string().describe("Required. The column name.")
-              .optional(),
-            dataType: z.string().describe("Optional. Spanner data type.")
-              .optional(),
-            isPrimaryKey: z.boolean().describe(
-              "Optional. Whether or not the column is a primary key.",
-            ).optional(),
-            ordinalPosition: z.string().describe(
-              "Optional. The ordinal position of the column in the table.",
-            ).optional(),
-          })).describe("Optional. Spanner columns in the table.").optional(),
-          table: z.string().describe("Required. The table name.").optional(),
-        })).describe("Optional. Spanner tables in the schema.").optional(),
+        tables: z.array(z.unknown()).describe(
+          "Optional. Spanner tables in the schema.",
+        ).optional(),
       })).describe("Optional. Spanner schemas in the database.").optional(),
     }).describe("Spanner database structure.").optional(),
     sqlServerExcludedObjects: z.object({
       schemas: z.array(z.object({
         schema: z.string().describe("The schema name.").optional(),
-        tables: z.array(z.object({
-          columns: z.array(z.object({
-            column: z.string().describe("The column name.").optional(),
-            dataType: z.string().describe("The SQLServer data type.")
-              .optional(),
-            length: z.number().int().describe("Column length.").optional(),
-            nullable: z.boolean().describe(
-              "Whether or not the column can accept a null value.",
-            ).optional(),
-            ordinalPosition: z.number().int().describe(
-              "The ordinal position of the column in the table.",
-            ).optional(),
-            precision: z.number().int().describe("Column precision.")
-              .optional(),
-            primaryKey: z.boolean().describe(
-              "Whether or not the column represents a primary key.",
-            ).optional(),
-            scale: z.number().int().describe("Column scale.").optional(),
-          })).describe(
-            "SQLServer columns in the schema. When unspecified as part of include/exclude objects, includes/excludes everything.",
-          ).optional(),
-          table: z.string().describe("The table name.").optional(),
-        })).describe("Tables in the schema.").optional(),
+        tables: z.array(z.unknown()).describe("Tables in the schema.")
+          .optional(),
       })).describe("SQLServer schemas in the database server.").optional(),
     }).describe("SQLServer database structure.").optional(),
   }).describe(
@@ -1666,51 +993,21 @@ const InputsSchema = z.object({
   ruleSets: z.array(z.object({
     customizationRules: z.array(z.object({
       bigqueryClustering: z.object({
-        columns: z.array(z.string()).describe(
+        columns: z.unknown().describe(
           "Required. Column names to set as clustering columns.",
         ).optional(),
       }).describe("BigQuery clustering configuration.").optional(),
       bigqueryPartitioning: z.object({
-        ingestionTimePartition: z.object({
-          partitioningTimeGranularity: z.enum([
-            "PARTITIONING_TIME_GRANULARITY_UNSPECIFIED",
-            "PARTITIONING_TIME_GRANULARITY_HOUR",
-            "PARTITIONING_TIME_GRANULARITY_DAY",
-            "PARTITIONING_TIME_GRANULARITY_MONTH",
-            "PARTITIONING_TIME_GRANULARITY_YEAR",
-          ]).describe("Optional. Partition granularity").optional(),
-        }).describe(
+        ingestionTimePartition: z.unknown().describe(
           "Ingestion time partitioning. see https://cloud.google.com/bigquery/docs/partitioned-tables#ingestion_time",
         ).optional(),
-        integerRangePartition: z.object({
-          column: z.string().describe("Required. The partitioning column.")
-            .optional(),
-          end: z.string().describe(
-            "Required. The ending value for range partitioning (exclusive).",
-          ).optional(),
-          interval: z.string().describe(
-            "Required. The interval of each range within the partition.",
-          ).optional(),
-          start: z.string().describe(
-            "Required. The starting value for range partitioning (inclusive).",
-          ).optional(),
-        }).describe(
+        integerRangePartition: z.unknown().describe(
           "Integer range partitioning. see https://cloud.google.com/bigquery/docs/partitioned-tables#integer_range",
         ).optional(),
-        requirePartitionFilter: z.boolean().describe(
+        requirePartitionFilter: z.unknown().describe(
           "Optional. If true, queries over the table require a partition filter.",
         ).optional(),
-        timeUnitPartition: z.object({
-          column: z.string().describe("Required. The partitioning column.")
-            .optional(),
-          partitioningTimeGranularity: z.enum([
-            "PARTITIONING_TIME_GRANULARITY_UNSPECIFIED",
-            "PARTITIONING_TIME_GRANULARITY_HOUR",
-            "PARTITIONING_TIME_GRANULARITY_DAY",
-            "PARTITIONING_TIME_GRANULARITY_MONTH",
-            "PARTITIONING_TIME_GRANULARITY_YEAR",
-          ]).describe("Optional. Partition granularity.").optional(),
-        }).describe(
+        timeUnitPartition: z.unknown().describe(
           "Time unit column partitioning. see https://cloud.google.com/bigquery/docs/partitioned-tables#date_timestamp_partitioned_tables",
         ).optional(),
       }).describe("BigQuery partitioning configuration.").optional(),
@@ -1718,35 +1015,35 @@ const InputsSchema = z.object({
     objectFilter: z.object({
       sourceObjectIdentifier: z.object({
         mongodbIdentifier: z.object({
-          collection: z.string().describe("Required. The collection name.")
+          collection: z.unknown().describe("Required. The collection name.")
             .optional(),
-          database: z.string().describe("Required. The database name.")
+          database: z.unknown().describe("Required. The database name.")
             .optional(),
         }).describe("MongoDB data source object identifier.").optional(),
         mysqlIdentifier: z.object({
-          database: z.string().describe("Required. The database name.")
+          database: z.unknown().describe("Required. The database name.")
             .optional(),
-          table: z.string().describe("Required. The table name.").optional(),
+          table: z.unknown().describe("Required. The table name.").optional(),
         }).describe("Mysql data source object identifier.").optional(),
         oracleIdentifier: z.object({
-          schema: z.string().describe("Required. The schema name.").optional(),
-          table: z.string().describe("Required. The table name.").optional(),
+          schema: z.unknown().describe("Required. The schema name.").optional(),
+          table: z.unknown().describe("Required. The table name.").optional(),
         }).describe("Oracle data source object identifier.").optional(),
         postgresqlIdentifier: z.object({
-          schema: z.string().describe("Required. The schema name.").optional(),
-          table: z.string().describe("Required. The table name.").optional(),
+          schema: z.unknown().describe("Required. The schema name.").optional(),
+          table: z.unknown().describe("Required. The table name.").optional(),
         }).describe("PostgreSQL data source object identifier.").optional(),
         salesforceIdentifier: z.object({
-          objectName: z.string().describe("Required. The object name.")
+          objectName: z.unknown().describe("Required. The object name.")
             .optional(),
         }).describe("Salesforce data source object identifier.").optional(),
         spannerIdentifier: z.object({
-          schema: z.string().describe("Optional. The schema name.").optional(),
-          table: z.string().describe("Required. The table name.").optional(),
+          schema: z.unknown().describe("Optional. The schema name.").optional(),
+          table: z.unknown().describe("Required. The table name.").optional(),
         }).describe("Spanner data source object identifier.").optional(),
         sqlServerIdentifier: z.object({
-          schema: z.string().describe("Required. The schema name.").optional(),
-          table: z.string().describe("Required. The table name.").optional(),
+          schema: z.unknown().describe("Required. The schema name.").optional(),
+          table: z.unknown().describe("Required. The table name.").optional(),
         }).describe("SQLServer data source object identifier.").optional(),
       }).describe("Represents an identifier of an object in the data source.")
         .optional(),
@@ -1756,24 +1053,16 @@ const InputsSchema = z.object({
     mongodbSourceConfig: z.object({
       excludeObjects: z.object({
         databases: z.array(z.object({
-          collections: z.array(z.object({
-            collection: z.string().describe("The collection name.").optional(),
-            fields: z.array(z.object({
-              field: z.string().describe("The field name.").optional(),
-            })).describe("Fields in the collection.").optional(),
-          })).describe("Collections in the database.").optional(),
-          database: z.string().describe("The database name.").optional(),
+          collections: z.unknown().describe("Collections in the database.")
+            .optional(),
+          database: z.unknown().describe("The database name.").optional(),
         })).describe("MongoDB databases in the cluster.").optional(),
       }).describe("MongoDB Cluster structure.").optional(),
       includeObjects: z.object({
         databases: z.array(z.object({
-          collections: z.array(z.object({
-            collection: z.string().describe("The collection name.").optional(),
-            fields: z.array(z.object({
-              field: z.string().describe("The field name.").optional(),
-            })).describe("Fields in the collection.").optional(),
-          })).describe("Collections in the database.").optional(),
-          database: z.string().describe("The database name.").optional(),
+          collections: z.unknown().describe("Collections in the database.")
+            .optional(),
+          database: z.unknown().describe("The database name.").optional(),
         })).describe("MongoDB databases in the cluster.").optional(),
       }).describe("MongoDB Cluster structure.").optional(),
       jsonMode: z.enum(["MONGODB_JSON_MODE_UNSPECIFIED", "STRICT", "CANONICAL"])
@@ -1790,63 +1079,17 @@ const InputsSchema = z.object({
       ).optional(),
       excludeObjects: z.object({
         mysqlDatabases: z.array(z.object({
-          database: z.string().describe("The database name.").optional(),
-          mysqlTables: z.array(z.object({
-            mysqlColumns: z.array(z.object({
-              collation: z.string().describe("Column collation.").optional(),
-              column: z.string().describe("The column name.").optional(),
-              dataType: z.string().describe(
-                "The MySQL data type. Full data types list can be found here: https://dev.mysql.com/doc/refman/8.0/en/data-types.html",
-              ).optional(),
-              length: z.number().int().describe("Column length.").optional(),
-              nullable: z.boolean().describe(
-                "Whether or not the column can accept a null value.",
-              ).optional(),
-              ordinalPosition: z.number().int().describe(
-                "The ordinal position of the column in the table.",
-              ).optional(),
-              precision: z.number().int().describe("Column precision.")
-                .optional(),
-              primaryKey: z.boolean().describe(
-                "Whether or not the column represents a primary key.",
-              ).optional(),
-              scale: z.number().int().describe("Column scale.").optional(),
-            })).describe(
-              "MySQL columns in the database. When unspecified as part of include/exclude objects, includes/excludes everything.",
-            ).optional(),
-            table: z.string().describe("The table name.").optional(),
-          })).describe("Tables in the database.").optional(),
+          database: z.unknown().describe("The database name.").optional(),
+          mysqlTables: z.unknown().describe("Tables in the database.")
+            .optional(),
         })).describe("Mysql databases on the server").optional(),
       }).describe("MySQL database structure").optional(),
       gtid: z.object({}).describe("Use GTID based replication.").optional(),
       includeObjects: z.object({
         mysqlDatabases: z.array(z.object({
-          database: z.string().describe("The database name.").optional(),
-          mysqlTables: z.array(z.object({
-            mysqlColumns: z.array(z.object({
-              collation: z.string().describe("Column collation.").optional(),
-              column: z.string().describe("The column name.").optional(),
-              dataType: z.string().describe(
-                "The MySQL data type. Full data types list can be found here: https://dev.mysql.com/doc/refman/8.0/en/data-types.html",
-              ).optional(),
-              length: z.number().int().describe("Column length.").optional(),
-              nullable: z.boolean().describe(
-                "Whether or not the column can accept a null value.",
-              ).optional(),
-              ordinalPosition: z.number().int().describe(
-                "The ordinal position of the column in the table.",
-              ).optional(),
-              precision: z.number().int().describe("Column precision.")
-                .optional(),
-              primaryKey: z.boolean().describe(
-                "Whether or not the column represents a primary key.",
-              ).optional(),
-              scale: z.number().int().describe("Column scale.").optional(),
-            })).describe(
-              "MySQL columns in the database. When unspecified as part of include/exclude objects, includes/excludes everything.",
-            ).optional(),
-            table: z.string().describe("The table name.").optional(),
-          })).describe("Tables in the database.").optional(),
+          database: z.unknown().describe("The database name.").optional(),
+          mysqlTables: z.unknown().describe("Tables in the database.")
+            .optional(),
         })).describe("Mysql databases on the server").optional(),
       }).describe("MySQL database structure").optional(),
       maxConcurrentBackfillTasks: z.number().int().describe(
@@ -1879,59 +1122,17 @@ const InputsSchema = z.object({
       ).optional(),
       excludeObjects: z.object({
         oracleSchemas: z.array(z.object({
-          oracleTables: z.array(z.object({
-            oracleColumns: z.array(z.object({
-              column: z.string().describe("The column name.").optional(),
-              dataType: z.string().describe("The Oracle data type.").optional(),
-              encoding: z.string().describe("Column encoding.").optional(),
-              length: z.number().int().describe("Column length.").optional(),
-              nullable: z.boolean().describe(
-                "Whether or not the column can accept a null value.",
-              ).optional(),
-              ordinalPosition: z.number().int().describe(
-                "The ordinal position of the column in the table.",
-              ).optional(),
-              precision: z.number().int().describe("Column precision.")
-                .optional(),
-              primaryKey: z.boolean().describe(
-                "Whether or not the column represents a primary key.",
-              ).optional(),
-              scale: z.number().int().describe("Column scale.").optional(),
-            })).describe(
-              "Oracle columns in the schema. When unspecified as part of include/exclude objects, includes/excludes everything.",
-            ).optional(),
-            table: z.string().describe("The table name.").optional(),
-          })).describe("Tables in the schema.").optional(),
-          schema: z.string().describe("The schema name.").optional(),
+          oracleTables: z.unknown().describe("Tables in the schema.")
+            .optional(),
+          schema: z.unknown().describe("The schema name.").optional(),
         })).describe("Oracle schemas/databases in the database server.")
           .optional(),
       }).describe("Oracle database structure.").optional(),
       includeObjects: z.object({
         oracleSchemas: z.array(z.object({
-          oracleTables: z.array(z.object({
-            oracleColumns: z.array(z.object({
-              column: z.string().describe("The column name.").optional(),
-              dataType: z.string().describe("The Oracle data type.").optional(),
-              encoding: z.string().describe("Column encoding.").optional(),
-              length: z.number().int().describe("Column length.").optional(),
-              nullable: z.boolean().describe(
-                "Whether or not the column can accept a null value.",
-              ).optional(),
-              ordinalPosition: z.number().int().describe(
-                "The ordinal position of the column in the table.",
-              ).optional(),
-              precision: z.number().int().describe("Column precision.")
-                .optional(),
-              primaryKey: z.boolean().describe(
-                "Whether or not the column represents a primary key.",
-              ).optional(),
-              scale: z.number().int().describe("Column scale.").optional(),
-            })).describe(
-              "Oracle columns in the schema. When unspecified as part of include/exclude objects, includes/excludes everything.",
-            ).optional(),
-            table: z.string().describe("The table name.").optional(),
-          })).describe("Tables in the schema.").optional(),
-          schema: z.string().describe("The schema name.").optional(),
+          oracleTables: z.unknown().describe("Tables in the schema.")
+            .optional(),
+          schema: z.unknown().describe("The schema name.").optional(),
         })).describe("Oracle schemas/databases in the database server.")
           .optional(),
       }).describe("Oracle database structure.").optional(),
@@ -1952,58 +1153,16 @@ const InputsSchema = z.object({
     postgresqlSourceConfig: z.object({
       excludeObjects: z.object({
         postgresqlSchemas: z.array(z.object({
-          postgresqlTables: z.array(z.object({
-            postgresqlColumns: z.array(z.object({
-              column: z.string().describe("The column name.").optional(),
-              dataType: z.string().describe("The PostgreSQL data type.")
-                .optional(),
-              length: z.number().int().describe("Column length.").optional(),
-              nullable: z.boolean().describe(
-                "Whether or not the column can accept a null value.",
-              ).optional(),
-              ordinalPosition: z.number().int().describe(
-                "The ordinal position of the column in the table.",
-              ).optional(),
-              precision: z.number().int().describe("Column precision.")
-                .optional(),
-              primaryKey: z.boolean().describe(
-                "Whether or not the column represents a primary key.",
-              ).optional(),
-              scale: z.number().int().describe("Column scale.").optional(),
-            })).describe(
-              "PostgreSQL columns in the schema. When unspecified as part of include/exclude objects, includes/excludes everything.",
-            ).optional(),
-            table: z.string().describe("The table name.").optional(),
-          })).describe("Tables in the schema.").optional(),
-          schema: z.string().describe("The schema name.").optional(),
+          postgresqlTables: z.unknown().describe("Tables in the schema.")
+            .optional(),
+          schema: z.unknown().describe("The schema name.").optional(),
         })).describe("PostgreSQL schemas in the database server.").optional(),
       }).describe("PostgreSQL database structure.").optional(),
       includeObjects: z.object({
         postgresqlSchemas: z.array(z.object({
-          postgresqlTables: z.array(z.object({
-            postgresqlColumns: z.array(z.object({
-              column: z.string().describe("The column name.").optional(),
-              dataType: z.string().describe("The PostgreSQL data type.")
-                .optional(),
-              length: z.number().int().describe("Column length.").optional(),
-              nullable: z.boolean().describe(
-                "Whether or not the column can accept a null value.",
-              ).optional(),
-              ordinalPosition: z.number().int().describe(
-                "The ordinal position of the column in the table.",
-              ).optional(),
-              precision: z.number().int().describe("Column precision.")
-                .optional(),
-              primaryKey: z.boolean().describe(
-                "Whether or not the column represents a primary key.",
-              ).optional(),
-              scale: z.number().int().describe("Column scale.").optional(),
-            })).describe(
-              "PostgreSQL columns in the schema. When unspecified as part of include/exclude objects, includes/excludes everything.",
-            ).optional(),
-            table: z.string().describe("The table name.").optional(),
-          })).describe("Tables in the schema.").optional(),
-          schema: z.string().describe("The schema name.").optional(),
+          postgresqlTables: z.unknown().describe("Tables in the schema.")
+            .optional(),
+          schema: z.unknown().describe("The schema name.").optional(),
         })).describe("PostgreSQL schemas in the database server.").optional(),
       }).describe("PostgreSQL database structure.").optional(),
       maxConcurrentBackfillTasks: z.number().int().describe(
@@ -2020,30 +1179,18 @@ const InputsSchema = z.object({
     salesforceSourceConfig: z.object({
       excludeObjects: z.object({
         objects: z.array(z.object({
-          fields: z.array(z.object({
-            dataType: z.string().describe("The data type.").optional(),
-            name: z.string().describe("The field name.").optional(),
-            nillable: z.boolean().describe(
-              "Indicates whether the field can accept nil values.",
-            ).optional(),
-          })).describe(
+          fields: z.unknown().describe(
             "Salesforce fields. When unspecified as part of include objects, includes everything, when unspecified as part of exclude objects, excludes nothing.",
           ).optional(),
-          objectName: z.string().describe("The object name.").optional(),
+          objectName: z.unknown().describe("The object name.").optional(),
         })).describe("Salesforce objects in the database server.").optional(),
       }).describe("Salesforce organization structure.").optional(),
       includeObjects: z.object({
         objects: z.array(z.object({
-          fields: z.array(z.object({
-            dataType: z.string().describe("The data type.").optional(),
-            name: z.string().describe("The field name.").optional(),
-            nillable: z.boolean().describe(
-              "Indicates whether the field can accept nil values.",
-            ).optional(),
-          })).describe(
+          fields: z.unknown().describe(
             "Salesforce fields. When unspecified as part of include objects, includes everything, when unspecified as part of exclude objects, excludes nothing.",
           ).optional(),
-          objectName: z.string().describe("The object name.").optional(),
+          objectName: z.unknown().describe("The object name.").optional(),
         })).describe("Salesforce objects in the database server.").optional(),
       }).describe("Salesforce organization structure.").optional(),
       pollingInterval: z.string().describe(
@@ -2063,22 +1210,10 @@ const InputsSchema = z.object({
       ).optional(),
       excludeObjects: z.object({
         schemas: z.array(z.object({
-          schema: z.string().describe("Required. The schema name.").optional(),
-          tables: z.array(z.object({
-            columns: z.array(z.object({
-              column: z.string().describe("Required. The column name.")
-                .optional(),
-              dataType: z.string().describe("Optional. Spanner data type.")
-                .optional(),
-              isPrimaryKey: z.boolean().describe(
-                "Optional. Whether or not the column is a primary key.",
-              ).optional(),
-              ordinalPosition: z.string().describe(
-                "Optional. The ordinal position of the column in the table.",
-              ).optional(),
-            })).describe("Optional. Spanner columns in the table.").optional(),
-            table: z.string().describe("Required. The table name.").optional(),
-          })).describe("Optional. Spanner tables in the schema.").optional(),
+          schema: z.unknown().describe("Required. The schema name.").optional(),
+          tables: z.unknown().describe(
+            "Optional. Spanner tables in the schema.",
+          ).optional(),
         })).describe("Optional. Spanner schemas in the database.").optional(),
       }).describe("Spanner database structure.").optional(),
       fgacRole: z.string().describe(
@@ -2086,22 +1221,10 @@ const InputsSchema = z.object({
       ).optional(),
       includeObjects: z.object({
         schemas: z.array(z.object({
-          schema: z.string().describe("Required. The schema name.").optional(),
-          tables: z.array(z.object({
-            columns: z.array(z.object({
-              column: z.string().describe("Required. The column name.")
-                .optional(),
-              dataType: z.string().describe("Optional. Spanner data type.")
-                .optional(),
-              isPrimaryKey: z.boolean().describe(
-                "Optional. Whether or not the column is a primary key.",
-              ).optional(),
-              ordinalPosition: z.string().describe(
-                "Optional. The ordinal position of the column in the table.",
-              ).optional(),
-            })).describe("Optional. Spanner columns in the table.").optional(),
-            table: z.string().describe("Required. The table name.").optional(),
-          })).describe("Optional. Spanner tables in the schema.").optional(),
+          schema: z.unknown().describe("Required. The schema name.").optional(),
+          tables: z.unknown().describe(
+            "Optional. Spanner tables in the schema.",
+          ).optional(),
         })).describe("Optional. Spanner schemas in the database.").optional(),
       }).describe("Spanner database structure.").optional(),
       maxConcurrentBackfillTasks: z.number().int().describe(
@@ -2125,58 +1248,14 @@ const InputsSchema = z.object({
       ).optional(),
       excludeObjects: z.object({
         schemas: z.array(z.object({
-          schema: z.string().describe("The schema name.").optional(),
-          tables: z.array(z.object({
-            columns: z.array(z.object({
-              column: z.string().describe("The column name.").optional(),
-              dataType: z.string().describe("The SQLServer data type.")
-                .optional(),
-              length: z.number().int().describe("Column length.").optional(),
-              nullable: z.boolean().describe(
-                "Whether or not the column can accept a null value.",
-              ).optional(),
-              ordinalPosition: z.number().int().describe(
-                "The ordinal position of the column in the table.",
-              ).optional(),
-              precision: z.number().int().describe("Column precision.")
-                .optional(),
-              primaryKey: z.boolean().describe(
-                "Whether or not the column represents a primary key.",
-              ).optional(),
-              scale: z.number().int().describe("Column scale.").optional(),
-            })).describe(
-              "SQLServer columns in the schema. When unspecified as part of include/exclude objects, includes/excludes everything.",
-            ).optional(),
-            table: z.string().describe("The table name.").optional(),
-          })).describe("Tables in the schema.").optional(),
+          schema: z.unknown().describe("The schema name.").optional(),
+          tables: z.unknown().describe("Tables in the schema.").optional(),
         })).describe("SQLServer schemas in the database server.").optional(),
       }).describe("SQLServer database structure.").optional(),
       includeObjects: z.object({
         schemas: z.array(z.object({
-          schema: z.string().describe("The schema name.").optional(),
-          tables: z.array(z.object({
-            columns: z.array(z.object({
-              column: z.string().describe("The column name.").optional(),
-              dataType: z.string().describe("The SQLServer data type.")
-                .optional(),
-              length: z.number().int().describe("Column length.").optional(),
-              nullable: z.boolean().describe(
-                "Whether or not the column can accept a null value.",
-              ).optional(),
-              ordinalPosition: z.number().int().describe(
-                "The ordinal position of the column in the table.",
-              ).optional(),
-              precision: z.number().int().describe("Column precision.")
-                .optional(),
-              primaryKey: z.boolean().describe(
-                "Whether or not the column represents a primary key.",
-              ).optional(),
-              scale: z.number().int().describe("Column scale.").optional(),
-            })).describe(
-              "SQLServer columns in the schema. When unspecified as part of include/exclude objects, includes/excludes everything.",
-            ).optional(),
-            table: z.string().describe("The table name.").optional(),
-          })).describe("Tables in the schema.").optional(),
+          schema: z.unknown().describe("The schema name.").optional(),
+          tables: z.unknown().describe("Tables in the schema.").optional(),
         })).describe("SQLServer schemas in the database server.").optional(),
       }).describe("SQLServer database structure.").optional(),
       maxConcurrentBackfillTasks: z.number().int().describe(
@@ -2216,7 +1295,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/datastream/streams",
-  version: "2026.04.03.3",
+  version: "2026.04.04.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -2240,6 +1319,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.3",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.04.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

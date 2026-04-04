@@ -707,19 +707,19 @@ const GlobalArgsSchema = z.object({
           "Optional. The network attachment of the consumer network that the Private Service Connect enabled Cloud SQL instance is authorized to connect via PSC interface. format: projects/PROJECT/regions/REGION/networkAttachments/ID",
         ).optional(),
         pscAutoConnections: z.array(z.object({
-          consumerNetwork: z.string().describe(
+          consumerNetwork: z.unknown().describe(
             "Optional. The consumer network of this consumer endpoint. This must be a resource path that includes both the host project and the network name. For example, `projects/project1/global/networks/network1`. The consumer host project of this network might be different from the consumer service project.",
           ).optional(),
-          consumerNetworkStatus: z.string().describe(
+          consumerNetworkStatus: z.unknown().describe(
             "The connection policy status of the consumer network.",
           ).optional(),
-          consumerProject: z.string().describe(
+          consumerProject: z.unknown().describe(
             "Optional. This is the project ID of consumer service project of this consumer endpoint. This is only applicable if `consumer_network` is a shared VPC network.",
           ).optional(),
-          ipAddress: z.string().describe(
+          ipAddress: z.unknown().describe(
             "The IP address of the consumer endpoint.",
           ).optional(),
-          status: z.string().describe(
+          status: z.unknown().describe(
             "The connection status of the consumer endpoint.",
           ).optional(),
         })).describe(
@@ -1206,11 +1206,11 @@ const StateSchema = z.object({
         allowedConsumerProjects: z.array(z.string()),
         networkAttachmentUri: z.string(),
         pscAutoConnections: z.array(z.object({
-          consumerNetwork: z.string(),
-          consumerNetworkStatus: z.string(),
-          consumerProject: z.string(),
-          ipAddress: z.string(),
-          status: z.string(),
+          consumerNetwork: z.unknown(),
+          consumerNetworkStatus: z.unknown(),
+          consumerProject: z.unknown(),
+          ipAddress: z.unknown(),
+          status: z.unknown(),
         })),
         pscAutoDnsEnabled: z.boolean(),
         pscEnabled: z.boolean(),
@@ -1901,19 +1901,19 @@ const InputsSchema = z.object({
           "Optional. The network attachment of the consumer network that the Private Service Connect enabled Cloud SQL instance is authorized to connect via PSC interface. format: projects/PROJECT/regions/REGION/networkAttachments/ID",
         ).optional(),
         pscAutoConnections: z.array(z.object({
-          consumerNetwork: z.string().describe(
+          consumerNetwork: z.unknown().describe(
             "Optional. The consumer network of this consumer endpoint. This must be a resource path that includes both the host project and the network name. For example, `projects/project1/global/networks/network1`. The consumer host project of this network might be different from the consumer service project.",
           ).optional(),
-          consumerNetworkStatus: z.string().describe(
+          consumerNetworkStatus: z.unknown().describe(
             "The connection policy status of the consumer network.",
           ).optional(),
-          consumerProject: z.string().describe(
+          consumerProject: z.unknown().describe(
             "Optional. This is the project ID of consumer service project of this consumer endpoint. This is only applicable if `consumer_network` is a shared VPC network.",
           ).optional(),
-          ipAddress: z.string().describe(
+          ipAddress: z.unknown().describe(
             "The IP address of the consumer endpoint.",
           ).optional(),
-          status: z.string().describe(
+          status: z.unknown().describe(
             "The connection status of the consumer endpoint.",
           ).optional(),
         })).describe(
@@ -2153,7 +2153,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/sqladmin/instances",
-  version: "2026.04.03.3",
+  version: "2026.04.04.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -2187,6 +2187,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.3",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.04.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

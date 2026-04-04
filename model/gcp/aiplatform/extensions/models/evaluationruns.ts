@@ -133,10 +133,10 @@ const GlobalArgsSchema = z.object({
             'Optional. The desired aspect ratio for the generated images. The following aspect ratios are supported: "1:1" "2:3", "3:2" "3:4", "4:3" "4:5", "5:4" "9:16", "16:9" "21:9"',
           ).optional(),
           imageOutputOptions: z.object({
-            compressionQuality: z.number().int().describe(
+            compressionQuality: z.unknown().describe(
               "Optional. The compression quality of the output image.",
             ).optional(),
-            mimeType: z.string().describe(
+            mimeType: z.unknown().describe(
               "Optional. The image format that the output should be saved as.",
             ).optional(),
           }).describe("The image output format for generated images.")
@@ -197,19 +197,19 @@ const GlobalArgsSchema = z.object({
           additionalProperties: z.string().describe(
             "Optional. If `type` is `OBJECT`, specifies how to handle properties not defined in `properties`. If it is a boolean `false`, no additional properties are allowed. If it is a schema, additional properties are allowed if they conform to the schema.",
           ).optional(),
-          anyOf: z.array(z.string()).describe(
+          anyOf: z.array(z.unknown()).describe(
             "Optional. The instance must be valid against any (one or more) of the subschemas listed in `any_of`.",
           ).optional(),
           default: z.string().describe(
             "Optional. Default value to use if the field is not specified.",
           ).optional(),
-          defs: z.record(z.string(), z.string()).describe(
+          defs: z.record(z.string(), z.unknown()).describe(
             "Optional. `defs` provides a map of schema definitions that can be reused by `ref` elsewhere in the schema. Only allowed at root level of the schema.",
           ).optional(),
           description: z.string().describe(
             "Optional. Describes the data. The model uses this field to understand the purpose of the schema and how to use it. It is a best practice to provide a clear and descriptive explanation for the schema and its properties here, rather than in the prompt.",
           ).optional(),
-          enum: z.array(z.string()).describe(
+          enum: z.array(z.unknown()).describe(
             'Optional. Possible values of the field. This field can be used to restrict a value to a fixed set of values. To mark a field as an enum, set `format` to `enum` and provide the list of possible values in `enum`. For example: 1. To define directions: `{type:STRING, format:enum, enum:["EAST", "NORTH", "SOUTH", "WEST"]}` 2. To define apartment numbers: `{type:INTEGER, format:enum, enum:["101", "201", "301"]}`',
           ).optional(),
           example: z.string().describe(
@@ -251,16 +251,16 @@ const GlobalArgsSchema = z.object({
           pattern: z.string().describe(
             "Optional. If type is `STRING`, `pattern` specifies a regular expression that the string must match.",
           ).optional(),
-          properties: z.record(z.string(), z.string()).describe(
+          properties: z.record(z.string(), z.unknown()).describe(
             "Optional. If type is `OBJECT`, `properties` is a map of property names to schema definitions for each property of the object.",
           ).optional(),
-          propertyOrdering: z.array(z.string()).describe(
+          propertyOrdering: z.array(z.unknown()).describe(
             "Optional. Order of properties displayed or used where order matters. This is not a standard field in OpenAPI specification, but can be used to control the order of properties.",
           ).optional(),
           ref: z.string().describe(
             'Optional. Allows referencing another schema definition to use in place of this schema. The value must be a valid reference to a schema in `defs`. For example, the following schema defines a reference to a schema node named "Pet": type: object properties: pet: ref: #/defs/Pet defs: Pet: type: object properties: name: type: string The value of the "pet" property is a reference to the schema node named "Pet". See details in https://json-schema.org/understanding-json-schema/structuring',
           ).optional(),
-          required: z.array(z.string()).describe(
+          required: z.array(z.unknown()).describe(
             "Optional. If type is `OBJECT`, `required` lists the names of properties that must be present.",
           ).optional(),
           title: z.string().describe("Optional. Title for the schema.")
@@ -280,17 +280,14 @@ const GlobalArgsSchema = z.object({
         ).optional(),
         routingConfig: z.object({
           autoMode: z.object({
-            modelRoutingPreference: z.enum([
-              "UNKNOWN",
-              "PRIORITIZE_QUALITY",
-              "BALANCED",
-              "PRIORITIZE_COST",
-            ]).describe("The model routing preference.").optional(),
+            modelRoutingPreference: z.unknown().describe(
+              "The model routing preference.",
+            ).optional(),
           }).describe(
             "The configuration for automated routing. When automated routing is specified, the routing will be determined by the pretrained routing model and customer provided model routing preference.",
           ).optional(),
           manualMode: z.object({
-            modelName: z.string().describe(
+            modelName: z.unknown().describe(
               "The name of the model to use. Only public LLM models are accepted.",
             ).optional(),
           }).describe(
@@ -307,48 +304,19 @@ const GlobalArgsSchema = z.object({
             "Optional. The language code (ISO 639-1) for the speech synthesis.",
           ).optional(),
           multiSpeakerVoiceConfig: z.object({
-            speakerVoiceConfigs: z.array(z.object({
-              speaker: z.string().describe(
-                "Required. The name of the speaker. This should be the same as the speaker name used in the prompt.",
-              ).optional(),
-              voiceConfig: z.object({
-                prebuiltVoiceConfig: z.object({
-                  voiceName: z.string().describe(
-                    "The name of the prebuilt voice to use.",
-                  ).optional(),
-                }).describe("Configuration for a prebuilt voice.").optional(),
-                replicatedVoiceConfig: z.object({
-                  mimeType: z.string().describe(
-                    "Optional. The mimetype of the voice sample. The only currently supported value is `audio/wav`. This represents 16-bit signed little-endian wav data, with a 24kHz sampling rate. `mime_type` will default to `audio/wav` if not set.",
-                  ).optional(),
-                  voiceSampleAudio: z.string().describe(
-                    "Optional. The sample of the custom voice.",
-                  ).optional(),
-                }).describe(
-                  "The configuration for the replicated voice to use.",
-                ).optional(),
-              }).describe("Configuration for a voice.").optional(),
-            })).describe(
+            speakerVoiceConfigs: z.unknown().describe(
               "Required. A list of configurations for the voices of the speakers. Exactly two speaker voice configurations must be provided.",
             ).optional(),
           }).describe(
             "Configuration for a multi-speaker text-to-speech request.",
           ).optional(),
           voiceConfig: z.object({
-            prebuiltVoiceConfig: z.object({
-              voiceName: z.string().describe(
-                "The name of the prebuilt voice to use.",
-              ).optional(),
-            }).describe("Configuration for a prebuilt voice.").optional(),
-            replicatedVoiceConfig: z.object({
-              mimeType: z.string().describe(
-                "Optional. The mimetype of the voice sample. The only currently supported value is `audio/wav`. This represents 16-bit signed little-endian wav data, with a 24kHz sampling rate. `mime_type` will default to `audio/wav` if not set.",
-              ).optional(),
-              voiceSampleAudio: z.string().describe(
-                "Optional. The sample of the custom voice.",
-              ).optional(),
-            }).describe("The configuration for the replicated voice to use.")
-              .optional(),
+            prebuiltVoiceConfig: z.unknown().describe(
+              "Configuration for a prebuilt voice.",
+            ).optional(),
+            replicatedVoiceConfig: z.unknown().describe(
+              "The configuration for the replicated voice to use.",
+            ).optional(),
           }).describe("Configuration for a voice.").optional(),
         }).describe("Configuration for speech generation.").optional(),
         stopSequences: z.array(z.string()).describe(
@@ -401,7 +369,7 @@ const GlobalArgsSchema = z.object({
     ).optional(),
     metrics: z.array(z.object({
       computationBasedMetricSpec: z.object({
-        parameters: z.record(z.string(), z.string()).describe(
+        parameters: z.record(z.string(), z.unknown()).describe(
           'Optional. A map of parameters for the metric, e.g. {"rouge_type": "rougeL"}.',
         ).optional(),
         type: z.enum([
@@ -413,287 +381,17 @@ const GlobalArgsSchema = z.object({
           .optional(),
       }).describe("Specification for a computation based metric.").optional(),
       llmBasedMetricSpec: z.object({
-        additionalConfig: z.record(z.string(), z.string()).describe(
+        additionalConfig: z.record(z.string(), z.unknown()).describe(
           "Optional. Optional additional configuration for the metric.",
         ).optional(),
         judgeAutoraterConfig: z.object({
-          autoraterModel: z.string().describe(
+          autoraterModel: z.unknown().describe(
             "Optional. The fully qualified name of the publisher model or tuned autorater endpoint to use. Publisher model format: `projects/{project}/locations/{location}/publishers/*/models/*` Tuned model endpoint format: `projects/{project}/locations/{location}/endpoints/{endpoint}`",
           ).optional(),
-          generationConfig: z.object({
-            audioTimestamp: z.boolean().describe(
-              "Optional. If enabled, audio timestamps will be included in the request to the model. This can be useful for synchronizing audio with other modalities in the response.",
-            ).optional(),
-            candidateCount: z.number().int().describe(
-              "Optional. The number of candidate responses to generate. A higher `candidate_count` can provide more options to choose from, but it also consumes more resources. This can be useful for generating a variety of responses and selecting the best one.",
-            ).optional(),
-            enableAffectiveDialog: z.boolean().describe(
-              "Optional. If enabled, the model will detect emotions and adapt its responses accordingly. For example, if the model detects that the user is frustrated, it may provide a more empathetic response.",
-            ).optional(),
-            frequencyPenalty: z.number().describe(
-              "Optional. Penalizes tokens based on their frequency in the generated text. A positive value helps to reduce the repetition of words and phrases. Valid values can range from [-2.0, 2.0].",
-            ).optional(),
-            imageConfig: z.object({
-              aspectRatio: z.string().describe(
-                'Optional. The desired aspect ratio for the generated images. The following aspect ratios are supported: "1:1" "2:3", "3:2" "3:4", "4:3" "4:5", "5:4" "9:16", "16:9" "21:9"',
-              ).optional(),
-              imageOutputOptions: z.object({
-                compressionQuality: z.number().int().describe(
-                  "Optional. The compression quality of the output image.",
-                ).optional(),
-                mimeType: z.string().describe(
-                  "Optional. The image format that the output should be saved as.",
-                ).optional(),
-              }).describe("The image output format for generated images.")
-                .optional(),
-              imageSize: z.string().describe(
-                "Optional. Specifies the size of generated images. Supported values are `1K`, `2K`, `4K`. If not specified, the model will use default value `1K`.",
-              ).optional(),
-              personGeneration: z.enum([
-                "PERSON_GENERATION_UNSPECIFIED",
-                "ALLOW_ALL",
-                "ALLOW_ADULT",
-                "ALLOW_NONE",
-              ]).describe(
-                "Optional. Controls whether the model can generate people.",
-              ).optional(),
-              prominentPeople: z.enum([
-                "PROMINENT_PEOPLE_UNSPECIFIED",
-                "ALLOW_PROMINENT_PEOPLE",
-                "BLOCK_PROMINENT_PEOPLE",
-              ]).describe(
-                "Optional. Controls whether prominent people (celebrities) generation is allowed. If used with personGeneration, personGeneration enum would take precedence. For instance, if ALLOW_NONE is set, all person generation would be blocked. If this field is unspecified, the default behavior is to allow prominent people.",
-              ).optional(),
-            }).describe(
-              "Configuration for image generation. This message allows you to control various aspects of image generation, such as the output format, aspect ratio, and whether the model can generate images of people.",
-            ).optional(),
-            logprobs: z.number().int().describe(
-              "Optional. The number of top log probabilities to return for each token. This can be used to see which other tokens were considered likely candidates for a given position. A higher value will return more options, but it will also increase the size of the response.",
-            ).optional(),
-            maxOutputTokens: z.number().int().describe(
-              "Optional. The maximum number of tokens to generate in the response. A token is approximately four characters. The default value varies by model. This parameter can be used to control the length of the generated text and prevent overly long responses.",
-            ).optional(),
-            mediaResolution: z.enum([
-              "MEDIA_RESOLUTION_UNSPECIFIED",
-              "MEDIA_RESOLUTION_LOW",
-              "MEDIA_RESOLUTION_MEDIUM",
-              "MEDIA_RESOLUTION_HIGH",
-            ]).describe(
-              "Optional. The token resolution at which input media content is sampled. This is used to control the trade-off between the quality of the response and the number of tokens used to represent the media. A higher resolution allows the model to perceive more detail, which can lead to a more nuanced response, but it will also use more tokens. This does not affect the image dimensions sent to the model.",
-            ).optional(),
-            presencePenalty: z.number().describe(
-              "Optional. Penalizes tokens that have already appeared in the generated text. A positive value encourages the model to generate more diverse and less repetitive text. Valid values can range from [-2.0, 2.0].",
-            ).optional(),
-            responseJsonSchema: z.string().describe(
-              "Optional. When this field is set, response_schema must be omitted and response_mime_type must be set to `application/json`.",
-            ).optional(),
-            responseLogprobs: z.boolean().describe(
-              "Optional. If set to true, the log probabilities of the output tokens are returned. Log probabilities are the logarithm of the probability of a token appearing in the output. A higher log probability means the token is more likely to be generated. This can be useful for analyzing the model's confidence in its own output and for debugging.",
-            ).optional(),
-            responseMimeType: z.string().describe(
-              "Optional. The IANA standard MIME type of the response. The model will generate output that conforms to this MIME type. Supported values include 'text/plain' (default) and 'application/json'. The model needs to be prompted to output the appropriate response type, otherwise the behavior is undefined.",
-            ).optional(),
-            responseModalities: z.array(
-              z.enum(["MODALITY_UNSPECIFIED", "TEXT", "IMAGE", "AUDIO"]),
-            ).describe(
-              "Optional. The modalities of the response. The model will generate a response that includes all the specified modalities. For example, if this is set to `[TEXT, IMAGE]`, the response will include both text and an image.",
-            ).optional(),
-            responseSchema: z.object({
-              additionalProperties: z.string().describe(
-                "Optional. If `type` is `OBJECT`, specifies how to handle properties not defined in `properties`. If it is a boolean `false`, no additional properties are allowed. If it is a schema, additional properties are allowed if they conform to the schema.",
-              ).optional(),
-              anyOf: z.array(z.string()).describe(
-                "Optional. The instance must be valid against any (one or more) of the subschemas listed in `any_of`.",
-              ).optional(),
-              default: z.string().describe(
-                "Optional. Default value to use if the field is not specified.",
-              ).optional(),
-              defs: z.record(z.string(), z.string()).describe(
-                "Optional. `defs` provides a map of schema definitions that can be reused by `ref` elsewhere in the schema. Only allowed at root level of the schema.",
-              ).optional(),
-              description: z.string().describe(
-                "Optional. Describes the data. The model uses this field to understand the purpose of the schema and how to use it. It is a best practice to provide a clear and descriptive explanation for the schema and its properties here, rather than in the prompt.",
-              ).optional(),
-              enum: z.array(z.string()).describe(
-                'Optional. Possible values of the field. This field can be used to restrict a value to a fixed set of values. To mark a field as an enum, set `format` to `enum` and provide the list of possible values in `enum`. For example: 1. To define directions: `{type:STRING, format:enum, enum:["EAST", "NORTH", "SOUTH", "WEST"]}` 2. To define apartment numbers: `{type:INTEGER, format:enum, enum:["101", "201", "301"]}`',
-              ).optional(),
-              example: z.string().describe(
-                "Optional. Example of an instance of this schema.",
-              ).optional(),
-              format: z.string().describe(
-                "Optional. The format of the data. For `NUMBER` type, format can be `float` or `double`. For `INTEGER` type, format can be `int32` or `int64`. For `STRING` type, format can be `email`, `byte`, `date`, `date-time`, `password`, and other formats to further refine the data type.",
-              ).optional(),
-              items: z.string().describe(
-                "Circular reference to GoogleCloudAiplatformV1Schema",
-              ).optional(),
-              maxItems: z.string().describe(
-                "Optional. If type is `ARRAY`, `max_items` specifies the maximum number of items in an array.",
-              ).optional(),
-              maxLength: z.string().describe(
-                "Optional. If type is `STRING`, `max_length` specifies the maximum length of the string.",
-              ).optional(),
-              maxProperties: z.string().describe(
-                "Optional. If type is `OBJECT`, `max_properties` specifies the maximum number of properties that can be provided.",
-              ).optional(),
-              maximum: z.number().describe(
-                "Optional. If type is `INTEGER` or `NUMBER`, `maximum` specifies the maximum allowed value.",
-              ).optional(),
-              minItems: z.string().describe(
-                "Optional. If type is `ARRAY`, `min_items` specifies the minimum number of items in an array.",
-              ).optional(),
-              minLength: z.string().describe(
-                "Optional. If type is `STRING`, `min_length` specifies the minimum length of the string.",
-              ).optional(),
-              minProperties: z.string().describe(
-                "Optional. If type is `OBJECT`, `min_properties` specifies the minimum number of properties that can be provided.",
-              ).optional(),
-              minimum: z.number().describe(
-                "Optional. If type is `INTEGER` or `NUMBER`, `minimum` specifies the minimum allowed value.",
-              ).optional(),
-              nullable: z.boolean().describe(
-                "Optional. Indicates if the value of this field can be null.",
-              ).optional(),
-              pattern: z.string().describe(
-                "Optional. If type is `STRING`, `pattern` specifies a regular expression that the string must match.",
-              ).optional(),
-              properties: z.record(z.string(), z.string()).describe(
-                "Optional. If type is `OBJECT`, `properties` is a map of property names to schema definitions for each property of the object.",
-              ).optional(),
-              propertyOrdering: z.array(z.string()).describe(
-                "Optional. Order of properties displayed or used where order matters. This is not a standard field in OpenAPI specification, but can be used to control the order of properties.",
-              ).optional(),
-              ref: z.string().describe(
-                'Optional. Allows referencing another schema definition to use in place of this schema. The value must be a valid reference to a schema in `defs`. For example, the following schema defines a reference to a schema node named "Pet": type: object properties: pet: ref: #/defs/Pet defs: Pet: type: object properties: name: type: string The value of the "pet" property is a reference to the schema node named "Pet". See details in https://json-schema.org/understanding-json-schema/structuring',
-              ).optional(),
-              required: z.array(z.string()).describe(
-                "Optional. If type is `OBJECT`, `required` lists the names of properties that must be present.",
-              ).optional(),
-              title: z.string().describe("Optional. Title for the schema.")
-                .optional(),
-              type: z.enum([
-                "TYPE_UNSPECIFIED",
-                "STRING",
-                "NUMBER",
-                "INTEGER",
-                "BOOLEAN",
-                "ARRAY",
-                "OBJECT",
-                "NULL",
-              ]).describe("Optional. Data type of the schema field.")
-                .optional(),
-            }).describe(
-              "Defines the schema of input and output data. This is a subset of the [OpenAPI 3.0 Schema Object](https://spec.openapis.org/oas/v3.0.3#schema-object).",
-            ).optional(),
-            routingConfig: z.object({
-              autoMode: z.object({
-                modelRoutingPreference: z.enum([
-                  "UNKNOWN",
-                  "PRIORITIZE_QUALITY",
-                  "BALANCED",
-                  "PRIORITIZE_COST",
-                ]).describe("The model routing preference.").optional(),
-              }).describe(
-                "The configuration for automated routing. When automated routing is specified, the routing will be determined by the pretrained routing model and customer provided model routing preference.",
-              ).optional(),
-              manualMode: z.object({
-                modelName: z.string().describe(
-                  "The name of the model to use. Only public LLM models are accepted.",
-                ).optional(),
-              }).describe(
-                "The configuration for manual routing. When manual routing is specified, the model will be selected based on the model name provided.",
-              ).optional(),
-            }).describe(
-              "The configuration for routing the request to a specific model. This can be used to control which model is used for the generation, either automatically or by specifying a model name.",
-            ).optional(),
-            seed: z.number().int().describe(
-              "Optional. A seed for the random number generator. By setting a seed, you can make the model's output mostly deterministic. For a given prompt and parameters (like temperature, top_p, etc.), the model will produce the same response every time. However, it's not a guaranteed absolute deterministic behavior. This is different from parameters like `temperature`, which control the *level* of randomness. `seed` ensures that the \"random\" choices the model makes are the same on every run, making it essential for testing and ensuring reproducible results.",
-            ).optional(),
-            speechConfig: z.object({
-              languageCode: z.string().describe(
-                "Optional. The language code (ISO 639-1) for the speech synthesis.",
-              ).optional(),
-              multiSpeakerVoiceConfig: z.object({
-                speakerVoiceConfigs: z.array(z.object({
-                  speaker: z.string().describe(
-                    "Required. The name of the speaker. This should be the same as the speaker name used in the prompt.",
-                  ).optional(),
-                  voiceConfig: z.object({
-                    prebuiltVoiceConfig: z.object({
-                      voiceName: z.string().describe(
-                        "The name of the prebuilt voice to use.",
-                      ).optional(),
-                    }).describe("Configuration for a prebuilt voice.")
-                      .optional(),
-                    replicatedVoiceConfig: z.object({
-                      mimeType: z.string().describe(
-                        "Optional. The mimetype of the voice sample. The only currently supported value is `audio/wav`. This represents 16-bit signed little-endian wav data, with a 24kHz sampling rate. `mime_type` will default to `audio/wav` if not set.",
-                      ).optional(),
-                      voiceSampleAudio: z.string().describe(
-                        "Optional. The sample of the custom voice.",
-                      ).optional(),
-                    }).describe(
-                      "The configuration for the replicated voice to use.",
-                    ).optional(),
-                  }).describe("Configuration for a voice.").optional(),
-                })).describe(
-                  "Required. A list of configurations for the voices of the speakers. Exactly two speaker voice configurations must be provided.",
-                ).optional(),
-              }).describe(
-                "Configuration for a multi-speaker text-to-speech request.",
-              ).optional(),
-              voiceConfig: z.object({
-                prebuiltVoiceConfig: z.object({
-                  voiceName: z.string().describe(
-                    "The name of the prebuilt voice to use.",
-                  ).optional(),
-                }).describe("Configuration for a prebuilt voice.").optional(),
-                replicatedVoiceConfig: z.object({
-                  mimeType: z.string().describe(
-                    "Optional. The mimetype of the voice sample. The only currently supported value is `audio/wav`. This represents 16-bit signed little-endian wav data, with a 24kHz sampling rate. `mime_type` will default to `audio/wav` if not set.",
-                  ).optional(),
-                  voiceSampleAudio: z.string().describe(
-                    "Optional. The sample of the custom voice.",
-                  ).optional(),
-                }).describe(
-                  "The configuration for the replicated voice to use.",
-                ).optional(),
-              }).describe("Configuration for a voice.").optional(),
-            }).describe("Configuration for speech generation.").optional(),
-            stopSequences: z.array(z.string()).describe(
-              'Optional. A list of character sequences that will stop the model from generating further tokens. If a stop sequence is generated, the output will end at that point. This is useful for controlling the length and structure of the output. For example, you can use ["\\n", "###"] to stop generation at a new line or a specific marker.',
-            ).optional(),
-            temperature: z.number().describe(
-              "Optional. Controls the randomness of the output. A higher temperature results in more creative and diverse responses, while a lower temperature makes the output more predictable and focused. The valid range is (0.0, 2.0].",
-            ).optional(),
-            thinkingConfig: z.object({
-              includeThoughts: z.boolean().describe(
-                'Optional. If true, the model will include its thoughts in the response. "Thoughts" are the intermediate steps the model takes to arrive at the final response. They can provide insights into the model\'s reasoning process and help with debugging. If this is true, thoughts are returned only when available.',
-              ).optional(),
-              thinkingBudget: z.number().int().describe(
-                "Optional. The token budget for the model's thinking process. The model will make a best effort to stay within this budget. This can be used to control the trade-off between response quality and latency.",
-              ).optional(),
-              thinkingLevel: z.enum([
-                "THINKING_LEVEL_UNSPECIFIED",
-                "LOW",
-                "MEDIUM",
-                "HIGH",
-                "MINIMAL",
-              ]).describe(
-                "Optional. The number of thoughts tokens that the model should generate.",
-              ).optional(),
-            }).describe(
-              'Configuration for the model\'s thinking features. "Thinking" is a process where the model breaks down a complex task into smaller, manageable steps. This allows the model to reason about the task, plan its approach, and execute the plan to generate a high-quality response.',
-            ).optional(),
-            topK: z.number().describe(
-              "Optional. Specifies the top-k sampling threshold. The model considers only the top k most probable tokens for the next token. This can be useful for generating more coherent and less random text. For example, a `top_k` of 40 means the model will choose the next word from the 40 most likely words.",
-            ).optional(),
-            topP: z.number().describe(
-              "Optional. Specifies the nucleus sampling threshold. The model considers only the smallest set of tokens whose cumulative probability is at least `top_p`. This helps generate more diverse and less repetitive responses. For example, a `top_p` of 0.9 means the model considers tokens until the cumulative probability of the tokens to select from reaches 0.9. It's recommended to adjust either temperature or `top_p`, but not both.",
-            ).optional(),
-          }).describe(
+          generationConfig: z.unknown().describe(
             "Configuration for content generation. This message contains all the parameters that control how the model generates content. It allows you to influence the randomness, length, and structure of the output.",
           ).optional(),
-          sampleCount: z.number().int().describe(
+          sampleCount: z.unknown().describe(
             "Optional. Number of samples for each instance in the dataset. If not specified, the default is 4. Minimum value is 1, maximum value is 32.",
           ).optional(),
         }).describe("The autorater config used for the evaluation run.")
@@ -702,310 +400,27 @@ const GlobalArgsSchema = z.object({
           "Required. Template for the prompt sent to the judge model.",
         ).optional(),
         predefinedRubricGenerationSpec: z.object({
-          metricSpecName: z.string().describe(
+          metricSpecName: z.unknown().describe(
             'Required. The name of a pre-defined metric, such as "instruction_following_v1" or "text_quality_v1".',
           ).optional(),
-          parameters: z.record(z.string(), z.string()).describe(
+          parameters: z.unknown().describe(
             "Optional. The parameters needed to run the pre-defined metric.",
           ).optional(),
         }).describe("Specification for a pre-defined metric.").optional(),
         rubricGenerationSpec: z.object({
-          metricResourceName: z.string().describe(
+          metricResourceName: z.unknown().describe(
             "Optional. Resource name of the metric definition.",
           ).optional(),
-          modelConfig: z.object({
-            autoraterModel: z.string().describe(
-              "Optional. The fully qualified name of the publisher model or tuned autorater endpoint to use. Publisher model format: `projects/{project}/locations/{location}/publishers/*/models/*` Tuned model endpoint format: `projects/{project}/locations/{location}/endpoints/{endpoint}`",
-            ).optional(),
-            generationConfig: z.object({
-              audioTimestamp: z.boolean().describe(
-                "Optional. If enabled, audio timestamps will be included in the request to the model. This can be useful for synchronizing audio with other modalities in the response.",
-              ).optional(),
-              candidateCount: z.number().int().describe(
-                "Optional. The number of candidate responses to generate. A higher `candidate_count` can provide more options to choose from, but it also consumes more resources. This can be useful for generating a variety of responses and selecting the best one.",
-              ).optional(),
-              enableAffectiveDialog: z.boolean().describe(
-                "Optional. If enabled, the model will detect emotions and adapt its responses accordingly. For example, if the model detects that the user is frustrated, it may provide a more empathetic response.",
-              ).optional(),
-              frequencyPenalty: z.number().describe(
-                "Optional. Penalizes tokens based on their frequency in the generated text. A positive value helps to reduce the repetition of words and phrases. Valid values can range from [-2.0, 2.0].",
-              ).optional(),
-              imageConfig: z.object({
-                aspectRatio: z.string().describe(
-                  'Optional. The desired aspect ratio for the generated images. The following aspect ratios are supported: "1:1" "2:3", "3:2" "3:4", "4:3" "4:5", "5:4" "9:16", "16:9" "21:9"',
-                ).optional(),
-                imageOutputOptions: z.object({
-                  compressionQuality: z.number().int().describe(
-                    "Optional. The compression quality of the output image.",
-                  ).optional(),
-                  mimeType: z.string().describe(
-                    "Optional. The image format that the output should be saved as.",
-                  ).optional(),
-                }).describe("The image output format for generated images.")
-                  .optional(),
-                imageSize: z.string().describe(
-                  "Optional. Specifies the size of generated images. Supported values are `1K`, `2K`, `4K`. If not specified, the model will use default value `1K`.",
-                ).optional(),
-                personGeneration: z.enum([
-                  "PERSON_GENERATION_UNSPECIFIED",
-                  "ALLOW_ALL",
-                  "ALLOW_ADULT",
-                  "ALLOW_NONE",
-                ]).describe(
-                  "Optional. Controls whether the model can generate people.",
-                ).optional(),
-                prominentPeople: z.enum([
-                  "PROMINENT_PEOPLE_UNSPECIFIED",
-                  "ALLOW_PROMINENT_PEOPLE",
-                  "BLOCK_PROMINENT_PEOPLE",
-                ]).describe(
-                  "Optional. Controls whether prominent people (celebrities) generation is allowed. If used with personGeneration, personGeneration enum would take precedence. For instance, if ALLOW_NONE is set, all person generation would be blocked. If this field is unspecified, the default behavior is to allow prominent people.",
-                ).optional(),
-              }).describe(
-                "Configuration for image generation. This message allows you to control various aspects of image generation, such as the output format, aspect ratio, and whether the model can generate images of people.",
-              ).optional(),
-              logprobs: z.number().int().describe(
-                "Optional. The number of top log probabilities to return for each token. This can be used to see which other tokens were considered likely candidates for a given position. A higher value will return more options, but it will also increase the size of the response.",
-              ).optional(),
-              maxOutputTokens: z.number().int().describe(
-                "Optional. The maximum number of tokens to generate in the response. A token is approximately four characters. The default value varies by model. This parameter can be used to control the length of the generated text and prevent overly long responses.",
-              ).optional(),
-              mediaResolution: z.enum([
-                "MEDIA_RESOLUTION_UNSPECIFIED",
-                "MEDIA_RESOLUTION_LOW",
-                "MEDIA_RESOLUTION_MEDIUM",
-                "MEDIA_RESOLUTION_HIGH",
-              ]).describe(
-                "Optional. The token resolution at which input media content is sampled. This is used to control the trade-off between the quality of the response and the number of tokens used to represent the media. A higher resolution allows the model to perceive more detail, which can lead to a more nuanced response, but it will also use more tokens. This does not affect the image dimensions sent to the model.",
-              ).optional(),
-              presencePenalty: z.number().describe(
-                "Optional. Penalizes tokens that have already appeared in the generated text. A positive value encourages the model to generate more diverse and less repetitive text. Valid values can range from [-2.0, 2.0].",
-              ).optional(),
-              responseJsonSchema: z.string().describe(
-                "Optional. When this field is set, response_schema must be omitted and response_mime_type must be set to `application/json`.",
-              ).optional(),
-              responseLogprobs: z.boolean().describe(
-                "Optional. If set to true, the log probabilities of the output tokens are returned. Log probabilities are the logarithm of the probability of a token appearing in the output. A higher log probability means the token is more likely to be generated. This can be useful for analyzing the model's confidence in its own output and for debugging.",
-              ).optional(),
-              responseMimeType: z.string().describe(
-                "Optional. The IANA standard MIME type of the response. The model will generate output that conforms to this MIME type. Supported values include 'text/plain' (default) and 'application/json'. The model needs to be prompted to output the appropriate response type, otherwise the behavior is undefined.",
-              ).optional(),
-              responseModalities: z.array(
-                z.enum(["MODALITY_UNSPECIFIED", "TEXT", "IMAGE", "AUDIO"]),
-              ).describe(
-                "Optional. The modalities of the response. The model will generate a response that includes all the specified modalities. For example, if this is set to `[TEXT, IMAGE]`, the response will include both text and an image.",
-              ).optional(),
-              responseSchema: z.object({
-                additionalProperties: z.string().describe(
-                  "Optional. If `type` is `OBJECT`, specifies how to handle properties not defined in `properties`. If it is a boolean `false`, no additional properties are allowed. If it is a schema, additional properties are allowed if they conform to the schema.",
-                ).optional(),
-                anyOf: z.array(z.string()).describe(
-                  "Optional. The instance must be valid against any (one or more) of the subschemas listed in `any_of`.",
-                ).optional(),
-                default: z.string().describe(
-                  "Optional. Default value to use if the field is not specified.",
-                ).optional(),
-                defs: z.record(z.string(), z.string()).describe(
-                  "Optional. `defs` provides a map of schema definitions that can be reused by `ref` elsewhere in the schema. Only allowed at root level of the schema.",
-                ).optional(),
-                description: z.string().describe(
-                  "Optional. Describes the data. The model uses this field to understand the purpose of the schema and how to use it. It is a best practice to provide a clear and descriptive explanation for the schema and its properties here, rather than in the prompt.",
-                ).optional(),
-                enum: z.array(z.string()).describe(
-                  'Optional. Possible values of the field. This field can be used to restrict a value to a fixed set of values. To mark a field as an enum, set `format` to `enum` and provide the list of possible values in `enum`. For example: 1. To define directions: `{type:STRING, format:enum, enum:["EAST", "NORTH", "SOUTH", "WEST"]}` 2. To define apartment numbers: `{type:INTEGER, format:enum, enum:["101", "201", "301"]}`',
-                ).optional(),
-                example: z.string().describe(
-                  "Optional. Example of an instance of this schema.",
-                ).optional(),
-                format: z.string().describe(
-                  "Optional. The format of the data. For `NUMBER` type, format can be `float` or `double`. For `INTEGER` type, format can be `int32` or `int64`. For `STRING` type, format can be `email`, `byte`, `date`, `date-time`, `password`, and other formats to further refine the data type.",
-                ).optional(),
-                items: z.string().describe(
-                  "Circular reference to GoogleCloudAiplatformV1Schema",
-                ).optional(),
-                maxItems: z.string().describe(
-                  "Optional. If type is `ARRAY`, `max_items` specifies the maximum number of items in an array.",
-                ).optional(),
-                maxLength: z.string().describe(
-                  "Optional. If type is `STRING`, `max_length` specifies the maximum length of the string.",
-                ).optional(),
-                maxProperties: z.string().describe(
-                  "Optional. If type is `OBJECT`, `max_properties` specifies the maximum number of properties that can be provided.",
-                ).optional(),
-                maximum: z.number().describe(
-                  "Optional. If type is `INTEGER` or `NUMBER`, `maximum` specifies the maximum allowed value.",
-                ).optional(),
-                minItems: z.string().describe(
-                  "Optional. If type is `ARRAY`, `min_items` specifies the minimum number of items in an array.",
-                ).optional(),
-                minLength: z.string().describe(
-                  "Optional. If type is `STRING`, `min_length` specifies the minimum length of the string.",
-                ).optional(),
-                minProperties: z.string().describe(
-                  "Optional. If type is `OBJECT`, `min_properties` specifies the minimum number of properties that can be provided.",
-                ).optional(),
-                minimum: z.number().describe(
-                  "Optional. If type is `INTEGER` or `NUMBER`, `minimum` specifies the minimum allowed value.",
-                ).optional(),
-                nullable: z.boolean().describe(
-                  "Optional. Indicates if the value of this field can be null.",
-                ).optional(),
-                pattern: z.string().describe(
-                  "Optional. If type is `STRING`, `pattern` specifies a regular expression that the string must match.",
-                ).optional(),
-                properties: z.record(z.string(), z.string()).describe(
-                  "Optional. If type is `OBJECT`, `properties` is a map of property names to schema definitions for each property of the object.",
-                ).optional(),
-                propertyOrdering: z.array(z.string()).describe(
-                  "Optional. Order of properties displayed or used where order matters. This is not a standard field in OpenAPI specification, but can be used to control the order of properties.",
-                ).optional(),
-                ref: z.string().describe(
-                  'Optional. Allows referencing another schema definition to use in place of this schema. The value must be a valid reference to a schema in `defs`. For example, the following schema defines a reference to a schema node named "Pet": type: object properties: pet: ref: #/defs/Pet defs: Pet: type: object properties: name: type: string The value of the "pet" property is a reference to the schema node named "Pet". See details in https://json-schema.org/understanding-json-schema/structuring',
-                ).optional(),
-                required: z.array(z.string()).describe(
-                  "Optional. If type is `OBJECT`, `required` lists the names of properties that must be present.",
-                ).optional(),
-                title: z.string().describe("Optional. Title for the schema.")
-                  .optional(),
-                type: z.enum([
-                  "TYPE_UNSPECIFIED",
-                  "STRING",
-                  "NUMBER",
-                  "INTEGER",
-                  "BOOLEAN",
-                  "ARRAY",
-                  "OBJECT",
-                  "NULL",
-                ]).describe("Optional. Data type of the schema field.")
-                  .optional(),
-              }).describe(
-                "Defines the schema of input and output data. This is a subset of the [OpenAPI 3.0 Schema Object](https://spec.openapis.org/oas/v3.0.3#schema-object).",
-              ).optional(),
-              routingConfig: z.object({
-                autoMode: z.object({
-                  modelRoutingPreference: z.enum([
-                    "UNKNOWN",
-                    "PRIORITIZE_QUALITY",
-                    "BALANCED",
-                    "PRIORITIZE_COST",
-                  ]).describe("The model routing preference.").optional(),
-                }).describe(
-                  "The configuration for automated routing. When automated routing is specified, the routing will be determined by the pretrained routing model and customer provided model routing preference.",
-                ).optional(),
-                manualMode: z.object({
-                  modelName: z.string().describe(
-                    "The name of the model to use. Only public LLM models are accepted.",
-                  ).optional(),
-                }).describe(
-                  "The configuration for manual routing. When manual routing is specified, the model will be selected based on the model name provided.",
-                ).optional(),
-              }).describe(
-                "The configuration for routing the request to a specific model. This can be used to control which model is used for the generation, either automatically or by specifying a model name.",
-              ).optional(),
-              seed: z.number().int().describe(
-                "Optional. A seed for the random number generator. By setting a seed, you can make the model's output mostly deterministic. For a given prompt and parameters (like temperature, top_p, etc.), the model will produce the same response every time. However, it's not a guaranteed absolute deterministic behavior. This is different from parameters like `temperature`, which control the *level* of randomness. `seed` ensures that the \"random\" choices the model makes are the same on every run, making it essential for testing and ensuring reproducible results.",
-              ).optional(),
-              speechConfig: z.object({
-                languageCode: z.string().describe(
-                  "Optional. The language code (ISO 639-1) for the speech synthesis.",
-                ).optional(),
-                multiSpeakerVoiceConfig: z.object({
-                  speakerVoiceConfigs: z.array(z.object({
-                    speaker: z.string().describe(
-                      "Required. The name of the speaker. This should be the same as the speaker name used in the prompt.",
-                    ).optional(),
-                    voiceConfig: z.object({
-                      prebuiltVoiceConfig: z.object({
-                        voiceName: z.string().describe(
-                          "The name of the prebuilt voice to use.",
-                        ).optional(),
-                      }).describe("Configuration for a prebuilt voice.")
-                        .optional(),
-                      replicatedVoiceConfig: z.object({
-                        mimeType: z.string().describe(
-                          "Optional. The mimetype of the voice sample. The only currently supported value is `audio/wav`. This represents 16-bit signed little-endian wav data, with a 24kHz sampling rate. `mime_type` will default to `audio/wav` if not set.",
-                        ).optional(),
-                        voiceSampleAudio: z.string().describe(
-                          "Optional. The sample of the custom voice.",
-                        ).optional(),
-                      }).describe(
-                        "The configuration for the replicated voice to use.",
-                      ).optional(),
-                    }).describe("Configuration for a voice.").optional(),
-                  })).describe(
-                    "Required. A list of configurations for the voices of the speakers. Exactly two speaker voice configurations must be provided.",
-                  ).optional(),
-                }).describe(
-                  "Configuration for a multi-speaker text-to-speech request.",
-                ).optional(),
-                voiceConfig: z.object({
-                  prebuiltVoiceConfig: z.object({
-                    voiceName: z.string().describe(
-                      "The name of the prebuilt voice to use.",
-                    ).optional(),
-                  }).describe("Configuration for a prebuilt voice.").optional(),
-                  replicatedVoiceConfig: z.object({
-                    mimeType: z.string().describe(
-                      "Optional. The mimetype of the voice sample. The only currently supported value is `audio/wav`. This represents 16-bit signed little-endian wav data, with a 24kHz sampling rate. `mime_type` will default to `audio/wav` if not set.",
-                    ).optional(),
-                    voiceSampleAudio: z.string().describe(
-                      "Optional. The sample of the custom voice.",
-                    ).optional(),
-                  }).describe(
-                    "The configuration for the replicated voice to use.",
-                  ).optional(),
-                }).describe("Configuration for a voice.").optional(),
-              }).describe("Configuration for speech generation.").optional(),
-              stopSequences: z.array(z.string()).describe(
-                'Optional. A list of character sequences that will stop the model from generating further tokens. If a stop sequence is generated, the output will end at that point. This is useful for controlling the length and structure of the output. For example, you can use ["\\n", "###"] to stop generation at a new line or a specific marker.',
-              ).optional(),
-              temperature: z.number().describe(
-                "Optional. Controls the randomness of the output. A higher temperature results in more creative and diverse responses, while a lower temperature makes the output more predictable and focused. The valid range is (0.0, 2.0].",
-              ).optional(),
-              thinkingConfig: z.object({
-                includeThoughts: z.boolean().describe(
-                  'Optional. If true, the model will include its thoughts in the response. "Thoughts" are the intermediate steps the model takes to arrive at the final response. They can provide insights into the model\'s reasoning process and help with debugging. If this is true, thoughts are returned only when available.',
-                ).optional(),
-                thinkingBudget: z.number().int().describe(
-                  "Optional. The token budget for the model's thinking process. The model will make a best effort to stay within this budget. This can be used to control the trade-off between response quality and latency.",
-                ).optional(),
-                thinkingLevel: z.enum([
-                  "THINKING_LEVEL_UNSPECIFIED",
-                  "LOW",
-                  "MEDIUM",
-                  "HIGH",
-                  "MINIMAL",
-                ]).describe(
-                  "Optional. The number of thoughts tokens that the model should generate.",
-                ).optional(),
-              }).describe(
-                'Configuration for the model\'s thinking features. "Thinking" is a process where the model breaks down a complex task into smaller, manageable steps. This allows the model to reason about the task, plan its approach, and execute the plan to generate a high-quality response.',
-              ).optional(),
-              topK: z.number().describe(
-                "Optional. Specifies the top-k sampling threshold. The model considers only the top k most probable tokens for the next token. This can be useful for generating more coherent and less random text. For example, a `top_k` of 40 means the model will choose the next word from the 40 most likely words.",
-              ).optional(),
-              topP: z.number().describe(
-                "Optional. Specifies the nucleus sampling threshold. The model considers only the smallest set of tokens whose cumulative probability is at least `top_p`. This helps generate more diverse and less repetitive responses. For example, a `top_p` of 0.9 means the model considers tokens until the cumulative probability of the tokens to select from reaches 0.9. It's recommended to adjust either temperature or `top_p`, but not both.",
-              ).optional(),
-            }).describe(
-              "Configuration for content generation. This message contains all the parameters that control how the model generates content. It allows you to influence the randomness, length, and structure of the output.",
-            ).optional(),
-            sampleCount: z.number().int().describe(
-              "Optional. Number of samples for each instance in the dataset. If not specified, the default is 4. Minimum value is 1, maximum value is 32.",
-            ).optional(),
-          }).describe("The autorater config used for the evaluation run.")
-            .optional(),
-          promptTemplate: z.string().describe(
+          modelConfig: z.unknown().describe(
+            "The autorater config used for the evaluation run.",
+          ).optional(),
+          promptTemplate: z.unknown().describe(
             "Optional. Template for the prompt used to generate rubrics. The details should be updated based on the most-recent recipe requirements.",
           ).optional(),
-          rubricContentType: z.enum([
-            "RUBRIC_CONTENT_TYPE_UNSPECIFIED",
-            "PROPERTY",
-            "NL_QUESTION_ANSWER",
-            "PYTHON_CODE_ASSERTION",
-          ]).describe("Optional. The type of rubric content to be generated.")
-            .optional(),
-          rubricTypeOntology: z.array(z.string()).describe(
+          rubricContentType: z.unknown().describe(
+            "Optional. The type of rubric content to be generated.",
+          ).optional(),
+          rubricTypeOntology: z.unknown().describe(
             "Optional. An optional, pre-defined list of allowed types for generated rubrics. If this field is provided, it implies `include_rubric_type` should be true, and the generated rubric types should be chosen from this ontology.",
           ).optional(),
         }).describe("Specification for how rubrics should be generated.")
@@ -1020,42 +435,26 @@ const GlobalArgsSchema = z.object({
       metric: z.string().describe("Required. The name of the metric.")
         .optional(),
       metricConfig: z.object({
-        aggregationMetrics: z.array(
-          z.enum([
-            "AGGREGATION_METRIC_UNSPECIFIED",
-            "AVERAGE",
-            "MODE",
-            "STANDARD_DEVIATION",
-            "VARIANCE",
-            "MINIMUM",
-            "MAXIMUM",
-            "MEDIAN",
-            "PERCENTILE_P90",
-            "PERCENTILE_P95",
-            "PERCENTILE_P99",
-          ]),
-        ).describe("Optional. The aggregation metrics to use.").optional(),
+        aggregationMetrics: z.array(z.unknown()).describe(
+          "Optional. The aggregation metrics to use.",
+        ).optional(),
         bleuSpec: z.object({
-          useEffectiveOrder: z.boolean().describe(
+          useEffectiveOrder: z.unknown().describe(
             "Optional. Whether to use_effective_order to compute bleu score.",
           ).optional(),
         }).describe(
           "Spec for bleu score metric - calculates the precision of n-grams in the prediction as compared to reference - returns a score ranging between 0 to 1.",
         ).optional(),
         computationBasedMetricSpec: z.object({
-          parameters: z.record(z.string(), z.string()).describe(
+          parameters: z.unknown().describe(
             'Optional. A map of parameters for the metric, e.g. {"rouge_type": "rougeL"}.',
           ).optional(),
-          type: z.enum([
-            "COMPUTATION_BASED_METRIC_TYPE_UNSPECIFIED",
-            "EXACT_MATCH",
-            "BLEU",
-            "ROUGE",
-          ]).describe("Required. The type of the computation based metric.")
-            .optional(),
+          type: z.unknown().describe(
+            "Required. The type of the computation based metric.",
+          ).optional(),
         }).describe("Specification for a computation based metric.").optional(),
         customCodeExecutionSpec: z.object({
-          evaluationFunction: z.string().describe(
+          evaluationFunction: z.unknown().describe(
             "Required. Python function. Expected user to define the following function, e.g.: def evaluate(instance: dict[str, Any]) -> float: Please include this function signature in the code snippet. Instance is the evaluation instance, any fields populated in the instance are available to the function as instance[field_name]. Example: Example input: ` instance= EvaluationInstance( response=EvaluationInstance.InstanceData(text=\"The answer is 4.\"), reference=EvaluationInstance.InstanceData(text=\"4\")) ` Example converted input: ` { 'response': {'text': 'The answer is 4.'}, 'reference': {'text': '4'} } ` Example python function: ` def evaluate(instance: dict[str, Any]) -> float: if instance'response' == instance'reference': return 1.0 return 0.0 ` CustomCodeExecutionSpec is also supported in Batch Evaluation (EvalDataset RPC) and Tuning Evaluation. Each line in the input jsonl file will be converted to dict[str, Any] and passed to the evaluation function.",
           ).optional(),
         }).describe(
@@ -1065,692 +464,85 @@ const GlobalArgsSchema = z.object({
           "Spec for exact match metric - returns 1 if prediction and reference exactly matches, otherwise 0.",
         ).optional(),
         llmBasedMetricSpec: z.object({
-          additionalConfig: z.record(z.string(), z.string()).describe(
+          additionalConfig: z.unknown().describe(
             "Optional. Optional additional configuration for the metric.",
           ).optional(),
-          judgeAutoraterConfig: z.object({
-            autoraterModel: z.string().describe(
-              "Optional. The fully qualified name of the publisher model or tuned autorater endpoint to use. Publisher model format: `projects/{project}/locations/{location}/publishers/*/models/*` Tuned model endpoint format: `projects/{project}/locations/{location}/endpoints/{endpoint}`",
-            ).optional(),
-            flipEnabled: z.boolean().describe(
-              "Optional. Default is true. Whether to flip the candidate and baseline responses. This is only applicable to the pairwise metric. If enabled, also provide PairwiseMetricSpec.candidate_response_field_name and PairwiseMetricSpec.baseline_response_field_name. When rendering PairwiseMetricSpec.metric_prompt_template, the candidate and baseline fields will be flipped for half of the samples to reduce bias.",
-            ).optional(),
-            generationConfig: z.object({
-              audioTimestamp: z.boolean().describe(
-                "Optional. If enabled, audio timestamps will be included in the request to the model. This can be useful for synchronizing audio with other modalities in the response.",
-              ).optional(),
-              candidateCount: z.number().int().describe(
-                "Optional. The number of candidate responses to generate. A higher `candidate_count` can provide more options to choose from, but it also consumes more resources. This can be useful for generating a variety of responses and selecting the best one.",
-              ).optional(),
-              enableAffectiveDialog: z.boolean().describe(
-                "Optional. If enabled, the model will detect emotions and adapt its responses accordingly. For example, if the model detects that the user is frustrated, it may provide a more empathetic response.",
-              ).optional(),
-              frequencyPenalty: z.number().describe(
-                "Optional. Penalizes tokens based on their frequency in the generated text. A positive value helps to reduce the repetition of words and phrases. Valid values can range from [-2.0, 2.0].",
-              ).optional(),
-              imageConfig: z.object({
-                aspectRatio: z.string().describe(
-                  'Optional. The desired aspect ratio for the generated images. The following aspect ratios are supported: "1:1" "2:3", "3:2" "3:4", "4:3" "4:5", "5:4" "9:16", "16:9" "21:9"',
-                ).optional(),
-                imageOutputOptions: z.object({
-                  compressionQuality: z.number().int().describe(
-                    "Optional. The compression quality of the output image.",
-                  ).optional(),
-                  mimeType: z.string().describe(
-                    "Optional. The image format that the output should be saved as.",
-                  ).optional(),
-                }).describe("The image output format for generated images.")
-                  .optional(),
-                imageSize: z.string().describe(
-                  "Optional. Specifies the size of generated images. Supported values are `1K`, `2K`, `4K`. If not specified, the model will use default value `1K`.",
-                ).optional(),
-                personGeneration: z.enum([
-                  "PERSON_GENERATION_UNSPECIFIED",
-                  "ALLOW_ALL",
-                  "ALLOW_ADULT",
-                  "ALLOW_NONE",
-                ]).describe(
-                  "Optional. Controls whether the model can generate people.",
-                ).optional(),
-                prominentPeople: z.enum([
-                  "PROMINENT_PEOPLE_UNSPECIFIED",
-                  "ALLOW_PROMINENT_PEOPLE",
-                  "BLOCK_PROMINENT_PEOPLE",
-                ]).describe(
-                  "Optional. Controls whether prominent people (celebrities) generation is allowed. If used with personGeneration, personGeneration enum would take precedence. For instance, if ALLOW_NONE is set, all person generation would be blocked. If this field is unspecified, the default behavior is to allow prominent people.",
-                ).optional(),
-              }).describe(
-                "Configuration for image generation. This message allows you to control various aspects of image generation, such as the output format, aspect ratio, and whether the model can generate images of people.",
-              ).optional(),
-              logprobs: z.number().int().describe(
-                "Optional. The number of top log probabilities to return for each token. This can be used to see which other tokens were considered likely candidates for a given position. A higher value will return more options, but it will also increase the size of the response.",
-              ).optional(),
-              maxOutputTokens: z.number().int().describe(
-                "Optional. The maximum number of tokens to generate in the response. A token is approximately four characters. The default value varies by model. This parameter can be used to control the length of the generated text and prevent overly long responses.",
-              ).optional(),
-              mediaResolution: z.enum([
-                "MEDIA_RESOLUTION_UNSPECIFIED",
-                "MEDIA_RESOLUTION_LOW",
-                "MEDIA_RESOLUTION_MEDIUM",
-                "MEDIA_RESOLUTION_HIGH",
-              ]).describe(
-                "Optional. The token resolution at which input media content is sampled. This is used to control the trade-off between the quality of the response and the number of tokens used to represent the media. A higher resolution allows the model to perceive more detail, which can lead to a more nuanced response, but it will also use more tokens. This does not affect the image dimensions sent to the model.",
-              ).optional(),
-              presencePenalty: z.number().describe(
-                "Optional. Penalizes tokens that have already appeared in the generated text. A positive value encourages the model to generate more diverse and less repetitive text. Valid values can range from [-2.0, 2.0].",
-              ).optional(),
-              responseJsonSchema: z.string().describe(
-                "Optional. When this field is set, response_schema must be omitted and response_mime_type must be set to `application/json`.",
-              ).optional(),
-              responseLogprobs: z.boolean().describe(
-                "Optional. If set to true, the log probabilities of the output tokens are returned. Log probabilities are the logarithm of the probability of a token appearing in the output. A higher log probability means the token is more likely to be generated. This can be useful for analyzing the model's confidence in its own output and for debugging.",
-              ).optional(),
-              responseMimeType: z.string().describe(
-                "Optional. The IANA standard MIME type of the response. The model will generate output that conforms to this MIME type. Supported values include 'text/plain' (default) and 'application/json'. The model needs to be prompted to output the appropriate response type, otherwise the behavior is undefined.",
-              ).optional(),
-              responseModalities: z.array(
-                z.enum(["MODALITY_UNSPECIFIED", "TEXT", "IMAGE", "AUDIO"]),
-              ).describe(
-                "Optional. The modalities of the response. The model will generate a response that includes all the specified modalities. For example, if this is set to `[TEXT, IMAGE]`, the response will include both text and an image.",
-              ).optional(),
-              responseSchema: z.object({
-                additionalProperties: z.string().describe(
-                  "Optional. If `type` is `OBJECT`, specifies how to handle properties not defined in `properties`. If it is a boolean `false`, no additional properties are allowed. If it is a schema, additional properties are allowed if they conform to the schema.",
-                ).optional(),
-                anyOf: z.array(z.string()).describe(
-                  "Optional. The instance must be valid against any (one or more) of the subschemas listed in `any_of`.",
-                ).optional(),
-                default: z.string().describe(
-                  "Optional. Default value to use if the field is not specified.",
-                ).optional(),
-                defs: z.record(z.string(), z.string()).describe(
-                  "Optional. `defs` provides a map of schema definitions that can be reused by `ref` elsewhere in the schema. Only allowed at root level of the schema.",
-                ).optional(),
-                description: z.string().describe(
-                  "Optional. Describes the data. The model uses this field to understand the purpose of the schema and how to use it. It is a best practice to provide a clear and descriptive explanation for the schema and its properties here, rather than in the prompt.",
-                ).optional(),
-                enum: z.array(z.string()).describe(
-                  'Optional. Possible values of the field. This field can be used to restrict a value to a fixed set of values. To mark a field as an enum, set `format` to `enum` and provide the list of possible values in `enum`. For example: 1. To define directions: `{type:STRING, format:enum, enum:["EAST", "NORTH", "SOUTH", "WEST"]}` 2. To define apartment numbers: `{type:INTEGER, format:enum, enum:["101", "201", "301"]}`',
-                ).optional(),
-                example: z.string().describe(
-                  "Optional. Example of an instance of this schema.",
-                ).optional(),
-                format: z.string().describe(
-                  "Optional. The format of the data. For `NUMBER` type, format can be `float` or `double`. For `INTEGER` type, format can be `int32` or `int64`. For `STRING` type, format can be `email`, `byte`, `date`, `date-time`, `password`, and other formats to further refine the data type.",
-                ).optional(),
-                items: z.string().describe(
-                  "Circular reference to GoogleCloudAiplatformV1Schema",
-                ).optional(),
-                maxItems: z.string().describe(
-                  "Optional. If type is `ARRAY`, `max_items` specifies the maximum number of items in an array.",
-                ).optional(),
-                maxLength: z.string().describe(
-                  "Optional. If type is `STRING`, `max_length` specifies the maximum length of the string.",
-                ).optional(),
-                maxProperties: z.string().describe(
-                  "Optional. If type is `OBJECT`, `max_properties` specifies the maximum number of properties that can be provided.",
-                ).optional(),
-                maximum: z.number().describe(
-                  "Optional. If type is `INTEGER` or `NUMBER`, `maximum` specifies the maximum allowed value.",
-                ).optional(),
-                minItems: z.string().describe(
-                  "Optional. If type is `ARRAY`, `min_items` specifies the minimum number of items in an array.",
-                ).optional(),
-                minLength: z.string().describe(
-                  "Optional. If type is `STRING`, `min_length` specifies the minimum length of the string.",
-                ).optional(),
-                minProperties: z.string().describe(
-                  "Optional. If type is `OBJECT`, `min_properties` specifies the minimum number of properties that can be provided.",
-                ).optional(),
-                minimum: z.number().describe(
-                  "Optional. If type is `INTEGER` or `NUMBER`, `minimum` specifies the minimum allowed value.",
-                ).optional(),
-                nullable: z.boolean().describe(
-                  "Optional. Indicates if the value of this field can be null.",
-                ).optional(),
-                pattern: z.string().describe(
-                  "Optional. If type is `STRING`, `pattern` specifies a regular expression that the string must match.",
-                ).optional(),
-                properties: z.record(z.string(), z.string()).describe(
-                  "Optional. If type is `OBJECT`, `properties` is a map of property names to schema definitions for each property of the object.",
-                ).optional(),
-                propertyOrdering: z.array(z.string()).describe(
-                  "Optional. Order of properties displayed or used where order matters. This is not a standard field in OpenAPI specification, but can be used to control the order of properties.",
-                ).optional(),
-                ref: z.string().describe(
-                  'Optional. Allows referencing another schema definition to use in place of this schema. The value must be a valid reference to a schema in `defs`. For example, the following schema defines a reference to a schema node named "Pet": type: object properties: pet: ref: #/defs/Pet defs: Pet: type: object properties: name: type: string The value of the "pet" property is a reference to the schema node named "Pet". See details in https://json-schema.org/understanding-json-schema/structuring',
-                ).optional(),
-                required: z.array(z.string()).describe(
-                  "Optional. If type is `OBJECT`, `required` lists the names of properties that must be present.",
-                ).optional(),
-                title: z.string().describe("Optional. Title for the schema.")
-                  .optional(),
-                type: z.enum([
-                  "TYPE_UNSPECIFIED",
-                  "STRING",
-                  "NUMBER",
-                  "INTEGER",
-                  "BOOLEAN",
-                  "ARRAY",
-                  "OBJECT",
-                  "NULL",
-                ]).describe("Optional. Data type of the schema field.")
-                  .optional(),
-              }).describe(
-                "Defines the schema of input and output data. This is a subset of the [OpenAPI 3.0 Schema Object](https://spec.openapis.org/oas/v3.0.3#schema-object).",
-              ).optional(),
-              routingConfig: z.object({
-                autoMode: z.object({
-                  modelRoutingPreference: z.enum([
-                    "UNKNOWN",
-                    "PRIORITIZE_QUALITY",
-                    "BALANCED",
-                    "PRIORITIZE_COST",
-                  ]).describe("The model routing preference.").optional(),
-                }).describe(
-                  "The configuration for automated routing. When automated routing is specified, the routing will be determined by the pretrained routing model and customer provided model routing preference.",
-                ).optional(),
-                manualMode: z.object({
-                  modelName: z.string().describe(
-                    "The name of the model to use. Only public LLM models are accepted.",
-                  ).optional(),
-                }).describe(
-                  "The configuration for manual routing. When manual routing is specified, the model will be selected based on the model name provided.",
-                ).optional(),
-              }).describe(
-                "The configuration for routing the request to a specific model. This can be used to control which model is used for the generation, either automatically or by specifying a model name.",
-              ).optional(),
-              seed: z.number().int().describe(
-                "Optional. A seed for the random number generator. By setting a seed, you can make the model's output mostly deterministic. For a given prompt and parameters (like temperature, top_p, etc.), the model will produce the same response every time. However, it's not a guaranteed absolute deterministic behavior. This is different from parameters like `temperature`, which control the *level* of randomness. `seed` ensures that the \"random\" choices the model makes are the same on every run, making it essential for testing and ensuring reproducible results.",
-              ).optional(),
-              speechConfig: z.object({
-                languageCode: z.string().describe(
-                  "Optional. The language code (ISO 639-1) for the speech synthesis.",
-                ).optional(),
-                multiSpeakerVoiceConfig: z.object({
-                  speakerVoiceConfigs: z.array(z.object({
-                    speaker: z.string().describe(
-                      "Required. The name of the speaker. This should be the same as the speaker name used in the prompt.",
-                    ).optional(),
-                    voiceConfig: z.object({
-                      prebuiltVoiceConfig: z.object({
-                        voiceName: z.string().describe(
-                          "The name of the prebuilt voice to use.",
-                        ).optional(),
-                      }).describe("Configuration for a prebuilt voice.")
-                        .optional(),
-                      replicatedVoiceConfig: z.object({
-                        mimeType: z.string().describe(
-                          "Optional. The mimetype of the voice sample. The only currently supported value is `audio/wav`. This represents 16-bit signed little-endian wav data, with a 24kHz sampling rate. `mime_type` will default to `audio/wav` if not set.",
-                        ).optional(),
-                        voiceSampleAudio: z.string().describe(
-                          "Optional. The sample of the custom voice.",
-                        ).optional(),
-                      }).describe(
-                        "The configuration for the replicated voice to use.",
-                      ).optional(),
-                    }).describe("Configuration for a voice.").optional(),
-                  })).describe(
-                    "Required. A list of configurations for the voices of the speakers. Exactly two speaker voice configurations must be provided.",
-                  ).optional(),
-                }).describe(
-                  "Configuration for a multi-speaker text-to-speech request.",
-                ).optional(),
-                voiceConfig: z.object({
-                  prebuiltVoiceConfig: z.object({
-                    voiceName: z.string().describe(
-                      "The name of the prebuilt voice to use.",
-                    ).optional(),
-                  }).describe("Configuration for a prebuilt voice.").optional(),
-                  replicatedVoiceConfig: z.object({
-                    mimeType: z.string().describe(
-                      "Optional. The mimetype of the voice sample. The only currently supported value is `audio/wav`. This represents 16-bit signed little-endian wav data, with a 24kHz sampling rate. `mime_type` will default to `audio/wav` if not set.",
-                    ).optional(),
-                    voiceSampleAudio: z.string().describe(
-                      "Optional. The sample of the custom voice.",
-                    ).optional(),
-                  }).describe(
-                    "The configuration for the replicated voice to use.",
-                  ).optional(),
-                }).describe("Configuration for a voice.").optional(),
-              }).describe("Configuration for speech generation.").optional(),
-              stopSequences: z.array(z.string()).describe(
-                'Optional. A list of character sequences that will stop the model from generating further tokens. If a stop sequence is generated, the output will end at that point. This is useful for controlling the length and structure of the output. For example, you can use ["\\n", "###"] to stop generation at a new line or a specific marker.',
-              ).optional(),
-              temperature: z.number().describe(
-                "Optional. Controls the randomness of the output. A higher temperature results in more creative and diverse responses, while a lower temperature makes the output more predictable and focused. The valid range is (0.0, 2.0].",
-              ).optional(),
-              thinkingConfig: z.object({
-                includeThoughts: z.boolean().describe(
-                  'Optional. If true, the model will include its thoughts in the response. "Thoughts" are the intermediate steps the model takes to arrive at the final response. They can provide insights into the model\'s reasoning process and help with debugging. If this is true, thoughts are returned only when available.',
-                ).optional(),
-                thinkingBudget: z.number().int().describe(
-                  "Optional. The token budget for the model's thinking process. The model will make a best effort to stay within this budget. This can be used to control the trade-off between response quality and latency.",
-                ).optional(),
-                thinkingLevel: z.enum([
-                  "THINKING_LEVEL_UNSPECIFIED",
-                  "LOW",
-                  "MEDIUM",
-                  "HIGH",
-                  "MINIMAL",
-                ]).describe(
-                  "Optional. The number of thoughts tokens that the model should generate.",
-                ).optional(),
-              }).describe(
-                'Configuration for the model\'s thinking features. "Thinking" is a process where the model breaks down a complex task into smaller, manageable steps. This allows the model to reason about the task, plan its approach, and execute the plan to generate a high-quality response.',
-              ).optional(),
-              topK: z.number().describe(
-                "Optional. Specifies the top-k sampling threshold. The model considers only the top k most probable tokens for the next token. This can be useful for generating more coherent and less random text. For example, a `top_k` of 40 means the model will choose the next word from the 40 most likely words.",
-              ).optional(),
-              topP: z.number().describe(
-                "Optional. Specifies the nucleus sampling threshold. The model considers only the smallest set of tokens whose cumulative probability is at least `top_p`. This helps generate more diverse and less repetitive responses. For example, a `top_p` of 0.9 means the model considers tokens until the cumulative probability of the tokens to select from reaches 0.9. It's recommended to adjust either temperature or `top_p`, but not both.",
-              ).optional(),
-            }).describe(
-              "Configuration for content generation. This message contains all the parameters that control how the model generates content. It allows you to influence the randomness, length, and structure of the output.",
-            ).optional(),
-            samplingCount: z.number().int().describe(
-              "Optional. Number of samples for each instance in the dataset. If not specified, the default is 4. Minimum value is 1, maximum value is 32.",
-            ).optional(),
-          }).describe(
+          judgeAutoraterConfig: z.unknown().describe(
             "The configs for autorater. This is applicable to both EvaluateInstances and EvaluateDataset.",
           ).optional(),
-          metricPromptTemplate: z.string().describe(
+          metricPromptTemplate: z.unknown().describe(
             "Required. Template for the prompt sent to the judge model.",
           ).optional(),
-          predefinedRubricGenerationSpec: z.object({
-            metricSpecName: z.string().describe(
-              'Required. The name of a pre-defined metric, such as "instruction_following_v1" or "text_quality_v1".',
-            ).optional(),
-            metricSpecParameters: z.record(z.string(), z.string()).describe(
-              "Optional. The parameters needed to run the pre-defined metric.",
-            ).optional(),
-          }).describe("The spec for a pre-defined metric.").optional(),
-          rubricGenerationSpec: z.object({
-            modelConfig: z.object({
-              autoraterModel: z.string().describe(
-                "Optional. The fully qualified name of the publisher model or tuned autorater endpoint to use. Publisher model format: `projects/{project}/locations/{location}/publishers/*/models/*` Tuned model endpoint format: `projects/{project}/locations/{location}/endpoints/{endpoint}`",
-              ).optional(),
-              flipEnabled: z.boolean().describe(
-                "Optional. Default is true. Whether to flip the candidate and baseline responses. This is only applicable to the pairwise metric. If enabled, also provide PairwiseMetricSpec.candidate_response_field_name and PairwiseMetricSpec.baseline_response_field_name. When rendering PairwiseMetricSpec.metric_prompt_template, the candidate and baseline fields will be flipped for half of the samples to reduce bias.",
-              ).optional(),
-              generationConfig: z.object({
-                audioTimestamp: z.boolean().describe(
-                  "Optional. If enabled, audio timestamps will be included in the request to the model. This can be useful for synchronizing audio with other modalities in the response.",
-                ).optional(),
-                candidateCount: z.number().int().describe(
-                  "Optional. The number of candidate responses to generate. A higher `candidate_count` can provide more options to choose from, but it also consumes more resources. This can be useful for generating a variety of responses and selecting the best one.",
-                ).optional(),
-                enableAffectiveDialog: z.boolean().describe(
-                  "Optional. If enabled, the model will detect emotions and adapt its responses accordingly. For example, if the model detects that the user is frustrated, it may provide a more empathetic response.",
-                ).optional(),
-                frequencyPenalty: z.number().describe(
-                  "Optional. Penalizes tokens based on their frequency in the generated text. A positive value helps to reduce the repetition of words and phrases. Valid values can range from [-2.0, 2.0].",
-                ).optional(),
-                imageConfig: z.object({
-                  aspectRatio: z.string().describe(
-                    'Optional. The desired aspect ratio for the generated images. The following aspect ratios are supported: "1:1" "2:3", "3:2" "3:4", "4:3" "4:5", "5:4" "9:16", "16:9" "21:9"',
-                  ).optional(),
-                  imageOutputOptions: z.object({
-                    compressionQuality: z.number().int().describe(
-                      "Optional. The compression quality of the output image.",
-                    ).optional(),
-                    mimeType: z.string().describe(
-                      "Optional. The image format that the output should be saved as.",
-                    ).optional(),
-                  }).describe("The image output format for generated images.")
-                    .optional(),
-                  imageSize: z.string().describe(
-                    "Optional. Specifies the size of generated images. Supported values are `1K`, `2K`, `4K`. If not specified, the model will use default value `1K`.",
-                  ).optional(),
-                  personGeneration: z.enum([
-                    "PERSON_GENERATION_UNSPECIFIED",
-                    "ALLOW_ALL",
-                    "ALLOW_ADULT",
-                    "ALLOW_NONE",
-                  ]).describe(
-                    "Optional. Controls whether the model can generate people.",
-                  ).optional(),
-                  prominentPeople: z.enum([
-                    "PROMINENT_PEOPLE_UNSPECIFIED",
-                    "ALLOW_PROMINENT_PEOPLE",
-                    "BLOCK_PROMINENT_PEOPLE",
-                  ]).describe(
-                    "Optional. Controls whether prominent people (celebrities) generation is allowed. If used with personGeneration, personGeneration enum would take precedence. For instance, if ALLOW_NONE is set, all person generation would be blocked. If this field is unspecified, the default behavior is to allow prominent people.",
-                  ).optional(),
-                }).describe(
-                  "Configuration for image generation. This message allows you to control various aspects of image generation, such as the output format, aspect ratio, and whether the model can generate images of people.",
-                ).optional(),
-                logprobs: z.number().int().describe(
-                  "Optional. The number of top log probabilities to return for each token. This can be used to see which other tokens were considered likely candidates for a given position. A higher value will return more options, but it will also increase the size of the response.",
-                ).optional(),
-                maxOutputTokens: z.number().int().describe(
-                  "Optional. The maximum number of tokens to generate in the response. A token is approximately four characters. The default value varies by model. This parameter can be used to control the length of the generated text and prevent overly long responses.",
-                ).optional(),
-                mediaResolution: z.enum([
-                  "MEDIA_RESOLUTION_UNSPECIFIED",
-                  "MEDIA_RESOLUTION_LOW",
-                  "MEDIA_RESOLUTION_MEDIUM",
-                  "MEDIA_RESOLUTION_HIGH",
-                ]).describe(
-                  "Optional. The token resolution at which input media content is sampled. This is used to control the trade-off between the quality of the response and the number of tokens used to represent the media. A higher resolution allows the model to perceive more detail, which can lead to a more nuanced response, but it will also use more tokens. This does not affect the image dimensions sent to the model.",
-                ).optional(),
-                presencePenalty: z.number().describe(
-                  "Optional. Penalizes tokens that have already appeared in the generated text. A positive value encourages the model to generate more diverse and less repetitive text. Valid values can range from [-2.0, 2.0].",
-                ).optional(),
-                responseJsonSchema: z.string().describe(
-                  "Optional. When this field is set, response_schema must be omitted and response_mime_type must be set to `application/json`.",
-                ).optional(),
-                responseLogprobs: z.boolean().describe(
-                  "Optional. If set to true, the log probabilities of the output tokens are returned. Log probabilities are the logarithm of the probability of a token appearing in the output. A higher log probability means the token is more likely to be generated. This can be useful for analyzing the model's confidence in its own output and for debugging.",
-                ).optional(),
-                responseMimeType: z.string().describe(
-                  "Optional. The IANA standard MIME type of the response. The model will generate output that conforms to this MIME type. Supported values include 'text/plain' (default) and 'application/json'. The model needs to be prompted to output the appropriate response type, otherwise the behavior is undefined.",
-                ).optional(),
-                responseModalities: z.array(
-                  z.enum(["MODALITY_UNSPECIFIED", "TEXT", "IMAGE", "AUDIO"]),
-                ).describe(
-                  "Optional. The modalities of the response. The model will generate a response that includes all the specified modalities. For example, if this is set to `[TEXT, IMAGE]`, the response will include both text and an image.",
-                ).optional(),
-                responseSchema: z.object({
-                  additionalProperties: z.string().describe(
-                    "Optional. If `type` is `OBJECT`, specifies how to handle properties not defined in `properties`. If it is a boolean `false`, no additional properties are allowed. If it is a schema, additional properties are allowed if they conform to the schema.",
-                  ).optional(),
-                  anyOf: z.array(z.string()).describe(
-                    "Optional. The instance must be valid against any (one or more) of the subschemas listed in `any_of`.",
-                  ).optional(),
-                  default: z.string().describe(
-                    "Optional. Default value to use if the field is not specified.",
-                  ).optional(),
-                  defs: z.record(z.string(), z.string()).describe(
-                    "Optional. `defs` provides a map of schema definitions that can be reused by `ref` elsewhere in the schema. Only allowed at root level of the schema.",
-                  ).optional(),
-                  description: z.string().describe(
-                    "Optional. Describes the data. The model uses this field to understand the purpose of the schema and how to use it. It is a best practice to provide a clear and descriptive explanation for the schema and its properties here, rather than in the prompt.",
-                  ).optional(),
-                  enum: z.array(z.string()).describe(
-                    'Optional. Possible values of the field. This field can be used to restrict a value to a fixed set of values. To mark a field as an enum, set `format` to `enum` and provide the list of possible values in `enum`. For example: 1. To define directions: `{type:STRING, format:enum, enum:["EAST", "NORTH", "SOUTH", "WEST"]}` 2. To define apartment numbers: `{type:INTEGER, format:enum, enum:["101", "201", "301"]}`',
-                  ).optional(),
-                  example: z.string().describe(
-                    "Optional. Example of an instance of this schema.",
-                  ).optional(),
-                  format: z.string().describe(
-                    "Optional. The format of the data. For `NUMBER` type, format can be `float` or `double`. For `INTEGER` type, format can be `int32` or `int64`. For `STRING` type, format can be `email`, `byte`, `date`, `date-time`, `password`, and other formats to further refine the data type.",
-                  ).optional(),
-                  items: z.string().describe(
-                    "Circular reference to GoogleCloudAiplatformV1Schema",
-                  ).optional(),
-                  maxItems: z.string().describe(
-                    "Optional. If type is `ARRAY`, `max_items` specifies the maximum number of items in an array.",
-                  ).optional(),
-                  maxLength: z.string().describe(
-                    "Optional. If type is `STRING`, `max_length` specifies the maximum length of the string.",
-                  ).optional(),
-                  maxProperties: z.string().describe(
-                    "Optional. If type is `OBJECT`, `max_properties` specifies the maximum number of properties that can be provided.",
-                  ).optional(),
-                  maximum: z.number().describe(
-                    "Optional. If type is `INTEGER` or `NUMBER`, `maximum` specifies the maximum allowed value.",
-                  ).optional(),
-                  minItems: z.string().describe(
-                    "Optional. If type is `ARRAY`, `min_items` specifies the minimum number of items in an array.",
-                  ).optional(),
-                  minLength: z.string().describe(
-                    "Optional. If type is `STRING`, `min_length` specifies the minimum length of the string.",
-                  ).optional(),
-                  minProperties: z.string().describe(
-                    "Optional. If type is `OBJECT`, `min_properties` specifies the minimum number of properties that can be provided.",
-                  ).optional(),
-                  minimum: z.number().describe(
-                    "Optional. If type is `INTEGER` or `NUMBER`, `minimum` specifies the minimum allowed value.",
-                  ).optional(),
-                  nullable: z.boolean().describe(
-                    "Optional. Indicates if the value of this field can be null.",
-                  ).optional(),
-                  pattern: z.string().describe(
-                    "Optional. If type is `STRING`, `pattern` specifies a regular expression that the string must match.",
-                  ).optional(),
-                  properties: z.record(z.string(), z.string()).describe(
-                    "Optional. If type is `OBJECT`, `properties` is a map of property names to schema definitions for each property of the object.",
-                  ).optional(),
-                  propertyOrdering: z.array(z.string()).describe(
-                    "Optional. Order of properties displayed or used where order matters. This is not a standard field in OpenAPI specification, but can be used to control the order of properties.",
-                  ).optional(),
-                  ref: z.string().describe(
-                    'Optional. Allows referencing another schema definition to use in place of this schema. The value must be a valid reference to a schema in `defs`. For example, the following schema defines a reference to a schema node named "Pet": type: object properties: pet: ref: #/defs/Pet defs: Pet: type: object properties: name: type: string The value of the "pet" property is a reference to the schema node named "Pet". See details in https://json-schema.org/understanding-json-schema/structuring',
-                  ).optional(),
-                  required: z.array(z.string()).describe(
-                    "Optional. If type is `OBJECT`, `required` lists the names of properties that must be present.",
-                  ).optional(),
-                  title: z.string().describe("Optional. Title for the schema.")
-                    .optional(),
-                  type: z.enum([
-                    "TYPE_UNSPECIFIED",
-                    "STRING",
-                    "NUMBER",
-                    "INTEGER",
-                    "BOOLEAN",
-                    "ARRAY",
-                    "OBJECT",
-                    "NULL",
-                  ]).describe("Optional. Data type of the schema field.")
-                    .optional(),
-                }).describe(
-                  "Defines the schema of input and output data. This is a subset of the [OpenAPI 3.0 Schema Object](https://spec.openapis.org/oas/v3.0.3#schema-object).",
-                ).optional(),
-                routingConfig: z.object({
-                  autoMode: z.object({
-                    modelRoutingPreference: z.enum([
-                      "UNKNOWN",
-                      "PRIORITIZE_QUALITY",
-                      "BALANCED",
-                      "PRIORITIZE_COST",
-                    ]).describe("The model routing preference.").optional(),
-                  }).describe(
-                    "The configuration for automated routing. When automated routing is specified, the routing will be determined by the pretrained routing model and customer provided model routing preference.",
-                  ).optional(),
-                  manualMode: z.object({
-                    modelName: z.string().describe(
-                      "The name of the model to use. Only public LLM models are accepted.",
-                    ).optional(),
-                  }).describe(
-                    "The configuration for manual routing. When manual routing is specified, the model will be selected based on the model name provided.",
-                  ).optional(),
-                }).describe(
-                  "The configuration for routing the request to a specific model. This can be used to control which model is used for the generation, either automatically or by specifying a model name.",
-                ).optional(),
-                seed: z.number().int().describe(
-                  "Optional. A seed for the random number generator. By setting a seed, you can make the model's output mostly deterministic. For a given prompt and parameters (like temperature, top_p, etc.), the model will produce the same response every time. However, it's not a guaranteed absolute deterministic behavior. This is different from parameters like `temperature`, which control the *level* of randomness. `seed` ensures that the \"random\" choices the model makes are the same on every run, making it essential for testing and ensuring reproducible results.",
-                ).optional(),
-                speechConfig: z.object({
-                  languageCode: z.string().describe(
-                    "Optional. The language code (ISO 639-1) for the speech synthesis.",
-                  ).optional(),
-                  multiSpeakerVoiceConfig: z.object({
-                    speakerVoiceConfigs: z.array(z.object({
-                      speaker: z.string().describe(
-                        "Required. The name of the speaker. This should be the same as the speaker name used in the prompt.",
-                      ).optional(),
-                      voiceConfig: z.object({
-                        prebuiltVoiceConfig: z.object({
-                          voiceName: z.string().describe(
-                            "The name of the prebuilt voice to use.",
-                          ).optional(),
-                        }).describe("Configuration for a prebuilt voice.")
-                          .optional(),
-                        replicatedVoiceConfig: z.object({
-                          mimeType: z.string().describe(
-                            "Optional. The mimetype of the voice sample. The only currently supported value is `audio/wav`. This represents 16-bit signed little-endian wav data, with a 24kHz sampling rate. `mime_type` will default to `audio/wav` if not set.",
-                          ).optional(),
-                          voiceSampleAudio: z.string().describe(
-                            "Optional. The sample of the custom voice.",
-                          ).optional(),
-                        }).describe(
-                          "The configuration for the replicated voice to use.",
-                        ).optional(),
-                      }).describe("Configuration for a voice.").optional(),
-                    })).describe(
-                      "Required. A list of configurations for the voices of the speakers. Exactly two speaker voice configurations must be provided.",
-                    ).optional(),
-                  }).describe(
-                    "Configuration for a multi-speaker text-to-speech request.",
-                  ).optional(),
-                  voiceConfig: z.object({
-                    prebuiltVoiceConfig: z.object({
-                      voiceName: z.string().describe(
-                        "The name of the prebuilt voice to use.",
-                      ).optional(),
-                    }).describe("Configuration for a prebuilt voice.")
-                      .optional(),
-                    replicatedVoiceConfig: z.object({
-                      mimeType: z.string().describe(
-                        "Optional. The mimetype of the voice sample. The only currently supported value is `audio/wav`. This represents 16-bit signed little-endian wav data, with a 24kHz sampling rate. `mime_type` will default to `audio/wav` if not set.",
-                      ).optional(),
-                      voiceSampleAudio: z.string().describe(
-                        "Optional. The sample of the custom voice.",
-                      ).optional(),
-                    }).describe(
-                      "The configuration for the replicated voice to use.",
-                    ).optional(),
-                  }).describe("Configuration for a voice.").optional(),
-                }).describe("Configuration for speech generation.").optional(),
-                stopSequences: z.array(z.string()).describe(
-                  'Optional. A list of character sequences that will stop the model from generating further tokens. If a stop sequence is generated, the output will end at that point. This is useful for controlling the length and structure of the output. For example, you can use ["\\n", "###"] to stop generation at a new line or a specific marker.',
-                ).optional(),
-                temperature: z.number().describe(
-                  "Optional. Controls the randomness of the output. A higher temperature results in more creative and diverse responses, while a lower temperature makes the output more predictable and focused. The valid range is (0.0, 2.0].",
-                ).optional(),
-                thinkingConfig: z.object({
-                  includeThoughts: z.boolean().describe(
-                    'Optional. If true, the model will include its thoughts in the response. "Thoughts" are the intermediate steps the model takes to arrive at the final response. They can provide insights into the model\'s reasoning process and help with debugging. If this is true, thoughts are returned only when available.',
-                  ).optional(),
-                  thinkingBudget: z.number().int().describe(
-                    "Optional. The token budget for the model's thinking process. The model will make a best effort to stay within this budget. This can be used to control the trade-off between response quality and latency.",
-                  ).optional(),
-                  thinkingLevel: z.enum([
-                    "THINKING_LEVEL_UNSPECIFIED",
-                    "LOW",
-                    "MEDIUM",
-                    "HIGH",
-                    "MINIMAL",
-                  ]).describe(
-                    "Optional. The number of thoughts tokens that the model should generate.",
-                  ).optional(),
-                }).describe(
-                  'Configuration for the model\'s thinking features. "Thinking" is a process where the model breaks down a complex task into smaller, manageable steps. This allows the model to reason about the task, plan its approach, and execute the plan to generate a high-quality response.',
-                ).optional(),
-                topK: z.number().describe(
-                  "Optional. Specifies the top-k sampling threshold. The model considers only the top k most probable tokens for the next token. This can be useful for generating more coherent and less random text. For example, a `top_k` of 40 means the model will choose the next word from the 40 most likely words.",
-                ).optional(),
-                topP: z.number().describe(
-                  "Optional. Specifies the nucleus sampling threshold. The model considers only the smallest set of tokens whose cumulative probability is at least `top_p`. This helps generate more diverse and less repetitive responses. For example, a `top_p` of 0.9 means the model considers tokens until the cumulative probability of the tokens to select from reaches 0.9. It's recommended to adjust either temperature or `top_p`, but not both.",
-                ).optional(),
-              }).describe(
-                "Configuration for content generation. This message contains all the parameters that control how the model generates content. It allows you to influence the randomness, length, and structure of the output.",
-              ).optional(),
-              samplingCount: z.number().int().describe(
-                "Optional. Number of samples for each instance in the dataset. If not specified, the default is 4. Minimum value is 1, maximum value is 32.",
-              ).optional(),
-            }).describe(
-              "The configs for autorater. This is applicable to both EvaluateInstances and EvaluateDataset.",
-            ).optional(),
-            promptTemplate: z.string().describe(
-              "Template for the prompt used to generate rubrics. The details should be updated based on the most-recent recipe requirements.",
-            ).optional(),
-            rubricContentType: z.enum([
-              "RUBRIC_CONTENT_TYPE_UNSPECIFIED",
-              "PROPERTY",
-              "NL_QUESTION_ANSWER",
-              "PYTHON_CODE_ASSERTION",
-            ]).describe("The type of rubric content to be generated.")
-              .optional(),
-            rubricTypeOntology: z.array(z.string()).describe(
-              "Optional. An optional, pre-defined list of allowed types for generated rubrics. If this field is provided, it implies `include_rubric_type` should be true, and the generated rubric types should be chosen from this ontology.",
-            ).optional(),
-          }).describe("Specification for how rubrics should be generated.")
-            .optional(),
-          rubricGroupKey: z.string().describe(
+          predefinedRubricGenerationSpec: z.unknown().describe(
+            "The spec for a pre-defined metric.",
+          ).optional(),
+          rubricGenerationSpec: z.unknown().describe(
+            "Specification for how rubrics should be generated.",
+          ).optional(),
+          rubricGroupKey: z.unknown().describe(
             "Use a pre-defined group of rubrics associated with the input. Refers to a key in the rubric_groups map of EvaluationInstance.",
           ).optional(),
-          systemInstruction: z.string().describe(
+          systemInstruction: z.unknown().describe(
             "Optional. System instructions for the judge model.",
           ).optional(),
         }).describe("Specification for an LLM based metric.").optional(),
         metadata: z.object({
-          otherMetadata: z.record(z.string(), z.string()).describe(
+          otherMetadata: z.unknown().describe(
             "Optional. Flexible metadata for user-defined attributes.",
           ).optional(),
-          scoreRange: z.object({
-            description: z.string().describe(
-              "Optional. The description of the score explaining the directionality etc.",
-            ).optional(),
-            max: z.number().describe(
-              "Required. The maximum value of the score range (inclusive).",
-            ).optional(),
-            min: z.number().describe(
-              "Required. The minimum value of the score range (inclusive).",
-            ).optional(),
-            step: z.number().describe(
-              "Optional. The distance between discrete steps in the range. If unset, the range is assumed to be continuous.",
-            ).optional(),
-          }).describe(
+          scoreRange: z.unknown().describe(
             "The range of possible scores for this metric, used for plotting.",
           ).optional(),
-          title: z.string().describe(
+          title: z.unknown().describe(
             "Optional. The user-friendly name for the metric. If not set for a registered metric, it will default to the metric's display name.",
           ).optional(),
         }).describe(
           "Metadata about the metric, used for visualization and organization.",
         ).optional(),
         pairwiseMetricSpec: z.object({
-          baselineResponseFieldName: z.string().describe(
+          baselineResponseFieldName: z.unknown().describe(
             "Optional. The field name of the baseline response.",
           ).optional(),
-          candidateResponseFieldName: z.string().describe(
+          candidateResponseFieldName: z.unknown().describe(
             "Optional. The field name of the candidate response.",
           ).optional(),
-          customOutputFormatConfig: z.object({
-            returnRawOutput: z.boolean().describe(
-              "Optional. Whether to return raw output.",
-            ).optional(),
-          }).describe("Spec for custom output format configuration.")
-            .optional(),
-          metricPromptTemplate: z.string().describe(
+          customOutputFormatConfig: z.unknown().describe(
+            "Spec for custom output format configuration.",
+          ).optional(),
+          metricPromptTemplate: z.unknown().describe(
             "Required. Metric prompt template for pairwise metric.",
           ).optional(),
-          systemInstruction: z.string().describe(
+          systemInstruction: z.unknown().describe(
             "Optional. System instructions for pairwise metric.",
           ).optional(),
         }).describe("Spec for pairwise metric.").optional(),
         pointwiseMetricSpec: z.object({
-          customOutputFormatConfig: z.object({
-            returnRawOutput: z.boolean().describe(
-              "Optional. Whether to return raw output.",
-            ).optional(),
-          }).describe("Spec for custom output format configuration.")
-            .optional(),
-          metricPromptTemplate: z.string().describe(
+          customOutputFormatConfig: z.unknown().describe(
+            "Spec for custom output format configuration.",
+          ).optional(),
+          metricPromptTemplate: z.unknown().describe(
             "Required. Metric prompt template for pointwise metric.",
           ).optional(),
-          systemInstruction: z.string().describe(
+          systemInstruction: z.unknown().describe(
             "Optional. System instructions for pointwise metric.",
           ).optional(),
         }).describe("Spec for pointwise metric.").optional(),
         predefinedMetricSpec: z.object({
-          metricSpecName: z.string().describe(
+          metricSpecName: z.unknown().describe(
             'Required. The name of a pre-defined metric, such as "instruction_following_v1" or "text_quality_v1".',
           ).optional(),
-          metricSpecParameters: z.record(z.string(), z.string()).describe(
+          metricSpecParameters: z.unknown().describe(
             "Optional. The parameters needed to run the pre-defined metric.",
           ).optional(),
         }).describe("The spec for a pre-defined metric.").optional(),
         rougeSpec: z.object({
-          rougeType: z.string().describe(
+          rougeType: z.unknown().describe(
             "Optional. Supported rouge types are rougen[1-9], rougeL, and rougeLsum.",
           ).optional(),
-          splitSummaries: z.boolean().describe(
+          splitSummaries: z.unknown().describe(
             "Optional. Whether to split summaries while using rougeLsum.",
           ).optional(),
-          useStemmer: z.boolean().describe(
+          useStemmer: z.unknown().describe(
             "Optional. Whether to use stemmer to compute rouge score.",
           ).optional(),
         }).describe(
@@ -1764,318 +556,24 @@ const GlobalArgsSchema = z.object({
         metricSpecName: z.string().describe(
           'Required. The name of a pre-defined metric, such as "instruction_following_v1" or "text_quality_v1".',
         ).optional(),
-        parameters: z.record(z.string(), z.string()).describe(
+        parameters: z.record(z.string(), z.unknown()).describe(
           "Optional. The parameters needed to run the pre-defined metric.",
         ).optional(),
       }).describe("Specification for a pre-defined metric.").optional(),
       rubricBasedMetricSpec: z.object({
         inlineRubrics: z.object({
-          rubrics: z.array(z.object({
-            content: z.object({
-              property: z.object({
-                description: z.string().describe(
-                  'Description of the property being evaluated. Example: "The model\'s response is grammatically correct."',
-                ).optional(),
-              }).describe("Defines criteria based on a specific property.")
-                .optional(),
-            }).describe(
-              "Content of the rubric, defining the testable criteria.",
-            ).optional(),
-            importance: z.enum([
-              "IMPORTANCE_UNSPECIFIED",
-              "HIGH",
-              "MEDIUM",
-              "LOW",
-            ]).describe("Optional. The relative importance of this rubric.")
-              .optional(),
-            rubricId: z.string().describe(
-              "Unique identifier for the rubric. This ID is used to refer to this rubric, e.g., in RubricVerdict.",
-            ).optional(),
-            type: z.string().describe(
-              'Optional. A type designator for the rubric, which can inform how it\'s evaluated or interpreted by systems or users. It\'s recommended to use consistent, well-defined, upper snake_case strings. Examples: "SUMMARIZATION_QUALITY", "SAFETY_HARMFUL_CONTENT", "INSTRUCTION_ADHERENCE".',
-            ).optional(),
-          })).describe("The list of rubrics.").optional(),
+          rubrics: z.unknown().describe("The list of rubrics.").optional(),
         }).describe(
           "Defines a list of rubrics, used when providing rubrics inline.",
         ).optional(),
         judgeAutoraterConfig: z.object({
-          autoraterModel: z.string().describe(
+          autoraterModel: z.unknown().describe(
             "Optional. The fully qualified name of the publisher model or tuned autorater endpoint to use. Publisher model format: `projects/{project}/locations/{location}/publishers/*/models/*` Tuned model endpoint format: `projects/{project}/locations/{location}/endpoints/{endpoint}`",
           ).optional(),
-          generationConfig: z.object({
-            audioTimestamp: z.boolean().describe(
-              "Optional. If enabled, audio timestamps will be included in the request to the model. This can be useful for synchronizing audio with other modalities in the response.",
-            ).optional(),
-            candidateCount: z.number().int().describe(
-              "Optional. The number of candidate responses to generate. A higher `candidate_count` can provide more options to choose from, but it also consumes more resources. This can be useful for generating a variety of responses and selecting the best one.",
-            ).optional(),
-            enableAffectiveDialog: z.boolean().describe(
-              "Optional. If enabled, the model will detect emotions and adapt its responses accordingly. For example, if the model detects that the user is frustrated, it may provide a more empathetic response.",
-            ).optional(),
-            frequencyPenalty: z.number().describe(
-              "Optional. Penalizes tokens based on their frequency in the generated text. A positive value helps to reduce the repetition of words and phrases. Valid values can range from [-2.0, 2.0].",
-            ).optional(),
-            imageConfig: z.object({
-              aspectRatio: z.string().describe(
-                'Optional. The desired aspect ratio for the generated images. The following aspect ratios are supported: "1:1" "2:3", "3:2" "3:4", "4:3" "4:5", "5:4" "9:16", "16:9" "21:9"',
-              ).optional(),
-              imageOutputOptions: z.object({
-                compressionQuality: z.number().int().describe(
-                  "Optional. The compression quality of the output image.",
-                ).optional(),
-                mimeType: z.string().describe(
-                  "Optional. The image format that the output should be saved as.",
-                ).optional(),
-              }).describe("The image output format for generated images.")
-                .optional(),
-              imageSize: z.string().describe(
-                "Optional. Specifies the size of generated images. Supported values are `1K`, `2K`, `4K`. If not specified, the model will use default value `1K`.",
-              ).optional(),
-              personGeneration: z.enum([
-                "PERSON_GENERATION_UNSPECIFIED",
-                "ALLOW_ALL",
-                "ALLOW_ADULT",
-                "ALLOW_NONE",
-              ]).describe(
-                "Optional. Controls whether the model can generate people.",
-              ).optional(),
-              prominentPeople: z.enum([
-                "PROMINENT_PEOPLE_UNSPECIFIED",
-                "ALLOW_PROMINENT_PEOPLE",
-                "BLOCK_PROMINENT_PEOPLE",
-              ]).describe(
-                "Optional. Controls whether prominent people (celebrities) generation is allowed. If used with personGeneration, personGeneration enum would take precedence. For instance, if ALLOW_NONE is set, all person generation would be blocked. If this field is unspecified, the default behavior is to allow prominent people.",
-              ).optional(),
-            }).describe(
-              "Configuration for image generation. This message allows you to control various aspects of image generation, such as the output format, aspect ratio, and whether the model can generate images of people.",
-            ).optional(),
-            logprobs: z.number().int().describe(
-              "Optional. The number of top log probabilities to return for each token. This can be used to see which other tokens were considered likely candidates for a given position. A higher value will return more options, but it will also increase the size of the response.",
-            ).optional(),
-            maxOutputTokens: z.number().int().describe(
-              "Optional. The maximum number of tokens to generate in the response. A token is approximately four characters. The default value varies by model. This parameter can be used to control the length of the generated text and prevent overly long responses.",
-            ).optional(),
-            mediaResolution: z.enum([
-              "MEDIA_RESOLUTION_UNSPECIFIED",
-              "MEDIA_RESOLUTION_LOW",
-              "MEDIA_RESOLUTION_MEDIUM",
-              "MEDIA_RESOLUTION_HIGH",
-            ]).describe(
-              "Optional. The token resolution at which input media content is sampled. This is used to control the trade-off between the quality of the response and the number of tokens used to represent the media. A higher resolution allows the model to perceive more detail, which can lead to a more nuanced response, but it will also use more tokens. This does not affect the image dimensions sent to the model.",
-            ).optional(),
-            presencePenalty: z.number().describe(
-              "Optional. Penalizes tokens that have already appeared in the generated text. A positive value encourages the model to generate more diverse and less repetitive text. Valid values can range from [-2.0, 2.0].",
-            ).optional(),
-            responseJsonSchema: z.string().describe(
-              "Optional. When this field is set, response_schema must be omitted and response_mime_type must be set to `application/json`.",
-            ).optional(),
-            responseLogprobs: z.boolean().describe(
-              "Optional. If set to true, the log probabilities of the output tokens are returned. Log probabilities are the logarithm of the probability of a token appearing in the output. A higher log probability means the token is more likely to be generated. This can be useful for analyzing the model's confidence in its own output and for debugging.",
-            ).optional(),
-            responseMimeType: z.string().describe(
-              "Optional. The IANA standard MIME type of the response. The model will generate output that conforms to this MIME type. Supported values include 'text/plain' (default) and 'application/json'. The model needs to be prompted to output the appropriate response type, otherwise the behavior is undefined.",
-            ).optional(),
-            responseModalities: z.array(
-              z.enum(["MODALITY_UNSPECIFIED", "TEXT", "IMAGE", "AUDIO"]),
-            ).describe(
-              "Optional. The modalities of the response. The model will generate a response that includes all the specified modalities. For example, if this is set to `[TEXT, IMAGE]`, the response will include both text and an image.",
-            ).optional(),
-            responseSchema: z.object({
-              additionalProperties: z.string().describe(
-                "Optional. If `type` is `OBJECT`, specifies how to handle properties not defined in `properties`. If it is a boolean `false`, no additional properties are allowed. If it is a schema, additional properties are allowed if they conform to the schema.",
-              ).optional(),
-              anyOf: z.array(z.string()).describe(
-                "Optional. The instance must be valid against any (one or more) of the subschemas listed in `any_of`.",
-              ).optional(),
-              default: z.string().describe(
-                "Optional. Default value to use if the field is not specified.",
-              ).optional(),
-              defs: z.record(z.string(), z.string()).describe(
-                "Optional. `defs` provides a map of schema definitions that can be reused by `ref` elsewhere in the schema. Only allowed at root level of the schema.",
-              ).optional(),
-              description: z.string().describe(
-                "Optional. Describes the data. The model uses this field to understand the purpose of the schema and how to use it. It is a best practice to provide a clear and descriptive explanation for the schema and its properties here, rather than in the prompt.",
-              ).optional(),
-              enum: z.array(z.string()).describe(
-                'Optional. Possible values of the field. This field can be used to restrict a value to a fixed set of values. To mark a field as an enum, set `format` to `enum` and provide the list of possible values in `enum`. For example: 1. To define directions: `{type:STRING, format:enum, enum:["EAST", "NORTH", "SOUTH", "WEST"]}` 2. To define apartment numbers: `{type:INTEGER, format:enum, enum:["101", "201", "301"]}`',
-              ).optional(),
-              example: z.string().describe(
-                "Optional. Example of an instance of this schema.",
-              ).optional(),
-              format: z.string().describe(
-                "Optional. The format of the data. For `NUMBER` type, format can be `float` or `double`. For `INTEGER` type, format can be `int32` or `int64`. For `STRING` type, format can be `email`, `byte`, `date`, `date-time`, `password`, and other formats to further refine the data type.",
-              ).optional(),
-              items: z.string().describe(
-                "Circular reference to GoogleCloudAiplatformV1Schema",
-              ).optional(),
-              maxItems: z.string().describe(
-                "Optional. If type is `ARRAY`, `max_items` specifies the maximum number of items in an array.",
-              ).optional(),
-              maxLength: z.string().describe(
-                "Optional. If type is `STRING`, `max_length` specifies the maximum length of the string.",
-              ).optional(),
-              maxProperties: z.string().describe(
-                "Optional. If type is `OBJECT`, `max_properties` specifies the maximum number of properties that can be provided.",
-              ).optional(),
-              maximum: z.number().describe(
-                "Optional. If type is `INTEGER` or `NUMBER`, `maximum` specifies the maximum allowed value.",
-              ).optional(),
-              minItems: z.string().describe(
-                "Optional. If type is `ARRAY`, `min_items` specifies the minimum number of items in an array.",
-              ).optional(),
-              minLength: z.string().describe(
-                "Optional. If type is `STRING`, `min_length` specifies the minimum length of the string.",
-              ).optional(),
-              minProperties: z.string().describe(
-                "Optional. If type is `OBJECT`, `min_properties` specifies the minimum number of properties that can be provided.",
-              ).optional(),
-              minimum: z.number().describe(
-                "Optional. If type is `INTEGER` or `NUMBER`, `minimum` specifies the minimum allowed value.",
-              ).optional(),
-              nullable: z.boolean().describe(
-                "Optional. Indicates if the value of this field can be null.",
-              ).optional(),
-              pattern: z.string().describe(
-                "Optional. If type is `STRING`, `pattern` specifies a regular expression that the string must match.",
-              ).optional(),
-              properties: z.record(z.string(), z.string()).describe(
-                "Optional. If type is `OBJECT`, `properties` is a map of property names to schema definitions for each property of the object.",
-              ).optional(),
-              propertyOrdering: z.array(z.string()).describe(
-                "Optional. Order of properties displayed or used where order matters. This is not a standard field in OpenAPI specification, but can be used to control the order of properties.",
-              ).optional(),
-              ref: z.string().describe(
-                'Optional. Allows referencing another schema definition to use in place of this schema. The value must be a valid reference to a schema in `defs`. For example, the following schema defines a reference to a schema node named "Pet": type: object properties: pet: ref: #/defs/Pet defs: Pet: type: object properties: name: type: string The value of the "pet" property is a reference to the schema node named "Pet". See details in https://json-schema.org/understanding-json-schema/structuring',
-              ).optional(),
-              required: z.array(z.string()).describe(
-                "Optional. If type is `OBJECT`, `required` lists the names of properties that must be present.",
-              ).optional(),
-              title: z.string().describe("Optional. Title for the schema.")
-                .optional(),
-              type: z.enum([
-                "TYPE_UNSPECIFIED",
-                "STRING",
-                "NUMBER",
-                "INTEGER",
-                "BOOLEAN",
-                "ARRAY",
-                "OBJECT",
-                "NULL",
-              ]).describe("Optional. Data type of the schema field.")
-                .optional(),
-            }).describe(
-              "Defines the schema of input and output data. This is a subset of the [OpenAPI 3.0 Schema Object](https://spec.openapis.org/oas/v3.0.3#schema-object).",
-            ).optional(),
-            routingConfig: z.object({
-              autoMode: z.object({
-                modelRoutingPreference: z.enum([
-                  "UNKNOWN",
-                  "PRIORITIZE_QUALITY",
-                  "BALANCED",
-                  "PRIORITIZE_COST",
-                ]).describe("The model routing preference.").optional(),
-              }).describe(
-                "The configuration for automated routing. When automated routing is specified, the routing will be determined by the pretrained routing model and customer provided model routing preference.",
-              ).optional(),
-              manualMode: z.object({
-                modelName: z.string().describe(
-                  "The name of the model to use. Only public LLM models are accepted.",
-                ).optional(),
-              }).describe(
-                "The configuration for manual routing. When manual routing is specified, the model will be selected based on the model name provided.",
-              ).optional(),
-            }).describe(
-              "The configuration for routing the request to a specific model. This can be used to control which model is used for the generation, either automatically or by specifying a model name.",
-            ).optional(),
-            seed: z.number().int().describe(
-              "Optional. A seed for the random number generator. By setting a seed, you can make the model's output mostly deterministic. For a given prompt and parameters (like temperature, top_p, etc.), the model will produce the same response every time. However, it's not a guaranteed absolute deterministic behavior. This is different from parameters like `temperature`, which control the *level* of randomness. `seed` ensures that the \"random\" choices the model makes are the same on every run, making it essential for testing and ensuring reproducible results.",
-            ).optional(),
-            speechConfig: z.object({
-              languageCode: z.string().describe(
-                "Optional. The language code (ISO 639-1) for the speech synthesis.",
-              ).optional(),
-              multiSpeakerVoiceConfig: z.object({
-                speakerVoiceConfigs: z.array(z.object({
-                  speaker: z.string().describe(
-                    "Required. The name of the speaker. This should be the same as the speaker name used in the prompt.",
-                  ).optional(),
-                  voiceConfig: z.object({
-                    prebuiltVoiceConfig: z.object({
-                      voiceName: z.string().describe(
-                        "The name of the prebuilt voice to use.",
-                      ).optional(),
-                    }).describe("Configuration for a prebuilt voice.")
-                      .optional(),
-                    replicatedVoiceConfig: z.object({
-                      mimeType: z.string().describe(
-                        "Optional. The mimetype of the voice sample. The only currently supported value is `audio/wav`. This represents 16-bit signed little-endian wav data, with a 24kHz sampling rate. `mime_type` will default to `audio/wav` if not set.",
-                      ).optional(),
-                      voiceSampleAudio: z.string().describe(
-                        "Optional. The sample of the custom voice.",
-                      ).optional(),
-                    }).describe(
-                      "The configuration for the replicated voice to use.",
-                    ).optional(),
-                  }).describe("Configuration for a voice.").optional(),
-                })).describe(
-                  "Required. A list of configurations for the voices of the speakers. Exactly two speaker voice configurations must be provided.",
-                ).optional(),
-              }).describe(
-                "Configuration for a multi-speaker text-to-speech request.",
-              ).optional(),
-              voiceConfig: z.object({
-                prebuiltVoiceConfig: z.object({
-                  voiceName: z.string().describe(
-                    "The name of the prebuilt voice to use.",
-                  ).optional(),
-                }).describe("Configuration for a prebuilt voice.").optional(),
-                replicatedVoiceConfig: z.object({
-                  mimeType: z.string().describe(
-                    "Optional. The mimetype of the voice sample. The only currently supported value is `audio/wav`. This represents 16-bit signed little-endian wav data, with a 24kHz sampling rate. `mime_type` will default to `audio/wav` if not set.",
-                  ).optional(),
-                  voiceSampleAudio: z.string().describe(
-                    "Optional. The sample of the custom voice.",
-                  ).optional(),
-                }).describe(
-                  "The configuration for the replicated voice to use.",
-                ).optional(),
-              }).describe("Configuration for a voice.").optional(),
-            }).describe("Configuration for speech generation.").optional(),
-            stopSequences: z.array(z.string()).describe(
-              'Optional. A list of character sequences that will stop the model from generating further tokens. If a stop sequence is generated, the output will end at that point. This is useful for controlling the length and structure of the output. For example, you can use ["\\n", "###"] to stop generation at a new line or a specific marker.',
-            ).optional(),
-            temperature: z.number().describe(
-              "Optional. Controls the randomness of the output. A higher temperature results in more creative and diverse responses, while a lower temperature makes the output more predictable and focused. The valid range is (0.0, 2.0].",
-            ).optional(),
-            thinkingConfig: z.object({
-              includeThoughts: z.boolean().describe(
-                'Optional. If true, the model will include its thoughts in the response. "Thoughts" are the intermediate steps the model takes to arrive at the final response. They can provide insights into the model\'s reasoning process and help with debugging. If this is true, thoughts are returned only when available.',
-              ).optional(),
-              thinkingBudget: z.number().int().describe(
-                "Optional. The token budget for the model's thinking process. The model will make a best effort to stay within this budget. This can be used to control the trade-off between response quality and latency.",
-              ).optional(),
-              thinkingLevel: z.enum([
-                "THINKING_LEVEL_UNSPECIFIED",
-                "LOW",
-                "MEDIUM",
-                "HIGH",
-                "MINIMAL",
-              ]).describe(
-                "Optional. The number of thoughts tokens that the model should generate.",
-              ).optional(),
-            }).describe(
-              'Configuration for the model\'s thinking features. "Thinking" is a process where the model breaks down a complex task into smaller, manageable steps. This allows the model to reason about the task, plan its approach, and execute the plan to generate a high-quality response.',
-            ).optional(),
-            topK: z.number().describe(
-              "Optional. Specifies the top-k sampling threshold. The model considers only the top k most probable tokens for the next token. This can be useful for generating more coherent and less random text. For example, a `top_k` of 40 means the model will choose the next word from the 40 most likely words.",
-            ).optional(),
-            topP: z.number().describe(
-              "Optional. Specifies the nucleus sampling threshold. The model considers only the smallest set of tokens whose cumulative probability is at least `top_p`. This helps generate more diverse and less repetitive responses. For example, a `top_p` of 0.9 means the model considers tokens until the cumulative probability of the tokens to select from reaches 0.9. It's recommended to adjust either temperature or `top_p`, but not both.",
-            ).optional(),
-          }).describe(
+          generationConfig: z.unknown().describe(
             "Configuration for content generation. This message contains all the parameters that control how the model generates content. It allows you to influence the randomness, length, and structure of the output.",
           ).optional(),
-          sampleCount: z.number().int().describe(
+          sampleCount: z.unknown().describe(
             "Optional. Number of samples for each instance in the dataset. If not specified, the default is 4. Minimum value is 1, maximum value is 32.",
           ).optional(),
         }).describe("The autorater config used for the evaluation run.")
@@ -2084,302 +582,19 @@ const GlobalArgsSchema = z.object({
           "Optional. Template for the prompt used by the judge model to evaluate against rubrics.",
         ).optional(),
         rubricGenerationSpec: z.object({
-          metricResourceName: z.string().describe(
+          metricResourceName: z.unknown().describe(
             "Optional. Resource name of the metric definition.",
           ).optional(),
-          modelConfig: z.object({
-            autoraterModel: z.string().describe(
-              "Optional. The fully qualified name of the publisher model or tuned autorater endpoint to use. Publisher model format: `projects/{project}/locations/{location}/publishers/*/models/*` Tuned model endpoint format: `projects/{project}/locations/{location}/endpoints/{endpoint}`",
-            ).optional(),
-            generationConfig: z.object({
-              audioTimestamp: z.boolean().describe(
-                "Optional. If enabled, audio timestamps will be included in the request to the model. This can be useful for synchronizing audio with other modalities in the response.",
-              ).optional(),
-              candidateCount: z.number().int().describe(
-                "Optional. The number of candidate responses to generate. A higher `candidate_count` can provide more options to choose from, but it also consumes more resources. This can be useful for generating a variety of responses and selecting the best one.",
-              ).optional(),
-              enableAffectiveDialog: z.boolean().describe(
-                "Optional. If enabled, the model will detect emotions and adapt its responses accordingly. For example, if the model detects that the user is frustrated, it may provide a more empathetic response.",
-              ).optional(),
-              frequencyPenalty: z.number().describe(
-                "Optional. Penalizes tokens based on their frequency in the generated text. A positive value helps to reduce the repetition of words and phrases. Valid values can range from [-2.0, 2.0].",
-              ).optional(),
-              imageConfig: z.object({
-                aspectRatio: z.string().describe(
-                  'Optional. The desired aspect ratio for the generated images. The following aspect ratios are supported: "1:1" "2:3", "3:2" "3:4", "4:3" "4:5", "5:4" "9:16", "16:9" "21:9"',
-                ).optional(),
-                imageOutputOptions: z.object({
-                  compressionQuality: z.number().int().describe(
-                    "Optional. The compression quality of the output image.",
-                  ).optional(),
-                  mimeType: z.string().describe(
-                    "Optional. The image format that the output should be saved as.",
-                  ).optional(),
-                }).describe("The image output format for generated images.")
-                  .optional(),
-                imageSize: z.string().describe(
-                  "Optional. Specifies the size of generated images. Supported values are `1K`, `2K`, `4K`. If not specified, the model will use default value `1K`.",
-                ).optional(),
-                personGeneration: z.enum([
-                  "PERSON_GENERATION_UNSPECIFIED",
-                  "ALLOW_ALL",
-                  "ALLOW_ADULT",
-                  "ALLOW_NONE",
-                ]).describe(
-                  "Optional. Controls whether the model can generate people.",
-                ).optional(),
-                prominentPeople: z.enum([
-                  "PROMINENT_PEOPLE_UNSPECIFIED",
-                  "ALLOW_PROMINENT_PEOPLE",
-                  "BLOCK_PROMINENT_PEOPLE",
-                ]).describe(
-                  "Optional. Controls whether prominent people (celebrities) generation is allowed. If used with personGeneration, personGeneration enum would take precedence. For instance, if ALLOW_NONE is set, all person generation would be blocked. If this field is unspecified, the default behavior is to allow prominent people.",
-                ).optional(),
-              }).describe(
-                "Configuration for image generation. This message allows you to control various aspects of image generation, such as the output format, aspect ratio, and whether the model can generate images of people.",
-              ).optional(),
-              logprobs: z.number().int().describe(
-                "Optional. The number of top log probabilities to return for each token. This can be used to see which other tokens were considered likely candidates for a given position. A higher value will return more options, but it will also increase the size of the response.",
-              ).optional(),
-              maxOutputTokens: z.number().int().describe(
-                "Optional. The maximum number of tokens to generate in the response. A token is approximately four characters. The default value varies by model. This parameter can be used to control the length of the generated text and prevent overly long responses.",
-              ).optional(),
-              mediaResolution: z.enum([
-                "MEDIA_RESOLUTION_UNSPECIFIED",
-                "MEDIA_RESOLUTION_LOW",
-                "MEDIA_RESOLUTION_MEDIUM",
-                "MEDIA_RESOLUTION_HIGH",
-              ]).describe(
-                "Optional. The token resolution at which input media content is sampled. This is used to control the trade-off between the quality of the response and the number of tokens used to represent the media. A higher resolution allows the model to perceive more detail, which can lead to a more nuanced response, but it will also use more tokens. This does not affect the image dimensions sent to the model.",
-              ).optional(),
-              presencePenalty: z.number().describe(
-                "Optional. Penalizes tokens that have already appeared in the generated text. A positive value encourages the model to generate more diverse and less repetitive text. Valid values can range from [-2.0, 2.0].",
-              ).optional(),
-              responseJsonSchema: z.string().describe(
-                "Optional. When this field is set, response_schema must be omitted and response_mime_type must be set to `application/json`.",
-              ).optional(),
-              responseLogprobs: z.boolean().describe(
-                "Optional. If set to true, the log probabilities of the output tokens are returned. Log probabilities are the logarithm of the probability of a token appearing in the output. A higher log probability means the token is more likely to be generated. This can be useful for analyzing the model's confidence in its own output and for debugging.",
-              ).optional(),
-              responseMimeType: z.string().describe(
-                "Optional. The IANA standard MIME type of the response. The model will generate output that conforms to this MIME type. Supported values include 'text/plain' (default) and 'application/json'. The model needs to be prompted to output the appropriate response type, otherwise the behavior is undefined.",
-              ).optional(),
-              responseModalities: z.array(
-                z.enum(["MODALITY_UNSPECIFIED", "TEXT", "IMAGE", "AUDIO"]),
-              ).describe(
-                "Optional. The modalities of the response. The model will generate a response that includes all the specified modalities. For example, if this is set to `[TEXT, IMAGE]`, the response will include both text and an image.",
-              ).optional(),
-              responseSchema: z.object({
-                additionalProperties: z.string().describe(
-                  "Optional. If `type` is `OBJECT`, specifies how to handle properties not defined in `properties`. If it is a boolean `false`, no additional properties are allowed. If it is a schema, additional properties are allowed if they conform to the schema.",
-                ).optional(),
-                anyOf: z.array(z.string()).describe(
-                  "Optional. The instance must be valid against any (one or more) of the subschemas listed in `any_of`.",
-                ).optional(),
-                default: z.string().describe(
-                  "Optional. Default value to use if the field is not specified.",
-                ).optional(),
-                defs: z.record(z.string(), z.string()).describe(
-                  "Optional. `defs` provides a map of schema definitions that can be reused by `ref` elsewhere in the schema. Only allowed at root level of the schema.",
-                ).optional(),
-                description: z.string().describe(
-                  "Optional. Describes the data. The model uses this field to understand the purpose of the schema and how to use it. It is a best practice to provide a clear and descriptive explanation for the schema and its properties here, rather than in the prompt.",
-                ).optional(),
-                enum: z.array(z.string()).describe(
-                  'Optional. Possible values of the field. This field can be used to restrict a value to a fixed set of values. To mark a field as an enum, set `format` to `enum` and provide the list of possible values in `enum`. For example: 1. To define directions: `{type:STRING, format:enum, enum:["EAST", "NORTH", "SOUTH", "WEST"]}` 2. To define apartment numbers: `{type:INTEGER, format:enum, enum:["101", "201", "301"]}`',
-                ).optional(),
-                example: z.string().describe(
-                  "Optional. Example of an instance of this schema.",
-                ).optional(),
-                format: z.string().describe(
-                  "Optional. The format of the data. For `NUMBER` type, format can be `float` or `double`. For `INTEGER` type, format can be `int32` or `int64`. For `STRING` type, format can be `email`, `byte`, `date`, `date-time`, `password`, and other formats to further refine the data type.",
-                ).optional(),
-                items: z.string().describe(
-                  "Circular reference to GoogleCloudAiplatformV1Schema",
-                ).optional(),
-                maxItems: z.string().describe(
-                  "Optional. If type is `ARRAY`, `max_items` specifies the maximum number of items in an array.",
-                ).optional(),
-                maxLength: z.string().describe(
-                  "Optional. If type is `STRING`, `max_length` specifies the maximum length of the string.",
-                ).optional(),
-                maxProperties: z.string().describe(
-                  "Optional. If type is `OBJECT`, `max_properties` specifies the maximum number of properties that can be provided.",
-                ).optional(),
-                maximum: z.number().describe(
-                  "Optional. If type is `INTEGER` or `NUMBER`, `maximum` specifies the maximum allowed value.",
-                ).optional(),
-                minItems: z.string().describe(
-                  "Optional. If type is `ARRAY`, `min_items` specifies the minimum number of items in an array.",
-                ).optional(),
-                minLength: z.string().describe(
-                  "Optional. If type is `STRING`, `min_length` specifies the minimum length of the string.",
-                ).optional(),
-                minProperties: z.string().describe(
-                  "Optional. If type is `OBJECT`, `min_properties` specifies the minimum number of properties that can be provided.",
-                ).optional(),
-                minimum: z.number().describe(
-                  "Optional. If type is `INTEGER` or `NUMBER`, `minimum` specifies the minimum allowed value.",
-                ).optional(),
-                nullable: z.boolean().describe(
-                  "Optional. Indicates if the value of this field can be null.",
-                ).optional(),
-                pattern: z.string().describe(
-                  "Optional. If type is `STRING`, `pattern` specifies a regular expression that the string must match.",
-                ).optional(),
-                properties: z.record(z.string(), z.string()).describe(
-                  "Optional. If type is `OBJECT`, `properties` is a map of property names to schema definitions for each property of the object.",
-                ).optional(),
-                propertyOrdering: z.array(z.string()).describe(
-                  "Optional. Order of properties displayed or used where order matters. This is not a standard field in OpenAPI specification, but can be used to control the order of properties.",
-                ).optional(),
-                ref: z.string().describe(
-                  'Optional. Allows referencing another schema definition to use in place of this schema. The value must be a valid reference to a schema in `defs`. For example, the following schema defines a reference to a schema node named "Pet": type: object properties: pet: ref: #/defs/Pet defs: Pet: type: object properties: name: type: string The value of the "pet" property is a reference to the schema node named "Pet". See details in https://json-schema.org/understanding-json-schema/structuring',
-                ).optional(),
-                required: z.array(z.string()).describe(
-                  "Optional. If type is `OBJECT`, `required` lists the names of properties that must be present.",
-                ).optional(),
-                title: z.string().describe("Optional. Title for the schema.")
-                  .optional(),
-                type: z.enum([
-                  "TYPE_UNSPECIFIED",
-                  "STRING",
-                  "NUMBER",
-                  "INTEGER",
-                  "BOOLEAN",
-                  "ARRAY",
-                  "OBJECT",
-                  "NULL",
-                ]).describe("Optional. Data type of the schema field.")
-                  .optional(),
-              }).describe(
-                "Defines the schema of input and output data. This is a subset of the [OpenAPI 3.0 Schema Object](https://spec.openapis.org/oas/v3.0.3#schema-object).",
-              ).optional(),
-              routingConfig: z.object({
-                autoMode: z.object({
-                  modelRoutingPreference: z.enum([
-                    "UNKNOWN",
-                    "PRIORITIZE_QUALITY",
-                    "BALANCED",
-                    "PRIORITIZE_COST",
-                  ]).describe("The model routing preference.").optional(),
-                }).describe(
-                  "The configuration for automated routing. When automated routing is specified, the routing will be determined by the pretrained routing model and customer provided model routing preference.",
-                ).optional(),
-                manualMode: z.object({
-                  modelName: z.string().describe(
-                    "The name of the model to use. Only public LLM models are accepted.",
-                  ).optional(),
-                }).describe(
-                  "The configuration for manual routing. When manual routing is specified, the model will be selected based on the model name provided.",
-                ).optional(),
-              }).describe(
-                "The configuration for routing the request to a specific model. This can be used to control which model is used for the generation, either automatically or by specifying a model name.",
-              ).optional(),
-              seed: z.number().int().describe(
-                "Optional. A seed for the random number generator. By setting a seed, you can make the model's output mostly deterministic. For a given prompt and parameters (like temperature, top_p, etc.), the model will produce the same response every time. However, it's not a guaranteed absolute deterministic behavior. This is different from parameters like `temperature`, which control the *level* of randomness. `seed` ensures that the \"random\" choices the model makes are the same on every run, making it essential for testing and ensuring reproducible results.",
-              ).optional(),
-              speechConfig: z.object({
-                languageCode: z.string().describe(
-                  "Optional. The language code (ISO 639-1) for the speech synthesis.",
-                ).optional(),
-                multiSpeakerVoiceConfig: z.object({
-                  speakerVoiceConfigs: z.array(z.object({
-                    speaker: z.string().describe(
-                      "Required. The name of the speaker. This should be the same as the speaker name used in the prompt.",
-                    ).optional(),
-                    voiceConfig: z.object({
-                      prebuiltVoiceConfig: z.object({
-                        voiceName: z.string().describe(
-                          "The name of the prebuilt voice to use.",
-                        ).optional(),
-                      }).describe("Configuration for a prebuilt voice.")
-                        .optional(),
-                      replicatedVoiceConfig: z.object({
-                        mimeType: z.string().describe(
-                          "Optional. The mimetype of the voice sample. The only currently supported value is `audio/wav`. This represents 16-bit signed little-endian wav data, with a 24kHz sampling rate. `mime_type` will default to `audio/wav` if not set.",
-                        ).optional(),
-                        voiceSampleAudio: z.string().describe(
-                          "Optional. The sample of the custom voice.",
-                        ).optional(),
-                      }).describe(
-                        "The configuration for the replicated voice to use.",
-                      ).optional(),
-                    }).describe("Configuration for a voice.").optional(),
-                  })).describe(
-                    "Required. A list of configurations for the voices of the speakers. Exactly two speaker voice configurations must be provided.",
-                  ).optional(),
-                }).describe(
-                  "Configuration for a multi-speaker text-to-speech request.",
-                ).optional(),
-                voiceConfig: z.object({
-                  prebuiltVoiceConfig: z.object({
-                    voiceName: z.string().describe(
-                      "The name of the prebuilt voice to use.",
-                    ).optional(),
-                  }).describe("Configuration for a prebuilt voice.").optional(),
-                  replicatedVoiceConfig: z.object({
-                    mimeType: z.string().describe(
-                      "Optional. The mimetype of the voice sample. The only currently supported value is `audio/wav`. This represents 16-bit signed little-endian wav data, with a 24kHz sampling rate. `mime_type` will default to `audio/wav` if not set.",
-                    ).optional(),
-                    voiceSampleAudio: z.string().describe(
-                      "Optional. The sample of the custom voice.",
-                    ).optional(),
-                  }).describe(
-                    "The configuration for the replicated voice to use.",
-                  ).optional(),
-                }).describe("Configuration for a voice.").optional(),
-              }).describe("Configuration for speech generation.").optional(),
-              stopSequences: z.array(z.string()).describe(
-                'Optional. A list of character sequences that will stop the model from generating further tokens. If a stop sequence is generated, the output will end at that point. This is useful for controlling the length and structure of the output. For example, you can use ["\\n", "###"] to stop generation at a new line or a specific marker.',
-              ).optional(),
-              temperature: z.number().describe(
-                "Optional. Controls the randomness of the output. A higher temperature results in more creative and diverse responses, while a lower temperature makes the output more predictable and focused. The valid range is (0.0, 2.0].",
-              ).optional(),
-              thinkingConfig: z.object({
-                includeThoughts: z.boolean().describe(
-                  'Optional. If true, the model will include its thoughts in the response. "Thoughts" are the intermediate steps the model takes to arrive at the final response. They can provide insights into the model\'s reasoning process and help with debugging. If this is true, thoughts are returned only when available.',
-                ).optional(),
-                thinkingBudget: z.number().int().describe(
-                  "Optional. The token budget for the model's thinking process. The model will make a best effort to stay within this budget. This can be used to control the trade-off between response quality and latency.",
-                ).optional(),
-                thinkingLevel: z.enum([
-                  "THINKING_LEVEL_UNSPECIFIED",
-                  "LOW",
-                  "MEDIUM",
-                  "HIGH",
-                  "MINIMAL",
-                ]).describe(
-                  "Optional. The number of thoughts tokens that the model should generate.",
-                ).optional(),
-              }).describe(
-                'Configuration for the model\'s thinking features. "Thinking" is a process where the model breaks down a complex task into smaller, manageable steps. This allows the model to reason about the task, plan its approach, and execute the plan to generate a high-quality response.',
-              ).optional(),
-              topK: z.number().describe(
-                "Optional. Specifies the top-k sampling threshold. The model considers only the top k most probable tokens for the next token. This can be useful for generating more coherent and less random text. For example, a `top_k` of 40 means the model will choose the next word from the 40 most likely words.",
-              ).optional(),
-              topP: z.number().describe(
-                "Optional. Specifies the nucleus sampling threshold. The model considers only the smallest set of tokens whose cumulative probability is at least `top_p`. This helps generate more diverse and less repetitive responses. For example, a `top_p` of 0.9 means the model considers tokens until the cumulative probability of the tokens to select from reaches 0.9. It's recommended to adjust either temperature or `top_p`, but not both.",
-              ).optional(),
-            }).describe(
-              "Configuration for content generation. This message contains all the parameters that control how the model generates content. It allows you to influence the randomness, length, and structure of the output.",
-            ).optional(),
-            sampleCount: z.number().int().describe(
-              "Optional. Number of samples for each instance in the dataset. If not specified, the default is 4. Minimum value is 1, maximum value is 32.",
-            ).optional(),
-          }).describe("The autorater config used for the evaluation run.")
-            .optional(),
-          promptTemplate: z.string().describe(
+          modelConfig: z.unknown().describe(
+            "The autorater config used for the evaluation run.",
+          ).optional(),
+          promptTemplate: z.unknown().describe(
             "Optional. Template for the prompt used to generate rubrics. The details should be updated based on the most-recent recipe requirements.",
           ).optional(),
-          rubricContentType: z.enum([
-            "RUBRIC_CONTENT_TYPE_UNSPECIFIED",
-            "PROPERTY",
-            "NL_QUESTION_ANSWER",
-            "PYTHON_CODE_ASSERTION",
-          ]).describe("Optional. The type of rubric content to be generated.")
-            .optional(),
-          rubricTypeOntology: z.array(z.string()).describe(
+          rubricContentType: z.unknown().describe(
+            "Optional. The type of rubric content to be generated.",
+          ).optional(),
+          rubricTypeOntology: z.unknown().describe(
             "Optional. An optional, pre-defined list of allowed types for generated rubrics. If this field is provided, it implies `include_rubric_type` should be true, and the generated rubric types should be chosen from this ontology.",
           ).optional(),
         }).describe("Specification for how rubrics should be generated.")
@@ -2419,7 +634,7 @@ const GlobalArgsSchema = z.object({
         metricSpecName: z.string().describe(
           'Required. The name of a pre-defined metric, such as "instruction_following_v1" or "text_quality_v1".',
         ).optional(),
-        parameters: z.record(z.string(), z.string()).describe(
+        parameters: z.record(z.string(), z.unknown()).describe(
           "Optional. The parameters needed to run the pre-defined metric.",
         ).optional(),
       }).describe("Specification for a pre-defined metric.").optional(),
@@ -2428,283 +643,13 @@ const GlobalArgsSchema = z.object({
           "Optional. Resource name of the metric definition.",
         ).optional(),
         modelConfig: z.object({
-          autoraterModel: z.string().describe(
+          autoraterModel: z.unknown().describe(
             "Optional. The fully qualified name of the publisher model or tuned autorater endpoint to use. Publisher model format: `projects/{project}/locations/{location}/publishers/*/models/*` Tuned model endpoint format: `projects/{project}/locations/{location}/endpoints/{endpoint}`",
           ).optional(),
-          generationConfig: z.object({
-            audioTimestamp: z.boolean().describe(
-              "Optional. If enabled, audio timestamps will be included in the request to the model. This can be useful for synchronizing audio with other modalities in the response.",
-            ).optional(),
-            candidateCount: z.number().int().describe(
-              "Optional. The number of candidate responses to generate. A higher `candidate_count` can provide more options to choose from, but it also consumes more resources. This can be useful for generating a variety of responses and selecting the best one.",
-            ).optional(),
-            enableAffectiveDialog: z.boolean().describe(
-              "Optional. If enabled, the model will detect emotions and adapt its responses accordingly. For example, if the model detects that the user is frustrated, it may provide a more empathetic response.",
-            ).optional(),
-            frequencyPenalty: z.number().describe(
-              "Optional. Penalizes tokens based on their frequency in the generated text. A positive value helps to reduce the repetition of words and phrases. Valid values can range from [-2.0, 2.0].",
-            ).optional(),
-            imageConfig: z.object({
-              aspectRatio: z.string().describe(
-                'Optional. The desired aspect ratio for the generated images. The following aspect ratios are supported: "1:1" "2:3", "3:2" "3:4", "4:3" "4:5", "5:4" "9:16", "16:9" "21:9"',
-              ).optional(),
-              imageOutputOptions: z.object({
-                compressionQuality: z.number().int().describe(
-                  "Optional. The compression quality of the output image.",
-                ).optional(),
-                mimeType: z.string().describe(
-                  "Optional. The image format that the output should be saved as.",
-                ).optional(),
-              }).describe("The image output format for generated images.")
-                .optional(),
-              imageSize: z.string().describe(
-                "Optional. Specifies the size of generated images. Supported values are `1K`, `2K`, `4K`. If not specified, the model will use default value `1K`.",
-              ).optional(),
-              personGeneration: z.enum([
-                "PERSON_GENERATION_UNSPECIFIED",
-                "ALLOW_ALL",
-                "ALLOW_ADULT",
-                "ALLOW_NONE",
-              ]).describe(
-                "Optional. Controls whether the model can generate people.",
-              ).optional(),
-              prominentPeople: z.enum([
-                "PROMINENT_PEOPLE_UNSPECIFIED",
-                "ALLOW_PROMINENT_PEOPLE",
-                "BLOCK_PROMINENT_PEOPLE",
-              ]).describe(
-                "Optional. Controls whether prominent people (celebrities) generation is allowed. If used with personGeneration, personGeneration enum would take precedence. For instance, if ALLOW_NONE is set, all person generation would be blocked. If this field is unspecified, the default behavior is to allow prominent people.",
-              ).optional(),
-            }).describe(
-              "Configuration for image generation. This message allows you to control various aspects of image generation, such as the output format, aspect ratio, and whether the model can generate images of people.",
-            ).optional(),
-            logprobs: z.number().int().describe(
-              "Optional. The number of top log probabilities to return for each token. This can be used to see which other tokens were considered likely candidates for a given position. A higher value will return more options, but it will also increase the size of the response.",
-            ).optional(),
-            maxOutputTokens: z.number().int().describe(
-              "Optional. The maximum number of tokens to generate in the response. A token is approximately four characters. The default value varies by model. This parameter can be used to control the length of the generated text and prevent overly long responses.",
-            ).optional(),
-            mediaResolution: z.enum([
-              "MEDIA_RESOLUTION_UNSPECIFIED",
-              "MEDIA_RESOLUTION_LOW",
-              "MEDIA_RESOLUTION_MEDIUM",
-              "MEDIA_RESOLUTION_HIGH",
-            ]).describe(
-              "Optional. The token resolution at which input media content is sampled. This is used to control the trade-off between the quality of the response and the number of tokens used to represent the media. A higher resolution allows the model to perceive more detail, which can lead to a more nuanced response, but it will also use more tokens. This does not affect the image dimensions sent to the model.",
-            ).optional(),
-            presencePenalty: z.number().describe(
-              "Optional. Penalizes tokens that have already appeared in the generated text. A positive value encourages the model to generate more diverse and less repetitive text. Valid values can range from [-2.0, 2.0].",
-            ).optional(),
-            responseJsonSchema: z.string().describe(
-              "Optional. When this field is set, response_schema must be omitted and response_mime_type must be set to `application/json`.",
-            ).optional(),
-            responseLogprobs: z.boolean().describe(
-              "Optional. If set to true, the log probabilities of the output tokens are returned. Log probabilities are the logarithm of the probability of a token appearing in the output. A higher log probability means the token is more likely to be generated. This can be useful for analyzing the model's confidence in its own output and for debugging.",
-            ).optional(),
-            responseMimeType: z.string().describe(
-              "Optional. The IANA standard MIME type of the response. The model will generate output that conforms to this MIME type. Supported values include 'text/plain' (default) and 'application/json'. The model needs to be prompted to output the appropriate response type, otherwise the behavior is undefined.",
-            ).optional(),
-            responseModalities: z.array(
-              z.enum(["MODALITY_UNSPECIFIED", "TEXT", "IMAGE", "AUDIO"]),
-            ).describe(
-              "Optional. The modalities of the response. The model will generate a response that includes all the specified modalities. For example, if this is set to `[TEXT, IMAGE]`, the response will include both text and an image.",
-            ).optional(),
-            responseSchema: z.object({
-              additionalProperties: z.string().describe(
-                "Optional. If `type` is `OBJECT`, specifies how to handle properties not defined in `properties`. If it is a boolean `false`, no additional properties are allowed. If it is a schema, additional properties are allowed if they conform to the schema.",
-              ).optional(),
-              anyOf: z.array(z.string()).describe(
-                "Optional. The instance must be valid against any (one or more) of the subschemas listed in `any_of`.",
-              ).optional(),
-              default: z.string().describe(
-                "Optional. Default value to use if the field is not specified.",
-              ).optional(),
-              defs: z.record(z.string(), z.string()).describe(
-                "Optional. `defs` provides a map of schema definitions that can be reused by `ref` elsewhere in the schema. Only allowed at root level of the schema.",
-              ).optional(),
-              description: z.string().describe(
-                "Optional. Describes the data. The model uses this field to understand the purpose of the schema and how to use it. It is a best practice to provide a clear and descriptive explanation for the schema and its properties here, rather than in the prompt.",
-              ).optional(),
-              enum: z.array(z.string()).describe(
-                'Optional. Possible values of the field. This field can be used to restrict a value to a fixed set of values. To mark a field as an enum, set `format` to `enum` and provide the list of possible values in `enum`. For example: 1. To define directions: `{type:STRING, format:enum, enum:["EAST", "NORTH", "SOUTH", "WEST"]}` 2. To define apartment numbers: `{type:INTEGER, format:enum, enum:["101", "201", "301"]}`',
-              ).optional(),
-              example: z.string().describe(
-                "Optional. Example of an instance of this schema.",
-              ).optional(),
-              format: z.string().describe(
-                "Optional. The format of the data. For `NUMBER` type, format can be `float` or `double`. For `INTEGER` type, format can be `int32` or `int64`. For `STRING` type, format can be `email`, `byte`, `date`, `date-time`, `password`, and other formats to further refine the data type.",
-              ).optional(),
-              items: z.string().describe(
-                "Circular reference to GoogleCloudAiplatformV1Schema",
-              ).optional(),
-              maxItems: z.string().describe(
-                "Optional. If type is `ARRAY`, `max_items` specifies the maximum number of items in an array.",
-              ).optional(),
-              maxLength: z.string().describe(
-                "Optional. If type is `STRING`, `max_length` specifies the maximum length of the string.",
-              ).optional(),
-              maxProperties: z.string().describe(
-                "Optional. If type is `OBJECT`, `max_properties` specifies the maximum number of properties that can be provided.",
-              ).optional(),
-              maximum: z.number().describe(
-                "Optional. If type is `INTEGER` or `NUMBER`, `maximum` specifies the maximum allowed value.",
-              ).optional(),
-              minItems: z.string().describe(
-                "Optional. If type is `ARRAY`, `min_items` specifies the minimum number of items in an array.",
-              ).optional(),
-              minLength: z.string().describe(
-                "Optional. If type is `STRING`, `min_length` specifies the minimum length of the string.",
-              ).optional(),
-              minProperties: z.string().describe(
-                "Optional. If type is `OBJECT`, `min_properties` specifies the minimum number of properties that can be provided.",
-              ).optional(),
-              minimum: z.number().describe(
-                "Optional. If type is `INTEGER` or `NUMBER`, `minimum` specifies the minimum allowed value.",
-              ).optional(),
-              nullable: z.boolean().describe(
-                "Optional. Indicates if the value of this field can be null.",
-              ).optional(),
-              pattern: z.string().describe(
-                "Optional. If type is `STRING`, `pattern` specifies a regular expression that the string must match.",
-              ).optional(),
-              properties: z.record(z.string(), z.string()).describe(
-                "Optional. If type is `OBJECT`, `properties` is a map of property names to schema definitions for each property of the object.",
-              ).optional(),
-              propertyOrdering: z.array(z.string()).describe(
-                "Optional. Order of properties displayed or used where order matters. This is not a standard field in OpenAPI specification, but can be used to control the order of properties.",
-              ).optional(),
-              ref: z.string().describe(
-                'Optional. Allows referencing another schema definition to use in place of this schema. The value must be a valid reference to a schema in `defs`. For example, the following schema defines a reference to a schema node named "Pet": type: object properties: pet: ref: #/defs/Pet defs: Pet: type: object properties: name: type: string The value of the "pet" property is a reference to the schema node named "Pet". See details in https://json-schema.org/understanding-json-schema/structuring',
-              ).optional(),
-              required: z.array(z.string()).describe(
-                "Optional. If type is `OBJECT`, `required` lists the names of properties that must be present.",
-              ).optional(),
-              title: z.string().describe("Optional. Title for the schema.")
-                .optional(),
-              type: z.enum([
-                "TYPE_UNSPECIFIED",
-                "STRING",
-                "NUMBER",
-                "INTEGER",
-                "BOOLEAN",
-                "ARRAY",
-                "OBJECT",
-                "NULL",
-              ]).describe("Optional. Data type of the schema field.")
-                .optional(),
-            }).describe(
-              "Defines the schema of input and output data. This is a subset of the [OpenAPI 3.0 Schema Object](https://spec.openapis.org/oas/v3.0.3#schema-object).",
-            ).optional(),
-            routingConfig: z.object({
-              autoMode: z.object({
-                modelRoutingPreference: z.enum([
-                  "UNKNOWN",
-                  "PRIORITIZE_QUALITY",
-                  "BALANCED",
-                  "PRIORITIZE_COST",
-                ]).describe("The model routing preference.").optional(),
-              }).describe(
-                "The configuration for automated routing. When automated routing is specified, the routing will be determined by the pretrained routing model and customer provided model routing preference.",
-              ).optional(),
-              manualMode: z.object({
-                modelName: z.string().describe(
-                  "The name of the model to use. Only public LLM models are accepted.",
-                ).optional(),
-              }).describe(
-                "The configuration for manual routing. When manual routing is specified, the model will be selected based on the model name provided.",
-              ).optional(),
-            }).describe(
-              "The configuration for routing the request to a specific model. This can be used to control which model is used for the generation, either automatically or by specifying a model name.",
-            ).optional(),
-            seed: z.number().int().describe(
-              "Optional. A seed for the random number generator. By setting a seed, you can make the model's output mostly deterministic. For a given prompt and parameters (like temperature, top_p, etc.), the model will produce the same response every time. However, it's not a guaranteed absolute deterministic behavior. This is different from parameters like `temperature`, which control the *level* of randomness. `seed` ensures that the \"random\" choices the model makes are the same on every run, making it essential for testing and ensuring reproducible results.",
-            ).optional(),
-            speechConfig: z.object({
-              languageCode: z.string().describe(
-                "Optional. The language code (ISO 639-1) for the speech synthesis.",
-              ).optional(),
-              multiSpeakerVoiceConfig: z.object({
-                speakerVoiceConfigs: z.array(z.object({
-                  speaker: z.string().describe(
-                    "Required. The name of the speaker. This should be the same as the speaker name used in the prompt.",
-                  ).optional(),
-                  voiceConfig: z.object({
-                    prebuiltVoiceConfig: z.object({
-                      voiceName: z.string().describe(
-                        "The name of the prebuilt voice to use.",
-                      ).optional(),
-                    }).describe("Configuration for a prebuilt voice.")
-                      .optional(),
-                    replicatedVoiceConfig: z.object({
-                      mimeType: z.string().describe(
-                        "Optional. The mimetype of the voice sample. The only currently supported value is `audio/wav`. This represents 16-bit signed little-endian wav data, with a 24kHz sampling rate. `mime_type` will default to `audio/wav` if not set.",
-                      ).optional(),
-                      voiceSampleAudio: z.string().describe(
-                        "Optional. The sample of the custom voice.",
-                      ).optional(),
-                    }).describe(
-                      "The configuration for the replicated voice to use.",
-                    ).optional(),
-                  }).describe("Configuration for a voice.").optional(),
-                })).describe(
-                  "Required. A list of configurations for the voices of the speakers. Exactly two speaker voice configurations must be provided.",
-                ).optional(),
-              }).describe(
-                "Configuration for a multi-speaker text-to-speech request.",
-              ).optional(),
-              voiceConfig: z.object({
-                prebuiltVoiceConfig: z.object({
-                  voiceName: z.string().describe(
-                    "The name of the prebuilt voice to use.",
-                  ).optional(),
-                }).describe("Configuration for a prebuilt voice.").optional(),
-                replicatedVoiceConfig: z.object({
-                  mimeType: z.string().describe(
-                    "Optional. The mimetype of the voice sample. The only currently supported value is `audio/wav`. This represents 16-bit signed little-endian wav data, with a 24kHz sampling rate. `mime_type` will default to `audio/wav` if not set.",
-                  ).optional(),
-                  voiceSampleAudio: z.string().describe(
-                    "Optional. The sample of the custom voice.",
-                  ).optional(),
-                }).describe(
-                  "The configuration for the replicated voice to use.",
-                ).optional(),
-              }).describe("Configuration for a voice.").optional(),
-            }).describe("Configuration for speech generation.").optional(),
-            stopSequences: z.array(z.string()).describe(
-              'Optional. A list of character sequences that will stop the model from generating further tokens. If a stop sequence is generated, the output will end at that point. This is useful for controlling the length and structure of the output. For example, you can use ["\\n", "###"] to stop generation at a new line or a specific marker.',
-            ).optional(),
-            temperature: z.number().describe(
-              "Optional. Controls the randomness of the output. A higher temperature results in more creative and diverse responses, while a lower temperature makes the output more predictable and focused. The valid range is (0.0, 2.0].",
-            ).optional(),
-            thinkingConfig: z.object({
-              includeThoughts: z.boolean().describe(
-                'Optional. If true, the model will include its thoughts in the response. "Thoughts" are the intermediate steps the model takes to arrive at the final response. They can provide insights into the model\'s reasoning process and help with debugging. If this is true, thoughts are returned only when available.',
-              ).optional(),
-              thinkingBudget: z.number().int().describe(
-                "Optional. The token budget for the model's thinking process. The model will make a best effort to stay within this budget. This can be used to control the trade-off between response quality and latency.",
-              ).optional(),
-              thinkingLevel: z.enum([
-                "THINKING_LEVEL_UNSPECIFIED",
-                "LOW",
-                "MEDIUM",
-                "HIGH",
-                "MINIMAL",
-              ]).describe(
-                "Optional. The number of thoughts tokens that the model should generate.",
-              ).optional(),
-            }).describe(
-              'Configuration for the model\'s thinking features. "Thinking" is a process where the model breaks down a complex task into smaller, manageable steps. This allows the model to reason about the task, plan its approach, and execute the plan to generate a high-quality response.',
-            ).optional(),
-            topK: z.number().describe(
-              "Optional. Specifies the top-k sampling threshold. The model considers only the top k most probable tokens for the next token. This can be useful for generating more coherent and less random text. For example, a `top_k` of 40 means the model will choose the next word from the 40 most likely words.",
-            ).optional(),
-            topP: z.number().describe(
-              "Optional. Specifies the nucleus sampling threshold. The model considers only the smallest set of tokens whose cumulative probability is at least `top_p`. This helps generate more diverse and less repetitive responses. For example, a `top_p` of 0.9 means the model considers tokens until the cumulative probability of the tokens to select from reaches 0.9. It's recommended to adjust either temperature or `top_p`, but not both.",
-            ).optional(),
-          }).describe(
+          generationConfig: z.unknown().describe(
             "Configuration for content generation. This message contains all the parameters that control how the model generates content. It allows you to influence the randomness, length, and structure of the output.",
           ).optional(),
-          sampleCount: z.number().int().describe(
+          sampleCount: z.unknown().describe(
             "Optional. Number of samples for each instance in the dataset. If not specified, the default is 4. Minimum value is 1, maximum value is 32.",
           ).optional(),
         }).describe("The autorater config used for the evaluation run.")
@@ -2719,7 +664,7 @@ const GlobalArgsSchema = z.object({
           "PYTHON_CODE_ASSERTION",
         ]).describe("Optional. The type of rubric content to be generated.")
           .optional(),
-        rubricTypeOntology: z.array(z.string()).describe(
+        rubricTypeOntology: z.array(z.unknown()).describe(
           "Optional. An optional, pre-defined list of allowed types for generated rubrics. If this field is provided, it implies `include_rubric_type` should be true, and the generated rubric types should be chosen from this ontology.",
         ).optional(),
       }).describe("Specification for how rubrics should be generated.")
@@ -2756,10 +701,10 @@ const GlobalArgsSchema = z.object({
           "Optional. The resource name of the Agent Engine. Format: projects/{project}/locations/{location}/reasoningEngines/{reasoning_engine} For example: projects/123/locations/us-central1/reasoningEngines/456",
         ).optional(),
         sessionInput: z.object({
-          parameters: z.record(z.string(), z.string()).describe(
+          parameters: z.record(z.string(), z.unknown()).describe(
             'Optional. Additional parameters for the session, like app_name, etc. For example, {"app_name": "my-app"}.',
           ).optional(),
-          sessionState: z.record(z.string(), z.string()).describe(
+          sessionState: z.record(z.string(), z.unknown()).describe(
             "Optional. Session specific memory which stores key conversation points.",
           ).optional(),
           userId: z.string().describe(
@@ -2771,273 +716,70 @@ const GlobalArgsSchema = z.object({
             "Maximum number of invocations allowed by the multi-turn agent scraping. This property allows us to stop a run-off conversation, where the agent and the user simulator get into a never ending loop. The initial fixed prompt is also counted as an invocation.",
           ).optional(),
           modelConfig: z.object({
-            audioTimestamp: z.boolean().describe(
+            audioTimestamp: z.unknown().describe(
               "Optional. If enabled, audio timestamps will be included in the request to the model. This can be useful for synchronizing audio with other modalities in the response.",
             ).optional(),
-            candidateCount: z.number().int().describe(
+            candidateCount: z.unknown().describe(
               "Optional. The number of candidate responses to generate. A higher `candidate_count` can provide more options to choose from, but it also consumes more resources. This can be useful for generating a variety of responses and selecting the best one.",
             ).optional(),
-            enableAffectiveDialog: z.boolean().describe(
+            enableAffectiveDialog: z.unknown().describe(
               "Optional. If enabled, the model will detect emotions and adapt its responses accordingly. For example, if the model detects that the user is frustrated, it may provide a more empathetic response.",
             ).optional(),
-            frequencyPenalty: z.number().describe(
+            frequencyPenalty: z.unknown().describe(
               "Optional. Penalizes tokens based on their frequency in the generated text. A positive value helps to reduce the repetition of words and phrases. Valid values can range from [-2.0, 2.0].",
             ).optional(),
-            imageConfig: z.object({
-              aspectRatio: z.string().describe(
-                'Optional. The desired aspect ratio for the generated images. The following aspect ratios are supported: "1:1" "2:3", "3:2" "3:4", "4:3" "4:5", "5:4" "9:16", "16:9" "21:9"',
-              ).optional(),
-              imageOutputOptions: z.object({
-                compressionQuality: z.number().int().describe(
-                  "Optional. The compression quality of the output image.",
-                ).optional(),
-                mimeType: z.string().describe(
-                  "Optional. The image format that the output should be saved as.",
-                ).optional(),
-              }).describe("The image output format for generated images.")
-                .optional(),
-              imageSize: z.string().describe(
-                "Optional. Specifies the size of generated images. Supported values are `1K`, `2K`, `4K`. If not specified, the model will use default value `1K`.",
-              ).optional(),
-              personGeneration: z.enum([
-                "PERSON_GENERATION_UNSPECIFIED",
-                "ALLOW_ALL",
-                "ALLOW_ADULT",
-                "ALLOW_NONE",
-              ]).describe(
-                "Optional. Controls whether the model can generate people.",
-              ).optional(),
-              prominentPeople: z.enum([
-                "PROMINENT_PEOPLE_UNSPECIFIED",
-                "ALLOW_PROMINENT_PEOPLE",
-                "BLOCK_PROMINENT_PEOPLE",
-              ]).describe(
-                "Optional. Controls whether prominent people (celebrities) generation is allowed. If used with personGeneration, personGeneration enum would take precedence. For instance, if ALLOW_NONE is set, all person generation would be blocked. If this field is unspecified, the default behavior is to allow prominent people.",
-              ).optional(),
-            }).describe(
+            imageConfig: z.unknown().describe(
               "Configuration for image generation. This message allows you to control various aspects of image generation, such as the output format, aspect ratio, and whether the model can generate images of people.",
             ).optional(),
-            logprobs: z.number().int().describe(
+            logprobs: z.unknown().describe(
               "Optional. The number of top log probabilities to return for each token. This can be used to see which other tokens were considered likely candidates for a given position. A higher value will return more options, but it will also increase the size of the response.",
             ).optional(),
-            maxOutputTokens: z.number().int().describe(
+            maxOutputTokens: z.unknown().describe(
               "Optional. The maximum number of tokens to generate in the response. A token is approximately four characters. The default value varies by model. This parameter can be used to control the length of the generated text and prevent overly long responses.",
             ).optional(),
-            mediaResolution: z.enum([
-              "MEDIA_RESOLUTION_UNSPECIFIED",
-              "MEDIA_RESOLUTION_LOW",
-              "MEDIA_RESOLUTION_MEDIUM",
-              "MEDIA_RESOLUTION_HIGH",
-            ]).describe(
+            mediaResolution: z.unknown().describe(
               "Optional. The token resolution at which input media content is sampled. This is used to control the trade-off between the quality of the response and the number of tokens used to represent the media. A higher resolution allows the model to perceive more detail, which can lead to a more nuanced response, but it will also use more tokens. This does not affect the image dimensions sent to the model.",
             ).optional(),
-            presencePenalty: z.number().describe(
+            presencePenalty: z.unknown().describe(
               "Optional. Penalizes tokens that have already appeared in the generated text. A positive value encourages the model to generate more diverse and less repetitive text. Valid values can range from [-2.0, 2.0].",
             ).optional(),
-            responseJsonSchema: z.string().describe(
+            responseJsonSchema: z.unknown().describe(
               "Optional. When this field is set, response_schema must be omitted and response_mime_type must be set to `application/json`.",
             ).optional(),
-            responseLogprobs: z.boolean().describe(
+            responseLogprobs: z.unknown().describe(
               "Optional. If set to true, the log probabilities of the output tokens are returned. Log probabilities are the logarithm of the probability of a token appearing in the output. A higher log probability means the token is more likely to be generated. This can be useful for analyzing the model's confidence in its own output and for debugging.",
             ).optional(),
-            responseMimeType: z.string().describe(
+            responseMimeType: z.unknown().describe(
               "Optional. The IANA standard MIME type of the response. The model will generate output that conforms to this MIME type. Supported values include 'text/plain' (default) and 'application/json'. The model needs to be prompted to output the appropriate response type, otherwise the behavior is undefined.",
             ).optional(),
-            responseModalities: z.array(
-              z.enum(["MODALITY_UNSPECIFIED", "TEXT", "IMAGE", "AUDIO"]),
-            ).describe(
+            responseModalities: z.unknown().describe(
               "Optional. The modalities of the response. The model will generate a response that includes all the specified modalities. For example, if this is set to `[TEXT, IMAGE]`, the response will include both text and an image.",
             ).optional(),
-            responseSchema: z.object({
-              additionalProperties: z.string().describe(
-                "Optional. If `type` is `OBJECT`, specifies how to handle properties not defined in `properties`. If it is a boolean `false`, no additional properties are allowed. If it is a schema, additional properties are allowed if they conform to the schema.",
-              ).optional(),
-              anyOf: z.array(z.string()).describe(
-                "Optional. The instance must be valid against any (one or more) of the subschemas listed in `any_of`.",
-              ).optional(),
-              default: z.string().describe(
-                "Optional. Default value to use if the field is not specified.",
-              ).optional(),
-              defs: z.record(z.string(), z.string()).describe(
-                "Optional. `defs` provides a map of schema definitions that can be reused by `ref` elsewhere in the schema. Only allowed at root level of the schema.",
-              ).optional(),
-              description: z.string().describe(
-                "Optional. Describes the data. The model uses this field to understand the purpose of the schema and how to use it. It is a best practice to provide a clear and descriptive explanation for the schema and its properties here, rather than in the prompt.",
-              ).optional(),
-              enum: z.array(z.string()).describe(
-                'Optional. Possible values of the field. This field can be used to restrict a value to a fixed set of values. To mark a field as an enum, set `format` to `enum` and provide the list of possible values in `enum`. For example: 1. To define directions: `{type:STRING, format:enum, enum:["EAST", "NORTH", "SOUTH", "WEST"]}` 2. To define apartment numbers: `{type:INTEGER, format:enum, enum:["101", "201", "301"]}`',
-              ).optional(),
-              example: z.string().describe(
-                "Optional. Example of an instance of this schema.",
-              ).optional(),
-              format: z.string().describe(
-                "Optional. The format of the data. For `NUMBER` type, format can be `float` or `double`. For `INTEGER` type, format can be `int32` or `int64`. For `STRING` type, format can be `email`, `byte`, `date`, `date-time`, `password`, and other formats to further refine the data type.",
-              ).optional(),
-              items: z.string().describe(
-                "Circular reference to GoogleCloudAiplatformV1Schema",
-              ).optional(),
-              maxItems: z.string().describe(
-                "Optional. If type is `ARRAY`, `max_items` specifies the maximum number of items in an array.",
-              ).optional(),
-              maxLength: z.string().describe(
-                "Optional. If type is `STRING`, `max_length` specifies the maximum length of the string.",
-              ).optional(),
-              maxProperties: z.string().describe(
-                "Optional. If type is `OBJECT`, `max_properties` specifies the maximum number of properties that can be provided.",
-              ).optional(),
-              maximum: z.number().describe(
-                "Optional. If type is `INTEGER` or `NUMBER`, `maximum` specifies the maximum allowed value.",
-              ).optional(),
-              minItems: z.string().describe(
-                "Optional. If type is `ARRAY`, `min_items` specifies the minimum number of items in an array.",
-              ).optional(),
-              minLength: z.string().describe(
-                "Optional. If type is `STRING`, `min_length` specifies the minimum length of the string.",
-              ).optional(),
-              minProperties: z.string().describe(
-                "Optional. If type is `OBJECT`, `min_properties` specifies the minimum number of properties that can be provided.",
-              ).optional(),
-              minimum: z.number().describe(
-                "Optional. If type is `INTEGER` or `NUMBER`, `minimum` specifies the minimum allowed value.",
-              ).optional(),
-              nullable: z.boolean().describe(
-                "Optional. Indicates if the value of this field can be null.",
-              ).optional(),
-              pattern: z.string().describe(
-                "Optional. If type is `STRING`, `pattern` specifies a regular expression that the string must match.",
-              ).optional(),
-              properties: z.record(z.string(), z.string()).describe(
-                "Optional. If type is `OBJECT`, `properties` is a map of property names to schema definitions for each property of the object.",
-              ).optional(),
-              propertyOrdering: z.array(z.string()).describe(
-                "Optional. Order of properties displayed or used where order matters. This is not a standard field in OpenAPI specification, but can be used to control the order of properties.",
-              ).optional(),
-              ref: z.string().describe(
-                'Optional. Allows referencing another schema definition to use in place of this schema. The value must be a valid reference to a schema in `defs`. For example, the following schema defines a reference to a schema node named "Pet": type: object properties: pet: ref: #/defs/Pet defs: Pet: type: object properties: name: type: string The value of the "pet" property is a reference to the schema node named "Pet". See details in https://json-schema.org/understanding-json-schema/structuring',
-              ).optional(),
-              required: z.array(z.string()).describe(
-                "Optional. If type is `OBJECT`, `required` lists the names of properties that must be present.",
-              ).optional(),
-              title: z.string().describe("Optional. Title for the schema.")
-                .optional(),
-              type: z.enum([
-                "TYPE_UNSPECIFIED",
-                "STRING",
-                "NUMBER",
-                "INTEGER",
-                "BOOLEAN",
-                "ARRAY",
-                "OBJECT",
-                "NULL",
-              ]).describe("Optional. Data type of the schema field.")
-                .optional(),
-            }).describe(
+            responseSchema: z.unknown().describe(
               "Defines the schema of input and output data. This is a subset of the [OpenAPI 3.0 Schema Object](https://spec.openapis.org/oas/v3.0.3#schema-object).",
             ).optional(),
-            routingConfig: z.object({
-              autoMode: z.object({
-                modelRoutingPreference: z.enum([
-                  "UNKNOWN",
-                  "PRIORITIZE_QUALITY",
-                  "BALANCED",
-                  "PRIORITIZE_COST",
-                ]).describe("The model routing preference.").optional(),
-              }).describe(
-                "The configuration for automated routing. When automated routing is specified, the routing will be determined by the pretrained routing model and customer provided model routing preference.",
-              ).optional(),
-              manualMode: z.object({
-                modelName: z.string().describe(
-                  "The name of the model to use. Only public LLM models are accepted.",
-                ).optional(),
-              }).describe(
-                "The configuration for manual routing. When manual routing is specified, the model will be selected based on the model name provided.",
-              ).optional(),
-            }).describe(
+            routingConfig: z.unknown().describe(
               "The configuration for routing the request to a specific model. This can be used to control which model is used for the generation, either automatically or by specifying a model name.",
             ).optional(),
-            seed: z.number().int().describe(
+            seed: z.unknown().describe(
               "Optional. A seed for the random number generator. By setting a seed, you can make the model's output mostly deterministic. For a given prompt and parameters (like temperature, top_p, etc.), the model will produce the same response every time. However, it's not a guaranteed absolute deterministic behavior. This is different from parameters like `temperature`, which control the *level* of randomness. `seed` ensures that the \"random\" choices the model makes are the same on every run, making it essential for testing and ensuring reproducible results.",
             ).optional(),
-            speechConfig: z.object({
-              languageCode: z.string().describe(
-                "Optional. The language code (ISO 639-1) for the speech synthesis.",
-              ).optional(),
-              multiSpeakerVoiceConfig: z.object({
-                speakerVoiceConfigs: z.array(z.object({
-                  speaker: z.string().describe(
-                    "Required. The name of the speaker. This should be the same as the speaker name used in the prompt.",
-                  ).optional(),
-                  voiceConfig: z.object({
-                    prebuiltVoiceConfig: z.object({
-                      voiceName: z.string().describe(
-                        "The name of the prebuilt voice to use.",
-                      ).optional(),
-                    }).describe("Configuration for a prebuilt voice.")
-                      .optional(),
-                    replicatedVoiceConfig: z.object({
-                      mimeType: z.string().describe(
-                        "Optional. The mimetype of the voice sample. The only currently supported value is `audio/wav`. This represents 16-bit signed little-endian wav data, with a 24kHz sampling rate. `mime_type` will default to `audio/wav` if not set.",
-                      ).optional(),
-                      voiceSampleAudio: z.string().describe(
-                        "Optional. The sample of the custom voice.",
-                      ).optional(),
-                    }).describe(
-                      "The configuration for the replicated voice to use.",
-                    ).optional(),
-                  }).describe("Configuration for a voice.").optional(),
-                })).describe(
-                  "Required. A list of configurations for the voices of the speakers. Exactly two speaker voice configurations must be provided.",
-                ).optional(),
-              }).describe(
-                "Configuration for a multi-speaker text-to-speech request.",
-              ).optional(),
-              voiceConfig: z.object({
-                prebuiltVoiceConfig: z.object({
-                  voiceName: z.string().describe(
-                    "The name of the prebuilt voice to use.",
-                  ).optional(),
-                }).describe("Configuration for a prebuilt voice.").optional(),
-                replicatedVoiceConfig: z.object({
-                  mimeType: z.string().describe(
-                    "Optional. The mimetype of the voice sample. The only currently supported value is `audio/wav`. This represents 16-bit signed little-endian wav data, with a 24kHz sampling rate. `mime_type` will default to `audio/wav` if not set.",
-                  ).optional(),
-                  voiceSampleAudio: z.string().describe(
-                    "Optional. The sample of the custom voice.",
-                  ).optional(),
-                }).describe(
-                  "The configuration for the replicated voice to use.",
-                ).optional(),
-              }).describe("Configuration for a voice.").optional(),
-            }).describe("Configuration for speech generation.").optional(),
-            stopSequences: z.array(z.string()).describe(
+            speechConfig: z.unknown().describe(
+              "Configuration for speech generation.",
+            ).optional(),
+            stopSequences: z.unknown().describe(
               'Optional. A list of character sequences that will stop the model from generating further tokens. If a stop sequence is generated, the output will end at that point. This is useful for controlling the length and structure of the output. For example, you can use ["\\n", "###"] to stop generation at a new line or a specific marker.',
             ).optional(),
-            temperature: z.number().describe(
+            temperature: z.unknown().describe(
               "Optional. Controls the randomness of the output. A higher temperature results in more creative and diverse responses, while a lower temperature makes the output more predictable and focused. The valid range is (0.0, 2.0].",
             ).optional(),
-            thinkingConfig: z.object({
-              includeThoughts: z.boolean().describe(
-                'Optional. If true, the model will include its thoughts in the response. "Thoughts" are the intermediate steps the model takes to arrive at the final response. They can provide insights into the model\'s reasoning process and help with debugging. If this is true, thoughts are returned only when available.',
-              ).optional(),
-              thinkingBudget: z.number().int().describe(
-                "Optional. The token budget for the model's thinking process. The model will make a best effort to stay within this budget. This can be used to control the trade-off between response quality and latency.",
-              ).optional(),
-              thinkingLevel: z.enum([
-                "THINKING_LEVEL_UNSPECIFIED",
-                "LOW",
-                "MEDIUM",
-                "HIGH",
-                "MINIMAL",
-              ]).describe(
-                "Optional. The number of thoughts tokens that the model should generate.",
-              ).optional(),
-            }).describe(
+            thinkingConfig: z.unknown().describe(
               'Configuration for the model\'s thinking features. "Thinking" is a process where the model breaks down a complex task into smaller, manageable steps. This allows the model to reason about the task, plan its approach, and execute the plan to generate a high-quality response.',
             ).optional(),
-            topK: z.number().describe(
+            topK: z.unknown().describe(
               "Optional. Specifies the top-k sampling threshold. The model considers only the top k most probable tokens for the next token. This can be useful for generating more coherent and less random text. For example, a `top_k` of 40 means the model will choose the next word from the 40 most likely words.",
             ).optional(),
-            topP: z.number().describe(
+            topP: z.unknown().describe(
               "Optional. Specifies the nucleus sampling threshold. The model considers only the smallest set of tokens whose cumulative probability is at least `top_p`. This helps generate more diverse and less repetitive responses. For example, a `top_p` of 0.9 means the model considers tokens until the cumulative probability of the tokens to select from reaches 0.9. It's recommended to adjust either temperature or `top_p`, but not both.",
             ).optional(),
           }).describe(
@@ -3068,10 +810,10 @@ const GlobalArgsSchema = z.object({
             'Optional. The desired aspect ratio for the generated images. The following aspect ratios are supported: "1:1" "2:3", "3:2" "3:4", "4:3" "4:5", "5:4" "9:16", "16:9" "21:9"',
           ).optional(),
           imageOutputOptions: z.object({
-            compressionQuality: z.number().int().describe(
+            compressionQuality: z.unknown().describe(
               "Optional. The compression quality of the output image.",
             ).optional(),
-            mimeType: z.string().describe(
+            mimeType: z.unknown().describe(
               "Optional. The image format that the output should be saved as.",
             ).optional(),
           }).describe("The image output format for generated images.")
@@ -3132,19 +874,19 @@ const GlobalArgsSchema = z.object({
           additionalProperties: z.string().describe(
             "Optional. If `type` is `OBJECT`, specifies how to handle properties not defined in `properties`. If it is a boolean `false`, no additional properties are allowed. If it is a schema, additional properties are allowed if they conform to the schema.",
           ).optional(),
-          anyOf: z.array(z.string()).describe(
+          anyOf: z.array(z.unknown()).describe(
             "Optional. The instance must be valid against any (one or more) of the subschemas listed in `any_of`.",
           ).optional(),
           default: z.string().describe(
             "Optional. Default value to use if the field is not specified.",
           ).optional(),
-          defs: z.record(z.string(), z.string()).describe(
+          defs: z.record(z.string(), z.unknown()).describe(
             "Optional. `defs` provides a map of schema definitions that can be reused by `ref` elsewhere in the schema. Only allowed at root level of the schema.",
           ).optional(),
           description: z.string().describe(
             "Optional. Describes the data. The model uses this field to understand the purpose of the schema and how to use it. It is a best practice to provide a clear and descriptive explanation for the schema and its properties here, rather than in the prompt.",
           ).optional(),
-          enum: z.array(z.string()).describe(
+          enum: z.array(z.unknown()).describe(
             'Optional. Possible values of the field. This field can be used to restrict a value to a fixed set of values. To mark a field as an enum, set `format` to `enum` and provide the list of possible values in `enum`. For example: 1. To define directions: `{type:STRING, format:enum, enum:["EAST", "NORTH", "SOUTH", "WEST"]}` 2. To define apartment numbers: `{type:INTEGER, format:enum, enum:["101", "201", "301"]}`',
           ).optional(),
           example: z.string().describe(
@@ -3186,16 +928,16 @@ const GlobalArgsSchema = z.object({
           pattern: z.string().describe(
             "Optional. If type is `STRING`, `pattern` specifies a regular expression that the string must match.",
           ).optional(),
-          properties: z.record(z.string(), z.string()).describe(
+          properties: z.record(z.string(), z.unknown()).describe(
             "Optional. If type is `OBJECT`, `properties` is a map of property names to schema definitions for each property of the object.",
           ).optional(),
-          propertyOrdering: z.array(z.string()).describe(
+          propertyOrdering: z.array(z.unknown()).describe(
             "Optional. Order of properties displayed or used where order matters. This is not a standard field in OpenAPI specification, but can be used to control the order of properties.",
           ).optional(),
           ref: z.string().describe(
             'Optional. Allows referencing another schema definition to use in place of this schema. The value must be a valid reference to a schema in `defs`. For example, the following schema defines a reference to a schema node named "Pet": type: object properties: pet: ref: #/defs/Pet defs: Pet: type: object properties: name: type: string The value of the "pet" property is a reference to the schema node named "Pet". See details in https://json-schema.org/understanding-json-schema/structuring',
           ).optional(),
-          required: z.array(z.string()).describe(
+          required: z.array(z.unknown()).describe(
             "Optional. If type is `OBJECT`, `required` lists the names of properties that must be present.",
           ).optional(),
           title: z.string().describe("Optional. Title for the schema.")
@@ -3215,17 +957,14 @@ const GlobalArgsSchema = z.object({
         ).optional(),
         routingConfig: z.object({
           autoMode: z.object({
-            modelRoutingPreference: z.enum([
-              "UNKNOWN",
-              "PRIORITIZE_QUALITY",
-              "BALANCED",
-              "PRIORITIZE_COST",
-            ]).describe("The model routing preference.").optional(),
+            modelRoutingPreference: z.unknown().describe(
+              "The model routing preference.",
+            ).optional(),
           }).describe(
             "The configuration for automated routing. When automated routing is specified, the routing will be determined by the pretrained routing model and customer provided model routing preference.",
           ).optional(),
           manualMode: z.object({
-            modelName: z.string().describe(
+            modelName: z.unknown().describe(
               "The name of the model to use. Only public LLM models are accepted.",
             ).optional(),
           }).describe(
@@ -3242,48 +981,19 @@ const GlobalArgsSchema = z.object({
             "Optional. The language code (ISO 639-1) for the speech synthesis.",
           ).optional(),
           multiSpeakerVoiceConfig: z.object({
-            speakerVoiceConfigs: z.array(z.object({
-              speaker: z.string().describe(
-                "Required. The name of the speaker. This should be the same as the speaker name used in the prompt.",
-              ).optional(),
-              voiceConfig: z.object({
-                prebuiltVoiceConfig: z.object({
-                  voiceName: z.string().describe(
-                    "The name of the prebuilt voice to use.",
-                  ).optional(),
-                }).describe("Configuration for a prebuilt voice.").optional(),
-                replicatedVoiceConfig: z.object({
-                  mimeType: z.string().describe(
-                    "Optional. The mimetype of the voice sample. The only currently supported value is `audio/wav`. This represents 16-bit signed little-endian wav data, with a 24kHz sampling rate. `mime_type` will default to `audio/wav` if not set.",
-                  ).optional(),
-                  voiceSampleAudio: z.string().describe(
-                    "Optional. The sample of the custom voice.",
-                  ).optional(),
-                }).describe(
-                  "The configuration for the replicated voice to use.",
-                ).optional(),
-              }).describe("Configuration for a voice.").optional(),
-            })).describe(
+            speakerVoiceConfigs: z.unknown().describe(
               "Required. A list of configurations for the voices of the speakers. Exactly two speaker voice configurations must be provided.",
             ).optional(),
           }).describe(
             "Configuration for a multi-speaker text-to-speech request.",
           ).optional(),
           voiceConfig: z.object({
-            prebuiltVoiceConfig: z.object({
-              voiceName: z.string().describe(
-                "The name of the prebuilt voice to use.",
-              ).optional(),
-            }).describe("Configuration for a prebuilt voice.").optional(),
-            replicatedVoiceConfig: z.object({
-              mimeType: z.string().describe(
-                "Optional. The mimetype of the voice sample. The only currently supported value is `audio/wav`. This represents 16-bit signed little-endian wav data, with a 24kHz sampling rate. `mime_type` will default to `audio/wav` if not set.",
-              ).optional(),
-              voiceSampleAudio: z.string().describe(
-                "Optional. The sample of the custom voice.",
-              ).optional(),
-            }).describe("The configuration for the replicated voice to use.")
-              .optional(),
+            prebuiltVoiceConfig: z.unknown().describe(
+              "Configuration for a prebuilt voice.",
+            ).optional(),
+            replicatedVoiceConfig: z.unknown().describe(
+              "The configuration for the replicated voice to use.",
+            ).optional(),
           }).describe("Configuration for a voice.").optional(),
         }).describe("Configuration for speech generation.").optional(),
         stopSequences: z.array(z.string()).describe(
@@ -3375,8 +1085,8 @@ const StateSchema = z.object({
         imageConfig: z.object({
           aspectRatio: z.string(),
           imageOutputOptions: z.object({
-            compressionQuality: z.number(),
-            mimeType: z.string(),
+            compressionQuality: z.unknown(),
+            mimeType: z.unknown(),
           }),
           imageSize: z.string(),
           personGeneration: z.string(),
@@ -3392,11 +1102,11 @@ const StateSchema = z.object({
         responseModalities: z.array(z.string()),
         responseSchema: z.object({
           additionalProperties: z.string(),
-          anyOf: z.array(z.string()),
+          anyOf: z.array(z.unknown()),
           default: z.string(),
           defs: z.record(z.string(), z.unknown()),
           description: z.string(),
-          enum: z.array(z.string()),
+          enum: z.array(z.unknown()),
           example: z.string(),
           format: z.string(),
           items: z.string(),
@@ -3411,45 +1121,29 @@ const StateSchema = z.object({
           nullable: z.boolean(),
           pattern: z.string(),
           properties: z.record(z.string(), z.unknown()),
-          propertyOrdering: z.array(z.string()),
+          propertyOrdering: z.array(z.unknown()),
           ref: z.string(),
-          required: z.array(z.string()),
+          required: z.array(z.unknown()),
           title: z.string(),
           type: z.string(),
         }),
         routingConfig: z.object({
           autoMode: z.object({
-            modelRoutingPreference: z.string(),
+            modelRoutingPreference: z.unknown(),
           }),
           manualMode: z.object({
-            modelName: z.string(),
+            modelName: z.unknown(),
           }),
         }),
         seed: z.number(),
         speechConfig: z.object({
           languageCode: z.string(),
           multiSpeakerVoiceConfig: z.object({
-            speakerVoiceConfigs: z.array(z.object({
-              speaker: z.string(),
-              voiceConfig: z.object({
-                prebuiltVoiceConfig: z.object({
-                  voiceName: z.string(),
-                }),
-                replicatedVoiceConfig: z.object({
-                  mimeType: z.string(),
-                  voiceSampleAudio: z.string(),
-                }),
-              }),
-            })),
+            speakerVoiceConfigs: z.unknown(),
           }),
           voiceConfig: z.object({
-            prebuiltVoiceConfig: z.object({
-              voiceName: z.string(),
-            }),
-            replicatedVoiceConfig: z.object({
-              mimeType: z.string(),
-              voiceSampleAudio: z.string(),
-            }),
+            prebuiltVoiceConfig: z.unknown(),
+            replicatedVoiceConfig: z.unknown(),
           }),
         }),
         stopSequences: z.array(z.string()),
@@ -3476,480 +1170,73 @@ const StateSchema = z.object({
       llmBasedMetricSpec: z.object({
         additionalConfig: z.record(z.string(), z.unknown()),
         judgeAutoraterConfig: z.object({
-          autoraterModel: z.string(),
-          generationConfig: z.object({
-            audioTimestamp: z.boolean(),
-            candidateCount: z.number(),
-            enableAffectiveDialog: z.boolean(),
-            frequencyPenalty: z.number(),
-            imageConfig: z.object({
-              aspectRatio: z.string(),
-              imageOutputOptions: z.object({
-                compressionQuality: z.number(),
-                mimeType: z.string(),
-              }),
-              imageSize: z.string(),
-              personGeneration: z.string(),
-              prominentPeople: z.string(),
-            }),
-            logprobs: z.number(),
-            maxOutputTokens: z.number(),
-            mediaResolution: z.string(),
-            presencePenalty: z.number(),
-            responseJsonSchema: z.string(),
-            responseLogprobs: z.boolean(),
-            responseMimeType: z.string(),
-            responseModalities: z.array(z.string()),
-            responseSchema: z.object({
-              additionalProperties: z.string(),
-              anyOf: z.array(z.string()),
-              default: z.string(),
-              defs: z.record(z.string(), z.unknown()),
-              description: z.string(),
-              enum: z.array(z.string()),
-              example: z.string(),
-              format: z.string(),
-              items: z.string(),
-              maxItems: z.string(),
-              maxLength: z.string(),
-              maxProperties: z.string(),
-              maximum: z.number(),
-              minItems: z.string(),
-              minLength: z.string(),
-              minProperties: z.string(),
-              minimum: z.number(),
-              nullable: z.boolean(),
-              pattern: z.string(),
-              properties: z.record(z.string(), z.unknown()),
-              propertyOrdering: z.array(z.string()),
-              ref: z.string(),
-              required: z.array(z.string()),
-              title: z.string(),
-              type: z.string(),
-            }),
-            routingConfig: z.object({
-              autoMode: z.object({
-                modelRoutingPreference: z.string(),
-              }),
-              manualMode: z.object({
-                modelName: z.string(),
-              }),
-            }),
-            seed: z.number(),
-            speechConfig: z.object({
-              languageCode: z.string(),
-              multiSpeakerVoiceConfig: z.object({
-                speakerVoiceConfigs: z.array(z.object({
-                  speaker: z.string(),
-                  voiceConfig: z.object({
-                    prebuiltVoiceConfig: z.object({
-                      voiceName: z.string(),
-                    }),
-                    replicatedVoiceConfig: z.object({
-                      mimeType: z.string(),
-                      voiceSampleAudio: z.string(),
-                    }),
-                  }),
-                })),
-              }),
-              voiceConfig: z.object({
-                prebuiltVoiceConfig: z.object({
-                  voiceName: z.string(),
-                }),
-                replicatedVoiceConfig: z.object({
-                  mimeType: z.string(),
-                  voiceSampleAudio: z.string(),
-                }),
-              }),
-            }),
-            stopSequences: z.array(z.string()),
-            temperature: z.number(),
-            thinkingConfig: z.object({
-              includeThoughts: z.boolean(),
-              thinkingBudget: z.number(),
-              thinkingLevel: z.string(),
-            }),
-            topK: z.number(),
-            topP: z.number(),
-          }),
-          sampleCount: z.number(),
+          autoraterModel: z.unknown(),
+          generationConfig: z.unknown(),
+          sampleCount: z.unknown(),
         }),
         metricPromptTemplate: z.string(),
         predefinedRubricGenerationSpec: z.object({
-          metricSpecName: z.string(),
-          parameters: z.record(z.string(), z.unknown()),
+          metricSpecName: z.unknown(),
+          parameters: z.unknown(),
         }),
         rubricGenerationSpec: z.object({
-          metricResourceName: z.string(),
-          modelConfig: z.object({
-            autoraterModel: z.string(),
-            generationConfig: z.object({
-              audioTimestamp: z.boolean(),
-              candidateCount: z.number(),
-              enableAffectiveDialog: z.boolean(),
-              frequencyPenalty: z.number(),
-              imageConfig: z.object({
-                aspectRatio: z.string(),
-                imageOutputOptions: z.object({
-                  compressionQuality: z.number(),
-                  mimeType: z.string(),
-                }),
-                imageSize: z.string(),
-                personGeneration: z.string(),
-                prominentPeople: z.string(),
-              }),
-              logprobs: z.number(),
-              maxOutputTokens: z.number(),
-              mediaResolution: z.string(),
-              presencePenalty: z.number(),
-              responseJsonSchema: z.string(),
-              responseLogprobs: z.boolean(),
-              responseMimeType: z.string(),
-              responseModalities: z.array(z.string()),
-              responseSchema: z.object({
-                additionalProperties: z.string(),
-                anyOf: z.array(z.string()),
-                default: z.string(),
-                defs: z.record(z.string(), z.unknown()),
-                description: z.string(),
-                enum: z.array(z.string()),
-                example: z.string(),
-                format: z.string(),
-                items: z.string(),
-                maxItems: z.string(),
-                maxLength: z.string(),
-                maxProperties: z.string(),
-                maximum: z.number(),
-                minItems: z.string(),
-                minLength: z.string(),
-                minProperties: z.string(),
-                minimum: z.number(),
-                nullable: z.boolean(),
-                pattern: z.string(),
-                properties: z.record(z.string(), z.unknown()),
-                propertyOrdering: z.array(z.string()),
-                ref: z.string(),
-                required: z.array(z.string()),
-                title: z.string(),
-                type: z.string(),
-              }),
-              routingConfig: z.object({
-                autoMode: z.object({
-                  modelRoutingPreference: z.string(),
-                }),
-                manualMode: z.object({
-                  modelName: z.string(),
-                }),
-              }),
-              seed: z.number(),
-              speechConfig: z.object({
-                languageCode: z.string(),
-                multiSpeakerVoiceConfig: z.object({
-                  speakerVoiceConfigs: z.array(z.object({
-                    speaker: z.string(),
-                    voiceConfig: z.object({
-                      prebuiltVoiceConfig: z.object({
-                        voiceName: z.string(),
-                      }),
-                      replicatedVoiceConfig: z.object({
-                        mimeType: z.string(),
-                        voiceSampleAudio: z.string(),
-                      }),
-                    }),
-                  })),
-                }),
-                voiceConfig: z.object({
-                  prebuiltVoiceConfig: z.object({
-                    voiceName: z.string(),
-                  }),
-                  replicatedVoiceConfig: z.object({
-                    mimeType: z.string(),
-                    voiceSampleAudio: z.string(),
-                  }),
-                }),
-              }),
-              stopSequences: z.array(z.string()),
-              temperature: z.number(),
-              thinkingConfig: z.object({
-                includeThoughts: z.boolean(),
-                thinkingBudget: z.number(),
-                thinkingLevel: z.string(),
-              }),
-              topK: z.number(),
-              topP: z.number(),
-            }),
-            sampleCount: z.number(),
-          }),
-          promptTemplate: z.string(),
-          rubricContentType: z.string(),
-          rubricTypeOntology: z.array(z.string()),
+          metricResourceName: z.unknown(),
+          modelConfig: z.unknown(),
+          promptTemplate: z.unknown(),
+          rubricContentType: z.unknown(),
+          rubricTypeOntology: z.unknown(),
         }),
         rubricGroupKey: z.string(),
         systemInstruction: z.string(),
       }),
       metric: z.string(),
       metricConfig: z.object({
-        aggregationMetrics: z.array(z.string()),
+        aggregationMetrics: z.array(z.unknown()),
         bleuSpec: z.object({
-          useEffectiveOrder: z.boolean(),
+          useEffectiveOrder: z.unknown(),
         }),
         computationBasedMetricSpec: z.object({
-          parameters: z.record(z.string(), z.unknown()),
-          type: z.string(),
+          parameters: z.unknown(),
+          type: z.unknown(),
         }),
         customCodeExecutionSpec: z.object({
-          evaluationFunction: z.string(),
+          evaluationFunction: z.unknown(),
         }),
         exactMatchSpec: z.object({}),
         llmBasedMetricSpec: z.object({
-          additionalConfig: z.record(z.string(), z.unknown()),
-          judgeAutoraterConfig: z.object({
-            autoraterModel: z.string(),
-            flipEnabled: z.boolean(),
-            generationConfig: z.object({
-              audioTimestamp: z.boolean(),
-              candidateCount: z.number(),
-              enableAffectiveDialog: z.boolean(),
-              frequencyPenalty: z.number(),
-              imageConfig: z.object({
-                aspectRatio: z.string(),
-                imageOutputOptions: z.object({
-                  compressionQuality: z.number(),
-                  mimeType: z.string(),
-                }),
-                imageSize: z.string(),
-                personGeneration: z.string(),
-                prominentPeople: z.string(),
-              }),
-              logprobs: z.number(),
-              maxOutputTokens: z.number(),
-              mediaResolution: z.string(),
-              presencePenalty: z.number(),
-              responseJsonSchema: z.string(),
-              responseLogprobs: z.boolean(),
-              responseMimeType: z.string(),
-              responseModalities: z.array(z.string()),
-              responseSchema: z.object({
-                additionalProperties: z.string(),
-                anyOf: z.array(z.string()),
-                default: z.string(),
-                defs: z.record(z.string(), z.unknown()),
-                description: z.string(),
-                enum: z.array(z.string()),
-                example: z.string(),
-                format: z.string(),
-                items: z.string(),
-                maxItems: z.string(),
-                maxLength: z.string(),
-                maxProperties: z.string(),
-                maximum: z.number(),
-                minItems: z.string(),
-                minLength: z.string(),
-                minProperties: z.string(),
-                minimum: z.number(),
-                nullable: z.boolean(),
-                pattern: z.string(),
-                properties: z.record(z.string(), z.unknown()),
-                propertyOrdering: z.array(z.string()),
-                ref: z.string(),
-                required: z.array(z.string()),
-                title: z.string(),
-                type: z.string(),
-              }),
-              routingConfig: z.object({
-                autoMode: z.object({
-                  modelRoutingPreference: z.string(),
-                }),
-                manualMode: z.object({
-                  modelName: z.string(),
-                }),
-              }),
-              seed: z.number(),
-              speechConfig: z.object({
-                languageCode: z.string(),
-                multiSpeakerVoiceConfig: z.object({
-                  speakerVoiceConfigs: z.array(z.object({
-                    speaker: z.string(),
-                    voiceConfig: z.object({
-                      prebuiltVoiceConfig: z.object({
-                        voiceName: z.string(),
-                      }),
-                      replicatedVoiceConfig: z.object({
-                        mimeType: z.string(),
-                        voiceSampleAudio: z.string(),
-                      }),
-                    }),
-                  })),
-                }),
-                voiceConfig: z.object({
-                  prebuiltVoiceConfig: z.object({
-                    voiceName: z.string(),
-                  }),
-                  replicatedVoiceConfig: z.object({
-                    mimeType: z.string(),
-                    voiceSampleAudio: z.string(),
-                  }),
-                }),
-              }),
-              stopSequences: z.array(z.string()),
-              temperature: z.number(),
-              thinkingConfig: z.object({
-                includeThoughts: z.boolean(),
-                thinkingBudget: z.number(),
-                thinkingLevel: z.string(),
-              }),
-              topK: z.number(),
-              topP: z.number(),
-            }),
-            samplingCount: z.number(),
-          }),
-          metricPromptTemplate: z.string(),
-          predefinedRubricGenerationSpec: z.object({
-            metricSpecName: z.string(),
-            metricSpecParameters: z.record(z.string(), z.unknown()),
-          }),
-          rubricGenerationSpec: z.object({
-            modelConfig: z.object({
-              autoraterModel: z.string(),
-              flipEnabled: z.boolean(),
-              generationConfig: z.object({
-                audioTimestamp: z.boolean(),
-                candidateCount: z.number(),
-                enableAffectiveDialog: z.boolean(),
-                frequencyPenalty: z.number(),
-                imageConfig: z.object({
-                  aspectRatio: z.string(),
-                  imageOutputOptions: z.object({
-                    compressionQuality: z.number(),
-                    mimeType: z.string(),
-                  }),
-                  imageSize: z.string(),
-                  personGeneration: z.string(),
-                  prominentPeople: z.string(),
-                }),
-                logprobs: z.number(),
-                maxOutputTokens: z.number(),
-                mediaResolution: z.string(),
-                presencePenalty: z.number(),
-                responseJsonSchema: z.string(),
-                responseLogprobs: z.boolean(),
-                responseMimeType: z.string(),
-                responseModalities: z.array(z.string()),
-                responseSchema: z.object({
-                  additionalProperties: z.string(),
-                  anyOf: z.array(z.string()),
-                  default: z.string(),
-                  defs: z.record(z.string(), z.unknown()),
-                  description: z.string(),
-                  enum: z.array(z.string()),
-                  example: z.string(),
-                  format: z.string(),
-                  items: z.string(),
-                  maxItems: z.string(),
-                  maxLength: z.string(),
-                  maxProperties: z.string(),
-                  maximum: z.number(),
-                  minItems: z.string(),
-                  minLength: z.string(),
-                  minProperties: z.string(),
-                  minimum: z.number(),
-                  nullable: z.boolean(),
-                  pattern: z.string(),
-                  properties: z.record(z.string(), z.unknown()),
-                  propertyOrdering: z.array(z.string()),
-                  ref: z.string(),
-                  required: z.array(z.string()),
-                  title: z.string(),
-                  type: z.string(),
-                }),
-                routingConfig: z.object({
-                  autoMode: z.object({
-                    modelRoutingPreference: z.string(),
-                  }),
-                  manualMode: z.object({
-                    modelName: z.string(),
-                  }),
-                }),
-                seed: z.number(),
-                speechConfig: z.object({
-                  languageCode: z.string(),
-                  multiSpeakerVoiceConfig: z.object({
-                    speakerVoiceConfigs: z.array(z.object({
-                      speaker: z.string(),
-                      voiceConfig: z.object({
-                        prebuiltVoiceConfig: z.object({
-                          voiceName: z.string(),
-                        }),
-                        replicatedVoiceConfig: z.object({
-                          mimeType: z.string(),
-                          voiceSampleAudio: z.string(),
-                        }),
-                      }),
-                    })),
-                  }),
-                  voiceConfig: z.object({
-                    prebuiltVoiceConfig: z.object({
-                      voiceName: z.string(),
-                    }),
-                    replicatedVoiceConfig: z.object({
-                      mimeType: z.string(),
-                      voiceSampleAudio: z.string(),
-                    }),
-                  }),
-                }),
-                stopSequences: z.array(z.string()),
-                temperature: z.number(),
-                thinkingConfig: z.object({
-                  includeThoughts: z.boolean(),
-                  thinkingBudget: z.number(),
-                  thinkingLevel: z.string(),
-                }),
-                topK: z.number(),
-                topP: z.number(),
-              }),
-              samplingCount: z.number(),
-            }),
-            promptTemplate: z.string(),
-            rubricContentType: z.string(),
-            rubricTypeOntology: z.array(z.string()),
-          }),
-          rubricGroupKey: z.string(),
-          systemInstruction: z.string(),
+          additionalConfig: z.unknown(),
+          judgeAutoraterConfig: z.unknown(),
+          metricPromptTemplate: z.unknown(),
+          predefinedRubricGenerationSpec: z.unknown(),
+          rubricGenerationSpec: z.unknown(),
+          rubricGroupKey: z.unknown(),
+          systemInstruction: z.unknown(),
         }),
         metadata: z.object({
-          otherMetadata: z.record(z.string(), z.unknown()),
-          scoreRange: z.object({
-            description: z.string(),
-            max: z.number(),
-            min: z.number(),
-            step: z.number(),
-          }),
-          title: z.string(),
+          otherMetadata: z.unknown(),
+          scoreRange: z.unknown(),
+          title: z.unknown(),
         }),
         pairwiseMetricSpec: z.object({
-          baselineResponseFieldName: z.string(),
-          candidateResponseFieldName: z.string(),
-          customOutputFormatConfig: z.object({
-            returnRawOutput: z.boolean(),
-          }),
-          metricPromptTemplate: z.string(),
-          systemInstruction: z.string(),
+          baselineResponseFieldName: z.unknown(),
+          candidateResponseFieldName: z.unknown(),
+          customOutputFormatConfig: z.unknown(),
+          metricPromptTemplate: z.unknown(),
+          systemInstruction: z.unknown(),
         }),
         pointwiseMetricSpec: z.object({
-          customOutputFormatConfig: z.object({
-            returnRawOutput: z.boolean(),
-          }),
-          metricPromptTemplate: z.string(),
-          systemInstruction: z.string(),
+          customOutputFormatConfig: z.unknown(),
+          metricPromptTemplate: z.unknown(),
+          systemInstruction: z.unknown(),
         }),
         predefinedMetricSpec: z.object({
-          metricSpecName: z.string(),
-          metricSpecParameters: z.record(z.string(), z.unknown()),
+          metricSpecName: z.unknown(),
+          metricSpecParameters: z.unknown(),
         }),
         rougeSpec: z.object({
-          rougeType: z.string(),
-          splitSummaries: z.boolean(),
-          useStemmer: z.boolean(),
+          rougeType: z.unknown(),
+          splitSummaries: z.unknown(),
+          useStemmer: z.unknown(),
         }),
       }),
       metricResourceName: z.string(),
@@ -3959,221 +1246,20 @@ const StateSchema = z.object({
       }),
       rubricBasedMetricSpec: z.object({
         inlineRubrics: z.object({
-          rubrics: z.array(z.object({
-            content: z.object({
-              property: z.object({
-                description: z.string(),
-              }),
-            }),
-            importance: z.string(),
-            rubricId: z.string(),
-            type: z.string(),
-          })),
+          rubrics: z.unknown(),
         }),
         judgeAutoraterConfig: z.object({
-          autoraterModel: z.string(),
-          generationConfig: z.object({
-            audioTimestamp: z.boolean(),
-            candidateCount: z.number(),
-            enableAffectiveDialog: z.boolean(),
-            frequencyPenalty: z.number(),
-            imageConfig: z.object({
-              aspectRatio: z.string(),
-              imageOutputOptions: z.object({
-                compressionQuality: z.number(),
-                mimeType: z.string(),
-              }),
-              imageSize: z.string(),
-              personGeneration: z.string(),
-              prominentPeople: z.string(),
-            }),
-            logprobs: z.number(),
-            maxOutputTokens: z.number(),
-            mediaResolution: z.string(),
-            presencePenalty: z.number(),
-            responseJsonSchema: z.string(),
-            responseLogprobs: z.boolean(),
-            responseMimeType: z.string(),
-            responseModalities: z.array(z.string()),
-            responseSchema: z.object({
-              additionalProperties: z.string(),
-              anyOf: z.array(z.string()),
-              default: z.string(),
-              defs: z.record(z.string(), z.unknown()),
-              description: z.string(),
-              enum: z.array(z.string()),
-              example: z.string(),
-              format: z.string(),
-              items: z.string(),
-              maxItems: z.string(),
-              maxLength: z.string(),
-              maxProperties: z.string(),
-              maximum: z.number(),
-              minItems: z.string(),
-              minLength: z.string(),
-              minProperties: z.string(),
-              minimum: z.number(),
-              nullable: z.boolean(),
-              pattern: z.string(),
-              properties: z.record(z.string(), z.unknown()),
-              propertyOrdering: z.array(z.string()),
-              ref: z.string(),
-              required: z.array(z.string()),
-              title: z.string(),
-              type: z.string(),
-            }),
-            routingConfig: z.object({
-              autoMode: z.object({
-                modelRoutingPreference: z.string(),
-              }),
-              manualMode: z.object({
-                modelName: z.string(),
-              }),
-            }),
-            seed: z.number(),
-            speechConfig: z.object({
-              languageCode: z.string(),
-              multiSpeakerVoiceConfig: z.object({
-                speakerVoiceConfigs: z.array(z.object({
-                  speaker: z.string(),
-                  voiceConfig: z.object({
-                    prebuiltVoiceConfig: z.object({
-                      voiceName: z.string(),
-                    }),
-                    replicatedVoiceConfig: z.object({
-                      mimeType: z.string(),
-                      voiceSampleAudio: z.string(),
-                    }),
-                  }),
-                })),
-              }),
-              voiceConfig: z.object({
-                prebuiltVoiceConfig: z.object({
-                  voiceName: z.string(),
-                }),
-                replicatedVoiceConfig: z.object({
-                  mimeType: z.string(),
-                  voiceSampleAudio: z.string(),
-                }),
-              }),
-            }),
-            stopSequences: z.array(z.string()),
-            temperature: z.number(),
-            thinkingConfig: z.object({
-              includeThoughts: z.boolean(),
-              thinkingBudget: z.number(),
-              thinkingLevel: z.string(),
-            }),
-            topK: z.number(),
-            topP: z.number(),
-          }),
-          sampleCount: z.number(),
+          autoraterModel: z.unknown(),
+          generationConfig: z.unknown(),
+          sampleCount: z.unknown(),
         }),
         metricPromptTemplate: z.string(),
         rubricGenerationSpec: z.object({
-          metricResourceName: z.string(),
-          modelConfig: z.object({
-            autoraterModel: z.string(),
-            generationConfig: z.object({
-              audioTimestamp: z.boolean(),
-              candidateCount: z.number(),
-              enableAffectiveDialog: z.boolean(),
-              frequencyPenalty: z.number(),
-              imageConfig: z.object({
-                aspectRatio: z.string(),
-                imageOutputOptions: z.object({
-                  compressionQuality: z.number(),
-                  mimeType: z.string(),
-                }),
-                imageSize: z.string(),
-                personGeneration: z.string(),
-                prominentPeople: z.string(),
-              }),
-              logprobs: z.number(),
-              maxOutputTokens: z.number(),
-              mediaResolution: z.string(),
-              presencePenalty: z.number(),
-              responseJsonSchema: z.string(),
-              responseLogprobs: z.boolean(),
-              responseMimeType: z.string(),
-              responseModalities: z.array(z.string()),
-              responseSchema: z.object({
-                additionalProperties: z.string(),
-                anyOf: z.array(z.string()),
-                default: z.string(),
-                defs: z.record(z.string(), z.unknown()),
-                description: z.string(),
-                enum: z.array(z.string()),
-                example: z.string(),
-                format: z.string(),
-                items: z.string(),
-                maxItems: z.string(),
-                maxLength: z.string(),
-                maxProperties: z.string(),
-                maximum: z.number(),
-                minItems: z.string(),
-                minLength: z.string(),
-                minProperties: z.string(),
-                minimum: z.number(),
-                nullable: z.boolean(),
-                pattern: z.string(),
-                properties: z.record(z.string(), z.unknown()),
-                propertyOrdering: z.array(z.string()),
-                ref: z.string(),
-                required: z.array(z.string()),
-                title: z.string(),
-                type: z.string(),
-              }),
-              routingConfig: z.object({
-                autoMode: z.object({
-                  modelRoutingPreference: z.string(),
-                }),
-                manualMode: z.object({
-                  modelName: z.string(),
-                }),
-              }),
-              seed: z.number(),
-              speechConfig: z.object({
-                languageCode: z.string(),
-                multiSpeakerVoiceConfig: z.object({
-                  speakerVoiceConfigs: z.array(z.object({
-                    speaker: z.string(),
-                    voiceConfig: z.object({
-                      prebuiltVoiceConfig: z.object({
-                        voiceName: z.string(),
-                      }),
-                      replicatedVoiceConfig: z.object({
-                        mimeType: z.string(),
-                        voiceSampleAudio: z.string(),
-                      }),
-                    }),
-                  })),
-                }),
-                voiceConfig: z.object({
-                  prebuiltVoiceConfig: z.object({
-                    voiceName: z.string(),
-                  }),
-                  replicatedVoiceConfig: z.object({
-                    mimeType: z.string(),
-                    voiceSampleAudio: z.string(),
-                  }),
-                }),
-              }),
-              stopSequences: z.array(z.string()),
-              temperature: z.number(),
-              thinkingConfig: z.object({
-                includeThoughts: z.boolean(),
-                thinkingBudget: z.number(),
-                thinkingLevel: z.string(),
-              }),
-              topK: z.number(),
-              topP: z.number(),
-            }),
-            sampleCount: z.number(),
-          }),
-          promptTemplate: z.string(),
-          rubricContentType: z.string(),
-          rubricTypeOntology: z.array(z.string()),
+          metricResourceName: z.unknown(),
+          modelConfig: z.unknown(),
+          promptTemplate: z.unknown(),
+          rubricContentType: z.unknown(),
+          rubricTypeOntology: z.unknown(),
         }),
         rubricGroupKey: z.string(),
       }),
@@ -4198,107 +1284,13 @@ const StateSchema = z.object({
       rubricGenerationSpec: z.object({
         metricResourceName: z.string(),
         modelConfig: z.object({
-          autoraterModel: z.string(),
-          generationConfig: z.object({
-            audioTimestamp: z.boolean(),
-            candidateCount: z.number(),
-            enableAffectiveDialog: z.boolean(),
-            frequencyPenalty: z.number(),
-            imageConfig: z.object({
-              aspectRatio: z.string(),
-              imageOutputOptions: z.object({
-                compressionQuality: z.number(),
-                mimeType: z.string(),
-              }),
-              imageSize: z.string(),
-              personGeneration: z.string(),
-              prominentPeople: z.string(),
-            }),
-            logprobs: z.number(),
-            maxOutputTokens: z.number(),
-            mediaResolution: z.string(),
-            presencePenalty: z.number(),
-            responseJsonSchema: z.string(),
-            responseLogprobs: z.boolean(),
-            responseMimeType: z.string(),
-            responseModalities: z.array(z.string()),
-            responseSchema: z.object({
-              additionalProperties: z.string(),
-              anyOf: z.array(z.string()),
-              default: z.string(),
-              defs: z.record(z.string(), z.unknown()),
-              description: z.string(),
-              enum: z.array(z.string()),
-              example: z.string(),
-              format: z.string(),
-              items: z.string(),
-              maxItems: z.string(),
-              maxLength: z.string(),
-              maxProperties: z.string(),
-              maximum: z.number(),
-              minItems: z.string(),
-              minLength: z.string(),
-              minProperties: z.string(),
-              minimum: z.number(),
-              nullable: z.boolean(),
-              pattern: z.string(),
-              properties: z.record(z.string(), z.unknown()),
-              propertyOrdering: z.array(z.string()),
-              ref: z.string(),
-              required: z.array(z.string()),
-              title: z.string(),
-              type: z.string(),
-            }),
-            routingConfig: z.object({
-              autoMode: z.object({
-                modelRoutingPreference: z.string(),
-              }),
-              manualMode: z.object({
-                modelName: z.string(),
-              }),
-            }),
-            seed: z.number(),
-            speechConfig: z.object({
-              languageCode: z.string(),
-              multiSpeakerVoiceConfig: z.object({
-                speakerVoiceConfigs: z.array(z.object({
-                  speaker: z.string(),
-                  voiceConfig: z.object({
-                    prebuiltVoiceConfig: z.object({
-                      voiceName: z.string(),
-                    }),
-                    replicatedVoiceConfig: z.object({
-                      mimeType: z.string(),
-                      voiceSampleAudio: z.string(),
-                    }),
-                  }),
-                })),
-              }),
-              voiceConfig: z.object({
-                prebuiltVoiceConfig: z.object({
-                  voiceName: z.string(),
-                }),
-                replicatedVoiceConfig: z.object({
-                  mimeType: z.string(),
-                  voiceSampleAudio: z.string(),
-                }),
-              }),
-            }),
-            stopSequences: z.array(z.string()),
-            temperature: z.number(),
-            thinkingConfig: z.object({
-              includeThoughts: z.boolean(),
-              thinkingBudget: z.number(),
-              thinkingLevel: z.string(),
-            }),
-            topK: z.number(),
-            topP: z.number(),
-          }),
-          sampleCount: z.number(),
+          autoraterModel: z.unknown(),
+          generationConfig: z.unknown(),
+          sampleCount: z.unknown(),
         }),
         promptTemplate: z.string(),
         rubricContentType: z.string(),
-        rubricTypeOntology: z.array(z.string()),
+        rubricTypeOntology: z.array(z.unknown()),
       }),
       rubricGroupKey: z.string(),
     })),
@@ -4390,10 +1382,10 @@ const InputsSchema = z.object({
             'Optional. The desired aspect ratio for the generated images. The following aspect ratios are supported: "1:1" "2:3", "3:2" "3:4", "4:3" "4:5", "5:4" "9:16", "16:9" "21:9"',
           ).optional(),
           imageOutputOptions: z.object({
-            compressionQuality: z.number().int().describe(
+            compressionQuality: z.unknown().describe(
               "Optional. The compression quality of the output image.",
             ).optional(),
-            mimeType: z.string().describe(
+            mimeType: z.unknown().describe(
               "Optional. The image format that the output should be saved as.",
             ).optional(),
           }).describe("The image output format for generated images.")
@@ -4454,19 +1446,19 @@ const InputsSchema = z.object({
           additionalProperties: z.string().describe(
             "Optional. If `type` is `OBJECT`, specifies how to handle properties not defined in `properties`. If it is a boolean `false`, no additional properties are allowed. If it is a schema, additional properties are allowed if they conform to the schema.",
           ).optional(),
-          anyOf: z.array(z.string()).describe(
+          anyOf: z.array(z.unknown()).describe(
             "Optional. The instance must be valid against any (one or more) of the subschemas listed in `any_of`.",
           ).optional(),
           default: z.string().describe(
             "Optional. Default value to use if the field is not specified.",
           ).optional(),
-          defs: z.record(z.string(), z.string()).describe(
+          defs: z.record(z.string(), z.unknown()).describe(
             "Optional. `defs` provides a map of schema definitions that can be reused by `ref` elsewhere in the schema. Only allowed at root level of the schema.",
           ).optional(),
           description: z.string().describe(
             "Optional. Describes the data. The model uses this field to understand the purpose of the schema and how to use it. It is a best practice to provide a clear and descriptive explanation for the schema and its properties here, rather than in the prompt.",
           ).optional(),
-          enum: z.array(z.string()).describe(
+          enum: z.array(z.unknown()).describe(
             'Optional. Possible values of the field. This field can be used to restrict a value to a fixed set of values. To mark a field as an enum, set `format` to `enum` and provide the list of possible values in `enum`. For example: 1. To define directions: `{type:STRING, format:enum, enum:["EAST", "NORTH", "SOUTH", "WEST"]}` 2. To define apartment numbers: `{type:INTEGER, format:enum, enum:["101", "201", "301"]}`',
           ).optional(),
           example: z.string().describe(
@@ -4508,16 +1500,16 @@ const InputsSchema = z.object({
           pattern: z.string().describe(
             "Optional. If type is `STRING`, `pattern` specifies a regular expression that the string must match.",
           ).optional(),
-          properties: z.record(z.string(), z.string()).describe(
+          properties: z.record(z.string(), z.unknown()).describe(
             "Optional. If type is `OBJECT`, `properties` is a map of property names to schema definitions for each property of the object.",
           ).optional(),
-          propertyOrdering: z.array(z.string()).describe(
+          propertyOrdering: z.array(z.unknown()).describe(
             "Optional. Order of properties displayed or used where order matters. This is not a standard field in OpenAPI specification, but can be used to control the order of properties.",
           ).optional(),
           ref: z.string().describe(
             'Optional. Allows referencing another schema definition to use in place of this schema. The value must be a valid reference to a schema in `defs`. For example, the following schema defines a reference to a schema node named "Pet": type: object properties: pet: ref: #/defs/Pet defs: Pet: type: object properties: name: type: string The value of the "pet" property is a reference to the schema node named "Pet". See details in https://json-schema.org/understanding-json-schema/structuring',
           ).optional(),
-          required: z.array(z.string()).describe(
+          required: z.array(z.unknown()).describe(
             "Optional. If type is `OBJECT`, `required` lists the names of properties that must be present.",
           ).optional(),
           title: z.string().describe("Optional. Title for the schema.")
@@ -4537,17 +1529,14 @@ const InputsSchema = z.object({
         ).optional(),
         routingConfig: z.object({
           autoMode: z.object({
-            modelRoutingPreference: z.enum([
-              "UNKNOWN",
-              "PRIORITIZE_QUALITY",
-              "BALANCED",
-              "PRIORITIZE_COST",
-            ]).describe("The model routing preference.").optional(),
+            modelRoutingPreference: z.unknown().describe(
+              "The model routing preference.",
+            ).optional(),
           }).describe(
             "The configuration for automated routing. When automated routing is specified, the routing will be determined by the pretrained routing model and customer provided model routing preference.",
           ).optional(),
           manualMode: z.object({
-            modelName: z.string().describe(
+            modelName: z.unknown().describe(
               "The name of the model to use. Only public LLM models are accepted.",
             ).optional(),
           }).describe(
@@ -4564,48 +1553,19 @@ const InputsSchema = z.object({
             "Optional. The language code (ISO 639-1) for the speech synthesis.",
           ).optional(),
           multiSpeakerVoiceConfig: z.object({
-            speakerVoiceConfigs: z.array(z.object({
-              speaker: z.string().describe(
-                "Required. The name of the speaker. This should be the same as the speaker name used in the prompt.",
-              ).optional(),
-              voiceConfig: z.object({
-                prebuiltVoiceConfig: z.object({
-                  voiceName: z.string().describe(
-                    "The name of the prebuilt voice to use.",
-                  ).optional(),
-                }).describe("Configuration for a prebuilt voice.").optional(),
-                replicatedVoiceConfig: z.object({
-                  mimeType: z.string().describe(
-                    "Optional. The mimetype of the voice sample. The only currently supported value is `audio/wav`. This represents 16-bit signed little-endian wav data, with a 24kHz sampling rate. `mime_type` will default to `audio/wav` if not set.",
-                  ).optional(),
-                  voiceSampleAudio: z.string().describe(
-                    "Optional. The sample of the custom voice.",
-                  ).optional(),
-                }).describe(
-                  "The configuration for the replicated voice to use.",
-                ).optional(),
-              }).describe("Configuration for a voice.").optional(),
-            })).describe(
+            speakerVoiceConfigs: z.unknown().describe(
               "Required. A list of configurations for the voices of the speakers. Exactly two speaker voice configurations must be provided.",
             ).optional(),
           }).describe(
             "Configuration for a multi-speaker text-to-speech request.",
           ).optional(),
           voiceConfig: z.object({
-            prebuiltVoiceConfig: z.object({
-              voiceName: z.string().describe(
-                "The name of the prebuilt voice to use.",
-              ).optional(),
-            }).describe("Configuration for a prebuilt voice.").optional(),
-            replicatedVoiceConfig: z.object({
-              mimeType: z.string().describe(
-                "Optional. The mimetype of the voice sample. The only currently supported value is `audio/wav`. This represents 16-bit signed little-endian wav data, with a 24kHz sampling rate. `mime_type` will default to `audio/wav` if not set.",
-              ).optional(),
-              voiceSampleAudio: z.string().describe(
-                "Optional. The sample of the custom voice.",
-              ).optional(),
-            }).describe("The configuration for the replicated voice to use.")
-              .optional(),
+            prebuiltVoiceConfig: z.unknown().describe(
+              "Configuration for a prebuilt voice.",
+            ).optional(),
+            replicatedVoiceConfig: z.unknown().describe(
+              "The configuration for the replicated voice to use.",
+            ).optional(),
           }).describe("Configuration for a voice.").optional(),
         }).describe("Configuration for speech generation.").optional(),
         stopSequences: z.array(z.string()).describe(
@@ -4658,7 +1618,7 @@ const InputsSchema = z.object({
     ).optional(),
     metrics: z.array(z.object({
       computationBasedMetricSpec: z.object({
-        parameters: z.record(z.string(), z.string()).describe(
+        parameters: z.record(z.string(), z.unknown()).describe(
           'Optional. A map of parameters for the metric, e.g. {"rouge_type": "rougeL"}.',
         ).optional(),
         type: z.enum([
@@ -4670,287 +1630,17 @@ const InputsSchema = z.object({
           .optional(),
       }).describe("Specification for a computation based metric.").optional(),
       llmBasedMetricSpec: z.object({
-        additionalConfig: z.record(z.string(), z.string()).describe(
+        additionalConfig: z.record(z.string(), z.unknown()).describe(
           "Optional. Optional additional configuration for the metric.",
         ).optional(),
         judgeAutoraterConfig: z.object({
-          autoraterModel: z.string().describe(
+          autoraterModel: z.unknown().describe(
             "Optional. The fully qualified name of the publisher model or tuned autorater endpoint to use. Publisher model format: `projects/{project}/locations/{location}/publishers/*/models/*` Tuned model endpoint format: `projects/{project}/locations/{location}/endpoints/{endpoint}`",
           ).optional(),
-          generationConfig: z.object({
-            audioTimestamp: z.boolean().describe(
-              "Optional. If enabled, audio timestamps will be included in the request to the model. This can be useful for synchronizing audio with other modalities in the response.",
-            ).optional(),
-            candidateCount: z.number().int().describe(
-              "Optional. The number of candidate responses to generate. A higher `candidate_count` can provide more options to choose from, but it also consumes more resources. This can be useful for generating a variety of responses and selecting the best one.",
-            ).optional(),
-            enableAffectiveDialog: z.boolean().describe(
-              "Optional. If enabled, the model will detect emotions and adapt its responses accordingly. For example, if the model detects that the user is frustrated, it may provide a more empathetic response.",
-            ).optional(),
-            frequencyPenalty: z.number().describe(
-              "Optional. Penalizes tokens based on their frequency in the generated text. A positive value helps to reduce the repetition of words and phrases. Valid values can range from [-2.0, 2.0].",
-            ).optional(),
-            imageConfig: z.object({
-              aspectRatio: z.string().describe(
-                'Optional. The desired aspect ratio for the generated images. The following aspect ratios are supported: "1:1" "2:3", "3:2" "3:4", "4:3" "4:5", "5:4" "9:16", "16:9" "21:9"',
-              ).optional(),
-              imageOutputOptions: z.object({
-                compressionQuality: z.number().int().describe(
-                  "Optional. The compression quality of the output image.",
-                ).optional(),
-                mimeType: z.string().describe(
-                  "Optional. The image format that the output should be saved as.",
-                ).optional(),
-              }).describe("The image output format for generated images.")
-                .optional(),
-              imageSize: z.string().describe(
-                "Optional. Specifies the size of generated images. Supported values are `1K`, `2K`, `4K`. If not specified, the model will use default value `1K`.",
-              ).optional(),
-              personGeneration: z.enum([
-                "PERSON_GENERATION_UNSPECIFIED",
-                "ALLOW_ALL",
-                "ALLOW_ADULT",
-                "ALLOW_NONE",
-              ]).describe(
-                "Optional. Controls whether the model can generate people.",
-              ).optional(),
-              prominentPeople: z.enum([
-                "PROMINENT_PEOPLE_UNSPECIFIED",
-                "ALLOW_PROMINENT_PEOPLE",
-                "BLOCK_PROMINENT_PEOPLE",
-              ]).describe(
-                "Optional. Controls whether prominent people (celebrities) generation is allowed. If used with personGeneration, personGeneration enum would take precedence. For instance, if ALLOW_NONE is set, all person generation would be blocked. If this field is unspecified, the default behavior is to allow prominent people.",
-              ).optional(),
-            }).describe(
-              "Configuration for image generation. This message allows you to control various aspects of image generation, such as the output format, aspect ratio, and whether the model can generate images of people.",
-            ).optional(),
-            logprobs: z.number().int().describe(
-              "Optional. The number of top log probabilities to return for each token. This can be used to see which other tokens were considered likely candidates for a given position. A higher value will return more options, but it will also increase the size of the response.",
-            ).optional(),
-            maxOutputTokens: z.number().int().describe(
-              "Optional. The maximum number of tokens to generate in the response. A token is approximately four characters. The default value varies by model. This parameter can be used to control the length of the generated text and prevent overly long responses.",
-            ).optional(),
-            mediaResolution: z.enum([
-              "MEDIA_RESOLUTION_UNSPECIFIED",
-              "MEDIA_RESOLUTION_LOW",
-              "MEDIA_RESOLUTION_MEDIUM",
-              "MEDIA_RESOLUTION_HIGH",
-            ]).describe(
-              "Optional. The token resolution at which input media content is sampled. This is used to control the trade-off between the quality of the response and the number of tokens used to represent the media. A higher resolution allows the model to perceive more detail, which can lead to a more nuanced response, but it will also use more tokens. This does not affect the image dimensions sent to the model.",
-            ).optional(),
-            presencePenalty: z.number().describe(
-              "Optional. Penalizes tokens that have already appeared in the generated text. A positive value encourages the model to generate more diverse and less repetitive text. Valid values can range from [-2.0, 2.0].",
-            ).optional(),
-            responseJsonSchema: z.string().describe(
-              "Optional. When this field is set, response_schema must be omitted and response_mime_type must be set to `application/json`.",
-            ).optional(),
-            responseLogprobs: z.boolean().describe(
-              "Optional. If set to true, the log probabilities of the output tokens are returned. Log probabilities are the logarithm of the probability of a token appearing in the output. A higher log probability means the token is more likely to be generated. This can be useful for analyzing the model's confidence in its own output and for debugging.",
-            ).optional(),
-            responseMimeType: z.string().describe(
-              "Optional. The IANA standard MIME type of the response. The model will generate output that conforms to this MIME type. Supported values include 'text/plain' (default) and 'application/json'. The model needs to be prompted to output the appropriate response type, otherwise the behavior is undefined.",
-            ).optional(),
-            responseModalities: z.array(
-              z.enum(["MODALITY_UNSPECIFIED", "TEXT", "IMAGE", "AUDIO"]),
-            ).describe(
-              "Optional. The modalities of the response. The model will generate a response that includes all the specified modalities. For example, if this is set to `[TEXT, IMAGE]`, the response will include both text and an image.",
-            ).optional(),
-            responseSchema: z.object({
-              additionalProperties: z.string().describe(
-                "Optional. If `type` is `OBJECT`, specifies how to handle properties not defined in `properties`. If it is a boolean `false`, no additional properties are allowed. If it is a schema, additional properties are allowed if they conform to the schema.",
-              ).optional(),
-              anyOf: z.array(z.string()).describe(
-                "Optional. The instance must be valid against any (one or more) of the subschemas listed in `any_of`.",
-              ).optional(),
-              default: z.string().describe(
-                "Optional. Default value to use if the field is not specified.",
-              ).optional(),
-              defs: z.record(z.string(), z.string()).describe(
-                "Optional. `defs` provides a map of schema definitions that can be reused by `ref` elsewhere in the schema. Only allowed at root level of the schema.",
-              ).optional(),
-              description: z.string().describe(
-                "Optional. Describes the data. The model uses this field to understand the purpose of the schema and how to use it. It is a best practice to provide a clear and descriptive explanation for the schema and its properties here, rather than in the prompt.",
-              ).optional(),
-              enum: z.array(z.string()).describe(
-                'Optional. Possible values of the field. This field can be used to restrict a value to a fixed set of values. To mark a field as an enum, set `format` to `enum` and provide the list of possible values in `enum`. For example: 1. To define directions: `{type:STRING, format:enum, enum:["EAST", "NORTH", "SOUTH", "WEST"]}` 2. To define apartment numbers: `{type:INTEGER, format:enum, enum:["101", "201", "301"]}`',
-              ).optional(),
-              example: z.string().describe(
-                "Optional. Example of an instance of this schema.",
-              ).optional(),
-              format: z.string().describe(
-                "Optional. The format of the data. For `NUMBER` type, format can be `float` or `double`. For `INTEGER` type, format can be `int32` or `int64`. For `STRING` type, format can be `email`, `byte`, `date`, `date-time`, `password`, and other formats to further refine the data type.",
-              ).optional(),
-              items: z.string().describe(
-                "Circular reference to GoogleCloudAiplatformV1Schema",
-              ).optional(),
-              maxItems: z.string().describe(
-                "Optional. If type is `ARRAY`, `max_items` specifies the maximum number of items in an array.",
-              ).optional(),
-              maxLength: z.string().describe(
-                "Optional. If type is `STRING`, `max_length` specifies the maximum length of the string.",
-              ).optional(),
-              maxProperties: z.string().describe(
-                "Optional. If type is `OBJECT`, `max_properties` specifies the maximum number of properties that can be provided.",
-              ).optional(),
-              maximum: z.number().describe(
-                "Optional. If type is `INTEGER` or `NUMBER`, `maximum` specifies the maximum allowed value.",
-              ).optional(),
-              minItems: z.string().describe(
-                "Optional. If type is `ARRAY`, `min_items` specifies the minimum number of items in an array.",
-              ).optional(),
-              minLength: z.string().describe(
-                "Optional. If type is `STRING`, `min_length` specifies the minimum length of the string.",
-              ).optional(),
-              minProperties: z.string().describe(
-                "Optional. If type is `OBJECT`, `min_properties` specifies the minimum number of properties that can be provided.",
-              ).optional(),
-              minimum: z.number().describe(
-                "Optional. If type is `INTEGER` or `NUMBER`, `minimum` specifies the minimum allowed value.",
-              ).optional(),
-              nullable: z.boolean().describe(
-                "Optional. Indicates if the value of this field can be null.",
-              ).optional(),
-              pattern: z.string().describe(
-                "Optional. If type is `STRING`, `pattern` specifies a regular expression that the string must match.",
-              ).optional(),
-              properties: z.record(z.string(), z.string()).describe(
-                "Optional. If type is `OBJECT`, `properties` is a map of property names to schema definitions for each property of the object.",
-              ).optional(),
-              propertyOrdering: z.array(z.string()).describe(
-                "Optional. Order of properties displayed or used where order matters. This is not a standard field in OpenAPI specification, but can be used to control the order of properties.",
-              ).optional(),
-              ref: z.string().describe(
-                'Optional. Allows referencing another schema definition to use in place of this schema. The value must be a valid reference to a schema in `defs`. For example, the following schema defines a reference to a schema node named "Pet": type: object properties: pet: ref: #/defs/Pet defs: Pet: type: object properties: name: type: string The value of the "pet" property is a reference to the schema node named "Pet". See details in https://json-schema.org/understanding-json-schema/structuring',
-              ).optional(),
-              required: z.array(z.string()).describe(
-                "Optional. If type is `OBJECT`, `required` lists the names of properties that must be present.",
-              ).optional(),
-              title: z.string().describe("Optional. Title for the schema.")
-                .optional(),
-              type: z.enum([
-                "TYPE_UNSPECIFIED",
-                "STRING",
-                "NUMBER",
-                "INTEGER",
-                "BOOLEAN",
-                "ARRAY",
-                "OBJECT",
-                "NULL",
-              ]).describe("Optional. Data type of the schema field.")
-                .optional(),
-            }).describe(
-              "Defines the schema of input and output data. This is a subset of the [OpenAPI 3.0 Schema Object](https://spec.openapis.org/oas/v3.0.3#schema-object).",
-            ).optional(),
-            routingConfig: z.object({
-              autoMode: z.object({
-                modelRoutingPreference: z.enum([
-                  "UNKNOWN",
-                  "PRIORITIZE_QUALITY",
-                  "BALANCED",
-                  "PRIORITIZE_COST",
-                ]).describe("The model routing preference.").optional(),
-              }).describe(
-                "The configuration for automated routing. When automated routing is specified, the routing will be determined by the pretrained routing model and customer provided model routing preference.",
-              ).optional(),
-              manualMode: z.object({
-                modelName: z.string().describe(
-                  "The name of the model to use. Only public LLM models are accepted.",
-                ).optional(),
-              }).describe(
-                "The configuration for manual routing. When manual routing is specified, the model will be selected based on the model name provided.",
-              ).optional(),
-            }).describe(
-              "The configuration for routing the request to a specific model. This can be used to control which model is used for the generation, either automatically or by specifying a model name.",
-            ).optional(),
-            seed: z.number().int().describe(
-              "Optional. A seed for the random number generator. By setting a seed, you can make the model's output mostly deterministic. For a given prompt and parameters (like temperature, top_p, etc.), the model will produce the same response every time. However, it's not a guaranteed absolute deterministic behavior. This is different from parameters like `temperature`, which control the *level* of randomness. `seed` ensures that the \"random\" choices the model makes are the same on every run, making it essential for testing and ensuring reproducible results.",
-            ).optional(),
-            speechConfig: z.object({
-              languageCode: z.string().describe(
-                "Optional. The language code (ISO 639-1) for the speech synthesis.",
-              ).optional(),
-              multiSpeakerVoiceConfig: z.object({
-                speakerVoiceConfigs: z.array(z.object({
-                  speaker: z.string().describe(
-                    "Required. The name of the speaker. This should be the same as the speaker name used in the prompt.",
-                  ).optional(),
-                  voiceConfig: z.object({
-                    prebuiltVoiceConfig: z.object({
-                      voiceName: z.string().describe(
-                        "The name of the prebuilt voice to use.",
-                      ).optional(),
-                    }).describe("Configuration for a prebuilt voice.")
-                      .optional(),
-                    replicatedVoiceConfig: z.object({
-                      mimeType: z.string().describe(
-                        "Optional. The mimetype of the voice sample. The only currently supported value is `audio/wav`. This represents 16-bit signed little-endian wav data, with a 24kHz sampling rate. `mime_type` will default to `audio/wav` if not set.",
-                      ).optional(),
-                      voiceSampleAudio: z.string().describe(
-                        "Optional. The sample of the custom voice.",
-                      ).optional(),
-                    }).describe(
-                      "The configuration for the replicated voice to use.",
-                    ).optional(),
-                  }).describe("Configuration for a voice.").optional(),
-                })).describe(
-                  "Required. A list of configurations for the voices of the speakers. Exactly two speaker voice configurations must be provided.",
-                ).optional(),
-              }).describe(
-                "Configuration for a multi-speaker text-to-speech request.",
-              ).optional(),
-              voiceConfig: z.object({
-                prebuiltVoiceConfig: z.object({
-                  voiceName: z.string().describe(
-                    "The name of the prebuilt voice to use.",
-                  ).optional(),
-                }).describe("Configuration for a prebuilt voice.").optional(),
-                replicatedVoiceConfig: z.object({
-                  mimeType: z.string().describe(
-                    "Optional. The mimetype of the voice sample. The only currently supported value is `audio/wav`. This represents 16-bit signed little-endian wav data, with a 24kHz sampling rate. `mime_type` will default to `audio/wav` if not set.",
-                  ).optional(),
-                  voiceSampleAudio: z.string().describe(
-                    "Optional. The sample of the custom voice.",
-                  ).optional(),
-                }).describe(
-                  "The configuration for the replicated voice to use.",
-                ).optional(),
-              }).describe("Configuration for a voice.").optional(),
-            }).describe("Configuration for speech generation.").optional(),
-            stopSequences: z.array(z.string()).describe(
-              'Optional. A list of character sequences that will stop the model from generating further tokens. If a stop sequence is generated, the output will end at that point. This is useful for controlling the length and structure of the output. For example, you can use ["\\n", "###"] to stop generation at a new line or a specific marker.',
-            ).optional(),
-            temperature: z.number().describe(
-              "Optional. Controls the randomness of the output. A higher temperature results in more creative and diverse responses, while a lower temperature makes the output more predictable and focused. The valid range is (0.0, 2.0].",
-            ).optional(),
-            thinkingConfig: z.object({
-              includeThoughts: z.boolean().describe(
-                'Optional. If true, the model will include its thoughts in the response. "Thoughts" are the intermediate steps the model takes to arrive at the final response. They can provide insights into the model\'s reasoning process and help with debugging. If this is true, thoughts are returned only when available.',
-              ).optional(),
-              thinkingBudget: z.number().int().describe(
-                "Optional. The token budget for the model's thinking process. The model will make a best effort to stay within this budget. This can be used to control the trade-off between response quality and latency.",
-              ).optional(),
-              thinkingLevel: z.enum([
-                "THINKING_LEVEL_UNSPECIFIED",
-                "LOW",
-                "MEDIUM",
-                "HIGH",
-                "MINIMAL",
-              ]).describe(
-                "Optional. The number of thoughts tokens that the model should generate.",
-              ).optional(),
-            }).describe(
-              'Configuration for the model\'s thinking features. "Thinking" is a process where the model breaks down a complex task into smaller, manageable steps. This allows the model to reason about the task, plan its approach, and execute the plan to generate a high-quality response.',
-            ).optional(),
-            topK: z.number().describe(
-              "Optional. Specifies the top-k sampling threshold. The model considers only the top k most probable tokens for the next token. This can be useful for generating more coherent and less random text. For example, a `top_k` of 40 means the model will choose the next word from the 40 most likely words.",
-            ).optional(),
-            topP: z.number().describe(
-              "Optional. Specifies the nucleus sampling threshold. The model considers only the smallest set of tokens whose cumulative probability is at least `top_p`. This helps generate more diverse and less repetitive responses. For example, a `top_p` of 0.9 means the model considers tokens until the cumulative probability of the tokens to select from reaches 0.9. It's recommended to adjust either temperature or `top_p`, but not both.",
-            ).optional(),
-          }).describe(
+          generationConfig: z.unknown().describe(
             "Configuration for content generation. This message contains all the parameters that control how the model generates content. It allows you to influence the randomness, length, and structure of the output.",
           ).optional(),
-          sampleCount: z.number().int().describe(
+          sampleCount: z.unknown().describe(
             "Optional. Number of samples for each instance in the dataset. If not specified, the default is 4. Minimum value is 1, maximum value is 32.",
           ).optional(),
         }).describe("The autorater config used for the evaluation run.")
@@ -4959,310 +1649,27 @@ const InputsSchema = z.object({
           "Required. Template for the prompt sent to the judge model.",
         ).optional(),
         predefinedRubricGenerationSpec: z.object({
-          metricSpecName: z.string().describe(
+          metricSpecName: z.unknown().describe(
             'Required. The name of a pre-defined metric, such as "instruction_following_v1" or "text_quality_v1".',
           ).optional(),
-          parameters: z.record(z.string(), z.string()).describe(
+          parameters: z.unknown().describe(
             "Optional. The parameters needed to run the pre-defined metric.",
           ).optional(),
         }).describe("Specification for a pre-defined metric.").optional(),
         rubricGenerationSpec: z.object({
-          metricResourceName: z.string().describe(
+          metricResourceName: z.unknown().describe(
             "Optional. Resource name of the metric definition.",
           ).optional(),
-          modelConfig: z.object({
-            autoraterModel: z.string().describe(
-              "Optional. The fully qualified name of the publisher model or tuned autorater endpoint to use. Publisher model format: `projects/{project}/locations/{location}/publishers/*/models/*` Tuned model endpoint format: `projects/{project}/locations/{location}/endpoints/{endpoint}`",
-            ).optional(),
-            generationConfig: z.object({
-              audioTimestamp: z.boolean().describe(
-                "Optional. If enabled, audio timestamps will be included in the request to the model. This can be useful for synchronizing audio with other modalities in the response.",
-              ).optional(),
-              candidateCount: z.number().int().describe(
-                "Optional. The number of candidate responses to generate. A higher `candidate_count` can provide more options to choose from, but it also consumes more resources. This can be useful for generating a variety of responses and selecting the best one.",
-              ).optional(),
-              enableAffectiveDialog: z.boolean().describe(
-                "Optional. If enabled, the model will detect emotions and adapt its responses accordingly. For example, if the model detects that the user is frustrated, it may provide a more empathetic response.",
-              ).optional(),
-              frequencyPenalty: z.number().describe(
-                "Optional. Penalizes tokens based on their frequency in the generated text. A positive value helps to reduce the repetition of words and phrases. Valid values can range from [-2.0, 2.0].",
-              ).optional(),
-              imageConfig: z.object({
-                aspectRatio: z.string().describe(
-                  'Optional. The desired aspect ratio for the generated images. The following aspect ratios are supported: "1:1" "2:3", "3:2" "3:4", "4:3" "4:5", "5:4" "9:16", "16:9" "21:9"',
-                ).optional(),
-                imageOutputOptions: z.object({
-                  compressionQuality: z.number().int().describe(
-                    "Optional. The compression quality of the output image.",
-                  ).optional(),
-                  mimeType: z.string().describe(
-                    "Optional. The image format that the output should be saved as.",
-                  ).optional(),
-                }).describe("The image output format for generated images.")
-                  .optional(),
-                imageSize: z.string().describe(
-                  "Optional. Specifies the size of generated images. Supported values are `1K`, `2K`, `4K`. If not specified, the model will use default value `1K`.",
-                ).optional(),
-                personGeneration: z.enum([
-                  "PERSON_GENERATION_UNSPECIFIED",
-                  "ALLOW_ALL",
-                  "ALLOW_ADULT",
-                  "ALLOW_NONE",
-                ]).describe(
-                  "Optional. Controls whether the model can generate people.",
-                ).optional(),
-                prominentPeople: z.enum([
-                  "PROMINENT_PEOPLE_UNSPECIFIED",
-                  "ALLOW_PROMINENT_PEOPLE",
-                  "BLOCK_PROMINENT_PEOPLE",
-                ]).describe(
-                  "Optional. Controls whether prominent people (celebrities) generation is allowed. If used with personGeneration, personGeneration enum would take precedence. For instance, if ALLOW_NONE is set, all person generation would be blocked. If this field is unspecified, the default behavior is to allow prominent people.",
-                ).optional(),
-              }).describe(
-                "Configuration for image generation. This message allows you to control various aspects of image generation, such as the output format, aspect ratio, and whether the model can generate images of people.",
-              ).optional(),
-              logprobs: z.number().int().describe(
-                "Optional. The number of top log probabilities to return for each token. This can be used to see which other tokens were considered likely candidates for a given position. A higher value will return more options, but it will also increase the size of the response.",
-              ).optional(),
-              maxOutputTokens: z.number().int().describe(
-                "Optional. The maximum number of tokens to generate in the response. A token is approximately four characters. The default value varies by model. This parameter can be used to control the length of the generated text and prevent overly long responses.",
-              ).optional(),
-              mediaResolution: z.enum([
-                "MEDIA_RESOLUTION_UNSPECIFIED",
-                "MEDIA_RESOLUTION_LOW",
-                "MEDIA_RESOLUTION_MEDIUM",
-                "MEDIA_RESOLUTION_HIGH",
-              ]).describe(
-                "Optional. The token resolution at which input media content is sampled. This is used to control the trade-off between the quality of the response and the number of tokens used to represent the media. A higher resolution allows the model to perceive more detail, which can lead to a more nuanced response, but it will also use more tokens. This does not affect the image dimensions sent to the model.",
-              ).optional(),
-              presencePenalty: z.number().describe(
-                "Optional. Penalizes tokens that have already appeared in the generated text. A positive value encourages the model to generate more diverse and less repetitive text. Valid values can range from [-2.0, 2.0].",
-              ).optional(),
-              responseJsonSchema: z.string().describe(
-                "Optional. When this field is set, response_schema must be omitted and response_mime_type must be set to `application/json`.",
-              ).optional(),
-              responseLogprobs: z.boolean().describe(
-                "Optional. If set to true, the log probabilities of the output tokens are returned. Log probabilities are the logarithm of the probability of a token appearing in the output. A higher log probability means the token is more likely to be generated. This can be useful for analyzing the model's confidence in its own output and for debugging.",
-              ).optional(),
-              responseMimeType: z.string().describe(
-                "Optional. The IANA standard MIME type of the response. The model will generate output that conforms to this MIME type. Supported values include 'text/plain' (default) and 'application/json'. The model needs to be prompted to output the appropriate response type, otherwise the behavior is undefined.",
-              ).optional(),
-              responseModalities: z.array(
-                z.enum(["MODALITY_UNSPECIFIED", "TEXT", "IMAGE", "AUDIO"]),
-              ).describe(
-                "Optional. The modalities of the response. The model will generate a response that includes all the specified modalities. For example, if this is set to `[TEXT, IMAGE]`, the response will include both text and an image.",
-              ).optional(),
-              responseSchema: z.object({
-                additionalProperties: z.string().describe(
-                  "Optional. If `type` is `OBJECT`, specifies how to handle properties not defined in `properties`. If it is a boolean `false`, no additional properties are allowed. If it is a schema, additional properties are allowed if they conform to the schema.",
-                ).optional(),
-                anyOf: z.array(z.string()).describe(
-                  "Optional. The instance must be valid against any (one or more) of the subschemas listed in `any_of`.",
-                ).optional(),
-                default: z.string().describe(
-                  "Optional. Default value to use if the field is not specified.",
-                ).optional(),
-                defs: z.record(z.string(), z.string()).describe(
-                  "Optional. `defs` provides a map of schema definitions that can be reused by `ref` elsewhere in the schema. Only allowed at root level of the schema.",
-                ).optional(),
-                description: z.string().describe(
-                  "Optional. Describes the data. The model uses this field to understand the purpose of the schema and how to use it. It is a best practice to provide a clear and descriptive explanation for the schema and its properties here, rather than in the prompt.",
-                ).optional(),
-                enum: z.array(z.string()).describe(
-                  'Optional. Possible values of the field. This field can be used to restrict a value to a fixed set of values. To mark a field as an enum, set `format` to `enum` and provide the list of possible values in `enum`. For example: 1. To define directions: `{type:STRING, format:enum, enum:["EAST", "NORTH", "SOUTH", "WEST"]}` 2. To define apartment numbers: `{type:INTEGER, format:enum, enum:["101", "201", "301"]}`',
-                ).optional(),
-                example: z.string().describe(
-                  "Optional. Example of an instance of this schema.",
-                ).optional(),
-                format: z.string().describe(
-                  "Optional. The format of the data. For `NUMBER` type, format can be `float` or `double`. For `INTEGER` type, format can be `int32` or `int64`. For `STRING` type, format can be `email`, `byte`, `date`, `date-time`, `password`, and other formats to further refine the data type.",
-                ).optional(),
-                items: z.string().describe(
-                  "Circular reference to GoogleCloudAiplatformV1Schema",
-                ).optional(),
-                maxItems: z.string().describe(
-                  "Optional. If type is `ARRAY`, `max_items` specifies the maximum number of items in an array.",
-                ).optional(),
-                maxLength: z.string().describe(
-                  "Optional. If type is `STRING`, `max_length` specifies the maximum length of the string.",
-                ).optional(),
-                maxProperties: z.string().describe(
-                  "Optional. If type is `OBJECT`, `max_properties` specifies the maximum number of properties that can be provided.",
-                ).optional(),
-                maximum: z.number().describe(
-                  "Optional. If type is `INTEGER` or `NUMBER`, `maximum` specifies the maximum allowed value.",
-                ).optional(),
-                minItems: z.string().describe(
-                  "Optional. If type is `ARRAY`, `min_items` specifies the minimum number of items in an array.",
-                ).optional(),
-                minLength: z.string().describe(
-                  "Optional. If type is `STRING`, `min_length` specifies the minimum length of the string.",
-                ).optional(),
-                minProperties: z.string().describe(
-                  "Optional. If type is `OBJECT`, `min_properties` specifies the minimum number of properties that can be provided.",
-                ).optional(),
-                minimum: z.number().describe(
-                  "Optional. If type is `INTEGER` or `NUMBER`, `minimum` specifies the minimum allowed value.",
-                ).optional(),
-                nullable: z.boolean().describe(
-                  "Optional. Indicates if the value of this field can be null.",
-                ).optional(),
-                pattern: z.string().describe(
-                  "Optional. If type is `STRING`, `pattern` specifies a regular expression that the string must match.",
-                ).optional(),
-                properties: z.record(z.string(), z.string()).describe(
-                  "Optional. If type is `OBJECT`, `properties` is a map of property names to schema definitions for each property of the object.",
-                ).optional(),
-                propertyOrdering: z.array(z.string()).describe(
-                  "Optional. Order of properties displayed or used where order matters. This is not a standard field in OpenAPI specification, but can be used to control the order of properties.",
-                ).optional(),
-                ref: z.string().describe(
-                  'Optional. Allows referencing another schema definition to use in place of this schema. The value must be a valid reference to a schema in `defs`. For example, the following schema defines a reference to a schema node named "Pet": type: object properties: pet: ref: #/defs/Pet defs: Pet: type: object properties: name: type: string The value of the "pet" property is a reference to the schema node named "Pet". See details in https://json-schema.org/understanding-json-schema/structuring',
-                ).optional(),
-                required: z.array(z.string()).describe(
-                  "Optional. If type is `OBJECT`, `required` lists the names of properties that must be present.",
-                ).optional(),
-                title: z.string().describe("Optional. Title for the schema.")
-                  .optional(),
-                type: z.enum([
-                  "TYPE_UNSPECIFIED",
-                  "STRING",
-                  "NUMBER",
-                  "INTEGER",
-                  "BOOLEAN",
-                  "ARRAY",
-                  "OBJECT",
-                  "NULL",
-                ]).describe("Optional. Data type of the schema field.")
-                  .optional(),
-              }).describe(
-                "Defines the schema of input and output data. This is a subset of the [OpenAPI 3.0 Schema Object](https://spec.openapis.org/oas/v3.0.3#schema-object).",
-              ).optional(),
-              routingConfig: z.object({
-                autoMode: z.object({
-                  modelRoutingPreference: z.enum([
-                    "UNKNOWN",
-                    "PRIORITIZE_QUALITY",
-                    "BALANCED",
-                    "PRIORITIZE_COST",
-                  ]).describe("The model routing preference.").optional(),
-                }).describe(
-                  "The configuration for automated routing. When automated routing is specified, the routing will be determined by the pretrained routing model and customer provided model routing preference.",
-                ).optional(),
-                manualMode: z.object({
-                  modelName: z.string().describe(
-                    "The name of the model to use. Only public LLM models are accepted.",
-                  ).optional(),
-                }).describe(
-                  "The configuration for manual routing. When manual routing is specified, the model will be selected based on the model name provided.",
-                ).optional(),
-              }).describe(
-                "The configuration for routing the request to a specific model. This can be used to control which model is used for the generation, either automatically or by specifying a model name.",
-              ).optional(),
-              seed: z.number().int().describe(
-                "Optional. A seed for the random number generator. By setting a seed, you can make the model's output mostly deterministic. For a given prompt and parameters (like temperature, top_p, etc.), the model will produce the same response every time. However, it's not a guaranteed absolute deterministic behavior. This is different from parameters like `temperature`, which control the *level* of randomness. `seed` ensures that the \"random\" choices the model makes are the same on every run, making it essential for testing and ensuring reproducible results.",
-              ).optional(),
-              speechConfig: z.object({
-                languageCode: z.string().describe(
-                  "Optional. The language code (ISO 639-1) for the speech synthesis.",
-                ).optional(),
-                multiSpeakerVoiceConfig: z.object({
-                  speakerVoiceConfigs: z.array(z.object({
-                    speaker: z.string().describe(
-                      "Required. The name of the speaker. This should be the same as the speaker name used in the prompt.",
-                    ).optional(),
-                    voiceConfig: z.object({
-                      prebuiltVoiceConfig: z.object({
-                        voiceName: z.string().describe(
-                          "The name of the prebuilt voice to use.",
-                        ).optional(),
-                      }).describe("Configuration for a prebuilt voice.")
-                        .optional(),
-                      replicatedVoiceConfig: z.object({
-                        mimeType: z.string().describe(
-                          "Optional. The mimetype of the voice sample. The only currently supported value is `audio/wav`. This represents 16-bit signed little-endian wav data, with a 24kHz sampling rate. `mime_type` will default to `audio/wav` if not set.",
-                        ).optional(),
-                        voiceSampleAudio: z.string().describe(
-                          "Optional. The sample of the custom voice.",
-                        ).optional(),
-                      }).describe(
-                        "The configuration for the replicated voice to use.",
-                      ).optional(),
-                    }).describe("Configuration for a voice.").optional(),
-                  })).describe(
-                    "Required. A list of configurations for the voices of the speakers. Exactly two speaker voice configurations must be provided.",
-                  ).optional(),
-                }).describe(
-                  "Configuration for a multi-speaker text-to-speech request.",
-                ).optional(),
-                voiceConfig: z.object({
-                  prebuiltVoiceConfig: z.object({
-                    voiceName: z.string().describe(
-                      "The name of the prebuilt voice to use.",
-                    ).optional(),
-                  }).describe("Configuration for a prebuilt voice.").optional(),
-                  replicatedVoiceConfig: z.object({
-                    mimeType: z.string().describe(
-                      "Optional. The mimetype of the voice sample. The only currently supported value is `audio/wav`. This represents 16-bit signed little-endian wav data, with a 24kHz sampling rate. `mime_type` will default to `audio/wav` if not set.",
-                    ).optional(),
-                    voiceSampleAudio: z.string().describe(
-                      "Optional. The sample of the custom voice.",
-                    ).optional(),
-                  }).describe(
-                    "The configuration for the replicated voice to use.",
-                  ).optional(),
-                }).describe("Configuration for a voice.").optional(),
-              }).describe("Configuration for speech generation.").optional(),
-              stopSequences: z.array(z.string()).describe(
-                'Optional. A list of character sequences that will stop the model from generating further tokens. If a stop sequence is generated, the output will end at that point. This is useful for controlling the length and structure of the output. For example, you can use ["\\n", "###"] to stop generation at a new line or a specific marker.',
-              ).optional(),
-              temperature: z.number().describe(
-                "Optional. Controls the randomness of the output. A higher temperature results in more creative and diverse responses, while a lower temperature makes the output more predictable and focused. The valid range is (0.0, 2.0].",
-              ).optional(),
-              thinkingConfig: z.object({
-                includeThoughts: z.boolean().describe(
-                  'Optional. If true, the model will include its thoughts in the response. "Thoughts" are the intermediate steps the model takes to arrive at the final response. They can provide insights into the model\'s reasoning process and help with debugging. If this is true, thoughts are returned only when available.',
-                ).optional(),
-                thinkingBudget: z.number().int().describe(
-                  "Optional. The token budget for the model's thinking process. The model will make a best effort to stay within this budget. This can be used to control the trade-off between response quality and latency.",
-                ).optional(),
-                thinkingLevel: z.enum([
-                  "THINKING_LEVEL_UNSPECIFIED",
-                  "LOW",
-                  "MEDIUM",
-                  "HIGH",
-                  "MINIMAL",
-                ]).describe(
-                  "Optional. The number of thoughts tokens that the model should generate.",
-                ).optional(),
-              }).describe(
-                'Configuration for the model\'s thinking features. "Thinking" is a process where the model breaks down a complex task into smaller, manageable steps. This allows the model to reason about the task, plan its approach, and execute the plan to generate a high-quality response.',
-              ).optional(),
-              topK: z.number().describe(
-                "Optional. Specifies the top-k sampling threshold. The model considers only the top k most probable tokens for the next token. This can be useful for generating more coherent and less random text. For example, a `top_k` of 40 means the model will choose the next word from the 40 most likely words.",
-              ).optional(),
-              topP: z.number().describe(
-                "Optional. Specifies the nucleus sampling threshold. The model considers only the smallest set of tokens whose cumulative probability is at least `top_p`. This helps generate more diverse and less repetitive responses. For example, a `top_p` of 0.9 means the model considers tokens until the cumulative probability of the tokens to select from reaches 0.9. It's recommended to adjust either temperature or `top_p`, but not both.",
-              ).optional(),
-            }).describe(
-              "Configuration for content generation. This message contains all the parameters that control how the model generates content. It allows you to influence the randomness, length, and structure of the output.",
-            ).optional(),
-            sampleCount: z.number().int().describe(
-              "Optional. Number of samples for each instance in the dataset. If not specified, the default is 4. Minimum value is 1, maximum value is 32.",
-            ).optional(),
-          }).describe("The autorater config used for the evaluation run.")
-            .optional(),
-          promptTemplate: z.string().describe(
+          modelConfig: z.unknown().describe(
+            "The autorater config used for the evaluation run.",
+          ).optional(),
+          promptTemplate: z.unknown().describe(
             "Optional. Template for the prompt used to generate rubrics. The details should be updated based on the most-recent recipe requirements.",
           ).optional(),
-          rubricContentType: z.enum([
-            "RUBRIC_CONTENT_TYPE_UNSPECIFIED",
-            "PROPERTY",
-            "NL_QUESTION_ANSWER",
-            "PYTHON_CODE_ASSERTION",
-          ]).describe("Optional. The type of rubric content to be generated.")
-            .optional(),
-          rubricTypeOntology: z.array(z.string()).describe(
+          rubricContentType: z.unknown().describe(
+            "Optional. The type of rubric content to be generated.",
+          ).optional(),
+          rubricTypeOntology: z.unknown().describe(
             "Optional. An optional, pre-defined list of allowed types for generated rubrics. If this field is provided, it implies `include_rubric_type` should be true, and the generated rubric types should be chosen from this ontology.",
           ).optional(),
         }).describe("Specification for how rubrics should be generated.")
@@ -5277,42 +1684,26 @@ const InputsSchema = z.object({
       metric: z.string().describe("Required. The name of the metric.")
         .optional(),
       metricConfig: z.object({
-        aggregationMetrics: z.array(
-          z.enum([
-            "AGGREGATION_METRIC_UNSPECIFIED",
-            "AVERAGE",
-            "MODE",
-            "STANDARD_DEVIATION",
-            "VARIANCE",
-            "MINIMUM",
-            "MAXIMUM",
-            "MEDIAN",
-            "PERCENTILE_P90",
-            "PERCENTILE_P95",
-            "PERCENTILE_P99",
-          ]),
-        ).describe("Optional. The aggregation metrics to use.").optional(),
+        aggregationMetrics: z.array(z.unknown()).describe(
+          "Optional. The aggregation metrics to use.",
+        ).optional(),
         bleuSpec: z.object({
-          useEffectiveOrder: z.boolean().describe(
+          useEffectiveOrder: z.unknown().describe(
             "Optional. Whether to use_effective_order to compute bleu score.",
           ).optional(),
         }).describe(
           "Spec for bleu score metric - calculates the precision of n-grams in the prediction as compared to reference - returns a score ranging between 0 to 1.",
         ).optional(),
         computationBasedMetricSpec: z.object({
-          parameters: z.record(z.string(), z.string()).describe(
+          parameters: z.unknown().describe(
             'Optional. A map of parameters for the metric, e.g. {"rouge_type": "rougeL"}.',
           ).optional(),
-          type: z.enum([
-            "COMPUTATION_BASED_METRIC_TYPE_UNSPECIFIED",
-            "EXACT_MATCH",
-            "BLEU",
-            "ROUGE",
-          ]).describe("Required. The type of the computation based metric.")
-            .optional(),
+          type: z.unknown().describe(
+            "Required. The type of the computation based metric.",
+          ).optional(),
         }).describe("Specification for a computation based metric.").optional(),
         customCodeExecutionSpec: z.object({
-          evaluationFunction: z.string().describe(
+          evaluationFunction: z.unknown().describe(
             "Required. Python function. Expected user to define the following function, e.g.: def evaluate(instance: dict[str, Any]) -> float: Please include this function signature in the code snippet. Instance is the evaluation instance, any fields populated in the instance are available to the function as instance[field_name]. Example: Example input: ` instance= EvaluationInstance( response=EvaluationInstance.InstanceData(text=\"The answer is 4.\"), reference=EvaluationInstance.InstanceData(text=\"4\")) ` Example converted input: ` { 'response': {'text': 'The answer is 4.'}, 'reference': {'text': '4'} } ` Example python function: ` def evaluate(instance: dict[str, Any]) -> float: if instance'response' == instance'reference': return 1.0 return 0.0 ` CustomCodeExecutionSpec is also supported in Batch Evaluation (EvalDataset RPC) and Tuning Evaluation. Each line in the input jsonl file will be converted to dict[str, Any] and passed to the evaluation function.",
           ).optional(),
         }).describe(
@@ -5322,692 +1713,85 @@ const InputsSchema = z.object({
           "Spec for exact match metric - returns 1 if prediction and reference exactly matches, otherwise 0.",
         ).optional(),
         llmBasedMetricSpec: z.object({
-          additionalConfig: z.record(z.string(), z.string()).describe(
+          additionalConfig: z.unknown().describe(
             "Optional. Optional additional configuration for the metric.",
           ).optional(),
-          judgeAutoraterConfig: z.object({
-            autoraterModel: z.string().describe(
-              "Optional. The fully qualified name of the publisher model or tuned autorater endpoint to use. Publisher model format: `projects/{project}/locations/{location}/publishers/*/models/*` Tuned model endpoint format: `projects/{project}/locations/{location}/endpoints/{endpoint}`",
-            ).optional(),
-            flipEnabled: z.boolean().describe(
-              "Optional. Default is true. Whether to flip the candidate and baseline responses. This is only applicable to the pairwise metric. If enabled, also provide PairwiseMetricSpec.candidate_response_field_name and PairwiseMetricSpec.baseline_response_field_name. When rendering PairwiseMetricSpec.metric_prompt_template, the candidate and baseline fields will be flipped for half of the samples to reduce bias.",
-            ).optional(),
-            generationConfig: z.object({
-              audioTimestamp: z.boolean().describe(
-                "Optional. If enabled, audio timestamps will be included in the request to the model. This can be useful for synchronizing audio with other modalities in the response.",
-              ).optional(),
-              candidateCount: z.number().int().describe(
-                "Optional. The number of candidate responses to generate. A higher `candidate_count` can provide more options to choose from, but it also consumes more resources. This can be useful for generating a variety of responses and selecting the best one.",
-              ).optional(),
-              enableAffectiveDialog: z.boolean().describe(
-                "Optional. If enabled, the model will detect emotions and adapt its responses accordingly. For example, if the model detects that the user is frustrated, it may provide a more empathetic response.",
-              ).optional(),
-              frequencyPenalty: z.number().describe(
-                "Optional. Penalizes tokens based on their frequency in the generated text. A positive value helps to reduce the repetition of words and phrases. Valid values can range from [-2.0, 2.0].",
-              ).optional(),
-              imageConfig: z.object({
-                aspectRatio: z.string().describe(
-                  'Optional. The desired aspect ratio for the generated images. The following aspect ratios are supported: "1:1" "2:3", "3:2" "3:4", "4:3" "4:5", "5:4" "9:16", "16:9" "21:9"',
-                ).optional(),
-                imageOutputOptions: z.object({
-                  compressionQuality: z.number().int().describe(
-                    "Optional. The compression quality of the output image.",
-                  ).optional(),
-                  mimeType: z.string().describe(
-                    "Optional. The image format that the output should be saved as.",
-                  ).optional(),
-                }).describe("The image output format for generated images.")
-                  .optional(),
-                imageSize: z.string().describe(
-                  "Optional. Specifies the size of generated images. Supported values are `1K`, `2K`, `4K`. If not specified, the model will use default value `1K`.",
-                ).optional(),
-                personGeneration: z.enum([
-                  "PERSON_GENERATION_UNSPECIFIED",
-                  "ALLOW_ALL",
-                  "ALLOW_ADULT",
-                  "ALLOW_NONE",
-                ]).describe(
-                  "Optional. Controls whether the model can generate people.",
-                ).optional(),
-                prominentPeople: z.enum([
-                  "PROMINENT_PEOPLE_UNSPECIFIED",
-                  "ALLOW_PROMINENT_PEOPLE",
-                  "BLOCK_PROMINENT_PEOPLE",
-                ]).describe(
-                  "Optional. Controls whether prominent people (celebrities) generation is allowed. If used with personGeneration, personGeneration enum would take precedence. For instance, if ALLOW_NONE is set, all person generation would be blocked. If this field is unspecified, the default behavior is to allow prominent people.",
-                ).optional(),
-              }).describe(
-                "Configuration for image generation. This message allows you to control various aspects of image generation, such as the output format, aspect ratio, and whether the model can generate images of people.",
-              ).optional(),
-              logprobs: z.number().int().describe(
-                "Optional. The number of top log probabilities to return for each token. This can be used to see which other tokens were considered likely candidates for a given position. A higher value will return more options, but it will also increase the size of the response.",
-              ).optional(),
-              maxOutputTokens: z.number().int().describe(
-                "Optional. The maximum number of tokens to generate in the response. A token is approximately four characters. The default value varies by model. This parameter can be used to control the length of the generated text and prevent overly long responses.",
-              ).optional(),
-              mediaResolution: z.enum([
-                "MEDIA_RESOLUTION_UNSPECIFIED",
-                "MEDIA_RESOLUTION_LOW",
-                "MEDIA_RESOLUTION_MEDIUM",
-                "MEDIA_RESOLUTION_HIGH",
-              ]).describe(
-                "Optional. The token resolution at which input media content is sampled. This is used to control the trade-off between the quality of the response and the number of tokens used to represent the media. A higher resolution allows the model to perceive more detail, which can lead to a more nuanced response, but it will also use more tokens. This does not affect the image dimensions sent to the model.",
-              ).optional(),
-              presencePenalty: z.number().describe(
-                "Optional. Penalizes tokens that have already appeared in the generated text. A positive value encourages the model to generate more diverse and less repetitive text. Valid values can range from [-2.0, 2.0].",
-              ).optional(),
-              responseJsonSchema: z.string().describe(
-                "Optional. When this field is set, response_schema must be omitted and response_mime_type must be set to `application/json`.",
-              ).optional(),
-              responseLogprobs: z.boolean().describe(
-                "Optional. If set to true, the log probabilities of the output tokens are returned. Log probabilities are the logarithm of the probability of a token appearing in the output. A higher log probability means the token is more likely to be generated. This can be useful for analyzing the model's confidence in its own output and for debugging.",
-              ).optional(),
-              responseMimeType: z.string().describe(
-                "Optional. The IANA standard MIME type of the response. The model will generate output that conforms to this MIME type. Supported values include 'text/plain' (default) and 'application/json'. The model needs to be prompted to output the appropriate response type, otherwise the behavior is undefined.",
-              ).optional(),
-              responseModalities: z.array(
-                z.enum(["MODALITY_UNSPECIFIED", "TEXT", "IMAGE", "AUDIO"]),
-              ).describe(
-                "Optional. The modalities of the response. The model will generate a response that includes all the specified modalities. For example, if this is set to `[TEXT, IMAGE]`, the response will include both text and an image.",
-              ).optional(),
-              responseSchema: z.object({
-                additionalProperties: z.string().describe(
-                  "Optional. If `type` is `OBJECT`, specifies how to handle properties not defined in `properties`. If it is a boolean `false`, no additional properties are allowed. If it is a schema, additional properties are allowed if they conform to the schema.",
-                ).optional(),
-                anyOf: z.array(z.string()).describe(
-                  "Optional. The instance must be valid against any (one or more) of the subschemas listed in `any_of`.",
-                ).optional(),
-                default: z.string().describe(
-                  "Optional. Default value to use if the field is not specified.",
-                ).optional(),
-                defs: z.record(z.string(), z.string()).describe(
-                  "Optional. `defs` provides a map of schema definitions that can be reused by `ref` elsewhere in the schema. Only allowed at root level of the schema.",
-                ).optional(),
-                description: z.string().describe(
-                  "Optional. Describes the data. The model uses this field to understand the purpose of the schema and how to use it. It is a best practice to provide a clear and descriptive explanation for the schema and its properties here, rather than in the prompt.",
-                ).optional(),
-                enum: z.array(z.string()).describe(
-                  'Optional. Possible values of the field. This field can be used to restrict a value to a fixed set of values. To mark a field as an enum, set `format` to `enum` and provide the list of possible values in `enum`. For example: 1. To define directions: `{type:STRING, format:enum, enum:["EAST", "NORTH", "SOUTH", "WEST"]}` 2. To define apartment numbers: `{type:INTEGER, format:enum, enum:["101", "201", "301"]}`',
-                ).optional(),
-                example: z.string().describe(
-                  "Optional. Example of an instance of this schema.",
-                ).optional(),
-                format: z.string().describe(
-                  "Optional. The format of the data. For `NUMBER` type, format can be `float` or `double`. For `INTEGER` type, format can be `int32` or `int64`. For `STRING` type, format can be `email`, `byte`, `date`, `date-time`, `password`, and other formats to further refine the data type.",
-                ).optional(),
-                items: z.string().describe(
-                  "Circular reference to GoogleCloudAiplatformV1Schema",
-                ).optional(),
-                maxItems: z.string().describe(
-                  "Optional. If type is `ARRAY`, `max_items` specifies the maximum number of items in an array.",
-                ).optional(),
-                maxLength: z.string().describe(
-                  "Optional. If type is `STRING`, `max_length` specifies the maximum length of the string.",
-                ).optional(),
-                maxProperties: z.string().describe(
-                  "Optional. If type is `OBJECT`, `max_properties` specifies the maximum number of properties that can be provided.",
-                ).optional(),
-                maximum: z.number().describe(
-                  "Optional. If type is `INTEGER` or `NUMBER`, `maximum` specifies the maximum allowed value.",
-                ).optional(),
-                minItems: z.string().describe(
-                  "Optional. If type is `ARRAY`, `min_items` specifies the minimum number of items in an array.",
-                ).optional(),
-                minLength: z.string().describe(
-                  "Optional. If type is `STRING`, `min_length` specifies the minimum length of the string.",
-                ).optional(),
-                minProperties: z.string().describe(
-                  "Optional. If type is `OBJECT`, `min_properties` specifies the minimum number of properties that can be provided.",
-                ).optional(),
-                minimum: z.number().describe(
-                  "Optional. If type is `INTEGER` or `NUMBER`, `minimum` specifies the minimum allowed value.",
-                ).optional(),
-                nullable: z.boolean().describe(
-                  "Optional. Indicates if the value of this field can be null.",
-                ).optional(),
-                pattern: z.string().describe(
-                  "Optional. If type is `STRING`, `pattern` specifies a regular expression that the string must match.",
-                ).optional(),
-                properties: z.record(z.string(), z.string()).describe(
-                  "Optional. If type is `OBJECT`, `properties` is a map of property names to schema definitions for each property of the object.",
-                ).optional(),
-                propertyOrdering: z.array(z.string()).describe(
-                  "Optional. Order of properties displayed or used where order matters. This is not a standard field in OpenAPI specification, but can be used to control the order of properties.",
-                ).optional(),
-                ref: z.string().describe(
-                  'Optional. Allows referencing another schema definition to use in place of this schema. The value must be a valid reference to a schema in `defs`. For example, the following schema defines a reference to a schema node named "Pet": type: object properties: pet: ref: #/defs/Pet defs: Pet: type: object properties: name: type: string The value of the "pet" property is a reference to the schema node named "Pet". See details in https://json-schema.org/understanding-json-schema/structuring',
-                ).optional(),
-                required: z.array(z.string()).describe(
-                  "Optional. If type is `OBJECT`, `required` lists the names of properties that must be present.",
-                ).optional(),
-                title: z.string().describe("Optional. Title for the schema.")
-                  .optional(),
-                type: z.enum([
-                  "TYPE_UNSPECIFIED",
-                  "STRING",
-                  "NUMBER",
-                  "INTEGER",
-                  "BOOLEAN",
-                  "ARRAY",
-                  "OBJECT",
-                  "NULL",
-                ]).describe("Optional. Data type of the schema field.")
-                  .optional(),
-              }).describe(
-                "Defines the schema of input and output data. This is a subset of the [OpenAPI 3.0 Schema Object](https://spec.openapis.org/oas/v3.0.3#schema-object).",
-              ).optional(),
-              routingConfig: z.object({
-                autoMode: z.object({
-                  modelRoutingPreference: z.enum([
-                    "UNKNOWN",
-                    "PRIORITIZE_QUALITY",
-                    "BALANCED",
-                    "PRIORITIZE_COST",
-                  ]).describe("The model routing preference.").optional(),
-                }).describe(
-                  "The configuration for automated routing. When automated routing is specified, the routing will be determined by the pretrained routing model and customer provided model routing preference.",
-                ).optional(),
-                manualMode: z.object({
-                  modelName: z.string().describe(
-                    "The name of the model to use. Only public LLM models are accepted.",
-                  ).optional(),
-                }).describe(
-                  "The configuration for manual routing. When manual routing is specified, the model will be selected based on the model name provided.",
-                ).optional(),
-              }).describe(
-                "The configuration for routing the request to a specific model. This can be used to control which model is used for the generation, either automatically or by specifying a model name.",
-              ).optional(),
-              seed: z.number().int().describe(
-                "Optional. A seed for the random number generator. By setting a seed, you can make the model's output mostly deterministic. For a given prompt and parameters (like temperature, top_p, etc.), the model will produce the same response every time. However, it's not a guaranteed absolute deterministic behavior. This is different from parameters like `temperature`, which control the *level* of randomness. `seed` ensures that the \"random\" choices the model makes are the same on every run, making it essential for testing and ensuring reproducible results.",
-              ).optional(),
-              speechConfig: z.object({
-                languageCode: z.string().describe(
-                  "Optional. The language code (ISO 639-1) for the speech synthesis.",
-                ).optional(),
-                multiSpeakerVoiceConfig: z.object({
-                  speakerVoiceConfigs: z.array(z.object({
-                    speaker: z.string().describe(
-                      "Required. The name of the speaker. This should be the same as the speaker name used in the prompt.",
-                    ).optional(),
-                    voiceConfig: z.object({
-                      prebuiltVoiceConfig: z.object({
-                        voiceName: z.string().describe(
-                          "The name of the prebuilt voice to use.",
-                        ).optional(),
-                      }).describe("Configuration for a prebuilt voice.")
-                        .optional(),
-                      replicatedVoiceConfig: z.object({
-                        mimeType: z.string().describe(
-                          "Optional. The mimetype of the voice sample. The only currently supported value is `audio/wav`. This represents 16-bit signed little-endian wav data, with a 24kHz sampling rate. `mime_type` will default to `audio/wav` if not set.",
-                        ).optional(),
-                        voiceSampleAudio: z.string().describe(
-                          "Optional. The sample of the custom voice.",
-                        ).optional(),
-                      }).describe(
-                        "The configuration for the replicated voice to use.",
-                      ).optional(),
-                    }).describe("Configuration for a voice.").optional(),
-                  })).describe(
-                    "Required. A list of configurations for the voices of the speakers. Exactly two speaker voice configurations must be provided.",
-                  ).optional(),
-                }).describe(
-                  "Configuration for a multi-speaker text-to-speech request.",
-                ).optional(),
-                voiceConfig: z.object({
-                  prebuiltVoiceConfig: z.object({
-                    voiceName: z.string().describe(
-                      "The name of the prebuilt voice to use.",
-                    ).optional(),
-                  }).describe("Configuration for a prebuilt voice.").optional(),
-                  replicatedVoiceConfig: z.object({
-                    mimeType: z.string().describe(
-                      "Optional. The mimetype of the voice sample. The only currently supported value is `audio/wav`. This represents 16-bit signed little-endian wav data, with a 24kHz sampling rate. `mime_type` will default to `audio/wav` if not set.",
-                    ).optional(),
-                    voiceSampleAudio: z.string().describe(
-                      "Optional. The sample of the custom voice.",
-                    ).optional(),
-                  }).describe(
-                    "The configuration for the replicated voice to use.",
-                  ).optional(),
-                }).describe("Configuration for a voice.").optional(),
-              }).describe("Configuration for speech generation.").optional(),
-              stopSequences: z.array(z.string()).describe(
-                'Optional. A list of character sequences that will stop the model from generating further tokens. If a stop sequence is generated, the output will end at that point. This is useful for controlling the length and structure of the output. For example, you can use ["\\n", "###"] to stop generation at a new line or a specific marker.',
-              ).optional(),
-              temperature: z.number().describe(
-                "Optional. Controls the randomness of the output. A higher temperature results in more creative and diverse responses, while a lower temperature makes the output more predictable and focused. The valid range is (0.0, 2.0].",
-              ).optional(),
-              thinkingConfig: z.object({
-                includeThoughts: z.boolean().describe(
-                  'Optional. If true, the model will include its thoughts in the response. "Thoughts" are the intermediate steps the model takes to arrive at the final response. They can provide insights into the model\'s reasoning process and help with debugging. If this is true, thoughts are returned only when available.',
-                ).optional(),
-                thinkingBudget: z.number().int().describe(
-                  "Optional. The token budget for the model's thinking process. The model will make a best effort to stay within this budget. This can be used to control the trade-off between response quality and latency.",
-                ).optional(),
-                thinkingLevel: z.enum([
-                  "THINKING_LEVEL_UNSPECIFIED",
-                  "LOW",
-                  "MEDIUM",
-                  "HIGH",
-                  "MINIMAL",
-                ]).describe(
-                  "Optional. The number of thoughts tokens that the model should generate.",
-                ).optional(),
-              }).describe(
-                'Configuration for the model\'s thinking features. "Thinking" is a process where the model breaks down a complex task into smaller, manageable steps. This allows the model to reason about the task, plan its approach, and execute the plan to generate a high-quality response.',
-              ).optional(),
-              topK: z.number().describe(
-                "Optional. Specifies the top-k sampling threshold. The model considers only the top k most probable tokens for the next token. This can be useful for generating more coherent and less random text. For example, a `top_k` of 40 means the model will choose the next word from the 40 most likely words.",
-              ).optional(),
-              topP: z.number().describe(
-                "Optional. Specifies the nucleus sampling threshold. The model considers only the smallest set of tokens whose cumulative probability is at least `top_p`. This helps generate more diverse and less repetitive responses. For example, a `top_p` of 0.9 means the model considers tokens until the cumulative probability of the tokens to select from reaches 0.9. It's recommended to adjust either temperature or `top_p`, but not both.",
-              ).optional(),
-            }).describe(
-              "Configuration for content generation. This message contains all the parameters that control how the model generates content. It allows you to influence the randomness, length, and structure of the output.",
-            ).optional(),
-            samplingCount: z.number().int().describe(
-              "Optional. Number of samples for each instance in the dataset. If not specified, the default is 4. Minimum value is 1, maximum value is 32.",
-            ).optional(),
-          }).describe(
+          judgeAutoraterConfig: z.unknown().describe(
             "The configs for autorater. This is applicable to both EvaluateInstances and EvaluateDataset.",
           ).optional(),
-          metricPromptTemplate: z.string().describe(
+          metricPromptTemplate: z.unknown().describe(
             "Required. Template for the prompt sent to the judge model.",
           ).optional(),
-          predefinedRubricGenerationSpec: z.object({
-            metricSpecName: z.string().describe(
-              'Required. The name of a pre-defined metric, such as "instruction_following_v1" or "text_quality_v1".',
-            ).optional(),
-            metricSpecParameters: z.record(z.string(), z.string()).describe(
-              "Optional. The parameters needed to run the pre-defined metric.",
-            ).optional(),
-          }).describe("The spec for a pre-defined metric.").optional(),
-          rubricGenerationSpec: z.object({
-            modelConfig: z.object({
-              autoraterModel: z.string().describe(
-                "Optional. The fully qualified name of the publisher model or tuned autorater endpoint to use. Publisher model format: `projects/{project}/locations/{location}/publishers/*/models/*` Tuned model endpoint format: `projects/{project}/locations/{location}/endpoints/{endpoint}`",
-              ).optional(),
-              flipEnabled: z.boolean().describe(
-                "Optional. Default is true. Whether to flip the candidate and baseline responses. This is only applicable to the pairwise metric. If enabled, also provide PairwiseMetricSpec.candidate_response_field_name and PairwiseMetricSpec.baseline_response_field_name. When rendering PairwiseMetricSpec.metric_prompt_template, the candidate and baseline fields will be flipped for half of the samples to reduce bias.",
-              ).optional(),
-              generationConfig: z.object({
-                audioTimestamp: z.boolean().describe(
-                  "Optional. If enabled, audio timestamps will be included in the request to the model. This can be useful for synchronizing audio with other modalities in the response.",
-                ).optional(),
-                candidateCount: z.number().int().describe(
-                  "Optional. The number of candidate responses to generate. A higher `candidate_count` can provide more options to choose from, but it also consumes more resources. This can be useful for generating a variety of responses and selecting the best one.",
-                ).optional(),
-                enableAffectiveDialog: z.boolean().describe(
-                  "Optional. If enabled, the model will detect emotions and adapt its responses accordingly. For example, if the model detects that the user is frustrated, it may provide a more empathetic response.",
-                ).optional(),
-                frequencyPenalty: z.number().describe(
-                  "Optional. Penalizes tokens based on their frequency in the generated text. A positive value helps to reduce the repetition of words and phrases. Valid values can range from [-2.0, 2.0].",
-                ).optional(),
-                imageConfig: z.object({
-                  aspectRatio: z.string().describe(
-                    'Optional. The desired aspect ratio for the generated images. The following aspect ratios are supported: "1:1" "2:3", "3:2" "3:4", "4:3" "4:5", "5:4" "9:16", "16:9" "21:9"',
-                  ).optional(),
-                  imageOutputOptions: z.object({
-                    compressionQuality: z.number().int().describe(
-                      "Optional. The compression quality of the output image.",
-                    ).optional(),
-                    mimeType: z.string().describe(
-                      "Optional. The image format that the output should be saved as.",
-                    ).optional(),
-                  }).describe("The image output format for generated images.")
-                    .optional(),
-                  imageSize: z.string().describe(
-                    "Optional. Specifies the size of generated images. Supported values are `1K`, `2K`, `4K`. If not specified, the model will use default value `1K`.",
-                  ).optional(),
-                  personGeneration: z.enum([
-                    "PERSON_GENERATION_UNSPECIFIED",
-                    "ALLOW_ALL",
-                    "ALLOW_ADULT",
-                    "ALLOW_NONE",
-                  ]).describe(
-                    "Optional. Controls whether the model can generate people.",
-                  ).optional(),
-                  prominentPeople: z.enum([
-                    "PROMINENT_PEOPLE_UNSPECIFIED",
-                    "ALLOW_PROMINENT_PEOPLE",
-                    "BLOCK_PROMINENT_PEOPLE",
-                  ]).describe(
-                    "Optional. Controls whether prominent people (celebrities) generation is allowed. If used with personGeneration, personGeneration enum would take precedence. For instance, if ALLOW_NONE is set, all person generation would be blocked. If this field is unspecified, the default behavior is to allow prominent people.",
-                  ).optional(),
-                }).describe(
-                  "Configuration for image generation. This message allows you to control various aspects of image generation, such as the output format, aspect ratio, and whether the model can generate images of people.",
-                ).optional(),
-                logprobs: z.number().int().describe(
-                  "Optional. The number of top log probabilities to return for each token. This can be used to see which other tokens were considered likely candidates for a given position. A higher value will return more options, but it will also increase the size of the response.",
-                ).optional(),
-                maxOutputTokens: z.number().int().describe(
-                  "Optional. The maximum number of tokens to generate in the response. A token is approximately four characters. The default value varies by model. This parameter can be used to control the length of the generated text and prevent overly long responses.",
-                ).optional(),
-                mediaResolution: z.enum([
-                  "MEDIA_RESOLUTION_UNSPECIFIED",
-                  "MEDIA_RESOLUTION_LOW",
-                  "MEDIA_RESOLUTION_MEDIUM",
-                  "MEDIA_RESOLUTION_HIGH",
-                ]).describe(
-                  "Optional. The token resolution at which input media content is sampled. This is used to control the trade-off between the quality of the response and the number of tokens used to represent the media. A higher resolution allows the model to perceive more detail, which can lead to a more nuanced response, but it will also use more tokens. This does not affect the image dimensions sent to the model.",
-                ).optional(),
-                presencePenalty: z.number().describe(
-                  "Optional. Penalizes tokens that have already appeared in the generated text. A positive value encourages the model to generate more diverse and less repetitive text. Valid values can range from [-2.0, 2.0].",
-                ).optional(),
-                responseJsonSchema: z.string().describe(
-                  "Optional. When this field is set, response_schema must be omitted and response_mime_type must be set to `application/json`.",
-                ).optional(),
-                responseLogprobs: z.boolean().describe(
-                  "Optional. If set to true, the log probabilities of the output tokens are returned. Log probabilities are the logarithm of the probability of a token appearing in the output. A higher log probability means the token is more likely to be generated. This can be useful for analyzing the model's confidence in its own output and for debugging.",
-                ).optional(),
-                responseMimeType: z.string().describe(
-                  "Optional. The IANA standard MIME type of the response. The model will generate output that conforms to this MIME type. Supported values include 'text/plain' (default) and 'application/json'. The model needs to be prompted to output the appropriate response type, otherwise the behavior is undefined.",
-                ).optional(),
-                responseModalities: z.array(
-                  z.enum(["MODALITY_UNSPECIFIED", "TEXT", "IMAGE", "AUDIO"]),
-                ).describe(
-                  "Optional. The modalities of the response. The model will generate a response that includes all the specified modalities. For example, if this is set to `[TEXT, IMAGE]`, the response will include both text and an image.",
-                ).optional(),
-                responseSchema: z.object({
-                  additionalProperties: z.string().describe(
-                    "Optional. If `type` is `OBJECT`, specifies how to handle properties not defined in `properties`. If it is a boolean `false`, no additional properties are allowed. If it is a schema, additional properties are allowed if they conform to the schema.",
-                  ).optional(),
-                  anyOf: z.array(z.string()).describe(
-                    "Optional. The instance must be valid against any (one or more) of the subschemas listed in `any_of`.",
-                  ).optional(),
-                  default: z.string().describe(
-                    "Optional. Default value to use if the field is not specified.",
-                  ).optional(),
-                  defs: z.record(z.string(), z.string()).describe(
-                    "Optional. `defs` provides a map of schema definitions that can be reused by `ref` elsewhere in the schema. Only allowed at root level of the schema.",
-                  ).optional(),
-                  description: z.string().describe(
-                    "Optional. Describes the data. The model uses this field to understand the purpose of the schema and how to use it. It is a best practice to provide a clear and descriptive explanation for the schema and its properties here, rather than in the prompt.",
-                  ).optional(),
-                  enum: z.array(z.string()).describe(
-                    'Optional. Possible values of the field. This field can be used to restrict a value to a fixed set of values. To mark a field as an enum, set `format` to `enum` and provide the list of possible values in `enum`. For example: 1. To define directions: `{type:STRING, format:enum, enum:["EAST", "NORTH", "SOUTH", "WEST"]}` 2. To define apartment numbers: `{type:INTEGER, format:enum, enum:["101", "201", "301"]}`',
-                  ).optional(),
-                  example: z.string().describe(
-                    "Optional. Example of an instance of this schema.",
-                  ).optional(),
-                  format: z.string().describe(
-                    "Optional. The format of the data. For `NUMBER` type, format can be `float` or `double`. For `INTEGER` type, format can be `int32` or `int64`. For `STRING` type, format can be `email`, `byte`, `date`, `date-time`, `password`, and other formats to further refine the data type.",
-                  ).optional(),
-                  items: z.string().describe(
-                    "Circular reference to GoogleCloudAiplatformV1Schema",
-                  ).optional(),
-                  maxItems: z.string().describe(
-                    "Optional. If type is `ARRAY`, `max_items` specifies the maximum number of items in an array.",
-                  ).optional(),
-                  maxLength: z.string().describe(
-                    "Optional. If type is `STRING`, `max_length` specifies the maximum length of the string.",
-                  ).optional(),
-                  maxProperties: z.string().describe(
-                    "Optional. If type is `OBJECT`, `max_properties` specifies the maximum number of properties that can be provided.",
-                  ).optional(),
-                  maximum: z.number().describe(
-                    "Optional. If type is `INTEGER` or `NUMBER`, `maximum` specifies the maximum allowed value.",
-                  ).optional(),
-                  minItems: z.string().describe(
-                    "Optional. If type is `ARRAY`, `min_items` specifies the minimum number of items in an array.",
-                  ).optional(),
-                  minLength: z.string().describe(
-                    "Optional. If type is `STRING`, `min_length` specifies the minimum length of the string.",
-                  ).optional(),
-                  minProperties: z.string().describe(
-                    "Optional. If type is `OBJECT`, `min_properties` specifies the minimum number of properties that can be provided.",
-                  ).optional(),
-                  minimum: z.number().describe(
-                    "Optional. If type is `INTEGER` or `NUMBER`, `minimum` specifies the minimum allowed value.",
-                  ).optional(),
-                  nullable: z.boolean().describe(
-                    "Optional. Indicates if the value of this field can be null.",
-                  ).optional(),
-                  pattern: z.string().describe(
-                    "Optional. If type is `STRING`, `pattern` specifies a regular expression that the string must match.",
-                  ).optional(),
-                  properties: z.record(z.string(), z.string()).describe(
-                    "Optional. If type is `OBJECT`, `properties` is a map of property names to schema definitions for each property of the object.",
-                  ).optional(),
-                  propertyOrdering: z.array(z.string()).describe(
-                    "Optional. Order of properties displayed or used where order matters. This is not a standard field in OpenAPI specification, but can be used to control the order of properties.",
-                  ).optional(),
-                  ref: z.string().describe(
-                    'Optional. Allows referencing another schema definition to use in place of this schema. The value must be a valid reference to a schema in `defs`. For example, the following schema defines a reference to a schema node named "Pet": type: object properties: pet: ref: #/defs/Pet defs: Pet: type: object properties: name: type: string The value of the "pet" property is a reference to the schema node named "Pet". See details in https://json-schema.org/understanding-json-schema/structuring',
-                  ).optional(),
-                  required: z.array(z.string()).describe(
-                    "Optional. If type is `OBJECT`, `required` lists the names of properties that must be present.",
-                  ).optional(),
-                  title: z.string().describe("Optional. Title for the schema.")
-                    .optional(),
-                  type: z.enum([
-                    "TYPE_UNSPECIFIED",
-                    "STRING",
-                    "NUMBER",
-                    "INTEGER",
-                    "BOOLEAN",
-                    "ARRAY",
-                    "OBJECT",
-                    "NULL",
-                  ]).describe("Optional. Data type of the schema field.")
-                    .optional(),
-                }).describe(
-                  "Defines the schema of input and output data. This is a subset of the [OpenAPI 3.0 Schema Object](https://spec.openapis.org/oas/v3.0.3#schema-object).",
-                ).optional(),
-                routingConfig: z.object({
-                  autoMode: z.object({
-                    modelRoutingPreference: z.enum([
-                      "UNKNOWN",
-                      "PRIORITIZE_QUALITY",
-                      "BALANCED",
-                      "PRIORITIZE_COST",
-                    ]).describe("The model routing preference.").optional(),
-                  }).describe(
-                    "The configuration for automated routing. When automated routing is specified, the routing will be determined by the pretrained routing model and customer provided model routing preference.",
-                  ).optional(),
-                  manualMode: z.object({
-                    modelName: z.string().describe(
-                      "The name of the model to use. Only public LLM models are accepted.",
-                    ).optional(),
-                  }).describe(
-                    "The configuration for manual routing. When manual routing is specified, the model will be selected based on the model name provided.",
-                  ).optional(),
-                }).describe(
-                  "The configuration for routing the request to a specific model. This can be used to control which model is used for the generation, either automatically or by specifying a model name.",
-                ).optional(),
-                seed: z.number().int().describe(
-                  "Optional. A seed for the random number generator. By setting a seed, you can make the model's output mostly deterministic. For a given prompt and parameters (like temperature, top_p, etc.), the model will produce the same response every time. However, it's not a guaranteed absolute deterministic behavior. This is different from parameters like `temperature`, which control the *level* of randomness. `seed` ensures that the \"random\" choices the model makes are the same on every run, making it essential for testing and ensuring reproducible results.",
-                ).optional(),
-                speechConfig: z.object({
-                  languageCode: z.string().describe(
-                    "Optional. The language code (ISO 639-1) for the speech synthesis.",
-                  ).optional(),
-                  multiSpeakerVoiceConfig: z.object({
-                    speakerVoiceConfigs: z.array(z.object({
-                      speaker: z.string().describe(
-                        "Required. The name of the speaker. This should be the same as the speaker name used in the prompt.",
-                      ).optional(),
-                      voiceConfig: z.object({
-                        prebuiltVoiceConfig: z.object({
-                          voiceName: z.string().describe(
-                            "The name of the prebuilt voice to use.",
-                          ).optional(),
-                        }).describe("Configuration for a prebuilt voice.")
-                          .optional(),
-                        replicatedVoiceConfig: z.object({
-                          mimeType: z.string().describe(
-                            "Optional. The mimetype of the voice sample. The only currently supported value is `audio/wav`. This represents 16-bit signed little-endian wav data, with a 24kHz sampling rate. `mime_type` will default to `audio/wav` if not set.",
-                          ).optional(),
-                          voiceSampleAudio: z.string().describe(
-                            "Optional. The sample of the custom voice.",
-                          ).optional(),
-                        }).describe(
-                          "The configuration for the replicated voice to use.",
-                        ).optional(),
-                      }).describe("Configuration for a voice.").optional(),
-                    })).describe(
-                      "Required. A list of configurations for the voices of the speakers. Exactly two speaker voice configurations must be provided.",
-                    ).optional(),
-                  }).describe(
-                    "Configuration for a multi-speaker text-to-speech request.",
-                  ).optional(),
-                  voiceConfig: z.object({
-                    prebuiltVoiceConfig: z.object({
-                      voiceName: z.string().describe(
-                        "The name of the prebuilt voice to use.",
-                      ).optional(),
-                    }).describe("Configuration for a prebuilt voice.")
-                      .optional(),
-                    replicatedVoiceConfig: z.object({
-                      mimeType: z.string().describe(
-                        "Optional. The mimetype of the voice sample. The only currently supported value is `audio/wav`. This represents 16-bit signed little-endian wav data, with a 24kHz sampling rate. `mime_type` will default to `audio/wav` if not set.",
-                      ).optional(),
-                      voiceSampleAudio: z.string().describe(
-                        "Optional. The sample of the custom voice.",
-                      ).optional(),
-                    }).describe(
-                      "The configuration for the replicated voice to use.",
-                    ).optional(),
-                  }).describe("Configuration for a voice.").optional(),
-                }).describe("Configuration for speech generation.").optional(),
-                stopSequences: z.array(z.string()).describe(
-                  'Optional. A list of character sequences that will stop the model from generating further tokens. If a stop sequence is generated, the output will end at that point. This is useful for controlling the length and structure of the output. For example, you can use ["\\n", "###"] to stop generation at a new line or a specific marker.',
-                ).optional(),
-                temperature: z.number().describe(
-                  "Optional. Controls the randomness of the output. A higher temperature results in more creative and diverse responses, while a lower temperature makes the output more predictable and focused. The valid range is (0.0, 2.0].",
-                ).optional(),
-                thinkingConfig: z.object({
-                  includeThoughts: z.boolean().describe(
-                    'Optional. If true, the model will include its thoughts in the response. "Thoughts" are the intermediate steps the model takes to arrive at the final response. They can provide insights into the model\'s reasoning process and help with debugging. If this is true, thoughts are returned only when available.',
-                  ).optional(),
-                  thinkingBudget: z.number().int().describe(
-                    "Optional. The token budget for the model's thinking process. The model will make a best effort to stay within this budget. This can be used to control the trade-off between response quality and latency.",
-                  ).optional(),
-                  thinkingLevel: z.enum([
-                    "THINKING_LEVEL_UNSPECIFIED",
-                    "LOW",
-                    "MEDIUM",
-                    "HIGH",
-                    "MINIMAL",
-                  ]).describe(
-                    "Optional. The number of thoughts tokens that the model should generate.",
-                  ).optional(),
-                }).describe(
-                  'Configuration for the model\'s thinking features. "Thinking" is a process where the model breaks down a complex task into smaller, manageable steps. This allows the model to reason about the task, plan its approach, and execute the plan to generate a high-quality response.',
-                ).optional(),
-                topK: z.number().describe(
-                  "Optional. Specifies the top-k sampling threshold. The model considers only the top k most probable tokens for the next token. This can be useful for generating more coherent and less random text. For example, a `top_k` of 40 means the model will choose the next word from the 40 most likely words.",
-                ).optional(),
-                topP: z.number().describe(
-                  "Optional. Specifies the nucleus sampling threshold. The model considers only the smallest set of tokens whose cumulative probability is at least `top_p`. This helps generate more diverse and less repetitive responses. For example, a `top_p` of 0.9 means the model considers tokens until the cumulative probability of the tokens to select from reaches 0.9. It's recommended to adjust either temperature or `top_p`, but not both.",
-                ).optional(),
-              }).describe(
-                "Configuration for content generation. This message contains all the parameters that control how the model generates content. It allows you to influence the randomness, length, and structure of the output.",
-              ).optional(),
-              samplingCount: z.number().int().describe(
-                "Optional. Number of samples for each instance in the dataset. If not specified, the default is 4. Minimum value is 1, maximum value is 32.",
-              ).optional(),
-            }).describe(
-              "The configs for autorater. This is applicable to both EvaluateInstances and EvaluateDataset.",
-            ).optional(),
-            promptTemplate: z.string().describe(
-              "Template for the prompt used to generate rubrics. The details should be updated based on the most-recent recipe requirements.",
-            ).optional(),
-            rubricContentType: z.enum([
-              "RUBRIC_CONTENT_TYPE_UNSPECIFIED",
-              "PROPERTY",
-              "NL_QUESTION_ANSWER",
-              "PYTHON_CODE_ASSERTION",
-            ]).describe("The type of rubric content to be generated.")
-              .optional(),
-            rubricTypeOntology: z.array(z.string()).describe(
-              "Optional. An optional, pre-defined list of allowed types for generated rubrics. If this field is provided, it implies `include_rubric_type` should be true, and the generated rubric types should be chosen from this ontology.",
-            ).optional(),
-          }).describe("Specification for how rubrics should be generated.")
-            .optional(),
-          rubricGroupKey: z.string().describe(
+          predefinedRubricGenerationSpec: z.unknown().describe(
+            "The spec for a pre-defined metric.",
+          ).optional(),
+          rubricGenerationSpec: z.unknown().describe(
+            "Specification for how rubrics should be generated.",
+          ).optional(),
+          rubricGroupKey: z.unknown().describe(
             "Use a pre-defined group of rubrics associated with the input. Refers to a key in the rubric_groups map of EvaluationInstance.",
           ).optional(),
-          systemInstruction: z.string().describe(
+          systemInstruction: z.unknown().describe(
             "Optional. System instructions for the judge model.",
           ).optional(),
         }).describe("Specification for an LLM based metric.").optional(),
         metadata: z.object({
-          otherMetadata: z.record(z.string(), z.string()).describe(
+          otherMetadata: z.unknown().describe(
             "Optional. Flexible metadata for user-defined attributes.",
           ).optional(),
-          scoreRange: z.object({
-            description: z.string().describe(
-              "Optional. The description of the score explaining the directionality etc.",
-            ).optional(),
-            max: z.number().describe(
-              "Required. The maximum value of the score range (inclusive).",
-            ).optional(),
-            min: z.number().describe(
-              "Required. The minimum value of the score range (inclusive).",
-            ).optional(),
-            step: z.number().describe(
-              "Optional. The distance between discrete steps in the range. If unset, the range is assumed to be continuous.",
-            ).optional(),
-          }).describe(
+          scoreRange: z.unknown().describe(
             "The range of possible scores for this metric, used for plotting.",
           ).optional(),
-          title: z.string().describe(
+          title: z.unknown().describe(
             "Optional. The user-friendly name for the metric. If not set for a registered metric, it will default to the metric's display name.",
           ).optional(),
         }).describe(
           "Metadata about the metric, used for visualization and organization.",
         ).optional(),
         pairwiseMetricSpec: z.object({
-          baselineResponseFieldName: z.string().describe(
+          baselineResponseFieldName: z.unknown().describe(
             "Optional. The field name of the baseline response.",
           ).optional(),
-          candidateResponseFieldName: z.string().describe(
+          candidateResponseFieldName: z.unknown().describe(
             "Optional. The field name of the candidate response.",
           ).optional(),
-          customOutputFormatConfig: z.object({
-            returnRawOutput: z.boolean().describe(
-              "Optional. Whether to return raw output.",
-            ).optional(),
-          }).describe("Spec for custom output format configuration.")
-            .optional(),
-          metricPromptTemplate: z.string().describe(
+          customOutputFormatConfig: z.unknown().describe(
+            "Spec for custom output format configuration.",
+          ).optional(),
+          metricPromptTemplate: z.unknown().describe(
             "Required. Metric prompt template for pairwise metric.",
           ).optional(),
-          systemInstruction: z.string().describe(
+          systemInstruction: z.unknown().describe(
             "Optional. System instructions for pairwise metric.",
           ).optional(),
         }).describe("Spec for pairwise metric.").optional(),
         pointwiseMetricSpec: z.object({
-          customOutputFormatConfig: z.object({
-            returnRawOutput: z.boolean().describe(
-              "Optional. Whether to return raw output.",
-            ).optional(),
-          }).describe("Spec for custom output format configuration.")
-            .optional(),
-          metricPromptTemplate: z.string().describe(
+          customOutputFormatConfig: z.unknown().describe(
+            "Spec for custom output format configuration.",
+          ).optional(),
+          metricPromptTemplate: z.unknown().describe(
             "Required. Metric prompt template for pointwise metric.",
           ).optional(),
-          systemInstruction: z.string().describe(
+          systemInstruction: z.unknown().describe(
             "Optional. System instructions for pointwise metric.",
           ).optional(),
         }).describe("Spec for pointwise metric.").optional(),
         predefinedMetricSpec: z.object({
-          metricSpecName: z.string().describe(
+          metricSpecName: z.unknown().describe(
             'Required. The name of a pre-defined metric, such as "instruction_following_v1" or "text_quality_v1".',
           ).optional(),
-          metricSpecParameters: z.record(z.string(), z.string()).describe(
+          metricSpecParameters: z.unknown().describe(
             "Optional. The parameters needed to run the pre-defined metric.",
           ).optional(),
         }).describe("The spec for a pre-defined metric.").optional(),
         rougeSpec: z.object({
-          rougeType: z.string().describe(
+          rougeType: z.unknown().describe(
             "Optional. Supported rouge types are rougen[1-9], rougeL, and rougeLsum.",
           ).optional(),
-          splitSummaries: z.boolean().describe(
+          splitSummaries: z.unknown().describe(
             "Optional. Whether to split summaries while using rougeLsum.",
           ).optional(),
-          useStemmer: z.boolean().describe(
+          useStemmer: z.unknown().describe(
             "Optional. Whether to use stemmer to compute rouge score.",
           ).optional(),
         }).describe(
@@ -6021,318 +1805,24 @@ const InputsSchema = z.object({
         metricSpecName: z.string().describe(
           'Required. The name of a pre-defined metric, such as "instruction_following_v1" or "text_quality_v1".',
         ).optional(),
-        parameters: z.record(z.string(), z.string()).describe(
+        parameters: z.record(z.string(), z.unknown()).describe(
           "Optional. The parameters needed to run the pre-defined metric.",
         ).optional(),
       }).describe("Specification for a pre-defined metric.").optional(),
       rubricBasedMetricSpec: z.object({
         inlineRubrics: z.object({
-          rubrics: z.array(z.object({
-            content: z.object({
-              property: z.object({
-                description: z.string().describe(
-                  'Description of the property being evaluated. Example: "The model\'s response is grammatically correct."',
-                ).optional(),
-              }).describe("Defines criteria based on a specific property.")
-                .optional(),
-            }).describe(
-              "Content of the rubric, defining the testable criteria.",
-            ).optional(),
-            importance: z.enum([
-              "IMPORTANCE_UNSPECIFIED",
-              "HIGH",
-              "MEDIUM",
-              "LOW",
-            ]).describe("Optional. The relative importance of this rubric.")
-              .optional(),
-            rubricId: z.string().describe(
-              "Unique identifier for the rubric. This ID is used to refer to this rubric, e.g., in RubricVerdict.",
-            ).optional(),
-            type: z.string().describe(
-              'Optional. A type designator for the rubric, which can inform how it\'s evaluated or interpreted by systems or users. It\'s recommended to use consistent, well-defined, upper snake_case strings. Examples: "SUMMARIZATION_QUALITY", "SAFETY_HARMFUL_CONTENT", "INSTRUCTION_ADHERENCE".',
-            ).optional(),
-          })).describe("The list of rubrics.").optional(),
+          rubrics: z.unknown().describe("The list of rubrics.").optional(),
         }).describe(
           "Defines a list of rubrics, used when providing rubrics inline.",
         ).optional(),
         judgeAutoraterConfig: z.object({
-          autoraterModel: z.string().describe(
+          autoraterModel: z.unknown().describe(
             "Optional. The fully qualified name of the publisher model or tuned autorater endpoint to use. Publisher model format: `projects/{project}/locations/{location}/publishers/*/models/*` Tuned model endpoint format: `projects/{project}/locations/{location}/endpoints/{endpoint}`",
           ).optional(),
-          generationConfig: z.object({
-            audioTimestamp: z.boolean().describe(
-              "Optional. If enabled, audio timestamps will be included in the request to the model. This can be useful for synchronizing audio with other modalities in the response.",
-            ).optional(),
-            candidateCount: z.number().int().describe(
-              "Optional. The number of candidate responses to generate. A higher `candidate_count` can provide more options to choose from, but it also consumes more resources. This can be useful for generating a variety of responses and selecting the best one.",
-            ).optional(),
-            enableAffectiveDialog: z.boolean().describe(
-              "Optional. If enabled, the model will detect emotions and adapt its responses accordingly. For example, if the model detects that the user is frustrated, it may provide a more empathetic response.",
-            ).optional(),
-            frequencyPenalty: z.number().describe(
-              "Optional. Penalizes tokens based on their frequency in the generated text. A positive value helps to reduce the repetition of words and phrases. Valid values can range from [-2.0, 2.0].",
-            ).optional(),
-            imageConfig: z.object({
-              aspectRatio: z.string().describe(
-                'Optional. The desired aspect ratio for the generated images. The following aspect ratios are supported: "1:1" "2:3", "3:2" "3:4", "4:3" "4:5", "5:4" "9:16", "16:9" "21:9"',
-              ).optional(),
-              imageOutputOptions: z.object({
-                compressionQuality: z.number().int().describe(
-                  "Optional. The compression quality of the output image.",
-                ).optional(),
-                mimeType: z.string().describe(
-                  "Optional. The image format that the output should be saved as.",
-                ).optional(),
-              }).describe("The image output format for generated images.")
-                .optional(),
-              imageSize: z.string().describe(
-                "Optional. Specifies the size of generated images. Supported values are `1K`, `2K`, `4K`. If not specified, the model will use default value `1K`.",
-              ).optional(),
-              personGeneration: z.enum([
-                "PERSON_GENERATION_UNSPECIFIED",
-                "ALLOW_ALL",
-                "ALLOW_ADULT",
-                "ALLOW_NONE",
-              ]).describe(
-                "Optional. Controls whether the model can generate people.",
-              ).optional(),
-              prominentPeople: z.enum([
-                "PROMINENT_PEOPLE_UNSPECIFIED",
-                "ALLOW_PROMINENT_PEOPLE",
-                "BLOCK_PROMINENT_PEOPLE",
-              ]).describe(
-                "Optional. Controls whether prominent people (celebrities) generation is allowed. If used with personGeneration, personGeneration enum would take precedence. For instance, if ALLOW_NONE is set, all person generation would be blocked. If this field is unspecified, the default behavior is to allow prominent people.",
-              ).optional(),
-            }).describe(
-              "Configuration for image generation. This message allows you to control various aspects of image generation, such as the output format, aspect ratio, and whether the model can generate images of people.",
-            ).optional(),
-            logprobs: z.number().int().describe(
-              "Optional. The number of top log probabilities to return for each token. This can be used to see which other tokens were considered likely candidates for a given position. A higher value will return more options, but it will also increase the size of the response.",
-            ).optional(),
-            maxOutputTokens: z.number().int().describe(
-              "Optional. The maximum number of tokens to generate in the response. A token is approximately four characters. The default value varies by model. This parameter can be used to control the length of the generated text and prevent overly long responses.",
-            ).optional(),
-            mediaResolution: z.enum([
-              "MEDIA_RESOLUTION_UNSPECIFIED",
-              "MEDIA_RESOLUTION_LOW",
-              "MEDIA_RESOLUTION_MEDIUM",
-              "MEDIA_RESOLUTION_HIGH",
-            ]).describe(
-              "Optional. The token resolution at which input media content is sampled. This is used to control the trade-off between the quality of the response and the number of tokens used to represent the media. A higher resolution allows the model to perceive more detail, which can lead to a more nuanced response, but it will also use more tokens. This does not affect the image dimensions sent to the model.",
-            ).optional(),
-            presencePenalty: z.number().describe(
-              "Optional. Penalizes tokens that have already appeared in the generated text. A positive value encourages the model to generate more diverse and less repetitive text. Valid values can range from [-2.0, 2.0].",
-            ).optional(),
-            responseJsonSchema: z.string().describe(
-              "Optional. When this field is set, response_schema must be omitted and response_mime_type must be set to `application/json`.",
-            ).optional(),
-            responseLogprobs: z.boolean().describe(
-              "Optional. If set to true, the log probabilities of the output tokens are returned. Log probabilities are the logarithm of the probability of a token appearing in the output. A higher log probability means the token is more likely to be generated. This can be useful for analyzing the model's confidence in its own output and for debugging.",
-            ).optional(),
-            responseMimeType: z.string().describe(
-              "Optional. The IANA standard MIME type of the response. The model will generate output that conforms to this MIME type. Supported values include 'text/plain' (default) and 'application/json'. The model needs to be prompted to output the appropriate response type, otherwise the behavior is undefined.",
-            ).optional(),
-            responseModalities: z.array(
-              z.enum(["MODALITY_UNSPECIFIED", "TEXT", "IMAGE", "AUDIO"]),
-            ).describe(
-              "Optional. The modalities of the response. The model will generate a response that includes all the specified modalities. For example, if this is set to `[TEXT, IMAGE]`, the response will include both text and an image.",
-            ).optional(),
-            responseSchema: z.object({
-              additionalProperties: z.string().describe(
-                "Optional. If `type` is `OBJECT`, specifies how to handle properties not defined in `properties`. If it is a boolean `false`, no additional properties are allowed. If it is a schema, additional properties are allowed if they conform to the schema.",
-              ).optional(),
-              anyOf: z.array(z.string()).describe(
-                "Optional. The instance must be valid against any (one or more) of the subschemas listed in `any_of`.",
-              ).optional(),
-              default: z.string().describe(
-                "Optional. Default value to use if the field is not specified.",
-              ).optional(),
-              defs: z.record(z.string(), z.string()).describe(
-                "Optional. `defs` provides a map of schema definitions that can be reused by `ref` elsewhere in the schema. Only allowed at root level of the schema.",
-              ).optional(),
-              description: z.string().describe(
-                "Optional. Describes the data. The model uses this field to understand the purpose of the schema and how to use it. It is a best practice to provide a clear and descriptive explanation for the schema and its properties here, rather than in the prompt.",
-              ).optional(),
-              enum: z.array(z.string()).describe(
-                'Optional. Possible values of the field. This field can be used to restrict a value to a fixed set of values. To mark a field as an enum, set `format` to `enum` and provide the list of possible values in `enum`. For example: 1. To define directions: `{type:STRING, format:enum, enum:["EAST", "NORTH", "SOUTH", "WEST"]}` 2. To define apartment numbers: `{type:INTEGER, format:enum, enum:["101", "201", "301"]}`',
-              ).optional(),
-              example: z.string().describe(
-                "Optional. Example of an instance of this schema.",
-              ).optional(),
-              format: z.string().describe(
-                "Optional. The format of the data. For `NUMBER` type, format can be `float` or `double`. For `INTEGER` type, format can be `int32` or `int64`. For `STRING` type, format can be `email`, `byte`, `date`, `date-time`, `password`, and other formats to further refine the data type.",
-              ).optional(),
-              items: z.string().describe(
-                "Circular reference to GoogleCloudAiplatformV1Schema",
-              ).optional(),
-              maxItems: z.string().describe(
-                "Optional. If type is `ARRAY`, `max_items` specifies the maximum number of items in an array.",
-              ).optional(),
-              maxLength: z.string().describe(
-                "Optional. If type is `STRING`, `max_length` specifies the maximum length of the string.",
-              ).optional(),
-              maxProperties: z.string().describe(
-                "Optional. If type is `OBJECT`, `max_properties` specifies the maximum number of properties that can be provided.",
-              ).optional(),
-              maximum: z.number().describe(
-                "Optional. If type is `INTEGER` or `NUMBER`, `maximum` specifies the maximum allowed value.",
-              ).optional(),
-              minItems: z.string().describe(
-                "Optional. If type is `ARRAY`, `min_items` specifies the minimum number of items in an array.",
-              ).optional(),
-              minLength: z.string().describe(
-                "Optional. If type is `STRING`, `min_length` specifies the minimum length of the string.",
-              ).optional(),
-              minProperties: z.string().describe(
-                "Optional. If type is `OBJECT`, `min_properties` specifies the minimum number of properties that can be provided.",
-              ).optional(),
-              minimum: z.number().describe(
-                "Optional. If type is `INTEGER` or `NUMBER`, `minimum` specifies the minimum allowed value.",
-              ).optional(),
-              nullable: z.boolean().describe(
-                "Optional. Indicates if the value of this field can be null.",
-              ).optional(),
-              pattern: z.string().describe(
-                "Optional. If type is `STRING`, `pattern` specifies a regular expression that the string must match.",
-              ).optional(),
-              properties: z.record(z.string(), z.string()).describe(
-                "Optional. If type is `OBJECT`, `properties` is a map of property names to schema definitions for each property of the object.",
-              ).optional(),
-              propertyOrdering: z.array(z.string()).describe(
-                "Optional. Order of properties displayed or used where order matters. This is not a standard field in OpenAPI specification, but can be used to control the order of properties.",
-              ).optional(),
-              ref: z.string().describe(
-                'Optional. Allows referencing another schema definition to use in place of this schema. The value must be a valid reference to a schema in `defs`. For example, the following schema defines a reference to a schema node named "Pet": type: object properties: pet: ref: #/defs/Pet defs: Pet: type: object properties: name: type: string The value of the "pet" property is a reference to the schema node named "Pet". See details in https://json-schema.org/understanding-json-schema/structuring',
-              ).optional(),
-              required: z.array(z.string()).describe(
-                "Optional. If type is `OBJECT`, `required` lists the names of properties that must be present.",
-              ).optional(),
-              title: z.string().describe("Optional. Title for the schema.")
-                .optional(),
-              type: z.enum([
-                "TYPE_UNSPECIFIED",
-                "STRING",
-                "NUMBER",
-                "INTEGER",
-                "BOOLEAN",
-                "ARRAY",
-                "OBJECT",
-                "NULL",
-              ]).describe("Optional. Data type of the schema field.")
-                .optional(),
-            }).describe(
-              "Defines the schema of input and output data. This is a subset of the [OpenAPI 3.0 Schema Object](https://spec.openapis.org/oas/v3.0.3#schema-object).",
-            ).optional(),
-            routingConfig: z.object({
-              autoMode: z.object({
-                modelRoutingPreference: z.enum([
-                  "UNKNOWN",
-                  "PRIORITIZE_QUALITY",
-                  "BALANCED",
-                  "PRIORITIZE_COST",
-                ]).describe("The model routing preference.").optional(),
-              }).describe(
-                "The configuration for automated routing. When automated routing is specified, the routing will be determined by the pretrained routing model and customer provided model routing preference.",
-              ).optional(),
-              manualMode: z.object({
-                modelName: z.string().describe(
-                  "The name of the model to use. Only public LLM models are accepted.",
-                ).optional(),
-              }).describe(
-                "The configuration for manual routing. When manual routing is specified, the model will be selected based on the model name provided.",
-              ).optional(),
-            }).describe(
-              "The configuration for routing the request to a specific model. This can be used to control which model is used for the generation, either automatically or by specifying a model name.",
-            ).optional(),
-            seed: z.number().int().describe(
-              "Optional. A seed for the random number generator. By setting a seed, you can make the model's output mostly deterministic. For a given prompt and parameters (like temperature, top_p, etc.), the model will produce the same response every time. However, it's not a guaranteed absolute deterministic behavior. This is different from parameters like `temperature`, which control the *level* of randomness. `seed` ensures that the \"random\" choices the model makes are the same on every run, making it essential for testing and ensuring reproducible results.",
-            ).optional(),
-            speechConfig: z.object({
-              languageCode: z.string().describe(
-                "Optional. The language code (ISO 639-1) for the speech synthesis.",
-              ).optional(),
-              multiSpeakerVoiceConfig: z.object({
-                speakerVoiceConfigs: z.array(z.object({
-                  speaker: z.string().describe(
-                    "Required. The name of the speaker. This should be the same as the speaker name used in the prompt.",
-                  ).optional(),
-                  voiceConfig: z.object({
-                    prebuiltVoiceConfig: z.object({
-                      voiceName: z.string().describe(
-                        "The name of the prebuilt voice to use.",
-                      ).optional(),
-                    }).describe("Configuration for a prebuilt voice.")
-                      .optional(),
-                    replicatedVoiceConfig: z.object({
-                      mimeType: z.string().describe(
-                        "Optional. The mimetype of the voice sample. The only currently supported value is `audio/wav`. This represents 16-bit signed little-endian wav data, with a 24kHz sampling rate. `mime_type` will default to `audio/wav` if not set.",
-                      ).optional(),
-                      voiceSampleAudio: z.string().describe(
-                        "Optional. The sample of the custom voice.",
-                      ).optional(),
-                    }).describe(
-                      "The configuration for the replicated voice to use.",
-                    ).optional(),
-                  }).describe("Configuration for a voice.").optional(),
-                })).describe(
-                  "Required. A list of configurations for the voices of the speakers. Exactly two speaker voice configurations must be provided.",
-                ).optional(),
-              }).describe(
-                "Configuration for a multi-speaker text-to-speech request.",
-              ).optional(),
-              voiceConfig: z.object({
-                prebuiltVoiceConfig: z.object({
-                  voiceName: z.string().describe(
-                    "The name of the prebuilt voice to use.",
-                  ).optional(),
-                }).describe("Configuration for a prebuilt voice.").optional(),
-                replicatedVoiceConfig: z.object({
-                  mimeType: z.string().describe(
-                    "Optional. The mimetype of the voice sample. The only currently supported value is `audio/wav`. This represents 16-bit signed little-endian wav data, with a 24kHz sampling rate. `mime_type` will default to `audio/wav` if not set.",
-                  ).optional(),
-                  voiceSampleAudio: z.string().describe(
-                    "Optional. The sample of the custom voice.",
-                  ).optional(),
-                }).describe(
-                  "The configuration for the replicated voice to use.",
-                ).optional(),
-              }).describe("Configuration for a voice.").optional(),
-            }).describe("Configuration for speech generation.").optional(),
-            stopSequences: z.array(z.string()).describe(
-              'Optional. A list of character sequences that will stop the model from generating further tokens. If a stop sequence is generated, the output will end at that point. This is useful for controlling the length and structure of the output. For example, you can use ["\\n", "###"] to stop generation at a new line or a specific marker.',
-            ).optional(),
-            temperature: z.number().describe(
-              "Optional. Controls the randomness of the output. A higher temperature results in more creative and diverse responses, while a lower temperature makes the output more predictable and focused. The valid range is (0.0, 2.0].",
-            ).optional(),
-            thinkingConfig: z.object({
-              includeThoughts: z.boolean().describe(
-                'Optional. If true, the model will include its thoughts in the response. "Thoughts" are the intermediate steps the model takes to arrive at the final response. They can provide insights into the model\'s reasoning process and help with debugging. If this is true, thoughts are returned only when available.',
-              ).optional(),
-              thinkingBudget: z.number().int().describe(
-                "Optional. The token budget for the model's thinking process. The model will make a best effort to stay within this budget. This can be used to control the trade-off between response quality and latency.",
-              ).optional(),
-              thinkingLevel: z.enum([
-                "THINKING_LEVEL_UNSPECIFIED",
-                "LOW",
-                "MEDIUM",
-                "HIGH",
-                "MINIMAL",
-              ]).describe(
-                "Optional. The number of thoughts tokens that the model should generate.",
-              ).optional(),
-            }).describe(
-              'Configuration for the model\'s thinking features. "Thinking" is a process where the model breaks down a complex task into smaller, manageable steps. This allows the model to reason about the task, plan its approach, and execute the plan to generate a high-quality response.',
-            ).optional(),
-            topK: z.number().describe(
-              "Optional. Specifies the top-k sampling threshold. The model considers only the top k most probable tokens for the next token. This can be useful for generating more coherent and less random text. For example, a `top_k` of 40 means the model will choose the next word from the 40 most likely words.",
-            ).optional(),
-            topP: z.number().describe(
-              "Optional. Specifies the nucleus sampling threshold. The model considers only the smallest set of tokens whose cumulative probability is at least `top_p`. This helps generate more diverse and less repetitive responses. For example, a `top_p` of 0.9 means the model considers tokens until the cumulative probability of the tokens to select from reaches 0.9. It's recommended to adjust either temperature or `top_p`, but not both.",
-            ).optional(),
-          }).describe(
+          generationConfig: z.unknown().describe(
             "Configuration for content generation. This message contains all the parameters that control how the model generates content. It allows you to influence the randomness, length, and structure of the output.",
           ).optional(),
-          sampleCount: z.number().int().describe(
+          sampleCount: z.unknown().describe(
             "Optional. Number of samples for each instance in the dataset. If not specified, the default is 4. Minimum value is 1, maximum value is 32.",
           ).optional(),
         }).describe("The autorater config used for the evaluation run.")
@@ -6341,302 +1831,19 @@ const InputsSchema = z.object({
           "Optional. Template for the prompt used by the judge model to evaluate against rubrics.",
         ).optional(),
         rubricGenerationSpec: z.object({
-          metricResourceName: z.string().describe(
+          metricResourceName: z.unknown().describe(
             "Optional. Resource name of the metric definition.",
           ).optional(),
-          modelConfig: z.object({
-            autoraterModel: z.string().describe(
-              "Optional. The fully qualified name of the publisher model or tuned autorater endpoint to use. Publisher model format: `projects/{project}/locations/{location}/publishers/*/models/*` Tuned model endpoint format: `projects/{project}/locations/{location}/endpoints/{endpoint}`",
-            ).optional(),
-            generationConfig: z.object({
-              audioTimestamp: z.boolean().describe(
-                "Optional. If enabled, audio timestamps will be included in the request to the model. This can be useful for synchronizing audio with other modalities in the response.",
-              ).optional(),
-              candidateCount: z.number().int().describe(
-                "Optional. The number of candidate responses to generate. A higher `candidate_count` can provide more options to choose from, but it also consumes more resources. This can be useful for generating a variety of responses and selecting the best one.",
-              ).optional(),
-              enableAffectiveDialog: z.boolean().describe(
-                "Optional. If enabled, the model will detect emotions and adapt its responses accordingly. For example, if the model detects that the user is frustrated, it may provide a more empathetic response.",
-              ).optional(),
-              frequencyPenalty: z.number().describe(
-                "Optional. Penalizes tokens based on their frequency in the generated text. A positive value helps to reduce the repetition of words and phrases. Valid values can range from [-2.0, 2.0].",
-              ).optional(),
-              imageConfig: z.object({
-                aspectRatio: z.string().describe(
-                  'Optional. The desired aspect ratio for the generated images. The following aspect ratios are supported: "1:1" "2:3", "3:2" "3:4", "4:3" "4:5", "5:4" "9:16", "16:9" "21:9"',
-                ).optional(),
-                imageOutputOptions: z.object({
-                  compressionQuality: z.number().int().describe(
-                    "Optional. The compression quality of the output image.",
-                  ).optional(),
-                  mimeType: z.string().describe(
-                    "Optional. The image format that the output should be saved as.",
-                  ).optional(),
-                }).describe("The image output format for generated images.")
-                  .optional(),
-                imageSize: z.string().describe(
-                  "Optional. Specifies the size of generated images. Supported values are `1K`, `2K`, `4K`. If not specified, the model will use default value `1K`.",
-                ).optional(),
-                personGeneration: z.enum([
-                  "PERSON_GENERATION_UNSPECIFIED",
-                  "ALLOW_ALL",
-                  "ALLOW_ADULT",
-                  "ALLOW_NONE",
-                ]).describe(
-                  "Optional. Controls whether the model can generate people.",
-                ).optional(),
-                prominentPeople: z.enum([
-                  "PROMINENT_PEOPLE_UNSPECIFIED",
-                  "ALLOW_PROMINENT_PEOPLE",
-                  "BLOCK_PROMINENT_PEOPLE",
-                ]).describe(
-                  "Optional. Controls whether prominent people (celebrities) generation is allowed. If used with personGeneration, personGeneration enum would take precedence. For instance, if ALLOW_NONE is set, all person generation would be blocked. If this field is unspecified, the default behavior is to allow prominent people.",
-                ).optional(),
-              }).describe(
-                "Configuration for image generation. This message allows you to control various aspects of image generation, such as the output format, aspect ratio, and whether the model can generate images of people.",
-              ).optional(),
-              logprobs: z.number().int().describe(
-                "Optional. The number of top log probabilities to return for each token. This can be used to see which other tokens were considered likely candidates for a given position. A higher value will return more options, but it will also increase the size of the response.",
-              ).optional(),
-              maxOutputTokens: z.number().int().describe(
-                "Optional. The maximum number of tokens to generate in the response. A token is approximately four characters. The default value varies by model. This parameter can be used to control the length of the generated text and prevent overly long responses.",
-              ).optional(),
-              mediaResolution: z.enum([
-                "MEDIA_RESOLUTION_UNSPECIFIED",
-                "MEDIA_RESOLUTION_LOW",
-                "MEDIA_RESOLUTION_MEDIUM",
-                "MEDIA_RESOLUTION_HIGH",
-              ]).describe(
-                "Optional. The token resolution at which input media content is sampled. This is used to control the trade-off between the quality of the response and the number of tokens used to represent the media. A higher resolution allows the model to perceive more detail, which can lead to a more nuanced response, but it will also use more tokens. This does not affect the image dimensions sent to the model.",
-              ).optional(),
-              presencePenalty: z.number().describe(
-                "Optional. Penalizes tokens that have already appeared in the generated text. A positive value encourages the model to generate more diverse and less repetitive text. Valid values can range from [-2.0, 2.0].",
-              ).optional(),
-              responseJsonSchema: z.string().describe(
-                "Optional. When this field is set, response_schema must be omitted and response_mime_type must be set to `application/json`.",
-              ).optional(),
-              responseLogprobs: z.boolean().describe(
-                "Optional. If set to true, the log probabilities of the output tokens are returned. Log probabilities are the logarithm of the probability of a token appearing in the output. A higher log probability means the token is more likely to be generated. This can be useful for analyzing the model's confidence in its own output and for debugging.",
-              ).optional(),
-              responseMimeType: z.string().describe(
-                "Optional. The IANA standard MIME type of the response. The model will generate output that conforms to this MIME type. Supported values include 'text/plain' (default) and 'application/json'. The model needs to be prompted to output the appropriate response type, otherwise the behavior is undefined.",
-              ).optional(),
-              responseModalities: z.array(
-                z.enum(["MODALITY_UNSPECIFIED", "TEXT", "IMAGE", "AUDIO"]),
-              ).describe(
-                "Optional. The modalities of the response. The model will generate a response that includes all the specified modalities. For example, if this is set to `[TEXT, IMAGE]`, the response will include both text and an image.",
-              ).optional(),
-              responseSchema: z.object({
-                additionalProperties: z.string().describe(
-                  "Optional. If `type` is `OBJECT`, specifies how to handle properties not defined in `properties`. If it is a boolean `false`, no additional properties are allowed. If it is a schema, additional properties are allowed if they conform to the schema.",
-                ).optional(),
-                anyOf: z.array(z.string()).describe(
-                  "Optional. The instance must be valid against any (one or more) of the subschemas listed in `any_of`.",
-                ).optional(),
-                default: z.string().describe(
-                  "Optional. Default value to use if the field is not specified.",
-                ).optional(),
-                defs: z.record(z.string(), z.string()).describe(
-                  "Optional. `defs` provides a map of schema definitions that can be reused by `ref` elsewhere in the schema. Only allowed at root level of the schema.",
-                ).optional(),
-                description: z.string().describe(
-                  "Optional. Describes the data. The model uses this field to understand the purpose of the schema and how to use it. It is a best practice to provide a clear and descriptive explanation for the schema and its properties here, rather than in the prompt.",
-                ).optional(),
-                enum: z.array(z.string()).describe(
-                  'Optional. Possible values of the field. This field can be used to restrict a value to a fixed set of values. To mark a field as an enum, set `format` to `enum` and provide the list of possible values in `enum`. For example: 1. To define directions: `{type:STRING, format:enum, enum:["EAST", "NORTH", "SOUTH", "WEST"]}` 2. To define apartment numbers: `{type:INTEGER, format:enum, enum:["101", "201", "301"]}`',
-                ).optional(),
-                example: z.string().describe(
-                  "Optional. Example of an instance of this schema.",
-                ).optional(),
-                format: z.string().describe(
-                  "Optional. The format of the data. For `NUMBER` type, format can be `float` or `double`. For `INTEGER` type, format can be `int32` or `int64`. For `STRING` type, format can be `email`, `byte`, `date`, `date-time`, `password`, and other formats to further refine the data type.",
-                ).optional(),
-                items: z.string().describe(
-                  "Circular reference to GoogleCloudAiplatformV1Schema",
-                ).optional(),
-                maxItems: z.string().describe(
-                  "Optional. If type is `ARRAY`, `max_items` specifies the maximum number of items in an array.",
-                ).optional(),
-                maxLength: z.string().describe(
-                  "Optional. If type is `STRING`, `max_length` specifies the maximum length of the string.",
-                ).optional(),
-                maxProperties: z.string().describe(
-                  "Optional. If type is `OBJECT`, `max_properties` specifies the maximum number of properties that can be provided.",
-                ).optional(),
-                maximum: z.number().describe(
-                  "Optional. If type is `INTEGER` or `NUMBER`, `maximum` specifies the maximum allowed value.",
-                ).optional(),
-                minItems: z.string().describe(
-                  "Optional. If type is `ARRAY`, `min_items` specifies the minimum number of items in an array.",
-                ).optional(),
-                minLength: z.string().describe(
-                  "Optional. If type is `STRING`, `min_length` specifies the minimum length of the string.",
-                ).optional(),
-                minProperties: z.string().describe(
-                  "Optional. If type is `OBJECT`, `min_properties` specifies the minimum number of properties that can be provided.",
-                ).optional(),
-                minimum: z.number().describe(
-                  "Optional. If type is `INTEGER` or `NUMBER`, `minimum` specifies the minimum allowed value.",
-                ).optional(),
-                nullable: z.boolean().describe(
-                  "Optional. Indicates if the value of this field can be null.",
-                ).optional(),
-                pattern: z.string().describe(
-                  "Optional. If type is `STRING`, `pattern` specifies a regular expression that the string must match.",
-                ).optional(),
-                properties: z.record(z.string(), z.string()).describe(
-                  "Optional. If type is `OBJECT`, `properties` is a map of property names to schema definitions for each property of the object.",
-                ).optional(),
-                propertyOrdering: z.array(z.string()).describe(
-                  "Optional. Order of properties displayed or used where order matters. This is not a standard field in OpenAPI specification, but can be used to control the order of properties.",
-                ).optional(),
-                ref: z.string().describe(
-                  'Optional. Allows referencing another schema definition to use in place of this schema. The value must be a valid reference to a schema in `defs`. For example, the following schema defines a reference to a schema node named "Pet": type: object properties: pet: ref: #/defs/Pet defs: Pet: type: object properties: name: type: string The value of the "pet" property is a reference to the schema node named "Pet". See details in https://json-schema.org/understanding-json-schema/structuring',
-                ).optional(),
-                required: z.array(z.string()).describe(
-                  "Optional. If type is `OBJECT`, `required` lists the names of properties that must be present.",
-                ).optional(),
-                title: z.string().describe("Optional. Title for the schema.")
-                  .optional(),
-                type: z.enum([
-                  "TYPE_UNSPECIFIED",
-                  "STRING",
-                  "NUMBER",
-                  "INTEGER",
-                  "BOOLEAN",
-                  "ARRAY",
-                  "OBJECT",
-                  "NULL",
-                ]).describe("Optional. Data type of the schema field.")
-                  .optional(),
-              }).describe(
-                "Defines the schema of input and output data. This is a subset of the [OpenAPI 3.0 Schema Object](https://spec.openapis.org/oas/v3.0.3#schema-object).",
-              ).optional(),
-              routingConfig: z.object({
-                autoMode: z.object({
-                  modelRoutingPreference: z.enum([
-                    "UNKNOWN",
-                    "PRIORITIZE_QUALITY",
-                    "BALANCED",
-                    "PRIORITIZE_COST",
-                  ]).describe("The model routing preference.").optional(),
-                }).describe(
-                  "The configuration for automated routing. When automated routing is specified, the routing will be determined by the pretrained routing model and customer provided model routing preference.",
-                ).optional(),
-                manualMode: z.object({
-                  modelName: z.string().describe(
-                    "The name of the model to use. Only public LLM models are accepted.",
-                  ).optional(),
-                }).describe(
-                  "The configuration for manual routing. When manual routing is specified, the model will be selected based on the model name provided.",
-                ).optional(),
-              }).describe(
-                "The configuration for routing the request to a specific model. This can be used to control which model is used for the generation, either automatically or by specifying a model name.",
-              ).optional(),
-              seed: z.number().int().describe(
-                "Optional. A seed for the random number generator. By setting a seed, you can make the model's output mostly deterministic. For a given prompt and parameters (like temperature, top_p, etc.), the model will produce the same response every time. However, it's not a guaranteed absolute deterministic behavior. This is different from parameters like `temperature`, which control the *level* of randomness. `seed` ensures that the \"random\" choices the model makes are the same on every run, making it essential for testing and ensuring reproducible results.",
-              ).optional(),
-              speechConfig: z.object({
-                languageCode: z.string().describe(
-                  "Optional. The language code (ISO 639-1) for the speech synthesis.",
-                ).optional(),
-                multiSpeakerVoiceConfig: z.object({
-                  speakerVoiceConfigs: z.array(z.object({
-                    speaker: z.string().describe(
-                      "Required. The name of the speaker. This should be the same as the speaker name used in the prompt.",
-                    ).optional(),
-                    voiceConfig: z.object({
-                      prebuiltVoiceConfig: z.object({
-                        voiceName: z.string().describe(
-                          "The name of the prebuilt voice to use.",
-                        ).optional(),
-                      }).describe("Configuration for a prebuilt voice.")
-                        .optional(),
-                      replicatedVoiceConfig: z.object({
-                        mimeType: z.string().describe(
-                          "Optional. The mimetype of the voice sample. The only currently supported value is `audio/wav`. This represents 16-bit signed little-endian wav data, with a 24kHz sampling rate. `mime_type` will default to `audio/wav` if not set.",
-                        ).optional(),
-                        voiceSampleAudio: z.string().describe(
-                          "Optional. The sample of the custom voice.",
-                        ).optional(),
-                      }).describe(
-                        "The configuration for the replicated voice to use.",
-                      ).optional(),
-                    }).describe("Configuration for a voice.").optional(),
-                  })).describe(
-                    "Required. A list of configurations for the voices of the speakers. Exactly two speaker voice configurations must be provided.",
-                  ).optional(),
-                }).describe(
-                  "Configuration for a multi-speaker text-to-speech request.",
-                ).optional(),
-                voiceConfig: z.object({
-                  prebuiltVoiceConfig: z.object({
-                    voiceName: z.string().describe(
-                      "The name of the prebuilt voice to use.",
-                    ).optional(),
-                  }).describe("Configuration for a prebuilt voice.").optional(),
-                  replicatedVoiceConfig: z.object({
-                    mimeType: z.string().describe(
-                      "Optional. The mimetype of the voice sample. The only currently supported value is `audio/wav`. This represents 16-bit signed little-endian wav data, with a 24kHz sampling rate. `mime_type` will default to `audio/wav` if not set.",
-                    ).optional(),
-                    voiceSampleAudio: z.string().describe(
-                      "Optional. The sample of the custom voice.",
-                    ).optional(),
-                  }).describe(
-                    "The configuration for the replicated voice to use.",
-                  ).optional(),
-                }).describe("Configuration for a voice.").optional(),
-              }).describe("Configuration for speech generation.").optional(),
-              stopSequences: z.array(z.string()).describe(
-                'Optional. A list of character sequences that will stop the model from generating further tokens. If a stop sequence is generated, the output will end at that point. This is useful for controlling the length and structure of the output. For example, you can use ["\\n", "###"] to stop generation at a new line or a specific marker.',
-              ).optional(),
-              temperature: z.number().describe(
-                "Optional. Controls the randomness of the output. A higher temperature results in more creative and diverse responses, while a lower temperature makes the output more predictable and focused. The valid range is (0.0, 2.0].",
-              ).optional(),
-              thinkingConfig: z.object({
-                includeThoughts: z.boolean().describe(
-                  'Optional. If true, the model will include its thoughts in the response. "Thoughts" are the intermediate steps the model takes to arrive at the final response. They can provide insights into the model\'s reasoning process and help with debugging. If this is true, thoughts are returned only when available.',
-                ).optional(),
-                thinkingBudget: z.number().int().describe(
-                  "Optional. The token budget for the model's thinking process. The model will make a best effort to stay within this budget. This can be used to control the trade-off between response quality and latency.",
-                ).optional(),
-                thinkingLevel: z.enum([
-                  "THINKING_LEVEL_UNSPECIFIED",
-                  "LOW",
-                  "MEDIUM",
-                  "HIGH",
-                  "MINIMAL",
-                ]).describe(
-                  "Optional. The number of thoughts tokens that the model should generate.",
-                ).optional(),
-              }).describe(
-                'Configuration for the model\'s thinking features. "Thinking" is a process where the model breaks down a complex task into smaller, manageable steps. This allows the model to reason about the task, plan its approach, and execute the plan to generate a high-quality response.',
-              ).optional(),
-              topK: z.number().describe(
-                "Optional. Specifies the top-k sampling threshold. The model considers only the top k most probable tokens for the next token. This can be useful for generating more coherent and less random text. For example, a `top_k` of 40 means the model will choose the next word from the 40 most likely words.",
-              ).optional(),
-              topP: z.number().describe(
-                "Optional. Specifies the nucleus sampling threshold. The model considers only the smallest set of tokens whose cumulative probability is at least `top_p`. This helps generate more diverse and less repetitive responses. For example, a `top_p` of 0.9 means the model considers tokens until the cumulative probability of the tokens to select from reaches 0.9. It's recommended to adjust either temperature or `top_p`, but not both.",
-              ).optional(),
-            }).describe(
-              "Configuration for content generation. This message contains all the parameters that control how the model generates content. It allows you to influence the randomness, length, and structure of the output.",
-            ).optional(),
-            sampleCount: z.number().int().describe(
-              "Optional. Number of samples for each instance in the dataset. If not specified, the default is 4. Minimum value is 1, maximum value is 32.",
-            ).optional(),
-          }).describe("The autorater config used for the evaluation run.")
-            .optional(),
-          promptTemplate: z.string().describe(
+          modelConfig: z.unknown().describe(
+            "The autorater config used for the evaluation run.",
+          ).optional(),
+          promptTemplate: z.unknown().describe(
             "Optional. Template for the prompt used to generate rubrics. The details should be updated based on the most-recent recipe requirements.",
           ).optional(),
-          rubricContentType: z.enum([
-            "RUBRIC_CONTENT_TYPE_UNSPECIFIED",
-            "PROPERTY",
-            "NL_QUESTION_ANSWER",
-            "PYTHON_CODE_ASSERTION",
-          ]).describe("Optional. The type of rubric content to be generated.")
-            .optional(),
-          rubricTypeOntology: z.array(z.string()).describe(
+          rubricContentType: z.unknown().describe(
+            "Optional. The type of rubric content to be generated.",
+          ).optional(),
+          rubricTypeOntology: z.unknown().describe(
             "Optional. An optional, pre-defined list of allowed types for generated rubrics. If this field is provided, it implies `include_rubric_type` should be true, and the generated rubric types should be chosen from this ontology.",
           ).optional(),
         }).describe("Specification for how rubrics should be generated.")
@@ -6676,7 +1883,7 @@ const InputsSchema = z.object({
         metricSpecName: z.string().describe(
           'Required. The name of a pre-defined metric, such as "instruction_following_v1" or "text_quality_v1".',
         ).optional(),
-        parameters: z.record(z.string(), z.string()).describe(
+        parameters: z.record(z.string(), z.unknown()).describe(
           "Optional. The parameters needed to run the pre-defined metric.",
         ).optional(),
       }).describe("Specification for a pre-defined metric.").optional(),
@@ -6685,283 +1892,13 @@ const InputsSchema = z.object({
           "Optional. Resource name of the metric definition.",
         ).optional(),
         modelConfig: z.object({
-          autoraterModel: z.string().describe(
+          autoraterModel: z.unknown().describe(
             "Optional. The fully qualified name of the publisher model or tuned autorater endpoint to use. Publisher model format: `projects/{project}/locations/{location}/publishers/*/models/*` Tuned model endpoint format: `projects/{project}/locations/{location}/endpoints/{endpoint}`",
           ).optional(),
-          generationConfig: z.object({
-            audioTimestamp: z.boolean().describe(
-              "Optional. If enabled, audio timestamps will be included in the request to the model. This can be useful for synchronizing audio with other modalities in the response.",
-            ).optional(),
-            candidateCount: z.number().int().describe(
-              "Optional. The number of candidate responses to generate. A higher `candidate_count` can provide more options to choose from, but it also consumes more resources. This can be useful for generating a variety of responses and selecting the best one.",
-            ).optional(),
-            enableAffectiveDialog: z.boolean().describe(
-              "Optional. If enabled, the model will detect emotions and adapt its responses accordingly. For example, if the model detects that the user is frustrated, it may provide a more empathetic response.",
-            ).optional(),
-            frequencyPenalty: z.number().describe(
-              "Optional. Penalizes tokens based on their frequency in the generated text. A positive value helps to reduce the repetition of words and phrases. Valid values can range from [-2.0, 2.0].",
-            ).optional(),
-            imageConfig: z.object({
-              aspectRatio: z.string().describe(
-                'Optional. The desired aspect ratio for the generated images. The following aspect ratios are supported: "1:1" "2:3", "3:2" "3:4", "4:3" "4:5", "5:4" "9:16", "16:9" "21:9"',
-              ).optional(),
-              imageOutputOptions: z.object({
-                compressionQuality: z.number().int().describe(
-                  "Optional. The compression quality of the output image.",
-                ).optional(),
-                mimeType: z.string().describe(
-                  "Optional. The image format that the output should be saved as.",
-                ).optional(),
-              }).describe("The image output format for generated images.")
-                .optional(),
-              imageSize: z.string().describe(
-                "Optional. Specifies the size of generated images. Supported values are `1K`, `2K`, `4K`. If not specified, the model will use default value `1K`.",
-              ).optional(),
-              personGeneration: z.enum([
-                "PERSON_GENERATION_UNSPECIFIED",
-                "ALLOW_ALL",
-                "ALLOW_ADULT",
-                "ALLOW_NONE",
-              ]).describe(
-                "Optional. Controls whether the model can generate people.",
-              ).optional(),
-              prominentPeople: z.enum([
-                "PROMINENT_PEOPLE_UNSPECIFIED",
-                "ALLOW_PROMINENT_PEOPLE",
-                "BLOCK_PROMINENT_PEOPLE",
-              ]).describe(
-                "Optional. Controls whether prominent people (celebrities) generation is allowed. If used with personGeneration, personGeneration enum would take precedence. For instance, if ALLOW_NONE is set, all person generation would be blocked. If this field is unspecified, the default behavior is to allow prominent people.",
-              ).optional(),
-            }).describe(
-              "Configuration for image generation. This message allows you to control various aspects of image generation, such as the output format, aspect ratio, and whether the model can generate images of people.",
-            ).optional(),
-            logprobs: z.number().int().describe(
-              "Optional. The number of top log probabilities to return for each token. This can be used to see which other tokens were considered likely candidates for a given position. A higher value will return more options, but it will also increase the size of the response.",
-            ).optional(),
-            maxOutputTokens: z.number().int().describe(
-              "Optional. The maximum number of tokens to generate in the response. A token is approximately four characters. The default value varies by model. This parameter can be used to control the length of the generated text and prevent overly long responses.",
-            ).optional(),
-            mediaResolution: z.enum([
-              "MEDIA_RESOLUTION_UNSPECIFIED",
-              "MEDIA_RESOLUTION_LOW",
-              "MEDIA_RESOLUTION_MEDIUM",
-              "MEDIA_RESOLUTION_HIGH",
-            ]).describe(
-              "Optional. The token resolution at which input media content is sampled. This is used to control the trade-off between the quality of the response and the number of tokens used to represent the media. A higher resolution allows the model to perceive more detail, which can lead to a more nuanced response, but it will also use more tokens. This does not affect the image dimensions sent to the model.",
-            ).optional(),
-            presencePenalty: z.number().describe(
-              "Optional. Penalizes tokens that have already appeared in the generated text. A positive value encourages the model to generate more diverse and less repetitive text. Valid values can range from [-2.0, 2.0].",
-            ).optional(),
-            responseJsonSchema: z.string().describe(
-              "Optional. When this field is set, response_schema must be omitted and response_mime_type must be set to `application/json`.",
-            ).optional(),
-            responseLogprobs: z.boolean().describe(
-              "Optional. If set to true, the log probabilities of the output tokens are returned. Log probabilities are the logarithm of the probability of a token appearing in the output. A higher log probability means the token is more likely to be generated. This can be useful for analyzing the model's confidence in its own output and for debugging.",
-            ).optional(),
-            responseMimeType: z.string().describe(
-              "Optional. The IANA standard MIME type of the response. The model will generate output that conforms to this MIME type. Supported values include 'text/plain' (default) and 'application/json'. The model needs to be prompted to output the appropriate response type, otherwise the behavior is undefined.",
-            ).optional(),
-            responseModalities: z.array(
-              z.enum(["MODALITY_UNSPECIFIED", "TEXT", "IMAGE", "AUDIO"]),
-            ).describe(
-              "Optional. The modalities of the response. The model will generate a response that includes all the specified modalities. For example, if this is set to `[TEXT, IMAGE]`, the response will include both text and an image.",
-            ).optional(),
-            responseSchema: z.object({
-              additionalProperties: z.string().describe(
-                "Optional. If `type` is `OBJECT`, specifies how to handle properties not defined in `properties`. If it is a boolean `false`, no additional properties are allowed. If it is a schema, additional properties are allowed if they conform to the schema.",
-              ).optional(),
-              anyOf: z.array(z.string()).describe(
-                "Optional. The instance must be valid against any (one or more) of the subschemas listed in `any_of`.",
-              ).optional(),
-              default: z.string().describe(
-                "Optional. Default value to use if the field is not specified.",
-              ).optional(),
-              defs: z.record(z.string(), z.string()).describe(
-                "Optional. `defs` provides a map of schema definitions that can be reused by `ref` elsewhere in the schema. Only allowed at root level of the schema.",
-              ).optional(),
-              description: z.string().describe(
-                "Optional. Describes the data. The model uses this field to understand the purpose of the schema and how to use it. It is a best practice to provide a clear and descriptive explanation for the schema and its properties here, rather than in the prompt.",
-              ).optional(),
-              enum: z.array(z.string()).describe(
-                'Optional. Possible values of the field. This field can be used to restrict a value to a fixed set of values. To mark a field as an enum, set `format` to `enum` and provide the list of possible values in `enum`. For example: 1. To define directions: `{type:STRING, format:enum, enum:["EAST", "NORTH", "SOUTH", "WEST"]}` 2. To define apartment numbers: `{type:INTEGER, format:enum, enum:["101", "201", "301"]}`',
-              ).optional(),
-              example: z.string().describe(
-                "Optional. Example of an instance of this schema.",
-              ).optional(),
-              format: z.string().describe(
-                "Optional. The format of the data. For `NUMBER` type, format can be `float` or `double`. For `INTEGER` type, format can be `int32` or `int64`. For `STRING` type, format can be `email`, `byte`, `date`, `date-time`, `password`, and other formats to further refine the data type.",
-              ).optional(),
-              items: z.string().describe(
-                "Circular reference to GoogleCloudAiplatformV1Schema",
-              ).optional(),
-              maxItems: z.string().describe(
-                "Optional. If type is `ARRAY`, `max_items` specifies the maximum number of items in an array.",
-              ).optional(),
-              maxLength: z.string().describe(
-                "Optional. If type is `STRING`, `max_length` specifies the maximum length of the string.",
-              ).optional(),
-              maxProperties: z.string().describe(
-                "Optional. If type is `OBJECT`, `max_properties` specifies the maximum number of properties that can be provided.",
-              ).optional(),
-              maximum: z.number().describe(
-                "Optional. If type is `INTEGER` or `NUMBER`, `maximum` specifies the maximum allowed value.",
-              ).optional(),
-              minItems: z.string().describe(
-                "Optional. If type is `ARRAY`, `min_items` specifies the minimum number of items in an array.",
-              ).optional(),
-              minLength: z.string().describe(
-                "Optional. If type is `STRING`, `min_length` specifies the minimum length of the string.",
-              ).optional(),
-              minProperties: z.string().describe(
-                "Optional. If type is `OBJECT`, `min_properties` specifies the minimum number of properties that can be provided.",
-              ).optional(),
-              minimum: z.number().describe(
-                "Optional. If type is `INTEGER` or `NUMBER`, `minimum` specifies the minimum allowed value.",
-              ).optional(),
-              nullable: z.boolean().describe(
-                "Optional. Indicates if the value of this field can be null.",
-              ).optional(),
-              pattern: z.string().describe(
-                "Optional. If type is `STRING`, `pattern` specifies a regular expression that the string must match.",
-              ).optional(),
-              properties: z.record(z.string(), z.string()).describe(
-                "Optional. If type is `OBJECT`, `properties` is a map of property names to schema definitions for each property of the object.",
-              ).optional(),
-              propertyOrdering: z.array(z.string()).describe(
-                "Optional. Order of properties displayed or used where order matters. This is not a standard field in OpenAPI specification, but can be used to control the order of properties.",
-              ).optional(),
-              ref: z.string().describe(
-                'Optional. Allows referencing another schema definition to use in place of this schema. The value must be a valid reference to a schema in `defs`. For example, the following schema defines a reference to a schema node named "Pet": type: object properties: pet: ref: #/defs/Pet defs: Pet: type: object properties: name: type: string The value of the "pet" property is a reference to the schema node named "Pet". See details in https://json-schema.org/understanding-json-schema/structuring',
-              ).optional(),
-              required: z.array(z.string()).describe(
-                "Optional. If type is `OBJECT`, `required` lists the names of properties that must be present.",
-              ).optional(),
-              title: z.string().describe("Optional. Title for the schema.")
-                .optional(),
-              type: z.enum([
-                "TYPE_UNSPECIFIED",
-                "STRING",
-                "NUMBER",
-                "INTEGER",
-                "BOOLEAN",
-                "ARRAY",
-                "OBJECT",
-                "NULL",
-              ]).describe("Optional. Data type of the schema field.")
-                .optional(),
-            }).describe(
-              "Defines the schema of input and output data. This is a subset of the [OpenAPI 3.0 Schema Object](https://spec.openapis.org/oas/v3.0.3#schema-object).",
-            ).optional(),
-            routingConfig: z.object({
-              autoMode: z.object({
-                modelRoutingPreference: z.enum([
-                  "UNKNOWN",
-                  "PRIORITIZE_QUALITY",
-                  "BALANCED",
-                  "PRIORITIZE_COST",
-                ]).describe("The model routing preference.").optional(),
-              }).describe(
-                "The configuration for automated routing. When automated routing is specified, the routing will be determined by the pretrained routing model and customer provided model routing preference.",
-              ).optional(),
-              manualMode: z.object({
-                modelName: z.string().describe(
-                  "The name of the model to use. Only public LLM models are accepted.",
-                ).optional(),
-              }).describe(
-                "The configuration for manual routing. When manual routing is specified, the model will be selected based on the model name provided.",
-              ).optional(),
-            }).describe(
-              "The configuration for routing the request to a specific model. This can be used to control which model is used for the generation, either automatically or by specifying a model name.",
-            ).optional(),
-            seed: z.number().int().describe(
-              "Optional. A seed for the random number generator. By setting a seed, you can make the model's output mostly deterministic. For a given prompt and parameters (like temperature, top_p, etc.), the model will produce the same response every time. However, it's not a guaranteed absolute deterministic behavior. This is different from parameters like `temperature`, which control the *level* of randomness. `seed` ensures that the \"random\" choices the model makes are the same on every run, making it essential for testing and ensuring reproducible results.",
-            ).optional(),
-            speechConfig: z.object({
-              languageCode: z.string().describe(
-                "Optional. The language code (ISO 639-1) for the speech synthesis.",
-              ).optional(),
-              multiSpeakerVoiceConfig: z.object({
-                speakerVoiceConfigs: z.array(z.object({
-                  speaker: z.string().describe(
-                    "Required. The name of the speaker. This should be the same as the speaker name used in the prompt.",
-                  ).optional(),
-                  voiceConfig: z.object({
-                    prebuiltVoiceConfig: z.object({
-                      voiceName: z.string().describe(
-                        "The name of the prebuilt voice to use.",
-                      ).optional(),
-                    }).describe("Configuration for a prebuilt voice.")
-                      .optional(),
-                    replicatedVoiceConfig: z.object({
-                      mimeType: z.string().describe(
-                        "Optional. The mimetype of the voice sample. The only currently supported value is `audio/wav`. This represents 16-bit signed little-endian wav data, with a 24kHz sampling rate. `mime_type` will default to `audio/wav` if not set.",
-                      ).optional(),
-                      voiceSampleAudio: z.string().describe(
-                        "Optional. The sample of the custom voice.",
-                      ).optional(),
-                    }).describe(
-                      "The configuration for the replicated voice to use.",
-                    ).optional(),
-                  }).describe("Configuration for a voice.").optional(),
-                })).describe(
-                  "Required. A list of configurations for the voices of the speakers. Exactly two speaker voice configurations must be provided.",
-                ).optional(),
-              }).describe(
-                "Configuration for a multi-speaker text-to-speech request.",
-              ).optional(),
-              voiceConfig: z.object({
-                prebuiltVoiceConfig: z.object({
-                  voiceName: z.string().describe(
-                    "The name of the prebuilt voice to use.",
-                  ).optional(),
-                }).describe("Configuration for a prebuilt voice.").optional(),
-                replicatedVoiceConfig: z.object({
-                  mimeType: z.string().describe(
-                    "Optional. The mimetype of the voice sample. The only currently supported value is `audio/wav`. This represents 16-bit signed little-endian wav data, with a 24kHz sampling rate. `mime_type` will default to `audio/wav` if not set.",
-                  ).optional(),
-                  voiceSampleAudio: z.string().describe(
-                    "Optional. The sample of the custom voice.",
-                  ).optional(),
-                }).describe(
-                  "The configuration for the replicated voice to use.",
-                ).optional(),
-              }).describe("Configuration for a voice.").optional(),
-            }).describe("Configuration for speech generation.").optional(),
-            stopSequences: z.array(z.string()).describe(
-              'Optional. A list of character sequences that will stop the model from generating further tokens. If a stop sequence is generated, the output will end at that point. This is useful for controlling the length and structure of the output. For example, you can use ["\\n", "###"] to stop generation at a new line or a specific marker.',
-            ).optional(),
-            temperature: z.number().describe(
-              "Optional. Controls the randomness of the output. A higher temperature results in more creative and diverse responses, while a lower temperature makes the output more predictable and focused. The valid range is (0.0, 2.0].",
-            ).optional(),
-            thinkingConfig: z.object({
-              includeThoughts: z.boolean().describe(
-                'Optional. If true, the model will include its thoughts in the response. "Thoughts" are the intermediate steps the model takes to arrive at the final response. They can provide insights into the model\'s reasoning process and help with debugging. If this is true, thoughts are returned only when available.',
-              ).optional(),
-              thinkingBudget: z.number().int().describe(
-                "Optional. The token budget for the model's thinking process. The model will make a best effort to stay within this budget. This can be used to control the trade-off between response quality and latency.",
-              ).optional(),
-              thinkingLevel: z.enum([
-                "THINKING_LEVEL_UNSPECIFIED",
-                "LOW",
-                "MEDIUM",
-                "HIGH",
-                "MINIMAL",
-              ]).describe(
-                "Optional. The number of thoughts tokens that the model should generate.",
-              ).optional(),
-            }).describe(
-              'Configuration for the model\'s thinking features. "Thinking" is a process where the model breaks down a complex task into smaller, manageable steps. This allows the model to reason about the task, plan its approach, and execute the plan to generate a high-quality response.',
-            ).optional(),
-            topK: z.number().describe(
-              "Optional. Specifies the top-k sampling threshold. The model considers only the top k most probable tokens for the next token. This can be useful for generating more coherent and less random text. For example, a `top_k` of 40 means the model will choose the next word from the 40 most likely words.",
-            ).optional(),
-            topP: z.number().describe(
-              "Optional. Specifies the nucleus sampling threshold. The model considers only the smallest set of tokens whose cumulative probability is at least `top_p`. This helps generate more diverse and less repetitive responses. For example, a `top_p` of 0.9 means the model considers tokens until the cumulative probability of the tokens to select from reaches 0.9. It's recommended to adjust either temperature or `top_p`, but not both.",
-            ).optional(),
-          }).describe(
+          generationConfig: z.unknown().describe(
             "Configuration for content generation. This message contains all the parameters that control how the model generates content. It allows you to influence the randomness, length, and structure of the output.",
           ).optional(),
-          sampleCount: z.number().int().describe(
+          sampleCount: z.unknown().describe(
             "Optional. Number of samples for each instance in the dataset. If not specified, the default is 4. Minimum value is 1, maximum value is 32.",
           ).optional(),
         }).describe("The autorater config used for the evaluation run.")
@@ -6976,7 +1913,7 @@ const InputsSchema = z.object({
           "PYTHON_CODE_ASSERTION",
         ]).describe("Optional. The type of rubric content to be generated.")
           .optional(),
-        rubricTypeOntology: z.array(z.string()).describe(
+        rubricTypeOntology: z.array(z.unknown()).describe(
           "Optional. An optional, pre-defined list of allowed types for generated rubrics. If this field is provided, it implies `include_rubric_type` should be true, and the generated rubric types should be chosen from this ontology.",
         ).optional(),
       }).describe("Specification for how rubrics should be generated.")
@@ -7013,10 +1950,10 @@ const InputsSchema = z.object({
           "Optional. The resource name of the Agent Engine. Format: projects/{project}/locations/{location}/reasoningEngines/{reasoning_engine} For example: projects/123/locations/us-central1/reasoningEngines/456",
         ).optional(),
         sessionInput: z.object({
-          parameters: z.record(z.string(), z.string()).describe(
+          parameters: z.record(z.string(), z.unknown()).describe(
             'Optional. Additional parameters for the session, like app_name, etc. For example, {"app_name": "my-app"}.',
           ).optional(),
-          sessionState: z.record(z.string(), z.string()).describe(
+          sessionState: z.record(z.string(), z.unknown()).describe(
             "Optional. Session specific memory which stores key conversation points.",
           ).optional(),
           userId: z.string().describe(
@@ -7028,273 +1965,70 @@ const InputsSchema = z.object({
             "Maximum number of invocations allowed by the multi-turn agent scraping. This property allows us to stop a run-off conversation, where the agent and the user simulator get into a never ending loop. The initial fixed prompt is also counted as an invocation.",
           ).optional(),
           modelConfig: z.object({
-            audioTimestamp: z.boolean().describe(
+            audioTimestamp: z.unknown().describe(
               "Optional. If enabled, audio timestamps will be included in the request to the model. This can be useful for synchronizing audio with other modalities in the response.",
             ).optional(),
-            candidateCount: z.number().int().describe(
+            candidateCount: z.unknown().describe(
               "Optional. The number of candidate responses to generate. A higher `candidate_count` can provide more options to choose from, but it also consumes more resources. This can be useful for generating a variety of responses and selecting the best one.",
             ).optional(),
-            enableAffectiveDialog: z.boolean().describe(
+            enableAffectiveDialog: z.unknown().describe(
               "Optional. If enabled, the model will detect emotions and adapt its responses accordingly. For example, if the model detects that the user is frustrated, it may provide a more empathetic response.",
             ).optional(),
-            frequencyPenalty: z.number().describe(
+            frequencyPenalty: z.unknown().describe(
               "Optional. Penalizes tokens based on their frequency in the generated text. A positive value helps to reduce the repetition of words and phrases. Valid values can range from [-2.0, 2.0].",
             ).optional(),
-            imageConfig: z.object({
-              aspectRatio: z.string().describe(
-                'Optional. The desired aspect ratio for the generated images. The following aspect ratios are supported: "1:1" "2:3", "3:2" "3:4", "4:3" "4:5", "5:4" "9:16", "16:9" "21:9"',
-              ).optional(),
-              imageOutputOptions: z.object({
-                compressionQuality: z.number().int().describe(
-                  "Optional. The compression quality of the output image.",
-                ).optional(),
-                mimeType: z.string().describe(
-                  "Optional. The image format that the output should be saved as.",
-                ).optional(),
-              }).describe("The image output format for generated images.")
-                .optional(),
-              imageSize: z.string().describe(
-                "Optional. Specifies the size of generated images. Supported values are `1K`, `2K`, `4K`. If not specified, the model will use default value `1K`.",
-              ).optional(),
-              personGeneration: z.enum([
-                "PERSON_GENERATION_UNSPECIFIED",
-                "ALLOW_ALL",
-                "ALLOW_ADULT",
-                "ALLOW_NONE",
-              ]).describe(
-                "Optional. Controls whether the model can generate people.",
-              ).optional(),
-              prominentPeople: z.enum([
-                "PROMINENT_PEOPLE_UNSPECIFIED",
-                "ALLOW_PROMINENT_PEOPLE",
-                "BLOCK_PROMINENT_PEOPLE",
-              ]).describe(
-                "Optional. Controls whether prominent people (celebrities) generation is allowed. If used with personGeneration, personGeneration enum would take precedence. For instance, if ALLOW_NONE is set, all person generation would be blocked. If this field is unspecified, the default behavior is to allow prominent people.",
-              ).optional(),
-            }).describe(
+            imageConfig: z.unknown().describe(
               "Configuration for image generation. This message allows you to control various aspects of image generation, such as the output format, aspect ratio, and whether the model can generate images of people.",
             ).optional(),
-            logprobs: z.number().int().describe(
+            logprobs: z.unknown().describe(
               "Optional. The number of top log probabilities to return for each token. This can be used to see which other tokens were considered likely candidates for a given position. A higher value will return more options, but it will also increase the size of the response.",
             ).optional(),
-            maxOutputTokens: z.number().int().describe(
+            maxOutputTokens: z.unknown().describe(
               "Optional. The maximum number of tokens to generate in the response. A token is approximately four characters. The default value varies by model. This parameter can be used to control the length of the generated text and prevent overly long responses.",
             ).optional(),
-            mediaResolution: z.enum([
-              "MEDIA_RESOLUTION_UNSPECIFIED",
-              "MEDIA_RESOLUTION_LOW",
-              "MEDIA_RESOLUTION_MEDIUM",
-              "MEDIA_RESOLUTION_HIGH",
-            ]).describe(
+            mediaResolution: z.unknown().describe(
               "Optional. The token resolution at which input media content is sampled. This is used to control the trade-off between the quality of the response and the number of tokens used to represent the media. A higher resolution allows the model to perceive more detail, which can lead to a more nuanced response, but it will also use more tokens. This does not affect the image dimensions sent to the model.",
             ).optional(),
-            presencePenalty: z.number().describe(
+            presencePenalty: z.unknown().describe(
               "Optional. Penalizes tokens that have already appeared in the generated text. A positive value encourages the model to generate more diverse and less repetitive text. Valid values can range from [-2.0, 2.0].",
             ).optional(),
-            responseJsonSchema: z.string().describe(
+            responseJsonSchema: z.unknown().describe(
               "Optional. When this field is set, response_schema must be omitted and response_mime_type must be set to `application/json`.",
             ).optional(),
-            responseLogprobs: z.boolean().describe(
+            responseLogprobs: z.unknown().describe(
               "Optional. If set to true, the log probabilities of the output tokens are returned. Log probabilities are the logarithm of the probability of a token appearing in the output. A higher log probability means the token is more likely to be generated. This can be useful for analyzing the model's confidence in its own output and for debugging.",
             ).optional(),
-            responseMimeType: z.string().describe(
+            responseMimeType: z.unknown().describe(
               "Optional. The IANA standard MIME type of the response. The model will generate output that conforms to this MIME type. Supported values include 'text/plain' (default) and 'application/json'. The model needs to be prompted to output the appropriate response type, otherwise the behavior is undefined.",
             ).optional(),
-            responseModalities: z.array(
-              z.enum(["MODALITY_UNSPECIFIED", "TEXT", "IMAGE", "AUDIO"]),
-            ).describe(
+            responseModalities: z.unknown().describe(
               "Optional. The modalities of the response. The model will generate a response that includes all the specified modalities. For example, if this is set to `[TEXT, IMAGE]`, the response will include both text and an image.",
             ).optional(),
-            responseSchema: z.object({
-              additionalProperties: z.string().describe(
-                "Optional. If `type` is `OBJECT`, specifies how to handle properties not defined in `properties`. If it is a boolean `false`, no additional properties are allowed. If it is a schema, additional properties are allowed if they conform to the schema.",
-              ).optional(),
-              anyOf: z.array(z.string()).describe(
-                "Optional. The instance must be valid against any (one or more) of the subschemas listed in `any_of`.",
-              ).optional(),
-              default: z.string().describe(
-                "Optional. Default value to use if the field is not specified.",
-              ).optional(),
-              defs: z.record(z.string(), z.string()).describe(
-                "Optional. `defs` provides a map of schema definitions that can be reused by `ref` elsewhere in the schema. Only allowed at root level of the schema.",
-              ).optional(),
-              description: z.string().describe(
-                "Optional. Describes the data. The model uses this field to understand the purpose of the schema and how to use it. It is a best practice to provide a clear and descriptive explanation for the schema and its properties here, rather than in the prompt.",
-              ).optional(),
-              enum: z.array(z.string()).describe(
-                'Optional. Possible values of the field. This field can be used to restrict a value to a fixed set of values. To mark a field as an enum, set `format` to `enum` and provide the list of possible values in `enum`. For example: 1. To define directions: `{type:STRING, format:enum, enum:["EAST", "NORTH", "SOUTH", "WEST"]}` 2. To define apartment numbers: `{type:INTEGER, format:enum, enum:["101", "201", "301"]}`',
-              ).optional(),
-              example: z.string().describe(
-                "Optional. Example of an instance of this schema.",
-              ).optional(),
-              format: z.string().describe(
-                "Optional. The format of the data. For `NUMBER` type, format can be `float` or `double`. For `INTEGER` type, format can be `int32` or `int64`. For `STRING` type, format can be `email`, `byte`, `date`, `date-time`, `password`, and other formats to further refine the data type.",
-              ).optional(),
-              items: z.string().describe(
-                "Circular reference to GoogleCloudAiplatformV1Schema",
-              ).optional(),
-              maxItems: z.string().describe(
-                "Optional. If type is `ARRAY`, `max_items` specifies the maximum number of items in an array.",
-              ).optional(),
-              maxLength: z.string().describe(
-                "Optional. If type is `STRING`, `max_length` specifies the maximum length of the string.",
-              ).optional(),
-              maxProperties: z.string().describe(
-                "Optional. If type is `OBJECT`, `max_properties` specifies the maximum number of properties that can be provided.",
-              ).optional(),
-              maximum: z.number().describe(
-                "Optional. If type is `INTEGER` or `NUMBER`, `maximum` specifies the maximum allowed value.",
-              ).optional(),
-              minItems: z.string().describe(
-                "Optional. If type is `ARRAY`, `min_items` specifies the minimum number of items in an array.",
-              ).optional(),
-              minLength: z.string().describe(
-                "Optional. If type is `STRING`, `min_length` specifies the minimum length of the string.",
-              ).optional(),
-              minProperties: z.string().describe(
-                "Optional. If type is `OBJECT`, `min_properties` specifies the minimum number of properties that can be provided.",
-              ).optional(),
-              minimum: z.number().describe(
-                "Optional. If type is `INTEGER` or `NUMBER`, `minimum` specifies the minimum allowed value.",
-              ).optional(),
-              nullable: z.boolean().describe(
-                "Optional. Indicates if the value of this field can be null.",
-              ).optional(),
-              pattern: z.string().describe(
-                "Optional. If type is `STRING`, `pattern` specifies a regular expression that the string must match.",
-              ).optional(),
-              properties: z.record(z.string(), z.string()).describe(
-                "Optional. If type is `OBJECT`, `properties` is a map of property names to schema definitions for each property of the object.",
-              ).optional(),
-              propertyOrdering: z.array(z.string()).describe(
-                "Optional. Order of properties displayed or used where order matters. This is not a standard field in OpenAPI specification, but can be used to control the order of properties.",
-              ).optional(),
-              ref: z.string().describe(
-                'Optional. Allows referencing another schema definition to use in place of this schema. The value must be a valid reference to a schema in `defs`. For example, the following schema defines a reference to a schema node named "Pet": type: object properties: pet: ref: #/defs/Pet defs: Pet: type: object properties: name: type: string The value of the "pet" property is a reference to the schema node named "Pet". See details in https://json-schema.org/understanding-json-schema/structuring',
-              ).optional(),
-              required: z.array(z.string()).describe(
-                "Optional. If type is `OBJECT`, `required` lists the names of properties that must be present.",
-              ).optional(),
-              title: z.string().describe("Optional. Title for the schema.")
-                .optional(),
-              type: z.enum([
-                "TYPE_UNSPECIFIED",
-                "STRING",
-                "NUMBER",
-                "INTEGER",
-                "BOOLEAN",
-                "ARRAY",
-                "OBJECT",
-                "NULL",
-              ]).describe("Optional. Data type of the schema field.")
-                .optional(),
-            }).describe(
+            responseSchema: z.unknown().describe(
               "Defines the schema of input and output data. This is a subset of the [OpenAPI 3.0 Schema Object](https://spec.openapis.org/oas/v3.0.3#schema-object).",
             ).optional(),
-            routingConfig: z.object({
-              autoMode: z.object({
-                modelRoutingPreference: z.enum([
-                  "UNKNOWN",
-                  "PRIORITIZE_QUALITY",
-                  "BALANCED",
-                  "PRIORITIZE_COST",
-                ]).describe("The model routing preference.").optional(),
-              }).describe(
-                "The configuration for automated routing. When automated routing is specified, the routing will be determined by the pretrained routing model and customer provided model routing preference.",
-              ).optional(),
-              manualMode: z.object({
-                modelName: z.string().describe(
-                  "The name of the model to use. Only public LLM models are accepted.",
-                ).optional(),
-              }).describe(
-                "The configuration for manual routing. When manual routing is specified, the model will be selected based on the model name provided.",
-              ).optional(),
-            }).describe(
+            routingConfig: z.unknown().describe(
               "The configuration for routing the request to a specific model. This can be used to control which model is used for the generation, either automatically or by specifying a model name.",
             ).optional(),
-            seed: z.number().int().describe(
+            seed: z.unknown().describe(
               "Optional. A seed for the random number generator. By setting a seed, you can make the model's output mostly deterministic. For a given prompt and parameters (like temperature, top_p, etc.), the model will produce the same response every time. However, it's not a guaranteed absolute deterministic behavior. This is different from parameters like `temperature`, which control the *level* of randomness. `seed` ensures that the \"random\" choices the model makes are the same on every run, making it essential for testing and ensuring reproducible results.",
             ).optional(),
-            speechConfig: z.object({
-              languageCode: z.string().describe(
-                "Optional. The language code (ISO 639-1) for the speech synthesis.",
-              ).optional(),
-              multiSpeakerVoiceConfig: z.object({
-                speakerVoiceConfigs: z.array(z.object({
-                  speaker: z.string().describe(
-                    "Required. The name of the speaker. This should be the same as the speaker name used in the prompt.",
-                  ).optional(),
-                  voiceConfig: z.object({
-                    prebuiltVoiceConfig: z.object({
-                      voiceName: z.string().describe(
-                        "The name of the prebuilt voice to use.",
-                      ).optional(),
-                    }).describe("Configuration for a prebuilt voice.")
-                      .optional(),
-                    replicatedVoiceConfig: z.object({
-                      mimeType: z.string().describe(
-                        "Optional. The mimetype of the voice sample. The only currently supported value is `audio/wav`. This represents 16-bit signed little-endian wav data, with a 24kHz sampling rate. `mime_type` will default to `audio/wav` if not set.",
-                      ).optional(),
-                      voiceSampleAudio: z.string().describe(
-                        "Optional. The sample of the custom voice.",
-                      ).optional(),
-                    }).describe(
-                      "The configuration for the replicated voice to use.",
-                    ).optional(),
-                  }).describe("Configuration for a voice.").optional(),
-                })).describe(
-                  "Required. A list of configurations for the voices of the speakers. Exactly two speaker voice configurations must be provided.",
-                ).optional(),
-              }).describe(
-                "Configuration for a multi-speaker text-to-speech request.",
-              ).optional(),
-              voiceConfig: z.object({
-                prebuiltVoiceConfig: z.object({
-                  voiceName: z.string().describe(
-                    "The name of the prebuilt voice to use.",
-                  ).optional(),
-                }).describe("Configuration for a prebuilt voice.").optional(),
-                replicatedVoiceConfig: z.object({
-                  mimeType: z.string().describe(
-                    "Optional. The mimetype of the voice sample. The only currently supported value is `audio/wav`. This represents 16-bit signed little-endian wav data, with a 24kHz sampling rate. `mime_type` will default to `audio/wav` if not set.",
-                  ).optional(),
-                  voiceSampleAudio: z.string().describe(
-                    "Optional. The sample of the custom voice.",
-                  ).optional(),
-                }).describe(
-                  "The configuration for the replicated voice to use.",
-                ).optional(),
-              }).describe("Configuration for a voice.").optional(),
-            }).describe("Configuration for speech generation.").optional(),
-            stopSequences: z.array(z.string()).describe(
+            speechConfig: z.unknown().describe(
+              "Configuration for speech generation.",
+            ).optional(),
+            stopSequences: z.unknown().describe(
               'Optional. A list of character sequences that will stop the model from generating further tokens. If a stop sequence is generated, the output will end at that point. This is useful for controlling the length and structure of the output. For example, you can use ["\\n", "###"] to stop generation at a new line or a specific marker.',
             ).optional(),
-            temperature: z.number().describe(
+            temperature: z.unknown().describe(
               "Optional. Controls the randomness of the output. A higher temperature results in more creative and diverse responses, while a lower temperature makes the output more predictable and focused. The valid range is (0.0, 2.0].",
             ).optional(),
-            thinkingConfig: z.object({
-              includeThoughts: z.boolean().describe(
-                'Optional. If true, the model will include its thoughts in the response. "Thoughts" are the intermediate steps the model takes to arrive at the final response. They can provide insights into the model\'s reasoning process and help with debugging. If this is true, thoughts are returned only when available.',
-              ).optional(),
-              thinkingBudget: z.number().int().describe(
-                "Optional. The token budget for the model's thinking process. The model will make a best effort to stay within this budget. This can be used to control the trade-off between response quality and latency.",
-              ).optional(),
-              thinkingLevel: z.enum([
-                "THINKING_LEVEL_UNSPECIFIED",
-                "LOW",
-                "MEDIUM",
-                "HIGH",
-                "MINIMAL",
-              ]).describe(
-                "Optional. The number of thoughts tokens that the model should generate.",
-              ).optional(),
-            }).describe(
+            thinkingConfig: z.unknown().describe(
               'Configuration for the model\'s thinking features. "Thinking" is a process where the model breaks down a complex task into smaller, manageable steps. This allows the model to reason about the task, plan its approach, and execute the plan to generate a high-quality response.',
             ).optional(),
-            topK: z.number().describe(
+            topK: z.unknown().describe(
               "Optional. Specifies the top-k sampling threshold. The model considers only the top k most probable tokens for the next token. This can be useful for generating more coherent and less random text. For example, a `top_k` of 40 means the model will choose the next word from the 40 most likely words.",
             ).optional(),
-            topP: z.number().describe(
+            topP: z.unknown().describe(
               "Optional. Specifies the nucleus sampling threshold. The model considers only the smallest set of tokens whose cumulative probability is at least `top_p`. This helps generate more diverse and less repetitive responses. For example, a `top_p` of 0.9 means the model considers tokens until the cumulative probability of the tokens to select from reaches 0.9. It's recommended to adjust either temperature or `top_p`, but not both.",
             ).optional(),
           }).describe(
@@ -7325,10 +2059,10 @@ const InputsSchema = z.object({
             'Optional. The desired aspect ratio for the generated images. The following aspect ratios are supported: "1:1" "2:3", "3:2" "3:4", "4:3" "4:5", "5:4" "9:16", "16:9" "21:9"',
           ).optional(),
           imageOutputOptions: z.object({
-            compressionQuality: z.number().int().describe(
+            compressionQuality: z.unknown().describe(
               "Optional. The compression quality of the output image.",
             ).optional(),
-            mimeType: z.string().describe(
+            mimeType: z.unknown().describe(
               "Optional. The image format that the output should be saved as.",
             ).optional(),
           }).describe("The image output format for generated images.")
@@ -7389,19 +2123,19 @@ const InputsSchema = z.object({
           additionalProperties: z.string().describe(
             "Optional. If `type` is `OBJECT`, specifies how to handle properties not defined in `properties`. If it is a boolean `false`, no additional properties are allowed. If it is a schema, additional properties are allowed if they conform to the schema.",
           ).optional(),
-          anyOf: z.array(z.string()).describe(
+          anyOf: z.array(z.unknown()).describe(
             "Optional. The instance must be valid against any (one or more) of the subschemas listed in `any_of`.",
           ).optional(),
           default: z.string().describe(
             "Optional. Default value to use if the field is not specified.",
           ).optional(),
-          defs: z.record(z.string(), z.string()).describe(
+          defs: z.record(z.string(), z.unknown()).describe(
             "Optional. `defs` provides a map of schema definitions that can be reused by `ref` elsewhere in the schema. Only allowed at root level of the schema.",
           ).optional(),
           description: z.string().describe(
             "Optional. Describes the data. The model uses this field to understand the purpose of the schema and how to use it. It is a best practice to provide a clear and descriptive explanation for the schema and its properties here, rather than in the prompt.",
           ).optional(),
-          enum: z.array(z.string()).describe(
+          enum: z.array(z.unknown()).describe(
             'Optional. Possible values of the field. This field can be used to restrict a value to a fixed set of values. To mark a field as an enum, set `format` to `enum` and provide the list of possible values in `enum`. For example: 1. To define directions: `{type:STRING, format:enum, enum:["EAST", "NORTH", "SOUTH", "WEST"]}` 2. To define apartment numbers: `{type:INTEGER, format:enum, enum:["101", "201", "301"]}`',
           ).optional(),
           example: z.string().describe(
@@ -7443,16 +2177,16 @@ const InputsSchema = z.object({
           pattern: z.string().describe(
             "Optional. If type is `STRING`, `pattern` specifies a regular expression that the string must match.",
           ).optional(),
-          properties: z.record(z.string(), z.string()).describe(
+          properties: z.record(z.string(), z.unknown()).describe(
             "Optional. If type is `OBJECT`, `properties` is a map of property names to schema definitions for each property of the object.",
           ).optional(),
-          propertyOrdering: z.array(z.string()).describe(
+          propertyOrdering: z.array(z.unknown()).describe(
             "Optional. Order of properties displayed or used where order matters. This is not a standard field in OpenAPI specification, but can be used to control the order of properties.",
           ).optional(),
           ref: z.string().describe(
             'Optional. Allows referencing another schema definition to use in place of this schema. The value must be a valid reference to a schema in `defs`. For example, the following schema defines a reference to a schema node named "Pet": type: object properties: pet: ref: #/defs/Pet defs: Pet: type: object properties: name: type: string The value of the "pet" property is a reference to the schema node named "Pet". See details in https://json-schema.org/understanding-json-schema/structuring',
           ).optional(),
-          required: z.array(z.string()).describe(
+          required: z.array(z.unknown()).describe(
             "Optional. If type is `OBJECT`, `required` lists the names of properties that must be present.",
           ).optional(),
           title: z.string().describe("Optional. Title for the schema.")
@@ -7472,17 +2206,14 @@ const InputsSchema = z.object({
         ).optional(),
         routingConfig: z.object({
           autoMode: z.object({
-            modelRoutingPreference: z.enum([
-              "UNKNOWN",
-              "PRIORITIZE_QUALITY",
-              "BALANCED",
-              "PRIORITIZE_COST",
-            ]).describe("The model routing preference.").optional(),
+            modelRoutingPreference: z.unknown().describe(
+              "The model routing preference.",
+            ).optional(),
           }).describe(
             "The configuration for automated routing. When automated routing is specified, the routing will be determined by the pretrained routing model and customer provided model routing preference.",
           ).optional(),
           manualMode: z.object({
-            modelName: z.string().describe(
+            modelName: z.unknown().describe(
               "The name of the model to use. Only public LLM models are accepted.",
             ).optional(),
           }).describe(
@@ -7499,48 +2230,19 @@ const InputsSchema = z.object({
             "Optional. The language code (ISO 639-1) for the speech synthesis.",
           ).optional(),
           multiSpeakerVoiceConfig: z.object({
-            speakerVoiceConfigs: z.array(z.object({
-              speaker: z.string().describe(
-                "Required. The name of the speaker. This should be the same as the speaker name used in the prompt.",
-              ).optional(),
-              voiceConfig: z.object({
-                prebuiltVoiceConfig: z.object({
-                  voiceName: z.string().describe(
-                    "The name of the prebuilt voice to use.",
-                  ).optional(),
-                }).describe("Configuration for a prebuilt voice.").optional(),
-                replicatedVoiceConfig: z.object({
-                  mimeType: z.string().describe(
-                    "Optional. The mimetype of the voice sample. The only currently supported value is `audio/wav`. This represents 16-bit signed little-endian wav data, with a 24kHz sampling rate. `mime_type` will default to `audio/wav` if not set.",
-                  ).optional(),
-                  voiceSampleAudio: z.string().describe(
-                    "Optional. The sample of the custom voice.",
-                  ).optional(),
-                }).describe(
-                  "The configuration for the replicated voice to use.",
-                ).optional(),
-              }).describe("Configuration for a voice.").optional(),
-            })).describe(
+            speakerVoiceConfigs: z.unknown().describe(
               "Required. A list of configurations for the voices of the speakers. Exactly two speaker voice configurations must be provided.",
             ).optional(),
           }).describe(
             "Configuration for a multi-speaker text-to-speech request.",
           ).optional(),
           voiceConfig: z.object({
-            prebuiltVoiceConfig: z.object({
-              voiceName: z.string().describe(
-                "The name of the prebuilt voice to use.",
-              ).optional(),
-            }).describe("Configuration for a prebuilt voice.").optional(),
-            replicatedVoiceConfig: z.object({
-              mimeType: z.string().describe(
-                "Optional. The mimetype of the voice sample. The only currently supported value is `audio/wav`. This represents 16-bit signed little-endian wav data, with a 24kHz sampling rate. `mime_type` will default to `audio/wav` if not set.",
-              ).optional(),
-              voiceSampleAudio: z.string().describe(
-                "Optional. The sample of the custom voice.",
-              ).optional(),
-            }).describe("The configuration for the replicated voice to use.")
-              .optional(),
+            prebuiltVoiceConfig: z.unknown().describe(
+              "Configuration for a prebuilt voice.",
+            ).optional(),
+            replicatedVoiceConfig: z.unknown().describe(
+              "The configuration for the replicated voice to use.",
+            ).optional(),
           }).describe("Configuration for a voice.").optional(),
         }).describe("Configuration for speech generation.").optional(),
         stopSequences: z.array(z.string()).describe(
@@ -7600,7 +2302,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/aiplatform/evaluationruns",
-  version: "2026.04.03.3",
+  version: "2026.04.04.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -7624,6 +2326,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.3",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.04.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

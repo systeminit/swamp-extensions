@@ -173,19 +173,19 @@ const StateSchema = z.object({
           path: z.string(),
         }),
         wordList: z.object({
-          words: z.array(z.string()),
+          words: z.array(z.unknown()),
         }),
       }),
       displayName: z.string(),
       largeCustomDictionary: z.object({
         bigQueryField: z.object({
           field: z.object({
-            name: z.string(),
+            name: z.unknown(),
           }),
           table: z.object({
-            datasetId: z.string(),
-            projectId: z.string(),
-            tableId: z.string(),
+            datasetId: z.unknown(),
+            projectId: z.unknown(),
+            tableId: z.unknown(),
           }),
         }),
         cloudStorageFileSet: z.object({
@@ -204,7 +204,7 @@ const StateSchema = z.object({
     errors: z.array(z.object({
       details: z.object({
         code: z.number(),
-        details: z.array(z.record(z.string(), z.unknown())),
+        details: z.array(z.unknown()),
         message: z.string(),
       }),
       extraInfo: z.string(),
@@ -223,45 +223,39 @@ const StateSchema = z.object({
       description: z.string(),
       dictionary: z.object({
         cloudStoragePath: z.object({
-          path: z.string(),
+          path: z.unknown(),
         }),
         wordList: z.object({
-          words: z.array(z.string()),
+          words: z.unknown(),
         }),
       }),
       displayName: z.string(),
       largeCustomDictionary: z.object({
         bigQueryField: z.object({
-          field: z.object({
-            name: z.string(),
-          }),
-          table: z.object({
-            datasetId: z.string(),
-            projectId: z.string(),
-            tableId: z.string(),
-          }),
+          field: z.unknown(),
+          table: z.unknown(),
         }),
         cloudStorageFileSet: z.object({
-          url: z.string(),
+          url: z.unknown(),
         }),
         outputPath: z.object({
-          path: z.string(),
+          path: z.unknown(),
         }),
       }),
       regex: z.object({
-        groupIndexes: z.array(z.number()),
+        groupIndexes: z.array(z.unknown()),
         pattern: z.string(),
       }),
     }),
     createTime: z.string(),
     errors: z.array(z.object({
       details: z.object({
-        code: z.number(),
-        details: z.array(z.record(z.string(), z.unknown())),
-        message: z.string(),
+        code: z.unknown(),
+        details: z.unknown(),
+        message: z.unknown(),
       }),
       extraInfo: z.string(),
-      timestamps: z.array(z.string()),
+      timestamps: z.array(z.unknown()),
     })),
     state: z.string(),
     stats: z.object({
@@ -358,7 +352,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/dlp/storedinfotypes",
-  version: "2026.04.03.3",
+  version: "2026.04.04.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -382,6 +376,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.3",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.04.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

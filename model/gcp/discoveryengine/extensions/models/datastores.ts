@@ -269,22 +269,22 @@ const GlobalArgsSchema = z.object({
           enableTableAnnotation: z.boolean().describe(
             "Optional. If true, the LLM based annotation is added to the table during parsing.",
           ).optional(),
-          excludeHtmlClasses: z.array(z.string()).describe(
+          excludeHtmlClasses: z.array(z.unknown()).describe(
             "Optional. List of HTML classes to exclude from the parsed content.",
           ).optional(),
-          excludeHtmlElements: z.array(z.string()).describe(
+          excludeHtmlElements: z.array(z.unknown()).describe(
             "Optional. List of HTML elements to exclude from the parsed content.",
           ).optional(),
-          excludeHtmlIds: z.array(z.string()).describe(
+          excludeHtmlIds: z.array(z.unknown()).describe(
             "Optional. List of HTML ids to exclude from the parsed content.",
           ).optional(),
-          structuredContentTypes: z.array(z.string()).describe(
+          structuredContentTypes: z.array(z.unknown()).describe(
             "Optional. Contains the required structure types to extract from the document. Supported values: * `shareholder-structure`",
           ).optional(),
         }).describe("The layout parsing configurations for documents.")
           .optional(),
         ocrParsingConfig: z.object({
-          enhancedDocumentElements: z.array(z.string()).describe(
+          enhancedDocumentElements: z.array(z.unknown()).describe(
             "[DEPRECATED] This field is deprecated. To use the additional enhanced document elements processing, please switch to `layout_parsing_config`.",
           ).optional(),
           useNativeText: z.boolean().describe(
@@ -741,22 +741,22 @@ const InputsSchema = z.object({
           enableTableAnnotation: z.boolean().describe(
             "Optional. If true, the LLM based annotation is added to the table during parsing.",
           ).optional(),
-          excludeHtmlClasses: z.array(z.string()).describe(
+          excludeHtmlClasses: z.array(z.unknown()).describe(
             "Optional. List of HTML classes to exclude from the parsed content.",
           ).optional(),
-          excludeHtmlElements: z.array(z.string()).describe(
+          excludeHtmlElements: z.array(z.unknown()).describe(
             "Optional. List of HTML elements to exclude from the parsed content.",
           ).optional(),
-          excludeHtmlIds: z.array(z.string()).describe(
+          excludeHtmlIds: z.array(z.unknown()).describe(
             "Optional. List of HTML ids to exclude from the parsed content.",
           ).optional(),
-          structuredContentTypes: z.array(z.string()).describe(
+          structuredContentTypes: z.array(z.unknown()).describe(
             "Optional. Contains the required structure types to extract from the document. Supported values: * `shareholder-structure`",
           ).optional(),
         }).describe("The layout parsing configurations for documents.")
           .optional(),
         ocrParsingConfig: z.object({
-          enhancedDocumentElements: z.array(z.string()).describe(
+          enhancedDocumentElements: z.array(z.unknown()).describe(
             "[DEPRECATED] This field is deprecated. To use the additional enhanced document elements processing, please switch to `layout_parsing_config`.",
           ).optional(),
           useNativeText: z.boolean().describe(
@@ -930,7 +930,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/discoveryengine/datastores",
-  version: "2026.04.03.3",
+  version: "2026.04.04.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -954,6 +954,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.3",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.04.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

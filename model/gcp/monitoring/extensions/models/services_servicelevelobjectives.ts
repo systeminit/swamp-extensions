@@ -174,17 +174,17 @@ const GlobalArgsSchema = z.object({
             "Future parameters for the availability SLI.",
           ).optional(),
           latency: z.object({
-            threshold: z.string().describe(
+            threshold: z.unknown().describe(
               "Good service is defined to be the count of requests made to this service that return in no more than threshold.",
             ).optional(),
           }).describe("Parameters for a latency threshold SLI.").optional(),
-          location: z.array(z.string()).describe(
+          location: z.array(z.unknown()).describe(
             "OPTIONAL: The set of locations to which this SLI is relevant. Telemetry from other locations will not be used to calculate performance for this SLI. If omitted, this SLI applies to all locations in which the Service has activity. For service types that don't support breaking down by location, setting this field will result in an error.",
           ).optional(),
-          method: z.array(z.string()).describe(
+          method: z.array(z.unknown()).describe(
             "OPTIONAL: The set of RPCs to which this SLI is relevant. Telemetry from other methods will not be used to calculate performance for this SLI. If omitted, this SLI applies to all the Service's methods. For service types that don't support breaking down by method, setting this field will result in an error.",
           ).optional(),
-          version: z.array(z.string()).describe(
+          version: z.array(z.unknown()).describe(
             "OPTIONAL: The set of API versions to which this SLI is relevant. Telemetry from other API versions will not be used to calculate performance for this SLI. If omitted, this SLI applies to all API versions. For service types that don't support breaking down by version, setting this field will result in an error.",
           ).optional(),
         }).describe(
@@ -192,25 +192,23 @@ const GlobalArgsSchema = z.object({
         ).optional(),
         performance: z.object({
           distributionCut: z.object({
-            distributionFilter: z.string().describe(
+            distributionFilter: z.unknown().describe(
               "A monitoring filter (https://cloud.google.com/monitoring/api/v3/filters) specifying a TimeSeries aggregating values. Must have ValueType = DISTRIBUTION and MetricKind = DELTA or MetricKind = CUMULATIVE.",
             ).optional(),
-            range: z.object({
-              max: z.number().describe("Range maximum.").optional(),
-              min: z.number().describe("Range minimum.").optional(),
-            }).describe("Range of numerical values within min and max.")
-              .optional(),
+            range: z.unknown().describe(
+              "Range of numerical values within min and max.",
+            ).optional(),
           }).describe(
             "A DistributionCut defines a TimeSeries and thresholds used for measuring good service and total service. The TimeSeries must have ValueType = DISTRIBUTION and MetricKind = DELTA or MetricKind = CUMULATIVE. The computed good_service will be the estimated count of values in the Distribution that fall within the specified min and max.",
           ).optional(),
           goodTotalRatio: z.object({
-            badServiceFilter: z.string().describe(
+            badServiceFilter: z.unknown().describe(
               "A monitoring filter (https://cloud.google.com/monitoring/api/v3/filters) specifying a TimeSeries quantifying bad service, either demanded service that was not provided or demanded service that was of inadequate quality. Must have ValueType = DOUBLE or ValueType = INT64 and must have MetricKind = DELTA or MetricKind = CUMULATIVE.",
             ).optional(),
-            goodServiceFilter: z.string().describe(
+            goodServiceFilter: z.unknown().describe(
               "A monitoring filter (https://cloud.google.com/monitoring/api/v3/filters) specifying a TimeSeries quantifying good service provided. Must have ValueType = DOUBLE or ValueType = INT64 and must have MetricKind = DELTA or MetricKind = CUMULATIVE.",
             ).optional(),
-            totalServiceFilter: z.string().describe(
+            totalServiceFilter: z.unknown().describe(
               "A monitoring filter (https://cloud.google.com/monitoring/api/v3/filters) specifying a TimeSeries quantifying total demanded service. Must have ValueType = DOUBLE or ValueType = INT64 and must have MetricKind = DELTA or MetricKind = CUMULATIVE.",
             ).optional(),
           }).describe(
@@ -303,24 +301,21 @@ const StateSchema = z.object({
         basicSliPerformance: z.object({
           availability: z.object({}),
           latency: z.object({
-            threshold: z.string(),
+            threshold: z.unknown(),
           }),
-          location: z.array(z.string()),
-          method: z.array(z.string()),
-          version: z.array(z.string()),
+          location: z.array(z.unknown()),
+          method: z.array(z.unknown()),
+          version: z.array(z.unknown()),
         }),
         performance: z.object({
           distributionCut: z.object({
-            distributionFilter: z.string(),
-            range: z.object({
-              max: z.number(),
-              min: z.number(),
-            }),
+            distributionFilter: z.unknown(),
+            range: z.unknown(),
           }),
           goodTotalRatio: z.object({
-            badServiceFilter: z.string(),
-            goodServiceFilter: z.string(),
-            totalServiceFilter: z.string(),
+            badServiceFilter: z.unknown(),
+            goodServiceFilter: z.unknown(),
+            totalServiceFilter: z.unknown(),
           }),
         }),
         threshold: z.number(),
@@ -432,17 +427,17 @@ const InputsSchema = z.object({
             "Future parameters for the availability SLI.",
           ).optional(),
           latency: z.object({
-            threshold: z.string().describe(
+            threshold: z.unknown().describe(
               "Good service is defined to be the count of requests made to this service that return in no more than threshold.",
             ).optional(),
           }).describe("Parameters for a latency threshold SLI.").optional(),
-          location: z.array(z.string()).describe(
+          location: z.array(z.unknown()).describe(
             "OPTIONAL: The set of locations to which this SLI is relevant. Telemetry from other locations will not be used to calculate performance for this SLI. If omitted, this SLI applies to all locations in which the Service has activity. For service types that don't support breaking down by location, setting this field will result in an error.",
           ).optional(),
-          method: z.array(z.string()).describe(
+          method: z.array(z.unknown()).describe(
             "OPTIONAL: The set of RPCs to which this SLI is relevant. Telemetry from other methods will not be used to calculate performance for this SLI. If omitted, this SLI applies to all the Service's methods. For service types that don't support breaking down by method, setting this field will result in an error.",
           ).optional(),
-          version: z.array(z.string()).describe(
+          version: z.array(z.unknown()).describe(
             "OPTIONAL: The set of API versions to which this SLI is relevant. Telemetry from other API versions will not be used to calculate performance for this SLI. If omitted, this SLI applies to all API versions. For service types that don't support breaking down by version, setting this field will result in an error.",
           ).optional(),
         }).describe(
@@ -450,25 +445,23 @@ const InputsSchema = z.object({
         ).optional(),
         performance: z.object({
           distributionCut: z.object({
-            distributionFilter: z.string().describe(
+            distributionFilter: z.unknown().describe(
               "A monitoring filter (https://cloud.google.com/monitoring/api/v3/filters) specifying a TimeSeries aggregating values. Must have ValueType = DISTRIBUTION and MetricKind = DELTA or MetricKind = CUMULATIVE.",
             ).optional(),
-            range: z.object({
-              max: z.number().describe("Range maximum.").optional(),
-              min: z.number().describe("Range minimum.").optional(),
-            }).describe("Range of numerical values within min and max.")
-              .optional(),
+            range: z.unknown().describe(
+              "Range of numerical values within min and max.",
+            ).optional(),
           }).describe(
             "A DistributionCut defines a TimeSeries and thresholds used for measuring good service and total service. The TimeSeries must have ValueType = DISTRIBUTION and MetricKind = DELTA or MetricKind = CUMULATIVE. The computed good_service will be the estimated count of values in the Distribution that fall within the specified min and max.",
           ).optional(),
           goodTotalRatio: z.object({
-            badServiceFilter: z.string().describe(
+            badServiceFilter: z.unknown().describe(
               "A monitoring filter (https://cloud.google.com/monitoring/api/v3/filters) specifying a TimeSeries quantifying bad service, either demanded service that was not provided or demanded service that was of inadequate quality. Must have ValueType = DOUBLE or ValueType = INT64 and must have MetricKind = DELTA or MetricKind = CUMULATIVE.",
             ).optional(),
-            goodServiceFilter: z.string().describe(
+            goodServiceFilter: z.unknown().describe(
               "A monitoring filter (https://cloud.google.com/monitoring/api/v3/filters) specifying a TimeSeries quantifying good service provided. Must have ValueType = DOUBLE or ValueType = INT64 and must have MetricKind = DELTA or MetricKind = CUMULATIVE.",
             ).optional(),
-            totalServiceFilter: z.string().describe(
+            totalServiceFilter: z.unknown().describe(
               "A monitoring filter (https://cloud.google.com/monitoring/api/v3/filters) specifying a TimeSeries quantifying total demanded service. Must have ValueType = DOUBLE or ValueType = INT64 and must have MetricKind = DELTA or MetricKind = CUMULATIVE.",
             ).optional(),
           }).describe(
@@ -527,7 +520,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/monitoring/services-servicelevelobjectives",
-  version: "2026.04.03.3",
+  version: "2026.04.04.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -551,6 +544,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.3",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.04.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

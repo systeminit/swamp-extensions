@@ -107,13 +107,13 @@ const GlobalArgsSchema = z.object({
       failOpen: z.boolean().describe(
         "Optional. Determines how the proxy behaves if the call to the extension fails or times out. When set to `TRUE`, request or response processing continues without error. Any subsequent extensions in the extension chain are also executed. When set to `FALSE` or the default setting of `FALSE` is used, one of the following happens: * If response headers have not been delivered to the downstream client, a generic 500 error is returned to the client. The error response can be tailored by configuring a custom error response in the load balancer. * If response headers have been delivered, then the HTTP stream to the downstream client is reset.",
       ).optional(),
-      forwardAttributes: z.array(z.string()).describe(
+      forwardAttributes: z.array(z.unknown()).describe(
         "Optional. List of the Envoy attributes to forward to the extension server. The attributes provided here are included as part of the `ProcessingRequest.attributes` field (of type `map`), where the keys are the attribute names. Refer to the [documentation](https://cloud.google.com/service-extensions/docs/cel-matcher-language-reference#attributes) for the names of attributes that can be forwarded. If omitted, no attributes are sent. Each element is a string indicating the attribute name.",
       ).optional(),
-      forwardHeaders: z.array(z.string()).describe(
+      forwardHeaders: z.array(z.unknown()).describe(
         "Optional. List of the HTTP headers to forward to the extension (from the client or backend). If omitted, all headers are sent. Each element is a string indicating the header name.",
       ).optional(),
-      metadata: z.record(z.string(), z.string()).describe(
+      metadata: z.record(z.string(), z.unknown()).describe(
         "Optional. The metadata provided here is included as part of the `metadata_context` (of type `google.protobuf.Struct`) in the `ProcessingRequest` message sent to the extension server. For `AuthzExtension` resources, the metadata is available under the namespace `com.google.authz_extension.`. For other types of extensions, the metadata is available under the namespace `com.google....`. For example: `com.google.lb_traffic_extension.lbtrafficextension1.chain1.ext1`. The following variables are supported in the metadata: `{forwarding_rule_id}` - substituted with the forwarding rule's fully qualified resource name. This field must not be set for plugin extensions. Setting it results in a validation error. You can set metadata at either the resource level or the extension level. The extension level metadata is recommended because you can pass a different set of metadata through each extension to the backend. This field is subject to following limitations: * The total size of the metadata must be less than 1KiB. * The total number of keys in the metadata must be less than 16. * The length of each key must be less than 64 characters. * The length of each value must be less than 1024 characters. * All values must be strings.",
       ).optional(),
       name: z.string().describe(
@@ -139,17 +139,7 @@ const GlobalArgsSchema = z.object({
       service: z.string().describe(
         "Required. The reference to the service that runs the extension. To configure a callout extension, `service` must be a fully-qualified reference to a [backend service](https://cloud.google.com/compute/docs/reference/rest/v1/backendServices) in the format: `https://www.googleapis.com/compute/v1/projects/{project}/regions/{region}/backendServices/{backendService}` or `https://www.googleapis.com/compute/v1/projects/{project}/global/backendServices/{backendService}`. To configure a plugin extension, `service` must be a reference to a [`WasmPlugin` resource](https://cloud.google.com/service-extensions/docs/reference/rest/v1beta1/projects.locations.wasmPlugins) in the format: `projects/{project}/locations/{location}/wasmPlugins/{plugin}` or `//networkservices.googleapis.com/projects/{project}/locations/{location}/wasmPlugins/{wasmPlugin}`. Plugin extensions are currently supported for the `LbTrafficExtension`, the `LbRouteExtension`, and the `LbEdgeExtension` resources.",
       ).optional(),
-      supportedEvents: z.array(
-        z.enum([
-          "EVENT_TYPE_UNSPECIFIED",
-          "REQUEST_HEADERS",
-          "REQUEST_BODY",
-          "RESPONSE_HEADERS",
-          "RESPONSE_BODY",
-          "REQUEST_TRAILERS",
-          "RESPONSE_TRAILERS",
-        ]),
-      ).describe(
+      supportedEvents: z.array(z.unknown()).describe(
         "Optional. A set of events during request or response processing for which this extension is called. For the `LbTrafficExtension` resource, this field is required. For the `LbRouteExtension` resource, this field is optional. If unspecified, `REQUEST_HEADERS` event is assumed as supported. For the `LbEdgeExtension` resource, this field is required and must only contain `REQUEST_HEADERS` event. For the `AuthzExtension` resource, this field is optional. `REQUEST_HEADERS` is the only supported event. If unspecified, `REQUEST_HEADERS` event is assumed as supported.",
       ).optional(),
       timeout: z.string().describe(
@@ -207,15 +197,15 @@ const StateSchema = z.object({
     extensions: z.array(z.object({
       authority: z.string(),
       failOpen: z.boolean(),
-      forwardAttributes: z.array(z.string()),
-      forwardHeaders: z.array(z.string()),
+      forwardAttributes: z.array(z.unknown()),
+      forwardHeaders: z.array(z.unknown()),
       metadata: z.record(z.string(), z.unknown()),
       name: z.string(),
       observabilityMode: z.boolean(),
       requestBodySendMode: z.string(),
       responseBodySendMode: z.string(),
       service: z.string(),
-      supportedEvents: z.array(z.string()),
+      supportedEvents: z.array(z.unknown()),
       timeout: z.string(),
     })),
     matchCondition: z.object({
@@ -245,13 +235,13 @@ const InputsSchema = z.object({
       failOpen: z.boolean().describe(
         "Optional. Determines how the proxy behaves if the call to the extension fails or times out. When set to `TRUE`, request or response processing continues without error. Any subsequent extensions in the extension chain are also executed. When set to `FALSE` or the default setting of `FALSE` is used, one of the following happens: * If response headers have not been delivered to the downstream client, a generic 500 error is returned to the client. The error response can be tailored by configuring a custom error response in the load balancer. * If response headers have been delivered, then the HTTP stream to the downstream client is reset.",
       ).optional(),
-      forwardAttributes: z.array(z.string()).describe(
+      forwardAttributes: z.array(z.unknown()).describe(
         "Optional. List of the Envoy attributes to forward to the extension server. The attributes provided here are included as part of the `ProcessingRequest.attributes` field (of type `map`), where the keys are the attribute names. Refer to the [documentation](https://cloud.google.com/service-extensions/docs/cel-matcher-language-reference#attributes) for the names of attributes that can be forwarded. If omitted, no attributes are sent. Each element is a string indicating the attribute name.",
       ).optional(),
-      forwardHeaders: z.array(z.string()).describe(
+      forwardHeaders: z.array(z.unknown()).describe(
         "Optional. List of the HTTP headers to forward to the extension (from the client or backend). If omitted, all headers are sent. Each element is a string indicating the header name.",
       ).optional(),
-      metadata: z.record(z.string(), z.string()).describe(
+      metadata: z.record(z.string(), z.unknown()).describe(
         "Optional. The metadata provided here is included as part of the `metadata_context` (of type `google.protobuf.Struct`) in the `ProcessingRequest` message sent to the extension server. For `AuthzExtension` resources, the metadata is available under the namespace `com.google.authz_extension.`. For other types of extensions, the metadata is available under the namespace `com.google....`. For example: `com.google.lb_traffic_extension.lbtrafficextension1.chain1.ext1`. The following variables are supported in the metadata: `{forwarding_rule_id}` - substituted with the forwarding rule's fully qualified resource name. This field must not be set for plugin extensions. Setting it results in a validation error. You can set metadata at either the resource level or the extension level. The extension level metadata is recommended because you can pass a different set of metadata through each extension to the backend. This field is subject to following limitations: * The total size of the metadata must be less than 1KiB. * The total number of keys in the metadata must be less than 16. * The length of each key must be less than 64 characters. * The length of each value must be less than 1024 characters. * All values must be strings.",
       ).optional(),
       name: z.string().describe(
@@ -277,17 +267,7 @@ const InputsSchema = z.object({
       service: z.string().describe(
         "Required. The reference to the service that runs the extension. To configure a callout extension, `service` must be a fully-qualified reference to a [backend service](https://cloud.google.com/compute/docs/reference/rest/v1/backendServices) in the format: `https://www.googleapis.com/compute/v1/projects/{project}/regions/{region}/backendServices/{backendService}` or `https://www.googleapis.com/compute/v1/projects/{project}/global/backendServices/{backendService}`. To configure a plugin extension, `service` must be a reference to a [`WasmPlugin` resource](https://cloud.google.com/service-extensions/docs/reference/rest/v1beta1/projects.locations.wasmPlugins) in the format: `projects/{project}/locations/{location}/wasmPlugins/{plugin}` or `//networkservices.googleapis.com/projects/{project}/locations/{location}/wasmPlugins/{wasmPlugin}`. Plugin extensions are currently supported for the `LbTrafficExtension`, the `LbRouteExtension`, and the `LbEdgeExtension` resources.",
       ).optional(),
-      supportedEvents: z.array(
-        z.enum([
-          "EVENT_TYPE_UNSPECIFIED",
-          "REQUEST_HEADERS",
-          "REQUEST_BODY",
-          "RESPONSE_HEADERS",
-          "RESPONSE_BODY",
-          "REQUEST_TRAILERS",
-          "RESPONSE_TRAILERS",
-        ]),
-      ).describe(
+      supportedEvents: z.array(z.unknown()).describe(
         "Optional. A set of events during request or response processing for which this extension is called. For the `LbTrafficExtension` resource, this field is required. For the `LbRouteExtension` resource, this field is optional. If unspecified, `REQUEST_HEADERS` event is assumed as supported. For the `LbEdgeExtension` resource, this field is required and must only contain `REQUEST_HEADERS` event. For the `AuthzExtension` resource, this field is optional. `REQUEST_HEADERS` is the only supported event. If unspecified, `REQUEST_HEADERS` event is assumed as supported.",
       ).optional(),
       timeout: z.string().describe(
@@ -340,7 +320,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/networkservices/lbrouteextensions",
-  version: "2026.04.03.3",
+  version: "2026.04.04.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -364,6 +344,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.3",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.04.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

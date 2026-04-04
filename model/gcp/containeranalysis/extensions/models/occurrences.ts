@@ -122,45 +122,21 @@ const GlobalArgsSchema = z.object({
       predicate: z.object({
         buildDefinition: z.object({
           buildType: z.string().optional(),
-          externalParameters: z.record(z.string(), z.string()).optional(),
-          internalParameters: z.record(z.string(), z.string()).optional(),
-          resolvedDependencies: z.array(z.object({
-            annotations: z.record(z.string(), z.string()).optional(),
-            content: z.string().optional(),
-            digest: z.record(z.string(), z.string()).optional(),
-            downloadLocation: z.string().optional(),
-            mediaType: z.string().optional(),
-            name: z.string().optional(),
-            uri: z.string().optional(),
-          })).optional(),
+          externalParameters: z.record(z.string(), z.unknown()).optional(),
+          internalParameters: z.record(z.string(), z.unknown()).optional(),
+          resolvedDependencies: z.array(z.unknown()).optional(),
         }).optional(),
         runDetails: z.object({
           builder: z.object({
-            builderDependencies: z.array(z.object({
-              annotations: z.record(z.string(), z.string()).optional(),
-              content: z.string().optional(),
-              digest: z.record(z.string(), z.string()).optional(),
-              downloadLocation: z.string().optional(),
-              mediaType: z.string().optional(),
-              name: z.string().optional(),
-              uri: z.string().optional(),
-            })).optional(),
-            id: z.string().optional(),
-            version: z.record(z.string(), z.string()).optional(),
+            builderDependencies: z.unknown().optional(),
+            id: z.unknown().optional(),
+            version: z.unknown().optional(),
           }).optional(),
-          byproducts: z.array(z.object({
-            annotations: z.record(z.string(), z.string()).optional(),
-            content: z.string().optional(),
-            digest: z.record(z.string(), z.string()).optional(),
-            downloadLocation: z.string().optional(),
-            mediaType: z.string().optional(),
-            name: z.string().optional(),
-            uri: z.string().optional(),
-          })).optional(),
+          byproducts: z.array(z.unknown()).optional(),
           metadata: z.object({
-            finishedOn: z.string().optional(),
-            invocationId: z.string().optional(),
-            startedOn: z.string().optional(),
+            finishedOn: z.unknown().optional(),
+            invocationId: z.unknown().optional(),
+            startedOn: z.unknown().optional(),
           }).optional(),
         }).optional(),
       }).describe(
@@ -168,7 +144,7 @@ const GlobalArgsSchema = z.object({
       ).optional(),
       predicateType: z.string().optional(),
       subject: z.array(z.object({
-        digest: z.record(z.string(), z.string()).describe(
+        digest: z.record(z.string(), z.unknown()).describe(
           '`"": ""` Algorithms can be e.g. sha256, sha512 See https://github.com/in-toto/attestation/blob/main/spec/field_types.md#DigestSet',
         ).optional(),
         name: z.string().optional(),
@@ -209,7 +185,7 @@ const GlobalArgsSchema = z.object({
         ).optional(),
       }).describe("Other properties of the build.").optional(),
       recipe: z.object({
-        arguments: z.array(z.record(z.string(), z.string())).describe(
+        arguments: z.array(z.record(z.string(), z.unknown())).describe(
           'Collection of all external inputs that influenced the build on top of recipe.definedInMaterial and recipe.entryPoint. For example, if the recipe type were "make", then this might be the flags passed to make aside from the target, which is captured in recipe.entryPoint. Since the arguments field can greatly vary in structure, depending on the builder and recipe type, this is of form "Any".',
         ).optional(),
         definedInMaterial: z.string().describe(
@@ -218,7 +194,7 @@ const GlobalArgsSchema = z.object({
         entryPoint: z.string().describe(
           'String identifying the entry point into the build. This is often a path to a configuration file and/or a target label within that file. The syntax and meaning are defined by recipe.type. For example, if the recipe type were "make", then this would reference the directory in which to run make as well as which target to use.',
         ).optional(),
-        environment: z.array(z.record(z.string(), z.string())).describe(
+        environment: z.array(z.record(z.string(), z.unknown())).describe(
           'Any other builder-controlled inputs necessary for correctly evaluating the recipe. Usually only needed for reproducing the build but not evaluated as part of policy. Since the environment field can greatly vary in structure, depending on the builder and recipe type, this is of form "Any".',
         ).optional(),
         type: z.string().describe(
@@ -252,13 +228,13 @@ const GlobalArgsSchema = z.object({
             "The timestamp of when the build started.",
           ).optional(),
           completeness: z.object({
-            arguments: z.boolean().describe(
+            arguments: z.unknown().describe(
               "If true, the builder claims that recipe.arguments is complete, meaning that all external inputs are properly captured in the recipe.",
             ).optional(),
-            environment: z.boolean().describe(
+            environment: z.unknown().describe(
               "If true, the builder claims that recipe.environment is claimed to be complete.",
             ).optional(),
-            materials: z.boolean().describe(
+            materials: z.unknown().describe(
               'If true, the builder claims that materials are complete, usually through some controls to prevent network access. Sometimes called "hermetic".',
             ).optional(),
           }).describe(
@@ -269,7 +245,7 @@ const GlobalArgsSchema = z.object({
           ).optional(),
         }).describe("Other properties of the build.").optional(),
         recipe: z.object({
-          arguments: z.array(z.record(z.string(), z.string())).describe(
+          arguments: z.array(z.unknown()).describe(
             'Collection of all external inputs that influenced the build on top of recipe.definedInMaterial and recipe.entryPoint. For example, if the recipe type were "make", then this might be the flags passed to make aside from the target, which is captured in recipe.entryPoint. Since the arguments field can greatly vary in structure, depending on the builder and recipe type, this is of form "Any".',
           ).optional(),
           definedInMaterial: z.string().describe(
@@ -278,7 +254,7 @@ const GlobalArgsSchema = z.object({
           entryPoint: z.string().describe(
             'String identifying the entry point into the build. This is often a path to a configuration file and/or a target label within that file. The syntax and meaning are defined by recipe.type. For example, if the recipe type were "make", then this would reference the directory in which to run make as well as which target to use.',
           ).optional(),
-          environment: z.array(z.record(z.string(), z.string())).describe(
+          environment: z.array(z.unknown()).describe(
             'Any other builder-controlled inputs necessary for correctly evaluating the recipe. Usually only needed for reproducing the build but not evaluated as part of policy. Since the environment field can greatly vary in structure, depending on the builder and recipe type, this is of form "Any".',
           ).optional(),
           type: z.string().describe(
@@ -293,8 +269,8 @@ const GlobalArgsSchema = z.object({
           id: z.string().optional(),
         }).optional(),
         materials: z.array(z.object({
-          digest: z.record(z.string(), z.string()).optional(),
-          uri: z.string().optional(),
+          digest: z.unknown().optional(),
+          uri: z.unknown().optional(),
         })).describe(
           "The collection of artifacts that influenced the build including sources, dependencies, build tools, base images, and so on. This is considered to be incomplete unless metadata.completeness.materials is true. Unset or null is equivalent to empty.",
         ).optional(),
@@ -309,13 +285,13 @@ const GlobalArgsSchema = z.object({
             "The timestamp of when the build started.",
           ).optional(),
           completeness: z.object({
-            arguments: z.boolean().describe(
+            arguments: z.unknown().describe(
               "If true, the builder claims that recipe.arguments is complete, meaning that all external inputs are properly captured in the recipe.",
             ).optional(),
-            environment: z.boolean().describe(
+            environment: z.unknown().describe(
               "If true, the builder claims that recipe.environment is claimed to be complete.",
             ).optional(),
-            materials: z.boolean().describe(
+            materials: z.unknown().describe(
               'If true, the builder claims that materials are complete, usually through some controls to prevent network access. Sometimes called "hermetic".',
             ).optional(),
           }).describe(
@@ -326,7 +302,7 @@ const GlobalArgsSchema = z.object({
           ).optional(),
         }).describe("Other properties of the build.").optional(),
         recipe: z.object({
-          arguments: z.record(z.string(), z.string()).describe(
+          arguments: z.record(z.string(), z.unknown()).describe(
             'Collection of all external inputs that influenced the build on top of recipe.definedInMaterial and recipe.entryPoint. For example, if the recipe type were "make", then this might be the flags passed to make aside from the target, which is captured in recipe.entryPoint. Depending on the recipe Type, the structure may be different.',
           ).optional(),
           definedInMaterial: z.string().describe(
@@ -335,7 +311,7 @@ const GlobalArgsSchema = z.object({
           entryPoint: z.string().describe(
             'String identifying the entry point into the build. This is often a path to a configuration file and/or a target label within that file. The syntax and meaning are defined by recipe.type. For example, if the recipe type were "make", then this would reference the directory in which to run make as well as which target to use.',
           ).optional(),
-          environment: z.record(z.string(), z.string()).describe(
+          environment: z.record(z.string(), z.unknown()).describe(
             "Any other builder-controlled inputs necessary for correctly evaluating the recipe. Usually only needed for reproducing the build but not evaluated as part of policy. Depending on the recipe Type, the structure may be different.",
           ).optional(),
           type: z.string().describe(
@@ -355,28 +331,28 @@ const GlobalArgsSchema = z.object({
         ).optional(),
         invocation: z.object({
           configSource: z.object({
-            digest: z.record(z.string(), z.string()).optional(),
-            entryPoint: z.string().optional(),
-            uri: z.string().optional(),
+            digest: z.unknown().optional(),
+            entryPoint: z.unknown().optional(),
+            uri: z.unknown().optional(),
           }).describe(
             "Describes where the config file that kicked off the build came from. This is effectively a pointer to the source where buildConfig came from.",
           ).optional(),
-          environment: z.record(z.string(), z.string()).optional(),
-          parameters: z.record(z.string(), z.string()).optional(),
+          environment: z.record(z.string(), z.unknown()).optional(),
+          parameters: z.record(z.string(), z.unknown()).optional(),
         }).describe("Identifies the event that kicked off the build.")
           .optional(),
         materials: z.array(z.object({
-          digest: z.record(z.string(), z.string()).optional(),
-          uri: z.string().optional(),
+          digest: z.unknown().optional(),
+          uri: z.unknown().optional(),
         })).optional(),
         metadata: z.object({
           buildFinishedOn: z.string().optional(),
           buildInvocationId: z.string().optional(),
           buildStartedOn: z.string().optional(),
           completeness: z.object({
-            environment: z.boolean().optional(),
-            materials: z.boolean().optional(),
-            parameters: z.boolean().optional(),
+            environment: z.unknown().optional(),
+            materials: z.unknown().optional(),
+            parameters: z.unknown().optional(),
           }).describe(
             "Indicates that the builder claims certain fields in this message to be complete.",
           ).optional(),
@@ -385,7 +361,7 @@ const GlobalArgsSchema = z.object({
       }).describe("See full explanation of fields at slsa.dev/provenance/v0.2.")
         .optional(),
       subject: z.array(z.object({
-        digest: z.record(z.string(), z.string()).describe(
+        digest: z.record(z.string(), z.unknown()).describe(
           '`"": ""` Algorithms can be e.g. sha256, sha512 See https://github.com/in-toto/attestation/blob/main/spec/field_types.md#DigestSet',
         ).optional(),
         name: z.string().optional(),
@@ -407,18 +383,18 @@ const GlobalArgsSchema = z.object({
         id: z.string().describe(
           "Artifact ID, if any; for container images, this will be a URL by digest like `gcr.io/projectID/imagename@sha256:123456`.",
         ).optional(),
-        names: z.array(z.string()).describe(
+        names: z.array(z.unknown()).describe(
           "Related artifact names. This may be the path to a binary or jar file, or in the case of a container build, the name used to push the container image to Google Container Registry, as presented to `docker push`. Note that a single Artifact ID can have multiple names, for example if two tags are applied to one image.",
         ).optional(),
       })).describe("Output of the build.").optional(),
       commands: z.array(z.object({
-        args: z.array(z.string()).describe(
+        args: z.array(z.unknown()).describe(
           "Command-line arguments used when executing this command.",
         ).optional(),
         dir: z.string().describe(
           "Working directory (relative to project source root) used when running this command.",
         ).optional(),
-        env: z.array(z.string()).describe(
+        env: z.array(z.unknown()).describe(
           "Environment variables set before running this command.",
         ).optional(),
         id: z.string().describe(
@@ -427,7 +403,7 @@ const GlobalArgsSchema = z.object({
         name: z.string().describe(
           "Required. Name of the command, as presented on the command line, or if the command is packaged as a Docker container, as presented to `docker pull`.",
         ).optional(),
-        waitFor: z.array(z.string()).describe(
+        waitFor: z.array(z.unknown()).describe(
           "The ID(s) of the command(s) that this command depends on.",
         ).optional(),
       })).describe("Commands requested by the build.").optional(),
@@ -447,55 +423,17 @@ const GlobalArgsSchema = z.object({
       projectId: z.string().describe("ID of the project.").optional(),
       sourceProvenance: z.object({
         additionalContexts: z.array(z.object({
-          cloudRepo: z.object({
-            aliasContext: z.object({
-              kind: z.enum(["KIND_UNSPECIFIED", "FIXED", "MOVABLE", "OTHER"])
-                .describe("The alias kind.").optional(),
-              name: z.string().describe("The alias name.").optional(),
-            }).describe("An alias to a repo revision.").optional(),
-            repoId: z.object({
-              projectRepoId: z.object({
-                projectId: z.string().describe("The ID of the project.")
-                  .optional(),
-                repoName: z.string().describe(
-                  "The name of the repo. Leave empty for the default repo.",
-                ).optional(),
-              }).describe(
-                "Selects a repo using a Google Cloud Platform project ID (e.g., winged-cargo-31) and a repo name within that project.",
-              ).optional(),
-              uid: z.string().describe(
-                "A server-assigned, globally unique identifier.",
-              ).optional(),
-            }).describe("A unique identifier for a Cloud Repo.").optional(),
-            revisionId: z.string().describe("A revision ID.").optional(),
-          }).describe(
+          cloudRepo: z.unknown().describe(
             "A CloudRepoSourceContext denotes a particular revision in a Google Cloud Source Repo.",
           ).optional(),
-          gerrit: z.object({
-            aliasContext: z.object({
-              kind: z.enum(["KIND_UNSPECIFIED", "FIXED", "MOVABLE", "OTHER"])
-                .describe("The alias kind.").optional(),
-              name: z.string().describe("The alias name.").optional(),
-            }).describe("An alias to a repo revision.").optional(),
-            gerritProject: z.string().describe(
-              'The full project name within the host. Projects may be nested, so "project/subproject" is a valid project name. The "repo name" is the hostURI/project.',
-            ).optional(),
-            hostUri: z.string().describe(
-              "The URI of a running Gerrit instance.",
-            ).optional(),
-            revisionId: z.string().describe("A revision (commit) ID.")
-              .optional(),
-          }).describe("A SourceContext referring to a Gerrit project.")
-            .optional(),
-          git: z.object({
-            revisionId: z.string().describe("Git commit hash.").optional(),
-            url: z.string().describe("Git repository URL.").optional(),
-          }).describe(
+          gerrit: z.unknown().describe(
+            "A SourceContext referring to a Gerrit project.",
+          ).optional(),
+          git: z.unknown().describe(
             "A GitSourceContext denotes a particular revision in a third party Git repository (e.g., GitHub).",
           ).optional(),
-          labels: z.record(z.string(), z.string()).describe(
-            "Labels with user defined metadata.",
-          ).optional(),
+          labels: z.unknown().describe("Labels with user defined metadata.")
+            .optional(),
         })).describe(
           "If provided, some of the source code used for the build may be found in these locations, in the case where the source repository had multiple remotes or submodules. This list will not include the context specified in the context field.",
         ).optional(),
@@ -504,52 +442,35 @@ const GlobalArgsSchema = z.object({
         ).optional(),
         context: z.object({
           cloudRepo: z.object({
-            aliasContext: z.object({
-              kind: z.enum(["KIND_UNSPECIFIED", "FIXED", "MOVABLE", "OTHER"])
-                .describe("The alias kind.").optional(),
-              name: z.string().describe("The alias name.").optional(),
-            }).describe("An alias to a repo revision.").optional(),
-            repoId: z.object({
-              projectRepoId: z.object({
-                projectId: z.string().describe("The ID of the project.")
-                  .optional(),
-                repoName: z.string().describe(
-                  "The name of the repo. Leave empty for the default repo.",
-                ).optional(),
-              }).describe(
-                "Selects a repo using a Google Cloud Platform project ID (e.g., winged-cargo-31) and a repo name within that project.",
-              ).optional(),
-              uid: z.string().describe(
-                "A server-assigned, globally unique identifier.",
-              ).optional(),
-            }).describe("A unique identifier for a Cloud Repo.").optional(),
-            revisionId: z.string().describe("A revision ID.").optional(),
+            aliasContext: z.unknown().describe("An alias to a repo revision.")
+              .optional(),
+            repoId: z.unknown().describe(
+              "A unique identifier for a Cloud Repo.",
+            ).optional(),
+            revisionId: z.unknown().describe("A revision ID.").optional(),
           }).describe(
             "A CloudRepoSourceContext denotes a particular revision in a Google Cloud Source Repo.",
           ).optional(),
           gerrit: z.object({
-            aliasContext: z.object({
-              kind: z.enum(["KIND_UNSPECIFIED", "FIXED", "MOVABLE", "OTHER"])
-                .describe("The alias kind.").optional(),
-              name: z.string().describe("The alias name.").optional(),
-            }).describe("An alias to a repo revision.").optional(),
-            gerritProject: z.string().describe(
+            aliasContext: z.unknown().describe("An alias to a repo revision.")
+              .optional(),
+            gerritProject: z.unknown().describe(
               'The full project name within the host. Projects may be nested, so "project/subproject" is a valid project name. The "repo name" is the hostURI/project.',
             ).optional(),
-            hostUri: z.string().describe(
+            hostUri: z.unknown().describe(
               "The URI of a running Gerrit instance.",
             ).optional(),
-            revisionId: z.string().describe("A revision (commit) ID.")
+            revisionId: z.unknown().describe("A revision (commit) ID.")
               .optional(),
           }).describe("A SourceContext referring to a Gerrit project.")
             .optional(),
           git: z.object({
-            revisionId: z.string().describe("Git commit hash.").optional(),
-            url: z.string().describe("Git repository URL.").optional(),
+            revisionId: z.unknown().describe("Git commit hash.").optional(),
+            url: z.unknown().describe("Git repository URL.").optional(),
           }).describe(
             "A GitSourceContext denotes a particular revision in a third party Git repository (e.g., GitHub).",
           ).optional(),
-          labels: z.record(z.string(), z.string()).describe(
+          labels: z.record(z.string(), z.unknown()).describe(
             "Labels with user defined metadata.",
           ).optional(),
         }).describe(
@@ -558,13 +479,9 @@ const GlobalArgsSchema = z.object({
         fileHashes: z.record(
           z.string(),
           z.object({
-            fileHash: z.array(z.object({
-              type: z.string().describe(
-                'Required. The type of hash that was performed, e.g. "SHA-256".',
-              ).optional(),
-              value: z.string().describe("Required. The hash value.")
-                .optional(),
-            })).describe("Required. Collection of file hashes.").optional(),
+            fileHash: z.unknown().describe(
+              "Required. Collection of file hashes.",
+            ).optional(),
           }),
         ).describe(
           "Hash(es) of the build source, which can be used to verify that the original source integrity was maintained in the build. The keys to this map are file paths used as build source and the values contain the hash values for those files. If the build source came in a single package such as a gzipped tarfile (.tar.gz), the FileHash will be for the single path to that file.",
@@ -645,7 +562,7 @@ const GlobalArgsSchema = z.object({
       code: z.number().int().describe(
         "The status code, which should be an enum value of google.rpc.Code.",
       ).optional(),
-      details: z.array(z.record(z.string(), z.string())).describe(
+      details: z.array(z.record(z.string(), z.unknown())).describe(
         "A list of messages that carry the error details. There is a common set of message types for APIs to use.",
       ).optional(),
       message: z.string().describe(
@@ -742,13 +659,13 @@ const GlobalArgsSchema = z.object({
             "The timestamp of when the build started.",
           ).optional(),
           completeness: z.object({
-            arguments: z.boolean().describe(
+            arguments: z.unknown().describe(
               "If true, the builder claims that recipe.arguments is complete, meaning that all external inputs are properly captured in the recipe.",
             ).optional(),
-            environment: z.boolean().describe(
+            environment: z.unknown().describe(
               "If true, the builder claims that recipe.environment is claimed to be complete.",
             ).optional(),
-            materials: z.boolean().describe(
+            materials: z.unknown().describe(
               'If true, the builder claims that materials are complete, usually through some controls to prevent network access. Sometimes called "hermetic".',
             ).optional(),
           }).describe(
@@ -759,7 +676,7 @@ const GlobalArgsSchema = z.object({
           ).optional(),
         }).describe("Other properties of the build.").optional(),
         recipe: z.object({
-          arguments: z.array(z.record(z.string(), z.string())).describe(
+          arguments: z.array(z.unknown()).describe(
             'Collection of all external inputs that influenced the build on top of recipe.definedInMaterial and recipe.entryPoint. For example, if the recipe type were "make", then this might be the flags passed to make aside from the target, which is captured in recipe.entryPoint. Since the arguments field can greatly vary in structure, depending on the builder and recipe type, this is of form "Any".',
           ).optional(),
           definedInMaterial: z.string().describe(
@@ -768,7 +685,7 @@ const GlobalArgsSchema = z.object({
           entryPoint: z.string().describe(
             'String identifying the entry point into the build. This is often a path to a configuration file and/or a target label within that file. The syntax and meaning are defined by recipe.type. For example, if the recipe type were "make", then this would reference the directory in which to run make as well as which target to use.',
           ).optional(),
-          environment: z.array(z.record(z.string(), z.string())).describe(
+          environment: z.array(z.unknown()).describe(
             'Any other builder-controlled inputs necessary for correctly evaluating the recipe. Usually only needed for reproducing the build but not evaluated as part of policy. Since the environment field can greatly vary in structure, depending on the builder and recipe type, this is of form "Any".',
           ).optional(),
           type: z.string().describe(
@@ -783,8 +700,8 @@ const GlobalArgsSchema = z.object({
           id: z.string().optional(),
         }).optional(),
         materials: z.array(z.object({
-          digest: z.record(z.string(), z.string()).optional(),
-          uri: z.string().optional(),
+          digest: z.unknown().optional(),
+          uri: z.unknown().optional(),
         })).describe(
           "The collection of artifacts that influenced the build including sources, dependencies, build tools, base images, and so on. This is considered to be incomplete unless metadata.completeness.materials is true. Unset or null is equivalent to empty.",
         ).optional(),
@@ -799,13 +716,13 @@ const GlobalArgsSchema = z.object({
             "The timestamp of when the build started.",
           ).optional(),
           completeness: z.object({
-            arguments: z.boolean().describe(
+            arguments: z.unknown().describe(
               "If true, the builder claims that recipe.arguments is complete, meaning that all external inputs are properly captured in the recipe.",
             ).optional(),
-            environment: z.boolean().describe(
+            environment: z.unknown().describe(
               "If true, the builder claims that recipe.environment is claimed to be complete.",
             ).optional(),
-            materials: z.boolean().describe(
+            materials: z.unknown().describe(
               'If true, the builder claims that materials are complete, usually through some controls to prevent network access. Sometimes called "hermetic".',
             ).optional(),
           }).describe(
@@ -816,7 +733,7 @@ const GlobalArgsSchema = z.object({
           ).optional(),
         }).describe("Other properties of the build.").optional(),
         recipe: z.object({
-          arguments: z.record(z.string(), z.string()).describe(
+          arguments: z.record(z.string(), z.unknown()).describe(
             'Collection of all external inputs that influenced the build on top of recipe.definedInMaterial and recipe.entryPoint. For example, if the recipe type were "make", then this might be the flags passed to make aside from the target, which is captured in recipe.entryPoint. Depending on the recipe Type, the structure may be different.',
           ).optional(),
           definedInMaterial: z.string().describe(
@@ -825,7 +742,7 @@ const GlobalArgsSchema = z.object({
           entryPoint: z.string().describe(
             'String identifying the entry point into the build. This is often a path to a configuration file and/or a target label within that file. The syntax and meaning are defined by recipe.type. For example, if the recipe type were "make", then this would reference the directory in which to run make as well as which target to use.',
           ).optional(),
-          environment: z.record(z.string(), z.string()).describe(
+          environment: z.record(z.string(), z.unknown()).describe(
             "Any other builder-controlled inputs necessary for correctly evaluating the recipe. Usually only needed for reproducing the build but not evaluated as part of policy. Depending on the recipe Type, the structure may be different.",
           ).optional(),
           type: z.string().describe(
@@ -845,28 +762,28 @@ const GlobalArgsSchema = z.object({
         ).optional(),
         invocation: z.object({
           configSource: z.object({
-            digest: z.record(z.string(), z.string()).optional(),
-            entryPoint: z.string().optional(),
-            uri: z.string().optional(),
+            digest: z.unknown().optional(),
+            entryPoint: z.unknown().optional(),
+            uri: z.unknown().optional(),
           }).describe(
             "Describes where the config file that kicked off the build came from. This is effectively a pointer to the source where buildConfig came from.",
           ).optional(),
-          environment: z.record(z.string(), z.string()).optional(),
-          parameters: z.record(z.string(), z.string()).optional(),
+          environment: z.record(z.string(), z.unknown()).optional(),
+          parameters: z.record(z.string(), z.unknown()).optional(),
         }).describe("Identifies the event that kicked off the build.")
           .optional(),
         materials: z.array(z.object({
-          digest: z.record(z.string(), z.string()).optional(),
-          uri: z.string().optional(),
+          digest: z.unknown().optional(),
+          uri: z.unknown().optional(),
         })).optional(),
         metadata: z.object({
           buildFinishedOn: z.string().optional(),
           buildInvocationId: z.string().optional(),
           buildStartedOn: z.string().optional(),
           completeness: z.object({
-            environment: z.boolean().optional(),
-            materials: z.boolean().optional(),
-            parameters: z.boolean().optional(),
+            environment: z.unknown().optional(),
+            materials: z.unknown().optional(),
+            parameters: z.unknown().optional(),
           }).describe(
             "Indicates that the builder claims certain fields in this message to be complete.",
           ).optional(),
@@ -875,7 +792,7 @@ const GlobalArgsSchema = z.object({
       }).describe("See full explanation of fields at slsa.dev/provenance/v0.2.")
         .optional(),
       subject: z.array(z.object({
-        digest: z.record(z.string(), z.string()).describe(
+        digest: z.record(z.string(), z.unknown()).describe(
           '`"": ""` Algorithms can be e.g. sha256, sha512 See https://github.com/in-toto/attestation/blob/main/spec/field_types.md#DigestSet',
         ).optional(),
         name: z.string().optional(),
@@ -1039,7 +956,7 @@ const GlobalArgsSchema = z.object({
         "URI identifying the type of the Predicate.",
       ).optional(),
       subject: z.array(z.object({
-        digest: z.record(z.string(), z.string()).describe(
+        digest: z.record(z.string(), z.unknown()).describe(
           '`"": ""` Algorithms can be e.g. sha256, sha512 See https://github.com/in-toto/attestation/blob/main/spec/field_types.md#DigestSet',
         ).optional(),
         name: z.string().optional(),
@@ -1091,28 +1008,19 @@ const GlobalArgsSchema = z.object({
           "For jars that are contained inside.war files, this filepath can indicate the path to war file combined with the path to jar file.",
         ).optional(),
         layerDetails: z.object({
-          baseImages: z.array(z.object({
-            layerCount: z.number().int().describe(
-              "The number of layers that the base image is composed of.",
-            ).optional(),
-            name: z.string().describe("The name of the base image.").optional(),
-            registry: z.string().describe(
-              "The registry in which the base image is from.",
-            ).optional(),
-            repository: z.string().describe(
-              "The repository name in which the base image is from.",
-            ).optional(),
-          })).describe("The base images the layer is found within.").optional(),
-          chainId: z.string().describe(
+          baseImages: z.unknown().describe(
+            "The base images the layer is found within.",
+          ).optional(),
+          chainId: z.unknown().describe(
             "The layer chain ID (sha256 hash) of the layer in the container image. https://github.com/opencontainers/image-spec/blob/main/config.md#layer-chainid",
           ).optional(),
-          command: z.string().describe(
+          command: z.unknown().describe(
             "The layer build command that was used to build the layer. This may not be found in all layers depending on how the container image is built.",
           ).optional(),
-          diffId: z.string().describe(
+          diffId: z.unknown().describe(
             "The diff ID (typically a sha256 hash) of the layer in the container image.",
           ).optional(),
-          index: z.number().int().describe(
+          index: z.unknown().describe(
             "The index of the layer in the container image.",
           ).optional(),
         }).describe("Details about the layer a package was found in.")
@@ -1422,37 +1330,13 @@ const GlobalArgsSchema = z.object({
         "Output only. The distro or language system assigned severity for this vulnerability when that is available and note provider assigned severity when it is not available.",
       ).optional(),
       fileLocation: z.array(z.object({
-        filePath: z.string().describe(
+        filePath: z.unknown().describe(
           "For jars that are contained inside.war files, this filepath can indicate the path to war file combined with the path to jar file.",
         ).optional(),
-        layerDetails: z.object({
-          baseImages: z.array(z.object({
-            layerCount: z.number().int().describe(
-              "The number of layers that the base image is composed of.",
-            ).optional(),
-            name: z.string().describe("The name of the base image.").optional(),
-            registry: z.string().describe(
-              "The registry in which the base image is from.",
-            ).optional(),
-            repository: z.string().describe(
-              "The repository name in which the base image is from.",
-            ).optional(),
-          })).describe("The base images the layer is found within.").optional(),
-          chainId: z.string().describe(
-            "The layer chain ID (sha256 hash) of the layer in the container image. https://github.com/opencontainers/image-spec/blob/main/config.md#layer-chainid",
-          ).optional(),
-          command: z.string().describe(
-            "The layer build command that was used to build the layer. This may not be found in all layers depending on how the container image is built.",
-          ).optional(),
-          diffId: z.string().describe(
-            "The diff ID (typically a sha256 hash) of the layer in the container image.",
-          ).optional(),
-          index: z.number().int().describe(
-            "The index of the layer in the container image.",
-          ).optional(),
-        }).describe("Details about the layer a package was found in.")
-          .optional(),
-        lineNumber: z.number().int().describe(
+        layerDetails: z.unknown().describe(
+          "Details about the layer a package was found in.",
+        ).optional(),
+        lineNumber: z.unknown().describe(
           "Line number in the file where the package was found. Optional field that only applies to source repository scanning.",
         ).optional(),
       })).describe("The location at which this package was found.").optional(),
@@ -1582,10 +1466,11 @@ const GlobalArgsSchema = z.object({
           "WORKAROUND",
         ]).describe("The type of remediation that can be applied.").optional(),
         remediationUri: z.object({
-          label: z.string().describe("Label to describe usage of the URL.")
+          label: z.unknown().describe("Label to describe usage of the URL.")
             .optional(),
-          url: z.string().describe("Specific URL associated with the resource.")
-            .optional(),
+          url: z.unknown().describe(
+            "Specific URL associated with the resource.",
+          ).optional(),
         }).describe("Metadata for any related URL information.").optional(),
       })).describe(
         "Specifies details on how to handle (and presumably, fix) a vulnerability.",
@@ -1631,43 +1516,19 @@ const StateSchema = z.object({
           buildType: z.string(),
           externalParameters: z.record(z.string(), z.unknown()),
           internalParameters: z.record(z.string(), z.unknown()),
-          resolvedDependencies: z.array(z.object({
-            annotations: z.record(z.string(), z.unknown()),
-            content: z.string(),
-            digest: z.record(z.string(), z.unknown()),
-            downloadLocation: z.string(),
-            mediaType: z.string(),
-            name: z.string(),
-            uri: z.string(),
-          })),
+          resolvedDependencies: z.array(z.unknown()),
         }),
         runDetails: z.object({
           builder: z.object({
-            builderDependencies: z.array(z.object({
-              annotations: z.record(z.string(), z.unknown()),
-              content: z.string(),
-              digest: z.record(z.string(), z.unknown()),
-              downloadLocation: z.string(),
-              mediaType: z.string(),
-              name: z.string(),
-              uri: z.string(),
-            })),
-            id: z.string(),
-            version: z.record(z.string(), z.unknown()),
+            builderDependencies: z.unknown(),
+            id: z.unknown(),
+            version: z.unknown(),
           }),
-          byproducts: z.array(z.object({
-            annotations: z.record(z.string(), z.unknown()),
-            content: z.string(),
-            digest: z.record(z.string(), z.unknown()),
-            downloadLocation: z.string(),
-            mediaType: z.string(),
-            name: z.string(),
-            uri: z.string(),
-          })),
+          byproducts: z.array(z.unknown()),
           metadata: z.object({
-            finishedOn: z.string(),
-            invocationId: z.string(),
-            startedOn: z.string(),
+            finishedOn: z.unknown(),
+            invocationId: z.unknown(),
+            startedOn: z.unknown(),
           }),
         }),
       }),
@@ -1714,17 +1575,17 @@ const StateSchema = z.object({
           buildInvocationId: z.string(),
           buildStartedOn: z.string(),
           completeness: z.object({
-            arguments: z.boolean(),
-            environment: z.boolean(),
-            materials: z.boolean(),
+            arguments: z.unknown(),
+            environment: z.unknown(),
+            materials: z.unknown(),
           }),
           reproducible: z.boolean(),
         }),
         recipe: z.object({
-          arguments: z.array(z.record(z.string(), z.unknown())),
+          arguments: z.array(z.unknown()),
           definedInMaterial: z.string(),
           entryPoint: z.string(),
-          environment: z.array(z.record(z.string(), z.unknown())),
+          environment: z.array(z.unknown()),
           type: z.string(),
         }),
       }),
@@ -1733,17 +1594,17 @@ const StateSchema = z.object({
           id: z.string(),
         }),
         materials: z.array(z.object({
-          digest: z.record(z.string(), z.unknown()),
-          uri: z.string(),
+          digest: z.unknown(),
+          uri: z.unknown(),
         })),
         metadata: z.object({
           buildFinishedOn: z.string(),
           buildInvocationId: z.string(),
           buildStartedOn: z.string(),
           completeness: z.object({
-            arguments: z.boolean(),
-            environment: z.boolean(),
-            materials: z.boolean(),
+            arguments: z.unknown(),
+            environment: z.unknown(),
+            materials: z.unknown(),
           }),
           reproducible: z.boolean(),
         }),
@@ -1763,25 +1624,25 @@ const StateSchema = z.object({
         }),
         invocation: z.object({
           configSource: z.object({
-            digest: z.record(z.string(), z.unknown()),
-            entryPoint: z.string(),
-            uri: z.string(),
+            digest: z.unknown(),
+            entryPoint: z.unknown(),
+            uri: z.unknown(),
           }),
           environment: z.record(z.string(), z.unknown()),
           parameters: z.record(z.string(), z.unknown()),
         }),
         materials: z.array(z.object({
-          digest: z.record(z.string(), z.unknown()),
-          uri: z.string(),
+          digest: z.unknown(),
+          uri: z.unknown(),
         })),
         metadata: z.object({
           buildFinishedOn: z.string(),
           buildInvocationId: z.string(),
           buildStartedOn: z.string(),
           completeness: z.object({
-            environment: z.boolean(),
-            materials: z.boolean(),
-            parameters: z.boolean(),
+            environment: z.unknown(),
+            materials: z.unknown(),
+            parameters: z.unknown(),
           }),
           reproducible: z.boolean(),
         }),
@@ -1797,15 +1658,15 @@ const StateSchema = z.object({
       builtArtifacts: z.array(z.object({
         checksum: z.string(),
         id: z.string(),
-        names: z.array(z.string()),
+        names: z.array(z.unknown()),
       })),
       commands: z.array(z.object({
-        args: z.array(z.string()),
+        args: z.array(z.unknown()),
         dir: z.string(),
-        env: z.array(z.string()),
+        env: z.array(z.unknown()),
         id: z.string(),
         name: z.string(),
-        waitFor: z.array(z.string()),
+        waitFor: z.array(z.unknown()),
       })),
       createTime: z.string(),
       creator: z.string(),
@@ -1815,63 +1676,27 @@ const StateSchema = z.object({
       projectId: z.string(),
       sourceProvenance: z.object({
         additionalContexts: z.array(z.object({
-          cloudRepo: z.object({
-            aliasContext: z.object({
-              kind: z.string(),
-              name: z.string(),
-            }),
-            repoId: z.object({
-              projectRepoId: z.object({
-                projectId: z.string(),
-                repoName: z.string(),
-              }),
-              uid: z.string(),
-            }),
-            revisionId: z.string(),
-          }),
-          gerrit: z.object({
-            aliasContext: z.object({
-              kind: z.string(),
-              name: z.string(),
-            }),
-            gerritProject: z.string(),
-            hostUri: z.string(),
-            revisionId: z.string(),
-          }),
-          git: z.object({
-            revisionId: z.string(),
-            url: z.string(),
-          }),
-          labels: z.record(z.string(), z.unknown()),
+          cloudRepo: z.unknown(),
+          gerrit: z.unknown(),
+          git: z.unknown(),
+          labels: z.unknown(),
         })),
         artifactStorageSourceUri: z.string(),
         context: z.object({
           cloudRepo: z.object({
-            aliasContext: z.object({
-              kind: z.string(),
-              name: z.string(),
-            }),
-            repoId: z.object({
-              projectRepoId: z.object({
-                projectId: z.string(),
-                repoName: z.string(),
-              }),
-              uid: z.string(),
-            }),
-            revisionId: z.string(),
+            aliasContext: z.unknown(),
+            repoId: z.unknown(),
+            revisionId: z.unknown(),
           }),
           gerrit: z.object({
-            aliasContext: z.object({
-              kind: z.string(),
-              name: z.string(),
-            }),
-            gerritProject: z.string(),
-            hostUri: z.string(),
-            revisionId: z.string(),
+            aliasContext: z.unknown(),
+            gerritProject: z.unknown(),
+            hostUri: z.unknown(),
+            revisionId: z.unknown(),
           }),
           git: z.object({
-            revisionId: z.string(),
-            url: z.string(),
+            revisionId: z.unknown(),
+            url: z.unknown(),
           }),
           labels: z.record(z.string(), z.unknown()),
         }),
@@ -1956,17 +1781,17 @@ const StateSchema = z.object({
           buildInvocationId: z.string(),
           buildStartedOn: z.string(),
           completeness: z.object({
-            arguments: z.boolean(),
-            environment: z.boolean(),
-            materials: z.boolean(),
+            arguments: z.unknown(),
+            environment: z.unknown(),
+            materials: z.unknown(),
           }),
           reproducible: z.boolean(),
         }),
         recipe: z.object({
-          arguments: z.array(z.record(z.string(), z.unknown())),
+          arguments: z.array(z.unknown()),
           definedInMaterial: z.string(),
           entryPoint: z.string(),
-          environment: z.array(z.record(z.string(), z.unknown())),
+          environment: z.array(z.unknown()),
           type: z.string(),
         }),
       }),
@@ -1975,17 +1800,17 @@ const StateSchema = z.object({
           id: z.string(),
         }),
         materials: z.array(z.object({
-          digest: z.record(z.string(), z.unknown()),
-          uri: z.string(),
+          digest: z.unknown(),
+          uri: z.unknown(),
         })),
         metadata: z.object({
           buildFinishedOn: z.string(),
           buildInvocationId: z.string(),
           buildStartedOn: z.string(),
           completeness: z.object({
-            arguments: z.boolean(),
-            environment: z.boolean(),
-            materials: z.boolean(),
+            arguments: z.unknown(),
+            environment: z.unknown(),
+            materials: z.unknown(),
           }),
           reproducible: z.boolean(),
         }),
@@ -2005,25 +1830,25 @@ const StateSchema = z.object({
         }),
         invocation: z.object({
           configSource: z.object({
-            digest: z.record(z.string(), z.unknown()),
-            entryPoint: z.string(),
-            uri: z.string(),
+            digest: z.unknown(),
+            entryPoint: z.unknown(),
+            uri: z.unknown(),
           }),
           environment: z.record(z.string(), z.unknown()),
           parameters: z.record(z.string(), z.unknown()),
         }),
         materials: z.array(z.object({
-          digest: z.record(z.string(), z.unknown()),
-          uri: z.string(),
+          digest: z.unknown(),
+          uri: z.unknown(),
         })),
         metadata: z.object({
           buildFinishedOn: z.string(),
           buildInvocationId: z.string(),
           buildStartedOn: z.string(),
           completeness: z.object({
-            environment: z.boolean(),
-            materials: z.boolean(),
-            parameters: z.boolean(),
+            environment: z.unknown(),
+            materials: z.unknown(),
+            parameters: z.unknown(),
           }),
           reproducible: z.boolean(),
         }),
@@ -2117,16 +1942,11 @@ const StateSchema = z.object({
       fileLocation: z.object({
         filePath: z.string(),
         layerDetails: z.object({
-          baseImages: z.array(z.object({
-            layerCount: z.number(),
-            name: z.string(),
-            registry: z.string(),
-            repository: z.string(),
-          })),
-          chainId: z.string(),
-          command: z.string(),
-          diffId: z.string(),
-          index: z.number(),
+          baseImages: z.unknown(),
+          chainId: z.unknown(),
+          command: z.unknown(),
+          diffId: z.unknown(),
+          index: z.unknown(),
         }),
         lineNumber: z.number(),
       }),
@@ -2218,20 +2038,9 @@ const StateSchema = z.object({
       }),
       effectiveSeverity: z.string(),
       fileLocation: z.array(z.object({
-        filePath: z.string(),
-        layerDetails: z.object({
-          baseImages: z.array(z.object({
-            layerCount: z.number(),
-            name: z.string(),
-            registry: z.string(),
-            repository: z.string(),
-          })),
-          chainId: z.string(),
-          command: z.string(),
-          diffId: z.string(),
-          index: z.number(),
-        }),
-        lineNumber: z.number(),
+        filePath: z.unknown(),
+        layerDetails: z.unknown(),
+        lineNumber: z.unknown(),
       })),
       fixAvailable: z.boolean(),
       fixedCpeUri: z.string(),
@@ -2278,8 +2087,8 @@ const StateSchema = z.object({
         details: z.string(),
         remediationType: z.string(),
         remediationUri: z.object({
-          label: z.string(),
-          url: z.string(),
+          label: z.unknown(),
+          url: z.unknown(),
         }),
       })),
       state: z.string(),
@@ -2327,45 +2136,21 @@ const InputsSchema = z.object({
       predicate: z.object({
         buildDefinition: z.object({
           buildType: z.string().optional(),
-          externalParameters: z.record(z.string(), z.string()).optional(),
-          internalParameters: z.record(z.string(), z.string()).optional(),
-          resolvedDependencies: z.array(z.object({
-            annotations: z.record(z.string(), z.string()).optional(),
-            content: z.string().optional(),
-            digest: z.record(z.string(), z.string()).optional(),
-            downloadLocation: z.string().optional(),
-            mediaType: z.string().optional(),
-            name: z.string().optional(),
-            uri: z.string().optional(),
-          })).optional(),
+          externalParameters: z.record(z.string(), z.unknown()).optional(),
+          internalParameters: z.record(z.string(), z.unknown()).optional(),
+          resolvedDependencies: z.array(z.unknown()).optional(),
         }).optional(),
         runDetails: z.object({
           builder: z.object({
-            builderDependencies: z.array(z.object({
-              annotations: z.record(z.string(), z.string()).optional(),
-              content: z.string().optional(),
-              digest: z.record(z.string(), z.string()).optional(),
-              downloadLocation: z.string().optional(),
-              mediaType: z.string().optional(),
-              name: z.string().optional(),
-              uri: z.string().optional(),
-            })).optional(),
-            id: z.string().optional(),
-            version: z.record(z.string(), z.string()).optional(),
+            builderDependencies: z.unknown().optional(),
+            id: z.unknown().optional(),
+            version: z.unknown().optional(),
           }).optional(),
-          byproducts: z.array(z.object({
-            annotations: z.record(z.string(), z.string()).optional(),
-            content: z.string().optional(),
-            digest: z.record(z.string(), z.string()).optional(),
-            downloadLocation: z.string().optional(),
-            mediaType: z.string().optional(),
-            name: z.string().optional(),
-            uri: z.string().optional(),
-          })).optional(),
+          byproducts: z.array(z.unknown()).optional(),
           metadata: z.object({
-            finishedOn: z.string().optional(),
-            invocationId: z.string().optional(),
-            startedOn: z.string().optional(),
+            finishedOn: z.unknown().optional(),
+            invocationId: z.unknown().optional(),
+            startedOn: z.unknown().optional(),
           }).optional(),
         }).optional(),
       }).describe(
@@ -2373,7 +2158,7 @@ const InputsSchema = z.object({
       ).optional(),
       predicateType: z.string().optional(),
       subject: z.array(z.object({
-        digest: z.record(z.string(), z.string()).describe(
+        digest: z.record(z.string(), z.unknown()).describe(
           '`"": ""` Algorithms can be e.g. sha256, sha512 See https://github.com/in-toto/attestation/blob/main/spec/field_types.md#DigestSet',
         ).optional(),
         name: z.string().optional(),
@@ -2414,7 +2199,7 @@ const InputsSchema = z.object({
         ).optional(),
       }).describe("Other properties of the build.").optional(),
       recipe: z.object({
-        arguments: z.array(z.record(z.string(), z.string())).describe(
+        arguments: z.array(z.record(z.string(), z.unknown())).describe(
           'Collection of all external inputs that influenced the build on top of recipe.definedInMaterial and recipe.entryPoint. For example, if the recipe type were "make", then this might be the flags passed to make aside from the target, which is captured in recipe.entryPoint. Since the arguments field can greatly vary in structure, depending on the builder and recipe type, this is of form "Any".',
         ).optional(),
         definedInMaterial: z.string().describe(
@@ -2423,7 +2208,7 @@ const InputsSchema = z.object({
         entryPoint: z.string().describe(
           'String identifying the entry point into the build. This is often a path to a configuration file and/or a target label within that file. The syntax and meaning are defined by recipe.type. For example, if the recipe type were "make", then this would reference the directory in which to run make as well as which target to use.',
         ).optional(),
-        environment: z.array(z.record(z.string(), z.string())).describe(
+        environment: z.array(z.record(z.string(), z.unknown())).describe(
           'Any other builder-controlled inputs necessary for correctly evaluating the recipe. Usually only needed for reproducing the build but not evaluated as part of policy. Since the environment field can greatly vary in structure, depending on the builder and recipe type, this is of form "Any".',
         ).optional(),
         type: z.string().describe(
@@ -2457,13 +2242,13 @@ const InputsSchema = z.object({
             "The timestamp of when the build started.",
           ).optional(),
           completeness: z.object({
-            arguments: z.boolean().describe(
+            arguments: z.unknown().describe(
               "If true, the builder claims that recipe.arguments is complete, meaning that all external inputs are properly captured in the recipe.",
             ).optional(),
-            environment: z.boolean().describe(
+            environment: z.unknown().describe(
               "If true, the builder claims that recipe.environment is claimed to be complete.",
             ).optional(),
-            materials: z.boolean().describe(
+            materials: z.unknown().describe(
               'If true, the builder claims that materials are complete, usually through some controls to prevent network access. Sometimes called "hermetic".',
             ).optional(),
           }).describe(
@@ -2474,7 +2259,7 @@ const InputsSchema = z.object({
           ).optional(),
         }).describe("Other properties of the build.").optional(),
         recipe: z.object({
-          arguments: z.array(z.record(z.string(), z.string())).describe(
+          arguments: z.array(z.unknown()).describe(
             'Collection of all external inputs that influenced the build on top of recipe.definedInMaterial and recipe.entryPoint. For example, if the recipe type were "make", then this might be the flags passed to make aside from the target, which is captured in recipe.entryPoint. Since the arguments field can greatly vary in structure, depending on the builder and recipe type, this is of form "Any".',
           ).optional(),
           definedInMaterial: z.string().describe(
@@ -2483,7 +2268,7 @@ const InputsSchema = z.object({
           entryPoint: z.string().describe(
             'String identifying the entry point into the build. This is often a path to a configuration file and/or a target label within that file. The syntax and meaning are defined by recipe.type. For example, if the recipe type were "make", then this would reference the directory in which to run make as well as which target to use.',
           ).optional(),
-          environment: z.array(z.record(z.string(), z.string())).describe(
+          environment: z.array(z.unknown()).describe(
             'Any other builder-controlled inputs necessary for correctly evaluating the recipe. Usually only needed for reproducing the build but not evaluated as part of policy. Since the environment field can greatly vary in structure, depending on the builder and recipe type, this is of form "Any".',
           ).optional(),
           type: z.string().describe(
@@ -2498,8 +2283,8 @@ const InputsSchema = z.object({
           id: z.string().optional(),
         }).optional(),
         materials: z.array(z.object({
-          digest: z.record(z.string(), z.string()).optional(),
-          uri: z.string().optional(),
+          digest: z.unknown().optional(),
+          uri: z.unknown().optional(),
         })).describe(
           "The collection of artifacts that influenced the build including sources, dependencies, build tools, base images, and so on. This is considered to be incomplete unless metadata.completeness.materials is true. Unset or null is equivalent to empty.",
         ).optional(),
@@ -2514,13 +2299,13 @@ const InputsSchema = z.object({
             "The timestamp of when the build started.",
           ).optional(),
           completeness: z.object({
-            arguments: z.boolean().describe(
+            arguments: z.unknown().describe(
               "If true, the builder claims that recipe.arguments is complete, meaning that all external inputs are properly captured in the recipe.",
             ).optional(),
-            environment: z.boolean().describe(
+            environment: z.unknown().describe(
               "If true, the builder claims that recipe.environment is claimed to be complete.",
             ).optional(),
-            materials: z.boolean().describe(
+            materials: z.unknown().describe(
               'If true, the builder claims that materials are complete, usually through some controls to prevent network access. Sometimes called "hermetic".',
             ).optional(),
           }).describe(
@@ -2531,7 +2316,7 @@ const InputsSchema = z.object({
           ).optional(),
         }).describe("Other properties of the build.").optional(),
         recipe: z.object({
-          arguments: z.record(z.string(), z.string()).describe(
+          arguments: z.record(z.string(), z.unknown()).describe(
             'Collection of all external inputs that influenced the build on top of recipe.definedInMaterial and recipe.entryPoint. For example, if the recipe type were "make", then this might be the flags passed to make aside from the target, which is captured in recipe.entryPoint. Depending on the recipe Type, the structure may be different.',
           ).optional(),
           definedInMaterial: z.string().describe(
@@ -2540,7 +2325,7 @@ const InputsSchema = z.object({
           entryPoint: z.string().describe(
             'String identifying the entry point into the build. This is often a path to a configuration file and/or a target label within that file. The syntax and meaning are defined by recipe.type. For example, if the recipe type were "make", then this would reference the directory in which to run make as well as which target to use.',
           ).optional(),
-          environment: z.record(z.string(), z.string()).describe(
+          environment: z.record(z.string(), z.unknown()).describe(
             "Any other builder-controlled inputs necessary for correctly evaluating the recipe. Usually only needed for reproducing the build but not evaluated as part of policy. Depending on the recipe Type, the structure may be different.",
           ).optional(),
           type: z.string().describe(
@@ -2560,28 +2345,28 @@ const InputsSchema = z.object({
         ).optional(),
         invocation: z.object({
           configSource: z.object({
-            digest: z.record(z.string(), z.string()).optional(),
-            entryPoint: z.string().optional(),
-            uri: z.string().optional(),
+            digest: z.unknown().optional(),
+            entryPoint: z.unknown().optional(),
+            uri: z.unknown().optional(),
           }).describe(
             "Describes where the config file that kicked off the build came from. This is effectively a pointer to the source where buildConfig came from.",
           ).optional(),
-          environment: z.record(z.string(), z.string()).optional(),
-          parameters: z.record(z.string(), z.string()).optional(),
+          environment: z.record(z.string(), z.unknown()).optional(),
+          parameters: z.record(z.string(), z.unknown()).optional(),
         }).describe("Identifies the event that kicked off the build.")
           .optional(),
         materials: z.array(z.object({
-          digest: z.record(z.string(), z.string()).optional(),
-          uri: z.string().optional(),
+          digest: z.unknown().optional(),
+          uri: z.unknown().optional(),
         })).optional(),
         metadata: z.object({
           buildFinishedOn: z.string().optional(),
           buildInvocationId: z.string().optional(),
           buildStartedOn: z.string().optional(),
           completeness: z.object({
-            environment: z.boolean().optional(),
-            materials: z.boolean().optional(),
-            parameters: z.boolean().optional(),
+            environment: z.unknown().optional(),
+            materials: z.unknown().optional(),
+            parameters: z.unknown().optional(),
           }).describe(
             "Indicates that the builder claims certain fields in this message to be complete.",
           ).optional(),
@@ -2590,7 +2375,7 @@ const InputsSchema = z.object({
       }).describe("See full explanation of fields at slsa.dev/provenance/v0.2.")
         .optional(),
       subject: z.array(z.object({
-        digest: z.record(z.string(), z.string()).describe(
+        digest: z.record(z.string(), z.unknown()).describe(
           '`"": ""` Algorithms can be e.g. sha256, sha512 See https://github.com/in-toto/attestation/blob/main/spec/field_types.md#DigestSet',
         ).optional(),
         name: z.string().optional(),
@@ -2612,18 +2397,18 @@ const InputsSchema = z.object({
         id: z.string().describe(
           "Artifact ID, if any; for container images, this will be a URL by digest like `gcr.io/projectID/imagename@sha256:123456`.",
         ).optional(),
-        names: z.array(z.string()).describe(
+        names: z.array(z.unknown()).describe(
           "Related artifact names. This may be the path to a binary or jar file, or in the case of a container build, the name used to push the container image to Google Container Registry, as presented to `docker push`. Note that a single Artifact ID can have multiple names, for example if two tags are applied to one image.",
         ).optional(),
       })).describe("Output of the build.").optional(),
       commands: z.array(z.object({
-        args: z.array(z.string()).describe(
+        args: z.array(z.unknown()).describe(
           "Command-line arguments used when executing this command.",
         ).optional(),
         dir: z.string().describe(
           "Working directory (relative to project source root) used when running this command.",
         ).optional(),
-        env: z.array(z.string()).describe(
+        env: z.array(z.unknown()).describe(
           "Environment variables set before running this command.",
         ).optional(),
         id: z.string().describe(
@@ -2632,7 +2417,7 @@ const InputsSchema = z.object({
         name: z.string().describe(
           "Required. Name of the command, as presented on the command line, or if the command is packaged as a Docker container, as presented to `docker pull`.",
         ).optional(),
-        waitFor: z.array(z.string()).describe(
+        waitFor: z.array(z.unknown()).describe(
           "The ID(s) of the command(s) that this command depends on.",
         ).optional(),
       })).describe("Commands requested by the build.").optional(),
@@ -2652,55 +2437,17 @@ const InputsSchema = z.object({
       projectId: z.string().describe("ID of the project.").optional(),
       sourceProvenance: z.object({
         additionalContexts: z.array(z.object({
-          cloudRepo: z.object({
-            aliasContext: z.object({
-              kind: z.enum(["KIND_UNSPECIFIED", "FIXED", "MOVABLE", "OTHER"])
-                .describe("The alias kind.").optional(),
-              name: z.string().describe("The alias name.").optional(),
-            }).describe("An alias to a repo revision.").optional(),
-            repoId: z.object({
-              projectRepoId: z.object({
-                projectId: z.string().describe("The ID of the project.")
-                  .optional(),
-                repoName: z.string().describe(
-                  "The name of the repo. Leave empty for the default repo.",
-                ).optional(),
-              }).describe(
-                "Selects a repo using a Google Cloud Platform project ID (e.g., winged-cargo-31) and a repo name within that project.",
-              ).optional(),
-              uid: z.string().describe(
-                "A server-assigned, globally unique identifier.",
-              ).optional(),
-            }).describe("A unique identifier for a Cloud Repo.").optional(),
-            revisionId: z.string().describe("A revision ID.").optional(),
-          }).describe(
+          cloudRepo: z.unknown().describe(
             "A CloudRepoSourceContext denotes a particular revision in a Google Cloud Source Repo.",
           ).optional(),
-          gerrit: z.object({
-            aliasContext: z.object({
-              kind: z.enum(["KIND_UNSPECIFIED", "FIXED", "MOVABLE", "OTHER"])
-                .describe("The alias kind.").optional(),
-              name: z.string().describe("The alias name.").optional(),
-            }).describe("An alias to a repo revision.").optional(),
-            gerritProject: z.string().describe(
-              'The full project name within the host. Projects may be nested, so "project/subproject" is a valid project name. The "repo name" is the hostURI/project.',
-            ).optional(),
-            hostUri: z.string().describe(
-              "The URI of a running Gerrit instance.",
-            ).optional(),
-            revisionId: z.string().describe("A revision (commit) ID.")
-              .optional(),
-          }).describe("A SourceContext referring to a Gerrit project.")
-            .optional(),
-          git: z.object({
-            revisionId: z.string().describe("Git commit hash.").optional(),
-            url: z.string().describe("Git repository URL.").optional(),
-          }).describe(
+          gerrit: z.unknown().describe(
+            "A SourceContext referring to a Gerrit project.",
+          ).optional(),
+          git: z.unknown().describe(
             "A GitSourceContext denotes a particular revision in a third party Git repository (e.g., GitHub).",
           ).optional(),
-          labels: z.record(z.string(), z.string()).describe(
-            "Labels with user defined metadata.",
-          ).optional(),
+          labels: z.unknown().describe("Labels with user defined metadata.")
+            .optional(),
         })).describe(
           "If provided, some of the source code used for the build may be found in these locations, in the case where the source repository had multiple remotes or submodules. This list will not include the context specified in the context field.",
         ).optional(),
@@ -2709,52 +2456,35 @@ const InputsSchema = z.object({
         ).optional(),
         context: z.object({
           cloudRepo: z.object({
-            aliasContext: z.object({
-              kind: z.enum(["KIND_UNSPECIFIED", "FIXED", "MOVABLE", "OTHER"])
-                .describe("The alias kind.").optional(),
-              name: z.string().describe("The alias name.").optional(),
-            }).describe("An alias to a repo revision.").optional(),
-            repoId: z.object({
-              projectRepoId: z.object({
-                projectId: z.string().describe("The ID of the project.")
-                  .optional(),
-                repoName: z.string().describe(
-                  "The name of the repo. Leave empty for the default repo.",
-                ).optional(),
-              }).describe(
-                "Selects a repo using a Google Cloud Platform project ID (e.g., winged-cargo-31) and a repo name within that project.",
-              ).optional(),
-              uid: z.string().describe(
-                "A server-assigned, globally unique identifier.",
-              ).optional(),
-            }).describe("A unique identifier for a Cloud Repo.").optional(),
-            revisionId: z.string().describe("A revision ID.").optional(),
+            aliasContext: z.unknown().describe("An alias to a repo revision.")
+              .optional(),
+            repoId: z.unknown().describe(
+              "A unique identifier for a Cloud Repo.",
+            ).optional(),
+            revisionId: z.unknown().describe("A revision ID.").optional(),
           }).describe(
             "A CloudRepoSourceContext denotes a particular revision in a Google Cloud Source Repo.",
           ).optional(),
           gerrit: z.object({
-            aliasContext: z.object({
-              kind: z.enum(["KIND_UNSPECIFIED", "FIXED", "MOVABLE", "OTHER"])
-                .describe("The alias kind.").optional(),
-              name: z.string().describe("The alias name.").optional(),
-            }).describe("An alias to a repo revision.").optional(),
-            gerritProject: z.string().describe(
+            aliasContext: z.unknown().describe("An alias to a repo revision.")
+              .optional(),
+            gerritProject: z.unknown().describe(
               'The full project name within the host. Projects may be nested, so "project/subproject" is a valid project name. The "repo name" is the hostURI/project.',
             ).optional(),
-            hostUri: z.string().describe(
+            hostUri: z.unknown().describe(
               "The URI of a running Gerrit instance.",
             ).optional(),
-            revisionId: z.string().describe("A revision (commit) ID.")
+            revisionId: z.unknown().describe("A revision (commit) ID.")
               .optional(),
           }).describe("A SourceContext referring to a Gerrit project.")
             .optional(),
           git: z.object({
-            revisionId: z.string().describe("Git commit hash.").optional(),
-            url: z.string().describe("Git repository URL.").optional(),
+            revisionId: z.unknown().describe("Git commit hash.").optional(),
+            url: z.unknown().describe("Git repository URL.").optional(),
           }).describe(
             "A GitSourceContext denotes a particular revision in a third party Git repository (e.g., GitHub).",
           ).optional(),
-          labels: z.record(z.string(), z.string()).describe(
+          labels: z.record(z.string(), z.unknown()).describe(
             "Labels with user defined metadata.",
           ).optional(),
         }).describe(
@@ -2763,13 +2493,9 @@ const InputsSchema = z.object({
         fileHashes: z.record(
           z.string(),
           z.object({
-            fileHash: z.array(z.object({
-              type: z.string().describe(
-                'Required. The type of hash that was performed, e.g. "SHA-256".',
-              ).optional(),
-              value: z.string().describe("Required. The hash value.")
-                .optional(),
-            })).describe("Required. Collection of file hashes.").optional(),
+            fileHash: z.unknown().describe(
+              "Required. Collection of file hashes.",
+            ).optional(),
           }),
         ).describe(
           "Hash(es) of the build source, which can be used to verify that the original source integrity was maintained in the build. The keys to this map are file paths used as build source and the values contain the hash values for those files. If the build source came in a single package such as a gzipped tarfile (.tar.gz), the FileHash will be for the single path to that file.",
@@ -2850,7 +2576,7 @@ const InputsSchema = z.object({
       code: z.number().int().describe(
         "The status code, which should be an enum value of google.rpc.Code.",
       ).optional(),
-      details: z.array(z.record(z.string(), z.string())).describe(
+      details: z.array(z.record(z.string(), z.unknown())).describe(
         "A list of messages that carry the error details. There is a common set of message types for APIs to use.",
       ).optional(),
       message: z.string().describe(
@@ -2947,13 +2673,13 @@ const InputsSchema = z.object({
             "The timestamp of when the build started.",
           ).optional(),
           completeness: z.object({
-            arguments: z.boolean().describe(
+            arguments: z.unknown().describe(
               "If true, the builder claims that recipe.arguments is complete, meaning that all external inputs are properly captured in the recipe.",
             ).optional(),
-            environment: z.boolean().describe(
+            environment: z.unknown().describe(
               "If true, the builder claims that recipe.environment is claimed to be complete.",
             ).optional(),
-            materials: z.boolean().describe(
+            materials: z.unknown().describe(
               'If true, the builder claims that materials are complete, usually through some controls to prevent network access. Sometimes called "hermetic".',
             ).optional(),
           }).describe(
@@ -2964,7 +2690,7 @@ const InputsSchema = z.object({
           ).optional(),
         }).describe("Other properties of the build.").optional(),
         recipe: z.object({
-          arguments: z.array(z.record(z.string(), z.string())).describe(
+          arguments: z.array(z.unknown()).describe(
             'Collection of all external inputs that influenced the build on top of recipe.definedInMaterial and recipe.entryPoint. For example, if the recipe type were "make", then this might be the flags passed to make aside from the target, which is captured in recipe.entryPoint. Since the arguments field can greatly vary in structure, depending on the builder and recipe type, this is of form "Any".',
           ).optional(),
           definedInMaterial: z.string().describe(
@@ -2973,7 +2699,7 @@ const InputsSchema = z.object({
           entryPoint: z.string().describe(
             'String identifying the entry point into the build. This is often a path to a configuration file and/or a target label within that file. The syntax and meaning are defined by recipe.type. For example, if the recipe type were "make", then this would reference the directory in which to run make as well as which target to use.',
           ).optional(),
-          environment: z.array(z.record(z.string(), z.string())).describe(
+          environment: z.array(z.unknown()).describe(
             'Any other builder-controlled inputs necessary for correctly evaluating the recipe. Usually only needed for reproducing the build but not evaluated as part of policy. Since the environment field can greatly vary in structure, depending on the builder and recipe type, this is of form "Any".',
           ).optional(),
           type: z.string().describe(
@@ -2988,8 +2714,8 @@ const InputsSchema = z.object({
           id: z.string().optional(),
         }).optional(),
         materials: z.array(z.object({
-          digest: z.record(z.string(), z.string()).optional(),
-          uri: z.string().optional(),
+          digest: z.unknown().optional(),
+          uri: z.unknown().optional(),
         })).describe(
           "The collection of artifacts that influenced the build including sources, dependencies, build tools, base images, and so on. This is considered to be incomplete unless metadata.completeness.materials is true. Unset or null is equivalent to empty.",
         ).optional(),
@@ -3004,13 +2730,13 @@ const InputsSchema = z.object({
             "The timestamp of when the build started.",
           ).optional(),
           completeness: z.object({
-            arguments: z.boolean().describe(
+            arguments: z.unknown().describe(
               "If true, the builder claims that recipe.arguments is complete, meaning that all external inputs are properly captured in the recipe.",
             ).optional(),
-            environment: z.boolean().describe(
+            environment: z.unknown().describe(
               "If true, the builder claims that recipe.environment is claimed to be complete.",
             ).optional(),
-            materials: z.boolean().describe(
+            materials: z.unknown().describe(
               'If true, the builder claims that materials are complete, usually through some controls to prevent network access. Sometimes called "hermetic".',
             ).optional(),
           }).describe(
@@ -3021,7 +2747,7 @@ const InputsSchema = z.object({
           ).optional(),
         }).describe("Other properties of the build.").optional(),
         recipe: z.object({
-          arguments: z.record(z.string(), z.string()).describe(
+          arguments: z.record(z.string(), z.unknown()).describe(
             'Collection of all external inputs that influenced the build on top of recipe.definedInMaterial and recipe.entryPoint. For example, if the recipe type were "make", then this might be the flags passed to make aside from the target, which is captured in recipe.entryPoint. Depending on the recipe Type, the structure may be different.',
           ).optional(),
           definedInMaterial: z.string().describe(
@@ -3030,7 +2756,7 @@ const InputsSchema = z.object({
           entryPoint: z.string().describe(
             'String identifying the entry point into the build. This is often a path to a configuration file and/or a target label within that file. The syntax and meaning are defined by recipe.type. For example, if the recipe type were "make", then this would reference the directory in which to run make as well as which target to use.',
           ).optional(),
-          environment: z.record(z.string(), z.string()).describe(
+          environment: z.record(z.string(), z.unknown()).describe(
             "Any other builder-controlled inputs necessary for correctly evaluating the recipe. Usually only needed for reproducing the build but not evaluated as part of policy. Depending on the recipe Type, the structure may be different.",
           ).optional(),
           type: z.string().describe(
@@ -3050,28 +2776,28 @@ const InputsSchema = z.object({
         ).optional(),
         invocation: z.object({
           configSource: z.object({
-            digest: z.record(z.string(), z.string()).optional(),
-            entryPoint: z.string().optional(),
-            uri: z.string().optional(),
+            digest: z.unknown().optional(),
+            entryPoint: z.unknown().optional(),
+            uri: z.unknown().optional(),
           }).describe(
             "Describes where the config file that kicked off the build came from. This is effectively a pointer to the source where buildConfig came from.",
           ).optional(),
-          environment: z.record(z.string(), z.string()).optional(),
-          parameters: z.record(z.string(), z.string()).optional(),
+          environment: z.record(z.string(), z.unknown()).optional(),
+          parameters: z.record(z.string(), z.unknown()).optional(),
         }).describe("Identifies the event that kicked off the build.")
           .optional(),
         materials: z.array(z.object({
-          digest: z.record(z.string(), z.string()).optional(),
-          uri: z.string().optional(),
+          digest: z.unknown().optional(),
+          uri: z.unknown().optional(),
         })).optional(),
         metadata: z.object({
           buildFinishedOn: z.string().optional(),
           buildInvocationId: z.string().optional(),
           buildStartedOn: z.string().optional(),
           completeness: z.object({
-            environment: z.boolean().optional(),
-            materials: z.boolean().optional(),
-            parameters: z.boolean().optional(),
+            environment: z.unknown().optional(),
+            materials: z.unknown().optional(),
+            parameters: z.unknown().optional(),
           }).describe(
             "Indicates that the builder claims certain fields in this message to be complete.",
           ).optional(),
@@ -3080,7 +2806,7 @@ const InputsSchema = z.object({
       }).describe("See full explanation of fields at slsa.dev/provenance/v0.2.")
         .optional(),
       subject: z.array(z.object({
-        digest: z.record(z.string(), z.string()).describe(
+        digest: z.record(z.string(), z.unknown()).describe(
           '`"": ""` Algorithms can be e.g. sha256, sha512 See https://github.com/in-toto/attestation/blob/main/spec/field_types.md#DigestSet',
         ).optional(),
         name: z.string().optional(),
@@ -3244,7 +2970,7 @@ const InputsSchema = z.object({
         "URI identifying the type of the Predicate.",
       ).optional(),
       subject: z.array(z.object({
-        digest: z.record(z.string(), z.string()).describe(
+        digest: z.record(z.string(), z.unknown()).describe(
           '`"": ""` Algorithms can be e.g. sha256, sha512 See https://github.com/in-toto/attestation/blob/main/spec/field_types.md#DigestSet',
         ).optional(),
         name: z.string().optional(),
@@ -3296,28 +3022,19 @@ const InputsSchema = z.object({
           "For jars that are contained inside.war files, this filepath can indicate the path to war file combined with the path to jar file.",
         ).optional(),
         layerDetails: z.object({
-          baseImages: z.array(z.object({
-            layerCount: z.number().int().describe(
-              "The number of layers that the base image is composed of.",
-            ).optional(),
-            name: z.string().describe("The name of the base image.").optional(),
-            registry: z.string().describe(
-              "The registry in which the base image is from.",
-            ).optional(),
-            repository: z.string().describe(
-              "The repository name in which the base image is from.",
-            ).optional(),
-          })).describe("The base images the layer is found within.").optional(),
-          chainId: z.string().describe(
+          baseImages: z.unknown().describe(
+            "The base images the layer is found within.",
+          ).optional(),
+          chainId: z.unknown().describe(
             "The layer chain ID (sha256 hash) of the layer in the container image. https://github.com/opencontainers/image-spec/blob/main/config.md#layer-chainid",
           ).optional(),
-          command: z.string().describe(
+          command: z.unknown().describe(
             "The layer build command that was used to build the layer. This may not be found in all layers depending on how the container image is built.",
           ).optional(),
-          diffId: z.string().describe(
+          diffId: z.unknown().describe(
             "The diff ID (typically a sha256 hash) of the layer in the container image.",
           ).optional(),
-          index: z.number().int().describe(
+          index: z.unknown().describe(
             "The index of the layer in the container image.",
           ).optional(),
         }).describe("Details about the layer a package was found in.")
@@ -3627,37 +3344,13 @@ const InputsSchema = z.object({
         "Output only. The distro or language system assigned severity for this vulnerability when that is available and note provider assigned severity when it is not available.",
       ).optional(),
       fileLocation: z.array(z.object({
-        filePath: z.string().describe(
+        filePath: z.unknown().describe(
           "For jars that are contained inside.war files, this filepath can indicate the path to war file combined with the path to jar file.",
         ).optional(),
-        layerDetails: z.object({
-          baseImages: z.array(z.object({
-            layerCount: z.number().int().describe(
-              "The number of layers that the base image is composed of.",
-            ).optional(),
-            name: z.string().describe("The name of the base image.").optional(),
-            registry: z.string().describe(
-              "The registry in which the base image is from.",
-            ).optional(),
-            repository: z.string().describe(
-              "The repository name in which the base image is from.",
-            ).optional(),
-          })).describe("The base images the layer is found within.").optional(),
-          chainId: z.string().describe(
-            "The layer chain ID (sha256 hash) of the layer in the container image. https://github.com/opencontainers/image-spec/blob/main/config.md#layer-chainid",
-          ).optional(),
-          command: z.string().describe(
-            "The layer build command that was used to build the layer. This may not be found in all layers depending on how the container image is built.",
-          ).optional(),
-          diffId: z.string().describe(
-            "The diff ID (typically a sha256 hash) of the layer in the container image.",
-          ).optional(),
-          index: z.number().int().describe(
-            "The index of the layer in the container image.",
-          ).optional(),
-        }).describe("Details about the layer a package was found in.")
-          .optional(),
-        lineNumber: z.number().int().describe(
+        layerDetails: z.unknown().describe(
+          "Details about the layer a package was found in.",
+        ).optional(),
+        lineNumber: z.unknown().describe(
           "Line number in the file where the package was found. Optional field that only applies to source repository scanning.",
         ).optional(),
       })).describe("The location at which this package was found.").optional(),
@@ -3787,10 +3480,11 @@ const InputsSchema = z.object({
           "WORKAROUND",
         ]).describe("The type of remediation that can be applied.").optional(),
         remediationUri: z.object({
-          label: z.string().describe("Label to describe usage of the URL.")
+          label: z.unknown().describe("Label to describe usage of the URL.")
             .optional(),
-          url: z.string().describe("Specific URL associated with the resource.")
-            .optional(),
+          url: z.unknown().describe(
+            "Specific URL associated with the resource.",
+          ).optional(),
         }).describe("Metadata for any related URL information.").optional(),
       })).describe(
         "Specifies details on how to handle (and presumably, fix) a vulnerability.",
@@ -3818,7 +3512,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/containeranalysis/occurrences",
-  version: "2026.04.03.3",
+  version: "2026.04.04.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -3842,6 +3536,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.3",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.04.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

@@ -142,10 +142,10 @@ const StateSchema = z.object({
         blockerType: z.string(),
         documentationLink: z.string(),
         explanation: z.string(),
-        facilities: z.array(z.string()),
-        interconnects: z.array(z.string()),
-        metros: z.array(z.string()),
-        zones: z.array(z.string()),
+        facilities: z.array(z.unknown()),
+        interconnects: z.array(z.unknown()),
+        metros: z.array(z.unknown()),
+        zones: z.array(z.unknown()),
       })),
       supportedSla: z.string(),
     }),
@@ -163,11 +163,8 @@ const StateSchema = z.object({
   physicalStructure: z.object({
     metros: z.array(z.object({
       facilities: z.array(z.object({
-        facility: z.string(),
-        zones: z.array(z.object({
-          interconnects: z.array(z.string()),
-          zone: z.string(),
-        })),
+        facility: z.unknown(),
+        zones: z.unknown(),
       })),
       metro: z.string(),
     })),
@@ -212,7 +209,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/compute/interconnectgroups",
-  version: "2026.04.03.3",
+  version: "2026.04.04.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -236,6 +233,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.3",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.04.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

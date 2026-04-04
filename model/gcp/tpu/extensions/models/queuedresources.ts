@@ -127,7 +127,7 @@ const GlobalArgsSchema = z.object({
         code: z.number().int().describe(
           "The status code, which should be an enum value of google.rpc.Code.",
         ).optional(),
-        details: z.array(z.record(z.string(), z.string())).describe(
+        details: z.array(z.record(z.string(), z.unknown())).describe(
           "A list of messages that carry the error details. There is a common set of message types for APIs to use.",
         ).optional(),
         message: z.string().describe(
@@ -179,17 +179,9 @@ const GlobalArgsSchema = z.object({
       ).optional(),
       node: z.object({
         acceleratorConfig: z.object({
-          topology: z.string().describe("Required. Topology of TPU in chips.")
+          topology: z.unknown().describe("Required. Topology of TPU in chips.")
             .optional(),
-          type: z.enum([
-            "TYPE_UNSPECIFIED",
-            "V2",
-            "V3",
-            "V4",
-            "V5LITE_POD",
-            "V5P",
-            "V6E",
-          ]).describe("Required. Type of TPU.").optional(),
+          type: z.unknown().describe("Required. Type of TPU.").optional(),
         }).describe("A TPU accelerator configuration.").optional(),
         acceleratorType: z.string().describe(
           "Optional. The type of hardware accelerators associated with this node.",
@@ -203,11 +195,7 @@ const GlobalArgsSchema = z.object({
         ]).describe("Output only. The API version that created this Node.")
           .optional(),
         bootDiskConfig: z.object({
-          customerEncryptionKey: z.object({
-            kmsKeyName: z.string().describe(
-              'The name of the encryption key that is stored in Google Cloud KMS. For example: "kmsKeyName": "projects/KMS_PROJECT_ID/locations/REGION/keyRings/KEY_REGION/cryptoKeys/KEY The fully-qualifed key name may be returned for resource GET requests. For example: "kmsKeyName": "projects/KMS_PROJECT_ID/locations/REGION/keyRings/KEY_REGION/cryptoKeys/KEY/cryptoKeyVersions/1',
-            ).optional(),
-          }).describe(
+          customerEncryptionKey: z.unknown().describe(
             "Defines the customer encryption key for disk encryption.",
           ).optional(),
         }).describe("Sets the boot disk configuration for the TPU node.")
@@ -218,15 +206,9 @@ const GlobalArgsSchema = z.object({
         createTime: z.string().describe(
           "Output only. The time when the node was created.",
         ).optional(),
-        dataDisks: z.array(z.object({
-          mode: z.enum(["DISK_MODE_UNSPECIFIED", "READ_WRITE", "READ_ONLY"])
-            .describe(
-              "The mode in which to attach this disk. If not specified, the default is READ_WRITE mode. Only applicable to data_disks.",
-            ).optional(),
-          sourceDisk: z.string().describe(
-            'Specifies the full path to an existing disk. For example: "projects/my-project/zones/us-central1-c/disks/my-disk".',
-          ).optional(),
-        })).describe("The additional data disks for the Node.").optional(),
+        dataDisks: z.array(z.unknown()).describe(
+          "The additional data disks for the Node.",
+        ).optional(),
         description: z.string().describe(
           "The user-supplied description of the TPU. Maximum of 512 characters.",
         ).optional(),
@@ -243,10 +225,10 @@ const GlobalArgsSchema = z.object({
         id: z.string().describe(
           "Output only. The unique identifier for the TPU Node.",
         ).optional(),
-        labels: z.record(z.string(), z.string()).describe(
+        labels: z.record(z.string(), z.unknown()).describe(
           "Resource labels to represent user-provided metadata.",
         ).optional(),
-        metadata: z.record(z.string(), z.string()).describe(
+        metadata: z.record(z.string(), z.unknown()).describe(
           "Custom metadata to apply to the TPU Node. Can set startup-script and shutdown-script",
         ).optional(),
         multisliceNode: z.boolean().describe(
@@ -256,54 +238,26 @@ const GlobalArgsSchema = z.object({
           "Output only. Immutable. The name of the TPU.",
         ).optional(),
         networkConfig: z.object({
-          canIpForward: z.boolean().describe(
+          canIpForward: z.unknown().describe(
             "Allows the TPU node to send and receive packets with non-matching destination or source IPs. This is required if you plan to use the TPU workers to forward routes.",
           ).optional(),
-          enableExternalIps: z.boolean().describe(
+          enableExternalIps: z.unknown().describe(
             "Indicates that external IP addresses would be associated with the TPU workers. If set to false, the specified subnetwork or network should have Private Google Access enabled.",
           ).optional(),
-          network: z.string().describe(
+          network: z.unknown().describe(
             'The name of the network for the TPU node. It must be a preexisting Google Compute Engine network. If none is provided, "default" will be used.',
           ).optional(),
-          queueCount: z.number().int().describe(
+          queueCount: z.unknown().describe(
             "Optional. Specifies networking queue count for TPU VM instance's network interface.",
           ).optional(),
-          subnetwork: z.string().describe(
+          subnetwork: z.unknown().describe(
             'The name of the subnetwork for the TPU node. It must be a preexisting Google Compute Engine subnetwork. If none is provided, "default" will be used.',
           ).optional(),
         }).describe("Network related configurations.").optional(),
-        networkConfigs: z.array(z.object({
-          canIpForward: z.boolean().describe(
-            "Allows the TPU node to send and receive packets with non-matching destination or source IPs. This is required if you plan to use the TPU workers to forward routes.",
-          ).optional(),
-          enableExternalIps: z.boolean().describe(
-            "Indicates that external IP addresses would be associated with the TPU workers. If set to false, the specified subnetwork or network should have Private Google Access enabled.",
-          ).optional(),
-          network: z.string().describe(
-            'The name of the network for the TPU node. It must be a preexisting Google Compute Engine network. If none is provided, "default" will be used.',
-          ).optional(),
-          queueCount: z.number().int().describe(
-            "Optional. Specifies networking queue count for TPU VM instance's network interface.",
-          ).optional(),
-          subnetwork: z.string().describe(
-            'The name of the subnetwork for the TPU node. It must be a preexisting Google Compute Engine subnetwork. If none is provided, "default" will be used.',
-          ).optional(),
-        })).describe(
+        networkConfigs: z.array(z.unknown()).describe(
           "Optional. Repeated network configurations for the TPU node. This field is used to specify multiple networks configs for the TPU node. network_config and network_configs are mutually exclusive, you can only specify one of them. If both are specified, an error will be returned.",
         ).optional(),
-        networkEndpoints: z.array(z.object({
-          accessConfig: z.object({
-            externalIp: z.string().describe(
-              "Output only. An external IP address associated with the TPU worker.",
-            ).optional(),
-          }).describe("An access config attached to the TPU worker.")
-            .optional(),
-          ipAddress: z.string().describe(
-            "The internal IP address of this network endpoint.",
-          ).optional(),
-          port: z.number().int().describe("The port of this network endpoint.")
-            .optional(),
-        })).describe(
+        networkEndpoints: z.array(z.unknown()).describe(
           "Output only. The network endpoints where TPU workers can be accessed and sent work. It is recommended that runtime clients of the node reach out to the 0th entry in this map first.",
         ).optional(),
         queuedResource: z.string().describe(
@@ -313,26 +267,26 @@ const GlobalArgsSchema = z.object({
           "Required. The runtime version running in the Node.",
         ).optional(),
         schedulingConfig: z.object({
-          preemptible: z.boolean().describe(
+          preemptible: z.unknown().describe(
             "Defines whether the node is preemptible.",
           ).optional(),
-          reserved: z.boolean().describe(
+          reserved: z.unknown().describe(
             "Whether the node is created under a reservation.",
           ).optional(),
-          spot: z.boolean().describe(
+          spot: z.unknown().describe(
             "Optional. Defines whether the node is Spot VM.",
           ).optional(),
         }).describe("Sets the scheduling options for this node.").optional(),
         serviceAccount: z.object({
-          email: z.string().describe(
+          email: z.unknown().describe(
             "Email address of the service account. If empty, default Compute service account will be used.",
           ).optional(),
-          scope: z.array(z.string()).describe(
+          scope: z.unknown().describe(
             "The list of scopes to be made available for this service account. If empty, access to all Cloud APIs will be allowed.",
           ).optional(),
         }).describe("A service account.").optional(),
         shieldedInstanceConfig: z.object({
-          enableSecureBoot: z.boolean().describe(
+          enableSecureBoot: z.unknown().describe(
             "Defines whether the instance has Secure Boot enabled.",
           ).optional(),
         }).describe("A set of Shielded Instance options.").optional(),
@@ -355,48 +309,28 @@ const GlobalArgsSchema = z.object({
           "UNKNOWN",
         ]).describe("Output only. The current state for the TPU Node.")
           .optional(),
-        symptoms: z.array(z.object({
-          createTime: z.string().describe(
-            "Timestamp when the Symptom is created.",
-          ).optional(),
-          details: z.string().describe(
-            "Detailed information of the current Symptom.",
-          ).optional(),
-          symptomType: z.enum([
-            "SYMPTOM_TYPE_UNSPECIFIED",
-            "LOW_MEMORY",
-            "OUT_OF_MEMORY",
-            "EXECUTE_TIMED_OUT",
-            "MESH_BUILD_FAIL",
-            "HBM_OUT_OF_MEMORY",
-            "PROJECT_ABUSE",
-          ]).describe("Type of the Symptom.").optional(),
-          workerId: z.string().describe(
-            "A string used to uniquely distinguish a worker within a TPU node.",
-          ).optional(),
-        })).describe(
+        symptoms: z.array(z.unknown()).describe(
           "Output only. The Symptoms that have occurred to the TPU Node.",
         ).optional(),
-        tags: z.array(z.string()).describe(
+        tags: z.array(z.unknown()).describe(
           "Tags to apply to the TPU Node. Tags are used to identify valid sources or targets for network firewalls.",
         ).optional(),
         upcomingMaintenance: z.object({
-          canReschedule: z.boolean().describe(
+          canReschedule: z.unknown().describe(
             "Indicates if the maintenance can be customer triggered.",
           ).optional(),
-          latestWindowStartTime: z.string().describe(
+          latestWindowStartTime: z.unknown().describe(
             "The latest time for the planned maintenance window to start. This timestamp value is in RFC3339 text format.",
           ).optional(),
-          maintenanceStatus: z.enum(["UNKNOWN", "PENDING", "ONGOING"]).describe(
+          maintenanceStatus: z.unknown().describe(
             "The status of the maintenance.",
           ).optional(),
-          type: z.enum(["UNKNOWN_TYPE", "SCHEDULED", "UNSCHEDULED"]).describe(
-            "Defines the type of maintenance.",
-          ).optional(),
-          windowEndTime: z.string().describe(
+          type: z.unknown().describe("Defines the type of maintenance.")
+            .optional(),
+          windowEndTime: z.unknown().describe(
             "The time by which the maintenance disruption will be completed. This timestamp value is in RFC3339 text format.",
           ).optional(),
-          windowStartTime: z.string().describe(
+          windowStartTime: z.unknown().describe(
             "The current start time of the maintenance window. This timestamp value is in RFC3339 text format.",
           ).optional(),
         }).describe("Upcoming Maintenance notification information.")
@@ -463,22 +397,17 @@ const StateSchema = z.object({
       }),
       node: z.object({
         acceleratorConfig: z.object({
-          topology: z.string(),
-          type: z.string(),
+          topology: z.unknown(),
+          type: z.unknown(),
         }),
         acceleratorType: z.string(),
         apiVersion: z.string(),
         bootDiskConfig: z.object({
-          customerEncryptionKey: z.object({
-            kmsKeyName: z.string(),
-          }),
+          customerEncryptionKey: z.unknown(),
         }),
         cidrBlock: z.string(),
         createTime: z.string(),
-        dataDisks: z.array(z.object({
-          mode: z.string(),
-          sourceDisk: z.string(),
-        })),
+        dataDisks: z.array(z.unknown()),
         description: z.string(),
         health: z.string(),
         healthDescription: z.string(),
@@ -488,55 +417,38 @@ const StateSchema = z.object({
         multisliceNode: z.boolean(),
         name: z.string(),
         networkConfig: z.object({
-          canIpForward: z.boolean(),
-          enableExternalIps: z.boolean(),
-          network: z.string(),
-          queueCount: z.number(),
-          subnetwork: z.string(),
+          canIpForward: z.unknown(),
+          enableExternalIps: z.unknown(),
+          network: z.unknown(),
+          queueCount: z.unknown(),
+          subnetwork: z.unknown(),
         }),
-        networkConfigs: z.array(z.object({
-          canIpForward: z.boolean(),
-          enableExternalIps: z.boolean(),
-          network: z.string(),
-          queueCount: z.number(),
-          subnetwork: z.string(),
-        })),
-        networkEndpoints: z.array(z.object({
-          accessConfig: z.object({
-            externalIp: z.string(),
-          }),
-          ipAddress: z.string(),
-          port: z.number(),
-        })),
+        networkConfigs: z.array(z.unknown()),
+        networkEndpoints: z.array(z.unknown()),
         queuedResource: z.string(),
         runtimeVersion: z.string(),
         schedulingConfig: z.object({
-          preemptible: z.boolean(),
-          reserved: z.boolean(),
-          spot: z.boolean(),
+          preemptible: z.unknown(),
+          reserved: z.unknown(),
+          spot: z.unknown(),
         }),
         serviceAccount: z.object({
-          email: z.string(),
-          scope: z.array(z.string()),
+          email: z.unknown(),
+          scope: z.unknown(),
         }),
         shieldedInstanceConfig: z.object({
-          enableSecureBoot: z.boolean(),
+          enableSecureBoot: z.unknown(),
         }),
         state: z.string(),
-        symptoms: z.array(z.object({
-          createTime: z.string(),
-          details: z.string(),
-          symptomType: z.string(),
-          workerId: z.string(),
-        })),
-        tags: z.array(z.string()),
+        symptoms: z.array(z.unknown()),
+        tags: z.array(z.unknown()),
         upcomingMaintenance: z.object({
-          canReschedule: z.boolean(),
-          latestWindowStartTime: z.string(),
-          maintenanceStatus: z.string(),
-          type: z.string(),
-          windowEndTime: z.string(),
-          windowStartTime: z.string(),
+          canReschedule: z.unknown(),
+          latestWindowStartTime: z.unknown(),
+          maintenanceStatus: z.unknown(),
+          type: z.unknown(),
+          windowEndTime: z.unknown(),
+          windowStartTime: z.unknown(),
         }),
       }),
       nodeId: z.string(),
@@ -596,7 +508,7 @@ const InputsSchema = z.object({
         code: z.number().int().describe(
           "The status code, which should be an enum value of google.rpc.Code.",
         ).optional(),
-        details: z.array(z.record(z.string(), z.string())).describe(
+        details: z.array(z.record(z.string(), z.unknown())).describe(
           "A list of messages that carry the error details. There is a common set of message types for APIs to use.",
         ).optional(),
         message: z.string().describe(
@@ -648,17 +560,9 @@ const InputsSchema = z.object({
       ).optional(),
       node: z.object({
         acceleratorConfig: z.object({
-          topology: z.string().describe("Required. Topology of TPU in chips.")
+          topology: z.unknown().describe("Required. Topology of TPU in chips.")
             .optional(),
-          type: z.enum([
-            "TYPE_UNSPECIFIED",
-            "V2",
-            "V3",
-            "V4",
-            "V5LITE_POD",
-            "V5P",
-            "V6E",
-          ]).describe("Required. Type of TPU.").optional(),
+          type: z.unknown().describe("Required. Type of TPU.").optional(),
         }).describe("A TPU accelerator configuration.").optional(),
         acceleratorType: z.string().describe(
           "Optional. The type of hardware accelerators associated with this node.",
@@ -672,11 +576,7 @@ const InputsSchema = z.object({
         ]).describe("Output only. The API version that created this Node.")
           .optional(),
         bootDiskConfig: z.object({
-          customerEncryptionKey: z.object({
-            kmsKeyName: z.string().describe(
-              'The name of the encryption key that is stored in Google Cloud KMS. For example: "kmsKeyName": "projects/KMS_PROJECT_ID/locations/REGION/keyRings/KEY_REGION/cryptoKeys/KEY The fully-qualifed key name may be returned for resource GET requests. For example: "kmsKeyName": "projects/KMS_PROJECT_ID/locations/REGION/keyRings/KEY_REGION/cryptoKeys/KEY/cryptoKeyVersions/1',
-            ).optional(),
-          }).describe(
+          customerEncryptionKey: z.unknown().describe(
             "Defines the customer encryption key for disk encryption.",
           ).optional(),
         }).describe("Sets the boot disk configuration for the TPU node.")
@@ -687,15 +587,9 @@ const InputsSchema = z.object({
         createTime: z.string().describe(
           "Output only. The time when the node was created.",
         ).optional(),
-        dataDisks: z.array(z.object({
-          mode: z.enum(["DISK_MODE_UNSPECIFIED", "READ_WRITE", "READ_ONLY"])
-            .describe(
-              "The mode in which to attach this disk. If not specified, the default is READ_WRITE mode. Only applicable to data_disks.",
-            ).optional(),
-          sourceDisk: z.string().describe(
-            'Specifies the full path to an existing disk. For example: "projects/my-project/zones/us-central1-c/disks/my-disk".',
-          ).optional(),
-        })).describe("The additional data disks for the Node.").optional(),
+        dataDisks: z.array(z.unknown()).describe(
+          "The additional data disks for the Node.",
+        ).optional(),
         description: z.string().describe(
           "The user-supplied description of the TPU. Maximum of 512 characters.",
         ).optional(),
@@ -712,10 +606,10 @@ const InputsSchema = z.object({
         id: z.string().describe(
           "Output only. The unique identifier for the TPU Node.",
         ).optional(),
-        labels: z.record(z.string(), z.string()).describe(
+        labels: z.record(z.string(), z.unknown()).describe(
           "Resource labels to represent user-provided metadata.",
         ).optional(),
-        metadata: z.record(z.string(), z.string()).describe(
+        metadata: z.record(z.string(), z.unknown()).describe(
           "Custom metadata to apply to the TPU Node. Can set startup-script and shutdown-script",
         ).optional(),
         multisliceNode: z.boolean().describe(
@@ -725,54 +619,26 @@ const InputsSchema = z.object({
           "Output only. Immutable. The name of the TPU.",
         ).optional(),
         networkConfig: z.object({
-          canIpForward: z.boolean().describe(
+          canIpForward: z.unknown().describe(
             "Allows the TPU node to send and receive packets with non-matching destination or source IPs. This is required if you plan to use the TPU workers to forward routes.",
           ).optional(),
-          enableExternalIps: z.boolean().describe(
+          enableExternalIps: z.unknown().describe(
             "Indicates that external IP addresses would be associated with the TPU workers. If set to false, the specified subnetwork or network should have Private Google Access enabled.",
           ).optional(),
-          network: z.string().describe(
+          network: z.unknown().describe(
             'The name of the network for the TPU node. It must be a preexisting Google Compute Engine network. If none is provided, "default" will be used.',
           ).optional(),
-          queueCount: z.number().int().describe(
+          queueCount: z.unknown().describe(
             "Optional. Specifies networking queue count for TPU VM instance's network interface.",
           ).optional(),
-          subnetwork: z.string().describe(
+          subnetwork: z.unknown().describe(
             'The name of the subnetwork for the TPU node. It must be a preexisting Google Compute Engine subnetwork. If none is provided, "default" will be used.',
           ).optional(),
         }).describe("Network related configurations.").optional(),
-        networkConfigs: z.array(z.object({
-          canIpForward: z.boolean().describe(
-            "Allows the TPU node to send and receive packets with non-matching destination or source IPs. This is required if you plan to use the TPU workers to forward routes.",
-          ).optional(),
-          enableExternalIps: z.boolean().describe(
-            "Indicates that external IP addresses would be associated with the TPU workers. If set to false, the specified subnetwork or network should have Private Google Access enabled.",
-          ).optional(),
-          network: z.string().describe(
-            'The name of the network for the TPU node. It must be a preexisting Google Compute Engine network. If none is provided, "default" will be used.',
-          ).optional(),
-          queueCount: z.number().int().describe(
-            "Optional. Specifies networking queue count for TPU VM instance's network interface.",
-          ).optional(),
-          subnetwork: z.string().describe(
-            'The name of the subnetwork for the TPU node. It must be a preexisting Google Compute Engine subnetwork. If none is provided, "default" will be used.',
-          ).optional(),
-        })).describe(
+        networkConfigs: z.array(z.unknown()).describe(
           "Optional. Repeated network configurations for the TPU node. This field is used to specify multiple networks configs for the TPU node. network_config and network_configs are mutually exclusive, you can only specify one of them. If both are specified, an error will be returned.",
         ).optional(),
-        networkEndpoints: z.array(z.object({
-          accessConfig: z.object({
-            externalIp: z.string().describe(
-              "Output only. An external IP address associated with the TPU worker.",
-            ).optional(),
-          }).describe("An access config attached to the TPU worker.")
-            .optional(),
-          ipAddress: z.string().describe(
-            "The internal IP address of this network endpoint.",
-          ).optional(),
-          port: z.number().int().describe("The port of this network endpoint.")
-            .optional(),
-        })).describe(
+        networkEndpoints: z.array(z.unknown()).describe(
           "Output only. The network endpoints where TPU workers can be accessed and sent work. It is recommended that runtime clients of the node reach out to the 0th entry in this map first.",
         ).optional(),
         queuedResource: z.string().describe(
@@ -782,26 +648,26 @@ const InputsSchema = z.object({
           "Required. The runtime version running in the Node.",
         ).optional(),
         schedulingConfig: z.object({
-          preemptible: z.boolean().describe(
+          preemptible: z.unknown().describe(
             "Defines whether the node is preemptible.",
           ).optional(),
-          reserved: z.boolean().describe(
+          reserved: z.unknown().describe(
             "Whether the node is created under a reservation.",
           ).optional(),
-          spot: z.boolean().describe(
+          spot: z.unknown().describe(
             "Optional. Defines whether the node is Spot VM.",
           ).optional(),
         }).describe("Sets the scheduling options for this node.").optional(),
         serviceAccount: z.object({
-          email: z.string().describe(
+          email: z.unknown().describe(
             "Email address of the service account. If empty, default Compute service account will be used.",
           ).optional(),
-          scope: z.array(z.string()).describe(
+          scope: z.unknown().describe(
             "The list of scopes to be made available for this service account. If empty, access to all Cloud APIs will be allowed.",
           ).optional(),
         }).describe("A service account.").optional(),
         shieldedInstanceConfig: z.object({
-          enableSecureBoot: z.boolean().describe(
+          enableSecureBoot: z.unknown().describe(
             "Defines whether the instance has Secure Boot enabled.",
           ).optional(),
         }).describe("A set of Shielded Instance options.").optional(),
@@ -824,48 +690,28 @@ const InputsSchema = z.object({
           "UNKNOWN",
         ]).describe("Output only. The current state for the TPU Node.")
           .optional(),
-        symptoms: z.array(z.object({
-          createTime: z.string().describe(
-            "Timestamp when the Symptom is created.",
-          ).optional(),
-          details: z.string().describe(
-            "Detailed information of the current Symptom.",
-          ).optional(),
-          symptomType: z.enum([
-            "SYMPTOM_TYPE_UNSPECIFIED",
-            "LOW_MEMORY",
-            "OUT_OF_MEMORY",
-            "EXECUTE_TIMED_OUT",
-            "MESH_BUILD_FAIL",
-            "HBM_OUT_OF_MEMORY",
-            "PROJECT_ABUSE",
-          ]).describe("Type of the Symptom.").optional(),
-          workerId: z.string().describe(
-            "A string used to uniquely distinguish a worker within a TPU node.",
-          ).optional(),
-        })).describe(
+        symptoms: z.array(z.unknown()).describe(
           "Output only. The Symptoms that have occurred to the TPU Node.",
         ).optional(),
-        tags: z.array(z.string()).describe(
+        tags: z.array(z.unknown()).describe(
           "Tags to apply to the TPU Node. Tags are used to identify valid sources or targets for network firewalls.",
         ).optional(),
         upcomingMaintenance: z.object({
-          canReschedule: z.boolean().describe(
+          canReschedule: z.unknown().describe(
             "Indicates if the maintenance can be customer triggered.",
           ).optional(),
-          latestWindowStartTime: z.string().describe(
+          latestWindowStartTime: z.unknown().describe(
             "The latest time for the planned maintenance window to start. This timestamp value is in RFC3339 text format.",
           ).optional(),
-          maintenanceStatus: z.enum(["UNKNOWN", "PENDING", "ONGOING"]).describe(
+          maintenanceStatus: z.unknown().describe(
             "The status of the maintenance.",
           ).optional(),
-          type: z.enum(["UNKNOWN_TYPE", "SCHEDULED", "UNSCHEDULED"]).describe(
-            "Defines the type of maintenance.",
-          ).optional(),
-          windowEndTime: z.string().describe(
+          type: z.unknown().describe("Defines the type of maintenance.")
+            .optional(),
+          windowEndTime: z.unknown().describe(
             "The time by which the maintenance disruption will be completed. This timestamp value is in RFC3339 text format.",
           ).optional(),
-          windowStartTime: z.string().describe(
+          windowStartTime: z.unknown().describe(
             "The current start time of the maintenance window. This timestamp value is in RFC3339 text format.",
           ).optional(),
         }).describe("Upcoming Maintenance notification information.")
@@ -890,7 +736,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/tpu/queuedresources",
-  version: "2026.04.03.3",
+  version: "2026.04.04.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -914,6 +760,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.3",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.04.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

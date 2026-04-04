@@ -108,10 +108,10 @@ const GlobalArgsSchema = z.object({
   rules: z.array(z.object({
     action: z.object({
       destinations: z.array(z.object({
-        serviceName: z.string().describe(
+        serviceName: z.unknown().describe(
           "Required. The URL of a destination service to which to route traffic. Must refer to either a BackendService or ServiceDirectoryService.",
         ).optional(),
-        weight: z.number().int().describe(
+        weight: z.unknown().describe(
           "Optional. Specifies the proportion of requests forwarded to the backend referenced by the serviceName field. This is computed as: - weight/Sum(weights in this destination list). For non-zero values, there may be some epsilon from the exact proportion defined here depending on the precision an implementation supports. If only one serviceName is specified and it has a weight greater than 0, 100% of the traffic is forwarded to that backend. If weights are specified for any one service name, they need to be specified for all of them. If weights are unspecified for all services, then, traffic is distributed in equal proportions to all of them.",
         ).optional(),
       })).describe(
@@ -119,20 +119,20 @@ const GlobalArgsSchema = z.object({
       ).optional(),
       faultInjectionPolicy: z.object({
         abort: z.object({
-          httpStatus: z.number().int().describe(
+          httpStatus: z.unknown().describe(
             "The HTTP status code used to abort the request. The value must be between 200 and 599 inclusive.",
           ).optional(),
-          percentage: z.number().int().describe(
+          percentage: z.unknown().describe(
             "The percentage of traffic which will be aborted. The value must be between [0, 100]",
           ).optional(),
         }).describe(
           "Specification of how client requests are aborted as part of fault injection before being sent to a destination.",
         ).optional(),
         delay: z.object({
-          fixedDelay: z.string().describe(
+          fixedDelay: z.unknown().describe(
             "Specify a fixed delay before forwarding the request.",
           ).optional(),
-          percentage: z.number().int().describe(
+          percentage: z.unknown().describe(
             "The percentage of traffic on which delay will be injected. The value must be between [0, 100]",
           ).optional(),
         }).describe(
@@ -148,7 +148,7 @@ const GlobalArgsSchema = z.object({
         numRetries: z.number().int().describe(
           "Specifies the allowed number of retries. This number must be > 0. If not specified, default to 1.",
         ).optional(),
-        retryConditions: z.array(z.string()).describe(
+        retryConditions: z.array(z.unknown()).describe(
           "- connect-failure: Router will retry on failures connecting to Backend Services, for example due to connection timeouts. - refused-stream: Router will retry if the backend service resets the stream with a REFUSED_STREAM error code. This reset type indicates that it is safe to retry. - cancelled: Router will retry if the gRPC status code in the response header is set to cancelled - deadline-exceeded: Router will retry if the gRPC status code in the response header is set to deadline-exceeded - resource-exhausted: Router will retry if the gRPC status code in the response header is set to resource-exhausted - unavailable: Router will retry if the gRPC status code in the response header is set to unavailable",
         ).optional(),
       }).describe(
@@ -166,30 +166,22 @@ const GlobalArgsSchema = z.object({
       ).optional(),
     }).describe("Specifies how to route matched traffic.").optional(),
     matches: z.array(z.object({
-      headers: z.array(z.object({
-        key: z.string().describe("Required. The key of the header.").optional(),
-        type: z.enum(["TYPE_UNSPECIFIED", "EXACT", "REGULAR_EXPRESSION"])
-          .describe(
-            "Optional. Specifies how to match against the value of the header. If not specified, a default value of EXACT is used.",
-          ).optional(),
-        value: z.string().describe("Required. The value of the header.")
-          .optional(),
-      })).describe("Optional. Specifies a collection of headers to match.")
-        .optional(),
+      headers: z.array(z.unknown()).describe(
+        "Optional. Specifies a collection of headers to match.",
+      ).optional(),
       method: z.object({
-        caseSensitive: z.boolean().describe(
+        caseSensitive: z.unknown().describe(
           "Optional. Specifies that matches are case sensitive. The default value is true. case_sensitive must not be used with a type of REGULAR_EXPRESSION.",
         ).optional(),
-        grpcMethod: z.string().describe(
+        grpcMethod: z.unknown().describe(
           "Required. Name of the method to match against. If unspecified, will match all methods.",
         ).optional(),
-        grpcService: z.string().describe(
+        grpcService: z.unknown().describe(
           "Required. Name of the service to match against. If unspecified, will match all services.",
         ).optional(),
-        type: z.enum(["TYPE_UNSPECIFIED", "EXACT", "REGULAR_EXPRESSION"])
-          .describe(
-            'Optional. Specifies how to match against the name. If not specified, a default value of "EXACT" is used.',
-          ).optional(),
+        type: z.unknown().describe(
+          'Optional. Specifies how to match against the name. If not specified, a default value of "EXACT" is used.',
+        ).optional(),
       }).describe("Specifies a match against a method.").optional(),
     })).describe(
       "Optional. Matches define conditions used for matching the rule against incoming gRPC requests. Each match is independent, i.e. this rule will be matched if ANY one of the matches is satisfied. If no matches field is specified, this rule will unconditionally match traffic.",
@@ -216,23 +208,23 @@ const StateSchema = z.object({
   rules: z.array(z.object({
     action: z.object({
       destinations: z.array(z.object({
-        serviceName: z.string(),
-        weight: z.number(),
+        serviceName: z.unknown(),
+        weight: z.unknown(),
       })),
       faultInjectionPolicy: z.object({
         abort: z.object({
-          httpStatus: z.number(),
-          percentage: z.number(),
+          httpStatus: z.unknown(),
+          percentage: z.unknown(),
         }),
         delay: z.object({
-          fixedDelay: z.string(),
-          percentage: z.number(),
+          fixedDelay: z.unknown(),
+          percentage: z.unknown(),
         }),
       }),
       idleTimeout: z.string(),
       retryPolicy: z.object({
         numRetries: z.number(),
-        retryConditions: z.array(z.string()),
+        retryConditions: z.array(z.unknown()),
       }),
       statefulSessionAffinity: z.object({
         cookieTtl: z.string(),
@@ -240,16 +232,12 @@ const StateSchema = z.object({
       timeout: z.string(),
     }),
     matches: z.array(z.object({
-      headers: z.array(z.object({
-        key: z.string(),
-        type: z.string(),
-        value: z.string(),
-      })),
+      headers: z.array(z.unknown()),
       method: z.object({
-        caseSensitive: z.boolean(),
-        grpcMethod: z.string(),
-        grpcService: z.string(),
-        type: z.string(),
+        caseSensitive: z.unknown(),
+        grpcMethod: z.unknown(),
+        grpcService: z.unknown(),
+        type: z.unknown(),
       }),
     })),
   })).optional(),
@@ -281,10 +269,10 @@ const InputsSchema = z.object({
   rules: z.array(z.object({
     action: z.object({
       destinations: z.array(z.object({
-        serviceName: z.string().describe(
+        serviceName: z.unknown().describe(
           "Required. The URL of a destination service to which to route traffic. Must refer to either a BackendService or ServiceDirectoryService.",
         ).optional(),
-        weight: z.number().int().describe(
+        weight: z.unknown().describe(
           "Optional. Specifies the proportion of requests forwarded to the backend referenced by the serviceName field. This is computed as: - weight/Sum(weights in this destination list). For non-zero values, there may be some epsilon from the exact proportion defined here depending on the precision an implementation supports. If only one serviceName is specified and it has a weight greater than 0, 100% of the traffic is forwarded to that backend. If weights are specified for any one service name, they need to be specified for all of them. If weights are unspecified for all services, then, traffic is distributed in equal proportions to all of them.",
         ).optional(),
       })).describe(
@@ -292,20 +280,20 @@ const InputsSchema = z.object({
       ).optional(),
       faultInjectionPolicy: z.object({
         abort: z.object({
-          httpStatus: z.number().int().describe(
+          httpStatus: z.unknown().describe(
             "The HTTP status code used to abort the request. The value must be between 200 and 599 inclusive.",
           ).optional(),
-          percentage: z.number().int().describe(
+          percentage: z.unknown().describe(
             "The percentage of traffic which will be aborted. The value must be between [0, 100]",
           ).optional(),
         }).describe(
           "Specification of how client requests are aborted as part of fault injection before being sent to a destination.",
         ).optional(),
         delay: z.object({
-          fixedDelay: z.string().describe(
+          fixedDelay: z.unknown().describe(
             "Specify a fixed delay before forwarding the request.",
           ).optional(),
-          percentage: z.number().int().describe(
+          percentage: z.unknown().describe(
             "The percentage of traffic on which delay will be injected. The value must be between [0, 100]",
           ).optional(),
         }).describe(
@@ -321,7 +309,7 @@ const InputsSchema = z.object({
         numRetries: z.number().int().describe(
           "Specifies the allowed number of retries. This number must be > 0. If not specified, default to 1.",
         ).optional(),
-        retryConditions: z.array(z.string()).describe(
+        retryConditions: z.array(z.unknown()).describe(
           "- connect-failure: Router will retry on failures connecting to Backend Services, for example due to connection timeouts. - refused-stream: Router will retry if the backend service resets the stream with a REFUSED_STREAM error code. This reset type indicates that it is safe to retry. - cancelled: Router will retry if the gRPC status code in the response header is set to cancelled - deadline-exceeded: Router will retry if the gRPC status code in the response header is set to deadline-exceeded - resource-exhausted: Router will retry if the gRPC status code in the response header is set to resource-exhausted - unavailable: Router will retry if the gRPC status code in the response header is set to unavailable",
         ).optional(),
       }).describe(
@@ -339,30 +327,22 @@ const InputsSchema = z.object({
       ).optional(),
     }).describe("Specifies how to route matched traffic.").optional(),
     matches: z.array(z.object({
-      headers: z.array(z.object({
-        key: z.string().describe("Required. The key of the header.").optional(),
-        type: z.enum(["TYPE_UNSPECIFIED", "EXACT", "REGULAR_EXPRESSION"])
-          .describe(
-            "Optional. Specifies how to match against the value of the header. If not specified, a default value of EXACT is used.",
-          ).optional(),
-        value: z.string().describe("Required. The value of the header.")
-          .optional(),
-      })).describe("Optional. Specifies a collection of headers to match.")
-        .optional(),
+      headers: z.array(z.unknown()).describe(
+        "Optional. Specifies a collection of headers to match.",
+      ).optional(),
       method: z.object({
-        caseSensitive: z.boolean().describe(
+        caseSensitive: z.unknown().describe(
           "Optional. Specifies that matches are case sensitive. The default value is true. case_sensitive must not be used with a type of REGULAR_EXPRESSION.",
         ).optional(),
-        grpcMethod: z.string().describe(
+        grpcMethod: z.unknown().describe(
           "Required. Name of the method to match against. If unspecified, will match all methods.",
         ).optional(),
-        grpcService: z.string().describe(
+        grpcService: z.unknown().describe(
           "Required. Name of the service to match against. If unspecified, will match all services.",
         ).optional(),
-        type: z.enum(["TYPE_UNSPECIFIED", "EXACT", "REGULAR_EXPRESSION"])
-          .describe(
-            'Optional. Specifies how to match against the name. If not specified, a default value of "EXACT" is used.',
-          ).optional(),
+        type: z.unknown().describe(
+          'Optional. Specifies how to match against the name. If not specified, a default value of "EXACT" is used.',
+        ).optional(),
       }).describe("Specifies a match against a method.").optional(),
     })).describe(
       "Optional. Matches define conditions used for matching the rule against incoming gRPC requests. Each match is independent, i.e. this rule will be matched if ANY one of the matches is satisfied. If no matches field is specified, this rule will unconditionally match traffic.",
@@ -380,7 +360,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/networkservices/grpcroutes",
-  version: "2026.04.03.3",
+  version: "2026.04.04.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -404,6 +384,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.3",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.04.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

@@ -303,18 +303,18 @@ const StateSchema = z.object({
       kind: z.string(),
       pendingOwner: z.boolean(),
       permissionDetails: z.array(z.object({
-        inherited: z.boolean(),
-        inheritedFrom: z.string(),
-        permissionType: z.string(),
-        role: z.string(),
+        inherited: z.unknown(),
+        inheritedFrom: z.unknown(),
+        permissionType: z.unknown(),
+        role: z.unknown(),
       })),
       photoLink: z.string(),
       role: z.string(),
       teamDrivePermissionDetails: z.array(z.object({
-        inherited: z.boolean(),
-        inheritedFrom: z.string(),
-        role: z.string(),
-        teamDrivePermissionType: z.string(),
+        inherited: z.unknown(),
+        inheritedFrom: z.unknown(),
+        role: z.unknown(),
+        teamDrivePermissionType: z.unknown(),
       })),
       type: z.string(),
       view: z.string(),
@@ -436,7 +436,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/drive/changes",
-  version: "2026.04.03.3",
+  version: "2026.04.04.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -460,6 +460,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.3",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.04.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

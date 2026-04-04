@@ -210,7 +210,7 @@ const GlobalArgsSchema = z.object({
         ).optional(),
         dataFormat: z.object({
           avro: z.object({
-            text: z.string().describe("JSON source of the Avro schema.")
+            text: z.unknown().describe("JSON source of the Avro schema.")
               .optional(),
           }).describe("Schema in Avro JSON format.").optional(),
           csv: z.object({}).describe("Marks a CSV-encoded data source.")
@@ -220,11 +220,11 @@ const GlobalArgsSchema = z.object({
           parquet: z.object({}).describe("Marks a Parquet-encoded data source.")
             .optional(),
           protobuf: z.object({
-            text: z.string().describe("Protocol buffer source of the schema.")
+            text: z.unknown().describe("Protocol buffer source of the schema.")
               .optional(),
           }).describe("Schema in protocol buffer format.").optional(),
           thrift: z.object({
-            text: z.string().describe("Thrift IDL source of the schema.")
+            text: z.unknown().describe("Thrift IDL source of the schema.")
               .optional(),
           }).describe("Schema in Thrift format.").optional(),
         }).describe(
@@ -320,7 +320,7 @@ const GlobalArgsSchema = z.object({
         ).optional(),
         dataFormat: z.object({
           avro: z.object({
-            text: z.string().describe("JSON source of the Avro schema.")
+            text: z.unknown().describe("JSON source of the Avro schema.")
               .optional(),
           }).describe("Schema in Avro JSON format.").optional(),
           csv: z.object({}).describe("Marks a CSV-encoded data source.")
@@ -330,11 +330,11 @@ const GlobalArgsSchema = z.object({
           parquet: z.object({}).describe("Marks a Parquet-encoded data source.")
             .optional(),
           protobuf: z.object({
-            text: z.string().describe("Protocol buffer source of the schema.")
+            text: z.unknown().describe("Protocol buffer source of the schema.")
               .optional(),
           }).describe("Schema in protocol buffer format.").optional(),
           thrift: z.object({
-            text: z.string().describe("Thrift IDL source of the schema.")
+            text: z.unknown().describe("Thrift IDL source of the schema.")
               .optional(),
           }).describe("Schema in Thrift format.").optional(),
         }).describe(
@@ -388,13 +388,13 @@ const GlobalArgsSchema = z.object({
         "Required. The name of the data source. This is either a table name or a view name that is used for graph element input source. E.g. `Person` table or `PersonView` view.",
       ).optional(),
       destinationNodeReference: z.object({
-        edgeTableColumns: z.array(z.string()).describe(
+        edgeTableColumns: z.array(z.unknown()).describe(
           "Required. The referencing columns in the edge table. The size of `edge_table_columns` must be equal to the size of `node_table_columns`.",
         ).optional(),
         nodeAlias: z.string().describe(
           "Required. The reference to the source/destination node of the edge. This name must be a valid `alias` of a node element in the same graph. Example, `Person` node can be a source node name of an edge element `Person_to_Address`.",
         ).optional(),
-        nodeTableColumns: z.array(z.string()).describe(
+        nodeTableColumns: z.array(z.unknown()).describe(
           "Required. The referenced columns of the source node table.",
         ).optional(),
       }).describe(
@@ -416,24 +416,22 @@ const GlobalArgsSchema = z.object({
         "Required. The kind of the graph element.",
       ).optional(),
       labelAndProperties: z.array(z.object({
-        label: z.string().describe("Required. The name of the label.")
+        label: z.unknown().describe("Required. The name of the label.")
           .optional(),
-        properties: z.array(z.object({
-          name: z.string().describe("Required. Property name.").optional(),
-          type: z.string().describe("Required. Property data type.").optional(),
-        })).describe("Optional. The properties associated with the label.")
-          .optional(),
+        properties: z.unknown().describe(
+          "Optional. The properties associated with the label.",
+        ).optional(),
       })).describe(
         "Required. The labels and their properties for the graph element.",
       ).optional(),
       sourceNodeReference: z.object({
-        edgeTableColumns: z.array(z.string()).describe(
+        edgeTableColumns: z.array(z.unknown()).describe(
           "Required. The referencing columns in the edge table. The size of `edge_table_columns` must be equal to the size of `node_table_columns`.",
         ).optional(),
         nodeAlias: z.string().describe(
           "Required. The reference to the source/destination node of the edge. This name must be a valid `alias` of a node element in the same graph. Example, `Person` node can be a source node name of an edge element `Person_to_Address`.",
         ).optional(),
-        nodeTableColumns: z.array(z.string()).describe(
+        nodeTableColumns: z.array(z.unknown()).describe(
           "Required. The referenced columns of the source node table.",
         ).optional(),
       }).describe(
@@ -451,13 +449,13 @@ const GlobalArgsSchema = z.object({
         "Required. The name of the data source. This is either a table name or a view name that is used for graph element input source. E.g. `Person` table or `PersonView` view.",
       ).optional(),
       destinationNodeReference: z.object({
-        edgeTableColumns: z.array(z.string()).describe(
+        edgeTableColumns: z.array(z.unknown()).describe(
           "Required. The referencing columns in the edge table. The size of `edge_table_columns` must be equal to the size of `node_table_columns`.",
         ).optional(),
         nodeAlias: z.string().describe(
           "Required. The reference to the source/destination node of the edge. This name must be a valid `alias` of a node element in the same graph. Example, `Person` node can be a source node name of an edge element `Person_to_Address`.",
         ).optional(),
-        nodeTableColumns: z.array(z.string()).describe(
+        nodeTableColumns: z.array(z.unknown()).describe(
           "Required. The referenced columns of the source node table.",
         ).optional(),
       }).describe(
@@ -479,24 +477,22 @@ const GlobalArgsSchema = z.object({
         "Required. The kind of the graph element.",
       ).optional(),
       labelAndProperties: z.array(z.object({
-        label: z.string().describe("Required. The name of the label.")
+        label: z.unknown().describe("Required. The name of the label.")
           .optional(),
-        properties: z.array(z.object({
-          name: z.string().describe("Required. Property name.").optional(),
-          type: z.string().describe("Required. Property data type.").optional(),
-        })).describe("Optional. The properties associated with the label.")
-          .optional(),
+        properties: z.unknown().describe(
+          "Optional. The properties associated with the label.",
+        ).optional(),
       })).describe(
         "Required. The labels and their properties for the graph element.",
       ).optional(),
       sourceNodeReference: z.object({
-        edgeTableColumns: z.array(z.string()).describe(
+        edgeTableColumns: z.array(z.unknown()).describe(
           "Required. The referencing columns in the edge table. The size of `edge_table_columns` must be equal to the size of `node_table_columns`.",
         ).optional(),
         nodeAlias: z.string().describe(
           "Required. The reference to the source/destination node of the edge. This name must be a valid `alias` of a node element in the same graph. Example, `Person` node can be a source node name of an edge element `Person_to_Address`.",
         ).optional(),
-        nodeTableColumns: z.array(z.string()).describe(
+        nodeTableColumns: z.array(z.unknown()).describe(
           "Required. The referenced columns of the source node table.",
         ).optional(),
       }).describe(
@@ -693,10 +689,10 @@ const GlobalArgsSchema = z.object({
   spannerTableSpec: z.object({
     foreignKeys: z.array(z.object({
       columnMappings: z.array(z.object({
-        column: z.string().describe(
+        column: z.unknown().describe(
           "Output only. The column in the current table that is part of the foreign key.",
         ).optional(),
-        referenceColumn: z.string().describe(
+        referenceColumn: z.unknown().describe(
           "Output only. The column in the referenced table that is part of the foreign key.",
         ).optional(),
       })).describe(
@@ -864,16 +860,16 @@ const StateSchema = z.object({
         compressionFormat: z.string(),
         dataFormat: z.object({
           avro: z.object({
-            text: z.string(),
+            text: z.unknown(),
           }),
           csv: z.object({}),
           orc: z.object({}),
           parquet: z.object({}),
           protobuf: z.object({
-            text: z.string(),
+            text: z.unknown(),
           }),
           thrift: z.object({
-            text: z.string(),
+            text: z.unknown(),
           }),
         }),
         projectId: z.string(),
@@ -906,16 +902,16 @@ const StateSchema = z.object({
         compressionFormat: z.string(),
         dataFormat: z.object({
           avro: z.object({
-            text: z.string(),
+            text: z.unknown(),
           }),
           csv: z.object({}),
           orc: z.object({}),
           parquet: z.object({}),
           protobuf: z.object({
-            text: z.string(),
+            text: z.unknown(),
           }),
           thrift: z.object({
-            text: z.string(),
+            text: z.unknown(),
           }),
         }),
         projectId: z.string(),
@@ -940,9 +936,9 @@ const StateSchema = z.object({
       alias: z.string(),
       dataSource: z.string(),
       destinationNodeReference: z.object({
-        edgeTableColumns: z.array(z.string()),
+        edgeTableColumns: z.array(z.unknown()),
         nodeAlias: z.string(),
-        nodeTableColumns: z.array(z.string()),
+        nodeTableColumns: z.array(z.unknown()),
       }),
       dynamicLabelColumn: z.string(),
       dynamicPropertiesColumn: z.string(),
@@ -950,16 +946,13 @@ const StateSchema = z.object({
       inputSource: z.string(),
       kind: z.string(),
       labelAndProperties: z.array(z.object({
-        label: z.string(),
-        properties: z.array(z.object({
-          name: z.string(),
-          type: z.string(),
-        })),
+        label: z.unknown(),
+        properties: z.unknown(),
       })),
       sourceNodeReference: z.object({
-        edgeTableColumns: z.array(z.string()),
+        edgeTableColumns: z.array(z.unknown()),
         nodeAlias: z.string(),
-        nodeTableColumns: z.array(z.string()),
+        nodeTableColumns: z.array(z.unknown()),
       }),
     })),
     name: z.string(),
@@ -967,9 +960,9 @@ const StateSchema = z.object({
       alias: z.string(),
       dataSource: z.string(),
       destinationNodeReference: z.object({
-        edgeTableColumns: z.array(z.string()),
+        edgeTableColumns: z.array(z.unknown()),
         nodeAlias: z.string(),
-        nodeTableColumns: z.array(z.string()),
+        nodeTableColumns: z.array(z.unknown()),
       }),
       dynamicLabelColumn: z.string(),
       dynamicPropertiesColumn: z.string(),
@@ -977,16 +970,13 @@ const StateSchema = z.object({
       inputSource: z.string(),
       kind: z.string(),
       labelAndProperties: z.array(z.object({
-        label: z.string(),
-        properties: z.array(z.object({
-          name: z.string(),
-          type: z.string(),
-        })),
+        label: z.unknown(),
+        properties: z.unknown(),
       })),
       sourceNodeReference: z.object({
-        edgeTableColumns: z.array(z.string()),
+        edgeTableColumns: z.array(z.unknown()),
         nodeAlias: z.string(),
-        nodeTableColumns: z.array(z.string()),
+        nodeTableColumns: z.array(z.unknown()),
       }),
     })),
   }).optional(),
@@ -1069,8 +1059,8 @@ const StateSchema = z.object({
   spannerTableSpec: z.object({
     foreignKeys: z.array(z.object({
       columnMappings: z.array(z.object({
-        column: z.string(),
-        referenceColumn: z.string(),
+        column: z.unknown(),
+        referenceColumn: z.unknown(),
       })),
       entry: z.string(),
       name: z.string(),
@@ -1219,7 +1209,7 @@ const InputsSchema = z.object({
         ).optional(),
         dataFormat: z.object({
           avro: z.object({
-            text: z.string().describe("JSON source of the Avro schema.")
+            text: z.unknown().describe("JSON source of the Avro schema.")
               .optional(),
           }).describe("Schema in Avro JSON format.").optional(),
           csv: z.object({}).describe("Marks a CSV-encoded data source.")
@@ -1229,11 +1219,11 @@ const InputsSchema = z.object({
           parquet: z.object({}).describe("Marks a Parquet-encoded data source.")
             .optional(),
           protobuf: z.object({
-            text: z.string().describe("Protocol buffer source of the schema.")
+            text: z.unknown().describe("Protocol buffer source of the schema.")
               .optional(),
           }).describe("Schema in protocol buffer format.").optional(),
           thrift: z.object({
-            text: z.string().describe("Thrift IDL source of the schema.")
+            text: z.unknown().describe("Thrift IDL source of the schema.")
               .optional(),
           }).describe("Schema in Thrift format.").optional(),
         }).describe(
@@ -1329,7 +1319,7 @@ const InputsSchema = z.object({
         ).optional(),
         dataFormat: z.object({
           avro: z.object({
-            text: z.string().describe("JSON source of the Avro schema.")
+            text: z.unknown().describe("JSON source of the Avro schema.")
               .optional(),
           }).describe("Schema in Avro JSON format.").optional(),
           csv: z.object({}).describe("Marks a CSV-encoded data source.")
@@ -1339,11 +1329,11 @@ const InputsSchema = z.object({
           parquet: z.object({}).describe("Marks a Parquet-encoded data source.")
             .optional(),
           protobuf: z.object({
-            text: z.string().describe("Protocol buffer source of the schema.")
+            text: z.unknown().describe("Protocol buffer source of the schema.")
               .optional(),
           }).describe("Schema in protocol buffer format.").optional(),
           thrift: z.object({
-            text: z.string().describe("Thrift IDL source of the schema.")
+            text: z.unknown().describe("Thrift IDL source of the schema.")
               .optional(),
           }).describe("Schema in Thrift format.").optional(),
         }).describe(
@@ -1397,13 +1387,13 @@ const InputsSchema = z.object({
         "Required. The name of the data source. This is either a table name or a view name that is used for graph element input source. E.g. `Person` table or `PersonView` view.",
       ).optional(),
       destinationNodeReference: z.object({
-        edgeTableColumns: z.array(z.string()).describe(
+        edgeTableColumns: z.array(z.unknown()).describe(
           "Required. The referencing columns in the edge table. The size of `edge_table_columns` must be equal to the size of `node_table_columns`.",
         ).optional(),
         nodeAlias: z.string().describe(
           "Required. The reference to the source/destination node of the edge. This name must be a valid `alias` of a node element in the same graph. Example, `Person` node can be a source node name of an edge element `Person_to_Address`.",
         ).optional(),
-        nodeTableColumns: z.array(z.string()).describe(
+        nodeTableColumns: z.array(z.unknown()).describe(
           "Required. The referenced columns of the source node table.",
         ).optional(),
       }).describe(
@@ -1425,24 +1415,22 @@ const InputsSchema = z.object({
         "Required. The kind of the graph element.",
       ).optional(),
       labelAndProperties: z.array(z.object({
-        label: z.string().describe("Required. The name of the label.")
+        label: z.unknown().describe("Required. The name of the label.")
           .optional(),
-        properties: z.array(z.object({
-          name: z.string().describe("Required. Property name.").optional(),
-          type: z.string().describe("Required. Property data type.").optional(),
-        })).describe("Optional. The properties associated with the label.")
-          .optional(),
+        properties: z.unknown().describe(
+          "Optional. The properties associated with the label.",
+        ).optional(),
       })).describe(
         "Required. The labels and their properties for the graph element.",
       ).optional(),
       sourceNodeReference: z.object({
-        edgeTableColumns: z.array(z.string()).describe(
+        edgeTableColumns: z.array(z.unknown()).describe(
           "Required. The referencing columns in the edge table. The size of `edge_table_columns` must be equal to the size of `node_table_columns`.",
         ).optional(),
         nodeAlias: z.string().describe(
           "Required. The reference to the source/destination node of the edge. This name must be a valid `alias` of a node element in the same graph. Example, `Person` node can be a source node name of an edge element `Person_to_Address`.",
         ).optional(),
-        nodeTableColumns: z.array(z.string()).describe(
+        nodeTableColumns: z.array(z.unknown()).describe(
           "Required. The referenced columns of the source node table.",
         ).optional(),
       }).describe(
@@ -1460,13 +1448,13 @@ const InputsSchema = z.object({
         "Required. The name of the data source. This is either a table name or a view name that is used for graph element input source. E.g. `Person` table or `PersonView` view.",
       ).optional(),
       destinationNodeReference: z.object({
-        edgeTableColumns: z.array(z.string()).describe(
+        edgeTableColumns: z.array(z.unknown()).describe(
           "Required. The referencing columns in the edge table. The size of `edge_table_columns` must be equal to the size of `node_table_columns`.",
         ).optional(),
         nodeAlias: z.string().describe(
           "Required. The reference to the source/destination node of the edge. This name must be a valid `alias` of a node element in the same graph. Example, `Person` node can be a source node name of an edge element `Person_to_Address`.",
         ).optional(),
-        nodeTableColumns: z.array(z.string()).describe(
+        nodeTableColumns: z.array(z.unknown()).describe(
           "Required. The referenced columns of the source node table.",
         ).optional(),
       }).describe(
@@ -1488,24 +1476,22 @@ const InputsSchema = z.object({
         "Required. The kind of the graph element.",
       ).optional(),
       labelAndProperties: z.array(z.object({
-        label: z.string().describe("Required. The name of the label.")
+        label: z.unknown().describe("Required. The name of the label.")
           .optional(),
-        properties: z.array(z.object({
-          name: z.string().describe("Required. Property name.").optional(),
-          type: z.string().describe("Required. Property data type.").optional(),
-        })).describe("Optional. The properties associated with the label.")
-          .optional(),
+        properties: z.unknown().describe(
+          "Optional. The properties associated with the label.",
+        ).optional(),
       })).describe(
         "Required. The labels and their properties for the graph element.",
       ).optional(),
       sourceNodeReference: z.object({
-        edgeTableColumns: z.array(z.string()).describe(
+        edgeTableColumns: z.array(z.unknown()).describe(
           "Required. The referencing columns in the edge table. The size of `edge_table_columns` must be equal to the size of `node_table_columns`.",
         ).optional(),
         nodeAlias: z.string().describe(
           "Required. The reference to the source/destination node of the edge. This name must be a valid `alias` of a node element in the same graph. Example, `Person` node can be a source node name of an edge element `Person_to_Address`.",
         ).optional(),
-        nodeTableColumns: z.array(z.string()).describe(
+        nodeTableColumns: z.array(z.unknown()).describe(
           "Required. The referenced columns of the source node table.",
         ).optional(),
       }).describe(
@@ -1702,10 +1688,10 @@ const InputsSchema = z.object({
   spannerTableSpec: z.object({
     foreignKeys: z.array(z.object({
       columnMappings: z.array(z.object({
-        column: z.string().describe(
+        column: z.unknown().describe(
           "Output only. The column in the current table that is part of the foreign key.",
         ).optional(),
-        referenceColumn: z.string().describe(
+        referenceColumn: z.unknown().describe(
           "Output only. The column in the referenced table that is part of the foreign key.",
         ).optional(),
       })).describe(
@@ -1813,7 +1799,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/datacatalog/entrygroups-entries",
-  version: "2026.04.03.3",
+  version: "2026.04.04.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -1837,6 +1823,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.3",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.04.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

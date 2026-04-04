@@ -1,7 +1,7 @@
 # Auto-generated manifest. Re-generate with the appropriate deno task.
 manifestVersion: 1
 name: "@swamp/gcp/realtimebidding"
-version: "2026.04.03.3"
+version: "2026.04.04.1"
 description: "Google Cloud realtimebidding infrastructure models"
 labels:
   - gcp
@@ -10,7 +10,7 @@ labels:
   - cloud
   - infrastructure
 releaseNotes: |
-  - Updated: bidders, bidders_creatives, bidders_endpoints, bidders_pretargetingconfigs, bidders_publisherconnections, buyers, buyers_creatives, buyers_userlists
+  - Updated: bidders_creatives, buyers_creatives
 models:
   - bidders.ts
   - bidders_creatives.ts

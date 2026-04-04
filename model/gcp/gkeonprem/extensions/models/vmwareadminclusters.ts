@@ -206,14 +206,7 @@ const GlobalArgsSchema = z.object({
         gateway: z.string().describe(
           "The network gateway used by the VMware user cluster.",
         ).optional(),
-        ips: z.array(z.object({
-          hostname: z.string().describe(
-            "Hostname of the machine. VM's name will be used if this field is empty.",
-          ).optional(),
-          ip: z.string().describe(
-            "IP could be an IP address (like 1.2.3.4) or a CIDR (like 1.2.3.0/24).",
-          ).optional(),
-        })).describe(
+        ips: z.array(z.unknown()).describe(
           "The node's network configurations used by the VMware user cluster.",
         ).optional(),
         netmask: z.string().describe(
@@ -261,10 +254,10 @@ const GlobalArgsSchema = z.object({
           "The network gateway used by the VMware user cluster.",
         ).optional(),
         ips: z.array(z.object({
-          hostname: z.string().describe(
+          hostname: z.unknown().describe(
             "Hostname of the machine. VM's name will be used if this field is empty.",
           ).optional(),
-          ip: z.string().describe(
+          ip: z.unknown().describe(
             "IP could be an IP address (like 1.2.3.4) or a CIDR (like 1.2.3.0/24).",
           ).optional(),
         })).describe(
@@ -295,14 +288,7 @@ const GlobalArgsSchema = z.object({
         gateway: z.string().describe(
           "The network gateway used by the VMware user cluster.",
         ).optional(),
-        ips: z.array(z.object({
-          hostname: z.string().describe(
-            "Hostname of the machine. VM's name will be used if this field is empty.",
-          ).optional(),
-          ip: z.string().describe(
-            "IP could be an IP address (like 1.2.3.4) or a CIDR (like 1.2.3.0/24).",
-          ).optional(),
-        })).describe(
+        ips: z.array(z.unknown()).describe(
           "The node's network configurations used by the VMware user cluster.",
         ).optional(),
         netmask: z.string().describe(
@@ -326,26 +312,7 @@ const GlobalArgsSchema = z.object({
   platformConfig: z.object({
     bundles: z.array(z.object({
       status: z.object({
-        conditions: z.array(z.object({
-          lastTransitionTime: z.string().describe(
-            "Last time the condition transit from one status to another.",
-          ).optional(),
-          message: z.string().describe(
-            "Human-readable message indicating details about last transition.",
-          ).optional(),
-          reason: z.string().describe(
-            "Machine-readable message indicating details about last transition.",
-          ).optional(),
-          state: z.enum([
-            "STATE_UNSPECIFIED",
-            "STATE_TRUE",
-            "STATE_FALSE",
-            "STATE_UNKNOWN",
-          ]).describe("state of the condition.").optional(),
-          type: z.string().describe(
-            "Type of the condition. (e.g., ClusterRunning, NodePoolRunning or ServerSidePreflightReady)",
-          ).optional(),
-        })).describe(
+        conditions: z.array(z.unknown()).describe(
           "ResourceCondition provide a standard mechanism for higher-level status reporting from controller.",
         ).optional(),
         errorMessage: z.string().describe(
@@ -354,12 +321,7 @@ const GlobalArgsSchema = z.object({
         version: z.string().describe("Reflect current version of the resource.")
           .optional(),
         versions: z.object({
-          versions: z.array(z.object({
-            count: z.string().describe(
-              "Number of machines under the above version.",
-            ).optional(),
-            version: z.string().describe("Resource version.").optional(),
-          })).describe(
+          versions: z.unknown().describe(
             "Shows the mapping of a given version to the number of machines under this version.",
           ).optional(),
         }).describe(
@@ -408,10 +370,10 @@ const GlobalArgsSchema = z.object({
         .optional(),
       versions: z.object({
         versions: z.array(z.object({
-          count: z.string().describe(
+          count: z.unknown().describe(
             "Number of machines under the above version.",
           ).optional(),
-          version: z.string().describe("Resource version.").optional(),
+          version: z.unknown().describe("Resource version.").optional(),
         })).describe(
           "Shows the mapping of a given version to the number of machines under this version.",
         ).optional(),
@@ -623,10 +585,7 @@ const StateSchema = z.object({
       group: z.string(),
       ipBlocks: z.array(z.object({
         gateway: z.string(),
-        ips: z.array(z.object({
-          hostname: z.string(),
-          ip: z.string(),
-        })),
+        ips: z.array(z.unknown()),
         netmask: z.string(),
       })),
       masterIp: z.string(),
@@ -648,8 +607,8 @@ const StateSchema = z.object({
       controlPlaneIpBlock: z.object({
         gateway: z.string(),
         ips: z.array(z.object({
-          hostname: z.string(),
-          ip: z.string(),
+          hostname: z.unknown(),
+          ip: z.unknown(),
         })),
         netmask: z.string(),
       }),
@@ -664,10 +623,7 @@ const StateSchema = z.object({
     staticIpConfig: z.object({
       ipBlocks: z.array(z.object({
         gateway: z.string(),
-        ips: z.array(z.object({
-          hostname: z.string(),
-          ip: z.string(),
-        })),
+        ips: z.array(z.unknown()),
         netmask: z.string(),
       })),
     }),
@@ -677,20 +633,11 @@ const StateSchema = z.object({
   platformConfig: z.object({
     bundles: z.array(z.object({
       status: z.object({
-        conditions: z.array(z.object({
-          lastTransitionTime: z.string(),
-          message: z.string(),
-          reason: z.string(),
-          state: z.string(),
-          type: z.string(),
-        })),
+        conditions: z.array(z.unknown()),
         errorMessage: z.string(),
         version: z.string(),
         versions: z.object({
-          versions: z.array(z.object({
-            count: z.string(),
-            version: z.string(),
-          })),
+          versions: z.unknown(),
         }),
       }),
       version: z.string(),
@@ -709,8 +656,8 @@ const StateSchema = z.object({
       version: z.string(),
       versions: z.object({
         versions: z.array(z.object({
-          count: z.string(),
-          version: z.string(),
+          count: z.unknown(),
+          version: z.unknown(),
         })),
       }),
     }),
@@ -890,14 +837,7 @@ const InputsSchema = z.object({
         gateway: z.string().describe(
           "The network gateway used by the VMware user cluster.",
         ).optional(),
-        ips: z.array(z.object({
-          hostname: z.string().describe(
-            "Hostname of the machine. VM's name will be used if this field is empty.",
-          ).optional(),
-          ip: z.string().describe(
-            "IP could be an IP address (like 1.2.3.4) or a CIDR (like 1.2.3.0/24).",
-          ).optional(),
-        })).describe(
+        ips: z.array(z.unknown()).describe(
           "The node's network configurations used by the VMware user cluster.",
         ).optional(),
         netmask: z.string().describe(
@@ -945,10 +885,10 @@ const InputsSchema = z.object({
           "The network gateway used by the VMware user cluster.",
         ).optional(),
         ips: z.array(z.object({
-          hostname: z.string().describe(
+          hostname: z.unknown().describe(
             "Hostname of the machine. VM's name will be used if this field is empty.",
           ).optional(),
-          ip: z.string().describe(
+          ip: z.unknown().describe(
             "IP could be an IP address (like 1.2.3.4) or a CIDR (like 1.2.3.0/24).",
           ).optional(),
         })).describe(
@@ -979,14 +919,7 @@ const InputsSchema = z.object({
         gateway: z.string().describe(
           "The network gateway used by the VMware user cluster.",
         ).optional(),
-        ips: z.array(z.object({
-          hostname: z.string().describe(
-            "Hostname of the machine. VM's name will be used if this field is empty.",
-          ).optional(),
-          ip: z.string().describe(
-            "IP could be an IP address (like 1.2.3.4) or a CIDR (like 1.2.3.0/24).",
-          ).optional(),
-        })).describe(
+        ips: z.array(z.unknown()).describe(
           "The node's network configurations used by the VMware user cluster.",
         ).optional(),
         netmask: z.string().describe(
@@ -1010,26 +943,7 @@ const InputsSchema = z.object({
   platformConfig: z.object({
     bundles: z.array(z.object({
       status: z.object({
-        conditions: z.array(z.object({
-          lastTransitionTime: z.string().describe(
-            "Last time the condition transit from one status to another.",
-          ).optional(),
-          message: z.string().describe(
-            "Human-readable message indicating details about last transition.",
-          ).optional(),
-          reason: z.string().describe(
-            "Machine-readable message indicating details about last transition.",
-          ).optional(),
-          state: z.enum([
-            "STATE_UNSPECIFIED",
-            "STATE_TRUE",
-            "STATE_FALSE",
-            "STATE_UNKNOWN",
-          ]).describe("state of the condition.").optional(),
-          type: z.string().describe(
-            "Type of the condition. (e.g., ClusterRunning, NodePoolRunning or ServerSidePreflightReady)",
-          ).optional(),
-        })).describe(
+        conditions: z.array(z.unknown()).describe(
           "ResourceCondition provide a standard mechanism for higher-level status reporting from controller.",
         ).optional(),
         errorMessage: z.string().describe(
@@ -1038,12 +952,7 @@ const InputsSchema = z.object({
         version: z.string().describe("Reflect current version of the resource.")
           .optional(),
         versions: z.object({
-          versions: z.array(z.object({
-            count: z.string().describe(
-              "Number of machines under the above version.",
-            ).optional(),
-            version: z.string().describe("Resource version.").optional(),
-          })).describe(
+          versions: z.unknown().describe(
             "Shows the mapping of a given version to the number of machines under this version.",
           ).optional(),
         }).describe(
@@ -1092,10 +1001,10 @@ const InputsSchema = z.object({
         .optional(),
       versions: z.object({
         versions: z.array(z.object({
-          count: z.string().describe(
+          count: z.unknown().describe(
             "Number of machines under the above version.",
           ).optional(),
-          version: z.string().describe("Resource version.").optional(),
+          version: z.unknown().describe("Resource version.").optional(),
         })).describe(
           "Shows the mapping of a given version to the number of machines under this version.",
         ).optional(),
@@ -1255,7 +1164,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/gkeonprem/vmwareadminclusters",
-  version: "2026.04.03.3",
+  version: "2026.04.04.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -1279,6 +1188,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.3",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.04.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

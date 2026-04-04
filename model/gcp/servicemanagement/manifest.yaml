@@ -1,7 +1,7 @@
 # Auto-generated manifest. Re-generate with the appropriate deno task.
 manifestVersion: 1
 name: "@swamp/gcp/servicemanagement"
-version: "2026.04.03.3"
+version: "2026.04.04.1"
 description: "Google Cloud servicemanagement infrastructure models"
 labels:
   - gcp
@@ -10,7 +10,7 @@ labels:
   - cloud
   - infrastructure
 releaseNotes: |
-  - Updated: services, services_configs, services_rollouts
+  - Updated: services_configs
 models:
   - services.ts
   - services_configs.ts

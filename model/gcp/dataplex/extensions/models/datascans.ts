@@ -213,33 +213,26 @@ const GlobalArgsSchema = z.object({
         .optional(),
       schemaRelationships: z.array(z.object({
         leftSchemaPaths: z.object({
-          paths: z.array(z.string()).describe(
+          paths: z.unknown().describe(
             "Output only. An ordered set of Paths to fields within the schema of the table. For fields nested within a top level field of type record, use '.' to separate field names. Examples: Top level field - top_level Nested field - top_level.child.sub_field",
           ).optional(),
-          tableFqn: z.string().describe(
+          tableFqn: z.unknown().describe(
             "Output only. The service-qualified full resource name of the table Ex: //bigquery.googleapis.com/projects/PROJECT_ID/datasets/DATASET_ID/tables/TABLE_ID",
           ).optional(),
         }).describe(
           "Represents an ordered set of paths within a table's schema.",
         ).optional(),
         rightSchemaPaths: z.object({
-          paths: z.array(z.string()).describe(
+          paths: z.unknown().describe(
             "Output only. An ordered set of Paths to fields within the schema of the table. For fields nested within a top level field of type record, use '.' to separate field names. Examples: Top level field - top_level Nested field - top_level.child.sub_field",
           ).optional(),
-          tableFqn: z.string().describe(
+          tableFqn: z.unknown().describe(
             "Output only. The service-qualified full resource name of the table Ex: //bigquery.googleapis.com/projects/PROJECT_ID/datasets/DATASET_ID/tables/TABLE_ID",
           ).optional(),
         }).describe(
           "Represents an ordered set of paths within a table's schema.",
         ).optional(),
-        sources: z.array(
-          z.enum([
-            "SOURCE_UNSPECIFIED",
-            "AGENT",
-            "QUERY_HISTORY",
-            "TABLE_CONSTRAINTS",
-          ]),
-        ).describe(
+        sources: z.array(z.unknown()).describe(
           "Output only. Sources which generated the schema relation edge.",
         ).optional(),
         type: z.enum(["TYPE_UNSPECIFIED", "SCHEMA_JOIN"]).describe(
@@ -255,25 +248,12 @@ const GlobalArgsSchema = z.object({
         overview: z.string().describe(
           "Output only. Generated description of the table.",
         ).optional(),
-        queries: z.array(z.object({
-          description: z.string().describe(
-            "Output only. The description for the query.",
-          ).optional(),
-          sql: z.string().describe(
-            "Output only. The SQL query string which can be executed.",
-          ).optional(),
-        })).describe("Output only. Sample SQL queries for the table.")
-          .optional(),
+        queries: z.array(z.unknown()).describe(
+          "Output only. Sample SQL queries for the table.",
+        ).optional(),
         schema: z.object({
-          fields: z.array(z.object({
-            description: z.string().describe(
-              "Output only. Generated description for columns and fields.",
-            ).optional(),
-            fields: z.array(z.string()).describe("Output only. Nested fields.")
-              .optional(),
-            name: z.string().describe("Output only. The name of the column.")
-              .optional(),
-          })).describe("Output only. The list of columns.").optional(),
+          fields: z.unknown().describe("Output only. The list of columns.")
+            .optional(),
         }).describe("Schema of the table with generated metadata of columns.")
           .optional(),
       })).describe(
@@ -297,12 +277,12 @@ const GlobalArgsSchema = z.object({
       })).describe("Output only. Sample SQL queries for the table.").optional(),
       schema: z.object({
         fields: z.array(z.object({
-          description: z.string().describe(
+          description: z.unknown().describe(
             "Output only. Generated description for columns and fields.",
           ).optional(),
-          fields: z.array(z.string()).describe("Output only. Nested fields.")
+          fields: z.unknown().describe("Output only. Nested fields.")
             .optional(),
-          name: z.string().describe("Output only. The name of the column.")
+          name: z.unknown().describe("Output only. The name of the column.")
             .optional(),
         })).describe("Output only. The list of columns.").optional(),
       }).describe("Schema of the table with generated metadata of columns.")
@@ -350,71 +330,22 @@ const GlobalArgsSchema = z.object({
         name: z.string().describe("Output only. The name of the field.")
           .optional(),
         profile: z.object({
-          distinctRatio: z.number().describe(
+          distinctRatio: z.unknown().describe(
             "Output only. Ratio of rows with distinct values against total scanned rows. Not available for complex non-groupable field type, including RECORD, ARRAY, GEOGRAPHY, and JSON, as well as fields with REPEATABLE mode.",
           ).optional(),
-          doubleProfile: z.object({
-            average: z.number().describe(
-              "Output only. Average of non-null values in the scanned data. NaN, if the field has a NaN.",
-            ).optional(),
-            max: z.number().describe(
-              "Output only. Maximum of non-null values in the scanned data. NaN, if the field has a NaN.",
-            ).optional(),
-            min: z.number().describe(
-              "Output only. Minimum of non-null values in the scanned data. NaN, if the field has a NaN.",
-            ).optional(),
-            quartiles: z.array(z.number()).describe(
-              "Output only. A quartile divides the number of data points into four parts, or quarters, of more-or-less equal size. Three main quartiles used are: The first quartile (Q1) splits off the lowest 25% of data from the highest 75%. It is also known as the lower or 25th empirical quartile, as 25% of the data is below this point. The second quartile (Q2) is the median of a data set. So, 50% of the data lies below this point. The third quartile (Q3) splits off the highest 25% of data from the lowest 75%. It is known as the upper or 75th empirical quartile, as 75% of the data lies below this point. Here, the quartiles is provided as an ordered list of quartile values for the scanned data, occurring in order Q1, median, Q3.",
-            ).optional(),
-            standardDeviation: z.number().describe(
-              "Output only. Standard deviation of non-null values in the scanned data. NaN, if the field has a NaN.",
-            ).optional(),
-          }).describe("The profile information for a double type field.")
-            .optional(),
-          integerProfile: z.object({
-            average: z.number().describe(
-              "Output only. Average of non-null values in the scanned data. NaN, if the field has a NaN.",
-            ).optional(),
-            max: z.string().describe(
-              "Output only. Maximum of non-null values in the scanned data. NaN, if the field has a NaN.",
-            ).optional(),
-            min: z.string().describe(
-              "Output only. Minimum of non-null values in the scanned data. NaN, if the field has a NaN.",
-            ).optional(),
-            quartiles: z.array(z.string()).describe(
-              "Output only. A quartile divides the number of data points into four parts, or quarters, of more-or-less equal size. Three main quartiles used are: The first quartile (Q1) splits off the lowest 25% of data from the highest 75%. It is also known as the lower or 25th empirical quartile, as 25% of the data is below this point. The second quartile (Q2) is the median of a data set. So, 50% of the data lies below this point. The third quartile (Q3) splits off the highest 25% of data from the lowest 75%. It is known as the upper or 75th empirical quartile, as 75% of the data lies below this point. Here, the quartiles is provided as an ordered list of approximate quartile values for the scanned data, occurring in order Q1, median, Q3.",
-            ).optional(),
-            standardDeviation: z.number().describe(
-              "Output only. Standard deviation of non-null values in the scanned data. NaN, if the field has a NaN.",
-            ).optional(),
-          }).describe("The profile information for an integer type field.")
-            .optional(),
-          nullRatio: z.number().describe(
+          doubleProfile: z.unknown().describe(
+            "The profile information for a double type field.",
+          ).optional(),
+          integerProfile: z.unknown().describe(
+            "The profile information for an integer type field.",
+          ).optional(),
+          nullRatio: z.unknown().describe(
             "Output only. Ratio of rows with null value against total scanned rows.",
           ).optional(),
-          stringProfile: z.object({
-            averageLength: z.number().describe(
-              "Output only. Average length of non-null values in the scanned data.",
-            ).optional(),
-            maxLength: z.string().describe(
-              "Output only. Maximum length of non-null values in the scanned data.",
-            ).optional(),
-            minLength: z.string().describe(
-              "Output only. Minimum length of non-null values in the scanned data.",
-            ).optional(),
-          }).describe("The profile information for a string type field.")
-            .optional(),
-          topNValues: z.array(z.object({
-            count: z.string().describe(
-              "Output only. Count of the corresponding value in the scanned data.",
-            ).optional(),
-            ratio: z.number().describe(
-              "Output only. Ratio of the corresponding value in the field against the total number of rows in the scanned data.",
-            ).optional(),
-            value: z.string().describe(
-              "Output only. String value of a top N non-null value.",
-            ).optional(),
-          })).describe(
+          stringProfile: z.unknown().describe(
+            "The profile information for a string type field.",
+          ).optional(),
+          topNValues: z.unknown().describe(
             "Output only. The list of top N non-null values, frequency and ratio with which they occur in the scanned data. N is 10 or equal to the number of distinct values in the field, whichever is smaller. Not available for complex non-groupable field type, including RECORD, ARRAY, GEOGRAPHY, and JSON, as well as fields with REPEATABLE mode.",
           ).optional(),
         }).describe("The profile information for each field type.").optional(),
@@ -511,17 +442,13 @@ const GlobalArgsSchema = z.object({
         "Output only. The column specified in the DataQualityRule.",
       ).optional(),
       dimensions: z.array(z.object({
-        dimension: z.object({
-          name: z.string().describe(
-            "Output only. The dimension name a rule belongs to. Custom dimension name is supported with all uppercase letters and maximum length of 30 characters.",
-          ).optional(),
-        }).describe(
+        dimension: z.unknown().describe(
           "A dimension captures data quality intent about a defined subset of the rules specified.",
         ).optional(),
-        passed: z.boolean().describe(
+        passed: z.unknown().describe(
           "Output only. Whether the dimension passed or failed.",
         ).optional(),
-        score: z.number().describe(
+        score: z.unknown().describe(
           "Output only. The dimension-level data quality score for this data scan job if and only if the 'dimension' field is set.The score ranges between 0, 100 (up to two decimal points).",
         ).optional(),
       })).describe("Output only. The dimension-level results for this column.")
@@ -573,17 +500,7 @@ const GlobalArgsSchema = z.object({
         "Output only. The number of rows returned by the SQL statement in a SQL assertion rule.This field is only valid for SQL assertion rules.",
       ).optional(),
       debugQueriesResultSets: z.array(z.object({
-        results: z.array(z.object({
-          name: z.string().describe(
-            "Specifies the name of the result. Available if provided with an explicit alias using [AS] alias.",
-          ).optional(),
-          type: z.string().describe(
-            "Indicates the data type of the result. For more information, see BigQuery data types (https://cloud.google.com/bigquery/docs/reference/standard-sql/data-types).",
-          ).optional(),
-          value: z.string().describe(
-            "Represents the value of the result as a string.",
-          ).optional(),
-        })).describe(
+        results: z.unknown().describe(
           "Output only. Contains all results. Up to 10 results can be returned.",
         ).optional(),
       })).describe(
@@ -611,14 +528,7 @@ const GlobalArgsSchema = z.object({
         column: z.string().describe(
           "Optional. The unnested column which this rule is evaluated against.",
         ).optional(),
-        debugQueries: z.array(z.object({
-          description: z.string().describe(
-            "Optional. Specifies the description of the debug query. The maximum length is 1,024 characters.",
-          ).optional(),
-          sqlStatement: z.string().describe(
-            "Required. Specifies the SQL statement to be executed.",
-          ).optional(),
-        })).describe(
+        debugQueries: z.array(z.unknown()).describe(
           "Optional. Specifies the debug queries for this rule. Currently, only one query is supported, but this may be expanded in the future.",
         ).optional(),
         description: z.string().describe(
@@ -637,60 +547,61 @@ const GlobalArgsSchema = z.object({
           "Evaluates whether each column value is null.",
         ).optional(),
         rangeExpectation: z.object({
-          maxValue: z.string().describe(
+          maxValue: z.unknown().describe(
             "Optional. The maximum column value allowed for a row to pass this validation. At least one of min_value and max_value need to be provided.",
           ).optional(),
-          minValue: z.string().describe(
+          minValue: z.unknown().describe(
             "Optional. The minimum column value allowed for a row to pass this validation. At least one of min_value and max_value need to be provided.",
           ).optional(),
-          strictMaxEnabled: z.boolean().describe(
+          strictMaxEnabled: z.unknown().describe(
             "Optional. Whether each value needs to be strictly lesser than ('<') the maximum, or if equality is allowed.Only relevant if a max_value has been defined. Default = false.",
           ).optional(),
-          strictMinEnabled: z.boolean().describe(
+          strictMinEnabled: z.unknown().describe(
             "Optional. Whether each value needs to be strictly greater than ('>') the minimum, or if equality is allowed.Only relevant if a min_value has been defined. Default = false.",
           ).optional(),
         }).describe(
           "Evaluates whether each column value lies between a specified range.",
         ).optional(),
         regexExpectation: z.object({
-          regex: z.string().describe(
+          regex: z.unknown().describe(
             "Optional. A regular expression the column value is expected to match.",
           ).optional(),
         }).describe(
           "Evaluates whether each column value matches a specified regex.",
         ).optional(),
         rowConditionExpectation: z.object({
-          sqlExpression: z.string().describe("Optional. The SQL expression.")
+          sqlExpression: z.unknown().describe("Optional. The SQL expression.")
             .optional(),
         }).describe(
           "Evaluates whether each row passes the specified condition.The SQL expression needs to use GoogleSQL syntax (https://cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax) and should produce a boolean value per row as the result.Example: col1 >= 0 AND col2 < 10",
         ).optional(),
         setExpectation: z.object({
-          values: z.array(z.string()).describe(
+          values: z.unknown().describe(
             "Optional. Expected values for the column value.",
           ).optional(),
         }).describe(
           "Evaluates whether each column value is contained by a specified set.",
         ).optional(),
         sqlAssertion: z.object({
-          sqlStatement: z.string().describe("Optional. The SQL statement.")
+          sqlStatement: z.unknown().describe("Optional. The SQL statement.")
             .optional(),
         }).describe(
           "A SQL statement that is evaluated to return rows that match an invalid state. If any rows are are returned, this rule fails.The SQL statement must use GoogleSQL syntax (https://cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax), and must not contain any semicolons.You can use the data reference parameter ${data()} to reference the source table with all of its precondition filters applied. Examples of precondition filters include row filters, incremental data filters, and sampling. For more information, see Data reference parameter (https://cloud.google.com/dataplex/docs/auto-data-quality-overview#data-reference-parameter).Example: SELECT * FROM ${data()} WHERE price < 0",
         ).optional(),
         statisticRangeExpectation: z.object({
-          maxValue: z.string().describe(
+          maxValue: z.unknown().describe(
             "Optional. The maximum column statistic value allowed for a row to pass this validation.At least one of min_value and max_value need to be provided.",
           ).optional(),
-          minValue: z.string().describe(
+          minValue: z.unknown().describe(
             "Optional. The minimum column statistic value allowed for a row to pass this validation.At least one of min_value and max_value need to be provided.",
           ).optional(),
-          statistic: z.enum(["STATISTIC_UNDEFINED", "MEAN", "MIN", "MAX"])
-            .describe("Optional. The aggregate metric to evaluate.").optional(),
-          strictMaxEnabled: z.boolean().describe(
+          statistic: z.unknown().describe(
+            "Optional. The aggregate metric to evaluate.",
+          ).optional(),
+          strictMaxEnabled: z.unknown().describe(
             "Optional. Whether column statistic needs to be strictly lesser than ('<') the maximum, or if equality is allowed.Only relevant if a max_value has been defined. Default = false.",
           ).optional(),
-          strictMinEnabled: z.boolean().describe(
+          strictMinEnabled: z.unknown().describe(
             "Optional. Whether column statistic needs to be strictly greater than ('>') the minimum, or if equality is allowed.Only relevant if a min_value has been defined. Default = false.",
           ).optional(),
         }).describe(
@@ -700,7 +611,7 @@ const GlobalArgsSchema = z.object({
           "Optional. Whether the Rule is active or suspended. Default is false.",
         ).optional(),
         tableConditionExpectation: z.object({
-          sqlExpression: z.string().describe("Optional. The SQL expression.")
+          sqlExpression: z.unknown().describe("Optional. The SQL expression.")
             .optional(),
         }).describe(
           "Evaluates whether the provided expression is true.The SQL expression needs to use GoogleSQL syntax (https://cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax) and should produce a scalar boolean result.Example: MIN(col1) >= 0",
@@ -756,7 +667,7 @@ const GlobalArgsSchema = z.object({
           "This trigger is triggered when the scan job itself fails, regardless of the result.",
         ).optional(),
         recipients: z.object({
-          emails: z.array(z.string()).describe(
+          emails: z.array(z.unknown()).describe(
             "Optional. The email recipients who will receive the DataQualityScan results report.",
           ).optional(),
         }).describe(
@@ -781,10 +692,10 @@ const GlobalArgsSchema = z.object({
         "Optional. The unnested column which this rule is evaluated against.",
       ).optional(),
       debugQueries: z.array(z.object({
-        description: z.string().describe(
+        description: z.unknown().describe(
           "Optional. Specifies the description of the debug query. The maximum length is 1,024 characters.",
         ).optional(),
-        sqlStatement: z.string().describe(
+        sqlStatement: z.unknown().describe(
           "Required. Specifies the SQL statement to be executed.",
         ).optional(),
       })).describe(
@@ -835,7 +746,7 @@ const GlobalArgsSchema = z.object({
         "Evaluates whether each row passes the specified condition.The SQL expression needs to use GoogleSQL syntax (https://cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax) and should produce a boolean value per row as the result.Example: col1 >= 0 AND col2 < 10",
       ).optional(),
       setExpectation: z.object({
-        values: z.array(z.string()).describe(
+        values: z.array(z.unknown()).describe(
           "Optional. Expected values for the column value.",
         ).optional(),
       }).describe(
@@ -989,29 +900,22 @@ const StateSchema = z.object({
       })),
       schemaRelationships: z.array(z.object({
         leftSchemaPaths: z.object({
-          paths: z.array(z.string()),
-          tableFqn: z.string(),
+          paths: z.unknown(),
+          tableFqn: z.unknown(),
         }),
         rightSchemaPaths: z.object({
-          paths: z.array(z.string()),
-          tableFqn: z.string(),
+          paths: z.unknown(),
+          tableFqn: z.unknown(),
         }),
-        sources: z.array(z.string()),
+        sources: z.array(z.unknown()),
         type: z.string(),
       })),
       tableResults: z.array(z.object({
         name: z.string(),
         overview: z.string(),
-        queries: z.array(z.object({
-          description: z.string(),
-          sql: z.string(),
-        })),
+        queries: z.array(z.unknown()),
         schema: z.object({
-          fields: z.array(z.object({
-            description: z.string(),
-            fields: z.array(z.string()),
-            name: z.string(),
-          })),
+          fields: z.unknown(),
         }),
       })),
     }),
@@ -1024,9 +928,9 @@ const StateSchema = z.object({
       })),
       schema: z.object({
         fields: z.array(z.object({
-          description: z.string(),
-          fields: z.array(z.string()),
-          name: z.string(),
+          description: z.unknown(),
+          fields: z.unknown(),
+          name: z.unknown(),
         })),
       }),
     }),
@@ -1050,32 +954,12 @@ const StateSchema = z.object({
         mode: z.string(),
         name: z.string(),
         profile: z.object({
-          distinctRatio: z.number(),
-          doubleProfile: z.object({
-            average: z.number(),
-            max: z.number(),
-            min: z.number(),
-            quartiles: z.array(z.number()),
-            standardDeviation: z.number(),
-          }),
-          integerProfile: z.object({
-            average: z.number(),
-            max: z.string(),
-            min: z.string(),
-            quartiles: z.array(z.string()),
-            standardDeviation: z.number(),
-          }),
-          nullRatio: z.number(),
-          stringProfile: z.object({
-            averageLength: z.number(),
-            maxLength: z.string(),
-            minLength: z.string(),
-          }),
-          topNValues: z.array(z.object({
-            count: z.string(),
-            ratio: z.number(),
-            value: z.string(),
-          })),
+          distinctRatio: z.unknown(),
+          doubleProfile: z.unknown(),
+          integerProfile: z.unknown(),
+          nullRatio: z.unknown(),
+          stringProfile: z.unknown(),
+          topNValues: z.unknown(),
         }),
         type: z.string(),
       })),
@@ -1118,11 +1002,9 @@ const StateSchema = z.object({
     columns: z.array(z.object({
       column: z.string(),
       dimensions: z.array(z.object({
-        dimension: z.object({
-          name: z.string(),
-        }),
-        passed: z.boolean(),
-        score: z.number(),
+        dimension: z.unknown(),
+        passed: z.unknown(),
+        score: z.unknown(),
       })),
       passed: z.boolean(),
       score: z.number(),
@@ -1145,11 +1027,7 @@ const StateSchema = z.object({
     rules: z.array(z.object({
       assertionRowCount: z.string(),
       debugQueriesResultSets: z.array(z.object({
-        results: z.array(z.object({
-          name: z.string(),
-          type: z.string(),
-          value: z.string(),
-        })),
+        results: z.unknown(),
       })),
       evaluatedCount: z.string(),
       failingRowsQuery: z.string(),
@@ -1159,43 +1037,40 @@ const StateSchema = z.object({
       passedCount: z.string(),
       rule: z.object({
         column: z.string(),
-        debugQueries: z.array(z.object({
-          description: z.string(),
-          sqlStatement: z.string(),
-        })),
+        debugQueries: z.array(z.unknown()),
         description: z.string(),
         dimension: z.string(),
         ignoreNull: z.boolean(),
         name: z.string(),
         nonNullExpectation: z.object({}),
         rangeExpectation: z.object({
-          maxValue: z.string(),
-          minValue: z.string(),
-          strictMaxEnabled: z.boolean(),
-          strictMinEnabled: z.boolean(),
+          maxValue: z.unknown(),
+          minValue: z.unknown(),
+          strictMaxEnabled: z.unknown(),
+          strictMinEnabled: z.unknown(),
         }),
         regexExpectation: z.object({
-          regex: z.string(),
+          regex: z.unknown(),
         }),
         rowConditionExpectation: z.object({
-          sqlExpression: z.string(),
+          sqlExpression: z.unknown(),
         }),
         setExpectation: z.object({
-          values: z.array(z.string()),
+          values: z.unknown(),
         }),
         sqlAssertion: z.object({
-          sqlStatement: z.string(),
+          sqlStatement: z.unknown(),
         }),
         statisticRangeExpectation: z.object({
-          maxValue: z.string(),
-          minValue: z.string(),
-          statistic: z.string(),
-          strictMaxEnabled: z.boolean(),
-          strictMinEnabled: z.boolean(),
+          maxValue: z.unknown(),
+          minValue: z.unknown(),
+          statistic: z.unknown(),
+          strictMaxEnabled: z.unknown(),
+          strictMinEnabled: z.unknown(),
         }),
         suspended: z.boolean(),
         tableConditionExpectation: z.object({
-          sqlExpression: z.string(),
+          sqlExpression: z.unknown(),
         }),
         threshold: z.number(),
         uniquenessExpectation: z.object({}),
@@ -1220,7 +1095,7 @@ const StateSchema = z.object({
         jobEndTrigger: z.object({}),
         jobFailureTrigger: z.object({}),
         recipients: z.object({
-          emails: z.array(z.string()),
+          emails: z.array(z.unknown()),
         }),
         scoreThresholdTrigger: z.object({
           scoreThreshold: z.number(),
@@ -1231,8 +1106,8 @@ const StateSchema = z.object({
     rules: z.array(z.object({
       column: z.string(),
       debugQueries: z.array(z.object({
-        description: z.string(),
-        sqlStatement: z.string(),
+        description: z.unknown(),
+        sqlStatement: z.unknown(),
       })),
       description: z.string(),
       dimension: z.string(),
@@ -1252,7 +1127,7 @@ const StateSchema = z.object({
         sqlExpression: z.string(),
       }),
       setExpectation: z.object({
-        values: z.array(z.string()),
+        values: z.array(z.unknown()),
       }),
       sqlAssertion: z.object({
         sqlStatement: z.string(),
@@ -1415,33 +1290,26 @@ const InputsSchema = z.object({
         .optional(),
       schemaRelationships: z.array(z.object({
         leftSchemaPaths: z.object({
-          paths: z.array(z.string()).describe(
+          paths: z.unknown().describe(
             "Output only. An ordered set of Paths to fields within the schema of the table. For fields nested within a top level field of type record, use '.' to separate field names. Examples: Top level field - top_level Nested field - top_level.child.sub_field",
           ).optional(),
-          tableFqn: z.string().describe(
+          tableFqn: z.unknown().describe(
             "Output only. The service-qualified full resource name of the table Ex: //bigquery.googleapis.com/projects/PROJECT_ID/datasets/DATASET_ID/tables/TABLE_ID",
           ).optional(),
         }).describe(
           "Represents an ordered set of paths within a table's schema.",
         ).optional(),
         rightSchemaPaths: z.object({
-          paths: z.array(z.string()).describe(
+          paths: z.unknown().describe(
             "Output only. An ordered set of Paths to fields within the schema of the table. For fields nested within a top level field of type record, use '.' to separate field names. Examples: Top level field - top_level Nested field - top_level.child.sub_field",
           ).optional(),
-          tableFqn: z.string().describe(
+          tableFqn: z.unknown().describe(
             "Output only. The service-qualified full resource name of the table Ex: //bigquery.googleapis.com/projects/PROJECT_ID/datasets/DATASET_ID/tables/TABLE_ID",
           ).optional(),
         }).describe(
           "Represents an ordered set of paths within a table's schema.",
         ).optional(),
-        sources: z.array(
-          z.enum([
-            "SOURCE_UNSPECIFIED",
-            "AGENT",
-            "QUERY_HISTORY",
-            "TABLE_CONSTRAINTS",
-          ]),
-        ).describe(
+        sources: z.array(z.unknown()).describe(
           "Output only. Sources which generated the schema relation edge.",
         ).optional(),
         type: z.enum(["TYPE_UNSPECIFIED", "SCHEMA_JOIN"]).describe(
@@ -1457,25 +1325,12 @@ const InputsSchema = z.object({
         overview: z.string().describe(
           "Output only. Generated description of the table.",
         ).optional(),
-        queries: z.array(z.object({
-          description: z.string().describe(
-            "Output only. The description for the query.",
-          ).optional(),
-          sql: z.string().describe(
-            "Output only. The SQL query string which can be executed.",
-          ).optional(),
-        })).describe("Output only. Sample SQL queries for the table.")
-          .optional(),
+        queries: z.array(z.unknown()).describe(
+          "Output only. Sample SQL queries for the table.",
+        ).optional(),
         schema: z.object({
-          fields: z.array(z.object({
-            description: z.string().describe(
-              "Output only. Generated description for columns and fields.",
-            ).optional(),
-            fields: z.array(z.string()).describe("Output only. Nested fields.")
-              .optional(),
-            name: z.string().describe("Output only. The name of the column.")
-              .optional(),
-          })).describe("Output only. The list of columns.").optional(),
+          fields: z.unknown().describe("Output only. The list of columns.")
+            .optional(),
         }).describe("Schema of the table with generated metadata of columns.")
           .optional(),
       })).describe(
@@ -1499,12 +1354,12 @@ const InputsSchema = z.object({
       })).describe("Output only. Sample SQL queries for the table.").optional(),
       schema: z.object({
         fields: z.array(z.object({
-          description: z.string().describe(
+          description: z.unknown().describe(
             "Output only. Generated description for columns and fields.",
           ).optional(),
-          fields: z.array(z.string()).describe("Output only. Nested fields.")
+          fields: z.unknown().describe("Output only. Nested fields.")
             .optional(),
-          name: z.string().describe("Output only. The name of the column.")
+          name: z.unknown().describe("Output only. The name of the column.")
             .optional(),
         })).describe("Output only. The list of columns.").optional(),
       }).describe("Schema of the table with generated metadata of columns.")
@@ -1552,71 +1407,22 @@ const InputsSchema = z.object({
         name: z.string().describe("Output only. The name of the field.")
           .optional(),
         profile: z.object({
-          distinctRatio: z.number().describe(
+          distinctRatio: z.unknown().describe(
             "Output only. Ratio of rows with distinct values against total scanned rows. Not available for complex non-groupable field type, including RECORD, ARRAY, GEOGRAPHY, and JSON, as well as fields with REPEATABLE mode.",
           ).optional(),
-          doubleProfile: z.object({
-            average: z.number().describe(
-              "Output only. Average of non-null values in the scanned data. NaN, if the field has a NaN.",
-            ).optional(),
-            max: z.number().describe(
-              "Output only. Maximum of non-null values in the scanned data. NaN, if the field has a NaN.",
-            ).optional(),
-            min: z.number().describe(
-              "Output only. Minimum of non-null values in the scanned data. NaN, if the field has a NaN.",
-            ).optional(),
-            quartiles: z.array(z.number()).describe(
-              "Output only. A quartile divides the number of data points into four parts, or quarters, of more-or-less equal size. Three main quartiles used are: The first quartile (Q1) splits off the lowest 25% of data from the highest 75%. It is also known as the lower or 25th empirical quartile, as 25% of the data is below this point. The second quartile (Q2) is the median of a data set. So, 50% of the data lies below this point. The third quartile (Q3) splits off the highest 25% of data from the lowest 75%. It is known as the upper or 75th empirical quartile, as 75% of the data lies below this point. Here, the quartiles is provided as an ordered list of quartile values for the scanned data, occurring in order Q1, median, Q3.",
-            ).optional(),
-            standardDeviation: z.number().describe(
-              "Output only. Standard deviation of non-null values in the scanned data. NaN, if the field has a NaN.",
-            ).optional(),
-          }).describe("The profile information for a double type field.")
-            .optional(),
-          integerProfile: z.object({
-            average: z.number().describe(
-              "Output only. Average of non-null values in the scanned data. NaN, if the field has a NaN.",
-            ).optional(),
-            max: z.string().describe(
-              "Output only. Maximum of non-null values in the scanned data. NaN, if the field has a NaN.",
-            ).optional(),
-            min: z.string().describe(
-              "Output only. Minimum of non-null values in the scanned data. NaN, if the field has a NaN.",
-            ).optional(),
-            quartiles: z.array(z.string()).describe(
-              "Output only. A quartile divides the number of data points into four parts, or quarters, of more-or-less equal size. Three main quartiles used are: The first quartile (Q1) splits off the lowest 25% of data from the highest 75%. It is also known as the lower or 25th empirical quartile, as 25% of the data is below this point. The second quartile (Q2) is the median of a data set. So, 50% of the data lies below this point. The third quartile (Q3) splits off the highest 25% of data from the lowest 75%. It is known as the upper or 75th empirical quartile, as 75% of the data lies below this point. Here, the quartiles is provided as an ordered list of approximate quartile values for the scanned data, occurring in order Q1, median, Q3.",
-            ).optional(),
-            standardDeviation: z.number().describe(
-              "Output only. Standard deviation of non-null values in the scanned data. NaN, if the field has a NaN.",
-            ).optional(),
-          }).describe("The profile information for an integer type field.")
-            .optional(),
-          nullRatio: z.number().describe(
+          doubleProfile: z.unknown().describe(
+            "The profile information for a double type field.",
+          ).optional(),
+          integerProfile: z.unknown().describe(
+            "The profile information for an integer type field.",
+          ).optional(),
+          nullRatio: z.unknown().describe(
             "Output only. Ratio of rows with null value against total scanned rows.",
           ).optional(),
-          stringProfile: z.object({
-            averageLength: z.number().describe(
-              "Output only. Average length of non-null values in the scanned data.",
-            ).optional(),
-            maxLength: z.string().describe(
-              "Output only. Maximum length of non-null values in the scanned data.",
-            ).optional(),
-            minLength: z.string().describe(
-              "Output only. Minimum length of non-null values in the scanned data.",
-            ).optional(),
-          }).describe("The profile information for a string type field.")
-            .optional(),
-          topNValues: z.array(z.object({
-            count: z.string().describe(
-              "Output only. Count of the corresponding value in the scanned data.",
-            ).optional(),
-            ratio: z.number().describe(
-              "Output only. Ratio of the corresponding value in the field against the total number of rows in the scanned data.",
-            ).optional(),
-            value: z.string().describe(
-              "Output only. String value of a top N non-null value.",
-            ).optional(),
-          })).describe(
+          stringProfile: z.unknown().describe(
+            "The profile information for a string type field.",
+          ).optional(),
+          topNValues: z.unknown().describe(
             "Output only. The list of top N non-null values, frequency and ratio with which they occur in the scanned data. N is 10 or equal to the number of distinct values in the field, whichever is smaller. Not available for complex non-groupable field type, including RECORD, ARRAY, GEOGRAPHY, and JSON, as well as fields with REPEATABLE mode.",
           ).optional(),
         }).describe("The profile information for each field type.").optional(),
@@ -1713,17 +1519,13 @@ const InputsSchema = z.object({
         "Output only. The column specified in the DataQualityRule.",
       ).optional(),
       dimensions: z.array(z.object({
-        dimension: z.object({
-          name: z.string().describe(
-            "Output only. The dimension name a rule belongs to. Custom dimension name is supported with all uppercase letters and maximum length of 30 characters.",
-          ).optional(),
-        }).describe(
+        dimension: z.unknown().describe(
           "A dimension captures data quality intent about a defined subset of the rules specified.",
         ).optional(),
-        passed: z.boolean().describe(
+        passed: z.unknown().describe(
           "Output only. Whether the dimension passed or failed.",
         ).optional(),
-        score: z.number().describe(
+        score: z.unknown().describe(
           "Output only. The dimension-level data quality score for this data scan job if and only if the 'dimension' field is set.The score ranges between 0, 100 (up to two decimal points).",
         ).optional(),
       })).describe("Output only. The dimension-level results for this column.")
@@ -1775,17 +1577,7 @@ const InputsSchema = z.object({
         "Output only. The number of rows returned by the SQL statement in a SQL assertion rule.This field is only valid for SQL assertion rules.",
       ).optional(),
       debugQueriesResultSets: z.array(z.object({
-        results: z.array(z.object({
-          name: z.string().describe(
-            "Specifies the name of the result. Available if provided with an explicit alias using [AS] alias.",
-          ).optional(),
-          type: z.string().describe(
-            "Indicates the data type of the result. For more information, see BigQuery data types (https://cloud.google.com/bigquery/docs/reference/standard-sql/data-types).",
-          ).optional(),
-          value: z.string().describe(
-            "Represents the value of the result as a string.",
-          ).optional(),
-        })).describe(
+        results: z.unknown().describe(
           "Output only. Contains all results. Up to 10 results can be returned.",
         ).optional(),
       })).describe(
@@ -1813,14 +1605,7 @@ const InputsSchema = z.object({
         column: z.string().describe(
           "Optional. The unnested column which this rule is evaluated against.",
         ).optional(),
-        debugQueries: z.array(z.object({
-          description: z.string().describe(
-            "Optional. Specifies the description of the debug query. The maximum length is 1,024 characters.",
-          ).optional(),
-          sqlStatement: z.string().describe(
-            "Required. Specifies the SQL statement to be executed.",
-          ).optional(),
-        })).describe(
+        debugQueries: z.array(z.unknown()).describe(
           "Optional. Specifies the debug queries for this rule. Currently, only one query is supported, but this may be expanded in the future.",
         ).optional(),
         description: z.string().describe(
@@ -1839,60 +1624,61 @@ const InputsSchema = z.object({
           "Evaluates whether each column value is null.",
         ).optional(),
         rangeExpectation: z.object({
-          maxValue: z.string().describe(
+          maxValue: z.unknown().describe(
             "Optional. The maximum column value allowed for a row to pass this validation. At least one of min_value and max_value need to be provided.",
           ).optional(),
-          minValue: z.string().describe(
+          minValue: z.unknown().describe(
             "Optional. The minimum column value allowed for a row to pass this validation. At least one of min_value and max_value need to be provided.",
           ).optional(),
-          strictMaxEnabled: z.boolean().describe(
+          strictMaxEnabled: z.unknown().describe(
             "Optional. Whether each value needs to be strictly lesser than ('<') the maximum, or if equality is allowed.Only relevant if a max_value has been defined. Default = false.",
           ).optional(),
-          strictMinEnabled: z.boolean().describe(
+          strictMinEnabled: z.unknown().describe(
             "Optional. Whether each value needs to be strictly greater than ('>') the minimum, or if equality is allowed.Only relevant if a min_value has been defined. Default = false.",
           ).optional(),
         }).describe(
           "Evaluates whether each column value lies between a specified range.",
         ).optional(),
         regexExpectation: z.object({
-          regex: z.string().describe(
+          regex: z.unknown().describe(
             "Optional. A regular expression the column value is expected to match.",
           ).optional(),
         }).describe(
           "Evaluates whether each column value matches a specified regex.",
         ).optional(),
         rowConditionExpectation: z.object({
-          sqlExpression: z.string().describe("Optional. The SQL expression.")
+          sqlExpression: z.unknown().describe("Optional. The SQL expression.")
             .optional(),
         }).describe(
           "Evaluates whether each row passes the specified condition.The SQL expression needs to use GoogleSQL syntax (https://cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax) and should produce a boolean value per row as the result.Example: col1 >= 0 AND col2 < 10",
         ).optional(),
         setExpectation: z.object({
-          values: z.array(z.string()).describe(
+          values: z.unknown().describe(
             "Optional. Expected values for the column value.",
           ).optional(),
         }).describe(
           "Evaluates whether each column value is contained by a specified set.",
         ).optional(),
         sqlAssertion: z.object({
-          sqlStatement: z.string().describe("Optional. The SQL statement.")
+          sqlStatement: z.unknown().describe("Optional. The SQL statement.")
             .optional(),
         }).describe(
           "A SQL statement that is evaluated to return rows that match an invalid state. If any rows are are returned, this rule fails.The SQL statement must use GoogleSQL syntax (https://cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax), and must not contain any semicolons.You can use the data reference parameter ${data()} to reference the source table with all of its precondition filters applied. Examples of precondition filters include row filters, incremental data filters, and sampling. For more information, see Data reference parameter (https://cloud.google.com/dataplex/docs/auto-data-quality-overview#data-reference-parameter).Example: SELECT * FROM ${data()} WHERE price < 0",
         ).optional(),
         statisticRangeExpectation: z.object({
-          maxValue: z.string().describe(
+          maxValue: z.unknown().describe(
             "Optional. The maximum column statistic value allowed for a row to pass this validation.At least one of min_value and max_value need to be provided.",
           ).optional(),
-          minValue: z.string().describe(
+          minValue: z.unknown().describe(
             "Optional. The minimum column statistic value allowed for a row to pass this validation.At least one of min_value and max_value need to be provided.",
           ).optional(),
-          statistic: z.enum(["STATISTIC_UNDEFINED", "MEAN", "MIN", "MAX"])
-            .describe("Optional. The aggregate metric to evaluate.").optional(),
-          strictMaxEnabled: z.boolean().describe(
+          statistic: z.unknown().describe(
+            "Optional. The aggregate metric to evaluate.",
+          ).optional(),
+          strictMaxEnabled: z.unknown().describe(
             "Optional. Whether column statistic needs to be strictly lesser than ('<') the maximum, or if equality is allowed.Only relevant if a max_value has been defined. Default = false.",
           ).optional(),
-          strictMinEnabled: z.boolean().describe(
+          strictMinEnabled: z.unknown().describe(
             "Optional. Whether column statistic needs to be strictly greater than ('>') the minimum, or if equality is allowed.Only relevant if a min_value has been defined. Default = false.",
           ).optional(),
         }).describe(
@@ -1902,7 +1688,7 @@ const InputsSchema = z.object({
           "Optional. Whether the Rule is active or suspended. Default is false.",
         ).optional(),
         tableConditionExpectation: z.object({
-          sqlExpression: z.string().describe("Optional. The SQL expression.")
+          sqlExpression: z.unknown().describe("Optional. The SQL expression.")
             .optional(),
         }).describe(
           "Evaluates whether the provided expression is true.The SQL expression needs to use GoogleSQL syntax (https://cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax) and should produce a scalar boolean result.Example: MIN(col1) >= 0",
@@ -1958,7 +1744,7 @@ const InputsSchema = z.object({
           "This trigger is triggered when the scan job itself fails, regardless of the result.",
         ).optional(),
         recipients: z.object({
-          emails: z.array(z.string()).describe(
+          emails: z.array(z.unknown()).describe(
             "Optional. The email recipients who will receive the DataQualityScan results report.",
           ).optional(),
         }).describe(
@@ -1983,10 +1769,10 @@ const InputsSchema = z.object({
         "Optional. The unnested column which this rule is evaluated against.",
       ).optional(),
       debugQueries: z.array(z.object({
-        description: z.string().describe(
+        description: z.unknown().describe(
           "Optional. Specifies the description of the debug query. The maximum length is 1,024 characters.",
         ).optional(),
-        sqlStatement: z.string().describe(
+        sqlStatement: z.unknown().describe(
           "Required. Specifies the SQL statement to be executed.",
         ).optional(),
       })).describe(
@@ -2037,7 +1823,7 @@ const InputsSchema = z.object({
         "Evaluates whether each row passes the specified condition.The SQL expression needs to use GoogleSQL syntax (https://cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax) and should produce a boolean value per row as the result.Example: col1 >= 0 AND col2 < 10",
       ).optional(),
       setExpectation: z.object({
-        values: z.array(z.string()).describe(
+        values: z.array(z.unknown()).describe(
           "Optional. Expected values for the column value.",
         ).optional(),
       }).describe(
@@ -2138,7 +1924,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/dataplex/datascans",
-  version: "2026.04.03.3",
+  version: "2026.04.04.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -2172,6 +1958,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.3",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.04.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

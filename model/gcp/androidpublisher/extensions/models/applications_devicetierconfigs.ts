@@ -59,39 +59,24 @@ const GlobalArgsSchema = z.object({
   deviceGroups: z.array(z.object({
     deviceSelectors: z.array(z.object({
       deviceRam: z.object({
-        maxBytes: z.string().describe("Maximum RAM in bytes (bound excluded).")
+        maxBytes: z.unknown().describe("Maximum RAM in bytes (bound excluded).")
           .optional(),
-        minBytes: z.string().describe("Minimum RAM in bytes (bound included).")
+        minBytes: z.unknown().describe("Minimum RAM in bytes (bound included).")
           .optional(),
       }).describe("Conditions about a device's RAM capabilities.").optional(),
-      excludedDeviceIds: z.array(z.object({
-        buildBrand: z.string().describe("Value of Build.BRAND.").optional(),
-        buildDevice: z.string().describe("Value of Build.DEVICE.").optional(),
-      })).describe(
+      excludedDeviceIds: z.array(z.unknown()).describe(
         "Device models excluded by this selector, even if they match all other conditions.",
       ).optional(),
-      forbiddenSystemFeatures: z.array(z.object({
-        name: z.string().describe("The name of the feature.").optional(),
-      })).describe(
+      forbiddenSystemFeatures: z.array(z.unknown()).describe(
         "A device that has any of these system features is excluded by this selector, even if it matches all other conditions.",
       ).optional(),
-      includedDeviceIds: z.array(z.object({
-        buildBrand: z.string().describe("Value of Build.BRAND.").optional(),
-        buildDevice: z.string().describe("Value of Build.DEVICE.").optional(),
-      })).describe("Device models included by this selector.").optional(),
-      requiredSystemFeatures: z.array(z.object({
-        name: z.string().describe("The name of the feature.").optional(),
-      })).describe(
+      includedDeviceIds: z.array(z.unknown()).describe(
+        "Device models included by this selector.",
+      ).optional(),
+      requiredSystemFeatures: z.array(z.unknown()).describe(
         "A device needs to have all these system features to be included by the selector.",
       ).optional(),
-      systemOnChips: z.array(z.object({
-        manufacturer: z.string().describe(
-          'Required. The designer of the SoC, eg. "Google" Value of build property "ro.soc.manufacturer" https://developer.android.com/reference/android/os/Build#SOC_MANUFACTURER Required.',
-        ).optional(),
-        model: z.string().describe(
-          'Required. The model of the SoC, eg. "Tensor" Value of build property "ro.soc.model" https://developer.android.com/reference/android/os/Build#SOC_MODEL Required.',
-        ).optional(),
-      })).describe(
+      systemOnChips: z.array(z.unknown()).describe(
         "Optional. The SoCs included by this selector. Only works for Android S+ devices.",
       ).optional(),
     })).describe(
@@ -127,27 +112,14 @@ const StateSchema = z.object({
   deviceGroups: z.array(z.object({
     deviceSelectors: z.array(z.object({
       deviceRam: z.object({
-        maxBytes: z.string(),
-        minBytes: z.string(),
+        maxBytes: z.unknown(),
+        minBytes: z.unknown(),
       }),
-      excludedDeviceIds: z.array(z.object({
-        buildBrand: z.string(),
-        buildDevice: z.string(),
-      })),
-      forbiddenSystemFeatures: z.array(z.object({
-        name: z.string(),
-      })),
-      includedDeviceIds: z.array(z.object({
-        buildBrand: z.string(),
-        buildDevice: z.string(),
-      })),
-      requiredSystemFeatures: z.array(z.object({
-        name: z.string(),
-      })),
-      systemOnChips: z.array(z.object({
-        manufacturer: z.string(),
-        model: z.string(),
-      })),
+      excludedDeviceIds: z.array(z.unknown()),
+      forbiddenSystemFeatures: z.array(z.unknown()),
+      includedDeviceIds: z.array(z.unknown()),
+      requiredSystemFeatures: z.array(z.unknown()),
+      systemOnChips: z.array(z.unknown()),
     })),
     name: z.string(),
   })).optional(),
@@ -171,39 +143,24 @@ const InputsSchema = z.object({
   deviceGroups: z.array(z.object({
     deviceSelectors: z.array(z.object({
       deviceRam: z.object({
-        maxBytes: z.string().describe("Maximum RAM in bytes (bound excluded).")
+        maxBytes: z.unknown().describe("Maximum RAM in bytes (bound excluded).")
           .optional(),
-        minBytes: z.string().describe("Minimum RAM in bytes (bound included).")
+        minBytes: z.unknown().describe("Minimum RAM in bytes (bound included).")
           .optional(),
       }).describe("Conditions about a device's RAM capabilities.").optional(),
-      excludedDeviceIds: z.array(z.object({
-        buildBrand: z.string().describe("Value of Build.BRAND.").optional(),
-        buildDevice: z.string().describe("Value of Build.DEVICE.").optional(),
-      })).describe(
+      excludedDeviceIds: z.array(z.unknown()).describe(
         "Device models excluded by this selector, even if they match all other conditions.",
       ).optional(),
-      forbiddenSystemFeatures: z.array(z.object({
-        name: z.string().describe("The name of the feature.").optional(),
-      })).describe(
+      forbiddenSystemFeatures: z.array(z.unknown()).describe(
         "A device that has any of these system features is excluded by this selector, even if it matches all other conditions.",
       ).optional(),
-      includedDeviceIds: z.array(z.object({
-        buildBrand: z.string().describe("Value of Build.BRAND.").optional(),
-        buildDevice: z.string().describe("Value of Build.DEVICE.").optional(),
-      })).describe("Device models included by this selector.").optional(),
-      requiredSystemFeatures: z.array(z.object({
-        name: z.string().describe("The name of the feature.").optional(),
-      })).describe(
+      includedDeviceIds: z.array(z.unknown()).describe(
+        "Device models included by this selector.",
+      ).optional(),
+      requiredSystemFeatures: z.array(z.unknown()).describe(
         "A device needs to have all these system features to be included by the selector.",
       ).optional(),
-      systemOnChips: z.array(z.object({
-        manufacturer: z.string().describe(
-          'Required. The designer of the SoC, eg. "Google" Value of build property "ro.soc.manufacturer" https://developer.android.com/reference/android/os/Build#SOC_MANUFACTURER Required.',
-        ).optional(),
-        model: z.string().describe(
-          'Required. The model of the SoC, eg. "Tensor" Value of build property "ro.soc.model" https://developer.android.com/reference/android/os/Build#SOC_MODEL Required.',
-        ).optional(),
-      })).describe(
+      systemOnChips: z.array(z.unknown()).describe(
         "Optional. The SoCs included by this selector. Only works for Android S+ devices.",
       ).optional(),
     })).describe(
@@ -237,7 +194,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/androidpublisher/applications-devicetierconfigs",
-  version: "2026.04.03.3",
+  version: "2026.04.04.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -261,6 +218,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.3",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.04.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

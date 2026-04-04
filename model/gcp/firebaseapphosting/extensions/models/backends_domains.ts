@@ -140,7 +140,7 @@ const GlobalArgsSchema = z.object({
       code: z.number().int().describe(
         "The status code, which should be an enum value of google.rpc.Code.",
       ).optional(),
-      details: z.array(z.record(z.string(), z.string())).describe(
+      details: z.array(z.record(z.string(), z.unknown())).describe(
         "A list of messages that carry the error details. There is a common set of message types for APIs to use.",
       ).optional(),
       message: z.string().describe(
@@ -165,92 +165,26 @@ const GlobalArgsSchema = z.object({
         "Output only. The last time App Hosting checked your custom domain's DNS records.",
       ).optional(),
       desired: z.array(z.object({
-        checkError: z.object({
-          code: z.number().int().describe(
-            "The status code, which should be an enum value of google.rpc.Code.",
-          ).optional(),
-          details: z.array(z.record(z.string(), z.string())).describe(
-            "A list of messages that carry the error details. There is a common set of message types for APIs to use.",
-          ).optional(),
-          message: z.string().describe(
-            "A developer-facing error message, which should be in English. Any user-facing error message should be localized and sent in the google.rpc.Status.details field, or localized by the client.",
-          ).optional(),
-        }).describe(
+        checkError: z.unknown().describe(
           "The `Status` type defines a logical error model that is suitable for different programming environments, including REST APIs and RPC APIs. It is used by [gRPC](https://github.com/grpc). Each `Status` message contains three pieces of data: error code, error message, and error details. You can find out more about this error model and how to work with it in the [API Design Guide](https://cloud.google.com/apis/design/errors).",
         ).optional(),
-        domainName: z.string().describe(
+        domainName: z.unknown().describe(
           "Output only. The domain name the record set pertains to.",
         ).optional(),
-        records: z.array(z.object({
-          domainName: z.string().describe(
-            "Output only. The domain the record pertains to, e.g. `foo.bar.com.`.",
-          ).optional(),
-          rdata: z.string().describe(
-            "Output only. The data of the record. The meaning of the value depends on record type: - A and AAAA: IP addresses for the domain. - CNAME: Another domain to check for records. - TXT: Arbitrary text strings associated with the domain. App Hosting uses TXT records to determine which Firebase projects have permission to act on the domain's behalf. - CAA: The record's flags, tag, and value, e.g. `0 issue \"pki.goog\"`.",
-          ).optional(),
-          relevantState: z.array(
-            z.enum([
-              "CUSTOM_DOMAIN_STATE_UNSPECIFIED",
-              "HOST_STATE",
-              "OWNERSHIP_STATE",
-              "CERT_STATE",
-            ]),
-          ).describe(
-            "Output only. An enum that indicates which state(s) this DNS record applies to. Populated for all records with an `ADD` or `REMOVE` required action.",
-          ).optional(),
-          requiredAction: z.enum(["NONE", "ADD", "REMOVE"]).describe(
-            "Output only. An enum that indicates the a required action for this record. Populated when the record is part of a required change in a `DnsUpdates` `discovered` or `desired` record set.",
-          ).optional(),
-          type: z.enum(["TYPE_UNSPECIFIED", "A", "CNAME", "TXT", "AAAA", "CAA"])
-            .describe(
-              "Output only. The record's type, which determines what data the record contains.",
-            ).optional(),
-        })).describe("Output only. Records on the domain.").optional(),
+        records: z.unknown().describe("Output only. Records on the domain.")
+          .optional(),
       })).describe(
         "Output only. The set of DNS records App Hosting needs in order to be able to serve secure content on the domain.",
       ).optional(),
       discovered: z.array(z.object({
-        checkError: z.object({
-          code: z.number().int().describe(
-            "The status code, which should be an enum value of google.rpc.Code.",
-          ).optional(),
-          details: z.array(z.record(z.string(), z.string())).describe(
-            "A list of messages that carry the error details. There is a common set of message types for APIs to use.",
-          ).optional(),
-          message: z.string().describe(
-            "A developer-facing error message, which should be in English. Any user-facing error message should be localized and sent in the google.rpc.Status.details field, or localized by the client.",
-          ).optional(),
-        }).describe(
+        checkError: z.unknown().describe(
           "The `Status` type defines a logical error model that is suitable for different programming environments, including REST APIs and RPC APIs. It is used by [gRPC](https://github.com/grpc). Each `Status` message contains three pieces of data: error code, error message, and error details. You can find out more about this error model and how to work with it in the [API Design Guide](https://cloud.google.com/apis/design/errors).",
         ).optional(),
-        domainName: z.string().describe(
+        domainName: z.unknown().describe(
           "Output only. The domain name the record set pertains to.",
         ).optional(),
-        records: z.array(z.object({
-          domainName: z.string().describe(
-            "Output only. The domain the record pertains to, e.g. `foo.bar.com.`.",
-          ).optional(),
-          rdata: z.string().describe(
-            "Output only. The data of the record. The meaning of the value depends on record type: - A and AAAA: IP addresses for the domain. - CNAME: Another domain to check for records. - TXT: Arbitrary text strings associated with the domain. App Hosting uses TXT records to determine which Firebase projects have permission to act on the domain's behalf. - CAA: The record's flags, tag, and value, e.g. `0 issue \"pki.goog\"`.",
-          ).optional(),
-          relevantState: z.array(
-            z.enum([
-              "CUSTOM_DOMAIN_STATE_UNSPECIFIED",
-              "HOST_STATE",
-              "OWNERSHIP_STATE",
-              "CERT_STATE",
-            ]),
-          ).describe(
-            "Output only. An enum that indicates which state(s) this DNS record applies to. Populated for all records with an `ADD` or `REMOVE` required action.",
-          ).optional(),
-          requiredAction: z.enum(["NONE", "ADD", "REMOVE"]).describe(
-            "Output only. An enum that indicates the a required action for this record. Populated when the record is part of a required change in a `DnsUpdates` `discovered` or `desired` record set.",
-          ).optional(),
-          type: z.enum(["TYPE_UNSPECIFIED", "A", "CNAME", "TXT", "AAAA", "CAA"])
-            .describe(
-              "Output only. The record's type, which determines what data the record contains.",
-            ).optional(),
-        })).describe("Output only. Records on the domain.").optional(),
+        records: z.unknown().describe("Output only. Records on the domain.")
+          .optional(),
       })).describe(
         "Output only. The set of DNS records App Hosting discovered when inspecting a domain.",
       ).optional(),
@@ -311,34 +245,14 @@ const StateSchema = z.object({
     requiredDnsUpdates: z.array(z.object({
       checkTime: z.string(),
       desired: z.array(z.object({
-        checkError: z.object({
-          code: z.number(),
-          details: z.array(z.record(z.string(), z.unknown())),
-          message: z.string(),
-        }),
-        domainName: z.string(),
-        records: z.array(z.object({
-          domainName: z.string(),
-          rdata: z.string(),
-          relevantState: z.array(z.string()),
-          requiredAction: z.string(),
-          type: z.string(),
-        })),
+        checkError: z.unknown(),
+        domainName: z.unknown(),
+        records: z.unknown(),
       })),
       discovered: z.array(z.object({
-        checkError: z.object({
-          code: z.number(),
-          details: z.array(z.record(z.string(), z.unknown())),
-          message: z.string(),
-        }),
-        domainName: z.string(),
-        records: z.array(z.object({
-          domainName: z.string(),
-          rdata: z.string(),
-          relevantState: z.array(z.string()),
-          requiredAction: z.string(),
-          type: z.string(),
-        })),
+        checkError: z.unknown(),
+        domainName: z.unknown(),
+        records: z.unknown(),
       })),
       domainName: z.string(),
     })),
@@ -393,7 +307,7 @@ const InputsSchema = z.object({
       code: z.number().int().describe(
         "The status code, which should be an enum value of google.rpc.Code.",
       ).optional(),
-      details: z.array(z.record(z.string(), z.string())).describe(
+      details: z.array(z.record(z.string(), z.unknown())).describe(
         "A list of messages that carry the error details. There is a common set of message types for APIs to use.",
       ).optional(),
       message: z.string().describe(
@@ -418,92 +332,26 @@ const InputsSchema = z.object({
         "Output only. The last time App Hosting checked your custom domain's DNS records.",
       ).optional(),
       desired: z.array(z.object({
-        checkError: z.object({
-          code: z.number().int().describe(
-            "The status code, which should be an enum value of google.rpc.Code.",
-          ).optional(),
-          details: z.array(z.record(z.string(), z.string())).describe(
-            "A list of messages that carry the error details. There is a common set of message types for APIs to use.",
-          ).optional(),
-          message: z.string().describe(
-            "A developer-facing error message, which should be in English. Any user-facing error message should be localized and sent in the google.rpc.Status.details field, or localized by the client.",
-          ).optional(),
-        }).describe(
+        checkError: z.unknown().describe(
           "The `Status` type defines a logical error model that is suitable for different programming environments, including REST APIs and RPC APIs. It is used by [gRPC](https://github.com/grpc). Each `Status` message contains three pieces of data: error code, error message, and error details. You can find out more about this error model and how to work with it in the [API Design Guide](https://cloud.google.com/apis/design/errors).",
         ).optional(),
-        domainName: z.string().describe(
+        domainName: z.unknown().describe(
           "Output only. The domain name the record set pertains to.",
         ).optional(),
-        records: z.array(z.object({
-          domainName: z.string().describe(
-            "Output only. The domain the record pertains to, e.g. `foo.bar.com.`.",
-          ).optional(),
-          rdata: z.string().describe(
-            "Output only. The data of the record. The meaning of the value depends on record type: - A and AAAA: IP addresses for the domain. - CNAME: Another domain to check for records. - TXT: Arbitrary text strings associated with the domain. App Hosting uses TXT records to determine which Firebase projects have permission to act on the domain's behalf. - CAA: The record's flags, tag, and value, e.g. `0 issue \"pki.goog\"`.",
-          ).optional(),
-          relevantState: z.array(
-            z.enum([
-              "CUSTOM_DOMAIN_STATE_UNSPECIFIED",
-              "HOST_STATE",
-              "OWNERSHIP_STATE",
-              "CERT_STATE",
-            ]),
-          ).describe(
-            "Output only. An enum that indicates which state(s) this DNS record applies to. Populated for all records with an `ADD` or `REMOVE` required action.",
-          ).optional(),
-          requiredAction: z.enum(["NONE", "ADD", "REMOVE"]).describe(
-            "Output only. An enum that indicates the a required action for this record. Populated when the record is part of a required change in a `DnsUpdates` `discovered` or `desired` record set.",
-          ).optional(),
-          type: z.enum(["TYPE_UNSPECIFIED", "A", "CNAME", "TXT", "AAAA", "CAA"])
-            .describe(
-              "Output only. The record's type, which determines what data the record contains.",
-            ).optional(),
-        })).describe("Output only. Records on the domain.").optional(),
+        records: z.unknown().describe("Output only. Records on the domain.")
+          .optional(),
       })).describe(
         "Output only. The set of DNS records App Hosting needs in order to be able to serve secure content on the domain.",
       ).optional(),
       discovered: z.array(z.object({
-        checkError: z.object({
-          code: z.number().int().describe(
-            "The status code, which should be an enum value of google.rpc.Code.",
-          ).optional(),
-          details: z.array(z.record(z.string(), z.string())).describe(
-            "A list of messages that carry the error details. There is a common set of message types for APIs to use.",
-          ).optional(),
-          message: z.string().describe(
-            "A developer-facing error message, which should be in English. Any user-facing error message should be localized and sent in the google.rpc.Status.details field, or localized by the client.",
-          ).optional(),
-        }).describe(
+        checkError: z.unknown().describe(
           "The `Status` type defines a logical error model that is suitable for different programming environments, including REST APIs and RPC APIs. It is used by [gRPC](https://github.com/grpc). Each `Status` message contains three pieces of data: error code, error message, and error details. You can find out more about this error model and how to work with it in the [API Design Guide](https://cloud.google.com/apis/design/errors).",
         ).optional(),
-        domainName: z.string().describe(
+        domainName: z.unknown().describe(
           "Output only. The domain name the record set pertains to.",
         ).optional(),
-        records: z.array(z.object({
-          domainName: z.string().describe(
-            "Output only. The domain the record pertains to, e.g. `foo.bar.com.`.",
-          ).optional(),
-          rdata: z.string().describe(
-            "Output only. The data of the record. The meaning of the value depends on record type: - A and AAAA: IP addresses for the domain. - CNAME: Another domain to check for records. - TXT: Arbitrary text strings associated with the domain. App Hosting uses TXT records to determine which Firebase projects have permission to act on the domain's behalf. - CAA: The record's flags, tag, and value, e.g. `0 issue \"pki.goog\"`.",
-          ).optional(),
-          relevantState: z.array(
-            z.enum([
-              "CUSTOM_DOMAIN_STATE_UNSPECIFIED",
-              "HOST_STATE",
-              "OWNERSHIP_STATE",
-              "CERT_STATE",
-            ]),
-          ).describe(
-            "Output only. An enum that indicates which state(s) this DNS record applies to. Populated for all records with an `ADD` or `REMOVE` required action.",
-          ).optional(),
-          requiredAction: z.enum(["NONE", "ADD", "REMOVE"]).describe(
-            "Output only. An enum that indicates the a required action for this record. Populated when the record is part of a required change in a `DnsUpdates` `discovered` or `desired` record set.",
-          ).optional(),
-          type: z.enum(["TYPE_UNSPECIFIED", "A", "CNAME", "TXT", "AAAA", "CAA"])
-            .describe(
-              "Output only. The record's type, which determines what data the record contains.",
-            ).optional(),
-        })).describe("Output only. Records on the domain.").optional(),
+        records: z.unknown().describe("Output only. Records on the domain.")
+          .optional(),
       })).describe(
         "Output only. The set of DNS records App Hosting discovered when inspecting a domain.",
       ).optional(),
@@ -551,7 +399,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/firebaseapphosting/backends-domains",
-  version: "2026.04.03.3",
+  version: "2026.04.04.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -575,6 +423,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.3",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.04.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

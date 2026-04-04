@@ -105,10 +105,10 @@ const GlobalArgsSchema = z.object({
   rules: z.array(z.object({
     action: z.object({
       destinations: z.array(z.object({
-        serviceName: z.string().describe(
+        serviceName: z.unknown().describe(
           "Required. The URL of a BackendService to route traffic to.",
         ).optional(),
-        weight: z.number().int().describe(
+        weight: z.unknown().describe(
           "Optional. Specifies the proportion of requests forwarded to the backend referenced by the serviceName field. This is computed as: - weight/Sum(weights in this destination list). For non-zero values, there may be some epsilon from the exact proportion defined here depending on the precision an implementation supports. If only one serviceName is specified and it has a weight greater than 0, 100% of the traffic is forwarded to that backend. If weights are specified for any one service name, they need to be specified for all of them. If weights are unspecified for all services, then, traffic is distributed in equal proportions to all of them.",
         ).optional(),
       })).describe(
@@ -154,8 +154,8 @@ const StateSchema = z.object({
   rules: z.array(z.object({
     action: z.object({
       destinations: z.array(z.object({
-        serviceName: z.string(),
-        weight: z.number(),
+        serviceName: z.unknown(),
+        weight: z.unknown(),
       })),
       idleTimeout: z.string(),
       originalDestination: z.boolean(),
@@ -190,10 +190,10 @@ const InputsSchema = z.object({
   rules: z.array(z.object({
     action: z.object({
       destinations: z.array(z.object({
-        serviceName: z.string().describe(
+        serviceName: z.unknown().describe(
           "Required. The URL of a BackendService to route traffic to.",
         ).optional(),
-        weight: z.number().int().describe(
+        weight: z.unknown().describe(
           "Optional. Specifies the proportion of requests forwarded to the backend referenced by the serviceName field. This is computed as: - weight/Sum(weights in this destination list). For non-zero values, there may be some epsilon from the exact proportion defined here depending on the precision an implementation supports. If only one serviceName is specified and it has a weight greater than 0, 100% of the traffic is forwarded to that backend. If weights are specified for any one service name, they need to be specified for all of them. If weights are unspecified for all services, then, traffic is distributed in equal proportions to all of them.",
         ).optional(),
       })).describe(
@@ -231,7 +231,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/networkservices/tcproutes",
-  version: "2026.04.03.3",
+  version: "2026.04.04.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -255,6 +255,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.3",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.04.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

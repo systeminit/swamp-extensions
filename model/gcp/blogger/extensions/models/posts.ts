@@ -180,7 +180,7 @@ const GlobalArgsSchema = z.object({
         displayName: z.string().describe("The display name.").optional(),
         id: z.string().describe("The identifier of the creator.").optional(),
         image: z.object({
-          url: z.string().describe("The creator's avatar URL.").optional(),
+          url: z.unknown().describe("The creator's avatar URL.").optional(),
         }).describe("The creator's avatar.").optional(),
         url: z.string().describe("The URL of the creator's Profile page.")
           .optional(),
@@ -280,7 +280,7 @@ const StateSchema = z.object({
         displayName: z.string(),
         id: z.string(),
         image: z.object({
-          url: z.string(),
+          url: z.unknown(),
         }),
         url: z.string(),
       }),
@@ -364,7 +364,7 @@ const InputsSchema = z.object({
         displayName: z.string().describe("The display name.").optional(),
         id: z.string().describe("The identifier of the creator.").optional(),
         image: z.object({
-          url: z.string().describe("The creator's avatar URL.").optional(),
+          url: z.unknown().describe("The creator's avatar URL.").optional(),
         }).describe("The creator's avatar.").optional(),
         url: z.string().describe("The URL of the creator's Profile page.")
           .optional(),
@@ -431,7 +431,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/blogger/posts",
-  version: "2026.04.03.3",
+  version: "2026.04.04.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -455,6 +455,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.3",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.04.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

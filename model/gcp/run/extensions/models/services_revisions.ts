@@ -91,10 +91,7 @@ const StateSchema = z.object({
       name: z.string(),
       value: z.string(),
       valueSource: z.object({
-        secretKeyRef: z.object({
-          secret: z.string(),
-          version: z.string(),
-        }),
+        secretKeyRef: z.unknown(),
       }),
     })),
     image: z.string(),
@@ -105,10 +102,7 @@ const StateSchema = z.object({
         service: z.string(),
       }),
       httpGet: z.object({
-        httpHeaders: z.array(z.object({
-          name: z.string(),
-          value: z.string(),
-        })),
+        httpHeaders: z.array(z.unknown()),
         path: z.string(),
         port: z.number(),
       }),
@@ -131,10 +125,7 @@ const StateSchema = z.object({
         service: z.string(),
       }),
       httpGet: z.object({
-        httpHeaders: z.array(z.object({
-          name: z.string(),
-          value: z.string(),
-        })),
+        httpHeaders: z.array(z.unknown()),
         path: z.string(),
         port: z.number(),
       }),
@@ -157,10 +148,7 @@ const StateSchema = z.object({
         object: z.string(),
       }),
       inlinedSource: z.object({
-        sources: z.array(z.object({
-          content: z.string(),
-          filename: z.string(),
-        })),
+        sources: z.array(z.unknown()),
       }),
     }),
     startupProbe: z.object({
@@ -170,10 +158,7 @@ const StateSchema = z.object({
         service: z.string(),
       }),
       httpGet: z.object({
-        httpHeaders: z.array(z.object({
-          name: z.string(),
-          value: z.string(),
-        })),
+        httpHeaders: z.array(z.unknown()),
         path: z.string(),
         port: z.number(),
       }),
@@ -253,9 +238,9 @@ const StateSchema = z.object({
     secret: z.object({
       defaultMode: z.number(),
       items: z.array(z.object({
-        mode: z.number(),
-        path: z.string(),
-        version: z.string(),
+        mode: z.unknown(),
+        path: z.unknown(),
+        version: z.unknown(),
       })),
       secret: z.string(),
     }),
@@ -282,7 +267,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/run/services-revisions",
-  version: "2026.04.03.3",
+  version: "2026.04.04.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -306,6 +291,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.3",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.04.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

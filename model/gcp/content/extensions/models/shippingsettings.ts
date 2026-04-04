@@ -102,24 +102,24 @@ const GlobalArgsSchema = z.object({
         ).optional(),
       }).optional(),
       handlingBusinessDayConfig: z.object({
-        businessDays: z.array(z.string()).describe(
+        businessDays: z.array(z.unknown()).describe(
           "Regular business days, such as '\"monday\"'. May not be empty.",
         ).optional(),
       }).optional(),
       holidayCutoffs: z.array(z.object({
-        deadlineDate: z.string().describe(
+        deadlineDate: z.unknown().describe(
           'Date of the order deadline, in ISO 8601 format. For example, "2016-11-29" for 29th November 2016. Required.',
         ).optional(),
-        deadlineHour: z.number().int().describe(
+        deadlineHour: z.unknown().describe(
           "Hour of the day on the deadline date until which the order has to be placed to qualify for the delivery guarantee. Possible values are: 0 (midnight), 1,..., 12 (noon), 13,..., 23. Required.",
         ).optional(),
-        deadlineTimezone: z.string().describe(
+        deadlineTimezone: z.unknown().describe(
           'Timezone identifier for the deadline hour (for example, "Europe/Zurich"). List of identifiers. Required.',
         ).optional(),
-        holidayId: z.string().describe(
+        holidayId: z.unknown().describe(
           "Unique identifier for the holiday. Required.",
         ).optional(),
-        visibleFromDate: z.string().describe(
+        visibleFromDate: z.unknown().describe(
           'Date on which the deadline will become visible to consumers in ISO 8601 format. For example, "2016-10-31" for 31st October 2016. Required.',
         ).optional(),
       })).describe(
@@ -138,47 +138,38 @@ const GlobalArgsSchema = z.object({
         "Minimum number of business days that are spent in transit. 0 means same day delivery, 1 means next day delivery. Either `{min,max}TransitTimeInDays` or `transitTimeTable` must be set, but not both.",
       ).optional(),
       transitBusinessDayConfig: z.object({
-        businessDays: z.array(z.string()).describe(
+        businessDays: z.array(z.unknown()).describe(
           "Regular business days, such as '\"monday\"'. May not be empty.",
         ).optional(),
       }).optional(),
       transitTimeTable: z.object({
-        postalCodeGroupNames: z.array(z.string()).describe(
+        postalCodeGroupNames: z.array(z.unknown()).describe(
           'A list of postal group names. The last value can be `"all other locations"`. Example: `["zone 1", "zone 2", "all other locations"]`. The referred postal code groups must match the delivery country of the service.',
         ).optional(),
-        rows: z.array(z.object({
-          values: z.array(z.object({
-            maxTransitTimeInDays: z.number().int().describe(
-              "Must be greater than or equal to `minTransitTimeInDays`.",
-            ).optional(),
-            minTransitTimeInDays: z.number().int().describe(
-              "Transit time range (min-max) in business days. 0 means same day delivery, 1 means next day delivery.",
-            ).optional(),
-          })).optional(),
-        })).optional(),
-        transitTimeLabels: z.array(z.string()).describe(
+        rows: z.array(z.unknown()).optional(),
+        transitTimeLabels: z.array(z.unknown()).describe(
           'A list of transit time labels. The last value can be `"all other labels"`. Example: `["food", "electronics", "all other labels"]`.',
         ).optional(),
       }).optional(),
       warehouseBasedDeliveryTimes: z.array(z.object({
-        carrier: z.string().describe(
+        carrier: z.unknown().describe(
           'Required. Carrier, such as `"UPS"` or `"Fedex"`. The list of supported carriers can be retrieved through the `listSupportedCarriers` method.',
         ).optional(),
-        carrierService: z.string().describe(
+        carrierService: z.unknown().describe(
           'Required. Carrier service, such as `"ground"` or `"2 days"`. The list of supported services for a carrier can be retrieved through the `listSupportedCarriers` method. The name of the service must be in the eddSupportedServices list.',
         ).optional(),
-        originAdministrativeArea: z.string().describe(
+        originAdministrativeArea: z.unknown().describe(
           "Shipping origin's state.",
         ).optional(),
-        originCity: z.string().describe("Shipping origin's city.").optional(),
-        originCountry: z.string().describe(
+        originCity: z.unknown().describe("Shipping origin's city.").optional(),
+        originCountry: z.unknown().describe(
           "Shipping origin's country represented as a [CLDR territory code](https://github.com/unicode-org/cldr/blob/latest/common/main/en.xml).",
         ).optional(),
-        originPostalCode: z.string().describe("Shipping origin.").optional(),
-        originStreetAddress: z.string().describe(
+        originPostalCode: z.unknown().describe("Shipping origin.").optional(),
+        originStreetAddress: z.unknown().describe(
           "Shipping origin's street address.",
         ).optional(),
-        warehouseName: z.string().describe(
+        warehouseName: z.unknown().describe(
           "The name of the warehouse. Warehouse name need to be matched with name. If warehouseName is set, the below fields will be ignored. The warehouse info will be read from warehouse.",
         ).optional(),
       })).describe(
@@ -195,15 +186,10 @@ const GlobalArgsSchema = z.object({
     }).optional(),
     minimumOrderValueTable: z.object({
       storeCodeSetWithMovs: z.array(z.object({
-        storeCodes: z.array(z.string()).describe(
+        storeCodes: z.unknown().describe(
           "A list of unique store codes or empty for the catch all.",
         ).optional(),
-        value: z.object({
-          currency: z.string().describe("The currency of the price.")
-            .optional(),
-          value: z.string().describe("The price represented as a number.")
-            .optional(),
-        }).optional(),
+        value: z.unknown().optional(),
       })).optional(),
     }).optional(),
     name: z.string().describe(
@@ -218,132 +204,23 @@ const GlobalArgsSchema = z.object({
       ).optional(),
     }).optional(),
     rateGroups: z.array(z.object({
-      applicableShippingLabels: z.array(z.string()).describe(
+      applicableShippingLabels: z.array(z.unknown()).describe(
         "A list of shipping labels defining the products to which this rate group applies to. This is a disjunction: only one of the labels has to match for the rate group to apply. May only be empty for the last rate group of a service. Required.",
       ).optional(),
-      carrierRates: z.array(z.object({
-        carrierName: z.string().describe(
-          'Carrier service, such as `"UPS"` or `"Fedex"`. The list of supported carriers can be retrieved through the `getSupportedCarriers` method. Required.',
-        ).optional(),
-        carrierService: z.string().describe(
-          'Carrier service, such as `"ground"` or `"2 days"`. The list of supported services for a carrier can be retrieved through the `getSupportedCarriers` method. Required.',
-        ).optional(),
-        flatAdjustment: z.object({
-          currency: z.string().describe("The currency of the price.")
-            .optional(),
-          value: z.string().describe("The price represented as a number.")
-            .optional(),
-        }).optional(),
-        name: z.string().describe(
-          "Name of the carrier rate. Must be unique per rate group. Required.",
-        ).optional(),
-        originPostalCode: z.string().describe(
-          "Shipping origin for this carrier rate. Required.",
-        ).optional(),
-        percentageAdjustment: z.string().describe(
-          'Multiplicative shipping rate modifier as a number in decimal notation. Can be negative. For example `"5.4"` increases the rate by 5.4%, `"-3"` decreases the rate by 3%. Optional.',
-        ).optional(),
-      })).describe(
+      carrierRates: z.array(z.unknown()).describe(
         "A list of carrier rates that can be referred to by `mainTable` or `singleValue`.",
       ).optional(),
       mainTable: z.object({
-        columnHeaders: z.object({
-          locations: z.array(z.object({
-            locationIds: z.array(z.string()).describe(
-              "A non-empty list of location IDs. They must all be of the same location type (for example, state).",
-            ).optional(),
-          })).describe(
-            "A list of location ID sets. Must be non-empty. Can only be set if all other fields are not set.",
-          ).optional(),
-          numberOfItems: z.array(z.string()).describe(
-            'A list of inclusive number of items upper bounds. The last value can be `"infinity"`. For example `["10", "50", "infinity"]` represents the headers " 50 items". Must be non-empty. Can only be set if all other fields are not set.',
-          ).optional(),
-          postalCodeGroupNames: z.array(z.string()).describe(
-            'A list of postal group names. The last value can be `"all other locations"`. Example: `["zone 1", "zone 2", "all other locations"]`. The referred postal code groups must match the delivery country of the service. Must be non-empty. Can only be set if all other fields are not set.',
-          ).optional(),
-          prices: z.array(z.object({
-            currency: z.string().describe("The currency of the price.")
-              .optional(),
-            value: z.string().describe("The price represented as a number.")
-              .optional(),
-          })).describe(
-            'A list of inclusive order price upper bounds. The last price\'s value can be `"infinity"`. For example `[{"value": "10", "currency": "USD"}, {"value": "500", "currency": "USD"}, {"value": "infinity", "currency": "USD"}]` represents the headers " $500". All prices within a service must have the same currency. Must be non-empty. Can only be set if all other fields are not set.',
-          ).optional(),
-          weights: z.array(z.object({
-            unit: z.string().describe(
-              'Required. The weight unit. Acceptable values are: - "`kg`" - "`lb`"',
-            ).optional(),
-            value: z.string().describe(
-              "Required. The weight represented as a number. The weight can have a maximum precision of four decimal places.",
-            ).optional(),
-          })).describe(
-            'A list of inclusive order weight upper bounds. The last weight\'s value can be `"infinity"`. For example `[{"value": "10", "unit": "kg"}, {"value": "50", "unit": "kg"}, {"value": "infinity", "unit": "kg"}]` represents the headers " 50kg". All weights within a service must have the same unit. Must be non-empty. Can only be set if all other fields are not set.',
-          ).optional(),
-        }).describe(
+        columnHeaders: z.unknown().describe(
           "A non-empty list of row or column headers for a table. Exactly one of `prices`, `weights`, `numItems`, `postalCodeGroupNames`, or `location` must be set.",
         ).optional(),
-        name: z.string().describe(
+        name: z.unknown().describe(
           "Name of the table. Required for subtables, ignored for the main table.",
         ).optional(),
-        rowHeaders: z.object({
-          locations: z.array(z.object({
-            locationIds: z.array(z.string()).describe(
-              "A non-empty list of location IDs. They must all be of the same location type (for example, state).",
-            ).optional(),
-          })).describe(
-            "A list of location ID sets. Must be non-empty. Can only be set if all other fields are not set.",
-          ).optional(),
-          numberOfItems: z.array(z.string()).describe(
-            'A list of inclusive number of items upper bounds. The last value can be `"infinity"`. For example `["10", "50", "infinity"]` represents the headers " 50 items". Must be non-empty. Can only be set if all other fields are not set.',
-          ).optional(),
-          postalCodeGroupNames: z.array(z.string()).describe(
-            'A list of postal group names. The last value can be `"all other locations"`. Example: `["zone 1", "zone 2", "all other locations"]`. The referred postal code groups must match the delivery country of the service. Must be non-empty. Can only be set if all other fields are not set.',
-          ).optional(),
-          prices: z.array(z.object({
-            currency: z.string().describe("The currency of the price.")
-              .optional(),
-            value: z.string().describe("The price represented as a number.")
-              .optional(),
-          })).describe(
-            'A list of inclusive order price upper bounds. The last price\'s value can be `"infinity"`. For example `[{"value": "10", "currency": "USD"}, {"value": "500", "currency": "USD"}, {"value": "infinity", "currency": "USD"}]` represents the headers " $500". All prices within a service must have the same currency. Must be non-empty. Can only be set if all other fields are not set.',
-          ).optional(),
-          weights: z.array(z.object({
-            unit: z.string().describe(
-              'Required. The weight unit. Acceptable values are: - "`kg`" - "`lb`"',
-            ).optional(),
-            value: z.string().describe(
-              "Required. The weight represented as a number. The weight can have a maximum precision of four decimal places.",
-            ).optional(),
-          })).describe(
-            'A list of inclusive order weight upper bounds. The last weight\'s value can be `"infinity"`. For example `[{"value": "10", "unit": "kg"}, {"value": "50", "unit": "kg"}, {"value": "infinity", "unit": "kg"}]` represents the headers " 50kg". All weights within a service must have the same unit. Must be non-empty. Can only be set if all other fields are not set.',
-          ).optional(),
-        }).describe(
+        rowHeaders: z.unknown().describe(
           "A non-empty list of row or column headers for a table. Exactly one of `prices`, `weights`, `numItems`, `postalCodeGroupNames`, or `location` must be set.",
         ).optional(),
-        rows: z.array(z.object({
-          cells: z.array(z.object({
-            carrierRateName: z.string().describe(
-              "The name of a carrier rate referring to a carrier rate defined in the same rate group. Can only be set if all other fields are not set.",
-            ).optional(),
-            flatRate: z.object({
-              currency: z.string().describe("The currency of the price.")
-                .optional(),
-              value: z.string().describe("The price represented as a number.")
-                .optional(),
-            }).optional(),
-            noShipping: z.boolean().describe(
-              "If true, then the product can't ship. Must be true when set, can only be set if all other fields are not set.",
-            ).optional(),
-            pricePercentage: z.string().describe(
-              'A percentage of the price represented as a number in decimal notation (for example, `"5.4"`). Can only be set if all other fields are not set.',
-            ).optional(),
-            subtableName: z.string().describe(
-              "The name of a subtable. Can only be set in table cells (not for single values), and only if all other fields are not set.",
-            ).optional(),
-          })).describe(
-            "The list of cells that constitute the row. Must have the same length as `columnHeaders` for two-dimensional tables, a length of 1 for one-dimensional tables. Required.",
-          ).optional(),
-        })).describe(
+        rows: z.unknown().describe(
           "The list of rows that constitute the table. Must have the same length as `rowHeaders`. Required.",
         ).optional(),
       }).optional(),
@@ -351,128 +228,23 @@ const GlobalArgsSchema = z.object({
         "Name of the rate group. Optional. If set has to be unique within shipping service.",
       ).optional(),
       singleValue: z.object({
-        carrierRateName: z.string().describe(
+        carrierRateName: z.unknown().describe(
           "The name of a carrier rate referring to a carrier rate defined in the same rate group. Can only be set if all other fields are not set.",
         ).optional(),
-        flatRate: z.object({
-          currency: z.string().describe("The currency of the price.")
-            .optional(),
-          value: z.string().describe("The price represented as a number.")
-            .optional(),
-        }).optional(),
-        noShipping: z.boolean().describe(
+        flatRate: z.unknown().optional(),
+        noShipping: z.unknown().describe(
           "If true, then the product can't ship. Must be true when set, can only be set if all other fields are not set.",
         ).optional(),
-        pricePercentage: z.string().describe(
+        pricePercentage: z.unknown().describe(
           'A percentage of the price represented as a number in decimal notation (for example, `"5.4"`). Can only be set if all other fields are not set.',
         ).optional(),
-        subtableName: z.string().describe(
+        subtableName: z.unknown().describe(
           "The name of a subtable. Can only be set in table cells (not for single values), and only if all other fields are not set.",
         ).optional(),
       }).describe(
         "The single value of a rate group or the value of a rate group table's cell. Exactly one of `noShipping`, `flatRate`, `pricePercentage`, `carrierRateName`, `subtableName` must be set.",
       ).optional(),
-      subtables: z.array(z.object({
-        columnHeaders: z.object({
-          locations: z.array(z.object({
-            locationIds: z.array(z.string()).describe(
-              "A non-empty list of location IDs. They must all be of the same location type (for example, state).",
-            ).optional(),
-          })).describe(
-            "A list of location ID sets. Must be non-empty. Can only be set if all other fields are not set.",
-          ).optional(),
-          numberOfItems: z.array(z.string()).describe(
-            'A list of inclusive number of items upper bounds. The last value can be `"infinity"`. For example `["10", "50", "infinity"]` represents the headers " 50 items". Must be non-empty. Can only be set if all other fields are not set.',
-          ).optional(),
-          postalCodeGroupNames: z.array(z.string()).describe(
-            'A list of postal group names. The last value can be `"all other locations"`. Example: `["zone 1", "zone 2", "all other locations"]`. The referred postal code groups must match the delivery country of the service. Must be non-empty. Can only be set if all other fields are not set.',
-          ).optional(),
-          prices: z.array(z.object({
-            currency: z.string().describe("The currency of the price.")
-              .optional(),
-            value: z.string().describe("The price represented as a number.")
-              .optional(),
-          })).describe(
-            'A list of inclusive order price upper bounds. The last price\'s value can be `"infinity"`. For example `[{"value": "10", "currency": "USD"}, {"value": "500", "currency": "USD"}, {"value": "infinity", "currency": "USD"}]` represents the headers " $500". All prices within a service must have the same currency. Must be non-empty. Can only be set if all other fields are not set.',
-          ).optional(),
-          weights: z.array(z.object({
-            unit: z.string().describe(
-              'Required. The weight unit. Acceptable values are: - "`kg`" - "`lb`"',
-            ).optional(),
-            value: z.string().describe(
-              "Required. The weight represented as a number. The weight can have a maximum precision of four decimal places.",
-            ).optional(),
-          })).describe(
-            'A list of inclusive order weight upper bounds. The last weight\'s value can be `"infinity"`. For example `[{"value": "10", "unit": "kg"}, {"value": "50", "unit": "kg"}, {"value": "infinity", "unit": "kg"}]` represents the headers " 50kg". All weights within a service must have the same unit. Must be non-empty. Can only be set if all other fields are not set.',
-          ).optional(),
-        }).describe(
-          "A non-empty list of row or column headers for a table. Exactly one of `prices`, `weights`, `numItems`, `postalCodeGroupNames`, or `location` must be set.",
-        ).optional(),
-        name: z.string().describe(
-          "Name of the table. Required for subtables, ignored for the main table.",
-        ).optional(),
-        rowHeaders: z.object({
-          locations: z.array(z.object({
-            locationIds: z.array(z.string()).describe(
-              "A non-empty list of location IDs. They must all be of the same location type (for example, state).",
-            ).optional(),
-          })).describe(
-            "A list of location ID sets. Must be non-empty. Can only be set if all other fields are not set.",
-          ).optional(),
-          numberOfItems: z.array(z.string()).describe(
-            'A list of inclusive number of items upper bounds. The last value can be `"infinity"`. For example `["10", "50", "infinity"]` represents the headers " 50 items". Must be non-empty. Can only be set if all other fields are not set.',
-          ).optional(),
-          postalCodeGroupNames: z.array(z.string()).describe(
-            'A list of postal group names. The last value can be `"all other locations"`. Example: `["zone 1", "zone 2", "all other locations"]`. The referred postal code groups must match the delivery country of the service. Must be non-empty. Can only be set if all other fields are not set.',
-          ).optional(),
-          prices: z.array(z.object({
-            currency: z.string().describe("The currency of the price.")
-              .optional(),
-            value: z.string().describe("The price represented as a number.")
-              .optional(),
-          })).describe(
-            'A list of inclusive order price upper bounds. The last price\'s value can be `"infinity"`. For example `[{"value": "10", "currency": "USD"}, {"value": "500", "currency": "USD"}, {"value": "infinity", "currency": "USD"}]` represents the headers " $500". All prices within a service must have the same currency. Must be non-empty. Can only be set if all other fields are not set.',
-          ).optional(),
-          weights: z.array(z.object({
-            unit: z.string().describe(
-              'Required. The weight unit. Acceptable values are: - "`kg`" - "`lb`"',
-            ).optional(),
-            value: z.string().describe(
-              "Required. The weight represented as a number. The weight can have a maximum precision of four decimal places.",
-            ).optional(),
-          })).describe(
-            'A list of inclusive order weight upper bounds. The last weight\'s value can be `"infinity"`. For example `[{"value": "10", "unit": "kg"}, {"value": "50", "unit": "kg"}, {"value": "infinity", "unit": "kg"}]` represents the headers " 50kg". All weights within a service must have the same unit. Must be non-empty. Can only be set if all other fields are not set.',
-          ).optional(),
-        }).describe(
-          "A non-empty list of row or column headers for a table. Exactly one of `prices`, `weights`, `numItems`, `postalCodeGroupNames`, or `location` must be set.",
-        ).optional(),
-        rows: z.array(z.object({
-          cells: z.array(z.object({
-            carrierRateName: z.string().describe(
-              "The name of a carrier rate referring to a carrier rate defined in the same rate group. Can only be set if all other fields are not set.",
-            ).optional(),
-            flatRate: z.object({
-              currency: z.string().describe("The currency of the price.")
-                .optional(),
-              value: z.string().describe("The price represented as a number.")
-                .optional(),
-            }).optional(),
-            noShipping: z.boolean().describe(
-              "If true, then the product can't ship. Must be true when set, can only be set if all other fields are not set.",
-            ).optional(),
-            pricePercentage: z.string().describe(
-              'A percentage of the price represented as a number in decimal notation (for example, `"5.4"`). Can only be set if all other fields are not set.',
-            ).optional(),
-            subtableName: z.string().describe(
-              "The name of a subtable. Can only be set in table cells (not for single values), and only if all other fields are not set.",
-            ).optional(),
-          })).describe(
-            "The list of cells that constitute the row. Must have the same length as `columnHeaders` for two-dimensional tables, a length of 1 for one-dimensional tables. Required.",
-          ).optional(),
-        })).describe(
-          "The list of rows that constitute the table. Must have the same length as `rowHeaders`. Required.",
-        ).optional(),
-      })).describe(
+      subtables: z.array(z.unknown()).describe(
         "A list of subtables referred to by `mainTable`. Can only be set if `mainTable` is set.",
       ).optional(),
     })).describe(
@@ -484,10 +256,10 @@ const GlobalArgsSchema = z.object({
     storeConfig: z.object({
       cutoffConfig: z.object({
         localCutoffTime: z.object({
-          hour: z.string().describe(
+          hour: z.unknown().describe(
             "Hour local delivery orders must be placed by to process the same day.",
           ).optional(),
-          minute: z.string().describe(
+          minute: z.unknown().describe(
             "Minute local delivery orders must be placed by to process the same day.",
           ).optional(),
         }).describe(
@@ -582,41 +354,36 @@ const StateSchema = z.object({
         timezone: z.string(),
       }),
       handlingBusinessDayConfig: z.object({
-        businessDays: z.array(z.string()),
+        businessDays: z.array(z.unknown()),
       }),
       holidayCutoffs: z.array(z.object({
-        deadlineDate: z.string(),
-        deadlineHour: z.number(),
-        deadlineTimezone: z.string(),
-        holidayId: z.string(),
-        visibleFromDate: z.string(),
+        deadlineDate: z.unknown(),
+        deadlineHour: z.unknown(),
+        deadlineTimezone: z.unknown(),
+        holidayId: z.unknown(),
+        visibleFromDate: z.unknown(),
       })),
       maxHandlingTimeInDays: z.number(),
       maxTransitTimeInDays: z.number(),
       minHandlingTimeInDays: z.number(),
       minTransitTimeInDays: z.number(),
       transitBusinessDayConfig: z.object({
-        businessDays: z.array(z.string()),
+        businessDays: z.array(z.unknown()),
       }),
       transitTimeTable: z.object({
-        postalCodeGroupNames: z.array(z.string()),
-        rows: z.array(z.object({
-          values: z.array(z.object({
-            maxTransitTimeInDays: z.number(),
-            minTransitTimeInDays: z.number(),
-          })),
-        })),
-        transitTimeLabels: z.array(z.string()),
+        postalCodeGroupNames: z.array(z.unknown()),
+        rows: z.array(z.unknown()),
+        transitTimeLabels: z.array(z.unknown()),
       }),
       warehouseBasedDeliveryTimes: z.array(z.object({
-        carrier: z.string(),
-        carrierService: z.string(),
-        originAdministrativeArea: z.string(),
-        originCity: z.string(),
-        originCountry: z.string(),
-        originPostalCode: z.string(),
-        originStreetAddress: z.string(),
-        warehouseName: z.string(),
+        carrier: z.unknown(),
+        carrierService: z.unknown(),
+        originAdministrativeArea: z.unknown(),
+        originCity: z.unknown(),
+        originCountry: z.unknown(),
+        originPostalCode: z.unknown(),
+        originStreetAddress: z.unknown(),
+        warehouseName: z.unknown(),
       })),
     }),
     eligibility: z.string(),
@@ -626,11 +393,8 @@ const StateSchema = z.object({
     }),
     minimumOrderValueTable: z.object({
       storeCodeSetWithMovs: z.array(z.object({
-        storeCodes: z.array(z.string()),
-        value: z.object({
-          currency: z.string(),
-          value: z.string(),
-        }),
+        storeCodes: z.unknown(),
+        value: z.unknown(),
       })),
     }),
     name: z.string(),
@@ -639,126 +403,30 @@ const StateSchema = z.object({
       serviceName: z.string(),
     }),
     rateGroups: z.array(z.object({
-      applicableShippingLabels: z.array(z.string()),
-      carrierRates: z.array(z.object({
-        carrierName: z.string(),
-        carrierService: z.string(),
-        flatAdjustment: z.object({
-          currency: z.string(),
-          value: z.string(),
-        }),
-        name: z.string(),
-        originPostalCode: z.string(),
-        percentageAdjustment: z.string(),
-      })),
+      applicableShippingLabels: z.array(z.unknown()),
+      carrierRates: z.array(z.unknown()),
       mainTable: z.object({
-        columnHeaders: z.object({
-          locations: z.array(z.object({
-            locationIds: z.array(z.string()),
-          })),
-          numberOfItems: z.array(z.string()),
-          postalCodeGroupNames: z.array(z.string()),
-          prices: z.array(z.object({
-            currency: z.string(),
-            value: z.string(),
-          })),
-          weights: z.array(z.object({
-            unit: z.string(),
-            value: z.string(),
-          })),
-        }),
-        name: z.string(),
-        rowHeaders: z.object({
-          locations: z.array(z.object({
-            locationIds: z.array(z.string()),
-          })),
-          numberOfItems: z.array(z.string()),
-          postalCodeGroupNames: z.array(z.string()),
-          prices: z.array(z.object({
-            currency: z.string(),
-            value: z.string(),
-          })),
-          weights: z.array(z.object({
-            unit: z.string(),
-            value: z.string(),
-          })),
-        }),
-        rows: z.array(z.object({
-          cells: z.array(z.object({
-            carrierRateName: z.string(),
-            flatRate: z.object({
-              currency: z.string(),
-              value: z.string(),
-            }),
-            noShipping: z.boolean(),
-            pricePercentage: z.string(),
-            subtableName: z.string(),
-          })),
-        })),
+        columnHeaders: z.unknown(),
+        name: z.unknown(),
+        rowHeaders: z.unknown(),
+        rows: z.unknown(),
       }),
       name: z.string(),
       singleValue: z.object({
-        carrierRateName: z.string(),
-        flatRate: z.object({
-          currency: z.string(),
-          value: z.string(),
-        }),
-        noShipping: z.boolean(),
-        pricePercentage: z.string(),
-        subtableName: z.string(),
+        carrierRateName: z.unknown(),
+        flatRate: z.unknown(),
+        noShipping: z.unknown(),
+        pricePercentage: z.unknown(),
+        subtableName: z.unknown(),
       }),
-      subtables: z.array(z.object({
-        columnHeaders: z.object({
-          locations: z.array(z.object({
-            locationIds: z.array(z.string()),
-          })),
-          numberOfItems: z.array(z.string()),
-          postalCodeGroupNames: z.array(z.string()),
-          prices: z.array(z.object({
-            currency: z.string(),
-            value: z.string(),
-          })),
-          weights: z.array(z.object({
-            unit: z.string(),
-            value: z.string(),
-          })),
-        }),
-        name: z.string(),
-        rowHeaders: z.object({
-          locations: z.array(z.object({
-            locationIds: z.array(z.string()),
-          })),
-          numberOfItems: z.array(z.string()),
-          postalCodeGroupNames: z.array(z.string()),
-          prices: z.array(z.object({
-            currency: z.string(),
-            value: z.string(),
-          })),
-          weights: z.array(z.object({
-            unit: z.string(),
-            value: z.string(),
-          })),
-        }),
-        rows: z.array(z.object({
-          cells: z.array(z.object({
-            carrierRateName: z.string(),
-            flatRate: z.object({
-              currency: z.string(),
-              value: z.string(),
-            }),
-            noShipping: z.boolean(),
-            pricePercentage: z.string(),
-            subtableName: z.string(),
-          })),
-        })),
-      })),
+      subtables: z.array(z.unknown()),
     })),
     shipmentType: z.string(),
     storeConfig: z.object({
       cutoffConfig: z.object({
         localCutoffTime: z.object({
-          hour: z.string(),
-          minute: z.string(),
+          hour: z.unknown(),
+          minute: z.unknown(),
         }),
         noDeliveryPostCutoff: z.boolean(),
         storeCloseOffsetHours: z.string(),
@@ -839,24 +507,24 @@ const InputsSchema = z.object({
         ).optional(),
       }).optional(),
       handlingBusinessDayConfig: z.object({
-        businessDays: z.array(z.string()).describe(
+        businessDays: z.array(z.unknown()).describe(
           "Regular business days, such as '\"monday\"'. May not be empty.",
         ).optional(),
       }).optional(),
       holidayCutoffs: z.array(z.object({
-        deadlineDate: z.string().describe(
+        deadlineDate: z.unknown().describe(
           'Date of the order deadline, in ISO 8601 format. For example, "2016-11-29" for 29th November 2016. Required.',
         ).optional(),
-        deadlineHour: z.number().int().describe(
+        deadlineHour: z.unknown().describe(
           "Hour of the day on the deadline date until which the order has to be placed to qualify for the delivery guarantee. Possible values are: 0 (midnight), 1,..., 12 (noon), 13,..., 23. Required.",
         ).optional(),
-        deadlineTimezone: z.string().describe(
+        deadlineTimezone: z.unknown().describe(
           'Timezone identifier for the deadline hour (for example, "Europe/Zurich"). List of identifiers. Required.',
         ).optional(),
-        holidayId: z.string().describe(
+        holidayId: z.unknown().describe(
           "Unique identifier for the holiday. Required.",
         ).optional(),
-        visibleFromDate: z.string().describe(
+        visibleFromDate: z.unknown().describe(
           'Date on which the deadline will become visible to consumers in ISO 8601 format. For example, "2016-10-31" for 31st October 2016. Required.',
         ).optional(),
       })).describe(
@@ -875,47 +543,38 @@ const InputsSchema = z.object({
         "Minimum number of business days that are spent in transit. 0 means same day delivery, 1 means next day delivery. Either `{min,max}TransitTimeInDays` or `transitTimeTable` must be set, but not both.",
       ).optional(),
       transitBusinessDayConfig: z.object({
-        businessDays: z.array(z.string()).describe(
+        businessDays: z.array(z.unknown()).describe(
           "Regular business days, such as '\"monday\"'. May not be empty.",
         ).optional(),
       }).optional(),
       transitTimeTable: z.object({
-        postalCodeGroupNames: z.array(z.string()).describe(
+        postalCodeGroupNames: z.array(z.unknown()).describe(
           'A list of postal group names. The last value can be `"all other locations"`. Example: `["zone 1", "zone 2", "all other locations"]`. The referred postal code groups must match the delivery country of the service.',
         ).optional(),
-        rows: z.array(z.object({
-          values: z.array(z.object({
-            maxTransitTimeInDays: z.number().int().describe(
-              "Must be greater than or equal to `minTransitTimeInDays`.",
-            ).optional(),
-            minTransitTimeInDays: z.number().int().describe(
-              "Transit time range (min-max) in business days. 0 means same day delivery, 1 means next day delivery.",
-            ).optional(),
-          })).optional(),
-        })).optional(),
-        transitTimeLabels: z.array(z.string()).describe(
+        rows: z.array(z.unknown()).optional(),
+        transitTimeLabels: z.array(z.unknown()).describe(
           'A list of transit time labels. The last value can be `"all other labels"`. Example: `["food", "electronics", "all other labels"]`.',
         ).optional(),
       }).optional(),
       warehouseBasedDeliveryTimes: z.array(z.object({
-        carrier: z.string().describe(
+        carrier: z.unknown().describe(
           'Required. Carrier, such as `"UPS"` or `"Fedex"`. The list of supported carriers can be retrieved through the `listSupportedCarriers` method.',
         ).optional(),
-        carrierService: z.string().describe(
+        carrierService: z.unknown().describe(
           'Required. Carrier service, such as `"ground"` or `"2 days"`. The list of supported services for a carrier can be retrieved through the `listSupportedCarriers` method. The name of the service must be in the eddSupportedServices list.',
         ).optional(),
-        originAdministrativeArea: z.string().describe(
+        originAdministrativeArea: z.unknown().describe(
           "Shipping origin's state.",
         ).optional(),
-        originCity: z.string().describe("Shipping origin's city.").optional(),
-        originCountry: z.string().describe(
+        originCity: z.unknown().describe("Shipping origin's city.").optional(),
+        originCountry: z.unknown().describe(
           "Shipping origin's country represented as a [CLDR territory code](https://github.com/unicode-org/cldr/blob/latest/common/main/en.xml).",
         ).optional(),
-        originPostalCode: z.string().describe("Shipping origin.").optional(),
-        originStreetAddress: z.string().describe(
+        originPostalCode: z.unknown().describe("Shipping origin.").optional(),
+        originStreetAddress: z.unknown().describe(
           "Shipping origin's street address.",
         ).optional(),
-        warehouseName: z.string().describe(
+        warehouseName: z.unknown().describe(
           "The name of the warehouse. Warehouse name need to be matched with name. If warehouseName is set, the below fields will be ignored. The warehouse info will be read from warehouse.",
         ).optional(),
       })).describe(
@@ -932,15 +591,10 @@ const InputsSchema = z.object({
     }).optional(),
     minimumOrderValueTable: z.object({
       storeCodeSetWithMovs: z.array(z.object({
-        storeCodes: z.array(z.string()).describe(
+        storeCodes: z.unknown().describe(
           "A list of unique store codes or empty for the catch all.",
         ).optional(),
-        value: z.object({
-          currency: z.string().describe("The currency of the price.")
-            .optional(),
-          value: z.string().describe("The price represented as a number.")
-            .optional(),
-        }).optional(),
+        value: z.unknown().optional(),
       })).optional(),
     }).optional(),
     name: z.string().describe(
@@ -955,132 +609,23 @@ const InputsSchema = z.object({
       ).optional(),
     }).optional(),
     rateGroups: z.array(z.object({
-      applicableShippingLabels: z.array(z.string()).describe(
+      applicableShippingLabels: z.array(z.unknown()).describe(
         "A list of shipping labels defining the products to which this rate group applies to. This is a disjunction: only one of the labels has to match for the rate group to apply. May only be empty for the last rate group of a service. Required.",
       ).optional(),
-      carrierRates: z.array(z.object({
-        carrierName: z.string().describe(
-          'Carrier service, such as `"UPS"` or `"Fedex"`. The list of supported carriers can be retrieved through the `getSupportedCarriers` method. Required.',
-        ).optional(),
-        carrierService: z.string().describe(
-          'Carrier service, such as `"ground"` or `"2 days"`. The list of supported services for a carrier can be retrieved through the `getSupportedCarriers` method. Required.',
-        ).optional(),
-        flatAdjustment: z.object({
-          currency: z.string().describe("The currency of the price.")
-            .optional(),
-          value: z.string().describe("The price represented as a number.")
-            .optional(),
-        }).optional(),
-        name: z.string().describe(
-          "Name of the carrier rate. Must be unique per rate group. Required.",
-        ).optional(),
-        originPostalCode: z.string().describe(
-          "Shipping origin for this carrier rate. Required.",
-        ).optional(),
-        percentageAdjustment: z.string().describe(
-          'Multiplicative shipping rate modifier as a number in decimal notation. Can be negative. For example `"5.4"` increases the rate by 5.4%, `"-3"` decreases the rate by 3%. Optional.',
-        ).optional(),
-      })).describe(
+      carrierRates: z.array(z.unknown()).describe(
         "A list of carrier rates that can be referred to by `mainTable` or `singleValue`.",
       ).optional(),
       mainTable: z.object({
-        columnHeaders: z.object({
-          locations: z.array(z.object({
-            locationIds: z.array(z.string()).describe(
-              "A non-empty list of location IDs. They must all be of the same location type (for example, state).",
-            ).optional(),
-          })).describe(
-            "A list of location ID sets. Must be non-empty. Can only be set if all other fields are not set.",
-          ).optional(),
-          numberOfItems: z.array(z.string()).describe(
-            'A list of inclusive number of items upper bounds. The last value can be `"infinity"`. For example `["10", "50", "infinity"]` represents the headers " 50 items". Must be non-empty. Can only be set if all other fields are not set.',
-          ).optional(),
-          postalCodeGroupNames: z.array(z.string()).describe(
-            'A list of postal group names. The last value can be `"all other locations"`. Example: `["zone 1", "zone 2", "all other locations"]`. The referred postal code groups must match the delivery country of the service. Must be non-empty. Can only be set if all other fields are not set.',
-          ).optional(),
-          prices: z.array(z.object({
-            currency: z.string().describe("The currency of the price.")
-              .optional(),
-            value: z.string().describe("The price represented as a number.")
-              .optional(),
-          })).describe(
-            'A list of inclusive order price upper bounds. The last price\'s value can be `"infinity"`. For example `[{"value": "10", "currency": "USD"}, {"value": "500", "currency": "USD"}, {"value": "infinity", "currency": "USD"}]` represents the headers " $500". All prices within a service must have the same currency. Must be non-empty. Can only be set if all other fields are not set.',
-          ).optional(),
-          weights: z.array(z.object({
-            unit: z.string().describe(
-              'Required. The weight unit. Acceptable values are: - "`kg`" - "`lb`"',
-            ).optional(),
-            value: z.string().describe(
-              "Required. The weight represented as a number. The weight can have a maximum precision of four decimal places.",
-            ).optional(),
-          })).describe(
-            'A list of inclusive order weight upper bounds. The last weight\'s value can be `"infinity"`. For example `[{"value": "10", "unit": "kg"}, {"value": "50", "unit": "kg"}, {"value": "infinity", "unit": "kg"}]` represents the headers " 50kg". All weights within a service must have the same unit. Must be non-empty. Can only be set if all other fields are not set.',
-          ).optional(),
-        }).describe(
+        columnHeaders: z.unknown().describe(
           "A non-empty list of row or column headers for a table. Exactly one of `prices`, `weights`, `numItems`, `postalCodeGroupNames`, or `location` must be set.",
         ).optional(),
-        name: z.string().describe(
+        name: z.unknown().describe(
           "Name of the table. Required for subtables, ignored for the main table.",
         ).optional(),
-        rowHeaders: z.object({
-          locations: z.array(z.object({
-            locationIds: z.array(z.string()).describe(
-              "A non-empty list of location IDs. They must all be of the same location type (for example, state).",
-            ).optional(),
-          })).describe(
-            "A list of location ID sets. Must be non-empty. Can only be set if all other fields are not set.",
-          ).optional(),
-          numberOfItems: z.array(z.string()).describe(
-            'A list of inclusive number of items upper bounds. The last value can be `"infinity"`. For example `["10", "50", "infinity"]` represents the headers " 50 items". Must be non-empty. Can only be set if all other fields are not set.',
-          ).optional(),
-          postalCodeGroupNames: z.array(z.string()).describe(
-            'A list of postal group names. The last value can be `"all other locations"`. Example: `["zone 1", "zone 2", "all other locations"]`. The referred postal code groups must match the delivery country of the service. Must be non-empty. Can only be set if all other fields are not set.',
-          ).optional(),
-          prices: z.array(z.object({
-            currency: z.string().describe("The currency of the price.")
-              .optional(),
-            value: z.string().describe("The price represented as a number.")
-              .optional(),
-          })).describe(
-            'A list of inclusive order price upper bounds. The last price\'s value can be `"infinity"`. For example `[{"value": "10", "currency": "USD"}, {"value": "500", "currency": "USD"}, {"value": "infinity", "currency": "USD"}]` represents the headers " $500". All prices within a service must have the same currency. Must be non-empty. Can only be set if all other fields are not set.',
-          ).optional(),
-          weights: z.array(z.object({
-            unit: z.string().describe(
-              'Required. The weight unit. Acceptable values are: - "`kg`" - "`lb`"',
-            ).optional(),
-            value: z.string().describe(
-              "Required. The weight represented as a number. The weight can have a maximum precision of four decimal places.",
-            ).optional(),
-          })).describe(
-            'A list of inclusive order weight upper bounds. The last weight\'s value can be `"infinity"`. For example `[{"value": "10", "unit": "kg"}, {"value": "50", "unit": "kg"}, {"value": "infinity", "unit": "kg"}]` represents the headers " 50kg". All weights within a service must have the same unit. Must be non-empty. Can only be set if all other fields are not set.',
-          ).optional(),
-        }).describe(
+        rowHeaders: z.unknown().describe(
           "A non-empty list of row or column headers for a table. Exactly one of `prices`, `weights`, `numItems`, `postalCodeGroupNames`, or `location` must be set.",
         ).optional(),
-        rows: z.array(z.object({
-          cells: z.array(z.object({
-            carrierRateName: z.string().describe(
-              "The name of a carrier rate referring to a carrier rate defined in the same rate group. Can only be set if all other fields are not set.",
-            ).optional(),
-            flatRate: z.object({
-              currency: z.string().describe("The currency of the price.")
-                .optional(),
-              value: z.string().describe("The price represented as a number.")
-                .optional(),
-            }).optional(),
-            noShipping: z.boolean().describe(
-              "If true, then the product can't ship. Must be true when set, can only be set if all other fields are not set.",
-            ).optional(),
-            pricePercentage: z.string().describe(
-              'A percentage of the price represented as a number in decimal notation (for example, `"5.4"`). Can only be set if all other fields are not set.',
-            ).optional(),
-            subtableName: z.string().describe(
-              "The name of a subtable. Can only be set in table cells (not for single values), and only if all other fields are not set.",
-            ).optional(),
-          })).describe(
-            "The list of cells that constitute the row. Must have the same length as `columnHeaders` for two-dimensional tables, a length of 1 for one-dimensional tables. Required.",
-          ).optional(),
-        })).describe(
+        rows: z.unknown().describe(
           "The list of rows that constitute the table. Must have the same length as `rowHeaders`. Required.",
         ).optional(),
       }).optional(),
@@ -1088,128 +633,23 @@ const InputsSchema = z.object({
         "Name of the rate group. Optional. If set has to be unique within shipping service.",
       ).optional(),
       singleValue: z.object({
-        carrierRateName: z.string().describe(
+        carrierRateName: z.unknown().describe(
           "The name of a carrier rate referring to a carrier rate defined in the same rate group. Can only be set if all other fields are not set.",
         ).optional(),
-        flatRate: z.object({
-          currency: z.string().describe("The currency of the price.")
-            .optional(),
-          value: z.string().describe("The price represented as a number.")
-            .optional(),
-        }).optional(),
-        noShipping: z.boolean().describe(
+        flatRate: z.unknown().optional(),
+        noShipping: z.unknown().describe(
           "If true, then the product can't ship. Must be true when set, can only be set if all other fields are not set.",
         ).optional(),
-        pricePercentage: z.string().describe(
+        pricePercentage: z.unknown().describe(
           'A percentage of the price represented as a number in decimal notation (for example, `"5.4"`). Can only be set if all other fields are not set.',
         ).optional(),
-        subtableName: z.string().describe(
+        subtableName: z.unknown().describe(
           "The name of a subtable. Can only be set in table cells (not for single values), and only if all other fields are not set.",
         ).optional(),
       }).describe(
         "The single value of a rate group or the value of a rate group table's cell. Exactly one of `noShipping`, `flatRate`, `pricePercentage`, `carrierRateName`, `subtableName` must be set.",
       ).optional(),
-      subtables: z.array(z.object({
-        columnHeaders: z.object({
-          locations: z.array(z.object({
-            locationIds: z.array(z.string()).describe(
-              "A non-empty list of location IDs. They must all be of the same location type (for example, state).",
-            ).optional(),
-          })).describe(
-            "A list of location ID sets. Must be non-empty. Can only be set if all other fields are not set.",
-          ).optional(),
-          numberOfItems: z.array(z.string()).describe(
-            'A list of inclusive number of items upper bounds. The last value can be `"infinity"`. For example `["10", "50", "infinity"]` represents the headers " 50 items". Must be non-empty. Can only be set if all other fields are not set.',
-          ).optional(),
-          postalCodeGroupNames: z.array(z.string()).describe(
-            'A list of postal group names. The last value can be `"all other locations"`. Example: `["zone 1", "zone 2", "all other locations"]`. The referred postal code groups must match the delivery country of the service. Must be non-empty. Can only be set if all other fields are not set.',
-          ).optional(),
-          prices: z.array(z.object({
-            currency: z.string().describe("The currency of the price.")
-              .optional(),
-            value: z.string().describe("The price represented as a number.")
-              .optional(),
-          })).describe(
-            'A list of inclusive order price upper bounds. The last price\'s value can be `"infinity"`. For example `[{"value": "10", "currency": "USD"}, {"value": "500", "currency": "USD"}, {"value": "infinity", "currency": "USD"}]` represents the headers " $500". All prices within a service must have the same currency. Must be non-empty. Can only be set if all other fields are not set.',
-          ).optional(),
-          weights: z.array(z.object({
-            unit: z.string().describe(
-              'Required. The weight unit. Acceptable values are: - "`kg`" - "`lb`"',
-            ).optional(),
-            value: z.string().describe(
-              "Required. The weight represented as a number. The weight can have a maximum precision of four decimal places.",
-            ).optional(),
-          })).describe(
-            'A list of inclusive order weight upper bounds. The last weight\'s value can be `"infinity"`. For example `[{"value": "10", "unit": "kg"}, {"value": "50", "unit": "kg"}, {"value": "infinity", "unit": "kg"}]` represents the headers " 50kg". All weights within a service must have the same unit. Must be non-empty. Can only be set if all other fields are not set.',
-          ).optional(),
-        }).describe(
-          "A non-empty list of row or column headers for a table. Exactly one of `prices`, `weights`, `numItems`, `postalCodeGroupNames`, or `location` must be set.",
-        ).optional(),
-        name: z.string().describe(
-          "Name of the table. Required for subtables, ignored for the main table.",
-        ).optional(),
-        rowHeaders: z.object({
-          locations: z.array(z.object({
-            locationIds: z.array(z.string()).describe(
-              "A non-empty list of location IDs. They must all be of the same location type (for example, state).",
-            ).optional(),
-          })).describe(
-            "A list of location ID sets. Must be non-empty. Can only be set if all other fields are not set.",
-          ).optional(),
-          numberOfItems: z.array(z.string()).describe(
-            'A list of inclusive number of items upper bounds. The last value can be `"infinity"`. For example `["10", "50", "infinity"]` represents the headers " 50 items". Must be non-empty. Can only be set if all other fields are not set.',
-          ).optional(),
-          postalCodeGroupNames: z.array(z.string()).describe(
-            'A list of postal group names. The last value can be `"all other locations"`. Example: `["zone 1", "zone 2", "all other locations"]`. The referred postal code groups must match the delivery country of the service. Must be non-empty. Can only be set if all other fields are not set.',
-          ).optional(),
-          prices: z.array(z.object({
-            currency: z.string().describe("The currency of the price.")
-              .optional(),
-            value: z.string().describe("The price represented as a number.")
-              .optional(),
-          })).describe(
-            'A list of inclusive order price upper bounds. The last price\'s value can be `"infinity"`. For example `[{"value": "10", "currency": "USD"}, {"value": "500", "currency": "USD"}, {"value": "infinity", "currency": "USD"}]` represents the headers " $500". All prices within a service must have the same currency. Must be non-empty. Can only be set if all other fields are not set.',
-          ).optional(),
-          weights: z.array(z.object({
-            unit: z.string().describe(
-              'Required. The weight unit. Acceptable values are: - "`kg`" - "`lb`"',
-            ).optional(),
-            value: z.string().describe(
-              "Required. The weight represented as a number. The weight can have a maximum precision of four decimal places.",
-            ).optional(),
-          })).describe(
-            'A list of inclusive order weight upper bounds. The last weight\'s value can be `"infinity"`. For example `[{"value": "10", "unit": "kg"}, {"value": "50", "unit": "kg"}, {"value": "infinity", "unit": "kg"}]` represents the headers " 50kg". All weights within a service must have the same unit. Must be non-empty. Can only be set if all other fields are not set.',
-          ).optional(),
-        }).describe(
-          "A non-empty list of row or column headers for a table. Exactly one of `prices`, `weights`, `numItems`, `postalCodeGroupNames`, or `location` must be set.",
-        ).optional(),
-        rows: z.array(z.object({
-          cells: z.array(z.object({
-            carrierRateName: z.string().describe(
-              "The name of a carrier rate referring to a carrier rate defined in the same rate group. Can only be set if all other fields are not set.",
-            ).optional(),
-            flatRate: z.object({
-              currency: z.string().describe("The currency of the price.")
-                .optional(),
-              value: z.string().describe("The price represented as a number.")
-                .optional(),
-            }).optional(),
-            noShipping: z.boolean().describe(
-              "If true, then the product can't ship. Must be true when set, can only be set if all other fields are not set.",
-            ).optional(),
-            pricePercentage: z.string().describe(
-              'A percentage of the price represented as a number in decimal notation (for example, `"5.4"`). Can only be set if all other fields are not set.',
-            ).optional(),
-            subtableName: z.string().describe(
-              "The name of a subtable. Can only be set in table cells (not for single values), and only if all other fields are not set.",
-            ).optional(),
-          })).describe(
-            "The list of cells that constitute the row. Must have the same length as `columnHeaders` for two-dimensional tables, a length of 1 for one-dimensional tables. Required.",
-          ).optional(),
-        })).describe(
-          "The list of rows that constitute the table. Must have the same length as `rowHeaders`. Required.",
-        ).optional(),
-      })).describe(
+      subtables: z.array(z.unknown()).describe(
         "A list of subtables referred to by `mainTable`. Can only be set if `mainTable` is set.",
       ).optional(),
     })).describe(
@@ -1221,10 +661,10 @@ const InputsSchema = z.object({
     storeConfig: z.object({
       cutoffConfig: z.object({
         localCutoffTime: z.object({
-          hour: z.string().describe(
+          hour: z.unknown().describe(
             "Hour local delivery orders must be placed by to process the same day.",
           ).optional(),
-          minute: z.string().describe(
+          minute: z.unknown().describe(
             "Minute local delivery orders must be placed by to process the same day.",
           ).optional(),
         }).describe(
@@ -1300,7 +740,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/content/shippingsettings",
-  version: "2026.04.03.3",
+  version: "2026.04.04.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -1324,6 +764,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.3",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.04.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

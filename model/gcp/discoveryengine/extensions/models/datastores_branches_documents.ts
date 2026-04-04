@@ -98,13 +98,13 @@ const GlobalArgsSchema = z.object({
       idpWide: z.boolean().describe("All users within the Identity Provider.")
         .optional(),
       principals: z.array(z.object({
-        externalEntityId: z.string().describe(
+        externalEntityId: z.unknown().describe(
           "For 3P application identities which are not present in the customer identity provider.",
         ).optional(),
-        groupId: z.string().describe(
+        groupId: z.unknown().describe(
           "Group identifier. For Google Workspace user account, group_id should be the google workspace group email. For non-google identity provider user account, group_id is the mapped group identifier configured during the workforcepool config.",
         ).optional(),
-        userId: z.string().describe(
+        userId: z.unknown().describe(
           "User identifier. For Google Workspace user account, user_id should be the google workspace user email. For non-google identity provider user account, user_id is the mapped user identifier configured during the workforcepool config.",
         ).optional(),
       })).describe("List of principals.").optional(),
@@ -129,7 +129,7 @@ const GlobalArgsSchema = z.object({
       code: z.number().int().describe(
         "The status code, which should be an enum value of google.rpc.Code.",
       ).optional(),
-      details: z.array(z.record(z.string(), z.string())).describe(
+      details: z.array(z.record(z.string(), z.unknown())).describe(
         "A list of messages that carry the error details. There is a common set of message types for APIs to use.",
       ).optional(),
       message: z.string().describe(
@@ -173,9 +173,9 @@ const StateSchema = z.object({
     readers: z.array(z.object({
       idpWide: z.boolean(),
       principals: z.array(z.object({
-        externalEntityId: z.string(),
-        groupId: z.string(),
-        userId: z.string(),
+        externalEntityId: z.unknown(),
+        groupId: z.unknown(),
+        userId: z.unknown(),
       })),
     })),
   }).optional(),
@@ -211,13 +211,13 @@ const InputsSchema = z.object({
       idpWide: z.boolean().describe("All users within the Identity Provider.")
         .optional(),
       principals: z.array(z.object({
-        externalEntityId: z.string().describe(
+        externalEntityId: z.unknown().describe(
           "For 3P application identities which are not present in the customer identity provider.",
         ).optional(),
-        groupId: z.string().describe(
+        groupId: z.unknown().describe(
           "Group identifier. For Google Workspace user account, group_id should be the google workspace group email. For non-google identity provider user account, group_id is the mapped group identifier configured during the workforcepool config.",
         ).optional(),
-        userId: z.string().describe(
+        userId: z.unknown().describe(
           "User identifier. For Google Workspace user account, user_id should be the google workspace user email. For non-google identity provider user account, user_id is the mapped user identifier configured during the workforcepool config.",
         ).optional(),
       })).describe("List of principals.").optional(),
@@ -242,7 +242,7 @@ const InputsSchema = z.object({
       code: z.number().int().describe(
         "The status code, which should be an enum value of google.rpc.Code.",
       ).optional(),
-      details: z.array(z.record(z.string(), z.string())).describe(
+      details: z.array(z.record(z.string(), z.unknown())).describe(
         "A list of messages that carry the error details. There is a common set of message types for APIs to use.",
       ).optional(),
       message: z.string().describe(
@@ -283,7 +283,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/discoveryengine/datastores-branches-documents",
-  version: "2026.04.03.3",
+  version: "2026.04.04.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -307,6 +307,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.3",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.04.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

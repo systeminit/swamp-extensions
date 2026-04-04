@@ -1,4 +1,4 @@
-# @swamp/gcp/siteVerification
+# @swamp/gcp/siteverification
 
 Auto-generated [swamp](https://github.com/systeminit/swamp) extension models for
 Google Cloud siteVerification resources.
@@ -13,7 +13,7 @@ the live state in GCP. Available methods:
 - **delete** — remove the resource from GCP
 - **sync** — refresh all resource properties from the API
 
-Use `swamp model type describe @swamp/gcp/siteVerification/webresource` to see
+Use `swamp model type describe @swamp/gcp/siteverification/webresource` to see
 the full list of configurable properties and available methods for this model.
 
 ## Authentication
@@ -60,7 +60,7 @@ gcloud config set project my-project
 
 ```bash
 # Create a new webresource model
-swamp model create @swamp/gcp/siteVerification/webresource my-webresource
+swamp model create @swamp/gcp/siteverification/webresource my-webresource
 
 # Edit the model to configure its properties
 swamp model edit my-webresource

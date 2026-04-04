@@ -114,15 +114,15 @@ const GlobalArgsSchema = z.object({
         "Required. Name of the API proxy endpoint or remote service with which the GraphQL operation and quota are associated.",
       ).optional(),
       attributes: z.array(z.object({
-        name: z.string().describe("API key of the attribute.").optional(),
-        value: z.string().describe("Value of the attribute.").optional(),
+        name: z.unknown().describe("API key of the attribute.").optional(),
+        value: z.unknown().describe("Value of the attribute.").optional(),
       })).describe("Custom attributes associated with the operation.")
         .optional(),
       operations: z.array(z.object({
-        operation: z.string().describe(
+        operation: z.unknown().describe(
           "GraphQL operation name. The name and operation type will be used to apply quotas. If no name is specified, the quota will be applied to all GraphQL operations irrespective of their operation names in the payload.",
         ).optional(),
-        operationTypes: z.array(z.string()).describe(
+        operationTypes: z.unknown().describe(
           "Required. GraphQL operation types. Valid values include `query` or `mutation`. **Note**: Apigee does not currently support `subscription` types.",
         ).optional(),
       })).describe(
@@ -153,8 +153,8 @@ const GlobalArgsSchema = z.object({
         "Required. Name of the API proxy with which the gRPC operation and quota are associated.",
       ).optional(),
       attributes: z.array(z.object({
-        name: z.string().describe("API key of the attribute.").optional(),
-        value: z.string().describe("Value of the attribute.").optional(),
+        name: z.unknown().describe("API key of the attribute.").optional(),
+        value: z.unknown().describe("Value of the attribute.").optional(),
       })).describe("Custom attributes associated with the operation.")
         .optional(),
       methods: z.array(z.string()).describe(
@@ -191,18 +191,18 @@ const GlobalArgsSchema = z.object({
         "Required. Name of the API proxy or remote service with which the resources, methods, and quota are associated.",
       ).optional(),
       attributes: z.array(z.object({
-        name: z.string().describe("API key of the attribute.").optional(),
-        value: z.string().describe("Value of the attribute.").optional(),
+        name: z.unknown().describe("API key of the attribute.").optional(),
+        value: z.unknown().describe("Value of the attribute.").optional(),
       })).describe("Optional. Custom attributes associated with the operation.")
         .optional(),
       llmOperations: z.array(z.object({
-        methods: z.array(z.string()).describe(
+        methods: z.unknown().describe(
           "Optional. methods refers to the REST verbs as in https://httpwg.org/specs/rfc9110.html For example: GET, POST, PUT, DELETE, etc. They need to be in uppercase. When none specified, all verb types are allowed.",
         ).optional(),
-        model: z.string().describe(
+        model: z.unknown().describe(
           "Required. LLM model name associated with the API proxy",
         ).optional(),
-        resource: z.string().describe(
+        resource: z.unknown().describe(
           "Required. REST resource path associated with the API proxy or remote service.",
         ).optional(),
       })).describe(
@@ -248,15 +248,15 @@ const GlobalArgsSchema = z.object({
         "Required. Name of the API proxy or remote service with which the resources, methods, and quota are associated.",
       ).optional(),
       attributes: z.array(z.object({
-        name: z.string().describe("API key of the attribute.").optional(),
-        value: z.string().describe("Value of the attribute.").optional(),
+        name: z.unknown().describe("API key of the attribute.").optional(),
+        value: z.unknown().describe("Value of the attribute.").optional(),
       })).describe("Custom attributes associated with the operation.")
         .optional(),
       operations: z.array(z.object({
-        methods: z.array(z.string()).describe(
+        methods: z.unknown().describe(
           "methods refers to the REST verbs as in https://www.w3.org/Protocols/rfc2616/rfc2616-sec9.html. When none specified, all verb types are allowed.",
         ).optional(),
-        resource: z.string().describe(
+        resource: z.unknown().describe(
           "Required. REST resource path associated with the API proxy or remote service.",
         ).optional(),
       })).describe(
@@ -328,12 +328,12 @@ const StateSchema = z.object({
     operationConfigs: z.array(z.object({
       apiSource: z.string(),
       attributes: z.array(z.object({
-        name: z.string(),
-        value: z.string(),
+        name: z.unknown(),
+        value: z.unknown(),
       })),
       operations: z.array(z.object({
-        operation: z.string(),
-        operationTypes: z.array(z.string()),
+        operation: z.unknown(),
+        operationTypes: z.unknown(),
       })),
       quota: z.object({
         interval: z.string(),
@@ -346,8 +346,8 @@ const StateSchema = z.object({
     operationConfigs: z.array(z.object({
       apiSource: z.string(),
       attributes: z.array(z.object({
-        name: z.string(),
-        value: z.string(),
+        name: z.unknown(),
+        value: z.unknown(),
       })),
       methods: z.array(z.string()),
       quota: z.object({
@@ -363,13 +363,13 @@ const StateSchema = z.object({
     operationConfigs: z.array(z.object({
       apiSource: z.string(),
       attributes: z.array(z.object({
-        name: z.string(),
-        value: z.string(),
+        name: z.unknown(),
+        value: z.unknown(),
       })),
       llmOperations: z.array(z.object({
-        methods: z.array(z.string()),
-        model: z.string(),
-        resource: z.string(),
+        methods: z.unknown(),
+        model: z.unknown(),
+        resource: z.unknown(),
       })),
       llmTokenQuota: z.object({
         interval: z.string(),
@@ -387,12 +387,12 @@ const StateSchema = z.object({
     operationConfigs: z.array(z.object({
       apiSource: z.string(),
       attributes: z.array(z.object({
-        name: z.string(),
-        value: z.string(),
+        name: z.unknown(),
+        value: z.unknown(),
       })),
       operations: z.array(z.object({
-        methods: z.array(z.string()),
-        resource: z.string(),
+        methods: z.unknown(),
+        resource: z.unknown(),
       })),
       quota: z.object({
         interval: z.string(),
@@ -446,15 +446,15 @@ const InputsSchema = z.object({
         "Required. Name of the API proxy endpoint or remote service with which the GraphQL operation and quota are associated.",
       ).optional(),
       attributes: z.array(z.object({
-        name: z.string().describe("API key of the attribute.").optional(),
-        value: z.string().describe("Value of the attribute.").optional(),
+        name: z.unknown().describe("API key of the attribute.").optional(),
+        value: z.unknown().describe("Value of the attribute.").optional(),
       })).describe("Custom attributes associated with the operation.")
         .optional(),
       operations: z.array(z.object({
-        operation: z.string().describe(
+        operation: z.unknown().describe(
           "GraphQL operation name. The name and operation type will be used to apply quotas. If no name is specified, the quota will be applied to all GraphQL operations irrespective of their operation names in the payload.",
         ).optional(),
-        operationTypes: z.array(z.string()).describe(
+        operationTypes: z.unknown().describe(
           "Required. GraphQL operation types. Valid values include `query` or `mutation`. **Note**: Apigee does not currently support `subscription` types.",
         ).optional(),
       })).describe(
@@ -485,8 +485,8 @@ const InputsSchema = z.object({
         "Required. Name of the API proxy with which the gRPC operation and quota are associated.",
       ).optional(),
       attributes: z.array(z.object({
-        name: z.string().describe("API key of the attribute.").optional(),
-        value: z.string().describe("Value of the attribute.").optional(),
+        name: z.unknown().describe("API key of the attribute.").optional(),
+        value: z.unknown().describe("Value of the attribute.").optional(),
       })).describe("Custom attributes associated with the operation.")
         .optional(),
       methods: z.array(z.string()).describe(
@@ -523,18 +523,18 @@ const InputsSchema = z.object({
         "Required. Name of the API proxy or remote service with which the resources, methods, and quota are associated.",
       ).optional(),
       attributes: z.array(z.object({
-        name: z.string().describe("API key of the attribute.").optional(),
-        value: z.string().describe("Value of the attribute.").optional(),
+        name: z.unknown().describe("API key of the attribute.").optional(),
+        value: z.unknown().describe("Value of the attribute.").optional(),
       })).describe("Optional. Custom attributes associated with the operation.")
         .optional(),
       llmOperations: z.array(z.object({
-        methods: z.array(z.string()).describe(
+        methods: z.unknown().describe(
           "Optional. methods refers to the REST verbs as in https://httpwg.org/specs/rfc9110.html For example: GET, POST, PUT, DELETE, etc. They need to be in uppercase. When none specified, all verb types are allowed.",
         ).optional(),
-        model: z.string().describe(
+        model: z.unknown().describe(
           "Required. LLM model name associated with the API proxy",
         ).optional(),
-        resource: z.string().describe(
+        resource: z.unknown().describe(
           "Required. REST resource path associated with the API proxy or remote service.",
         ).optional(),
       })).describe(
@@ -580,15 +580,15 @@ const InputsSchema = z.object({
         "Required. Name of the API proxy or remote service with which the resources, methods, and quota are associated.",
       ).optional(),
       attributes: z.array(z.object({
-        name: z.string().describe("API key of the attribute.").optional(),
-        value: z.string().describe("Value of the attribute.").optional(),
+        name: z.unknown().describe("API key of the attribute.").optional(),
+        value: z.unknown().describe("Value of the attribute.").optional(),
       })).describe("Custom attributes associated with the operation.")
         .optional(),
       operations: z.array(z.object({
-        methods: z.array(z.string()).describe(
+        methods: z.unknown().describe(
           "methods refers to the REST verbs as in https://www.w3.org/Protocols/rfc2616/rfc2616-sec9.html. When none specified, all verb types are allowed.",
         ).optional(),
-        resource: z.string().describe(
+        resource: z.unknown().describe(
           "Required. REST resource path associated with the API proxy or remote service.",
         ).optional(),
       })).describe(
@@ -646,7 +646,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/apigee/apiproducts",
-  version: "2026.04.03.3",
+  version: "2026.04.04.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -670,6 +670,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.3",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.04.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

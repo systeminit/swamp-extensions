@@ -52,8 +52,8 @@ const StateSchema = z.object({
     alertPolicyAnalyses: z.array(z.object({
       alertPolicies: z.array(z.string()),
       failedAlertPolicies: z.array(z.object({
-        alertPolicy: z.string(),
-        alerts: z.array(z.string()),
+        alertPolicy: z.unknown(),
+        alerts: z.unknown(),
       })),
       failureMessage: z.string(),
       id: z.string(),
@@ -70,10 +70,10 @@ const StateSchema = z.object({
       }),
       task: z.object({
         container: z.object({
-          args: z.array(z.string()),
-          command: z.array(z.string()),
-          env: z.record(z.string(), z.unknown()),
-          image: z.string(),
+          args: z.unknown(),
+          command: z.unknown(),
+          env: z.unknown(),
+          image: z.unknown(),
         }),
       }),
     })),
@@ -162,7 +162,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/clouddeploy/deliverypipelines-releases-rollouts-jobruns",
-  version: "2026.04.03.3",
+  version: "2026.04.04.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -186,6 +186,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.3",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.04.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

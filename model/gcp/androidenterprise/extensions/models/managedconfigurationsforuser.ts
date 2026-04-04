@@ -123,7 +123,7 @@ const GlobalArgsSchema = z.object({
       ).optional(),
     }).describe("A bundle of managed properties.").optional(),
     valueBundleArray: z.array(z.object({
-      managedProperty: z.array(z.string()).describe(
+      managedProperty: z.array(z.unknown()).describe(
         "The list of managed properties.",
       ).optional(),
     })).describe(
@@ -161,7 +161,7 @@ const StateSchema = z.object({
       managedProperty: z.array(z.string()),
     }),
     valueBundleArray: z.array(z.object({
-      managedProperty: z.array(z.string()),
+      managedProperty: z.array(z.unknown()),
     })),
     valueInteger: z.number(),
     valueString: z.string(),
@@ -201,7 +201,7 @@ const InputsSchema = z.object({
       ).optional(),
     }).describe("A bundle of managed properties.").optional(),
     valueBundleArray: z.array(z.object({
-      managedProperty: z.array(z.string()).describe(
+      managedProperty: z.array(z.unknown()).describe(
         "The list of managed properties.",
       ).optional(),
     })).describe(
@@ -225,7 +225,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/androidenterprise/managedconfigurationsforuser",
-  version: "2026.04.03.3",
+  version: "2026.04.04.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -249,6 +249,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.3",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.04.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

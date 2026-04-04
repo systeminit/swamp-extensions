@@ -104,29 +104,11 @@ const StateSchema = z.object({
       boolValue: z.boolean(),
       intValue: z.string(),
       messageValue: z.object({
-        parameter: z.array(z.object({
-          boolValue: z.boolean(),
-          intValue: z.string(),
-          multiBoolValue: z.array(z.boolean()),
-          multiIntValue: z.array(z.string()),
-          multiValue: z.array(z.string()),
-          name: z.string(),
-          value: z.string(),
-        })),
+        parameter: z.unknown(),
       }),
-      multiIntValue: z.array(z.string()),
-      multiMessageValue: z.array(z.object({
-        parameter: z.array(z.object({
-          boolValue: z.boolean(),
-          intValue: z.string(),
-          multiBoolValue: z.array(z.boolean()),
-          multiIntValue: z.array(z.string()),
-          multiValue: z.array(z.string()),
-          name: z.string(),
-          value: z.string(),
-        })),
-      })),
-      multiValue: z.array(z.string()),
+      multiIntValue: z.array(z.unknown()),
+      multiMessageValue: z.array(z.unknown()),
+      multiValue: z.array(z.unknown()),
       name: z.string(),
       value: z.string(),
     })),
@@ -135,29 +117,11 @@ const StateSchema = z.object({
       boolValue: z.boolean(),
       intValue: z.string(),
       messageValue: z.object({
-        parameter: z.array(z.object({
-          boolValue: z.boolean(),
-          intValue: z.string(),
-          multiBoolValue: z.array(z.boolean()),
-          multiIntValue: z.array(z.string()),
-          multiValue: z.array(z.string()),
-          name: z.string(),
-          value: z.string(),
-        })),
+        parameter: z.unknown(),
       }),
-      multiIntValue: z.array(z.string()),
-      multiMessageValue: z.array(z.object({
-        parameter: z.array(z.object({
-          boolValue: z.boolean(),
-          intValue: z.string(),
-          multiBoolValue: z.array(z.boolean()),
-          multiIntValue: z.array(z.string()),
-          multiValue: z.array(z.string()),
-          name: z.string(),
-          value: z.string(),
-        })),
-      })),
-      multiValue: z.array(z.string()),
+      multiIntValue: z.array(z.unknown()),
+      multiMessageValue: z.array(z.unknown()),
+      multiValue: z.array(z.unknown()),
       name: z.string(),
       value: z.string(),
     })),
@@ -185,66 +149,19 @@ const StateSchema = z.object({
   ownerDomain: z.string().optional(),
   resourceDetails: z.array(z.object({
     appliedLabels: z.array(z.object({
-      fieldValues: z.array(z.object({
-        dateValue: z.object({
-          day: z.number(),
-          month: z.number(),
-          year: z.number(),
-        }),
-        displayName: z.string(),
-        id: z.string(),
-        integerValue: z.string(),
-        longTextValue: z.string(),
-        reason: z.object({
-          reasonType: z.string(),
-        }),
-        selectionListValue: z.object({
-          values: z.array(z.object({
-            badged: z.boolean(),
-            displayName: z.string(),
-            id: z.string(),
-          })),
-        }),
-        selectionValue: z.object({
-          badged: z.boolean(),
-          displayName: z.string(),
-          id: z.string(),
-        }),
-        textListValue: z.object({
-          values: z.array(z.string()),
-        }),
-        textValue: z.string(),
-        type: z.string(),
-        unsetValue: z.boolean(),
-        userListValue: z.object({
-          values: z.array(z.object({
-            email: z.string(),
-          })),
-        }),
-        userValue: z.object({
-          email: z.string(),
-        }),
-      })),
+      fieldValues: z.array(z.unknown()),
       id: z.string(),
       reason: z.object({
-        reasonType: z.string(),
+        reasonType: z.unknown(),
       }),
       title: z.string(),
     })),
     id: z.string(),
     ownerDetails: z.object({
       ownerIdentity: z.array(z.object({
-        customerIdentity: z.object({
-          id: z.string(),
-        }),
-        groupIdentity: z.object({
-          groupEmail: z.string(),
-          id: z.string(),
-        }),
-        userIdentity: z.object({
-          id: z.string(),
-          userEmail: z.string(),
-        }),
+        customerIdentity: z.unknown(),
+        groupIdentity: z.unknown(),
+        userIdentity: z.unknown(),
       })),
       ownerType: z.string(),
     }),
@@ -262,7 +179,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/admin/activities",
-  version: "2026.04.03.3",
+  version: "2026.04.04.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -286,6 +203,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.3",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.04.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

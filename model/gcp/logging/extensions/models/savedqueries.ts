@@ -135,37 +135,25 @@ const GlobalArgsSchema = z.object({
           "The dot-delimited path of the parent container that holds the target field.This path defines the structural hierarchy and is essential for correctly generating SQL when field keys contain special characters (e.g., dots or brackets).Example: json_payload.labels (This points to the 'labels' object). This is an empty string if the target field is at the root level.",
         ).optional(),
         projectedField: z.object({
-          alias: z.string().describe(
+          alias: z.unknown().describe(
             'The alias name for the field. Valid alias examples are: - single word alias: TestAlias - numbers in an alias: Alias123 - multi word alias should be enclosed in quotes: "Test Alias" Invalid alias examples are: - alias containing keywords: WHERE, SELECT, FROM, etc. - alias starting with a number: 1stAlias',
           ).optional(),
-          cast: z.string().describe(
+          cast: z.unknown().describe(
             "The cast for the field. This can any SQL cast type. Examples: - STRING - CHAR - DATE - TIMESTAMP - DATETIME - INT - FLOAT",
           ).optional(),
-          field: z.string().describe(
+          field: z.unknown().describe(
             "The field name. This will be the field that is selected using the dot notation to display the drill down value.",
           ).optional(),
-          operation: z.enum([
-            "FIELD_OPERATION_UNSPECIFIED",
-            "NO_SETTING",
-            "GROUP_BY",
-            "AGGREGATE",
-          ]).describe(
+          operation: z.unknown().describe(
             "Specifies the role of this field (direct selection, grouping, or aggregation).",
           ).optional(),
-          regexExtraction: z.string().describe(
+          regexExtraction: z.unknown().describe(
             'The re2 extraction for the field. This will be used to extract the value from the field using REGEXP_EXTRACT. More information on re2 can be found here: https://github.com/google/re2/wiki/Syntax. Meta characters like +?()| will need to be escaped. Examples: - ".(autoscaler.*)$" will be converted to REGEXP_EXTRACT(JSON_VALUE(field),"request(.*(autoscaler.*)$)")in SQL. - "\\(test_value\\)$" will be converted to REGEXP_EXTRACT(JSON_VALUE(field),"request(\\(test_value\\)$)") in SQL.',
           ).optional(),
-          sqlAggregationFunction: z.object({
-            parameters: z.array(z.string()).describe(
-              "Optional. Parameters to be applied to the aggregation. Aggregations that support or require parameters are listed above.",
-            ).optional(),
-            type: z.string().describe(
-              'Required. Specifies the aggregation function. Use one of the following string identifiers: "average": Computes the average (AVG). Applies only to numeric values. "count": Counts the number of values (COUNT). "count-distinct": Counts the number of distinct values (COUNT DISTINCT). "count-distinct-approx": Approximates the count of distinct values (APPROX_COUNT_DISTINCT). "max": Finds the maximum value (MAX). Applies only to numeric values. "min": Finds the minimum value (MIN). Applies only to numeric values. "sum": Computes the sum (SUM). Applies only to numeric values.',
-            ).optional(),
-          }).describe(
+          sqlAggregationFunction: z.unknown().describe(
             "Defines the aggregation function to apply to this field. This message is used only when operation is set to AGGREGATE.",
           ).optional(),
-          truncationGranularity: z.string().describe(
+          truncationGranularity: z.unknown().describe(
             "The truncation granularity when grouping by a time/date field. This will be used to truncate the field to the granularity specified. This can be either a date or a time granularity found at https://cloud.google.com/bigquery/docs/reference/standard-sql/timestamp_functions#timestamp_trunc_granularity_date and https://cloud.google.com/bigquery/docs/reference/standard-sql/timestamp_functions#timestamp_trunc_granularity_time respectively.",
           ).optional(),
         }).describe(
@@ -192,112 +180,44 @@ const GlobalArgsSchema = z.object({
             "LIKE",
           ]).describe("The comparison type to use for the filter.").optional(),
           fieldSource: z.object({
-            aliasRef: z.string().describe(
+            aliasRef: z.unknown().describe(
               "The alias name for a field that has already been aliased within a different ProjectedField type elsewhere in the query model. The alias must be defined in the QueryBuilderConfig's field_sources list, otherwise the model is invalid.",
             ).optional(),
-            columnType: z.string().describe(
+            columnType: z.unknown().describe(
               "The type of the selected field. This comes from the schema. Can be one of the BigQuery data types: - STRING - INT64 - FLOAT64 - BOOL - TIMESTAMP - DATE - RECORD - JSON",
             ).optional(),
-            field: z.string().describe(
+            field: z.unknown().describe(
               "The fully qualified, dot-delimited path to the selected atomic field (the leaf value). This path is used for primary selection and actions like drill-down or projection.The path components should match the exact field names or keys as they appear in the underlying data schema. For JSON fields, this means respecting the original casing (e.g., camelCase or snake_case as present in the JSON).To reference field names containing special characters (e.g., hyphens, spaces), enclose the individual path segment in backticks (`).Examples: * json_payload.labels.message * json_payload.request_id * httpRequest.status * json_payload.\\my-custom-field`.value *jsonPayload.`my key with spaces`.data`",
             ).optional(),
-            isJson: z.boolean().describe(
+            isJson: z.unknown().describe(
               "Whether the field is a JSON field, or has a parent that is a JSON field. This value is used to determine JSON extractions in generated SQL queries. Note that this is_json flag may be true when the column_type is not JSON if the parent is a JSON field. Ex: - A json_payload.message field might have is_json=true, since the 'json_payload' parent is of type JSON, and columnType='STRING' if the 'message' field is of type STRING.",
             ).optional(),
-            parentPath: z.string().describe(
+            parentPath: z.unknown().describe(
               "The dot-delimited path of the parent container that holds the target field.This path defines the structural hierarchy and is essential for correctly generating SQL when field keys contain special characters (e.g., dots or brackets).Example: json_payload.labels (This points to the 'labels' object). This is an empty string if the target field is at the root level.",
             ).optional(),
-            projectedField: z.object({
-              alias: z.string().describe(
-                'The alias name for the field. Valid alias examples are: - single word alias: TestAlias - numbers in an alias: Alias123 - multi word alias should be enclosed in quotes: "Test Alias" Invalid alias examples are: - alias containing keywords: WHERE, SELECT, FROM, etc. - alias starting with a number: 1stAlias',
-              ).optional(),
-              cast: z.string().describe(
-                "The cast for the field. This can any SQL cast type. Examples: - STRING - CHAR - DATE - TIMESTAMP - DATETIME - INT - FLOAT",
-              ).optional(),
-              field: z.string().describe(
-                "The field name. This will be the field that is selected using the dot notation to display the drill down value.",
-              ).optional(),
-              operation: z.enum([
-                "FIELD_OPERATION_UNSPECIFIED",
-                "NO_SETTING",
-                "GROUP_BY",
-                "AGGREGATE",
-              ]).describe(
-                "Specifies the role of this field (direct selection, grouping, or aggregation).",
-              ).optional(),
-              regexExtraction: z.string().describe(
-                'The re2 extraction for the field. This will be used to extract the value from the field using REGEXP_EXTRACT. More information on re2 can be found here: https://github.com/google/re2/wiki/Syntax. Meta characters like +?()| will need to be escaped. Examples: - ".(autoscaler.*)$" will be converted to REGEXP_EXTRACT(JSON_VALUE(field),"request(.*(autoscaler.*)$)")in SQL. - "\\(test_value\\)$" will be converted to REGEXP_EXTRACT(JSON_VALUE(field),"request(\\(test_value\\)$)") in SQL.',
-              ).optional(),
-              sqlAggregationFunction: z.object({
-                parameters: z.array(z.string()).describe(
-                  "Optional. Parameters to be applied to the aggregation. Aggregations that support or require parameters are listed above.",
-                ).optional(),
-                type: z.string().describe(
-                  'Required. Specifies the aggregation function. Use one of the following string identifiers: "average": Computes the average (AVG). Applies only to numeric values. "count": Counts the number of values (COUNT). "count-distinct": Counts the number of distinct values (COUNT DISTINCT). "count-distinct-approx": Approximates the count of distinct values (APPROX_COUNT_DISTINCT). "max": Finds the maximum value (MAX). Applies only to numeric values. "min": Finds the minimum value (MIN). Applies only to numeric values. "sum": Computes the sum (SUM). Applies only to numeric values.',
-                ).optional(),
-              }).describe(
-                "Defines the aggregation function to apply to this field. This message is used only when operation is set to AGGREGATE.",
-              ).optional(),
-              truncationGranularity: z.string().describe(
-                "The truncation granularity when grouping by a time/date field. This will be used to truncate the field to the granularity specified. This can be either a date or a time granularity found at https://cloud.google.com/bigquery/docs/reference/standard-sql/timestamp_functions#timestamp_trunc_granularity_date and https://cloud.google.com/bigquery/docs/reference/standard-sql/timestamp_functions#timestamp_trunc_granularity_time respectively.",
-              ).optional(),
-            }).describe(
+            projectedField: z.unknown().describe(
               "Represents a field selected in the query, analogous to an item in a SQL SELECT clause. It specifies the source field and optionally applies transformations like aggregation, casting, regex extraction, or assigns an alias. Use ProjectedField when you need more than just the raw source field name (for which you might use FieldSource directly in QueryBuilderConfig's field_sources list if no transformations or specific operation type are needed).",
             ).optional(),
           }).describe(
             "A source that can be used to represent a field within various parts of a structured query, such as in SELECT, WHERE, or ORDER BY clauses.",
           ).optional(),
           fieldSourceValue: z.object({
-            aliasRef: z.string().describe(
+            aliasRef: z.unknown().describe(
               "The alias name for a field that has already been aliased within a different ProjectedField type elsewhere in the query model. The alias must be defined in the QueryBuilderConfig's field_sources list, otherwise the model is invalid.",
             ).optional(),
-            columnType: z.string().describe(
+            columnType: z.unknown().describe(
               "The type of the selected field. This comes from the schema. Can be one of the BigQuery data types: - STRING - INT64 - FLOAT64 - BOOL - TIMESTAMP - DATE - RECORD - JSON",
             ).optional(),
-            field: z.string().describe(
+            field: z.unknown().describe(
               "The fully qualified, dot-delimited path to the selected atomic field (the leaf value). This path is used for primary selection and actions like drill-down or projection.The path components should match the exact field names or keys as they appear in the underlying data schema. For JSON fields, this means respecting the original casing (e.g., camelCase or snake_case as present in the JSON).To reference field names containing special characters (e.g., hyphens, spaces), enclose the individual path segment in backticks (`).Examples: * json_payload.labels.message * json_payload.request_id * httpRequest.status * json_payload.\\my-custom-field`.value *jsonPayload.`my key with spaces`.data`",
             ).optional(),
-            isJson: z.boolean().describe(
+            isJson: z.unknown().describe(
               "Whether the field is a JSON field, or has a parent that is a JSON field. This value is used to determine JSON extractions in generated SQL queries. Note that this is_json flag may be true when the column_type is not JSON if the parent is a JSON field. Ex: - A json_payload.message field might have is_json=true, since the 'json_payload' parent is of type JSON, and columnType='STRING' if the 'message' field is of type STRING.",
             ).optional(),
-            parentPath: z.string().describe(
+            parentPath: z.unknown().describe(
               "The dot-delimited path of the parent container that holds the target field.This path defines the structural hierarchy and is essential for correctly generating SQL when field keys contain special characters (e.g., dots or brackets).Example: json_payload.labels (This points to the 'labels' object). This is an empty string if the target field is at the root level.",
             ).optional(),
-            projectedField: z.object({
-              alias: z.string().describe(
-                'The alias name for the field. Valid alias examples are: - single word alias: TestAlias - numbers in an alias: Alias123 - multi word alias should be enclosed in quotes: "Test Alias" Invalid alias examples are: - alias containing keywords: WHERE, SELECT, FROM, etc. - alias starting with a number: 1stAlias',
-              ).optional(),
-              cast: z.string().describe(
-                "The cast for the field. This can any SQL cast type. Examples: - STRING - CHAR - DATE - TIMESTAMP - DATETIME - INT - FLOAT",
-              ).optional(),
-              field: z.string().describe(
-                "The field name. This will be the field that is selected using the dot notation to display the drill down value.",
-              ).optional(),
-              operation: z.enum([
-                "FIELD_OPERATION_UNSPECIFIED",
-                "NO_SETTING",
-                "GROUP_BY",
-                "AGGREGATE",
-              ]).describe(
-                "Specifies the role of this field (direct selection, grouping, or aggregation).",
-              ).optional(),
-              regexExtraction: z.string().describe(
-                'The re2 extraction for the field. This will be used to extract the value from the field using REGEXP_EXTRACT. More information on re2 can be found here: https://github.com/google/re2/wiki/Syntax. Meta characters like +?()| will need to be escaped. Examples: - ".(autoscaler.*)$" will be converted to REGEXP_EXTRACT(JSON_VALUE(field),"request(.*(autoscaler.*)$)")in SQL. - "\\(test_value\\)$" will be converted to REGEXP_EXTRACT(JSON_VALUE(field),"request(\\(test_value\\)$)") in SQL.',
-              ).optional(),
-              sqlAggregationFunction: z.object({
-                parameters: z.array(z.string()).describe(
-                  "Optional. Parameters to be applied to the aggregation. Aggregations that support or require parameters are listed above.",
-                ).optional(),
-                type: z.string().describe(
-                  'Required. Specifies the aggregation function. Use one of the following string identifiers: "average": Computes the average (AVG). Applies only to numeric values. "count": Counts the number of values (COUNT). "count-distinct": Counts the number of distinct values (COUNT DISTINCT). "count-distinct-approx": Approximates the count of distinct values (APPROX_COUNT_DISTINCT). "max": Finds the maximum value (MAX). Applies only to numeric values. "min": Finds the minimum value (MIN). Applies only to numeric values. "sum": Computes the sum (SUM). Applies only to numeric values.',
-                ).optional(),
-              }).describe(
-                "Defines the aggregation function to apply to this field. This message is used only when operation is set to AGGREGATE.",
-              ).optional(),
-              truncationGranularity: z.string().describe(
-                "The truncation granularity when grouping by a time/date field. This will be used to truncate the field to the granularity specified. This can be either a date or a time granularity found at https://cloud.google.com/bigquery/docs/reference/standard-sql/timestamp_functions#timestamp_trunc_granularity_date and https://cloud.google.com/bigquery/docs/reference/standard-sql/timestamp_functions#timestamp_trunc_granularity_time respectively.",
-              ).optional(),
-            }).describe(
+            projectedField: z.unknown().describe(
               "Represents a field selected in the query, analogous to an item in a SQL SELECT clause. It specifies the source field and optionally applies transformations like aggregation, casting, regex extraction, or assigns an alias. Use ProjectedField when you need more than just the raw source field name (for which you might use FieldSource directly in QueryBuilderConfig's field_sources list if no transformations or specific operation type are needed).",
             ).optional(),
           }).describe(
@@ -324,56 +244,22 @@ const GlobalArgsSchema = z.object({
       ).optional(),
       orderBys: z.array(z.object({
         fieldSource: z.object({
-          aliasRef: z.string().describe(
+          aliasRef: z.unknown().describe(
             "The alias name for a field that has already been aliased within a different ProjectedField type elsewhere in the query model. The alias must be defined in the QueryBuilderConfig's field_sources list, otherwise the model is invalid.",
           ).optional(),
-          columnType: z.string().describe(
+          columnType: z.unknown().describe(
             "The type of the selected field. This comes from the schema. Can be one of the BigQuery data types: - STRING - INT64 - FLOAT64 - BOOL - TIMESTAMP - DATE - RECORD - JSON",
           ).optional(),
-          field: z.string().describe(
+          field: z.unknown().describe(
             "The fully qualified, dot-delimited path to the selected atomic field (the leaf value). This path is used for primary selection and actions like drill-down or projection.The path components should match the exact field names or keys as they appear in the underlying data schema. For JSON fields, this means respecting the original casing (e.g., camelCase or snake_case as present in the JSON).To reference field names containing special characters (e.g., hyphens, spaces), enclose the individual path segment in backticks (`).Examples: * json_payload.labels.message * json_payload.request_id * httpRequest.status * json_payload.\\my-custom-field`.value *jsonPayload.`my key with spaces`.data`",
           ).optional(),
-          isJson: z.boolean().describe(
+          isJson: z.unknown().describe(
             "Whether the field is a JSON field, or has a parent that is a JSON field. This value is used to determine JSON extractions in generated SQL queries. Note that this is_json flag may be true when the column_type is not JSON if the parent is a JSON field. Ex: - A json_payload.message field might have is_json=true, since the 'json_payload' parent is of type JSON, and columnType='STRING' if the 'message' field is of type STRING.",
           ).optional(),
-          parentPath: z.string().describe(
+          parentPath: z.unknown().describe(
             "The dot-delimited path of the parent container that holds the target field.This path defines the structural hierarchy and is essential for correctly generating SQL when field keys contain special characters (e.g., dots or brackets).Example: json_payload.labels (This points to the 'labels' object). This is an empty string if the target field is at the root level.",
           ).optional(),
-          projectedField: z.object({
-            alias: z.string().describe(
-              'The alias name for the field. Valid alias examples are: - single word alias: TestAlias - numbers in an alias: Alias123 - multi word alias should be enclosed in quotes: "Test Alias" Invalid alias examples are: - alias containing keywords: WHERE, SELECT, FROM, etc. - alias starting with a number: 1stAlias',
-            ).optional(),
-            cast: z.string().describe(
-              "The cast for the field. This can any SQL cast type. Examples: - STRING - CHAR - DATE - TIMESTAMP - DATETIME - INT - FLOAT",
-            ).optional(),
-            field: z.string().describe(
-              "The field name. This will be the field that is selected using the dot notation to display the drill down value.",
-            ).optional(),
-            operation: z.enum([
-              "FIELD_OPERATION_UNSPECIFIED",
-              "NO_SETTING",
-              "GROUP_BY",
-              "AGGREGATE",
-            ]).describe(
-              "Specifies the role of this field (direct selection, grouping, or aggregation).",
-            ).optional(),
-            regexExtraction: z.string().describe(
-              'The re2 extraction for the field. This will be used to extract the value from the field using REGEXP_EXTRACT. More information on re2 can be found here: https://github.com/google/re2/wiki/Syntax. Meta characters like +?()| will need to be escaped. Examples: - ".(autoscaler.*)$" will be converted to REGEXP_EXTRACT(JSON_VALUE(field),"request(.*(autoscaler.*)$)")in SQL. - "\\(test_value\\)$" will be converted to REGEXP_EXTRACT(JSON_VALUE(field),"request(\\(test_value\\)$)") in SQL.',
-            ).optional(),
-            sqlAggregationFunction: z.object({
-              parameters: z.array(z.string()).describe(
-                "Optional. Parameters to be applied to the aggregation. Aggregations that support or require parameters are listed above.",
-              ).optional(),
-              type: z.string().describe(
-                'Required. Specifies the aggregation function. Use one of the following string identifiers: "average": Computes the average (AVG). Applies only to numeric values. "count": Counts the number of values (COUNT). "count-distinct": Counts the number of distinct values (COUNT DISTINCT). "count-distinct-approx": Approximates the count of distinct values (APPROX_COUNT_DISTINCT). "max": Finds the maximum value (MAX). Applies only to numeric values. "min": Finds the minimum value (MIN). Applies only to numeric values. "sum": Computes the sum (SUM). Applies only to numeric values.',
-              ).optional(),
-            }).describe(
-              "Defines the aggregation function to apply to this field. This message is used only when operation is set to AGGREGATE.",
-            ).optional(),
-            truncationGranularity: z.string().describe(
-              "The truncation granularity when grouping by a time/date field. This will be used to truncate the field to the granularity specified. This can be either a date or a time granularity found at https://cloud.google.com/bigquery/docs/reference/standard-sql/timestamp_functions#timestamp_trunc_granularity_date and https://cloud.google.com/bigquery/docs/reference/standard-sql/timestamp_functions#timestamp_trunc_granularity_time respectively.",
-            ).optional(),
-          }).describe(
+          projectedField: z.unknown().describe(
             "Represents a field selected in the query, analogous to an item in a SQL SELECT clause. It specifies the source field and optionally applies transformations like aggregation, casting, regex extraction, or assigns an alias. Use ProjectedField when you need more than just the raw source field name (for which you might use FieldSource directly in QueryBuilderConfig's field_sources list if no transformations or specific operation type are needed).",
           ).optional(),
         }).describe(
@@ -434,16 +320,13 @@ const StateSchema = z.object({
         isJson: z.boolean(),
         parentPath: z.string(),
         projectedField: z.object({
-          alias: z.string(),
-          cast: z.string(),
-          field: z.string(),
-          operation: z.string(),
-          regexExtraction: z.string(),
-          sqlAggregationFunction: z.object({
-            parameters: z.array(z.string()),
-            type: z.string(),
-          }),
-          truncationGranularity: z.string(),
+          alias: z.unknown(),
+          cast: z.unknown(),
+          field: z.unknown(),
+          operation: z.unknown(),
+          regexExtraction: z.unknown(),
+          sqlAggregationFunction: z.unknown(),
+          truncationGranularity: z.unknown(),
         }),
       })),
       filter: z.object({
@@ -451,42 +334,20 @@ const StateSchema = z.object({
         leafPredicate: z.object({
           comparator: z.string(),
           fieldSource: z.object({
-            aliasRef: z.string(),
-            columnType: z.string(),
-            field: z.string(),
-            isJson: z.boolean(),
-            parentPath: z.string(),
-            projectedField: z.object({
-              alias: z.string(),
-              cast: z.string(),
-              field: z.string(),
-              operation: z.string(),
-              regexExtraction: z.string(),
-              sqlAggregationFunction: z.object({
-                parameters: z.array(z.string()),
-                type: z.string(),
-              }),
-              truncationGranularity: z.string(),
-            }),
+            aliasRef: z.unknown(),
+            columnType: z.unknown(),
+            field: z.unknown(),
+            isJson: z.unknown(),
+            parentPath: z.unknown(),
+            projectedField: z.unknown(),
           }),
           fieldSourceValue: z.object({
-            aliasRef: z.string(),
-            columnType: z.string(),
-            field: z.string(),
-            isJson: z.boolean(),
-            parentPath: z.string(),
-            projectedField: z.object({
-              alias: z.string(),
-              cast: z.string(),
-              field: z.string(),
-              operation: z.string(),
-              regexExtraction: z.string(),
-              sqlAggregationFunction: z.object({
-                parameters: z.array(z.string()),
-                type: z.string(),
-              }),
-              truncationGranularity: z.string(),
-            }),
+            aliasRef: z.unknown(),
+            columnType: z.unknown(),
+            field: z.unknown(),
+            isJson: z.unknown(),
+            parentPath: z.unknown(),
+            projectedField: z.unknown(),
           }),
           isNegation: z.boolean(),
           literalValue: z.string(),
@@ -496,23 +357,12 @@ const StateSchema = z.object({
       limit: z.string(),
       orderBys: z.array(z.object({
         fieldSource: z.object({
-          aliasRef: z.string(),
-          columnType: z.string(),
-          field: z.string(),
-          isJson: z.boolean(),
-          parentPath: z.string(),
-          projectedField: z.object({
-            alias: z.string(),
-            cast: z.string(),
-            field: z.string(),
-            operation: z.string(),
-            regexExtraction: z.string(),
-            sqlAggregationFunction: z.object({
-              parameters: z.array(z.string()),
-              type: z.string(),
-            }),
-            truncationGranularity: z.string(),
-          }),
+          aliasRef: z.unknown(),
+          columnType: z.unknown(),
+          field: z.unknown(),
+          isJson: z.unknown(),
+          parentPath: z.unknown(),
+          projectedField: z.unknown(),
         }),
         sortOrderDirection: z.string(),
       })),
@@ -574,37 +424,25 @@ const InputsSchema = z.object({
           "The dot-delimited path of the parent container that holds the target field.This path defines the structural hierarchy and is essential for correctly generating SQL when field keys contain special characters (e.g., dots or brackets).Example: json_payload.labels (This points to the 'labels' object). This is an empty string if the target field is at the root level.",
         ).optional(),
         projectedField: z.object({
-          alias: z.string().describe(
+          alias: z.unknown().describe(
             'The alias name for the field. Valid alias examples are: - single word alias: TestAlias - numbers in an alias: Alias123 - multi word alias should be enclosed in quotes: "Test Alias" Invalid alias examples are: - alias containing keywords: WHERE, SELECT, FROM, etc. - alias starting with a number: 1stAlias',
           ).optional(),
-          cast: z.string().describe(
+          cast: z.unknown().describe(
             "The cast for the field. This can any SQL cast type. Examples: - STRING - CHAR - DATE - TIMESTAMP - DATETIME - INT - FLOAT",
           ).optional(),
-          field: z.string().describe(
+          field: z.unknown().describe(
             "The field name. This will be the field that is selected using the dot notation to display the drill down value.",
           ).optional(),
-          operation: z.enum([
-            "FIELD_OPERATION_UNSPECIFIED",
-            "NO_SETTING",
-            "GROUP_BY",
-            "AGGREGATE",
-          ]).describe(
+          operation: z.unknown().describe(
             "Specifies the role of this field (direct selection, grouping, or aggregation).",
           ).optional(),
-          regexExtraction: z.string().describe(
+          regexExtraction: z.unknown().describe(
             'The re2 extraction for the field. This will be used to extract the value from the field using REGEXP_EXTRACT. More information on re2 can be found here: https://github.com/google/re2/wiki/Syntax. Meta characters like +?()| will need to be escaped. Examples: - ".(autoscaler.*)$" will be converted to REGEXP_EXTRACT(JSON_VALUE(field),"request(.*(autoscaler.*)$)")in SQL. - "\\(test_value\\)$" will be converted to REGEXP_EXTRACT(JSON_VALUE(field),"request(\\(test_value\\)$)") in SQL.',
           ).optional(),
-          sqlAggregationFunction: z.object({
-            parameters: z.array(z.string()).describe(
-              "Optional. Parameters to be applied to the aggregation. Aggregations that support or require parameters are listed above.",
-            ).optional(),
-            type: z.string().describe(
-              'Required. Specifies the aggregation function. Use one of the following string identifiers: "average": Computes the average (AVG). Applies only to numeric values. "count": Counts the number of values (COUNT). "count-distinct": Counts the number of distinct values (COUNT DISTINCT). "count-distinct-approx": Approximates the count of distinct values (APPROX_COUNT_DISTINCT). "max": Finds the maximum value (MAX). Applies only to numeric values. "min": Finds the minimum value (MIN). Applies only to numeric values. "sum": Computes the sum (SUM). Applies only to numeric values.',
-            ).optional(),
-          }).describe(
+          sqlAggregationFunction: z.unknown().describe(
             "Defines the aggregation function to apply to this field. This message is used only when operation is set to AGGREGATE.",
           ).optional(),
-          truncationGranularity: z.string().describe(
+          truncationGranularity: z.unknown().describe(
             "The truncation granularity when grouping by a time/date field. This will be used to truncate the field to the granularity specified. This can be either a date or a time granularity found at https://cloud.google.com/bigquery/docs/reference/standard-sql/timestamp_functions#timestamp_trunc_granularity_date and https://cloud.google.com/bigquery/docs/reference/standard-sql/timestamp_functions#timestamp_trunc_granularity_time respectively.",
           ).optional(),
         }).describe(
@@ -631,112 +469,44 @@ const InputsSchema = z.object({
             "LIKE",
           ]).describe("The comparison type to use for the filter.").optional(),
           fieldSource: z.object({
-            aliasRef: z.string().describe(
+            aliasRef: z.unknown().describe(
               "The alias name for a field that has already been aliased within a different ProjectedField type elsewhere in the query model. The alias must be defined in the QueryBuilderConfig's field_sources list, otherwise the model is invalid.",
             ).optional(),
-            columnType: z.string().describe(
+            columnType: z.unknown().describe(
               "The type of the selected field. This comes from the schema. Can be one of the BigQuery data types: - STRING - INT64 - FLOAT64 - BOOL - TIMESTAMP - DATE - RECORD - JSON",
             ).optional(),
-            field: z.string().describe(
+            field: z.unknown().describe(
               "The fully qualified, dot-delimited path to the selected atomic field (the leaf value). This path is used for primary selection and actions like drill-down or projection.The path components should match the exact field names or keys as they appear in the underlying data schema. For JSON fields, this means respecting the original casing (e.g., camelCase or snake_case as present in the JSON).To reference field names containing special characters (e.g., hyphens, spaces), enclose the individual path segment in backticks (`).Examples: * json_payload.labels.message * json_payload.request_id * httpRequest.status * json_payload.\\my-custom-field`.value *jsonPayload.`my key with spaces`.data`",
             ).optional(),
-            isJson: z.boolean().describe(
+            isJson: z.unknown().describe(
               "Whether the field is a JSON field, or has a parent that is a JSON field. This value is used to determine JSON extractions in generated SQL queries. Note that this is_json flag may be true when the column_type is not JSON if the parent is a JSON field. Ex: - A json_payload.message field might have is_json=true, since the 'json_payload' parent is of type JSON, and columnType='STRING' if the 'message' field is of type STRING.",
             ).optional(),
-            parentPath: z.string().describe(
+            parentPath: z.unknown().describe(
               "The dot-delimited path of the parent container that holds the target field.This path defines the structural hierarchy and is essential for correctly generating SQL when field keys contain special characters (e.g., dots or brackets).Example: json_payload.labels (This points to the 'labels' object). This is an empty string if the target field is at the root level.",
             ).optional(),
-            projectedField: z.object({
-              alias: z.string().describe(
-                'The alias name for the field. Valid alias examples are: - single word alias: TestAlias - numbers in an alias: Alias123 - multi word alias should be enclosed in quotes: "Test Alias" Invalid alias examples are: - alias containing keywords: WHERE, SELECT, FROM, etc. - alias starting with a number: 1stAlias',
-              ).optional(),
-              cast: z.string().describe(
-                "The cast for the field. This can any SQL cast type. Examples: - STRING - CHAR - DATE - TIMESTAMP - DATETIME - INT - FLOAT",
-              ).optional(),
-              field: z.string().describe(
-                "The field name. This will be the field that is selected using the dot notation to display the drill down value.",
-              ).optional(),
-              operation: z.enum([
-                "FIELD_OPERATION_UNSPECIFIED",
-                "NO_SETTING",
-                "GROUP_BY",
-                "AGGREGATE",
-              ]).describe(
-                "Specifies the role of this field (direct selection, grouping, or aggregation).",
-              ).optional(),
-              regexExtraction: z.string().describe(
-                'The re2 extraction for the field. This will be used to extract the value from the field using REGEXP_EXTRACT. More information on re2 can be found here: https://github.com/google/re2/wiki/Syntax. Meta characters like +?()| will need to be escaped. Examples: - ".(autoscaler.*)$" will be converted to REGEXP_EXTRACT(JSON_VALUE(field),"request(.*(autoscaler.*)$)")in SQL. - "\\(test_value\\)$" will be converted to REGEXP_EXTRACT(JSON_VALUE(field),"request(\\(test_value\\)$)") in SQL.',
-              ).optional(),
-              sqlAggregationFunction: z.object({
-                parameters: z.array(z.string()).describe(
-                  "Optional. Parameters to be applied to the aggregation. Aggregations that support or require parameters are listed above.",
-                ).optional(),
-                type: z.string().describe(
-                  'Required. Specifies the aggregation function. Use one of the following string identifiers: "average": Computes the average (AVG). Applies only to numeric values. "count": Counts the number of values (COUNT). "count-distinct": Counts the number of distinct values (COUNT DISTINCT). "count-distinct-approx": Approximates the count of distinct values (APPROX_COUNT_DISTINCT). "max": Finds the maximum value (MAX). Applies only to numeric values. "min": Finds the minimum value (MIN). Applies only to numeric values. "sum": Computes the sum (SUM). Applies only to numeric values.',
-                ).optional(),
-              }).describe(
-                "Defines the aggregation function to apply to this field. This message is used only when operation is set to AGGREGATE.",
-              ).optional(),
-              truncationGranularity: z.string().describe(
-                "The truncation granularity when grouping by a time/date field. This will be used to truncate the field to the granularity specified. This can be either a date or a time granularity found at https://cloud.google.com/bigquery/docs/reference/standard-sql/timestamp_functions#timestamp_trunc_granularity_date and https://cloud.google.com/bigquery/docs/reference/standard-sql/timestamp_functions#timestamp_trunc_granularity_time respectively.",
-              ).optional(),
-            }).describe(
+            projectedField: z.unknown().describe(
               "Represents a field selected in the query, analogous to an item in a SQL SELECT clause. It specifies the source field and optionally applies transformations like aggregation, casting, regex extraction, or assigns an alias. Use ProjectedField when you need more than just the raw source field name (for which you might use FieldSource directly in QueryBuilderConfig's field_sources list if no transformations or specific operation type are needed).",
             ).optional(),
           }).describe(
             "A source that can be used to represent a field within various parts of a structured query, such as in SELECT, WHERE, or ORDER BY clauses.",
           ).optional(),
           fieldSourceValue: z.object({
-            aliasRef: z.string().describe(
+            aliasRef: z.unknown().describe(
               "The alias name for a field that has already been aliased within a different ProjectedField type elsewhere in the query model. The alias must be defined in the QueryBuilderConfig's field_sources list, otherwise the model is invalid.",
             ).optional(),
-            columnType: z.string().describe(
+            columnType: z.unknown().describe(
               "The type of the selected field. This comes from the schema. Can be one of the BigQuery data types: - STRING - INT64 - FLOAT64 - BOOL - TIMESTAMP - DATE - RECORD - JSON",
             ).optional(),
-            field: z.string().describe(
+            field: z.unknown().describe(
               "The fully qualified, dot-delimited path to the selected atomic field (the leaf value). This path is used for primary selection and actions like drill-down or projection.The path components should match the exact field names or keys as they appear in the underlying data schema. For JSON fields, this means respecting the original casing (e.g., camelCase or snake_case as present in the JSON).To reference field names containing special characters (e.g., hyphens, spaces), enclose the individual path segment in backticks (`).Examples: * json_payload.labels.message * json_payload.request_id * httpRequest.status * json_payload.\\my-custom-field`.value *jsonPayload.`my key with spaces`.data`",
             ).optional(),
-            isJson: z.boolean().describe(
+            isJson: z.unknown().describe(
               "Whether the field is a JSON field, or has a parent that is a JSON field. This value is used to determine JSON extractions in generated SQL queries. Note that this is_json flag may be true when the column_type is not JSON if the parent is a JSON field. Ex: - A json_payload.message field might have is_json=true, since the 'json_payload' parent is of type JSON, and columnType='STRING' if the 'message' field is of type STRING.",
             ).optional(),
-            parentPath: z.string().describe(
+            parentPath: z.unknown().describe(
               "The dot-delimited path of the parent container that holds the target field.This path defines the structural hierarchy and is essential for correctly generating SQL when field keys contain special characters (e.g., dots or brackets).Example: json_payload.labels (This points to the 'labels' object). This is an empty string if the target field is at the root level.",
             ).optional(),
-            projectedField: z.object({
-              alias: z.string().describe(
-                'The alias name for the field. Valid alias examples are: - single word alias: TestAlias - numbers in an alias: Alias123 - multi word alias should be enclosed in quotes: "Test Alias" Invalid alias examples are: - alias containing keywords: WHERE, SELECT, FROM, etc. - alias starting with a number: 1stAlias',
-              ).optional(),
-              cast: z.string().describe(
-                "The cast for the field. This can any SQL cast type. Examples: - STRING - CHAR - DATE - TIMESTAMP - DATETIME - INT - FLOAT",
-              ).optional(),
-              field: z.string().describe(
-                "The field name. This will be the field that is selected using the dot notation to display the drill down value.",
-              ).optional(),
-              operation: z.enum([
-                "FIELD_OPERATION_UNSPECIFIED",
-                "NO_SETTING",
-                "GROUP_BY",
-                "AGGREGATE",
-              ]).describe(
-                "Specifies the role of this field (direct selection, grouping, or aggregation).",
-              ).optional(),
-              regexExtraction: z.string().describe(
-                'The re2 extraction for the field. This will be used to extract the value from the field using REGEXP_EXTRACT. More information on re2 can be found here: https://github.com/google/re2/wiki/Syntax. Meta characters like +?()| will need to be escaped. Examples: - ".(autoscaler.*)$" will be converted to REGEXP_EXTRACT(JSON_VALUE(field),"request(.*(autoscaler.*)$)")in SQL. - "\\(test_value\\)$" will be converted to REGEXP_EXTRACT(JSON_VALUE(field),"request(\\(test_value\\)$)") in SQL.',
-              ).optional(),
-              sqlAggregationFunction: z.object({
-                parameters: z.array(z.string()).describe(
-                  "Optional. Parameters to be applied to the aggregation. Aggregations that support or require parameters are listed above.",
-                ).optional(),
-                type: z.string().describe(
-                  'Required. Specifies the aggregation function. Use one of the following string identifiers: "average": Computes the average (AVG). Applies only to numeric values. "count": Counts the number of values (COUNT). "count-distinct": Counts the number of distinct values (COUNT DISTINCT). "count-distinct-approx": Approximates the count of distinct values (APPROX_COUNT_DISTINCT). "max": Finds the maximum value (MAX). Applies only to numeric values. "min": Finds the minimum value (MIN). Applies only to numeric values. "sum": Computes the sum (SUM). Applies only to numeric values.',
-                ).optional(),
-              }).describe(
-                "Defines the aggregation function to apply to this field. This message is used only when operation is set to AGGREGATE.",
-              ).optional(),
-              truncationGranularity: z.string().describe(
-                "The truncation granularity when grouping by a time/date field. This will be used to truncate the field to the granularity specified. This can be either a date or a time granularity found at https://cloud.google.com/bigquery/docs/reference/standard-sql/timestamp_functions#timestamp_trunc_granularity_date and https://cloud.google.com/bigquery/docs/reference/standard-sql/timestamp_functions#timestamp_trunc_granularity_time respectively.",
-              ).optional(),
-            }).describe(
+            projectedField: z.unknown().describe(
               "Represents a field selected in the query, analogous to an item in a SQL SELECT clause. It specifies the source field and optionally applies transformations like aggregation, casting, regex extraction, or assigns an alias. Use ProjectedField when you need more than just the raw source field name (for which you might use FieldSource directly in QueryBuilderConfig's field_sources list if no transformations or specific operation type are needed).",
             ).optional(),
           }).describe(
@@ -763,56 +533,22 @@ const InputsSchema = z.object({
       ).optional(),
       orderBys: z.array(z.object({
         fieldSource: z.object({
-          aliasRef: z.string().describe(
+          aliasRef: z.unknown().describe(
             "The alias name for a field that has already been aliased within a different ProjectedField type elsewhere in the query model. The alias must be defined in the QueryBuilderConfig's field_sources list, otherwise the model is invalid.",
           ).optional(),
-          columnType: z.string().describe(
+          columnType: z.unknown().describe(
             "The type of the selected field. This comes from the schema. Can be one of the BigQuery data types: - STRING - INT64 - FLOAT64 - BOOL - TIMESTAMP - DATE - RECORD - JSON",
           ).optional(),
-          field: z.string().describe(
+          field: z.unknown().describe(
             "The fully qualified, dot-delimited path to the selected atomic field (the leaf value). This path is used for primary selection and actions like drill-down or projection.The path components should match the exact field names or keys as they appear in the underlying data schema. For JSON fields, this means respecting the original casing (e.g., camelCase or snake_case as present in the JSON).To reference field names containing special characters (e.g., hyphens, spaces), enclose the individual path segment in backticks (`).Examples: * json_payload.labels.message * json_payload.request_id * httpRequest.status * json_payload.\\my-custom-field`.value *jsonPayload.`my key with spaces`.data`",
           ).optional(),
-          isJson: z.boolean().describe(
+          isJson: z.unknown().describe(
             "Whether the field is a JSON field, or has a parent that is a JSON field. This value is used to determine JSON extractions in generated SQL queries. Note that this is_json flag may be true when the column_type is not JSON if the parent is a JSON field. Ex: - A json_payload.message field might have is_json=true, since the 'json_payload' parent is of type JSON, and columnType='STRING' if the 'message' field is of type STRING.",
           ).optional(),
-          parentPath: z.string().describe(
+          parentPath: z.unknown().describe(
             "The dot-delimited path of the parent container that holds the target field.This path defines the structural hierarchy and is essential for correctly generating SQL when field keys contain special characters (e.g., dots or brackets).Example: json_payload.labels (This points to the 'labels' object). This is an empty string if the target field is at the root level.",
           ).optional(),
-          projectedField: z.object({
-            alias: z.string().describe(
-              'The alias name for the field. Valid alias examples are: - single word alias: TestAlias - numbers in an alias: Alias123 - multi word alias should be enclosed in quotes: "Test Alias" Invalid alias examples are: - alias containing keywords: WHERE, SELECT, FROM, etc. - alias starting with a number: 1stAlias',
-            ).optional(),
-            cast: z.string().describe(
-              "The cast for the field. This can any SQL cast type. Examples: - STRING - CHAR - DATE - TIMESTAMP - DATETIME - INT - FLOAT",
-            ).optional(),
-            field: z.string().describe(
-              "The field name. This will be the field that is selected using the dot notation to display the drill down value.",
-            ).optional(),
-            operation: z.enum([
-              "FIELD_OPERATION_UNSPECIFIED",
-              "NO_SETTING",
-              "GROUP_BY",
-              "AGGREGATE",
-            ]).describe(
-              "Specifies the role of this field (direct selection, grouping, or aggregation).",
-            ).optional(),
-            regexExtraction: z.string().describe(
-              'The re2 extraction for the field. This will be used to extract the value from the field using REGEXP_EXTRACT. More information on re2 can be found here: https://github.com/google/re2/wiki/Syntax. Meta characters like +?()| will need to be escaped. Examples: - ".(autoscaler.*)$" will be converted to REGEXP_EXTRACT(JSON_VALUE(field),"request(.*(autoscaler.*)$)")in SQL. - "\\(test_value\\)$" will be converted to REGEXP_EXTRACT(JSON_VALUE(field),"request(\\(test_value\\)$)") in SQL.',
-            ).optional(),
-            sqlAggregationFunction: z.object({
-              parameters: z.array(z.string()).describe(
-                "Optional. Parameters to be applied to the aggregation. Aggregations that support or require parameters are listed above.",
-              ).optional(),
-              type: z.string().describe(
-                'Required. Specifies the aggregation function. Use one of the following string identifiers: "average": Computes the average (AVG). Applies only to numeric values. "count": Counts the number of values (COUNT). "count-distinct": Counts the number of distinct values (COUNT DISTINCT). "count-distinct-approx": Approximates the count of distinct values (APPROX_COUNT_DISTINCT). "max": Finds the maximum value (MAX). Applies only to numeric values. "min": Finds the minimum value (MIN). Applies only to numeric values. "sum": Computes the sum (SUM). Applies only to numeric values.',
-              ).optional(),
-            }).describe(
-              "Defines the aggregation function to apply to this field. This message is used only when operation is set to AGGREGATE.",
-            ).optional(),
-            truncationGranularity: z.string().describe(
-              "The truncation granularity when grouping by a time/date field. This will be used to truncate the field to the granularity specified. This can be either a date or a time granularity found at https://cloud.google.com/bigquery/docs/reference/standard-sql/timestamp_functions#timestamp_trunc_granularity_date and https://cloud.google.com/bigquery/docs/reference/standard-sql/timestamp_functions#timestamp_trunc_granularity_time respectively.",
-            ).optional(),
-          }).describe(
+          projectedField: z.unknown().describe(
             "Represents a field selected in the query, analogous to an item in a SQL SELECT clause. It specifies the source field and optionally applies transformations like aggregation, casting, regex extraction, or assigns an alias. Use ProjectedField when you need more than just the raw source field name (for which you might use FieldSource directly in QueryBuilderConfig's field_sources list if no transformations or specific operation type are needed).",
           ).optional(),
         }).describe(
@@ -853,7 +589,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/logging/savedqueries",
-  version: "2026.04.03.3",
+  version: "2026.04.04.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -877,6 +613,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.3",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.04.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

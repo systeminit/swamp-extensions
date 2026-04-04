@@ -59,72 +59,32 @@ const StateSchema = z.object({
   targetingCriterion: z.array(z.object({
     exclusions: z.array(z.object({
       creativeSizeValue: z.object({
-        allowedFormats: z.array(z.string()),
-        companionSizes: z.array(z.object({
-          height: z.number(),
-          width: z.number(),
-        })),
-        creativeSizeType: z.string(),
-        nativeTemplate: z.string(),
-        size: z.object({
-          height: z.number(),
-          width: z.number(),
-        }),
-        skippableAdType: z.string(),
+        allowedFormats: z.unknown(),
+        companionSizes: z.unknown(),
+        creativeSizeType: z.unknown(),
+        nativeTemplate: z.unknown(),
+        size: z.unknown(),
+        skippableAdType: z.unknown(),
       }),
       dayPartTargetingValue: z.object({
-        dayParts: z.array(z.object({
-          dayOfWeek: z.string(),
-          endTime: z.object({
-            hours: z.number(),
-            minutes: z.number(),
-            nanos: z.number(),
-            seconds: z.number(),
-          }),
-          startTime: z.object({
-            hours: z.number(),
-            minutes: z.number(),
-            nanos: z.number(),
-            seconds: z.number(),
-          }),
-        })),
-        timeZoneType: z.string(),
+        dayParts: z.unknown(),
+        timeZoneType: z.unknown(),
       }),
       longValue: z.string(),
       stringValue: z.string(),
     })),
     inclusions: z.array(z.object({
       creativeSizeValue: z.object({
-        allowedFormats: z.array(z.string()),
-        companionSizes: z.array(z.object({
-          height: z.number(),
-          width: z.number(),
-        })),
-        creativeSizeType: z.string(),
-        nativeTemplate: z.string(),
-        size: z.object({
-          height: z.number(),
-          width: z.number(),
-        }),
-        skippableAdType: z.string(),
+        allowedFormats: z.unknown(),
+        companionSizes: z.unknown(),
+        creativeSizeType: z.unknown(),
+        nativeTemplate: z.unknown(),
+        size: z.unknown(),
+        skippableAdType: z.unknown(),
       }),
       dayPartTargetingValue: z.object({
-        dayParts: z.array(z.object({
-          dayOfWeek: z.string(),
-          endTime: z.object({
-            hours: z.number(),
-            minutes: z.number(),
-            nanos: z.number(),
-            seconds: z.number(),
-          }),
-          startTime: z.object({
-            hours: z.number(),
-            minutes: z.number(),
-            nanos: z.number(),
-            seconds: z.number(),
-          }),
-        })),
-        timeZoneType: z.string(),
+        dayParts: z.unknown(),
+        timeZoneType: z.unknown(),
       }),
       longValue: z.string(),
       stringValue: z.string(),
@@ -145,17 +105,13 @@ const StateSchema = z.object({
     estimatedImpressionsPerDay: z.string(),
     guaranteedFixedPriceTerms: z.object({
       fixedPrices: z.array(z.object({
-        advertiserIds: z.array(z.string()),
+        advertiserIds: z.array(z.unknown()),
         buyer: z.object({
-          accountId: z.string(),
+          accountId: z.unknown(),
         }),
         price: z.object({
-          amount: z.object({
-            currencyCode: z.string(),
-            nanos: z.number(),
-            units: z.string(),
-          }),
-          pricingType: z.string(),
+          amount: z.unknown(),
+          pricingType: z.unknown(),
         }),
       })),
       guaranteedImpressions: z.string(),
@@ -168,33 +124,25 @@ const StateSchema = z.object({
     nonGuaranteedAuctionTerms: z.object({
       autoOptimizePrivateAuction: z.boolean(),
       reservePricesPerBuyer: z.array(z.object({
-        advertiserIds: z.array(z.string()),
+        advertiserIds: z.array(z.unknown()),
         buyer: z.object({
-          accountId: z.string(),
+          accountId: z.unknown(),
         }),
         price: z.object({
-          amount: z.object({
-            currencyCode: z.string(),
-            nanos: z.number(),
-            units: z.string(),
-          }),
-          pricingType: z.string(),
+          amount: z.unknown(),
+          pricingType: z.unknown(),
         }),
       })),
     }),
     nonGuaranteedFixedPriceTerms: z.object({
       fixedPrices: z.array(z.object({
-        advertiserIds: z.array(z.string()),
+        advertiserIds: z.array(z.unknown()),
         buyer: z.object({
-          accountId: z.string(),
+          accountId: z.unknown(),
         }),
         price: z.object({
-          amount: z.object({
-            currencyCode: z.string(),
-            nanos: z.number(),
-            units: z.string(),
-          }),
-          pricingType: z.string(),
+          amount: z.unknown(),
+          pricingType: z.unknown(),
         }),
       })),
     }),
@@ -212,7 +160,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/adexchangebuyer2/accounts-products",
-  version: "2026.04.03.3",
+  version: "2026.04.04.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -236,6 +184,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.3",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.04.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

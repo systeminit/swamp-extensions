@@ -95,16 +95,16 @@ const GlobalArgsSchema = z.object({
       ).optional(),
       enumValues: z.object({
         values: z.array(z.object({
-          description: z.string().describe(
+          description: z.unknown().describe(
             "Optional. The detailed description of the allowed value.",
           ).optional(),
-          displayName: z.string().describe(
+          displayName: z.unknown().describe(
             "Required. The display name of the allowed value.",
           ).optional(),
-          id: z.string().describe(
+          id: z.unknown().describe(
             "Required. The ID of the allowed value. * If provided, the same will be used. The service will throw an error if the specified id is already used by another allowed value in the same attribute resource. * If not provided, a system generated id derived from the display name will be used. In this case, the service will handle conflict resolution by adding a system generated suffix in case of duplicates. This value should be 4-63 characters, and valid characters are /a-z-/.",
           ).optional(),
-          immutable: z.boolean().describe(
+          immutable: z.unknown().describe(
             "Optional. When set to true, the allowed value cannot be updated or deleted by the user. It can only be true for System defined attributes.",
           ).optional(),
         })).describe(
@@ -190,20 +190,18 @@ const GlobalArgsSchema = z.object({
       ).optional(),
       range: z.object({
         end: z.object({
-          character: z.number().int().describe(
+          character: z.unknown().describe(
             "Required. Character position within the line (zero-indexed).",
           ).optional(),
-          line: z.number().int().describe(
-            "Required. Line number (zero-indexed).",
-          ).optional(),
+          line: z.unknown().describe("Required. Line number (zero-indexed).")
+            .optional(),
         }).describe("Point within the file (line and character).").optional(),
         start: z.object({
-          character: z.number().int().describe(
+          character: z.unknown().describe(
             "Required. Character position within the line (zero-indexed).",
           ).optional(),
-          line: z.number().int().describe(
-            "Required. Line number (zero-indexed).",
-          ).optional(),
+          line: z.unknown().describe("Required. Line number (zero-indexed).")
+            .optional(),
         }).describe("Point within the file (line and character).").optional(),
       }).describe("Object describing where in the file the issue was found.")
         .optional(),
@@ -339,12 +337,12 @@ const StateSchema = z.object({
       path: z.array(z.string()),
       range: z.object({
         end: z.object({
-          character: z.number(),
-          line: z.number(),
+          character: z.unknown(),
+          line: z.unknown(),
         }),
         start: z.object({
-          character: z.number(),
-          line: z.number(),
+          character: z.unknown(),
+          line: z.unknown(),
         }),
       }),
       severity: z.string(),
@@ -404,16 +402,16 @@ const InputsSchema = z.object({
       ).optional(),
       enumValues: z.object({
         values: z.array(z.object({
-          description: z.string().describe(
+          description: z.unknown().describe(
             "Optional. The detailed description of the allowed value.",
           ).optional(),
-          displayName: z.string().describe(
+          displayName: z.unknown().describe(
             "Required. The display name of the allowed value.",
           ).optional(),
-          id: z.string().describe(
+          id: z.unknown().describe(
             "Required. The ID of the allowed value. * If provided, the same will be used. The service will throw an error if the specified id is already used by another allowed value in the same attribute resource. * If not provided, a system generated id derived from the display name will be used. In this case, the service will handle conflict resolution by adding a system generated suffix in case of duplicates. This value should be 4-63 characters, and valid characters are /a-z-/.",
           ).optional(),
-          immutable: z.boolean().describe(
+          immutable: z.unknown().describe(
             "Optional. When set to true, the allowed value cannot be updated or deleted by the user. It can only be true for System defined attributes.",
           ).optional(),
         })).describe(
@@ -499,20 +497,18 @@ const InputsSchema = z.object({
       ).optional(),
       range: z.object({
         end: z.object({
-          character: z.number().int().describe(
+          character: z.unknown().describe(
             "Required. Character position within the line (zero-indexed).",
           ).optional(),
-          line: z.number().int().describe(
-            "Required. Line number (zero-indexed).",
-          ).optional(),
+          line: z.unknown().describe("Required. Line number (zero-indexed).")
+            .optional(),
         }).describe("Point within the file (line and character).").optional(),
         start: z.object({
-          character: z.number().int().describe(
+          character: z.unknown().describe(
             "Required. Character position within the line (zero-indexed).",
           ).optional(),
-          line: z.number().int().describe(
-            "Required. Line number (zero-indexed).",
-          ).optional(),
+          line: z.unknown().describe("Required. Line number (zero-indexed).")
+            .optional(),
         }).describe("Point within the file (line and character).").optional(),
       }).describe("Object describing where in the file the issue was found.")
         .optional(),
@@ -610,7 +606,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/apihub/apis-versions-specs",
-  version: "2026.04.03.3",
+  version: "2026.04.04.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -634,6 +630,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.3",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.04.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

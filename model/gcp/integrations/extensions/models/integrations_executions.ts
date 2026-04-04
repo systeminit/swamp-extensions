@@ -60,104 +60,23 @@ const StateSchema = z.object({
     eventExecutionDetails: z.object({
       cancelReason: z.string(),
       eventAttemptStats: z.array(z.object({
-        endTime: z.string(),
-        startTime: z.string(),
+        endTime: z.unknown(),
+        startTime: z.unknown(),
       })),
       eventExecutionSnapshot: z.array(z.object({
-        checkpointTaskNumber: z.string(),
-        clientId: z.string(),
-        conditionResults: z.array(z.object({
-          currentTaskNumber: z.string(),
-          nextTaskNumber: z.string(),
-          result: z.boolean(),
-        })),
-        diffParams: z.object({
-          parameters: z.array(z.object({
-            key: z.string(),
-            masked: z.boolean(),
-            value: z.object({
-              booleanArray: z.object({
-                booleanValues: z.array(z.boolean()),
-              }),
-              booleanValue: z.boolean(),
-              doubleArray: z.object({
-                doubleValues: z.array(z.number()),
-              }),
-              doubleValue: z.number(),
-              intArray: z.object({
-                intValues: z.array(z.string()),
-              }),
-              intValue: z.string(),
-              protoArray: z.object({
-                protoValues: z.array(z.record(z.string(), z.unknown())),
-              }),
-              protoValue: z.record(z.string(), z.unknown()),
-              serializedObjectValue: z.object({
-                objectValue: z.string(),
-              }),
-              stringArray: z.object({
-                stringValues: z.array(z.string()),
-              }),
-              stringValue: z.string(),
-            }),
-          })),
-        }),
-        eventExecutionInfoId: z.string(),
-        eventExecutionSnapshotId: z.string(),
-        eventExecutionSnapshotMetadata: z.object({
-          ancestorIterationNumbers: z.array(z.string()),
-          ancestorTaskNumbers: z.array(z.string()),
-          eventAttemptNum: z.number(),
-          integrationName: z.string(),
-          taskAttemptNum: z.number(),
-          taskLabel: z.string(),
-          taskName: z.string(),
-          taskNumber: z.string(),
-        }),
-        eventParams: z.object({
-          parameters: z.array(z.object({
-            key: z.string(),
-            masked: z.boolean(),
-            value: z.object({
-              booleanArray: z.object({
-                booleanValues: z.array(z.boolean()),
-              }),
-              booleanValue: z.boolean(),
-              doubleArray: z.object({
-                doubleValues: z.array(z.number()),
-              }),
-              doubleValue: z.number(),
-              intArray: z.object({
-                intValues: z.array(z.string()),
-              }),
-              intValue: z.string(),
-              protoArray: z.object({
-                protoValues: z.array(z.record(z.string(), z.unknown())),
-              }),
-              protoValue: z.record(z.string(), z.unknown()),
-              serializedObjectValue: z.object({
-                objectValue: z.string(),
-              }),
-              stringArray: z.object({
-                stringValues: z.array(z.string()),
-              }),
-              stringValue: z.string(),
-            }),
-          })),
-        }),
-        exceedMaxSize: z.boolean(),
-        snapshotTime: z.string(),
-        taskExecutionDetails: z.array(z.object({
-          skippedOnFailure: z.boolean(),
-          taskAttemptStats: z.array(z.object({
-            endTime: z.string(),
-            startTime: z.string(),
-          })),
-          taskExecutionState: z.string(),
-          taskNumber: z.string(),
-        })),
-        taskName: z.string(),
-        workflowName: z.string(),
+        checkpointTaskNumber: z.unknown(),
+        clientId: z.unknown(),
+        conditionResults: z.unknown(),
+        diffParams: z.unknown(),
+        eventExecutionInfoId: z.unknown(),
+        eventExecutionSnapshotId: z.unknown(),
+        eventExecutionSnapshotMetadata: z.unknown(),
+        eventParams: z.unknown(),
+        exceedMaxSize: z.unknown(),
+        snapshotTime: z.unknown(),
+        taskExecutionDetails: z.unknown(),
+        taskName: z.unknown(),
+        workflowName: z.unknown(),
       })),
       eventExecutionSnapshotsSize: z.string(),
       eventExecutionState: z.string(),
@@ -169,31 +88,15 @@ const StateSchema = z.object({
     }),
     executionDetails: z.object({
       attemptStats: z.array(z.object({
-        endTime: z.string(),
-        startTime: z.string(),
+        endTime: z.unknown(),
+        startTime: z.unknown(),
       })),
       eventExecutionSnapshotsSize: z.string(),
       executionSnapshots: z.array(z.object({
-        checkpointTaskNumber: z.string(),
-        executionSnapshotMetadata: z.object({
-          ancestorIterationNumbers: z.array(z.string()),
-          ancestorTaskNumbers: z.array(z.string()),
-          executionAttempt: z.number(),
-          integrationName: z.string(),
-          task: z.string(),
-          taskAttempt: z.number(),
-          taskLabel: z.string(),
-          taskNumber: z.string(),
-        }),
-        params: z.record(z.string(), z.unknown()),
-        taskExecutionDetails: z.array(z.object({
-          taskAttemptStats: z.array(z.object({
-            endTime: z.string(),
-            startTime: z.string(),
-          })),
-          taskExecutionState: z.string(),
-          taskNumber: z.string(),
-        })),
+        checkpointTaskNumber: z.unknown(),
+        executionSnapshotMetadata: z.unknown(),
+        params: z.unknown(),
+        taskExecutionDetails: z.unknown(),
       })),
       state: z.string(),
     }),
@@ -212,30 +115,18 @@ const StateSchema = z.object({
       key: z.string(),
       masked: z.boolean(),
       value: z.object({
-        booleanArray: z.object({
-          booleanValues: z.array(z.boolean()),
-        }),
-        booleanValue: z.boolean(),
-        doubleArray: z.object({
-          doubleValues: z.array(z.number()),
-        }),
-        doubleValue: z.number(),
-        intArray: z.object({
-          intValues: z.array(z.string()),
-        }),
-        intValue: z.string(),
-        jsonValue: z.string(),
-        protoArray: z.object({
-          protoValues: z.array(z.record(z.string(), z.unknown())),
-        }),
-        protoValue: z.record(z.string(), z.unknown()),
-        serializedObjectValue: z.object({
-          objectValue: z.string(),
-        }),
-        stringArray: z.object({
-          stringValues: z.array(z.string()),
-        }),
-        stringValue: z.string(),
+        booleanArray: z.unknown(),
+        booleanValue: z.unknown(),
+        doubleArray: z.unknown(),
+        doubleValue: z.unknown(),
+        intArray: z.unknown(),
+        intValue: z.unknown(),
+        jsonValue: z.unknown(),
+        protoArray: z.unknown(),
+        protoValue: z.unknown(),
+        serializedObjectValue: z.unknown(),
+        stringArray: z.unknown(),
+        stringValue: z.unknown(),
       }),
     })),
     responseParameters: z.record(z.string(), z.unknown()),
@@ -244,30 +135,18 @@ const StateSchema = z.object({
       key: z.string(),
       masked: z.boolean(),
       value: z.object({
-        booleanArray: z.object({
-          booleanValues: z.array(z.boolean()),
-        }),
-        booleanValue: z.boolean(),
-        doubleArray: z.object({
-          doubleValues: z.array(z.number()),
-        }),
-        doubleValue: z.number(),
-        intArray: z.object({
-          intValues: z.array(z.string()),
-        }),
-        intValue: z.string(),
-        jsonValue: z.string(),
-        protoArray: z.object({
-          protoValues: z.array(z.record(z.string(), z.unknown())),
-        }),
-        protoValue: z.record(z.string(), z.unknown()),
-        serializedObjectValue: z.object({
-          objectValue: z.string(),
-        }),
-        stringArray: z.object({
-          stringValues: z.array(z.string()),
-        }),
-        stringValue: z.string(),
+        booleanArray: z.unknown(),
+        booleanValue: z.unknown(),
+        doubleArray: z.unknown(),
+        doubleValue: z.unknown(),
+        intArray: z.unknown(),
+        intValue: z.unknown(),
+        jsonValue: z.unknown(),
+        protoArray: z.unknown(),
+        protoValue: z.unknown(),
+        serializedObjectValue: z.unknown(),
+        stringArray: z.unknown(),
+        stringValue: z.unknown(),
       }),
     })),
     snapshotNumber: z.string(),
@@ -284,46 +163,18 @@ const StateSchema = z.object({
       checkpointTaskNumber: z.string(),
       clientId: z.string(),
       conditionResults: z.array(z.object({
-        currentTaskNumber: z.string(),
-        nextTaskNumber: z.string(),
-        result: z.boolean(),
+        currentTaskNumber: z.unknown(),
+        nextTaskNumber: z.unknown(),
+        result: z.unknown(),
       })),
       diffParams: z.object({
-        parameters: z.array(z.object({
-          key: z.string(),
-          masked: z.boolean(),
-          value: z.object({
-            booleanArray: z.object({
-              booleanValues: z.array(z.boolean()),
-            }),
-            booleanValue: z.boolean(),
-            doubleArray: z.object({
-              doubleValues: z.array(z.number()),
-            }),
-            doubleValue: z.number(),
-            intArray: z.object({
-              intValues: z.array(z.string()),
-            }),
-            intValue: z.string(),
-            protoArray: z.object({
-              protoValues: z.array(z.record(z.string(), z.unknown())),
-            }),
-            protoValue: z.record(z.string(), z.unknown()),
-            serializedObjectValue: z.object({
-              objectValue: z.string(),
-            }),
-            stringArray: z.object({
-              stringValues: z.array(z.string()),
-            }),
-            stringValue: z.string(),
-          }),
-        })),
+        parameters: z.array(z.unknown()),
       }),
       eventExecutionInfoId: z.string(),
       eventExecutionSnapshotId: z.string(),
       eventExecutionSnapshotMetadata: z.object({
-        ancestorIterationNumbers: z.array(z.string()),
-        ancestorTaskNumbers: z.array(z.string()),
+        ancestorIterationNumbers: z.array(z.unknown()),
+        ancestorTaskNumbers: z.array(z.unknown()),
         eventAttemptNum: z.number(),
         integrationName: z.string(),
         taskAttemptNum: z.number(),
@@ -332,46 +183,15 @@ const StateSchema = z.object({
         taskNumber: z.string(),
       }),
       eventParams: z.object({
-        parameters: z.array(z.object({
-          key: z.string(),
-          masked: z.boolean(),
-          value: z.object({
-            booleanArray: z.object({
-              booleanValues: z.array(z.boolean()),
-            }),
-            booleanValue: z.boolean(),
-            doubleArray: z.object({
-              doubleValues: z.array(z.number()),
-            }),
-            doubleValue: z.number(),
-            intArray: z.object({
-              intValues: z.array(z.string()),
-            }),
-            intValue: z.string(),
-            protoArray: z.object({
-              protoValues: z.array(z.record(z.string(), z.unknown())),
-            }),
-            protoValue: z.record(z.string(), z.unknown()),
-            serializedObjectValue: z.object({
-              objectValue: z.string(),
-            }),
-            stringArray: z.object({
-              stringValues: z.array(z.string()),
-            }),
-            stringValue: z.string(),
-          }),
-        })),
+        parameters: z.array(z.unknown()),
       }),
       exceedMaxSize: z.boolean(),
       snapshotTime: z.string(),
       taskExecutionDetails: z.array(z.object({
-        skippedOnFailure: z.boolean(),
-        taskAttemptStats: z.array(z.object({
-          endTime: z.string(),
-          startTime: z.string(),
-        })),
-        taskExecutionState: z.string(),
-        taskNumber: z.string(),
+        skippedOnFailure: z.unknown(),
+        taskAttemptStats: z.unknown(),
+        taskExecutionState: z.unknown(),
+        taskNumber: z.unknown(),
       })),
       taskName: z.string(),
       workflowName: z.string(),
@@ -393,8 +213,8 @@ const StateSchema = z.object({
     executionSnapshots: z.array(z.object({
       checkpointTaskNumber: z.string(),
       executionSnapshotMetadata: z.object({
-        ancestorIterationNumbers: z.array(z.string()),
-        ancestorTaskNumbers: z.array(z.string()),
+        ancestorIterationNumbers: z.array(z.unknown()),
+        ancestorTaskNumbers: z.array(z.unknown()),
         executionAttempt: z.number(),
         integrationName: z.string(),
         task: z.string(),
@@ -404,12 +224,9 @@ const StateSchema = z.object({
       }),
       params: z.record(z.string(), z.unknown()),
       taskExecutionDetails: z.array(z.object({
-        taskAttemptStats: z.array(z.object({
-          endTime: z.string(),
-          startTime: z.string(),
-        })),
-        taskExecutionState: z.string(),
-        taskNumber: z.string(),
+        taskAttemptStats: z.unknown(),
+        taskExecutionState: z.unknown(),
+        taskNumber: z.unknown(),
       })),
     })),
     state: z.string(),
@@ -430,27 +247,27 @@ const StateSchema = z.object({
     masked: z.boolean(),
     value: z.object({
       booleanArray: z.object({
-        booleanValues: z.array(z.boolean()),
+        booleanValues: z.array(z.unknown()),
       }),
       booleanValue: z.boolean(),
       doubleArray: z.object({
-        doubleValues: z.array(z.number()),
+        doubleValues: z.array(z.unknown()),
       }),
       doubleValue: z.number(),
       intArray: z.object({
-        intValues: z.array(z.string()),
+        intValues: z.array(z.unknown()),
       }),
       intValue: z.string(),
       jsonValue: z.string(),
       protoArray: z.object({
-        protoValues: z.array(z.record(z.string(), z.unknown())),
+        protoValues: z.array(z.unknown()),
       }),
       protoValue: z.record(z.string(), z.unknown()),
       serializedObjectValue: z.object({
         objectValue: z.string(),
       }),
       stringArray: z.object({
-        stringValues: z.array(z.string()),
+        stringValues: z.array(z.unknown()),
       }),
       stringValue: z.string(),
     }),
@@ -462,27 +279,27 @@ const StateSchema = z.object({
     masked: z.boolean(),
     value: z.object({
       booleanArray: z.object({
-        booleanValues: z.array(z.boolean()),
+        booleanValues: z.array(z.unknown()),
       }),
       booleanValue: z.boolean(),
       doubleArray: z.object({
-        doubleValues: z.array(z.number()),
+        doubleValues: z.array(z.unknown()),
       }),
       doubleValue: z.number(),
       intArray: z.object({
-        intValues: z.array(z.string()),
+        intValues: z.array(z.unknown()),
       }),
       intValue: z.string(),
       jsonValue: z.string(),
       protoArray: z.object({
-        protoValues: z.array(z.record(z.string(), z.unknown())),
+        protoValues: z.array(z.unknown()),
       }),
       protoValue: z.record(z.string(), z.unknown()),
       serializedObjectValue: z.object({
         objectValue: z.string(),
       }),
       stringArray: z.object({
-        stringValues: z.array(z.string()),
+        stringValues: z.array(z.unknown()),
       }),
       stringValue: z.string(),
     }),
@@ -503,7 +320,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/integrations/integrations-executions",
-  version: "2026.04.03.3",
+  version: "2026.04.04.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -527,6 +344,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.3",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.04.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

@@ -164,7 +164,7 @@ const GlobalArgsSchema = z.object({
         "Optional. Indicates whether or not this extension is critical (i.e., if the client does not know how to handle this extension, the client should consider this to be an error).",
       ).optional(),
       objectId: z.object({
-        objectIdPath: z.array(z.number().int()).describe(
+        objectIdPath: z.array(z.unknown()).describe(
           "Required. The parts of an OID path. The most significant parts of the path come first.",
         ).optional(),
       }).describe(
@@ -241,7 +241,7 @@ const GlobalArgsSchema = z.object({
         "KeyUsage.ExtendedKeyUsageOptions has fields that correspond to certain common OIDs that could be specified as an extended key usage value.",
       ).optional(),
       unknownExtendedKeyUsages: z.array(z.object({
-        objectIdPath: z.array(z.number().int()).describe(
+        objectIdPath: z.array(z.unknown()).describe(
           "Required. The parts of an OID path. The most significant parts of the path come first.",
         ).optional(),
       })).describe(
@@ -328,7 +328,7 @@ const StateSchema = z.object({
     additionalExtensions: z.array(z.object({
       critical: z.boolean(),
       objectId: z.object({
-        objectIdPath: z.array(z.number()),
+        objectIdPath: z.array(z.unknown()),
       }),
       value: z.string(),
     })),
@@ -358,7 +358,7 @@ const StateSchema = z.object({
         timeStamping: z.boolean(),
       }),
       unknownExtendedKeyUsages: z.array(z.object({
-        objectIdPath: z.array(z.number()),
+        objectIdPath: z.array(z.unknown()),
       })),
     }),
     nameConstraints: z.object({
@@ -450,7 +450,7 @@ const InputsSchema = z.object({
         "Optional. Indicates whether or not this extension is critical (i.e., if the client does not know how to handle this extension, the client should consider this to be an error).",
       ).optional(),
       objectId: z.object({
-        objectIdPath: z.array(z.number().int()).describe(
+        objectIdPath: z.array(z.unknown()).describe(
           "Required. The parts of an OID path. The most significant parts of the path come first.",
         ).optional(),
       }).describe(
@@ -527,7 +527,7 @@ const InputsSchema = z.object({
         "KeyUsage.ExtendedKeyUsageOptions has fields that correspond to certain common OIDs that could be specified as an extended key usage value.",
       ).optional(),
       unknownExtendedKeyUsages: z.array(z.object({
-        objectIdPath: z.array(z.number().int()).describe(
+        objectIdPath: z.array(z.unknown()).describe(
           "Required. The parts of an OID path. The most significant parts of the path come first.",
         ).optional(),
       })).describe(
@@ -590,7 +590,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/privateca/certificatetemplates",
-  version: "2026.04.03.3",
+  version: "2026.04.04.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -614,6 +614,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.3",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.04.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

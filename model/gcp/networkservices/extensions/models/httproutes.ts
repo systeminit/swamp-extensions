@@ -111,22 +111,22 @@ const GlobalArgsSchema = z.object({
         allowCredentials: z.boolean().describe(
           "In response to a preflight request, setting this to true indicates that the actual request can include user credentials. This translates to the Access-Control-Allow-Credentials header. Default value is false.",
         ).optional(),
-        allowHeaders: z.array(z.string()).describe(
+        allowHeaders: z.array(z.unknown()).describe(
           "Specifies the content for Access-Control-Allow-Headers header.",
         ).optional(),
-        allowMethods: z.array(z.string()).describe(
+        allowMethods: z.array(z.unknown()).describe(
           "Specifies the content for Access-Control-Allow-Methods header.",
         ).optional(),
-        allowOriginRegexes: z.array(z.string()).describe(
+        allowOriginRegexes: z.array(z.unknown()).describe(
           "Specifies the regular expression patterns that match allowed origins. For regular expression grammar, please see https://github.com/google/re2/wiki/Syntax.",
         ).optional(),
-        allowOrigins: z.array(z.string()).describe(
+        allowOrigins: z.array(z.unknown()).describe(
           "Specifies the list of origins that will be allowed to do CORS requests. An origin is allowed if it matches either an item in allow_origins or an item in allow_origin_regexes.",
         ).optional(),
         disabled: z.boolean().describe(
           "If true, the CORS policy is disabled. The default value is false, which indicates that the CORS policy is in effect.",
         ).optional(),
-        exposeHeaders: z.array(z.string()).describe(
+        exposeHeaders: z.array(z.unknown()).describe(
           "Specifies the content for Access-Control-Expose-Headers header.",
         ).optional(),
         maxAge: z.string().describe(
@@ -136,36 +136,16 @@ const GlobalArgsSchema = z.object({
         "The Specification for allowing client side cross-origin requests.",
       ).optional(),
       destinations: z.array(z.object({
-        requestHeaderModifier: z.object({
-          add: z.record(z.string(), z.string()).describe(
-            "Add the headers with given map where key is the name of the header, value is the value of the header.",
-          ).optional(),
-          remove: z.array(z.string()).describe(
-            "Remove headers (matching by header names) specified in the list.",
-          ).optional(),
-          set: z.record(z.string(), z.string()).describe(
-            "Completely overwrite/replace the headers with given map where key is the name of the header, value is the value of the header.",
-          ).optional(),
-        }).describe(
+        requestHeaderModifier: z.unknown().describe(
           "The specification for modifying HTTP header in HTTP request and HTTP response.",
         ).optional(),
-        responseHeaderModifier: z.object({
-          add: z.record(z.string(), z.string()).describe(
-            "Add the headers with given map where key is the name of the header, value is the value of the header.",
-          ).optional(),
-          remove: z.array(z.string()).describe(
-            "Remove headers (matching by header names) specified in the list.",
-          ).optional(),
-          set: z.record(z.string(), z.string()).describe(
-            "Completely overwrite/replace the headers with given map where key is the name of the header, value is the value of the header.",
-          ).optional(),
-        }).describe(
+        responseHeaderModifier: z.unknown().describe(
           "The specification for modifying HTTP header in HTTP request and HTTP response.",
         ).optional(),
-        serviceName: z.string().describe(
+        serviceName: z.unknown().describe(
           "The URL of a BackendService to route traffic to.",
         ).optional(),
-        weight: z.number().int().describe(
+        weight: z.unknown().describe(
           "Specifies the proportion of requests forwarded to the backend referenced by the serviceName field. This is computed as: - weight/Sum(weights in this destination list). For non-zero values, there may be some epsilon from the exact proportion defined here depending on the precision an implementation supports. If only one serviceName is specified and it has a weight greater than 0, 100% of the traffic is forwarded to that backend. If weights are specified for any one service name, they need to be specified for all of them. If weights are unspecified for all services, then, traffic is distributed in equal proportions to all of them.",
         ).optional(),
       })).describe("The destination to which traffic should be forwarded.")
@@ -183,20 +163,20 @@ const GlobalArgsSchema = z.object({
       }).describe("Static HTTP response object to be returned.").optional(),
       faultInjectionPolicy: z.object({
         abort: z.object({
-          httpStatus: z.number().int().describe(
+          httpStatus: z.unknown().describe(
             "The HTTP status code used to abort the request. The value must be between 200 and 599 inclusive.",
           ).optional(),
-          percentage: z.number().int().describe(
+          percentage: z.unknown().describe(
             "The percentage of traffic which will be aborted. The value must be between [0, 100]",
           ).optional(),
         }).describe(
           "Specification of how client requests are aborted as part of fault injection before being sent to a destination.",
         ).optional(),
         delay: z.object({
-          fixedDelay: z.string().describe(
+          fixedDelay: z.unknown().describe(
             "Specify a fixed delay before forwarding the request.",
           ).optional(),
-          percentage: z.number().int().describe(
+          percentage: z.unknown().describe(
             "The percentage of traffic on which delay will be injected. The value must be between [0, 100]",
           ).optional(),
         }).describe(
@@ -237,13 +217,13 @@ const GlobalArgsSchema = z.object({
         ).optional(),
       }).describe("The specification for redirecting traffic.").optional(),
       requestHeaderModifier: z.object({
-        add: z.record(z.string(), z.string()).describe(
+        add: z.record(z.string(), z.unknown()).describe(
           "Add the headers with given map where key is the name of the header, value is the value of the header.",
         ).optional(),
-        remove: z.array(z.string()).describe(
+        remove: z.array(z.unknown()).describe(
           "Remove headers (matching by header names) specified in the list.",
         ).optional(),
-        set: z.record(z.string(), z.string()).describe(
+        set: z.record(z.string(), z.unknown()).describe(
           "Completely overwrite/replace the headers with given map where key is the name of the header, value is the value of the header.",
         ).optional(),
       }).describe(
@@ -251,36 +231,16 @@ const GlobalArgsSchema = z.object({
       ).optional(),
       requestMirrorPolicy: z.object({
         destination: z.object({
-          requestHeaderModifier: z.object({
-            add: z.record(z.string(), z.string()).describe(
-              "Add the headers with given map where key is the name of the header, value is the value of the header.",
-            ).optional(),
-            remove: z.array(z.string()).describe(
-              "Remove headers (matching by header names) specified in the list.",
-            ).optional(),
-            set: z.record(z.string(), z.string()).describe(
-              "Completely overwrite/replace the headers with given map where key is the name of the header, value is the value of the header.",
-            ).optional(),
-          }).describe(
+          requestHeaderModifier: z.unknown().describe(
             "The specification for modifying HTTP header in HTTP request and HTTP response.",
           ).optional(),
-          responseHeaderModifier: z.object({
-            add: z.record(z.string(), z.string()).describe(
-              "Add the headers with given map where key is the name of the header, value is the value of the header.",
-            ).optional(),
-            remove: z.array(z.string()).describe(
-              "Remove headers (matching by header names) specified in the list.",
-            ).optional(),
-            set: z.record(z.string(), z.string()).describe(
-              "Completely overwrite/replace the headers with given map where key is the name of the header, value is the value of the header.",
-            ).optional(),
-          }).describe(
+          responseHeaderModifier: z.unknown().describe(
             "The specification for modifying HTTP header in HTTP request and HTTP response.",
           ).optional(),
-          serviceName: z.string().describe(
+          serviceName: z.unknown().describe(
             "The URL of a BackendService to route traffic to.",
           ).optional(),
-          weight: z.number().int().describe(
+          weight: z.unknown().describe(
             "Specifies the proportion of requests forwarded to the backend referenced by the serviceName field. This is computed as: - weight/Sum(weights in this destination list). For non-zero values, there may be some epsilon from the exact proportion defined here depending on the precision an implementation supports. If only one serviceName is specified and it has a weight greater than 0, 100% of the traffic is forwarded to that backend. If weights are specified for any one service name, they need to be specified for all of them. If weights are unspecified for all services, then, traffic is distributed in equal proportions to all of them.",
           ).optional(),
         }).describe(
@@ -293,13 +253,13 @@ const GlobalArgsSchema = z.object({
         "Specifies the policy on how requests are shadowed to a separate mirrored destination service. The proxy does not wait for responses from the shadow service. Prior to sending traffic to the shadow service, the host/authority header is suffixed with -shadow. Mirroring is currently not supported for Cloud Run destinations.",
       ).optional(),
       responseHeaderModifier: z.object({
-        add: z.record(z.string(), z.string()).describe(
+        add: z.record(z.string(), z.unknown()).describe(
           "Add the headers with given map where key is the name of the header, value is the value of the header.",
         ).optional(),
-        remove: z.array(z.string()).describe(
+        remove: z.array(z.unknown()).describe(
           "Remove headers (matching by header names) specified in the list.",
         ).optional(),
-        set: z.record(z.string(), z.string()).describe(
+        set: z.record(z.string(), z.unknown()).describe(
           "Completely overwrite/replace the headers with given map where key is the name of the header, value is the value of the header.",
         ).optional(),
       }).describe(
@@ -312,7 +272,7 @@ const GlobalArgsSchema = z.object({
         perTryTimeout: z.string().describe(
           "Specifies a non-zero timeout per retry attempt.",
         ).optional(),
-        retryConditions: z.array(z.string()).describe(
+        retryConditions: z.array(z.unknown()).describe(
           "Specifies one or more conditions when this retry policy applies. Valid values are: 5xx: Proxy will attempt a retry if the destination service responds with any 5xx response code, of if the destination service does not respond at all, example: disconnect, reset, read timeout, connection failure and refused streams. gateway-error: Similar to 5xx, but only applies to response codes 502, 503, 504. reset: Proxy will attempt a retry if the destination service does not respond at all (disconnect/reset/read timeout) connect-failure: Proxy will retry on failures connecting to destination for example due to connection timeouts. retriable-4xx: Proxy will retry fro retriable 4xx response codes. Currently the only retriable error supported is 409. refused-stream: Proxy will retry if the destination resets the stream with a REFUSED_STREAM error code. This reset type indicates that it is safe to retry.",
         ).optional(),
       }).describe("The specifications for retries.").optional(),
@@ -343,35 +303,7 @@ const GlobalArgsSchema = z.object({
       fullPathMatch: z.string().describe(
         "The HTTP request path value should exactly match this value. Only one of full_path_match, prefix_match, or regex_match should be used.",
       ).optional(),
-      headers: z.array(z.object({
-        exactMatch: z.string().describe(
-          "The value of the header should match exactly the content of exact_match.",
-        ).optional(),
-        header: z.string().describe(
-          "The name of the HTTP header to match against.",
-        ).optional(),
-        invertMatch: z.boolean().describe(
-          "If specified, the match result will be inverted before checking. Default value is set to false.",
-        ).optional(),
-        prefixMatch: z.string().describe(
-          "The value of the header must start with the contents of prefix_match.",
-        ).optional(),
-        presentMatch: z.boolean().describe(
-          "A header with header_name must exist. The match takes place whether or not the header has a value.",
-        ).optional(),
-        rangeMatch: z.object({
-          end: z.number().int().describe("End of the range (exclusive)")
-            .optional(),
-          start: z.number().int().describe("Start of the range (inclusive)")
-            .optional(),
-        }).describe("Represents an integer value range.").optional(),
-        regexMatch: z.string().describe(
-          "The value of the header must match the regular expression specified in regex_match. For regular expression grammar, please see: https://github.com/google/re2/wiki/Syntax",
-        ).optional(),
-        suffixMatch: z.string().describe(
-          "The value of the header must end with the contents of suffix_match.",
-        ).optional(),
-      })).describe(
+      headers: z.array(z.unknown()).describe(
         "Specifies a list of HTTP request headers to match against. ALL of the supplied headers must be matched.",
       ).optional(),
       ignoreCase: z.boolean().describe(
@@ -380,20 +312,7 @@ const GlobalArgsSchema = z.object({
       prefixMatch: z.string().describe(
         "The HTTP request path value must begin with specified prefix_match. prefix_match must begin with a /. Only one of full_path_match, prefix_match, or regex_match should be used.",
       ).optional(),
-      queryParameters: z.array(z.object({
-        exactMatch: z.string().describe(
-          "The value of the query parameter must exactly match the contents of exact_match. Only one of exact_match, regex_match, or present_match must be set.",
-        ).optional(),
-        presentMatch: z.boolean().describe(
-          "Specifies that the QueryParameterMatcher matches if request contains query parameter, irrespective of whether the parameter has a value or not. Only one of exact_match, regex_match, or present_match must be set.",
-        ).optional(),
-        queryParameter: z.string().describe(
-          "The name of the query parameter to match.",
-        ).optional(),
-        regexMatch: z.string().describe(
-          "The value of the query parameter must match the regular expression specified by regex_match. For regular expression grammar, please see https://github.com/google/re2/wiki/Syntax Only one of exact_match, regex_match, or present_match must be set.",
-        ).optional(),
-      })).describe(
+      queryParameters: z.array(z.unknown()).describe(
         "Specifies a list of query parameters to match against. ALL of the query parameters must be matched.",
       ).optional(),
       regexMatch: z.string().describe(
@@ -425,27 +344,19 @@ const StateSchema = z.object({
     action: z.object({
       corsPolicy: z.object({
         allowCredentials: z.boolean(),
-        allowHeaders: z.array(z.string()),
-        allowMethods: z.array(z.string()),
-        allowOriginRegexes: z.array(z.string()),
-        allowOrigins: z.array(z.string()),
+        allowHeaders: z.array(z.unknown()),
+        allowMethods: z.array(z.unknown()),
+        allowOriginRegexes: z.array(z.unknown()),
+        allowOrigins: z.array(z.unknown()),
         disabled: z.boolean(),
-        exposeHeaders: z.array(z.string()),
+        exposeHeaders: z.array(z.unknown()),
         maxAge: z.string(),
       }),
       destinations: z.array(z.object({
-        requestHeaderModifier: z.object({
-          add: z.record(z.string(), z.unknown()),
-          remove: z.array(z.string()),
-          set: z.record(z.string(), z.unknown()),
-        }),
-        responseHeaderModifier: z.object({
-          add: z.record(z.string(), z.unknown()),
-          remove: z.array(z.string()),
-          set: z.record(z.string(), z.unknown()),
-        }),
-        serviceName: z.string(),
-        weight: z.number(),
+        requestHeaderModifier: z.unknown(),
+        responseHeaderModifier: z.unknown(),
+        serviceName: z.unknown(),
+        weight: z.unknown(),
       })),
       directResponse: z.object({
         bytesBody: z.string(),
@@ -454,12 +365,12 @@ const StateSchema = z.object({
       }),
       faultInjectionPolicy: z.object({
         abort: z.object({
-          httpStatus: z.number(),
-          percentage: z.number(),
+          httpStatus: z.unknown(),
+          percentage: z.unknown(),
         }),
         delay: z.object({
-          fixedDelay: z.string(),
-          percentage: z.number(),
+          fixedDelay: z.unknown(),
+          percentage: z.unknown(),
         }),
       }),
       idleTimeout: z.string(),
@@ -474,35 +385,27 @@ const StateSchema = z.object({
       }),
       requestHeaderModifier: z.object({
         add: z.record(z.string(), z.unknown()),
-        remove: z.array(z.string()),
+        remove: z.array(z.unknown()),
         set: z.record(z.string(), z.unknown()),
       }),
       requestMirrorPolicy: z.object({
         destination: z.object({
-          requestHeaderModifier: z.object({
-            add: z.record(z.string(), z.unknown()),
-            remove: z.array(z.string()),
-            set: z.record(z.string(), z.unknown()),
-          }),
-          responseHeaderModifier: z.object({
-            add: z.record(z.string(), z.unknown()),
-            remove: z.array(z.string()),
-            set: z.record(z.string(), z.unknown()),
-          }),
-          serviceName: z.string(),
-          weight: z.number(),
+          requestHeaderModifier: z.unknown(),
+          responseHeaderModifier: z.unknown(),
+          serviceName: z.unknown(),
+          weight: z.unknown(),
         }),
         mirrorPercent: z.number(),
       }),
       responseHeaderModifier: z.object({
         add: z.record(z.string(), z.unknown()),
-        remove: z.array(z.string()),
+        remove: z.array(z.unknown()),
         set: z.record(z.string(), z.unknown()),
       }),
       retryPolicy: z.object({
         numRetries: z.number(),
         perTryTimeout: z.string(),
-        retryConditions: z.array(z.string()),
+        retryConditions: z.array(z.unknown()),
       }),
       statefulSessionAffinity: z.object({
         cookieTtl: z.string(),
@@ -515,27 +418,10 @@ const StateSchema = z.object({
     }),
     matches: z.array(z.object({
       fullPathMatch: z.string(),
-      headers: z.array(z.object({
-        exactMatch: z.string(),
-        header: z.string(),
-        invertMatch: z.boolean(),
-        prefixMatch: z.string(),
-        presentMatch: z.boolean(),
-        rangeMatch: z.object({
-          end: z.number(),
-          start: z.number(),
-        }),
-        regexMatch: z.string(),
-        suffixMatch: z.string(),
-      })),
+      headers: z.array(z.unknown()),
       ignoreCase: z.boolean(),
       prefixMatch: z.string(),
-      queryParameters: z.array(z.object({
-        exactMatch: z.string(),
-        presentMatch: z.boolean(),
-        queryParameter: z.string(),
-        regexMatch: z.string(),
-      })),
+      queryParameters: z.array(z.unknown()),
       regexMatch: z.string(),
     })),
   })).optional(),
@@ -570,22 +456,22 @@ const InputsSchema = z.object({
         allowCredentials: z.boolean().describe(
           "In response to a preflight request, setting this to true indicates that the actual request can include user credentials. This translates to the Access-Control-Allow-Credentials header. Default value is false.",
         ).optional(),
-        allowHeaders: z.array(z.string()).describe(
+        allowHeaders: z.array(z.unknown()).describe(
           "Specifies the content for Access-Control-Allow-Headers header.",
         ).optional(),
-        allowMethods: z.array(z.string()).describe(
+        allowMethods: z.array(z.unknown()).describe(
           "Specifies the content for Access-Control-Allow-Methods header.",
         ).optional(),
-        allowOriginRegexes: z.array(z.string()).describe(
+        allowOriginRegexes: z.array(z.unknown()).describe(
           "Specifies the regular expression patterns that match allowed origins. For regular expression grammar, please see https://github.com/google/re2/wiki/Syntax.",
         ).optional(),
-        allowOrigins: z.array(z.string()).describe(
+        allowOrigins: z.array(z.unknown()).describe(
           "Specifies the list of origins that will be allowed to do CORS requests. An origin is allowed if it matches either an item in allow_origins or an item in allow_origin_regexes.",
         ).optional(),
         disabled: z.boolean().describe(
           "If true, the CORS policy is disabled. The default value is false, which indicates that the CORS policy is in effect.",
         ).optional(),
-        exposeHeaders: z.array(z.string()).describe(
+        exposeHeaders: z.array(z.unknown()).describe(
           "Specifies the content for Access-Control-Expose-Headers header.",
         ).optional(),
         maxAge: z.string().describe(
@@ -595,36 +481,16 @@ const InputsSchema = z.object({
         "The Specification for allowing client side cross-origin requests.",
       ).optional(),
       destinations: z.array(z.object({
-        requestHeaderModifier: z.object({
-          add: z.record(z.string(), z.string()).describe(
-            "Add the headers with given map where key is the name of the header, value is the value of the header.",
-          ).optional(),
-          remove: z.array(z.string()).describe(
-            "Remove headers (matching by header names) specified in the list.",
-          ).optional(),
-          set: z.record(z.string(), z.string()).describe(
-            "Completely overwrite/replace the headers with given map where key is the name of the header, value is the value of the header.",
-          ).optional(),
-        }).describe(
+        requestHeaderModifier: z.unknown().describe(
           "The specification for modifying HTTP header in HTTP request and HTTP response.",
         ).optional(),
-        responseHeaderModifier: z.object({
-          add: z.record(z.string(), z.string()).describe(
-            "Add the headers with given map where key is the name of the header, value is the value of the header.",
-          ).optional(),
-          remove: z.array(z.string()).describe(
-            "Remove headers (matching by header names) specified in the list.",
-          ).optional(),
-          set: z.record(z.string(), z.string()).describe(
-            "Completely overwrite/replace the headers with given map where key is the name of the header, value is the value of the header.",
-          ).optional(),
-        }).describe(
+        responseHeaderModifier: z.unknown().describe(
           "The specification for modifying HTTP header in HTTP request and HTTP response.",
         ).optional(),
-        serviceName: z.string().describe(
+        serviceName: z.unknown().describe(
           "The URL of a BackendService to route traffic to.",
         ).optional(),
-        weight: z.number().int().describe(
+        weight: z.unknown().describe(
           "Specifies the proportion of requests forwarded to the backend referenced by the serviceName field. This is computed as: - weight/Sum(weights in this destination list). For non-zero values, there may be some epsilon from the exact proportion defined here depending on the precision an implementation supports. If only one serviceName is specified and it has a weight greater than 0, 100% of the traffic is forwarded to that backend. If weights are specified for any one service name, they need to be specified for all of them. If weights are unspecified for all services, then, traffic is distributed in equal proportions to all of them.",
         ).optional(),
       })).describe("The destination to which traffic should be forwarded.")
@@ -642,20 +508,20 @@ const InputsSchema = z.object({
       }).describe("Static HTTP response object to be returned.").optional(),
       faultInjectionPolicy: z.object({
         abort: z.object({
-          httpStatus: z.number().int().describe(
+          httpStatus: z.unknown().describe(
             "The HTTP status code used to abort the request. The value must be between 200 and 599 inclusive.",
           ).optional(),
-          percentage: z.number().int().describe(
+          percentage: z.unknown().describe(
             "The percentage of traffic which will be aborted. The value must be between [0, 100]",
           ).optional(),
         }).describe(
           "Specification of how client requests are aborted as part of fault injection before being sent to a destination.",
         ).optional(),
         delay: z.object({
-          fixedDelay: z.string().describe(
+          fixedDelay: z.unknown().describe(
             "Specify a fixed delay before forwarding the request.",
           ).optional(),
-          percentage: z.number().int().describe(
+          percentage: z.unknown().describe(
             "The percentage of traffic on which delay will be injected. The value must be between [0, 100]",
           ).optional(),
         }).describe(
@@ -696,13 +562,13 @@ const InputsSchema = z.object({
         ).optional(),
       }).describe("The specification for redirecting traffic.").optional(),
       requestHeaderModifier: z.object({
-        add: z.record(z.string(), z.string()).describe(
+        add: z.record(z.string(), z.unknown()).describe(
           "Add the headers with given map where key is the name of the header, value is the value of the header.",
         ).optional(),
-        remove: z.array(z.string()).describe(
+        remove: z.array(z.unknown()).describe(
           "Remove headers (matching by header names) specified in the list.",
         ).optional(),
-        set: z.record(z.string(), z.string()).describe(
+        set: z.record(z.string(), z.unknown()).describe(
           "Completely overwrite/replace the headers with given map where key is the name of the header, value is the value of the header.",
         ).optional(),
       }).describe(
@@ -710,36 +576,16 @@ const InputsSchema = z.object({
       ).optional(),
       requestMirrorPolicy: z.object({
         destination: z.object({
-          requestHeaderModifier: z.object({
-            add: z.record(z.string(), z.string()).describe(
-              "Add the headers with given map where key is the name of the header, value is the value of the header.",
-            ).optional(),
-            remove: z.array(z.string()).describe(
-              "Remove headers (matching by header names) specified in the list.",
-            ).optional(),
-            set: z.record(z.string(), z.string()).describe(
-              "Completely overwrite/replace the headers with given map where key is the name of the header, value is the value of the header.",
-            ).optional(),
-          }).describe(
+          requestHeaderModifier: z.unknown().describe(
             "The specification for modifying HTTP header in HTTP request and HTTP response.",
           ).optional(),
-          responseHeaderModifier: z.object({
-            add: z.record(z.string(), z.string()).describe(
-              "Add the headers with given map where key is the name of the header, value is the value of the header.",
-            ).optional(),
-            remove: z.array(z.string()).describe(
-              "Remove headers (matching by header names) specified in the list.",
-            ).optional(),
-            set: z.record(z.string(), z.string()).describe(
-              "Completely overwrite/replace the headers with given map where key is the name of the header, value is the value of the header.",
-            ).optional(),
-          }).describe(
+          responseHeaderModifier: z.unknown().describe(
             "The specification for modifying HTTP header in HTTP request and HTTP response.",
           ).optional(),
-          serviceName: z.string().describe(
+          serviceName: z.unknown().describe(
             "The URL of a BackendService to route traffic to.",
           ).optional(),
-          weight: z.number().int().describe(
+          weight: z.unknown().describe(
             "Specifies the proportion of requests forwarded to the backend referenced by the serviceName field. This is computed as: - weight/Sum(weights in this destination list). For non-zero values, there may be some epsilon from the exact proportion defined here depending on the precision an implementation supports. If only one serviceName is specified and it has a weight greater than 0, 100% of the traffic is forwarded to that backend. If weights are specified for any one service name, they need to be specified for all of them. If weights are unspecified for all services, then, traffic is distributed in equal proportions to all of them.",
           ).optional(),
         }).describe(
@@ -752,13 +598,13 @@ const InputsSchema = z.object({
         "Specifies the policy on how requests are shadowed to a separate mirrored destination service. The proxy does not wait for responses from the shadow service. Prior to sending traffic to the shadow service, the host/authority header is suffixed with -shadow. Mirroring is currently not supported for Cloud Run destinations.",
       ).optional(),
       responseHeaderModifier: z.object({
-        add: z.record(z.string(), z.string()).describe(
+        add: z.record(z.string(), z.unknown()).describe(
           "Add the headers with given map where key is the name of the header, value is the value of the header.",
         ).optional(),
-        remove: z.array(z.string()).describe(
+        remove: z.array(z.unknown()).describe(
           "Remove headers (matching by header names) specified in the list.",
         ).optional(),
-        set: z.record(z.string(), z.string()).describe(
+        set: z.record(z.string(), z.unknown()).describe(
           "Completely overwrite/replace the headers with given map where key is the name of the header, value is the value of the header.",
         ).optional(),
       }).describe(
@@ -771,7 +617,7 @@ const InputsSchema = z.object({
         perTryTimeout: z.string().describe(
           "Specifies a non-zero timeout per retry attempt.",
         ).optional(),
-        retryConditions: z.array(z.string()).describe(
+        retryConditions: z.array(z.unknown()).describe(
           "Specifies one or more conditions when this retry policy applies. Valid values are: 5xx: Proxy will attempt a retry if the destination service responds with any 5xx response code, of if the destination service does not respond at all, example: disconnect, reset, read timeout, connection failure and refused streams. gateway-error: Similar to 5xx, but only applies to response codes 502, 503, 504. reset: Proxy will attempt a retry if the destination service does not respond at all (disconnect/reset/read timeout) connect-failure: Proxy will retry on failures connecting to destination for example due to connection timeouts. retriable-4xx: Proxy will retry fro retriable 4xx response codes. Currently the only retriable error supported is 409. refused-stream: Proxy will retry if the destination resets the stream with a REFUSED_STREAM error code. This reset type indicates that it is safe to retry.",
         ).optional(),
       }).describe("The specifications for retries.").optional(),
@@ -802,35 +648,7 @@ const InputsSchema = z.object({
       fullPathMatch: z.string().describe(
         "The HTTP request path value should exactly match this value. Only one of full_path_match, prefix_match, or regex_match should be used.",
       ).optional(),
-      headers: z.array(z.object({
-        exactMatch: z.string().describe(
-          "The value of the header should match exactly the content of exact_match.",
-        ).optional(),
-        header: z.string().describe(
-          "The name of the HTTP header to match against.",
-        ).optional(),
-        invertMatch: z.boolean().describe(
-          "If specified, the match result will be inverted before checking. Default value is set to false.",
-        ).optional(),
-        prefixMatch: z.string().describe(
-          "The value of the header must start with the contents of prefix_match.",
-        ).optional(),
-        presentMatch: z.boolean().describe(
-          "A header with header_name must exist. The match takes place whether or not the header has a value.",
-        ).optional(),
-        rangeMatch: z.object({
-          end: z.number().int().describe("End of the range (exclusive)")
-            .optional(),
-          start: z.number().int().describe("Start of the range (inclusive)")
-            .optional(),
-        }).describe("Represents an integer value range.").optional(),
-        regexMatch: z.string().describe(
-          "The value of the header must match the regular expression specified in regex_match. For regular expression grammar, please see: https://github.com/google/re2/wiki/Syntax",
-        ).optional(),
-        suffixMatch: z.string().describe(
-          "The value of the header must end with the contents of suffix_match.",
-        ).optional(),
-      })).describe(
+      headers: z.array(z.unknown()).describe(
         "Specifies a list of HTTP request headers to match against. ALL of the supplied headers must be matched.",
       ).optional(),
       ignoreCase: z.boolean().describe(
@@ -839,20 +657,7 @@ const InputsSchema = z.object({
       prefixMatch: z.string().describe(
         "The HTTP request path value must begin with specified prefix_match. prefix_match must begin with a /. Only one of full_path_match, prefix_match, or regex_match should be used.",
       ).optional(),
-      queryParameters: z.array(z.object({
-        exactMatch: z.string().describe(
-          "The value of the query parameter must exactly match the contents of exact_match. Only one of exact_match, regex_match, or present_match must be set.",
-        ).optional(),
-        presentMatch: z.boolean().describe(
-          "Specifies that the QueryParameterMatcher matches if request contains query parameter, irrespective of whether the parameter has a value or not. Only one of exact_match, regex_match, or present_match must be set.",
-        ).optional(),
-        queryParameter: z.string().describe(
-          "The name of the query parameter to match.",
-        ).optional(),
-        regexMatch: z.string().describe(
-          "The value of the query parameter must match the regular expression specified by regex_match. For regular expression grammar, please see https://github.com/google/re2/wiki/Syntax Only one of exact_match, regex_match, or present_match must be set.",
-        ).optional(),
-      })).describe(
+      queryParameters: z.array(z.unknown()).describe(
         "Specifies a list of query parameters to match against. ALL of the query parameters must be matched.",
       ).optional(),
       regexMatch: z.string().describe(
@@ -874,7 +679,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/networkservices/httproutes",
-  version: "2026.04.03.3",
+  version: "2026.04.04.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -898,6 +703,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.3",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.04.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

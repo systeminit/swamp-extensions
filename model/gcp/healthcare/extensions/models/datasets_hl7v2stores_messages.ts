@@ -103,7 +103,7 @@ const GlobalArgsSchema = z.object({
     ).optional(),
     parsedData: z.object({
       segments: z.array(z.object({
-        fields: z.record(z.string(), z.string()).describe(
+        fields: z.record(z.string(), z.unknown()).describe(
           'A mapping from the positional location to the value. The key string uses zero-based indexes separated by dots to identify Fields, components and sub-components. A bracket notation is also used to identify different instances of a repeated field. Regex for key: (\\d+)(\\[\\d+\\])?(.\\d+)?(.\\d+)? Examples of (key, value) pairs: * (0.1, "hemoglobin") denotes that the first component of Field 0 has the value "hemoglobin". * (1.1.2, "CBC") denotes that the second sub-component of the first component of Field 1 has the value "CBC". * (1[0].1, "HbA1c") denotes that the first component of the first Instance of Field 1, which is repeated, has the value "HbA1c".',
         ).optional(),
         segmentId: z.string().describe(
@@ -230,7 +230,7 @@ const InputsSchema = z.object({
     ).optional(),
     parsedData: z.object({
       segments: z.array(z.object({
-        fields: z.record(z.string(), z.string()).describe(
+        fields: z.record(z.string(), z.unknown()).describe(
           'A mapping from the positional location to the value. The key string uses zero-based indexes separated by dots to identify Fields, components and sub-components. A bracket notation is also used to identify different instances of a repeated field. Regex for key: (\\d+)(\\[\\d+\\])?(.\\d+)?(.\\d+)? Examples of (key, value) pairs: * (0.1, "hemoglobin") denotes that the first component of Field 0 has the value "hemoglobin". * (1.1.2, "CBC") denotes that the second sub-component of the first component of Field 1 has the value "CBC". * (1[0].1, "HbA1c") denotes that the first component of the first Instance of Field 1, which is repeated, has the value "HbA1c".',
         ).optional(),
         segmentId: z.string().describe(
@@ -315,7 +315,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/healthcare/datasets-hl7v2stores-messages",
-  version: "2026.04.03.3",
+  version: "2026.04.04.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -339,6 +339,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.3",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.04.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

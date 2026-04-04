@@ -52,112 +52,29 @@ const GlobalArgsSchema = z.object({
         "Optional. Dynamic feed ID associated with dynamic profile version.",
       ).optional(),
       dynamicRules: z.object({
-        autoTargetedFieldIds: z.array(z.number().int()).describe(
+        autoTargetedFieldIds: z.array(z.unknown()).describe(
           "Optional. List of field IDs in this element that should be auto-targeted. Applicable when rule type is AUTO.",
         ).optional(),
-        customRules: z.array(z.object({
-          name: z.string().describe("Optional. Name of this custom rule.")
-            .optional(),
-          priority: z.number().int().describe(
-            "Optional. Priority of the custom rule.",
-          ).optional(),
-          ruleBlocks: z.array(z.object({
-            fieldFilter: z.array(z.object({
-              boolValue: z.boolean().describe(
-                "Optional. The boolean values, only applicable when rhs_value_type is BOOL.",
-              ).optional(),
-              dependentFieldValue: z.object({
-                elementId: z.string().describe(
-                  "Optional. The ID of the element that value's field will match against.",
-                ).optional(),
-                fieldId: z.number().int().describe(
-                  "Optional. The field id of the dependent field.",
-                ).optional(),
-              }).describe("Contains dependent field value information.")
-                .optional(),
-              fieldId: z.number().int().describe(
-                "Optional. The field ID on the left hand side of the expression.",
-              ).optional(),
-              matchType: z.enum([
-                "LHS_MATCH_TYPE_UNKNOWN",
-                "EQUALS_OR_UNRESTRICTED",
-                "EQUALS",
-                "UNRESTRICTED",
-                "NOT_EQUALS",
-              ]).describe(
-                "Optional. Left hand side of the expression match type.",
-              ).optional(),
-              requestValue: z.object({
-                excludeFromUserAttributeIds: z.array(z.string()).describe(
-                  "Optional. User attribute IDs in the request that should be excluded. Used only when the field type is REMARKETING_VALUE or USER_ATTRIBUTE_ID.",
-                ).optional(),
-                key: z.string().describe(
-                  "Optional. Custom key in the request. Used only when the field type is CUSTOM_VALUE.",
-                ).optional(),
-                userAttributeIds: z.array(z.string()).describe(
-                  "Optional. User attribute IDs in the request. Used only when the field type is REMARKETING_VALUE or USER_ATTRIBUTE_ID.",
-                ).optional(),
-              }).describe("Contains request value information.").optional(),
-              stringValue: z.string().describe(
-                "Optional. The string value, only applicable when rhs_value_type is STRING.",
-              ).optional(),
-              valueType: z.enum([
-                "RHS_VALUE_TYPE_UNKNOWN",
-                "STRING",
-                "REQUEST",
-                "BOOL",
-                "DEPENDENT",
-              ]).describe("Optional. Right hand side of the expression.")
-                .optional(),
-            })).describe("Optional. A list of non-auto field filters")
-              .optional(),
-          })).describe(
-            "Optional. A list of field filter, the custom rule will apply.",
-          ).optional(),
-        })).describe(
+        customRules: z.array(z.unknown()).describe(
           "Optional. The custom rules of the dynamic feed, only applicable when rule type is CUSTOM.",
         ).optional(),
-        customValueFields: z.array(z.object({
-          fieldId: z.number().int().describe(
-            "Optional. Field ID in the element.",
-          ).optional(),
-          requestKey: z.string().describe(
-            "Optional. Custom key used to match for auto filtering.",
-          ).optional(),
-        })).describe(
+        customValueFields: z.array(z.unknown()).describe(
           "Optional. Mapping between field ID and custom key that are used to match for auto filtering.",
         ).optional(),
         proximityFilter: z.object({
-          fieldId: z.number().int().describe(
-            "Optional. Field ID in the element.",
-          ).optional(),
-          radiusBucketType: z.enum([
-            "RADIUS_BUCKET_TYPE_UNKNOWN",
-            "SMALL",
-            "MEDIUM",
-            "LARGE",
-            "MULTI_REGIONAL",
-            "NATIONAL",
-          ]).describe(
+          fieldId: z.unknown().describe("Optional. Field ID in the element.")
+            .optional(),
+          radiusBucketType: z.unknown().describe(
             "Optional. The radius bucket type of the proximity filter",
           ).optional(),
-          radiusUnitType: z.enum([
-            "RADIUS_UNIT_TYPE_UNKNOWN",
-            "KILOMETERS",
-            "MILES",
-          ]).describe("Optional. The units of the radius value").optional(),
-          radiusValue: z.number().int().describe(
+          radiusUnitType: z.unknown().describe(
+            "Optional. The units of the radius value",
+          ).optional(),
+          radiusValue: z.unknown().describe(
             "Optional. Radius length in units defined by radius_units.",
           ).optional(),
         }).describe("Contains proximity filter information.").optional(),
-        remarketingValueAttributes: z.array(z.object({
-          fieldId: z.number().int().describe(
-            "Optional. Field ID in the element.",
-          ).optional(),
-          userAttributeIds: z.array(z.string()).describe(
-            "Optional. Remarketing user attribute IDs for auto filtering.",
-          ).optional(),
-        })).describe(
+        remarketingValueAttributes: z.array(z.unknown()).describe(
           "Optional. The link between an element field ID and a list of user attribute IDs.",
         ).optional(),
         rotationType: z.enum([
@@ -207,112 +124,29 @@ const GlobalArgsSchema = z.object({
         "Optional. Dynamic feed ID associated with dynamic profile version.",
       ).optional(),
       dynamicRules: z.object({
-        autoTargetedFieldIds: z.array(z.number().int()).describe(
+        autoTargetedFieldIds: z.array(z.unknown()).describe(
           "Optional. List of field IDs in this element that should be auto-targeted. Applicable when rule type is AUTO.",
         ).optional(),
-        customRules: z.array(z.object({
-          name: z.string().describe("Optional. Name of this custom rule.")
-            .optional(),
-          priority: z.number().int().describe(
-            "Optional. Priority of the custom rule.",
-          ).optional(),
-          ruleBlocks: z.array(z.object({
-            fieldFilter: z.array(z.object({
-              boolValue: z.boolean().describe(
-                "Optional. The boolean values, only applicable when rhs_value_type is BOOL.",
-              ).optional(),
-              dependentFieldValue: z.object({
-                elementId: z.string().describe(
-                  "Optional. The ID of the element that value's field will match against.",
-                ).optional(),
-                fieldId: z.number().int().describe(
-                  "Optional. The field id of the dependent field.",
-                ).optional(),
-              }).describe("Contains dependent field value information.")
-                .optional(),
-              fieldId: z.number().int().describe(
-                "Optional. The field ID on the left hand side of the expression.",
-              ).optional(),
-              matchType: z.enum([
-                "LHS_MATCH_TYPE_UNKNOWN",
-                "EQUALS_OR_UNRESTRICTED",
-                "EQUALS",
-                "UNRESTRICTED",
-                "NOT_EQUALS",
-              ]).describe(
-                "Optional. Left hand side of the expression match type.",
-              ).optional(),
-              requestValue: z.object({
-                excludeFromUserAttributeIds: z.array(z.string()).describe(
-                  "Optional. User attribute IDs in the request that should be excluded. Used only when the field type is REMARKETING_VALUE or USER_ATTRIBUTE_ID.",
-                ).optional(),
-                key: z.string().describe(
-                  "Optional. Custom key in the request. Used only when the field type is CUSTOM_VALUE.",
-                ).optional(),
-                userAttributeIds: z.array(z.string()).describe(
-                  "Optional. User attribute IDs in the request. Used only when the field type is REMARKETING_VALUE or USER_ATTRIBUTE_ID.",
-                ).optional(),
-              }).describe("Contains request value information.").optional(),
-              stringValue: z.string().describe(
-                "Optional. The string value, only applicable when rhs_value_type is STRING.",
-              ).optional(),
-              valueType: z.enum([
-                "RHS_VALUE_TYPE_UNKNOWN",
-                "STRING",
-                "REQUEST",
-                "BOOL",
-                "DEPENDENT",
-              ]).describe("Optional. Right hand side of the expression.")
-                .optional(),
-            })).describe("Optional. A list of non-auto field filters")
-              .optional(),
-          })).describe(
-            "Optional. A list of field filter, the custom rule will apply.",
-          ).optional(),
-        })).describe(
+        customRules: z.array(z.unknown()).describe(
           "Optional. The custom rules of the dynamic feed, only applicable when rule type is CUSTOM.",
         ).optional(),
-        customValueFields: z.array(z.object({
-          fieldId: z.number().int().describe(
-            "Optional. Field ID in the element.",
-          ).optional(),
-          requestKey: z.string().describe(
-            "Optional. Custom key used to match for auto filtering.",
-          ).optional(),
-        })).describe(
+        customValueFields: z.array(z.unknown()).describe(
           "Optional. Mapping between field ID and custom key that are used to match for auto filtering.",
         ).optional(),
         proximityFilter: z.object({
-          fieldId: z.number().int().describe(
-            "Optional. Field ID in the element.",
-          ).optional(),
-          radiusBucketType: z.enum([
-            "RADIUS_BUCKET_TYPE_UNKNOWN",
-            "SMALL",
-            "MEDIUM",
-            "LARGE",
-            "MULTI_REGIONAL",
-            "NATIONAL",
-          ]).describe(
+          fieldId: z.unknown().describe("Optional. Field ID in the element.")
+            .optional(),
+          radiusBucketType: z.unknown().describe(
             "Optional. The radius bucket type of the proximity filter",
           ).optional(),
-          radiusUnitType: z.enum([
-            "RADIUS_UNIT_TYPE_UNKNOWN",
-            "KILOMETERS",
-            "MILES",
-          ]).describe("Optional. The units of the radius value").optional(),
-          radiusValue: z.number().int().describe(
+          radiusUnitType: z.unknown().describe(
+            "Optional. The units of the radius value",
+          ).optional(),
+          radiusValue: z.unknown().describe(
             "Optional. Radius length in units defined by radius_units.",
           ).optional(),
         }).describe("Contains proximity filter information.").optional(),
-        remarketingValueAttributes: z.array(z.object({
-          fieldId: z.number().int().describe(
-            "Optional. Field ID in the element.",
-          ).optional(),
-          userAttributeIds: z.array(z.string()).describe(
-            "Optional. Remarketing user attribute IDs for auto filtering.",
-          ).optional(),
-        })).describe(
+        remarketingValueAttributes: z.array(z.unknown()).describe(
           "Optional. The link between an element field ID and a list of user attribute IDs.",
         ).optional(),
         rotationType: z.enum([
@@ -367,43 +201,16 @@ const StateSchema = z.object({
     dynamicProfileFeedSettings: z.array(z.object({
       dynamicFeedId: z.string(),
       dynamicRules: z.object({
-        autoTargetedFieldIds: z.array(z.number()),
-        customRules: z.array(z.object({
-          name: z.string(),
-          priority: z.number(),
-          ruleBlocks: z.array(z.object({
-            fieldFilter: z.array(z.object({
-              boolValue: z.boolean(),
-              dependentFieldValue: z.object({
-                elementId: z.string(),
-                fieldId: z.number(),
-              }),
-              fieldId: z.number(),
-              matchType: z.string(),
-              requestValue: z.object({
-                excludeFromUserAttributeIds: z.array(z.string()),
-                key: z.string(),
-                userAttributeIds: z.array(z.string()),
-              }),
-              stringValue: z.string(),
-              valueType: z.string(),
-            })),
-          })),
-        })),
-        customValueFields: z.array(z.object({
-          fieldId: z.number(),
-          requestKey: z.string(),
-        })),
+        autoTargetedFieldIds: z.array(z.unknown()),
+        customRules: z.array(z.unknown()),
+        customValueFields: z.array(z.unknown()),
         proximityFilter: z.object({
-          fieldId: z.number(),
-          radiusBucketType: z.string(),
-          radiusUnitType: z.string(),
-          radiusValue: z.number(),
+          fieldId: z.unknown(),
+          radiusBucketType: z.unknown(),
+          radiusUnitType: z.unknown(),
+          radiusValue: z.unknown(),
         }),
-        remarketingValueAttributes: z.array(z.object({
-          fieldId: z.number(),
-          userAttributeIds: z.array(z.string()),
-        })),
+        remarketingValueAttributes: z.array(z.unknown()),
         rotationType: z.string(),
         ruleType: z.string(),
         weightFieldId: z.number(),
@@ -421,43 +228,16 @@ const StateSchema = z.object({
     dynamicProfileFeedSettings: z.array(z.object({
       dynamicFeedId: z.string(),
       dynamicRules: z.object({
-        autoTargetedFieldIds: z.array(z.number()),
-        customRules: z.array(z.object({
-          name: z.string(),
-          priority: z.number(),
-          ruleBlocks: z.array(z.object({
-            fieldFilter: z.array(z.object({
-              boolValue: z.boolean(),
-              dependentFieldValue: z.object({
-                elementId: z.string(),
-                fieldId: z.number(),
-              }),
-              fieldId: z.number(),
-              matchType: z.string(),
-              requestValue: z.object({
-                excludeFromUserAttributeIds: z.array(z.string()),
-                key: z.string(),
-                userAttributeIds: z.array(z.string()),
-              }),
-              stringValue: z.string(),
-              valueType: z.string(),
-            })),
-          })),
-        })),
-        customValueFields: z.array(z.object({
-          fieldId: z.number(),
-          requestKey: z.string(),
-        })),
+        autoTargetedFieldIds: z.array(z.unknown()),
+        customRules: z.array(z.unknown()),
+        customValueFields: z.array(z.unknown()),
         proximityFilter: z.object({
-          fieldId: z.number(),
-          radiusBucketType: z.string(),
-          radiusUnitType: z.string(),
-          radiusValue: z.number(),
+          fieldId: z.unknown(),
+          radiusBucketType: z.unknown(),
+          radiusUnitType: z.unknown(),
+          radiusValue: z.unknown(),
         }),
-        remarketingValueAttributes: z.array(z.object({
-          fieldId: z.number(),
-          userAttributeIds: z.array(z.string()),
-        })),
+        remarketingValueAttributes: z.array(z.unknown()),
         rotationType: z.string(),
         ruleType: z.string(),
         weightFieldId: z.number(),
@@ -485,112 +265,29 @@ const InputsSchema = z.object({
         "Optional. Dynamic feed ID associated with dynamic profile version.",
       ).optional(),
       dynamicRules: z.object({
-        autoTargetedFieldIds: z.array(z.number().int()).describe(
+        autoTargetedFieldIds: z.array(z.unknown()).describe(
           "Optional. List of field IDs in this element that should be auto-targeted. Applicable when rule type is AUTO.",
         ).optional(),
-        customRules: z.array(z.object({
-          name: z.string().describe("Optional. Name of this custom rule.")
-            .optional(),
-          priority: z.number().int().describe(
-            "Optional. Priority of the custom rule.",
-          ).optional(),
-          ruleBlocks: z.array(z.object({
-            fieldFilter: z.array(z.object({
-              boolValue: z.boolean().describe(
-                "Optional. The boolean values, only applicable when rhs_value_type is BOOL.",
-              ).optional(),
-              dependentFieldValue: z.object({
-                elementId: z.string().describe(
-                  "Optional. The ID of the element that value's field will match against.",
-                ).optional(),
-                fieldId: z.number().int().describe(
-                  "Optional. The field id of the dependent field.",
-                ).optional(),
-              }).describe("Contains dependent field value information.")
-                .optional(),
-              fieldId: z.number().int().describe(
-                "Optional. The field ID on the left hand side of the expression.",
-              ).optional(),
-              matchType: z.enum([
-                "LHS_MATCH_TYPE_UNKNOWN",
-                "EQUALS_OR_UNRESTRICTED",
-                "EQUALS",
-                "UNRESTRICTED",
-                "NOT_EQUALS",
-              ]).describe(
-                "Optional. Left hand side of the expression match type.",
-              ).optional(),
-              requestValue: z.object({
-                excludeFromUserAttributeIds: z.array(z.string()).describe(
-                  "Optional. User attribute IDs in the request that should be excluded. Used only when the field type is REMARKETING_VALUE or USER_ATTRIBUTE_ID.",
-                ).optional(),
-                key: z.string().describe(
-                  "Optional. Custom key in the request. Used only when the field type is CUSTOM_VALUE.",
-                ).optional(),
-                userAttributeIds: z.array(z.string()).describe(
-                  "Optional. User attribute IDs in the request. Used only when the field type is REMARKETING_VALUE or USER_ATTRIBUTE_ID.",
-                ).optional(),
-              }).describe("Contains request value information.").optional(),
-              stringValue: z.string().describe(
-                "Optional. The string value, only applicable when rhs_value_type is STRING.",
-              ).optional(),
-              valueType: z.enum([
-                "RHS_VALUE_TYPE_UNKNOWN",
-                "STRING",
-                "REQUEST",
-                "BOOL",
-                "DEPENDENT",
-              ]).describe("Optional. Right hand side of the expression.")
-                .optional(),
-            })).describe("Optional. A list of non-auto field filters")
-              .optional(),
-          })).describe(
-            "Optional. A list of field filter, the custom rule will apply.",
-          ).optional(),
-        })).describe(
+        customRules: z.array(z.unknown()).describe(
           "Optional. The custom rules of the dynamic feed, only applicable when rule type is CUSTOM.",
         ).optional(),
-        customValueFields: z.array(z.object({
-          fieldId: z.number().int().describe(
-            "Optional. Field ID in the element.",
-          ).optional(),
-          requestKey: z.string().describe(
-            "Optional. Custom key used to match for auto filtering.",
-          ).optional(),
-        })).describe(
+        customValueFields: z.array(z.unknown()).describe(
           "Optional. Mapping between field ID and custom key that are used to match for auto filtering.",
         ).optional(),
         proximityFilter: z.object({
-          fieldId: z.number().int().describe(
-            "Optional. Field ID in the element.",
-          ).optional(),
-          radiusBucketType: z.enum([
-            "RADIUS_BUCKET_TYPE_UNKNOWN",
-            "SMALL",
-            "MEDIUM",
-            "LARGE",
-            "MULTI_REGIONAL",
-            "NATIONAL",
-          ]).describe(
+          fieldId: z.unknown().describe("Optional. Field ID in the element.")
+            .optional(),
+          radiusBucketType: z.unknown().describe(
             "Optional. The radius bucket type of the proximity filter",
           ).optional(),
-          radiusUnitType: z.enum([
-            "RADIUS_UNIT_TYPE_UNKNOWN",
-            "KILOMETERS",
-            "MILES",
-          ]).describe("Optional. The units of the radius value").optional(),
-          radiusValue: z.number().int().describe(
+          radiusUnitType: z.unknown().describe(
+            "Optional. The units of the radius value",
+          ).optional(),
+          radiusValue: z.unknown().describe(
             "Optional. Radius length in units defined by radius_units.",
           ).optional(),
         }).describe("Contains proximity filter information.").optional(),
-        remarketingValueAttributes: z.array(z.object({
-          fieldId: z.number().int().describe(
-            "Optional. Field ID in the element.",
-          ).optional(),
-          userAttributeIds: z.array(z.string()).describe(
-            "Optional. Remarketing user attribute IDs for auto filtering.",
-          ).optional(),
-        })).describe(
+        remarketingValueAttributes: z.array(z.unknown()).describe(
           "Optional. The link between an element field ID and a list of user attribute IDs.",
         ).optional(),
         rotationType: z.enum([
@@ -640,112 +337,29 @@ const InputsSchema = z.object({
         "Optional. Dynamic feed ID associated with dynamic profile version.",
       ).optional(),
       dynamicRules: z.object({
-        autoTargetedFieldIds: z.array(z.number().int()).describe(
+        autoTargetedFieldIds: z.array(z.unknown()).describe(
           "Optional. List of field IDs in this element that should be auto-targeted. Applicable when rule type is AUTO.",
         ).optional(),
-        customRules: z.array(z.object({
-          name: z.string().describe("Optional. Name of this custom rule.")
-            .optional(),
-          priority: z.number().int().describe(
-            "Optional. Priority of the custom rule.",
-          ).optional(),
-          ruleBlocks: z.array(z.object({
-            fieldFilter: z.array(z.object({
-              boolValue: z.boolean().describe(
-                "Optional. The boolean values, only applicable when rhs_value_type is BOOL.",
-              ).optional(),
-              dependentFieldValue: z.object({
-                elementId: z.string().describe(
-                  "Optional. The ID of the element that value's field will match against.",
-                ).optional(),
-                fieldId: z.number().int().describe(
-                  "Optional. The field id of the dependent field.",
-                ).optional(),
-              }).describe("Contains dependent field value information.")
-                .optional(),
-              fieldId: z.number().int().describe(
-                "Optional. The field ID on the left hand side of the expression.",
-              ).optional(),
-              matchType: z.enum([
-                "LHS_MATCH_TYPE_UNKNOWN",
-                "EQUALS_OR_UNRESTRICTED",
-                "EQUALS",
-                "UNRESTRICTED",
-                "NOT_EQUALS",
-              ]).describe(
-                "Optional. Left hand side of the expression match type.",
-              ).optional(),
-              requestValue: z.object({
-                excludeFromUserAttributeIds: z.array(z.string()).describe(
-                  "Optional. User attribute IDs in the request that should be excluded. Used only when the field type is REMARKETING_VALUE or USER_ATTRIBUTE_ID.",
-                ).optional(),
-                key: z.string().describe(
-                  "Optional. Custom key in the request. Used only when the field type is CUSTOM_VALUE.",
-                ).optional(),
-                userAttributeIds: z.array(z.string()).describe(
-                  "Optional. User attribute IDs in the request. Used only when the field type is REMARKETING_VALUE or USER_ATTRIBUTE_ID.",
-                ).optional(),
-              }).describe("Contains request value information.").optional(),
-              stringValue: z.string().describe(
-                "Optional. The string value, only applicable when rhs_value_type is STRING.",
-              ).optional(),
-              valueType: z.enum([
-                "RHS_VALUE_TYPE_UNKNOWN",
-                "STRING",
-                "REQUEST",
-                "BOOL",
-                "DEPENDENT",
-              ]).describe("Optional. Right hand side of the expression.")
-                .optional(),
-            })).describe("Optional. A list of non-auto field filters")
-              .optional(),
-          })).describe(
-            "Optional. A list of field filter, the custom rule will apply.",
-          ).optional(),
-        })).describe(
+        customRules: z.array(z.unknown()).describe(
           "Optional. The custom rules of the dynamic feed, only applicable when rule type is CUSTOM.",
         ).optional(),
-        customValueFields: z.array(z.object({
-          fieldId: z.number().int().describe(
-            "Optional. Field ID in the element.",
-          ).optional(),
-          requestKey: z.string().describe(
-            "Optional. Custom key used to match for auto filtering.",
-          ).optional(),
-        })).describe(
+        customValueFields: z.array(z.unknown()).describe(
           "Optional. Mapping between field ID and custom key that are used to match for auto filtering.",
         ).optional(),
         proximityFilter: z.object({
-          fieldId: z.number().int().describe(
-            "Optional. Field ID in the element.",
-          ).optional(),
-          radiusBucketType: z.enum([
-            "RADIUS_BUCKET_TYPE_UNKNOWN",
-            "SMALL",
-            "MEDIUM",
-            "LARGE",
-            "MULTI_REGIONAL",
-            "NATIONAL",
-          ]).describe(
+          fieldId: z.unknown().describe("Optional. Field ID in the element.")
+            .optional(),
+          radiusBucketType: z.unknown().describe(
             "Optional. The radius bucket type of the proximity filter",
           ).optional(),
-          radiusUnitType: z.enum([
-            "RADIUS_UNIT_TYPE_UNKNOWN",
-            "KILOMETERS",
-            "MILES",
-          ]).describe("Optional. The units of the radius value").optional(),
-          radiusValue: z.number().int().describe(
+          radiusUnitType: z.unknown().describe(
+            "Optional. The units of the radius value",
+          ).optional(),
+          radiusValue: z.unknown().describe(
             "Optional. Radius length in units defined by radius_units.",
           ).optional(),
         }).describe("Contains proximity filter information.").optional(),
-        remarketingValueAttributes: z.array(z.object({
-          fieldId: z.number().int().describe(
-            "Optional. Field ID in the element.",
-          ).optional(),
-          userAttributeIds: z.array(z.string()).describe(
-            "Optional. Remarketing user attribute IDs for auto filtering.",
-          ).optional(),
-        })).describe(
+        remarketingValueAttributes: z.array(z.unknown()).describe(
           "Optional. The link between an element field ID and a list of user attribute IDs.",
         ).optional(),
         rotationType: z.enum([
@@ -797,7 +411,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/dfareporting/dynamicprofiles",
-  version: "2026.04.03.3",
+  version: "2026.04.04.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -821,6 +435,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.3",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.04.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

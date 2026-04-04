@@ -1,4 +1,4 @@
-# @swamp/gcp/youtubeAnalytics
+# @swamp/gcp/youtubeanalytics
 
 Auto-generated [swamp](https://github.com/systeminit/swamp) extension models for
 Google Cloud youtubeAnalytics resources.
@@ -13,7 +13,7 @@ the live state in GCP. Available methods:
 - **delete** — remove the resource from GCP
 - **sync** — refresh all resource properties from the API
 
-Use `swamp model type describe @swamp/gcp/youtubeAnalytics/groupitems` to see
+Use `swamp model type describe @swamp/gcp/youtubeanalytics/groupitems` to see
 the full list of configurable properties and available methods for this model.
 
 ## Authentication
@@ -60,7 +60,7 @@ gcloud config set project my-project
 
 ```bash
 # Create a new groupitems model
-swamp model create @swamp/gcp/youtubeAnalytics/groupitems my-groupitems
+swamp model create @swamp/gcp/youtubeanalytics/groupitems my-groupitems
 
 # Edit the model to configure its properties
 swamp model edit my-groupitems

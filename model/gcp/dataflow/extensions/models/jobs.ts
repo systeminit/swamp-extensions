@@ -211,13 +211,13 @@ const GlobalArgsSchema = z.object({
         ).optional(),
       }).describe("Settings for WorkerPool autoscaling.").optional(),
       dataDisks: z.array(z.object({
-        diskType: z.string().describe(
+        diskType: z.unknown().describe(
           'Disk storage type, as defined by Google Compute Engine. This must be a disk type appropriate to the project and zone in which the workers will run. If unknown or unspecified, the service will attempt to choose a reasonable default. For example, the standard persistent disk type is a resource name typically ending in "pd-standard". If SSD persistent disks are available, the resource name typically ends with "pd-ssd". The actual valid values are defined the Google Compute Engine API, not by the Cloud Dataflow API; consult the Google Compute Engine documentation for more information about determining the set of available disk types for a particular project and zone. Google Compute Engine Disk types are local to a particular project in a particular zone, and so the resource name will typically look something like this: compute.googleapis.com/projects/project-id/zones/zone/diskTypes/pd-standard',
         ).optional(),
-        mountPoint: z.string().describe(
+        mountPoint: z.unknown().describe(
           "Directory in a VM where disk is mounted.",
         ).optional(),
-        sizeGb: z.number().int().describe(
+        sizeGb: z.unknown().describe(
           "Size of disk in GB. If zero or unspecified, the service will attempt to choose a reasonable default.",
         ).optional(),
       })).describe("Data disks that are used by a VM in this workflow.")
@@ -272,25 +272,25 @@ const GlobalArgsSchema = z.object({
         "The action to take on host maintenance, as defined by the Google Compute Engine API.",
       ).optional(),
       packages: z.array(z.object({
-        location: z.string().describe(
+        location: z.unknown().describe(
           "The resource to read the package from. The supported resource type is: Google Cloud Storage: storage.googleapis.com/{bucket} bucket.storage.googleapis.com/",
         ).optional(),
-        name: z.string().describe("The name of the package.").optional(),
+        name: z.unknown().describe("The name of the package.").optional(),
       })).describe("Packages to be installed on workers.").optional(),
       poolArgs: z.record(z.string(), z.string()).describe(
         "Extra arguments for this worker pool.",
       ).optional(),
       sdkHarnessContainerImages: z.array(z.object({
-        capabilities: z.array(z.string()).describe(
+        capabilities: z.unknown().describe(
           "The set of capabilities enumerated in the above Environment proto. See also [beam_runner_api.proto](https://github.com/apache/beam/blob/master/model/pipeline/src/main/proto/org/apache/beam/model/pipeline/v1/beam_runner_api.proto)",
         ).optional(),
-        containerImage: z.string().describe(
+        containerImage: z.unknown().describe(
           "A docker container image that resides in Google Container Registry.",
         ).optional(),
-        environmentId: z.string().describe(
+        environmentId: z.unknown().describe(
           "Environment ID for the Beam runner API proto Environment that corresponds to the current SDK Harness.",
         ).optional(),
-        useSingleCorePerContainer: z.boolean().describe(
+        useSingleCorePerContainer: z.unknown().describe(
           "If true, recommends the Dataflow service to use only one core per SDK container instance with this image. If false (or unset) recommends using more than one core per SDK container instance with this image for efficiency. Note that Dataflow service may choose to override this property if needed.",
         ).optional(),
       })).describe(
@@ -331,26 +331,26 @@ const GlobalArgsSchema = z.object({
         logUploadLocation: z.string().describe(
           "Indicates where to put logs. If this is not specified, the logs will not be uploaded. The supported resource type is: Google Cloud Storage: storage.googleapis.com/{bucket}/{object} bucket.storage.googleapis.com/{object}",
         ).optional(),
-        oauthScopes: z.array(z.string()).describe(
+        oauthScopes: z.array(z.unknown()).describe(
           "The OAuth2 scopes to be requested by the taskrunner in order to access the Cloud Dataflow API.",
         ).optional(),
         parallelWorkerSettings: z.object({
-          baseUrl: z.string().describe(
+          baseUrl: z.unknown().describe(
             'The base URL for accessing Google Cloud APIs. When workers access Google Cloud APIs, they logically do so via relative URLs. If this field is specified, it supplies the base URL to use for resolving these relative URLs. The normative algorithm used is defined by RFC 1808, "Relative Uniform Resource Locators". If not specified, the default value is "http://www.googleapis.com/"',
           ).optional(),
-          reportingEnabled: z.boolean().describe(
+          reportingEnabled: z.unknown().describe(
             "Whether to send work progress updates to the service.",
           ).optional(),
-          servicePath: z.string().describe(
+          servicePath: z.unknown().describe(
             'The Cloud Dataflow service path relative to the root URL, for example, "dataflow/v1b3/projects".',
           ).optional(),
-          shuffleServicePath: z.string().describe(
+          shuffleServicePath: z.unknown().describe(
             'The Shuffle service path relative to the root URL, for example, "shuffle/v1beta1".',
           ).optional(),
-          tempStoragePrefix: z.string().describe(
+          tempStoragePrefix: z.unknown().describe(
             "The prefix of the resources the system should use for temporary storage. The supported resource type is: Google Cloud Storage: storage.googleapis.com/{bucket}/{object} bucket.storage.googleapis.com/{object}",
           ).optional(),
-          workerId: z.string().describe(
+          workerId: z.unknown().describe(
             "The ID of the worker running this pipeline.",
           ).optional(),
         }).describe("Provides data to pass through to the worker harness.")
@@ -550,41 +550,41 @@ const GlobalArgsSchema = z.object({
     })).describe("Pipeline level display data.").optional(),
     executionPipelineStage: z.array(z.object({
       componentSource: z.array(z.object({
-        name: z.string().describe(
+        name: z.unknown().describe(
           "Dataflow service generated name for this source.",
         ).optional(),
-        originalTransformOrCollection: z.string().describe(
+        originalTransformOrCollection: z.unknown().describe(
           "User name for the original user transform or collection with which this source is most closely associated.",
         ).optional(),
-        userName: z.string().describe(
+        userName: z.unknown().describe(
           "Human-readable name for this transform; may be user or system generated.",
         ).optional(),
       })).describe(
         "Collections produced and consumed by component transforms of this stage.",
       ).optional(),
       componentTransform: z.array(z.object({
-        name: z.string().describe(
+        name: z.unknown().describe(
           "Dataflow service generated name for this source.",
         ).optional(),
-        originalTransform: z.string().describe(
+        originalTransform: z.unknown().describe(
           "User name for the original user transform with which this transform is most closely associated.",
         ).optional(),
-        userName: z.string().describe(
+        userName: z.unknown().describe(
           "Human-readable name for this transform; may be user or system generated.",
         ).optional(),
       })).describe("Transforms that comprise this execution stage.").optional(),
       id: z.string().describe("Dataflow service generated id for this stage.")
         .optional(),
       inputSource: z.array(z.object({
-        name: z.string().describe(
+        name: z.unknown().describe(
           "Dataflow service generated name for this source.",
         ).optional(),
-        originalTransformOrCollection: z.string().describe(
+        originalTransformOrCollection: z.unknown().describe(
           "User name for the original user transform or collection with which this source is most closely associated.",
         ).optional(),
-        sizeBytes: z.string().describe("Size of the source, if measurable.")
+        sizeBytes: z.unknown().describe("Size of the source, if measurable.")
           .optional(),
-        userName: z.string().describe(
+        userName: z.unknown().describe(
           "Human-readable name for this source; may be user or system generated.",
         ).optional(),
       })).describe("Input sources for this stage.").optional(),
@@ -603,15 +603,15 @@ const GlobalArgsSchema = z.object({
         "Dataflow service generated name for this stage.",
       ).optional(),
       outputSource: z.array(z.object({
-        name: z.string().describe(
+        name: z.unknown().describe(
           "Dataflow service generated name for this source.",
         ).optional(),
-        originalTransformOrCollection: z.string().describe(
+        originalTransformOrCollection: z.unknown().describe(
           "User name for the original user transform or collection with which this source is most closely associated.",
         ).optional(),
-        sizeBytes: z.string().describe("Size of the source, if measurable.")
+        sizeBytes: z.unknown().describe("Size of the source, if measurable.")
           .optional(),
-        userName: z.string().describe(
+        userName: z.unknown().describe(
           "Human-readable name for this source; may be user or system generated.",
         ).optional(),
       })).describe("Output sources for this stage.").optional(),
@@ -622,40 +622,40 @@ const GlobalArgsSchema = z.object({
       .optional(),
     originalPipelineTransform: z.array(z.object({
       displayData: z.array(z.object({
-        boolValue: z.boolean().describe(
+        boolValue: z.unknown().describe(
           "Contains value if the data is of a boolean type.",
         ).optional(),
-        durationValue: z.string().describe(
+        durationValue: z.unknown().describe(
           "Contains value if the data is of duration type.",
         ).optional(),
-        floatValue: z.number().describe(
+        floatValue: z.unknown().describe(
           "Contains value if the data is of float type.",
         ).optional(),
-        int64Value: z.string().describe(
+        int64Value: z.unknown().describe(
           "Contains value if the data is of int64 type.",
         ).optional(),
-        javaClassValue: z.string().describe(
+        javaClassValue: z.unknown().describe(
           "Contains value if the data is of java class type.",
         ).optional(),
-        key: z.string().describe(
+        key: z.unknown().describe(
           "The key identifying the display data. This is intended to be used as a label for the display data when viewed in a dax monitoring system.",
         ).optional(),
-        label: z.string().describe(
+        label: z.unknown().describe(
           "An optional label to display in a dax UI for the element.",
         ).optional(),
-        namespace: z.string().describe(
+        namespace: z.unknown().describe(
           "The namespace for the key. This is usually a class name or programming language namespace (i.e. python module) which defines the display data. This allows a dax monitoring system to specially handle the data and perform custom rendering.",
         ).optional(),
-        shortStrValue: z.string().describe(
+        shortStrValue: z.unknown().describe(
           "A possible additional shorter value to display. For example a java_class_name_value of com.mypackage.MyDoFn will be stored with MyDoFn as the short_str_value and com.mypackage.MyDoFn as the java_class_name value. short_str_value can be displayed and java_class_name_value will be displayed as a tooltip.",
         ).optional(),
-        strValue: z.string().describe(
+        strValue: z.unknown().describe(
           "Contains value if the data is of string type.",
         ).optional(),
-        timestampValue: z.string().describe(
+        timestampValue: z.unknown().describe(
           "Contains value if the data is of timestamp type.",
         ).optional(),
-        url: z.string().describe("An optional full URL.").optional(),
+        url: z.unknown().describe("An optional full URL.").optional(),
       })).describe("Transform-specific display data.").optional(),
       id: z.string().describe("SDK generated id of this transform instance.")
         .optional(),
@@ -837,9 +837,9 @@ const StateSchema = z.object({
         maxNumWorkers: z.number(),
       }),
       dataDisks: z.array(z.object({
-        diskType: z.string(),
-        mountPoint: z.string(),
-        sizeGb: z.number(),
+        diskType: z.unknown(),
+        mountPoint: z.unknown(),
+        sizeGb: z.unknown(),
       })),
       defaultPackageSet: z.string(),
       diskProvisionedIops: z.string(),
@@ -856,15 +856,15 @@ const StateSchema = z.object({
       numWorkers: z.number(),
       onHostMaintenance: z.string(),
       packages: z.array(z.object({
-        location: z.string(),
-        name: z.string(),
+        location: z.unknown(),
+        name: z.unknown(),
       })),
       poolArgs: z.record(z.string(), z.unknown()),
       sdkHarnessContainerImages: z.array(z.object({
-        capabilities: z.array(z.string()),
-        containerImage: z.string(),
-        environmentId: z.string(),
-        useSingleCorePerContainer: z.boolean(),
+        capabilities: z.unknown(),
+        containerImage: z.unknown(),
+        environmentId: z.unknown(),
+        useSingleCorePerContainer: z.unknown(),
       })),
       subnetwork: z.string(),
       taskrunnerSettings: z.object({
@@ -879,14 +879,14 @@ const StateSchema = z.object({
         logDir: z.string(),
         logToSerialconsole: z.boolean(),
         logUploadLocation: z.string(),
-        oauthScopes: z.array(z.string()),
+        oauthScopes: z.array(z.unknown()),
         parallelWorkerSettings: z.object({
-          baseUrl: z.string(),
-          reportingEnabled: z.boolean(),
-          servicePath: z.string(),
-          shuffleServicePath: z.string(),
-          tempStoragePrefix: z.string(),
-          workerId: z.string(),
+          baseUrl: z.unknown(),
+          reportingEnabled: z.unknown(),
+          servicePath: z.unknown(),
+          shuffleServicePath: z.unknown(),
+          tempStoragePrefix: z.unknown(),
+          workerId: z.unknown(),
         }),
         streamingWorkerMainClass: z.string(),
         taskGroup: z.string(),
@@ -967,46 +967,46 @@ const StateSchema = z.object({
     })),
     executionPipelineStage: z.array(z.object({
       componentSource: z.array(z.object({
-        name: z.string(),
-        originalTransformOrCollection: z.string(),
-        userName: z.string(),
+        name: z.unknown(),
+        originalTransformOrCollection: z.unknown(),
+        userName: z.unknown(),
       })),
       componentTransform: z.array(z.object({
-        name: z.string(),
-        originalTransform: z.string(),
-        userName: z.string(),
+        name: z.unknown(),
+        originalTransform: z.unknown(),
+        userName: z.unknown(),
       })),
       id: z.string(),
       inputSource: z.array(z.object({
-        name: z.string(),
-        originalTransformOrCollection: z.string(),
-        sizeBytes: z.string(),
-        userName: z.string(),
+        name: z.unknown(),
+        originalTransformOrCollection: z.unknown(),
+        sizeBytes: z.unknown(),
+        userName: z.unknown(),
       })),
       kind: z.string(),
       name: z.string(),
       outputSource: z.array(z.object({
-        name: z.string(),
-        originalTransformOrCollection: z.string(),
-        sizeBytes: z.string(),
-        userName: z.string(),
+        name: z.unknown(),
+        originalTransformOrCollection: z.unknown(),
+        sizeBytes: z.unknown(),
+        userName: z.unknown(),
       })),
       prerequisiteStage: z.array(z.string()),
     })),
     originalPipelineTransform: z.array(z.object({
       displayData: z.array(z.object({
-        boolValue: z.boolean(),
-        durationValue: z.string(),
-        floatValue: z.number(),
-        int64Value: z.string(),
-        javaClassValue: z.string(),
-        key: z.string(),
-        label: z.string(),
-        namespace: z.string(),
-        shortStrValue: z.string(),
-        strValue: z.string(),
-        timestampValue: z.string(),
-        url: z.string(),
+        boolValue: z.unknown(),
+        durationValue: z.unknown(),
+        floatValue: z.unknown(),
+        int64Value: z.unknown(),
+        javaClassValue: z.unknown(),
+        key: z.unknown(),
+        label: z.unknown(),
+        namespace: z.unknown(),
+        shortStrValue: z.unknown(),
+        strValue: z.unknown(),
+        timestampValue: z.unknown(),
+        url: z.unknown(),
       })),
       id: z.string(),
       inputCollectionName: z.array(z.string()),
@@ -1172,13 +1172,13 @@ const InputsSchema = z.object({
         ).optional(),
       }).describe("Settings for WorkerPool autoscaling.").optional(),
       dataDisks: z.array(z.object({
-        diskType: z.string().describe(
+        diskType: z.unknown().describe(
           'Disk storage type, as defined by Google Compute Engine. This must be a disk type appropriate to the project and zone in which the workers will run. If unknown or unspecified, the service will attempt to choose a reasonable default. For example, the standard persistent disk type is a resource name typically ending in "pd-standard". If SSD persistent disks are available, the resource name typically ends with "pd-ssd". The actual valid values are defined the Google Compute Engine API, not by the Cloud Dataflow API; consult the Google Compute Engine documentation for more information about determining the set of available disk types for a particular project and zone. Google Compute Engine Disk types are local to a particular project in a particular zone, and so the resource name will typically look something like this: compute.googleapis.com/projects/project-id/zones/zone/diskTypes/pd-standard',
         ).optional(),
-        mountPoint: z.string().describe(
+        mountPoint: z.unknown().describe(
           "Directory in a VM where disk is mounted.",
         ).optional(),
-        sizeGb: z.number().int().describe(
+        sizeGb: z.unknown().describe(
           "Size of disk in GB. If zero or unspecified, the service will attempt to choose a reasonable default.",
         ).optional(),
       })).describe("Data disks that are used by a VM in this workflow.")
@@ -1233,25 +1233,25 @@ const InputsSchema = z.object({
         "The action to take on host maintenance, as defined by the Google Compute Engine API.",
       ).optional(),
       packages: z.array(z.object({
-        location: z.string().describe(
+        location: z.unknown().describe(
           "The resource to read the package from. The supported resource type is: Google Cloud Storage: storage.googleapis.com/{bucket} bucket.storage.googleapis.com/",
         ).optional(),
-        name: z.string().describe("The name of the package.").optional(),
+        name: z.unknown().describe("The name of the package.").optional(),
       })).describe("Packages to be installed on workers.").optional(),
       poolArgs: z.record(z.string(), z.string()).describe(
         "Extra arguments for this worker pool.",
       ).optional(),
       sdkHarnessContainerImages: z.array(z.object({
-        capabilities: z.array(z.string()).describe(
+        capabilities: z.unknown().describe(
           "The set of capabilities enumerated in the above Environment proto. See also [beam_runner_api.proto](https://github.com/apache/beam/blob/master/model/pipeline/src/main/proto/org/apache/beam/model/pipeline/v1/beam_runner_api.proto)",
         ).optional(),
-        containerImage: z.string().describe(
+        containerImage: z.unknown().describe(
           "A docker container image that resides in Google Container Registry.",
         ).optional(),
-        environmentId: z.string().describe(
+        environmentId: z.unknown().describe(
           "Environment ID for the Beam runner API proto Environment that corresponds to the current SDK Harness.",
         ).optional(),
-        useSingleCorePerContainer: z.boolean().describe(
+        useSingleCorePerContainer: z.unknown().describe(
           "If true, recommends the Dataflow service to use only one core per SDK container instance with this image. If false (or unset) recommends using more than one core per SDK container instance with this image for efficiency. Note that Dataflow service may choose to override this property if needed.",
         ).optional(),
       })).describe(
@@ -1292,26 +1292,26 @@ const InputsSchema = z.object({
         logUploadLocation: z.string().describe(
           "Indicates where to put logs. If this is not specified, the logs will not be uploaded. The supported resource type is: Google Cloud Storage: storage.googleapis.com/{bucket}/{object} bucket.storage.googleapis.com/{object}",
         ).optional(),
-        oauthScopes: z.array(z.string()).describe(
+        oauthScopes: z.array(z.unknown()).describe(
           "The OAuth2 scopes to be requested by the taskrunner in order to access the Cloud Dataflow API.",
         ).optional(),
         parallelWorkerSettings: z.object({
-          baseUrl: z.string().describe(
+          baseUrl: z.unknown().describe(
             'The base URL for accessing Google Cloud APIs. When workers access Google Cloud APIs, they logically do so via relative URLs. If this field is specified, it supplies the base URL to use for resolving these relative URLs. The normative algorithm used is defined by RFC 1808, "Relative Uniform Resource Locators". If not specified, the default value is "http://www.googleapis.com/"',
           ).optional(),
-          reportingEnabled: z.boolean().describe(
+          reportingEnabled: z.unknown().describe(
             "Whether to send work progress updates to the service.",
           ).optional(),
-          servicePath: z.string().describe(
+          servicePath: z.unknown().describe(
             'The Cloud Dataflow service path relative to the root URL, for example, "dataflow/v1b3/projects".',
           ).optional(),
-          shuffleServicePath: z.string().describe(
+          shuffleServicePath: z.unknown().describe(
             'The Shuffle service path relative to the root URL, for example, "shuffle/v1beta1".',
           ).optional(),
-          tempStoragePrefix: z.string().describe(
+          tempStoragePrefix: z.unknown().describe(
             "The prefix of the resources the system should use for temporary storage. The supported resource type is: Google Cloud Storage: storage.googleapis.com/{bucket}/{object} bucket.storage.googleapis.com/{object}",
           ).optional(),
-          workerId: z.string().describe(
+          workerId: z.unknown().describe(
             "The ID of the worker running this pipeline.",
           ).optional(),
         }).describe("Provides data to pass through to the worker harness.")
@@ -1511,41 +1511,41 @@ const InputsSchema = z.object({
     })).describe("Pipeline level display data.").optional(),
     executionPipelineStage: z.array(z.object({
       componentSource: z.array(z.object({
-        name: z.string().describe(
+        name: z.unknown().describe(
           "Dataflow service generated name for this source.",
         ).optional(),
-        originalTransformOrCollection: z.string().describe(
+        originalTransformOrCollection: z.unknown().describe(
           "User name for the original user transform or collection with which this source is most closely associated.",
         ).optional(),
-        userName: z.string().describe(
+        userName: z.unknown().describe(
           "Human-readable name for this transform; may be user or system generated.",
         ).optional(),
       })).describe(
         "Collections produced and consumed by component transforms of this stage.",
       ).optional(),
       componentTransform: z.array(z.object({
-        name: z.string().describe(
+        name: z.unknown().describe(
           "Dataflow service generated name for this source.",
         ).optional(),
-        originalTransform: z.string().describe(
+        originalTransform: z.unknown().describe(
           "User name for the original user transform with which this transform is most closely associated.",
         ).optional(),
-        userName: z.string().describe(
+        userName: z.unknown().describe(
           "Human-readable name for this transform; may be user or system generated.",
         ).optional(),
       })).describe("Transforms that comprise this execution stage.").optional(),
       id: z.string().describe("Dataflow service generated id for this stage.")
         .optional(),
       inputSource: z.array(z.object({
-        name: z.string().describe(
+        name: z.unknown().describe(
           "Dataflow service generated name for this source.",
         ).optional(),
-        originalTransformOrCollection: z.string().describe(
+        originalTransformOrCollection: z.unknown().describe(
           "User name for the original user transform or collection with which this source is most closely associated.",
         ).optional(),
-        sizeBytes: z.string().describe("Size of the source, if measurable.")
+        sizeBytes: z.unknown().describe("Size of the source, if measurable.")
           .optional(),
-        userName: z.string().describe(
+        userName: z.unknown().describe(
           "Human-readable name for this source; may be user or system generated.",
         ).optional(),
       })).describe("Input sources for this stage.").optional(),
@@ -1564,15 +1564,15 @@ const InputsSchema = z.object({
         "Dataflow service generated name for this stage.",
       ).optional(),
       outputSource: z.array(z.object({
-        name: z.string().describe(
+        name: z.unknown().describe(
           "Dataflow service generated name for this source.",
         ).optional(),
-        originalTransformOrCollection: z.string().describe(
+        originalTransformOrCollection: z.unknown().describe(
           "User name for the original user transform or collection with which this source is most closely associated.",
         ).optional(),
-        sizeBytes: z.string().describe("Size of the source, if measurable.")
+        sizeBytes: z.unknown().describe("Size of the source, if measurable.")
           .optional(),
-        userName: z.string().describe(
+        userName: z.unknown().describe(
           "Human-readable name for this source; may be user or system generated.",
         ).optional(),
       })).describe("Output sources for this stage.").optional(),
@@ -1583,40 +1583,40 @@ const InputsSchema = z.object({
       .optional(),
     originalPipelineTransform: z.array(z.object({
       displayData: z.array(z.object({
-        boolValue: z.boolean().describe(
+        boolValue: z.unknown().describe(
           "Contains value if the data is of a boolean type.",
         ).optional(),
-        durationValue: z.string().describe(
+        durationValue: z.unknown().describe(
           "Contains value if the data is of duration type.",
         ).optional(),
-        floatValue: z.number().describe(
+        floatValue: z.unknown().describe(
           "Contains value if the data is of float type.",
         ).optional(),
-        int64Value: z.string().describe(
+        int64Value: z.unknown().describe(
           "Contains value if the data is of int64 type.",
         ).optional(),
-        javaClassValue: z.string().describe(
+        javaClassValue: z.unknown().describe(
           "Contains value if the data is of java class type.",
         ).optional(),
-        key: z.string().describe(
+        key: z.unknown().describe(
           "The key identifying the display data. This is intended to be used as a label for the display data when viewed in a dax monitoring system.",
         ).optional(),
-        label: z.string().describe(
+        label: z.unknown().describe(
           "An optional label to display in a dax UI for the element.",
         ).optional(),
-        namespace: z.string().describe(
+        namespace: z.unknown().describe(
           "The namespace for the key. This is usually a class name or programming language namespace (i.e. python module) which defines the display data. This allows a dax monitoring system to specially handle the data and perform custom rendering.",
         ).optional(),
-        shortStrValue: z.string().describe(
+        shortStrValue: z.unknown().describe(
           "A possible additional shorter value to display. For example a java_class_name_value of com.mypackage.MyDoFn will be stored with MyDoFn as the short_str_value and com.mypackage.MyDoFn as the java_class_name value. short_str_value can be displayed and java_class_name_value will be displayed as a tooltip.",
         ).optional(),
-        strValue: z.string().describe(
+        strValue: z.unknown().describe(
           "Contains value if the data is of string type.",
         ).optional(),
-        timestampValue: z.string().describe(
+        timestampValue: z.unknown().describe(
           "Contains value if the data is of timestamp type.",
         ).optional(),
-        url: z.string().describe("An optional full URL.").optional(),
+        url: z.unknown().describe("An optional full URL.").optional(),
       })).describe("Transform-specific display data.").optional(),
       id: z.string().describe("SDK generated id of this transform instance.")
         .optional(),
@@ -1765,7 +1765,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/dataflow/jobs",
-  version: "2026.04.03.3",
+  version: "2026.04.04.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -1789,6 +1789,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.3",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.04.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

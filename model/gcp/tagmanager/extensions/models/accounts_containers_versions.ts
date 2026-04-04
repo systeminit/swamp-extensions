@@ -219,10 +219,10 @@ const GlobalArgsSchema = z.object({
       key: z.string().describe(
         "The named key that uniquely identifies a parameter. Required for top-level parameters, as well as map values. Ignored for list values.",
       ).optional(),
-      list: z.array(z.string()).describe(
+      list: z.array(z.unknown()).describe(
         "This list parameter's parameters (keys will be ignored).",
       ).optional(),
-      map: z.array(z.string()).describe(
+      map: z.array(z.unknown()).describe(
         "This map parameter's parameters (must have keys; keys must be unique).",
       ).optional(),
       type: z.enum([
@@ -433,10 +433,10 @@ const GlobalArgsSchema = z.object({
       key: z.string().describe(
         "The named key that uniquely identifies a parameter. Required for top-level parameters, as well as map values. Ignored for list values.",
       ).optional(),
-      list: z.array(z.string()).describe(
+      list: z.array(z.unknown()).describe(
         "This list parameter's parameters (keys will be ignored).",
       ).optional(),
-      map: z.array(z.string()).describe(
+      map: z.array(z.unknown()).describe(
         "This map parameter's parameters (must have keys; keys must be unique).",
       ).optional(),
       type: z.enum([
@@ -486,10 +486,10 @@ const GlobalArgsSchema = z.object({
         key: z.string().describe(
           "The named key that uniquely identifies a parameter. Required for top-level parameters, as well as map values. Ignored for list values.",
         ).optional(),
-        list: z.array(z.string()).describe(
+        list: z.array(z.unknown()).describe(
           "This list parameter's parameters (keys will be ignored).",
         ).optional(),
-        map: z.array(z.string()).describe(
+        map: z.array(z.unknown()).describe(
           "This map parameter's parameters (must have keys; keys must be unique).",
         ).optional(),
         type: z.enum([
@@ -562,10 +562,10 @@ const GlobalArgsSchema = z.object({
       key: z.string().describe(
         "The named key that uniquely identifies a parameter. Required for top-level parameters, as well as map values. Ignored for list values.",
       ).optional(),
-      list: z.array(z.string()).describe(
+      list: z.array(z.unknown()).describe(
         "This list parameter's parameters (keys will be ignored).",
       ).optional(),
-      map: z.array(z.string()).describe(
+      map: z.array(z.unknown()).describe(
         "This map parameter's parameters (must have keys; keys must be unique).",
       ).optional(),
       type: z.enum([
@@ -673,10 +673,10 @@ const GlobalArgsSchema = z.object({
       key: z.string().describe(
         "The named key that uniquely identifies a parameter. Required for top-level parameters, as well as map values. Ignored for list values.",
       ).optional(),
-      list: z.array(z.string()).describe(
+      list: z.array(z.unknown()).describe(
         "This list parameter's parameters (keys will be ignored).",
       ).optional(),
-      map: z.array(z.string()).describe(
+      map: z.array(z.unknown()).describe(
         "This map parameter's parameters (must have keys; keys must be unique).",
       ).optional(),
       type: z.enum([
@@ -712,35 +712,7 @@ const GlobalArgsSchema = z.object({
   trigger: z.array(z.object({
     accountId: z.string().describe("GTM Account ID.").optional(),
     autoEventFilter: z.array(z.object({
-      parameter: z.array(z.object({
-        isWeakReference: z.boolean().describe(
-          "Whether or not a reference type parameter is strongly or weakly referenced. Only used by Transformations.",
-        ).optional(),
-        key: z.string().describe(
-          "The named key that uniquely identifies a parameter. Required for top-level parameters, as well as map values. Ignored for list values.",
-        ).optional(),
-        list: z.array(z.string()).describe(
-          "This list parameter's parameters (keys will be ignored).",
-        ).optional(),
-        map: z.array(z.string()).describe(
-          "This map parameter's parameters (must have keys; keys must be unique).",
-        ).optional(),
-        type: z.enum([
-          "typeUnspecified",
-          "template",
-          "integer",
-          "boolean",
-          "list",
-          "map",
-          "triggerReference",
-          "tagReference",
-        ]).describe(
-          "The parameter type. Valid values are: - boolean: The value represents a boolean, represented as 'true' or 'false' - integer: The value represents a 64-bit signed integer value, in base 10 - list: A list of parameters should be specified - map: A map of parameters should be specified - template: The value represents any text; this can include variable references (even variable references that might return non-string types) - trigger_reference: The value represents a trigger, represented as the trigger id - tag_reference: The value represents a tag, represented as the tag name",
-        ).optional(),
-        value: z.string().describe(
-          "A parameter's value (may contain variable references). as appropriate to the specified type.",
-        ).optional(),
-      })).describe(
+      parameter: z.array(z.unknown()).describe(
         "A list of named parameters (key/value), depending on the condition's type. Notes: - For binary operators, include parameters named arg0 and arg1 for specifying the left and right operands, respectively. - At this time, the left operand (arg0) must be a reference to a variable. - For case-insensitive Regex matching, include a boolean parameter named ignore_case that is set to true. If not specified or set to any other value, the matching will be case sensitive. - To negate an operator, include a boolean parameter named negate boolean parameter that is set to true.",
       ).optional(),
       type: z.enum([
@@ -818,35 +790,7 @@ const GlobalArgsSchema = z.object({
       ).optional(),
     }).describe("Represents a Google Tag Manager Parameter.").optional(),
     customEventFilter: z.array(z.object({
-      parameter: z.array(z.object({
-        isWeakReference: z.boolean().describe(
-          "Whether or not a reference type parameter is strongly or weakly referenced. Only used by Transformations.",
-        ).optional(),
-        key: z.string().describe(
-          "The named key that uniquely identifies a parameter. Required for top-level parameters, as well as map values. Ignored for list values.",
-        ).optional(),
-        list: z.array(z.string()).describe(
-          "This list parameter's parameters (keys will be ignored).",
-        ).optional(),
-        map: z.array(z.string()).describe(
-          "This map parameter's parameters (must have keys; keys must be unique).",
-        ).optional(),
-        type: z.enum([
-          "typeUnspecified",
-          "template",
-          "integer",
-          "boolean",
-          "list",
-          "map",
-          "triggerReference",
-          "tagReference",
-        ]).describe(
-          "The parameter type. Valid values are: - boolean: The value represents a boolean, represented as 'true' or 'false' - integer: The value represents a 64-bit signed integer value, in base 10 - list: A list of parameters should be specified - map: A map of parameters should be specified - template: The value represents any text; this can include variable references (even variable references that might return non-string types) - trigger_reference: The value represents a trigger, represented as the trigger id - tag_reference: The value represents a tag, represented as the tag name",
-        ).optional(),
-        value: z.string().describe(
-          "A parameter's value (may contain variable references). as appropriate to the specified type.",
-        ).optional(),
-      })).describe(
+      parameter: z.array(z.unknown()).describe(
         "A list of named parameters (key/value), depending on the condition's type. Notes: - For binary operators, include parameters named arg0 and arg1 for specifying the left and right operands, respectively. - At this time, the left operand (arg0) must be a reference to a variable. - For case-insensitive Regex matching, include a boolean parameter named ignore_case that is set to true. If not specified or set to any other value, the matching will be case sensitive. - To negate an operator, include a boolean parameter named negate boolean parameter that is set to true.",
       ).optional(),
       type: z.enum([
@@ -896,35 +840,7 @@ const GlobalArgsSchema = z.object({
       ).optional(),
     }).describe("Represents a Google Tag Manager Parameter.").optional(),
     filter: z.array(z.object({
-      parameter: z.array(z.object({
-        isWeakReference: z.boolean().describe(
-          "Whether or not a reference type parameter is strongly or weakly referenced. Only used by Transformations.",
-        ).optional(),
-        key: z.string().describe(
-          "The named key that uniquely identifies a parameter. Required for top-level parameters, as well as map values. Ignored for list values.",
-        ).optional(),
-        list: z.array(z.string()).describe(
-          "This list parameter's parameters (keys will be ignored).",
-        ).optional(),
-        map: z.array(z.string()).describe(
-          "This map parameter's parameters (must have keys; keys must be unique).",
-        ).optional(),
-        type: z.enum([
-          "typeUnspecified",
-          "template",
-          "integer",
-          "boolean",
-          "list",
-          "map",
-          "triggerReference",
-          "tagReference",
-        ]).describe(
-          "The parameter type. Valid values are: - boolean: The value represents a boolean, represented as 'true' or 'false' - integer: The value represents a 64-bit signed integer value, in base 10 - list: A list of parameters should be specified - map: A map of parameters should be specified - template: The value represents any text; this can include variable references (even variable references that might return non-string types) - trigger_reference: The value represents a trigger, represented as the trigger id - tag_reference: The value represents a tag, represented as the tag name",
-        ).optional(),
-        value: z.string().describe(
-          "A parameter's value (may contain variable references). as appropriate to the specified type.",
-        ).optional(),
-      })).describe(
+      parameter: z.array(z.unknown()).describe(
         "A list of named parameters (key/value), depending on the condition's type. Notes: - For binary operators, include parameters named arg0 and arg1 for specifying the left and right operands, respectively. - At this time, the left operand (arg0) must be a reference to a variable. - For case-insensitive Regex matching, include a boolean parameter named ignore_case that is set to true. If not specified or set to any other value, the matching will be case sensitive. - To negate an operator, include a boolean parameter named negate boolean parameter that is set to true.",
       ).optional(),
       type: z.enum([
@@ -1102,10 +1018,10 @@ const GlobalArgsSchema = z.object({
       key: z.string().describe(
         "The named key that uniquely identifies a parameter. Required for top-level parameters, as well as map values. Ignored for list values.",
       ).optional(),
-      list: z.array(z.string()).describe(
+      list: z.array(z.unknown()).describe(
         "This list parameter's parameters (keys will be ignored).",
       ).optional(),
-      map: z.array(z.string()).describe(
+      map: z.array(z.unknown()).describe(
         "This map parameter's parameters (must have keys; keys must be unique).",
       ).optional(),
       type: z.enum([
@@ -1458,10 +1374,10 @@ const GlobalArgsSchema = z.object({
         key: z.string().describe(
           "The named key that uniquely identifies a parameter. Required for top-level parameters, as well as map values. Ignored for list values.",
         ).optional(),
-        list: z.array(z.string()).describe(
+        list: z.array(z.unknown()).describe(
           "This list parameter's parameters (keys will be ignored).",
         ).optional(),
-        map: z.array(z.string()).describe(
+        map: z.array(z.unknown()).describe(
           "This map parameter's parameters (must have keys; keys must be unique).",
         ).optional(),
         type: z.enum([
@@ -1487,10 +1403,10 @@ const GlobalArgsSchema = z.object({
         key: z.string().describe(
           "The named key that uniquely identifies a parameter. Required for top-level parameters, as well as map values. Ignored for list values.",
         ).optional(),
-        list: z.array(z.string()).describe(
+        list: z.array(z.unknown()).describe(
           "This list parameter's parameters (keys will be ignored).",
         ).optional(),
-        map: z.array(z.string()).describe(
+        map: z.array(z.unknown()).describe(
           "This map parameter's parameters (must have keys; keys must be unique).",
         ).optional(),
         type: z.enum([
@@ -1525,10 +1441,10 @@ const GlobalArgsSchema = z.object({
         key: z.string().describe(
           "The named key that uniquely identifies a parameter. Required for top-level parameters, as well as map values. Ignored for list values.",
         ).optional(),
-        list: z.array(z.string()).describe(
+        list: z.array(z.unknown()).describe(
           "This list parameter's parameters (keys will be ignored).",
         ).optional(),
-        map: z.array(z.string()).describe(
+        map: z.array(z.unknown()).describe(
           "This map parameter's parameters (must have keys; keys must be unique).",
         ).optional(),
         type: z.enum([
@@ -1554,10 +1470,10 @@ const GlobalArgsSchema = z.object({
         key: z.string().describe(
           "The named key that uniquely identifies a parameter. Required for top-level parameters, as well as map values. Ignored for list values.",
         ).optional(),
-        list: z.array(z.string()).describe(
+        list: z.array(z.unknown()).describe(
           "This list parameter's parameters (keys will be ignored).",
         ).optional(),
-        map: z.array(z.string()).describe(
+        map: z.array(z.unknown()).describe(
           "This map parameter's parameters (must have keys; keys must be unique).",
         ).optional(),
         type: z.enum([
@@ -1588,10 +1504,10 @@ const GlobalArgsSchema = z.object({
       key: z.string().describe(
         "The named key that uniquely identifies a parameter. Required for top-level parameters, as well as map values. Ignored for list values.",
       ).optional(),
-      list: z.array(z.string()).describe(
+      list: z.array(z.unknown()).describe(
         "This list parameter's parameters (keys will be ignored).",
       ).optional(),
-      map: z.array(z.string()).describe(
+      map: z.array(z.unknown()).describe(
         "This map parameter's parameters (must have keys; keys must be unique).",
       ).optional(),
       type: z.enum([
@@ -1633,51 +1549,11 @@ const GlobalArgsSchema = z.object({
     accountId: z.string().describe("GTM Account ID.").optional(),
     boundary: z.object({
       condition: z.array(z.object({
-        parameter: z.array(z.object({
-          isWeakReference: z.boolean().describe(
-            "Whether or not a reference type parameter is strongly or weakly referenced. Only used by Transformations.",
-          ).optional(),
-          key: z.string().describe(
-            "The named key that uniquely identifies a parameter. Required for top-level parameters, as well as map values. Ignored for list values.",
-          ).optional(),
-          list: z.array(z.string()).describe(
-            "This list parameter's parameters (keys will be ignored).",
-          ).optional(),
-          map: z.array(z.string()).describe(
-            "This map parameter's parameters (must have keys; keys must be unique).",
-          ).optional(),
-          type: z.enum([
-            "typeUnspecified",
-            "template",
-            "integer",
-            "boolean",
-            "list",
-            "map",
-            "triggerReference",
-            "tagReference",
-          ]).describe(
-            "The parameter type. Valid values are: - boolean: The value represents a boolean, represented as 'true' or 'false' - integer: The value represents a 64-bit signed integer value, in base 10 - list: A list of parameters should be specified - map: A map of parameters should be specified - template: The value represents any text; this can include variable references (even variable references that might return non-string types) - trigger_reference: The value represents a trigger, represented as the trigger id - tag_reference: The value represents a tag, represented as the tag name",
-          ).optional(),
-          value: z.string().describe(
-            "A parameter's value (may contain variable references). as appropriate to the specified type.",
-          ).optional(),
-        })).describe(
+        parameter: z.unknown().describe(
           "A list of named parameters (key/value), depending on the condition's type. Notes: - For binary operators, include parameters named arg0 and arg1 for specifying the left and right operands, respectively. - At this time, the left operand (arg0) must be a reference to a variable. - For case-insensitive Regex matching, include a boolean parameter named ignore_case that is set to true. If not specified or set to any other value, the matching will be case sensitive. - To negate an operator, include a boolean parameter named negate boolean parameter that is set to true.",
         ).optional(),
-        type: z.enum([
-          "conditionTypeUnspecified",
-          "equals",
-          "contains",
-          "startsWith",
-          "endsWith",
-          "matchRegex",
-          "greater",
-          "greaterOrEquals",
-          "less",
-          "lessOrEquals",
-          "cssSelector",
-          "urlMatches",
-        ]).describe("The type of operator for this condition.").optional(),
+        type: z.unknown().describe("The type of operator for this condition.")
+          .optional(),
       })).describe("The conditions that, when conjoined, make up the boundary.")
         .optional(),
       customEvaluationTriggerId: z.array(z.string()).describe(
@@ -1738,8 +1614,8 @@ const StateSchema = z.object({
     parameter: z.array(z.object({
       isWeakReference: z.boolean(),
       key: z.string(),
-      list: z.array(z.string()),
-      map: z.array(z.string()),
+      list: z.array(z.unknown()),
+      map: z.array(z.unknown()),
       type: z.string(),
       value: z.string(),
     })),
@@ -1825,8 +1701,8 @@ const StateSchema = z.object({
     parameter: z.array(z.object({
       isWeakReference: z.boolean(),
       key: z.string(),
-      list: z.array(z.string()),
-      map: z.array(z.string()),
+      list: z.array(z.unknown()),
+      map: z.array(z.unknown()),
       type: z.string(),
       value: z.string(),
     })),
@@ -1845,8 +1721,8 @@ const StateSchema = z.object({
       consentType: z.object({
         isWeakReference: z.boolean(),
         key: z.string(),
-        list: z.array(z.string()),
-        map: z.array(z.string()),
+        list: z.array(z.unknown()),
+        map: z.array(z.unknown()),
         type: z.string(),
         value: z.string(),
       }),
@@ -1869,8 +1745,8 @@ const StateSchema = z.object({
     parameter: z.array(z.object({
       isWeakReference: z.boolean(),
       key: z.string(),
-      list: z.array(z.string()),
-      map: z.array(z.string()),
+      list: z.array(z.unknown()),
+      map: z.array(z.unknown()),
       type: z.string(),
       value: z.string(),
     })),
@@ -1911,8 +1787,8 @@ const StateSchema = z.object({
     parameter: z.array(z.object({
       isWeakReference: z.boolean(),
       key: z.string(),
-      list: z.array(z.string()),
-      map: z.array(z.string()),
+      list: z.array(z.unknown()),
+      map: z.array(z.unknown()),
       type: z.string(),
       value: z.string(),
     })),
@@ -1926,14 +1802,7 @@ const StateSchema = z.object({
   trigger: z.array(z.object({
     accountId: z.string(),
     autoEventFilter: z.array(z.object({
-      parameter: z.array(z.object({
-        isWeakReference: z.boolean(),
-        key: z.string(),
-        list: z.array(z.string()),
-        map: z.array(z.string()),
-        type: z.string(),
-        value: z.string(),
-      })),
+      parameter: z.array(z.unknown()),
       type: z.string(),
     })),
     checkValidation: z.object({
@@ -1954,14 +1823,7 @@ const StateSchema = z.object({
       value: z.string(),
     }),
     customEventFilter: z.array(z.object({
-      parameter: z.array(z.object({
-        isWeakReference: z.boolean(),
-        key: z.string(),
-        list: z.array(z.string()),
-        map: z.array(z.string()),
-        type: z.string(),
-        value: z.string(),
-      })),
+      parameter: z.array(z.unknown()),
       type: z.string(),
     })),
     eventName: z.object({
@@ -1973,14 +1835,7 @@ const StateSchema = z.object({
       value: z.string(),
     }),
     filter: z.array(z.object({
-      parameter: z.array(z.object({
-        isWeakReference: z.boolean(),
-        key: z.string(),
-        list: z.array(z.string()),
-        map: z.array(z.string()),
-        type: z.string(),
-        value: z.string(),
-      })),
+      parameter: z.array(z.unknown()),
       type: z.string(),
     })),
     fingerprint: z.string(),
@@ -2029,8 +1884,8 @@ const StateSchema = z.object({
     parameter: z.array(z.object({
       isWeakReference: z.boolean(),
       key: z.string(),
-      list: z.array(z.string()),
-      map: z.array(z.string()),
+      list: z.array(z.unknown()),
+      map: z.array(z.unknown()),
       type: z.string(),
       value: z.string(),
     })),
@@ -2124,16 +1979,16 @@ const StateSchema = z.object({
       convertFalseToValue: z.object({
         isWeakReference: z.boolean(),
         key: z.string(),
-        list: z.array(z.string()),
-        map: z.array(z.string()),
+        list: z.array(z.unknown()),
+        map: z.array(z.unknown()),
         type: z.string(),
         value: z.string(),
       }),
       convertNullToValue: z.object({
         isWeakReference: z.boolean(),
         key: z.string(),
-        list: z.array(z.string()),
-        map: z.array(z.string()),
+        list: z.array(z.unknown()),
+        map: z.array(z.unknown()),
         type: z.string(),
         value: z.string(),
       }),
@@ -2142,16 +1997,16 @@ const StateSchema = z.object({
       convertTrueToValue: z.object({
         isWeakReference: z.boolean(),
         key: z.string(),
-        list: z.array(z.string()),
-        map: z.array(z.string()),
+        list: z.array(z.unknown()),
+        map: z.array(z.unknown()),
         type: z.string(),
         value: z.string(),
       }),
       convertUndefinedToValue: z.object({
         isWeakReference: z.boolean(),
         key: z.string(),
-        list: z.array(z.string()),
-        map: z.array(z.string()),
+        list: z.array(z.unknown()),
+        map: z.array(z.unknown()),
         type: z.string(),
         value: z.string(),
       }),
@@ -2161,8 +2016,8 @@ const StateSchema = z.object({
     parameter: z.array(z.object({
       isWeakReference: z.boolean(),
       key: z.string(),
-      list: z.array(z.string()),
-      map: z.array(z.string()),
+      list: z.array(z.unknown()),
+      map: z.array(z.unknown()),
       type: z.string(),
       value: z.string(),
     })),
@@ -2179,15 +2034,8 @@ const StateSchema = z.object({
     accountId: z.string(),
     boundary: z.object({
       condition: z.array(z.object({
-        parameter: z.array(z.object({
-          isWeakReference: z.boolean(),
-          key: z.string(),
-          list: z.array(z.string()),
-          map: z.array(z.string()),
-          type: z.string(),
-          value: z.string(),
-        })),
-        type: z.string(),
+        parameter: z.unknown(),
+        type: z.unknown(),
       })),
       customEvaluationTriggerId: z.array(z.string()),
     }),
@@ -2365,10 +2213,10 @@ const InputsSchema = z.object({
       key: z.string().describe(
         "The named key that uniquely identifies a parameter. Required for top-level parameters, as well as map values. Ignored for list values.",
       ).optional(),
-      list: z.array(z.string()).describe(
+      list: z.array(z.unknown()).describe(
         "This list parameter's parameters (keys will be ignored).",
       ).optional(),
-      map: z.array(z.string()).describe(
+      map: z.array(z.unknown()).describe(
         "This map parameter's parameters (must have keys; keys must be unique).",
       ).optional(),
       type: z.enum([
@@ -2579,10 +2427,10 @@ const InputsSchema = z.object({
       key: z.string().describe(
         "The named key that uniquely identifies a parameter. Required for top-level parameters, as well as map values. Ignored for list values.",
       ).optional(),
-      list: z.array(z.string()).describe(
+      list: z.array(z.unknown()).describe(
         "This list parameter's parameters (keys will be ignored).",
       ).optional(),
-      map: z.array(z.string()).describe(
+      map: z.array(z.unknown()).describe(
         "This map parameter's parameters (must have keys; keys must be unique).",
       ).optional(),
       type: z.enum([
@@ -2632,10 +2480,10 @@ const InputsSchema = z.object({
         key: z.string().describe(
           "The named key that uniquely identifies a parameter. Required for top-level parameters, as well as map values. Ignored for list values.",
         ).optional(),
-        list: z.array(z.string()).describe(
+        list: z.array(z.unknown()).describe(
           "This list parameter's parameters (keys will be ignored).",
         ).optional(),
-        map: z.array(z.string()).describe(
+        map: z.array(z.unknown()).describe(
           "This map parameter's parameters (must have keys; keys must be unique).",
         ).optional(),
         type: z.enum([
@@ -2708,10 +2556,10 @@ const InputsSchema = z.object({
       key: z.string().describe(
         "The named key that uniquely identifies a parameter. Required for top-level parameters, as well as map values. Ignored for list values.",
       ).optional(),
-      list: z.array(z.string()).describe(
+      list: z.array(z.unknown()).describe(
         "This list parameter's parameters (keys will be ignored).",
       ).optional(),
-      map: z.array(z.string()).describe(
+      map: z.array(z.unknown()).describe(
         "This map parameter's parameters (must have keys; keys must be unique).",
       ).optional(),
       type: z.enum([
@@ -2819,10 +2667,10 @@ const InputsSchema = z.object({
       key: z.string().describe(
         "The named key that uniquely identifies a parameter. Required for top-level parameters, as well as map values. Ignored for list values.",
       ).optional(),
-      list: z.array(z.string()).describe(
+      list: z.array(z.unknown()).describe(
         "This list parameter's parameters (keys will be ignored).",
       ).optional(),
-      map: z.array(z.string()).describe(
+      map: z.array(z.unknown()).describe(
         "This map parameter's parameters (must have keys; keys must be unique).",
       ).optional(),
       type: z.enum([
@@ -2858,35 +2706,7 @@ const InputsSchema = z.object({
   trigger: z.array(z.object({
     accountId: z.string().describe("GTM Account ID.").optional(),
     autoEventFilter: z.array(z.object({
-      parameter: z.array(z.object({
-        isWeakReference: z.boolean().describe(
-          "Whether or not a reference type parameter is strongly or weakly referenced. Only used by Transformations.",
-        ).optional(),
-        key: z.string().describe(
-          "The named key that uniquely identifies a parameter. Required for top-level parameters, as well as map values. Ignored for list values.",
-        ).optional(),
-        list: z.array(z.string()).describe(
-          "This list parameter's parameters (keys will be ignored).",
-        ).optional(),
-        map: z.array(z.string()).describe(
-          "This map parameter's parameters (must have keys; keys must be unique).",
-        ).optional(),
-        type: z.enum([
-          "typeUnspecified",
-          "template",
-          "integer",
-          "boolean",
-          "list",
-          "map",
-          "triggerReference",
-          "tagReference",
-        ]).describe(
-          "The parameter type. Valid values are: - boolean: The value represents a boolean, represented as 'true' or 'false' - integer: The value represents a 64-bit signed integer value, in base 10 - list: A list of parameters should be specified - map: A map of parameters should be specified - template: The value represents any text; this can include variable references (even variable references that might return non-string types) - trigger_reference: The value represents a trigger, represented as the trigger id - tag_reference: The value represents a tag, represented as the tag name",
-        ).optional(),
-        value: z.string().describe(
-          "A parameter's value (may contain variable references). as appropriate to the specified type.",
-        ).optional(),
-      })).describe(
+      parameter: z.array(z.unknown()).describe(
         "A list of named parameters (key/value), depending on the condition's type. Notes: - For binary operators, include parameters named arg0 and arg1 for specifying the left and right operands, respectively. - At this time, the left operand (arg0) must be a reference to a variable. - For case-insensitive Regex matching, include a boolean parameter named ignore_case that is set to true. If not specified or set to any other value, the matching will be case sensitive. - To negate an operator, include a boolean parameter named negate boolean parameter that is set to true.",
       ).optional(),
       type: z.enum([
@@ -2964,35 +2784,7 @@ const InputsSchema = z.object({
       ).optional(),
     }).describe("Represents a Google Tag Manager Parameter.").optional(),
     customEventFilter: z.array(z.object({
-      parameter: z.array(z.object({
-        isWeakReference: z.boolean().describe(
-          "Whether or not a reference type parameter is strongly or weakly referenced. Only used by Transformations.",
-        ).optional(),
-        key: z.string().describe(
-          "The named key that uniquely identifies a parameter. Required for top-level parameters, as well as map values. Ignored for list values.",
-        ).optional(),
-        list: z.array(z.string()).describe(
-          "This list parameter's parameters (keys will be ignored).",
-        ).optional(),
-        map: z.array(z.string()).describe(
-          "This map parameter's parameters (must have keys; keys must be unique).",
-        ).optional(),
-        type: z.enum([
-          "typeUnspecified",
-          "template",
-          "integer",
-          "boolean",
-          "list",
-          "map",
-          "triggerReference",
-          "tagReference",
-        ]).describe(
-          "The parameter type. Valid values are: - boolean: The value represents a boolean, represented as 'true' or 'false' - integer: The value represents a 64-bit signed integer value, in base 10 - list: A list of parameters should be specified - map: A map of parameters should be specified - template: The value represents any text; this can include variable references (even variable references that might return non-string types) - trigger_reference: The value represents a trigger, represented as the trigger id - tag_reference: The value represents a tag, represented as the tag name",
-        ).optional(),
-        value: z.string().describe(
-          "A parameter's value (may contain variable references). as appropriate to the specified type.",
-        ).optional(),
-      })).describe(
+      parameter: z.array(z.unknown()).describe(
         "A list of named parameters (key/value), depending on the condition's type. Notes: - For binary operators, include parameters named arg0 and arg1 for specifying the left and right operands, respectively. - At this time, the left operand (arg0) must be a reference to a variable. - For case-insensitive Regex matching, include a boolean parameter named ignore_case that is set to true. If not specified or set to any other value, the matching will be case sensitive. - To negate an operator, include a boolean parameter named negate boolean parameter that is set to true.",
       ).optional(),
       type: z.enum([
@@ -3042,35 +2834,7 @@ const InputsSchema = z.object({
       ).optional(),
     }).describe("Represents a Google Tag Manager Parameter.").optional(),
     filter: z.array(z.object({
-      parameter: z.array(z.object({
-        isWeakReference: z.boolean().describe(
-          "Whether or not a reference type parameter is strongly or weakly referenced. Only used by Transformations.",
-        ).optional(),
-        key: z.string().describe(
-          "The named key that uniquely identifies a parameter. Required for top-level parameters, as well as map values. Ignored for list values.",
-        ).optional(),
-        list: z.array(z.string()).describe(
-          "This list parameter's parameters (keys will be ignored).",
-        ).optional(),
-        map: z.array(z.string()).describe(
-          "This map parameter's parameters (must have keys; keys must be unique).",
-        ).optional(),
-        type: z.enum([
-          "typeUnspecified",
-          "template",
-          "integer",
-          "boolean",
-          "list",
-          "map",
-          "triggerReference",
-          "tagReference",
-        ]).describe(
-          "The parameter type. Valid values are: - boolean: The value represents a boolean, represented as 'true' or 'false' - integer: The value represents a 64-bit signed integer value, in base 10 - list: A list of parameters should be specified - map: A map of parameters should be specified - template: The value represents any text; this can include variable references (even variable references that might return non-string types) - trigger_reference: The value represents a trigger, represented as the trigger id - tag_reference: The value represents a tag, represented as the tag name",
-        ).optional(),
-        value: z.string().describe(
-          "A parameter's value (may contain variable references). as appropriate to the specified type.",
-        ).optional(),
-      })).describe(
+      parameter: z.array(z.unknown()).describe(
         "A list of named parameters (key/value), depending on the condition's type. Notes: - For binary operators, include parameters named arg0 and arg1 for specifying the left and right operands, respectively. - At this time, the left operand (arg0) must be a reference to a variable. - For case-insensitive Regex matching, include a boolean parameter named ignore_case that is set to true. If not specified or set to any other value, the matching will be case sensitive. - To negate an operator, include a boolean parameter named negate boolean parameter that is set to true.",
       ).optional(),
       type: z.enum([
@@ -3248,10 +3012,10 @@ const InputsSchema = z.object({
       key: z.string().describe(
         "The named key that uniquely identifies a parameter. Required for top-level parameters, as well as map values. Ignored for list values.",
       ).optional(),
-      list: z.array(z.string()).describe(
+      list: z.array(z.unknown()).describe(
         "This list parameter's parameters (keys will be ignored).",
       ).optional(),
-      map: z.array(z.string()).describe(
+      map: z.array(z.unknown()).describe(
         "This map parameter's parameters (must have keys; keys must be unique).",
       ).optional(),
       type: z.enum([
@@ -3604,10 +3368,10 @@ const InputsSchema = z.object({
         key: z.string().describe(
           "The named key that uniquely identifies a parameter. Required for top-level parameters, as well as map values. Ignored for list values.",
         ).optional(),
-        list: z.array(z.string()).describe(
+        list: z.array(z.unknown()).describe(
           "This list parameter's parameters (keys will be ignored).",
         ).optional(),
-        map: z.array(z.string()).describe(
+        map: z.array(z.unknown()).describe(
           "This map parameter's parameters (must have keys; keys must be unique).",
         ).optional(),
         type: z.enum([
@@ -3633,10 +3397,10 @@ const InputsSchema = z.object({
         key: z.string().describe(
           "The named key that uniquely identifies a parameter. Required for top-level parameters, as well as map values. Ignored for list values.",
         ).optional(),
-        list: z.array(z.string()).describe(
+        list: z.array(z.unknown()).describe(
           "This list parameter's parameters (keys will be ignored).",
         ).optional(),
-        map: z.array(z.string()).describe(
+        map: z.array(z.unknown()).describe(
           "This map parameter's parameters (must have keys; keys must be unique).",
         ).optional(),
         type: z.enum([
@@ -3671,10 +3435,10 @@ const InputsSchema = z.object({
         key: z.string().describe(
           "The named key that uniquely identifies a parameter. Required for top-level parameters, as well as map values. Ignored for list values.",
         ).optional(),
-        list: z.array(z.string()).describe(
+        list: z.array(z.unknown()).describe(
           "This list parameter's parameters (keys will be ignored).",
         ).optional(),
-        map: z.array(z.string()).describe(
+        map: z.array(z.unknown()).describe(
           "This map parameter's parameters (must have keys; keys must be unique).",
         ).optional(),
         type: z.enum([
@@ -3700,10 +3464,10 @@ const InputsSchema = z.object({
         key: z.string().describe(
           "The named key that uniquely identifies a parameter. Required for top-level parameters, as well as map values. Ignored for list values.",
         ).optional(),
-        list: z.array(z.string()).describe(
+        list: z.array(z.unknown()).describe(
           "This list parameter's parameters (keys will be ignored).",
         ).optional(),
-        map: z.array(z.string()).describe(
+        map: z.array(z.unknown()).describe(
           "This map parameter's parameters (must have keys; keys must be unique).",
         ).optional(),
         type: z.enum([
@@ -3734,10 +3498,10 @@ const InputsSchema = z.object({
       key: z.string().describe(
         "The named key that uniquely identifies a parameter. Required for top-level parameters, as well as map values. Ignored for list values.",
       ).optional(),
-      list: z.array(z.string()).describe(
+      list: z.array(z.unknown()).describe(
         "This list parameter's parameters (keys will be ignored).",
       ).optional(),
-      map: z.array(z.string()).describe(
+      map: z.array(z.unknown()).describe(
         "This map parameter's parameters (must have keys; keys must be unique).",
       ).optional(),
       type: z.enum([
@@ -3779,51 +3543,11 @@ const InputsSchema = z.object({
     accountId: z.string().describe("GTM Account ID.").optional(),
     boundary: z.object({
       condition: z.array(z.object({
-        parameter: z.array(z.object({
-          isWeakReference: z.boolean().describe(
-            "Whether or not a reference type parameter is strongly or weakly referenced. Only used by Transformations.",
-          ).optional(),
-          key: z.string().describe(
-            "The named key that uniquely identifies a parameter. Required for top-level parameters, as well as map values. Ignored for list values.",
-          ).optional(),
-          list: z.array(z.string()).describe(
-            "This list parameter's parameters (keys will be ignored).",
-          ).optional(),
-          map: z.array(z.string()).describe(
-            "This map parameter's parameters (must have keys; keys must be unique).",
-          ).optional(),
-          type: z.enum([
-            "typeUnspecified",
-            "template",
-            "integer",
-            "boolean",
-            "list",
-            "map",
-            "triggerReference",
-            "tagReference",
-          ]).describe(
-            "The parameter type. Valid values are: - boolean: The value represents a boolean, represented as 'true' or 'false' - integer: The value represents a 64-bit signed integer value, in base 10 - list: A list of parameters should be specified - map: A map of parameters should be specified - template: The value represents any text; this can include variable references (even variable references that might return non-string types) - trigger_reference: The value represents a trigger, represented as the trigger id - tag_reference: The value represents a tag, represented as the tag name",
-          ).optional(),
-          value: z.string().describe(
-            "A parameter's value (may contain variable references). as appropriate to the specified type.",
-          ).optional(),
-        })).describe(
+        parameter: z.unknown().describe(
           "A list of named parameters (key/value), depending on the condition's type. Notes: - For binary operators, include parameters named arg0 and arg1 for specifying the left and right operands, respectively. - At this time, the left operand (arg0) must be a reference to a variable. - For case-insensitive Regex matching, include a boolean parameter named ignore_case that is set to true. If not specified or set to any other value, the matching will be case sensitive. - To negate an operator, include a boolean parameter named negate boolean parameter that is set to true.",
         ).optional(),
-        type: z.enum([
-          "conditionTypeUnspecified",
-          "equals",
-          "contains",
-          "startsWith",
-          "endsWith",
-          "matchRegex",
-          "greater",
-          "greaterOrEquals",
-          "less",
-          "lessOrEquals",
-          "cssSelector",
-          "urlMatches",
-        ]).describe("The type of operator for this condition.").optional(),
+        type: z.unknown().describe("The type of operator for this condition.")
+          .optional(),
       })).describe("The conditions that, when conjoined, make up the boundary.")
         .optional(),
       customEvaluationTriggerId: z.array(z.string()).describe(
@@ -3866,7 +3590,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/tagmanager/accounts-containers-versions",
-  version: "2026.04.03.3",
+  version: "2026.04.04.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -3890,6 +3614,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.3",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.04.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

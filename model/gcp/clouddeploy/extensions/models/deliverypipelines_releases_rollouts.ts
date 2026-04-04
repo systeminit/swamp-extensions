@@ -179,446 +179,156 @@ const StateSchema = z.object({
   phases: z.array(z.object({
     childRolloutJobs: z.object({
       advanceRolloutJobs: z.array(z.object({
-        advanceChildRolloutJob: z.object({}),
-        analysisJob: z.object({
-          customChecks: z.array(z.object({
-            frequency: z.string(),
-            id: z.string(),
-            task: z.object({
-              container: z.object({
-                args: z.array(z.string()),
-                command: z.array(z.string()),
-                env: z.record(z.string(), z.unknown()),
-                image: z.string(),
-              }),
-            }),
-          })),
-          duration: z.string(),
-          googleCloud: z.object({
-            alertPolicyChecks: z.array(z.object({
-              alertPolicies: z.array(z.string()),
-              id: z.string(),
-              labels: z.record(z.string(), z.unknown()),
-            })),
-          }),
-        }),
-        createChildRolloutJob: z.object({}),
-        deployJob: z.object({}),
-        id: z.string(),
-        jobRun: z.string(),
-        postdeployJob: z.object({
-          actions: z.array(z.string()),
-          tasks: z.array(z.object({
-            container: z.object({
-              args: z.array(z.string()),
-              command: z.array(z.string()),
-              env: z.record(z.string(), z.unknown()),
-              image: z.string(),
-            }),
-          })),
-        }),
-        predeployJob: z.object({
-          actions: z.array(z.string()),
-          tasks: z.array(z.object({
-            container: z.object({
-              args: z.array(z.string()),
-              command: z.array(z.string()),
-              env: z.record(z.string(), z.unknown()),
-              image: z.string(),
-            }),
-          })),
-        }),
-        skipMessage: z.string(),
-        state: z.string(),
-        verifyJob: z.object({
-          tasks: z.array(z.object({
-            container: z.object({
-              args: z.array(z.string()),
-              command: z.array(z.string()),
-              env: z.record(z.string(), z.unknown()),
-              image: z.string(),
-            }),
-          })),
-        }),
+        advanceChildRolloutJob: z.unknown(),
+        analysisJob: z.unknown(),
+        createChildRolloutJob: z.unknown(),
+        deployJob: z.unknown(),
+        id: z.unknown(),
+        jobRun: z.unknown(),
+        postdeployJob: z.unknown(),
+        predeployJob: z.unknown(),
+        skipMessage: z.unknown(),
+        state: z.unknown(),
+        verifyJob: z.unknown(),
       })),
       createRolloutJobs: z.array(z.object({
-        advanceChildRolloutJob: z.object({}),
-        analysisJob: z.object({
-          customChecks: z.array(z.object({
-            frequency: z.string(),
-            id: z.string(),
-            task: z.object({
-              container: z.object({
-                args: z.array(z.string()),
-                command: z.array(z.string()),
-                env: z.record(z.string(), z.unknown()),
-                image: z.string(),
-              }),
-            }),
-          })),
-          duration: z.string(),
-          googleCloud: z.object({
-            alertPolicyChecks: z.array(z.object({
-              alertPolicies: z.array(z.string()),
-              id: z.string(),
-              labels: z.record(z.string(), z.unknown()),
-            })),
-          }),
-        }),
-        createChildRolloutJob: z.object({}),
-        deployJob: z.object({}),
-        id: z.string(),
-        jobRun: z.string(),
-        postdeployJob: z.object({
-          actions: z.array(z.string()),
-          tasks: z.array(z.object({
-            container: z.object({
-              args: z.array(z.string()),
-              command: z.array(z.string()),
-              env: z.record(z.string(), z.unknown()),
-              image: z.string(),
-            }),
-          })),
-        }),
-        predeployJob: z.object({
-          actions: z.array(z.string()),
-          tasks: z.array(z.object({
-            container: z.object({
-              args: z.array(z.string()),
-              command: z.array(z.string()),
-              env: z.record(z.string(), z.unknown()),
-              image: z.string(),
-            }),
-          })),
-        }),
-        skipMessage: z.string(),
-        state: z.string(),
-        verifyJob: z.object({
-          tasks: z.array(z.object({
-            container: z.object({
-              args: z.array(z.string()),
-              command: z.array(z.string()),
-              env: z.record(z.string(), z.unknown()),
-              image: z.string(),
-            }),
-          })),
-        }),
+        advanceChildRolloutJob: z.unknown(),
+        analysisJob: z.unknown(),
+        createChildRolloutJob: z.unknown(),
+        deployJob: z.unknown(),
+        id: z.unknown(),
+        jobRun: z.unknown(),
+        postdeployJob: z.unknown(),
+        predeployJob: z.unknown(),
+        skipMessage: z.unknown(),
+        state: z.unknown(),
+        verifyJob: z.unknown(),
       })),
     }),
     deploymentJobs: z.object({
       analysisJob: z.object({
         advanceChildRolloutJob: z.object({}),
         analysisJob: z.object({
-          customChecks: z.array(z.object({
-            frequency: z.string(),
-            id: z.string(),
-            task: z.object({
-              container: z.object({
-                args: z.array(z.string()),
-                command: z.array(z.string()),
-                env: z.record(z.string(), z.unknown()),
-                image: z.string(),
-              }),
-            }),
-          })),
-          duration: z.string(),
-          googleCloud: z.object({
-            alertPolicyChecks: z.array(z.object({
-              alertPolicies: z.array(z.string()),
-              id: z.string(),
-              labels: z.record(z.string(), z.unknown()),
-            })),
-          }),
+          customChecks: z.unknown(),
+          duration: z.unknown(),
+          googleCloud: z.unknown(),
         }),
         createChildRolloutJob: z.object({}),
         deployJob: z.object({}),
         id: z.string(),
         jobRun: z.string(),
         postdeployJob: z.object({
-          actions: z.array(z.string()),
-          tasks: z.array(z.object({
-            container: z.object({
-              args: z.array(z.string()),
-              command: z.array(z.string()),
-              env: z.record(z.string(), z.unknown()),
-              image: z.string(),
-            }),
-          })),
+          actions: z.unknown(),
+          tasks: z.unknown(),
         }),
         predeployJob: z.object({
-          actions: z.array(z.string()),
-          tasks: z.array(z.object({
-            container: z.object({
-              args: z.array(z.string()),
-              command: z.array(z.string()),
-              env: z.record(z.string(), z.unknown()),
-              image: z.string(),
-            }),
-          })),
+          actions: z.unknown(),
+          tasks: z.unknown(),
         }),
         skipMessage: z.string(),
         state: z.string(),
         verifyJob: z.object({
-          tasks: z.array(z.object({
-            container: z.object({
-              args: z.array(z.string()),
-              command: z.array(z.string()),
-              env: z.record(z.string(), z.unknown()),
-              image: z.string(),
-            }),
-          })),
+          tasks: z.unknown(),
         }),
       }),
       deployJob: z.object({
         advanceChildRolloutJob: z.object({}),
         analysisJob: z.object({
-          customChecks: z.array(z.object({
-            frequency: z.string(),
-            id: z.string(),
-            task: z.object({
-              container: z.object({
-                args: z.array(z.string()),
-                command: z.array(z.string()),
-                env: z.record(z.string(), z.unknown()),
-                image: z.string(),
-              }),
-            }),
-          })),
-          duration: z.string(),
-          googleCloud: z.object({
-            alertPolicyChecks: z.array(z.object({
-              alertPolicies: z.array(z.string()),
-              id: z.string(),
-              labels: z.record(z.string(), z.unknown()),
-            })),
-          }),
+          customChecks: z.unknown(),
+          duration: z.unknown(),
+          googleCloud: z.unknown(),
         }),
         createChildRolloutJob: z.object({}),
         deployJob: z.object({}),
         id: z.string(),
         jobRun: z.string(),
         postdeployJob: z.object({
-          actions: z.array(z.string()),
-          tasks: z.array(z.object({
-            container: z.object({
-              args: z.array(z.string()),
-              command: z.array(z.string()),
-              env: z.record(z.string(), z.unknown()),
-              image: z.string(),
-            }),
-          })),
+          actions: z.unknown(),
+          tasks: z.unknown(),
         }),
         predeployJob: z.object({
-          actions: z.array(z.string()),
-          tasks: z.array(z.object({
-            container: z.object({
-              args: z.array(z.string()),
-              command: z.array(z.string()),
-              env: z.record(z.string(), z.unknown()),
-              image: z.string(),
-            }),
-          })),
+          actions: z.unknown(),
+          tasks: z.unknown(),
         }),
         skipMessage: z.string(),
         state: z.string(),
         verifyJob: z.object({
-          tasks: z.array(z.object({
-            container: z.object({
-              args: z.array(z.string()),
-              command: z.array(z.string()),
-              env: z.record(z.string(), z.unknown()),
-              image: z.string(),
-            }),
-          })),
+          tasks: z.unknown(),
         }),
       }),
       postdeployJob: z.object({
         advanceChildRolloutJob: z.object({}),
         analysisJob: z.object({
-          customChecks: z.array(z.object({
-            frequency: z.string(),
-            id: z.string(),
-            task: z.object({
-              container: z.object({
-                args: z.array(z.string()),
-                command: z.array(z.string()),
-                env: z.record(z.string(), z.unknown()),
-                image: z.string(),
-              }),
-            }),
-          })),
-          duration: z.string(),
-          googleCloud: z.object({
-            alertPolicyChecks: z.array(z.object({
-              alertPolicies: z.array(z.string()),
-              id: z.string(),
-              labels: z.record(z.string(), z.unknown()),
-            })),
-          }),
+          customChecks: z.unknown(),
+          duration: z.unknown(),
+          googleCloud: z.unknown(),
         }),
         createChildRolloutJob: z.object({}),
         deployJob: z.object({}),
         id: z.string(),
         jobRun: z.string(),
         postdeployJob: z.object({
-          actions: z.array(z.string()),
-          tasks: z.array(z.object({
-            container: z.object({
-              args: z.array(z.string()),
-              command: z.array(z.string()),
-              env: z.record(z.string(), z.unknown()),
-              image: z.string(),
-            }),
-          })),
+          actions: z.unknown(),
+          tasks: z.unknown(),
         }),
         predeployJob: z.object({
-          actions: z.array(z.string()),
-          tasks: z.array(z.object({
-            container: z.object({
-              args: z.array(z.string()),
-              command: z.array(z.string()),
-              env: z.record(z.string(), z.unknown()),
-              image: z.string(),
-            }),
-          })),
+          actions: z.unknown(),
+          tasks: z.unknown(),
         }),
         skipMessage: z.string(),
         state: z.string(),
         verifyJob: z.object({
-          tasks: z.array(z.object({
-            container: z.object({
-              args: z.array(z.string()),
-              command: z.array(z.string()),
-              env: z.record(z.string(), z.unknown()),
-              image: z.string(),
-            }),
-          })),
+          tasks: z.unknown(),
         }),
       }),
       predeployJob: z.object({
         advanceChildRolloutJob: z.object({}),
         analysisJob: z.object({
-          customChecks: z.array(z.object({
-            frequency: z.string(),
-            id: z.string(),
-            task: z.object({
-              container: z.object({
-                args: z.array(z.string()),
-                command: z.array(z.string()),
-                env: z.record(z.string(), z.unknown()),
-                image: z.string(),
-              }),
-            }),
-          })),
-          duration: z.string(),
-          googleCloud: z.object({
-            alertPolicyChecks: z.array(z.object({
-              alertPolicies: z.array(z.string()),
-              id: z.string(),
-              labels: z.record(z.string(), z.unknown()),
-            })),
-          }),
+          customChecks: z.unknown(),
+          duration: z.unknown(),
+          googleCloud: z.unknown(),
         }),
         createChildRolloutJob: z.object({}),
         deployJob: z.object({}),
         id: z.string(),
         jobRun: z.string(),
         postdeployJob: z.object({
-          actions: z.array(z.string()),
-          tasks: z.array(z.object({
-            container: z.object({
-              args: z.array(z.string()),
-              command: z.array(z.string()),
-              env: z.record(z.string(), z.unknown()),
-              image: z.string(),
-            }),
-          })),
+          actions: z.unknown(),
+          tasks: z.unknown(),
         }),
         predeployJob: z.object({
-          actions: z.array(z.string()),
-          tasks: z.array(z.object({
-            container: z.object({
-              args: z.array(z.string()),
-              command: z.array(z.string()),
-              env: z.record(z.string(), z.unknown()),
-              image: z.string(),
-            }),
-          })),
+          actions: z.unknown(),
+          tasks: z.unknown(),
         }),
         skipMessage: z.string(),
         state: z.string(),
         verifyJob: z.object({
-          tasks: z.array(z.object({
-            container: z.object({
-              args: z.array(z.string()),
-              command: z.array(z.string()),
-              env: z.record(z.string(), z.unknown()),
-              image: z.string(),
-            }),
-          })),
+          tasks: z.unknown(),
         }),
       }),
       verifyJob: z.object({
         advanceChildRolloutJob: z.object({}),
         analysisJob: z.object({
-          customChecks: z.array(z.object({
-            frequency: z.string(),
-            id: z.string(),
-            task: z.object({
-              container: z.object({
-                args: z.array(z.string()),
-                command: z.array(z.string()),
-                env: z.record(z.string(), z.unknown()),
-                image: z.string(),
-              }),
-            }),
-          })),
-          duration: z.string(),
-          googleCloud: z.object({
-            alertPolicyChecks: z.array(z.object({
-              alertPolicies: z.array(z.string()),
-              id: z.string(),
-              labels: z.record(z.string(), z.unknown()),
-            })),
-          }),
+          customChecks: z.unknown(),
+          duration: z.unknown(),
+          googleCloud: z.unknown(),
         }),
         createChildRolloutJob: z.object({}),
         deployJob: z.object({}),
         id: z.string(),
         jobRun: z.string(),
         postdeployJob: z.object({
-          actions: z.array(z.string()),
-          tasks: z.array(z.object({
-            container: z.object({
-              args: z.array(z.string()),
-              command: z.array(z.string()),
-              env: z.record(z.string(), z.unknown()),
-              image: z.string(),
-            }),
-          })),
+          actions: z.unknown(),
+          tasks: z.unknown(),
         }),
         predeployJob: z.object({
-          actions: z.array(z.string()),
-          tasks: z.array(z.object({
-            container: z.object({
-              args: z.array(z.string()),
-              command: z.array(z.string()),
-              env: z.record(z.string(), z.unknown()),
-              image: z.string(),
-            }),
-          })),
+          actions: z.unknown(),
+          tasks: z.unknown(),
         }),
         skipMessage: z.string(),
         state: z.string(),
         verifyJob: z.object({
-          tasks: z.array(z.object({
-            container: z.object({
-              args: z.array(z.string()),
-              command: z.array(z.string()),
-              env: z.record(z.string(), z.unknown()),
-              image: z.string(),
-            }),
-          })),
+          tasks: z.unknown(),
         }),
       }),
     }),
@@ -713,7 +423,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/clouddeploy/deliverypipelines-releases-rollouts",
-  version: "2026.04.03.3",
+  version: "2026.04.04.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -737,6 +447,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.3",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.04.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

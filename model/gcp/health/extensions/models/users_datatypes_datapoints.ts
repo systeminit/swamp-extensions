@@ -1061,33 +1061,33 @@ const GlobalArgsSchema = z.object({
           "Optional. Total elevation gain during the exercise.",
         ).optional(),
         heartRateZoneDurations: z.object({
-          lightTime: z.string().describe(
+          lightTime: z.unknown().describe(
             "Optional. Time spent in light heart rate zone.",
           ).optional(),
-          moderateTime: z.string().describe(
+          moderateTime: z.unknown().describe(
             "Optional. Time spent in moderate heart rate zone.",
           ).optional(),
-          peakTime: z.string().describe(
+          peakTime: z.unknown().describe(
             "Optional. Time spent in peak heart rate zone.",
           ).optional(),
-          vigorousTime: z.string().describe(
+          vigorousTime: z.unknown().describe(
             "Optional. Time spent in vigorous heart rate zone.",
           ).optional(),
         }).describe("Time spent in each heart rate zone.").optional(),
         mobilityMetrics: z.object({
-          avgCadenceStepsPerMinute: z.number().describe(
+          avgCadenceStepsPerMinute: z.unknown().describe(
             "Optional. Cadence is a measure of the frequency of your foot strikes. Steps / min in real time during workout.",
           ).optional(),
-          avgGroundContactTimeDuration: z.string().describe(
+          avgGroundContactTimeDuration: z.unknown().describe(
             "Optional. The ground contact time for a particular stride is the amount of time for which the foot was in contact with the ground on that stride",
           ).optional(),
-          avgStrideLengthMillimeters: z.string().describe(
+          avgStrideLengthMillimeters: z.unknown().describe(
             "Optional. Stride length is a measure of the distance covered by a single stride",
           ).optional(),
-          avgVerticalOscillationMillimeters: z.string().describe(
+          avgVerticalOscillationMillimeters: z.unknown().describe(
             "Optional. Distance off the ground your center of mass moves with each stride while running",
           ).optional(),
-          avgVerticalRatio: z.number().describe(
+          avgVerticalRatio: z.unknown().describe(
             "Optional. Vertical oscillation/stride length between [5.0, 11.0].",
           ).optional(),
         }).describe("Mobility workouts specific metrics").optional(),
@@ -1148,33 +1148,33 @@ const GlobalArgsSchema = z.object({
           "Optional. Total elevation gain during the exercise.",
         ).optional(),
         heartRateZoneDurations: z.object({
-          lightTime: z.string().describe(
+          lightTime: z.unknown().describe(
             "Optional. Time spent in light heart rate zone.",
           ).optional(),
-          moderateTime: z.string().describe(
+          moderateTime: z.unknown().describe(
             "Optional. Time spent in moderate heart rate zone.",
           ).optional(),
-          peakTime: z.string().describe(
+          peakTime: z.unknown().describe(
             "Optional. Time spent in peak heart rate zone.",
           ).optional(),
-          vigorousTime: z.string().describe(
+          vigorousTime: z.unknown().describe(
             "Optional. Time spent in vigorous heart rate zone.",
           ).optional(),
         }).describe("Time spent in each heart rate zone.").optional(),
         mobilityMetrics: z.object({
-          avgCadenceStepsPerMinute: z.number().describe(
+          avgCadenceStepsPerMinute: z.unknown().describe(
             "Optional. Cadence is a measure of the frequency of your foot strikes. Steps / min in real time during workout.",
           ).optional(),
-          avgGroundContactTimeDuration: z.string().describe(
+          avgGroundContactTimeDuration: z.unknown().describe(
             "Optional. The ground contact time for a particular stride is the amount of time for which the foot was in contact with the ground on that stride",
           ).optional(),
-          avgStrideLengthMillimeters: z.string().describe(
+          avgStrideLengthMillimeters: z.unknown().describe(
             "Optional. Stride length is a measure of the distance covered by a single stride",
           ).optional(),
-          avgVerticalOscillationMillimeters: z.string().describe(
+          avgVerticalOscillationMillimeters: z.unknown().describe(
             "Optional. Distance off the ground your center of mass moves with each stride while running",
           ).optional(),
-          avgVerticalRatio: z.number().describe(
+          avgVerticalRatio: z.unknown().describe(
             "Optional. Vertical oscillation/stride length between [5.0, 11.0].",
           ).optional(),
         }).describe("Mobility workouts specific metrics").optional(),
@@ -2655,17 +2655,17 @@ const StateSchema = z.object({
         distanceMillimeters: z.number(),
         elevationGainMillimeters: z.number(),
         heartRateZoneDurations: z.object({
-          lightTime: z.string(),
-          moderateTime: z.string(),
-          peakTime: z.string(),
-          vigorousTime: z.string(),
+          lightTime: z.unknown(),
+          moderateTime: z.unknown(),
+          peakTime: z.unknown(),
+          vigorousTime: z.unknown(),
         }),
         mobilityMetrics: z.object({
-          avgCadenceStepsPerMinute: z.number(),
-          avgGroundContactTimeDuration: z.string(),
-          avgStrideLengthMillimeters: z.string(),
-          avgVerticalOscillationMillimeters: z.string(),
-          avgVerticalRatio: z.number(),
+          avgCadenceStepsPerMinute: z.unknown(),
+          avgGroundContactTimeDuration: z.unknown(),
+          avgStrideLengthMillimeters: z.unknown(),
+          avgVerticalOscillationMillimeters: z.unknown(),
+          avgVerticalRatio: z.unknown(),
         }),
         runVo2Max: z.number(),
         steps: z.string(),
@@ -2688,17 +2688,17 @@ const StateSchema = z.object({
         distanceMillimeters: z.number(),
         elevationGainMillimeters: z.number(),
         heartRateZoneDurations: z.object({
-          lightTime: z.string(),
-          moderateTime: z.string(),
-          peakTime: z.string(),
-          vigorousTime: z.string(),
+          lightTime: z.unknown(),
+          moderateTime: z.unknown(),
+          peakTime: z.unknown(),
+          vigorousTime: z.unknown(),
         }),
         mobilityMetrics: z.object({
-          avgCadenceStepsPerMinute: z.number(),
-          avgGroundContactTimeDuration: z.string(),
-          avgStrideLengthMillimeters: z.string(),
-          avgVerticalOscillationMillimeters: z.string(),
-          avgVerticalRatio: z.number(),
+          avgCadenceStepsPerMinute: z.unknown(),
+          avgGroundContactTimeDuration: z.unknown(),
+          avgStrideLengthMillimeters: z.unknown(),
+          avgVerticalOscillationMillimeters: z.unknown(),
+          avgVerticalRatio: z.unknown(),
         }),
         runVo2Max: z.number(),
         steps: z.string(),
@@ -4119,33 +4119,33 @@ const InputsSchema = z.object({
           "Optional. Total elevation gain during the exercise.",
         ).optional(),
         heartRateZoneDurations: z.object({
-          lightTime: z.string().describe(
+          lightTime: z.unknown().describe(
             "Optional. Time spent in light heart rate zone.",
           ).optional(),
-          moderateTime: z.string().describe(
+          moderateTime: z.unknown().describe(
             "Optional. Time spent in moderate heart rate zone.",
           ).optional(),
-          peakTime: z.string().describe(
+          peakTime: z.unknown().describe(
             "Optional. Time spent in peak heart rate zone.",
           ).optional(),
-          vigorousTime: z.string().describe(
+          vigorousTime: z.unknown().describe(
             "Optional. Time spent in vigorous heart rate zone.",
           ).optional(),
         }).describe("Time spent in each heart rate zone.").optional(),
         mobilityMetrics: z.object({
-          avgCadenceStepsPerMinute: z.number().describe(
+          avgCadenceStepsPerMinute: z.unknown().describe(
             "Optional. Cadence is a measure of the frequency of your foot strikes. Steps / min in real time during workout.",
           ).optional(),
-          avgGroundContactTimeDuration: z.string().describe(
+          avgGroundContactTimeDuration: z.unknown().describe(
             "Optional. The ground contact time for a particular stride is the amount of time for which the foot was in contact with the ground on that stride",
           ).optional(),
-          avgStrideLengthMillimeters: z.string().describe(
+          avgStrideLengthMillimeters: z.unknown().describe(
             "Optional. Stride length is a measure of the distance covered by a single stride",
           ).optional(),
-          avgVerticalOscillationMillimeters: z.string().describe(
+          avgVerticalOscillationMillimeters: z.unknown().describe(
             "Optional. Distance off the ground your center of mass moves with each stride while running",
           ).optional(),
-          avgVerticalRatio: z.number().describe(
+          avgVerticalRatio: z.unknown().describe(
             "Optional. Vertical oscillation/stride length between [5.0, 11.0].",
           ).optional(),
         }).describe("Mobility workouts specific metrics").optional(),
@@ -4206,33 +4206,33 @@ const InputsSchema = z.object({
           "Optional. Total elevation gain during the exercise.",
         ).optional(),
         heartRateZoneDurations: z.object({
-          lightTime: z.string().describe(
+          lightTime: z.unknown().describe(
             "Optional. Time spent in light heart rate zone.",
           ).optional(),
-          moderateTime: z.string().describe(
+          moderateTime: z.unknown().describe(
             "Optional. Time spent in moderate heart rate zone.",
           ).optional(),
-          peakTime: z.string().describe(
+          peakTime: z.unknown().describe(
             "Optional. Time spent in peak heart rate zone.",
           ).optional(),
-          vigorousTime: z.string().describe(
+          vigorousTime: z.unknown().describe(
             "Optional. Time spent in vigorous heart rate zone.",
           ).optional(),
         }).describe("Time spent in each heart rate zone.").optional(),
         mobilityMetrics: z.object({
-          avgCadenceStepsPerMinute: z.number().describe(
+          avgCadenceStepsPerMinute: z.unknown().describe(
             "Optional. Cadence is a measure of the frequency of your foot strikes. Steps / min in real time during workout.",
           ).optional(),
-          avgGroundContactTimeDuration: z.string().describe(
+          avgGroundContactTimeDuration: z.unknown().describe(
             "Optional. The ground contact time for a particular stride is the amount of time for which the foot was in contact with the ground on that stride",
           ).optional(),
-          avgStrideLengthMillimeters: z.string().describe(
+          avgStrideLengthMillimeters: z.unknown().describe(
             "Optional. Stride length is a measure of the distance covered by a single stride",
           ).optional(),
-          avgVerticalOscillationMillimeters: z.string().describe(
+          avgVerticalOscillationMillimeters: z.unknown().describe(
             "Optional. Distance off the ground your center of mass moves with each stride while running",
           ).optional(),
-          avgVerticalRatio: z.number().describe(
+          avgVerticalRatio: z.unknown().describe(
             "Optional. Vertical oscillation/stride length between [5.0, 11.0].",
           ).optional(),
         }).describe("Mobility workouts specific metrics").optional(),
@@ -5342,7 +5342,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/health/users-datatypes-datapoints",
-  version: "2026.04.03.3",
+  version: "2026.04.04.1",
   upgrades: [
     {
       toVersion: "2026.04.01.2",
@@ -5366,6 +5366,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.3",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.04.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

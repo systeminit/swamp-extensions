@@ -93,38 +93,13 @@ const GlobalArgsSchema = z.object({
     ).optional(),
     conditions: z.array(z.object({
       devicePolicy: z.object({
-        allowedDeviceManagementLevels: z.array(
-          z.enum(["MANAGEMENT_UNSPECIFIED", "NONE", "BASIC", "COMPLETE"]),
-        ).describe(
+        allowedDeviceManagementLevels: z.array(z.unknown()).describe(
           "Allowed device management levels, an empty list allows all management levels.",
         ).optional(),
-        allowedEncryptionStatuses: z.array(
-          z.enum([
-            "ENCRYPTION_UNSPECIFIED",
-            "ENCRYPTION_UNSUPPORTED",
-            "UNENCRYPTED",
-            "ENCRYPTED",
-          ]),
-        ).describe(
+        allowedEncryptionStatuses: z.array(z.unknown()).describe(
           "Allowed encryptions statuses, an empty list allows all statuses.",
         ).optional(),
-        osConstraints: z.array(z.object({
-          minimumVersion: z.string().describe(
-            'The minimum allowed OS version. If not set, any version of this OS satisfies the constraint. Format: `"major.minor.patch"`. Examples: `"10.5.301"`, `"9.2.1"`.',
-          ).optional(),
-          osType: z.enum([
-            "OS_UNSPECIFIED",
-            "DESKTOP_MAC",
-            "DESKTOP_WINDOWS",
-            "DESKTOP_LINUX",
-            "DESKTOP_CHROME_OS",
-            "ANDROID",
-            "IOS",
-          ]).describe("Required. The allowed OS type.").optional(),
-          requireVerifiedChromeOs: z.boolean().describe(
-            "Only allows requests from devices with a verified Chrome OS. Verifications includes requirements that the device is enterprise-managed, conformant to domain policies, and the caller has permission to call the API targeted by the request.",
-          ).optional(),
-        })).describe(
+        osConstraints: z.array(z.unknown()).describe(
           "Allowed OS versions, an empty list allows all types and all versions.",
         ).optional(),
         requireAdminApproval: z.boolean().describe(
@@ -155,14 +130,9 @@ const GlobalArgsSchema = z.object({
         'A list of other access levels defined in the same `Policy`, referenced by resource name. Referencing an `AccessLevel` which does not exist is an error. All access levels listed must be granted for the Condition to be true. Example: "`accessPolicies/MY_POLICY/accessLevels/LEVEL_NAME"`',
       ).optional(),
       vpcNetworkSources: z.array(z.object({
-        vpcSubnetwork: z.object({
-          network: z.string().describe(
-            "Required. Network name. If the network is not part of the organization, the `compute.network.get` permission must be granted to the caller. Format: `//compute.googleapis.com/projects/{PROJECT_ID}/global/networks/{NETWORK_NAME}` Example: `//compute.googleapis.com/projects/my-project/global/networks/network-1`",
-          ).optional(),
-          vpcIpSubnetworks: z.array(z.string()).describe(
-            'CIDR block IP subnetwork specification. The IP address must be an IPv4 address and can be a public or private IP address. Note that for a CIDR IP address block, the specified IP address portion must be properly truncated (i.e. all the host bits must be zero) or the input is considered malformed. For example, "192.0.2.0/24" is accepted but "192.0.2.1/24" is not. If empty, all IP addresses are allowed.',
-          ).optional(),
-        }).describe("Sub-segment ranges inside of a VPC Network.").optional(),
+        vpcSubnetwork: z.unknown().describe(
+          "Sub-segment ranges inside of a VPC Network.",
+        ).optional(),
       })).describe(
         "The request must originate from one of the provided VPC networks in Google Cloud. Cannot specify this field together with `ip_subnetworks`.",
       ).optional(),
@@ -211,13 +181,9 @@ const StateSchema = z.object({
     combiningFunction: z.string(),
     conditions: z.array(z.object({
       devicePolicy: z.object({
-        allowedDeviceManagementLevels: z.array(z.string()),
-        allowedEncryptionStatuses: z.array(z.string()),
-        osConstraints: z.array(z.object({
-          minimumVersion: z.string(),
-          osType: z.string(),
-          requireVerifiedChromeOs: z.boolean(),
-        })),
+        allowedDeviceManagementLevels: z.array(z.unknown()),
+        allowedEncryptionStatuses: z.array(z.unknown()),
+        osConstraints: z.array(z.unknown()),
         requireAdminApproval: z.boolean(),
         requireCorpOwned: z.boolean(),
         requireScreenlock: z.boolean(),
@@ -228,10 +194,7 @@ const StateSchema = z.object({
       regions: z.array(z.string()),
       requiredAccessLevels: z.array(z.string()),
       vpcNetworkSources: z.array(z.object({
-        vpcSubnetwork: z.object({
-          network: z.string(),
-          vpcIpSubnetworks: z.array(z.string()),
-        }),
+        vpcSubnetwork: z.unknown(),
       })),
     })),
   }).optional(),
@@ -257,38 +220,13 @@ const InputsSchema = z.object({
     ).optional(),
     conditions: z.array(z.object({
       devicePolicy: z.object({
-        allowedDeviceManagementLevels: z.array(
-          z.enum(["MANAGEMENT_UNSPECIFIED", "NONE", "BASIC", "COMPLETE"]),
-        ).describe(
+        allowedDeviceManagementLevels: z.array(z.unknown()).describe(
           "Allowed device management levels, an empty list allows all management levels.",
         ).optional(),
-        allowedEncryptionStatuses: z.array(
-          z.enum([
-            "ENCRYPTION_UNSPECIFIED",
-            "ENCRYPTION_UNSUPPORTED",
-            "UNENCRYPTED",
-            "ENCRYPTED",
-          ]),
-        ).describe(
+        allowedEncryptionStatuses: z.array(z.unknown()).describe(
           "Allowed encryptions statuses, an empty list allows all statuses.",
         ).optional(),
-        osConstraints: z.array(z.object({
-          minimumVersion: z.string().describe(
-            'The minimum allowed OS version. If not set, any version of this OS satisfies the constraint. Format: `"major.minor.patch"`. Examples: `"10.5.301"`, `"9.2.1"`.',
-          ).optional(),
-          osType: z.enum([
-            "OS_UNSPECIFIED",
-            "DESKTOP_MAC",
-            "DESKTOP_WINDOWS",
-            "DESKTOP_LINUX",
-            "DESKTOP_CHROME_OS",
-            "ANDROID",
-            "IOS",
-          ]).describe("Required. The allowed OS type.").optional(),
-          requireVerifiedChromeOs: z.boolean().describe(
-            "Only allows requests from devices with a verified Chrome OS. Verifications includes requirements that the device is enterprise-managed, conformant to domain policies, and the caller has permission to call the API targeted by the request.",
-          ).optional(),
-        })).describe(
+        osConstraints: z.array(z.unknown()).describe(
           "Allowed OS versions, an empty list allows all types and all versions.",
         ).optional(),
         requireAdminApproval: z.boolean().describe(
@@ -319,14 +257,9 @@ const InputsSchema = z.object({
         'A list of other access levels defined in the same `Policy`, referenced by resource name. Referencing an `AccessLevel` which does not exist is an error. All access levels listed must be granted for the Condition to be true. Example: "`accessPolicies/MY_POLICY/accessLevels/LEVEL_NAME"`',
       ).optional(),
       vpcNetworkSources: z.array(z.object({
-        vpcSubnetwork: z.object({
-          network: z.string().describe(
-            "Required. Network name. If the network is not part of the organization, the `compute.network.get` permission must be granted to the caller. Format: `//compute.googleapis.com/projects/{PROJECT_ID}/global/networks/{NETWORK_NAME}` Example: `//compute.googleapis.com/projects/my-project/global/networks/network-1`",
-          ).optional(),
-          vpcIpSubnetworks: z.array(z.string()).describe(
-            'CIDR block IP subnetwork specification. The IP address must be an IPv4 address and can be a public or private IP address. Note that for a CIDR IP address block, the specified IP address portion must be properly truncated (i.e. all the host bits must be zero) or the input is considered malformed. For example, "192.0.2.0/24" is accepted but "192.0.2.1/24" is not. If empty, all IP addresses are allowed.',
-          ).optional(),
-        }).describe("Sub-segment ranges inside of a VPC Network.").optional(),
+        vpcSubnetwork: z.unknown().describe(
+          "Sub-segment ranges inside of a VPC Network.",
+        ).optional(),
       })).describe(
         "The request must originate from one of the provided VPC networks in Google Cloud. Cannot specify this field together with `ip_subnetworks`.",
       ).optional(),
@@ -372,7 +305,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/accesscontextmanager/accesspolicies-accesslevels",
-  version: "2026.04.03.3",
+  version: "2026.04.04.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -396,6 +329,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.3",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.04.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

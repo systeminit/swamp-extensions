@@ -160,8 +160,8 @@ const StateSchema = z.object({
     createTime: z.string(),
     dedicatedResources: z.object({
       autoscalingMetricSpecs: z.array(z.object({
-        metricName: z.string(),
-        target: z.number(),
+        metricName: z.unknown(),
+        target: z.unknown(),
       })),
       machineSpec: z.object({
         acceleratorCount: z.number(),
@@ -169,9 +169,9 @@ const StateSchema = z.object({
         gpuPartitionSize: z.string(),
         machineType: z.string(),
         reservationAffinity: z.object({
-          key: z.string(),
-          reservationAffinityType: z.string(),
-          values: z.array(z.string()),
+          key: z.unknown(),
+          reservationAffinityType: z.unknown(),
+          values: z.unknown(),
         }),
         tpuTopology: z.string(),
       }),
@@ -182,8 +182,8 @@ const StateSchema = z.object({
     }),
     deployedIndexAuthConfig: z.object({
       authProvider: z.object({
-        allowedIssuers: z.array(z.string()),
-        audiences: z.array(z.string()),
+        allowedIssuers: z.array(z.unknown()),
+        audiences: z.array(z.unknown()),
       }),
     }),
     deploymentGroup: z.string(),
@@ -197,9 +197,9 @@ const StateSchema = z.object({
     privateEndpoints: z.object({
       matchGrpcAddress: z.string(),
       pscAutomatedEndpoints: z.array(z.object({
-        matchAddress: z.string(),
-        network: z.string(),
-        projectId: z.string(),
+        matchAddress: z.unknown(),
+        network: z.unknown(),
+        projectId: z.unknown(),
       })),
       serviceAttachment: z.string(),
     }),
@@ -312,7 +312,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/aiplatform/indexendpoints",
-  version: "2026.04.03.3",
+  version: "2026.04.04.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -336,6 +336,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.3",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.04.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

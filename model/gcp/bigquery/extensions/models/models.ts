@@ -123,7 +123,7 @@ const GlobalArgsSchema = z.object({
         "Circular reference to StandardSqlDataType",
       ).optional(),
       structType: z.object({
-        fields: z.array(z.string()).describe("Fields within the struct.")
+        fields: z.array(z.unknown()).describe("Fields within the struct.")
           .optional(),
       }).describe("The representation of a SQL STRUCT type.").optional(),
       typeKind: z.enum([
@@ -238,7 +238,7 @@ const GlobalArgsSchema = z.object({
     }).describe("Search space for a double hyperparameter.").optional(),
     hiddenUnits: z.object({
       candidates: z.array(z.object({
-        elements: z.array(z.string()).describe("Elements in the int array.")
+        elements: z.array(z.unknown()).describe("Elements in the int array.")
           .optional(),
       })).describe("Candidates for the int array parameter.").optional(),
     }).describe("Search space for int array.").optional(),
@@ -398,147 +398,54 @@ const GlobalArgsSchema = z.object({
     ).optional(),
     evaluationMetrics: z.object({
       arimaForecastingMetrics: z.object({
-        arimaFittingMetrics: z.array(z.object({
-          aic: z.number().describe("AIC.").optional(),
-          logLikelihood: z.number().describe("Log-likelihood.").optional(),
-          variance: z.number().describe("Variance.").optional(),
-        })).describe("Arima model fitting metrics.").optional(),
-        arimaSingleModelForecastingMetrics: z.array(z.object({
-          arimaFittingMetrics: z.object({
-            aic: z.number().describe("AIC.").optional(),
-            logLikelihood: z.number().describe("Log-likelihood.").optional(),
-            variance: z.number().describe("Variance.").optional(),
-          }).describe("ARIMA model fitting metrics.").optional(),
-          hasDrift: z.boolean().describe(
-            "Is arima model fitted with drift or not. It is always false when d is not 1.",
-          ).optional(),
-          hasHolidayEffect: z.boolean().describe(
-            "If true, holiday_effect is a part of time series decomposition result.",
-          ).optional(),
-          hasSpikesAndDips: z.boolean().describe(
-            "If true, spikes_and_dips is a part of time series decomposition result.",
-          ).optional(),
-          hasStepChanges: z.boolean().describe(
-            "If true, step_changes is a part of time series decomposition result.",
-          ).optional(),
-          nonSeasonalOrder: z.object({
-            d: z.string().describe("Order of the differencing part.")
-              .optional(),
-            p: z.string().describe("Order of the autoregressive part.")
-              .optional(),
-            q: z.string().describe("Order of the moving-average part.")
-              .optional(),
-          }).describe(
-            "Arima order, can be used for both non-seasonal and seasonal parts.",
-          ).optional(),
-          seasonalPeriods: z.array(
-            z.enum([
-              "SEASONAL_PERIOD_TYPE_UNSPECIFIED",
-              "NO_SEASONALITY",
-              "DAILY",
-              "WEEKLY",
-              "MONTHLY",
-              "QUARTERLY",
-              "YEARLY",
-              "HOURLY",
-            ]),
-          ).describe(
-            "Seasonal periods. Repeated because multiple periods are supported for one time series.",
-          ).optional(),
-          timeSeriesId: z.string().describe(
-            "The time_series_id value for this time series. It will be one of the unique values from the time_series_id_column specified during ARIMA model training. Only present when time_series_id_column training option was used.",
-          ).optional(),
-          timeSeriesIds: z.array(z.string()).describe(
-            "The tuple of time_series_ids identifying this time series. It will be one of the unique tuples of values present in the time_series_id_columns specified during ARIMA model training. Only present when time_series_id_columns training option was used and the order of values here are same as the order of time_series_id_columns.",
-          ).optional(),
-        })).describe(
+        arimaFittingMetrics: z.array(z.unknown()).describe(
+          "Arima model fitting metrics.",
+        ).optional(),
+        arimaSingleModelForecastingMetrics: z.array(z.unknown()).describe(
           "Repeated as there can be many metric sets (one for each model) in auto-arima and the large-scale case.",
         ).optional(),
-        hasDrift: z.array(z.boolean()).describe(
+        hasDrift: z.array(z.unknown()).describe(
           "Whether Arima model fitted with drift or not. It is always false when d is not 1.",
         ).optional(),
-        nonSeasonalOrder: z.array(z.object({
-          d: z.string().describe("Order of the differencing part.").optional(),
-          p: z.string().describe("Order of the autoregressive part.")
-            .optional(),
-          q: z.string().describe("Order of the moving-average part.")
-            .optional(),
-        })).describe("Non-seasonal order.").optional(),
-        seasonalPeriods: z.array(
-          z.enum([
-            "SEASONAL_PERIOD_TYPE_UNSPECIFIED",
-            "NO_SEASONALITY",
-            "DAILY",
-            "WEEKLY",
-            "MONTHLY",
-            "QUARTERLY",
-            "YEARLY",
-            "HOURLY",
-          ]),
-        ).describe(
+        nonSeasonalOrder: z.array(z.unknown()).describe("Non-seasonal order.")
+          .optional(),
+        seasonalPeriods: z.array(z.unknown()).describe(
           "Seasonal periods. Repeated because multiple periods are supported for one time series.",
         ).optional(),
-        timeSeriesId: z.array(z.string()).describe(
+        timeSeriesId: z.array(z.unknown()).describe(
           "Id to differentiate different time series for the large-scale case.",
         ).optional(),
       }).describe("Model evaluation metrics for ARIMA forecasting models.")
         .optional(),
       binaryClassificationMetrics: z.object({
         aggregateClassificationMetrics: z.object({
-          accuracy: z.number().describe(
+          accuracy: z.unknown().describe(
             "Accuracy is the fraction of predictions given the correct label. For multiclass this is a micro-averaged metric.",
           ).optional(),
-          f1Score: z.number().describe(
+          f1Score: z.unknown().describe(
             "The F1 score is an average of recall and precision. For multiclass this is a macro-averaged metric.",
           ).optional(),
-          logLoss: z.number().describe(
+          logLoss: z.unknown().describe(
             "Logarithmic Loss. For multiclass this is a macro-averaged metric.",
           ).optional(),
-          precision: z.number().describe(
+          precision: z.unknown().describe(
             "Precision is the fraction of actual positive predictions that had positive actual labels. For multiclass this is a macro-averaged metric treating each class as a binary classifier.",
           ).optional(),
-          recall: z.number().describe(
+          recall: z.unknown().describe(
             "Recall is the fraction of actual positive labels that were given a positive prediction. For multiclass this is a macro-averaged metric.",
           ).optional(),
-          rocAuc: z.number().describe(
+          rocAuc: z.unknown().describe(
             "Area Under a ROC Curve. For multiclass this is a macro-averaged metric.",
           ).optional(),
-          threshold: z.number().describe(
+          threshold: z.unknown().describe(
             "Threshold at which the metrics are computed. For binary classification models this is the positive class threshold. For multi-class classification models this is the confidence threshold.",
           ).optional(),
         }).describe(
           "Aggregate metrics for classification/classifier models. For multi-class models, the metrics are either macro-averaged or micro-averaged. When macro-averaged, the metrics are calculated for each label and then an unweighted average is taken of those values. When micro-averaged, the metric is calculated globally by counting the total number of correctly predicted rows.",
         ).optional(),
-        binaryConfusionMatrixList: z.array(z.object({
-          accuracy: z.number().describe(
-            "The fraction of predictions given the correct label.",
-          ).optional(),
-          f1Score: z.number().describe(
-            "The equally weighted average of recall and precision.",
-          ).optional(),
-          falseNegatives: z.string().describe(
-            "Number of false samples predicted as false.",
-          ).optional(),
-          falsePositives: z.string().describe(
-            "Number of false samples predicted as true.",
-          ).optional(),
-          positiveClassThreshold: z.number().describe(
-            "Threshold value used when computing each of the following metric.",
-          ).optional(),
-          precision: z.number().describe(
-            "The fraction of actual positive predictions that had positive actual labels.",
-          ).optional(),
-          recall: z.number().describe(
-            "The fraction of actual positive labels that were given a positive prediction.",
-          ).optional(),
-          trueNegatives: z.string().describe(
-            "Number of true samples predicted as false.",
-          ).optional(),
-          truePositives: z.string().describe(
-            "Number of true samples predicted as true.",
-          ).optional(),
-        })).describe("Binary confusion matrix at multiple thresholds.")
-          .optional(),
+        binaryConfusionMatrixList: z.array(z.unknown()).describe(
+          "Binary confusion matrix at multiple thresholds.",
+        ).optional(),
         negativeLabel: z.string().describe(
           "Label representing the negative class.",
         ).optional(),
@@ -549,32 +456,8 @@ const GlobalArgsSchema = z.object({
         "Evaluation metrics for binary classification/classifier models.",
       ).optional(),
       clusteringMetrics: z.object({
-        clusters: z.array(z.object({
-          centroidId: z.string().describe("Centroid id.").optional(),
-          count: z.string().describe(
-            "Count of training data rows that were assigned to this cluster.",
-          ).optional(),
-          featureValues: z.array(z.object({
-            categoricalValue: z.object({
-              categoryCounts: z.array(z.object({
-                category: z.string().describe("The name of category.")
-                  .optional(),
-                count: z.string().describe(
-                  "The count of training samples matching the category within the cluster.",
-                ).optional(),
-              })).describe(
-                'Counts of all categories for the categorical feature. If there are more than ten categories, we return top ten (by count) and return one more CategoryCount with category "_OTHER_" and count as aggregate counts of remaining categories.',
-              ).optional(),
-            }).describe("Representative value of a categorical feature.")
-              .optional(),
-            featureColumn: z.string().describe("The feature column name.")
-              .optional(),
-            numericalValue: z.number().describe(
-              "The numerical feature value. This is the centroid value for this feature.",
-            ).optional(),
-          })).describe("Values of highly variant features for this cluster.")
-            .optional(),
-        })).describe("Information for all clusters.").optional(),
+        clusters: z.array(z.unknown()).describe("Information for all clusters.")
+          .optional(),
         daviesBouldinIndex: z.number().describe("Davies-Bouldin index.")
           .optional(),
         meanSquaredDistance: z.number().describe(
@@ -590,48 +473,33 @@ const GlobalArgsSchema = z.object({
       ).optional(),
       multiClassClassificationMetrics: z.object({
         aggregateClassificationMetrics: z.object({
-          accuracy: z.number().describe(
+          accuracy: z.unknown().describe(
             "Accuracy is the fraction of predictions given the correct label. For multiclass this is a micro-averaged metric.",
           ).optional(),
-          f1Score: z.number().describe(
+          f1Score: z.unknown().describe(
             "The F1 score is an average of recall and precision. For multiclass this is a macro-averaged metric.",
           ).optional(),
-          logLoss: z.number().describe(
+          logLoss: z.unknown().describe(
             "Logarithmic Loss. For multiclass this is a macro-averaged metric.",
           ).optional(),
-          precision: z.number().describe(
+          precision: z.unknown().describe(
             "Precision is the fraction of actual positive predictions that had positive actual labels. For multiclass this is a macro-averaged metric treating each class as a binary classifier.",
           ).optional(),
-          recall: z.number().describe(
+          recall: z.unknown().describe(
             "Recall is the fraction of actual positive labels that were given a positive prediction. For multiclass this is a macro-averaged metric.",
           ).optional(),
-          rocAuc: z.number().describe(
+          rocAuc: z.unknown().describe(
             "Area Under a ROC Curve. For multiclass this is a macro-averaged metric.",
           ).optional(),
-          threshold: z.number().describe(
+          threshold: z.unknown().describe(
             "Threshold at which the metrics are computed. For binary classification models this is the positive class threshold. For multi-class classification models this is the confidence threshold.",
           ).optional(),
         }).describe(
           "Aggregate metrics for classification/classifier models. For multi-class models, the metrics are either macro-averaged or micro-averaged. When macro-averaged, the metrics are calculated for each label and then an unweighted average is taken of those values. When micro-averaged, the metric is calculated globally by counting the total number of correctly predicted rows.",
         ).optional(),
-        confusionMatrixList: z.array(z.object({
-          confidenceThreshold: z.number().describe(
-            "Confidence threshold used when computing the entries of the confusion matrix.",
-          ).optional(),
-          rows: z.array(z.object({
-            actualLabel: z.string().describe("The original label of this row.")
-              .optional(),
-            entries: z.array(z.object({
-              itemCount: z.string().describe(
-                "Number of items being predicted as this label.",
-              ).optional(),
-              predictedLabel: z.string().describe(
-                "The predicted label. For confidence_threshold > 0, we will also add an entry indicating the number of items under the confidence threshold.",
-              ).optional(),
-            })).describe("Info describing predicted label distribution.")
-              .optional(),
-          })).describe("One row per actual label.").optional(),
-        })).describe("Confusion matrix at different thresholds.").optional(),
+        confusionMatrixList: z.array(z.unknown()).describe(
+          "Confusion matrix at different thresholds.",
+        ).optional(),
       }).describe(
         "Evaluation metrics for multi-class classification/classifier models.",
       ).optional(),
@@ -670,147 +538,54 @@ const GlobalArgsSchema = z.object({
     ).optional(),
     hparamTuningEvaluationMetrics: z.object({
       arimaForecastingMetrics: z.object({
-        arimaFittingMetrics: z.array(z.object({
-          aic: z.number().describe("AIC.").optional(),
-          logLikelihood: z.number().describe("Log-likelihood.").optional(),
-          variance: z.number().describe("Variance.").optional(),
-        })).describe("Arima model fitting metrics.").optional(),
-        arimaSingleModelForecastingMetrics: z.array(z.object({
-          arimaFittingMetrics: z.object({
-            aic: z.number().describe("AIC.").optional(),
-            logLikelihood: z.number().describe("Log-likelihood.").optional(),
-            variance: z.number().describe("Variance.").optional(),
-          }).describe("ARIMA model fitting metrics.").optional(),
-          hasDrift: z.boolean().describe(
-            "Is arima model fitted with drift or not. It is always false when d is not 1.",
-          ).optional(),
-          hasHolidayEffect: z.boolean().describe(
-            "If true, holiday_effect is a part of time series decomposition result.",
-          ).optional(),
-          hasSpikesAndDips: z.boolean().describe(
-            "If true, spikes_and_dips is a part of time series decomposition result.",
-          ).optional(),
-          hasStepChanges: z.boolean().describe(
-            "If true, step_changes is a part of time series decomposition result.",
-          ).optional(),
-          nonSeasonalOrder: z.object({
-            d: z.string().describe("Order of the differencing part.")
-              .optional(),
-            p: z.string().describe("Order of the autoregressive part.")
-              .optional(),
-            q: z.string().describe("Order of the moving-average part.")
-              .optional(),
-          }).describe(
-            "Arima order, can be used for both non-seasonal and seasonal parts.",
-          ).optional(),
-          seasonalPeriods: z.array(
-            z.enum([
-              "SEASONAL_PERIOD_TYPE_UNSPECIFIED",
-              "NO_SEASONALITY",
-              "DAILY",
-              "WEEKLY",
-              "MONTHLY",
-              "QUARTERLY",
-              "YEARLY",
-              "HOURLY",
-            ]),
-          ).describe(
-            "Seasonal periods. Repeated because multiple periods are supported for one time series.",
-          ).optional(),
-          timeSeriesId: z.string().describe(
-            "The time_series_id value for this time series. It will be one of the unique values from the time_series_id_column specified during ARIMA model training. Only present when time_series_id_column training option was used.",
-          ).optional(),
-          timeSeriesIds: z.array(z.string()).describe(
-            "The tuple of time_series_ids identifying this time series. It will be one of the unique tuples of values present in the time_series_id_columns specified during ARIMA model training. Only present when time_series_id_columns training option was used and the order of values here are same as the order of time_series_id_columns.",
-          ).optional(),
-        })).describe(
+        arimaFittingMetrics: z.array(z.unknown()).describe(
+          "Arima model fitting metrics.",
+        ).optional(),
+        arimaSingleModelForecastingMetrics: z.array(z.unknown()).describe(
           "Repeated as there can be many metric sets (one for each model) in auto-arima and the large-scale case.",
         ).optional(),
-        hasDrift: z.array(z.boolean()).describe(
+        hasDrift: z.array(z.unknown()).describe(
           "Whether Arima model fitted with drift or not. It is always false when d is not 1.",
         ).optional(),
-        nonSeasonalOrder: z.array(z.object({
-          d: z.string().describe("Order of the differencing part.").optional(),
-          p: z.string().describe("Order of the autoregressive part.")
-            .optional(),
-          q: z.string().describe("Order of the moving-average part.")
-            .optional(),
-        })).describe("Non-seasonal order.").optional(),
-        seasonalPeriods: z.array(
-          z.enum([
-            "SEASONAL_PERIOD_TYPE_UNSPECIFIED",
-            "NO_SEASONALITY",
-            "DAILY",
-            "WEEKLY",
-            "MONTHLY",
-            "QUARTERLY",
-            "YEARLY",
-            "HOURLY",
-          ]),
-        ).describe(
+        nonSeasonalOrder: z.array(z.unknown()).describe("Non-seasonal order.")
+          .optional(),
+        seasonalPeriods: z.array(z.unknown()).describe(
           "Seasonal periods. Repeated because multiple periods are supported for one time series.",
         ).optional(),
-        timeSeriesId: z.array(z.string()).describe(
+        timeSeriesId: z.array(z.unknown()).describe(
           "Id to differentiate different time series for the large-scale case.",
         ).optional(),
       }).describe("Model evaluation metrics for ARIMA forecasting models.")
         .optional(),
       binaryClassificationMetrics: z.object({
         aggregateClassificationMetrics: z.object({
-          accuracy: z.number().describe(
+          accuracy: z.unknown().describe(
             "Accuracy is the fraction of predictions given the correct label. For multiclass this is a micro-averaged metric.",
           ).optional(),
-          f1Score: z.number().describe(
+          f1Score: z.unknown().describe(
             "The F1 score is an average of recall and precision. For multiclass this is a macro-averaged metric.",
           ).optional(),
-          logLoss: z.number().describe(
+          logLoss: z.unknown().describe(
             "Logarithmic Loss. For multiclass this is a macro-averaged metric.",
           ).optional(),
-          precision: z.number().describe(
+          precision: z.unknown().describe(
             "Precision is the fraction of actual positive predictions that had positive actual labels. For multiclass this is a macro-averaged metric treating each class as a binary classifier.",
           ).optional(),
-          recall: z.number().describe(
+          recall: z.unknown().describe(
             "Recall is the fraction of actual positive labels that were given a positive prediction. For multiclass this is a macro-averaged metric.",
           ).optional(),
-          rocAuc: z.number().describe(
+          rocAuc: z.unknown().describe(
             "Area Under a ROC Curve. For multiclass this is a macro-averaged metric.",
           ).optional(),
-          threshold: z.number().describe(
+          threshold: z.unknown().describe(
             "Threshold at which the metrics are computed. For binary classification models this is the positive class threshold. For multi-class classification models this is the confidence threshold.",
           ).optional(),
         }).describe(
           "Aggregate metrics for classification/classifier models. For multi-class models, the metrics are either macro-averaged or micro-averaged. When macro-averaged, the metrics are calculated for each label and then an unweighted average is taken of those values. When micro-averaged, the metric is calculated globally by counting the total number of correctly predicted rows.",
         ).optional(),
-        binaryConfusionMatrixList: z.array(z.object({
-          accuracy: z.number().describe(
-            "The fraction of predictions given the correct label.",
-          ).optional(),
-          f1Score: z.number().describe(
-            "The equally weighted average of recall and precision.",
-          ).optional(),
-          falseNegatives: z.string().describe(
-            "Number of false samples predicted as false.",
-          ).optional(),
-          falsePositives: z.string().describe(
-            "Number of false samples predicted as true.",
-          ).optional(),
-          positiveClassThreshold: z.number().describe(
-            "Threshold value used when computing each of the following metric.",
-          ).optional(),
-          precision: z.number().describe(
-            "The fraction of actual positive predictions that had positive actual labels.",
-          ).optional(),
-          recall: z.number().describe(
-            "The fraction of actual positive labels that were given a positive prediction.",
-          ).optional(),
-          trueNegatives: z.string().describe(
-            "Number of true samples predicted as false.",
-          ).optional(),
-          truePositives: z.string().describe(
-            "Number of true samples predicted as true.",
-          ).optional(),
-        })).describe("Binary confusion matrix at multiple thresholds.")
-          .optional(),
+        binaryConfusionMatrixList: z.array(z.unknown()).describe(
+          "Binary confusion matrix at multiple thresholds.",
+        ).optional(),
         negativeLabel: z.string().describe(
           "Label representing the negative class.",
         ).optional(),
@@ -821,32 +596,8 @@ const GlobalArgsSchema = z.object({
         "Evaluation metrics for binary classification/classifier models.",
       ).optional(),
       clusteringMetrics: z.object({
-        clusters: z.array(z.object({
-          centroidId: z.string().describe("Centroid id.").optional(),
-          count: z.string().describe(
-            "Count of training data rows that were assigned to this cluster.",
-          ).optional(),
-          featureValues: z.array(z.object({
-            categoricalValue: z.object({
-              categoryCounts: z.array(z.object({
-                category: z.string().describe("The name of category.")
-                  .optional(),
-                count: z.string().describe(
-                  "The count of training samples matching the category within the cluster.",
-                ).optional(),
-              })).describe(
-                'Counts of all categories for the categorical feature. If there are more than ten categories, we return top ten (by count) and return one more CategoryCount with category "_OTHER_" and count as aggregate counts of remaining categories.',
-              ).optional(),
-            }).describe("Representative value of a categorical feature.")
-              .optional(),
-            featureColumn: z.string().describe("The feature column name.")
-              .optional(),
-            numericalValue: z.number().describe(
-              "The numerical feature value. This is the centroid value for this feature.",
-            ).optional(),
-          })).describe("Values of highly variant features for this cluster.")
-            .optional(),
-        })).describe("Information for all clusters.").optional(),
+        clusters: z.array(z.unknown()).describe("Information for all clusters.")
+          .optional(),
         daviesBouldinIndex: z.number().describe("Davies-Bouldin index.")
           .optional(),
         meanSquaredDistance: z.number().describe(
@@ -862,48 +613,33 @@ const GlobalArgsSchema = z.object({
       ).optional(),
       multiClassClassificationMetrics: z.object({
         aggregateClassificationMetrics: z.object({
-          accuracy: z.number().describe(
+          accuracy: z.unknown().describe(
             "Accuracy is the fraction of predictions given the correct label. For multiclass this is a micro-averaged metric.",
           ).optional(),
-          f1Score: z.number().describe(
+          f1Score: z.unknown().describe(
             "The F1 score is an average of recall and precision. For multiclass this is a macro-averaged metric.",
           ).optional(),
-          logLoss: z.number().describe(
+          logLoss: z.unknown().describe(
             "Logarithmic Loss. For multiclass this is a macro-averaged metric.",
           ).optional(),
-          precision: z.number().describe(
+          precision: z.unknown().describe(
             "Precision is the fraction of actual positive predictions that had positive actual labels. For multiclass this is a macro-averaged metric treating each class as a binary classifier.",
           ).optional(),
-          recall: z.number().describe(
+          recall: z.unknown().describe(
             "Recall is the fraction of actual positive labels that were given a positive prediction. For multiclass this is a macro-averaged metric.",
           ).optional(),
-          rocAuc: z.number().describe(
+          rocAuc: z.unknown().describe(
             "Area Under a ROC Curve. For multiclass this is a macro-averaged metric.",
           ).optional(),
-          threshold: z.number().describe(
+          threshold: z.unknown().describe(
             "Threshold at which the metrics are computed. For binary classification models this is the positive class threshold. For multi-class classification models this is the confidence threshold.",
           ).optional(),
         }).describe(
           "Aggregate metrics for classification/classifier models. For multi-class models, the metrics are either macro-averaged or micro-averaged. When macro-averaged, the metrics are calculated for each label and then an unweighted average is taken of those values. When micro-averaged, the metric is calculated globally by counting the total number of correctly predicted rows.",
         ).optional(),
-        confusionMatrixList: z.array(z.object({
-          confidenceThreshold: z.number().describe(
-            "Confidence threshold used when computing the entries of the confusion matrix.",
-          ).optional(),
-          rows: z.array(z.object({
-            actualLabel: z.string().describe("The original label of this row.")
-              .optional(),
-            entries: z.array(z.object({
-              itemCount: z.string().describe(
-                "Number of items being predicted as this label.",
-              ).optional(),
-              predictedLabel: z.string().describe(
-                "The predicted label. For confidence_threshold > 0, we will also add an entry indicating the number of items under the confidence threshold.",
-              ).optional(),
-            })).describe("Info describing predicted label distribution.")
-              .optional(),
-          })).describe("One row per actual label.").optional(),
-        })).describe("Confusion matrix at different thresholds.").optional(),
+        confusionMatrixList: z.array(z.unknown()).describe(
+          "Confusion matrix at different thresholds.",
+        ).optional(),
       }).describe(
         "Evaluation metrics for multi-class classification/classifier models.",
       ).optional(),
@@ -1487,7 +1223,7 @@ const GlobalArgsSchema = z.object({
         "Circular reference to StandardSqlDataType",
       ).optional(),
       structType: z.object({
-        fields: z.array(z.string()).describe("Fields within the struct.")
+        fields: z.array(z.unknown()).describe("Fields within the struct.")
           .optional(),
       }).describe("The representation of a SQL STRUCT type.").optional(),
       typeKind: z.enum([
@@ -1598,12 +1334,7 @@ const GlobalArgsSchema = z.object({
       classLabel: z.string().describe(
         "Class label for this set of global explanations. Will be empty/null for binary logistic and linear regression models. Sorted alphabetically in descending order.",
       ).optional(),
-      explanations: z.array(z.object({
-        attribution: z.number().describe("Attribution of feature.").optional(),
-        featureName: z.string().describe(
-          "The full feature name. For non-numerical features, will be formatted like `.`. Overall size of feature name will always be truncated to first 120 characters.",
-        ).optional(),
-      })).describe(
+      explanations: z.array(z.unknown()).describe(
         "A list of the top global explanations. Sorted by absolute value of attribution in descending order.",
       ).optional(),
     })).describe(
@@ -1648,147 +1379,54 @@ const GlobalArgsSchema = z.object({
     ).optional(),
     evaluationMetrics: z.object({
       arimaForecastingMetrics: z.object({
-        arimaFittingMetrics: z.array(z.object({
-          aic: z.number().describe("AIC.").optional(),
-          logLikelihood: z.number().describe("Log-likelihood.").optional(),
-          variance: z.number().describe("Variance.").optional(),
-        })).describe("Arima model fitting metrics.").optional(),
-        arimaSingleModelForecastingMetrics: z.array(z.object({
-          arimaFittingMetrics: z.object({
-            aic: z.number().describe("AIC.").optional(),
-            logLikelihood: z.number().describe("Log-likelihood.").optional(),
-            variance: z.number().describe("Variance.").optional(),
-          }).describe("ARIMA model fitting metrics.").optional(),
-          hasDrift: z.boolean().describe(
-            "Is arima model fitted with drift or not. It is always false when d is not 1.",
-          ).optional(),
-          hasHolidayEffect: z.boolean().describe(
-            "If true, holiday_effect is a part of time series decomposition result.",
-          ).optional(),
-          hasSpikesAndDips: z.boolean().describe(
-            "If true, spikes_and_dips is a part of time series decomposition result.",
-          ).optional(),
-          hasStepChanges: z.boolean().describe(
-            "If true, step_changes is a part of time series decomposition result.",
-          ).optional(),
-          nonSeasonalOrder: z.object({
-            d: z.string().describe("Order of the differencing part.")
-              .optional(),
-            p: z.string().describe("Order of the autoregressive part.")
-              .optional(),
-            q: z.string().describe("Order of the moving-average part.")
-              .optional(),
-          }).describe(
-            "Arima order, can be used for both non-seasonal and seasonal parts.",
-          ).optional(),
-          seasonalPeriods: z.array(
-            z.enum([
-              "SEASONAL_PERIOD_TYPE_UNSPECIFIED",
-              "NO_SEASONALITY",
-              "DAILY",
-              "WEEKLY",
-              "MONTHLY",
-              "QUARTERLY",
-              "YEARLY",
-              "HOURLY",
-            ]),
-          ).describe(
-            "Seasonal periods. Repeated because multiple periods are supported for one time series.",
-          ).optional(),
-          timeSeriesId: z.string().describe(
-            "The time_series_id value for this time series. It will be one of the unique values from the time_series_id_column specified during ARIMA model training. Only present when time_series_id_column training option was used.",
-          ).optional(),
-          timeSeriesIds: z.array(z.string()).describe(
-            "The tuple of time_series_ids identifying this time series. It will be one of the unique tuples of values present in the time_series_id_columns specified during ARIMA model training. Only present when time_series_id_columns training option was used and the order of values here are same as the order of time_series_id_columns.",
-          ).optional(),
-        })).describe(
+        arimaFittingMetrics: z.array(z.unknown()).describe(
+          "Arima model fitting metrics.",
+        ).optional(),
+        arimaSingleModelForecastingMetrics: z.array(z.unknown()).describe(
           "Repeated as there can be many metric sets (one for each model) in auto-arima and the large-scale case.",
         ).optional(),
-        hasDrift: z.array(z.boolean()).describe(
+        hasDrift: z.array(z.unknown()).describe(
           "Whether Arima model fitted with drift or not. It is always false when d is not 1.",
         ).optional(),
-        nonSeasonalOrder: z.array(z.object({
-          d: z.string().describe("Order of the differencing part.").optional(),
-          p: z.string().describe("Order of the autoregressive part.")
-            .optional(),
-          q: z.string().describe("Order of the moving-average part.")
-            .optional(),
-        })).describe("Non-seasonal order.").optional(),
-        seasonalPeriods: z.array(
-          z.enum([
-            "SEASONAL_PERIOD_TYPE_UNSPECIFIED",
-            "NO_SEASONALITY",
-            "DAILY",
-            "WEEKLY",
-            "MONTHLY",
-            "QUARTERLY",
-            "YEARLY",
-            "HOURLY",
-          ]),
-        ).describe(
+        nonSeasonalOrder: z.array(z.unknown()).describe("Non-seasonal order.")
+          .optional(),
+        seasonalPeriods: z.array(z.unknown()).describe(
           "Seasonal periods. Repeated because multiple periods are supported for one time series.",
         ).optional(),
-        timeSeriesId: z.array(z.string()).describe(
+        timeSeriesId: z.array(z.unknown()).describe(
           "Id to differentiate different time series for the large-scale case.",
         ).optional(),
       }).describe("Model evaluation metrics for ARIMA forecasting models.")
         .optional(),
       binaryClassificationMetrics: z.object({
         aggregateClassificationMetrics: z.object({
-          accuracy: z.number().describe(
+          accuracy: z.unknown().describe(
             "Accuracy is the fraction of predictions given the correct label. For multiclass this is a micro-averaged metric.",
           ).optional(),
-          f1Score: z.number().describe(
+          f1Score: z.unknown().describe(
             "The F1 score is an average of recall and precision. For multiclass this is a macro-averaged metric.",
           ).optional(),
-          logLoss: z.number().describe(
+          logLoss: z.unknown().describe(
             "Logarithmic Loss. For multiclass this is a macro-averaged metric.",
           ).optional(),
-          precision: z.number().describe(
+          precision: z.unknown().describe(
             "Precision is the fraction of actual positive predictions that had positive actual labels. For multiclass this is a macro-averaged metric treating each class as a binary classifier.",
           ).optional(),
-          recall: z.number().describe(
+          recall: z.unknown().describe(
             "Recall is the fraction of actual positive labels that were given a positive prediction. For multiclass this is a macro-averaged metric.",
           ).optional(),
-          rocAuc: z.number().describe(
+          rocAuc: z.unknown().describe(
             "Area Under a ROC Curve. For multiclass this is a macro-averaged metric.",
           ).optional(),
-          threshold: z.number().describe(
+          threshold: z.unknown().describe(
             "Threshold at which the metrics are computed. For binary classification models this is the positive class threshold. For multi-class classification models this is the confidence threshold.",
           ).optional(),
         }).describe(
           "Aggregate metrics for classification/classifier models. For multi-class models, the metrics are either macro-averaged or micro-averaged. When macro-averaged, the metrics are calculated for each label and then an unweighted average is taken of those values. When micro-averaged, the metric is calculated globally by counting the total number of correctly predicted rows.",
         ).optional(),
-        binaryConfusionMatrixList: z.array(z.object({
-          accuracy: z.number().describe(
-            "The fraction of predictions given the correct label.",
-          ).optional(),
-          f1Score: z.number().describe(
-            "The equally weighted average of recall and precision.",
-          ).optional(),
-          falseNegatives: z.string().describe(
-            "Number of false samples predicted as false.",
-          ).optional(),
-          falsePositives: z.string().describe(
-            "Number of false samples predicted as true.",
-          ).optional(),
-          positiveClassThreshold: z.number().describe(
-            "Threshold value used when computing each of the following metric.",
-          ).optional(),
-          precision: z.number().describe(
-            "The fraction of actual positive predictions that had positive actual labels.",
-          ).optional(),
-          recall: z.number().describe(
-            "The fraction of actual positive labels that were given a positive prediction.",
-          ).optional(),
-          trueNegatives: z.string().describe(
-            "Number of true samples predicted as false.",
-          ).optional(),
-          truePositives: z.string().describe(
-            "Number of true samples predicted as true.",
-          ).optional(),
-        })).describe("Binary confusion matrix at multiple thresholds.")
-          .optional(),
+        binaryConfusionMatrixList: z.array(z.unknown()).describe(
+          "Binary confusion matrix at multiple thresholds.",
+        ).optional(),
         negativeLabel: z.string().describe(
           "Label representing the negative class.",
         ).optional(),
@@ -1799,32 +1437,8 @@ const GlobalArgsSchema = z.object({
         "Evaluation metrics for binary classification/classifier models.",
       ).optional(),
       clusteringMetrics: z.object({
-        clusters: z.array(z.object({
-          centroidId: z.string().describe("Centroid id.").optional(),
-          count: z.string().describe(
-            "Count of training data rows that were assigned to this cluster.",
-          ).optional(),
-          featureValues: z.array(z.object({
-            categoricalValue: z.object({
-              categoryCounts: z.array(z.object({
-                category: z.string().describe("The name of category.")
-                  .optional(),
-                count: z.string().describe(
-                  "The count of training samples matching the category within the cluster.",
-                ).optional(),
-              })).describe(
-                'Counts of all categories for the categorical feature. If there are more than ten categories, we return top ten (by count) and return one more CategoryCount with category "_OTHER_" and count as aggregate counts of remaining categories.',
-              ).optional(),
-            }).describe("Representative value of a categorical feature.")
-              .optional(),
-            featureColumn: z.string().describe("The feature column name.")
-              .optional(),
-            numericalValue: z.number().describe(
-              "The numerical feature value. This is the centroid value for this feature.",
-            ).optional(),
-          })).describe("Values of highly variant features for this cluster.")
-            .optional(),
-        })).describe("Information for all clusters.").optional(),
+        clusters: z.array(z.unknown()).describe("Information for all clusters.")
+          .optional(),
         daviesBouldinIndex: z.number().describe("Davies-Bouldin index.")
           .optional(),
         meanSquaredDistance: z.number().describe(
@@ -1840,48 +1454,33 @@ const GlobalArgsSchema = z.object({
       ).optional(),
       multiClassClassificationMetrics: z.object({
         aggregateClassificationMetrics: z.object({
-          accuracy: z.number().describe(
+          accuracy: z.unknown().describe(
             "Accuracy is the fraction of predictions given the correct label. For multiclass this is a micro-averaged metric.",
           ).optional(),
-          f1Score: z.number().describe(
+          f1Score: z.unknown().describe(
             "The F1 score is an average of recall and precision. For multiclass this is a macro-averaged metric.",
           ).optional(),
-          logLoss: z.number().describe(
+          logLoss: z.unknown().describe(
             "Logarithmic Loss. For multiclass this is a macro-averaged metric.",
           ).optional(),
-          precision: z.number().describe(
+          precision: z.unknown().describe(
             "Precision is the fraction of actual positive predictions that had positive actual labels. For multiclass this is a macro-averaged metric treating each class as a binary classifier.",
           ).optional(),
-          recall: z.number().describe(
+          recall: z.unknown().describe(
             "Recall is the fraction of actual positive labels that were given a positive prediction. For multiclass this is a macro-averaged metric.",
           ).optional(),
-          rocAuc: z.number().describe(
+          rocAuc: z.unknown().describe(
             "Area Under a ROC Curve. For multiclass this is a macro-averaged metric.",
           ).optional(),
-          threshold: z.number().describe(
+          threshold: z.unknown().describe(
             "Threshold at which the metrics are computed. For binary classification models this is the positive class threshold. For multi-class classification models this is the confidence threshold.",
           ).optional(),
         }).describe(
           "Aggregate metrics for classification/classifier models. For multi-class models, the metrics are either macro-averaged or micro-averaged. When macro-averaged, the metrics are calculated for each label and then an unweighted average is taken of those values. When micro-averaged, the metric is calculated globally by counting the total number of correctly predicted rows.",
         ).optional(),
-        confusionMatrixList: z.array(z.object({
-          confidenceThreshold: z.number().describe(
-            "Confidence threshold used when computing the entries of the confusion matrix.",
-          ).optional(),
-          rows: z.array(z.object({
-            actualLabel: z.string().describe("The original label of this row.")
-              .optional(),
-            entries: z.array(z.object({
-              itemCount: z.string().describe(
-                "Number of items being predicted as this label.",
-              ).optional(),
-              predictedLabel: z.string().describe(
-                "The predicted label. For confidence_threshold > 0, we will also add an entry indicating the number of items under the confidence threshold.",
-              ).optional(),
-            })).describe("Info describing predicted label distribution.")
-              .optional(),
-          })).describe("One row per actual label.").optional(),
-        })).describe("Confusion matrix at different thresholds.").optional(),
+        confusionMatrixList: z.array(z.unknown()).describe(
+          "Confusion matrix at different thresholds.",
+        ).optional(),
       }).describe(
         "Evaluation metrics for multi-class classification/classifier models.",
       ).optional(),
@@ -1923,8 +1522,8 @@ const GlobalArgsSchema = z.object({
         "Class label for this set of global explanations. Will be empty/null for binary logistic and linear regression models. Sorted alphabetically in descending order.",
       ).optional(),
       explanations: z.array(z.object({
-        attribution: z.number().describe("Attribution of feature.").optional(),
-        featureName: z.string().describe(
+        attribution: z.unknown().describe("Attribution of feature.").optional(),
+        featureName: z.unknown().describe(
           "The full feature name. For non-numerical features, will be formatted like `.`. Overall size of feature name will always be truncated to first 120 characters.",
         ).optional(),
       })).describe(
@@ -1935,95 +1534,18 @@ const GlobalArgsSchema = z.object({
     ).optional(),
     results: z.array(z.object({
       arimaResult: z.object({
-        arimaModelInfo: z.array(z.object({
-          arimaCoefficients: z.object({
-            autoRegressiveCoefficients: z.array(z.number()).describe(
-              "Auto-regressive coefficients, an array of double.",
-            ).optional(),
-            interceptCoefficient: z.number().describe(
-              "Intercept coefficient, just a double not an array.",
-            ).optional(),
-            movingAverageCoefficients: z.array(z.number()).describe(
-              "Moving-average coefficients, an array of double.",
-            ).optional(),
-          }).describe("Arima coefficients.").optional(),
-          arimaFittingMetrics: z.object({
-            aic: z.number().describe("AIC.").optional(),
-            logLikelihood: z.number().describe("Log-likelihood.").optional(),
-            variance: z.number().describe("Variance.").optional(),
-          }).describe("ARIMA model fitting metrics.").optional(),
-          hasDrift: z.boolean().describe(
-            "Whether Arima model fitted with drift or not. It is always false when d is not 1.",
-          ).optional(),
-          hasHolidayEffect: z.boolean().describe(
-            "If true, holiday_effect is a part of time series decomposition result.",
-          ).optional(),
-          hasSpikesAndDips: z.boolean().describe(
-            "If true, spikes_and_dips is a part of time series decomposition result.",
-          ).optional(),
-          hasStepChanges: z.boolean().describe(
-            "If true, step_changes is a part of time series decomposition result.",
-          ).optional(),
-          nonSeasonalOrder: z.object({
-            d: z.string().describe("Order of the differencing part.")
-              .optional(),
-            p: z.string().describe("Order of the autoregressive part.")
-              .optional(),
-            q: z.string().describe("Order of the moving-average part.")
-              .optional(),
-          }).describe(
-            "Arima order, can be used for both non-seasonal and seasonal parts.",
-          ).optional(),
-          seasonalPeriods: z.array(
-            z.enum([
-              "SEASONAL_PERIOD_TYPE_UNSPECIFIED",
-              "NO_SEASONALITY",
-              "DAILY",
-              "WEEKLY",
-              "MONTHLY",
-              "QUARTERLY",
-              "YEARLY",
-              "HOURLY",
-            ]),
-          ).describe(
-            "Seasonal periods. Repeated because multiple periods are supported for one time series.",
-          ).optional(),
-          timeSeriesId: z.string().describe(
-            "The time_series_id value for this time series. It will be one of the unique values from the time_series_id_column specified during ARIMA model training. Only present when time_series_id_column training option was used.",
-          ).optional(),
-          timeSeriesIds: z.array(z.string()).describe(
-            "The tuple of time_series_ids identifying this time series. It will be one of the unique tuples of values present in the time_series_id_columns specified during ARIMA model training. Only present when time_series_id_columns training option was used and the order of values here are same as the order of time_series_id_columns.",
-          ).optional(),
-        })).describe(
+        arimaModelInfo: z.unknown().describe(
           "This message is repeated because there are multiple arima models fitted in auto-arima. For non-auto-arima model, its size is one.",
         ).optional(),
-        seasonalPeriods: z.array(
-          z.enum([
-            "SEASONAL_PERIOD_TYPE_UNSPECIFIED",
-            "NO_SEASONALITY",
-            "DAILY",
-            "WEEKLY",
-            "MONTHLY",
-            "QUARTERLY",
-            "YEARLY",
-            "HOURLY",
-          ]),
-        ).describe(
+        seasonalPeriods: z.unknown().describe(
           "Seasonal periods. Repeated because multiple periods are supported for one time series.",
         ).optional(),
       }).describe(
         "(Auto-)arima fitting result. Wrap everything in ArimaResult for easier refactoring if we want to use model-specific iteration results.",
       ).optional(),
-      clusterInfos: z.array(z.object({
-        centroidId: z.string().describe("Centroid id.").optional(),
-        clusterRadius: z.number().describe(
-          "Cluster radius, the average distance from centroid to each point assigned to the cluster.",
-        ).optional(),
-        clusterSize: z.string().describe(
-          "Cluster size, the total number of points assigned to the cluster.",
-        ).optional(),
-      })).describe("Information about top clusters for clustering models.")
-        .optional(),
+      clusterInfos: z.array(z.unknown()).describe(
+        "Information about top clusters for clustering models.",
+      ).optional(),
       durationMs: z.string().describe(
         "Time taken to run the iteration in milliseconds.",
       ).optional(),
@@ -2034,20 +1556,9 @@ const GlobalArgsSchema = z.object({
         .optional(),
       learnRate: z.number().describe("Learn rate used for this iteration.")
         .optional(),
-      principalComponentInfos: z.array(z.object({
-        cumulativeExplainedVarianceRatio: z.number().describe(
-          "The explained_variance is pre-ordered in the descending order to compute the cumulative explained variance ratio.",
-        ).optional(),
-        explainedVariance: z.number().describe(
-          "Explained variance by this principal component, which is simply the eigenvalue.",
-        ).optional(),
-        explainedVarianceRatio: z.number().describe(
-          "Explained_variance over the total explained variance.",
-        ).optional(),
-        principalComponentId: z.string().describe(
-          "Id of the principal component.",
-        ).optional(),
-      })).describe("The information of the principal components.").optional(),
+      principalComponentInfos: z.array(z.unknown()).describe(
+        "The information of the principal components.",
+      ).optional(),
       trainingLoss: z.number().describe(
         "Loss computed on the training data at the end of iteration.",
       ).optional(),
@@ -2600,13 +2111,8 @@ const GlobalArgsSchema = z.object({
         "Circular reference to StandardSqlDataType",
       ).optional(),
       structType: z.object({
-        fields: z.array(z.object({
-          name: z.string().describe(
-            "Optional. The name of this field. Can be absent for struct fields.",
-          ).optional(),
-          type: z.string().describe("Circular reference to StandardSqlDataType")
-            .optional(),
-        })).describe("Fields within the struct.").optional(),
+        fields: z.array(z.unknown()).describe("Fields within the struct.")
+          .optional(),
       }).describe("The representation of a SQL STRUCT type.").optional(),
       typeKind: z.enum([
         "TYPE_KIND_UNSPECIFIED",
@@ -2654,7 +2160,7 @@ const StateSchema = z.object({
       arrayElementType: z.string(),
       rangeElementType: z.string(),
       structType: z.object({
-        fields: z.array(z.string()),
+        fields: z.array(z.unknown()),
       }),
       typeKind: z.string(),
     }),
@@ -2717,7 +2223,7 @@ const StateSchema = z.object({
     }),
     hiddenUnits: z.object({
       candidates: z.array(z.object({
-        elements: z.array(z.string()),
+        elements: z.array(z.unknown()),
       })),
     }),
     l1Reg: z.object({
@@ -2832,78 +2338,29 @@ const StateSchema = z.object({
     evalLoss: z.number(),
     evaluationMetrics: z.object({
       arimaForecastingMetrics: z.object({
-        arimaFittingMetrics: z.array(z.object({
-          aic: z.number(),
-          logLikelihood: z.number(),
-          variance: z.number(),
-        })),
-        arimaSingleModelForecastingMetrics: z.array(z.object({
-          arimaFittingMetrics: z.object({
-            aic: z.number(),
-            logLikelihood: z.number(),
-            variance: z.number(),
-          }),
-          hasDrift: z.boolean(),
-          hasHolidayEffect: z.boolean(),
-          hasSpikesAndDips: z.boolean(),
-          hasStepChanges: z.boolean(),
-          nonSeasonalOrder: z.object({
-            d: z.string(),
-            p: z.string(),
-            q: z.string(),
-          }),
-          seasonalPeriods: z.array(z.string()),
-          timeSeriesId: z.string(),
-          timeSeriesIds: z.array(z.string()),
-        })),
-        hasDrift: z.array(z.boolean()),
-        nonSeasonalOrder: z.array(z.object({
-          d: z.string(),
-          p: z.string(),
-          q: z.string(),
-        })),
-        seasonalPeriods: z.array(z.string()),
-        timeSeriesId: z.array(z.string()),
+        arimaFittingMetrics: z.array(z.unknown()),
+        arimaSingleModelForecastingMetrics: z.array(z.unknown()),
+        hasDrift: z.array(z.unknown()),
+        nonSeasonalOrder: z.array(z.unknown()),
+        seasonalPeriods: z.array(z.unknown()),
+        timeSeriesId: z.array(z.unknown()),
       }),
       binaryClassificationMetrics: z.object({
         aggregateClassificationMetrics: z.object({
-          accuracy: z.number(),
-          f1Score: z.number(),
-          logLoss: z.number(),
-          precision: z.number(),
-          recall: z.number(),
-          rocAuc: z.number(),
-          threshold: z.number(),
+          accuracy: z.unknown(),
+          f1Score: z.unknown(),
+          logLoss: z.unknown(),
+          precision: z.unknown(),
+          recall: z.unknown(),
+          rocAuc: z.unknown(),
+          threshold: z.unknown(),
         }),
-        binaryConfusionMatrixList: z.array(z.object({
-          accuracy: z.number(),
-          f1Score: z.number(),
-          falseNegatives: z.string(),
-          falsePositives: z.string(),
-          positiveClassThreshold: z.number(),
-          precision: z.number(),
-          recall: z.number(),
-          trueNegatives: z.string(),
-          truePositives: z.string(),
-        })),
+        binaryConfusionMatrixList: z.array(z.unknown()),
         negativeLabel: z.string(),
         positiveLabel: z.string(),
       }),
       clusteringMetrics: z.object({
-        clusters: z.array(z.object({
-          centroidId: z.string(),
-          count: z.string(),
-          featureValues: z.array(z.object({
-            categoricalValue: z.object({
-              categoryCounts: z.array(z.object({
-                category: z.string(),
-                count: z.string(),
-              })),
-            }),
-            featureColumn: z.string(),
-            numericalValue: z.number(),
-          })),
-        })),
+        clusters: z.array(z.unknown()),
         daviesBouldinIndex: z.number(),
         meanSquaredDistance: z.number(),
       }),
@@ -2912,24 +2369,15 @@ const StateSchema = z.object({
       }),
       multiClassClassificationMetrics: z.object({
         aggregateClassificationMetrics: z.object({
-          accuracy: z.number(),
-          f1Score: z.number(),
-          logLoss: z.number(),
-          precision: z.number(),
-          recall: z.number(),
-          rocAuc: z.number(),
-          threshold: z.number(),
+          accuracy: z.unknown(),
+          f1Score: z.unknown(),
+          logLoss: z.unknown(),
+          precision: z.unknown(),
+          recall: z.unknown(),
+          rocAuc: z.unknown(),
+          threshold: z.unknown(),
         }),
-        confusionMatrixList: z.array(z.object({
-          confidenceThreshold: z.number(),
-          rows: z.array(z.object({
-            actualLabel: z.string(),
-            entries: z.array(z.object({
-              itemCount: z.string(),
-              predictedLabel: z.string(),
-            })),
-          })),
-        })),
+        confusionMatrixList: z.array(z.unknown()),
       }),
       rankingMetrics: z.object({
         averageRank: z.number(),
@@ -2947,78 +2395,29 @@ const StateSchema = z.object({
     }),
     hparamTuningEvaluationMetrics: z.object({
       arimaForecastingMetrics: z.object({
-        arimaFittingMetrics: z.array(z.object({
-          aic: z.number(),
-          logLikelihood: z.number(),
-          variance: z.number(),
-        })),
-        arimaSingleModelForecastingMetrics: z.array(z.object({
-          arimaFittingMetrics: z.object({
-            aic: z.number(),
-            logLikelihood: z.number(),
-            variance: z.number(),
-          }),
-          hasDrift: z.boolean(),
-          hasHolidayEffect: z.boolean(),
-          hasSpikesAndDips: z.boolean(),
-          hasStepChanges: z.boolean(),
-          nonSeasonalOrder: z.object({
-            d: z.string(),
-            p: z.string(),
-            q: z.string(),
-          }),
-          seasonalPeriods: z.array(z.string()),
-          timeSeriesId: z.string(),
-          timeSeriesIds: z.array(z.string()),
-        })),
-        hasDrift: z.array(z.boolean()),
-        nonSeasonalOrder: z.array(z.object({
-          d: z.string(),
-          p: z.string(),
-          q: z.string(),
-        })),
-        seasonalPeriods: z.array(z.string()),
-        timeSeriesId: z.array(z.string()),
+        arimaFittingMetrics: z.array(z.unknown()),
+        arimaSingleModelForecastingMetrics: z.array(z.unknown()),
+        hasDrift: z.array(z.unknown()),
+        nonSeasonalOrder: z.array(z.unknown()),
+        seasonalPeriods: z.array(z.unknown()),
+        timeSeriesId: z.array(z.unknown()),
       }),
       binaryClassificationMetrics: z.object({
         aggregateClassificationMetrics: z.object({
-          accuracy: z.number(),
-          f1Score: z.number(),
-          logLoss: z.number(),
-          precision: z.number(),
-          recall: z.number(),
-          rocAuc: z.number(),
-          threshold: z.number(),
+          accuracy: z.unknown(),
+          f1Score: z.unknown(),
+          logLoss: z.unknown(),
+          precision: z.unknown(),
+          recall: z.unknown(),
+          rocAuc: z.unknown(),
+          threshold: z.unknown(),
         }),
-        binaryConfusionMatrixList: z.array(z.object({
-          accuracy: z.number(),
-          f1Score: z.number(),
-          falseNegatives: z.string(),
-          falsePositives: z.string(),
-          positiveClassThreshold: z.number(),
-          precision: z.number(),
-          recall: z.number(),
-          trueNegatives: z.string(),
-          truePositives: z.string(),
-        })),
+        binaryConfusionMatrixList: z.array(z.unknown()),
         negativeLabel: z.string(),
         positiveLabel: z.string(),
       }),
       clusteringMetrics: z.object({
-        clusters: z.array(z.object({
-          centroidId: z.string(),
-          count: z.string(),
-          featureValues: z.array(z.object({
-            categoricalValue: z.object({
-              categoryCounts: z.array(z.object({
-                category: z.string(),
-                count: z.string(),
-              })),
-            }),
-            featureColumn: z.string(),
-            numericalValue: z.number(),
-          })),
-        })),
+        clusters: z.array(z.unknown()),
         daviesBouldinIndex: z.number(),
         meanSquaredDistance: z.number(),
       }),
@@ -3027,24 +2426,15 @@ const StateSchema = z.object({
       }),
       multiClassClassificationMetrics: z.object({
         aggregateClassificationMetrics: z.object({
-          accuracy: z.number(),
-          f1Score: z.number(),
-          logLoss: z.number(),
-          precision: z.number(),
-          recall: z.number(),
-          rocAuc: z.number(),
-          threshold: z.number(),
+          accuracy: z.unknown(),
+          f1Score: z.unknown(),
+          logLoss: z.unknown(),
+          precision: z.unknown(),
+          recall: z.unknown(),
+          rocAuc: z.unknown(),
+          threshold: z.unknown(),
         }),
-        confusionMatrixList: z.array(z.object({
-          confidenceThreshold: z.number(),
-          rows: z.array(z.object({
-            actualLabel: z.string(),
-            entries: z.array(z.object({
-              itemCount: z.string(),
-              predictedLabel: z.string(),
-            })),
-          })),
-        })),
+        confusionMatrixList: z.array(z.unknown()),
       }),
       rankingMetrics: z.object({
         averageRank: z.number(),
@@ -3178,7 +2568,7 @@ const StateSchema = z.object({
       arrayElementType: z.string(),
       rangeElementType: z.string(),
       structType: z.object({
-        fields: z.array(z.string()),
+        fields: z.array(z.unknown()),
       }),
       typeKind: z.string(),
     }),
@@ -3204,10 +2594,7 @@ const StateSchema = z.object({
   trainingRuns: z.array(z.object({
     classLevelGlobalExplanations: z.array(z.object({
       classLabel: z.string(),
-      explanations: z.array(z.object({
-        attribution: z.number(),
-        featureName: z.string(),
-      })),
+      explanations: z.array(z.unknown()),
     })),
     dataSplitResult: z.object({
       evaluationTable: z.object({
@@ -3228,78 +2615,29 @@ const StateSchema = z.object({
     }),
     evaluationMetrics: z.object({
       arimaForecastingMetrics: z.object({
-        arimaFittingMetrics: z.array(z.object({
-          aic: z.number(),
-          logLikelihood: z.number(),
-          variance: z.number(),
-        })),
-        arimaSingleModelForecastingMetrics: z.array(z.object({
-          arimaFittingMetrics: z.object({
-            aic: z.number(),
-            logLikelihood: z.number(),
-            variance: z.number(),
-          }),
-          hasDrift: z.boolean(),
-          hasHolidayEffect: z.boolean(),
-          hasSpikesAndDips: z.boolean(),
-          hasStepChanges: z.boolean(),
-          nonSeasonalOrder: z.object({
-            d: z.string(),
-            p: z.string(),
-            q: z.string(),
-          }),
-          seasonalPeriods: z.array(z.string()),
-          timeSeriesId: z.string(),
-          timeSeriesIds: z.array(z.string()),
-        })),
-        hasDrift: z.array(z.boolean()),
-        nonSeasonalOrder: z.array(z.object({
-          d: z.string(),
-          p: z.string(),
-          q: z.string(),
-        })),
-        seasonalPeriods: z.array(z.string()),
-        timeSeriesId: z.array(z.string()),
+        arimaFittingMetrics: z.array(z.unknown()),
+        arimaSingleModelForecastingMetrics: z.array(z.unknown()),
+        hasDrift: z.array(z.unknown()),
+        nonSeasonalOrder: z.array(z.unknown()),
+        seasonalPeriods: z.array(z.unknown()),
+        timeSeriesId: z.array(z.unknown()),
       }),
       binaryClassificationMetrics: z.object({
         aggregateClassificationMetrics: z.object({
-          accuracy: z.number(),
-          f1Score: z.number(),
-          logLoss: z.number(),
-          precision: z.number(),
-          recall: z.number(),
-          rocAuc: z.number(),
-          threshold: z.number(),
+          accuracy: z.unknown(),
+          f1Score: z.unknown(),
+          logLoss: z.unknown(),
+          precision: z.unknown(),
+          recall: z.unknown(),
+          rocAuc: z.unknown(),
+          threshold: z.unknown(),
         }),
-        binaryConfusionMatrixList: z.array(z.object({
-          accuracy: z.number(),
-          f1Score: z.number(),
-          falseNegatives: z.string(),
-          falsePositives: z.string(),
-          positiveClassThreshold: z.number(),
-          precision: z.number(),
-          recall: z.number(),
-          trueNegatives: z.string(),
-          truePositives: z.string(),
-        })),
+        binaryConfusionMatrixList: z.array(z.unknown()),
         negativeLabel: z.string(),
         positiveLabel: z.string(),
       }),
       clusteringMetrics: z.object({
-        clusters: z.array(z.object({
-          centroidId: z.string(),
-          count: z.string(),
-          featureValues: z.array(z.object({
-            categoricalValue: z.object({
-              categoryCounts: z.array(z.object({
-                category: z.string(),
-                count: z.string(),
-              })),
-            }),
-            featureColumn: z.string(),
-            numericalValue: z.number(),
-          })),
-        })),
+        clusters: z.array(z.unknown()),
         daviesBouldinIndex: z.number(),
         meanSquaredDistance: z.number(),
       }),
@@ -3308,24 +2646,15 @@ const StateSchema = z.object({
       }),
       multiClassClassificationMetrics: z.object({
         aggregateClassificationMetrics: z.object({
-          accuracy: z.number(),
-          f1Score: z.number(),
-          logLoss: z.number(),
-          precision: z.number(),
-          recall: z.number(),
-          rocAuc: z.number(),
-          threshold: z.number(),
+          accuracy: z.unknown(),
+          f1Score: z.unknown(),
+          logLoss: z.unknown(),
+          precision: z.unknown(),
+          recall: z.unknown(),
+          rocAuc: z.unknown(),
+          threshold: z.unknown(),
         }),
-        confusionMatrixList: z.array(z.object({
-          confidenceThreshold: z.number(),
-          rows: z.array(z.object({
-            actualLabel: z.string(),
-            entries: z.array(z.object({
-              itemCount: z.string(),
-              predictedLabel: z.string(),
-            })),
-          })),
-        })),
+        confusionMatrixList: z.array(z.unknown()),
       }),
       rankingMetrics: z.object({
         averageRank: z.number(),
@@ -3344,53 +2673,21 @@ const StateSchema = z.object({
     modelLevelGlobalExplanation: z.object({
       classLabel: z.string(),
       explanations: z.array(z.object({
-        attribution: z.number(),
-        featureName: z.string(),
+        attribution: z.unknown(),
+        featureName: z.unknown(),
       })),
     }),
     results: z.array(z.object({
       arimaResult: z.object({
-        arimaModelInfo: z.array(z.object({
-          arimaCoefficients: z.object({
-            autoRegressiveCoefficients: z.array(z.number()),
-            interceptCoefficient: z.number(),
-            movingAverageCoefficients: z.array(z.number()),
-          }),
-          arimaFittingMetrics: z.object({
-            aic: z.number(),
-            logLikelihood: z.number(),
-            variance: z.number(),
-          }),
-          hasDrift: z.boolean(),
-          hasHolidayEffect: z.boolean(),
-          hasSpikesAndDips: z.boolean(),
-          hasStepChanges: z.boolean(),
-          nonSeasonalOrder: z.object({
-            d: z.string(),
-            p: z.string(),
-            q: z.string(),
-          }),
-          seasonalPeriods: z.array(z.string()),
-          timeSeriesId: z.string(),
-          timeSeriesIds: z.array(z.string()),
-        })),
-        seasonalPeriods: z.array(z.string()),
+        arimaModelInfo: z.unknown(),
+        seasonalPeriods: z.unknown(),
       }),
-      clusterInfos: z.array(z.object({
-        centroidId: z.string(),
-        clusterRadius: z.number(),
-        clusterSize: z.string(),
-      })),
+      clusterInfos: z.array(z.unknown()),
       durationMs: z.string(),
       evalLoss: z.number(),
       index: z.number(),
       learnRate: z.number(),
-      principalComponentInfos: z.array(z.object({
-        cumulativeExplainedVarianceRatio: z.number(),
-        explainedVariance: z.number(),
-        explainedVarianceRatio: z.number(),
-        principalComponentId: z.string(),
-      })),
+      principalComponentInfos: z.array(z.unknown()),
       trainingLoss: z.number(),
     })),
     startTime: z.string(),
@@ -3512,10 +2809,7 @@ const StateSchema = z.object({
       arrayElementType: z.string(),
       rangeElementType: z.string(),
       structType: z.object({
-        fields: z.array(z.object({
-          name: z.string(),
-          type: z.string(),
-        })),
+        fields: z.array(z.unknown()),
       }),
       typeKind: z.string(),
     }),
@@ -3556,7 +2850,7 @@ const InputsSchema = z.object({
         "Circular reference to StandardSqlDataType",
       ).optional(),
       structType: z.object({
-        fields: z.array(z.string()).describe("Fields within the struct.")
+        fields: z.array(z.unknown()).describe("Fields within the struct.")
           .optional(),
       }).describe("The representation of a SQL STRUCT type.").optional(),
       typeKind: z.enum([
@@ -3671,7 +2965,7 @@ const InputsSchema = z.object({
     }).describe("Search space for a double hyperparameter.").optional(),
     hiddenUnits: z.object({
       candidates: z.array(z.object({
-        elements: z.array(z.string()).describe("Elements in the int array.")
+        elements: z.array(z.unknown()).describe("Elements in the int array.")
           .optional(),
       })).describe("Candidates for the int array parameter.").optional(),
     }).describe("Search space for int array.").optional(),
@@ -3831,147 +3125,54 @@ const InputsSchema = z.object({
     ).optional(),
     evaluationMetrics: z.object({
       arimaForecastingMetrics: z.object({
-        arimaFittingMetrics: z.array(z.object({
-          aic: z.number().describe("AIC.").optional(),
-          logLikelihood: z.number().describe("Log-likelihood.").optional(),
-          variance: z.number().describe("Variance.").optional(),
-        })).describe("Arima model fitting metrics.").optional(),
-        arimaSingleModelForecastingMetrics: z.array(z.object({
-          arimaFittingMetrics: z.object({
-            aic: z.number().describe("AIC.").optional(),
-            logLikelihood: z.number().describe("Log-likelihood.").optional(),
-            variance: z.number().describe("Variance.").optional(),
-          }).describe("ARIMA model fitting metrics.").optional(),
-          hasDrift: z.boolean().describe(
-            "Is arima model fitted with drift or not. It is always false when d is not 1.",
-          ).optional(),
-          hasHolidayEffect: z.boolean().describe(
-            "If true, holiday_effect is a part of time series decomposition result.",
-          ).optional(),
-          hasSpikesAndDips: z.boolean().describe(
-            "If true, spikes_and_dips is a part of time series decomposition result.",
-          ).optional(),
-          hasStepChanges: z.boolean().describe(
-            "If true, step_changes is a part of time series decomposition result.",
-          ).optional(),
-          nonSeasonalOrder: z.object({
-            d: z.string().describe("Order of the differencing part.")
-              .optional(),
-            p: z.string().describe("Order of the autoregressive part.")
-              .optional(),
-            q: z.string().describe("Order of the moving-average part.")
-              .optional(),
-          }).describe(
-            "Arima order, can be used for both non-seasonal and seasonal parts.",
-          ).optional(),
-          seasonalPeriods: z.array(
-            z.enum([
-              "SEASONAL_PERIOD_TYPE_UNSPECIFIED",
-              "NO_SEASONALITY",
-              "DAILY",
-              "WEEKLY",
-              "MONTHLY",
-              "QUARTERLY",
-              "YEARLY",
-              "HOURLY",
-            ]),
-          ).describe(
-            "Seasonal periods. Repeated because multiple periods are supported for one time series.",
-          ).optional(),
-          timeSeriesId: z.string().describe(
-            "The time_series_id value for this time series. It will be one of the unique values from the time_series_id_column specified during ARIMA model training. Only present when time_series_id_column training option was used.",
-          ).optional(),
-          timeSeriesIds: z.array(z.string()).describe(
-            "The tuple of time_series_ids identifying this time series. It will be one of the unique tuples of values present in the time_series_id_columns specified during ARIMA model training. Only present when time_series_id_columns training option was used and the order of values here are same as the order of time_series_id_columns.",
-          ).optional(),
-        })).describe(
+        arimaFittingMetrics: z.array(z.unknown()).describe(
+          "Arima model fitting metrics.",
+        ).optional(),
+        arimaSingleModelForecastingMetrics: z.array(z.unknown()).describe(
           "Repeated as there can be many metric sets (one for each model) in auto-arima and the large-scale case.",
         ).optional(),
-        hasDrift: z.array(z.boolean()).describe(
+        hasDrift: z.array(z.unknown()).describe(
           "Whether Arima model fitted with drift or not. It is always false when d is not 1.",
         ).optional(),
-        nonSeasonalOrder: z.array(z.object({
-          d: z.string().describe("Order of the differencing part.").optional(),
-          p: z.string().describe("Order of the autoregressive part.")
-            .optional(),
-          q: z.string().describe("Order of the moving-average part.")
-            .optional(),
-        })).describe("Non-seasonal order.").optional(),
-        seasonalPeriods: z.array(
-          z.enum([
-            "SEASONAL_PERIOD_TYPE_UNSPECIFIED",
-            "NO_SEASONALITY",
-            "DAILY",
-            "WEEKLY",
-            "MONTHLY",
-            "QUARTERLY",
-            "YEARLY",
-            "HOURLY",
-          ]),
-        ).describe(
+        nonSeasonalOrder: z.array(z.unknown()).describe("Non-seasonal order.")
+          .optional(),
+        seasonalPeriods: z.array(z.unknown()).describe(
           "Seasonal periods. Repeated because multiple periods are supported for one time series.",
         ).optional(),
-        timeSeriesId: z.array(z.string()).describe(
+        timeSeriesId: z.array(z.unknown()).describe(
           "Id to differentiate different time series for the large-scale case.",
         ).optional(),
       }).describe("Model evaluation metrics for ARIMA forecasting models.")
         .optional(),
       binaryClassificationMetrics: z.object({
         aggregateClassificationMetrics: z.object({
-          accuracy: z.number().describe(
+          accuracy: z.unknown().describe(
             "Accuracy is the fraction of predictions given the correct label. For multiclass this is a micro-averaged metric.",
           ).optional(),
-          f1Score: z.number().describe(
+          f1Score: z.unknown().describe(
             "The F1 score is an average of recall and precision. For multiclass this is a macro-averaged metric.",
           ).optional(),
-          logLoss: z.number().describe(
+          logLoss: z.unknown().describe(
             "Logarithmic Loss. For multiclass this is a macro-averaged metric.",
           ).optional(),
-          precision: z.number().describe(
+          precision: z.unknown().describe(
             "Precision is the fraction of actual positive predictions that had positive actual labels. For multiclass this is a macro-averaged metric treating each class as a binary classifier.",
           ).optional(),
-          recall: z.number().describe(
+          recall: z.unknown().describe(
             "Recall is the fraction of actual positive labels that were given a positive prediction. For multiclass this is a macro-averaged metric.",
           ).optional(),
-          rocAuc: z.number().describe(
+          rocAuc: z.unknown().describe(
             "Area Under a ROC Curve. For multiclass this is a macro-averaged metric.",
           ).optional(),
-          threshold: z.number().describe(
+          threshold: z.unknown().describe(
             "Threshold at which the metrics are computed. For binary classification models this is the positive class threshold. For multi-class classification models this is the confidence threshold.",
           ).optional(),
         }).describe(
           "Aggregate metrics for classification/classifier models. For multi-class models, the metrics are either macro-averaged or micro-averaged. When macro-averaged, the metrics are calculated for each label and then an unweighted average is taken of those values. When micro-averaged, the metric is calculated globally by counting the total number of correctly predicted rows.",
         ).optional(),
-        binaryConfusionMatrixList: z.array(z.object({
-          accuracy: z.number().describe(
-            "The fraction of predictions given the correct label.",
-          ).optional(),
-          f1Score: z.number().describe(
-            "The equally weighted average of recall and precision.",
-          ).optional(),
-          falseNegatives: z.string().describe(
-            "Number of false samples predicted as false.",
-          ).optional(),
-          falsePositives: z.string().describe(
-            "Number of false samples predicted as true.",
-          ).optional(),
-          positiveClassThreshold: z.number().describe(
-            "Threshold value used when computing each of the following metric.",
-          ).optional(),
-          precision: z.number().describe(
-            "The fraction of actual positive predictions that had positive actual labels.",
-          ).optional(),
-          recall: z.number().describe(
-            "The fraction of actual positive labels that were given a positive prediction.",
-          ).optional(),
-          trueNegatives: z.string().describe(
-            "Number of true samples predicted as false.",
-          ).optional(),
-          truePositives: z.string().describe(
-            "Number of true samples predicted as true.",
-          ).optional(),
-        })).describe("Binary confusion matrix at multiple thresholds.")
-          .optional(),
+        binaryConfusionMatrixList: z.array(z.unknown()).describe(
+          "Binary confusion matrix at multiple thresholds.",
+        ).optional(),
         negativeLabel: z.string().describe(
           "Label representing the negative class.",
         ).optional(),
@@ -3982,32 +3183,8 @@ const InputsSchema = z.object({
         "Evaluation metrics for binary classification/classifier models.",
       ).optional(),
       clusteringMetrics: z.object({
-        clusters: z.array(z.object({
-          centroidId: z.string().describe("Centroid id.").optional(),
-          count: z.string().describe(
-            "Count of training data rows that were assigned to this cluster.",
-          ).optional(),
-          featureValues: z.array(z.object({
-            categoricalValue: z.object({
-              categoryCounts: z.array(z.object({
-                category: z.string().describe("The name of category.")
-                  .optional(),
-                count: z.string().describe(
-                  "The count of training samples matching the category within the cluster.",
-                ).optional(),
-              })).describe(
-                'Counts of all categories for the categorical feature. If there are more than ten categories, we return top ten (by count) and return one more CategoryCount with category "_OTHER_" and count as aggregate counts of remaining categories.',
-              ).optional(),
-            }).describe("Representative value of a categorical feature.")
-              .optional(),
-            featureColumn: z.string().describe("The feature column name.")
-              .optional(),
-            numericalValue: z.number().describe(
-              "The numerical feature value. This is the centroid value for this feature.",
-            ).optional(),
-          })).describe("Values of highly variant features for this cluster.")
-            .optional(),
-        })).describe("Information for all clusters.").optional(),
+        clusters: z.array(z.unknown()).describe("Information for all clusters.")
+          .optional(),
         daviesBouldinIndex: z.number().describe("Davies-Bouldin index.")
           .optional(),
         meanSquaredDistance: z.number().describe(
@@ -4023,48 +3200,33 @@ const InputsSchema = z.object({
       ).optional(),
       multiClassClassificationMetrics: z.object({
         aggregateClassificationMetrics: z.object({
-          accuracy: z.number().describe(
+          accuracy: z.unknown().describe(
             "Accuracy is the fraction of predictions given the correct label. For multiclass this is a micro-averaged metric.",
           ).optional(),
-          f1Score: z.number().describe(
+          f1Score: z.unknown().describe(
             "The F1 score is an average of recall and precision. For multiclass this is a macro-averaged metric.",
           ).optional(),
-          logLoss: z.number().describe(
+          logLoss: z.unknown().describe(
             "Logarithmic Loss. For multiclass this is a macro-averaged metric.",
           ).optional(),
-          precision: z.number().describe(
+          precision: z.unknown().describe(
             "Precision is the fraction of actual positive predictions that had positive actual labels. For multiclass this is a macro-averaged metric treating each class as a binary classifier.",
           ).optional(),
-          recall: z.number().describe(
+          recall: z.unknown().describe(
             "Recall is the fraction of actual positive labels that were given a positive prediction. For multiclass this is a macro-averaged metric.",
           ).optional(),
-          rocAuc: z.number().describe(
+          rocAuc: z.unknown().describe(
             "Area Under a ROC Curve. For multiclass this is a macro-averaged metric.",
           ).optional(),
-          threshold: z.number().describe(
+          threshold: z.unknown().describe(
             "Threshold at which the metrics are computed. For binary classification models this is the positive class threshold. For multi-class classification models this is the confidence threshold.",
           ).optional(),
         }).describe(
           "Aggregate metrics for classification/classifier models. For multi-class models, the metrics are either macro-averaged or micro-averaged. When macro-averaged, the metrics are calculated for each label and then an unweighted average is taken of those values. When micro-averaged, the metric is calculated globally by counting the total number of correctly predicted rows.",
         ).optional(),
-        confusionMatrixList: z.array(z.object({
-          confidenceThreshold: z.number().describe(
-            "Confidence threshold used when computing the entries of the confusion matrix.",
-          ).optional(),
-          rows: z.array(z.object({
-            actualLabel: z.string().describe("The original label of this row.")
-              .optional(),
-            entries: z.array(z.object({
-              itemCount: z.string().describe(
-                "Number of items being predicted as this label.",
-              ).optional(),
-              predictedLabel: z.string().describe(
-                "The predicted label. For confidence_threshold > 0, we will also add an entry indicating the number of items under the confidence threshold.",
-              ).optional(),
-            })).describe("Info describing predicted label distribution.")
-              .optional(),
-          })).describe("One row per actual label.").optional(),
-        })).describe("Confusion matrix at different thresholds.").optional(),
+        confusionMatrixList: z.array(z.unknown()).describe(
+          "Confusion matrix at different thresholds.",
+        ).optional(),
       }).describe(
         "Evaluation metrics for multi-class classification/classifier models.",
       ).optional(),
@@ -4103,147 +3265,54 @@ const InputsSchema = z.object({
     ).optional(),
     hparamTuningEvaluationMetrics: z.object({
       arimaForecastingMetrics: z.object({
-        arimaFittingMetrics: z.array(z.object({
-          aic: z.number().describe("AIC.").optional(),
-          logLikelihood: z.number().describe("Log-likelihood.").optional(),
-          variance: z.number().describe("Variance.").optional(),
-        })).describe("Arima model fitting metrics.").optional(),
-        arimaSingleModelForecastingMetrics: z.array(z.object({
-          arimaFittingMetrics: z.object({
-            aic: z.number().describe("AIC.").optional(),
-            logLikelihood: z.number().describe("Log-likelihood.").optional(),
-            variance: z.number().describe("Variance.").optional(),
-          }).describe("ARIMA model fitting metrics.").optional(),
-          hasDrift: z.boolean().describe(
-            "Is arima model fitted with drift or not. It is always false when d is not 1.",
-          ).optional(),
-          hasHolidayEffect: z.boolean().describe(
-            "If true, holiday_effect is a part of time series decomposition result.",
-          ).optional(),
-          hasSpikesAndDips: z.boolean().describe(
-            "If true, spikes_and_dips is a part of time series decomposition result.",
-          ).optional(),
-          hasStepChanges: z.boolean().describe(
-            "If true, step_changes is a part of time series decomposition result.",
-          ).optional(),
-          nonSeasonalOrder: z.object({
-            d: z.string().describe("Order of the differencing part.")
-              .optional(),
-            p: z.string().describe("Order of the autoregressive part.")
-              .optional(),
-            q: z.string().describe("Order of the moving-average part.")
-              .optional(),
-          }).describe(
-            "Arima order, can be used for both non-seasonal and seasonal parts.",
-          ).optional(),
-          seasonalPeriods: z.array(
-            z.enum([
-              "SEASONAL_PERIOD_TYPE_UNSPECIFIED",
-              "NO_SEASONALITY",
-              "DAILY",
-              "WEEKLY",
-              "MONTHLY",
-              "QUARTERLY",
-              "YEARLY",
-              "HOURLY",
-            ]),
-          ).describe(
-            "Seasonal periods. Repeated because multiple periods are supported for one time series.",
-          ).optional(),
-          timeSeriesId: z.string().describe(
-            "The time_series_id value for this time series. It will be one of the unique values from the time_series_id_column specified during ARIMA model training. Only present when time_series_id_column training option was used.",
-          ).optional(),
-          timeSeriesIds: z.array(z.string()).describe(
-            "The tuple of time_series_ids identifying this time series. It will be one of the unique tuples of values present in the time_series_id_columns specified during ARIMA model training. Only present when time_series_id_columns training option was used and the order of values here are same as the order of time_series_id_columns.",
-          ).optional(),
-        })).describe(
+        arimaFittingMetrics: z.array(z.unknown()).describe(
+          "Arima model fitting metrics.",
+        ).optional(),
+        arimaSingleModelForecastingMetrics: z.array(z.unknown()).describe(
           "Repeated as there can be many metric sets (one for each model) in auto-arima and the large-scale case.",
         ).optional(),
-        hasDrift: z.array(z.boolean()).describe(
+        hasDrift: z.array(z.unknown()).describe(
           "Whether Arima model fitted with drift or not. It is always false when d is not 1.",
         ).optional(),
-        nonSeasonalOrder: z.array(z.object({
-          d: z.string().describe("Order of the differencing part.").optional(),
-          p: z.string().describe("Order of the autoregressive part.")
-            .optional(),
-          q: z.string().describe("Order of the moving-average part.")
-            .optional(),
-        })).describe("Non-seasonal order.").optional(),
-        seasonalPeriods: z.array(
-          z.enum([
-            "SEASONAL_PERIOD_TYPE_UNSPECIFIED",
-            "NO_SEASONALITY",
-            "DAILY",
-            "WEEKLY",
-            "MONTHLY",
-            "QUARTERLY",
-            "YEARLY",
-            "HOURLY",
-          ]),
-        ).describe(
+        nonSeasonalOrder: z.array(z.unknown()).describe("Non-seasonal order.")
+          .optional(),
+        seasonalPeriods: z.array(z.unknown()).describe(
           "Seasonal periods. Repeated because multiple periods are supported for one time series.",
         ).optional(),
-        timeSeriesId: z.array(z.string()).describe(
+        timeSeriesId: z.array(z.unknown()).describe(
           "Id to differentiate different time series for the large-scale case.",
         ).optional(),
       }).describe("Model evaluation metrics for ARIMA forecasting models.")
         .optional(),
       binaryClassificationMetrics: z.object({
         aggregateClassificationMetrics: z.object({
-          accuracy: z.number().describe(
+          accuracy: z.unknown().describe(
             "Accuracy is the fraction of predictions given the correct label. For multiclass this is a micro-averaged metric.",
           ).optional(),
-          f1Score: z.number().describe(
+          f1Score: z.unknown().describe(
             "The F1 score is an average of recall and precision. For multiclass this is a macro-averaged metric.",
           ).optional(),
-          logLoss: z.number().describe(
+          logLoss: z.unknown().describe(
             "Logarithmic Loss. For multiclass this is a macro-averaged metric.",
           ).optional(),
-          precision: z.number().describe(
+          precision: z.unknown().describe(
             "Precision is the fraction of actual positive predictions that had positive actual labels. For multiclass this is a macro-averaged metric treating each class as a binary classifier.",
           ).optional(),
-          recall: z.number().describe(
+          recall: z.unknown().describe(
             "Recall is the fraction of actual positive labels that were given a positive prediction. For multiclass this is a macro-averaged metric.",
           ).optional(),
-          rocAuc: z.number().describe(
+          rocAuc: z.unknown().describe(
             "Area Under a ROC Curve. For multiclass this is a macro-averaged metric.",
           ).optional(),
-          threshold: z.number().describe(
+          threshold: z.unknown().describe(
             "Threshold at which the metrics are computed. For binary classification models this is the positive class threshold. For multi-class classification models this is the confidence threshold.",
           ).optional(),
         }).describe(
           "Aggregate metrics for classification/classifier models. For multi-class models, the metrics are either macro-averaged or micro-averaged. When macro-averaged, the metrics are calculated for each label and then an unweighted average is taken of those values. When micro-averaged, the metric is calculated globally by counting the total number of correctly predicted rows.",
         ).optional(),
-        binaryConfusionMatrixList: z.array(z.object({
-          accuracy: z.number().describe(
-            "The fraction of predictions given the correct label.",
-          ).optional(),
-          f1Score: z.number().describe(
-            "The equally weighted average of recall and precision.",
-          ).optional(),
-          falseNegatives: z.string().describe(
-            "Number of false samples predicted as false.",
-          ).optional(),
-          falsePositives: z.string().describe(
-            "Number of false samples predicted as true.",
-          ).optional(),
-          positiveClassThreshold: z.number().describe(
-            "Threshold value used when computing each of the following metric.",
-          ).optional(),
-          precision: z.number().describe(
-            "The fraction of actual positive predictions that had positive actual labels.",
-          ).optional(),
-          recall: z.number().describe(
-            "The fraction of actual positive labels that were given a positive prediction.",
-          ).optional(),
-          trueNegatives: z.string().describe(
-            "Number of true samples predicted as false.",
-          ).optional(),
-          truePositives: z.string().describe(
-            "Number of true samples predicted as true.",
-          ).optional(),
-        })).describe("Binary confusion matrix at multiple thresholds.")
-          .optional(),
+        binaryConfusionMatrixList: z.array(z.unknown()).describe(
+          "Binary confusion matrix at multiple thresholds.",
+        ).optional(),
         negativeLabel: z.string().describe(
           "Label representing the negative class.",
         ).optional(),
@@ -4254,32 +3323,8 @@ const InputsSchema = z.object({
         "Evaluation metrics for binary classification/classifier models.",
       ).optional(),
       clusteringMetrics: z.object({
-        clusters: z.array(z.object({
-          centroidId: z.string().describe("Centroid id.").optional(),
-          count: z.string().describe(
-            "Count of training data rows that were assigned to this cluster.",
-          ).optional(),
-          featureValues: z.array(z.object({
-            categoricalValue: z.object({
-              categoryCounts: z.array(z.object({
-                category: z.string().describe("The name of category.")
-                  .optional(),
-                count: z.string().describe(
-                  "The count of training samples matching the category within the cluster.",
-                ).optional(),
-              })).describe(
-                'Counts of all categories for the categorical feature. If there are more than ten categories, we return top ten (by count) and return one more CategoryCount with category "_OTHER_" and count as aggregate counts of remaining categories.',
-              ).optional(),
-            }).describe("Representative value of a categorical feature.")
-              .optional(),
-            featureColumn: z.string().describe("The feature column name.")
-              .optional(),
-            numericalValue: z.number().describe(
-              "The numerical feature value. This is the centroid value for this feature.",
-            ).optional(),
-          })).describe("Values of highly variant features for this cluster.")
-            .optional(),
-        })).describe("Information for all clusters.").optional(),
+        clusters: z.array(z.unknown()).describe("Information for all clusters.")
+          .optional(),
         daviesBouldinIndex: z.number().describe("Davies-Bouldin index.")
           .optional(),
         meanSquaredDistance: z.number().describe(
@@ -4295,48 +3340,33 @@ const InputsSchema = z.object({
       ).optional(),
       multiClassClassificationMetrics: z.object({
         aggregateClassificationMetrics: z.object({
-          accuracy: z.number().describe(
+          accuracy: z.unknown().describe(
             "Accuracy is the fraction of predictions given the correct label. For multiclass this is a micro-averaged metric.",
           ).optional(),
-          f1Score: z.number().describe(
+          f1Score: z.unknown().describe(
             "The F1 score is an average of recall and precision. For multiclass this is a macro-averaged metric.",
           ).optional(),
-          logLoss: z.number().describe(
+          logLoss: z.unknown().describe(
             "Logarithmic Loss. For multiclass this is a macro-averaged metric.",
           ).optional(),
-          precision: z.number().describe(
+          precision: z.unknown().describe(
             "Precision is the fraction of actual positive predictions that had positive actual labels. For multiclass this is a macro-averaged metric treating each class as a binary classifier.",
           ).optional(),
-          recall: z.number().describe(
+          recall: z.unknown().describe(
             "Recall is the fraction of actual positive labels that were given a positive prediction. For multiclass this is a macro-averaged metric.",
           ).optional(),
-          rocAuc: z.number().describe(
+          rocAuc: z.unknown().describe(
             "Area Under a ROC Curve. For multiclass this is a macro-averaged metric.",
           ).optional(),
-          threshold: z.number().describe(
+          threshold: z.unknown().describe(
             "Threshold at which the metrics are computed. For binary classification models this is the positive class threshold. For multi-class classification models this is the confidence threshold.",
           ).optional(),
         }).describe(
           "Aggregate metrics for classification/classifier models. For multi-class models, the metrics are either macro-averaged or micro-averaged. When macro-averaged, the metrics are calculated for each label and then an unweighted average is taken of those values. When micro-averaged, the metric is calculated globally by counting the total number of correctly predicted rows.",
         ).optional(),
-        confusionMatrixList: z.array(z.object({
-          confidenceThreshold: z.number().describe(
-            "Confidence threshold used when computing the entries of the confusion matrix.",
-          ).optional(),
-          rows: z.array(z.object({
-            actualLabel: z.string().describe("The original label of this row.")
-              .optional(),
-            entries: z.array(z.object({
-              itemCount: z.string().describe(
-                "Number of items being predicted as this label.",
-              ).optional(),
-              predictedLabel: z.string().describe(
-                "The predicted label. For confidence_threshold > 0, we will also add an entry indicating the number of items under the confidence threshold.",
-              ).optional(),
-            })).describe("Info describing predicted label distribution.")
-              .optional(),
-          })).describe("One row per actual label.").optional(),
-        })).describe("Confusion matrix at different thresholds.").optional(),
+        confusionMatrixList: z.array(z.unknown()).describe(
+          "Confusion matrix at different thresholds.",
+        ).optional(),
       }).describe(
         "Evaluation metrics for multi-class classification/classifier models.",
       ).optional(),
@@ -4920,7 +3950,7 @@ const InputsSchema = z.object({
         "Circular reference to StandardSqlDataType",
       ).optional(),
       structType: z.object({
-        fields: z.array(z.string()).describe("Fields within the struct.")
+        fields: z.array(z.unknown()).describe("Fields within the struct.")
           .optional(),
       }).describe("The representation of a SQL STRUCT type.").optional(),
       typeKind: z.enum([
@@ -5031,12 +4061,7 @@ const InputsSchema = z.object({
       classLabel: z.string().describe(
         "Class label for this set of global explanations. Will be empty/null for binary logistic and linear regression models. Sorted alphabetically in descending order.",
       ).optional(),
-      explanations: z.array(z.object({
-        attribution: z.number().describe("Attribution of feature.").optional(),
-        featureName: z.string().describe(
-          "The full feature name. For non-numerical features, will be formatted like `.`. Overall size of feature name will always be truncated to first 120 characters.",
-        ).optional(),
-      })).describe(
+      explanations: z.array(z.unknown()).describe(
         "A list of the top global explanations. Sorted by absolute value of attribution in descending order.",
       ).optional(),
     })).describe(
@@ -5081,147 +4106,54 @@ const InputsSchema = z.object({
     ).optional(),
     evaluationMetrics: z.object({
       arimaForecastingMetrics: z.object({
-        arimaFittingMetrics: z.array(z.object({
-          aic: z.number().describe("AIC.").optional(),
-          logLikelihood: z.number().describe("Log-likelihood.").optional(),
-          variance: z.number().describe("Variance.").optional(),
-        })).describe("Arima model fitting metrics.").optional(),
-        arimaSingleModelForecastingMetrics: z.array(z.object({
-          arimaFittingMetrics: z.object({
-            aic: z.number().describe("AIC.").optional(),
-            logLikelihood: z.number().describe("Log-likelihood.").optional(),
-            variance: z.number().describe("Variance.").optional(),
-          }).describe("ARIMA model fitting metrics.").optional(),
-          hasDrift: z.boolean().describe(
-            "Is arima model fitted with drift or not. It is always false when d is not 1.",
-          ).optional(),
-          hasHolidayEffect: z.boolean().describe(
-            "If true, holiday_effect is a part of time series decomposition result.",
-          ).optional(),
-          hasSpikesAndDips: z.boolean().describe(
-            "If true, spikes_and_dips is a part of time series decomposition result.",
-          ).optional(),
-          hasStepChanges: z.boolean().describe(
-            "If true, step_changes is a part of time series decomposition result.",
-          ).optional(),
-          nonSeasonalOrder: z.object({
-            d: z.string().describe("Order of the differencing part.")
-              .optional(),
-            p: z.string().describe("Order of the autoregressive part.")
-              .optional(),
-            q: z.string().describe("Order of the moving-average part.")
-              .optional(),
-          }).describe(
-            "Arima order, can be used for both non-seasonal and seasonal parts.",
-          ).optional(),
-          seasonalPeriods: z.array(
-            z.enum([
-              "SEASONAL_PERIOD_TYPE_UNSPECIFIED",
-              "NO_SEASONALITY",
-              "DAILY",
-              "WEEKLY",
-              "MONTHLY",
-              "QUARTERLY",
-              "YEARLY",
-              "HOURLY",
-            ]),
-          ).describe(
-            "Seasonal periods. Repeated because multiple periods are supported for one time series.",
-          ).optional(),
-          timeSeriesId: z.string().describe(
-            "The time_series_id value for this time series. It will be one of the unique values from the time_series_id_column specified during ARIMA model training. Only present when time_series_id_column training option was used.",
-          ).optional(),
-          timeSeriesIds: z.array(z.string()).describe(
-            "The tuple of time_series_ids identifying this time series. It will be one of the unique tuples of values present in the time_series_id_columns specified during ARIMA model training. Only present when time_series_id_columns training option was used and the order of values here are same as the order of time_series_id_columns.",
-          ).optional(),
-        })).describe(
+        arimaFittingMetrics: z.array(z.unknown()).describe(
+          "Arima model fitting metrics.",
+        ).optional(),
+        arimaSingleModelForecastingMetrics: z.array(z.unknown()).describe(
           "Repeated as there can be many metric sets (one for each model) in auto-arima and the large-scale case.",
         ).optional(),
-        hasDrift: z.array(z.boolean()).describe(
+        hasDrift: z.array(z.unknown()).describe(
           "Whether Arima model fitted with drift or not. It is always false when d is not 1.",
         ).optional(),
-        nonSeasonalOrder: z.array(z.object({
-          d: z.string().describe("Order of the differencing part.").optional(),
-          p: z.string().describe("Order of the autoregressive part.")
-            .optional(),
-          q: z.string().describe("Order of the moving-average part.")
-            .optional(),
-        })).describe("Non-seasonal order.").optional(),
-        seasonalPeriods: z.array(
-          z.enum([
-            "SEASONAL_PERIOD_TYPE_UNSPECIFIED",
-            "NO_SEASONALITY",
-            "DAILY",
-            "WEEKLY",
-            "MONTHLY",
-            "QUARTERLY",
-            "YEARLY",
-            "HOURLY",
-          ]),
-        ).describe(
+        nonSeasonalOrder: z.array(z.unknown()).describe("Non-seasonal order.")
+          .optional(),
+        seasonalPeriods: z.array(z.unknown()).describe(
           "Seasonal periods. Repeated because multiple periods are supported for one time series.",
         ).optional(),
-        timeSeriesId: z.array(z.string()).describe(
+        timeSeriesId: z.array(z.unknown()).describe(
           "Id to differentiate different time series for the large-scale case.",
         ).optional(),
       }).describe("Model evaluation metrics for ARIMA forecasting models.")
         .optional(),
       binaryClassificationMetrics: z.object({
         aggregateClassificationMetrics: z.object({
-          accuracy: z.number().describe(
+          accuracy: z.unknown().describe(
             "Accuracy is the fraction of predictions given the correct label. For multiclass this is a micro-averaged metric.",
           ).optional(),
-          f1Score: z.number().describe(
+          f1Score: z.unknown().describe(
             "The F1 score is an average of recall and precision. For multiclass this is a macro-averaged metric.",
           ).optional(),
-          logLoss: z.number().describe(
+          logLoss: z.unknown().describe(
             "Logarithmic Loss. For multiclass this is a macro-averaged metric.",
           ).optional(),
-          precision: z.number().describe(
+          precision: z.unknown().describe(
             "Precision is the fraction of actual positive predictions that had positive actual labels. For multiclass this is a macro-averaged metric treating each class as a binary classifier.",
           ).optional(),
-          recall: z.number().describe(
+          recall: z.unknown().describe(
             "Recall is the fraction of actual positive labels that were given a positive prediction. For multiclass this is a macro-averaged metric.",
           ).optional(),
-          rocAuc: z.number().describe(
+          rocAuc: z.unknown().describe(
             "Area Under a ROC Curve. For multiclass this is a macro-averaged metric.",
           ).optional(),
-          threshold: z.number().describe(
+          threshold: z.unknown().describe(
             "Threshold at which the metrics are computed. For binary classification models this is the positive class threshold. For multi-class classification models this is the confidence threshold.",
           ).optional(),
         }).describe(
           "Aggregate metrics for classification/classifier models. For multi-class models, the metrics are either macro-averaged or micro-averaged. When macro-averaged, the metrics are calculated for each label and then an unweighted average is taken of those values. When micro-averaged, the metric is calculated globally by counting the total number of correctly predicted rows.",
         ).optional(),
-        binaryConfusionMatrixList: z.array(z.object({
-          accuracy: z.number().describe(
-            "The fraction of predictions given the correct label.",
-          ).optional(),
-          f1Score: z.number().describe(
-            "The equally weighted average of recall and precision.",
-          ).optional(),
-          falseNegatives: z.string().describe(
-            "Number of false samples predicted as false.",
-          ).optional(),
-          falsePositives: z.string().describe(
-            "Number of false samples predicted as true.",
-          ).optional(),
-          positiveClassThreshold: z.number().describe(
-            "Threshold value used when computing each of the following metric.",
-          ).optional(),
-          precision: z.number().describe(
-            "The fraction of actual positive predictions that had positive actual labels.",
-          ).optional(),
-          recall: z.number().describe(
-            "The fraction of actual positive labels that were given a positive prediction.",
-          ).optional(),
-          trueNegatives: z.string().describe(
-            "Number of true samples predicted as false.",
-          ).optional(),
-          truePositives: z.string().describe(
-            "Number of true samples predicted as true.",
-          ).optional(),
-        })).describe("Binary confusion matrix at multiple thresholds.")
-          .optional(),
+        binaryConfusionMatrixList: z.array(z.unknown()).describe(
+          "Binary confusion matrix at multiple thresholds.",
+        ).optional(),
         negativeLabel: z.string().describe(
           "Label representing the negative class.",
         ).optional(),
@@ -5232,32 +4164,8 @@ const InputsSchema = z.object({
         "Evaluation metrics for binary classification/classifier models.",
       ).optional(),
       clusteringMetrics: z.object({
-        clusters: z.array(z.object({
-          centroidId: z.string().describe("Centroid id.").optional(),
-          count: z.string().describe(
-            "Count of training data rows that were assigned to this cluster.",
-          ).optional(),
-          featureValues: z.array(z.object({
-            categoricalValue: z.object({
-              categoryCounts: z.array(z.object({
-                category: z.string().describe("The name of category.")
-                  .optional(),
-                count: z.string().describe(
-                  "The count of training samples matching the category within the cluster.",
-                ).optional(),
-              })).describe(
-                'Counts of all categories for the categorical feature. If there are more than ten categories, we return top ten (by count) and return one more CategoryCount with category "_OTHER_" and count as aggregate counts of remaining categories.',
-              ).optional(),
-            }).describe("Representative value of a categorical feature.")
-              .optional(),
-            featureColumn: z.string().describe("The feature column name.")
-              .optional(),
-            numericalValue: z.number().describe(
-              "The numerical feature value. This is the centroid value for this feature.",
-            ).optional(),
-          })).describe("Values of highly variant features for this cluster.")
-            .optional(),
-        })).describe("Information for all clusters.").optional(),
+        clusters: z.array(z.unknown()).describe("Information for all clusters.")
+          .optional(),
         daviesBouldinIndex: z.number().describe("Davies-Bouldin index.")
           .optional(),
         meanSquaredDistance: z.number().describe(
@@ -5273,48 +4181,33 @@ const InputsSchema = z.object({
       ).optional(),
       multiClassClassificationMetrics: z.object({
         aggregateClassificationMetrics: z.object({
-          accuracy: z.number().describe(
+          accuracy: z.unknown().describe(
             "Accuracy is the fraction of predictions given the correct label. For multiclass this is a micro-averaged metric.",
           ).optional(),
-          f1Score: z.number().describe(
+          f1Score: z.unknown().describe(
             "The F1 score is an average of recall and precision. For multiclass this is a macro-averaged metric.",
           ).optional(),
-          logLoss: z.number().describe(
+          logLoss: z.unknown().describe(
             "Logarithmic Loss. For multiclass this is a macro-averaged metric.",
           ).optional(),
-          precision: z.number().describe(
+          precision: z.unknown().describe(
             "Precision is the fraction of actual positive predictions that had positive actual labels. For multiclass this is a macro-averaged metric treating each class as a binary classifier.",
           ).optional(),
-          recall: z.number().describe(
+          recall: z.unknown().describe(
             "Recall is the fraction of actual positive labels that were given a positive prediction. For multiclass this is a macro-averaged metric.",
           ).optional(),
-          rocAuc: z.number().describe(
+          rocAuc: z.unknown().describe(
             "Area Under a ROC Curve. For multiclass this is a macro-averaged metric.",
           ).optional(),
-          threshold: z.number().describe(
+          threshold: z.unknown().describe(
             "Threshold at which the metrics are computed. For binary classification models this is the positive class threshold. For multi-class classification models this is the confidence threshold.",
           ).optional(),
         }).describe(
           "Aggregate metrics for classification/classifier models. For multi-class models, the metrics are either macro-averaged or micro-averaged. When macro-averaged, the metrics are calculated for each label and then an unweighted average is taken of those values. When micro-averaged, the metric is calculated globally by counting the total number of correctly predicted rows.",
         ).optional(),
-        confusionMatrixList: z.array(z.object({
-          confidenceThreshold: z.number().describe(
-            "Confidence threshold used when computing the entries of the confusion matrix.",
-          ).optional(),
-          rows: z.array(z.object({
-            actualLabel: z.string().describe("The original label of this row.")
-              .optional(),
-            entries: z.array(z.object({
-              itemCount: z.string().describe(
-                "Number of items being predicted as this label.",
-              ).optional(),
-              predictedLabel: z.string().describe(
-                "The predicted label. For confidence_threshold > 0, we will also add an entry indicating the number of items under the confidence threshold.",
-              ).optional(),
-            })).describe("Info describing predicted label distribution.")
-              .optional(),
-          })).describe("One row per actual label.").optional(),
-        })).describe("Confusion matrix at different thresholds.").optional(),
+        confusionMatrixList: z.array(z.unknown()).describe(
+          "Confusion matrix at different thresholds.",
+        ).optional(),
       }).describe(
         "Evaluation metrics for multi-class classification/classifier models.",
       ).optional(),
@@ -5356,8 +4249,8 @@ const InputsSchema = z.object({
         "Class label for this set of global explanations. Will be empty/null for binary logistic and linear regression models. Sorted alphabetically in descending order.",
       ).optional(),
       explanations: z.array(z.object({
-        attribution: z.number().describe("Attribution of feature.").optional(),
-        featureName: z.string().describe(
+        attribution: z.unknown().describe("Attribution of feature.").optional(),
+        featureName: z.unknown().describe(
           "The full feature name. For non-numerical features, will be formatted like `.`. Overall size of feature name will always be truncated to first 120 characters.",
         ).optional(),
       })).describe(
@@ -5368,95 +4261,18 @@ const InputsSchema = z.object({
     ).optional(),
     results: z.array(z.object({
       arimaResult: z.object({
-        arimaModelInfo: z.array(z.object({
-          arimaCoefficients: z.object({
-            autoRegressiveCoefficients: z.array(z.number()).describe(
-              "Auto-regressive coefficients, an array of double.",
-            ).optional(),
-            interceptCoefficient: z.number().describe(
-              "Intercept coefficient, just a double not an array.",
-            ).optional(),
-            movingAverageCoefficients: z.array(z.number()).describe(
-              "Moving-average coefficients, an array of double.",
-            ).optional(),
-          }).describe("Arima coefficients.").optional(),
-          arimaFittingMetrics: z.object({
-            aic: z.number().describe("AIC.").optional(),
-            logLikelihood: z.number().describe("Log-likelihood.").optional(),
-            variance: z.number().describe("Variance.").optional(),
-          }).describe("ARIMA model fitting metrics.").optional(),
-          hasDrift: z.boolean().describe(
-            "Whether Arima model fitted with drift or not. It is always false when d is not 1.",
-          ).optional(),
-          hasHolidayEffect: z.boolean().describe(
-            "If true, holiday_effect is a part of time series decomposition result.",
-          ).optional(),
-          hasSpikesAndDips: z.boolean().describe(
-            "If true, spikes_and_dips is a part of time series decomposition result.",
-          ).optional(),
-          hasStepChanges: z.boolean().describe(
-            "If true, step_changes is a part of time series decomposition result.",
-          ).optional(),
-          nonSeasonalOrder: z.object({
-            d: z.string().describe("Order of the differencing part.")
-              .optional(),
-            p: z.string().describe("Order of the autoregressive part.")
-              .optional(),
-            q: z.string().describe("Order of the moving-average part.")
-              .optional(),
-          }).describe(
-            "Arima order, can be used for both non-seasonal and seasonal parts.",
-          ).optional(),
-          seasonalPeriods: z.array(
-            z.enum([
-              "SEASONAL_PERIOD_TYPE_UNSPECIFIED",
-              "NO_SEASONALITY",
-              "DAILY",
-              "WEEKLY",
-              "MONTHLY",
-              "QUARTERLY",
-              "YEARLY",
-              "HOURLY",
-            ]),
-          ).describe(
-            "Seasonal periods. Repeated because multiple periods are supported for one time series.",
-          ).optional(),
-          timeSeriesId: z.string().describe(
-            "The time_series_id value for this time series. It will be one of the unique values from the time_series_id_column specified during ARIMA model training. Only present when time_series_id_column training option was used.",
-          ).optional(),
-          timeSeriesIds: z.array(z.string()).describe(
-            "The tuple of time_series_ids identifying this time series. It will be one of the unique tuples of values present in the time_series_id_columns specified during ARIMA model training. Only present when time_series_id_columns training option was used and the order of values here are same as the order of time_series_id_columns.",
-          ).optional(),
-        })).describe(
+        arimaModelInfo: z.unknown().describe(
           "This message is repeated because there are multiple arima models fitted in auto-arima. For non-auto-arima model, its size is one.",
         ).optional(),
-        seasonalPeriods: z.array(
-          z.enum([
-            "SEASONAL_PERIOD_TYPE_UNSPECIFIED",
-            "NO_SEASONALITY",
-            "DAILY",
-            "WEEKLY",
-            "MONTHLY",
-            "QUARTERLY",
-            "YEARLY",
-            "HOURLY",
-          ]),
-        ).describe(
+        seasonalPeriods: z.unknown().describe(
           "Seasonal periods. Repeated because multiple periods are supported for one time series.",
         ).optional(),
       }).describe(
         "(Auto-)arima fitting result. Wrap everything in ArimaResult for easier refactoring if we want to use model-specific iteration results.",
       ).optional(),
-      clusterInfos: z.array(z.object({
-        centroidId: z.string().describe("Centroid id.").optional(),
-        clusterRadius: z.number().describe(
-          "Cluster radius, the average distance from centroid to each point assigned to the cluster.",
-        ).optional(),
-        clusterSize: z.string().describe(
-          "Cluster size, the total number of points assigned to the cluster.",
-        ).optional(),
-      })).describe("Information about top clusters for clustering models.")
-        .optional(),
+      clusterInfos: z.array(z.unknown()).describe(
+        "Information about top clusters for clustering models.",
+      ).optional(),
       durationMs: z.string().describe(
         "Time taken to run the iteration in milliseconds.",
       ).optional(),
@@ -5467,20 +4283,9 @@ const InputsSchema = z.object({
         .optional(),
       learnRate: z.number().describe("Learn rate used for this iteration.")
         .optional(),
-      principalComponentInfos: z.array(z.object({
-        cumulativeExplainedVarianceRatio: z.number().describe(
-          "The explained_variance is pre-ordered in the descending order to compute the cumulative explained variance ratio.",
-        ).optional(),
-        explainedVariance: z.number().describe(
-          "Explained variance by this principal component, which is simply the eigenvalue.",
-        ).optional(),
-        explainedVarianceRatio: z.number().describe(
-          "Explained_variance over the total explained variance.",
-        ).optional(),
-        principalComponentId: z.string().describe(
-          "Id of the principal component.",
-        ).optional(),
-      })).describe("The information of the principal components.").optional(),
+      principalComponentInfos: z.array(z.unknown()).describe(
+        "The information of the principal components.",
+      ).optional(),
       trainingLoss: z.number().describe(
         "Loss computed on the training data at the end of iteration.",
       ).optional(),
@@ -6033,13 +4838,8 @@ const InputsSchema = z.object({
         "Circular reference to StandardSqlDataType",
       ).optional(),
       structType: z.object({
-        fields: z.array(z.object({
-          name: z.string().describe(
-            "Optional. The name of this field. Can be absent for struct fields.",
-          ).optional(),
-          type: z.string().describe("Circular reference to StandardSqlDataType")
-            .optional(),
-        })).describe("Fields within the struct.").optional(),
+        fields: z.array(z.unknown()).describe("Fields within the struct.")
+          .optional(),
       }).describe("The representation of a SQL STRUCT type.").optional(),
       typeKind: z.enum([
         "TYPE_KIND_UNSPECIFIED",
@@ -6073,7 +4873,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/bigquery/models",
-  version: "2026.04.03.3",
+  version: "2026.04.04.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -6097,6 +4897,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.3",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.04.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

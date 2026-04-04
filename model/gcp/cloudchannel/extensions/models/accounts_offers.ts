@@ -119,13 +119,9 @@ const StateSchema = z.object({
       }),
       discount: z.number(),
       discountComponents: z.array(z.object({
-        discountAbsolute: z.object({
-          currencyCode: z.string(),
-          nanos: z.number(),
-          units: z.string(),
-        }),
-        discountPercentage: z.number(),
-        discountType: z.string(),
+        discountAbsolute: z.unknown(),
+        discountPercentage: z.unknown(),
+        discountType: z.unknown(),
       })),
       effectivePrice: z.object({
         currencyCode: z.string(),
@@ -143,63 +139,14 @@ const StateSchema = z.object({
       lastPeriod: z.number(),
       periodType: z.string(),
       price: z.object({
-        basePrice: z.object({
-          currencyCode: z.string(),
-          nanos: z.number(),
-          units: z.string(),
-        }),
-        discount: z.number(),
-        discountComponents: z.array(z.object({
-          discountAbsolute: z.object({
-            currencyCode: z.string(),
-            nanos: z.number(),
-            units: z.string(),
-          }),
-          discountPercentage: z.number(),
-          discountType: z.string(),
-        })),
-        effectivePrice: z.object({
-          currencyCode: z.string(),
-          nanos: z.number(),
-          units: z.string(),
-        }),
-        externalPriceUri: z.string(),
-        pricePeriod: z.object({
-          duration: z.number(),
-          periodType: z.string(),
-        }),
+        basePrice: z.unknown(),
+        discount: z.unknown(),
+        discountComponents: z.unknown(),
+        effectivePrice: z.unknown(),
+        externalPriceUri: z.unknown(),
+        pricePeriod: z.unknown(),
       }),
-      priceTiers: z.array(z.object({
-        firstResource: z.number(),
-        lastResource: z.number(),
-        price: z.object({
-          basePrice: z.object({
-            currencyCode: z.string(),
-            nanos: z.number(),
-            units: z.string(),
-          }),
-          discount: z.number(),
-          discountComponents: z.array(z.object({
-            discountAbsolute: z.object({
-              currencyCode: z.string(),
-              nanos: z.number(),
-              units: z.string(),
-            }),
-            discountPercentage: z.number(),
-            discountType: z.string(),
-          })),
-          effectivePrice: z.object({
-            currencyCode: z.string(),
-            nanos: z.number(),
-            units: z.string(),
-          }),
-          externalPriceUri: z.string(),
-          pricePeriod: z.object({
-            duration: z.number(),
-            periodType: z.string(),
-          }),
-        }),
-      })),
+      priceTiers: z.array(z.unknown()),
     })),
     resourceType: z.string(),
   })).optional(),
@@ -241,7 +188,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/cloudchannel/accounts-offers",
-  version: "2026.04.03.3",
+  version: "2026.04.04.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -265,6 +212,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.3",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.04.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

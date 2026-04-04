@@ -60,37 +60,17 @@ const StateSchema = z.object({
     rules: z.array(z.object({
       advanceRolloutRule: z.object({
         condition: z.object({
-          targetsPresentCondition: z.object({
-            missingTargets: z.array(z.string()),
-            status: z.boolean(),
-            updateTime: z.string(),
-          }),
-          timedPromoteReleaseCondition: z.object({
-            nextPromotionTime: z.string(),
-            targetsList: z.array(z.object({
-              destinationTargetId: z.string(),
-              sourceTargetId: z.string(),
-            })),
-          }),
+          targetsPresentCondition: z.unknown(),
+          timedPromoteReleaseCondition: z.unknown(),
         }),
         id: z.string(),
-        sourcePhases: z.array(z.string()),
+        sourcePhases: z.array(z.unknown()),
         wait: z.string(),
       }),
       promoteReleaseRule: z.object({
         condition: z.object({
-          targetsPresentCondition: z.object({
-            missingTargets: z.array(z.string()),
-            status: z.boolean(),
-            updateTime: z.string(),
-          }),
-          timedPromoteReleaseCondition: z.object({
-            nextPromotionTime: z.string(),
-            targetsList: z.array(z.object({
-              destinationTargetId: z.string(),
-              sourceTargetId: z.string(),
-            })),
-          }),
+          targetsPresentCondition: z.unknown(),
+          timedPromoteReleaseCondition: z.unknown(),
         }),
         destinationPhase: z.string(),
         destinationTargetId: z.string(),
@@ -99,48 +79,18 @@ const StateSchema = z.object({
       }),
       repairRolloutRule: z.object({
         condition: z.object({
-          targetsPresentCondition: z.object({
-            missingTargets: z.array(z.string()),
-            status: z.boolean(),
-            updateTime: z.string(),
-          }),
-          timedPromoteReleaseCondition: z.object({
-            nextPromotionTime: z.string(),
-            targetsList: z.array(z.object({
-              destinationTargetId: z.string(),
-              sourceTargetId: z.string(),
-            })),
-          }),
+          targetsPresentCondition: z.unknown(),
+          timedPromoteReleaseCondition: z.unknown(),
         }),
         id: z.string(),
-        jobs: z.array(z.string()),
-        phases: z.array(z.string()),
-        repairPhases: z.array(z.object({
-          retry: z.object({
-            attempts: z.string(),
-            backoffMode: z.string(),
-            wait: z.string(),
-          }),
-          rollback: z.object({
-            destinationPhase: z.string(),
-            disableRollbackIfRolloutPending: z.boolean(),
-          }),
-        })),
+        jobs: z.array(z.unknown()),
+        phases: z.array(z.unknown()),
+        repairPhases: z.array(z.unknown()),
       }),
       timedPromoteReleaseRule: z.object({
         condition: z.object({
-          targetsPresentCondition: z.object({
-            missingTargets: z.array(z.string()),
-            status: z.boolean(),
-            updateTime: z.string(),
-          }),
-          timedPromoteReleaseCondition: z.object({
-            nextPromotionTime: z.string(),
-            targetsList: z.array(z.object({
-              destinationTargetId: z.string(),
-              sourceTargetId: z.string(),
-            })),
-          }),
+          targetsPresentCondition: z.unknown(),
+          timedPromoteReleaseCondition: z.unknown(),
         }),
         destinationPhase: z.string(),
         destinationTargetId: z.string(),
@@ -183,12 +133,7 @@ const StateSchema = z.object({
     phaseId: z.string(),
     repairPhases: z.array(z.object({
       retry: z.object({
-        attempts: z.array(z.object({
-          attempt: z.string(),
-          state: z.string(),
-          stateDesc: z.string(),
-          wait: z.string(),
-        })),
+        attempts: z.array(z.unknown()),
         backoffMode: z.string(),
         totalAttempts: z.string(),
       }),
@@ -228,7 +173,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/clouddeploy/deliverypipelines-automationruns",
-  version: "2026.04.03.3",
+  version: "2026.04.04.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -252,6 +197,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.3",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.04.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

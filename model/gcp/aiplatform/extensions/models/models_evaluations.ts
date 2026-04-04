@@ -57,55 +57,25 @@ const StateSchema = z.object({
       }),
       parameters: z.object({
         examples: z.object({
-          exampleGcsSource: z.object({
-            dataFormat: z.string(),
-            gcsSource: z.object({
-              uris: z.array(z.string()),
-            }),
-          }),
-          nearestNeighborSearchConfig: z.string(),
-          neighborCount: z.number(),
-          presets: z.object({
-            modality: z.string(),
-            query: z.string(),
-          }),
+          exampleGcsSource: z.unknown(),
+          nearestNeighborSearchConfig: z.unknown(),
+          neighborCount: z.unknown(),
+          presets: z.unknown(),
         }),
         integratedGradientsAttribution: z.object({
-          blurBaselineConfig: z.object({
-            maxBlurSigma: z.number(),
-          }),
-          smoothGradConfig: z.object({
-            featureNoiseSigma: z.object({
-              noiseSigma: z.array(z.object({
-                name: z.string(),
-                sigma: z.number(),
-              })),
-            }),
-            noiseSigma: z.number(),
-            noisySampleCount: z.number(),
-          }),
-          stepCount: z.number(),
+          blurBaselineConfig: z.unknown(),
+          smoothGradConfig: z.unknown(),
+          stepCount: z.unknown(),
         }),
-        outputIndices: z.array(z.string()),
+        outputIndices: z.array(z.unknown()),
         sampledShapleyAttribution: z.object({
-          pathCount: z.number(),
+          pathCount: z.unknown(),
         }),
         topK: z.number(),
         xraiAttribution: z.object({
-          blurBaselineConfig: z.object({
-            maxBlurSigma: z.number(),
-          }),
-          smoothGradConfig: z.object({
-            featureNoiseSigma: z.object({
-              noiseSigma: z.array(z.object({
-                name: z.string(),
-                sigma: z.number(),
-              })),
-            }),
-            noiseSigma: z.number(),
-            noisySampleCount: z.number(),
-          }),
-          stepCount: z.number(),
+          blurBaselineConfig: z.unknown(),
+          smoothGradConfig: z.unknown(),
+          stepCount: z.unknown(),
         }),
       }),
     }),
@@ -140,7 +110,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/aiplatform/models-evaluations",
-  version: "2026.04.03.3",
+  version: "2026.04.04.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -164,6 +134,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.3",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.04.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

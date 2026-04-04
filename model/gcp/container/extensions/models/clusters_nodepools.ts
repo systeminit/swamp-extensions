@@ -193,12 +193,9 @@ const GlobalArgsSchema = z.object({
           "The accelerator type resource name. List of supported accelerators [here](https://cloud.google.com/compute/docs/gpus)",
         ).optional(),
         gpuDriverInstallationConfig: z.object({
-          gpuDriverVersion: z.enum([
-            "GPU_DRIVER_VERSION_UNSPECIFIED",
-            "INSTALLATION_DISABLED",
-            "DEFAULT",
-            "LATEST",
-          ]).describe("Mode for how the GPU driver is installed.").optional(),
+          gpuDriverVersion: z.unknown().describe(
+            "Mode for how the GPU driver is installed.",
+          ).optional(),
         }).describe(
           "GPUDriverInstallationConfig specifies the version of GPU driver to be auto installed.",
         ).optional(),
@@ -206,14 +203,10 @@ const GlobalArgsSchema = z.object({
           "Size of partitions to create on the GPU. Valid values are described in the NVIDIA [mig user guide](https://docs.nvidia.com/datacenter/tesla/mig-user-guide/#partitioning).",
         ).optional(),
         gpuSharingConfig: z.object({
-          gpuSharingStrategy: z.enum([
-            "GPU_SHARING_STRATEGY_UNSPECIFIED",
-            "TIME_SHARING",
-            "MPS",
-          ]).describe(
+          gpuSharingStrategy: z.unknown().describe(
             "The type of GPU sharing strategy to enable on the GPU node.",
           ).optional(),
-          maxSharedClientsPerGpu: z.string().describe(
+          maxSharedClientsPerGpu: z.unknown().describe(
             "The max number of containers that can share a physical GPU.",
           ).optional(),
         }).describe(
@@ -279,80 +272,19 @@ const GlobalArgsSchema = z.object({
       ).optional(),
       containerdConfig: z.object({
         privateRegistryAccessConfig: z.object({
-          certificateAuthorityDomainConfig: z.array(z.object({
-            fqdns: z.array(z.string()).describe(
-              "List of fully qualified domain names (FQDN). Specifying port is supported. Wildcards are NOT supported. Examples: - `my.customdomain.com` - `10.0.1.2:5000`",
-            ).optional(),
-            gcpSecretManagerCertificateConfig: z.object({
-              secretUri: z.string().describe(
-                'Secret URI, in the form "projects/$PROJECT_ID/secrets/$SECRET_NAME/versions/$VERSION". Version can be fixed (e.g. "2") or "latest"',
-              ).optional(),
-            }).describe(
-              "GCPSecretManagerCertificateConfig configures a secret from [Secret Manager](https://cloud.google.com/secret-manager).",
-            ).optional(),
-          })).describe("Private registry access configuration.").optional(),
+          certificateAuthorityDomainConfig: z.array(z.unknown()).describe(
+            "Private registry access configuration.",
+          ).optional(),
           enabled: z.boolean().describe("Private registry access is enabled.")
             .optional(),
         }).describe(
           "PrivateRegistryAccessConfig contains access configuration for private container registries.",
         ).optional(),
         registryHosts: z.array(z.object({
-          hosts: z.array(z.object({
-            ca: z.array(z.object({
-              gcpSecretManagerSecretUri: z.string().describe(
-                'The URI configures a secret from [Secret Manager](https://cloud.google.com/secret-manager) in the format "projects/$PROJECT_ID/secrets/$SECRET_NAME/versions/$VERSION" for global secret or "projects/$PROJECT_ID/locations/$REGION/secrets/$SECRET_NAME/versions/$VERSION" for regional secret. Version can be fixed (e.g. "2") or "latest"',
-              ).optional(),
-            })).describe("CA configures the registry host certificate.")
-              .optional(),
-            capabilities: z.array(
-              z.enum([
-                "HOST_CAPABILITY_UNSPECIFIED",
-                "HOST_CAPABILITY_PULL",
-                "HOST_CAPABILITY_RESOLVE",
-                "HOST_CAPABILITY_PUSH",
-              ]),
-            ).describe(
-              "Capabilities represent the capabilities of the registry host, specifying what operations a host is capable of performing. If not set, containerd enables all capabilities by default.",
-            ).optional(),
-            client: z.array(z.object({
-              cert: z.object({
-                gcpSecretManagerSecretUri: z.string().describe(
-                  'The URI configures a secret from [Secret Manager](https://cloud.google.com/secret-manager) in the format "projects/$PROJECT_ID/secrets/$SECRET_NAME/versions/$VERSION" for global secret or "projects/$PROJECT_ID/locations/$REGION/secrets/$SECRET_NAME/versions/$VERSION" for regional secret. Version can be fixed (e.g. "2") or "latest"',
-                ).optional(),
-              }).describe(
-                "CertificateConfig configures certificate for the registry.",
-              ).optional(),
-              key: z.object({
-                gcpSecretManagerSecretUri: z.string().describe(
-                  'The URI configures a secret from [Secret Manager](https://cloud.google.com/secret-manager) in the format "projects/$PROJECT_ID/secrets/$SECRET_NAME/versions/$VERSION" for global secret or "projects/$PROJECT_ID/locations/$REGION/secrets/$SECRET_NAME/versions/$VERSION" for regional secret. Version can be fixed (e.g. "2") or "latest"',
-                ).optional(),
-              }).describe(
-                "CertificateConfig configures certificate for the registry.",
-              ).optional(),
-            })).describe(
-              "Client configures the registry host client certificate and key.",
-            ).optional(),
-            dialTimeout: z.string().describe(
-              "Specifies the maximum duration allowed for a connection attempt to complete. A shorter timeout helps reduce delays when falling back to the original registry if the mirror is unreachable. Maximum allowed value is 180s. If not set, containerd sets default 30s. The value should be a decimal number of seconds with an `s` suffix.",
-            ).optional(),
-            header: z.array(z.object({
-              key: z.string().describe("Key configures the header key.")
-                .optional(),
-              value: z.array(z.string()).describe(
-                "Value configures the header value.",
-              ).optional(),
-            })).describe("Header configures the registry host headers.")
-              .optional(),
-            host: z.string().describe(
-              "Host configures the registry host/mirror. It supports fully qualified domain names (FQDNs) and IP addresses. Specifying scheme, port or path is supported. Scheme can only be http or https. Wildcards are NOT supported. Examples: - `my.customdomain.com` - `https://my.customdomain.com/path` - `10.0.1.2:5000`",
-            ).optional(),
-            overridePath: z.boolean().describe(
-              "OverridePath is used to indicate the host's API root endpoint is defined in the URL path rather than by the API specification. This may be used with non-compliant OCI registries which are missing the /v2 prefix. If not set, containerd sets default false.",
-            ).optional(),
-          })).describe(
+          hosts: z.unknown().describe(
             "HostConfig configures a list of host-specific configurations for the server. Each server can have at most 10 host configurations.",
           ).optional(),
-          server: z.string().describe(
+          server: z.unknown().describe(
             "Defines the host name of the registry server, which will be used to create configuration file as /etc/containerd/hosts.d//hosts.toml. It supports fully qualified domain names (FQDN) and IP addresses: Specifying port is supported, while scheme and path are NOT supported. Wildcards are NOT supported. Examples: - `my.customdomain.com` - `10.0.1.2:5000`",
           ).optional(),
         })).describe(
@@ -602,15 +534,15 @@ const GlobalArgsSchema = z.object({
           .optional(),
         swapConfig: z.object({
           bootDiskProfile: z.object({
-            swapSizeGib: z.string().describe(
+            swapSizeGib: z.unknown().describe(
               "Specifies the size of the swap space in gibibytes (GiB).",
             ).optional(),
-            swapSizePercent: z.number().int().describe(
+            swapSizePercent: z.unknown().describe(
               "Specifies the size of the swap space as a percentage of the boot disk size.",
             ).optional(),
           }).describe("Swap on the node's boot disk.").optional(),
           dedicatedLocalSsdProfile: z.object({
-            diskCount: z.string().describe(
+            diskCount: z.unknown().describe(
               "The number of physical local NVMe SSD disks to attach.",
             ).optional(),
           }).describe(
@@ -620,16 +552,16 @@ const GlobalArgsSchema = z.object({
             "Optional. Enables or disables swap for the node pool.",
           ).optional(),
           encryptionConfig: z.object({
-            disabled: z.boolean().describe(
+            disabled: z.unknown().describe(
               "Optional. If true, swap space will not be encrypted. Defaults to false (encrypted).",
             ).optional(),
           }).describe("Defines encryption settings for the swap space.")
             .optional(),
           ephemeralLocalSsdProfile: z.object({
-            swapSizeGib: z.string().describe(
+            swapSizeGib: z.unknown().describe(
               "Specifies the size of the swap space in gibibytes (GiB).",
             ).optional(),
-            swapSizePercent: z.number().int().describe(
+            swapSizePercent: z.unknown().describe(
               "Specifies the size of the swap space as a percentage of the ephemeral local SSD capacity.",
             ).optional(),
           }).describe(
@@ -769,12 +701,10 @@ const GlobalArgsSchema = z.object({
           "Optional. The minimum number of virtual CPUs this instance will consume when running on a sole-tenant node. This field can only be set if the node pool is created in a shared sole-tenant node group.",
         ).optional(),
         nodeAffinities: z.array(z.object({
-          key: z.string().describe("Key for NodeAffinity.").optional(),
-          operator: z.enum(["OPERATOR_UNSPECIFIED", "IN", "NOT_IN"]).describe(
-            "Operator for NodeAffinity.",
-          ).optional(),
-          values: z.array(z.string()).describe("Values for NodeAffinity.")
+          key: z.unknown().describe("Key for NodeAffinity.").optional(),
+          operator: z.unknown().describe("Operator for NodeAffinity.")
             .optional(),
+          values: z.unknown().describe("Values for NodeAffinity.").optional(),
         })).describe(
           "NodeAffinities used to match to a shared sole tenant node group.",
         ).optional(),
@@ -888,7 +818,7 @@ const GlobalArgsSchema = z.object({
       ).optional(),
       additionalPodNetworkConfigs: z.array(z.object({
         maxPodsPerNode: z.object({
-          maxPodsPerNode: z.string().describe(
+          maxPodsPerNode: z.unknown().describe(
             "Constraint enforced on the max num of pods per node.",
           ).optional(),
         }).describe("Constraints applied to pods.").optional(),
@@ -1138,11 +1068,11 @@ const GlobalArgsSchema = z.object({
   containerdConfig: z.object({
     privateRegistryAccessConfig: z.object({
       certificateAuthorityDomainConfig: z.array(z.object({
-        fqdns: z.array(z.string()).describe(
+        fqdns: z.array(z.unknown()).describe(
           "List of fully qualified domain names (FQDN). Specifying port is supported. Wildcards are NOT supported. Examples: - `my.customdomain.com` - `10.0.1.2:5000`",
         ).optional(),
         gcpSecretManagerCertificateConfig: z.object({
-          secretUri: z.string().describe(
+          secretUri: z.unknown().describe(
             'Secret URI, in the form "projects/$PROJECT_ID/secrets/$SECRET_NAME/versions/$VERSION". Version can be fixed (e.g. "2") or "latest"',
           ).optional(),
         }).describe(
@@ -1156,52 +1086,24 @@ const GlobalArgsSchema = z.object({
     ).optional(),
     registryHosts: z.array(z.object({
       hosts: z.array(z.object({
-        ca: z.array(z.object({
-          gcpSecretManagerSecretUri: z.string().describe(
-            'The URI configures a secret from [Secret Manager](https://cloud.google.com/secret-manager) in the format "projects/$PROJECT_ID/secrets/$SECRET_NAME/versions/$VERSION" for global secret or "projects/$PROJECT_ID/locations/$REGION/secrets/$SECRET_NAME/versions/$VERSION" for regional secret. Version can be fixed (e.g. "2") or "latest"',
-          ).optional(),
-        })).describe("CA configures the registry host certificate.").optional(),
-        capabilities: z.array(
-          z.enum([
-            "HOST_CAPABILITY_UNSPECIFIED",
-            "HOST_CAPABILITY_PULL",
-            "HOST_CAPABILITY_RESOLVE",
-            "HOST_CAPABILITY_PUSH",
-          ]),
-        ).describe(
+        ca: z.unknown().describe("CA configures the registry host certificate.")
+          .optional(),
+        capabilities: z.unknown().describe(
           "Capabilities represent the capabilities of the registry host, specifying what operations a host is capable of performing. If not set, containerd enables all capabilities by default.",
         ).optional(),
-        client: z.array(z.object({
-          cert: z.object({
-            gcpSecretManagerSecretUri: z.string().describe(
-              'The URI configures a secret from [Secret Manager](https://cloud.google.com/secret-manager) in the format "projects/$PROJECT_ID/secrets/$SECRET_NAME/versions/$VERSION" for global secret or "projects/$PROJECT_ID/locations/$REGION/secrets/$SECRET_NAME/versions/$VERSION" for regional secret. Version can be fixed (e.g. "2") or "latest"',
-            ).optional(),
-          }).describe(
-            "CertificateConfig configures certificate for the registry.",
-          ).optional(),
-          key: z.object({
-            gcpSecretManagerSecretUri: z.string().describe(
-              'The URI configures a secret from [Secret Manager](https://cloud.google.com/secret-manager) in the format "projects/$PROJECT_ID/secrets/$SECRET_NAME/versions/$VERSION" for global secret or "projects/$PROJECT_ID/locations/$REGION/secrets/$SECRET_NAME/versions/$VERSION" for regional secret. Version can be fixed (e.g. "2") or "latest"',
-            ).optional(),
-          }).describe(
-            "CertificateConfig configures certificate for the registry.",
-          ).optional(),
-        })).describe(
+        client: z.unknown().describe(
           "Client configures the registry host client certificate and key.",
         ).optional(),
-        dialTimeout: z.string().describe(
+        dialTimeout: z.unknown().describe(
           "Specifies the maximum duration allowed for a connection attempt to complete. A shorter timeout helps reduce delays when falling back to the original registry if the mirror is unreachable. Maximum allowed value is 180s. If not set, containerd sets default 30s. The value should be a decimal number of seconds with an `s` suffix.",
         ).optional(),
-        header: z.array(z.object({
-          key: z.string().describe("Key configures the header key.").optional(),
-          value: z.array(z.string()).describe(
-            "Value configures the header value.",
-          ).optional(),
-        })).describe("Header configures the registry host headers.").optional(),
-        host: z.string().describe(
+        header: z.unknown().describe(
+          "Header configures the registry host headers.",
+        ).optional(),
+        host: z.unknown().describe(
           "Host configures the registry host/mirror. It supports fully qualified domain names (FQDNs) and IP addresses. Specifying scheme, port or path is supported. Scheme can only be http or https. Wildcards are NOT supported. Examples: - `my.customdomain.com` - `https://my.customdomain.com/path` - `10.0.1.2:5000`",
         ).optional(),
-        overridePath: z.boolean().describe(
+        overridePath: z.unknown().describe(
           "OverridePath is used to indicate the host's API root endpoint is defined in the URL path rather than by the API specification. This may be used with non-compliant OCI registries which are missing the /v2 prefix. If not set, containerd sets default false.",
         ).optional(),
       })).describe(
@@ -1749,35 +1651,13 @@ const StateSchema = z.object({
     containerdConfig: z.object({
       privateRegistryAccessConfig: z.object({
         certificateAuthorityDomainConfig: z.array(z.object({
-          fqdns: z.array(z.string()),
-          gcpSecretManagerCertificateConfig: z.object({
-            secretUri: z.string(),
-          }),
+          fqdns: z.unknown(),
+          gcpSecretManagerCertificateConfig: z.unknown(),
         })),
         enabled: z.boolean(),
       }),
       registryHosts: z.array(z.object({
-        hosts: z.array(z.object({
-          ca: z.array(z.object({
-            gcpSecretManagerSecretUri: z.string(),
-          })),
-          capabilities: z.array(z.string()),
-          client: z.array(z.object({
-            cert: z.object({
-              gcpSecretManagerSecretUri: z.string(),
-            }),
-            key: z.object({
-              gcpSecretManagerSecretUri: z.string(),
-            }),
-          })),
-          dialTimeout: z.string(),
-          header: z.array(z.object({
-            key: z.string(),
-            value: z.array(z.string()),
-          })),
-          host: z.string(),
-          overridePath: z.boolean(),
-        })),
+        hosts: z.array(z.unknown()),
         server: z.string(),
       })),
       writableCgroups: z.object({
@@ -1937,7 +1817,7 @@ const StateSchema = z.object({
       nodeAffinities: z.array(z.object({
         key: z.string(),
         operator: z.string(),
-        values: z.array(z.string()),
+        values: z.array(z.unknown()),
       })),
     }),
     spot: z.boolean(),
@@ -2138,12 +2018,9 @@ const InputsSchema = z.object({
           "The accelerator type resource name. List of supported accelerators [here](https://cloud.google.com/compute/docs/gpus)",
         ).optional(),
         gpuDriverInstallationConfig: z.object({
-          gpuDriverVersion: z.enum([
-            "GPU_DRIVER_VERSION_UNSPECIFIED",
-            "INSTALLATION_DISABLED",
-            "DEFAULT",
-            "LATEST",
-          ]).describe("Mode for how the GPU driver is installed.").optional(),
+          gpuDriverVersion: z.unknown().describe(
+            "Mode for how the GPU driver is installed.",
+          ).optional(),
         }).describe(
           "GPUDriverInstallationConfig specifies the version of GPU driver to be auto installed.",
         ).optional(),
@@ -2151,14 +2028,10 @@ const InputsSchema = z.object({
           "Size of partitions to create on the GPU. Valid values are described in the NVIDIA [mig user guide](https://docs.nvidia.com/datacenter/tesla/mig-user-guide/#partitioning).",
         ).optional(),
         gpuSharingConfig: z.object({
-          gpuSharingStrategy: z.enum([
-            "GPU_SHARING_STRATEGY_UNSPECIFIED",
-            "TIME_SHARING",
-            "MPS",
-          ]).describe(
+          gpuSharingStrategy: z.unknown().describe(
             "The type of GPU sharing strategy to enable on the GPU node.",
           ).optional(),
-          maxSharedClientsPerGpu: z.string().describe(
+          maxSharedClientsPerGpu: z.unknown().describe(
             "The max number of containers that can share a physical GPU.",
           ).optional(),
         }).describe(
@@ -2224,80 +2097,19 @@ const InputsSchema = z.object({
       ).optional(),
       containerdConfig: z.object({
         privateRegistryAccessConfig: z.object({
-          certificateAuthorityDomainConfig: z.array(z.object({
-            fqdns: z.array(z.string()).describe(
-              "List of fully qualified domain names (FQDN). Specifying port is supported. Wildcards are NOT supported. Examples: - `my.customdomain.com` - `10.0.1.2:5000`",
-            ).optional(),
-            gcpSecretManagerCertificateConfig: z.object({
-              secretUri: z.string().describe(
-                'Secret URI, in the form "projects/$PROJECT_ID/secrets/$SECRET_NAME/versions/$VERSION". Version can be fixed (e.g. "2") or "latest"',
-              ).optional(),
-            }).describe(
-              "GCPSecretManagerCertificateConfig configures a secret from [Secret Manager](https://cloud.google.com/secret-manager).",
-            ).optional(),
-          })).describe("Private registry access configuration.").optional(),
+          certificateAuthorityDomainConfig: z.array(z.unknown()).describe(
+            "Private registry access configuration.",
+          ).optional(),
           enabled: z.boolean().describe("Private registry access is enabled.")
             .optional(),
         }).describe(
           "PrivateRegistryAccessConfig contains access configuration for private container registries.",
         ).optional(),
         registryHosts: z.array(z.object({
-          hosts: z.array(z.object({
-            ca: z.array(z.object({
-              gcpSecretManagerSecretUri: z.string().describe(
-                'The URI configures a secret from [Secret Manager](https://cloud.google.com/secret-manager) in the format "projects/$PROJECT_ID/secrets/$SECRET_NAME/versions/$VERSION" for global secret or "projects/$PROJECT_ID/locations/$REGION/secrets/$SECRET_NAME/versions/$VERSION" for regional secret. Version can be fixed (e.g. "2") or "latest"',
-              ).optional(),
-            })).describe("CA configures the registry host certificate.")
-              .optional(),
-            capabilities: z.array(
-              z.enum([
-                "HOST_CAPABILITY_UNSPECIFIED",
-                "HOST_CAPABILITY_PULL",
-                "HOST_CAPABILITY_RESOLVE",
-                "HOST_CAPABILITY_PUSH",
-              ]),
-            ).describe(
-              "Capabilities represent the capabilities of the registry host, specifying what operations a host is capable of performing. If not set, containerd enables all capabilities by default.",
-            ).optional(),
-            client: z.array(z.object({
-              cert: z.object({
-                gcpSecretManagerSecretUri: z.string().describe(
-                  'The URI configures a secret from [Secret Manager](https://cloud.google.com/secret-manager) in the format "projects/$PROJECT_ID/secrets/$SECRET_NAME/versions/$VERSION" for global secret or "projects/$PROJECT_ID/locations/$REGION/secrets/$SECRET_NAME/versions/$VERSION" for regional secret. Version can be fixed (e.g. "2") or "latest"',
-                ).optional(),
-              }).describe(
-                "CertificateConfig configures certificate for the registry.",
-              ).optional(),
-              key: z.object({
-                gcpSecretManagerSecretUri: z.string().describe(
-                  'The URI configures a secret from [Secret Manager](https://cloud.google.com/secret-manager) in the format "projects/$PROJECT_ID/secrets/$SECRET_NAME/versions/$VERSION" for global secret or "projects/$PROJECT_ID/locations/$REGION/secrets/$SECRET_NAME/versions/$VERSION" for regional secret. Version can be fixed (e.g. "2") or "latest"',
-                ).optional(),
-              }).describe(
-                "CertificateConfig configures certificate for the registry.",
-              ).optional(),
-            })).describe(
-              "Client configures the registry host client certificate and key.",
-            ).optional(),
-            dialTimeout: z.string().describe(
-              "Specifies the maximum duration allowed for a connection attempt to complete. A shorter timeout helps reduce delays when falling back to the original registry if the mirror is unreachable. Maximum allowed value is 180s. If not set, containerd sets default 30s. The value should be a decimal number of seconds with an `s` suffix.",
-            ).optional(),
-            header: z.array(z.object({
-              key: z.string().describe("Key configures the header key.")
-                .optional(),
-              value: z.array(z.string()).describe(
-                "Value configures the header value.",
-              ).optional(),
-            })).describe("Header configures the registry host headers.")
-              .optional(),
-            host: z.string().describe(
-              "Host configures the registry host/mirror. It supports fully qualified domain names (FQDNs) and IP addresses. Specifying scheme, port or path is supported. Scheme can only be http or https. Wildcards are NOT supported. Examples: - `my.customdomain.com` - `https://my.customdomain.com/path` - `10.0.1.2:5000`",
-            ).optional(),
-            overridePath: z.boolean().describe(
-              "OverridePath is used to indicate the host's API root endpoint is defined in the URL path rather than by the API specification. This may be used with non-compliant OCI registries which are missing the /v2 prefix. If not set, containerd sets default false.",
-            ).optional(),
-          })).describe(
+          hosts: z.unknown().describe(
             "HostConfig configures a list of host-specific configurations for the server. Each server can have at most 10 host configurations.",
           ).optional(),
-          server: z.string().describe(
+          server: z.unknown().describe(
             "Defines the host name of the registry server, which will be used to create configuration file as /etc/containerd/hosts.d//hosts.toml. It supports fully qualified domain names (FQDN) and IP addresses: Specifying port is supported, while scheme and path are NOT supported. Wildcards are NOT supported. Examples: - `my.customdomain.com` - `10.0.1.2:5000`",
           ).optional(),
         })).describe(
@@ -2547,15 +2359,15 @@ const InputsSchema = z.object({
           .optional(),
         swapConfig: z.object({
           bootDiskProfile: z.object({
-            swapSizeGib: z.string().describe(
+            swapSizeGib: z.unknown().describe(
               "Specifies the size of the swap space in gibibytes (GiB).",
             ).optional(),
-            swapSizePercent: z.number().int().describe(
+            swapSizePercent: z.unknown().describe(
               "Specifies the size of the swap space as a percentage of the boot disk size.",
             ).optional(),
           }).describe("Swap on the node's boot disk.").optional(),
           dedicatedLocalSsdProfile: z.object({
-            diskCount: z.string().describe(
+            diskCount: z.unknown().describe(
               "The number of physical local NVMe SSD disks to attach.",
             ).optional(),
           }).describe(
@@ -2565,16 +2377,16 @@ const InputsSchema = z.object({
             "Optional. Enables or disables swap for the node pool.",
           ).optional(),
           encryptionConfig: z.object({
-            disabled: z.boolean().describe(
+            disabled: z.unknown().describe(
               "Optional. If true, swap space will not be encrypted. Defaults to false (encrypted).",
             ).optional(),
           }).describe("Defines encryption settings for the swap space.")
             .optional(),
           ephemeralLocalSsdProfile: z.object({
-            swapSizeGib: z.string().describe(
+            swapSizeGib: z.unknown().describe(
               "Specifies the size of the swap space in gibibytes (GiB).",
             ).optional(),
-            swapSizePercent: z.number().int().describe(
+            swapSizePercent: z.unknown().describe(
               "Specifies the size of the swap space as a percentage of the ephemeral local SSD capacity.",
             ).optional(),
           }).describe(
@@ -2714,12 +2526,10 @@ const InputsSchema = z.object({
           "Optional. The minimum number of virtual CPUs this instance will consume when running on a sole-tenant node. This field can only be set if the node pool is created in a shared sole-tenant node group.",
         ).optional(),
         nodeAffinities: z.array(z.object({
-          key: z.string().describe("Key for NodeAffinity.").optional(),
-          operator: z.enum(["OPERATOR_UNSPECIFIED", "IN", "NOT_IN"]).describe(
-            "Operator for NodeAffinity.",
-          ).optional(),
-          values: z.array(z.string()).describe("Values for NodeAffinity.")
+          key: z.unknown().describe("Key for NodeAffinity.").optional(),
+          operator: z.unknown().describe("Operator for NodeAffinity.")
             .optional(),
+          values: z.unknown().describe("Values for NodeAffinity.").optional(),
         })).describe(
           "NodeAffinities used to match to a shared sole tenant node group.",
         ).optional(),
@@ -2833,7 +2643,7 @@ const InputsSchema = z.object({
       ).optional(),
       additionalPodNetworkConfigs: z.array(z.object({
         maxPodsPerNode: z.object({
-          maxPodsPerNode: z.string().describe(
+          maxPodsPerNode: z.unknown().describe(
             "Constraint enforced on the max num of pods per node.",
           ).optional(),
         }).describe("Constraints applied to pods.").optional(),
@@ -3083,11 +2893,11 @@ const InputsSchema = z.object({
   containerdConfig: z.object({
     privateRegistryAccessConfig: z.object({
       certificateAuthorityDomainConfig: z.array(z.object({
-        fqdns: z.array(z.string()).describe(
+        fqdns: z.array(z.unknown()).describe(
           "List of fully qualified domain names (FQDN). Specifying port is supported. Wildcards are NOT supported. Examples: - `my.customdomain.com` - `10.0.1.2:5000`",
         ).optional(),
         gcpSecretManagerCertificateConfig: z.object({
-          secretUri: z.string().describe(
+          secretUri: z.unknown().describe(
             'Secret URI, in the form "projects/$PROJECT_ID/secrets/$SECRET_NAME/versions/$VERSION". Version can be fixed (e.g. "2") or "latest"',
           ).optional(),
         }).describe(
@@ -3101,52 +2911,24 @@ const InputsSchema = z.object({
     ).optional(),
     registryHosts: z.array(z.object({
       hosts: z.array(z.object({
-        ca: z.array(z.object({
-          gcpSecretManagerSecretUri: z.string().describe(
-            'The URI configures a secret from [Secret Manager](https://cloud.google.com/secret-manager) in the format "projects/$PROJECT_ID/secrets/$SECRET_NAME/versions/$VERSION" for global secret or "projects/$PROJECT_ID/locations/$REGION/secrets/$SECRET_NAME/versions/$VERSION" for regional secret. Version can be fixed (e.g. "2") or "latest"',
-          ).optional(),
-        })).describe("CA configures the registry host certificate.").optional(),
-        capabilities: z.array(
-          z.enum([
-            "HOST_CAPABILITY_UNSPECIFIED",
-            "HOST_CAPABILITY_PULL",
-            "HOST_CAPABILITY_RESOLVE",
-            "HOST_CAPABILITY_PUSH",
-          ]),
-        ).describe(
+        ca: z.unknown().describe("CA configures the registry host certificate.")
+          .optional(),
+        capabilities: z.unknown().describe(
           "Capabilities represent the capabilities of the registry host, specifying what operations a host is capable of performing. If not set, containerd enables all capabilities by default.",
         ).optional(),
-        client: z.array(z.object({
-          cert: z.object({
-            gcpSecretManagerSecretUri: z.string().describe(
-              'The URI configures a secret from [Secret Manager](https://cloud.google.com/secret-manager) in the format "projects/$PROJECT_ID/secrets/$SECRET_NAME/versions/$VERSION" for global secret or "projects/$PROJECT_ID/locations/$REGION/secrets/$SECRET_NAME/versions/$VERSION" for regional secret. Version can be fixed (e.g. "2") or "latest"',
-            ).optional(),
-          }).describe(
-            "CertificateConfig configures certificate for the registry.",
-          ).optional(),
-          key: z.object({
-            gcpSecretManagerSecretUri: z.string().describe(
-              'The URI configures a secret from [Secret Manager](https://cloud.google.com/secret-manager) in the format "projects/$PROJECT_ID/secrets/$SECRET_NAME/versions/$VERSION" for global secret or "projects/$PROJECT_ID/locations/$REGION/secrets/$SECRET_NAME/versions/$VERSION" for regional secret. Version can be fixed (e.g. "2") or "latest"',
-            ).optional(),
-          }).describe(
-            "CertificateConfig configures certificate for the registry.",
-          ).optional(),
-        })).describe(
+        client: z.unknown().describe(
           "Client configures the registry host client certificate and key.",
         ).optional(),
-        dialTimeout: z.string().describe(
+        dialTimeout: z.unknown().describe(
           "Specifies the maximum duration allowed for a connection attempt to complete. A shorter timeout helps reduce delays when falling back to the original registry if the mirror is unreachable. Maximum allowed value is 180s. If not set, containerd sets default 30s. The value should be a decimal number of seconds with an `s` suffix.",
         ).optional(),
-        header: z.array(z.object({
-          key: z.string().describe("Key configures the header key.").optional(),
-          value: z.array(z.string()).describe(
-            "Value configures the header value.",
-          ).optional(),
-        })).describe("Header configures the registry host headers.").optional(),
-        host: z.string().describe(
+        header: z.unknown().describe(
+          "Header configures the registry host headers.",
+        ).optional(),
+        host: z.unknown().describe(
           "Host configures the registry host/mirror. It supports fully qualified domain names (FQDNs) and IP addresses. Specifying scheme, port or path is supported. Scheme can only be http or https. Wildcards are NOT supported. Examples: - `my.customdomain.com` - `https://my.customdomain.com/path` - `10.0.1.2:5000`",
         ).optional(),
-        overridePath: z.boolean().describe(
+        overridePath: z.unknown().describe(
           "OverridePath is used to indicate the host's API root endpoint is defined in the URL path rather than by the API specification. This may be used with non-compliant OCI registries which are missing the /v2 prefix. If not set, containerd sets default false.",
         ).optional(),
       })).describe(
@@ -3641,7 +3423,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/container/clusters-nodepools",
-  version: "2026.04.03.3",
+  version: "2026.04.04.1",
   upgrades: [
     {
       toVersion: "2026.03.31.1",
@@ -3675,6 +3457,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.3",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.04.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

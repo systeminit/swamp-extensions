@@ -153,49 +153,25 @@ const GlobalArgsSchema = z.object({
         'The policy topic. Examples include "TRADEMARKS", "ALCOHOL", etc.',
       ).optional(),
       policyTopicConstraints: z.array(z.object({
-        certificateDomainMismatchCountryList: z.object({
-          countries: z.array(z.object({
-            countryCriterionId: z.string().describe("The country criterion id.")
-              .optional(),
-            countryLabel: z.string().describe(
-              "Localized name for the country. May be empty.",
-            ).optional(),
-          })).describe("Countries where the ad cannot serve.").optional(),
-        }).describe(
+        certificateDomainMismatchCountryList: z.unknown().describe(
           "A list of countries where the ad cannot serve due to policy constraints.",
         ).optional(),
-        certificateMissingCountryList: z.object({
-          countries: z.array(z.object({
-            countryCriterionId: z.string().describe("The country criterion id.")
-              .optional(),
-            countryLabel: z.string().describe(
-              "Localized name for the country. May be empty.",
-            ).optional(),
-          })).describe("Countries where the ad cannot serve.").optional(),
-        }).describe(
+        certificateMissingCountryList: z.unknown().describe(
           "A list of countries where the ad cannot serve due to policy constraints.",
         ).optional(),
-        countryConstraint: z.object({
-          countries: z.array(z.object({
-            countryCriterionId: z.string().describe("The country criterion id.")
-              .optional(),
-            countryLabel: z.string().describe(
-              "Localized name for the country. May be empty.",
-            ).optional(),
-          })).describe("Countries where the ad cannot serve.").optional(),
-        }).describe(
+        countryConstraint: z.unknown().describe(
           "A list of countries where the ad cannot serve due to policy constraints.",
         ).optional(),
-        globalCertificateDomainMismatch: z.object({}).describe(
+        globalCertificateDomainMismatch: z.unknown().describe(
           "Certificate is required to serve in any country and the existing certificate does not cover the ad's domain.",
         ).optional(),
-        globalCertificateMissing: z.object({}).describe(
+        globalCertificateMissing: z.unknown().describe(
           "Certificate is required to serve in any country.",
         ).optional(),
-        requestCertificateFormLink: z.string().describe(
+        requestCertificateFormLink: z.unknown().describe(
           "Link to the form to request a certificate for the constraint.",
         ).optional(),
-        resellerConstraint: z.object({}).describe(
+        resellerConstraint: z.unknown().describe(
           "Policy topic was constrained due to disapproval of the website for reseller purposes.",
         ).optional(),
       })).describe("The serving constraints relevant to the policy decision.")
@@ -204,136 +180,39 @@ const GlobalArgsSchema = z.object({
         "A short summary description of the policy topic.",
       ).optional(),
       policyTopicEvidences: z.array(z.object({
-        counterfeit: z.object({
-          owners: z.array(z.string()).describe(
-            "The content or product owners that made a complaint.",
-          ).optional(),
-        }).describe(
+        counterfeit: z.unknown().describe(
           "Details on the counterfeit enforcement that caused a policy violation.",
         ).optional(),
-        destinationMismatch: z.object({
-          uriTypes: z.array(
-            z.enum([
-              "AD_POLICY_TOPIC_EVIDENCE_DESTINATION_MISMATCH_URL_TYPE_UNKNOWN",
-              "DISPLAY_URL",
-              "FINAL_URL",
-              "FINAL_MOBILE_URL",
-              "TRACKING_URL",
-              "MOBILE_TRACKING_URL",
-            ]),
-          ).describe(
-            "The set of URLs that do not match. The list can include single or multiple uri types. Example 1: [`DISPLAY_URL`, `FINAL_URL`] means ad display URL does not match with the ad final URL. Example 2: [`FINAL_URL`] means ad final URL did not match the crawled url, which is also considered as destination mismatch.",
-          ).optional(),
-        }).describe("Details on a mismatch between destination URL types.")
-          .optional(),
-        destinationNotWorking: z.object({
-          device: z.enum([
-            "AD_POLICY_TOPIC_EVIDENCE_DESTINATION_NOT_WORKING_DEVICE_TYPE_UNKNOWN",
-            "DESKTOP",
-            "ANDROID",
-            "IOS",
-          ]).describe(
-            "The device where visiting the URL resulted in the error.",
-          ).optional(),
-          dnsErrorType: z.enum([
-            "AD_POLICY_TOPIC_EVIDENCE_DESTINATION_NOT_WORKING_DNS_ERROR_TYPE_UNKNOWN",
-            "HOSTNAME_NOT_FOUND",
-            "GOOGLE_CRAWLER_DNS_ISSUE",
-          ]).describe("The type of DNS error.").optional(),
-          expandedUri: z.string().describe("The full URL that didn't work.")
-            .optional(),
-          httpErrorCode: z.string().describe("The HTTP error code.").optional(),
-          lastCheckedTime: z.string().describe(
-            "The last time the error was seen when navigating to URL.",
-          ).optional(),
-        }).describe(
+        destinationMismatch: z.unknown().describe(
+          "Details on a mismatch between destination URL types.",
+        ).optional(),
+        destinationNotWorking: z.unknown().describe(
           "Details for on HTTP or DNS errors related to the ad destination.",
         ).optional(),
-        destinationTextList: z.object({
-          destinationTexts: z.array(z.string()).describe(
-            "Destination text that caused the policy finding.",
-          ).optional(),
-        }).describe("A list of destination text that violated the policy.")
-          .optional(),
-        httpCode: z.number().int().describe(
+        destinationTextList: z.unknown().describe(
+          "A list of destination text that violated the policy.",
+        ).optional(),
+        httpCode: z.unknown().describe(
           "HTTP code returned when the final URL was crawled.",
         ).optional(),
-        languageCode: z.string().describe(
+        languageCode: z.unknown().describe(
           'The language the ad was detected to be written in. This field uses IETF language tags, such as "en-US".',
         ).optional(),
-        legalRemoval: z.object({
-          complaintType: z.enum([
-            "AD_POLICY_TOPIC_EVIDENCE_LEGAL_REMOVAL_COMPLAINT_TYPE_UNKNOWN",
-            "COPYRIGHT",
-            "COURT_ORDER",
-            "LOCAL_LEGAL",
-          ]).describe("The type of complaint causing the legal removal.")
-            .optional(),
-          countryRestrictions: z.array(z.object({
-            countryCriterionId: z.string().describe("The country criterion id.")
-              .optional(),
-            countryLabel: z.string().describe(
-              "Localized name for the country. May be empty.",
-            ).optional(),
-          })).describe("The countries restricted due to the legal removal.")
-            .optional(),
-          dmca: z.object({
-            complainant: z.string().describe(
-              "The entity who made the legal complaint.",
-            ).optional(),
-          }).describe("DMCA complaint details.").optional(),
-          localLegal: z.object({
-            lawType: z.string().describe("Type of law for the legal notice.")
-              .optional(),
-          }).describe("Local legal regulation details.").optional(),
-          restrictedUris: z.array(z.string()).describe(
-            "The urls restricted due to the legal removal.",
-          ).optional(),
-        }).describe(
+        legalRemoval: z.unknown().describe(
           "Legal related regulation enforcement, either from DMCA or local legal regulation.",
         ).optional(),
-        regionalRequirements: z.object({
-          regionalRequirementsEntries: z.array(z.object({
-            countryRestrictions: z.array(z.object({
-              countryCriterionId: z.string().describe(
-                "The country criterion id.",
-              ).optional(),
-              countryLabel: z.string().describe(
-                "Localized name for the country. May be empty.",
-              ).optional(),
-            })).describe("The countries restricted due to the legal policy.")
-              .optional(),
-            legalPolicy: z.string().describe(
-              "The legal policy that is being violated.",
-            ).optional(),
-          })).describe("List of regional requirements.").optional(),
-        }).describe(
+        regionalRequirements: z.unknown().describe(
           "Trust & Safety (T&S) proactive enforcement for policies meant to address regional requirements. This is considered a Google-owned investigation instead of a regulation notice since it's proactive T&S enforcement.",
         ).optional(),
-        textList: z.object({
-          texts: z.array(z.string()).describe(
-            "The fragments of text from the resource that caused the policy finding.",
-          ).optional(),
-        }).describe("A list of fragments of text that violated the policy.")
-          .optional(),
-        trademark: z.object({
-          countryRestrictions: z.array(z.object({
-            countryCriterionId: z.string().describe("The country criterion id.")
-              .optional(),
-            countryLabel: z.string().describe(
-              "Localized name for the country. May be empty.",
-            ).optional(),
-          })).describe("Countries where the policy violation is relevant.")
-            .optional(),
-          owner: z.string().describe("The trademark content owner.").optional(),
-          term: z.string().describe("The trademark term.").optional(),
-        }).describe("Trademark terms that caused a policy violation.")
-          .optional(),
-        websiteList: z.object({
-          websites: z.array(z.string()).describe(
-            "Websites that caused the policy finding.",
-          ).optional(),
-        }).describe("A list of websites that violated the policy.").optional(),
+        textList: z.unknown().describe(
+          "A list of fragments of text that violated the policy.",
+        ).optional(),
+        trademark: z.unknown().describe(
+          "Trademark terms that caused a policy violation.",
+        ).optional(),
+        websiteList: z.unknown().describe(
+          "A list of websites that violated the policy.",
+        ).optional(),
       })).describe("The evidence used in the policy decision.").optional(),
       policyTopicType: z.enum([
         "AD_POLICY_TOPIC_ENTRY_TYPE_UNKNOWN",
@@ -459,10 +338,9 @@ const GlobalArgsSchema = z.object({
           "Output only. File size of the image asset in bytes.",
         ).optional(),
         fullSize: z.object({
-          heightPixels: z.number().int().describe("The height in pixels.")
+          heightPixels: z.unknown().describe("The height in pixels.")
             .optional(),
-          widthPixels: z.number().int().describe("The width in pixels.")
-            .optional(),
+          widthPixels: z.unknown().describe("The width in pixels.").optional(),
         }).describe("Dimensions.").optional(),
         mimeType: z.string().describe(
           "Output only. MIME type of the image asset.",
@@ -475,10 +353,9 @@ const GlobalArgsSchema = z.object({
           "Output only. File size of the image asset in bytes.",
         ).optional(),
         fullSize: z.object({
-          heightPixels: z.number().int().describe("The height in pixels.")
+          heightPixels: z.unknown().describe("The height in pixels.")
             .optional(),
-          widthPixels: z.number().int().describe("The width in pixels.")
-            .optional(),
+          widthPixels: z.unknown().describe("The width in pixels.").optional(),
         }).describe("Dimensions.").optional(),
         mimeType: z.string().describe(
           "Output only. MIME type of the image asset.",
@@ -491,10 +368,9 @@ const GlobalArgsSchema = z.object({
           "Output only. File size of the image asset in bytes.",
         ).optional(),
         fullSize: z.object({
-          heightPixels: z.number().int().describe("The height in pixels.")
+          heightPixels: z.unknown().describe("The height in pixels.")
             .optional(),
-          widthPixels: z.number().int().describe("The width in pixels.")
-            .optional(),
+          widthPixels: z.unknown().describe("The width in pixels.").optional(),
         }).describe("Dimensions.").optional(),
         mimeType: z.string().describe(
           "Output only. MIME type of the image asset.",
@@ -1096,86 +972,27 @@ const StateSchema = z.object({
       policyLabel: z.string(),
       policyTopic: z.string(),
       policyTopicConstraints: z.array(z.object({
-        certificateDomainMismatchCountryList: z.object({
-          countries: z.array(z.object({
-            countryCriterionId: z.string(),
-            countryLabel: z.string(),
-          })),
-        }),
-        certificateMissingCountryList: z.object({
-          countries: z.array(z.object({
-            countryCriterionId: z.string(),
-            countryLabel: z.string(),
-          })),
-        }),
-        countryConstraint: z.object({
-          countries: z.array(z.object({
-            countryCriterionId: z.string(),
-            countryLabel: z.string(),
-          })),
-        }),
-        globalCertificateDomainMismatch: z.object({}),
-        globalCertificateMissing: z.object({}),
-        requestCertificateFormLink: z.string(),
-        resellerConstraint: z.object({}),
+        certificateDomainMismatchCountryList: z.unknown(),
+        certificateMissingCountryList: z.unknown(),
+        countryConstraint: z.unknown(),
+        globalCertificateDomainMismatch: z.unknown(),
+        globalCertificateMissing: z.unknown(),
+        requestCertificateFormLink: z.unknown(),
+        resellerConstraint: z.unknown(),
       })),
       policyTopicDescription: z.string(),
       policyTopicEvidences: z.array(z.object({
-        counterfeit: z.object({
-          owners: z.array(z.string()),
-        }),
-        destinationMismatch: z.object({
-          uriTypes: z.array(z.string()),
-        }),
-        destinationNotWorking: z.object({
-          device: z.string(),
-          dnsErrorType: z.string(),
-          expandedUri: z.string(),
-          httpErrorCode: z.string(),
-          lastCheckedTime: z.string(),
-        }),
-        destinationTextList: z.object({
-          destinationTexts: z.array(z.string()),
-        }),
-        httpCode: z.number(),
-        languageCode: z.string(),
-        legalRemoval: z.object({
-          complaintType: z.string(),
-          countryRestrictions: z.array(z.object({
-            countryCriterionId: z.string(),
-            countryLabel: z.string(),
-          })),
-          dmca: z.object({
-            complainant: z.string(),
-          }),
-          localLegal: z.object({
-            lawType: z.string(),
-          }),
-          restrictedUris: z.array(z.string()),
-        }),
-        regionalRequirements: z.object({
-          regionalRequirementsEntries: z.array(z.object({
-            countryRestrictions: z.array(z.object({
-              countryCriterionId: z.string(),
-              countryLabel: z.string(),
-            })),
-            legalPolicy: z.string(),
-          })),
-        }),
-        textList: z.object({
-          texts: z.array(z.string()),
-        }),
-        trademark: z.object({
-          countryRestrictions: z.array(z.object({
-            countryCriterionId: z.string(),
-            countryLabel: z.string(),
-          })),
-          owner: z.string(),
-          term: z.string(),
-        }),
-        websiteList: z.object({
-          websites: z.array(z.string()),
-        }),
+        counterfeit: z.unknown(),
+        destinationMismatch: z.unknown(),
+        destinationNotWorking: z.unknown(),
+        destinationTextList: z.unknown(),
+        httpCode: z.unknown(),
+        languageCode: z.unknown(),
+        legalRemoval: z.unknown(),
+        regionalRequirements: z.unknown(),
+        textList: z.unknown(),
+        trademark: z.unknown(),
+        websiteList: z.unknown(),
       })),
       policyTopicType: z.string(),
     })),
@@ -1234,8 +1051,8 @@ const StateSchema = z.object({
         assetId: z.string(),
         fileSize: z.string(),
         fullSize: z.object({
-          heightPixels: z.number(),
-          widthPixels: z.number(),
+          heightPixels: z.unknown(),
+          widthPixels: z.unknown(),
         }),
         mimeType: z.string(),
       }),
@@ -1243,8 +1060,8 @@ const StateSchema = z.object({
         assetId: z.string(),
         fileSize: z.string(),
         fullSize: z.object({
-          heightPixels: z.number(),
-          widthPixels: z.number(),
+          heightPixels: z.unknown(),
+          widthPixels: z.unknown(),
         }),
         mimeType: z.string(),
       }),
@@ -1252,8 +1069,8 @@ const StateSchema = z.object({
         assetId: z.string(),
         fileSize: z.string(),
         fullSize: z.object({
-          heightPixels: z.number(),
-          widthPixels: z.number(),
+          heightPixels: z.unknown(),
+          widthPixels: z.unknown(),
         }),
         mimeType: z.string(),
       }),
@@ -1557,49 +1374,25 @@ const InputsSchema = z.object({
         'The policy topic. Examples include "TRADEMARKS", "ALCOHOL", etc.',
       ).optional(),
       policyTopicConstraints: z.array(z.object({
-        certificateDomainMismatchCountryList: z.object({
-          countries: z.array(z.object({
-            countryCriterionId: z.string().describe("The country criterion id.")
-              .optional(),
-            countryLabel: z.string().describe(
-              "Localized name for the country. May be empty.",
-            ).optional(),
-          })).describe("Countries where the ad cannot serve.").optional(),
-        }).describe(
+        certificateDomainMismatchCountryList: z.unknown().describe(
           "A list of countries where the ad cannot serve due to policy constraints.",
         ).optional(),
-        certificateMissingCountryList: z.object({
-          countries: z.array(z.object({
-            countryCriterionId: z.string().describe("The country criterion id.")
-              .optional(),
-            countryLabel: z.string().describe(
-              "Localized name for the country. May be empty.",
-            ).optional(),
-          })).describe("Countries where the ad cannot serve.").optional(),
-        }).describe(
+        certificateMissingCountryList: z.unknown().describe(
           "A list of countries where the ad cannot serve due to policy constraints.",
         ).optional(),
-        countryConstraint: z.object({
-          countries: z.array(z.object({
-            countryCriterionId: z.string().describe("The country criterion id.")
-              .optional(),
-            countryLabel: z.string().describe(
-              "Localized name for the country. May be empty.",
-            ).optional(),
-          })).describe("Countries where the ad cannot serve.").optional(),
-        }).describe(
+        countryConstraint: z.unknown().describe(
           "A list of countries where the ad cannot serve due to policy constraints.",
         ).optional(),
-        globalCertificateDomainMismatch: z.object({}).describe(
+        globalCertificateDomainMismatch: z.unknown().describe(
           "Certificate is required to serve in any country and the existing certificate does not cover the ad's domain.",
         ).optional(),
-        globalCertificateMissing: z.object({}).describe(
+        globalCertificateMissing: z.unknown().describe(
           "Certificate is required to serve in any country.",
         ).optional(),
-        requestCertificateFormLink: z.string().describe(
+        requestCertificateFormLink: z.unknown().describe(
           "Link to the form to request a certificate for the constraint.",
         ).optional(),
-        resellerConstraint: z.object({}).describe(
+        resellerConstraint: z.unknown().describe(
           "Policy topic was constrained due to disapproval of the website for reseller purposes.",
         ).optional(),
       })).describe("The serving constraints relevant to the policy decision.")
@@ -1608,136 +1401,39 @@ const InputsSchema = z.object({
         "A short summary description of the policy topic.",
       ).optional(),
       policyTopicEvidences: z.array(z.object({
-        counterfeit: z.object({
-          owners: z.array(z.string()).describe(
-            "The content or product owners that made a complaint.",
-          ).optional(),
-        }).describe(
+        counterfeit: z.unknown().describe(
           "Details on the counterfeit enforcement that caused a policy violation.",
         ).optional(),
-        destinationMismatch: z.object({
-          uriTypes: z.array(
-            z.enum([
-              "AD_POLICY_TOPIC_EVIDENCE_DESTINATION_MISMATCH_URL_TYPE_UNKNOWN",
-              "DISPLAY_URL",
-              "FINAL_URL",
-              "FINAL_MOBILE_URL",
-              "TRACKING_URL",
-              "MOBILE_TRACKING_URL",
-            ]),
-          ).describe(
-            "The set of URLs that do not match. The list can include single or multiple uri types. Example 1: [`DISPLAY_URL`, `FINAL_URL`] means ad display URL does not match with the ad final URL. Example 2: [`FINAL_URL`] means ad final URL did not match the crawled url, which is also considered as destination mismatch.",
-          ).optional(),
-        }).describe("Details on a mismatch between destination URL types.")
-          .optional(),
-        destinationNotWorking: z.object({
-          device: z.enum([
-            "AD_POLICY_TOPIC_EVIDENCE_DESTINATION_NOT_WORKING_DEVICE_TYPE_UNKNOWN",
-            "DESKTOP",
-            "ANDROID",
-            "IOS",
-          ]).describe(
-            "The device where visiting the URL resulted in the error.",
-          ).optional(),
-          dnsErrorType: z.enum([
-            "AD_POLICY_TOPIC_EVIDENCE_DESTINATION_NOT_WORKING_DNS_ERROR_TYPE_UNKNOWN",
-            "HOSTNAME_NOT_FOUND",
-            "GOOGLE_CRAWLER_DNS_ISSUE",
-          ]).describe("The type of DNS error.").optional(),
-          expandedUri: z.string().describe("The full URL that didn't work.")
-            .optional(),
-          httpErrorCode: z.string().describe("The HTTP error code.").optional(),
-          lastCheckedTime: z.string().describe(
-            "The last time the error was seen when navigating to URL.",
-          ).optional(),
-        }).describe(
+        destinationMismatch: z.unknown().describe(
+          "Details on a mismatch between destination URL types.",
+        ).optional(),
+        destinationNotWorking: z.unknown().describe(
           "Details for on HTTP or DNS errors related to the ad destination.",
         ).optional(),
-        destinationTextList: z.object({
-          destinationTexts: z.array(z.string()).describe(
-            "Destination text that caused the policy finding.",
-          ).optional(),
-        }).describe("A list of destination text that violated the policy.")
-          .optional(),
-        httpCode: z.number().int().describe(
+        destinationTextList: z.unknown().describe(
+          "A list of destination text that violated the policy.",
+        ).optional(),
+        httpCode: z.unknown().describe(
           "HTTP code returned when the final URL was crawled.",
         ).optional(),
-        languageCode: z.string().describe(
+        languageCode: z.unknown().describe(
           'The language the ad was detected to be written in. This field uses IETF language tags, such as "en-US".',
         ).optional(),
-        legalRemoval: z.object({
-          complaintType: z.enum([
-            "AD_POLICY_TOPIC_EVIDENCE_LEGAL_REMOVAL_COMPLAINT_TYPE_UNKNOWN",
-            "COPYRIGHT",
-            "COURT_ORDER",
-            "LOCAL_LEGAL",
-          ]).describe("The type of complaint causing the legal removal.")
-            .optional(),
-          countryRestrictions: z.array(z.object({
-            countryCriterionId: z.string().describe("The country criterion id.")
-              .optional(),
-            countryLabel: z.string().describe(
-              "Localized name for the country. May be empty.",
-            ).optional(),
-          })).describe("The countries restricted due to the legal removal.")
-            .optional(),
-          dmca: z.object({
-            complainant: z.string().describe(
-              "The entity who made the legal complaint.",
-            ).optional(),
-          }).describe("DMCA complaint details.").optional(),
-          localLegal: z.object({
-            lawType: z.string().describe("Type of law for the legal notice.")
-              .optional(),
-          }).describe("Local legal regulation details.").optional(),
-          restrictedUris: z.array(z.string()).describe(
-            "The urls restricted due to the legal removal.",
-          ).optional(),
-        }).describe(
+        legalRemoval: z.unknown().describe(
           "Legal related regulation enforcement, either from DMCA or local legal regulation.",
         ).optional(),
-        regionalRequirements: z.object({
-          regionalRequirementsEntries: z.array(z.object({
-            countryRestrictions: z.array(z.object({
-              countryCriterionId: z.string().describe(
-                "The country criterion id.",
-              ).optional(),
-              countryLabel: z.string().describe(
-                "Localized name for the country. May be empty.",
-              ).optional(),
-            })).describe("The countries restricted due to the legal policy.")
-              .optional(),
-            legalPolicy: z.string().describe(
-              "The legal policy that is being violated.",
-            ).optional(),
-          })).describe("List of regional requirements.").optional(),
-        }).describe(
+        regionalRequirements: z.unknown().describe(
           "Trust & Safety (T&S) proactive enforcement for policies meant to address regional requirements. This is considered a Google-owned investigation instead of a regulation notice since it's proactive T&S enforcement.",
         ).optional(),
-        textList: z.object({
-          texts: z.array(z.string()).describe(
-            "The fragments of text from the resource that caused the policy finding.",
-          ).optional(),
-        }).describe("A list of fragments of text that violated the policy.")
-          .optional(),
-        trademark: z.object({
-          countryRestrictions: z.array(z.object({
-            countryCriterionId: z.string().describe("The country criterion id.")
-              .optional(),
-            countryLabel: z.string().describe(
-              "Localized name for the country. May be empty.",
-            ).optional(),
-          })).describe("Countries where the policy violation is relevant.")
-            .optional(),
-          owner: z.string().describe("The trademark content owner.").optional(),
-          term: z.string().describe("The trademark term.").optional(),
-        }).describe("Trademark terms that caused a policy violation.")
-          .optional(),
-        websiteList: z.object({
-          websites: z.array(z.string()).describe(
-            "Websites that caused the policy finding.",
-          ).optional(),
-        }).describe("A list of websites that violated the policy.").optional(),
+        textList: z.unknown().describe(
+          "A list of fragments of text that violated the policy.",
+        ).optional(),
+        trademark: z.unknown().describe(
+          "Trademark terms that caused a policy violation.",
+        ).optional(),
+        websiteList: z.unknown().describe(
+          "A list of websites that violated the policy.",
+        ).optional(),
       })).describe("The evidence used in the policy decision.").optional(),
       policyTopicType: z.enum([
         "AD_POLICY_TOPIC_ENTRY_TYPE_UNKNOWN",
@@ -1863,10 +1559,9 @@ const InputsSchema = z.object({
           "Output only. File size of the image asset in bytes.",
         ).optional(),
         fullSize: z.object({
-          heightPixels: z.number().int().describe("The height in pixels.")
+          heightPixels: z.unknown().describe("The height in pixels.")
             .optional(),
-          widthPixels: z.number().int().describe("The width in pixels.")
-            .optional(),
+          widthPixels: z.unknown().describe("The width in pixels.").optional(),
         }).describe("Dimensions.").optional(),
         mimeType: z.string().describe(
           "Output only. MIME type of the image asset.",
@@ -1879,10 +1574,9 @@ const InputsSchema = z.object({
           "Output only. File size of the image asset in bytes.",
         ).optional(),
         fullSize: z.object({
-          heightPixels: z.number().int().describe("The height in pixels.")
+          heightPixels: z.unknown().describe("The height in pixels.")
             .optional(),
-          widthPixels: z.number().int().describe("The width in pixels.")
-            .optional(),
+          widthPixels: z.unknown().describe("The width in pixels.").optional(),
         }).describe("Dimensions.").optional(),
         mimeType: z.string().describe(
           "Output only. MIME type of the image asset.",
@@ -1895,10 +1589,9 @@ const InputsSchema = z.object({
           "Output only. File size of the image asset in bytes.",
         ).optional(),
         fullSize: z.object({
-          heightPixels: z.number().int().describe("The height in pixels.")
+          heightPixels: z.unknown().describe("The height in pixels.")
             .optional(),
-          widthPixels: z.number().int().describe("The width in pixels.")
-            .optional(),
+          widthPixels: z.unknown().describe("The width in pixels.").optional(),
         }).describe("Dimensions.").optional(),
         mimeType: z.string().describe(
           "Output only. MIME type of the image asset.",
@@ -2485,7 +2178,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/displayvideo/advertisers-adgroupads",
-  version: "2026.04.03.3",
+  version: "2026.04.04.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -2514,6 +2207,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.3",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.04.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

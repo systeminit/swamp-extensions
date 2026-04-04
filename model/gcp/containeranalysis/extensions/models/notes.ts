@@ -680,10 +680,10 @@ const GlobalArgsSchema = z.object({
       description: z.string().describe("The description of this vulnerability.")
         .optional(),
       fixingKbs: z.array(z.object({
-        name: z.string().describe(
+        name: z.unknown().describe(
           "The KB name (generally of the form KB[0-9]+ (e.g., KB123456)).",
         ).optional(),
-        url: z.string().describe(
+        url: z.unknown().describe(
           "A link to the KB in the [Windows update catalog] (https://www.catalog.update.microsoft.com/).",
         ).optional(),
       })).describe(
@@ -744,10 +744,11 @@ const GlobalArgsSchema = z.object({
           "WORKAROUND",
         ]).describe("The type of remediation that can be applied.").optional(),
         remediationUri: z.object({
-          label: z.string().describe("Label to describe usage of the URL.")
+          label: z.unknown().describe("Label to describe usage of the URL.")
             .optional(),
-          url: z.string().describe("Specific URL associated with the resource.")
-            .optional(),
+          url: z.unknown().describe(
+            "Specific URL associated with the resource.",
+          ).optional(),
         }).describe("Metadata for any related URL information.").optional(),
       })).describe(
         "Specifies details on how to handle (and presumably, fix) a vulnerability.",
@@ -1021,8 +1022,8 @@ const StateSchema = z.object({
       cpeUri: z.string(),
       description: z.string(),
       fixingKbs: z.array(z.object({
-        name: z.string(),
-        url: z.string(),
+        name: z.unknown(),
+        url: z.unknown(),
       })),
       name: z.string(),
     })),
@@ -1044,8 +1045,8 @@ const StateSchema = z.object({
         details: z.string(),
         remediationType: z.string(),
         remediationUri: z.object({
-          label: z.string(),
-          url: z.string(),
+          label: z.unknown(),
+          url: z.unknown(),
         }),
       })),
       shortDescription: z.string(),
@@ -1663,10 +1664,10 @@ const InputsSchema = z.object({
       description: z.string().describe("The description of this vulnerability.")
         .optional(),
       fixingKbs: z.array(z.object({
-        name: z.string().describe(
+        name: z.unknown().describe(
           "The KB name (generally of the form KB[0-9]+ (e.g., KB123456)).",
         ).optional(),
-        url: z.string().describe(
+        url: z.unknown().describe(
           "A link to the KB in the [Windows update catalog] (https://www.catalog.update.microsoft.com/).",
         ).optional(),
       })).describe(
@@ -1727,10 +1728,11 @@ const InputsSchema = z.object({
           "WORKAROUND",
         ]).describe("The type of remediation that can be applied.").optional(),
         remediationUri: z.object({
-          label: z.string().describe("Label to describe usage of the URL.")
+          label: z.unknown().describe("Label to describe usage of the URL.")
             .optional(),
-          url: z.string().describe("Specific URL associated with the resource.")
-            .optional(),
+          url: z.unknown().describe(
+            "Specific URL associated with the resource.",
+          ).optional(),
         }).describe("Metadata for any related URL information.").optional(),
       })).describe(
         "Specifies details on how to handle (and presumably, fix) a vulnerability.",
@@ -1798,7 +1800,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/containeranalysis/notes",
-  version: "2026.04.03.3",
+  version: "2026.04.04.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -1822,6 +1824,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.3",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.04.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

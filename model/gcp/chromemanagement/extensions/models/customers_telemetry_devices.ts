@@ -232,7 +232,7 @@ const StateSchema = z.object({
   peripheralsReport: z.array(z.object({
     reportTime: z.string(),
     usbPeripheralReport: z.array(z.object({
-      categories: z.array(z.string()),
+      categories: z.array(z.unknown()),
       classId: z.number(),
       firmwareVersion: z.string(),
       name: z.string(),
@@ -272,7 +272,7 @@ const StateSchema = z.object({
       serialNumber: z.string(),
       sizeBytes: z.string(),
       type: z.string(),
-      volumeIds: z.array(z.string()),
+      volumeIds: z.array(z.unknown()),
       writeTimeThisSession: z.string(),
     })),
     reportTime: z.string(),
@@ -293,7 +293,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/chromemanagement/customers-telemetry-devices",
-  version: "2026.04.03.3",
+  version: "2026.04.04.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -317,6 +317,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.3",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.04.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

@@ -66,47 +66,7 @@ const StateSchema = z.object({
     chinaPolicyCompliance: z.object({
       status: z.string(),
       topics: z.array(z.object({
-        evidences: z.array(z.object({
-          destinationNotCrawlable: z.object({
-            crawlTime: z.string(),
-            crawledUrl: z.string(),
-            reason: z.string(),
-          }),
-          destinationNotWorking: z.object({
-            dnsError: z.string(),
-            expandedUrl: z.string(),
-            httpError: z.number(),
-            invalidPage: z.string(),
-            lastCheckTime: z.string(),
-            platform: z.string(),
-            redirectionError: z.string(),
-            urlRejected: z.string(),
-          }),
-          destinationUrl: z.object({
-            destinationUrl: z.string(),
-          }),
-          domainCall: z.object({
-            topHttpCallDomains: z.array(z.object({
-              domain: z.string(),
-              httpCallCount: z.number(),
-            })),
-            totalHttpCallCount: z.number(),
-          }),
-          downloadSize: z.object({
-            topUrlDownloadSizeBreakdowns: z.array(z.object({
-              downloadSizeKb: z.number(),
-              normalizedUrl: z.string(),
-            })),
-            totalDownloadSizeKb: z.number(),
-          }),
-          httpCall: z.object({
-            urls: z.array(z.string()),
-          }),
-          httpCookie: z.object({
-            cookieNames: z.array(z.string()),
-            maxCookieCount: z.number(),
-          }),
-        })),
+        evidences: z.array(z.unknown()),
         helpCenterUrl: z.string(),
         missingCertificate: z.boolean(),
         policyTopic: z.string(),
@@ -115,47 +75,7 @@ const StateSchema = z.object({
     dealsPolicyCompliance: z.object({
       status: z.string(),
       topics: z.array(z.object({
-        evidences: z.array(z.object({
-          destinationNotCrawlable: z.object({
-            crawlTime: z.string(),
-            crawledUrl: z.string(),
-            reason: z.string(),
-          }),
-          destinationNotWorking: z.object({
-            dnsError: z.string(),
-            expandedUrl: z.string(),
-            httpError: z.number(),
-            invalidPage: z.string(),
-            lastCheckTime: z.string(),
-            platform: z.string(),
-            redirectionError: z.string(),
-            urlRejected: z.string(),
-          }),
-          destinationUrl: z.object({
-            destinationUrl: z.string(),
-          }),
-          domainCall: z.object({
-            topHttpCallDomains: z.array(z.object({
-              domain: z.string(),
-              httpCallCount: z.number(),
-            })),
-            totalHttpCallCount: z.number(),
-          }),
-          downloadSize: z.object({
-            topUrlDownloadSizeBreakdowns: z.array(z.object({
-              downloadSizeKb: z.number(),
-              normalizedUrl: z.string(),
-            })),
-            totalDownloadSizeKb: z.number(),
-          }),
-          httpCall: z.object({
-            urls: z.array(z.string()),
-          }),
-          httpCookie: z.object({
-            cookieNames: z.array(z.string()),
-            maxCookieCount: z.number(),
-          }),
-        })),
+        evidences: z.array(z.unknown()),
         helpCenterUrl: z.string(),
         missingCertificate: z.boolean(),
         policyTopic: z.string(),
@@ -180,47 +100,7 @@ const StateSchema = z.object({
     networkPolicyCompliance: z.object({
       status: z.string(),
       topics: z.array(z.object({
-        evidences: z.array(z.object({
-          destinationNotCrawlable: z.object({
-            crawlTime: z.string(),
-            crawledUrl: z.string(),
-            reason: z.string(),
-          }),
-          destinationNotWorking: z.object({
-            dnsError: z.string(),
-            expandedUrl: z.string(),
-            httpError: z.number(),
-            invalidPage: z.string(),
-            lastCheckTime: z.string(),
-            platform: z.string(),
-            redirectionError: z.string(),
-            urlRejected: z.string(),
-          }),
-          destinationUrl: z.object({
-            destinationUrl: z.string(),
-          }),
-          domainCall: z.object({
-            topHttpCallDomains: z.array(z.object({
-              domain: z.string(),
-              httpCallCount: z.number(),
-            })),
-            totalHttpCallCount: z.number(),
-          }),
-          downloadSize: z.object({
-            topUrlDownloadSizeBreakdowns: z.array(z.object({
-              downloadSizeKb: z.number(),
-              normalizedUrl: z.string(),
-            })),
-            totalDownloadSizeKb: z.number(),
-          }),
-          httpCall: z.object({
-            urls: z.array(z.string()),
-          }),
-          httpCookie: z.object({
-            cookieNames: z.array(z.string()),
-            maxCookieCount: z.number(),
-          }),
-        })),
+        evidences: z.array(z.unknown()),
         helpCenterUrl: z.string(),
         missingCertificate: z.boolean(),
         policyTopic: z.string(),
@@ -229,47 +109,7 @@ const StateSchema = z.object({
     platformPolicyCompliance: z.object({
       status: z.string(),
       topics: z.array(z.object({
-        evidences: z.array(z.object({
-          destinationNotCrawlable: z.object({
-            crawlTime: z.string(),
-            crawledUrl: z.string(),
-            reason: z.string(),
-          }),
-          destinationNotWorking: z.object({
-            dnsError: z.string(),
-            expandedUrl: z.string(),
-            httpError: z.number(),
-            invalidPage: z.string(),
-            lastCheckTime: z.string(),
-            platform: z.string(),
-            redirectionError: z.string(),
-            urlRejected: z.string(),
-          }),
-          destinationUrl: z.object({
-            destinationUrl: z.string(),
-          }),
-          domainCall: z.object({
-            topHttpCallDomains: z.array(z.object({
-              domain: z.string(),
-              httpCallCount: z.number(),
-            })),
-            totalHttpCallCount: z.number(),
-          }),
-          downloadSize: z.object({
-            topUrlDownloadSizeBreakdowns: z.array(z.object({
-              downloadSizeKb: z.number(),
-              normalizedUrl: z.string(),
-            })),
-            totalDownloadSizeKb: z.number(),
-          }),
-          httpCall: z.object({
-            urls: z.array(z.string()),
-          }),
-          httpCookie: z.object({
-            cookieNames: z.array(z.string()),
-            maxCookieCount: z.number(),
-          }),
-        })),
+        evidences: z.array(z.unknown()),
         helpCenterUrl: z.string(),
         missingCertificate: z.boolean(),
         policyTopic: z.string(),
@@ -278,47 +118,7 @@ const StateSchema = z.object({
     russiaPolicyCompliance: z.object({
       status: z.string(),
       topics: z.array(z.object({
-        evidences: z.array(z.object({
-          destinationNotCrawlable: z.object({
-            crawlTime: z.string(),
-            crawledUrl: z.string(),
-            reason: z.string(),
-          }),
-          destinationNotWorking: z.object({
-            dnsError: z.string(),
-            expandedUrl: z.string(),
-            httpError: z.number(),
-            invalidPage: z.string(),
-            lastCheckTime: z.string(),
-            platform: z.string(),
-            redirectionError: z.string(),
-            urlRejected: z.string(),
-          }),
-          destinationUrl: z.object({
-            destinationUrl: z.string(),
-          }),
-          domainCall: z.object({
-            topHttpCallDomains: z.array(z.object({
-              domain: z.string(),
-              httpCallCount: z.number(),
-            })),
-            totalHttpCallCount: z.number(),
-          }),
-          downloadSize: z.object({
-            topUrlDownloadSizeBreakdowns: z.array(z.object({
-              downloadSizeKb: z.number(),
-              normalizedUrl: z.string(),
-            })),
-            totalDownloadSizeKb: z.number(),
-          }),
-          httpCall: z.object({
-            urls: z.array(z.string()),
-          }),
-          httpCookie: z.object({
-            cookieNames: z.array(z.string()),
-            maxCookieCount: z.number(),
-          }),
-        })),
+        evidences: z.array(z.unknown()),
         helpCenterUrl: z.string(),
         missingCertificate: z.boolean(),
         policyTopic: z.string(),
@@ -395,7 +195,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/realtimebidding/bidders-creatives",
-  version: "2026.04.03.3",
+  version: "2026.04.04.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -419,6 +219,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.3",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.04.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

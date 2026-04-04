@@ -113,60 +113,15 @@ const GlobalArgsSchema = z.object({
   executionReport: z.object({
     executionErrors: z.object({
       fileValidations: z.array(z.object({
-        fileErrors: z.array(z.object({
-          errorDetails: z.string().describe("The error information.")
-            .optional(),
-          severity: z.enum(["SEVERITY_UNSPECIFIED", "ERROR", "WARNING", "INFO"])
-            .describe("The severity of the error.").optional(),
-        })).describe("List of file level errors.").optional(),
+        fileErrors: z.array(z.unknown()).describe("List of file level errors.")
+          .optional(),
         fileName: z.string().describe("The name of the file.").optional(),
         partialReport: z.boolean().describe(
           "Flag indicating that processing was aborted due to maximum number of errors.",
         ).optional(),
-        rowErrors: z.array(z.object({
-          archiveError: z.object({
-            csvError: z.object({
-              rowNumber: z.number().int().describe(
-                "The row number where the error was detected.",
-              ).optional(),
-            }).describe("Error details for a CSV file.").optional(),
-            filePath: z.string().describe(
-              "Output only. The file path inside the archive where the error was detected.",
-            ).optional(),
-          }).describe("Error details for an archive file.").optional(),
-          assetTitle: z.string().describe("Output only. The asset title.")
-            .optional(),
-          csvError: z.object({
-            rowNumber: z.number().int().describe(
-              "The row number where the error was detected.",
-            ).optional(),
-          }).describe("Error details for a CSV file.").optional(),
-          errors: z.array(z.object({
-            errorDetails: z.string().describe("The error information.")
-              .optional(),
-            severity: z.enum([
-              "SEVERITY_UNSPECIFIED",
-              "ERROR",
-              "WARNING",
-              "INFO",
-            ]).describe("The severity of the error.").optional(),
-          })).describe("The list of errors detected in the row.").optional(),
-          rowNumber: z.number().int().describe(
-            "The row number where the error was detected.",
-          ).optional(),
-          vmName: z.string().describe("The name of the VM in the row.")
-            .optional(),
-          vmUuid: z.string().describe("The VM UUID.").optional(),
-          xlsxError: z.object({
-            rowNumber: z.number().int().describe(
-              "The row number where the error was detected.",
-            ).optional(),
-            sheet: z.string().describe(
-              "The name of the sheet where the error was detected.",
-            ).optional(),
-          }).describe("Error details for an XLSX file.").optional(),
-        })).describe("Partial list of rows that encountered validation error.")
-          .optional(),
+        rowErrors: z.array(z.unknown()).describe(
+          "Partial list of rows that encountered validation error.",
+        ).optional(),
       })).describe("List of errors found in files.").optional(),
       jobErrors: z.array(z.object({
         errorDetails: z.string().describe("The error information.").optional(),
@@ -189,52 +144,30 @@ const GlobalArgsSchema = z.object({
   validationReport: z.object({
     fileValidations: z.array(z.object({
       fileErrors: z.array(z.object({
-        errorDetails: z.string().describe("The error information.").optional(),
-        severity: z.enum(["SEVERITY_UNSPECIFIED", "ERROR", "WARNING", "INFO"])
-          .describe("The severity of the error.").optional(),
+        errorDetails: z.unknown().describe("The error information.").optional(),
+        severity: z.unknown().describe("The severity of the error.").optional(),
       })).describe("List of file level errors.").optional(),
       fileName: z.string().describe("The name of the file.").optional(),
       partialReport: z.boolean().describe(
         "Flag indicating that processing was aborted due to maximum number of errors.",
       ).optional(),
       rowErrors: z.array(z.object({
-        archiveError: z.object({
-          csvError: z.object({
-            rowNumber: z.number().int().describe(
-              "The row number where the error was detected.",
-            ).optional(),
-          }).describe("Error details for a CSV file.").optional(),
-          filePath: z.string().describe(
-            "Output only. The file path inside the archive where the error was detected.",
-          ).optional(),
-        }).describe("Error details for an archive file.").optional(),
-        assetTitle: z.string().describe("Output only. The asset title.")
+        archiveError: z.unknown().describe("Error details for an archive file.")
           .optional(),
-        csvError: z.object({
-          rowNumber: z.number().int().describe(
-            "The row number where the error was detected.",
-          ).optional(),
-        }).describe("Error details for a CSV file.").optional(),
-        errors: z.array(z.object({
-          errorDetails: z.string().describe("The error information.")
-            .optional(),
-          severity: z.enum(["SEVERITY_UNSPECIFIED", "ERROR", "WARNING", "INFO"])
-            .describe("The severity of the error.").optional(),
-        })).describe("The list of errors detected in the row.").optional(),
-        rowNumber: z.number().int().describe(
+        assetTitle: z.unknown().describe("Output only. The asset title.")
+          .optional(),
+        csvError: z.unknown().describe("Error details for a CSV file.")
+          .optional(),
+        errors: z.unknown().describe("The list of errors detected in the row.")
+          .optional(),
+        rowNumber: z.unknown().describe(
           "The row number where the error was detected.",
         ).optional(),
-        vmName: z.string().describe("The name of the VM in the row.")
+        vmName: z.unknown().describe("The name of the VM in the row.")
           .optional(),
-        vmUuid: z.string().describe("The VM UUID.").optional(),
-        xlsxError: z.object({
-          rowNumber: z.number().int().describe(
-            "The row number where the error was detected.",
-          ).optional(),
-          sheet: z.string().describe(
-            "The name of the sheet where the error was detected.",
-          ).optional(),
-        }).describe("Error details for an XLSX file.").optional(),
+        vmUuid: z.unknown().describe("The VM UUID.").optional(),
+        xlsxError: z.unknown().describe("Error details for an XLSX file.")
+          .optional(),
       })).describe("Partial list of rows that encountered validation error.")
         .optional(),
     })).describe("List of errors found in files.").optional(),
@@ -263,35 +196,10 @@ const StateSchema = z.object({
   executionReport: z.object({
     executionErrors: z.object({
       fileValidations: z.array(z.object({
-        fileErrors: z.array(z.object({
-          errorDetails: z.string(),
-          severity: z.string(),
-        })),
+        fileErrors: z.array(z.unknown()),
         fileName: z.string(),
         partialReport: z.boolean(),
-        rowErrors: z.array(z.object({
-          archiveError: z.object({
-            csvError: z.object({
-              rowNumber: z.number(),
-            }),
-            filePath: z.string(),
-          }),
-          assetTitle: z.string(),
-          csvError: z.object({
-            rowNumber: z.number(),
-          }),
-          errors: z.array(z.object({
-            errorDetails: z.string(),
-            severity: z.string(),
-          })),
-          rowNumber: z.number(),
-          vmName: z.string(),
-          vmUuid: z.string(),
-          xlsxError: z.object({
-            rowNumber: z.number(),
-            sheet: z.string(),
-          }),
-        })),
+        rowErrors: z.array(z.unknown()),
       })),
       jobErrors: z.array(z.object({
         errorDetails: z.string(),
@@ -308,33 +216,20 @@ const StateSchema = z.object({
   validationReport: z.object({
     fileValidations: z.array(z.object({
       fileErrors: z.array(z.object({
-        errorDetails: z.string(),
-        severity: z.string(),
+        errorDetails: z.unknown(),
+        severity: z.unknown(),
       })),
       fileName: z.string(),
       partialReport: z.boolean(),
       rowErrors: z.array(z.object({
-        archiveError: z.object({
-          csvError: z.object({
-            rowNumber: z.number(),
-          }),
-          filePath: z.string(),
-        }),
-        assetTitle: z.string(),
-        csvError: z.object({
-          rowNumber: z.number(),
-        }),
-        errors: z.array(z.object({
-          errorDetails: z.string(),
-          severity: z.string(),
-        })),
-        rowNumber: z.number(),
-        vmName: z.string(),
-        vmUuid: z.string(),
-        xlsxError: z.object({
-          rowNumber: z.number(),
-          sheet: z.string(),
-        }),
+        archiveError: z.unknown(),
+        assetTitle: z.unknown(),
+        csvError: z.unknown(),
+        errors: z.unknown(),
+        rowNumber: z.unknown(),
+        vmName: z.unknown(),
+        vmUuid: z.unknown(),
+        xlsxError: z.unknown(),
       })),
     })),
     jobErrors: z.array(z.object({
@@ -356,60 +251,15 @@ const InputsSchema = z.object({
   executionReport: z.object({
     executionErrors: z.object({
       fileValidations: z.array(z.object({
-        fileErrors: z.array(z.object({
-          errorDetails: z.string().describe("The error information.")
-            .optional(),
-          severity: z.enum(["SEVERITY_UNSPECIFIED", "ERROR", "WARNING", "INFO"])
-            .describe("The severity of the error.").optional(),
-        })).describe("List of file level errors.").optional(),
+        fileErrors: z.array(z.unknown()).describe("List of file level errors.")
+          .optional(),
         fileName: z.string().describe("The name of the file.").optional(),
         partialReport: z.boolean().describe(
           "Flag indicating that processing was aborted due to maximum number of errors.",
         ).optional(),
-        rowErrors: z.array(z.object({
-          archiveError: z.object({
-            csvError: z.object({
-              rowNumber: z.number().int().describe(
-                "The row number where the error was detected.",
-              ).optional(),
-            }).describe("Error details for a CSV file.").optional(),
-            filePath: z.string().describe(
-              "Output only. The file path inside the archive where the error was detected.",
-            ).optional(),
-          }).describe("Error details for an archive file.").optional(),
-          assetTitle: z.string().describe("Output only. The asset title.")
-            .optional(),
-          csvError: z.object({
-            rowNumber: z.number().int().describe(
-              "The row number where the error was detected.",
-            ).optional(),
-          }).describe("Error details for a CSV file.").optional(),
-          errors: z.array(z.object({
-            errorDetails: z.string().describe("The error information.")
-              .optional(),
-            severity: z.enum([
-              "SEVERITY_UNSPECIFIED",
-              "ERROR",
-              "WARNING",
-              "INFO",
-            ]).describe("The severity of the error.").optional(),
-          })).describe("The list of errors detected in the row.").optional(),
-          rowNumber: z.number().int().describe(
-            "The row number where the error was detected.",
-          ).optional(),
-          vmName: z.string().describe("The name of the VM in the row.")
-            .optional(),
-          vmUuid: z.string().describe("The VM UUID.").optional(),
-          xlsxError: z.object({
-            rowNumber: z.number().int().describe(
-              "The row number where the error was detected.",
-            ).optional(),
-            sheet: z.string().describe(
-              "The name of the sheet where the error was detected.",
-            ).optional(),
-          }).describe("Error details for an XLSX file.").optional(),
-        })).describe("Partial list of rows that encountered validation error.")
-          .optional(),
+        rowErrors: z.array(z.unknown()).describe(
+          "Partial list of rows that encountered validation error.",
+        ).optional(),
       })).describe("List of errors found in files.").optional(),
       jobErrors: z.array(z.object({
         errorDetails: z.string().describe("The error information.").optional(),
@@ -432,52 +282,30 @@ const InputsSchema = z.object({
   validationReport: z.object({
     fileValidations: z.array(z.object({
       fileErrors: z.array(z.object({
-        errorDetails: z.string().describe("The error information.").optional(),
-        severity: z.enum(["SEVERITY_UNSPECIFIED", "ERROR", "WARNING", "INFO"])
-          .describe("The severity of the error.").optional(),
+        errorDetails: z.unknown().describe("The error information.").optional(),
+        severity: z.unknown().describe("The severity of the error.").optional(),
       })).describe("List of file level errors.").optional(),
       fileName: z.string().describe("The name of the file.").optional(),
       partialReport: z.boolean().describe(
         "Flag indicating that processing was aborted due to maximum number of errors.",
       ).optional(),
       rowErrors: z.array(z.object({
-        archiveError: z.object({
-          csvError: z.object({
-            rowNumber: z.number().int().describe(
-              "The row number where the error was detected.",
-            ).optional(),
-          }).describe("Error details for a CSV file.").optional(),
-          filePath: z.string().describe(
-            "Output only. The file path inside the archive where the error was detected.",
-          ).optional(),
-        }).describe("Error details for an archive file.").optional(),
-        assetTitle: z.string().describe("Output only. The asset title.")
+        archiveError: z.unknown().describe("Error details for an archive file.")
           .optional(),
-        csvError: z.object({
-          rowNumber: z.number().int().describe(
-            "The row number where the error was detected.",
-          ).optional(),
-        }).describe("Error details for a CSV file.").optional(),
-        errors: z.array(z.object({
-          errorDetails: z.string().describe("The error information.")
-            .optional(),
-          severity: z.enum(["SEVERITY_UNSPECIFIED", "ERROR", "WARNING", "INFO"])
-            .describe("The severity of the error.").optional(),
-        })).describe("The list of errors detected in the row.").optional(),
-        rowNumber: z.number().int().describe(
+        assetTitle: z.unknown().describe("Output only. The asset title.")
+          .optional(),
+        csvError: z.unknown().describe("Error details for a CSV file.")
+          .optional(),
+        errors: z.unknown().describe("The list of errors detected in the row.")
+          .optional(),
+        rowNumber: z.unknown().describe(
           "The row number where the error was detected.",
         ).optional(),
-        vmName: z.string().describe("The name of the VM in the row.")
+        vmName: z.unknown().describe("The name of the VM in the row.")
           .optional(),
-        vmUuid: z.string().describe("The VM UUID.").optional(),
-        xlsxError: z.object({
-          rowNumber: z.number().int().describe(
-            "The row number where the error was detected.",
-          ).optional(),
-          sheet: z.string().describe(
-            "The name of the sheet where the error was detected.",
-          ).optional(),
-        }).describe("Error details for an XLSX file.").optional(),
+        vmUuid: z.unknown().describe("The VM UUID.").optional(),
+        xlsxError: z.unknown().describe("Error details for an XLSX file.")
+          .optional(),
       })).describe("Partial list of rows that encountered validation error.")
         .optional(),
     })).describe("List of errors found in files.").optional(),
@@ -500,7 +328,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/migrationcenter/importjobs",
-  version: "2026.04.03.3",
+  version: "2026.04.04.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -524,6 +352,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.3",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.04.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

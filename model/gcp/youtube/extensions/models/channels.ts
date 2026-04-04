@@ -145,8 +145,8 @@ const GlobalArgsSchema = z.object({
           value: z.string().optional(),
         }).optional(),
         localized: z.array(z.object({
-          language: z.string().optional(),
-          value: z.string().optional(),
+          language: z.unknown().optional(),
+          value: z.unknown().optional(),
         })).optional(),
       }).optional(),
       bannerExternalUrl: z.string().describe(
@@ -200,8 +200,8 @@ const GlobalArgsSchema = z.object({
           value: z.string().optional(),
         }).optional(),
         localized: z.array(z.object({
-          language: z.string().optional(),
-          value: z.string().optional(),
+          language: z.unknown().optional(),
+          value: z.unknown().optional(),
         })).optional(),
       }).optional(),
       largeBrandedBannerImageUrl: z.object({
@@ -210,8 +210,8 @@ const GlobalArgsSchema = z.object({
           value: z.string().optional(),
         }).optional(),
         localized: z.array(z.object({
-          language: z.string().optional(),
-          value: z.string().optional(),
+          language: z.unknown().optional(),
+          value: z.unknown().optional(),
         })).optional(),
       }).optional(),
       smallBrandedBannerImageImapScript: z.object({
@@ -220,8 +220,8 @@ const GlobalArgsSchema = z.object({
           value: z.string().optional(),
         }).optional(),
         localized: z.array(z.object({
-          language: z.string().optional(),
-          value: z.string().optional(),
+          language: z.unknown().optional(),
+          value: z.unknown().optional(),
         })).optional(),
       }).optional(),
       smallBrandedBannerImageUrl: z.object({
@@ -230,8 +230,8 @@ const GlobalArgsSchema = z.object({
           value: z.string().optional(),
         }).optional(),
         localized: z.array(z.object({
-          language: z.string().optional(),
-          value: z.string().optional(),
+          language: z.unknown().optional(),
+          value: z.unknown().optional(),
         })).optional(),
       }).optional(),
       trackingImageUrl: z.string().describe(
@@ -471,8 +471,8 @@ const StateSchema = z.object({
           value: z.string(),
         }),
         localized: z.array(z.object({
-          language: z.string(),
-          value: z.string(),
+          language: z.unknown(),
+          value: z.unknown(),
         })),
       }),
       bannerExternalUrl: z.string(),
@@ -496,8 +496,8 @@ const StateSchema = z.object({
           value: z.string(),
         }),
         localized: z.array(z.object({
-          language: z.string(),
-          value: z.string(),
+          language: z.unknown(),
+          value: z.unknown(),
         })),
       }),
       largeBrandedBannerImageUrl: z.object({
@@ -506,8 +506,8 @@ const StateSchema = z.object({
           value: z.string(),
         }),
         localized: z.array(z.object({
-          language: z.string(),
-          value: z.string(),
+          language: z.unknown(),
+          value: z.unknown(),
         })),
       }),
       smallBrandedBannerImageImapScript: z.object({
@@ -516,8 +516,8 @@ const StateSchema = z.object({
           value: z.string(),
         }),
         localized: z.array(z.object({
-          language: z.string(),
-          value: z.string(),
+          language: z.unknown(),
+          value: z.unknown(),
         })),
       }),
       smallBrandedBannerImageUrl: z.object({
@@ -526,8 +526,8 @@ const StateSchema = z.object({
           value: z.string(),
         }),
         localized: z.array(z.object({
-          language: z.string(),
-          value: z.string(),
+          language: z.unknown(),
+          value: z.unknown(),
         })),
       }),
       trackingImageUrl: z.string(),
@@ -688,8 +688,8 @@ const InputsSchema = z.object({
           value: z.string().optional(),
         }).optional(),
         localized: z.array(z.object({
-          language: z.string().optional(),
-          value: z.string().optional(),
+          language: z.unknown().optional(),
+          value: z.unknown().optional(),
         })).optional(),
       }).optional(),
       bannerExternalUrl: z.string().describe(
@@ -743,8 +743,8 @@ const InputsSchema = z.object({
           value: z.string().optional(),
         }).optional(),
         localized: z.array(z.object({
-          language: z.string().optional(),
-          value: z.string().optional(),
+          language: z.unknown().optional(),
+          value: z.unknown().optional(),
         })).optional(),
       }).optional(),
       largeBrandedBannerImageUrl: z.object({
@@ -753,8 +753,8 @@ const InputsSchema = z.object({
           value: z.string().optional(),
         }).optional(),
         localized: z.array(z.object({
-          language: z.string().optional(),
-          value: z.string().optional(),
+          language: z.unknown().optional(),
+          value: z.unknown().optional(),
         })).optional(),
       }).optional(),
       smallBrandedBannerImageImapScript: z.object({
@@ -763,8 +763,8 @@ const InputsSchema = z.object({
           value: z.string().optional(),
         }).optional(),
         localized: z.array(z.object({
-          language: z.string().optional(),
-          value: z.string().optional(),
+          language: z.unknown().optional(),
+          value: z.unknown().optional(),
         })).optional(),
       }).optional(),
       smallBrandedBannerImageUrl: z.object({
@@ -773,8 +773,8 @@ const InputsSchema = z.object({
           value: z.string().optional(),
         }).optional(),
         localized: z.array(z.object({
-          language: z.string().optional(),
-          value: z.string().optional(),
+          language: z.unknown().optional(),
+          value: z.unknown().optional(),
         })).optional(),
       }).optional(),
       trackingImageUrl: z.string().describe(
@@ -982,7 +982,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/youtube/channels",
-  version: "2026.04.03.3",
+  version: "2026.04.04.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -1006,6 +1006,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.3",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.04.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

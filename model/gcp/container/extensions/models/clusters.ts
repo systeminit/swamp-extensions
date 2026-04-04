@@ -321,10 +321,10 @@ const GlobalArgsSchema = z.object({
             "A flag that specifies whether node auto-upgrade is enabled for the node pool. If enabled, node auto-upgrade helps keep the nodes in your node pool up to date with the latest release version of Kubernetes.",
           ).optional(),
           upgradeOptions: z.object({
-            autoUpgradeStartTime: z.string().describe(
+            autoUpgradeStartTime: z.unknown().describe(
               "Output only. This field is set when upgrades are about to commence with the approximate start time for the upgrades, in [RFC3339](https://www.ietf.org/rfc/rfc3339.txt) text format.",
             ).optional(),
-            description: z.string().describe(
+            description: z.unknown().describe(
               "Output only. This field is set when upgrades are about to commence with the description of the upgrade.",
             ).optional(),
           }).describe(
@@ -352,27 +352,13 @@ const GlobalArgsSchema = z.object({
         }).describe("A set of Shielded Instance options.").optional(),
         upgradeSettings: z.object({
           blueGreenSettings: z.object({
-            autoscaledRolloutPolicy: z.object({
-              waitForDrainDuration: z.string().describe(
-                "Optional. Time to wait after cordoning the blue pool before draining the nodes. Defaults to 3 days. The value can be set between 0 and 7 days, inclusive.",
-              ).optional(),
-            }).describe(
+            autoscaledRolloutPolicy: z.unknown().describe(
               "Autoscaled rollout policy utilizes the cluster autoscaler during blue-green upgrade to scale both the blue and green pools.",
             ).optional(),
-            nodePoolSoakDuration: z.string().describe(
+            nodePoolSoakDuration: z.unknown().describe(
               "Time needed after draining entire blue pool. After this period, blue pool will be cleaned up.",
             ).optional(),
-            standardRolloutPolicy: z.object({
-              batchNodeCount: z.number().int().describe(
-                "Number of blue nodes to drain in a batch.",
-              ).optional(),
-              batchPercentage: z.number().describe(
-                "Percentage of the blue pool nodes to drain in a batch. The range of this field should be (0.0, 1.0].",
-              ).optional(),
-              batchSoakDuration: z.string().describe(
-                "Soak time after each batch gets drained. Default to zero.",
-              ).optional(),
-            }).describe(
+            standardRolloutPolicy: z.unknown().describe(
               "Standard rollout policy is the default policy for blue-green.",
             ).optional(),
           }).describe("Settings for blue-green upgrade.").optional(),
@@ -527,14 +513,7 @@ const GlobalArgsSchema = z.object({
       }).describe("Describes the configuration of a DNS endpoint.").optional(),
       ipEndpointsConfig: z.object({
         authorizedNetworksConfig: z.object({
-          cidrBlocks: z.array(z.object({
-            cidrBlock: z.string().describe(
-              "cidr_block must be specified in CIDR notation.",
-            ).optional(),
-            displayName: z.string().describe(
-              "display_name is an optional field for users to identify CIDR blocks.",
-            ).optional(),
-          })).describe(
+          cidrBlocks: z.array(z.unknown()).describe(
             "cidr_blocks define up to 50 external networks that could access Kubernetes master through HTTPS.",
           ).optional(),
           enabled: z.boolean().describe(
@@ -710,7 +689,7 @@ const GlobalArgsSchema = z.object({
     ).optional(),
     ipAllocationPolicy: z.object({
       additionalIpRangesConfigs: z.array(z.object({
-        podIpv4RangeNames: z.array(z.string()).describe(
+        podIpv4RangeNames: z.array(z.unknown()).describe(
           "List of secondary ranges names within this subnetwork that can be used for pod IPs. Example1: gke-pod-range1 Example2: gke-pod-range1,gke-pod-range2",
         ).optional(),
         status: z.enum(["STATUS_UNSPECIFIED", "ACTIVE", "DRAINING"]).describe(
@@ -724,9 +703,9 @@ const GlobalArgsSchema = z.object({
       ).optional(),
       additionalPodRangesConfig: z.object({
         podRangeInfo: z.array(z.object({
-          rangeName: z.string().describe("Output only. Name of a range.")
+          rangeName: z.unknown().describe("Output only. Name of a range.")
             .optional(),
-          utilization: z.number().describe(
+          utilization: z.unknown().describe(
             "Output only. The utilization of the range.",
           ).optional(),
         })).describe("Output only. Information for additional pod range.")
@@ -892,26 +871,13 @@ const GlobalArgsSchema = z.object({
         maintenanceExclusions: z.record(
           z.string(),
           z.object({
-            endTime: z.string().describe(
+            endTime: z.unknown().describe(
               "The time that the window ends. The end time should take place after the start time.",
             ).optional(),
-            maintenanceExclusionOptions: z.object({
-              endTimeBehavior: z.enum([
-                "END_TIME_BEHAVIOR_UNSPECIFIED",
-                "UNTIL_END_OF_SUPPORT",
-              ]).describe(
-                "EndTimeBehavior specifies the behavior of the exclusion end time.",
-              ).optional(),
-              scope: z.enum([
-                "NO_UPGRADES",
-                "NO_MINOR_UPGRADES",
-                "NO_MINOR_OR_NODE_UPGRADES",
-              ]).describe(
-                "Scope specifies the upgrade scope which upgrades are blocked by the exclusion.",
-              ).optional(),
-            }).describe("Represents the Maintenance exclusion option.")
-              .optional(),
-            startTime: z.string().describe(
+            maintenanceExclusionOptions: z.unknown().describe(
+              "Represents the Maintenance exclusion option.",
+            ).optional(),
+            startTime: z.unknown().describe(
               "The time that the window first starts.",
             ).optional(),
           }),
@@ -923,26 +889,13 @@ const GlobalArgsSchema = z.object({
             "An RRULE (https://tools.ietf.org/html/rfc5545#section-3.8.5.3) for how this window recurs. They go on for the span of time between the start and end time. For example, to have something repeat every weekday, you'd use: `FREQ=WEEKLY;BYDAY=MO,TU,WE,TH,FR` To repeat some window daily (equivalent to the DailyMaintenanceWindow): `FREQ=DAILY` For the first weekend of every month: `FREQ=MONTHLY;BYSETPOS=1;BYDAY=SA,SU` This specifies how frequently the window starts. Eg, if you wanted to have a 9-5 UTC-4 window every weekday, you'd use something like: ` start time = 2019-01-01T09:00:00-0400 end time = 2019-01-01T17:00:00-0400 recurrence = FREQ=WEEKLY;BYDAY=MO,TU,WE,TH,FR ` Windows can span multiple days. Eg, to make the window encompass every weekend from midnight Saturday till the last minute of Sunday UTC: ` start time = 2019-01-05T00:00:00Z end time = 2019-01-07T23:59:00Z recurrence = FREQ=WEEKLY;BYDAY=SA ` Note the start and end time's specific dates are largely arbitrary except to specify duration of the window and when it first starts. The FREQ values of HOURLY, MINUTELY, and SECONDLY are not supported.",
           ).optional(),
           window: z.object({
-            endTime: z.string().describe(
+            endTime: z.unknown().describe(
               "The time that the window ends. The end time should take place after the start time.",
             ).optional(),
-            maintenanceExclusionOptions: z.object({
-              endTimeBehavior: z.enum([
-                "END_TIME_BEHAVIOR_UNSPECIFIED",
-                "UNTIL_END_OF_SUPPORT",
-              ]).describe(
-                "EndTimeBehavior specifies the behavior of the exclusion end time.",
-              ).optional(),
-              scope: z.enum([
-                "NO_UPGRADES",
-                "NO_MINOR_UPGRADES",
-                "NO_MINOR_OR_NODE_UPGRADES",
-              ]).describe(
-                "Scope specifies the upgrade scope which upgrades are blocked by the exclusion.",
-              ).optional(),
-            }).describe("Represents the Maintenance exclusion option.")
-              .optional(),
-            startTime: z.string().describe(
+            maintenanceExclusionOptions: z.unknown().describe(
+              "Represents the Maintenance exclusion option.",
+            ).optional(),
+            startTime: z.unknown().describe(
               "The time that the window first starts.",
             ).optional(),
           }).describe("Represents an arbitrary window of time.").optional(),
@@ -1213,12 +1166,9 @@ const GlobalArgsSchema = z.object({
           "The accelerator type resource name. List of supported accelerators [here](https://cloud.google.com/compute/docs/gpus)",
         ).optional(),
         gpuDriverInstallationConfig: z.object({
-          gpuDriverVersion: z.enum([
-            "GPU_DRIVER_VERSION_UNSPECIFIED",
-            "INSTALLATION_DISABLED",
-            "DEFAULT",
-            "LATEST",
-          ]).describe("Mode for how the GPU driver is installed.").optional(),
+          gpuDriverVersion: z.unknown().describe(
+            "Mode for how the GPU driver is installed.",
+          ).optional(),
         }).describe(
           "GPUDriverInstallationConfig specifies the version of GPU driver to be auto installed.",
         ).optional(),
@@ -1226,14 +1176,10 @@ const GlobalArgsSchema = z.object({
           "Size of partitions to create on the GPU. Valid values are described in the NVIDIA [mig user guide](https://docs.nvidia.com/datacenter/tesla/mig-user-guide/#partitioning).",
         ).optional(),
         gpuSharingConfig: z.object({
-          gpuSharingStrategy: z.enum([
-            "GPU_SHARING_STRATEGY_UNSPECIFIED",
-            "TIME_SHARING",
-            "MPS",
-          ]).describe(
+          gpuSharingStrategy: z.unknown().describe(
             "The type of GPU sharing strategy to enable on the GPU node.",
           ).optional(),
-          maxSharedClientsPerGpu: z.string().describe(
+          maxSharedClientsPerGpu: z.unknown().describe(
             "The max number of containers that can share a physical GPU.",
           ).optional(),
         }).describe(
@@ -1299,80 +1245,19 @@ const GlobalArgsSchema = z.object({
       ).optional(),
       containerdConfig: z.object({
         privateRegistryAccessConfig: z.object({
-          certificateAuthorityDomainConfig: z.array(z.object({
-            fqdns: z.array(z.string()).describe(
-              "List of fully qualified domain names (FQDN). Specifying port is supported. Wildcards are NOT supported. Examples: - `my.customdomain.com` - `10.0.1.2:5000`",
-            ).optional(),
-            gcpSecretManagerCertificateConfig: z.object({
-              secretUri: z.string().describe(
-                'Secret URI, in the form "projects/$PROJECT_ID/secrets/$SECRET_NAME/versions/$VERSION". Version can be fixed (e.g. "2") or "latest"',
-              ).optional(),
-            }).describe(
-              "GCPSecretManagerCertificateConfig configures a secret from [Secret Manager](https://cloud.google.com/secret-manager).",
-            ).optional(),
-          })).describe("Private registry access configuration.").optional(),
+          certificateAuthorityDomainConfig: z.array(z.unknown()).describe(
+            "Private registry access configuration.",
+          ).optional(),
           enabled: z.boolean().describe("Private registry access is enabled.")
             .optional(),
         }).describe(
           "PrivateRegistryAccessConfig contains access configuration for private container registries.",
         ).optional(),
         registryHosts: z.array(z.object({
-          hosts: z.array(z.object({
-            ca: z.array(z.object({
-              gcpSecretManagerSecretUri: z.string().describe(
-                'The URI configures a secret from [Secret Manager](https://cloud.google.com/secret-manager) in the format "projects/$PROJECT_ID/secrets/$SECRET_NAME/versions/$VERSION" for global secret or "projects/$PROJECT_ID/locations/$REGION/secrets/$SECRET_NAME/versions/$VERSION" for regional secret. Version can be fixed (e.g. "2") or "latest"',
-              ).optional(),
-            })).describe("CA configures the registry host certificate.")
-              .optional(),
-            capabilities: z.array(
-              z.enum([
-                "HOST_CAPABILITY_UNSPECIFIED",
-                "HOST_CAPABILITY_PULL",
-                "HOST_CAPABILITY_RESOLVE",
-                "HOST_CAPABILITY_PUSH",
-              ]),
-            ).describe(
-              "Capabilities represent the capabilities of the registry host, specifying what operations a host is capable of performing. If not set, containerd enables all capabilities by default.",
-            ).optional(),
-            client: z.array(z.object({
-              cert: z.object({
-                gcpSecretManagerSecretUri: z.string().describe(
-                  'The URI configures a secret from [Secret Manager](https://cloud.google.com/secret-manager) in the format "projects/$PROJECT_ID/secrets/$SECRET_NAME/versions/$VERSION" for global secret or "projects/$PROJECT_ID/locations/$REGION/secrets/$SECRET_NAME/versions/$VERSION" for regional secret. Version can be fixed (e.g. "2") or "latest"',
-                ).optional(),
-              }).describe(
-                "CertificateConfig configures certificate for the registry.",
-              ).optional(),
-              key: z.object({
-                gcpSecretManagerSecretUri: z.string().describe(
-                  'The URI configures a secret from [Secret Manager](https://cloud.google.com/secret-manager) in the format "projects/$PROJECT_ID/secrets/$SECRET_NAME/versions/$VERSION" for global secret or "projects/$PROJECT_ID/locations/$REGION/secrets/$SECRET_NAME/versions/$VERSION" for regional secret. Version can be fixed (e.g. "2") or "latest"',
-                ).optional(),
-              }).describe(
-                "CertificateConfig configures certificate for the registry.",
-              ).optional(),
-            })).describe(
-              "Client configures the registry host client certificate and key.",
-            ).optional(),
-            dialTimeout: z.string().describe(
-              "Specifies the maximum duration allowed for a connection attempt to complete. A shorter timeout helps reduce delays when falling back to the original registry if the mirror is unreachable. Maximum allowed value is 180s. If not set, containerd sets default 30s. The value should be a decimal number of seconds with an `s` suffix.",
-            ).optional(),
-            header: z.array(z.object({
-              key: z.string().describe("Key configures the header key.")
-                .optional(),
-              value: z.array(z.string()).describe(
-                "Value configures the header value.",
-              ).optional(),
-            })).describe("Header configures the registry host headers.")
-              .optional(),
-            host: z.string().describe(
-              "Host configures the registry host/mirror. It supports fully qualified domain names (FQDNs) and IP addresses. Specifying scheme, port or path is supported. Scheme can only be http or https. Wildcards are NOT supported. Examples: - `my.customdomain.com` - `https://my.customdomain.com/path` - `10.0.1.2:5000`",
-            ).optional(),
-            overridePath: z.boolean().describe(
-              "OverridePath is used to indicate the host's API root endpoint is defined in the URL path rather than by the API specification. This may be used with non-compliant OCI registries which are missing the /v2 prefix. If not set, containerd sets default false.",
-            ).optional(),
-          })).describe(
+          hosts: z.unknown().describe(
             "HostConfig configures a list of host-specific configurations for the server. Each server can have at most 10 host configurations.",
           ).optional(),
-          server: z.string().describe(
+          server: z.unknown().describe(
             "Defines the host name of the registry server, which will be used to create configuration file as /etc/containerd/hosts.d//hosts.toml. It supports fully qualified domain names (FQDN) and IP addresses: Specifying port is supported, while scheme and path are NOT supported. Wildcards are NOT supported. Examples: - `my.customdomain.com` - `10.0.1.2:5000`",
           ).optional(),
         })).describe(
@@ -1622,15 +1507,15 @@ const GlobalArgsSchema = z.object({
           .optional(),
         swapConfig: z.object({
           bootDiskProfile: z.object({
-            swapSizeGib: z.string().describe(
+            swapSizeGib: z.unknown().describe(
               "Specifies the size of the swap space in gibibytes (GiB).",
             ).optional(),
-            swapSizePercent: z.number().int().describe(
+            swapSizePercent: z.unknown().describe(
               "Specifies the size of the swap space as a percentage of the boot disk size.",
             ).optional(),
           }).describe("Swap on the node's boot disk.").optional(),
           dedicatedLocalSsdProfile: z.object({
-            diskCount: z.string().describe(
+            diskCount: z.unknown().describe(
               "The number of physical local NVMe SSD disks to attach.",
             ).optional(),
           }).describe(
@@ -1640,16 +1525,16 @@ const GlobalArgsSchema = z.object({
             "Optional. Enables or disables swap for the node pool.",
           ).optional(),
           encryptionConfig: z.object({
-            disabled: z.boolean().describe(
+            disabled: z.unknown().describe(
               "Optional. If true, swap space will not be encrypted. Defaults to false (encrypted).",
             ).optional(),
           }).describe("Defines encryption settings for the swap space.")
             .optional(),
           ephemeralLocalSsdProfile: z.object({
-            swapSizeGib: z.string().describe(
+            swapSizeGib: z.unknown().describe(
               "Specifies the size of the swap space in gibibytes (GiB).",
             ).optional(),
-            swapSizePercent: z.number().int().describe(
+            swapSizePercent: z.unknown().describe(
               "Specifies the size of the swap space as a percentage of the ephemeral local SSD capacity.",
             ).optional(),
           }).describe(
@@ -1789,12 +1674,10 @@ const GlobalArgsSchema = z.object({
           "Optional. The minimum number of virtual CPUs this instance will consume when running on a sole-tenant node. This field can only be set if the node pool is created in a shared sole-tenant node group.",
         ).optional(),
         nodeAffinities: z.array(z.object({
-          key: z.string().describe("Key for NodeAffinity.").optional(),
-          operator: z.enum(["OPERATOR_UNSPECIFIED", "IN", "NOT_IN"]).describe(
-            "Operator for NodeAffinity.",
-          ).optional(),
-          values: z.array(z.string()).describe("Values for NodeAffinity.")
+          key: z.unknown().describe("Key for NodeAffinity.").optional(),
+          operator: z.unknown().describe("Operator for NodeAffinity.")
             .optional(),
+          values: z.unknown().describe("Values for NodeAffinity.").optional(),
         })).describe(
           "NodeAffinities used to match to a shared sole tenant node group.",
         ).optional(),
@@ -1893,15 +1776,15 @@ const GlobalArgsSchema = z.object({
           .optional(),
         swapConfig: z.object({
           bootDiskProfile: z.object({
-            swapSizeGib: z.string().describe(
+            swapSizeGib: z.unknown().describe(
               "Specifies the size of the swap space in gibibytes (GiB).",
             ).optional(),
-            swapSizePercent: z.number().int().describe(
+            swapSizePercent: z.unknown().describe(
               "Specifies the size of the swap space as a percentage of the boot disk size.",
             ).optional(),
           }).describe("Swap on the node's boot disk.").optional(),
           dedicatedLocalSsdProfile: z.object({
-            diskCount: z.string().describe(
+            diskCount: z.unknown().describe(
               "The number of physical local NVMe SSD disks to attach.",
             ).optional(),
           }).describe(
@@ -1911,16 +1794,16 @@ const GlobalArgsSchema = z.object({
             "Optional. Enables or disables swap for the node pool.",
           ).optional(),
           encryptionConfig: z.object({
-            disabled: z.boolean().describe(
+            disabled: z.unknown().describe(
               "Optional. If true, swap space will not be encrypted. Defaults to false (encrypted).",
             ).optional(),
           }).describe("Defines encryption settings for the swap space.")
             .optional(),
           ephemeralLocalSsdProfile: z.object({
-            swapSizeGib: z.string().describe(
+            swapSizeGib: z.unknown().describe(
               "Specifies the size of the swap space in gibibytes (GiB).",
             ).optional(),
-            swapSizePercent: z.number().int().describe(
+            swapSizePercent: z.unknown().describe(
               "Specifies the size of the swap space as a percentage of the ephemeral local SSD capacity.",
             ).optional(),
           }).describe(
@@ -2112,87 +1995,19 @@ const GlobalArgsSchema = z.object({
       nodeConfigDefaults: z.object({
         containerdConfig: z.object({
           privateRegistryAccessConfig: z.object({
-            certificateAuthorityDomainConfig: z.array(z.object({
-              fqdns: z.array(z.string()).describe(
-                "List of fully qualified domain names (FQDN). Specifying port is supported. Wildcards are NOT supported. Examples: - `my.customdomain.com` - `10.0.1.2:5000`",
-              ).optional(),
-              gcpSecretManagerCertificateConfig: z.object({
-                secretUri: z.string().describe(
-                  'Secret URI, in the form "projects/$PROJECT_ID/secrets/$SECRET_NAME/versions/$VERSION". Version can be fixed (e.g. "2") or "latest"',
-                ).optional(),
-              }).describe(
-                "GCPSecretManagerCertificateConfig configures a secret from [Secret Manager](https://cloud.google.com/secret-manager).",
-              ).optional(),
-            })).describe("Private registry access configuration.").optional(),
-            enabled: z.boolean().describe("Private registry access is enabled.")
+            certificateAuthorityDomainConfig: z.unknown().describe(
+              "Private registry access configuration.",
+            ).optional(),
+            enabled: z.unknown().describe("Private registry access is enabled.")
               .optional(),
           }).describe(
             "PrivateRegistryAccessConfig contains access configuration for private container registries.",
           ).optional(),
-          registryHosts: z.array(z.object({
-            hosts: z.array(z.object({
-              ca: z.array(z.object({
-                gcpSecretManagerSecretUri: z.string().describe(
-                  'The URI configures a secret from [Secret Manager](https://cloud.google.com/secret-manager) in the format "projects/$PROJECT_ID/secrets/$SECRET_NAME/versions/$VERSION" for global secret or "projects/$PROJECT_ID/locations/$REGION/secrets/$SECRET_NAME/versions/$VERSION" for regional secret. Version can be fixed (e.g. "2") or "latest"',
-                ).optional(),
-              })).describe("CA configures the registry host certificate.")
-                .optional(),
-              capabilities: z.array(
-                z.enum([
-                  "HOST_CAPABILITY_UNSPECIFIED",
-                  "HOST_CAPABILITY_PULL",
-                  "HOST_CAPABILITY_RESOLVE",
-                  "HOST_CAPABILITY_PUSH",
-                ]),
-              ).describe(
-                "Capabilities represent the capabilities of the registry host, specifying what operations a host is capable of performing. If not set, containerd enables all capabilities by default.",
-              ).optional(),
-              client: z.array(z.object({
-                cert: z.object({
-                  gcpSecretManagerSecretUri: z.string().describe(
-                    'The URI configures a secret from [Secret Manager](https://cloud.google.com/secret-manager) in the format "projects/$PROJECT_ID/secrets/$SECRET_NAME/versions/$VERSION" for global secret or "projects/$PROJECT_ID/locations/$REGION/secrets/$SECRET_NAME/versions/$VERSION" for regional secret. Version can be fixed (e.g. "2") or "latest"',
-                  ).optional(),
-                }).describe(
-                  "CertificateConfig configures certificate for the registry.",
-                ).optional(),
-                key: z.object({
-                  gcpSecretManagerSecretUri: z.string().describe(
-                    'The URI configures a secret from [Secret Manager](https://cloud.google.com/secret-manager) in the format "projects/$PROJECT_ID/secrets/$SECRET_NAME/versions/$VERSION" for global secret or "projects/$PROJECT_ID/locations/$REGION/secrets/$SECRET_NAME/versions/$VERSION" for regional secret. Version can be fixed (e.g. "2") or "latest"',
-                  ).optional(),
-                }).describe(
-                  "CertificateConfig configures certificate for the registry.",
-                ).optional(),
-              })).describe(
-                "Client configures the registry host client certificate and key.",
-              ).optional(),
-              dialTimeout: z.string().describe(
-                "Specifies the maximum duration allowed for a connection attempt to complete. A shorter timeout helps reduce delays when falling back to the original registry if the mirror is unreachable. Maximum allowed value is 180s. If not set, containerd sets default 30s. The value should be a decimal number of seconds with an `s` suffix.",
-              ).optional(),
-              header: z.array(z.object({
-                key: z.string().describe("Key configures the header key.")
-                  .optional(),
-                value: z.array(z.string()).describe(
-                  "Value configures the header value.",
-                ).optional(),
-              })).describe("Header configures the registry host headers.")
-                .optional(),
-              host: z.string().describe(
-                "Host configures the registry host/mirror. It supports fully qualified domain names (FQDNs) and IP addresses. Specifying scheme, port or path is supported. Scheme can only be http or https. Wildcards are NOT supported. Examples: - `my.customdomain.com` - `https://my.customdomain.com/path` - `10.0.1.2:5000`",
-              ).optional(),
-              overridePath: z.boolean().describe(
-                "OverridePath is used to indicate the host's API root endpoint is defined in the URL path rather than by the API specification. This may be used with non-compliant OCI registries which are missing the /v2 prefix. If not set, containerd sets default false.",
-              ).optional(),
-            })).describe(
-              "HostConfig configures a list of host-specific configurations for the server. Each server can have at most 10 host configurations.",
-            ).optional(),
-            server: z.string().describe(
-              "Defines the host name of the registry server, which will be used to create configuration file as /etc/containerd/hosts.d//hosts.toml. It supports fully qualified domain names (FQDN) and IP addresses: Specifying port is supported, while scheme and path are NOT supported. Wildcards are NOT supported. Examples: - `my.customdomain.com` - `10.0.1.2:5000`",
-            ).optional(),
-          })).describe(
+          registryHosts: z.array(z.unknown()).describe(
             "RegistryHostConfig configures containerd registry host configuration. Each registry_hosts represents a hosts.toml file. At most 25 registry_hosts are allowed.",
           ).optional(),
           writableCgroups: z.object({
-            enabled: z.boolean().describe(
+            enabled: z.unknown().describe(
               "Optional. Whether writable cgroups is enabled.",
             ).optional(),
           }).describe("Defines writable cgroups configuration.").optional(),
@@ -2206,11 +2021,8 @@ const GlobalArgsSchema = z.object({
         ).optional(),
         loggingConfig: z.object({
           variantConfig: z.object({
-            variant: z.enum([
-              "VARIANT_UNSPECIFIED",
-              "DEFAULT",
-              "MAX_THROUGHPUT",
-            ]).describe("Logging variant deployed on nodes.").optional(),
+            variant: z.unknown().describe("Logging variant deployed on nodes.")
+              .optional(),
           }).describe(
             "LoggingVariantConfig specifies the behaviour of the logging component.",
           ).optional(),
@@ -2218,7 +2030,7 @@ const GlobalArgsSchema = z.object({
           "NodePoolLoggingConfig specifies logging configuration for nodepools.",
         ).optional(),
         nodeKubeletConfig: z.object({
-          allowedUnsafeSysctls: z.array(z.string()).describe(
+          allowedUnsafeSysctls: z.array(z.unknown()).describe(
             "Optional. Defines a comma-separated allowlist of unsafe sysctls or sysctl patterns (ending in `*`). The unsafe namespaced sysctl groups are `kernel.shm*`, `kernel.msg*`, `kernel.sem`, `fs.mqueue.*`, and `net.*`. Leaving this allowlist empty means they cannot be set on Pods. To allow certain sysctls or sysctl patterns to be set on Pods, list them separated by commas. For example: `kernel.msg*,net.ipv4.route.min_pmtu`. See https://kubernetes.io/docs/tasks/administer-cluster/sysctl-cluster/ for more details.",
           ).optional(),
           containerLogMaxFiles: z.number().int().describe(
@@ -2237,7 +2049,7 @@ const GlobalArgsSchema = z.object({
             'Control the CPU management policy on the node. See https://kubernetes.io/docs/tasks/administer-cluster/cpu-management-policies/ The following values are allowed. * "none": the default, which represents the existing scheduling behavior. * "static": allows pods with certain resource characteristics to be granted increased CPU affinity and exclusivity on the node. The default value is \'none\' if unspecified.',
           ).optional(),
           crashLoopBackOff: z.object({
-            maxContainerRestartPeriod: z.string().describe(
+            maxContainerRestartPeriod: z.unknown().describe(
               'Optional. The maximum duration the backoff delay can accrue to for container restarts, minimum 1 second, maximum 300 seconds. If not set, defaults to the internal crashloopbackoff maximum. The string must be a sequence of decimal numbers, each with optional fraction and a unit suffix, such as "300ms". Valid time units are "ns", "us" (or "µs"), "ms", "s", "m", "h". See https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle/#configurable-container-restart-delay for more details.',
             ).optional(),
           }).describe(
@@ -2247,66 +2059,66 @@ const GlobalArgsSchema = z.object({
             "Optional. eviction_max_pod_grace_period_seconds is the maximum allowed grace period (in seconds) to use when terminating pods in response to a soft eviction threshold being met. This value effectively caps the Pod's terminationGracePeriodSeconds value during soft evictions. Default: 0. Range: [0, 300].",
           ).optional(),
           evictionMinimumReclaim: z.object({
-            imagefsAvailable: z.string().describe(
+            imagefsAvailable: z.unknown().describe(
               'Optional. Minimum reclaim for eviction due to imagefs available signal. Only take percentage value for now. Sample format: "10%". Must be <=10%. See https://kubernetes.io/docs/concepts/scheduling-eviction/node-pressure-eviction/#eviction-signals',
             ).optional(),
-            imagefsInodesFree: z.string().describe(
+            imagefsInodesFree: z.unknown().describe(
               'Optional. Minimum reclaim for eviction due to imagefs inodes free signal. Only take percentage value for now. Sample format: "10%". Must be <=10%. See https://kubernetes.io/docs/concepts/scheduling-eviction/node-pressure-eviction/#eviction-signals',
             ).optional(),
-            memoryAvailable: z.string().describe(
+            memoryAvailable: z.unknown().describe(
               'Optional. Minimum reclaim for eviction due to memory available signal. Only take percentage value for now. Sample format: "10%". Must be <=10%. See https://kubernetes.io/docs/concepts/scheduling-eviction/node-pressure-eviction/#eviction-signals',
             ).optional(),
-            nodefsAvailable: z.string().describe(
+            nodefsAvailable: z.unknown().describe(
               'Optional. Minimum reclaim for eviction due to nodefs available signal. Only take percentage value for now. Sample format: "10%". Must be <=10%. See https://kubernetes.io/docs/concepts/scheduling-eviction/node-pressure-eviction/#eviction-signals',
             ).optional(),
-            nodefsInodesFree: z.string().describe(
+            nodefsInodesFree: z.unknown().describe(
               'Optional. Minimum reclaim for eviction due to nodefs inodes free signal. Only take percentage value for now. Sample format: "10%". Must be <=10%. See https://kubernetes.io/docs/concepts/scheduling-eviction/node-pressure-eviction/#eviction-signals',
             ).optional(),
-            pidAvailable: z.string().describe(
+            pidAvailable: z.unknown().describe(
               'Optional. Minimum reclaim for eviction due to pid available signal. Only take percentage value for now. Sample format: "10%". Must be <=10%. See https://kubernetes.io/docs/concepts/scheduling-eviction/node-pressure-eviction/#eviction-signals',
             ).optional(),
           }).describe(
             "Eviction minimum reclaims are the resource amounts of minimum reclaims for each eviction signal.",
           ).optional(),
           evictionSoft: z.object({
-            imagefsAvailable: z.string().describe(
+            imagefsAvailable: z.unknown().describe(
               'Optional. Amount of storage available on filesystem that container runtime uses for storing images layers. If the container filesystem and image filesystem are not separate, then imagefs can store both image layers and writeable layers. Defines the amount of "imagefs.available" signal in kubelet. Default is unset, if not specified in the kubelet config. It takses percentage value for now. Sample format: "30%". Must be >= 15% and <= 50%. See https://kubernetes.io/docs/concepts/scheduling-eviction/node-pressure-eviction/#eviction-signals',
             ).optional(),
-            imagefsInodesFree: z.string().describe(
+            imagefsInodesFree: z.unknown().describe(
               'Optional. Amount of inodes available on filesystem that container runtime uses for storing images layers. Defines the amount of "imagefs.inodesFree" signal in kubelet. Default is unset, if not specified in the kubelet config. Linux only. It takses percentage value for now. Sample format: "30%". Must be >= 5% and <= 50%. See https://kubernetes.io/docs/concepts/scheduling-eviction/node-pressure-eviction/#eviction-signals',
             ).optional(),
-            memoryAvailable: z.string().describe(
+            memoryAvailable: z.unknown().describe(
               'Optional. Memory available (i.e. capacity - workingSet), in bytes. Defines the amount of "memory.available" signal in kubelet. Default is unset, if not specified in the kubelet config. Format: positive number + unit, e.g. 100Ki, 10Mi, 5Gi. Valid units are Ki, Mi, Gi. Must be >= 100Mi and <= 50% of the node\'s memory. See https://kubernetes.io/docs/concepts/scheduling-eviction/node-pressure-eviction/#eviction-signals',
             ).optional(),
-            nodefsAvailable: z.string().describe(
+            nodefsAvailable: z.unknown().describe(
               'Optional. Amount of storage available on filesystem that kubelet uses for volumes, daemon logs, etc. Defines the amount of "nodefs.available" signal in kubelet. Default is unset, if not specified in the kubelet config. It takses percentage value for now. Sample format: "30%". Must be >= 10% and <= 50%. See https://kubernetes.io/docs/concepts/scheduling-eviction/node-pressure-eviction/#eviction-signals',
             ).optional(),
-            nodefsInodesFree: z.string().describe(
+            nodefsInodesFree: z.unknown().describe(
               'Optional. Amount of inodes available on filesystem that kubelet uses for volumes, daemon logs, etc. Defines the amount of "nodefs.inodesFree" signal in kubelet. Default is unset, if not specified in the kubelet config. Linux only. It takses percentage value for now. Sample format: "30%". Must be >= 5% and <= 50%. See https://kubernetes.io/docs/concepts/scheduling-eviction/node-pressure-eviction/#eviction-signals',
             ).optional(),
-            pidAvailable: z.string().describe(
+            pidAvailable: z.unknown().describe(
               'Optional. Amount of PID available for pod allocation. Defines the amount of "pid.available" signal in kubelet. Default is unset, if not specified in the kubelet config. It takses percentage value for now. Sample format: "30%". Must be >= 10% and <= 50%. See https://kubernetes.io/docs/concepts/scheduling-eviction/node-pressure-eviction/#eviction-signals',
             ).optional(),
           }).describe(
             "Eviction signals are the current state of a particular resource at a specific point in time. The kubelet uses eviction signals to make eviction decisions by comparing the signals to eviction thresholds, which are the minimum amount of the resource that should be available on the node.",
           ).optional(),
           evictionSoftGracePeriod: z.object({
-            imagefsAvailable: z.string().describe(
+            imagefsAvailable: z.unknown().describe(
               'Optional. Grace period for eviction due to imagefs available signal. Sample format: "10s". Must be >= 0. See https://kubernetes.io/docs/concepts/scheduling-eviction/node-pressure-eviction/#eviction-signals',
             ).optional(),
-            imagefsInodesFree: z.string().describe(
+            imagefsInodesFree: z.unknown().describe(
               'Optional. Grace period for eviction due to imagefs inodes free signal. Sample format: "10s". Must be >= 0. See https://kubernetes.io/docs/concepts/scheduling-eviction/node-pressure-eviction/#eviction-signals',
             ).optional(),
-            memoryAvailable: z.string().describe(
+            memoryAvailable: z.unknown().describe(
               'Optional. Grace period for eviction due to memory available signal. Sample format: "10s". Must be >= 0. See https://kubernetes.io/docs/concepts/scheduling-eviction/node-pressure-eviction/#eviction-signals',
             ).optional(),
-            nodefsAvailable: z.string().describe(
+            nodefsAvailable: z.unknown().describe(
               'Optional. Grace period for eviction due to nodefs available signal. Sample format: "10s". Must be >= 0. See https://kubernetes.io/docs/concepts/scheduling-eviction/node-pressure-eviction/#eviction-signals',
             ).optional(),
-            nodefsInodesFree: z.string().describe(
+            nodefsInodesFree: z.unknown().describe(
               'Optional. Grace period for eviction due to nodefs inodes free signal. Sample format: "10s". Must be >= 0. See https://kubernetes.io/docs/concepts/scheduling-eviction/node-pressure-eviction/#eviction-signals',
             ).optional(),
-            pidAvailable: z.string().describe(
+            pidAvailable: z.unknown().describe(
               'Optional. Grace period for eviction due to pid available signal. Sample format: "10s". Must be >= 0. See https://kubernetes.io/docs/concepts/scheduling-eviction/node-pressure-eviction/#eviction-signals',
             ).optional(),
           }).describe(
@@ -2331,7 +2143,7 @@ const GlobalArgsSchema = z.object({
             "Optional. Defines the maximum number of image pulls in parallel. The range is 2 to 5, inclusive. The default value is 2 or 3 depending on the disk type. See https://kubernetes.io/docs/concepts/containers/images/#maximum-parallel-image-pulls for more details.",
           ).optional(),
           memoryManager: z.object({
-            policy: z.string().describe(
+            policy: z.unknown().describe(
               'Controls the memory management policy on the Node. See https://kubernetes.io/docs/tasks/administer-cluster/memory-manager/#policies The following values are allowed. * "none" * "static" The default value is \'none\' if unspecified.',
             ).optional(),
           }).describe(
@@ -2350,10 +2162,10 @@ const GlobalArgsSchema = z.object({
             "Optional. Defines whether to enable single process OOM killer. If true, will prevent the memory.oom.group flag from being set for container cgroups in cgroups v2. This causes processes in the container to be OOM killed individually instead of as a group.",
           ).optional(),
           topologyManager: z.object({
-            policy: z.string().describe(
+            policy: z.unknown().describe(
               "Configures the strategy for resource alignment. Allowed values are: * none: the default policy, and does not perform any topology alignment. * restricted: the topology manager stores the preferred NUMA node affinity for the container, and will reject the pod if the affinity if not preferred. * best-effort: the topology manager stores the preferred NUMA node affinity for the container. If the affinity is not preferred, the topology manager will admit the pod to the node anyway. * single-numa-node: the topology manager determines if the single NUMA node affinity is possible. If it is, Topology Manager will store this and the Hint Providers can then use this information when making the resource allocation decision. If, however, this is not possible then the Topology Manager will reject the pod from the node. This will result in a pod in a Terminated state with a pod admission failure. The default policy value is 'none' if unspecified. Details about each strategy can be found [here](https://kubernetes.io/docs/tasks/administer-cluster/topology-manager/#topology-manager-policies).",
             ).optional(),
-            scope: z.string().describe(
+            scope: z.unknown().describe(
               "The Topology Manager aligns resources in following scopes: * container * pod The default scope is 'container' if unspecified. See https://kubernetes.io/docs/tasks/administer-cluster/topology-manager/#topology-manager-scopes",
             ).optional(),
           }).describe(
@@ -2407,110 +2219,44 @@ const GlobalArgsSchema = z.object({
         ).optional(),
       }).describe("Best effort provisioning.").optional(),
       conditions: z.array(z.object({
-        canonicalCode: z.enum([
-          "OK",
-          "CANCELLED",
-          "UNKNOWN",
-          "INVALID_ARGUMENT",
-          "DEADLINE_EXCEEDED",
-          "NOT_FOUND",
-          "ALREADY_EXISTS",
-          "PERMISSION_DENIED",
-          "UNAUTHENTICATED",
-          "RESOURCE_EXHAUSTED",
-          "FAILED_PRECONDITION",
-          "ABORTED",
-          "OUT_OF_RANGE",
-          "UNIMPLEMENTED",
-          "INTERNAL",
-          "UNAVAILABLE",
-          "DATA_LOSS",
-        ]).describe("Canonical code of the condition.").optional(),
-        code: z.enum([
-          "UNKNOWN",
-          "GCE_STOCKOUT",
-          "GKE_SERVICE_ACCOUNT_DELETED",
-          "GCE_QUOTA_EXCEEDED",
-          "SET_BY_OPERATOR",
-          "CLOUD_KMS_KEY_ERROR",
-          "CA_EXPIRING",
-          "NODE_SERVICE_ACCOUNT_MISSING_PERMISSIONS",
-          "CLOUD_KMS_KEY_DESTROYED",
-        ]).describe(
+        canonicalCode: z.unknown().describe("Canonical code of the condition.")
+          .optional(),
+        code: z.unknown().describe(
           "Machine-friendly representation of the condition Deprecated. Use canonical_code instead.",
         ).optional(),
-        message: z.string().describe(
+        message: z.unknown().describe(
           "Human-friendly representation of the condition",
         ).optional(),
       })).describe("Which conditions caused the current node pool state.")
         .optional(),
       config: z.object({
-        accelerators: z.array(z.object({
-          acceleratorCount: z.string().describe(
-            "The number of the accelerator cards exposed to an instance.",
-          ).optional(),
-          acceleratorType: z.string().describe(
-            "The accelerator type resource name. List of supported accelerators [here](https://cloud.google.com/compute/docs/gpus)",
-          ).optional(),
-          gpuDriverInstallationConfig: z.object({
-            gpuDriverVersion: z.enum([
-              "GPU_DRIVER_VERSION_UNSPECIFIED",
-              "INSTALLATION_DISABLED",
-              "DEFAULT",
-              "LATEST",
-            ]).describe("Mode for how the GPU driver is installed.").optional(),
-          }).describe(
-            "GPUDriverInstallationConfig specifies the version of GPU driver to be auto installed.",
-          ).optional(),
-          gpuPartitionSize: z.string().describe(
-            "Size of partitions to create on the GPU. Valid values are described in the NVIDIA [mig user guide](https://docs.nvidia.com/datacenter/tesla/mig-user-guide/#partitioning).",
-          ).optional(),
-          gpuSharingConfig: z.object({
-            gpuSharingStrategy: z.enum([
-              "GPU_SHARING_STRATEGY_UNSPECIFIED",
-              "TIME_SHARING",
-              "MPS",
-            ]).describe(
-              "The type of GPU sharing strategy to enable on the GPU node.",
-            ).optional(),
-            maxSharedClientsPerGpu: z.string().describe(
-              "The max number of containers that can share a physical GPU.",
-            ).optional(),
-          }).describe(
-            "GPUSharingConfig represents the GPU sharing configuration for Hardware Accelerators.",
-          ).optional(),
-        })).describe(
+        accelerators: z.array(z.unknown()).describe(
           "A list of hardware accelerators to be attached to each node. See https://cloud.google.com/compute/docs/gpus for more information about support for GPUs.",
         ).optional(),
         advancedMachineFeatures: z.object({
-          enableNestedVirtualization: z.boolean().describe(
+          enableNestedVirtualization: z.unknown().describe(
             "Whether or not to enable nested virtualization (defaults to false).",
           ).optional(),
-          performanceMonitoringUnit: z.enum([
-            "PERFORMANCE_MONITORING_UNIT_UNSPECIFIED",
-            "ARCHITECTURAL",
-            "STANDARD",
-            "ENHANCED",
-          ]).describe(
+          performanceMonitoringUnit: z.unknown().describe(
             "Type of Performance Monitoring Unit (PMU) requested on node pool instances. If unset, PMU will not be available to the node.",
           ).optional(),
-          threadsPerCore: z.string().describe(
+          threadsPerCore: z.unknown().describe(
             "The number of threads per physical core. To disable simultaneous multithreading (SMT) set this to 1. If unset, the maximum number of threads supported per core by the underlying processor is assumed.",
           ).optional(),
         }).describe(
           "Specifies options for controlling advanced machine features.",
         ).optional(),
         bootDisk: z.object({
-          diskType: z.string().describe(
+          diskType: z.unknown().describe(
             "Disk type of the boot disk. (i.e. Hyperdisk-Balanced, PD-Balanced, etc.)",
           ).optional(),
-          provisionedIops: z.string().describe(
+          provisionedIops: z.unknown().describe(
             "For Hyperdisk-Balanced only, the provisioned IOPS config value.",
           ).optional(),
-          provisionedThroughput: z.string().describe(
+          provisionedThroughput: z.unknown().describe(
             "For Hyperdisk-Balanced only, the provisioned throughput config value.",
           ).optional(),
-          sizeGb: z.string().describe(
+          sizeGb: z.unknown().describe(
             "Disk size in GB. Replaces NodeConfig.disk_size_gb",
           ).optional(),
         }).describe(
@@ -2520,15 +2266,10 @@ const GlobalArgsSchema = z.object({
           "The Customer Managed Encryption Key used to encrypt the boot disk attached to each node in the node pool. This should be of the form projects/[KEY_PROJECT_ID]/locations/[LOCATION]/keyRings/[RING_NAME]/cryptoKeys/[KEY_NAME]. For more information about protecting resources with Cloud KMS Keys please see: https://cloud.google.com/compute/docs/disks/customer-managed-encryption",
         ).optional(),
         confidentialNodes: z.object({
-          confidentialInstanceType: z.enum([
-            "CONFIDENTIAL_INSTANCE_TYPE_UNSPECIFIED",
-            "SEV",
-            "SEV_SNP",
-            "TDX",
-          ]).describe(
+          confidentialInstanceType: z.unknown().describe(
             "Defines the type of technology used by the confidential node.",
           ).optional(),
-          enabled: z.boolean().describe(
+          enabled: z.unknown().describe(
             "Whether Confidential Nodes feature is enabled.",
           ).optional(),
         }).describe(
@@ -2538,91 +2279,15 @@ const GlobalArgsSchema = z.object({
           "Consolidation delay defines duration after which the Cluster Autoscaler can scale down underutilized nodes. If not set, nodes are scaled down by default behavior, i.e. according to the chosen autoscaling profile.",
         ).optional(),
         containerdConfig: z.object({
-          privateRegistryAccessConfig: z.object({
-            certificateAuthorityDomainConfig: z.array(z.object({
-              fqdns: z.array(z.string()).describe(
-                "List of fully qualified domain names (FQDN). Specifying port is supported. Wildcards are NOT supported. Examples: - `my.customdomain.com` - `10.0.1.2:5000`",
-              ).optional(),
-              gcpSecretManagerCertificateConfig: z.object({
-                secretUri: z.string().describe(
-                  'Secret URI, in the form "projects/$PROJECT_ID/secrets/$SECRET_NAME/versions/$VERSION". Version can be fixed (e.g. "2") or "latest"',
-                ).optional(),
-              }).describe(
-                "GCPSecretManagerCertificateConfig configures a secret from [Secret Manager](https://cloud.google.com/secret-manager).",
-              ).optional(),
-            })).describe("Private registry access configuration.").optional(),
-            enabled: z.boolean().describe("Private registry access is enabled.")
-              .optional(),
-          }).describe(
+          privateRegistryAccessConfig: z.unknown().describe(
             "PrivateRegistryAccessConfig contains access configuration for private container registries.",
           ).optional(),
-          registryHosts: z.array(z.object({
-            hosts: z.array(z.object({
-              ca: z.array(z.object({
-                gcpSecretManagerSecretUri: z.string().describe(
-                  'The URI configures a secret from [Secret Manager](https://cloud.google.com/secret-manager) in the format "projects/$PROJECT_ID/secrets/$SECRET_NAME/versions/$VERSION" for global secret or "projects/$PROJECT_ID/locations/$REGION/secrets/$SECRET_NAME/versions/$VERSION" for regional secret. Version can be fixed (e.g. "2") or "latest"',
-                ).optional(),
-              })).describe("CA configures the registry host certificate.")
-                .optional(),
-              capabilities: z.array(
-                z.enum([
-                  "HOST_CAPABILITY_UNSPECIFIED",
-                  "HOST_CAPABILITY_PULL",
-                  "HOST_CAPABILITY_RESOLVE",
-                  "HOST_CAPABILITY_PUSH",
-                ]),
-              ).describe(
-                "Capabilities represent the capabilities of the registry host, specifying what operations a host is capable of performing. If not set, containerd enables all capabilities by default.",
-              ).optional(),
-              client: z.array(z.object({
-                cert: z.object({
-                  gcpSecretManagerSecretUri: z.string().describe(
-                    'The URI configures a secret from [Secret Manager](https://cloud.google.com/secret-manager) in the format "projects/$PROJECT_ID/secrets/$SECRET_NAME/versions/$VERSION" for global secret or "projects/$PROJECT_ID/locations/$REGION/secrets/$SECRET_NAME/versions/$VERSION" for regional secret. Version can be fixed (e.g. "2") or "latest"',
-                  ).optional(),
-                }).describe(
-                  "CertificateConfig configures certificate for the registry.",
-                ).optional(),
-                key: z.object({
-                  gcpSecretManagerSecretUri: z.string().describe(
-                    'The URI configures a secret from [Secret Manager](https://cloud.google.com/secret-manager) in the format "projects/$PROJECT_ID/secrets/$SECRET_NAME/versions/$VERSION" for global secret or "projects/$PROJECT_ID/locations/$REGION/secrets/$SECRET_NAME/versions/$VERSION" for regional secret. Version can be fixed (e.g. "2") or "latest"',
-                  ).optional(),
-                }).describe(
-                  "CertificateConfig configures certificate for the registry.",
-                ).optional(),
-              })).describe(
-                "Client configures the registry host client certificate and key.",
-              ).optional(),
-              dialTimeout: z.string().describe(
-                "Specifies the maximum duration allowed for a connection attempt to complete. A shorter timeout helps reduce delays when falling back to the original registry if the mirror is unreachable. Maximum allowed value is 180s. If not set, containerd sets default 30s. The value should be a decimal number of seconds with an `s` suffix.",
-              ).optional(),
-              header: z.array(z.object({
-                key: z.string().describe("Key configures the header key.")
-                  .optional(),
-                value: z.array(z.string()).describe(
-                  "Value configures the header value.",
-                ).optional(),
-              })).describe("Header configures the registry host headers.")
-                .optional(),
-              host: z.string().describe(
-                "Host configures the registry host/mirror. It supports fully qualified domain names (FQDNs) and IP addresses. Specifying scheme, port or path is supported. Scheme can only be http or https. Wildcards are NOT supported. Examples: - `my.customdomain.com` - `https://my.customdomain.com/path` - `10.0.1.2:5000`",
-              ).optional(),
-              overridePath: z.boolean().describe(
-                "OverridePath is used to indicate the host's API root endpoint is defined in the URL path rather than by the API specification. This may be used with non-compliant OCI registries which are missing the /v2 prefix. If not set, containerd sets default false.",
-              ).optional(),
-            })).describe(
-              "HostConfig configures a list of host-specific configurations for the server. Each server can have at most 10 host configurations.",
-            ).optional(),
-            server: z.string().describe(
-              "Defines the host name of the registry server, which will be used to create configuration file as /etc/containerd/hosts.d//hosts.toml. It supports fully qualified domain names (FQDN) and IP addresses: Specifying port is supported, while scheme and path are NOT supported. Wildcards are NOT supported. Examples: - `my.customdomain.com` - `10.0.1.2:5000`",
-            ).optional(),
-          })).describe(
+          registryHosts: z.unknown().describe(
             "RegistryHostConfig configures containerd registry host configuration. Each registry_hosts represents a hosts.toml file. At most 25 registry_hosts are allowed.",
           ).optional(),
-          writableCgroups: z.object({
-            enabled: z.boolean().describe(
-              "Optional. Whether writable cgroups is enabled.",
-            ).optional(),
-          }).describe("Defines writable cgroups configuration.").optional(),
+          writableCgroups: z.unknown().describe(
+            "Defines writable cgroups configuration.",
+          ).optional(),
         }).describe(
           "ContainerdConfig contains configuration to customize containerd.",
         ).optional(),
@@ -2643,17 +2308,17 @@ const GlobalArgsSchema = z.object({
           "Optional. Reserved for future use.",
         ).optional(),
         ephemeralStorageLocalSsdConfig: z.object({
-          dataCacheCount: z.number().int().describe(
+          dataCacheCount: z.unknown().describe(
             "Number of local SSDs to use for GKE Data Cache.",
           ).optional(),
-          localSsdCount: z.number().int().describe(
+          localSsdCount: z.unknown().describe(
             "Number of local SSDs to use to back ephemeral storage. Uses NVMe interfaces. A zero (or unset) value has different meanings depending on machine type being used: 1. For pre-Gen3 machines, which support flexible numbers of local ssds, zero (or unset) means to disable using local SSDs as ephemeral storage. The limit for this value is dependent upon the maximum number of disk available on a machine per zone. See: https://cloud.google.com/compute/docs/disks/local-ssd for more information. 2. For Gen3 machines which dictate a specific number of local ssds, zero (or unset) means to use the default number of local ssds that goes with that machine type. For example, for a c3-standard-8-lssd machine, 2 local ssds would be provisioned. For c3-standard-8 (which doesn't support local ssds), 0 will be provisioned. See https://cloud.google.com/compute/docs/disks/local-ssd#choose_number_local_ssds for more info.",
           ).optional(),
         }).describe(
           "EphemeralStorageLocalSsdConfig contains configuration for the node ephemeral storage using Local SSDs.",
         ).optional(),
         fastSocket: z.object({
-          enabled: z.boolean().describe(
+          enabled: z.unknown().describe(
             "Whether Fast Socket features are enabled in the node pool.",
           ).optional(),
         }).describe("Configuration of Fast Socket feature.").optional(),
@@ -2661,20 +2326,19 @@ const GlobalArgsSchema = z.object({
           "Flex Start flag for enabling Flex Start VM.",
         ).optional(),
         gcfsConfig: z.object({
-          enabled: z.boolean().describe("Whether to use GCFS.").optional(),
+          enabled: z.unknown().describe("Whether to use GCFS.").optional(),
         }).describe(
           "GcfsConfig contains configurations of Google Container File System (image streaming).",
         ).optional(),
         gpuDirectConfig: z.object({
-          gpuDirectStrategy: z.enum(["GPU_DIRECT_STRATEGY_UNSPECIFIED", "RDMA"])
-            .describe(
-              "The type of GPU direct strategy to enable on the node pool.",
-            ).optional(),
+          gpuDirectStrategy: z.unknown().describe(
+            "The type of GPU direct strategy to enable on the node pool.",
+          ).optional(),
         }).describe(
           "GPUDirectConfig specifies the GPU direct strategy on the node pool.",
         ).optional(),
         gvnic: z.object({
-          enabled: z.boolean().describe(
+          enabled: z.unknown().describe(
             "Whether gVNIC features are enabled in the node pool.",
           ).optional(),
         }).describe("Configuration of gVNIC feature.").optional(),
@@ -2682,246 +2346,108 @@ const GlobalArgsSchema = z.object({
           "The image type to use for this node. Note that for a given image type, the latest version of it will be used. Please see https://cloud.google.com/kubernetes-engine/docs/concepts/node-images for available image types.",
         ).optional(),
         kubeletConfig: z.object({
-          allowedUnsafeSysctls: z.array(z.string()).describe(
+          allowedUnsafeSysctls: z.unknown().describe(
             "Optional. Defines a comma-separated allowlist of unsafe sysctls or sysctl patterns (ending in `*`). The unsafe namespaced sysctl groups are `kernel.shm*`, `kernel.msg*`, `kernel.sem`, `fs.mqueue.*`, and `net.*`. Leaving this allowlist empty means they cannot be set on Pods. To allow certain sysctls or sysctl patterns to be set on Pods, list them separated by commas. For example: `kernel.msg*,net.ipv4.route.min_pmtu`. See https://kubernetes.io/docs/tasks/administer-cluster/sysctl-cluster/ for more details.",
           ).optional(),
-          containerLogMaxFiles: z.number().int().describe(
+          containerLogMaxFiles: z.unknown().describe(
             "Optional. Defines the maximum number of container log files that can be present for a container. See https://kubernetes.io/docs/concepts/cluster-administration/logging/#log-rotation The value must be an integer between 2 and 10, inclusive. The default value is 5 if unspecified.",
           ).optional(),
-          containerLogMaxSize: z.string().describe(
+          containerLogMaxSize: z.unknown().describe(
             "Optional. Defines the maximum size of the container log file before it is rotated. See https://kubernetes.io/docs/concepts/cluster-administration/logging/#log-rotation Valid format is positive number + unit, e.g. 100Ki, 10Mi. Valid units are Ki, Mi, Gi. The value must be between 10Mi and 500Mi, inclusive. Note that the total container log size (container_log_max_size * container_log_max_files) cannot exceed 1% of the total storage of the node, to avoid disk pressure caused by log files. The default value is 10Mi if unspecified.",
           ).optional(),
-          cpuCfsQuota: z.boolean().describe(
+          cpuCfsQuota: z.unknown().describe(
             "Enable CPU CFS quota enforcement for containers that specify CPU limits. This option is enabled by default which makes kubelet use CFS quota (https://www.kernel.org/doc/Documentation/scheduler/sched-bwc.txt) to enforce container CPU limits. Otherwise, CPU limits will not be enforced at all. Disable this option to mitigate CPU throttling problems while still having your pods to be in Guaranteed QoS class by specifying the CPU limits. The default value is 'true' if unspecified.",
           ).optional(),
-          cpuCfsQuotaPeriod: z.string().describe(
+          cpuCfsQuotaPeriod: z.unknown().describe(
             'Set the CPU CFS quota period value \'cpu.cfs_period_us\'. The string must be a sequence of decimal numbers, each with optional fraction and a unit suffix, such as "300ms". Valid time units are "ns", "us" (or "µs"), "ms", "s", "m", "h". The value must be a positive duration between 1ms and 1 second, inclusive.',
           ).optional(),
-          cpuManagerPolicy: z.string().describe(
+          cpuManagerPolicy: z.unknown().describe(
             'Control the CPU management policy on the node. See https://kubernetes.io/docs/tasks/administer-cluster/cpu-management-policies/ The following values are allowed. * "none": the default, which represents the existing scheduling behavior. * "static": allows pods with certain resource characteristics to be granted increased CPU affinity and exclusivity on the node. The default value is \'none\' if unspecified.',
           ).optional(),
-          crashLoopBackOff: z.object({
-            maxContainerRestartPeriod: z.string().describe(
-              'Optional. The maximum duration the backoff delay can accrue to for container restarts, minimum 1 second, maximum 300 seconds. If not set, defaults to the internal crashloopbackoff maximum. The string must be a sequence of decimal numbers, each with optional fraction and a unit suffix, such as "300ms". Valid time units are "ns", "us" (or "µs"), "ms", "s", "m", "h". See https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle/#configurable-container-restart-delay for more details.',
-            ).optional(),
-          }).describe(
+          crashLoopBackOff: z.unknown().describe(
             "Contains config to modify node-level parameters for container restart behavior.",
           ).optional(),
-          evictionMaxPodGracePeriodSeconds: z.number().int().describe(
+          evictionMaxPodGracePeriodSeconds: z.unknown().describe(
             "Optional. eviction_max_pod_grace_period_seconds is the maximum allowed grace period (in seconds) to use when terminating pods in response to a soft eviction threshold being met. This value effectively caps the Pod's terminationGracePeriodSeconds value during soft evictions. Default: 0. Range: [0, 300].",
           ).optional(),
-          evictionMinimumReclaim: z.object({
-            imagefsAvailable: z.string().describe(
-              'Optional. Minimum reclaim for eviction due to imagefs available signal. Only take percentage value for now. Sample format: "10%". Must be <=10%. See https://kubernetes.io/docs/concepts/scheduling-eviction/node-pressure-eviction/#eviction-signals',
-            ).optional(),
-            imagefsInodesFree: z.string().describe(
-              'Optional. Minimum reclaim for eviction due to imagefs inodes free signal. Only take percentage value for now. Sample format: "10%". Must be <=10%. See https://kubernetes.io/docs/concepts/scheduling-eviction/node-pressure-eviction/#eviction-signals',
-            ).optional(),
-            memoryAvailable: z.string().describe(
-              'Optional. Minimum reclaim for eviction due to memory available signal. Only take percentage value for now. Sample format: "10%". Must be <=10%. See https://kubernetes.io/docs/concepts/scheduling-eviction/node-pressure-eviction/#eviction-signals',
-            ).optional(),
-            nodefsAvailable: z.string().describe(
-              'Optional. Minimum reclaim for eviction due to nodefs available signal. Only take percentage value for now. Sample format: "10%". Must be <=10%. See https://kubernetes.io/docs/concepts/scheduling-eviction/node-pressure-eviction/#eviction-signals',
-            ).optional(),
-            nodefsInodesFree: z.string().describe(
-              'Optional. Minimum reclaim for eviction due to nodefs inodes free signal. Only take percentage value for now. Sample format: "10%". Must be <=10%. See https://kubernetes.io/docs/concepts/scheduling-eviction/node-pressure-eviction/#eviction-signals',
-            ).optional(),
-            pidAvailable: z.string().describe(
-              'Optional. Minimum reclaim for eviction due to pid available signal. Only take percentage value for now. Sample format: "10%". Must be <=10%. See https://kubernetes.io/docs/concepts/scheduling-eviction/node-pressure-eviction/#eviction-signals',
-            ).optional(),
-          }).describe(
+          evictionMinimumReclaim: z.unknown().describe(
             "Eviction minimum reclaims are the resource amounts of minimum reclaims for each eviction signal.",
           ).optional(),
-          evictionSoft: z.object({
-            imagefsAvailable: z.string().describe(
-              'Optional. Amount of storage available on filesystem that container runtime uses for storing images layers. If the container filesystem and image filesystem are not separate, then imagefs can store both image layers and writeable layers. Defines the amount of "imagefs.available" signal in kubelet. Default is unset, if not specified in the kubelet config. It takses percentage value for now. Sample format: "30%". Must be >= 15% and <= 50%. See https://kubernetes.io/docs/concepts/scheduling-eviction/node-pressure-eviction/#eviction-signals',
-            ).optional(),
-            imagefsInodesFree: z.string().describe(
-              'Optional. Amount of inodes available on filesystem that container runtime uses for storing images layers. Defines the amount of "imagefs.inodesFree" signal in kubelet. Default is unset, if not specified in the kubelet config. Linux only. It takses percentage value for now. Sample format: "30%". Must be >= 5% and <= 50%. See https://kubernetes.io/docs/concepts/scheduling-eviction/node-pressure-eviction/#eviction-signals',
-            ).optional(),
-            memoryAvailable: z.string().describe(
-              'Optional. Memory available (i.e. capacity - workingSet), in bytes. Defines the amount of "memory.available" signal in kubelet. Default is unset, if not specified in the kubelet config. Format: positive number + unit, e.g. 100Ki, 10Mi, 5Gi. Valid units are Ki, Mi, Gi. Must be >= 100Mi and <= 50% of the node\'s memory. See https://kubernetes.io/docs/concepts/scheduling-eviction/node-pressure-eviction/#eviction-signals',
-            ).optional(),
-            nodefsAvailable: z.string().describe(
-              'Optional. Amount of storage available on filesystem that kubelet uses for volumes, daemon logs, etc. Defines the amount of "nodefs.available" signal in kubelet. Default is unset, if not specified in the kubelet config. It takses percentage value for now. Sample format: "30%". Must be >= 10% and <= 50%. See https://kubernetes.io/docs/concepts/scheduling-eviction/node-pressure-eviction/#eviction-signals',
-            ).optional(),
-            nodefsInodesFree: z.string().describe(
-              'Optional. Amount of inodes available on filesystem that kubelet uses for volumes, daemon logs, etc. Defines the amount of "nodefs.inodesFree" signal in kubelet. Default is unset, if not specified in the kubelet config. Linux only. It takses percentage value for now. Sample format: "30%". Must be >= 5% and <= 50%. See https://kubernetes.io/docs/concepts/scheduling-eviction/node-pressure-eviction/#eviction-signals',
-            ).optional(),
-            pidAvailable: z.string().describe(
-              'Optional. Amount of PID available for pod allocation. Defines the amount of "pid.available" signal in kubelet. Default is unset, if not specified in the kubelet config. It takses percentage value for now. Sample format: "30%". Must be >= 10% and <= 50%. See https://kubernetes.io/docs/concepts/scheduling-eviction/node-pressure-eviction/#eviction-signals',
-            ).optional(),
-          }).describe(
+          evictionSoft: z.unknown().describe(
             "Eviction signals are the current state of a particular resource at a specific point in time. The kubelet uses eviction signals to make eviction decisions by comparing the signals to eviction thresholds, which are the minimum amount of the resource that should be available on the node.",
           ).optional(),
-          evictionSoftGracePeriod: z.object({
-            imagefsAvailable: z.string().describe(
-              'Optional. Grace period for eviction due to imagefs available signal. Sample format: "10s". Must be >= 0. See https://kubernetes.io/docs/concepts/scheduling-eviction/node-pressure-eviction/#eviction-signals',
-            ).optional(),
-            imagefsInodesFree: z.string().describe(
-              'Optional. Grace period for eviction due to imagefs inodes free signal. Sample format: "10s". Must be >= 0. See https://kubernetes.io/docs/concepts/scheduling-eviction/node-pressure-eviction/#eviction-signals',
-            ).optional(),
-            memoryAvailable: z.string().describe(
-              'Optional. Grace period for eviction due to memory available signal. Sample format: "10s". Must be >= 0. See https://kubernetes.io/docs/concepts/scheduling-eviction/node-pressure-eviction/#eviction-signals',
-            ).optional(),
-            nodefsAvailable: z.string().describe(
-              'Optional. Grace period for eviction due to nodefs available signal. Sample format: "10s". Must be >= 0. See https://kubernetes.io/docs/concepts/scheduling-eviction/node-pressure-eviction/#eviction-signals',
-            ).optional(),
-            nodefsInodesFree: z.string().describe(
-              'Optional. Grace period for eviction due to nodefs inodes free signal. Sample format: "10s". Must be >= 0. See https://kubernetes.io/docs/concepts/scheduling-eviction/node-pressure-eviction/#eviction-signals',
-            ).optional(),
-            pidAvailable: z.string().describe(
-              'Optional. Grace period for eviction due to pid available signal. Sample format: "10s". Must be >= 0. See https://kubernetes.io/docs/concepts/scheduling-eviction/node-pressure-eviction/#eviction-signals',
-            ).optional(),
-          }).describe(
+          evictionSoftGracePeriod: z.unknown().describe(
             "Eviction grace periods are grace periods for each eviction signal.",
           ).optional(),
-          imageGcHighThresholdPercent: z.number().int().describe(
+          imageGcHighThresholdPercent: z.unknown().describe(
             "Optional. Defines the percent of disk usage after which image garbage collection is always run. The percent is calculated as this field value out of 100. The value must be between 10 and 85, inclusive and greater than image_gc_low_threshold_percent. The default value is 85 if unspecified.",
           ).optional(),
-          imageGcLowThresholdPercent: z.number().int().describe(
+          imageGcLowThresholdPercent: z.unknown().describe(
             "Optional. Defines the percent of disk usage before which image garbage collection is never run. Lowest disk usage to garbage collect to. The percent is calculated as this field value out of 100. The value must be between 10 and 85, inclusive and smaller than image_gc_high_threshold_percent. The default value is 80 if unspecified.",
           ).optional(),
-          imageMaximumGcAge: z.string().describe(
+          imageMaximumGcAge: z.unknown().describe(
             'Optional. Defines the maximum age an image can be unused before it is garbage collected. The string must be a sequence of decimal numbers, each with optional fraction and a unit suffix, such as "300s", "1.5h", and "2h45m". Valid time units are "ns", "us" (or "µs"), "ms", "s", "m", "h". The value must be a positive duration greater than image_minimum_gc_age or "0s". The default value is "0s" if unspecified, which disables this field, meaning images won\'t be garbage collected based on being unused for too long.',
           ).optional(),
-          imageMinimumGcAge: z.string().describe(
+          imageMinimumGcAge: z.unknown().describe(
             'Optional. Defines the minimum age for an unused image before it is garbage collected. The string must be a sequence of decimal numbers, each with optional fraction and a unit suffix, such as "300s", "1.5h", and "2h45m". Valid time units are "ns", "us" (or "µs"), "ms", "s", "m", "h". The value must be a positive duration less than or equal to 2 minutes. The default value is "2m0s" if unspecified.',
           ).optional(),
-          insecureKubeletReadonlyPortEnabled: z.boolean().describe(
+          insecureKubeletReadonlyPortEnabled: z.unknown().describe(
             "Enable or disable Kubelet read only port.",
           ).optional(),
-          maxParallelImagePulls: z.number().int().describe(
+          maxParallelImagePulls: z.unknown().describe(
             "Optional. Defines the maximum number of image pulls in parallel. The range is 2 to 5, inclusive. The default value is 2 or 3 depending on the disk type. See https://kubernetes.io/docs/concepts/containers/images/#maximum-parallel-image-pulls for more details.",
           ).optional(),
-          memoryManager: z.object({
-            policy: z.string().describe(
-              'Controls the memory management policy on the Node. See https://kubernetes.io/docs/tasks/administer-cluster/memory-manager/#policies The following values are allowed. * "none" * "static" The default value is \'none\' if unspecified.',
-            ).optional(),
-          }).describe(
+          memoryManager: z.unknown().describe(
             "The option enables the Kubernetes NUMA-aware Memory Manager feature. Detailed description about the feature can be found [here](https://kubernetes.io/docs/tasks/administer-cluster/memory-manager/).",
           ).optional(),
-          podPidsLimit: z.string().describe(
+          podPidsLimit: z.unknown().describe(
             "Set the Pod PID limits. See https://kubernetes.io/docs/concepts/policy/pid-limiting/#pod-pid-limits Controls the maximum number of processes allowed to run in a pod. The value must be greater than or equal to 1024 and less than 4194304.",
           ).optional(),
-          shutdownGracePeriodCriticalPodsSeconds: z.number().int().describe(
+          shutdownGracePeriodCriticalPodsSeconds: z.unknown().describe(
             "Optional. shutdown_grace_period_critical_pods_seconds is the maximum allowed grace period (in seconds) used to terminate critical pods during a node shutdown. This value should be <= shutdown_grace_period_seconds, and is only valid if shutdown_grace_period_seconds is set. https://kubernetes.io/docs/concepts/cluster-administration/node-shutdown/ Range: [0, 120].",
           ).optional(),
-          shutdownGracePeriodSeconds: z.number().int().describe(
+          shutdownGracePeriodSeconds: z.unknown().describe(
             "Optional. shutdown_grace_period_seconds is the maximum allowed grace period (in seconds) the total duration that the node should delay the shutdown during a graceful shutdown. This is the total grace period for pod termination for both regular and critical pods. https://kubernetes.io/docs/concepts/cluster-administration/node-shutdown/ If set to 0, node will not enable the graceful node shutdown functionality. This field is only valid for Spot VMs. Allowed values: 0, 30, 120.",
           ).optional(),
-          singleProcessOomKill: z.boolean().describe(
+          singleProcessOomKill: z.unknown().describe(
             "Optional. Defines whether to enable single process OOM killer. If true, will prevent the memory.oom.group flag from being set for container cgroups in cgroups v2. This causes processes in the container to be OOM killed individually instead of as a group.",
           ).optional(),
-          topologyManager: z.object({
-            policy: z.string().describe(
-              "Configures the strategy for resource alignment. Allowed values are: * none: the default policy, and does not perform any topology alignment. * restricted: the topology manager stores the preferred NUMA node affinity for the container, and will reject the pod if the affinity if not preferred. * best-effort: the topology manager stores the preferred NUMA node affinity for the container. If the affinity is not preferred, the topology manager will admit the pod to the node anyway. * single-numa-node: the topology manager determines if the single NUMA node affinity is possible. If it is, Topology Manager will store this and the Hint Providers can then use this information when making the resource allocation decision. If, however, this is not possible then the Topology Manager will reject the pod from the node. This will result in a pod in a Terminated state with a pod admission failure. The default policy value is 'none' if unspecified. Details about each strategy can be found [here](https://kubernetes.io/docs/tasks/administer-cluster/topology-manager/#topology-manager-policies).",
-            ).optional(),
-            scope: z.string().describe(
-              "The Topology Manager aligns resources in following scopes: * container * pod The default scope is 'container' if unspecified. See https://kubernetes.io/docs/tasks/administer-cluster/topology-manager/#topology-manager-scopes",
-            ).optional(),
-          }).describe(
+          topologyManager: z.unknown().describe(
             "TopologyManager defines the configuration options for Topology Manager feature. See https://kubernetes.io/docs/tasks/administer-cluster/topology-manager/",
           ).optional(),
         }).describe("Node kubelet configs.").optional(),
-        labels: z.record(z.string(), z.string()).describe(
+        labels: z.record(z.string(), z.unknown()).describe(
           "The Kubernetes labels (key/value pairs) to apply to each node. The values in this field are added to the set of default labels Kubernetes applies to nodes. This field has the following restrictions: * Labels must use a valid Kubernetes syntax and character set, as defined in https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/#syntax-and-character-set. * This field supports up to 1,024 total characters in a single request. Depending on the Kubernetes version, keys in this field might conflict with the keys of the default labels, which might change which of your labels are applied to the nodes. Assume that the behavior is unpredictable and avoid label key conflicts. For more information about the default labels, see: https://kubernetes.io/docs/reference/labels-annotations-taints/",
         ).optional(),
         linuxNodeConfig: z.object({
-          accurateTimeConfig: z.object({
-            enablePtpKvmTimeSync: z.boolean().describe(
-              "Enables enhanced time synchronization using PTP-KVM.",
-            ).optional(),
-          }).describe(
+          accurateTimeConfig: z.unknown().describe(
             "AccurateTimeConfig contains configuration for the accurate time synchronization feature.",
           ).optional(),
-          cgroupMode: z.enum([
-            "CGROUP_MODE_UNSPECIFIED",
-            "CGROUP_MODE_V1",
-            "CGROUP_MODE_V2",
-          ]).describe(
+          cgroupMode: z.unknown().describe(
             "cgroup_mode specifies the cgroup mode to be used on the node.",
           ).optional(),
-          hugepages: z.object({
-            hugepageSize1g: z.number().int().describe(
-              "Optional. Amount of 1G hugepages",
-            ).optional(),
-            hugepageSize2m: z.number().int().describe(
-              "Optional. Amount of 2M hugepages",
-            ).optional(),
-          }).describe("Hugepages amount in both 2m and 1g size").optional(),
-          nodeKernelModuleLoading: z.object({
-            policy: z.enum([
-              "POLICY_UNSPECIFIED",
-              "ENFORCE_SIGNED_MODULES",
-              "DO_NOT_ENFORCE_SIGNED_MODULES",
-            ]).describe(
-              "Set the node module loading policy for nodes in the node pool.",
-            ).optional(),
-          }).describe("Configuration for kernel module loading on nodes.")
-            .optional(),
-          swapConfig: z.object({
-            bootDiskProfile: z.object({
-              swapSizeGib: z.string().describe(
-                "Specifies the size of the swap space in gibibytes (GiB).",
-              ).optional(),
-              swapSizePercent: z.number().int().describe(
-                "Specifies the size of the swap space as a percentage of the boot disk size.",
-              ).optional(),
-            }).describe("Swap on the node's boot disk.").optional(),
-            dedicatedLocalSsdProfile: z.object({
-              diskCount: z.string().describe(
-                "The number of physical local NVMe SSD disks to attach.",
-              ).optional(),
-            }).describe(
-              "Provisions a new, separate local NVMe SSD exclusively for swap.",
-            ).optional(),
-            enabled: z.boolean().describe(
-              "Optional. Enables or disables swap for the node pool.",
-            ).optional(),
-            encryptionConfig: z.object({
-              disabled: z.boolean().describe(
-                "Optional. If true, swap space will not be encrypted. Defaults to false (encrypted).",
-              ).optional(),
-            }).describe("Defines encryption settings for the swap space.")
-              .optional(),
-            ephemeralLocalSsdProfile: z.object({
-              swapSizeGib: z.string().describe(
-                "Specifies the size of the swap space in gibibytes (GiB).",
-              ).optional(),
-              swapSizePercent: z.number().int().describe(
-                "Specifies the size of the swap space as a percentage of the ephemeral local SSD capacity.",
-              ).optional(),
-            }).describe(
-              "Swap on the local SSD shared with pod ephemeral storage.",
-            ).optional(),
-          }).describe("Configuration for swap memory on a node pool.")
-            .optional(),
-          sysctls: z.record(z.string(), z.string()).describe(
+          hugepages: z.unknown().describe(
+            "Hugepages amount in both 2m and 1g size",
+          ).optional(),
+          nodeKernelModuleLoading: z.unknown().describe(
+            "Configuration for kernel module loading on nodes.",
+          ).optional(),
+          swapConfig: z.unknown().describe(
+            "Configuration for swap memory on a node pool.",
+          ).optional(),
+          sysctls: z.unknown().describe(
             "The Linux kernel parameters to be applied to the nodes and all pods running on the nodes. The following parameters are supported. net.core.busy_poll net.core.busy_read net.core.netdev_max_backlog net.core.rmem_max net.core.rmem_default net.core.wmem_default net.core.wmem_max net.core.optmem_max net.core.somaxconn net.ipv4.tcp_rmem net.ipv4.tcp_wmem net.ipv4.tcp_tw_reuse net.ipv4.tcp_mtu_probing net.ipv4.tcp_max_orphans net.ipv4.tcp_max_tw_buckets net.ipv4.tcp_syn_retries net.ipv4.tcp_ecn net.ipv4.tcp_congestion_control net.netfilter.nf_conntrack_max net.netfilter.nf_conntrack_buckets net.netfilter.nf_conntrack_tcp_timeout_close_wait net.netfilter.nf_conntrack_tcp_timeout_time_wait net.netfilter.nf_conntrack_tcp_timeout_established net.netfilter.nf_conntrack_acct kernel.shmmni kernel.shmmax kernel.shmall kernel.perf_event_paranoid kernel.sched_rt_runtime_us kernel.softlockup_panic kernel.yama.ptrace_scope kernel.kptr_restrict kernel.dmesg_restrict kernel.sysrq fs.aio-max-nr fs.file-max fs.inotify.max_user_instances fs.inotify.max_user_watches fs.nr_open vm.dirty_background_ratio vm.dirty_background_bytes vm.dirty_expire_centisecs vm.dirty_ratio vm.dirty_bytes vm.dirty_writeback_centisecs vm.max_map_count vm.overcommit_memory vm.overcommit_ratio vm.vfs_cache_pressure vm.swappiness vm.watermark_scale_factor vm.min_free_kbytes",
           ).optional(),
-          transparentHugepageDefrag: z.enum([
-            "TRANSPARENT_HUGEPAGE_DEFRAG_UNSPECIFIED",
-            "TRANSPARENT_HUGEPAGE_DEFRAG_ALWAYS",
-            "TRANSPARENT_HUGEPAGE_DEFRAG_DEFER",
-            "TRANSPARENT_HUGEPAGE_DEFRAG_DEFER_WITH_MADVISE",
-            "TRANSPARENT_HUGEPAGE_DEFRAG_MADVISE",
-            "TRANSPARENT_HUGEPAGE_DEFRAG_NEVER",
-          ]).describe(
+          transparentHugepageDefrag: z.unknown().describe(
             "Optional. Defines the transparent hugepage defrag configuration on the node. VM hugepage allocation can be managed by either limiting defragmentation for delayed allocation or skipping it entirely for immediate allocation only. See https://docs.kernel.org/admin-guide/mm/transhuge.html for more details.",
           ).optional(),
-          transparentHugepageEnabled: z.enum([
-            "TRANSPARENT_HUGEPAGE_ENABLED_UNSPECIFIED",
-            "TRANSPARENT_HUGEPAGE_ENABLED_ALWAYS",
-            "TRANSPARENT_HUGEPAGE_ENABLED_MADVISE",
-            "TRANSPARENT_HUGEPAGE_ENABLED_NEVER",
-          ]).describe(
+          transparentHugepageEnabled: z.unknown().describe(
             "Optional. Transparent hugepage support for anonymous memory can be entirely disabled (mostly for debugging purposes) or only enabled inside MADV_HUGEPAGE regions (to avoid the risk of consuming more memory resources) or enabled system wide. See https://docs.kernel.org/admin-guide/mm/transhuge.html for more details.",
           ).optional(),
         }).describe("Parameters that can be configured on Linux nodes.")
           .optional(),
         localNvmeSsdBlockConfig: z.object({
-          localSsdCount: z.number().int().describe(
+          localSsdCount: z.unknown().describe(
             "Number of local NVMe SSDs to use. The limit for this value is dependent upon the maximum number of disk available on a machine per zone. See: https://cloud.google.com/compute/docs/disks/local-ssd for more information. A zero (or unset) value has different meanings depending on machine type being used: 1. For pre-Gen3 machines, which support flexible numbers of local ssds, zero (or unset) means to disable using local SSDs as ephemeral storage. 2. For Gen3 machines which dictate a specific number of local ssds, zero (or unset) means to use the default number of local ssds that goes with that machine type. For example, for a c3-standard-8-lssd machine, 2 local ssds would be provisioned. For c3-standard-8 (which doesn't support local ssds), 0 will be provisioned. See https://cloud.google.com/compute/docs/disks/local-ssd#choose_number_local_ssds for more info.",
           ).optional(),
         }).describe(
@@ -2938,13 +2464,7 @@ const GlobalArgsSchema = z.object({
           "Specifies which method should be used for encrypting the Local SSDs attached to the node.",
         ).optional(),
         loggingConfig: z.object({
-          variantConfig: z.object({
-            variant: z.enum([
-              "VARIANT_UNSPECIFIED",
-              "DEFAULT",
-              "MAX_THROUGHPUT",
-            ]).describe("Logging variant deployed on nodes.").optional(),
-          }).describe(
+          variantConfig: z.unknown().describe(
             "LoggingVariantConfig specifies the behaviour of the logging component.",
           ).optional(),
         }).describe(
@@ -2956,7 +2476,7 @@ const GlobalArgsSchema = z.object({
         maxRunDuration: z.string().describe(
           "The maximum duration for the nodes to exist. If unspecified, the nodes can exist indefinitely.",
         ).optional(),
-        metadata: z.record(z.string(), z.string()).describe(
+        metadata: z.record(z.string(), z.unknown()).describe(
           'The metadata key/value pairs assigned to instances in the cluster. Keys must conform to the regexp `[a-zA-Z0-9-_]+` and be less than 128 bytes in length. These are reflected as part of a URL in the metadata server. Additionally, to avoid ambiguity, keys must not conflict with any other metadata keys for the project or be one of the reserved keys: - "cluster-location" - "cluster-name" - "cluster-uid" - "configure-sh" - "containerd-configure-sh" - "enable-os-login" - "gci-ensure-gke-docker" - "gci-metrics-enabled" - "gci-update-strategy" - "instance-template" - "kube-env" - "startup-script" - "user-data" - "disable-address-manager" - "windows-startup-script-ps1" - "common-psm1" - "k8s-node-setup-psm1" - "install-ssh-psm1" - "user-profile-psm1" Values are free-form strings, and only have meaning as interpreted by the image running in the instance. The only restriction placed on them is that each value\'s size must be less than or equal to 32 KB. The total size of all keys and values must be less than 512 KB.',
         ).optional(),
         minCpuPlatform: z.string().describe(
@@ -2965,81 +2485,63 @@ const GlobalArgsSchema = z.object({
         nodeGroup: z.string().describe(
           "Setting this field will assign instances of this pool to run on the specified node group. This is useful for running workloads on [sole tenant nodes](https://cloud.google.com/compute/docs/nodes/sole-tenant-nodes).",
         ).optional(),
-        oauthScopes: z.array(z.string()).describe(
+        oauthScopes: z.array(z.unknown()).describe(
           'The set of Google API scopes to be made available on all of the node VMs under the "default" service account. The following scopes are recommended, but not required, and by default are not included: * `https://www.googleapis.com/auth/compute` is required for mounting persistent storage on your nodes. * `https://www.googleapis.com/auth/devstorage.read_only` is required for communicating with **gcr.io** (the [Artifact Registry](https://cloud.google.com/artifact-registry/)). If unspecified, no scopes are added, unless Cloud Logging or Cloud Monitoring are enabled, in which case their required scopes will be added.',
         ).optional(),
         preemptible: z.boolean().describe(
           "Whether the nodes are created as preemptible VM instances. See: https://cloud.google.com/compute/docs/instances/preemptible for more information about preemptible VM instances.",
         ).optional(),
         reservationAffinity: z.object({
-          consumeReservationType: z.enum([
-            "UNSPECIFIED",
-            "NO_RESERVATION",
-            "ANY_RESERVATION",
-            "SPECIFIC_RESERVATION",
-          ]).describe("Corresponds to the type of reservation consumption.")
-            .optional(),
-          key: z.string().describe(
+          consumeReservationType: z.unknown().describe(
+            "Corresponds to the type of reservation consumption.",
+          ).optional(),
+          key: z.unknown().describe(
             'Corresponds to the label key of a reservation resource. To target a SPECIFIC_RESERVATION by name, specify "compute.googleapis.com/reservation-name" as the key and specify the name of your reservation as its value.',
           ).optional(),
-          values: z.array(z.string()).describe(
+          values: z.unknown().describe(
             "Corresponds to the label value(s) of reservation resource(s).",
           ).optional(),
         }).describe(
           "[ReservationAffinity](https://cloud.google.com/compute/docs/instances/reserving-zonal-resources) is the configuration of desired reservation which instances could take capacity from.",
         ).optional(),
-        resourceLabels: z.record(z.string(), z.string()).describe(
+        resourceLabels: z.record(z.string(), z.unknown()).describe(
           "The resource labels for the node pool to use to annotate any related Google Compute Engine resources.",
         ).optional(),
         resourceManagerTags: z.object({
-          tags: z.record(z.string(), z.string()).describe(
+          tags: z.unknown().describe(
             "TagKeyValue must be in one of the following formats ([KEY]=[VALUE]) 1. `tagKeys/{tag_key_id}=tagValues/{tag_value_id}` 2. `{org_id}/{tag_key_name}={tag_value_name}` 3. `{project_id}/{tag_key_name}={tag_value_name}`",
           ).optional(),
         }).describe(
           "A map of resource manager tag keys and values to be attached to the nodes for managing Compute Engine firewalls using Network Firewall Policies. Tags must be according to specifications in https://cloud.google.com/vpc/docs/tags-firewalls-overview#specifications. A maximum of 5 tag key-value pairs can be specified. Existing tags will be replaced with new values.",
         ).optional(),
         sandboxConfig: z.object({
-          type: z.enum(["UNSPECIFIED", "GVISOR"]).describe(
-            "Type of the sandbox to use for the node.",
-          ).optional(),
+          type: z.unknown().describe("Type of the sandbox to use for the node.")
+            .optional(),
         }).describe(
           "SandboxConfig contains configurations of the sandbox to use for the node.",
         ).optional(),
         secondaryBootDiskUpdateStrategy: z.object({}).describe(
           "SecondaryBootDiskUpdateStrategy is a placeholder which will be extended in the future to define different options for updating secondary boot disks.",
         ).optional(),
-        secondaryBootDisks: z.array(z.object({
-          diskImage: z.string().describe(
-            "Fully-qualified resource ID for an existing disk image.",
-          ).optional(),
-          mode: z.enum(["MODE_UNSPECIFIED", "CONTAINER_IMAGE_CACHE"]).describe(
-            "Disk mode (container image cache, etc.)",
-          ).optional(),
-        })).describe("List of secondary boot disks attached to the nodes.")
-          .optional(),
+        secondaryBootDisks: z.array(z.unknown()).describe(
+          "List of secondary boot disks attached to the nodes.",
+        ).optional(),
         serviceAccount: z.string().describe(
           'The Google Cloud Platform Service Account to be used by the node VMs. Specify the email address of the Service Account; otherwise, if no Service Account is specified, the "default" service account is used.',
         ).optional(),
         shieldedInstanceConfig: z.object({
-          enableIntegrityMonitoring: z.boolean().describe(
+          enableIntegrityMonitoring: z.unknown().describe(
             "Defines whether the instance has integrity monitoring enabled. Enables monitoring and attestation of the boot integrity of the instance. The attestation is performed against the integrity policy baseline. This baseline is initially derived from the implicitly trusted boot image when the instance is created.",
           ).optional(),
-          enableSecureBoot: z.boolean().describe(
+          enableSecureBoot: z.unknown().describe(
             "Defines whether the instance has Secure Boot enabled. Secure Boot helps ensure that the system only runs authentic software by verifying the digital signature of all boot components, and halting the boot process if signature verification fails.",
           ).optional(),
         }).describe("A set of Shielded Instance options.").optional(),
         soleTenantConfig: z.object({
-          minNodeCpus: z.number().int().describe(
+          minNodeCpus: z.unknown().describe(
             "Optional. The minimum number of virtual CPUs this instance will consume when running on a sole-tenant node. This field can only be set if the node pool is created in a shared sole-tenant node group.",
           ).optional(),
-          nodeAffinities: z.array(z.object({
-            key: z.string().describe("Key for NodeAffinity.").optional(),
-            operator: z.enum(["OPERATOR_UNSPECIFIED", "IN", "NOT_IN"]).describe(
-              "Operator for NodeAffinity.",
-            ).optional(),
-            values: z.array(z.string()).describe("Values for NodeAffinity.")
-              .optional(),
-          })).describe(
+          nodeAffinities: z.unknown().describe(
             "NodeAffinities used to match to a shared sole tenant node group.",
           ).optional(),
         }).describe(
@@ -3048,50 +2550,33 @@ const GlobalArgsSchema = z.object({
         spot: z.boolean().describe(
           "Spot flag for enabling Spot VM, which is a rebrand of the existing preemptible flag.",
         ).optional(),
-        storagePools: z.array(z.string()).describe(
+        storagePools: z.array(z.unknown()).describe(
           "List of Storage Pools where boot disks are provisioned.",
         ).optional(),
-        tags: z.array(z.string()).describe(
+        tags: z.array(z.unknown()).describe(
           "The list of instance tags applied to all nodes. Tags are used to identify valid sources or targets for network firewalls and are specified by the client during cluster or node pool creation. Each tag within the list must comply with RFC1035.",
         ).optional(),
         taintConfig: z.object({
-          architectureTaintBehavior: z.enum([
-            "ARCHITECTURE_TAINT_BEHAVIOR_UNSPECIFIED",
-            "NONE",
-            "ARM",
-          ]).describe("Optional. Controls architecture tainting behavior.")
-            .optional(),
+          architectureTaintBehavior: z.unknown().describe(
+            "Optional. Controls architecture tainting behavior.",
+          ).optional(),
         }).describe(
           "TaintConfig contains the configuration for the taints of the node pool.",
         ).optional(),
-        taints: z.array(z.object({
-          effect: z.enum([
-            "EFFECT_UNSPECIFIED",
-            "NO_SCHEDULE",
-            "PREFER_NO_SCHEDULE",
-            "NO_EXECUTE",
-          ]).describe("Effect for taint.").optional(),
-          key: z.string().describe("Key for taint.").optional(),
-          value: z.string().describe("Value for taint.").optional(),
-        })).describe(
+        taints: z.array(z.unknown()).describe(
           "List of kubernetes taints to be applied to each node. For more information, including usage and the valid values, see: https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/",
         ).optional(),
         windowsNodeConfig: z.object({
-          osVersion: z.enum([
-            "OS_VERSION_UNSPECIFIED",
-            "OS_VERSION_LTSC2019",
-            "OS_VERSION_LTSC2022",
-          ]).describe(
+          osVersion: z.unknown().describe(
             "OSVersion specifies the Windows node config to be used on the node.",
           ).optional(),
         }).describe(
           "Parameters that can be configured on Windows nodes. Windows Node Config that define the parameters that will be used to configure the Windows node pool settings.",
         ).optional(),
         workloadMetadataConfig: z.object({
-          mode: z.enum(["MODE_UNSPECIFIED", "GCE_METADATA", "GKE_METADATA"])
-            .describe(
-              "Mode is the configuration for how to expose metadata to workloads running on the node pool.",
-            ).optional(),
+          mode: z.unknown().describe(
+            "Mode is the configuration for how to expose metadata to workloads running on the node pool.",
+          ).optional(),
         }).describe(
           "WorkloadMetadataConfig defines the metadata configuration to expose to workloads on the node pool.",
         ).optional(),
@@ -3118,10 +2603,10 @@ const GlobalArgsSchema = z.object({
           "A flag that specifies whether node auto-upgrade is enabled for the node pool. If enabled, node auto-upgrade helps keep the nodes in your node pool up to date with the latest release version of Kubernetes.",
         ).optional(),
         upgradeOptions: z.object({
-          autoUpgradeStartTime: z.string().describe(
+          autoUpgradeStartTime: z.unknown().describe(
             "Output only. This field is set when upgrades are about to commence with the approximate start time for the upgrades, in [RFC3339](https://www.ietf.org/rfc/rfc3339.txt) text format.",
           ).optional(),
-          description: z.string().describe(
+          description: z.unknown().describe(
             "Output only. This field is set when upgrades are about to commence with the description of the upgrade.",
           ).optional(),
         }).describe(
@@ -3140,32 +2625,10 @@ const GlobalArgsSchema = z.object({
         acceleratorNetworkProfile: z.string().describe(
           'Immutable. The accelerator network profile for the node pool. For now the only valid value is "auto". If specified, the network configuration of the nodes in this node pool will be managed by this profile for the supported machine types, zone, etc.',
         ).optional(),
-        additionalNodeNetworkConfigs: z.array(z.object({
-          network: z.string().describe(
-            "Name of the VPC where the additional interface belongs",
-          ).optional(),
-          subnetwork: z.string().describe(
-            "Name of the subnetwork where the additional interface belongs",
-          ).optional(),
-        })).describe(
+        additionalNodeNetworkConfigs: z.array(z.unknown()).describe(
           "We specify the additional node networks for this node pool using this list. Each node network corresponds to an additional interface",
         ).optional(),
-        additionalPodNetworkConfigs: z.array(z.object({
-          maxPodsPerNode: z.object({
-            maxPodsPerNode: z.string().describe(
-              "Constraint enforced on the max num of pods per node.",
-            ).optional(),
-          }).describe("Constraints applied to pods.").optional(),
-          networkAttachment: z.string().describe(
-            "The name of the network attachment for pods to communicate to; cannot be specified along with subnetwork or secondary_pod_range.",
-          ).optional(),
-          secondaryPodRange: z.string().describe(
-            "The name of the secondary range on the subnet which provides IP address for this pod range.",
-          ).optional(),
-          subnetwork: z.string().describe(
-            "Name of the subnetwork where the additional pod network belongs.",
-          ).optional(),
-        })).describe(
+        additionalPodNetworkConfigs: z.array(z.unknown()).describe(
           "We specify the additional pod networks for this node pool using this list. Each pod network corresponds to an additional alias IP range for the node",
         ).optional(),
         createPodRange: z.boolean().describe(
@@ -3175,22 +2638,17 @@ const GlobalArgsSchema = z.object({
           "Whether nodes have internal IP addresses only. If enable_private_nodes is not specified, then the value is derived from Cluster.NetworkConfig.default_enable_private_nodes",
         ).optional(),
         networkPerformanceConfig: z.object({
-          totalEgressBandwidthTier: z.enum(["TIER_UNSPECIFIED", "TIER_1"])
-            .describe(
-              "Specifies the total network bandwidth tier for the NodePool.",
-            ).optional(),
+          totalEgressBandwidthTier: z.unknown().describe(
+            "Specifies the total network bandwidth tier for the NodePool.",
+          ).optional(),
         }).describe("Configuration of all network bandwidth tiers").optional(),
         networkTierConfig: z.object({
-          networkTier: z.enum([
-            "NETWORK_TIER_UNSPECIFIED",
-            "NETWORK_TIER_DEFAULT",
-            "NETWORK_TIER_PREMIUM",
-            "NETWORK_TIER_STANDARD",
-          ]).describe("Network tier configuration.").optional(),
+          networkTier: z.unknown().describe("Network tier configuration.")
+            .optional(),
         }).describe("NetworkTierConfig contains network tier information.")
           .optional(),
         podCidrOverprovisionConfig: z.object({
-          disable: z.boolean().describe(
+          disable: z.unknown().describe(
             "Whether Pod CIDR overprovisioning is disabled. Note: Pod CIDR overprovisioning is enabled by default.",
           ).optional(),
         }).describe(
@@ -3257,54 +2715,32 @@ const GlobalArgsSchema = z.object({
       ).optional(),
       updateInfo: z.object({
         blueGreenInfo: z.object({
-          blueInstanceGroupUrls: z.array(z.string()).describe(
+          blueInstanceGroupUrls: z.unknown().describe(
             "The resource URLs of the [managed instance groups] (/compute/docs/instance-groups/creating-groups-of-managed-instances) associated with blue pool.",
           ).optional(),
-          bluePoolDeletionStartTime: z.string().describe(
+          bluePoolDeletionStartTime: z.unknown().describe(
             "Time to start deleting blue pool to complete blue-green upgrade, in [RFC3339](https://www.ietf.org/rfc/rfc3339.txt) text format.",
           ).optional(),
-          greenInstanceGroupUrls: z.array(z.string()).describe(
+          greenInstanceGroupUrls: z.unknown().describe(
             "The resource URLs of the [managed instance groups] (/compute/docs/instance-groups/creating-groups-of-managed-instances) associated with green pool.",
           ).optional(),
-          greenPoolVersion: z.string().describe("Version of green pool.")
+          greenPoolVersion: z.unknown().describe("Version of green pool.")
             .optional(),
-          phase: z.enum([
-            "PHASE_UNSPECIFIED",
-            "UPDATE_STARTED",
-            "CREATING_GREEN_POOL",
-            "CORDONING_BLUE_POOL",
-            "DRAINING_BLUE_POOL",
-            "NODE_POOL_SOAKING",
-            "DELETING_BLUE_POOL",
-            "ROLLBACK_STARTED",
-          ]).describe("Current blue-green upgrade phase.").optional(),
+          phase: z.unknown().describe("Current blue-green upgrade phase.")
+            .optional(),
         }).describe("Information relevant to blue-green upgrade.").optional(),
       }).describe(
         "UpdateInfo contains resource (instance groups, etc), status and other intermediate information relevant to a node pool upgrade.",
       ).optional(),
       upgradeSettings: z.object({
         blueGreenSettings: z.object({
-          autoscaledRolloutPolicy: z.object({
-            waitForDrainDuration: z.string().describe(
-              "Optional. Time to wait after cordoning the blue pool before draining the nodes. Defaults to 3 days. The value can be set between 0 and 7 days, inclusive.",
-            ).optional(),
-          }).describe(
+          autoscaledRolloutPolicy: z.unknown().describe(
             "Autoscaled rollout policy utilizes the cluster autoscaler during blue-green upgrade to scale both the blue and green pools.",
           ).optional(),
-          nodePoolSoakDuration: z.string().describe(
+          nodePoolSoakDuration: z.unknown().describe(
             "Time needed after draining entire blue pool. After this period, blue pool will be cleaned up.",
           ).optional(),
-          standardRolloutPolicy: z.object({
-            batchNodeCount: z.number().int().describe(
-              "Number of blue nodes to drain in a batch.",
-            ).optional(),
-            batchPercentage: z.number().describe(
-              "Percentage of the blue pool nodes to drain in a batch. The range of this field should be (0.0, 1.0].",
-            ).optional(),
-            batchSoakDuration: z.string().describe(
-              "Soak time after each batch gets drained. Default to zero.",
-            ).optional(),
-          }).describe(
+          standardRolloutPolicy: z.unknown().describe(
             "Standard rollout policy is the default policy for blue-green.",
           ).optional(),
         }).describe("Settings for blue-green upgrade.").optional(),
@@ -3334,15 +2770,8 @@ const GlobalArgsSchema = z.object({
         enabled: z.boolean().describe("Enable notifications for Pub/Sub.")
           .optional(),
         filter: z.object({
-          eventType: z.array(
-            z.enum([
-              "EVENT_TYPE_UNSPECIFIED",
-              "UPGRADE_AVAILABLE_EVENT",
-              "UPGRADE_EVENT",
-              "SECURITY_BULLETIN_EVENT",
-              "UPGRADE_INFO_EVENT",
-            ]),
-          ).describe("Event types to allowlist.").optional(),
+          eventType: z.array(z.unknown()).describe("Event types to allowlist.")
+            .optional(),
         }).describe(
           "Allows filtering to one or more specific event types. If event types are present, those and only those event types will be transmitted to the cluster. Other types will be skipped. If no filter is specified, or no event types are present, all event types will be sent",
         ).optional(),
@@ -3589,7 +3018,7 @@ const GlobalArgsSchema = z.object({
     ).optional(),
     desiredAdditionalIpRangesConfig: z.object({
       additionalIpRangesConfigs: z.array(z.object({
-        podIpv4RangeNames: z.array(z.string()).describe(
+        podIpv4RangeNames: z.array(z.unknown()).describe(
           "List of secondary ranges names within this subnetwork that can be used for pod IPs. Example1: gke-pod-range1 Example2: gke-pod-range1,gke-pod-range2",
         ).optional(),
         status: z.enum(["STATUS_UNSPECIFIED", "ACTIVE", "DRAINING"]).describe(
@@ -3828,10 +3257,10 @@ const GlobalArgsSchema = z.object({
             "A flag that specifies whether node auto-upgrade is enabled for the node pool. If enabled, node auto-upgrade helps keep the nodes in your node pool up to date with the latest release version of Kubernetes.",
           ).optional(),
           upgradeOptions: z.object({
-            autoUpgradeStartTime: z.string().describe(
+            autoUpgradeStartTime: z.unknown().describe(
               "Output only. This field is set when upgrades are about to commence with the approximate start time for the upgrades, in [RFC3339](https://www.ietf.org/rfc/rfc3339.txt) text format.",
             ).optional(),
-            description: z.string().describe(
+            description: z.unknown().describe(
               "Output only. This field is set when upgrades are about to commence with the description of the upgrade.",
             ).optional(),
           }).describe(
@@ -3859,27 +3288,13 @@ const GlobalArgsSchema = z.object({
         }).describe("A set of Shielded Instance options.").optional(),
         upgradeSettings: z.object({
           blueGreenSettings: z.object({
-            autoscaledRolloutPolicy: z.object({
-              waitForDrainDuration: z.string().describe(
-                "Optional. Time to wait after cordoning the blue pool before draining the nodes. Defaults to 3 days. The value can be set between 0 and 7 days, inclusive.",
-              ).optional(),
-            }).describe(
+            autoscaledRolloutPolicy: z.unknown().describe(
               "Autoscaled rollout policy utilizes the cluster autoscaler during blue-green upgrade to scale both the blue and green pools.",
             ).optional(),
-            nodePoolSoakDuration: z.string().describe(
+            nodePoolSoakDuration: z.unknown().describe(
               "Time needed after draining entire blue pool. After this period, blue pool will be cleaned up.",
             ).optional(),
-            standardRolloutPolicy: z.object({
-              batchNodeCount: z.number().int().describe(
-                "Number of blue nodes to drain in a batch.",
-              ).optional(),
-              batchPercentage: z.number().describe(
-                "Percentage of the blue pool nodes to drain in a batch. The range of this field should be (0.0, 1.0].",
-              ).optional(),
-              batchSoakDuration: z.string().describe(
-                "Soak time after each batch gets drained. Default to zero.",
-              ).optional(),
-            }).describe(
+            standardRolloutPolicy: z.unknown().describe(
               "Standard rollout policy is the default policy for blue-green.",
             ).optional(),
           }).describe("Settings for blue-green upgrade.").optional(),
@@ -3945,14 +3360,10 @@ const GlobalArgsSchema = z.object({
     desiredContainerdConfig: z.object({
       privateRegistryAccessConfig: z.object({
         certificateAuthorityDomainConfig: z.array(z.object({
-          fqdns: z.array(z.string()).describe(
+          fqdns: z.unknown().describe(
             "List of fully qualified domain names (FQDN). Specifying port is supported. Wildcards are NOT supported. Examples: - `my.customdomain.com` - `10.0.1.2:5000`",
           ).optional(),
-          gcpSecretManagerCertificateConfig: z.object({
-            secretUri: z.string().describe(
-              'Secret URI, in the form "projects/$PROJECT_ID/secrets/$SECRET_NAME/versions/$VERSION". Version can be fixed (e.g. "2") or "latest"',
-            ).optional(),
-          }).describe(
+          gcpSecretManagerCertificateConfig: z.unknown().describe(
             "GCPSecretManagerCertificateConfig configures a secret from [Secret Manager](https://cloud.google.com/secret-manager).",
           ).optional(),
         })).describe("Private registry access configuration.").optional(),
@@ -3962,59 +3373,7 @@ const GlobalArgsSchema = z.object({
         "PrivateRegistryAccessConfig contains access configuration for private container registries.",
       ).optional(),
       registryHosts: z.array(z.object({
-        hosts: z.array(z.object({
-          ca: z.array(z.object({
-            gcpSecretManagerSecretUri: z.string().describe(
-              'The URI configures a secret from [Secret Manager](https://cloud.google.com/secret-manager) in the format "projects/$PROJECT_ID/secrets/$SECRET_NAME/versions/$VERSION" for global secret or "projects/$PROJECT_ID/locations/$REGION/secrets/$SECRET_NAME/versions/$VERSION" for regional secret. Version can be fixed (e.g. "2") or "latest"',
-            ).optional(),
-          })).describe("CA configures the registry host certificate.")
-            .optional(),
-          capabilities: z.array(
-            z.enum([
-              "HOST_CAPABILITY_UNSPECIFIED",
-              "HOST_CAPABILITY_PULL",
-              "HOST_CAPABILITY_RESOLVE",
-              "HOST_CAPABILITY_PUSH",
-            ]),
-          ).describe(
-            "Capabilities represent the capabilities of the registry host, specifying what operations a host is capable of performing. If not set, containerd enables all capabilities by default.",
-          ).optional(),
-          client: z.array(z.object({
-            cert: z.object({
-              gcpSecretManagerSecretUri: z.string().describe(
-                'The URI configures a secret from [Secret Manager](https://cloud.google.com/secret-manager) in the format "projects/$PROJECT_ID/secrets/$SECRET_NAME/versions/$VERSION" for global secret or "projects/$PROJECT_ID/locations/$REGION/secrets/$SECRET_NAME/versions/$VERSION" for regional secret. Version can be fixed (e.g. "2") or "latest"',
-              ).optional(),
-            }).describe(
-              "CertificateConfig configures certificate for the registry.",
-            ).optional(),
-            key: z.object({
-              gcpSecretManagerSecretUri: z.string().describe(
-                'The URI configures a secret from [Secret Manager](https://cloud.google.com/secret-manager) in the format "projects/$PROJECT_ID/secrets/$SECRET_NAME/versions/$VERSION" for global secret or "projects/$PROJECT_ID/locations/$REGION/secrets/$SECRET_NAME/versions/$VERSION" for regional secret. Version can be fixed (e.g. "2") or "latest"',
-              ).optional(),
-            }).describe(
-              "CertificateConfig configures certificate for the registry.",
-            ).optional(),
-          })).describe(
-            "Client configures the registry host client certificate and key.",
-          ).optional(),
-          dialTimeout: z.string().describe(
-            "Specifies the maximum duration allowed for a connection attempt to complete. A shorter timeout helps reduce delays when falling back to the original registry if the mirror is unreachable. Maximum allowed value is 180s. If not set, containerd sets default 30s. The value should be a decimal number of seconds with an `s` suffix.",
-          ).optional(),
-          header: z.array(z.object({
-            key: z.string().describe("Key configures the header key.")
-              .optional(),
-            value: z.array(z.string()).describe(
-              "Value configures the header value.",
-            ).optional(),
-          })).describe("Header configures the registry host headers.")
-            .optional(),
-          host: z.string().describe(
-            "Host configures the registry host/mirror. It supports fully qualified domain names (FQDNs) and IP addresses. Specifying scheme, port or path is supported. Scheme can only be http or https. Wildcards are NOT supported. Examples: - `my.customdomain.com` - `https://my.customdomain.com/path` - `10.0.1.2:5000`",
-          ).optional(),
-          overridePath: z.boolean().describe(
-            "OverridePath is used to indicate the host's API root endpoint is defined in the URL path rather than by the API specification. This may be used with non-compliant OCI registries which are missing the /v2 prefix. If not set, containerd sets default false.",
-          ).optional(),
-        })).describe(
+        hosts: z.array(z.unknown()).describe(
           "HostConfig configures a list of host-specific configurations for the server. Each server can have at most 10 host configurations.",
         ).optional(),
         server: z.string().describe(
@@ -4055,14 +3414,7 @@ const GlobalArgsSchema = z.object({
       }).describe("Describes the configuration of a DNS endpoint.").optional(),
       ipEndpointsConfig: z.object({
         authorizedNetworksConfig: z.object({
-          cidrBlocks: z.array(z.object({
-            cidrBlock: z.string().describe(
-              "cidr_block must be specified in CIDR notation.",
-            ).optional(),
-            displayName: z.string().describe(
-              "display_name is an optional field for users to identify CIDR blocks.",
-            ).optional(),
-          })).describe(
+          cidrBlocks: z.array(z.unknown()).describe(
             "cidr_blocks define up to 50 external networks that could access Kubernetes master through HTTPS.",
           ).optional(),
           enabled: z.boolean().describe(
@@ -4849,15 +4201,8 @@ const GlobalArgsSchema = z.object({
         enabled: z.boolean().describe("Enable notifications for Pub/Sub.")
           .optional(),
         filter: z.object({
-          eventType: z.array(
-            z.enum([
-              "EVENT_TYPE_UNSPECIFIED",
-              "UPGRADE_AVAILABLE_EVENT",
-              "UPGRADE_EVENT",
-              "SECURITY_BULLETIN_EVENT",
-              "UPGRADE_INFO_EVENT",
-            ]),
-          ).describe("Event types to allowlist.").optional(),
+          eventType: z.array(z.unknown()).describe("Event types to allowlist.")
+            .optional(),
         }).describe(
           "Allows filtering to one or more specific event types. If event types are present, those and only those event types will be transmitted to the cluster. Other types will be skipped. If no filter is specified, or no event types are present, all event types will be sent",
         ).optional(),
@@ -5241,13 +4586,13 @@ const StateSchema = z.object({
       upgradeSettings: z.object({
         blueGreenSettings: z.object({
           autoscaledRolloutPolicy: z.object({
-            waitForDrainDuration: z.string(),
+            waitForDrainDuration: z.unknown(),
           }),
           nodePoolSoakDuration: z.string(),
           standardRolloutPolicy: z.object({
-            batchNodeCount: z.number(),
-            batchPercentage: z.number(),
-            batchSoakDuration: z.string(),
+            batchNodeCount: z.unknown(),
+            batchPercentage: z.unknown(),
+            batchSoakDuration: z.unknown(),
           }),
         }),
         maxSurge: z.number(),
@@ -5299,8 +4644,8 @@ const StateSchema = z.object({
     ipEndpointsConfig: z.object({
       authorizedNetworksConfig: z.object({
         cidrBlocks: z.array(z.object({
-          cidrBlock: z.string(),
-          displayName: z.string(),
+          cidrBlock: z.unknown(),
+          displayName: z.unknown(),
         })),
         enabled: z.boolean(),
         gcpPublicCidrsAccessEnabled: z.boolean(),
@@ -5436,8 +4781,8 @@ const StateSchema = z.object({
         window: z.object({
           endTime: z.string(),
           maintenanceExclusionOptions: z.object({
-            endTimeBehavior: z.string(),
-            scope: z.string(),
+            endTimeBehavior: z.unknown(),
+            scope: z.unknown(),
           }),
           startTime: z.string(),
         }),
@@ -5560,35 +4905,13 @@ const StateSchema = z.object({
     containerdConfig: z.object({
       privateRegistryAccessConfig: z.object({
         certificateAuthorityDomainConfig: z.array(z.object({
-          fqdns: z.array(z.string()),
-          gcpSecretManagerCertificateConfig: z.object({
-            secretUri: z.string(),
-          }),
+          fqdns: z.unknown(),
+          gcpSecretManagerCertificateConfig: z.unknown(),
         })),
         enabled: z.boolean(),
       }),
       registryHosts: z.array(z.object({
-        hosts: z.array(z.object({
-          ca: z.array(z.object({
-            gcpSecretManagerSecretUri: z.string(),
-          })),
-          capabilities: z.array(z.string()),
-          client: z.array(z.object({
-            cert: z.object({
-              gcpSecretManagerSecretUri: z.string(),
-            }),
-            key: z.object({
-              gcpSecretManagerSecretUri: z.string(),
-            }),
-          })),
-          dialTimeout: z.string(),
-          header: z.array(z.object({
-            key: z.string(),
-            value: z.array(z.string()),
-          })),
-          host: z.string(),
-          overridePath: z.boolean(),
-        })),
+        hosts: z.array(z.unknown()),
         server: z.string(),
       })),
       writableCgroups: z.object({
@@ -5748,7 +5071,7 @@ const StateSchema = z.object({
       nodeAffinities: z.array(z.object({
         key: z.string(),
         operator: z.string(),
-        values: z.array(z.string()),
+        values: z.array(z.unknown()),
       })),
     }),
     spot: z.boolean(),
@@ -5868,37 +5191,12 @@ const StateSchema = z.object({
     nodeConfigDefaults: z.object({
       containerdConfig: z.object({
         privateRegistryAccessConfig: z.object({
-          certificateAuthorityDomainConfig: z.array(z.object({
-            fqdns: z.array(z.string()),
-            gcpSecretManagerCertificateConfig: z.object({
-              secretUri: z.string(),
-            }),
-          })),
+          certificateAuthorityDomainConfig: z.array(z.unknown()),
           enabled: z.boolean(),
         }),
         registryHosts: z.array(z.object({
-          hosts: z.array(z.object({
-            ca: z.array(z.object({
-              gcpSecretManagerSecretUri: z.string(),
-            })),
-            capabilities: z.array(z.string()),
-            client: z.array(z.object({
-              cert: z.object({
-                gcpSecretManagerSecretUri: z.string(),
-              }),
-              key: z.object({
-                gcpSecretManagerSecretUri: z.string(),
-              }),
-            })),
-            dialTimeout: z.string(),
-            header: z.array(z.object({
-              key: z.string(),
-              value: z.array(z.string()),
-            })),
-            host: z.string(),
-            overridePath: z.boolean(),
-          })),
-          server: z.string(),
+          hosts: z.unknown(),
+          server: z.unknown(),
         })),
         writableCgroups: z.object({
           enabled: z.boolean(),
@@ -5991,16 +5289,11 @@ const StateSchema = z.object({
     })),
     config: z.object({
       accelerators: z.array(z.object({
-        acceleratorCount: z.string(),
-        acceleratorType: z.string(),
-        gpuDriverInstallationConfig: z.object({
-          gpuDriverVersion: z.string(),
-        }),
-        gpuPartitionSize: z.string(),
-        gpuSharingConfig: z.object({
-          gpuSharingStrategy: z.string(),
-          maxSharedClientsPerGpu: z.string(),
-        }),
+        acceleratorCount: z.unknown(),
+        acceleratorType: z.unknown(),
+        gpuDriverInstallationConfig: z.unknown(),
+        gpuPartitionSize: z.unknown(),
+        gpuSharingConfig: z.unknown(),
       })),
       advancedMachineFeatures: z.object({
         enableNestedVirtualization: z.boolean(),
@@ -6021,40 +5314,12 @@ const StateSchema = z.object({
       consolidationDelay: z.string(),
       containerdConfig: z.object({
         privateRegistryAccessConfig: z.object({
-          certificateAuthorityDomainConfig: z.array(z.object({
-            fqdns: z.array(z.string()),
-            gcpSecretManagerCertificateConfig: z.object({
-              secretUri: z.string(),
-            }),
-          })),
-          enabled: z.boolean(),
+          certificateAuthorityDomainConfig: z.unknown(),
+          enabled: z.unknown(),
         }),
-        registryHosts: z.array(z.object({
-          hosts: z.array(z.object({
-            ca: z.array(z.object({
-              gcpSecretManagerSecretUri: z.string(),
-            })),
-            capabilities: z.array(z.string()),
-            client: z.array(z.object({
-              cert: z.object({
-                gcpSecretManagerSecretUri: z.string(),
-              }),
-              key: z.object({
-                gcpSecretManagerSecretUri: z.string(),
-              }),
-            })),
-            dialTimeout: z.string(),
-            header: z.array(z.object({
-              key: z.string(),
-              value: z.array(z.string()),
-            })),
-            host: z.string(),
-            overridePath: z.boolean(),
-          })),
-          server: z.string(),
-        })),
+        registryHosts: z.array(z.unknown()),
         writableCgroups: z.object({
-          enabled: z.boolean(),
+          enabled: z.unknown(),
         }),
       }),
       diskSizeGb: z.number(),
@@ -6080,39 +5345,39 @@ const StateSchema = z.object({
       }),
       imageType: z.string(),
       kubeletConfig: z.object({
-        allowedUnsafeSysctls: z.array(z.string()),
+        allowedUnsafeSysctls: z.array(z.unknown()),
         containerLogMaxFiles: z.number(),
         containerLogMaxSize: z.string(),
         cpuCfsQuota: z.boolean(),
         cpuCfsQuotaPeriod: z.string(),
         cpuManagerPolicy: z.string(),
         crashLoopBackOff: z.object({
-          maxContainerRestartPeriod: z.string(),
+          maxContainerRestartPeriod: z.unknown(),
         }),
         evictionMaxPodGracePeriodSeconds: z.number(),
         evictionMinimumReclaim: z.object({
-          imagefsAvailable: z.string(),
-          imagefsInodesFree: z.string(),
-          memoryAvailable: z.string(),
-          nodefsAvailable: z.string(),
-          nodefsInodesFree: z.string(),
-          pidAvailable: z.string(),
+          imagefsAvailable: z.unknown(),
+          imagefsInodesFree: z.unknown(),
+          memoryAvailable: z.unknown(),
+          nodefsAvailable: z.unknown(),
+          nodefsInodesFree: z.unknown(),
+          pidAvailable: z.unknown(),
         }),
         evictionSoft: z.object({
-          imagefsAvailable: z.string(),
-          imagefsInodesFree: z.string(),
-          memoryAvailable: z.string(),
-          nodefsAvailable: z.string(),
-          nodefsInodesFree: z.string(),
-          pidAvailable: z.string(),
+          imagefsAvailable: z.unknown(),
+          imagefsInodesFree: z.unknown(),
+          memoryAvailable: z.unknown(),
+          nodefsAvailable: z.unknown(),
+          nodefsInodesFree: z.unknown(),
+          pidAvailable: z.unknown(),
         }),
         evictionSoftGracePeriod: z.object({
-          imagefsAvailable: z.string(),
-          imagefsInodesFree: z.string(),
-          memoryAvailable: z.string(),
-          nodefsAvailable: z.string(),
-          nodefsInodesFree: z.string(),
-          pidAvailable: z.string(),
+          imagefsAvailable: z.unknown(),
+          imagefsInodesFree: z.unknown(),
+          memoryAvailable: z.unknown(),
+          nodefsAvailable: z.unknown(),
+          nodefsInodesFree: z.unknown(),
+          pidAvailable: z.unknown(),
         }),
         imageGcHighThresholdPercent: z.number(),
         imageGcLowThresholdPercent: z.number(),
@@ -6121,46 +5386,36 @@ const StateSchema = z.object({
         insecureKubeletReadonlyPortEnabled: z.boolean(),
         maxParallelImagePulls: z.number(),
         memoryManager: z.object({
-          policy: z.string(),
+          policy: z.unknown(),
         }),
         podPidsLimit: z.string(),
         shutdownGracePeriodCriticalPodsSeconds: z.number(),
         shutdownGracePeriodSeconds: z.number(),
         singleProcessOomKill: z.boolean(),
         topologyManager: z.object({
-          policy: z.string(),
-          scope: z.string(),
+          policy: z.unknown(),
+          scope: z.unknown(),
         }),
       }),
       labels: z.record(z.string(), z.unknown()),
       linuxNodeConfig: z.object({
         accurateTimeConfig: z.object({
-          enablePtpKvmTimeSync: z.boolean(),
+          enablePtpKvmTimeSync: z.unknown(),
         }),
         cgroupMode: z.string(),
         hugepages: z.object({
-          hugepageSize1g: z.number(),
-          hugepageSize2m: z.number(),
+          hugepageSize1g: z.unknown(),
+          hugepageSize2m: z.unknown(),
         }),
         nodeKernelModuleLoading: z.object({
-          policy: z.string(),
+          policy: z.unknown(),
         }),
         swapConfig: z.object({
-          bootDiskProfile: z.object({
-            swapSizeGib: z.string(),
-            swapSizePercent: z.number(),
-          }),
-          dedicatedLocalSsdProfile: z.object({
-            diskCount: z.string(),
-          }),
-          enabled: z.boolean(),
-          encryptionConfig: z.object({
-            disabled: z.boolean(),
-          }),
-          ephemeralLocalSsdProfile: z.object({
-            swapSizeGib: z.string(),
-            swapSizePercent: z.number(),
-          }),
+          bootDiskProfile: z.unknown(),
+          dedicatedLocalSsdProfile: z.unknown(),
+          enabled: z.unknown(),
+          encryptionConfig: z.unknown(),
+          ephemeralLocalSsdProfile: z.unknown(),
         }),
         sysctls: z.record(z.string(), z.unknown()),
         transparentHugepageDefrag: z.string(),
@@ -6173,7 +5428,7 @@ const StateSchema = z.object({
       localSsdEncryptionMode: z.string(),
       loggingConfig: z.object({
         variantConfig: z.object({
-          variant: z.string(),
+          variant: z.unknown(),
         }),
       }),
       machineType: z.string(),
@@ -6186,7 +5441,7 @@ const StateSchema = z.object({
       reservationAffinity: z.object({
         consumeReservationType: z.string(),
         key: z.string(),
-        values: z.array(z.string()),
+        values: z.array(z.unknown()),
       }),
       resourceLabels: z.record(z.string(), z.unknown()),
       resourceManagerTags: z.object({
@@ -6197,8 +5452,8 @@ const StateSchema = z.object({
       }),
       secondaryBootDiskUpdateStrategy: z.object({}),
       secondaryBootDisks: z.array(z.object({
-        diskImage: z.string(),
-        mode: z.string(),
+        diskImage: z.unknown(),
+        mode: z.unknown(),
       })),
       serviceAccount: z.string(),
       shieldedInstanceConfig: z.object({
@@ -6207,11 +5462,7 @@ const StateSchema = z.object({
       }),
       soleTenantConfig: z.object({
         minNodeCpus: z.number(),
-        nodeAffinities: z.array(z.object({
-          key: z.string(),
-          operator: z.string(),
-          values: z.array(z.string()),
-        })),
+        nodeAffinities: z.array(z.unknown()),
       }),
       spot: z.boolean(),
       storagePools: z.array(z.string()),
@@ -6220,9 +5471,9 @@ const StateSchema = z.object({
         architectureTaintBehavior: z.string(),
       }),
       taints: z.array(z.object({
-        effect: z.string(),
-        key: z.string(),
-        value: z.string(),
+        effect: z.unknown(),
+        key: z.unknown(),
+        value: z.unknown(),
       })),
       windowsNodeConfig: z.object({
         osVersion: z.string(),
@@ -6250,16 +5501,14 @@ const StateSchema = z.object({
     networkConfig: z.object({
       acceleratorNetworkProfile: z.string(),
       additionalNodeNetworkConfigs: z.array(z.object({
-        network: z.string(),
-        subnetwork: z.string(),
+        network: z.unknown(),
+        subnetwork: z.unknown(),
       })),
       additionalPodNetworkConfigs: z.array(z.object({
-        maxPodsPerNode: z.object({
-          maxPodsPerNode: z.string(),
-        }),
-        networkAttachment: z.string(),
-        secondaryPodRange: z.string(),
-        subnetwork: z.string(),
+        maxPodsPerNode: z.unknown(),
+        networkAttachment: z.unknown(),
+        secondaryPodRange: z.unknown(),
+        subnetwork: z.unknown(),
       })),
       createPodRange: z.boolean(),
       enablePrivateNodes: z.boolean(),
@@ -6294,9 +5543,9 @@ const StateSchema = z.object({
     statusMessage: z.string(),
     updateInfo: z.object({
       blueGreenInfo: z.object({
-        blueInstanceGroupUrls: z.array(z.string()),
+        blueInstanceGroupUrls: z.array(z.unknown()),
         bluePoolDeletionStartTime: z.string(),
-        greenInstanceGroupUrls: z.array(z.string()),
+        greenInstanceGroupUrls: z.array(z.unknown()),
         greenPoolVersion: z.string(),
         phase: z.string(),
       }),
@@ -6304,13 +5553,13 @@ const StateSchema = z.object({
     upgradeSettings: z.object({
       blueGreenSettings: z.object({
         autoscaledRolloutPolicy: z.object({
-          waitForDrainDuration: z.string(),
+          waitForDrainDuration: z.unknown(),
         }),
         nodePoolSoakDuration: z.string(),
         standardRolloutPolicy: z.object({
-          batchNodeCount: z.number(),
-          batchPercentage: z.number(),
-          batchSoakDuration: z.string(),
+          batchNodeCount: z.unknown(),
+          batchPercentage: z.unknown(),
+          batchSoakDuration: z.unknown(),
         }),
       }),
       maxSurge: z.number(),
@@ -6641,10 +5890,10 @@ const InputsSchema = z.object({
             "A flag that specifies whether node auto-upgrade is enabled for the node pool. If enabled, node auto-upgrade helps keep the nodes in your node pool up to date with the latest release version of Kubernetes.",
           ).optional(),
           upgradeOptions: z.object({
-            autoUpgradeStartTime: z.string().describe(
+            autoUpgradeStartTime: z.unknown().describe(
               "Output only. This field is set when upgrades are about to commence with the approximate start time for the upgrades, in [RFC3339](https://www.ietf.org/rfc/rfc3339.txt) text format.",
             ).optional(),
-            description: z.string().describe(
+            description: z.unknown().describe(
               "Output only. This field is set when upgrades are about to commence with the description of the upgrade.",
             ).optional(),
           }).describe(
@@ -6672,27 +5921,13 @@ const InputsSchema = z.object({
         }).describe("A set of Shielded Instance options.").optional(),
         upgradeSettings: z.object({
           blueGreenSettings: z.object({
-            autoscaledRolloutPolicy: z.object({
-              waitForDrainDuration: z.string().describe(
-                "Optional. Time to wait after cordoning the blue pool before draining the nodes. Defaults to 3 days. The value can be set between 0 and 7 days, inclusive.",
-              ).optional(),
-            }).describe(
+            autoscaledRolloutPolicy: z.unknown().describe(
               "Autoscaled rollout policy utilizes the cluster autoscaler during blue-green upgrade to scale both the blue and green pools.",
             ).optional(),
-            nodePoolSoakDuration: z.string().describe(
+            nodePoolSoakDuration: z.unknown().describe(
               "Time needed after draining entire blue pool. After this period, blue pool will be cleaned up.",
             ).optional(),
-            standardRolloutPolicy: z.object({
-              batchNodeCount: z.number().int().describe(
-                "Number of blue nodes to drain in a batch.",
-              ).optional(),
-              batchPercentage: z.number().describe(
-                "Percentage of the blue pool nodes to drain in a batch. The range of this field should be (0.0, 1.0].",
-              ).optional(),
-              batchSoakDuration: z.string().describe(
-                "Soak time after each batch gets drained. Default to zero.",
-              ).optional(),
-            }).describe(
+            standardRolloutPolicy: z.unknown().describe(
               "Standard rollout policy is the default policy for blue-green.",
             ).optional(),
           }).describe("Settings for blue-green upgrade.").optional(),
@@ -6847,14 +6082,7 @@ const InputsSchema = z.object({
       }).describe("Describes the configuration of a DNS endpoint.").optional(),
       ipEndpointsConfig: z.object({
         authorizedNetworksConfig: z.object({
-          cidrBlocks: z.array(z.object({
-            cidrBlock: z.string().describe(
-              "cidr_block must be specified in CIDR notation.",
-            ).optional(),
-            displayName: z.string().describe(
-              "display_name is an optional field for users to identify CIDR blocks.",
-            ).optional(),
-          })).describe(
+          cidrBlocks: z.array(z.unknown()).describe(
             "cidr_blocks define up to 50 external networks that could access Kubernetes master through HTTPS.",
           ).optional(),
           enabled: z.boolean().describe(
@@ -7030,7 +6258,7 @@ const InputsSchema = z.object({
     ).optional(),
     ipAllocationPolicy: z.object({
       additionalIpRangesConfigs: z.array(z.object({
-        podIpv4RangeNames: z.array(z.string()).describe(
+        podIpv4RangeNames: z.array(z.unknown()).describe(
           "List of secondary ranges names within this subnetwork that can be used for pod IPs. Example1: gke-pod-range1 Example2: gke-pod-range1,gke-pod-range2",
         ).optional(),
         status: z.enum(["STATUS_UNSPECIFIED", "ACTIVE", "DRAINING"]).describe(
@@ -7044,9 +6272,9 @@ const InputsSchema = z.object({
       ).optional(),
       additionalPodRangesConfig: z.object({
         podRangeInfo: z.array(z.object({
-          rangeName: z.string().describe("Output only. Name of a range.")
+          rangeName: z.unknown().describe("Output only. Name of a range.")
             .optional(),
-          utilization: z.number().describe(
+          utilization: z.unknown().describe(
             "Output only. The utilization of the range.",
           ).optional(),
         })).describe("Output only. Information for additional pod range.")
@@ -7212,26 +6440,13 @@ const InputsSchema = z.object({
         maintenanceExclusions: z.record(
           z.string(),
           z.object({
-            endTime: z.string().describe(
+            endTime: z.unknown().describe(
               "The time that the window ends. The end time should take place after the start time.",
             ).optional(),
-            maintenanceExclusionOptions: z.object({
-              endTimeBehavior: z.enum([
-                "END_TIME_BEHAVIOR_UNSPECIFIED",
-                "UNTIL_END_OF_SUPPORT",
-              ]).describe(
-                "EndTimeBehavior specifies the behavior of the exclusion end time.",
-              ).optional(),
-              scope: z.enum([
-                "NO_UPGRADES",
-                "NO_MINOR_UPGRADES",
-                "NO_MINOR_OR_NODE_UPGRADES",
-              ]).describe(
-                "Scope specifies the upgrade scope which upgrades are blocked by the exclusion.",
-              ).optional(),
-            }).describe("Represents the Maintenance exclusion option.")
-              .optional(),
-            startTime: z.string().describe(
+            maintenanceExclusionOptions: z.unknown().describe(
+              "Represents the Maintenance exclusion option.",
+            ).optional(),
+            startTime: z.unknown().describe(
               "The time that the window first starts.",
             ).optional(),
           }),
@@ -7243,26 +6458,13 @@ const InputsSchema = z.object({
             "An RRULE (https://tools.ietf.org/html/rfc5545#section-3.8.5.3) for how this window recurs. They go on for the span of time between the start and end time. For example, to have something repeat every weekday, you'd use: `FREQ=WEEKLY;BYDAY=MO,TU,WE,TH,FR` To repeat some window daily (equivalent to the DailyMaintenanceWindow): `FREQ=DAILY` For the first weekend of every month: `FREQ=MONTHLY;BYSETPOS=1;BYDAY=SA,SU` This specifies how frequently the window starts. Eg, if you wanted to have a 9-5 UTC-4 window every weekday, you'd use something like: ` start time = 2019-01-01T09:00:00-0400 end time = 2019-01-01T17:00:00-0400 recurrence = FREQ=WEEKLY;BYDAY=MO,TU,WE,TH,FR ` Windows can span multiple days. Eg, to make the window encompass every weekend from midnight Saturday till the last minute of Sunday UTC: ` start time = 2019-01-05T00:00:00Z end time = 2019-01-07T23:59:00Z recurrence = FREQ=WEEKLY;BYDAY=SA ` Note the start and end time's specific dates are largely arbitrary except to specify duration of the window and when it first starts. The FREQ values of HOURLY, MINUTELY, and SECONDLY are not supported.",
           ).optional(),
           window: z.object({
-            endTime: z.string().describe(
+            endTime: z.unknown().describe(
               "The time that the window ends. The end time should take place after the start time.",
             ).optional(),
-            maintenanceExclusionOptions: z.object({
-              endTimeBehavior: z.enum([
-                "END_TIME_BEHAVIOR_UNSPECIFIED",
-                "UNTIL_END_OF_SUPPORT",
-              ]).describe(
-                "EndTimeBehavior specifies the behavior of the exclusion end time.",
-              ).optional(),
-              scope: z.enum([
-                "NO_UPGRADES",
-                "NO_MINOR_UPGRADES",
-                "NO_MINOR_OR_NODE_UPGRADES",
-              ]).describe(
-                "Scope specifies the upgrade scope which upgrades are blocked by the exclusion.",
-              ).optional(),
-            }).describe("Represents the Maintenance exclusion option.")
-              .optional(),
-            startTime: z.string().describe(
+            maintenanceExclusionOptions: z.unknown().describe(
+              "Represents the Maintenance exclusion option.",
+            ).optional(),
+            startTime: z.unknown().describe(
               "The time that the window first starts.",
             ).optional(),
           }).describe("Represents an arbitrary window of time.").optional(),
@@ -7533,12 +6735,9 @@ const InputsSchema = z.object({
           "The accelerator type resource name. List of supported accelerators [here](https://cloud.google.com/compute/docs/gpus)",
         ).optional(),
         gpuDriverInstallationConfig: z.object({
-          gpuDriverVersion: z.enum([
-            "GPU_DRIVER_VERSION_UNSPECIFIED",
-            "INSTALLATION_DISABLED",
-            "DEFAULT",
-            "LATEST",
-          ]).describe("Mode for how the GPU driver is installed.").optional(),
+          gpuDriverVersion: z.unknown().describe(
+            "Mode for how the GPU driver is installed.",
+          ).optional(),
         }).describe(
           "GPUDriverInstallationConfig specifies the version of GPU driver to be auto installed.",
         ).optional(),
@@ -7546,14 +6745,10 @@ const InputsSchema = z.object({
           "Size of partitions to create on the GPU. Valid values are described in the NVIDIA [mig user guide](https://docs.nvidia.com/datacenter/tesla/mig-user-guide/#partitioning).",
         ).optional(),
         gpuSharingConfig: z.object({
-          gpuSharingStrategy: z.enum([
-            "GPU_SHARING_STRATEGY_UNSPECIFIED",
-            "TIME_SHARING",
-            "MPS",
-          ]).describe(
+          gpuSharingStrategy: z.unknown().describe(
             "The type of GPU sharing strategy to enable on the GPU node.",
           ).optional(),
-          maxSharedClientsPerGpu: z.string().describe(
+          maxSharedClientsPerGpu: z.unknown().describe(
             "The max number of containers that can share a physical GPU.",
           ).optional(),
         }).describe(
@@ -7619,80 +6814,19 @@ const InputsSchema = z.object({
       ).optional(),
       containerdConfig: z.object({
         privateRegistryAccessConfig: z.object({
-          certificateAuthorityDomainConfig: z.array(z.object({
-            fqdns: z.array(z.string()).describe(
-              "List of fully qualified domain names (FQDN). Specifying port is supported. Wildcards are NOT supported. Examples: - `my.customdomain.com` - `10.0.1.2:5000`",
-            ).optional(),
-            gcpSecretManagerCertificateConfig: z.object({
-              secretUri: z.string().describe(
-                'Secret URI, in the form "projects/$PROJECT_ID/secrets/$SECRET_NAME/versions/$VERSION". Version can be fixed (e.g. "2") or "latest"',
-              ).optional(),
-            }).describe(
-              "GCPSecretManagerCertificateConfig configures a secret from [Secret Manager](https://cloud.google.com/secret-manager).",
-            ).optional(),
-          })).describe("Private registry access configuration.").optional(),
+          certificateAuthorityDomainConfig: z.array(z.unknown()).describe(
+            "Private registry access configuration.",
+          ).optional(),
           enabled: z.boolean().describe("Private registry access is enabled.")
             .optional(),
         }).describe(
           "PrivateRegistryAccessConfig contains access configuration for private container registries.",
         ).optional(),
         registryHosts: z.array(z.object({
-          hosts: z.array(z.object({
-            ca: z.array(z.object({
-              gcpSecretManagerSecretUri: z.string().describe(
-                'The URI configures a secret from [Secret Manager](https://cloud.google.com/secret-manager) in the format "projects/$PROJECT_ID/secrets/$SECRET_NAME/versions/$VERSION" for global secret or "projects/$PROJECT_ID/locations/$REGION/secrets/$SECRET_NAME/versions/$VERSION" for regional secret. Version can be fixed (e.g. "2") or "latest"',
-              ).optional(),
-            })).describe("CA configures the registry host certificate.")
-              .optional(),
-            capabilities: z.array(
-              z.enum([
-                "HOST_CAPABILITY_UNSPECIFIED",
-                "HOST_CAPABILITY_PULL",
-                "HOST_CAPABILITY_RESOLVE",
-                "HOST_CAPABILITY_PUSH",
-              ]),
-            ).describe(
-              "Capabilities represent the capabilities of the registry host, specifying what operations a host is capable of performing. If not set, containerd enables all capabilities by default.",
-            ).optional(),
-            client: z.array(z.object({
-              cert: z.object({
-                gcpSecretManagerSecretUri: z.string().describe(
-                  'The URI configures a secret from [Secret Manager](https://cloud.google.com/secret-manager) in the format "projects/$PROJECT_ID/secrets/$SECRET_NAME/versions/$VERSION" for global secret or "projects/$PROJECT_ID/locations/$REGION/secrets/$SECRET_NAME/versions/$VERSION" for regional secret. Version can be fixed (e.g. "2") or "latest"',
-                ).optional(),
-              }).describe(
-                "CertificateConfig configures certificate for the registry.",
-              ).optional(),
-              key: z.object({
-                gcpSecretManagerSecretUri: z.string().describe(
-                  'The URI configures a secret from [Secret Manager](https://cloud.google.com/secret-manager) in the format "projects/$PROJECT_ID/secrets/$SECRET_NAME/versions/$VERSION" for global secret or "projects/$PROJECT_ID/locations/$REGION/secrets/$SECRET_NAME/versions/$VERSION" for regional secret. Version can be fixed (e.g. "2") or "latest"',
-                ).optional(),
-              }).describe(
-                "CertificateConfig configures certificate for the registry.",
-              ).optional(),
-            })).describe(
-              "Client configures the registry host client certificate and key.",
-            ).optional(),
-            dialTimeout: z.string().describe(
-              "Specifies the maximum duration allowed for a connection attempt to complete. A shorter timeout helps reduce delays when falling back to the original registry if the mirror is unreachable. Maximum allowed value is 180s. If not set, containerd sets default 30s. The value should be a decimal number of seconds with an `s` suffix.",
-            ).optional(),
-            header: z.array(z.object({
-              key: z.string().describe("Key configures the header key.")
-                .optional(),
-              value: z.array(z.string()).describe(
-                "Value configures the header value.",
-              ).optional(),
-            })).describe("Header configures the registry host headers.")
-              .optional(),
-            host: z.string().describe(
-              "Host configures the registry host/mirror. It supports fully qualified domain names (FQDNs) and IP addresses. Specifying scheme, port or path is supported. Scheme can only be http or https. Wildcards are NOT supported. Examples: - `my.customdomain.com` - `https://my.customdomain.com/path` - `10.0.1.2:5000`",
-            ).optional(),
-            overridePath: z.boolean().describe(
-              "OverridePath is used to indicate the host's API root endpoint is defined in the URL path rather than by the API specification. This may be used with non-compliant OCI registries which are missing the /v2 prefix. If not set, containerd sets default false.",
-            ).optional(),
-          })).describe(
+          hosts: z.unknown().describe(
             "HostConfig configures a list of host-specific configurations for the server. Each server can have at most 10 host configurations.",
           ).optional(),
-          server: z.string().describe(
+          server: z.unknown().describe(
             "Defines the host name of the registry server, which will be used to create configuration file as /etc/containerd/hosts.d//hosts.toml. It supports fully qualified domain names (FQDN) and IP addresses: Specifying port is supported, while scheme and path are NOT supported. Wildcards are NOT supported. Examples: - `my.customdomain.com` - `10.0.1.2:5000`",
           ).optional(),
         })).describe(
@@ -7942,15 +7076,15 @@ const InputsSchema = z.object({
           .optional(),
         swapConfig: z.object({
           bootDiskProfile: z.object({
-            swapSizeGib: z.string().describe(
+            swapSizeGib: z.unknown().describe(
               "Specifies the size of the swap space in gibibytes (GiB).",
             ).optional(),
-            swapSizePercent: z.number().int().describe(
+            swapSizePercent: z.unknown().describe(
               "Specifies the size of the swap space as a percentage of the boot disk size.",
             ).optional(),
           }).describe("Swap on the node's boot disk.").optional(),
           dedicatedLocalSsdProfile: z.object({
-            diskCount: z.string().describe(
+            diskCount: z.unknown().describe(
               "The number of physical local NVMe SSD disks to attach.",
             ).optional(),
           }).describe(
@@ -7960,16 +7094,16 @@ const InputsSchema = z.object({
             "Optional. Enables or disables swap for the node pool.",
           ).optional(),
           encryptionConfig: z.object({
-            disabled: z.boolean().describe(
+            disabled: z.unknown().describe(
               "Optional. If true, swap space will not be encrypted. Defaults to false (encrypted).",
             ).optional(),
           }).describe("Defines encryption settings for the swap space.")
             .optional(),
           ephemeralLocalSsdProfile: z.object({
-            swapSizeGib: z.string().describe(
+            swapSizeGib: z.unknown().describe(
               "Specifies the size of the swap space in gibibytes (GiB).",
             ).optional(),
-            swapSizePercent: z.number().int().describe(
+            swapSizePercent: z.unknown().describe(
               "Specifies the size of the swap space as a percentage of the ephemeral local SSD capacity.",
             ).optional(),
           }).describe(
@@ -8109,12 +7243,10 @@ const InputsSchema = z.object({
           "Optional. The minimum number of virtual CPUs this instance will consume when running on a sole-tenant node. This field can only be set if the node pool is created in a shared sole-tenant node group.",
         ).optional(),
         nodeAffinities: z.array(z.object({
-          key: z.string().describe("Key for NodeAffinity.").optional(),
-          operator: z.enum(["OPERATOR_UNSPECIFIED", "IN", "NOT_IN"]).describe(
-            "Operator for NodeAffinity.",
-          ).optional(),
-          values: z.array(z.string()).describe("Values for NodeAffinity.")
+          key: z.unknown().describe("Key for NodeAffinity.").optional(),
+          operator: z.unknown().describe("Operator for NodeAffinity.")
             .optional(),
+          values: z.unknown().describe("Values for NodeAffinity.").optional(),
         })).describe(
           "NodeAffinities used to match to a shared sole tenant node group.",
         ).optional(),
@@ -8213,15 +7345,15 @@ const InputsSchema = z.object({
           .optional(),
         swapConfig: z.object({
           bootDiskProfile: z.object({
-            swapSizeGib: z.string().describe(
+            swapSizeGib: z.unknown().describe(
               "Specifies the size of the swap space in gibibytes (GiB).",
             ).optional(),
-            swapSizePercent: z.number().int().describe(
+            swapSizePercent: z.unknown().describe(
               "Specifies the size of the swap space as a percentage of the boot disk size.",
             ).optional(),
           }).describe("Swap on the node's boot disk.").optional(),
           dedicatedLocalSsdProfile: z.object({
-            diskCount: z.string().describe(
+            diskCount: z.unknown().describe(
               "The number of physical local NVMe SSD disks to attach.",
             ).optional(),
           }).describe(
@@ -8231,16 +7363,16 @@ const InputsSchema = z.object({
             "Optional. Enables or disables swap for the node pool.",
           ).optional(),
           encryptionConfig: z.object({
-            disabled: z.boolean().describe(
+            disabled: z.unknown().describe(
               "Optional. If true, swap space will not be encrypted. Defaults to false (encrypted).",
             ).optional(),
           }).describe("Defines encryption settings for the swap space.")
             .optional(),
           ephemeralLocalSsdProfile: z.object({
-            swapSizeGib: z.string().describe(
+            swapSizeGib: z.unknown().describe(
               "Specifies the size of the swap space in gibibytes (GiB).",
             ).optional(),
-            swapSizePercent: z.number().int().describe(
+            swapSizePercent: z.unknown().describe(
               "Specifies the size of the swap space as a percentage of the ephemeral local SSD capacity.",
             ).optional(),
           }).describe(
@@ -8432,87 +7564,19 @@ const InputsSchema = z.object({
       nodeConfigDefaults: z.object({
         containerdConfig: z.object({
           privateRegistryAccessConfig: z.object({
-            certificateAuthorityDomainConfig: z.array(z.object({
-              fqdns: z.array(z.string()).describe(
-                "List of fully qualified domain names (FQDN). Specifying port is supported. Wildcards are NOT supported. Examples: - `my.customdomain.com` - `10.0.1.2:5000`",
-              ).optional(),
-              gcpSecretManagerCertificateConfig: z.object({
-                secretUri: z.string().describe(
-                  'Secret URI, in the form "projects/$PROJECT_ID/secrets/$SECRET_NAME/versions/$VERSION". Version can be fixed (e.g. "2") or "latest"',
-                ).optional(),
-              }).describe(
-                "GCPSecretManagerCertificateConfig configures a secret from [Secret Manager](https://cloud.google.com/secret-manager).",
-              ).optional(),
-            })).describe("Private registry access configuration.").optional(),
-            enabled: z.boolean().describe("Private registry access is enabled.")
+            certificateAuthorityDomainConfig: z.unknown().describe(
+              "Private registry access configuration.",
+            ).optional(),
+            enabled: z.unknown().describe("Private registry access is enabled.")
               .optional(),
           }).describe(
             "PrivateRegistryAccessConfig contains access configuration for private container registries.",
           ).optional(),
-          registryHosts: z.array(z.object({
-            hosts: z.array(z.object({
-              ca: z.array(z.object({
-                gcpSecretManagerSecretUri: z.string().describe(
-                  'The URI configures a secret from [Secret Manager](https://cloud.google.com/secret-manager) in the format "projects/$PROJECT_ID/secrets/$SECRET_NAME/versions/$VERSION" for global secret or "projects/$PROJECT_ID/locations/$REGION/secrets/$SECRET_NAME/versions/$VERSION" for regional secret. Version can be fixed (e.g. "2") or "latest"',
-                ).optional(),
-              })).describe("CA configures the registry host certificate.")
-                .optional(),
-              capabilities: z.array(
-                z.enum([
-                  "HOST_CAPABILITY_UNSPECIFIED",
-                  "HOST_CAPABILITY_PULL",
-                  "HOST_CAPABILITY_RESOLVE",
-                  "HOST_CAPABILITY_PUSH",
-                ]),
-              ).describe(
-                "Capabilities represent the capabilities of the registry host, specifying what operations a host is capable of performing. If not set, containerd enables all capabilities by default.",
-              ).optional(),
-              client: z.array(z.object({
-                cert: z.object({
-                  gcpSecretManagerSecretUri: z.string().describe(
-                    'The URI configures a secret from [Secret Manager](https://cloud.google.com/secret-manager) in the format "projects/$PROJECT_ID/secrets/$SECRET_NAME/versions/$VERSION" for global secret or "projects/$PROJECT_ID/locations/$REGION/secrets/$SECRET_NAME/versions/$VERSION" for regional secret. Version can be fixed (e.g. "2") or "latest"',
-                  ).optional(),
-                }).describe(
-                  "CertificateConfig configures certificate for the registry.",
-                ).optional(),
-                key: z.object({
-                  gcpSecretManagerSecretUri: z.string().describe(
-                    'The URI configures a secret from [Secret Manager](https://cloud.google.com/secret-manager) in the format "projects/$PROJECT_ID/secrets/$SECRET_NAME/versions/$VERSION" for global secret or "projects/$PROJECT_ID/locations/$REGION/secrets/$SECRET_NAME/versions/$VERSION" for regional secret. Version can be fixed (e.g. "2") or "latest"',
-                  ).optional(),
-                }).describe(
-                  "CertificateConfig configures certificate for the registry.",
-                ).optional(),
-              })).describe(
-                "Client configures the registry host client certificate and key.",
-              ).optional(),
-              dialTimeout: z.string().describe(
-                "Specifies the maximum duration allowed for a connection attempt to complete. A shorter timeout helps reduce delays when falling back to the original registry if the mirror is unreachable. Maximum allowed value is 180s. If not set, containerd sets default 30s. The value should be a decimal number of seconds with an `s` suffix.",
-              ).optional(),
-              header: z.array(z.object({
-                key: z.string().describe("Key configures the header key.")
-                  .optional(),
-                value: z.array(z.string()).describe(
-                  "Value configures the header value.",
-                ).optional(),
-              })).describe("Header configures the registry host headers.")
-                .optional(),
-              host: z.string().describe(
-                "Host configures the registry host/mirror. It supports fully qualified domain names (FQDNs) and IP addresses. Specifying scheme, port or path is supported. Scheme can only be http or https. Wildcards are NOT supported. Examples: - `my.customdomain.com` - `https://my.customdomain.com/path` - `10.0.1.2:5000`",
-              ).optional(),
-              overridePath: z.boolean().describe(
-                "OverridePath is used to indicate the host's API root endpoint is defined in the URL path rather than by the API specification. This may be used with non-compliant OCI registries which are missing the /v2 prefix. If not set, containerd sets default false.",
-              ).optional(),
-            })).describe(
-              "HostConfig configures a list of host-specific configurations for the server. Each server can have at most 10 host configurations.",
-            ).optional(),
-            server: z.string().describe(
-              "Defines the host name of the registry server, which will be used to create configuration file as /etc/containerd/hosts.d//hosts.toml. It supports fully qualified domain names (FQDN) and IP addresses: Specifying port is supported, while scheme and path are NOT supported. Wildcards are NOT supported. Examples: - `my.customdomain.com` - `10.0.1.2:5000`",
-            ).optional(),
-          })).describe(
+          registryHosts: z.array(z.unknown()).describe(
             "RegistryHostConfig configures containerd registry host configuration. Each registry_hosts represents a hosts.toml file. At most 25 registry_hosts are allowed.",
           ).optional(),
           writableCgroups: z.object({
-            enabled: z.boolean().describe(
+            enabled: z.unknown().describe(
               "Optional. Whether writable cgroups is enabled.",
             ).optional(),
           }).describe("Defines writable cgroups configuration.").optional(),
@@ -8526,11 +7590,8 @@ const InputsSchema = z.object({
         ).optional(),
         loggingConfig: z.object({
           variantConfig: z.object({
-            variant: z.enum([
-              "VARIANT_UNSPECIFIED",
-              "DEFAULT",
-              "MAX_THROUGHPUT",
-            ]).describe("Logging variant deployed on nodes.").optional(),
+            variant: z.unknown().describe("Logging variant deployed on nodes.")
+              .optional(),
           }).describe(
             "LoggingVariantConfig specifies the behaviour of the logging component.",
           ).optional(),
@@ -8538,7 +7599,7 @@ const InputsSchema = z.object({
           "NodePoolLoggingConfig specifies logging configuration for nodepools.",
         ).optional(),
         nodeKubeletConfig: z.object({
-          allowedUnsafeSysctls: z.array(z.string()).describe(
+          allowedUnsafeSysctls: z.array(z.unknown()).describe(
             "Optional. Defines a comma-separated allowlist of unsafe sysctls or sysctl patterns (ending in `*`). The unsafe namespaced sysctl groups are `kernel.shm*`, `kernel.msg*`, `kernel.sem`, `fs.mqueue.*`, and `net.*`. Leaving this allowlist empty means they cannot be set on Pods. To allow certain sysctls or sysctl patterns to be set on Pods, list them separated by commas. For example: `kernel.msg*,net.ipv4.route.min_pmtu`. See https://kubernetes.io/docs/tasks/administer-cluster/sysctl-cluster/ for more details.",
           ).optional(),
           containerLogMaxFiles: z.number().int().describe(
@@ -8557,7 +7618,7 @@ const InputsSchema = z.object({
             'Control the CPU management policy on the node. See https://kubernetes.io/docs/tasks/administer-cluster/cpu-management-policies/ The following values are allowed. * "none": the default, which represents the existing scheduling behavior. * "static": allows pods with certain resource characteristics to be granted increased CPU affinity and exclusivity on the node. The default value is \'none\' if unspecified.',
           ).optional(),
           crashLoopBackOff: z.object({
-            maxContainerRestartPeriod: z.string().describe(
+            maxContainerRestartPeriod: z.unknown().describe(
               'Optional. The maximum duration the backoff delay can accrue to for container restarts, minimum 1 second, maximum 300 seconds. If not set, defaults to the internal crashloopbackoff maximum. The string must be a sequence of decimal numbers, each with optional fraction and a unit suffix, such as "300ms". Valid time units are "ns", "us" (or "µs"), "ms", "s", "m", "h". See https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle/#configurable-container-restart-delay for more details.',
             ).optional(),
           }).describe(
@@ -8567,66 +7628,66 @@ const InputsSchema = z.object({
             "Optional. eviction_max_pod_grace_period_seconds is the maximum allowed grace period (in seconds) to use when terminating pods in response to a soft eviction threshold being met. This value effectively caps the Pod's terminationGracePeriodSeconds value during soft evictions. Default: 0. Range: [0, 300].",
           ).optional(),
           evictionMinimumReclaim: z.object({
-            imagefsAvailable: z.string().describe(
+            imagefsAvailable: z.unknown().describe(
               'Optional. Minimum reclaim for eviction due to imagefs available signal. Only take percentage value for now. Sample format: "10%". Must be <=10%. See https://kubernetes.io/docs/concepts/scheduling-eviction/node-pressure-eviction/#eviction-signals',
             ).optional(),
-            imagefsInodesFree: z.string().describe(
+            imagefsInodesFree: z.unknown().describe(
               'Optional. Minimum reclaim for eviction due to imagefs inodes free signal. Only take percentage value for now. Sample format: "10%". Must be <=10%. See https://kubernetes.io/docs/concepts/scheduling-eviction/node-pressure-eviction/#eviction-signals',
             ).optional(),
-            memoryAvailable: z.string().describe(
+            memoryAvailable: z.unknown().describe(
               'Optional. Minimum reclaim for eviction due to memory available signal. Only take percentage value for now. Sample format: "10%". Must be <=10%. See https://kubernetes.io/docs/concepts/scheduling-eviction/node-pressure-eviction/#eviction-signals',
             ).optional(),
-            nodefsAvailable: z.string().describe(
+            nodefsAvailable: z.unknown().describe(
               'Optional. Minimum reclaim for eviction due to nodefs available signal. Only take percentage value for now. Sample format: "10%". Must be <=10%. See https://kubernetes.io/docs/concepts/scheduling-eviction/node-pressure-eviction/#eviction-signals',
             ).optional(),
-            nodefsInodesFree: z.string().describe(
+            nodefsInodesFree: z.unknown().describe(
               'Optional. Minimum reclaim for eviction due to nodefs inodes free signal. Only take percentage value for now. Sample format: "10%". Must be <=10%. See https://kubernetes.io/docs/concepts/scheduling-eviction/node-pressure-eviction/#eviction-signals',
             ).optional(),
-            pidAvailable: z.string().describe(
+            pidAvailable: z.unknown().describe(
               'Optional. Minimum reclaim for eviction due to pid available signal. Only take percentage value for now. Sample format: "10%". Must be <=10%. See https://kubernetes.io/docs/concepts/scheduling-eviction/node-pressure-eviction/#eviction-signals',
             ).optional(),
           }).describe(
             "Eviction minimum reclaims are the resource amounts of minimum reclaims for each eviction signal.",
           ).optional(),
           evictionSoft: z.object({
-            imagefsAvailable: z.string().describe(
+            imagefsAvailable: z.unknown().describe(
               'Optional. Amount of storage available on filesystem that container runtime uses for storing images layers. If the container filesystem and image filesystem are not separate, then imagefs can store both image layers and writeable layers. Defines the amount of "imagefs.available" signal in kubelet. Default is unset, if not specified in the kubelet config. It takses percentage value for now. Sample format: "30%". Must be >= 15% and <= 50%. See https://kubernetes.io/docs/concepts/scheduling-eviction/node-pressure-eviction/#eviction-signals',
             ).optional(),
-            imagefsInodesFree: z.string().describe(
+            imagefsInodesFree: z.unknown().describe(
               'Optional. Amount of inodes available on filesystem that container runtime uses for storing images layers. Defines the amount of "imagefs.inodesFree" signal in kubelet. Default is unset, if not specified in the kubelet config. Linux only. It takses percentage value for now. Sample format: "30%". Must be >= 5% and <= 50%. See https://kubernetes.io/docs/concepts/scheduling-eviction/node-pressure-eviction/#eviction-signals',
             ).optional(),
-            memoryAvailable: z.string().describe(
+            memoryAvailable: z.unknown().describe(
               'Optional. Memory available (i.e. capacity - workingSet), in bytes. Defines the amount of "memory.available" signal in kubelet. Default is unset, if not specified in the kubelet config. Format: positive number + unit, e.g. 100Ki, 10Mi, 5Gi. Valid units are Ki, Mi, Gi. Must be >= 100Mi and <= 50% of the node\'s memory. See https://kubernetes.io/docs/concepts/scheduling-eviction/node-pressure-eviction/#eviction-signals',
             ).optional(),
-            nodefsAvailable: z.string().describe(
+            nodefsAvailable: z.unknown().describe(
               'Optional. Amount of storage available on filesystem that kubelet uses for volumes, daemon logs, etc. Defines the amount of "nodefs.available" signal in kubelet. Default is unset, if not specified in the kubelet config. It takses percentage value for now. Sample format: "30%". Must be >= 10% and <= 50%. See https://kubernetes.io/docs/concepts/scheduling-eviction/node-pressure-eviction/#eviction-signals',
             ).optional(),
-            nodefsInodesFree: z.string().describe(
+            nodefsInodesFree: z.unknown().describe(
               'Optional. Amount of inodes available on filesystem that kubelet uses for volumes, daemon logs, etc. Defines the amount of "nodefs.inodesFree" signal in kubelet. Default is unset, if not specified in the kubelet config. Linux only. It takses percentage value for now. Sample format: "30%". Must be >= 5% and <= 50%. See https://kubernetes.io/docs/concepts/scheduling-eviction/node-pressure-eviction/#eviction-signals',
             ).optional(),
-            pidAvailable: z.string().describe(
+            pidAvailable: z.unknown().describe(
               'Optional. Amount of PID available for pod allocation. Defines the amount of "pid.available" signal in kubelet. Default is unset, if not specified in the kubelet config. It takses percentage value for now. Sample format: "30%". Must be >= 10% and <= 50%. See https://kubernetes.io/docs/concepts/scheduling-eviction/node-pressure-eviction/#eviction-signals',
             ).optional(),
           }).describe(
             "Eviction signals are the current state of a particular resource at a specific point in time. The kubelet uses eviction signals to make eviction decisions by comparing the signals to eviction thresholds, which are the minimum amount of the resource that should be available on the node.",
           ).optional(),
           evictionSoftGracePeriod: z.object({
-            imagefsAvailable: z.string().describe(
+            imagefsAvailable: z.unknown().describe(
               'Optional. Grace period for eviction due to imagefs available signal. Sample format: "10s". Must be >= 0. See https://kubernetes.io/docs/concepts/scheduling-eviction/node-pressure-eviction/#eviction-signals',
             ).optional(),
-            imagefsInodesFree: z.string().describe(
+            imagefsInodesFree: z.unknown().describe(
               'Optional. Grace period for eviction due to imagefs inodes free signal. Sample format: "10s". Must be >= 0. See https://kubernetes.io/docs/concepts/scheduling-eviction/node-pressure-eviction/#eviction-signals',
             ).optional(),
-            memoryAvailable: z.string().describe(
+            memoryAvailable: z.unknown().describe(
               'Optional. Grace period for eviction due to memory available signal. Sample format: "10s". Must be >= 0. See https://kubernetes.io/docs/concepts/scheduling-eviction/node-pressure-eviction/#eviction-signals',
             ).optional(),
-            nodefsAvailable: z.string().describe(
+            nodefsAvailable: z.unknown().describe(
               'Optional. Grace period for eviction due to nodefs available signal. Sample format: "10s". Must be >= 0. See https://kubernetes.io/docs/concepts/scheduling-eviction/node-pressure-eviction/#eviction-signals',
             ).optional(),
-            nodefsInodesFree: z.string().describe(
+            nodefsInodesFree: z.unknown().describe(
               'Optional. Grace period for eviction due to nodefs inodes free signal. Sample format: "10s". Must be >= 0. See https://kubernetes.io/docs/concepts/scheduling-eviction/node-pressure-eviction/#eviction-signals',
             ).optional(),
-            pidAvailable: z.string().describe(
+            pidAvailable: z.unknown().describe(
               'Optional. Grace period for eviction due to pid available signal. Sample format: "10s". Must be >= 0. See https://kubernetes.io/docs/concepts/scheduling-eviction/node-pressure-eviction/#eviction-signals',
             ).optional(),
           }).describe(
@@ -8651,7 +7712,7 @@ const InputsSchema = z.object({
             "Optional. Defines the maximum number of image pulls in parallel. The range is 2 to 5, inclusive. The default value is 2 or 3 depending on the disk type. See https://kubernetes.io/docs/concepts/containers/images/#maximum-parallel-image-pulls for more details.",
           ).optional(),
           memoryManager: z.object({
-            policy: z.string().describe(
+            policy: z.unknown().describe(
               'Controls the memory management policy on the Node. See https://kubernetes.io/docs/tasks/administer-cluster/memory-manager/#policies The following values are allowed. * "none" * "static" The default value is \'none\' if unspecified.',
             ).optional(),
           }).describe(
@@ -8670,10 +7731,10 @@ const InputsSchema = z.object({
             "Optional. Defines whether to enable single process OOM killer. If true, will prevent the memory.oom.group flag from being set for container cgroups in cgroups v2. This causes processes in the container to be OOM killed individually instead of as a group.",
           ).optional(),
           topologyManager: z.object({
-            policy: z.string().describe(
+            policy: z.unknown().describe(
               "Configures the strategy for resource alignment. Allowed values are: * none: the default policy, and does not perform any topology alignment. * restricted: the topology manager stores the preferred NUMA node affinity for the container, and will reject the pod if the affinity if not preferred. * best-effort: the topology manager stores the preferred NUMA node affinity for the container. If the affinity is not preferred, the topology manager will admit the pod to the node anyway. * single-numa-node: the topology manager determines if the single NUMA node affinity is possible. If it is, Topology Manager will store this and the Hint Providers can then use this information when making the resource allocation decision. If, however, this is not possible then the Topology Manager will reject the pod from the node. This will result in a pod in a Terminated state with a pod admission failure. The default policy value is 'none' if unspecified. Details about each strategy can be found [here](https://kubernetes.io/docs/tasks/administer-cluster/topology-manager/#topology-manager-policies).",
             ).optional(),
-            scope: z.string().describe(
+            scope: z.unknown().describe(
               "The Topology Manager aligns resources in following scopes: * container * pod The default scope is 'container' if unspecified. See https://kubernetes.io/docs/tasks/administer-cluster/topology-manager/#topology-manager-scopes",
             ).optional(),
           }).describe(
@@ -8727,110 +7788,44 @@ const InputsSchema = z.object({
         ).optional(),
       }).describe("Best effort provisioning.").optional(),
       conditions: z.array(z.object({
-        canonicalCode: z.enum([
-          "OK",
-          "CANCELLED",
-          "UNKNOWN",
-          "INVALID_ARGUMENT",
-          "DEADLINE_EXCEEDED",
-          "NOT_FOUND",
-          "ALREADY_EXISTS",
-          "PERMISSION_DENIED",
-          "UNAUTHENTICATED",
-          "RESOURCE_EXHAUSTED",
-          "FAILED_PRECONDITION",
-          "ABORTED",
-          "OUT_OF_RANGE",
-          "UNIMPLEMENTED",
-          "INTERNAL",
-          "UNAVAILABLE",
-          "DATA_LOSS",
-        ]).describe("Canonical code of the condition.").optional(),
-        code: z.enum([
-          "UNKNOWN",
-          "GCE_STOCKOUT",
-          "GKE_SERVICE_ACCOUNT_DELETED",
-          "GCE_QUOTA_EXCEEDED",
-          "SET_BY_OPERATOR",
-          "CLOUD_KMS_KEY_ERROR",
-          "CA_EXPIRING",
-          "NODE_SERVICE_ACCOUNT_MISSING_PERMISSIONS",
-          "CLOUD_KMS_KEY_DESTROYED",
-        ]).describe(
+        canonicalCode: z.unknown().describe("Canonical code of the condition.")
+          .optional(),
+        code: z.unknown().describe(
           "Machine-friendly representation of the condition Deprecated. Use canonical_code instead.",
         ).optional(),
-        message: z.string().describe(
+        message: z.unknown().describe(
           "Human-friendly representation of the condition",
         ).optional(),
       })).describe("Which conditions caused the current node pool state.")
         .optional(),
       config: z.object({
-        accelerators: z.array(z.object({
-          acceleratorCount: z.string().describe(
-            "The number of the accelerator cards exposed to an instance.",
-          ).optional(),
-          acceleratorType: z.string().describe(
-            "The accelerator type resource name. List of supported accelerators [here](https://cloud.google.com/compute/docs/gpus)",
-          ).optional(),
-          gpuDriverInstallationConfig: z.object({
-            gpuDriverVersion: z.enum([
-              "GPU_DRIVER_VERSION_UNSPECIFIED",
-              "INSTALLATION_DISABLED",
-              "DEFAULT",
-              "LATEST",
-            ]).describe("Mode for how the GPU driver is installed.").optional(),
-          }).describe(
-            "GPUDriverInstallationConfig specifies the version of GPU driver to be auto installed.",
-          ).optional(),
-          gpuPartitionSize: z.string().describe(
-            "Size of partitions to create on the GPU. Valid values are described in the NVIDIA [mig user guide](https://docs.nvidia.com/datacenter/tesla/mig-user-guide/#partitioning).",
-          ).optional(),
-          gpuSharingConfig: z.object({
-            gpuSharingStrategy: z.enum([
-              "GPU_SHARING_STRATEGY_UNSPECIFIED",
-              "TIME_SHARING",
-              "MPS",
-            ]).describe(
-              "The type of GPU sharing strategy to enable on the GPU node.",
-            ).optional(),
-            maxSharedClientsPerGpu: z.string().describe(
-              "The max number of containers that can share a physical GPU.",
-            ).optional(),
-          }).describe(
-            "GPUSharingConfig represents the GPU sharing configuration for Hardware Accelerators.",
-          ).optional(),
-        })).describe(
+        accelerators: z.array(z.unknown()).describe(
           "A list of hardware accelerators to be attached to each node. See https://cloud.google.com/compute/docs/gpus for more information about support for GPUs.",
         ).optional(),
         advancedMachineFeatures: z.object({
-          enableNestedVirtualization: z.boolean().describe(
+          enableNestedVirtualization: z.unknown().describe(
             "Whether or not to enable nested virtualization (defaults to false).",
           ).optional(),
-          performanceMonitoringUnit: z.enum([
-            "PERFORMANCE_MONITORING_UNIT_UNSPECIFIED",
-            "ARCHITECTURAL",
-            "STANDARD",
-            "ENHANCED",
-          ]).describe(
+          performanceMonitoringUnit: z.unknown().describe(
             "Type of Performance Monitoring Unit (PMU) requested on node pool instances. If unset, PMU will not be available to the node.",
           ).optional(),
-          threadsPerCore: z.string().describe(
+          threadsPerCore: z.unknown().describe(
             "The number of threads per physical core. To disable simultaneous multithreading (SMT) set this to 1. If unset, the maximum number of threads supported per core by the underlying processor is assumed.",
           ).optional(),
         }).describe(
           "Specifies options for controlling advanced machine features.",
         ).optional(),
         bootDisk: z.object({
-          diskType: z.string().describe(
+          diskType: z.unknown().describe(
             "Disk type of the boot disk. (i.e. Hyperdisk-Balanced, PD-Balanced, etc.)",
           ).optional(),
-          provisionedIops: z.string().describe(
+          provisionedIops: z.unknown().describe(
             "For Hyperdisk-Balanced only, the provisioned IOPS config value.",
           ).optional(),
-          provisionedThroughput: z.string().describe(
+          provisionedThroughput: z.unknown().describe(
             "For Hyperdisk-Balanced only, the provisioned throughput config value.",
           ).optional(),
-          sizeGb: z.string().describe(
+          sizeGb: z.unknown().describe(
             "Disk size in GB. Replaces NodeConfig.disk_size_gb",
           ).optional(),
         }).describe(
@@ -8840,15 +7835,10 @@ const InputsSchema = z.object({
           "The Customer Managed Encryption Key used to encrypt the boot disk attached to each node in the node pool. This should be of the form projects/[KEY_PROJECT_ID]/locations/[LOCATION]/keyRings/[RING_NAME]/cryptoKeys/[KEY_NAME]. For more information about protecting resources with Cloud KMS Keys please see: https://cloud.google.com/compute/docs/disks/customer-managed-encryption",
         ).optional(),
         confidentialNodes: z.object({
-          confidentialInstanceType: z.enum([
-            "CONFIDENTIAL_INSTANCE_TYPE_UNSPECIFIED",
-            "SEV",
-            "SEV_SNP",
-            "TDX",
-          ]).describe(
+          confidentialInstanceType: z.unknown().describe(
             "Defines the type of technology used by the confidential node.",
           ).optional(),
-          enabled: z.boolean().describe(
+          enabled: z.unknown().describe(
             "Whether Confidential Nodes feature is enabled.",
           ).optional(),
         }).describe(
@@ -8858,91 +7848,15 @@ const InputsSchema = z.object({
           "Consolidation delay defines duration after which the Cluster Autoscaler can scale down underutilized nodes. If not set, nodes are scaled down by default behavior, i.e. according to the chosen autoscaling profile.",
         ).optional(),
         containerdConfig: z.object({
-          privateRegistryAccessConfig: z.object({
-            certificateAuthorityDomainConfig: z.array(z.object({
-              fqdns: z.array(z.string()).describe(
-                "List of fully qualified domain names (FQDN). Specifying port is supported. Wildcards are NOT supported. Examples: - `my.customdomain.com` - `10.0.1.2:5000`",
-              ).optional(),
-              gcpSecretManagerCertificateConfig: z.object({
-                secretUri: z.string().describe(
-                  'Secret URI, in the form "projects/$PROJECT_ID/secrets/$SECRET_NAME/versions/$VERSION". Version can be fixed (e.g. "2") or "latest"',
-                ).optional(),
-              }).describe(
-                "GCPSecretManagerCertificateConfig configures a secret from [Secret Manager](https://cloud.google.com/secret-manager).",
-              ).optional(),
-            })).describe("Private registry access configuration.").optional(),
-            enabled: z.boolean().describe("Private registry access is enabled.")
-              .optional(),
-          }).describe(
+          privateRegistryAccessConfig: z.unknown().describe(
             "PrivateRegistryAccessConfig contains access configuration for private container registries.",
           ).optional(),
-          registryHosts: z.array(z.object({
-            hosts: z.array(z.object({
-              ca: z.array(z.object({
-                gcpSecretManagerSecretUri: z.string().describe(
-                  'The URI configures a secret from [Secret Manager](https://cloud.google.com/secret-manager) in the format "projects/$PROJECT_ID/secrets/$SECRET_NAME/versions/$VERSION" for global secret or "projects/$PROJECT_ID/locations/$REGION/secrets/$SECRET_NAME/versions/$VERSION" for regional secret. Version can be fixed (e.g. "2") or "latest"',
-                ).optional(),
-              })).describe("CA configures the registry host certificate.")
-                .optional(),
-              capabilities: z.array(
-                z.enum([
-                  "HOST_CAPABILITY_UNSPECIFIED",
-                  "HOST_CAPABILITY_PULL",
-                  "HOST_CAPABILITY_RESOLVE",
-                  "HOST_CAPABILITY_PUSH",
-                ]),
-              ).describe(
-                "Capabilities represent the capabilities of the registry host, specifying what operations a host is capable of performing. If not set, containerd enables all capabilities by default.",
-              ).optional(),
-              client: z.array(z.object({
-                cert: z.object({
-                  gcpSecretManagerSecretUri: z.string().describe(
-                    'The URI configures a secret from [Secret Manager](https://cloud.google.com/secret-manager) in the format "projects/$PROJECT_ID/secrets/$SECRET_NAME/versions/$VERSION" for global secret or "projects/$PROJECT_ID/locations/$REGION/secrets/$SECRET_NAME/versions/$VERSION" for regional secret. Version can be fixed (e.g. "2") or "latest"',
-                  ).optional(),
-                }).describe(
-                  "CertificateConfig configures certificate for the registry.",
-                ).optional(),
-                key: z.object({
-                  gcpSecretManagerSecretUri: z.string().describe(
-                    'The URI configures a secret from [Secret Manager](https://cloud.google.com/secret-manager) in the format "projects/$PROJECT_ID/secrets/$SECRET_NAME/versions/$VERSION" for global secret or "projects/$PROJECT_ID/locations/$REGION/secrets/$SECRET_NAME/versions/$VERSION" for regional secret. Version can be fixed (e.g. "2") or "latest"',
-                  ).optional(),
-                }).describe(
-                  "CertificateConfig configures certificate for the registry.",
-                ).optional(),
-              })).describe(
-                "Client configures the registry host client certificate and key.",
-              ).optional(),
-              dialTimeout: z.string().describe(
-                "Specifies the maximum duration allowed for a connection attempt to complete. A shorter timeout helps reduce delays when falling back to the original registry if the mirror is unreachable. Maximum allowed value is 180s. If not set, containerd sets default 30s. The value should be a decimal number of seconds with an `s` suffix.",
-              ).optional(),
-              header: z.array(z.object({
-                key: z.string().describe("Key configures the header key.")
-                  .optional(),
-                value: z.array(z.string()).describe(
-                  "Value configures the header value.",
-                ).optional(),
-              })).describe("Header configures the registry host headers.")
-                .optional(),
-              host: z.string().describe(
-                "Host configures the registry host/mirror. It supports fully qualified domain names (FQDNs) and IP addresses. Specifying scheme, port or path is supported. Scheme can only be http or https. Wildcards are NOT supported. Examples: - `my.customdomain.com` - `https://my.customdomain.com/path` - `10.0.1.2:5000`",
-              ).optional(),
-              overridePath: z.boolean().describe(
-                "OverridePath is used to indicate the host's API root endpoint is defined in the URL path rather than by the API specification. This may be used with non-compliant OCI registries which are missing the /v2 prefix. If not set, containerd sets default false.",
-              ).optional(),
-            })).describe(
-              "HostConfig configures a list of host-specific configurations for the server. Each server can have at most 10 host configurations.",
-            ).optional(),
-            server: z.string().describe(
-              "Defines the host name of the registry server, which will be used to create configuration file as /etc/containerd/hosts.d//hosts.toml. It supports fully qualified domain names (FQDN) and IP addresses: Specifying port is supported, while scheme and path are NOT supported. Wildcards are NOT supported. Examples: - `my.customdomain.com` - `10.0.1.2:5000`",
-            ).optional(),
-          })).describe(
+          registryHosts: z.unknown().describe(
             "RegistryHostConfig configures containerd registry host configuration. Each registry_hosts represents a hosts.toml file. At most 25 registry_hosts are allowed.",
           ).optional(),
-          writableCgroups: z.object({
-            enabled: z.boolean().describe(
-              "Optional. Whether writable cgroups is enabled.",
-            ).optional(),
-          }).describe("Defines writable cgroups configuration.").optional(),
+          writableCgroups: z.unknown().describe(
+            "Defines writable cgroups configuration.",
+          ).optional(),
         }).describe(
           "ContainerdConfig contains configuration to customize containerd.",
         ).optional(),
@@ -8963,17 +7877,17 @@ const InputsSchema = z.object({
           "Optional. Reserved for future use.",
         ).optional(),
         ephemeralStorageLocalSsdConfig: z.object({
-          dataCacheCount: z.number().int().describe(
+          dataCacheCount: z.unknown().describe(
             "Number of local SSDs to use for GKE Data Cache.",
           ).optional(),
-          localSsdCount: z.number().int().describe(
+          localSsdCount: z.unknown().describe(
             "Number of local SSDs to use to back ephemeral storage. Uses NVMe interfaces. A zero (or unset) value has different meanings depending on machine type being used: 1. For pre-Gen3 machines, which support flexible numbers of local ssds, zero (or unset) means to disable using local SSDs as ephemeral storage. The limit for this value is dependent upon the maximum number of disk available on a machine per zone. See: https://cloud.google.com/compute/docs/disks/local-ssd for more information. 2. For Gen3 machines which dictate a specific number of local ssds, zero (or unset) means to use the default number of local ssds that goes with that machine type. For example, for a c3-standard-8-lssd machine, 2 local ssds would be provisioned. For c3-standard-8 (which doesn't support local ssds), 0 will be provisioned. See https://cloud.google.com/compute/docs/disks/local-ssd#choose_number_local_ssds for more info.",
           ).optional(),
         }).describe(
           "EphemeralStorageLocalSsdConfig contains configuration for the node ephemeral storage using Local SSDs.",
         ).optional(),
         fastSocket: z.object({
-          enabled: z.boolean().describe(
+          enabled: z.unknown().describe(
             "Whether Fast Socket features are enabled in the node pool.",
           ).optional(),
         }).describe("Configuration of Fast Socket feature.").optional(),
@@ -8981,20 +7895,19 @@ const InputsSchema = z.object({
           "Flex Start flag for enabling Flex Start VM.",
         ).optional(),
         gcfsConfig: z.object({
-          enabled: z.boolean().describe("Whether to use GCFS.").optional(),
+          enabled: z.unknown().describe("Whether to use GCFS.").optional(),
         }).describe(
           "GcfsConfig contains configurations of Google Container File System (image streaming).",
         ).optional(),
         gpuDirectConfig: z.object({
-          gpuDirectStrategy: z.enum(["GPU_DIRECT_STRATEGY_UNSPECIFIED", "RDMA"])
-            .describe(
-              "The type of GPU direct strategy to enable on the node pool.",
-            ).optional(),
+          gpuDirectStrategy: z.unknown().describe(
+            "The type of GPU direct strategy to enable on the node pool.",
+          ).optional(),
         }).describe(
           "GPUDirectConfig specifies the GPU direct strategy on the node pool.",
         ).optional(),
         gvnic: z.object({
-          enabled: z.boolean().describe(
+          enabled: z.unknown().describe(
             "Whether gVNIC features are enabled in the node pool.",
           ).optional(),
         }).describe("Configuration of gVNIC feature.").optional(),
@@ -9002,246 +7915,108 @@ const InputsSchema = z.object({
           "The image type to use for this node. Note that for a given image type, the latest version of it will be used. Please see https://cloud.google.com/kubernetes-engine/docs/concepts/node-images for available image types.",
         ).optional(),
         kubeletConfig: z.object({
-          allowedUnsafeSysctls: z.array(z.string()).describe(
+          allowedUnsafeSysctls: z.unknown().describe(
             "Optional. Defines a comma-separated allowlist of unsafe sysctls or sysctl patterns (ending in `*`). The unsafe namespaced sysctl groups are `kernel.shm*`, `kernel.msg*`, `kernel.sem`, `fs.mqueue.*`, and `net.*`. Leaving this allowlist empty means they cannot be set on Pods. To allow certain sysctls or sysctl patterns to be set on Pods, list them separated by commas. For example: `kernel.msg*,net.ipv4.route.min_pmtu`. See https://kubernetes.io/docs/tasks/administer-cluster/sysctl-cluster/ for more details.",
           ).optional(),
-          containerLogMaxFiles: z.number().int().describe(
+          containerLogMaxFiles: z.unknown().describe(
             "Optional. Defines the maximum number of container log files that can be present for a container. See https://kubernetes.io/docs/concepts/cluster-administration/logging/#log-rotation The value must be an integer between 2 and 10, inclusive. The default value is 5 if unspecified.",
           ).optional(),
-          containerLogMaxSize: z.string().describe(
+          containerLogMaxSize: z.unknown().describe(
             "Optional. Defines the maximum size of the container log file before it is rotated. See https://kubernetes.io/docs/concepts/cluster-administration/logging/#log-rotation Valid format is positive number + unit, e.g. 100Ki, 10Mi. Valid units are Ki, Mi, Gi. The value must be between 10Mi and 500Mi, inclusive. Note that the total container log size (container_log_max_size * container_log_max_files) cannot exceed 1% of the total storage of the node, to avoid disk pressure caused by log files. The default value is 10Mi if unspecified.",
           ).optional(),
-          cpuCfsQuota: z.boolean().describe(
+          cpuCfsQuota: z.unknown().describe(
             "Enable CPU CFS quota enforcement for containers that specify CPU limits. This option is enabled by default which makes kubelet use CFS quota (https://www.kernel.org/doc/Documentation/scheduler/sched-bwc.txt) to enforce container CPU limits. Otherwise, CPU limits will not be enforced at all. Disable this option to mitigate CPU throttling problems while still having your pods to be in Guaranteed QoS class by specifying the CPU limits. The default value is 'true' if unspecified.",
           ).optional(),
-          cpuCfsQuotaPeriod: z.string().describe(
+          cpuCfsQuotaPeriod: z.unknown().describe(
             'Set the CPU CFS quota period value \'cpu.cfs_period_us\'. The string must be a sequence of decimal numbers, each with optional fraction and a unit suffix, such as "300ms". Valid time units are "ns", "us" (or "µs"), "ms", "s", "m", "h". The value must be a positive duration between 1ms and 1 second, inclusive.',
           ).optional(),
-          cpuManagerPolicy: z.string().describe(
+          cpuManagerPolicy: z.unknown().describe(
             'Control the CPU management policy on the node. See https://kubernetes.io/docs/tasks/administer-cluster/cpu-management-policies/ The following values are allowed. * "none": the default, which represents the existing scheduling behavior. * "static": allows pods with certain resource characteristics to be granted increased CPU affinity and exclusivity on the node. The default value is \'none\' if unspecified.',
           ).optional(),
-          crashLoopBackOff: z.object({
-            maxContainerRestartPeriod: z.string().describe(
-              'Optional. The maximum duration the backoff delay can accrue to for container restarts, minimum 1 second, maximum 300 seconds. If not set, defaults to the internal crashloopbackoff maximum. The string must be a sequence of decimal numbers, each with optional fraction and a unit suffix, such as "300ms". Valid time units are "ns", "us" (or "µs"), "ms", "s", "m", "h". See https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle/#configurable-container-restart-delay for more details.',
-            ).optional(),
-          }).describe(
+          crashLoopBackOff: z.unknown().describe(
             "Contains config to modify node-level parameters for container restart behavior.",
           ).optional(),
-          evictionMaxPodGracePeriodSeconds: z.number().int().describe(
+          evictionMaxPodGracePeriodSeconds: z.unknown().describe(
             "Optional. eviction_max_pod_grace_period_seconds is the maximum allowed grace period (in seconds) to use when terminating pods in response to a soft eviction threshold being met. This value effectively caps the Pod's terminationGracePeriodSeconds value during soft evictions. Default: 0. Range: [0, 300].",
           ).optional(),
-          evictionMinimumReclaim: z.object({
-            imagefsAvailable: z.string().describe(
-              'Optional. Minimum reclaim for eviction due to imagefs available signal. Only take percentage value for now. Sample format: "10%". Must be <=10%. See https://kubernetes.io/docs/concepts/scheduling-eviction/node-pressure-eviction/#eviction-signals',
-            ).optional(),
-            imagefsInodesFree: z.string().describe(
-              'Optional. Minimum reclaim for eviction due to imagefs inodes free signal. Only take percentage value for now. Sample format: "10%". Must be <=10%. See https://kubernetes.io/docs/concepts/scheduling-eviction/node-pressure-eviction/#eviction-signals',
-            ).optional(),
-            memoryAvailable: z.string().describe(
-              'Optional. Minimum reclaim for eviction due to memory available signal. Only take percentage value for now. Sample format: "10%". Must be <=10%. See https://kubernetes.io/docs/concepts/scheduling-eviction/node-pressure-eviction/#eviction-signals',
-            ).optional(),
-            nodefsAvailable: z.string().describe(
-              'Optional. Minimum reclaim for eviction due to nodefs available signal. Only take percentage value for now. Sample format: "10%". Must be <=10%. See https://kubernetes.io/docs/concepts/scheduling-eviction/node-pressure-eviction/#eviction-signals',
-            ).optional(),
-            nodefsInodesFree: z.string().describe(
-              'Optional. Minimum reclaim for eviction due to nodefs inodes free signal. Only take percentage value for now. Sample format: "10%". Must be <=10%. See https://kubernetes.io/docs/concepts/scheduling-eviction/node-pressure-eviction/#eviction-signals',
-            ).optional(),
-            pidAvailable: z.string().describe(
-              'Optional. Minimum reclaim for eviction due to pid available signal. Only take percentage value for now. Sample format: "10%". Must be <=10%. See https://kubernetes.io/docs/concepts/scheduling-eviction/node-pressure-eviction/#eviction-signals',
-            ).optional(),
-          }).describe(
+          evictionMinimumReclaim: z.unknown().describe(
             "Eviction minimum reclaims are the resource amounts of minimum reclaims for each eviction signal.",
           ).optional(),
-          evictionSoft: z.object({
-            imagefsAvailable: z.string().describe(
-              'Optional. Amount of storage available on filesystem that container runtime uses for storing images layers. If the container filesystem and image filesystem are not separate, then imagefs can store both image layers and writeable layers. Defines the amount of "imagefs.available" signal in kubelet. Default is unset, if not specified in the kubelet config. It takses percentage value for now. Sample format: "30%". Must be >= 15% and <= 50%. See https://kubernetes.io/docs/concepts/scheduling-eviction/node-pressure-eviction/#eviction-signals',
-            ).optional(),
-            imagefsInodesFree: z.string().describe(
-              'Optional. Amount of inodes available on filesystem that container runtime uses for storing images layers. Defines the amount of "imagefs.inodesFree" signal in kubelet. Default is unset, if not specified in the kubelet config. Linux only. It takses percentage value for now. Sample format: "30%". Must be >= 5% and <= 50%. See https://kubernetes.io/docs/concepts/scheduling-eviction/node-pressure-eviction/#eviction-signals',
-            ).optional(),
-            memoryAvailable: z.string().describe(
-              'Optional. Memory available (i.e. capacity - workingSet), in bytes. Defines the amount of "memory.available" signal in kubelet. Default is unset, if not specified in the kubelet config. Format: positive number + unit, e.g. 100Ki, 10Mi, 5Gi. Valid units are Ki, Mi, Gi. Must be >= 100Mi and <= 50% of the node\'s memory. See https://kubernetes.io/docs/concepts/scheduling-eviction/node-pressure-eviction/#eviction-signals',
-            ).optional(),
-            nodefsAvailable: z.string().describe(
-              'Optional. Amount of storage available on filesystem that kubelet uses for volumes, daemon logs, etc. Defines the amount of "nodefs.available" signal in kubelet. Default is unset, if not specified in the kubelet config. It takses percentage value for now. Sample format: "30%". Must be >= 10% and <= 50%. See https://kubernetes.io/docs/concepts/scheduling-eviction/node-pressure-eviction/#eviction-signals',
-            ).optional(),
-            nodefsInodesFree: z.string().describe(
-              'Optional. Amount of inodes available on filesystem that kubelet uses for volumes, daemon logs, etc. Defines the amount of "nodefs.inodesFree" signal in kubelet. Default is unset, if not specified in the kubelet config. Linux only. It takses percentage value for now. Sample format: "30%". Must be >= 5% and <= 50%. See https://kubernetes.io/docs/concepts/scheduling-eviction/node-pressure-eviction/#eviction-signals',
-            ).optional(),
-            pidAvailable: z.string().describe(
-              'Optional. Amount of PID available for pod allocation. Defines the amount of "pid.available" signal in kubelet. Default is unset, if not specified in the kubelet config. It takses percentage value for now. Sample format: "30%". Must be >= 10% and <= 50%. See https://kubernetes.io/docs/concepts/scheduling-eviction/node-pressure-eviction/#eviction-signals',
-            ).optional(),
-          }).describe(
+          evictionSoft: z.unknown().describe(
             "Eviction signals are the current state of a particular resource at a specific point in time. The kubelet uses eviction signals to make eviction decisions by comparing the signals to eviction thresholds, which are the minimum amount of the resource that should be available on the node.",
           ).optional(),
-          evictionSoftGracePeriod: z.object({
-            imagefsAvailable: z.string().describe(
-              'Optional. Grace period for eviction due to imagefs available signal. Sample format: "10s". Must be >= 0. See https://kubernetes.io/docs/concepts/scheduling-eviction/node-pressure-eviction/#eviction-signals',
-            ).optional(),
-            imagefsInodesFree: z.string().describe(
-              'Optional. Grace period for eviction due to imagefs inodes free signal. Sample format: "10s". Must be >= 0. See https://kubernetes.io/docs/concepts/scheduling-eviction/node-pressure-eviction/#eviction-signals',
-            ).optional(),
-            memoryAvailable: z.string().describe(
-              'Optional. Grace period for eviction due to memory available signal. Sample format: "10s". Must be >= 0. See https://kubernetes.io/docs/concepts/scheduling-eviction/node-pressure-eviction/#eviction-signals',
-            ).optional(),
-            nodefsAvailable: z.string().describe(
-              'Optional. Grace period for eviction due to nodefs available signal. Sample format: "10s". Must be >= 0. See https://kubernetes.io/docs/concepts/scheduling-eviction/node-pressure-eviction/#eviction-signals',
-            ).optional(),
-            nodefsInodesFree: z.string().describe(
-              'Optional. Grace period for eviction due to nodefs inodes free signal. Sample format: "10s". Must be >= 0. See https://kubernetes.io/docs/concepts/scheduling-eviction/node-pressure-eviction/#eviction-signals',
-            ).optional(),
-            pidAvailable: z.string().describe(
-              'Optional. Grace period for eviction due to pid available signal. Sample format: "10s". Must be >= 0. See https://kubernetes.io/docs/concepts/scheduling-eviction/node-pressure-eviction/#eviction-signals',
-            ).optional(),
-          }).describe(
+          evictionSoftGracePeriod: z.unknown().describe(
             "Eviction grace periods are grace periods for each eviction signal.",
           ).optional(),
-          imageGcHighThresholdPercent: z.number().int().describe(
+          imageGcHighThresholdPercent: z.unknown().describe(
             "Optional. Defines the percent of disk usage after which image garbage collection is always run. The percent is calculated as this field value out of 100. The value must be between 10 and 85, inclusive and greater than image_gc_low_threshold_percent. The default value is 85 if unspecified.",
           ).optional(),
-          imageGcLowThresholdPercent: z.number().int().describe(
+          imageGcLowThresholdPercent: z.unknown().describe(
             "Optional. Defines the percent of disk usage before which image garbage collection is never run. Lowest disk usage to garbage collect to. The percent is calculated as this field value out of 100. The value must be between 10 and 85, inclusive and smaller than image_gc_high_threshold_percent. The default value is 80 if unspecified.",
           ).optional(),
-          imageMaximumGcAge: z.string().describe(
+          imageMaximumGcAge: z.unknown().describe(
             'Optional. Defines the maximum age an image can be unused before it is garbage collected. The string must be a sequence of decimal numbers, each with optional fraction and a unit suffix, such as "300s", "1.5h", and "2h45m". Valid time units are "ns", "us" (or "µs"), "ms", "s", "m", "h". The value must be a positive duration greater than image_minimum_gc_age or "0s". The default value is "0s" if unspecified, which disables this field, meaning images won\'t be garbage collected based on being unused for too long.',
           ).optional(),
-          imageMinimumGcAge: z.string().describe(
+          imageMinimumGcAge: z.unknown().describe(
             'Optional. Defines the minimum age for an unused image before it is garbage collected. The string must be a sequence of decimal numbers, each with optional fraction and a unit suffix, such as "300s", "1.5h", and "2h45m". Valid time units are "ns", "us" (or "µs"), "ms", "s", "m", "h". The value must be a positive duration less than or equal to 2 minutes. The default value is "2m0s" if unspecified.',
           ).optional(),
-          insecureKubeletReadonlyPortEnabled: z.boolean().describe(
+          insecureKubeletReadonlyPortEnabled: z.unknown().describe(
             "Enable or disable Kubelet read only port.",
           ).optional(),
-          maxParallelImagePulls: z.number().int().describe(
+          maxParallelImagePulls: z.unknown().describe(
             "Optional. Defines the maximum number of image pulls in parallel. The range is 2 to 5, inclusive. The default value is 2 or 3 depending on the disk type. See https://kubernetes.io/docs/concepts/containers/images/#maximum-parallel-image-pulls for more details.",
           ).optional(),
-          memoryManager: z.object({
-            policy: z.string().describe(
-              'Controls the memory management policy on the Node. See https://kubernetes.io/docs/tasks/administer-cluster/memory-manager/#policies The following values are allowed. * "none" * "static" The default value is \'none\' if unspecified.',
-            ).optional(),
-          }).describe(
+          memoryManager: z.unknown().describe(
             "The option enables the Kubernetes NUMA-aware Memory Manager feature. Detailed description about the feature can be found [here](https://kubernetes.io/docs/tasks/administer-cluster/memory-manager/).",
           ).optional(),
-          podPidsLimit: z.string().describe(
+          podPidsLimit: z.unknown().describe(
             "Set the Pod PID limits. See https://kubernetes.io/docs/concepts/policy/pid-limiting/#pod-pid-limits Controls the maximum number of processes allowed to run in a pod. The value must be greater than or equal to 1024 and less than 4194304.",
           ).optional(),
-          shutdownGracePeriodCriticalPodsSeconds: z.number().int().describe(
+          shutdownGracePeriodCriticalPodsSeconds: z.unknown().describe(
             "Optional. shutdown_grace_period_critical_pods_seconds is the maximum allowed grace period (in seconds) used to terminate critical pods during a node shutdown. This value should be <= shutdown_grace_period_seconds, and is only valid if shutdown_grace_period_seconds is set. https://kubernetes.io/docs/concepts/cluster-administration/node-shutdown/ Range: [0, 120].",
           ).optional(),
-          shutdownGracePeriodSeconds: z.number().int().describe(
+          shutdownGracePeriodSeconds: z.unknown().describe(
             "Optional. shutdown_grace_period_seconds is the maximum allowed grace period (in seconds) the total duration that the node should delay the shutdown during a graceful shutdown. This is the total grace period for pod termination for both regular and critical pods. https://kubernetes.io/docs/concepts/cluster-administration/node-shutdown/ If set to 0, node will not enable the graceful node shutdown functionality. This field is only valid for Spot VMs. Allowed values: 0, 30, 120.",
           ).optional(),
-          singleProcessOomKill: z.boolean().describe(
+          singleProcessOomKill: z.unknown().describe(
             "Optional. Defines whether to enable single process OOM killer. If true, will prevent the memory.oom.group flag from being set for container cgroups in cgroups v2. This causes processes in the container to be OOM killed individually instead of as a group.",
           ).optional(),
-          topologyManager: z.object({
-            policy: z.string().describe(
-              "Configures the strategy for resource alignment. Allowed values are: * none: the default policy, and does not perform any topology alignment. * restricted: the topology manager stores the preferred NUMA node affinity for the container, and will reject the pod if the affinity if not preferred. * best-effort: the topology manager stores the preferred NUMA node affinity for the container. If the affinity is not preferred, the topology manager will admit the pod to the node anyway. * single-numa-node: the topology manager determines if the single NUMA node affinity is possible. If it is, Topology Manager will store this and the Hint Providers can then use this information when making the resource allocation decision. If, however, this is not possible then the Topology Manager will reject the pod from the node. This will result in a pod in a Terminated state with a pod admission failure. The default policy value is 'none' if unspecified. Details about each strategy can be found [here](https://kubernetes.io/docs/tasks/administer-cluster/topology-manager/#topology-manager-policies).",
-            ).optional(),
-            scope: z.string().describe(
-              "The Topology Manager aligns resources in following scopes: * container * pod The default scope is 'container' if unspecified. See https://kubernetes.io/docs/tasks/administer-cluster/topology-manager/#topology-manager-scopes",
-            ).optional(),
-          }).describe(
+          topologyManager: z.unknown().describe(
             "TopologyManager defines the configuration options for Topology Manager feature. See https://kubernetes.io/docs/tasks/administer-cluster/topology-manager/",
           ).optional(),
         }).describe("Node kubelet configs.").optional(),
-        labels: z.record(z.string(), z.string()).describe(
+        labels: z.record(z.string(), z.unknown()).describe(
           "The Kubernetes labels (key/value pairs) to apply to each node. The values in this field are added to the set of default labels Kubernetes applies to nodes. This field has the following restrictions: * Labels must use a valid Kubernetes syntax and character set, as defined in https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/#syntax-and-character-set. * This field supports up to 1,024 total characters in a single request. Depending on the Kubernetes version, keys in this field might conflict with the keys of the default labels, which might change which of your labels are applied to the nodes. Assume that the behavior is unpredictable and avoid label key conflicts. For more information about the default labels, see: https://kubernetes.io/docs/reference/labels-annotations-taints/",
         ).optional(),
         linuxNodeConfig: z.object({
-          accurateTimeConfig: z.object({
-            enablePtpKvmTimeSync: z.boolean().describe(
-              "Enables enhanced time synchronization using PTP-KVM.",
-            ).optional(),
-          }).describe(
+          accurateTimeConfig: z.unknown().describe(
             "AccurateTimeConfig contains configuration for the accurate time synchronization feature.",
           ).optional(),
-          cgroupMode: z.enum([
-            "CGROUP_MODE_UNSPECIFIED",
-            "CGROUP_MODE_V1",
-            "CGROUP_MODE_V2",
-          ]).describe(
+          cgroupMode: z.unknown().describe(
             "cgroup_mode specifies the cgroup mode to be used on the node.",
           ).optional(),
-          hugepages: z.object({
-            hugepageSize1g: z.number().int().describe(
-              "Optional. Amount of 1G hugepages",
-            ).optional(),
-            hugepageSize2m: z.number().int().describe(
-              "Optional. Amount of 2M hugepages",
-            ).optional(),
-          }).describe("Hugepages amount in both 2m and 1g size").optional(),
-          nodeKernelModuleLoading: z.object({
-            policy: z.enum([
-              "POLICY_UNSPECIFIED",
-              "ENFORCE_SIGNED_MODULES",
-              "DO_NOT_ENFORCE_SIGNED_MODULES",
-            ]).describe(
-              "Set the node module loading policy for nodes in the node pool.",
-            ).optional(),
-          }).describe("Configuration for kernel module loading on nodes.")
-            .optional(),
-          swapConfig: z.object({
-            bootDiskProfile: z.object({
-              swapSizeGib: z.string().describe(
-                "Specifies the size of the swap space in gibibytes (GiB).",
-              ).optional(),
-              swapSizePercent: z.number().int().describe(
-                "Specifies the size of the swap space as a percentage of the boot disk size.",
-              ).optional(),
-            }).describe("Swap on the node's boot disk.").optional(),
-            dedicatedLocalSsdProfile: z.object({
-              diskCount: z.string().describe(
-                "The number of physical local NVMe SSD disks to attach.",
-              ).optional(),
-            }).describe(
-              "Provisions a new, separate local NVMe SSD exclusively for swap.",
-            ).optional(),
-            enabled: z.boolean().describe(
-              "Optional. Enables or disables swap for the node pool.",
-            ).optional(),
-            encryptionConfig: z.object({
-              disabled: z.boolean().describe(
-                "Optional. If true, swap space will not be encrypted. Defaults to false (encrypted).",
-              ).optional(),
-            }).describe("Defines encryption settings for the swap space.")
-              .optional(),
-            ephemeralLocalSsdProfile: z.object({
-              swapSizeGib: z.string().describe(
-                "Specifies the size of the swap space in gibibytes (GiB).",
-              ).optional(),
-              swapSizePercent: z.number().int().describe(
-                "Specifies the size of the swap space as a percentage of the ephemeral local SSD capacity.",
-              ).optional(),
-            }).describe(
-              "Swap on the local SSD shared with pod ephemeral storage.",
-            ).optional(),
-          }).describe("Configuration for swap memory on a node pool.")
-            .optional(),
-          sysctls: z.record(z.string(), z.string()).describe(
+          hugepages: z.unknown().describe(
+            "Hugepages amount in both 2m and 1g size",
+          ).optional(),
+          nodeKernelModuleLoading: z.unknown().describe(
+            "Configuration for kernel module loading on nodes.",
+          ).optional(),
+          swapConfig: z.unknown().describe(
+            "Configuration for swap memory on a node pool.",
+          ).optional(),
+          sysctls: z.unknown().describe(
             "The Linux kernel parameters to be applied to the nodes and all pods running on the nodes. The following parameters are supported. net.core.busy_poll net.core.busy_read net.core.netdev_max_backlog net.core.rmem_max net.core.rmem_default net.core.wmem_default net.core.wmem_max net.core.optmem_max net.core.somaxconn net.ipv4.tcp_rmem net.ipv4.tcp_wmem net.ipv4.tcp_tw_reuse net.ipv4.tcp_mtu_probing net.ipv4.tcp_max_orphans net.ipv4.tcp_max_tw_buckets net.ipv4.tcp_syn_retries net.ipv4.tcp_ecn net.ipv4.tcp_congestion_control net.netfilter.nf_conntrack_max net.netfilter.nf_conntrack_buckets net.netfilter.nf_conntrack_tcp_timeout_close_wait net.netfilter.nf_conntrack_tcp_timeout_time_wait net.netfilter.nf_conntrack_tcp_timeout_established net.netfilter.nf_conntrack_acct kernel.shmmni kernel.shmmax kernel.shmall kernel.perf_event_paranoid kernel.sched_rt_runtime_us kernel.softlockup_panic kernel.yama.ptrace_scope kernel.kptr_restrict kernel.dmesg_restrict kernel.sysrq fs.aio-max-nr fs.file-max fs.inotify.max_user_instances fs.inotify.max_user_watches fs.nr_open vm.dirty_background_ratio vm.dirty_background_bytes vm.dirty_expire_centisecs vm.dirty_ratio vm.dirty_bytes vm.dirty_writeback_centisecs vm.max_map_count vm.overcommit_memory vm.overcommit_ratio vm.vfs_cache_pressure vm.swappiness vm.watermark_scale_factor vm.min_free_kbytes",
           ).optional(),
-          transparentHugepageDefrag: z.enum([
-            "TRANSPARENT_HUGEPAGE_DEFRAG_UNSPECIFIED",
-            "TRANSPARENT_HUGEPAGE_DEFRAG_ALWAYS",
-            "TRANSPARENT_HUGEPAGE_DEFRAG_DEFER",
-            "TRANSPARENT_HUGEPAGE_DEFRAG_DEFER_WITH_MADVISE",
-            "TRANSPARENT_HUGEPAGE_DEFRAG_MADVISE",
-            "TRANSPARENT_HUGEPAGE_DEFRAG_NEVER",
-          ]).describe(
+          transparentHugepageDefrag: z.unknown().describe(
             "Optional. Defines the transparent hugepage defrag configuration on the node. VM hugepage allocation can be managed by either limiting defragmentation for delayed allocation or skipping it entirely for immediate allocation only. See https://docs.kernel.org/admin-guide/mm/transhuge.html for more details.",
           ).optional(),
-          transparentHugepageEnabled: z.enum([
-            "TRANSPARENT_HUGEPAGE_ENABLED_UNSPECIFIED",
-            "TRANSPARENT_HUGEPAGE_ENABLED_ALWAYS",
-            "TRANSPARENT_HUGEPAGE_ENABLED_MADVISE",
-            "TRANSPARENT_HUGEPAGE_ENABLED_NEVER",
-          ]).describe(
+          transparentHugepageEnabled: z.unknown().describe(
             "Optional. Transparent hugepage support for anonymous memory can be entirely disabled (mostly for debugging purposes) or only enabled inside MADV_HUGEPAGE regions (to avoid the risk of consuming more memory resources) or enabled system wide. See https://docs.kernel.org/admin-guide/mm/transhuge.html for more details.",
           ).optional(),
         }).describe("Parameters that can be configured on Linux nodes.")
           .optional(),
         localNvmeSsdBlockConfig: z.object({
-          localSsdCount: z.number().int().describe(
+          localSsdCount: z.unknown().describe(
             "Number of local NVMe SSDs to use. The limit for this value is dependent upon the maximum number of disk available on a machine per zone. See: https://cloud.google.com/compute/docs/disks/local-ssd for more information. A zero (or unset) value has different meanings depending on machine type being used: 1. For pre-Gen3 machines, which support flexible numbers of local ssds, zero (or unset) means to disable using local SSDs as ephemeral storage. 2. For Gen3 machines which dictate a specific number of local ssds, zero (or unset) means to use the default number of local ssds that goes with that machine type. For example, for a c3-standard-8-lssd machine, 2 local ssds would be provisioned. For c3-standard-8 (which doesn't support local ssds), 0 will be provisioned. See https://cloud.google.com/compute/docs/disks/local-ssd#choose_number_local_ssds for more info.",
           ).optional(),
         }).describe(
@@ -9258,13 +8033,7 @@ const InputsSchema = z.object({
           "Specifies which method should be used for encrypting the Local SSDs attached to the node.",
         ).optional(),
         loggingConfig: z.object({
-          variantConfig: z.object({
-            variant: z.enum([
-              "VARIANT_UNSPECIFIED",
-              "DEFAULT",
-              "MAX_THROUGHPUT",
-            ]).describe("Logging variant deployed on nodes.").optional(),
-          }).describe(
+          variantConfig: z.unknown().describe(
             "LoggingVariantConfig specifies the behaviour of the logging component.",
           ).optional(),
         }).describe(
@@ -9276,7 +8045,7 @@ const InputsSchema = z.object({
         maxRunDuration: z.string().describe(
           "The maximum duration for the nodes to exist. If unspecified, the nodes can exist indefinitely.",
         ).optional(),
-        metadata: z.record(z.string(), z.string()).describe(
+        metadata: z.record(z.string(), z.unknown()).describe(
           'The metadata key/value pairs assigned to instances in the cluster. Keys must conform to the regexp `[a-zA-Z0-9-_]+` and be less than 128 bytes in length. These are reflected as part of a URL in the metadata server. Additionally, to avoid ambiguity, keys must not conflict with any other metadata keys for the project or be one of the reserved keys: - "cluster-location" - "cluster-name" - "cluster-uid" - "configure-sh" - "containerd-configure-sh" - "enable-os-login" - "gci-ensure-gke-docker" - "gci-metrics-enabled" - "gci-update-strategy" - "instance-template" - "kube-env" - "startup-script" - "user-data" - "disable-address-manager" - "windows-startup-script-ps1" - "common-psm1" - "k8s-node-setup-psm1" - "install-ssh-psm1" - "user-profile-psm1" Values are free-form strings, and only have meaning as interpreted by the image running in the instance. The only restriction placed on them is that each value\'s size must be less than or equal to 32 KB. The total size of all keys and values must be less than 512 KB.',
         ).optional(),
         minCpuPlatform: z.string().describe(
@@ -9285,81 +8054,63 @@ const InputsSchema = z.object({
         nodeGroup: z.string().describe(
           "Setting this field will assign instances of this pool to run on the specified node group. This is useful for running workloads on [sole tenant nodes](https://cloud.google.com/compute/docs/nodes/sole-tenant-nodes).",
         ).optional(),
-        oauthScopes: z.array(z.string()).describe(
+        oauthScopes: z.array(z.unknown()).describe(
           'The set of Google API scopes to be made available on all of the node VMs under the "default" service account. The following scopes are recommended, but not required, and by default are not included: * `https://www.googleapis.com/auth/compute` is required for mounting persistent storage on your nodes. * `https://www.googleapis.com/auth/devstorage.read_only` is required for communicating with **gcr.io** (the [Artifact Registry](https://cloud.google.com/artifact-registry/)). If unspecified, no scopes are added, unless Cloud Logging or Cloud Monitoring are enabled, in which case their required scopes will be added.',
         ).optional(),
         preemptible: z.boolean().describe(
           "Whether the nodes are created as preemptible VM instances. See: https://cloud.google.com/compute/docs/instances/preemptible for more information about preemptible VM instances.",
         ).optional(),
         reservationAffinity: z.object({
-          consumeReservationType: z.enum([
-            "UNSPECIFIED",
-            "NO_RESERVATION",
-            "ANY_RESERVATION",
-            "SPECIFIC_RESERVATION",
-          ]).describe("Corresponds to the type of reservation consumption.")
-            .optional(),
-          key: z.string().describe(
+          consumeReservationType: z.unknown().describe(
+            "Corresponds to the type of reservation consumption.",
+          ).optional(),
+          key: z.unknown().describe(
             'Corresponds to the label key of a reservation resource. To target a SPECIFIC_RESERVATION by name, specify "compute.googleapis.com/reservation-name" as the key and specify the name of your reservation as its value.',
           ).optional(),
-          values: z.array(z.string()).describe(
+          values: z.unknown().describe(
             "Corresponds to the label value(s) of reservation resource(s).",
           ).optional(),
         }).describe(
           "[ReservationAffinity](https://cloud.google.com/compute/docs/instances/reserving-zonal-resources) is the configuration of desired reservation which instances could take capacity from.",
         ).optional(),
-        resourceLabels: z.record(z.string(), z.string()).describe(
+        resourceLabels: z.record(z.string(), z.unknown()).describe(
           "The resource labels for the node pool to use to annotate any related Google Compute Engine resources.",
         ).optional(),
         resourceManagerTags: z.object({
-          tags: z.record(z.string(), z.string()).describe(
+          tags: z.unknown().describe(
             "TagKeyValue must be in one of the following formats ([KEY]=[VALUE]) 1. `tagKeys/{tag_key_id}=tagValues/{tag_value_id}` 2. `{org_id}/{tag_key_name}={tag_value_name}` 3. `{project_id}/{tag_key_name}={tag_value_name}`",
           ).optional(),
         }).describe(
           "A map of resource manager tag keys and values to be attached to the nodes for managing Compute Engine firewalls using Network Firewall Policies. Tags must be according to specifications in https://cloud.google.com/vpc/docs/tags-firewalls-overview#specifications. A maximum of 5 tag key-value pairs can be specified. Existing tags will be replaced with new values.",
         ).optional(),
         sandboxConfig: z.object({
-          type: z.enum(["UNSPECIFIED", "GVISOR"]).describe(
-            "Type of the sandbox to use for the node.",
-          ).optional(),
+          type: z.unknown().describe("Type of the sandbox to use for the node.")
+            .optional(),
         }).describe(
           "SandboxConfig contains configurations of the sandbox to use for the node.",
         ).optional(),
         secondaryBootDiskUpdateStrategy: z.object({}).describe(
           "SecondaryBootDiskUpdateStrategy is a placeholder which will be extended in the future to define different options for updating secondary boot disks.",
         ).optional(),
-        secondaryBootDisks: z.array(z.object({
-          diskImage: z.string().describe(
-            "Fully-qualified resource ID for an existing disk image.",
-          ).optional(),
-          mode: z.enum(["MODE_UNSPECIFIED", "CONTAINER_IMAGE_CACHE"]).describe(
-            "Disk mode (container image cache, etc.)",
-          ).optional(),
-        })).describe("List of secondary boot disks attached to the nodes.")
-          .optional(),
+        secondaryBootDisks: z.array(z.unknown()).describe(
+          "List of secondary boot disks attached to the nodes.",
+        ).optional(),
         serviceAccount: z.string().describe(
           'The Google Cloud Platform Service Account to be used by the node VMs. Specify the email address of the Service Account; otherwise, if no Service Account is specified, the "default" service account is used.',
         ).optional(),
         shieldedInstanceConfig: z.object({
-          enableIntegrityMonitoring: z.boolean().describe(
+          enableIntegrityMonitoring: z.unknown().describe(
             "Defines whether the instance has integrity monitoring enabled. Enables monitoring and attestation of the boot integrity of the instance. The attestation is performed against the integrity policy baseline. This baseline is initially derived from the implicitly trusted boot image when the instance is created.",
           ).optional(),
-          enableSecureBoot: z.boolean().describe(
+          enableSecureBoot: z.unknown().describe(
             "Defines whether the instance has Secure Boot enabled. Secure Boot helps ensure that the system only runs authentic software by verifying the digital signature of all boot components, and halting the boot process if signature verification fails.",
           ).optional(),
         }).describe("A set of Shielded Instance options.").optional(),
         soleTenantConfig: z.object({
-          minNodeCpus: z.number().int().describe(
+          minNodeCpus: z.unknown().describe(
             "Optional. The minimum number of virtual CPUs this instance will consume when running on a sole-tenant node. This field can only be set if the node pool is created in a shared sole-tenant node group.",
           ).optional(),
-          nodeAffinities: z.array(z.object({
-            key: z.string().describe("Key for NodeAffinity.").optional(),
-            operator: z.enum(["OPERATOR_UNSPECIFIED", "IN", "NOT_IN"]).describe(
-              "Operator for NodeAffinity.",
-            ).optional(),
-            values: z.array(z.string()).describe("Values for NodeAffinity.")
-              .optional(),
-          })).describe(
+          nodeAffinities: z.unknown().describe(
             "NodeAffinities used to match to a shared sole tenant node group.",
           ).optional(),
         }).describe(
@@ -9368,50 +8119,33 @@ const InputsSchema = z.object({
         spot: z.boolean().describe(
           "Spot flag for enabling Spot VM, which is a rebrand of the existing preemptible flag.",
         ).optional(),
-        storagePools: z.array(z.string()).describe(
+        storagePools: z.array(z.unknown()).describe(
           "List of Storage Pools where boot disks are provisioned.",
         ).optional(),
-        tags: z.array(z.string()).describe(
+        tags: z.array(z.unknown()).describe(
           "The list of instance tags applied to all nodes. Tags are used to identify valid sources or targets for network firewalls and are specified by the client during cluster or node pool creation. Each tag within the list must comply with RFC1035.",
         ).optional(),
         taintConfig: z.object({
-          architectureTaintBehavior: z.enum([
-            "ARCHITECTURE_TAINT_BEHAVIOR_UNSPECIFIED",
-            "NONE",
-            "ARM",
-          ]).describe("Optional. Controls architecture tainting behavior.")
-            .optional(),
+          architectureTaintBehavior: z.unknown().describe(
+            "Optional. Controls architecture tainting behavior.",
+          ).optional(),
         }).describe(
           "TaintConfig contains the configuration for the taints of the node pool.",
         ).optional(),
-        taints: z.array(z.object({
-          effect: z.enum([
-            "EFFECT_UNSPECIFIED",
-            "NO_SCHEDULE",
-            "PREFER_NO_SCHEDULE",
-            "NO_EXECUTE",
-          ]).describe("Effect for taint.").optional(),
-          key: z.string().describe("Key for taint.").optional(),
-          value: z.string().describe("Value for taint.").optional(),
-        })).describe(
+        taints: z.array(z.unknown()).describe(
           "List of kubernetes taints to be applied to each node. For more information, including usage and the valid values, see: https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/",
         ).optional(),
         windowsNodeConfig: z.object({
-          osVersion: z.enum([
-            "OS_VERSION_UNSPECIFIED",
-            "OS_VERSION_LTSC2019",
-            "OS_VERSION_LTSC2022",
-          ]).describe(
+          osVersion: z.unknown().describe(
             "OSVersion specifies the Windows node config to be used on the node.",
           ).optional(),
         }).describe(
           "Parameters that can be configured on Windows nodes. Windows Node Config that define the parameters that will be used to configure the Windows node pool settings.",
         ).optional(),
         workloadMetadataConfig: z.object({
-          mode: z.enum(["MODE_UNSPECIFIED", "GCE_METADATA", "GKE_METADATA"])
-            .describe(
-              "Mode is the configuration for how to expose metadata to workloads running on the node pool.",
-            ).optional(),
+          mode: z.unknown().describe(
+            "Mode is the configuration for how to expose metadata to workloads running on the node pool.",
+          ).optional(),
         }).describe(
           "WorkloadMetadataConfig defines the metadata configuration to expose to workloads on the node pool.",
         ).optional(),
@@ -9438,10 +8172,10 @@ const InputsSchema = z.object({
           "A flag that specifies whether node auto-upgrade is enabled for the node pool. If enabled, node auto-upgrade helps keep the nodes in your node pool up to date with the latest release version of Kubernetes.",
         ).optional(),
         upgradeOptions: z.object({
-          autoUpgradeStartTime: z.string().describe(
+          autoUpgradeStartTime: z.unknown().describe(
             "Output only. This field is set when upgrades are about to commence with the approximate start time for the upgrades, in [RFC3339](https://www.ietf.org/rfc/rfc3339.txt) text format.",
           ).optional(),
-          description: z.string().describe(
+          description: z.unknown().describe(
             "Output only. This field is set when upgrades are about to commence with the description of the upgrade.",
           ).optional(),
         }).describe(
@@ -9460,32 +8194,10 @@ const InputsSchema = z.object({
         acceleratorNetworkProfile: z.string().describe(
           'Immutable. The accelerator network profile for the node pool. For now the only valid value is "auto". If specified, the network configuration of the nodes in this node pool will be managed by this profile for the supported machine types, zone, etc.',
         ).optional(),
-        additionalNodeNetworkConfigs: z.array(z.object({
-          network: z.string().describe(
-            "Name of the VPC where the additional interface belongs",
-          ).optional(),
-          subnetwork: z.string().describe(
-            "Name of the subnetwork where the additional interface belongs",
-          ).optional(),
-        })).describe(
+        additionalNodeNetworkConfigs: z.array(z.unknown()).describe(
           "We specify the additional node networks for this node pool using this list. Each node network corresponds to an additional interface",
         ).optional(),
-        additionalPodNetworkConfigs: z.array(z.object({
-          maxPodsPerNode: z.object({
-            maxPodsPerNode: z.string().describe(
-              "Constraint enforced on the max num of pods per node.",
-            ).optional(),
-          }).describe("Constraints applied to pods.").optional(),
-          networkAttachment: z.string().describe(
-            "The name of the network attachment for pods to communicate to; cannot be specified along with subnetwork or secondary_pod_range.",
-          ).optional(),
-          secondaryPodRange: z.string().describe(
-            "The name of the secondary range on the subnet which provides IP address for this pod range.",
-          ).optional(),
-          subnetwork: z.string().describe(
-            "Name of the subnetwork where the additional pod network belongs.",
-          ).optional(),
-        })).describe(
+        additionalPodNetworkConfigs: z.array(z.unknown()).describe(
           "We specify the additional pod networks for this node pool using this list. Each pod network corresponds to an additional alias IP range for the node",
         ).optional(),
         createPodRange: z.boolean().describe(
@@ -9495,22 +8207,17 @@ const InputsSchema = z.object({
           "Whether nodes have internal IP addresses only. If enable_private_nodes is not specified, then the value is derived from Cluster.NetworkConfig.default_enable_private_nodes",
         ).optional(),
         networkPerformanceConfig: z.object({
-          totalEgressBandwidthTier: z.enum(["TIER_UNSPECIFIED", "TIER_1"])
-            .describe(
-              "Specifies the total network bandwidth tier for the NodePool.",
-            ).optional(),
+          totalEgressBandwidthTier: z.unknown().describe(
+            "Specifies the total network bandwidth tier for the NodePool.",
+          ).optional(),
         }).describe("Configuration of all network bandwidth tiers").optional(),
         networkTierConfig: z.object({
-          networkTier: z.enum([
-            "NETWORK_TIER_UNSPECIFIED",
-            "NETWORK_TIER_DEFAULT",
-            "NETWORK_TIER_PREMIUM",
-            "NETWORK_TIER_STANDARD",
-          ]).describe("Network tier configuration.").optional(),
+          networkTier: z.unknown().describe("Network tier configuration.")
+            .optional(),
         }).describe("NetworkTierConfig contains network tier information.")
           .optional(),
         podCidrOverprovisionConfig: z.object({
-          disable: z.boolean().describe(
+          disable: z.unknown().describe(
             "Whether Pod CIDR overprovisioning is disabled. Note: Pod CIDR overprovisioning is enabled by default.",
           ).optional(),
         }).describe(
@@ -9577,54 +8284,32 @@ const InputsSchema = z.object({
       ).optional(),
       updateInfo: z.object({
         blueGreenInfo: z.object({
-          blueInstanceGroupUrls: z.array(z.string()).describe(
+          blueInstanceGroupUrls: z.unknown().describe(
             "The resource URLs of the [managed instance groups] (/compute/docs/instance-groups/creating-groups-of-managed-instances) associated with blue pool.",
           ).optional(),
-          bluePoolDeletionStartTime: z.string().describe(
+          bluePoolDeletionStartTime: z.unknown().describe(
             "Time to start deleting blue pool to complete blue-green upgrade, in [RFC3339](https://www.ietf.org/rfc/rfc3339.txt) text format.",
           ).optional(),
-          greenInstanceGroupUrls: z.array(z.string()).describe(
+          greenInstanceGroupUrls: z.unknown().describe(
             "The resource URLs of the [managed instance groups] (/compute/docs/instance-groups/creating-groups-of-managed-instances) associated with green pool.",
           ).optional(),
-          greenPoolVersion: z.string().describe("Version of green pool.")
+          greenPoolVersion: z.unknown().describe("Version of green pool.")
             .optional(),
-          phase: z.enum([
-            "PHASE_UNSPECIFIED",
-            "UPDATE_STARTED",
-            "CREATING_GREEN_POOL",
-            "CORDONING_BLUE_POOL",
-            "DRAINING_BLUE_POOL",
-            "NODE_POOL_SOAKING",
-            "DELETING_BLUE_POOL",
-            "ROLLBACK_STARTED",
-          ]).describe("Current blue-green upgrade phase.").optional(),
+          phase: z.unknown().describe("Current blue-green upgrade phase.")
+            .optional(),
         }).describe("Information relevant to blue-green upgrade.").optional(),
       }).describe(
         "UpdateInfo contains resource (instance groups, etc), status and other intermediate information relevant to a node pool upgrade.",
       ).optional(),
       upgradeSettings: z.object({
         blueGreenSettings: z.object({
-          autoscaledRolloutPolicy: z.object({
-            waitForDrainDuration: z.string().describe(
-              "Optional. Time to wait after cordoning the blue pool before draining the nodes. Defaults to 3 days. The value can be set between 0 and 7 days, inclusive.",
-            ).optional(),
-          }).describe(
+          autoscaledRolloutPolicy: z.unknown().describe(
             "Autoscaled rollout policy utilizes the cluster autoscaler during blue-green upgrade to scale both the blue and green pools.",
           ).optional(),
-          nodePoolSoakDuration: z.string().describe(
+          nodePoolSoakDuration: z.unknown().describe(
             "Time needed after draining entire blue pool. After this period, blue pool will be cleaned up.",
           ).optional(),
-          standardRolloutPolicy: z.object({
-            batchNodeCount: z.number().int().describe(
-              "Number of blue nodes to drain in a batch.",
-            ).optional(),
-            batchPercentage: z.number().describe(
-              "Percentage of the blue pool nodes to drain in a batch. The range of this field should be (0.0, 1.0].",
-            ).optional(),
-            batchSoakDuration: z.string().describe(
-              "Soak time after each batch gets drained. Default to zero.",
-            ).optional(),
-          }).describe(
+          standardRolloutPolicy: z.unknown().describe(
             "Standard rollout policy is the default policy for blue-green.",
           ).optional(),
         }).describe("Settings for blue-green upgrade.").optional(),
@@ -9654,15 +8339,8 @@ const InputsSchema = z.object({
         enabled: z.boolean().describe("Enable notifications for Pub/Sub.")
           .optional(),
         filter: z.object({
-          eventType: z.array(
-            z.enum([
-              "EVENT_TYPE_UNSPECIFIED",
-              "UPGRADE_AVAILABLE_EVENT",
-              "UPGRADE_EVENT",
-              "SECURITY_BULLETIN_EVENT",
-              "UPGRADE_INFO_EVENT",
-            ]),
-          ).describe("Event types to allowlist.").optional(),
+          eventType: z.array(z.unknown()).describe("Event types to allowlist.")
+            .optional(),
         }).describe(
           "Allows filtering to one or more specific event types. If event types are present, those and only those event types will be transmitted to the cluster. Other types will be skipped. If no filter is specified, or no event types are present, all event types will be sent",
         ).optional(),
@@ -9909,7 +8587,7 @@ const InputsSchema = z.object({
     ).optional(),
     desiredAdditionalIpRangesConfig: z.object({
       additionalIpRangesConfigs: z.array(z.object({
-        podIpv4RangeNames: z.array(z.string()).describe(
+        podIpv4RangeNames: z.array(z.unknown()).describe(
           "List of secondary ranges names within this subnetwork that can be used for pod IPs. Example1: gke-pod-range1 Example2: gke-pod-range1,gke-pod-range2",
         ).optional(),
         status: z.enum(["STATUS_UNSPECIFIED", "ACTIVE", "DRAINING"]).describe(
@@ -10148,10 +8826,10 @@ const InputsSchema = z.object({
             "A flag that specifies whether node auto-upgrade is enabled for the node pool. If enabled, node auto-upgrade helps keep the nodes in your node pool up to date with the latest release version of Kubernetes.",
           ).optional(),
           upgradeOptions: z.object({
-            autoUpgradeStartTime: z.string().describe(
+            autoUpgradeStartTime: z.unknown().describe(
               "Output only. This field is set when upgrades are about to commence with the approximate start time for the upgrades, in [RFC3339](https://www.ietf.org/rfc/rfc3339.txt) text format.",
             ).optional(),
-            description: z.string().describe(
+            description: z.unknown().describe(
               "Output only. This field is set when upgrades are about to commence with the description of the upgrade.",
             ).optional(),
           }).describe(
@@ -10179,27 +8857,13 @@ const InputsSchema = z.object({
         }).describe("A set of Shielded Instance options.").optional(),
         upgradeSettings: z.object({
           blueGreenSettings: z.object({
-            autoscaledRolloutPolicy: z.object({
-              waitForDrainDuration: z.string().describe(
-                "Optional. Time to wait after cordoning the blue pool before draining the nodes. Defaults to 3 days. The value can be set between 0 and 7 days, inclusive.",
-              ).optional(),
-            }).describe(
+            autoscaledRolloutPolicy: z.unknown().describe(
               "Autoscaled rollout policy utilizes the cluster autoscaler during blue-green upgrade to scale both the blue and green pools.",
             ).optional(),
-            nodePoolSoakDuration: z.string().describe(
+            nodePoolSoakDuration: z.unknown().describe(
               "Time needed after draining entire blue pool. After this period, blue pool will be cleaned up.",
             ).optional(),
-            standardRolloutPolicy: z.object({
-              batchNodeCount: z.number().int().describe(
-                "Number of blue nodes to drain in a batch.",
-              ).optional(),
-              batchPercentage: z.number().describe(
-                "Percentage of the blue pool nodes to drain in a batch. The range of this field should be (0.0, 1.0].",
-              ).optional(),
-              batchSoakDuration: z.string().describe(
-                "Soak time after each batch gets drained. Default to zero.",
-              ).optional(),
-            }).describe(
+            standardRolloutPolicy: z.unknown().describe(
               "Standard rollout policy is the default policy for blue-green.",
             ).optional(),
           }).describe("Settings for blue-green upgrade.").optional(),
@@ -10265,14 +8929,10 @@ const InputsSchema = z.object({
     desiredContainerdConfig: z.object({
       privateRegistryAccessConfig: z.object({
         certificateAuthorityDomainConfig: z.array(z.object({
-          fqdns: z.array(z.string()).describe(
+          fqdns: z.unknown().describe(
             "List of fully qualified domain names (FQDN). Specifying port is supported. Wildcards are NOT supported. Examples: - `my.customdomain.com` - `10.0.1.2:5000`",
           ).optional(),
-          gcpSecretManagerCertificateConfig: z.object({
-            secretUri: z.string().describe(
-              'Secret URI, in the form "projects/$PROJECT_ID/secrets/$SECRET_NAME/versions/$VERSION". Version can be fixed (e.g. "2") or "latest"',
-            ).optional(),
-          }).describe(
+          gcpSecretManagerCertificateConfig: z.unknown().describe(
             "GCPSecretManagerCertificateConfig configures a secret from [Secret Manager](https://cloud.google.com/secret-manager).",
           ).optional(),
         })).describe("Private registry access configuration.").optional(),
@@ -10282,59 +8942,7 @@ const InputsSchema = z.object({
         "PrivateRegistryAccessConfig contains access configuration for private container registries.",
       ).optional(),
       registryHosts: z.array(z.object({
-        hosts: z.array(z.object({
-          ca: z.array(z.object({
-            gcpSecretManagerSecretUri: z.string().describe(
-              'The URI configures a secret from [Secret Manager](https://cloud.google.com/secret-manager) in the format "projects/$PROJECT_ID/secrets/$SECRET_NAME/versions/$VERSION" for global secret or "projects/$PROJECT_ID/locations/$REGION/secrets/$SECRET_NAME/versions/$VERSION" for regional secret. Version can be fixed (e.g. "2") or "latest"',
-            ).optional(),
-          })).describe("CA configures the registry host certificate.")
-            .optional(),
-          capabilities: z.array(
-            z.enum([
-              "HOST_CAPABILITY_UNSPECIFIED",
-              "HOST_CAPABILITY_PULL",
-              "HOST_CAPABILITY_RESOLVE",
-              "HOST_CAPABILITY_PUSH",
-            ]),
-          ).describe(
-            "Capabilities represent the capabilities of the registry host, specifying what operations a host is capable of performing. If not set, containerd enables all capabilities by default.",
-          ).optional(),
-          client: z.array(z.object({
-            cert: z.object({
-              gcpSecretManagerSecretUri: z.string().describe(
-                'The URI configures a secret from [Secret Manager](https://cloud.google.com/secret-manager) in the format "projects/$PROJECT_ID/secrets/$SECRET_NAME/versions/$VERSION" for global secret or "projects/$PROJECT_ID/locations/$REGION/secrets/$SECRET_NAME/versions/$VERSION" for regional secret. Version can be fixed (e.g. "2") or "latest"',
-              ).optional(),
-            }).describe(
-              "CertificateConfig configures certificate for the registry.",
-            ).optional(),
-            key: z.object({
-              gcpSecretManagerSecretUri: z.string().describe(
-                'The URI configures a secret from [Secret Manager](https://cloud.google.com/secret-manager) in the format "projects/$PROJECT_ID/secrets/$SECRET_NAME/versions/$VERSION" for global secret or "projects/$PROJECT_ID/locations/$REGION/secrets/$SECRET_NAME/versions/$VERSION" for regional secret. Version can be fixed (e.g. "2") or "latest"',
-              ).optional(),
-            }).describe(
-              "CertificateConfig configures certificate for the registry.",
-            ).optional(),
-          })).describe(
-            "Client configures the registry host client certificate and key.",
-          ).optional(),
-          dialTimeout: z.string().describe(
-            "Specifies the maximum duration allowed for a connection attempt to complete. A shorter timeout helps reduce delays when falling back to the original registry if the mirror is unreachable. Maximum allowed value is 180s. If not set, containerd sets default 30s. The value should be a decimal number of seconds with an `s` suffix.",
-          ).optional(),
-          header: z.array(z.object({
-            key: z.string().describe("Key configures the header key.")
-              .optional(),
-            value: z.array(z.string()).describe(
-              "Value configures the header value.",
-            ).optional(),
-          })).describe("Header configures the registry host headers.")
-            .optional(),
-          host: z.string().describe(
-            "Host configures the registry host/mirror. It supports fully qualified domain names (FQDNs) and IP addresses. Specifying scheme, port or path is supported. Scheme can only be http or https. Wildcards are NOT supported. Examples: - `my.customdomain.com` - `https://my.customdomain.com/path` - `10.0.1.2:5000`",
-          ).optional(),
-          overridePath: z.boolean().describe(
-            "OverridePath is used to indicate the host's API root endpoint is defined in the URL path rather than by the API specification. This may be used with non-compliant OCI registries which are missing the /v2 prefix. If not set, containerd sets default false.",
-          ).optional(),
-        })).describe(
+        hosts: z.array(z.unknown()).describe(
           "HostConfig configures a list of host-specific configurations for the server. Each server can have at most 10 host configurations.",
         ).optional(),
         server: z.string().describe(
@@ -10375,14 +8983,7 @@ const InputsSchema = z.object({
       }).describe("Describes the configuration of a DNS endpoint.").optional(),
       ipEndpointsConfig: z.object({
         authorizedNetworksConfig: z.object({
-          cidrBlocks: z.array(z.object({
-            cidrBlock: z.string().describe(
-              "cidr_block must be specified in CIDR notation.",
-            ).optional(),
-            displayName: z.string().describe(
-              "display_name is an optional field for users to identify CIDR blocks.",
-            ).optional(),
-          })).describe(
+          cidrBlocks: z.array(z.unknown()).describe(
             "cidr_blocks define up to 50 external networks that could access Kubernetes master through HTTPS.",
           ).optional(),
           enabled: z.boolean().describe(
@@ -11169,15 +9770,8 @@ const InputsSchema = z.object({
         enabled: z.boolean().describe("Enable notifications for Pub/Sub.")
           .optional(),
         filter: z.object({
-          eventType: z.array(
-            z.enum([
-              "EVENT_TYPE_UNSPECIFIED",
-              "UPGRADE_AVAILABLE_EVENT",
-              "UPGRADE_EVENT",
-              "SECURITY_BULLETIN_EVENT",
-              "UPGRADE_INFO_EVENT",
-            ]),
-          ).describe("Event types to allowlist.").optional(),
+          eventType: z.array(z.unknown()).describe("Event types to allowlist.")
+            .optional(),
         }).describe(
           "Allows filtering to one or more specific event types. If event types are present, those and only those event types will be transmitted to the cluster. Other types will be skipped. If no filter is specified, or no event types are present, all event types will be sent",
         ).optional(),
@@ -11449,7 +10043,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/container/clusters",
-  version: "2026.04.03.3",
+  version: "2026.04.04.1",
   upgrades: [
     {
       toVersion: "2026.03.31.1",
@@ -11483,6 +10077,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.3",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.04.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

@@ -123,14 +123,7 @@ const GlobalArgsSchema = z.object({
         'Literal value of the environment variable. Defaults to "", and the maximum length is 32768 bytes. Variable references are not supported in Cloud Run.',
       ).optional(),
       valueSource: z.object({
-        secretKeyRef: z.object({
-          secret: z.string().describe(
-            "Required. The name of the secret in Cloud Secret Manager. Format: {secret_name} if the secret is in the same project. projects/{project}/secrets/{secret_name} if the secret is in a different project.",
-          ).optional(),
-          version: z.string().describe(
-            "The Cloud Secret Manager secret version. Can be 'latest' for the latest version, an integer for a specific version, or a version alias.",
-          ).optional(),
-        }).describe(
+        secretKeyRef: z.unknown().describe(
           "SecretEnvVarSource represents a source for the value of an EnvVar.",
         ).optional(),
       }).describe(
@@ -155,12 +148,7 @@ const GlobalArgsSchema = z.object({
       }).describe("GRPCAction describes an action involving a GRPC port.")
         .optional(),
       httpGet: z.object({
-        httpHeaders: z.array(z.object({
-          name: z.string().describe("Required. The header field name")
-            .optional(),
-          value: z.string().describe("Optional. The header field value")
-            .optional(),
-        })).describe(
+        httpHeaders: z.array(z.unknown()).describe(
           "Optional. Custom headers to set in the request. HTTP allows repeated headers.",
         ).optional(),
         path: z.string().describe(
@@ -218,12 +206,7 @@ const GlobalArgsSchema = z.object({
       }).describe("GRPCAction describes an action involving a GRPC port.")
         .optional(),
       httpGet: z.object({
-        httpHeaders: z.array(z.object({
-          name: z.string().describe("Required. The header field name")
-            .optional(),
-          value: z.string().describe("Optional. The header field value")
-            .optional(),
-        })).describe(
+        httpHeaders: z.array(z.unknown()).describe(
           "Optional. Custom headers to set in the request. HTTP allows repeated headers.",
         ).optional(),
         path: z.string().describe(
@@ -278,14 +261,9 @@ const GlobalArgsSchema = z.object({
           .optional(),
       }).describe("Cloud Storage source.").optional(),
       inlinedSource: z.object({
-        sources: z.array(z.object({
-          content: z.string().describe(
-            "Required. Input only. Represents the exact, literal, and complete source code of the file. Placeholders like `...` or comments such as `# [rest of code]` should NEVER be used as omission. Every character in this field will be built into the final container. Any omission will result in a broken application.",
-          ).optional(),
-          filename: z.string().describe(
-            'Required. Input only. The file name for the source code. e.g., `"index.js"` or `"node_modules/dependency.js"`. The filename must be less than 255 characters and cannot contain `..`, `./`, `//`, or end with a `/`. Cloud Run will place the files in the container subdirectories, please use relative path to access the file.',
-          ).optional(),
-        })).describe("Required. Input only. The source code.").optional(),
+        sources: z.array(z.unknown()).describe(
+          "Required. Input only. The source code.",
+        ).optional(),
       }).describe("Inlined source.").optional(),
     }).describe("Source type for the container.").optional(),
     startupProbe: z.object({
@@ -302,12 +280,7 @@ const GlobalArgsSchema = z.object({
       }).describe("GRPCAction describes an action involving a GRPC port.")
         .optional(),
       httpGet: z.object({
-        httpHeaders: z.array(z.object({
-          name: z.string().describe("Required. The header field name")
-            .optional(),
-          value: z.string().describe("Optional. The header field value")
-            .optional(),
-        })).describe(
+        httpHeaders: z.array(z.unknown()).describe(
           "Optional. Custom headers to set in the request. HTTP allows repeated headers.",
         ).optional(),
         path: z.string().describe(
@@ -523,13 +496,13 @@ const GlobalArgsSchema = z.object({
         "Integer representation of mode bits to use on created files by default. Must be a value between 0000 and 0777 (octal), defaulting to 0444. Directories within the path are not affected by this setting. Notes * Internally, a umask of 0222 will be applied to any non-zero value. * This is an integer representation of the mode bits. So, the octal integer value should look exactly as the chmod numeric notation with a leading zero. Some examples: for chmod 640 (u=rw,g=r), set to 0640 (octal) or 416 (base-10). For chmod 755 (u=rwx,g=rx,o=rx), set to 0755 (octal) or 493 (base-10). * This might be in conflict with other options that affect the file mode, like fsGroup, and the result can be other mode bits set. This might be in conflict with other options that affect the file mode, like fsGroup, and as a result, other mode bits could be set.",
       ).optional(),
       items: z.array(z.object({
-        mode: z.number().int().describe(
+        mode: z.unknown().describe(
           "Integer octal mode bits to use on this file, must be a value between 01 and 0777 (octal). If 0 or not set, the Volume's default mode will be used. Notes * Internally, a umask of 0222 will be applied to any non-zero value. * This is an integer representation of the mode bits. So, the octal integer value should look exactly as the chmod numeric notation with a leading zero. Some examples: for chmod 640 (u=rw,g=r), set to 0640 (octal) or 416 (base-10). For chmod 755 (u=rwx,g=rx,o=rx), set to 0755 (octal) or 493 (base-10). * This might be in conflict with other options that affect the file mode, like fsGroup, and the result can be other mode bits set.",
         ).optional(),
-        path: z.string().describe(
+        path: z.unknown().describe(
           "Required. The relative path of the secret in the container.",
         ).optional(),
-        version: z.string().describe(
+        version: z.unknown().describe(
           "The Cloud Secret Manager secret version. Can be 'latest' for the latest value, or an integer or a secret alias for a specific version.",
         ).optional(),
       })).describe(
@@ -613,10 +586,7 @@ const StateSchema = z.object({
       name: z.string(),
       value: z.string(),
       valueSource: z.object({
-        secretKeyRef: z.object({
-          secret: z.string(),
-          version: z.string(),
-        }),
+        secretKeyRef: z.unknown(),
       }),
     })),
     image: z.string(),
@@ -627,10 +597,7 @@ const StateSchema = z.object({
         service: z.string(),
       }),
       httpGet: z.object({
-        httpHeaders: z.array(z.object({
-          name: z.string(),
-          value: z.string(),
-        })),
+        httpHeaders: z.array(z.unknown()),
         path: z.string(),
         port: z.number(),
       }),
@@ -653,10 +620,7 @@ const StateSchema = z.object({
         service: z.string(),
       }),
       httpGet: z.object({
-        httpHeaders: z.array(z.object({
-          name: z.string(),
-          value: z.string(),
-        })),
+        httpHeaders: z.array(z.unknown()),
         path: z.string(),
         port: z.number(),
       }),
@@ -679,10 +643,7 @@ const StateSchema = z.object({
         object: z.string(),
       }),
       inlinedSource: z.object({
-        sources: z.array(z.object({
-          content: z.string(),
-          filename: z.string(),
-        })),
+        sources: z.array(z.unknown()),
       }),
     }),
     startupProbe: z.object({
@@ -692,10 +653,7 @@ const StateSchema = z.object({
         service: z.string(),
       }),
       httpGet: z.object({
-        httpHeaders: z.array(z.object({
-          name: z.string(),
-          value: z.string(),
-        })),
+        httpHeaders: z.array(z.unknown()),
         path: z.string(),
         port: z.number(),
       }),
@@ -775,9 +733,9 @@ const StateSchema = z.object({
     secret: z.object({
       defaultMode: z.number(),
       items: z.array(z.object({
-        mode: z.number(),
-        path: z.string(),
-        version: z.string(),
+        mode: z.unknown(),
+        path: z.unknown(),
+        version: z.unknown(),
       })),
       secret: z.string(),
     }),
@@ -842,14 +800,7 @@ const InputsSchema = z.object({
         'Literal value of the environment variable. Defaults to "", and the maximum length is 32768 bytes. Variable references are not supported in Cloud Run.',
       ).optional(),
       valueSource: z.object({
-        secretKeyRef: z.object({
-          secret: z.string().describe(
-            "Required. The name of the secret in Cloud Secret Manager. Format: {secret_name} if the secret is in the same project. projects/{project}/secrets/{secret_name} if the secret is in a different project.",
-          ).optional(),
-          version: z.string().describe(
-            "The Cloud Secret Manager secret version. Can be 'latest' for the latest version, an integer for a specific version, or a version alias.",
-          ).optional(),
-        }).describe(
+        secretKeyRef: z.unknown().describe(
           "SecretEnvVarSource represents a source for the value of an EnvVar.",
         ).optional(),
       }).describe(
@@ -874,12 +825,7 @@ const InputsSchema = z.object({
       }).describe("GRPCAction describes an action involving a GRPC port.")
         .optional(),
       httpGet: z.object({
-        httpHeaders: z.array(z.object({
-          name: z.string().describe("Required. The header field name")
-            .optional(),
-          value: z.string().describe("Optional. The header field value")
-            .optional(),
-        })).describe(
+        httpHeaders: z.array(z.unknown()).describe(
           "Optional. Custom headers to set in the request. HTTP allows repeated headers.",
         ).optional(),
         path: z.string().describe(
@@ -937,12 +883,7 @@ const InputsSchema = z.object({
       }).describe("GRPCAction describes an action involving a GRPC port.")
         .optional(),
       httpGet: z.object({
-        httpHeaders: z.array(z.object({
-          name: z.string().describe("Required. The header field name")
-            .optional(),
-          value: z.string().describe("Optional. The header field value")
-            .optional(),
-        })).describe(
+        httpHeaders: z.array(z.unknown()).describe(
           "Optional. Custom headers to set in the request. HTTP allows repeated headers.",
         ).optional(),
         path: z.string().describe(
@@ -997,14 +938,9 @@ const InputsSchema = z.object({
           .optional(),
       }).describe("Cloud Storage source.").optional(),
       inlinedSource: z.object({
-        sources: z.array(z.object({
-          content: z.string().describe(
-            "Required. Input only. Represents the exact, literal, and complete source code of the file. Placeholders like `...` or comments such as `# [rest of code]` should NEVER be used as omission. Every character in this field will be built into the final container. Any omission will result in a broken application.",
-          ).optional(),
-          filename: z.string().describe(
-            'Required. Input only. The file name for the source code. e.g., `"index.js"` or `"node_modules/dependency.js"`. The filename must be less than 255 characters and cannot contain `..`, `./`, `//`, or end with a `/`. Cloud Run will place the files in the container subdirectories, please use relative path to access the file.',
-          ).optional(),
-        })).describe("Required. Input only. The source code.").optional(),
+        sources: z.array(z.unknown()).describe(
+          "Required. Input only. The source code.",
+        ).optional(),
       }).describe("Inlined source.").optional(),
     }).describe("Source type for the container.").optional(),
     startupProbe: z.object({
@@ -1021,12 +957,7 @@ const InputsSchema = z.object({
       }).describe("GRPCAction describes an action involving a GRPC port.")
         .optional(),
       httpGet: z.object({
-        httpHeaders: z.array(z.object({
-          name: z.string().describe("Required. The header field name")
-            .optional(),
-          value: z.string().describe("Optional. The header field value")
-            .optional(),
-        })).describe(
+        httpHeaders: z.array(z.unknown()).describe(
           "Optional. Custom headers to set in the request. HTTP allows repeated headers.",
         ).optional(),
         path: z.string().describe(
@@ -1242,13 +1173,13 @@ const InputsSchema = z.object({
         "Integer representation of mode bits to use on created files by default. Must be a value between 0000 and 0777 (octal), defaulting to 0444. Directories within the path are not affected by this setting. Notes * Internally, a umask of 0222 will be applied to any non-zero value. * This is an integer representation of the mode bits. So, the octal integer value should look exactly as the chmod numeric notation with a leading zero. Some examples: for chmod 640 (u=rw,g=r), set to 0640 (octal) or 416 (base-10). For chmod 755 (u=rwx,g=rx,o=rx), set to 0755 (octal) or 493 (base-10). * This might be in conflict with other options that affect the file mode, like fsGroup, and the result can be other mode bits set. This might be in conflict with other options that affect the file mode, like fsGroup, and as a result, other mode bits could be set.",
       ).optional(),
       items: z.array(z.object({
-        mode: z.number().int().describe(
+        mode: z.unknown().describe(
           "Integer octal mode bits to use on this file, must be a value between 01 and 0777 (octal). If 0 or not set, the Volume's default mode will be used. Notes * Internally, a umask of 0222 will be applied to any non-zero value. * This is an integer representation of the mode bits. So, the octal integer value should look exactly as the chmod numeric notation with a leading zero. Some examples: for chmod 640 (u=rw,g=r), set to 0640 (octal) or 416 (base-10). For chmod 755 (u=rwx,g=rx,o=rx), set to 0755 (octal) or 493 (base-10). * This might be in conflict with other options that affect the file mode, like fsGroup, and the result can be other mode bits set.",
         ).optional(),
-        path: z.string().describe(
+        path: z.unknown().describe(
           "Required. The relative path of the secret in the container.",
         ).optional(),
-        version: z.string().describe(
+        version: z.unknown().describe(
           "The Cloud Secret Manager secret version. Can be 'latest' for the latest value, or an integer or a secret alias for a specific version.",
         ).optional(),
       })).describe(
@@ -1298,7 +1229,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/run/instances",
-  version: "2026.04.03.3",
+  version: "2026.04.04.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -1322,6 +1253,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.3",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.04.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

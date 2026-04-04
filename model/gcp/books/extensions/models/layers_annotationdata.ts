@@ -79,54 +79,12 @@ const StateSchema = z.object({
         url: z.string(),
       }),
       words: z.array(z.object({
-        derivatives: z.array(z.object({
-          source: z.object({
-            attribution: z.string(),
-            url: z.string(),
-          }),
-          text: z.string(),
-        })),
-        examples: z.array(z.object({
-          source: z.object({
-            attribution: z.string(),
-            url: z.string(),
-          }),
-          text: z.string(),
-        })),
-        senses: z.array(z.object({
-          conjugations: z.array(z.object({
-            type: z.string(),
-            value: z.string(),
-          })),
-          definitions: z.array(z.object({
-            definition: z.string(),
-            examples: z.array(z.object({
-              source: z.object({
-                attribution: z.string(),
-                url: z.string(),
-              }),
-              text: z.string(),
-            })),
-          })),
-          partOfSpeech: z.string(),
-          pronunciation: z.string(),
-          pronunciationUrl: z.string(),
-          source: z.object({
-            attribution: z.string(),
-            url: z.string(),
-          }),
-          syllabification: z.string(),
-          synonyms: z.array(z.object({
-            source: z.object({
-              attribution: z.string(),
-              url: z.string(),
-            }),
-            text: z.string(),
-          })),
-        })),
+        derivatives: z.array(z.unknown()),
+        examples: z.array(z.unknown()),
+        senses: z.array(z.unknown()),
         source: z.object({
-          attribution: z.string(),
-          url: z.string(),
+          attribution: z.unknown(),
+          url: z.unknown(),
         }),
       })),
     }),
@@ -149,7 +107,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/books/layers-annotationdata",
-  version: "2026.04.03.3",
+  version: "2026.04.04.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -173,6 +131,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.3",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.04.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

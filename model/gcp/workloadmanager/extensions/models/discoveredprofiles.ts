@@ -57,46 +57,12 @@ const StateSchema = z.object({
       haHosts: z.array(z.string()),
       resources: z.array(z.object({
         instanceProperties: z.object({
-          instanceNumber: z.string(),
-          machineType: z.string(),
-          roles: z.array(z.string()),
-          sapInstanceProperties: z.object({
-            agentStates: z.object({
-              availableVersion: z.string(),
-              hanaMonitoring: z.object({
-                iamPermissions: z.array(z.object({
-                  granted: z.boolean(),
-                  name: z.string(),
-                })),
-                state: z.string(),
-              }),
-              installedVersion: z.string(),
-              isFullyEnabled: z.boolean(),
-              processMetrics: z.object({
-                iamPermissions: z.array(z.object({
-                  granted: z.boolean(),
-                  name: z.string(),
-                })),
-                state: z.string(),
-              }),
-              systemDiscovery: z.object({
-                iamPermissions: z.array(z.object({
-                  granted: z.boolean(),
-                  name: z.string(),
-                })),
-                state: z.string(),
-              }),
-            }),
-            numbers: z.array(z.string()),
-          }),
-          status: z.string(),
-          upcomingMaintenanceEvent: z.object({
-            endTime: z.string(),
-            maintenanceStatus: z.string(),
-            onHostMaintenance: z.string(),
-            startTime: z.string(),
-            type: z.string(),
-          }),
+          instanceNumber: z.unknown(),
+          machineType: z.unknown(),
+          roles: z.unknown(),
+          sapInstanceProperties: z.unknown(),
+          status: z.unknown(),
+          upcomingMaintenanceEvent: z.unknown(),
         }),
         kind: z.string(),
         name: z.string(),
@@ -116,46 +82,12 @@ const StateSchema = z.object({
       haHosts: z.array(z.string()),
       resources: z.array(z.object({
         instanceProperties: z.object({
-          instanceNumber: z.string(),
-          machineType: z.string(),
-          roles: z.array(z.string()),
-          sapInstanceProperties: z.object({
-            agentStates: z.object({
-              availableVersion: z.string(),
-              hanaMonitoring: z.object({
-                iamPermissions: z.array(z.object({
-                  granted: z.boolean(),
-                  name: z.string(),
-                })),
-                state: z.string(),
-              }),
-              installedVersion: z.string(),
-              isFullyEnabled: z.boolean(),
-              processMetrics: z.object({
-                iamPermissions: z.array(z.object({
-                  granted: z.boolean(),
-                  name: z.string(),
-                })),
-                state: z.string(),
-              }),
-              systemDiscovery: z.object({
-                iamPermissions: z.array(z.object({
-                  granted: z.boolean(),
-                  name: z.string(),
-                })),
-                state: z.string(),
-              }),
-            }),
-            numbers: z.array(z.string()),
-          }),
-          status: z.string(),
-          upcomingMaintenanceEvent: z.object({
-            endTime: z.string(),
-            maintenanceStatus: z.string(),
-            onHostMaintenance: z.string(),
-            startTime: z.string(),
-            type: z.string(),
-          }),
+          instanceNumber: z.unknown(),
+          machineType: z.unknown(),
+          roles: z.unknown(),
+          sapInstanceProperties: z.unknown(),
+          status: z.unknown(),
+          upcomingMaintenanceEvent: z.unknown(),
         }),
         kind: z.string(),
         name: z.string(),
@@ -183,7 +115,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/workloadmanager/discoveredprofiles",
-  version: "2026.04.03.3",
+  version: "2026.04.04.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -207,6 +139,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.3",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.04.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

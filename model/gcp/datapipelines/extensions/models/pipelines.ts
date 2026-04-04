@@ -131,10 +131,10 @@ const GlobalArgsSchema = z.object({
           "Cloud Storage path to a file with a JSON-serialized ContainerSpec as content.",
         ).optional(),
         environment: z.object({
-          additionalExperiments: z.array(z.string()).describe(
+          additionalExperiments: z.array(z.unknown()).describe(
             "Additional experiment flags for the job.",
           ).optional(),
-          additionalUserLabels: z.record(z.string(), z.string()).describe(
+          additionalUserLabels: z.record(z.string(), z.unknown()).describe(
             'Additional user labels to be specified for the job. Keys and values must follow the restrictions specified in the [labeling restrictions](https://cloud.google.com/compute/docs/labeling-resources#restrictions). An object containing a list of key/value pairs. Example: `{ "name": "wrench", "mass": "1kg", "count": "3" }`.',
           ).optional(),
           enableStreamingEngine: z.boolean().describe(
@@ -221,10 +221,10 @@ const GlobalArgsSchema = z.object({
       ).optional(),
       launchParameters: z.object({
         environment: z.object({
-          additionalExperiments: z.array(z.string()).describe(
+          additionalExperiments: z.array(z.unknown()).describe(
             "Additional experiment flags for the job.",
           ).optional(),
-          additionalUserLabels: z.record(z.string(), z.string()).describe(
+          additionalUserLabels: z.record(z.string(), z.unknown()).describe(
             'Additional user labels to be specified for the job. Keys and values should follow the restrictions specified in the [labeling restrictions](https://cloud.google.com/compute/docs/labeling-resources#restrictions) page. An object containing a list of key/value pairs. Example: { "name": "wrench", "mass": "1kg", "count": "3" }.',
           ).optional(),
           bypassTempDirValidation: z.boolean().describe(
@@ -322,7 +322,7 @@ const StateSchema = z.object({
       launchParameter: z.object({
         containerSpecGcsPath: z.string(),
         environment: z.object({
-          additionalExperiments: z.array(z.string()),
+          additionalExperiments: z.array(z.unknown()),
           additionalUserLabels: z.record(z.string(), z.unknown()),
           enableStreamingEngine: z.boolean(),
           flexrsGoal: z.string(),
@@ -353,7 +353,7 @@ const StateSchema = z.object({
       gcsPath: z.string(),
       launchParameters: z.object({
         environment: z.object({
-          additionalExperiments: z.array(z.string()),
+          additionalExperiments: z.array(z.unknown()),
           additionalUserLabels: z.record(z.string(), z.unknown()),
           bypassTempDirValidation: z.boolean(),
           enableStreamingEngine: z.boolean(),
@@ -432,10 +432,10 @@ const InputsSchema = z.object({
           "Cloud Storage path to a file with a JSON-serialized ContainerSpec as content.",
         ).optional(),
         environment: z.object({
-          additionalExperiments: z.array(z.string()).describe(
+          additionalExperiments: z.array(z.unknown()).describe(
             "Additional experiment flags for the job.",
           ).optional(),
-          additionalUserLabels: z.record(z.string(), z.string()).describe(
+          additionalUserLabels: z.record(z.string(), z.unknown()).describe(
             'Additional user labels to be specified for the job. Keys and values must follow the restrictions specified in the [labeling restrictions](https://cloud.google.com/compute/docs/labeling-resources#restrictions). An object containing a list of key/value pairs. Example: `{ "name": "wrench", "mass": "1kg", "count": "3" }`.',
           ).optional(),
           enableStreamingEngine: z.boolean().describe(
@@ -522,10 +522,10 @@ const InputsSchema = z.object({
       ).optional(),
       launchParameters: z.object({
         environment: z.object({
-          additionalExperiments: z.array(z.string()).describe(
+          additionalExperiments: z.array(z.unknown()).describe(
             "Additional experiment flags for the job.",
           ).optional(),
-          additionalUserLabels: z.record(z.string(), z.string()).describe(
+          additionalUserLabels: z.record(z.string(), z.unknown()).describe(
             'Additional user labels to be specified for the job. Keys and values should follow the restrictions specified in the [labeling restrictions](https://cloud.google.com/compute/docs/labeling-resources#restrictions) page. An object containing a list of key/value pairs. Example: { "name": "wrench", "mass": "1kg", "count": "3" }.',
           ).optional(),
           bypassTempDirValidation: z.boolean().describe(
@@ -605,7 +605,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/datapipelines/pipelines",
-  version: "2026.04.03.3",
+  version: "2026.04.04.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -629,6 +629,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.3",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.04.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

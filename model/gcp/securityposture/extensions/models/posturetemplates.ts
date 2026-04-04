@@ -51,98 +51,12 @@ const StateSchema = z.object({
   policySets: z.array(z.object({
     description: z.string(),
     policies: z.array(z.object({
-      complianceStandards: z.array(z.object({
-        control: z.string(),
-        standard: z.string(),
-      })),
+      complianceStandards: z.array(z.unknown()),
       constraint: z.object({
-        orgPolicyConstraint: z.object({
-          cannedConstraintId: z.string(),
-          policyRules: z.array(z.object({
-            allowAll: z.boolean(),
-            condition: z.object({
-              description: z.string(),
-              expression: z.string(),
-              location: z.string(),
-              title: z.string(),
-            }),
-            denyAll: z.boolean(),
-            enforce: z.boolean(),
-            parameters: z.record(z.string(), z.unknown()),
-            resourceTypes: z.object({
-              included: z.array(z.string()),
-            }),
-            values: z.object({
-              allowedValues: z.array(z.string()),
-              deniedValues: z.array(z.string()),
-            }),
-          })),
-        }),
-        orgPolicyConstraintCustom: z.object({
-          customConstraint: z.object({
-            actionType: z.string(),
-            condition: z.string(),
-            description: z.string(),
-            displayName: z.string(),
-            methodTypes: z.array(z.string()),
-            name: z.string(),
-            resourceTypes: z.array(z.string()),
-            updateTime: z.string(),
-          }),
-          policyRules: z.array(z.object({
-            allowAll: z.boolean(),
-            condition: z.object({
-              description: z.string(),
-              expression: z.string(),
-              location: z.string(),
-              title: z.string(),
-            }),
-            denyAll: z.boolean(),
-            enforce: z.boolean(),
-            parameters: z.record(z.string(), z.unknown()),
-            resourceTypes: z.object({
-              included: z.array(z.string()),
-            }),
-            values: z.object({
-              allowedValues: z.array(z.string()),
-              deniedValues: z.array(z.string()),
-            }),
-          })),
-        }),
-        securityHealthAnalyticsCustomModule: z.object({
-          config: z.object({
-            customOutput: z.object({
-              properties: z.array(z.object({
-                name: z.string(),
-                valueExpression: z.object({
-                  description: z.string(),
-                  expression: z.string(),
-                  location: z.string(),
-                  title: z.string(),
-                }),
-              })),
-            }),
-            description: z.string(),
-            predicate: z.object({
-              description: z.string(),
-              expression: z.string(),
-              location: z.string(),
-              title: z.string(),
-            }),
-            recommendation: z.string(),
-            resourceSelector: z.object({
-              resourceTypes: z.array(z.string()),
-            }),
-            severity: z.string(),
-          }),
-          displayName: z.string(),
-          id: z.string(),
-          moduleEnablementState: z.string(),
-        }),
-        securityHealthAnalyticsModule: z.object({
-          moduleEnablementState: z.string(),
-          moduleName: z.string(),
-        }),
+        orgPolicyConstraint: z.unknown(),
+        orgPolicyConstraintCustom: z.unknown(),
+        securityHealthAnalyticsCustomModule: z.unknown(),
+        securityHealthAnalyticsModule: z.unknown(),
       }),
       description: z.string(),
       policyId: z.string(),
@@ -164,7 +78,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/securityposture/posturetemplates",
-  version: "2026.04.03.3",
+  version: "2026.04.04.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -188,6 +102,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.3",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.04.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

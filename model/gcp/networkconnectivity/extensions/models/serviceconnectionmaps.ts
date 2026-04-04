@@ -191,7 +191,7 @@ const StateSchema = z.object({
     dnsAutomationStatus: z.object({
       error: z.object({
         code: z.number(),
-        details: z.array(z.record(z.string(), z.unknown())),
+        details: z.array(z.unknown()),
         message: z.string(),
       }),
       fqdn: z.string(),
@@ -322,7 +322,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/networkconnectivity/serviceconnectionmaps",
-  version: "2026.04.03.3",
+  version: "2026.04.04.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -346,6 +346,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.3",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.04.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

@@ -124,45 +124,40 @@ const StateSchema = z.object({
     shardResult: z.object({
       outcome: z.object({
         failureDetail: z.object({
-          crashed: z.boolean(),
-          deviceOutOfMemory: z.boolean(),
-          failedRoboscript: z.boolean(),
-          notInstalled: z.boolean(),
-          otherNativeCrash: z.boolean(),
-          timedOut: z.boolean(),
-          unableToCrawl: z.boolean(),
+          crashed: z.unknown(),
+          deviceOutOfMemory: z.unknown(),
+          failedRoboscript: z.unknown(),
+          notInstalled: z.unknown(),
+          otherNativeCrash: z.unknown(),
+          timedOut: z.unknown(),
+          unableToCrawl: z.unknown(),
         }),
         inconclusiveDetail: z.object({
-          abortedByUser: z.boolean(),
-          hasErrorLogs: z.boolean(),
-          infrastructureFailure: z.boolean(),
+          abortedByUser: z.unknown(),
+          hasErrorLogs: z.unknown(),
+          infrastructureFailure: z.unknown(),
         }),
         skippedDetail: z.object({
-          incompatibleAppVersion: z.boolean(),
-          incompatibleArchitecture: z.boolean(),
-          incompatibleDevice: z.boolean(),
-          pendingTimeout: z.boolean(),
+          incompatibleAppVersion: z.unknown(),
+          incompatibleArchitecture: z.unknown(),
+          incompatibleDevice: z.unknown(),
+          pendingTimeout: z.unknown(),
         }),
         successDetail: z.object({
-          otherNativeCrash: z.boolean(),
+          otherNativeCrash: z.unknown(),
         }),
         summary: z.string(),
       }),
       state: z.string(),
       testSuiteOverviews: z.array(z.object({
-        elapsedTime: z.object({
-          nanos: z.number(),
-          seconds: z.string(),
-        }),
-        errorCount: z.number(),
-        failureCount: z.number(),
-        flakyCount: z.number(),
-        name: z.string(),
-        skippedCount: z.number(),
-        totalCount: z.number(),
-        xmlSource: z.object({
-          fileUri: z.string(),
-        }),
+        elapsedTime: z.unknown(),
+        errorCount: z.unknown(),
+        failureCount: z.unknown(),
+        flakyCount: z.unknown(),
+        name: z.unknown(),
+        skippedCount: z.unknown(),
+        totalCount: z.unknown(),
+        xmlSource: z.unknown(),
       })),
     }),
   })).optional(),
@@ -176,7 +171,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/toolresults/histories-executions-environments",
-  version: "2026.04.03.3",
+  version: "2026.04.04.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -200,6 +195,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.3",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.04.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

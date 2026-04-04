@@ -73,16 +73,8 @@ const StateSchema = z.object({
     creativeRestrictions: z.object({
       creativeFormat: z.string(),
       creativeSpecifications: z.array(z.object({
-        creativeCompanionSizes: z.array(z.object({
-          height: z.string(),
-          sizeType: z.string(),
-          width: z.string(),
-        })),
-        creativeSize: z.object({
-          height: z.string(),
-          sizeType: z.string(),
-          width: z.string(),
-        }),
+        creativeCompanionSizes: z.unknown(),
+        creativeSize: z.unknown(),
       })),
       skippableAdType: z.string(),
     }),
@@ -102,28 +94,15 @@ const StateSchema = z.object({
       description: z.string(),
       estimatedGrossSpend: z.object({
         amount: z.object({
-          currencyCode: z.string(),
-          nanos: z.number(),
-          units: z.string(),
+          currencyCode: z.unknown(),
+          nanos: z.unknown(),
+          units: z.unknown(),
         }),
         pricingType: z.string(),
       }),
       estimatedImpressionsPerDay: z.string(),
       guaranteedFixedPriceTerms: z.object({
-        fixedPrices: z.array(z.object({
-          advertiserIds: z.array(z.string()),
-          buyer: z.object({
-            accountId: z.string(),
-          }),
-          price: z.object({
-            amount: z.object({
-              currencyCode: z.string(),
-              nanos: z.number(),
-              units: z.string(),
-            }),
-            pricingType: z.string(),
-          }),
-        })),
+        fixedPrices: z.array(z.unknown()),
         guaranteedImpressions: z.string(),
         guaranteedLooks: z.string(),
         impressionCap: z.string(),
@@ -133,36 +112,10 @@ const StateSchema = z.object({
       }),
       nonGuaranteedAuctionTerms: z.object({
         autoOptimizePrivateAuction: z.boolean(),
-        reservePricesPerBuyer: z.array(z.object({
-          advertiserIds: z.array(z.string()),
-          buyer: z.object({
-            accountId: z.string(),
-          }),
-          price: z.object({
-            amount: z.object({
-              currencyCode: z.string(),
-              nanos: z.number(),
-              units: z.string(),
-            }),
-            pricingType: z.string(),
-          }),
-        })),
+        reservePricesPerBuyer: z.array(z.unknown()),
       }),
       nonGuaranteedFixedPriceTerms: z.object({
-        fixedPrices: z.array(z.object({
-          advertiserIds: z.array(z.string()),
-          buyer: z.object({
-            accountId: z.string(),
-          }),
-          price: z.object({
-            amount: z.object({
-              currencyCode: z.string(),
-              nanos: z.number(),
-              units: z.string(),
-            }),
-            pricingType: z.string(),
-          }),
-        })),
+        fixedPrices: z.array(z.unknown()),
       }),
       sellerTimeZone: z.string(),
     }),
@@ -170,9 +123,9 @@ const StateSchema = z.object({
       creativeBlockingLevel: z.string(),
       deliveryRateType: z.string(),
       frequencyCaps: z.array(z.object({
-        maxImpressions: z.number(),
-        numTimeUnits: z.number(),
-        timeUnitType: z.string(),
+        maxImpressions: z.unknown(),
+        numTimeUnits: z.unknown(),
+        timeUnitType: z.unknown(),
       })),
     }),
     description: z.string(),
@@ -188,131 +141,44 @@ const StateSchema = z.object({
     syndicationProduct: z.string(),
     targeting: z.object({
       geoTargeting: z.object({
-        excludedCriteriaIds: z.array(z.string()),
-        targetedCriteriaIds: z.array(z.string()),
+        excludedCriteriaIds: z.array(z.unknown()),
+        targetedCriteriaIds: z.array(z.unknown()),
       }),
       inventorySizeTargeting: z.object({
-        excludedInventorySizes: z.array(z.object({
-          height: z.string(),
-          sizeType: z.string(),
-          width: z.string(),
-        })),
-        targetedInventorySizes: z.array(z.object({
-          height: z.string(),
-          sizeType: z.string(),
-          width: z.string(),
-        })),
+        excludedInventorySizes: z.array(z.unknown()),
+        targetedInventorySizes: z.array(z.unknown()),
       }),
       placementTargeting: z.object({
         mobileApplicationTargeting: z.object({
-          firstPartyTargeting: z.object({
-            excludedAppIds: z.array(z.string()),
-            targetedAppIds: z.array(z.string()),
-          }),
+          firstPartyTargeting: z.unknown(),
         }),
         urlTargeting: z.object({
-          excludedUrls: z.array(z.string()),
-          targetedUrls: z.array(z.string()),
+          excludedUrls: z.unknown(),
+          targetedUrls: z.unknown(),
         }),
       }),
       technologyTargeting: z.object({
         deviceCapabilityTargeting: z.object({
-          excludedCriteriaIds: z.array(z.string()),
-          targetedCriteriaIds: z.array(z.string()),
+          excludedCriteriaIds: z.unknown(),
+          targetedCriteriaIds: z.unknown(),
         }),
         deviceCategoryTargeting: z.object({
-          excludedCriteriaIds: z.array(z.string()),
-          targetedCriteriaIds: z.array(z.string()),
+          excludedCriteriaIds: z.unknown(),
+          targetedCriteriaIds: z.unknown(),
         }),
         operatingSystemTargeting: z.object({
-          operatingSystemCriteria: z.object({
-            excludedCriteriaIds: z.array(z.string()),
-            targetedCriteriaIds: z.array(z.string()),
-          }),
-          operatingSystemVersionCriteria: z.object({
-            excludedCriteriaIds: z.array(z.string()),
-            targetedCriteriaIds: z.array(z.string()),
-          }),
+          operatingSystemCriteria: z.unknown(),
+          operatingSystemVersionCriteria: z.unknown(),
         }),
       }),
       videoTargeting: z.object({
-        excludedPositionTypes: z.array(z.string()),
-        targetedPositionTypes: z.array(z.string()),
+        excludedPositionTypes: z.array(z.unknown()),
+        targetedPositionTypes: z.array(z.unknown()),
       }),
     }),
     targetingCriterion: z.array(z.object({
-      exclusions: z.array(z.object({
-        creativeSizeValue: z.object({
-          allowedFormats: z.array(z.string()),
-          companionSizes: z.array(z.object({
-            height: z.number(),
-            width: z.number(),
-          })),
-          creativeSizeType: z.string(),
-          nativeTemplate: z.string(),
-          size: z.object({
-            height: z.number(),
-            width: z.number(),
-          }),
-          skippableAdType: z.string(),
-        }),
-        dayPartTargetingValue: z.object({
-          dayParts: z.array(z.object({
-            dayOfWeek: z.string(),
-            endTime: z.object({
-              hours: z.number(),
-              minutes: z.number(),
-              nanos: z.number(),
-              seconds: z.number(),
-            }),
-            startTime: z.object({
-              hours: z.number(),
-              minutes: z.number(),
-              nanos: z.number(),
-              seconds: z.number(),
-            }),
-          })),
-          timeZoneType: z.string(),
-        }),
-        longValue: z.string(),
-        stringValue: z.string(),
-      })),
-      inclusions: z.array(z.object({
-        creativeSizeValue: z.object({
-          allowedFormats: z.array(z.string()),
-          companionSizes: z.array(z.object({
-            height: z.number(),
-            width: z.number(),
-          })),
-          creativeSizeType: z.string(),
-          nativeTemplate: z.string(),
-          size: z.object({
-            height: z.number(),
-            width: z.number(),
-          }),
-          skippableAdType: z.string(),
-        }),
-        dayPartTargetingValue: z.object({
-          dayParts: z.array(z.object({
-            dayOfWeek: z.string(),
-            endTime: z.object({
-              hours: z.number(),
-              minutes: z.number(),
-              nanos: z.number(),
-              seconds: z.number(),
-            }),
-            startTime: z.object({
-              hours: z.number(),
-              minutes: z.number(),
-              nanos: z.number(),
-              seconds: z.number(),
-            }),
-          })),
-          timeZoneType: z.string(),
-        }),
-        longValue: z.string(),
-        stringValue: z.string(),
-      })),
+      exclusions: z.array(z.unknown()),
+      inclusions: z.array(z.unknown()),
       key: z.string(),
     })),
     updateTime: z.string(),
@@ -354,7 +220,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/adexchangebuyer2/accounts-finalizedproposals",
-  version: "2026.04.03.3",
+  version: "2026.04.04.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -378,6 +244,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.3",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.04.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

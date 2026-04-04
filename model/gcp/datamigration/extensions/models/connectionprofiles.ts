@@ -154,11 +154,7 @@ const GlobalArgsSchema = z.object({
           'Required. The ID of the AlloyDB primary instance. The ID must satisfy the regex expression "[a-z0-9-]+".',
         ).optional(),
         instanceNetworkConfig: z.object({
-          authorizedExternalNetworks: z.array(z.object({
-            cidrRange: z.string().describe(
-              "Optional. CIDR range for one authorzied network of the instance.",
-            ).optional(),
-          })).describe(
+          authorizedExternalNetworks: z.array(z.unknown()).describe(
             "Optional. A list of external network authorized to access this instance.",
           ).optional(),
           enableOutboundPublicIp: z.boolean().describe(
@@ -299,15 +295,15 @@ const GlobalArgsSchema = z.object({
           "Optional. The name of the allocated IP address range for the private IP Cloud SQL instance. This name refers to an already allocated IP range address. If set, the instance IP address will be created in the allocated range. Note that this IP address range can't be modified after the instance is created. If you change the VPC when configuring connectivity settings for the migration job, this field is not relevant.",
         ).optional(),
         authorizedNetworks: z.array(z.object({
-          expireTime: z.string().describe(
+          expireTime: z.unknown().describe(
             "The time when this access control entry expires in [RFC 3339](https://tools.ietf.org/html/rfc3339) format, for example: `2012-11-15T16:19:00.094Z`.",
           ).optional(),
-          label: z.string().describe("A label to identify this entry.")
+          label: z.unknown().describe("A label to identify this entry.")
             .optional(),
-          ttl: z.string().describe(
+          ttl: z.unknown().describe(
             "Input only. The time-to-leave of this access control entry.",
           ).optional(),
-          value: z.string().describe(
+          value: z.unknown().describe(
             "The allowlisted value for the access control list.",
           ).optional(),
         })).describe(
@@ -761,9 +757,7 @@ const StateSchema = z.object({
         databaseFlags: z.record(z.string(), z.unknown()),
         id: z.string(),
         instanceNetworkConfig: z.object({
-          authorizedExternalNetworks: z.array(z.object({
-            cidrRange: z.string(),
-          })),
+          authorizedExternalNetworks: z.array(z.unknown()),
           enableOutboundPublicIp: z.boolean(),
           enablePublicIp: z.boolean(),
         }),
@@ -803,10 +797,10 @@ const StateSchema = z.object({
       ipConfig: z.object({
         allocatedIpRange: z.string(),
         authorizedNetworks: z.array(z.object({
-          expireTime: z.string(),
-          label: z.string(),
-          ttl: z.string(),
-          value: z.string(),
+          expireTime: z.unknown(),
+          label: z.unknown(),
+          ttl: z.unknown(),
+          value: z.unknown(),
         })),
         enableIpv4: z.boolean(),
         privateNetwork: z.string(),
@@ -1010,11 +1004,7 @@ const InputsSchema = z.object({
           'Required. The ID of the AlloyDB primary instance. The ID must satisfy the regex expression "[a-z0-9-]+".',
         ).optional(),
         instanceNetworkConfig: z.object({
-          authorizedExternalNetworks: z.array(z.object({
-            cidrRange: z.string().describe(
-              "Optional. CIDR range for one authorzied network of the instance.",
-            ).optional(),
-          })).describe(
+          authorizedExternalNetworks: z.array(z.unknown()).describe(
             "Optional. A list of external network authorized to access this instance.",
           ).optional(),
           enableOutboundPublicIp: z.boolean().describe(
@@ -1155,15 +1145,15 @@ const InputsSchema = z.object({
           "Optional. The name of the allocated IP address range for the private IP Cloud SQL instance. This name refers to an already allocated IP range address. If set, the instance IP address will be created in the allocated range. Note that this IP address range can't be modified after the instance is created. If you change the VPC when configuring connectivity settings for the migration job, this field is not relevant.",
         ).optional(),
         authorizedNetworks: z.array(z.object({
-          expireTime: z.string().describe(
+          expireTime: z.unknown().describe(
             "The time when this access control entry expires in [RFC 3339](https://tools.ietf.org/html/rfc3339) format, for example: `2012-11-15T16:19:00.094Z`.",
           ).optional(),
-          label: z.string().describe("A label to identify this entry.")
+          label: z.unknown().describe("A label to identify this entry.")
             .optional(),
-          ttl: z.string().describe(
+          ttl: z.unknown().describe(
             "Input only. The time-to-leave of this access control entry.",
           ).optional(),
-          value: z.string().describe(
+          value: z.unknown().describe(
             "The allowlisted value for the access control list.",
           ).optional(),
         })).describe(
@@ -1601,7 +1591,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/datamigration/connectionprofiles",
-  version: "2026.04.03.3",
+  version: "2026.04.04.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -1625,6 +1615,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.3",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.04.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

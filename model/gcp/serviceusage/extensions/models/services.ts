@@ -47,26 +47,23 @@ const StateSchema = z.object({
     apis: z.array(z.object({
       edition: z.string(),
       methods: z.array(z.object({
-        edition: z.string(),
-        name: z.string(),
-        options: z.array(z.object({
-          name: z.string(),
-          value: z.record(z.string(), z.unknown()),
-        })),
-        requestStreaming: z.boolean(),
-        requestTypeUrl: z.string(),
-        responseStreaming: z.boolean(),
-        responseTypeUrl: z.string(),
-        syntax: z.string(),
+        edition: z.unknown(),
+        name: z.unknown(),
+        options: z.unknown(),
+        requestStreaming: z.unknown(),
+        requestTypeUrl: z.unknown(),
+        responseStreaming: z.unknown(),
+        responseTypeUrl: z.unknown(),
+        syntax: z.unknown(),
       })),
       mixins: z.array(z.object({
-        name: z.string(),
-        root: z.string(),
+        name: z.unknown(),
+        root: z.unknown(),
       })),
       name: z.string(),
       options: z.array(z.object({
-        name: z.string(),
-        value: z.record(z.string(), z.unknown()),
+        name: z.unknown(),
+        value: z.unknown(),
       })),
       sourceContext: z.object({
         fileName: z.string(),
@@ -81,22 +78,14 @@ const StateSchema = z.object({
         id: z.string(),
         issuer: z.string(),
         jwksUri: z.string(),
-        jwtLocations: z.array(z.object({
-          cookie: z.string(),
-          header: z.string(),
-          query: z.string(),
-          valuePrefix: z.string(),
-        })),
+        jwtLocations: z.array(z.unknown()),
       })),
       rules: z.array(z.object({
         allowWithoutCredential: z.boolean(),
         oauth: z.object({
-          canonicalScopes: z.string(),
+          canonicalScopes: z.unknown(),
         }),
-        requirements: z.array(z.object({
-          audiences: z.string(),
-          providerId: z.string(),
-        })),
+        requirements: z.array(z.unknown()),
         selector: z.string(),
       })),
     }),
@@ -107,7 +96,7 @@ const StateSchema = z.object({
       pages: z.array(z.object({
         content: z.string(),
         name: z.string(),
-        subpages: z.array(z.string()),
+        subpages: z.array(z.unknown()),
       })),
       rules: z.array(z.object({
         deprecationDescription: z.string(),
@@ -118,7 +107,7 @@ const StateSchema = z.object({
       sectionOverrides: z.array(z.object({
         content: z.string(),
         name: z.string(),
-        subpages: z.array(z.string()),
+        subpages: z.array(z.unknown()),
       })),
       serviceRootUrl: z.string(),
       summary: z.string(),
@@ -133,9 +122,9 @@ const StateSchema = z.object({
       description: z.string(),
       displayName: z.string(),
       labels: z.array(z.object({
-        description: z.string(),
-        key: z.string(),
-        valueType: z.string(),
+        description: z.unknown(),
+        key: z.unknown(),
+        valueType: z.unknown(),
       })),
       launchStage: z.string(),
       name: z.string(),
@@ -143,11 +132,11 @@ const StateSchema = z.object({
     })),
     monitoring: z.object({
       consumerDestinations: z.array(z.object({
-        metrics: z.array(z.string()),
+        metrics: z.array(z.unknown()),
         monitoredResource: z.string(),
       })),
       producerDestinations: z.array(z.object({
-        metrics: z.array(z.string()),
+        metrics: z.array(z.unknown()),
         monitoredResource: z.string(),
       })),
     }),
@@ -197,7 +186,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/serviceusage/services",
-  version: "2026.04.03.3",
+  version: "2026.04.04.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -221,6 +210,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.3",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.04.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

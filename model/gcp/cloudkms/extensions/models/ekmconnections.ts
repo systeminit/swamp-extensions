@@ -116,7 +116,7 @@ const GlobalArgsSchema = z.object({
       subject: z.string().describe(
         "Output only. The subject distinguished name in RFC 2253 format. Only present if parsed is true.",
       ).optional(),
-      subjectAlternativeDnsNames: z.array(z.string()).describe(
+      subjectAlternativeDnsNames: z.array(z.unknown()).describe(
         "Output only. The subject Alternative DNS names. Only present if parsed is true.",
       ).optional(),
     })).describe(
@@ -154,7 +154,7 @@ const StateSchema = z.object({
       serialNumber: z.string(),
       sha256Fingerprint: z.string(),
       subject: z.string(),
-      subjectAlternativeDnsNames: z.array(z.string()),
+      subjectAlternativeDnsNames: z.array(z.unknown()),
     })),
     serviceDirectoryService: z.string(),
   })).optional(),
@@ -206,7 +206,7 @@ const InputsSchema = z.object({
       subject: z.string().describe(
         "Output only. The subject distinguished name in RFC 2253 format. Only present if parsed is true.",
       ).optional(),
-      subjectAlternativeDnsNames: z.array(z.string()).describe(
+      subjectAlternativeDnsNames: z.array(z.unknown()).describe(
         "Output only. The subject Alternative DNS names. Only present if parsed is true.",
       ).optional(),
     })).describe(
@@ -228,7 +228,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/cloudkms/ekmconnections",
-  version: "2026.04.03.3",
+  version: "2026.04.04.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -252,6 +252,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.3",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.04.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

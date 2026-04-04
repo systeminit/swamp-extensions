@@ -266,7 +266,7 @@ const GlobalArgsSchema = z.object({
         "Optional. The service account to use to make prediction requests against endpoints. The resource creator or updater that specifies this field must have `iam.serviceAccounts.actAs` permission on the service account. If not specified, the Pub/Sub [service agent](https://cloud.google.com/iam/docs/service-agents), service-{project_number}@gcp-sa-pubsub.iam.gserviceaccount.com, is used.",
       ).optional(),
       unstructuredInference: z.object({
-        parameters: z.record(z.string(), z.string()).describe(
+        parameters: z.record(z.string(), z.unknown()).describe(
           "Optional. A parameters object to be included in each inference request. The parameters object is combined with the data field of the Pub/Sub message to form the inference request.",
         ).optional(),
       }).describe(
@@ -509,7 +509,7 @@ const GlobalArgsSchema = z.object({
           "Optional. The service account to use to make prediction requests against endpoints. The resource creator or updater that specifies this field must have `iam.serviceAccounts.actAs` permission on the service account. If not specified, the Pub/Sub [service agent](https://cloud.google.com/iam/docs/service-agents), service-{project_number}@gcp-sa-pubsub.iam.gserviceaccount.com, is used.",
         ).optional(),
         unstructuredInference: z.object({
-          parameters: z.record(z.string(), z.string()).describe(
+          parameters: z.unknown().describe(
             "Optional. A parameters object to be included in each inference request. The parameters object is combined with the data field of the Pub/Sub message to form the inference request.",
           ).optional(),
         }).describe(
@@ -847,7 +847,7 @@ const InputsSchema = z.object({
         "Optional. The service account to use to make prediction requests against endpoints. The resource creator or updater that specifies this field must have `iam.serviceAccounts.actAs` permission on the service account. If not specified, the Pub/Sub [service agent](https://cloud.google.com/iam/docs/service-agents), service-{project_number}@gcp-sa-pubsub.iam.gserviceaccount.com, is used.",
       ).optional(),
       unstructuredInference: z.object({
-        parameters: z.record(z.string(), z.string()).describe(
+        parameters: z.record(z.string(), z.unknown()).describe(
           "Optional. A parameters object to be included in each inference request. The parameters object is combined with the data field of the Pub/Sub message to form the inference request.",
         ).optional(),
       }).describe(
@@ -1090,7 +1090,7 @@ const InputsSchema = z.object({
           "Optional. The service account to use to make prediction requests against endpoints. The resource creator or updater that specifies this field must have `iam.serviceAccounts.actAs` permission on the service account. If not specified, the Pub/Sub [service agent](https://cloud.google.com/iam/docs/service-agents), service-{project_number}@gcp-sa-pubsub.iam.gserviceaccount.com, is used.",
         ).optional(),
         unstructuredInference: z.object({
-          parameters: z.record(z.string(), z.string()).describe(
+          parameters: z.unknown().describe(
             "Optional. A parameters object to be included in each inference request. The parameters object is combined with the data field of the Pub/Sub message to form the inference request.",
           ).optional(),
         }).describe(
@@ -1154,7 +1154,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/pubsub/topics",
-  version: "2026.04.03.3",
+  version: "2026.04.04.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -1178,6 +1178,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.3",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.04.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

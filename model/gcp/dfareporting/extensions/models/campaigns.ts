@@ -85,26 +85,21 @@ const GlobalArgsSchema = z.object({
         "Floodlight activity ID of this optimization activity. This is a required field.",
       ).optional(),
       floodlightActivityIdDimensionValue: z.object({
-        dimensionName: z.string().describe("The name of the dimension.")
+        dimensionName: z.unknown().describe("The name of the dimension.")
           .optional(),
-        etag: z.string().describe(
+        etag: z.unknown().describe(
           "The eTag of this response for caching purposes.",
         ).optional(),
-        id: z.string().describe(
+        id: z.unknown().describe(
           "The ID associated with the value if available.",
         ).optional(),
-        kind: z.string().describe(
+        kind: z.unknown().describe(
           "The kind of resource this is, in this case dfareporting#dimensionValue.",
         ).optional(),
-        matchType: z.enum([
-          "EXACT",
-          "BEGINS_WITH",
-          "CONTAINS",
-          "WILDCARD_EXPRESSION",
-        ]).describe(
+        matchType: z.unknown().describe(
           "Determines how the 'value' field is matched when filtering. If not specified, defaults to EXACT. If set to WILDCARD_EXPRESSION, '*' is allowed as a placeholder for variable length character sequences, and it can be escaped with a backslash. Note, only paid search dimensions ('dfa:paidSearch*') allow a matchType other than EXACT.",
         ).optional(),
-        value: z.string().describe("The value of the dimension.").optional(),
+        value: z.unknown().describe("The value of the dimension.").optional(),
       }).describe("Represents a DimensionValue resource.").optional(),
       weight: z.number().int().describe(
         "Weight associated with this optimization. The weight assigned will be understood in proportion to the weights assigned to the other optimization activities. Value must be greater than or equal to 1.",
@@ -339,12 +334,12 @@ const StateSchema = z.object({
     optimizationActivitys: z.array(z.object({
       floodlightActivityId: z.string(),
       floodlightActivityIdDimensionValue: z.object({
-        dimensionName: z.string(),
-        etag: z.string(),
-        id: z.string(),
-        kind: z.string(),
-        matchType: z.string(),
-        value: z.string(),
+        dimensionName: z.unknown(),
+        etag: z.unknown(),
+        id: z.unknown(),
+        kind: z.unknown(),
+        matchType: z.unknown(),
+        value: z.unknown(),
       }),
       weight: z.number(),
     })),
@@ -455,26 +450,21 @@ const InputsSchema = z.object({
         "Floodlight activity ID of this optimization activity. This is a required field.",
       ).optional(),
       floodlightActivityIdDimensionValue: z.object({
-        dimensionName: z.string().describe("The name of the dimension.")
+        dimensionName: z.unknown().describe("The name of the dimension.")
           .optional(),
-        etag: z.string().describe(
+        etag: z.unknown().describe(
           "The eTag of this response for caching purposes.",
         ).optional(),
-        id: z.string().describe(
+        id: z.unknown().describe(
           "The ID associated with the value if available.",
         ).optional(),
-        kind: z.string().describe(
+        kind: z.unknown().describe(
           "The kind of resource this is, in this case dfareporting#dimensionValue.",
         ).optional(),
-        matchType: z.enum([
-          "EXACT",
-          "BEGINS_WITH",
-          "CONTAINS",
-          "WILDCARD_EXPRESSION",
-        ]).describe(
+        matchType: z.unknown().describe(
           "Determines how the 'value' field is matched when filtering. If not specified, defaults to EXACT. If set to WILDCARD_EXPRESSION, '*' is allowed as a placeholder for variable length character sequences, and it can be escaped with a backslash. Note, only paid search dimensions ('dfa:paidSearch*') allow a matchType other than EXACT.",
         ).optional(),
-        value: z.string().describe("The value of the dimension.").optional(),
+        value: z.unknown().describe("The value of the dimension.").optional(),
       }).describe("Represents a DimensionValue resource.").optional(),
       weight: z.number().int().describe(
         "Weight associated with this optimization. The weight assigned will be understood in proportion to the weights assigned to the other optimization activities. Value must be greater than or equal to 1.",
@@ -700,7 +690,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/dfareporting/campaigns",
-  version: "2026.04.03.3",
+  version: "2026.04.04.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -724,6 +714,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.3",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.04.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

@@ -90,12 +90,13 @@ const GlobalArgsSchema = z.object({
     additionalConfigTemplate: z.array(z.object({
       description: z.string().describe("Optional. Description.").optional(),
       enumOptions: z.array(z.object({
-        description: z.string().describe("Optional. Description of the option.")
-          .optional(),
-        displayName: z.string().describe(
+        description: z.unknown().describe(
+          "Optional. Description of the option.",
+        ).optional(),
+        displayName: z.unknown().describe(
           "Required. Display name of the option.",
         ).optional(),
-        id: z.string().describe("Required. Id of the option.").optional(),
+        id: z.unknown().describe("Required. Id of the option.").optional(),
       })).describe(
         "Optional. Enum options. To be populated if `ValueType` is `ENUM`.",
       ).optional(),
@@ -103,12 +104,13 @@ const GlobalArgsSchema = z.object({
         "Required. ID of the config variable. Must be unique within the configuration.",
       ).optional(),
       multiSelectOptions: z.array(z.object({
-        description: z.string().describe("Optional. Description of the option.")
-          .optional(),
-        displayName: z.string().describe(
+        description: z.unknown().describe(
+          "Optional. Description of the option.",
+        ).optional(),
+        displayName: z.unknown().describe(
           "Required. Display name of the option.",
         ).optional(),
-        id: z.string().describe("Required. Id of the option.").optional(),
+        id: z.unknown().describe("Required. Id of the option.").optional(),
       })).describe(
         "Optional. Multi select options. To be populated if `ValueType` is `MULTI_SELECT`.",
       ).optional(),
@@ -253,15 +255,15 @@ const StateSchema = z.object({
     additionalConfigTemplate: z.array(z.object({
       description: z.string(),
       enumOptions: z.array(z.object({
-        description: z.string(),
-        displayName: z.string(),
-        id: z.string(),
+        description: z.unknown(),
+        displayName: z.unknown(),
+        id: z.unknown(),
       })),
       id: z.string(),
       multiSelectOptions: z.array(z.object({
-        description: z.string(),
-        displayName: z.string(),
-        id: z.string(),
+        description: z.unknown(),
+        displayName: z.unknown(),
+        id: z.unknown(),
       })),
       required: z.boolean(),
       validationRegex: z.string(),
@@ -336,12 +338,13 @@ const InputsSchema = z.object({
     additionalConfigTemplate: z.array(z.object({
       description: z.string().describe("Optional. Description.").optional(),
       enumOptions: z.array(z.object({
-        description: z.string().describe("Optional. Description of the option.")
-          .optional(),
-        displayName: z.string().describe(
+        description: z.unknown().describe(
+          "Optional. Description of the option.",
+        ).optional(),
+        displayName: z.unknown().describe(
           "Required. Display name of the option.",
         ).optional(),
-        id: z.string().describe("Required. Id of the option.").optional(),
+        id: z.unknown().describe("Required. Id of the option.").optional(),
       })).describe(
         "Optional. Enum options. To be populated if `ValueType` is `ENUM`.",
       ).optional(),
@@ -349,12 +352,13 @@ const InputsSchema = z.object({
         "Required. ID of the config variable. Must be unique within the configuration.",
       ).optional(),
       multiSelectOptions: z.array(z.object({
-        description: z.string().describe("Optional. Description of the option.")
-          .optional(),
-        displayName: z.string().describe(
+        description: z.unknown().describe(
+          "Optional. Description of the option.",
+        ).optional(),
+        displayName: z.unknown().describe(
           "Required. Display name of the option.",
         ).optional(),
-        id: z.string().describe("Required. Id of the option.").optional(),
+        id: z.unknown().describe("Required. Id of the option.").optional(),
       })).describe(
         "Optional. Multi select options. To be populated if `ValueType` is `MULTI_SELECT`.",
       ).optional(),
@@ -490,7 +494,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/apihub/plugins",
-  version: "2026.04.03.3",
+  version: "2026.04.04.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -514,6 +518,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.3",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.04.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

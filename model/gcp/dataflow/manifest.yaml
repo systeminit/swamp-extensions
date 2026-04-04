@@ -1,7 +1,7 @@
 # Auto-generated manifest. Re-generate with the appropriate deno task.
 manifestVersion: 1
 name: "@swamp/gcp/dataflow"
-version: "2026.04.03.3"
+version: "2026.04.04.1"
 description: "Google Cloud dataflow infrastructure models"
 labels:
   - gcp
@@ -10,7 +10,7 @@ labels:
   - cloud
   - infrastructure
 releaseNotes: |
-  - Updated: jobs, jobs_messages, jobs_snapshots, snapshots, templates
+  - Updated: jobs, templates
 models:
   - jobs.ts
   - jobs_messages.ts

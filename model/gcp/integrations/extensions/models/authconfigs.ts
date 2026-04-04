@@ -191,80 +191,12 @@ const GlobalArgsSchema = z.object({
       ).optional(),
       authParams: z.object({
         entries: z.array(z.object({
-          key: z.object({
-            literalValue: z.object({
-              booleanArray: z.object({
-                booleanValues: z.array(z.boolean()).describe("Boolean array.")
-                  .optional(),
-              }).describe(
-                "This message only contains a field of boolean array.",
-              ).optional(),
-              booleanValue: z.boolean().describe("Boolean.").optional(),
-              doubleArray: z.object({
-                doubleValues: z.array(z.number()).describe(
-                  "Double number array.",
-                ).optional(),
-              }).describe(
-                "This message only contains a field of double number array.",
-              ).optional(),
-              doubleValue: z.number().describe("Double Number.").optional(),
-              intArray: z.object({
-                intValues: z.array(z.string()).describe("Integer array.")
-                  .optional(),
-              }).describe(
-                "This message only contains a field of integer array.",
-              ).optional(),
-              intValue: z.string().describe("Integer.").optional(),
-              jsonValue: z.string().describe("Json.").optional(),
-              stringArray: z.object({
-                stringValues: z.array(z.string()).describe("String array.")
-                  .optional(),
-              }).describe("This message only contains a field of string array.")
-                .optional(),
-              stringValue: z.string().describe("String.").optional(),
-            }).describe("The type of the parameter.").optional(),
-            referenceKey: z.string().describe(
-              "Referencing one of the Integration variables.",
-            ).optional(),
-          }).describe("Field represents either the key or value in an entry.")
-            .optional(),
-          value: z.object({
-            literalValue: z.object({
-              booleanArray: z.object({
-                booleanValues: z.array(z.boolean()).describe("Boolean array.")
-                  .optional(),
-              }).describe(
-                "This message only contains a field of boolean array.",
-              ).optional(),
-              booleanValue: z.boolean().describe("Boolean.").optional(),
-              doubleArray: z.object({
-                doubleValues: z.array(z.number()).describe(
-                  "Double number array.",
-                ).optional(),
-              }).describe(
-                "This message only contains a field of double number array.",
-              ).optional(),
-              doubleValue: z.number().describe("Double Number.").optional(),
-              intArray: z.object({
-                intValues: z.array(z.string()).describe("Integer array.")
-                  .optional(),
-              }).describe(
-                "This message only contains a field of integer array.",
-              ).optional(),
-              intValue: z.string().describe("Integer.").optional(),
-              jsonValue: z.string().describe("Json.").optional(),
-              stringArray: z.object({
-                stringValues: z.array(z.string()).describe("String array.")
-                  .optional(),
-              }).describe("This message only contains a field of string array.")
-                .optional(),
-              stringValue: z.string().describe("String.").optional(),
-            }).describe("The type of the parameter.").optional(),
-            referenceKey: z.string().describe(
-              "Referencing one of the Integration variables.",
-            ).optional(),
-          }).describe("Field represents either the key or value in an entry.")
-            .optional(),
+          key: z.unknown().describe(
+            "Field represents either the key or value in an entry.",
+          ).optional(),
+          value: z.unknown().describe(
+            "Field represents either the key or value in an entry.",
+          ).optional(),
         })).describe("A list of parameter map entries.").optional(),
         keyType: z.enum([
           "INTEGRATION_PARAMETER_DATA_TYPE_UNSPECIFIED",
@@ -330,80 +262,12 @@ const GlobalArgsSchema = z.object({
       ).optional(),
       tokenParams: z.object({
         entries: z.array(z.object({
-          key: z.object({
-            literalValue: z.object({
-              booleanArray: z.object({
-                booleanValues: z.array(z.boolean()).describe("Boolean array.")
-                  .optional(),
-              }).describe(
-                "This message only contains a field of boolean array.",
-              ).optional(),
-              booleanValue: z.boolean().describe("Boolean.").optional(),
-              doubleArray: z.object({
-                doubleValues: z.array(z.number()).describe(
-                  "Double number array.",
-                ).optional(),
-              }).describe(
-                "This message only contains a field of double number array.",
-              ).optional(),
-              doubleValue: z.number().describe("Double Number.").optional(),
-              intArray: z.object({
-                intValues: z.array(z.string()).describe("Integer array.")
-                  .optional(),
-              }).describe(
-                "This message only contains a field of integer array.",
-              ).optional(),
-              intValue: z.string().describe("Integer.").optional(),
-              jsonValue: z.string().describe("Json.").optional(),
-              stringArray: z.object({
-                stringValues: z.array(z.string()).describe("String array.")
-                  .optional(),
-              }).describe("This message only contains a field of string array.")
-                .optional(),
-              stringValue: z.string().describe("String.").optional(),
-            }).describe("The type of the parameter.").optional(),
-            referenceKey: z.string().describe(
-              "Referencing one of the Integration variables.",
-            ).optional(),
-          }).describe("Field represents either the key or value in an entry.")
-            .optional(),
-          value: z.object({
-            literalValue: z.object({
-              booleanArray: z.object({
-                booleanValues: z.array(z.boolean()).describe("Boolean array.")
-                  .optional(),
-              }).describe(
-                "This message only contains a field of boolean array.",
-              ).optional(),
-              booleanValue: z.boolean().describe("Boolean.").optional(),
-              doubleArray: z.object({
-                doubleValues: z.array(z.number()).describe(
-                  "Double number array.",
-                ).optional(),
-              }).describe(
-                "This message only contains a field of double number array.",
-              ).optional(),
-              doubleValue: z.number().describe("Double Number.").optional(),
-              intArray: z.object({
-                intValues: z.array(z.string()).describe("Integer array.")
-                  .optional(),
-              }).describe(
-                "This message only contains a field of integer array.",
-              ).optional(),
-              intValue: z.string().describe("Integer.").optional(),
-              jsonValue: z.string().describe("Json.").optional(),
-              stringArray: z.object({
-                stringValues: z.array(z.string()).describe("String array.")
-                  .optional(),
-              }).describe("This message only contains a field of string array.")
-                .optional(),
-              stringValue: z.string().describe("String.").optional(),
-            }).describe("The type of the parameter.").optional(),
-            referenceKey: z.string().describe(
-              "Referencing one of the Integration variables.",
-            ).optional(),
-          }).describe("Field represents either the key or value in an entry.")
-            .optional(),
+          key: z.unknown().describe(
+            "Field represents either the key or value in an entry.",
+          ).optional(),
+          value: z.unknown().describe(
+            "Field represents either the key or value in an entry.",
+          ).optional(),
         })).describe("A list of parameter map entries.").optional(),
         keyType: z.enum([
           "INTEGRATION_PARAMETER_DATA_TYPE_UNSPECIFIED",
@@ -492,80 +356,12 @@ const GlobalArgsSchema = z.object({
       ).optional(),
       tokenParams: z.object({
         entries: z.array(z.object({
-          key: z.object({
-            literalValue: z.object({
-              booleanArray: z.object({
-                booleanValues: z.array(z.boolean()).describe("Boolean array.")
-                  .optional(),
-              }).describe(
-                "This message only contains a field of boolean array.",
-              ).optional(),
-              booleanValue: z.boolean().describe("Boolean.").optional(),
-              doubleArray: z.object({
-                doubleValues: z.array(z.number()).describe(
-                  "Double number array.",
-                ).optional(),
-              }).describe(
-                "This message only contains a field of double number array.",
-              ).optional(),
-              doubleValue: z.number().describe("Double Number.").optional(),
-              intArray: z.object({
-                intValues: z.array(z.string()).describe("Integer array.")
-                  .optional(),
-              }).describe(
-                "This message only contains a field of integer array.",
-              ).optional(),
-              intValue: z.string().describe("Integer.").optional(),
-              jsonValue: z.string().describe("Json.").optional(),
-              stringArray: z.object({
-                stringValues: z.array(z.string()).describe("String array.")
-                  .optional(),
-              }).describe("This message only contains a field of string array.")
-                .optional(),
-              stringValue: z.string().describe("String.").optional(),
-            }).describe("The type of the parameter.").optional(),
-            referenceKey: z.string().describe(
-              "Referencing one of the Integration variables.",
-            ).optional(),
-          }).describe("Field represents either the key or value in an entry.")
-            .optional(),
-          value: z.object({
-            literalValue: z.object({
-              booleanArray: z.object({
-                booleanValues: z.array(z.boolean()).describe("Boolean array.")
-                  .optional(),
-              }).describe(
-                "This message only contains a field of boolean array.",
-              ).optional(),
-              booleanValue: z.boolean().describe("Boolean.").optional(),
-              doubleArray: z.object({
-                doubleValues: z.array(z.number()).describe(
-                  "Double number array.",
-                ).optional(),
-              }).describe(
-                "This message only contains a field of double number array.",
-              ).optional(),
-              doubleValue: z.number().describe("Double Number.").optional(),
-              intArray: z.object({
-                intValues: z.array(z.string()).describe("Integer array.")
-                  .optional(),
-              }).describe(
-                "This message only contains a field of integer array.",
-              ).optional(),
-              intValue: z.string().describe("Integer.").optional(),
-              jsonValue: z.string().describe("Json.").optional(),
-              stringArray: z.object({
-                stringValues: z.array(z.string()).describe("String array.")
-                  .optional(),
-              }).describe("This message only contains a field of string array.")
-                .optional(),
-              stringValue: z.string().describe("String.").optional(),
-            }).describe("The type of the parameter.").optional(),
-            referenceKey: z.string().describe(
-              "Referencing one of the Integration variables.",
-            ).optional(),
-          }).describe("Field represents either the key or value in an entry.")
-            .optional(),
+          key: z.unknown().describe(
+            "Field represents either the key or value in an entry.",
+          ).optional(),
+          value: z.unknown().describe(
+            "Field represents either the key or value in an entry.",
+          ).optional(),
         })).describe("A list of parameter map entries.").optional(),
         keyType: z.enum([
           "INTEGRATION_PARAMETER_DATA_TYPE_UNSPECIFIED",
@@ -655,80 +451,12 @@ const GlobalArgsSchema = z.object({
       ).optional(),
       tokenParams: z.object({
         entries: z.array(z.object({
-          key: z.object({
-            literalValue: z.object({
-              booleanArray: z.object({
-                booleanValues: z.array(z.boolean()).describe("Boolean array.")
-                  .optional(),
-              }).describe(
-                "This message only contains a field of boolean array.",
-              ).optional(),
-              booleanValue: z.boolean().describe("Boolean.").optional(),
-              doubleArray: z.object({
-                doubleValues: z.array(z.number()).describe(
-                  "Double number array.",
-                ).optional(),
-              }).describe(
-                "This message only contains a field of double number array.",
-              ).optional(),
-              doubleValue: z.number().describe("Double Number.").optional(),
-              intArray: z.object({
-                intValues: z.array(z.string()).describe("Integer array.")
-                  .optional(),
-              }).describe(
-                "This message only contains a field of integer array.",
-              ).optional(),
-              intValue: z.string().describe("Integer.").optional(),
-              jsonValue: z.string().describe("Json.").optional(),
-              stringArray: z.object({
-                stringValues: z.array(z.string()).describe("String array.")
-                  .optional(),
-              }).describe("This message only contains a field of string array.")
-                .optional(),
-              stringValue: z.string().describe("String.").optional(),
-            }).describe("The type of the parameter.").optional(),
-            referenceKey: z.string().describe(
-              "Referencing one of the Integration variables.",
-            ).optional(),
-          }).describe("Field represents either the key or value in an entry.")
-            .optional(),
-          value: z.object({
-            literalValue: z.object({
-              booleanArray: z.object({
-                booleanValues: z.array(z.boolean()).describe("Boolean array.")
-                  .optional(),
-              }).describe(
-                "This message only contains a field of boolean array.",
-              ).optional(),
-              booleanValue: z.boolean().describe("Boolean.").optional(),
-              doubleArray: z.object({
-                doubleValues: z.array(z.number()).describe(
-                  "Double number array.",
-                ).optional(),
-              }).describe(
-                "This message only contains a field of double number array.",
-              ).optional(),
-              doubleValue: z.number().describe("Double Number.").optional(),
-              intArray: z.object({
-                intValues: z.array(z.string()).describe("Integer array.")
-                  .optional(),
-              }).describe(
-                "This message only contains a field of integer array.",
-              ).optional(),
-              intValue: z.string().describe("Integer.").optional(),
-              jsonValue: z.string().describe("Json.").optional(),
-              stringArray: z.object({
-                stringValues: z.array(z.string()).describe("String array.")
-                  .optional(),
-              }).describe("This message only contains a field of string array.")
-                .optional(),
-              stringValue: z.string().describe("String.").optional(),
-            }).describe("The type of the parameter.").optional(),
-            referenceKey: z.string().describe(
-              "Referencing one of the Integration variables.",
-            ).optional(),
-          }).describe("Field represents either the key or value in an entry.")
-            .optional(),
+          key: z.unknown().describe(
+            "Field represents either the key or value in an entry.",
+          ).optional(),
+          value: z.unknown().describe(
+            "Field represents either the key or value in an entry.",
+          ).optional(),
         })).describe("A list of parameter map entries.").optional(),
         keyType: z.enum([
           "INTEGRATION_PARAMETER_DATA_TYPE_UNSPECIFIED",
@@ -882,50 +610,8 @@ const StateSchema = z.object({
       authEndpoint: z.string(),
       authParams: z.object({
         entries: z.array(z.object({
-          key: z.object({
-            literalValue: z.object({
-              booleanArray: z.object({
-                booleanValues: z.array(z.boolean()),
-              }),
-              booleanValue: z.boolean(),
-              doubleArray: z.object({
-                doubleValues: z.array(z.number()),
-              }),
-              doubleValue: z.number(),
-              intArray: z.object({
-                intValues: z.array(z.string()),
-              }),
-              intValue: z.string(),
-              jsonValue: z.string(),
-              stringArray: z.object({
-                stringValues: z.array(z.string()),
-              }),
-              stringValue: z.string(),
-            }),
-            referenceKey: z.string(),
-          }),
-          value: z.object({
-            literalValue: z.object({
-              booleanArray: z.object({
-                booleanValues: z.array(z.boolean()),
-              }),
-              booleanValue: z.boolean(),
-              doubleArray: z.object({
-                doubleValues: z.array(z.number()),
-              }),
-              doubleValue: z.number(),
-              intArray: z.object({
-                intValues: z.array(z.string()),
-              }),
-              intValue: z.string(),
-              jsonValue: z.string(),
-              stringArray: z.object({
-                stringValues: z.array(z.string()),
-              }),
-              stringValue: z.string(),
-            }),
-            referenceKey: z.string(),
-          }),
+          key: z.unknown(),
+          value: z.unknown(),
         })),
         keyType: z.string(),
         valueType: z.string(),
@@ -937,50 +623,8 @@ const StateSchema = z.object({
       tokenEndpoint: z.string(),
       tokenParams: z.object({
         entries: z.array(z.object({
-          key: z.object({
-            literalValue: z.object({
-              booleanArray: z.object({
-                booleanValues: z.array(z.boolean()),
-              }),
-              booleanValue: z.boolean(),
-              doubleArray: z.object({
-                doubleValues: z.array(z.number()),
-              }),
-              doubleValue: z.number(),
-              intArray: z.object({
-                intValues: z.array(z.string()),
-              }),
-              intValue: z.string(),
-              jsonValue: z.string(),
-              stringArray: z.object({
-                stringValues: z.array(z.string()),
-              }),
-              stringValue: z.string(),
-            }),
-            referenceKey: z.string(),
-          }),
-          value: z.object({
-            literalValue: z.object({
-              booleanArray: z.object({
-                booleanValues: z.array(z.boolean()),
-              }),
-              booleanValue: z.boolean(),
-              doubleArray: z.object({
-                doubleValues: z.array(z.number()),
-              }),
-              doubleValue: z.number(),
-              intArray: z.object({
-                intValues: z.array(z.string()),
-              }),
-              intValue: z.string(),
-              jsonValue: z.string(),
-              stringArray: z.object({
-                stringValues: z.array(z.string()),
-              }),
-              stringValue: z.string(),
-            }),
-            referenceKey: z.string(),
-          }),
+          key: z.unknown(),
+          value: z.unknown(),
         })),
         keyType: z.string(),
         valueType: z.string(),
@@ -1001,50 +645,8 @@ const StateSchema = z.object({
       tokenEndpoint: z.string(),
       tokenParams: z.object({
         entries: z.array(z.object({
-          key: z.object({
-            literalValue: z.object({
-              booleanArray: z.object({
-                booleanValues: z.array(z.boolean()),
-              }),
-              booleanValue: z.boolean(),
-              doubleArray: z.object({
-                doubleValues: z.array(z.number()),
-              }),
-              doubleValue: z.number(),
-              intArray: z.object({
-                intValues: z.array(z.string()),
-              }),
-              intValue: z.string(),
-              jsonValue: z.string(),
-              stringArray: z.object({
-                stringValues: z.array(z.string()),
-              }),
-              stringValue: z.string(),
-            }),
-            referenceKey: z.string(),
-          }),
-          value: z.object({
-            literalValue: z.object({
-              booleanArray: z.object({
-                booleanValues: z.array(z.boolean()),
-              }),
-              booleanValue: z.boolean(),
-              doubleArray: z.object({
-                doubleValues: z.array(z.number()),
-              }),
-              doubleValue: z.number(),
-              intArray: z.object({
-                intValues: z.array(z.string()),
-              }),
-              intValue: z.string(),
-              jsonValue: z.string(),
-              stringArray: z.object({
-                stringValues: z.array(z.string()),
-              }),
-              stringValue: z.string(),
-            }),
-            referenceKey: z.string(),
-          }),
+          key: z.unknown(),
+          value: z.unknown(),
         })),
         keyType: z.string(),
         valueType: z.string(),
@@ -1066,50 +668,8 @@ const StateSchema = z.object({
       tokenEndpoint: z.string(),
       tokenParams: z.object({
         entries: z.array(z.object({
-          key: z.object({
-            literalValue: z.object({
-              booleanArray: z.object({
-                booleanValues: z.array(z.boolean()),
-              }),
-              booleanValue: z.boolean(),
-              doubleArray: z.object({
-                doubleValues: z.array(z.number()),
-              }),
-              doubleValue: z.number(),
-              intArray: z.object({
-                intValues: z.array(z.string()),
-              }),
-              intValue: z.string(),
-              jsonValue: z.string(),
-              stringArray: z.object({
-                stringValues: z.array(z.string()),
-              }),
-              stringValue: z.string(),
-            }),
-            referenceKey: z.string(),
-          }),
-          value: z.object({
-            literalValue: z.object({
-              booleanArray: z.object({
-                booleanValues: z.array(z.boolean()),
-              }),
-              booleanValue: z.boolean(),
-              doubleArray: z.object({
-                doubleValues: z.array(z.number()),
-              }),
-              doubleValue: z.number(),
-              intArray: z.object({
-                intValues: z.array(z.string()),
-              }),
-              intValue: z.string(),
-              jsonValue: z.string(),
-              stringArray: z.object({
-                stringValues: z.array(z.string()),
-              }),
-              stringValue: z.string(),
-            }),
-            referenceKey: z.string(),
-          }),
+          key: z.unknown(),
+          value: z.unknown(),
         })),
         keyType: z.string(),
         valueType: z.string(),
@@ -1237,80 +797,12 @@ const InputsSchema = z.object({
       ).optional(),
       authParams: z.object({
         entries: z.array(z.object({
-          key: z.object({
-            literalValue: z.object({
-              booleanArray: z.object({
-                booleanValues: z.array(z.boolean()).describe("Boolean array.")
-                  .optional(),
-              }).describe(
-                "This message only contains a field of boolean array.",
-              ).optional(),
-              booleanValue: z.boolean().describe("Boolean.").optional(),
-              doubleArray: z.object({
-                doubleValues: z.array(z.number()).describe(
-                  "Double number array.",
-                ).optional(),
-              }).describe(
-                "This message only contains a field of double number array.",
-              ).optional(),
-              doubleValue: z.number().describe("Double Number.").optional(),
-              intArray: z.object({
-                intValues: z.array(z.string()).describe("Integer array.")
-                  .optional(),
-              }).describe(
-                "This message only contains a field of integer array.",
-              ).optional(),
-              intValue: z.string().describe("Integer.").optional(),
-              jsonValue: z.string().describe("Json.").optional(),
-              stringArray: z.object({
-                stringValues: z.array(z.string()).describe("String array.")
-                  .optional(),
-              }).describe("This message only contains a field of string array.")
-                .optional(),
-              stringValue: z.string().describe("String.").optional(),
-            }).describe("The type of the parameter.").optional(),
-            referenceKey: z.string().describe(
-              "Referencing one of the Integration variables.",
-            ).optional(),
-          }).describe("Field represents either the key or value in an entry.")
-            .optional(),
-          value: z.object({
-            literalValue: z.object({
-              booleanArray: z.object({
-                booleanValues: z.array(z.boolean()).describe("Boolean array.")
-                  .optional(),
-              }).describe(
-                "This message only contains a field of boolean array.",
-              ).optional(),
-              booleanValue: z.boolean().describe("Boolean.").optional(),
-              doubleArray: z.object({
-                doubleValues: z.array(z.number()).describe(
-                  "Double number array.",
-                ).optional(),
-              }).describe(
-                "This message only contains a field of double number array.",
-              ).optional(),
-              doubleValue: z.number().describe("Double Number.").optional(),
-              intArray: z.object({
-                intValues: z.array(z.string()).describe("Integer array.")
-                  .optional(),
-              }).describe(
-                "This message only contains a field of integer array.",
-              ).optional(),
-              intValue: z.string().describe("Integer.").optional(),
-              jsonValue: z.string().describe("Json.").optional(),
-              stringArray: z.object({
-                stringValues: z.array(z.string()).describe("String array.")
-                  .optional(),
-              }).describe("This message only contains a field of string array.")
-                .optional(),
-              stringValue: z.string().describe("String.").optional(),
-            }).describe("The type of the parameter.").optional(),
-            referenceKey: z.string().describe(
-              "Referencing one of the Integration variables.",
-            ).optional(),
-          }).describe("Field represents either the key or value in an entry.")
-            .optional(),
+          key: z.unknown().describe(
+            "Field represents either the key or value in an entry.",
+          ).optional(),
+          value: z.unknown().describe(
+            "Field represents either the key or value in an entry.",
+          ).optional(),
         })).describe("A list of parameter map entries.").optional(),
         keyType: z.enum([
           "INTEGRATION_PARAMETER_DATA_TYPE_UNSPECIFIED",
@@ -1376,80 +868,12 @@ const InputsSchema = z.object({
       ).optional(),
       tokenParams: z.object({
         entries: z.array(z.object({
-          key: z.object({
-            literalValue: z.object({
-              booleanArray: z.object({
-                booleanValues: z.array(z.boolean()).describe("Boolean array.")
-                  .optional(),
-              }).describe(
-                "This message only contains a field of boolean array.",
-              ).optional(),
-              booleanValue: z.boolean().describe("Boolean.").optional(),
-              doubleArray: z.object({
-                doubleValues: z.array(z.number()).describe(
-                  "Double number array.",
-                ).optional(),
-              }).describe(
-                "This message only contains a field of double number array.",
-              ).optional(),
-              doubleValue: z.number().describe("Double Number.").optional(),
-              intArray: z.object({
-                intValues: z.array(z.string()).describe("Integer array.")
-                  .optional(),
-              }).describe(
-                "This message only contains a field of integer array.",
-              ).optional(),
-              intValue: z.string().describe("Integer.").optional(),
-              jsonValue: z.string().describe("Json.").optional(),
-              stringArray: z.object({
-                stringValues: z.array(z.string()).describe("String array.")
-                  .optional(),
-              }).describe("This message only contains a field of string array.")
-                .optional(),
-              stringValue: z.string().describe("String.").optional(),
-            }).describe("The type of the parameter.").optional(),
-            referenceKey: z.string().describe(
-              "Referencing one of the Integration variables.",
-            ).optional(),
-          }).describe("Field represents either the key or value in an entry.")
-            .optional(),
-          value: z.object({
-            literalValue: z.object({
-              booleanArray: z.object({
-                booleanValues: z.array(z.boolean()).describe("Boolean array.")
-                  .optional(),
-              }).describe(
-                "This message only contains a field of boolean array.",
-              ).optional(),
-              booleanValue: z.boolean().describe("Boolean.").optional(),
-              doubleArray: z.object({
-                doubleValues: z.array(z.number()).describe(
-                  "Double number array.",
-                ).optional(),
-              }).describe(
-                "This message only contains a field of double number array.",
-              ).optional(),
-              doubleValue: z.number().describe("Double Number.").optional(),
-              intArray: z.object({
-                intValues: z.array(z.string()).describe("Integer array.")
-                  .optional(),
-              }).describe(
-                "This message only contains a field of integer array.",
-              ).optional(),
-              intValue: z.string().describe("Integer.").optional(),
-              jsonValue: z.string().describe("Json.").optional(),
-              stringArray: z.object({
-                stringValues: z.array(z.string()).describe("String array.")
-                  .optional(),
-              }).describe("This message only contains a field of string array.")
-                .optional(),
-              stringValue: z.string().describe("String.").optional(),
-            }).describe("The type of the parameter.").optional(),
-            referenceKey: z.string().describe(
-              "Referencing one of the Integration variables.",
-            ).optional(),
-          }).describe("Field represents either the key or value in an entry.")
-            .optional(),
+          key: z.unknown().describe(
+            "Field represents either the key or value in an entry.",
+          ).optional(),
+          value: z.unknown().describe(
+            "Field represents either the key or value in an entry.",
+          ).optional(),
         })).describe("A list of parameter map entries.").optional(),
         keyType: z.enum([
           "INTEGRATION_PARAMETER_DATA_TYPE_UNSPECIFIED",
@@ -1538,80 +962,12 @@ const InputsSchema = z.object({
       ).optional(),
       tokenParams: z.object({
         entries: z.array(z.object({
-          key: z.object({
-            literalValue: z.object({
-              booleanArray: z.object({
-                booleanValues: z.array(z.boolean()).describe("Boolean array.")
-                  .optional(),
-              }).describe(
-                "This message only contains a field of boolean array.",
-              ).optional(),
-              booleanValue: z.boolean().describe("Boolean.").optional(),
-              doubleArray: z.object({
-                doubleValues: z.array(z.number()).describe(
-                  "Double number array.",
-                ).optional(),
-              }).describe(
-                "This message only contains a field of double number array.",
-              ).optional(),
-              doubleValue: z.number().describe("Double Number.").optional(),
-              intArray: z.object({
-                intValues: z.array(z.string()).describe("Integer array.")
-                  .optional(),
-              }).describe(
-                "This message only contains a field of integer array.",
-              ).optional(),
-              intValue: z.string().describe("Integer.").optional(),
-              jsonValue: z.string().describe("Json.").optional(),
-              stringArray: z.object({
-                stringValues: z.array(z.string()).describe("String array.")
-                  .optional(),
-              }).describe("This message only contains a field of string array.")
-                .optional(),
-              stringValue: z.string().describe("String.").optional(),
-            }).describe("The type of the parameter.").optional(),
-            referenceKey: z.string().describe(
-              "Referencing one of the Integration variables.",
-            ).optional(),
-          }).describe("Field represents either the key or value in an entry.")
-            .optional(),
-          value: z.object({
-            literalValue: z.object({
-              booleanArray: z.object({
-                booleanValues: z.array(z.boolean()).describe("Boolean array.")
-                  .optional(),
-              }).describe(
-                "This message only contains a field of boolean array.",
-              ).optional(),
-              booleanValue: z.boolean().describe("Boolean.").optional(),
-              doubleArray: z.object({
-                doubleValues: z.array(z.number()).describe(
-                  "Double number array.",
-                ).optional(),
-              }).describe(
-                "This message only contains a field of double number array.",
-              ).optional(),
-              doubleValue: z.number().describe("Double Number.").optional(),
-              intArray: z.object({
-                intValues: z.array(z.string()).describe("Integer array.")
-                  .optional(),
-              }).describe(
-                "This message only contains a field of integer array.",
-              ).optional(),
-              intValue: z.string().describe("Integer.").optional(),
-              jsonValue: z.string().describe("Json.").optional(),
-              stringArray: z.object({
-                stringValues: z.array(z.string()).describe("String array.")
-                  .optional(),
-              }).describe("This message only contains a field of string array.")
-                .optional(),
-              stringValue: z.string().describe("String.").optional(),
-            }).describe("The type of the parameter.").optional(),
-            referenceKey: z.string().describe(
-              "Referencing one of the Integration variables.",
-            ).optional(),
-          }).describe("Field represents either the key or value in an entry.")
-            .optional(),
+          key: z.unknown().describe(
+            "Field represents either the key or value in an entry.",
+          ).optional(),
+          value: z.unknown().describe(
+            "Field represents either the key or value in an entry.",
+          ).optional(),
         })).describe("A list of parameter map entries.").optional(),
         keyType: z.enum([
           "INTEGRATION_PARAMETER_DATA_TYPE_UNSPECIFIED",
@@ -1701,80 +1057,12 @@ const InputsSchema = z.object({
       ).optional(),
       tokenParams: z.object({
         entries: z.array(z.object({
-          key: z.object({
-            literalValue: z.object({
-              booleanArray: z.object({
-                booleanValues: z.array(z.boolean()).describe("Boolean array.")
-                  .optional(),
-              }).describe(
-                "This message only contains a field of boolean array.",
-              ).optional(),
-              booleanValue: z.boolean().describe("Boolean.").optional(),
-              doubleArray: z.object({
-                doubleValues: z.array(z.number()).describe(
-                  "Double number array.",
-                ).optional(),
-              }).describe(
-                "This message only contains a field of double number array.",
-              ).optional(),
-              doubleValue: z.number().describe("Double Number.").optional(),
-              intArray: z.object({
-                intValues: z.array(z.string()).describe("Integer array.")
-                  .optional(),
-              }).describe(
-                "This message only contains a field of integer array.",
-              ).optional(),
-              intValue: z.string().describe("Integer.").optional(),
-              jsonValue: z.string().describe("Json.").optional(),
-              stringArray: z.object({
-                stringValues: z.array(z.string()).describe("String array.")
-                  .optional(),
-              }).describe("This message only contains a field of string array.")
-                .optional(),
-              stringValue: z.string().describe("String.").optional(),
-            }).describe("The type of the parameter.").optional(),
-            referenceKey: z.string().describe(
-              "Referencing one of the Integration variables.",
-            ).optional(),
-          }).describe("Field represents either the key or value in an entry.")
-            .optional(),
-          value: z.object({
-            literalValue: z.object({
-              booleanArray: z.object({
-                booleanValues: z.array(z.boolean()).describe("Boolean array.")
-                  .optional(),
-              }).describe(
-                "This message only contains a field of boolean array.",
-              ).optional(),
-              booleanValue: z.boolean().describe("Boolean.").optional(),
-              doubleArray: z.object({
-                doubleValues: z.array(z.number()).describe(
-                  "Double number array.",
-                ).optional(),
-              }).describe(
-                "This message only contains a field of double number array.",
-              ).optional(),
-              doubleValue: z.number().describe("Double Number.").optional(),
-              intArray: z.object({
-                intValues: z.array(z.string()).describe("Integer array.")
-                  .optional(),
-              }).describe(
-                "This message only contains a field of integer array.",
-              ).optional(),
-              intValue: z.string().describe("Integer.").optional(),
-              jsonValue: z.string().describe("Json.").optional(),
-              stringArray: z.object({
-                stringValues: z.array(z.string()).describe("String array.")
-                  .optional(),
-              }).describe("This message only contains a field of string array.")
-                .optional(),
-              stringValue: z.string().describe("String.").optional(),
-            }).describe("The type of the parameter.").optional(),
-            referenceKey: z.string().describe(
-              "Referencing one of the Integration variables.",
-            ).optional(),
-          }).describe("Field represents either the key or value in an entry.")
-            .optional(),
+          key: z.unknown().describe(
+            "Field represents either the key or value in an entry.",
+          ).optional(),
+          value: z.unknown().describe(
+            "Field represents either the key or value in an entry.",
+          ).optional(),
         })).describe("A list of parameter map entries.").optional(),
         keyType: z.enum([
           "INTEGRATION_PARAMETER_DATA_TYPE_UNSPECIFIED",
@@ -1900,7 +1188,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/integrations/authconfigs",
-  version: "2026.04.03.3",
+  version: "2026.04.04.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -1924,6 +1212,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.3",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.04.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

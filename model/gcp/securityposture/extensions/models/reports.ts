@@ -56,7 +56,7 @@ const StateSchema = z.object({
         assetType: z.string(),
       }),
       violatedPolicy: z.object({
-        complianceStandards: z.array(z.string()),
+        complianceStandards: z.array(z.unknown()),
         constraint: z.string(),
         constraintType: z.string(),
         description: z.string(),
@@ -85,7 +85,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/securityposture/reports",
-  version: "2026.04.03.3",
+  version: "2026.04.04.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -109,6 +109,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.3",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.04.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

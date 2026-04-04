@@ -186,13 +186,13 @@ const GlobalArgsSchema = z.object({
         "AVAILABLE_FOR_OFFERS_ONLY",
       ]).describe("The availability of the purchase option.").optional(),
       price: z.object({
-        currencyCode: z.string().describe(
+        currencyCode: z.unknown().describe(
           "The three-letter currency code defined in ISO 4217.",
         ).optional(),
-        nanos: z.number().int().describe(
+        nanos: z.unknown().describe(
           "Number of nano (10^-9) units of the amount. The value must be between -999,999,999 and +999,999,999 inclusive. If `units` is positive, `nanos` must be positive or zero. If `units` is zero, `nanos` can be positive, zero, or negative. If `units` is negative, `nanos` must be negative or zero. For example $-1.75 is represented as `units`=-1 and `nanos`=-750,000,000.",
         ).optional(),
-        units: z.string().describe(
+        units: z.unknown().describe(
           'The whole units of the amount. For example if `currencyCode` is `"USD"`, then 1 unit is one US dollar.',
         ).optional(),
       }).describe("Represents an amount of money with its currency type.")
@@ -340,9 +340,9 @@ const StateSchema = z.object({
     regionalPricingAndAvailabilityConfigs: z.array(z.object({
       availability: z.string(),
       price: z.object({
-        currencyCode: z.string(),
-        nanos: z.number(),
-        units: z.string(),
+        currencyCode: z.unknown(),
+        nanos: z.unknown(),
+        units: z.unknown(),
       }),
       regionCode: z.string(),
     })),
@@ -470,13 +470,13 @@ const InputsSchema = z.object({
         "AVAILABLE_FOR_OFFERS_ONLY",
       ]).describe("The availability of the purchase option.").optional(),
       price: z.object({
-        currencyCode: z.string().describe(
+        currencyCode: z.unknown().describe(
           "The three-letter currency code defined in ISO 4217.",
         ).optional(),
-        nanos: z.number().int().describe(
+        nanos: z.unknown().describe(
           "Number of nano (10^-9) units of the amount. The value must be between -999,999,999 and +999,999,999 inclusive. If `units` is positive, `nanos` must be positive or zero. If `units` is zero, `nanos` can be positive, zero, or negative. If `units` is negative, `nanos` must be negative or zero. For example $-1.75 is represented as `units`=-1 and `nanos`=-750,000,000.",
         ).optional(),
-        units: z.string().describe(
+        units: z.unknown().describe(
           'The whole units of the amount. For example if `currencyCode` is `"USD"`, then 1 unit is one US dollar.',
         ).optional(),
       }).describe("Represents an amount of money with its currency type.")
@@ -590,7 +590,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/androidpublisher/monetization-onetimeproducts",
-  version: "2026.04.03.3",
+  version: "2026.04.04.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -614,6 +614,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.3",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.04.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

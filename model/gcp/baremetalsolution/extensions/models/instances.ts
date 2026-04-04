@@ -218,23 +218,19 @@ const GlobalArgsSchema = z.object({
       state: z.enum(["STATE_UNSPECIFIED", "PROVISIONING", "PROVISIONED"])
         .describe("The possible state of VRF.").optional(),
       vlanAttachments: z.array(z.object({
-        id: z.string().describe(
+        id: z.unknown().describe(
           "Immutable. The identifier of the attachment within vrf.",
         ).optional(),
-        interconnectAttachment: z.string().describe(
+        interconnectAttachment: z.unknown().describe(
           "Optional. The name of the vlan attachment within vrf. This is of the form projects/{project_number}/regions/{region}/interconnectAttachments/{interconnect_attachment}",
         ).optional(),
-        pairingKey: z.string().describe("Input only. Pairing key.").optional(),
-        peerIp: z.string().describe("The peer IP of the attachment.")
+        pairingKey: z.unknown().describe("Input only. Pairing key.").optional(),
+        peerIp: z.unknown().describe("The peer IP of the attachment.")
           .optional(),
-        peerVlanId: z.string().describe("The peer vlan ID of the attachment.")
+        peerVlanId: z.unknown().describe("The peer vlan ID of the attachment.")
           .optional(),
-        qosPolicy: z.object({
-          bandwidthGbps: z.number().describe(
-            "The bandwidth permitted by the QOS policy, in gbps.",
-          ).optional(),
-        }).describe("QOS policy parameters.").optional(),
-        routerIp: z.string().describe("The router IP of the attachment.")
+        qosPolicy: z.unknown().describe("QOS policy parameters.").optional(),
+        routerIp: z.unknown().describe("The router IP of the attachment.")
           .optional(),
       })).describe("The list of VLAN attachments for the VRF.").optional(),
     }).describe("A network VRF.").optional(),
@@ -444,15 +440,13 @@ const StateSchema = z.object({
       }),
       state: z.string(),
       vlanAttachments: z.array(z.object({
-        id: z.string(),
-        interconnectAttachment: z.string(),
-        pairingKey: z.string(),
-        peerIp: z.string(),
-        peerVlanId: z.string(),
-        qosPolicy: z.object({
-          bandwidthGbps: z.number(),
-        }),
-        routerIp: z.string(),
+        id: z.unknown(),
+        interconnectAttachment: z.unknown(),
+        pairingKey: z.unknown(),
+        peerIp: z.unknown(),
+        peerVlanId: z.unknown(),
+        qosPolicy: z.unknown(),
+        routerIp: z.unknown(),
       })),
     }),
     vrfAttachment: z.string(),
@@ -664,23 +658,19 @@ const InputsSchema = z.object({
       state: z.enum(["STATE_UNSPECIFIED", "PROVISIONING", "PROVISIONED"])
         .describe("The possible state of VRF.").optional(),
       vlanAttachments: z.array(z.object({
-        id: z.string().describe(
+        id: z.unknown().describe(
           "Immutable. The identifier of the attachment within vrf.",
         ).optional(),
-        interconnectAttachment: z.string().describe(
+        interconnectAttachment: z.unknown().describe(
           "Optional. The name of the vlan attachment within vrf. This is of the form projects/{project_number}/regions/{region}/interconnectAttachments/{interconnect_attachment}",
         ).optional(),
-        pairingKey: z.string().describe("Input only. Pairing key.").optional(),
-        peerIp: z.string().describe("The peer IP of the attachment.")
+        pairingKey: z.unknown().describe("Input only. Pairing key.").optional(),
+        peerIp: z.unknown().describe("The peer IP of the attachment.")
           .optional(),
-        peerVlanId: z.string().describe("The peer vlan ID of the attachment.")
+        peerVlanId: z.unknown().describe("The peer vlan ID of the attachment.")
           .optional(),
-        qosPolicy: z.object({
-          bandwidthGbps: z.number().describe(
-            "The bandwidth permitted by the QOS policy, in gbps.",
-          ).optional(),
-        }).describe("QOS policy parameters.").optional(),
-        routerIp: z.string().describe("The router IP of the attachment.")
+        qosPolicy: z.unknown().describe("QOS policy parameters.").optional(),
+        routerIp: z.unknown().describe("The router IP of the attachment.")
           .optional(),
       })).describe("The list of VLAN attachments for the VRF.").optional(),
     }).describe("A network VRF.").optional(),
@@ -823,7 +813,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/baremetalsolution/instances",
-  version: "2026.04.03.3",
+  version: "2026.04.04.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -847,6 +837,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.3",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.04.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

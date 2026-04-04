@@ -201,13 +201,13 @@ const GlobalArgsSchema = z.object({
         instanceName: z.string().describe("Optional. The instance's name.")
           .optional(),
         network: z.object({
-          hostNames: z.array(z.string()).describe(
+          hostNames: z.unknown().describe(
             "Optional. The instance's host names.",
           ).optional(),
-          ipAddresses: z.array(z.string()).describe(
+          ipAddresses: z.unknown().describe(
             "Optional. The instance's IP addresses.",
           ).optional(),
-          primaryMacAddress: z.string().describe(
+          primaryMacAddress: z.unknown().describe(
             "Optional. The instance's primary MAC address.",
           ).optional(),
         }).describe("Network details of a database instance.").optional(),
@@ -247,40 +247,14 @@ const GlobalArgsSchema = z.object({
       .optional(),
     schemas: z.array(z.object({
       mysql: z.object({
-        storageEngines: z.array(z.object({
-          encryptedTableCount: z.number().int().describe(
-            "Optional. The number of encrypted tables.",
-          ).optional(),
-          engine: z.enum([
-            "ENGINE_UNSPECIFIED",
-            "INNODB",
-            "MYISAM",
-            "MEMORY",
-            "CSV",
-            "ARCHIVE",
-            "BLACKHOLE",
-            "NDB",
-            "MERGE",
-            "FEDERATED",
-            "EXAMPLE",
-            "OTHER",
-          ]).describe("Required. The storage engine.").optional(),
-          tableCount: z.number().int().describe(
-            "Optional. The number of tables.",
-          ).optional(),
-        })).describe("Optional. Mysql storage engine tables.").optional(),
+        storageEngines: z.array(z.unknown()).describe(
+          "Optional. Mysql storage engine tables.",
+        ).optional(),
       }).describe("Specific details for a Mysql database.").optional(),
       objects: z.array(z.object({
-        category: z.enum([
-          "CATEGORY_UNSPECIFIED",
-          "TABLE",
-          "INDEX",
-          "CONSTRAINTS",
-          "VIEWS",
-          "SOURCE_CODE",
-          "OTHER",
-        ]).describe("Optional. The category of the objects.").optional(),
-        count: z.string().describe("Optional. The number of objects.")
+        category: z.unknown().describe("Optional. The category of the objects.")
+          .optional(),
+        count: z.unknown().describe("Optional. The number of objects.")
           .optional(),
       })).describe("Optional. List of details of objects by category.")
         .optional(),
@@ -288,12 +262,9 @@ const GlobalArgsSchema = z.object({
         foreignTablesCount: z.number().int().describe(
           "Optional. PostgreSql foreign tables.",
         ).optional(),
-        postgresqlExtensions: z.array(z.object({
-          extension: z.string().describe("Required. The extension name.")
-            .optional(),
-          version: z.string().describe("Required. The extension version.")
-            .optional(),
-        })).describe("Optional. PostgreSql extensions.").optional(),
+        postgresqlExtensions: z.array(z.unknown()).describe(
+          "Optional. PostgreSql extensions.",
+        ).optional(),
       }).describe("Specific details for a PostgreSql schema.").optional(),
       schemaName: z.string().describe("Required. The name of the schema.")
         .optional(),
@@ -318,7 +289,7 @@ const GlobalArgsSchema = z.object({
   insightList: z.object({
     insights: z.array(z.object({
       genericInsight: z.object({
-        additionalInformation: z.array(z.string()).describe(
+        additionalInformation: z.array(z.unknown()).describe(
           "Output only. Additional information about the insight, each entry can be a logical entry and must make sense if it is displayed with line breaks between each entry. Text can contain md style links.",
         ).optional(),
         defaultMessage: z.string().describe(
@@ -330,43 +301,11 @@ const GlobalArgsSchema = z.object({
       }).describe("A generic insight about an asset.").optional(),
       migrationInsight: z.object({
         computeEngineTarget: z.object({
-          shape: z.object({
-            logicalCoreCount: z.number().int().describe(
-              "Output only. Number of logical cores.",
-            ).optional(),
-            machineType: z.string().describe(
-              "Output only. Compute Engine machine type.",
-            ).optional(),
-            memoryMb: z.number().int().describe("Memory in mebibytes.")
-              .optional(),
-            physicalCoreCount: z.number().int().describe(
-              "Number of physical cores.",
-            ).optional(),
-            series: z.string().describe(
-              "Output only. Compute Engine machine series.",
-            ).optional(),
-            storage: z.array(z.object({
-              sizeGb: z.number().int().describe(
-                "Output only. Disk size in GiB.",
-              ).optional(),
-              type: z.enum([
-                "PERSISTENT_DISK_TYPE_UNSPECIFIED",
-                "PERSISTENT_DISK_TYPE_STANDARD",
-                "PERSISTENT_DISK_TYPE_BALANCED",
-                "PERSISTENT_DISK_TYPE_SSD",
-              ]).describe("Output only. Disk type backing the storage.")
-                .optional(),
-            })).describe("Output only. Compute Engine storage. Never empty.")
-              .optional(),
-          }).describe("Compute Engine target shape descriptor.").optional(),
+          shape: z.unknown().describe("Compute Engine target shape descriptor.")
+            .optional(),
         }).describe("Compute engine migration target.").optional(),
         fit: z.object({
-          fitLevel: z.enum([
-            "FIT_LEVEL_UNSPECIFIED",
-            "FIT",
-            "NO_FIT",
-            "REQUIRES_EFFORT",
-          ]).describe("Output only. Fit level.").optional(),
+          fitLevel: z.unknown().describe("Output only. Fit level.").optional(),
         }).describe(
           "Describes the fit level of an asset for migration to a specific target.",
         ).optional(),
@@ -437,17 +376,17 @@ const GlobalArgsSchema = z.object({
       ).optional(),
       partitions: z.object({
         entries: z.array(z.object({
-          capacityBytes: z.string().describe("Partition capacity.").optional(),
-          fileSystem: z.string().describe("Partition file system.").optional(),
-          freeBytes: z.string().describe("Partition free space.").optional(),
-          mountPoint: z.string().describe(
+          capacityBytes: z.unknown().describe("Partition capacity.").optional(),
+          fileSystem: z.unknown().describe("Partition file system.").optional(),
+          freeBytes: z.unknown().describe("Partition free space.").optional(),
+          mountPoint: z.unknown().describe(
             "Mount point (Linux/Windows) or drive letter (Windows).",
           ).optional(),
-          subPartitions: z.string().describe(
+          subPartitions: z.unknown().describe(
             "Circular reference to DiskPartitionList",
           ).optional(),
-          type: z.string().describe("Partition type.").optional(),
-          uuid: z.string().describe("Partition UUID.").optional(),
+          type: z.unknown().describe("Partition type.").optional(),
+          uuid: z.unknown().describe("Partition UUID.").optional(),
         })).describe("Partition entries.").optional(),
       }).describe("Disk partition list.").optional(),
       totalCapacityBytes: z.string().describe(
@@ -457,68 +396,19 @@ const GlobalArgsSchema = z.object({
     disks: z.object({
       disks: z.object({
         entries: z.array(z.object({
-          capacityBytes: z.string().describe("Disk capacity.").optional(),
-          diskLabel: z.string().describe("Disk label.").optional(),
-          diskLabelType: z.string().describe("Disk label type (e.g. BIOS/GPT)")
+          capacityBytes: z.unknown().describe("Disk capacity.").optional(),
+          diskLabel: z.unknown().describe("Disk label.").optional(),
+          diskLabelType: z.unknown().describe("Disk label type (e.g. BIOS/GPT)")
             .optional(),
-          freeBytes: z.string().describe("Disk free space.").optional(),
-          hwAddress: z.string().describe(
+          freeBytes: z.unknown().describe("Disk free space.").optional(),
+          hwAddress: z.unknown().describe(
             "Disk hardware address (e.g. 0:1 for SCSI).",
           ).optional(),
-          interfaceType: z.enum([
-            "INTERFACE_TYPE_UNSPECIFIED",
-            "IDE",
-            "SATA",
-            "SAS",
-            "SCSI",
-            "NVME",
-            "FC",
-            "ISCSI",
-          ]).describe("Disks interface type.").optional(),
-          partitions: z.object({
-            entries: z.array(z.object({
-              capacityBytes: z.string().describe("Partition capacity.")
-                .optional(),
-              fileSystem: z.string().describe("Partition file system.")
-                .optional(),
-              freeBytes: z.string().describe("Partition free space.")
-                .optional(),
-              mountPoint: z.string().describe(
-                "Mount point (Linux/Windows) or drive letter (Windows).",
-              ).optional(),
-              subPartitions: z.string().describe(
-                "Circular reference to DiskPartitionList",
-              ).optional(),
-              type: z.string().describe("Partition type.").optional(),
-              uuid: z.string().describe("Partition UUID.").optional(),
-            })).describe("Partition entries.").optional(),
-          }).describe("Disk partition list.").optional(),
-          vmware: z.object({
-            backingType: z.enum([
-              "BACKING_TYPE_UNSPECIFIED",
-              "BACKING_TYPE_FLAT_V1",
-              "BACKING_TYPE_FLAT_V2",
-              "BACKING_TYPE_PMEM",
-              "BACKING_TYPE_RDM_V1",
-              "BACKING_TYPE_RDM_V2",
-              "BACKING_TYPE_SESPARSE",
-              "BACKING_TYPE_SESPARSE_V1",
-              "BACKING_TYPE_SESPARSE_V2",
-            ]).describe("VMDK backing type.").optional(),
-            rdmCompatibility: z.enum([
-              "RDM_COMPATIBILITY_UNSPECIFIED",
-              "PHYSICAL_COMPATIBILITY",
-              "VIRTUAL_COMPATIBILITY",
-            ]).describe("RDM compatibility mode.").optional(),
-            shared: z.boolean().describe("Is VMDK shared with other VMs.")
-              .optional(),
-            vmdkMode: z.enum([
-              "VMDK_MODE_UNSPECIFIED",
-              "DEPENDENT",
-              "INDEPENDENT_PERSISTENT",
-              "INDEPENDENT_NONPERSISTENT",
-            ]).describe("VMDK disk mode.").optional(),
-          }).describe("VMware disk config details.").optional(),
+          interfaceType: z.unknown().describe("Disks interface type.")
+            .optional(),
+          partitions: z.unknown().describe("Disk partition list.").optional(),
+          vmware: z.unknown().describe("VMware disk config details.")
+            .optional(),
         })).describe("Disk entries.").optional(),
       }).describe("VM disks.").optional(),
       totalCapacityBytes: z.string().describe("Disk total Capacity.")
@@ -528,44 +418,16 @@ const GlobalArgsSchema = z.object({
     guestOs: z.object({
       config: z.object({
         fstab: z.object({
-          entries: z.array(z.object({
-            file: z.string().describe("The mount point for the filesystem.")
-              .optional(),
-            freq: z.number().int().describe(
-              "Used by dump to determine which filesystems need to be dumped.",
-            ).optional(),
-            mntops: z.string().describe(
-              "Mount options associated with the filesystem.",
-            ).optional(),
-            passno: z.number().int().describe(
-              "Used by the fsck(8) program to determine the order in which filesystem checks are done at reboot time.",
-            ).optional(),
-            spec: z.string().describe(
-              "The block special device or remote filesystem to be mounted.",
-            ).optional(),
-            vfstype: z.string().describe("The type of the filesystem.")
-              .optional(),
-          })).describe("Fstab entries.").optional(),
+          entries: z.array(z.unknown()).describe("Fstab entries.").optional(),
         }).describe("Fstab content.").optional(),
         hosts: z.object({
-          entries: z.array(z.object({
-            hostNames: z.array(z.string()).describe(
-              "List of host names / aliases.",
-            ).optional(),
-            ip: z.string().describe("IP (raw, IPv4/6 agnostic).").optional(),
-          })).describe("Hosts entries.").optional(),
+          entries: z.array(z.unknown()).describe("Hosts entries.").optional(),
         }).describe("Hosts content.").optional(),
         issue: z.string().describe("OS issue (typically /etc/issue in Linux).")
           .optional(),
         nfsExports: z.object({
-          entries: z.array(z.object({
-            exportDirectory: z.string().describe(
-              "The directory being exported.",
-            ).optional(),
-            hosts: z.array(z.string()).describe(
-              "The hosts or networks to which the export is being shared.",
-            ).optional(),
-          })).describe("NFS export entries.").optional(),
+          entries: z.array(z.unknown()).describe("NFS export entries.")
+            .optional(),
         }).describe("NFS exports.").optional(),
         selinuxMode: z.enum([
           "SE_LINUX_MODE_UNSPECIFIED",
@@ -587,90 +449,31 @@ const GlobalArgsSchema = z.object({
           "Domain, e.g. c.stratozone-development.internal.",
         ).optional(),
         installedApps: z.object({
-          entries: z.array(z.object({
-            applicationName: z.string().describe("Installed application name.")
-              .optional(),
-            installTime: z.string().describe(
-              "The time when the application was installed.",
-            ).optional(),
-            licenses: z.array(z.string()).describe(
-              "License strings associated with the installed application.",
-            ).optional(),
-            path: z.string().describe("Source path.").optional(),
-            vendor: z.string().describe("Installed application vendor.")
-              .optional(),
-            version: z.string().describe("Installed application version.")
-              .optional(),
-          })).describe("Application entries.").optional(),
+          entries: z.array(z.unknown()).describe("Application entries.")
+            .optional(),
         }).describe("Guest installed application list.").optional(),
         lastBootTime: z.string().describe("Last time the OS was booted.")
           .optional(),
         machineName: z.string().describe("Machine name.").optional(),
         network: z.object({
           connections: z.object({
-            entries: z.array(z.object({
-              localIpAddress: z.string().describe("Local IP address.")
-                .optional(),
-              localPort: z.number().int().describe("Local port.").optional(),
-              pid: z.string().describe("Process ID.").optional(),
-              processName: z.string().describe("Process or service name.")
-                .optional(),
-              protocol: z.string().describe(
-                "Connection protocol (e.g. TCP/UDP).",
-              ).optional(),
-              remoteIpAddress: z.string().describe("Remote IP address.")
-                .optional(),
-              remotePort: z.number().int().describe("Remote port.").optional(),
-              state: z.enum([
-                "STATE_UNSPECIFIED",
-                "OPENING",
-                "OPEN",
-                "LISTEN",
-                "CLOSING",
-                "CLOSED",
-              ]).describe("Network connection state.").optional(),
-            })).describe("Network connection entries.").optional(),
+            entries: z.unknown().describe("Network connection entries.")
+              .optional(),
           }).describe("Network connection list.").optional(),
           scanTime: z.string().describe("Time of the last network scan.")
             .optional(),
         }).describe("Runtime networking information.").optional(),
         openFileList: z.object({
-          entries: z.array(z.object({
-            command: z.string().describe("Opened file command.").optional(),
-            filePath: z.string().describe("Opened file file path.").optional(),
-            fileType: z.string().describe("Opened file file type.").optional(),
-            user: z.string().describe("Opened file user.").optional(),
-          })).describe("Open file details entries.").optional(),
+          entries: z.array(z.unknown()).describe("Open file details entries.")
+            .optional(),
         }).describe("Open file list.").optional(),
         processes: z.object({
-          entries: z.array(z.object({
-            attributes: z.record(z.string(), z.string()).describe(
-              "Process extended attributes.",
-            ).optional(),
-            cmdline: z.string().describe("Process full command line.")
-              .optional(),
-            exePath: z.string().describe("Process binary path.").optional(),
-            pid: z.string().describe("Process ID.").optional(),
-            user: z.string().describe("User running the process.").optional(),
-          })).describe("Running process entries.").optional(),
+          entries: z.array(z.unknown()).describe("Running process entries.")
+            .optional(),
         }).describe("List of running guest OS processes.").optional(),
         services: z.object({
-          entries: z.array(z.object({
-            cmdline: z.string().describe("Service command line.").optional(),
-            exePath: z.string().describe("Service binary path.").optional(),
-            pid: z.string().describe("Service pid.").optional(),
-            serviceName: z.string().describe("Service name.").optional(),
-            startMode: z.enum([
-              "START_MODE_UNSPECIFIED",
-              "BOOT",
-              "SYSTEM",
-              "AUTO",
-              "MANUAL",
-              "DISABLED",
-            ]).describe("Service start mode (OS-agnostic).").optional(),
-            state: z.enum(["STATE_UNSPECIFIED", "ACTIVE", "PAUSED", "STOPPED"])
-              .describe("Service state (OS-agnostic).").optional(),
-          })).describe("Running service entries.").optional(),
+          entries: z.array(z.unknown()).describe("Running service entries.")
+            .optional(),
         }).describe("List of running guest OS services.").optional(),
       }).describe("Guest OS runtime information.").optional(),
       version: z.string().describe("The version of the operating system.")
@@ -683,28 +486,13 @@ const GlobalArgsSchema = z.object({
     network: z.object({
       adapters: z.object({
         entries: z.array(z.object({
-          adapterType: z.string().describe(
+          adapterType: z.unknown().describe(
             "Network adapter type (e.g. VMXNET3).",
           ).optional(),
-          addresses: z.object({
-            entries: z.array(z.object({
-              assignment: z.enum([
-                "ADDRESS_ASSIGNMENT_UNSPECIFIED",
-                "ADDRESS_ASSIGNMENT_STATIC",
-                "ADDRESS_ASSIGNMENT_DHCP",
-              ]).describe("Whether DHCP is used to assign addresses.")
-                .optional(),
-              bcast: z.string().describe("Broadcast address.").optional(),
-              fqdn: z.string().describe("Fully qualified domain name.")
-                .optional(),
-              ipAddress: z.string().describe(
-                "Assigned or configured IP Address.",
-              ).optional(),
-              subnetMask: z.string().describe("Subnet mask.").optional(),
-            })).describe("Network address entries.").optional(),
-          }).describe("List of allocated/assigned network addresses.")
-            .optional(),
-          macAddress: z.string().describe("MAC address.").optional(),
+          addresses: z.unknown().describe(
+            "List of allocated/assigned network addresses.",
+          ).optional(),
+          macAddress: z.unknown().describe("MAC address.").optional(),
         })).describe("Network adapter entries.").optional(),
       }).describe("List of network adapters.").optional(),
       defaultGateway: z.string().describe("Optional. Default gateway address.")
@@ -807,12 +595,12 @@ const GlobalArgsSchema = z.object({
     dailyResourceUsageAggregations: z.array(z.object({
       cpu: z.object({
         utilizationPercentage: z.object({
-          average: z.number().describe("Average usage value.").optional(),
-          median: z.number().describe("Median usage value.").optional(),
-          ninteyFifthPercentile: z.number().describe(
+          average: z.unknown().describe("Average usage value.").optional(),
+          median: z.unknown().describe("Median usage value.").optional(),
+          ninteyFifthPercentile: z.unknown().describe(
             "95th percentile usage value.",
           ).optional(),
-          peak: z.number().describe("Peak usage value.").optional(),
+          peak: z.unknown().describe("Peak usage value.").optional(),
         }).describe(
           "Statistical aggregation of samples for a single resource usage.",
         ).optional(),
@@ -832,66 +620,66 @@ const GlobalArgsSchema = z.object({
       ).optional(),
       disk: z.object({
         iops: z.object({
-          average: z.number().describe("Average usage value.").optional(),
-          median: z.number().describe("Median usage value.").optional(),
-          ninteyFifthPercentile: z.number().describe(
+          average: z.unknown().describe("Average usage value.").optional(),
+          median: z.unknown().describe("Median usage value.").optional(),
+          ninteyFifthPercentile: z.unknown().describe(
             "95th percentile usage value.",
           ).optional(),
-          peak: z.number().describe("Peak usage value.").optional(),
+          peak: z.unknown().describe("Peak usage value.").optional(),
         }).describe(
           "Statistical aggregation of samples for a single resource usage.",
         ).optional(),
         readIops: z.object({
-          average: z.number().describe("Average usage value.").optional(),
-          median: z.number().describe("Median usage value.").optional(),
-          ninteyFifthPercentile: z.number().describe(
+          average: z.unknown().describe("Average usage value.").optional(),
+          median: z.unknown().describe("Median usage value.").optional(),
+          ninteyFifthPercentile: z.unknown().describe(
             "95th percentile usage value.",
           ).optional(),
-          peak: z.number().describe("Peak usage value.").optional(),
+          peak: z.unknown().describe("Peak usage value.").optional(),
         }).describe(
           "Statistical aggregation of samples for a single resource usage.",
         ).optional(),
         writeIops: z.object({
-          average: z.number().describe("Average usage value.").optional(),
-          median: z.number().describe("Median usage value.").optional(),
-          ninteyFifthPercentile: z.number().describe(
+          average: z.unknown().describe("Average usage value.").optional(),
+          median: z.unknown().describe("Median usage value.").optional(),
+          ninteyFifthPercentile: z.unknown().describe(
             "95th percentile usage value.",
           ).optional(),
-          peak: z.number().describe("Peak usage value.").optional(),
+          peak: z.unknown().describe("Peak usage value.").optional(),
         }).describe(
           "Statistical aggregation of samples for a single resource usage.",
         ).optional(),
       }).describe("Statistical aggregation of disk usage.").optional(),
       memory: z.object({
         utilizationPercentage: z.object({
-          average: z.number().describe("Average usage value.").optional(),
-          median: z.number().describe("Median usage value.").optional(),
-          ninteyFifthPercentile: z.number().describe(
+          average: z.unknown().describe("Average usage value.").optional(),
+          median: z.unknown().describe("Median usage value.").optional(),
+          ninteyFifthPercentile: z.unknown().describe(
             "95th percentile usage value.",
           ).optional(),
-          peak: z.number().describe("Peak usage value.").optional(),
+          peak: z.unknown().describe("Peak usage value.").optional(),
         }).describe(
           "Statistical aggregation of samples for a single resource usage.",
         ).optional(),
       }).describe("Statistical aggregation of memory usage.").optional(),
       network: z.object({
         egressBps: z.object({
-          average: z.number().describe("Average usage value.").optional(),
-          median: z.number().describe("Median usage value.").optional(),
-          ninteyFifthPercentile: z.number().describe(
+          average: z.unknown().describe("Average usage value.").optional(),
+          median: z.unknown().describe("Median usage value.").optional(),
+          ninteyFifthPercentile: z.unknown().describe(
             "95th percentile usage value.",
           ).optional(),
-          peak: z.number().describe("Peak usage value.").optional(),
+          peak: z.unknown().describe("Peak usage value.").optional(),
         }).describe(
           "Statistical aggregation of samples for a single resource usage.",
         ).optional(),
         ingressBps: z.object({
-          average: z.number().describe("Average usage value.").optional(),
-          median: z.number().describe("Median usage value.").optional(),
-          ninteyFifthPercentile: z.number().describe(
+          average: z.unknown().describe("Average usage value.").optional(),
+          median: z.unknown().describe("Median usage value.").optional(),
+          ninteyFifthPercentile: z.unknown().describe(
             "95th percentile usage value.",
           ).optional(),
-          peak: z.number().describe("Peak usage value.").optional(),
+          peak: z.unknown().describe("Peak usage value.").optional(),
         }).describe(
           "Statistical aggregation of samples for a single resource usage.",
         ).optional(),
@@ -983,9 +771,9 @@ const StateSchema = z.object({
       instances: z.array(z.object({
         instanceName: z.string(),
         network: z.object({
-          hostNames: z.array(z.string()),
-          ipAddresses: z.array(z.string()),
-          primaryMacAddress: z.string(),
+          hostNames: z.unknown(),
+          ipAddresses: z.unknown(),
+          primaryMacAddress: z.unknown(),
         }),
         role: z.string(),
       })),
@@ -1005,22 +793,15 @@ const StateSchema = z.object({
     }),
     schemas: z.array(z.object({
       mysql: z.object({
-        storageEngines: z.array(z.object({
-          encryptedTableCount: z.number(),
-          engine: z.string(),
-          tableCount: z.number(),
-        })),
+        storageEngines: z.array(z.unknown()),
       }),
       objects: z.array(z.object({
-        category: z.string(),
-        count: z.string(),
+        category: z.unknown(),
+        count: z.unknown(),
       })),
       postgresql: z.object({
         foreignTablesCount: z.number(),
-        postgresqlExtensions: z.array(z.object({
-          extension: z.string(),
-          version: z.string(),
-        })),
+        postgresqlExtensions: z.array(z.unknown()),
       }),
       schemaName: z.string(),
       sqlServer: z.object({
@@ -1035,26 +816,16 @@ const StateSchema = z.object({
   insightList: z.object({
     insights: z.array(z.object({
       genericInsight: z.object({
-        additionalInformation: z.array(z.string()),
+        additionalInformation: z.array(z.unknown()),
         defaultMessage: z.string(),
         messageId: z.string(),
       }),
       migrationInsight: z.object({
         computeEngineTarget: z.object({
-          shape: z.object({
-            logicalCoreCount: z.number(),
-            machineType: z.string(),
-            memoryMb: z.number(),
-            physicalCoreCount: z.number(),
-            series: z.string(),
-            storage: z.array(z.object({
-              sizeGb: z.number(),
-              type: z.string(),
-            })),
-          }),
+          shape: z.unknown(),
         }),
         fit: z.object({
-          fitLevel: z.string(),
+          fitLevel: z.unknown(),
         }),
       }),
     })),
@@ -1090,13 +861,13 @@ const StateSchema = z.object({
       freeSpaceBytes: z.string(),
       partitions: z.object({
         entries: z.array(z.object({
-          capacityBytes: z.string(),
-          fileSystem: z.string(),
-          freeBytes: z.string(),
-          mountPoint: z.string(),
-          subPartitions: z.string(),
-          type: z.string(),
-          uuid: z.string(),
+          capacityBytes: z.unknown(),
+          fileSystem: z.unknown(),
+          freeBytes: z.unknown(),
+          mountPoint: z.unknown(),
+          subPartitions: z.unknown(),
+          type: z.unknown(),
+          uuid: z.unknown(),
         })),
       }),
       totalCapacityBytes: z.string(),
@@ -1104,29 +875,14 @@ const StateSchema = z.object({
     disks: z.object({
       disks: z.object({
         entries: z.array(z.object({
-          capacityBytes: z.string(),
-          diskLabel: z.string(),
-          diskLabelType: z.string(),
-          freeBytes: z.string(),
-          hwAddress: z.string(),
-          interfaceType: z.string(),
-          partitions: z.object({
-            entries: z.array(z.object({
-              capacityBytes: z.string(),
-              fileSystem: z.string(),
-              freeBytes: z.string(),
-              mountPoint: z.string(),
-              subPartitions: z.string(),
-              type: z.string(),
-              uuid: z.string(),
-            })),
-          }),
-          vmware: z.object({
-            backingType: z.string(),
-            rdmCompatibility: z.string(),
-            shared: z.boolean(),
-            vmdkMode: z.string(),
-          }),
+          capacityBytes: z.unknown(),
+          diskLabel: z.unknown(),
+          diskLabelType: z.unknown(),
+          freeBytes: z.unknown(),
+          hwAddress: z.unknown(),
+          interfaceType: z.unknown(),
+          partitions: z.unknown(),
+          vmware: z.unknown(),
         })),
       }),
       totalCapacityBytes: z.string(),
@@ -1135,27 +891,14 @@ const StateSchema = z.object({
     guestOs: z.object({
       config: z.object({
         fstab: z.object({
-          entries: z.array(z.object({
-            file: z.string(),
-            freq: z.number(),
-            mntops: z.string(),
-            passno: z.number(),
-            spec: z.string(),
-            vfstype: z.string(),
-          })),
+          entries: z.array(z.unknown()),
         }),
         hosts: z.object({
-          entries: z.array(z.object({
-            hostNames: z.array(z.string()),
-            ip: z.string(),
-          })),
+          entries: z.array(z.unknown()),
         }),
         issue: z.string(),
         nfsExports: z.object({
-          entries: z.array(z.object({
-            exportDirectory: z.string(),
-            hosts: z.array(z.string()),
-          })),
+          entries: z.array(z.unknown()),
         }),
         selinuxMode: z.string(),
       }),
@@ -1164,58 +907,24 @@ const StateSchema = z.object({
       runtime: z.object({
         domain: z.string(),
         installedApps: z.object({
-          entries: z.array(z.object({
-            applicationName: z.string(),
-            installTime: z.string(),
-            licenses: z.array(z.string()),
-            path: z.string(),
-            vendor: z.string(),
-            version: z.string(),
-          })),
+          entries: z.array(z.unknown()),
         }),
         lastBootTime: z.string(),
         machineName: z.string(),
         network: z.object({
           connections: z.object({
-            entries: z.array(z.object({
-              localIpAddress: z.string(),
-              localPort: z.number(),
-              pid: z.string(),
-              processName: z.string(),
-              protocol: z.string(),
-              remoteIpAddress: z.string(),
-              remotePort: z.number(),
-              state: z.string(),
-            })),
+            entries: z.unknown(),
           }),
           scanTime: z.string(),
         }),
         openFileList: z.object({
-          entries: z.array(z.object({
-            command: z.string(),
-            filePath: z.string(),
-            fileType: z.string(),
-            user: z.string(),
-          })),
+          entries: z.array(z.unknown()),
         }),
         processes: z.object({
-          entries: z.array(z.object({
-            attributes: z.record(z.string(), z.unknown()),
-            cmdline: z.string(),
-            exePath: z.string(),
-            pid: z.string(),
-            user: z.string(),
-          })),
+          entries: z.array(z.unknown()),
         }),
         services: z.object({
-          entries: z.array(z.object({
-            cmdline: z.string(),
-            exePath: z.string(),
-            pid: z.string(),
-            serviceName: z.string(),
-            startMode: z.string(),
-            state: z.string(),
-          })),
+          entries: z.array(z.unknown()),
         }),
       }),
       version: z.string(),
@@ -1225,17 +934,9 @@ const StateSchema = z.object({
     network: z.object({
       adapters: z.object({
         entries: z.array(z.object({
-          adapterType: z.string(),
-          addresses: z.object({
-            entries: z.array(z.object({
-              assignment: z.string(),
-              bcast: z.string(),
-              fqdn: z.string(),
-              ipAddress: z.string(),
-              subnetMask: z.string(),
-            })),
-          }),
-          macAddress: z.string(),
+          adapterType: z.unknown(),
+          addresses: z.unknown(),
+          macAddress: z.unknown(),
         })),
       }),
       defaultGateway: z.string(),
@@ -1281,10 +982,10 @@ const StateSchema = z.object({
     dailyResourceUsageAggregations: z.array(z.object({
       cpu: z.object({
         utilizationPercentage: z.object({
-          average: z.number(),
-          median: z.number(),
-          ninteyFifthPercentile: z.number(),
-          peak: z.number(),
+          average: z.unknown(),
+          median: z.unknown(),
+          ninteyFifthPercentile: z.unknown(),
+          peak: z.unknown(),
         }),
       }),
       date: z.object({
@@ -1294,44 +995,44 @@ const StateSchema = z.object({
       }),
       disk: z.object({
         iops: z.object({
-          average: z.number(),
-          median: z.number(),
-          ninteyFifthPercentile: z.number(),
-          peak: z.number(),
+          average: z.unknown(),
+          median: z.unknown(),
+          ninteyFifthPercentile: z.unknown(),
+          peak: z.unknown(),
         }),
         readIops: z.object({
-          average: z.number(),
-          median: z.number(),
-          ninteyFifthPercentile: z.number(),
-          peak: z.number(),
+          average: z.unknown(),
+          median: z.unknown(),
+          ninteyFifthPercentile: z.unknown(),
+          peak: z.unknown(),
         }),
         writeIops: z.object({
-          average: z.number(),
-          median: z.number(),
-          ninteyFifthPercentile: z.number(),
-          peak: z.number(),
+          average: z.unknown(),
+          median: z.unknown(),
+          ninteyFifthPercentile: z.unknown(),
+          peak: z.unknown(),
         }),
       }),
       memory: z.object({
         utilizationPercentage: z.object({
-          average: z.number(),
-          median: z.number(),
-          ninteyFifthPercentile: z.number(),
-          peak: z.number(),
+          average: z.unknown(),
+          median: z.unknown(),
+          ninteyFifthPercentile: z.unknown(),
+          peak: z.unknown(),
         }),
       }),
       network: z.object({
         egressBps: z.object({
-          average: z.number(),
-          median: z.number(),
-          ninteyFifthPercentile: z.number(),
-          peak: z.number(),
+          average: z.unknown(),
+          median: z.unknown(),
+          ninteyFifthPercentile: z.unknown(),
+          peak: z.unknown(),
         }),
         ingressBps: z.object({
-          average: z.number(),
-          median: z.number(),
-          ninteyFifthPercentile: z.number(),
-          peak: z.number(),
+          average: z.unknown(),
+          median: z.unknown(),
+          ninteyFifthPercentile: z.unknown(),
+          peak: z.unknown(),
         }),
       }),
     })),
@@ -1467,13 +1168,13 @@ const InputsSchema = z.object({
         instanceName: z.string().describe("Optional. The instance's name.")
           .optional(),
         network: z.object({
-          hostNames: z.array(z.string()).describe(
+          hostNames: z.unknown().describe(
             "Optional. The instance's host names.",
           ).optional(),
-          ipAddresses: z.array(z.string()).describe(
+          ipAddresses: z.unknown().describe(
             "Optional. The instance's IP addresses.",
           ).optional(),
-          primaryMacAddress: z.string().describe(
+          primaryMacAddress: z.unknown().describe(
             "Optional. The instance's primary MAC address.",
           ).optional(),
         }).describe("Network details of a database instance.").optional(),
@@ -1513,40 +1214,14 @@ const InputsSchema = z.object({
       .optional(),
     schemas: z.array(z.object({
       mysql: z.object({
-        storageEngines: z.array(z.object({
-          encryptedTableCount: z.number().int().describe(
-            "Optional. The number of encrypted tables.",
-          ).optional(),
-          engine: z.enum([
-            "ENGINE_UNSPECIFIED",
-            "INNODB",
-            "MYISAM",
-            "MEMORY",
-            "CSV",
-            "ARCHIVE",
-            "BLACKHOLE",
-            "NDB",
-            "MERGE",
-            "FEDERATED",
-            "EXAMPLE",
-            "OTHER",
-          ]).describe("Required. The storage engine.").optional(),
-          tableCount: z.number().int().describe(
-            "Optional. The number of tables.",
-          ).optional(),
-        })).describe("Optional. Mysql storage engine tables.").optional(),
+        storageEngines: z.array(z.unknown()).describe(
+          "Optional. Mysql storage engine tables.",
+        ).optional(),
       }).describe("Specific details for a Mysql database.").optional(),
       objects: z.array(z.object({
-        category: z.enum([
-          "CATEGORY_UNSPECIFIED",
-          "TABLE",
-          "INDEX",
-          "CONSTRAINTS",
-          "VIEWS",
-          "SOURCE_CODE",
-          "OTHER",
-        ]).describe("Optional. The category of the objects.").optional(),
-        count: z.string().describe("Optional. The number of objects.")
+        category: z.unknown().describe("Optional. The category of the objects.")
+          .optional(),
+        count: z.unknown().describe("Optional. The number of objects.")
           .optional(),
       })).describe("Optional. List of details of objects by category.")
         .optional(),
@@ -1554,12 +1229,9 @@ const InputsSchema = z.object({
         foreignTablesCount: z.number().int().describe(
           "Optional. PostgreSql foreign tables.",
         ).optional(),
-        postgresqlExtensions: z.array(z.object({
-          extension: z.string().describe("Required. The extension name.")
-            .optional(),
-          version: z.string().describe("Required. The extension version.")
-            .optional(),
-        })).describe("Optional. PostgreSql extensions.").optional(),
+        postgresqlExtensions: z.array(z.unknown()).describe(
+          "Optional. PostgreSql extensions.",
+        ).optional(),
       }).describe("Specific details for a PostgreSql schema.").optional(),
       schemaName: z.string().describe("Required. The name of the schema.")
         .optional(),
@@ -1584,7 +1256,7 @@ const InputsSchema = z.object({
   insightList: z.object({
     insights: z.array(z.object({
       genericInsight: z.object({
-        additionalInformation: z.array(z.string()).describe(
+        additionalInformation: z.array(z.unknown()).describe(
           "Output only. Additional information about the insight, each entry can be a logical entry and must make sense if it is displayed with line breaks between each entry. Text can contain md style links.",
         ).optional(),
         defaultMessage: z.string().describe(
@@ -1596,43 +1268,11 @@ const InputsSchema = z.object({
       }).describe("A generic insight about an asset.").optional(),
       migrationInsight: z.object({
         computeEngineTarget: z.object({
-          shape: z.object({
-            logicalCoreCount: z.number().int().describe(
-              "Output only. Number of logical cores.",
-            ).optional(),
-            machineType: z.string().describe(
-              "Output only. Compute Engine machine type.",
-            ).optional(),
-            memoryMb: z.number().int().describe("Memory in mebibytes.")
-              .optional(),
-            physicalCoreCount: z.number().int().describe(
-              "Number of physical cores.",
-            ).optional(),
-            series: z.string().describe(
-              "Output only. Compute Engine machine series.",
-            ).optional(),
-            storage: z.array(z.object({
-              sizeGb: z.number().int().describe(
-                "Output only. Disk size in GiB.",
-              ).optional(),
-              type: z.enum([
-                "PERSISTENT_DISK_TYPE_UNSPECIFIED",
-                "PERSISTENT_DISK_TYPE_STANDARD",
-                "PERSISTENT_DISK_TYPE_BALANCED",
-                "PERSISTENT_DISK_TYPE_SSD",
-              ]).describe("Output only. Disk type backing the storage.")
-                .optional(),
-            })).describe("Output only. Compute Engine storage. Never empty.")
-              .optional(),
-          }).describe("Compute Engine target shape descriptor.").optional(),
+          shape: z.unknown().describe("Compute Engine target shape descriptor.")
+            .optional(),
         }).describe("Compute engine migration target.").optional(),
         fit: z.object({
-          fitLevel: z.enum([
-            "FIT_LEVEL_UNSPECIFIED",
-            "FIT",
-            "NO_FIT",
-            "REQUIRES_EFFORT",
-          ]).describe("Output only. Fit level.").optional(),
+          fitLevel: z.unknown().describe("Output only. Fit level.").optional(),
         }).describe(
           "Describes the fit level of an asset for migration to a specific target.",
         ).optional(),
@@ -1703,17 +1343,17 @@ const InputsSchema = z.object({
       ).optional(),
       partitions: z.object({
         entries: z.array(z.object({
-          capacityBytes: z.string().describe("Partition capacity.").optional(),
-          fileSystem: z.string().describe("Partition file system.").optional(),
-          freeBytes: z.string().describe("Partition free space.").optional(),
-          mountPoint: z.string().describe(
+          capacityBytes: z.unknown().describe("Partition capacity.").optional(),
+          fileSystem: z.unknown().describe("Partition file system.").optional(),
+          freeBytes: z.unknown().describe("Partition free space.").optional(),
+          mountPoint: z.unknown().describe(
             "Mount point (Linux/Windows) or drive letter (Windows).",
           ).optional(),
-          subPartitions: z.string().describe(
+          subPartitions: z.unknown().describe(
             "Circular reference to DiskPartitionList",
           ).optional(),
-          type: z.string().describe("Partition type.").optional(),
-          uuid: z.string().describe("Partition UUID.").optional(),
+          type: z.unknown().describe("Partition type.").optional(),
+          uuid: z.unknown().describe("Partition UUID.").optional(),
         })).describe("Partition entries.").optional(),
       }).describe("Disk partition list.").optional(),
       totalCapacityBytes: z.string().describe(
@@ -1723,68 +1363,19 @@ const InputsSchema = z.object({
     disks: z.object({
       disks: z.object({
         entries: z.array(z.object({
-          capacityBytes: z.string().describe("Disk capacity.").optional(),
-          diskLabel: z.string().describe("Disk label.").optional(),
-          diskLabelType: z.string().describe("Disk label type (e.g. BIOS/GPT)")
+          capacityBytes: z.unknown().describe("Disk capacity.").optional(),
+          diskLabel: z.unknown().describe("Disk label.").optional(),
+          diskLabelType: z.unknown().describe("Disk label type (e.g. BIOS/GPT)")
             .optional(),
-          freeBytes: z.string().describe("Disk free space.").optional(),
-          hwAddress: z.string().describe(
+          freeBytes: z.unknown().describe("Disk free space.").optional(),
+          hwAddress: z.unknown().describe(
             "Disk hardware address (e.g. 0:1 for SCSI).",
           ).optional(),
-          interfaceType: z.enum([
-            "INTERFACE_TYPE_UNSPECIFIED",
-            "IDE",
-            "SATA",
-            "SAS",
-            "SCSI",
-            "NVME",
-            "FC",
-            "ISCSI",
-          ]).describe("Disks interface type.").optional(),
-          partitions: z.object({
-            entries: z.array(z.object({
-              capacityBytes: z.string().describe("Partition capacity.")
-                .optional(),
-              fileSystem: z.string().describe("Partition file system.")
-                .optional(),
-              freeBytes: z.string().describe("Partition free space.")
-                .optional(),
-              mountPoint: z.string().describe(
-                "Mount point (Linux/Windows) or drive letter (Windows).",
-              ).optional(),
-              subPartitions: z.string().describe(
-                "Circular reference to DiskPartitionList",
-              ).optional(),
-              type: z.string().describe("Partition type.").optional(),
-              uuid: z.string().describe("Partition UUID.").optional(),
-            })).describe("Partition entries.").optional(),
-          }).describe("Disk partition list.").optional(),
-          vmware: z.object({
-            backingType: z.enum([
-              "BACKING_TYPE_UNSPECIFIED",
-              "BACKING_TYPE_FLAT_V1",
-              "BACKING_TYPE_FLAT_V2",
-              "BACKING_TYPE_PMEM",
-              "BACKING_TYPE_RDM_V1",
-              "BACKING_TYPE_RDM_V2",
-              "BACKING_TYPE_SESPARSE",
-              "BACKING_TYPE_SESPARSE_V1",
-              "BACKING_TYPE_SESPARSE_V2",
-            ]).describe("VMDK backing type.").optional(),
-            rdmCompatibility: z.enum([
-              "RDM_COMPATIBILITY_UNSPECIFIED",
-              "PHYSICAL_COMPATIBILITY",
-              "VIRTUAL_COMPATIBILITY",
-            ]).describe("RDM compatibility mode.").optional(),
-            shared: z.boolean().describe("Is VMDK shared with other VMs.")
-              .optional(),
-            vmdkMode: z.enum([
-              "VMDK_MODE_UNSPECIFIED",
-              "DEPENDENT",
-              "INDEPENDENT_PERSISTENT",
-              "INDEPENDENT_NONPERSISTENT",
-            ]).describe("VMDK disk mode.").optional(),
-          }).describe("VMware disk config details.").optional(),
+          interfaceType: z.unknown().describe("Disks interface type.")
+            .optional(),
+          partitions: z.unknown().describe("Disk partition list.").optional(),
+          vmware: z.unknown().describe("VMware disk config details.")
+            .optional(),
         })).describe("Disk entries.").optional(),
       }).describe("VM disks.").optional(),
       totalCapacityBytes: z.string().describe("Disk total Capacity.")
@@ -1794,44 +1385,16 @@ const InputsSchema = z.object({
     guestOs: z.object({
       config: z.object({
         fstab: z.object({
-          entries: z.array(z.object({
-            file: z.string().describe("The mount point for the filesystem.")
-              .optional(),
-            freq: z.number().int().describe(
-              "Used by dump to determine which filesystems need to be dumped.",
-            ).optional(),
-            mntops: z.string().describe(
-              "Mount options associated with the filesystem.",
-            ).optional(),
-            passno: z.number().int().describe(
-              "Used by the fsck(8) program to determine the order in which filesystem checks are done at reboot time.",
-            ).optional(),
-            spec: z.string().describe(
-              "The block special device or remote filesystem to be mounted.",
-            ).optional(),
-            vfstype: z.string().describe("The type of the filesystem.")
-              .optional(),
-          })).describe("Fstab entries.").optional(),
+          entries: z.array(z.unknown()).describe("Fstab entries.").optional(),
         }).describe("Fstab content.").optional(),
         hosts: z.object({
-          entries: z.array(z.object({
-            hostNames: z.array(z.string()).describe(
-              "List of host names / aliases.",
-            ).optional(),
-            ip: z.string().describe("IP (raw, IPv4/6 agnostic).").optional(),
-          })).describe("Hosts entries.").optional(),
+          entries: z.array(z.unknown()).describe("Hosts entries.").optional(),
         }).describe("Hosts content.").optional(),
         issue: z.string().describe("OS issue (typically /etc/issue in Linux).")
           .optional(),
         nfsExports: z.object({
-          entries: z.array(z.object({
-            exportDirectory: z.string().describe(
-              "The directory being exported.",
-            ).optional(),
-            hosts: z.array(z.string()).describe(
-              "The hosts or networks to which the export is being shared.",
-            ).optional(),
-          })).describe("NFS export entries.").optional(),
+          entries: z.array(z.unknown()).describe("NFS export entries.")
+            .optional(),
         }).describe("NFS exports.").optional(),
         selinuxMode: z.enum([
           "SE_LINUX_MODE_UNSPECIFIED",
@@ -1853,90 +1416,31 @@ const InputsSchema = z.object({
           "Domain, e.g. c.stratozone-development.internal.",
         ).optional(),
         installedApps: z.object({
-          entries: z.array(z.object({
-            applicationName: z.string().describe("Installed application name.")
-              .optional(),
-            installTime: z.string().describe(
-              "The time when the application was installed.",
-            ).optional(),
-            licenses: z.array(z.string()).describe(
-              "License strings associated with the installed application.",
-            ).optional(),
-            path: z.string().describe("Source path.").optional(),
-            vendor: z.string().describe("Installed application vendor.")
-              .optional(),
-            version: z.string().describe("Installed application version.")
-              .optional(),
-          })).describe("Application entries.").optional(),
+          entries: z.array(z.unknown()).describe("Application entries.")
+            .optional(),
         }).describe("Guest installed application list.").optional(),
         lastBootTime: z.string().describe("Last time the OS was booted.")
           .optional(),
         machineName: z.string().describe("Machine name.").optional(),
         network: z.object({
           connections: z.object({
-            entries: z.array(z.object({
-              localIpAddress: z.string().describe("Local IP address.")
-                .optional(),
-              localPort: z.number().int().describe("Local port.").optional(),
-              pid: z.string().describe("Process ID.").optional(),
-              processName: z.string().describe("Process or service name.")
-                .optional(),
-              protocol: z.string().describe(
-                "Connection protocol (e.g. TCP/UDP).",
-              ).optional(),
-              remoteIpAddress: z.string().describe("Remote IP address.")
-                .optional(),
-              remotePort: z.number().int().describe("Remote port.").optional(),
-              state: z.enum([
-                "STATE_UNSPECIFIED",
-                "OPENING",
-                "OPEN",
-                "LISTEN",
-                "CLOSING",
-                "CLOSED",
-              ]).describe("Network connection state.").optional(),
-            })).describe("Network connection entries.").optional(),
+            entries: z.unknown().describe("Network connection entries.")
+              .optional(),
           }).describe("Network connection list.").optional(),
           scanTime: z.string().describe("Time of the last network scan.")
             .optional(),
         }).describe("Runtime networking information.").optional(),
         openFileList: z.object({
-          entries: z.array(z.object({
-            command: z.string().describe("Opened file command.").optional(),
-            filePath: z.string().describe("Opened file file path.").optional(),
-            fileType: z.string().describe("Opened file file type.").optional(),
-            user: z.string().describe("Opened file user.").optional(),
-          })).describe("Open file details entries.").optional(),
+          entries: z.array(z.unknown()).describe("Open file details entries.")
+            .optional(),
         }).describe("Open file list.").optional(),
         processes: z.object({
-          entries: z.array(z.object({
-            attributes: z.record(z.string(), z.string()).describe(
-              "Process extended attributes.",
-            ).optional(),
-            cmdline: z.string().describe("Process full command line.")
-              .optional(),
-            exePath: z.string().describe("Process binary path.").optional(),
-            pid: z.string().describe("Process ID.").optional(),
-            user: z.string().describe("User running the process.").optional(),
-          })).describe("Running process entries.").optional(),
+          entries: z.array(z.unknown()).describe("Running process entries.")
+            .optional(),
         }).describe("List of running guest OS processes.").optional(),
         services: z.object({
-          entries: z.array(z.object({
-            cmdline: z.string().describe("Service command line.").optional(),
-            exePath: z.string().describe("Service binary path.").optional(),
-            pid: z.string().describe("Service pid.").optional(),
-            serviceName: z.string().describe("Service name.").optional(),
-            startMode: z.enum([
-              "START_MODE_UNSPECIFIED",
-              "BOOT",
-              "SYSTEM",
-              "AUTO",
-              "MANUAL",
-              "DISABLED",
-            ]).describe("Service start mode (OS-agnostic).").optional(),
-            state: z.enum(["STATE_UNSPECIFIED", "ACTIVE", "PAUSED", "STOPPED"])
-              .describe("Service state (OS-agnostic).").optional(),
-          })).describe("Running service entries.").optional(),
+          entries: z.array(z.unknown()).describe("Running service entries.")
+            .optional(),
         }).describe("List of running guest OS services.").optional(),
       }).describe("Guest OS runtime information.").optional(),
       version: z.string().describe("The version of the operating system.")
@@ -1949,28 +1453,13 @@ const InputsSchema = z.object({
     network: z.object({
       adapters: z.object({
         entries: z.array(z.object({
-          adapterType: z.string().describe(
+          adapterType: z.unknown().describe(
             "Network adapter type (e.g. VMXNET3).",
           ).optional(),
-          addresses: z.object({
-            entries: z.array(z.object({
-              assignment: z.enum([
-                "ADDRESS_ASSIGNMENT_UNSPECIFIED",
-                "ADDRESS_ASSIGNMENT_STATIC",
-                "ADDRESS_ASSIGNMENT_DHCP",
-              ]).describe("Whether DHCP is used to assign addresses.")
-                .optional(),
-              bcast: z.string().describe("Broadcast address.").optional(),
-              fqdn: z.string().describe("Fully qualified domain name.")
-                .optional(),
-              ipAddress: z.string().describe(
-                "Assigned or configured IP Address.",
-              ).optional(),
-              subnetMask: z.string().describe("Subnet mask.").optional(),
-            })).describe("Network address entries.").optional(),
-          }).describe("List of allocated/assigned network addresses.")
-            .optional(),
-          macAddress: z.string().describe("MAC address.").optional(),
+          addresses: z.unknown().describe(
+            "List of allocated/assigned network addresses.",
+          ).optional(),
+          macAddress: z.unknown().describe("MAC address.").optional(),
         })).describe("Network adapter entries.").optional(),
       }).describe("List of network adapters.").optional(),
       defaultGateway: z.string().describe("Optional. Default gateway address.")
@@ -2073,12 +1562,12 @@ const InputsSchema = z.object({
     dailyResourceUsageAggregations: z.array(z.object({
       cpu: z.object({
         utilizationPercentage: z.object({
-          average: z.number().describe("Average usage value.").optional(),
-          median: z.number().describe("Median usage value.").optional(),
-          ninteyFifthPercentile: z.number().describe(
+          average: z.unknown().describe("Average usage value.").optional(),
+          median: z.unknown().describe("Median usage value.").optional(),
+          ninteyFifthPercentile: z.unknown().describe(
             "95th percentile usage value.",
           ).optional(),
-          peak: z.number().describe("Peak usage value.").optional(),
+          peak: z.unknown().describe("Peak usage value.").optional(),
         }).describe(
           "Statistical aggregation of samples for a single resource usage.",
         ).optional(),
@@ -2098,66 +1587,66 @@ const InputsSchema = z.object({
       ).optional(),
       disk: z.object({
         iops: z.object({
-          average: z.number().describe("Average usage value.").optional(),
-          median: z.number().describe("Median usage value.").optional(),
-          ninteyFifthPercentile: z.number().describe(
+          average: z.unknown().describe("Average usage value.").optional(),
+          median: z.unknown().describe("Median usage value.").optional(),
+          ninteyFifthPercentile: z.unknown().describe(
             "95th percentile usage value.",
           ).optional(),
-          peak: z.number().describe("Peak usage value.").optional(),
+          peak: z.unknown().describe("Peak usage value.").optional(),
         }).describe(
           "Statistical aggregation of samples for a single resource usage.",
         ).optional(),
         readIops: z.object({
-          average: z.number().describe("Average usage value.").optional(),
-          median: z.number().describe("Median usage value.").optional(),
-          ninteyFifthPercentile: z.number().describe(
+          average: z.unknown().describe("Average usage value.").optional(),
+          median: z.unknown().describe("Median usage value.").optional(),
+          ninteyFifthPercentile: z.unknown().describe(
             "95th percentile usage value.",
           ).optional(),
-          peak: z.number().describe("Peak usage value.").optional(),
+          peak: z.unknown().describe("Peak usage value.").optional(),
         }).describe(
           "Statistical aggregation of samples for a single resource usage.",
         ).optional(),
         writeIops: z.object({
-          average: z.number().describe("Average usage value.").optional(),
-          median: z.number().describe("Median usage value.").optional(),
-          ninteyFifthPercentile: z.number().describe(
+          average: z.unknown().describe("Average usage value.").optional(),
+          median: z.unknown().describe("Median usage value.").optional(),
+          ninteyFifthPercentile: z.unknown().describe(
             "95th percentile usage value.",
           ).optional(),
-          peak: z.number().describe("Peak usage value.").optional(),
+          peak: z.unknown().describe("Peak usage value.").optional(),
         }).describe(
           "Statistical aggregation of samples for a single resource usage.",
         ).optional(),
       }).describe("Statistical aggregation of disk usage.").optional(),
       memory: z.object({
         utilizationPercentage: z.object({
-          average: z.number().describe("Average usage value.").optional(),
-          median: z.number().describe("Median usage value.").optional(),
-          ninteyFifthPercentile: z.number().describe(
+          average: z.unknown().describe("Average usage value.").optional(),
+          median: z.unknown().describe("Median usage value.").optional(),
+          ninteyFifthPercentile: z.unknown().describe(
             "95th percentile usage value.",
           ).optional(),
-          peak: z.number().describe("Peak usage value.").optional(),
+          peak: z.unknown().describe("Peak usage value.").optional(),
         }).describe(
           "Statistical aggregation of samples for a single resource usage.",
         ).optional(),
       }).describe("Statistical aggregation of memory usage.").optional(),
       network: z.object({
         egressBps: z.object({
-          average: z.number().describe("Average usage value.").optional(),
-          median: z.number().describe("Median usage value.").optional(),
-          ninteyFifthPercentile: z.number().describe(
+          average: z.unknown().describe("Average usage value.").optional(),
+          median: z.unknown().describe("Median usage value.").optional(),
+          ninteyFifthPercentile: z.unknown().describe(
             "95th percentile usage value.",
           ).optional(),
-          peak: z.number().describe("Peak usage value.").optional(),
+          peak: z.unknown().describe("Peak usage value.").optional(),
         }).describe(
           "Statistical aggregation of samples for a single resource usage.",
         ).optional(),
         ingressBps: z.object({
-          average: z.number().describe("Average usage value.").optional(),
-          median: z.number().describe("Median usage value.").optional(),
-          ninteyFifthPercentile: z.number().describe(
+          average: z.unknown().describe("Average usage value.").optional(),
+          median: z.unknown().describe("Median usage value.").optional(),
+          ninteyFifthPercentile: z.unknown().describe(
             "95th percentile usage value.",
           ).optional(),
-          peak: z.number().describe("Peak usage value.").optional(),
+          peak: z.unknown().describe("Peak usage value.").optional(),
         }).describe(
           "Statistical aggregation of samples for a single resource usage.",
         ).optional(),
@@ -2182,7 +1671,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/migrationcenter/assets",
-  version: "2026.04.03.3",
+  version: "2026.04.04.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -2206,6 +1695,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.3",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.04.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

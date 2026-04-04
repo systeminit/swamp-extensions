@@ -143,34 +143,22 @@ const GlobalArgsSchema = z.object({
         defaultValue: z.string().describe(
           "A default value for a `CATEGORICAL` parameter that is assumed to be a relatively good starting point. Unset value signals that there is no offered starting point. Currently only supported by the Vertex AI Vizier service. Not supported by HyperparameterTuningJob or TrainingPipeline.",
         ).optional(),
-        values: z.array(z.string()).describe(
+        values: z.array(z.unknown()).describe(
           "Required. The list of possible categories.",
         ).optional(),
       }).describe("Value specification for a parameter in `CATEGORICAL` type.")
         .optional(),
       conditionalParameterSpecs: z.array(z.object({
-        parameterSpec: z.string().describe(
+        parameterSpec: z.unknown().describe(
           "Circular reference to GoogleCloudAiplatformV1StudySpecParameterSpec",
         ).optional(),
-        parentCategoricalValues: z.object({
-          values: z.array(z.string()).describe(
-            "Required. Matches values of the parent parameter of 'CATEGORICAL' type. All values must exist in `categorical_value_spec` of parent parameter.",
-          ).optional(),
-        }).describe(
+        parentCategoricalValues: z.unknown().describe(
           "Represents the spec to match categorical values from parent parameter.",
         ).optional(),
-        parentDiscreteValues: z.object({
-          values: z.array(z.number()).describe(
-            "Required. Matches values of the parent parameter of 'DISCRETE' type. All values must exist in `discrete_value_spec` of parent parameter. The Epsilon of the value matching is 1e-10.",
-          ).optional(),
-        }).describe(
+        parentDiscreteValues: z.unknown().describe(
           "Represents the spec to match discrete values from parent parameter.",
         ).optional(),
-        parentIntValues: z.object({
-          values: z.array(z.string()).describe(
-            "Required. Matches values of the parent parameter of 'INTEGER' type. All values must lie in `integer_value_spec` of parent parameter.",
-          ).optional(),
-        }).describe(
+        parentIntValues: z.unknown().describe(
           "Represents the spec to match integer values from parent parameter.",
         ).optional(),
       })).describe(
@@ -180,7 +168,7 @@ const GlobalArgsSchema = z.object({
         defaultValue: z.number().describe(
           "A default value for a `DISCRETE` parameter that is assumed to be a relatively good starting point. Unset value signals that there is no offered starting point. It automatically rounds to the nearest feasible discrete point. Currently only supported by the Vertex AI Vizier service. Not supported by HyperparameterTuningJob or TrainingPipeline.",
         ).optional(),
-        values: z.array(z.number()).describe(
+        values: z.array(z.unknown()).describe(
           "Required. A list of possible values. The list should be in increasing order and at least 1e-10 apart. For instance, this parameter might have possible settings of 1.5, 2.5, and 4.0. This list should not contain more than 1,000 values.",
         ).optional(),
       }).describe("Value specification for a parameter in `DISCRETE` type.")
@@ -297,23 +285,17 @@ const StateSchema = z.object({
     parameters: z.array(z.object({
       categoricalValueSpec: z.object({
         defaultValue: z.string(),
-        values: z.array(z.string()),
+        values: z.array(z.unknown()),
       }),
       conditionalParameterSpecs: z.array(z.object({
-        parameterSpec: z.string(),
-        parentCategoricalValues: z.object({
-          values: z.array(z.string()),
-        }),
-        parentDiscreteValues: z.object({
-          values: z.array(z.number()),
-        }),
-        parentIntValues: z.object({
-          values: z.array(z.string()),
-        }),
+        parameterSpec: z.unknown(),
+        parentCategoricalValues: z.unknown(),
+        parentDiscreteValues: z.unknown(),
+        parentIntValues: z.unknown(),
       })),
       discreteValueSpec: z.object({
         defaultValue: z.number(),
-        values: z.array(z.number()),
+        values: z.array(z.unknown()),
       }),
       doubleValueSpec: z.object({
         defaultValue: z.number(),
@@ -425,34 +407,22 @@ const InputsSchema = z.object({
         defaultValue: z.string().describe(
           "A default value for a `CATEGORICAL` parameter that is assumed to be a relatively good starting point. Unset value signals that there is no offered starting point. Currently only supported by the Vertex AI Vizier service. Not supported by HyperparameterTuningJob or TrainingPipeline.",
         ).optional(),
-        values: z.array(z.string()).describe(
+        values: z.array(z.unknown()).describe(
           "Required. The list of possible categories.",
         ).optional(),
       }).describe("Value specification for a parameter in `CATEGORICAL` type.")
         .optional(),
       conditionalParameterSpecs: z.array(z.object({
-        parameterSpec: z.string().describe(
+        parameterSpec: z.unknown().describe(
           "Circular reference to GoogleCloudAiplatformV1StudySpecParameterSpec",
         ).optional(),
-        parentCategoricalValues: z.object({
-          values: z.array(z.string()).describe(
-            "Required. Matches values of the parent parameter of 'CATEGORICAL' type. All values must exist in `categorical_value_spec` of parent parameter.",
-          ).optional(),
-        }).describe(
+        parentCategoricalValues: z.unknown().describe(
           "Represents the spec to match categorical values from parent parameter.",
         ).optional(),
-        parentDiscreteValues: z.object({
-          values: z.array(z.number()).describe(
-            "Required. Matches values of the parent parameter of 'DISCRETE' type. All values must exist in `discrete_value_spec` of parent parameter. The Epsilon of the value matching is 1e-10.",
-          ).optional(),
-        }).describe(
+        parentDiscreteValues: z.unknown().describe(
           "Represents the spec to match discrete values from parent parameter.",
         ).optional(),
-        parentIntValues: z.object({
-          values: z.array(z.string()).describe(
-            "Required. Matches values of the parent parameter of 'INTEGER' type. All values must lie in `integer_value_spec` of parent parameter.",
-          ).optional(),
-        }).describe(
+        parentIntValues: z.unknown().describe(
           "Represents the spec to match integer values from parent parameter.",
         ).optional(),
       })).describe(
@@ -462,7 +432,7 @@ const InputsSchema = z.object({
         defaultValue: z.number().describe(
           "A default value for a `DISCRETE` parameter that is assumed to be a relatively good starting point. Unset value signals that there is no offered starting point. It automatically rounds to the nearest feasible discrete point. Currently only supported by the Vertex AI Vizier service. Not supported by HyperparameterTuningJob or TrainingPipeline.",
         ).optional(),
-        values: z.array(z.number()).describe(
+        values: z.array(z.unknown()).describe(
           "Required. A list of possible values. The list should be in increasing order and at least 1e-10 apart. For instance, this parameter might have possible settings of 1.5, 2.5, and 4.0. This list should not contain more than 1,000 values.",
         ).optional(),
       }).describe("Value specification for a parameter in `DISCRETE` type.")
@@ -546,7 +516,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/aiplatform/studies",
-  version: "2026.04.03.3",
+  version: "2026.04.04.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -570,6 +540,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.3",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.04.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

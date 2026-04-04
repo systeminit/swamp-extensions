@@ -392,8 +392,8 @@ const StateSchema = z.object({
     moveList: z.array(z.object({
       dpaId: z.string(),
       frequencyRange: z.object({
-        highFrequencyMhz: z.number(),
-        lowFrequencyMhz: z.number(),
+        highFrequencyMhz: z.unknown(),
+        lowFrequencyMhz: z.unknown(),
       }),
     })),
     state: z.string(),
@@ -706,7 +706,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/prod_tt_sasportal/nodes-nodes-devices",
-  version: "2026.04.03.3",
+  version: "2026.04.04.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -730,6 +730,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.3",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.04.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

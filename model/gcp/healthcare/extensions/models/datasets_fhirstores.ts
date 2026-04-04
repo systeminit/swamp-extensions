@@ -186,16 +186,10 @@ const GlobalArgsSchema = z.object({
       ).optional(),
       schemaConfig: z.object({
         lastUpdatedPartitionConfig: z.object({
-          expirationMs: z.string().describe(
+          expirationMs: z.unknown().describe(
             "Number of milliseconds for which to keep the storage for a partition.",
           ).optional(),
-          type: z.enum([
-            "PARTITION_TYPE_UNSPECIFIED",
-            "HOUR",
-            "DAY",
-            "MONTH",
-            "YEAR",
-          ]).describe("Type of partitioning.").optional(),
+          type: z.unknown().describe("Type of partitioning.").optional(),
         }).describe("Configuration for FHIR BigQuery time-partitioned tables.")
           .optional(),
         recursiveStructureDepth: z.string().describe(
@@ -223,173 +217,44 @@ const GlobalArgsSchema = z.object({
     deidentifiedStoreDestination: z.object({
       config: z.object({
         dicom: z.object({
-          filterProfile: z.enum([
-            "TAG_FILTER_PROFILE_UNSPECIFIED",
-            "MINIMAL_KEEP_LIST_PROFILE",
-            "ATTRIBUTE_CONFIDENTIALITY_BASIC_PROFILE",
-            "KEEP_ALL_PROFILE",
-            "DEIDENTIFY_TAG_CONTENTS",
-          ]).describe(
+          filterProfile: z.unknown().describe(
             "Tag filtering profile that determines which tags to keep/remove.",
           ).optional(),
-          keepList: z.object({
-            tags: z.array(z.string()).describe(
-              'Optional. Tags to be filtered. Tags must be DICOM Data Elements, File Meta Elements, or Directory Structuring Elements, as defined at: https://dicom.nema.org/medical/dicom/current/output/html/part06.html#table_6-1,. They may be provided by "Keyword" or "Tag". For example "PatientID", "00100010".',
-            ).optional(),
-          }).describe("List of tags to be filtered.").optional(),
-          removeList: z.object({
-            tags: z.array(z.string()).describe(
-              'Optional. Tags to be filtered. Tags must be DICOM Data Elements, File Meta Elements, or Directory Structuring Elements, as defined at: https://dicom.nema.org/medical/dicom/current/output/html/part06.html#table_6-1,. They may be provided by "Keyword" or "Tag". For example "PatientID", "00100010".',
-            ).optional(),
-          }).describe("List of tags to be filtered.").optional(),
-          skipIdRedaction: z.boolean().describe(
+          keepList: z.unknown().describe("List of tags to be filtered.")
+            .optional(),
+          removeList: z.unknown().describe("List of tags to be filtered.")
+            .optional(),
+          skipIdRedaction: z.unknown().describe(
             "Optional. If true, skip replacing StudyInstanceUID, SeriesInstanceUID, SOPInstanceUID, and MediaStorageSOPInstanceUID and leave them untouched. The Cloud Healthcare API regenerates these UIDs by default based on the DICOM Standard's reasoning: \"Whilst these UIDs cannot be mapped directly to an individual out of context, given access to the original images, or to a database of the original images containing the UIDs, it would be possible to recover the individual's identity.\" https://dicom.nema.org/medical/dicom/current/output/chtml/part15/sect_E.3.9.html",
           ).optional(),
         }).describe(
           "Specifies the parameters needed for de-identification of DICOM stores.",
         ).optional(),
         fhir: z.object({
-          defaultKeepExtensions: z.boolean().describe(
+          defaultKeepExtensions: z.unknown().describe(
             "Optional. The behaviour for handling FHIR extensions that aren't otherwise specified for de-identification. If true, all extensions are preserved during de-identification by default. If false or unspecified, all extensions are removed during de-identification by default.",
           ).optional(),
-          fieldMetadataList: z.array(z.object({
-            action: z.enum([
-              "ACTION_UNSPECIFIED",
-              "TRANSFORM",
-              "INSPECT_AND_TRANSFORM",
-              "DO_NOT_TRANSFORM",
-            ]).describe("Optional. Deidentify action for one field.")
-              .optional(),
-            paths: z.array(z.string()).describe(
-              'Optional. List of paths to FHIR fields to be redacted. Each path is a period-separated list where each component is either a field name or FHIR type name, for example: Patient, HumanName. For "choice" types (those defined in the FHIR spec with the form: field[x]) we use two separate components. For example, "deceasedAge.unit" is matched by "Deceased.Age.unit". Supported types are: AdministrativeGenderCode, Base64Binary, Boolean, Code, Date, DateTime, Decimal, HumanName, Id, Instant, Integer, LanguageCode, Markdown, Oid, PositiveInt, String, UnsignedInt, Uri, Uuid, Xhtml.',
-            ).optional(),
-          })).describe(
+          fieldMetadataList: z.unknown().describe(
             "Optional. Specifies FHIR paths to match and how to transform them. Any field that is not matched by a FieldMetadata is passed through to the output dataset unmodified. All extensions will be processed according to `default_keep_extensions`.",
           ).optional(),
         }).describe(
           "Specifies how to handle de-identification of a FHIR store.",
         ).optional(),
         image: z.object({
-          textRedactionMode: z.enum([
-            "TEXT_REDACTION_MODE_UNSPECIFIED",
-            "REDACT_ALL_TEXT",
-            "REDACT_SENSITIVE_TEXT",
-            "REDACT_NO_TEXT",
-          ]).describe("Optional. Determines how to redact text from image.")
-            .optional(),
+          textRedactionMode: z.unknown().describe(
+            "Optional. Determines how to redact text from image.",
+          ).optional(),
         }).describe(
           "Specifies how to handle de-identification of image pixels.",
         ).optional(),
         text: z.object({
-          additionalTransformations: z.array(z.object({
-            characterMaskConfig: z.object({
-              maskingCharacter: z.string().describe(
-                'Optional. Character to mask the sensitive values. If not supplied, defaults to "*".',
-              ).optional(),
-            }).describe(
-              "Mask a string by replacing its characters with a fixed character.",
-            ).optional(),
-            cryptoHashConfig: z.object({
-              cryptoKey: z.string().describe(
-                "An AES 128/192/256 bit key. Causes the hash to be computed based on this key. A default key is generated for each Deidentify operation and is used when neither `crypto_key` nor `kms_wrapped` is specified. Must not be set if `kms_wrapped` is set.",
-              ).optional(),
-              kmsWrapped: z.object({
-                cryptoKey: z.string().describe(
-                  "Required. The resource name of the KMS CryptoKey to use for unwrapping. For example, `projects/{project_id}/locations/{location_id}/keyRings/{keyring}/cryptoKeys/{key}`.",
-                ).optional(),
-                wrappedKey: z.string().describe(
-                  "Required. The wrapped data crypto key.",
-                ).optional(),
-              }).describe(
-                "Include to use an existing data crypto key wrapped by KMS. The wrapped key must be a 128-, 192-, or 256-bit key. The key must grant the Cloud IAM permission `cloudkms.cryptoKeyVersions.useToDecrypt` to the project's Cloud Healthcare Service Agent service account. For more information, see [Creating a wrapped key] (https://cloud.google.com/dlp/docs/create-wrapped-key).",
-              ).optional(),
-            }).describe(
-              "Pseudonymization method that generates surrogates via cryptographic hashing. Uses SHA-256. Outputs a base64-encoded representation of the hashed output (for example, `L7k0BHmF1ha5U3NfGykjro4xWi1MPVQPjhMAZbSV9mM=`).",
-            ).optional(),
-            dateShiftConfig: z.object({
-              cryptoKey: z.string().describe(
-                "An AES 128/192/256 bit key. The date shift is computed based on this key and the patient ID. If the patient ID is empty for a DICOM resource, the date shift is computed based on this key and the study instance UID. If `crypto_key` is not set, then `kms_wrapped` is used to calculate the date shift. If neither is set, a default key is generated for each de-identify operation. Must not be set if `kms_wrapped` is set.",
-              ).optional(),
-              kmsWrapped: z.object({
-                cryptoKey: z.string().describe(
-                  "Required. The resource name of the KMS CryptoKey to use for unwrapping. For example, `projects/{project_id}/locations/{location_id}/keyRings/{keyring}/cryptoKeys/{key}`.",
-                ).optional(),
-                wrappedKey: z.string().describe(
-                  "Required. The wrapped data crypto key.",
-                ).optional(),
-              }).describe(
-                "Include to use an existing data crypto key wrapped by KMS. The wrapped key must be a 128-, 192-, or 256-bit key. The key must grant the Cloud IAM permission `cloudkms.cryptoKeyVersions.useToDecrypt` to the project's Cloud Healthcare Service Agent service account. For more information, see [Creating a wrapped key] (https://cloud.google.com/dlp/docs/create-wrapped-key).",
-              ).optional(),
-            }).describe(
-              "Shift a date forward or backward in time by a random amount which is consistent for a given patient and crypto key combination.",
-            ).optional(),
-            infoTypes: z.array(z.string()).describe(
-              "Optional. InfoTypes to apply this transformation to. If this is not specified, the transformation applies to any info_type.",
-            ).optional(),
-            redactConfig: z.object({}).describe(
-              'Define how to redact sensitive values. Default behaviour is erase. For example, "My name is Jane." becomes "My name is."',
-            ).optional(),
-            replaceWithInfoTypeConfig: z.object({}).describe(
-              'When using the INSPECT_AND_TRANSFORM action, each match is replaced with the name of the info_type. For example, "My name is Jane" becomes "My name is [PERSON_NAME]." The TRANSFORM action is equivalent to redacting.',
-            ).optional(),
-          })).describe(
+          additionalTransformations: z.unknown().describe(
             "Optional. Transformations to apply to the detected data, overridden by `exclude_info_types`.",
           ).optional(),
-          excludeInfoTypes: z.array(z.string()).describe(
+          excludeInfoTypes: z.unknown().describe(
             "Optional. InfoTypes to skip transforming, overriding `additional_transformations`.",
           ).optional(),
-          transformations: z.array(z.object({
-            characterMaskConfig: z.object({
-              maskingCharacter: z.string().describe(
-                'Optional. Character to mask the sensitive values. If not supplied, defaults to "*".',
-              ).optional(),
-            }).describe(
-              "Mask a string by replacing its characters with a fixed character.",
-            ).optional(),
-            cryptoHashConfig: z.object({
-              cryptoKey: z.string().describe(
-                "An AES 128/192/256 bit key. Causes the hash to be computed based on this key. A default key is generated for each Deidentify operation and is used when neither `crypto_key` nor `kms_wrapped` is specified. Must not be set if `kms_wrapped` is set.",
-              ).optional(),
-              kmsWrapped: z.object({
-                cryptoKey: z.string().describe(
-                  "Required. The resource name of the KMS CryptoKey to use for unwrapping. For example, `projects/{project_id}/locations/{location_id}/keyRings/{keyring}/cryptoKeys/{key}`.",
-                ).optional(),
-                wrappedKey: z.string().describe(
-                  "Required. The wrapped data crypto key.",
-                ).optional(),
-              }).describe(
-                "Include to use an existing data crypto key wrapped by KMS. The wrapped key must be a 128-, 192-, or 256-bit key. The key must grant the Cloud IAM permission `cloudkms.cryptoKeyVersions.useToDecrypt` to the project's Cloud Healthcare Service Agent service account. For more information, see [Creating a wrapped key] (https://cloud.google.com/dlp/docs/create-wrapped-key).",
-              ).optional(),
-            }).describe(
-              "Pseudonymization method that generates surrogates via cryptographic hashing. Uses SHA-256. Outputs a base64-encoded representation of the hashed output (for example, `L7k0BHmF1ha5U3NfGykjro4xWi1MPVQPjhMAZbSV9mM=`).",
-            ).optional(),
-            dateShiftConfig: z.object({
-              cryptoKey: z.string().describe(
-                "An AES 128/192/256 bit key. The date shift is computed based on this key and the patient ID. If the patient ID is empty for a DICOM resource, the date shift is computed based on this key and the study instance UID. If `crypto_key` is not set, then `kms_wrapped` is used to calculate the date shift. If neither is set, a default key is generated for each de-identify operation. Must not be set if `kms_wrapped` is set.",
-              ).optional(),
-              kmsWrapped: z.object({
-                cryptoKey: z.string().describe(
-                  "Required. The resource name of the KMS CryptoKey to use for unwrapping. For example, `projects/{project_id}/locations/{location_id}/keyRings/{keyring}/cryptoKeys/{key}`.",
-                ).optional(),
-                wrappedKey: z.string().describe(
-                  "Required. The wrapped data crypto key.",
-                ).optional(),
-              }).describe(
-                "Include to use an existing data crypto key wrapped by KMS. The wrapped key must be a 128-, 192-, or 256-bit key. The key must grant the Cloud IAM permission `cloudkms.cryptoKeyVersions.useToDecrypt` to the project's Cloud Healthcare Service Agent service account. For more information, see [Creating a wrapped key] (https://cloud.google.com/dlp/docs/create-wrapped-key).",
-              ).optional(),
-            }).describe(
-              "Shift a date forward or backward in time by a random amount which is consistent for a given patient and crypto key combination.",
-            ).optional(),
-            infoTypes: z.array(z.string()).describe(
-              "Optional. InfoTypes to apply this transformation to. If this is not specified, the transformation applies to any info_type.",
-            ).optional(),
-            redactConfig: z.object({}).describe(
-              'Define how to redact sensitive values. Default behaviour is erase. For example, "My name is Jane." becomes "My name is."',
-            ).optional(),
-            replaceWithInfoTypeConfig: z.object({}).describe(
-              'When using the INSPECT_AND_TRANSFORM action, each match is replaced with the name of the info_type. For example, "My name is Jane" becomes "My name is [PERSON_NAME]." The TRANSFORM action is equivalent to redacting.',
-            ).optional(),
-          })).describe(
+          transformations: z.unknown().describe(
             "Optional. The transformations to apply to the detected data. Deprecated. Use `additional_transformations` instead.",
           ).optional(),
         }).optional(),
@@ -481,8 +346,8 @@ const StateSchema = z.object({
       force: z.boolean(),
       schemaConfig: z.object({
         lastUpdatedPartitionConfig: z.object({
-          expirationMs: z.string(),
-          type: z.string(),
+          expirationMs: z.unknown(),
+          type: z.unknown(),
         }),
         recursiveStructureDepth: z.string(),
         schemaType: z.string(),
@@ -492,71 +357,22 @@ const StateSchema = z.object({
     deidentifiedStoreDestination: z.object({
       config: z.object({
         dicom: z.object({
-          filterProfile: z.string(),
-          keepList: z.object({
-            tags: z.array(z.string()),
-          }),
-          removeList: z.object({
-            tags: z.array(z.string()),
-          }),
-          skipIdRedaction: z.boolean(),
+          filterProfile: z.unknown(),
+          keepList: z.unknown(),
+          removeList: z.unknown(),
+          skipIdRedaction: z.unknown(),
         }),
         fhir: z.object({
-          defaultKeepExtensions: z.boolean(),
-          fieldMetadataList: z.array(z.object({
-            action: z.string(),
-            paths: z.array(z.string()),
-          })),
+          defaultKeepExtensions: z.unknown(),
+          fieldMetadataList: z.unknown(),
         }),
         image: z.object({
-          textRedactionMode: z.string(),
+          textRedactionMode: z.unknown(),
         }),
         text: z.object({
-          additionalTransformations: z.array(z.object({
-            characterMaskConfig: z.object({
-              maskingCharacter: z.string(),
-            }),
-            cryptoHashConfig: z.object({
-              cryptoKey: z.string(),
-              kmsWrapped: z.object({
-                cryptoKey: z.string(),
-                wrappedKey: z.string(),
-              }),
-            }),
-            dateShiftConfig: z.object({
-              cryptoKey: z.string(),
-              kmsWrapped: z.object({
-                cryptoKey: z.string(),
-                wrappedKey: z.string(),
-              }),
-            }),
-            infoTypes: z.array(z.string()),
-            redactConfig: z.object({}),
-            replaceWithInfoTypeConfig: z.object({}),
-          })),
-          excludeInfoTypes: z.array(z.string()),
-          transformations: z.array(z.object({
-            characterMaskConfig: z.object({
-              maskingCharacter: z.string(),
-            }),
-            cryptoHashConfig: z.object({
-              cryptoKey: z.string(),
-              kmsWrapped: z.object({
-                cryptoKey: z.string(),
-                wrappedKey: z.string(),
-              }),
-            }),
-            dateShiftConfig: z.object({
-              cryptoKey: z.string(),
-              kmsWrapped: z.object({
-                cryptoKey: z.string(),
-                wrappedKey: z.string(),
-              }),
-            }),
-            infoTypes: z.array(z.string()),
-            redactConfig: z.object({}),
-            replaceWithInfoTypeConfig: z.object({}),
-          })),
+          additionalTransformations: z.unknown(),
+          excludeInfoTypes: z.unknown(),
+          transformations: z.unknown(),
         }),
         useRegionalDataProcessing: z.boolean(),
       }),
@@ -675,16 +491,10 @@ const InputsSchema = z.object({
       ).optional(),
       schemaConfig: z.object({
         lastUpdatedPartitionConfig: z.object({
-          expirationMs: z.string().describe(
+          expirationMs: z.unknown().describe(
             "Number of milliseconds for which to keep the storage for a partition.",
           ).optional(),
-          type: z.enum([
-            "PARTITION_TYPE_UNSPECIFIED",
-            "HOUR",
-            "DAY",
-            "MONTH",
-            "YEAR",
-          ]).describe("Type of partitioning.").optional(),
+          type: z.unknown().describe("Type of partitioning.").optional(),
         }).describe("Configuration for FHIR BigQuery time-partitioned tables.")
           .optional(),
         recursiveStructureDepth: z.string().describe(
@@ -712,173 +522,44 @@ const InputsSchema = z.object({
     deidentifiedStoreDestination: z.object({
       config: z.object({
         dicom: z.object({
-          filterProfile: z.enum([
-            "TAG_FILTER_PROFILE_UNSPECIFIED",
-            "MINIMAL_KEEP_LIST_PROFILE",
-            "ATTRIBUTE_CONFIDENTIALITY_BASIC_PROFILE",
-            "KEEP_ALL_PROFILE",
-            "DEIDENTIFY_TAG_CONTENTS",
-          ]).describe(
+          filterProfile: z.unknown().describe(
             "Tag filtering profile that determines which tags to keep/remove.",
           ).optional(),
-          keepList: z.object({
-            tags: z.array(z.string()).describe(
-              'Optional. Tags to be filtered. Tags must be DICOM Data Elements, File Meta Elements, or Directory Structuring Elements, as defined at: https://dicom.nema.org/medical/dicom/current/output/html/part06.html#table_6-1,. They may be provided by "Keyword" or "Tag". For example "PatientID", "00100010".',
-            ).optional(),
-          }).describe("List of tags to be filtered.").optional(),
-          removeList: z.object({
-            tags: z.array(z.string()).describe(
-              'Optional. Tags to be filtered. Tags must be DICOM Data Elements, File Meta Elements, or Directory Structuring Elements, as defined at: https://dicom.nema.org/medical/dicom/current/output/html/part06.html#table_6-1,. They may be provided by "Keyword" or "Tag". For example "PatientID", "00100010".',
-            ).optional(),
-          }).describe("List of tags to be filtered.").optional(),
-          skipIdRedaction: z.boolean().describe(
+          keepList: z.unknown().describe("List of tags to be filtered.")
+            .optional(),
+          removeList: z.unknown().describe("List of tags to be filtered.")
+            .optional(),
+          skipIdRedaction: z.unknown().describe(
             "Optional. If true, skip replacing StudyInstanceUID, SeriesInstanceUID, SOPInstanceUID, and MediaStorageSOPInstanceUID and leave them untouched. The Cloud Healthcare API regenerates these UIDs by default based on the DICOM Standard's reasoning: \"Whilst these UIDs cannot be mapped directly to an individual out of context, given access to the original images, or to a database of the original images containing the UIDs, it would be possible to recover the individual's identity.\" https://dicom.nema.org/medical/dicom/current/output/chtml/part15/sect_E.3.9.html",
           ).optional(),
         }).describe(
           "Specifies the parameters needed for de-identification of DICOM stores.",
         ).optional(),
         fhir: z.object({
-          defaultKeepExtensions: z.boolean().describe(
+          defaultKeepExtensions: z.unknown().describe(
             "Optional. The behaviour for handling FHIR extensions that aren't otherwise specified for de-identification. If true, all extensions are preserved during de-identification by default. If false or unspecified, all extensions are removed during de-identification by default.",
           ).optional(),
-          fieldMetadataList: z.array(z.object({
-            action: z.enum([
-              "ACTION_UNSPECIFIED",
-              "TRANSFORM",
-              "INSPECT_AND_TRANSFORM",
-              "DO_NOT_TRANSFORM",
-            ]).describe("Optional. Deidentify action for one field.")
-              .optional(),
-            paths: z.array(z.string()).describe(
-              'Optional. List of paths to FHIR fields to be redacted. Each path is a period-separated list where each component is either a field name or FHIR type name, for example: Patient, HumanName. For "choice" types (those defined in the FHIR spec with the form: field[x]) we use two separate components. For example, "deceasedAge.unit" is matched by "Deceased.Age.unit". Supported types are: AdministrativeGenderCode, Base64Binary, Boolean, Code, Date, DateTime, Decimal, HumanName, Id, Instant, Integer, LanguageCode, Markdown, Oid, PositiveInt, String, UnsignedInt, Uri, Uuid, Xhtml.',
-            ).optional(),
-          })).describe(
+          fieldMetadataList: z.unknown().describe(
             "Optional. Specifies FHIR paths to match and how to transform them. Any field that is not matched by a FieldMetadata is passed through to the output dataset unmodified. All extensions will be processed according to `default_keep_extensions`.",
           ).optional(),
         }).describe(
           "Specifies how to handle de-identification of a FHIR store.",
         ).optional(),
         image: z.object({
-          textRedactionMode: z.enum([
-            "TEXT_REDACTION_MODE_UNSPECIFIED",
-            "REDACT_ALL_TEXT",
-            "REDACT_SENSITIVE_TEXT",
-            "REDACT_NO_TEXT",
-          ]).describe("Optional. Determines how to redact text from image.")
-            .optional(),
+          textRedactionMode: z.unknown().describe(
+            "Optional. Determines how to redact text from image.",
+          ).optional(),
         }).describe(
           "Specifies how to handle de-identification of image pixels.",
         ).optional(),
         text: z.object({
-          additionalTransformations: z.array(z.object({
-            characterMaskConfig: z.object({
-              maskingCharacter: z.string().describe(
-                'Optional. Character to mask the sensitive values. If not supplied, defaults to "*".',
-              ).optional(),
-            }).describe(
-              "Mask a string by replacing its characters with a fixed character.",
-            ).optional(),
-            cryptoHashConfig: z.object({
-              cryptoKey: z.string().describe(
-                "An AES 128/192/256 bit key. Causes the hash to be computed based on this key. A default key is generated for each Deidentify operation and is used when neither `crypto_key` nor `kms_wrapped` is specified. Must not be set if `kms_wrapped` is set.",
-              ).optional(),
-              kmsWrapped: z.object({
-                cryptoKey: z.string().describe(
-                  "Required. The resource name of the KMS CryptoKey to use for unwrapping. For example, `projects/{project_id}/locations/{location_id}/keyRings/{keyring}/cryptoKeys/{key}`.",
-                ).optional(),
-                wrappedKey: z.string().describe(
-                  "Required. The wrapped data crypto key.",
-                ).optional(),
-              }).describe(
-                "Include to use an existing data crypto key wrapped by KMS. The wrapped key must be a 128-, 192-, or 256-bit key. The key must grant the Cloud IAM permission `cloudkms.cryptoKeyVersions.useToDecrypt` to the project's Cloud Healthcare Service Agent service account. For more information, see [Creating a wrapped key] (https://cloud.google.com/dlp/docs/create-wrapped-key).",
-              ).optional(),
-            }).describe(
-              "Pseudonymization method that generates surrogates via cryptographic hashing. Uses SHA-256. Outputs a base64-encoded representation of the hashed output (for example, `L7k0BHmF1ha5U3NfGykjro4xWi1MPVQPjhMAZbSV9mM=`).",
-            ).optional(),
-            dateShiftConfig: z.object({
-              cryptoKey: z.string().describe(
-                "An AES 128/192/256 bit key. The date shift is computed based on this key and the patient ID. If the patient ID is empty for a DICOM resource, the date shift is computed based on this key and the study instance UID. If `crypto_key` is not set, then `kms_wrapped` is used to calculate the date shift. If neither is set, a default key is generated for each de-identify operation. Must not be set if `kms_wrapped` is set.",
-              ).optional(),
-              kmsWrapped: z.object({
-                cryptoKey: z.string().describe(
-                  "Required. The resource name of the KMS CryptoKey to use for unwrapping. For example, `projects/{project_id}/locations/{location_id}/keyRings/{keyring}/cryptoKeys/{key}`.",
-                ).optional(),
-                wrappedKey: z.string().describe(
-                  "Required. The wrapped data crypto key.",
-                ).optional(),
-              }).describe(
-                "Include to use an existing data crypto key wrapped by KMS. The wrapped key must be a 128-, 192-, or 256-bit key. The key must grant the Cloud IAM permission `cloudkms.cryptoKeyVersions.useToDecrypt` to the project's Cloud Healthcare Service Agent service account. For more information, see [Creating a wrapped key] (https://cloud.google.com/dlp/docs/create-wrapped-key).",
-              ).optional(),
-            }).describe(
-              "Shift a date forward or backward in time by a random amount which is consistent for a given patient and crypto key combination.",
-            ).optional(),
-            infoTypes: z.array(z.string()).describe(
-              "Optional. InfoTypes to apply this transformation to. If this is not specified, the transformation applies to any info_type.",
-            ).optional(),
-            redactConfig: z.object({}).describe(
-              'Define how to redact sensitive values. Default behaviour is erase. For example, "My name is Jane." becomes "My name is."',
-            ).optional(),
-            replaceWithInfoTypeConfig: z.object({}).describe(
-              'When using the INSPECT_AND_TRANSFORM action, each match is replaced with the name of the info_type. For example, "My name is Jane" becomes "My name is [PERSON_NAME]." The TRANSFORM action is equivalent to redacting.',
-            ).optional(),
-          })).describe(
+          additionalTransformations: z.unknown().describe(
             "Optional. Transformations to apply to the detected data, overridden by `exclude_info_types`.",
           ).optional(),
-          excludeInfoTypes: z.array(z.string()).describe(
+          excludeInfoTypes: z.unknown().describe(
             "Optional. InfoTypes to skip transforming, overriding `additional_transformations`.",
           ).optional(),
-          transformations: z.array(z.object({
-            characterMaskConfig: z.object({
-              maskingCharacter: z.string().describe(
-                'Optional. Character to mask the sensitive values. If not supplied, defaults to "*".',
-              ).optional(),
-            }).describe(
-              "Mask a string by replacing its characters with a fixed character.",
-            ).optional(),
-            cryptoHashConfig: z.object({
-              cryptoKey: z.string().describe(
-                "An AES 128/192/256 bit key. Causes the hash to be computed based on this key. A default key is generated for each Deidentify operation and is used when neither `crypto_key` nor `kms_wrapped` is specified. Must not be set if `kms_wrapped` is set.",
-              ).optional(),
-              kmsWrapped: z.object({
-                cryptoKey: z.string().describe(
-                  "Required. The resource name of the KMS CryptoKey to use for unwrapping. For example, `projects/{project_id}/locations/{location_id}/keyRings/{keyring}/cryptoKeys/{key}`.",
-                ).optional(),
-                wrappedKey: z.string().describe(
-                  "Required. The wrapped data crypto key.",
-                ).optional(),
-              }).describe(
-                "Include to use an existing data crypto key wrapped by KMS. The wrapped key must be a 128-, 192-, or 256-bit key. The key must grant the Cloud IAM permission `cloudkms.cryptoKeyVersions.useToDecrypt` to the project's Cloud Healthcare Service Agent service account. For more information, see [Creating a wrapped key] (https://cloud.google.com/dlp/docs/create-wrapped-key).",
-              ).optional(),
-            }).describe(
-              "Pseudonymization method that generates surrogates via cryptographic hashing. Uses SHA-256. Outputs a base64-encoded representation of the hashed output (for example, `L7k0BHmF1ha5U3NfGykjro4xWi1MPVQPjhMAZbSV9mM=`).",
-            ).optional(),
-            dateShiftConfig: z.object({
-              cryptoKey: z.string().describe(
-                "An AES 128/192/256 bit key. The date shift is computed based on this key and the patient ID. If the patient ID is empty for a DICOM resource, the date shift is computed based on this key and the study instance UID. If `crypto_key` is not set, then `kms_wrapped` is used to calculate the date shift. If neither is set, a default key is generated for each de-identify operation. Must not be set if `kms_wrapped` is set.",
-              ).optional(),
-              kmsWrapped: z.object({
-                cryptoKey: z.string().describe(
-                  "Required. The resource name of the KMS CryptoKey to use for unwrapping. For example, `projects/{project_id}/locations/{location_id}/keyRings/{keyring}/cryptoKeys/{key}`.",
-                ).optional(),
-                wrappedKey: z.string().describe(
-                  "Required. The wrapped data crypto key.",
-                ).optional(),
-              }).describe(
-                "Include to use an existing data crypto key wrapped by KMS. The wrapped key must be a 128-, 192-, or 256-bit key. The key must grant the Cloud IAM permission `cloudkms.cryptoKeyVersions.useToDecrypt` to the project's Cloud Healthcare Service Agent service account. For more information, see [Creating a wrapped key] (https://cloud.google.com/dlp/docs/create-wrapped-key).",
-              ).optional(),
-            }).describe(
-              "Shift a date forward or backward in time by a random amount which is consistent for a given patient and crypto key combination.",
-            ).optional(),
-            infoTypes: z.array(z.string()).describe(
-              "Optional. InfoTypes to apply this transformation to. If this is not specified, the transformation applies to any info_type.",
-            ).optional(),
-            redactConfig: z.object({}).describe(
-              'Define how to redact sensitive values. Default behaviour is erase. For example, "My name is Jane." becomes "My name is."',
-            ).optional(),
-            replaceWithInfoTypeConfig: z.object({}).describe(
-              'When using the INSPECT_AND_TRANSFORM action, each match is replaced with the name of the info_type. For example, "My name is Jane" becomes "My name is [PERSON_NAME]." The TRANSFORM action is equivalent to redacting.',
-            ).optional(),
-          })).describe(
+          transformations: z.unknown().describe(
             "Optional. The transformations to apply to the detected data. Deprecated. Use `additional_transformations` instead.",
           ).optional(),
         }).optional(),
@@ -935,7 +616,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/healthcare/datasets-fhirstores",
-  version: "2026.04.03.3",
+  version: "2026.04.04.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -959,6 +640,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.3",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.04.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

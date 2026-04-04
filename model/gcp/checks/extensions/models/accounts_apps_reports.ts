@@ -58,86 +58,36 @@ const StateSchema = z.object({
     })),
     evidence: z.object({
       dataSecurity: z.object({
-        dataInTransitInfo: z.array(z.object({
-          uri: z.string(),
-        })),
+        dataInTransitInfo: z.array(z.unknown()),
       }),
       dataTypes: z.array(z.object({
-        dataType: z.string(),
-        dataTypeEvidence: z.object({
-          endpoints: z.array(z.object({
-            attributedSdks: z.array(z.object({
-              sdk: z.object({
-                id: z.string(),
-              }),
-            })),
-            endpointDetails: z.array(z.object({
-              endpoint: z.object({
-                domain: z.string(),
-              }),
-            })),
-            exfiltratedDataType: z.string(),
-          })),
-          permissions: z.array(z.object({
-            permission: z.object({
-              id: z.string(),
-            }),
-          })),
-          privacyPolicyTexts: z.array(z.object({
-            policyFragment: z.object({
-              htmlContent: z.string(),
-              sourceUri: z.string(),
-            }),
-          })),
-        }),
+        dataType: z.unknown(),
+        dataTypeEvidence: z.unknown(),
       })),
       endpointRestrictionViolations: z.array(z.object({
-        endpointDetails: z.array(z.object({
-          endpoint: z.object({
-            domain: z.string(),
-          }),
-        })),
+        endpointDetails: z.unknown(),
       })),
       endpoints: z.array(z.object({
-        endpoint: z.object({
-          domain: z.string(),
-        }),
+        endpoint: z.unknown(),
       })),
       permissionRestrictionViolations: z.array(z.object({
-        permissionDetails: z.array(z.object({
-          permission: z.object({
-            id: z.string(),
-          }),
-        })),
+        permissionDetails: z.unknown(),
       })),
       permissions: z.array(z.object({
-        permission: z.object({
-          id: z.string(),
-        }),
+        permission: z.unknown(),
       })),
       privacyPolicyTexts: z.array(z.object({
-        policyFragment: z.object({
-          htmlContent: z.string(),
-          sourceUri: z.string(),
-        }),
+        policyFragment: z.unknown(),
       })),
       sdkIssues: z.array(z.object({
-        sdk: z.object({
-          id: z.string(),
-        }),
-        sdkVersion: z.string(),
+        sdk: z.unknown(),
+        sdkVersion: z.unknown(),
       })),
       sdkRestrictionViolations: z.array(z.object({
-        sdkDetails: z.array(z.object({
-          sdk: z.object({
-            id: z.string(),
-          }),
-        })),
+        sdkDetails: z.unknown(),
       })),
       sdks: z.array(z.object({
-        sdk: z.object({
-          id: z.string(),
-        }),
+        sdk: z.unknown(),
       })),
     }),
     regionCodes: z.array(z.string()),
@@ -154,33 +104,12 @@ const StateSchema = z.object({
     dataTypes: z.array(z.object({
       dataType: z.string(),
       dataTypeEvidence: z.object({
-        endpoints: z.array(z.object({
-          attributedSdks: z.array(z.object({
-            sdk: z.object({
-              id: z.string(),
-            }),
-          })),
-          endpointDetails: z.array(z.object({
-            endpoint: z.object({
-              domain: z.string(),
-            }),
-          })),
-          exfiltratedDataType: z.string(),
-        })),
-        permissions: z.array(z.object({
-          permission: z.object({
-            id: z.string(),
-          }),
-        })),
-        privacyPolicyTexts: z.array(z.object({
-          policyFragment: z.object({
-            htmlContent: z.string(),
-            sourceUri: z.string(),
-          }),
-        })),
+        endpoints: z.array(z.unknown()),
+        permissions: z.array(z.unknown()),
+        privacyPolicyTexts: z.array(z.unknown()),
       }),
       metadata: z.object({
-        badges: z.array(z.string()),
+        badges: z.array(z.unknown()),
         firstDetectedTime: z.string(),
         lastDetectedAppVersion: z.string(),
         lastDetectedTime: z.string(),
@@ -192,7 +121,7 @@ const StateSchema = z.object({
       }),
       hitCount: z.number(),
       metadata: z.object({
-        badges: z.array(z.string()),
+        badges: z.array(z.unknown()),
         firstDetectedTime: z.string(),
         lastDetectedAppVersion: z.string(),
         lastDetectedTime: z.string(),
@@ -200,7 +129,7 @@ const StateSchema = z.object({
     })),
     permissions: z.array(z.object({
       metadata: z.object({
-        badges: z.array(z.string()),
+        badges: z.array(z.unknown()),
         firstDetectedTime: z.string(),
         lastDetectedAppVersion: z.string(),
         lastDetectedTime: z.string(),
@@ -211,7 +140,7 @@ const StateSchema = z.object({
     })),
     sdks: z.array(z.object({
       metadata: z.object({
-        badges: z.array(z.string()),
+        badges: z.array(z.unknown()),
         firstDetectedTime: z.string(),
         lastDetectedAppVersion: z.string(),
         lastDetectedTime: z.string(),
@@ -236,7 +165,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/checks/accounts-apps-reports",
-  version: "2026.04.03.3",
+  version: "2026.04.04.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -260,6 +189,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.3",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.04.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

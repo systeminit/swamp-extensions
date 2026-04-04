@@ -118,16 +118,16 @@ const GlobalArgsSchema = z.object({
           "Output only. The day on which the interval ends. Can be same as start day.",
         ).optional(),
         endTime: z.object({
-          hours: z.number().int().describe(
+          hours: z.unknown().describe(
             'Hours of a day in 24 hour format. Must be greater than or equal to 0 and typically must be less than or equal to 23. An API may choose to allow the value "24:00:00" for scenarios like business closing time.',
           ).optional(),
-          minutes: z.number().int().describe(
+          minutes: z.unknown().describe(
             "Minutes of an hour. Must be greater than or equal to 0 and less than or equal to 59.",
           ).optional(),
-          nanos: z.number().int().describe(
+          nanos: z.unknown().describe(
             "Fractions of seconds, in nanoseconds. Must be greater than or equal to 0 and less than or equal to 999,999,999.",
           ).optional(),
-          seconds: z.number().int().describe(
+          seconds: z.unknown().describe(
             "Seconds of a minute. Must be greater than or equal to 0 and typically must be less than or equal to 59. An API may allow the value 60 if it allows leap-seconds.",
           ).optional(),
         }).describe(
@@ -145,16 +145,16 @@ const GlobalArgsSchema = z.object({
         ]).describe("Output only. The day on which the interval starts.")
           .optional(),
         startTime: z.object({
-          hours: z.number().int().describe(
+          hours: z.unknown().describe(
             'Hours of a day in 24 hour format. Must be greater than or equal to 0 and typically must be less than or equal to 23. An API may choose to allow the value "24:00:00" for scenarios like business closing time.',
           ).optional(),
-          minutes: z.number().int().describe(
+          minutes: z.unknown().describe(
             "Minutes of an hour. Must be greater than or equal to 0 and less than or equal to 59.",
           ).optional(),
-          nanos: z.number().int().describe(
+          nanos: z.unknown().describe(
             "Fractions of seconds, in nanoseconds. Must be greater than or equal to 0 and less than or equal to 999,999,999.",
           ).optional(),
-          seconds: z.number().int().describe(
+          seconds: z.unknown().describe(
             "Seconds of a minute. Must be greater than or equal to 0 and typically must be less than or equal to 59. An API may allow the value 60 if it allows leap-seconds.",
           ).optional(),
         }).describe(
@@ -287,17 +287,17 @@ const StateSchema = z.object({
       disallowedIntervals: z.array(z.object({
         endDay: z.string(),
         endTime: z.object({
-          hours: z.number(),
-          minutes: z.number(),
-          nanos: z.number(),
-          seconds: z.number(),
+          hours: z.unknown(),
+          minutes: z.unknown(),
+          nanos: z.unknown(),
+          seconds: z.unknown(),
         }),
         startDay: z.string(),
         startTime: z.object({
-          hours: z.number(),
-          minutes: z.number(),
-          nanos: z.number(),
-          seconds: z.number(),
+          hours: z.unknown(),
+          minutes: z.unknown(),
+          nanos: z.unknown(),
+          seconds: z.unknown(),
         }),
       })),
       minHoursDay: z.number(),
@@ -399,16 +399,16 @@ const InputsSchema = z.object({
           "Output only. The day on which the interval ends. Can be same as start day.",
         ).optional(),
         endTime: z.object({
-          hours: z.number().int().describe(
+          hours: z.unknown().describe(
             'Hours of a day in 24 hour format. Must be greater than or equal to 0 and typically must be less than or equal to 23. An API may choose to allow the value "24:00:00" for scenarios like business closing time.',
           ).optional(),
-          minutes: z.number().int().describe(
+          minutes: z.unknown().describe(
             "Minutes of an hour. Must be greater than or equal to 0 and less than or equal to 59.",
           ).optional(),
-          nanos: z.number().int().describe(
+          nanos: z.unknown().describe(
             "Fractions of seconds, in nanoseconds. Must be greater than or equal to 0 and less than or equal to 999,999,999.",
           ).optional(),
-          seconds: z.number().int().describe(
+          seconds: z.unknown().describe(
             "Seconds of a minute. Must be greater than or equal to 0 and typically must be less than or equal to 59. An API may allow the value 60 if it allows leap-seconds.",
           ).optional(),
         }).describe(
@@ -426,16 +426,16 @@ const InputsSchema = z.object({
         ]).describe("Output only. The day on which the interval starts.")
           .optional(),
         startTime: z.object({
-          hours: z.number().int().describe(
+          hours: z.unknown().describe(
             'Hours of a day in 24 hour format. Must be greater than or equal to 0 and typically must be less than or equal to 23. An API may choose to allow the value "24:00:00" for scenarios like business closing time.',
           ).optional(),
-          minutes: z.number().int().describe(
+          minutes: z.unknown().describe(
             "Minutes of an hour. Must be greater than or equal to 0 and less than or equal to 59.",
           ).optional(),
-          nanos: z.number().int().describe(
+          nanos: z.unknown().describe(
             "Fractions of seconds, in nanoseconds. Must be greater than or equal to 0 and less than or equal to 999,999,999.",
           ).optional(),
-          seconds: z.number().int().describe(
+          seconds: z.unknown().describe(
             "Seconds of a minute. Must be greater than or equal to 0 and typically must be less than or equal to 59. An API may allow the value 60 if it allows leap-seconds.",
           ).optional(),
         }).describe(
@@ -554,7 +554,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/vmwareengine/privateclouds-upgrades",
-  version: "2026.04.03.3",
+  version: "2026.04.04.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -578,6 +578,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.3",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.04.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

@@ -82,10 +82,10 @@ const GlobalArgsSchema = z.object({
       .optional(),
     bundleDetails: z.object({
       bundleElementDetails: z.array(z.object({
-        product: z.string().describe(
+        product: z.unknown().describe(
           "Output only. Product resource name that identifies the bundle element. The format is 'partners/{partner_id}/products/{product_id}'.",
         ).optional(),
-        userAccountLinkedTime: z.string().describe(
+        userAccountLinkedTime: z.unknown().describe(
           "Output only. The time when this product is linked to an end user.",
         ).optional(),
       })).describe(
@@ -112,35 +112,14 @@ const GlobalArgsSchema = z.object({
     ).optional(),
     lineItemPromotionSpecs: z.array(z.object({
       freeTrialDuration: z.object({
-        count: z.number().int().describe(
-          "number of duration units to be included.",
-        ).optional(),
-        unit: z.enum(["UNIT_UNSPECIFIED", "MONTH", "DAY", "HOUR"]).describe(
-          "The unit used for the duration",
-        ).optional(),
+        count: z.unknown().describe("number of duration units to be included.")
+          .optional(),
+        unit: z.unknown().describe("The unit used for the duration").optional(),
       }).describe("Describes the length of a period of a time.").optional(),
       introductoryPricingDetails: z.object({
-        introductoryPricingSpecs: z.array(z.object({
-          discountAmount: z.object({
-            amountMicros: z.string().describe(
-              "Required. Amount in micros (1_000_000 micros = 1 currency unit)",
-            ).optional(),
-            currencyCode: z.string().describe(
-              "Required. Currency codes in accordance with [ISO-4217 Currency Codes] (https://en.wikipedia.org/wiki/ISO_4217). For example, USD.",
-            ).optional(),
-          }).describe("Describes the amount unit including the currency code.")
-            .optional(),
-          discountRatioMicros: z.string().describe(
-            "Output only. The discount percentage in micros. For example, 50,000 represents 5%.",
-          ).optional(),
-          recurrenceCount: z.number().int().describe(
-            "Output only. The duration of an introductory offer in billing cycles.",
-          ).optional(),
-          regionCode: z.string().describe(
-            'Output only. 2-letter ISO region code where the product is available in. Ex. "US".',
-          ).optional(),
-        })).describe("Output only. Specifies the introductory pricing periods.")
-          .optional(),
+        introductoryPricingSpecs: z.unknown().describe(
+          "Output only. Specifies the introductory pricing periods.",
+        ).optional(),
       }).describe("The details of a introductory pricing promotion.")
         .optional(),
       promotion: z.string().describe(
@@ -186,7 +165,7 @@ const GlobalArgsSchema = z.object({
         ).optional(),
       }).describe("Payload specific for Google Home products.").optional(),
       googleOnePayload: z.object({
-        campaigns: z.array(z.string()).describe(
+        campaigns: z.array(z.unknown()).describe(
           "Campaign attributed to sales of this subscription.",
         ).optional(),
         offering: z.enum([
@@ -215,7 +194,7 @@ const GlobalArgsSchema = z.object({
         accessEndTime: z.string().describe(
           "Output only. The access expiration time for this line item.",
         ).optional(),
-        partnerEligibilityIds: z.array(z.string()).describe(
+        partnerEligibilityIds: z.array(z.unknown()).describe(
           "The list of eligibility_ids which are applicable for the line item.",
         ).optional(),
         partnerPlanType: z.enum([
@@ -270,22 +249,16 @@ const GlobalArgsSchema = z.object({
     }).describe("Describes the length of a period of a time.").optional(),
     introductoryPricingDetails: z.object({
       introductoryPricingSpecs: z.array(z.object({
-        discountAmount: z.object({
-          amountMicros: z.string().describe(
-            "Required. Amount in micros (1_000_000 micros = 1 currency unit)",
-          ).optional(),
-          currencyCode: z.string().describe(
-            "Required. Currency codes in accordance with [ISO-4217 Currency Codes] (https://en.wikipedia.org/wiki/ISO_4217). For example, USD.",
-          ).optional(),
-        }).describe("Describes the amount unit including the currency code.")
-          .optional(),
-        discountRatioMicros: z.string().describe(
+        discountAmount: z.unknown().describe(
+          "Describes the amount unit including the currency code.",
+        ).optional(),
+        discountRatioMicros: z.unknown().describe(
           "Output only. The discount percentage in micros. For example, 50,000 represents 5%.",
         ).optional(),
-        recurrenceCount: z.number().int().describe(
+        recurrenceCount: z.unknown().describe(
           "Output only. The duration of an introductory offer in billing cycles.",
         ).optional(),
-        regionCode: z.string().describe(
+        regionCode: z.unknown().describe(
           'Output only. 2-letter ISO region code where the product is available in. Ex. "US".',
         ).optional(),
       })).describe("Output only. Specifies the introductory pricing periods.")
@@ -355,8 +328,8 @@ const StateSchema = z.object({
     }),
     bundleDetails: z.object({
       bundleElementDetails: z.array(z.object({
-        product: z.string(),
-        userAccountLinkedTime: z.string(),
+        product: z.unknown(),
+        userAccountLinkedTime: z.unknown(),
       })),
     }),
     description: z.string(),
@@ -367,19 +340,11 @@ const StateSchema = z.object({
     lineItemIndex: z.number(),
     lineItemPromotionSpecs: z.array(z.object({
       freeTrialDuration: z.object({
-        count: z.number(),
-        unit: z.string(),
+        count: z.unknown(),
+        unit: z.unknown(),
       }),
       introductoryPricingDetails: z.object({
-        introductoryPricingSpecs: z.array(z.object({
-          discountAmount: z.object({
-            amountMicros: z.string(),
-            currencyCode: z.string(),
-          }),
-          discountRatioMicros: z.string(),
-          recurrenceCount: z.number(),
-          regionCode: z.string(),
-        })),
+        introductoryPricingSpecs: z.unknown(),
       }),
       promotion: z.string(),
       type: z.string(),
@@ -399,14 +364,14 @@ const StateSchema = z.object({
         partnerStructureId: z.string(),
       }),
       googleOnePayload: z.object({
-        campaigns: z.array(z.string()),
+        campaigns: z.array(z.unknown()),
         offering: z.string(),
         salesChannel: z.string(),
         storeId: z.string(),
       }),
       youtubePayload: z.object({
         accessEndTime: z.string(),
-        partnerEligibilityIds: z.array(z.string()),
+        partnerEligibilityIds: z.array(z.unknown()),
         partnerPlanType: z.string(),
       }),
     }),
@@ -427,13 +392,10 @@ const StateSchema = z.object({
     }),
     introductoryPricingDetails: z.object({
       introductoryPricingSpecs: z.array(z.object({
-        discountAmount: z.object({
-          amountMicros: z.string(),
-          currencyCode: z.string(),
-        }),
-        discountRatioMicros: z.string(),
-        recurrenceCount: z.number(),
-        regionCode: z.string(),
+        discountAmount: z.unknown(),
+        discountRatioMicros: z.unknown(),
+        recurrenceCount: z.unknown(),
+        regionCode: z.unknown(),
       })),
     }),
     promotion: z.string(),
@@ -488,10 +450,10 @@ const InputsSchema = z.object({
       .optional(),
     bundleDetails: z.object({
       bundleElementDetails: z.array(z.object({
-        product: z.string().describe(
+        product: z.unknown().describe(
           "Output only. Product resource name that identifies the bundle element. The format is 'partners/{partner_id}/products/{product_id}'.",
         ).optional(),
-        userAccountLinkedTime: z.string().describe(
+        userAccountLinkedTime: z.unknown().describe(
           "Output only. The time when this product is linked to an end user.",
         ).optional(),
       })).describe(
@@ -518,35 +480,14 @@ const InputsSchema = z.object({
     ).optional(),
     lineItemPromotionSpecs: z.array(z.object({
       freeTrialDuration: z.object({
-        count: z.number().int().describe(
-          "number of duration units to be included.",
-        ).optional(),
-        unit: z.enum(["UNIT_UNSPECIFIED", "MONTH", "DAY", "HOUR"]).describe(
-          "The unit used for the duration",
-        ).optional(),
+        count: z.unknown().describe("number of duration units to be included.")
+          .optional(),
+        unit: z.unknown().describe("The unit used for the duration").optional(),
       }).describe("Describes the length of a period of a time.").optional(),
       introductoryPricingDetails: z.object({
-        introductoryPricingSpecs: z.array(z.object({
-          discountAmount: z.object({
-            amountMicros: z.string().describe(
-              "Required. Amount in micros (1_000_000 micros = 1 currency unit)",
-            ).optional(),
-            currencyCode: z.string().describe(
-              "Required. Currency codes in accordance with [ISO-4217 Currency Codes] (https://en.wikipedia.org/wiki/ISO_4217). For example, USD.",
-            ).optional(),
-          }).describe("Describes the amount unit including the currency code.")
-            .optional(),
-          discountRatioMicros: z.string().describe(
-            "Output only. The discount percentage in micros. For example, 50,000 represents 5%.",
-          ).optional(),
-          recurrenceCount: z.number().int().describe(
-            "Output only. The duration of an introductory offer in billing cycles.",
-          ).optional(),
-          regionCode: z.string().describe(
-            'Output only. 2-letter ISO region code where the product is available in. Ex. "US".',
-          ).optional(),
-        })).describe("Output only. Specifies the introductory pricing periods.")
-          .optional(),
+        introductoryPricingSpecs: z.unknown().describe(
+          "Output only. Specifies the introductory pricing periods.",
+        ).optional(),
       }).describe("The details of a introductory pricing promotion.")
         .optional(),
       promotion: z.string().describe(
@@ -592,7 +533,7 @@ const InputsSchema = z.object({
         ).optional(),
       }).describe("Payload specific for Google Home products.").optional(),
       googleOnePayload: z.object({
-        campaigns: z.array(z.string()).describe(
+        campaigns: z.array(z.unknown()).describe(
           "Campaign attributed to sales of this subscription.",
         ).optional(),
         offering: z.enum([
@@ -621,7 +562,7 @@ const InputsSchema = z.object({
         accessEndTime: z.string().describe(
           "Output only. The access expiration time for this line item.",
         ).optional(),
-        partnerEligibilityIds: z.array(z.string()).describe(
+        partnerEligibilityIds: z.array(z.unknown()).describe(
           "The list of eligibility_ids which are applicable for the line item.",
         ).optional(),
         partnerPlanType: z.enum([
@@ -676,22 +617,16 @@ const InputsSchema = z.object({
     }).describe("Describes the length of a period of a time.").optional(),
     introductoryPricingDetails: z.object({
       introductoryPricingSpecs: z.array(z.object({
-        discountAmount: z.object({
-          amountMicros: z.string().describe(
-            "Required. Amount in micros (1_000_000 micros = 1 currency unit)",
-          ).optional(),
-          currencyCode: z.string().describe(
-            "Required. Currency codes in accordance with [ISO-4217 Currency Codes] (https://en.wikipedia.org/wiki/ISO_4217). For example, USD.",
-          ).optional(),
-        }).describe("Describes the amount unit including the currency code.")
-          .optional(),
-        discountRatioMicros: z.string().describe(
+        discountAmount: z.unknown().describe(
+          "Describes the amount unit including the currency code.",
+        ).optional(),
+        discountRatioMicros: z.unknown().describe(
           "Output only. The discount percentage in micros. For example, 50,000 represents 5%.",
         ).optional(),
-        recurrenceCount: z.number().int().describe(
+        recurrenceCount: z.unknown().describe(
           "Output only. The duration of an introductory offer in billing cycles.",
         ).optional(),
-        regionCode: z.string().describe(
+        regionCode: z.unknown().describe(
           'Output only. 2-letter ISO region code where the product is available in. Ex. "US".',
         ).optional(),
       })).describe("Output only. Specifies the introductory pricing periods.")
@@ -748,7 +683,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/paymentsresellersubscription/partners-subscriptions",
-  version: "2026.04.03.3",
+  version: "2026.04.04.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -772,6 +707,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.3",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.04.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

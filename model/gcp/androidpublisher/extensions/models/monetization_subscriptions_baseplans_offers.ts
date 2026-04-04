@@ -186,25 +186,25 @@ const GlobalArgsSchema = z.object({
     otherRegionsConfig: z.object({
       absoluteDiscounts: z.object({
         eurPrice: z.object({
-          currencyCode: z.string().describe(
+          currencyCode: z.unknown().describe(
             "The three-letter currency code defined in ISO 4217.",
           ).optional(),
-          nanos: z.number().int().describe(
+          nanos: z.unknown().describe(
             "Number of nano (10^-9) units of the amount. The value must be between -999,999,999 and +999,999,999 inclusive. If `units` is positive, `nanos` must be positive or zero. If `units` is zero, `nanos` can be positive, zero, or negative. If `units` is negative, `nanos` must be negative or zero. For example $-1.75 is represented as `units`=-1 and `nanos`=-750,000,000.",
           ).optional(),
-          units: z.string().describe(
+          units: z.unknown().describe(
             'The whole units of the amount. For example if `currencyCode` is `"USD"`, then 1 unit is one US dollar.',
           ).optional(),
         }).describe("Represents an amount of money with its currency type.")
           .optional(),
         usdPrice: z.object({
-          currencyCode: z.string().describe(
+          currencyCode: z.unknown().describe(
             "The three-letter currency code defined in ISO 4217.",
           ).optional(),
-          nanos: z.number().int().describe(
+          nanos: z.unknown().describe(
             "Number of nano (10^-9) units of the amount. The value must be between -999,999,999 and +999,999,999 inclusive. If `units` is positive, `nanos` must be positive or zero. If `units` is zero, `nanos` can be positive, zero, or negative. If `units` is negative, `nanos` must be negative or zero. For example $-1.75 is represented as `units`=-1 and `nanos`=-750,000,000.",
           ).optional(),
-          units: z.string().describe(
+          units: z.unknown().describe(
             'The whole units of the amount. For example if `currencyCode` is `"USD"`, then 1 unit is one US dollar.',
           ).optional(),
         }).describe("Represents an amount of money with its currency type.")
@@ -217,25 +217,25 @@ const GlobalArgsSchema = z.object({
       ).optional(),
       otherRegionsPrices: z.object({
         eurPrice: z.object({
-          currencyCode: z.string().describe(
+          currencyCode: z.unknown().describe(
             "The three-letter currency code defined in ISO 4217.",
           ).optional(),
-          nanos: z.number().int().describe(
+          nanos: z.unknown().describe(
             "Number of nano (10^-9) units of the amount. The value must be between -999,999,999 and +999,999,999 inclusive. If `units` is positive, `nanos` must be positive or zero. If `units` is zero, `nanos` can be positive, zero, or negative. If `units` is negative, `nanos` must be negative or zero. For example $-1.75 is represented as `units`=-1 and `nanos`=-750,000,000.",
           ).optional(),
-          units: z.string().describe(
+          units: z.unknown().describe(
             'The whole units of the amount. For example if `currencyCode` is `"USD"`, then 1 unit is one US dollar.',
           ).optional(),
         }).describe("Represents an amount of money with its currency type.")
           .optional(),
         usdPrice: z.object({
-          currencyCode: z.string().describe(
+          currencyCode: z.unknown().describe(
             "The three-letter currency code defined in ISO 4217.",
           ).optional(),
-          nanos: z.number().int().describe(
+          nanos: z.unknown().describe(
             "Number of nano (10^-9) units of the amount. The value must be between -999,999,999 and +999,999,999 inclusive. If `units` is positive, `nanos` must be positive or zero. If `units` is zero, `nanos` can be positive, zero, or negative. If `units` is negative, `nanos` must be negative or zero. For example $-1.75 is represented as `units`=-1 and `nanos`=-750,000,000.",
           ).optional(),
-          units: z.string().describe(
+          units: z.unknown().describe(
             'The whole units of the amount. For example if `currencyCode` is `"USD"`, then 1 unit is one US dollar.',
           ).optional(),
         }).describe("Represents an amount of money with its currency type.")
@@ -254,13 +254,13 @@ const GlobalArgsSchema = z.object({
     ).optional(),
     regionalConfigs: z.array(z.object({
       absoluteDiscount: z.object({
-        currencyCode: z.string().describe(
+        currencyCode: z.unknown().describe(
           "The three-letter currency code defined in ISO 4217.",
         ).optional(),
-        nanos: z.number().int().describe(
+        nanos: z.unknown().describe(
           "Number of nano (10^-9) units of the amount. The value must be between -999,999,999 and +999,999,999 inclusive. If `units` is positive, `nanos` must be positive or zero. If `units` is zero, `nanos` can be positive, zero, or negative. If `units` is negative, `nanos` must be negative or zero. For example $-1.75 is represented as `units`=-1 and `nanos`=-750,000,000.",
         ).optional(),
-        units: z.string().describe(
+        units: z.unknown().describe(
           'The whole units of the amount. For example if `currencyCode` is `"USD"`, then 1 unit is one US dollar.',
         ).optional(),
       }).describe("Represents an amount of money with its currency type.")
@@ -269,13 +269,13 @@ const GlobalArgsSchema = z.object({
         "Represents the free price override configuration for a single phase of a subscription offer",
       ).optional(),
       price: z.object({
-        currencyCode: z.string().describe(
+        currencyCode: z.unknown().describe(
           "The three-letter currency code defined in ISO 4217.",
         ).optional(),
-        nanos: z.number().int().describe(
+        nanos: z.unknown().describe(
           "Number of nano (10^-9) units of the amount. The value must be between -999,999,999 and +999,999,999 inclusive. If `units` is positive, `nanos` must be positive or zero. If `units` is zero, `nanos` can be positive, zero, or negative. If `units` is negative, `nanos` must be negative or zero. For example $-1.75 is represented as `units`=-1 and `nanos`=-750,000,000.",
         ).optional(),
-        units: z.string().describe(
+        units: z.unknown().describe(
           'The whole units of the amount. For example if `currencyCode` is `"USD"`, then 1 unit is one US dollar.',
         ).optional(),
       }).describe("Represents an amount of money with its currency type.")
@@ -368,27 +368,27 @@ const StateSchema = z.object({
     otherRegionsConfig: z.object({
       absoluteDiscounts: z.object({
         eurPrice: z.object({
-          currencyCode: z.string(),
-          nanos: z.number(),
-          units: z.string(),
+          currencyCode: z.unknown(),
+          nanos: z.unknown(),
+          units: z.unknown(),
         }),
         usdPrice: z.object({
-          currencyCode: z.string(),
-          nanos: z.number(),
-          units: z.string(),
+          currencyCode: z.unknown(),
+          nanos: z.unknown(),
+          units: z.unknown(),
         }),
       }),
       free: z.object({}),
       otherRegionsPrices: z.object({
         eurPrice: z.object({
-          currencyCode: z.string(),
-          nanos: z.number(),
-          units: z.string(),
+          currencyCode: z.unknown(),
+          nanos: z.unknown(),
+          units: z.unknown(),
         }),
         usdPrice: z.object({
-          currencyCode: z.string(),
-          nanos: z.number(),
-          units: z.string(),
+          currencyCode: z.unknown(),
+          nanos: z.unknown(),
+          units: z.unknown(),
         }),
       }),
       relativeDiscount: z.number(),
@@ -396,15 +396,15 @@ const StateSchema = z.object({
     recurrenceCount: z.number(),
     regionalConfigs: z.array(z.object({
       absoluteDiscount: z.object({
-        currencyCode: z.string(),
-        nanos: z.number(),
-        units: z.string(),
+        currencyCode: z.unknown(),
+        nanos: z.unknown(),
+        units: z.unknown(),
       }),
       free: z.object({}),
       price: z.object({
-        currencyCode: z.string(),
-        nanos: z.number(),
-        units: z.string(),
+        currencyCode: z.unknown(),
+        nanos: z.unknown(),
+        units: z.unknown(),
       }),
       regionCode: z.string(),
       relativeDiscount: z.number(),
@@ -470,25 +470,25 @@ const InputsSchema = z.object({
     otherRegionsConfig: z.object({
       absoluteDiscounts: z.object({
         eurPrice: z.object({
-          currencyCode: z.string().describe(
+          currencyCode: z.unknown().describe(
             "The three-letter currency code defined in ISO 4217.",
           ).optional(),
-          nanos: z.number().int().describe(
+          nanos: z.unknown().describe(
             "Number of nano (10^-9) units of the amount. The value must be between -999,999,999 and +999,999,999 inclusive. If `units` is positive, `nanos` must be positive or zero. If `units` is zero, `nanos` can be positive, zero, or negative. If `units` is negative, `nanos` must be negative or zero. For example $-1.75 is represented as `units`=-1 and `nanos`=-750,000,000.",
           ).optional(),
-          units: z.string().describe(
+          units: z.unknown().describe(
             'The whole units of the amount. For example if `currencyCode` is `"USD"`, then 1 unit is one US dollar.',
           ).optional(),
         }).describe("Represents an amount of money with its currency type.")
           .optional(),
         usdPrice: z.object({
-          currencyCode: z.string().describe(
+          currencyCode: z.unknown().describe(
             "The three-letter currency code defined in ISO 4217.",
           ).optional(),
-          nanos: z.number().int().describe(
+          nanos: z.unknown().describe(
             "Number of nano (10^-9) units of the amount. The value must be between -999,999,999 and +999,999,999 inclusive. If `units` is positive, `nanos` must be positive or zero. If `units` is zero, `nanos` can be positive, zero, or negative. If `units` is negative, `nanos` must be negative or zero. For example $-1.75 is represented as `units`=-1 and `nanos`=-750,000,000.",
           ).optional(),
-          units: z.string().describe(
+          units: z.unknown().describe(
             'The whole units of the amount. For example if `currencyCode` is `"USD"`, then 1 unit is one US dollar.',
           ).optional(),
         }).describe("Represents an amount of money with its currency type.")
@@ -501,25 +501,25 @@ const InputsSchema = z.object({
       ).optional(),
       otherRegionsPrices: z.object({
         eurPrice: z.object({
-          currencyCode: z.string().describe(
+          currencyCode: z.unknown().describe(
             "The three-letter currency code defined in ISO 4217.",
           ).optional(),
-          nanos: z.number().int().describe(
+          nanos: z.unknown().describe(
             "Number of nano (10^-9) units of the amount. The value must be between -999,999,999 and +999,999,999 inclusive. If `units` is positive, `nanos` must be positive or zero. If `units` is zero, `nanos` can be positive, zero, or negative. If `units` is negative, `nanos` must be negative or zero. For example $-1.75 is represented as `units`=-1 and `nanos`=-750,000,000.",
           ).optional(),
-          units: z.string().describe(
+          units: z.unknown().describe(
             'The whole units of the amount. For example if `currencyCode` is `"USD"`, then 1 unit is one US dollar.',
           ).optional(),
         }).describe("Represents an amount of money with its currency type.")
           .optional(),
         usdPrice: z.object({
-          currencyCode: z.string().describe(
+          currencyCode: z.unknown().describe(
             "The three-letter currency code defined in ISO 4217.",
           ).optional(),
-          nanos: z.number().int().describe(
+          nanos: z.unknown().describe(
             "Number of nano (10^-9) units of the amount. The value must be between -999,999,999 and +999,999,999 inclusive. If `units` is positive, `nanos` must be positive or zero. If `units` is zero, `nanos` can be positive, zero, or negative. If `units` is negative, `nanos` must be negative or zero. For example $-1.75 is represented as `units`=-1 and `nanos`=-750,000,000.",
           ).optional(),
-          units: z.string().describe(
+          units: z.unknown().describe(
             'The whole units of the amount. For example if `currencyCode` is `"USD"`, then 1 unit is one US dollar.',
           ).optional(),
         }).describe("Represents an amount of money with its currency type.")
@@ -538,13 +538,13 @@ const InputsSchema = z.object({
     ).optional(),
     regionalConfigs: z.array(z.object({
       absoluteDiscount: z.object({
-        currencyCode: z.string().describe(
+        currencyCode: z.unknown().describe(
           "The three-letter currency code defined in ISO 4217.",
         ).optional(),
-        nanos: z.number().int().describe(
+        nanos: z.unknown().describe(
           "Number of nano (10^-9) units of the amount. The value must be between -999,999,999 and +999,999,999 inclusive. If `units` is positive, `nanos` must be positive or zero. If `units` is zero, `nanos` can be positive, zero, or negative. If `units` is negative, `nanos` must be negative or zero. For example $-1.75 is represented as `units`=-1 and `nanos`=-750,000,000.",
         ).optional(),
-        units: z.string().describe(
+        units: z.unknown().describe(
           'The whole units of the amount. For example if `currencyCode` is `"USD"`, then 1 unit is one US dollar.',
         ).optional(),
       }).describe("Represents an amount of money with its currency type.")
@@ -553,13 +553,13 @@ const InputsSchema = z.object({
         "Represents the free price override configuration for a single phase of a subscription offer",
       ).optional(),
       price: z.object({
-        currencyCode: z.string().describe(
+        currencyCode: z.unknown().describe(
           "The three-letter currency code defined in ISO 4217.",
         ).optional(),
-        nanos: z.number().int().describe(
+        nanos: z.unknown().describe(
           "Number of nano (10^-9) units of the amount. The value must be between -999,999,999 and +999,999,999 inclusive. If `units` is positive, `nanos` must be positive or zero. If `units` is zero, `nanos` can be positive, zero, or negative. If `units` is negative, `nanos` must be negative or zero. For example $-1.75 is represented as `units`=-1 and `nanos`=-750,000,000.",
         ).optional(),
-        units: z.string().describe(
+        units: z.unknown().describe(
           'The whole units of the amount. For example if `currencyCode` is `"USD"`, then 1 unit is one US dollar.',
         ).optional(),
       }).describe("Represents an amount of money with its currency type.")
@@ -640,7 +640,7 @@ const InputsSchema = z.object({
 export const model = {
   type:
     "@swamp/gcp/androidpublisher/monetization-subscriptions-baseplans-offers",
-  version: "2026.04.03.3",
+  version: "2026.04.04.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -664,6 +664,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.3",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.04.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

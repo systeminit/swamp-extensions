@@ -91,41 +91,27 @@ const GlobalArgsSchema = z.object({
     autoscalingConfig: z.object({
       asymmetricAutoscalingOptions: z.array(z.object({
         overrides: z.object({
-          autoscalingLimits: z.object({
-            maxNodes: z.number().int().describe(
-              "Maximum number of nodes allocated to the instance. If set, this number should be greater than or equal to min_nodes.",
-            ).optional(),
-            maxProcessingUnits: z.number().int().describe(
-              "Maximum number of processing units allocated to the instance. If set, this number should be multiples of 1000 and be greater than or equal to min_processing_units.",
-            ).optional(),
-            minNodes: z.number().int().describe(
-              "Minimum number of nodes allocated to the instance. If set, this number should be greater than or equal to 1.",
-            ).optional(),
-            minProcessingUnits: z.number().int().describe(
-              "Minimum number of processing units allocated to the instance. If set, this number should be multiples of 1000.",
-            ).optional(),
-          }).describe(
+          autoscalingLimits: z.unknown().describe(
             "The autoscaling limits for the instance. Users can define the minimum and maximum compute capacity allocated to the instance, and the autoscaler will only scale within that range. Users can either use nodes or processing units to specify the limits, but should use the same unit to set both the min_limit and max_limit.",
           ).optional(),
-          autoscalingTargetHighPriorityCpuUtilizationPercent: z.number().int()
+          autoscalingTargetHighPriorityCpuUtilizationPercent: z.unknown()
             .describe(
               "Optional. If specified, overrides the autoscaling target high_priority_cpu_utilization_percent in the top-level autoscaling configuration for the selected replicas.",
             ).optional(),
-          autoscalingTargetTotalCpuUtilizationPercent: z.number().int()
-            .describe(
-              "Optional. If specified, overrides the autoscaling target `total_cpu_utilization_percent` in the top-level autoscaling configuration for the selected replicas.",
-            ).optional(),
-          disableHighPriorityCpuAutoscaling: z.boolean().describe(
+          autoscalingTargetTotalCpuUtilizationPercent: z.unknown().describe(
+            "Optional. If specified, overrides the autoscaling target `total_cpu_utilization_percent` in the top-level autoscaling configuration for the selected replicas.",
+          ).optional(),
+          disableHighPriorityCpuAutoscaling: z.unknown().describe(
             "Optional. If true, disables high priority CPU autoscaling for the selected replicas and ignores high_priority_cpu_utilization_percent in the top-level autoscaling configuration. When setting this field to true, setting autoscaling_target_high_priority_cpu_utilization_percent field to a non-zero value for the same replica is not supported. If false, the autoscaling_target_high_priority_cpu_utilization_percent field in the replica will be used if set to a non-zero value. Otherwise, the high_priority_cpu_utilization_percent field in the top-level autoscaling configuration will be used. Setting both disable_high_priority_cpu_autoscaling and disable_total_cpu_autoscaling to true for the same replica is not supported.",
           ).optional(),
-          disableTotalCpuAutoscaling: z.boolean().describe(
+          disableTotalCpuAutoscaling: z.unknown().describe(
             "Optional. If true, disables total CPU autoscaling for the selected replicas and ignores total_cpu_utilization_percent in the top-level autoscaling configuration. When setting this field to true, setting autoscaling_target_total_cpu_utilization_percent field to a non-zero value for the same replica is not supported. If false, the autoscaling_target_total_cpu_utilization_percent field in the replica will be used if set to a non-zero value. Otherwise, the total_cpu_utilization_percent field in the top-level autoscaling configuration will be used. Setting both disable_high_priority_cpu_autoscaling and disable_total_cpu_autoscaling to true for the same replica is not supported.",
           ).optional(),
         }).describe(
           "Overrides the top-level autoscaling configuration for the replicas identified by `replica_selection`. All fields in this message are optional. Any unspecified fields will use the corresponding values from the top-level autoscaling configuration.",
         ).optional(),
         replicaSelection: z.object({
-          location: z.string().describe(
+          location: z.unknown().describe(
             'Required. Name of the location of the replicas (for example, "us-central1").',
           ).optional(),
         }).describe(
@@ -263,10 +249,10 @@ const StateSchema = z.object({
     asymmetricAutoscalingOptions: z.array(z.object({
       overrides: z.object({
         autoscalingLimits: z.object({
-          maxNodes: z.number(),
-          maxProcessingUnits: z.number(),
-          minNodes: z.number(),
-          minProcessingUnits: z.number(),
+          maxNodes: z.unknown(),
+          maxProcessingUnits: z.unknown(),
+          minNodes: z.unknown(),
+          minProcessingUnits: z.unknown(),
         }),
         autoscalingTargetHighPriorityCpuUtilizationPercent: z.number(),
         autoscalingTargetTotalCpuUtilizationPercent: z.number(),
@@ -324,41 +310,27 @@ const InputsSchema = z.object({
     autoscalingConfig: z.object({
       asymmetricAutoscalingOptions: z.array(z.object({
         overrides: z.object({
-          autoscalingLimits: z.object({
-            maxNodes: z.number().int().describe(
-              "Maximum number of nodes allocated to the instance. If set, this number should be greater than or equal to min_nodes.",
-            ).optional(),
-            maxProcessingUnits: z.number().int().describe(
-              "Maximum number of processing units allocated to the instance. If set, this number should be multiples of 1000 and be greater than or equal to min_processing_units.",
-            ).optional(),
-            minNodes: z.number().int().describe(
-              "Minimum number of nodes allocated to the instance. If set, this number should be greater than or equal to 1.",
-            ).optional(),
-            minProcessingUnits: z.number().int().describe(
-              "Minimum number of processing units allocated to the instance. If set, this number should be multiples of 1000.",
-            ).optional(),
-          }).describe(
+          autoscalingLimits: z.unknown().describe(
             "The autoscaling limits for the instance. Users can define the minimum and maximum compute capacity allocated to the instance, and the autoscaler will only scale within that range. Users can either use nodes or processing units to specify the limits, but should use the same unit to set both the min_limit and max_limit.",
           ).optional(),
-          autoscalingTargetHighPriorityCpuUtilizationPercent: z.number().int()
+          autoscalingTargetHighPriorityCpuUtilizationPercent: z.unknown()
             .describe(
               "Optional. If specified, overrides the autoscaling target high_priority_cpu_utilization_percent in the top-level autoscaling configuration for the selected replicas.",
             ).optional(),
-          autoscalingTargetTotalCpuUtilizationPercent: z.number().int()
-            .describe(
-              "Optional. If specified, overrides the autoscaling target `total_cpu_utilization_percent` in the top-level autoscaling configuration for the selected replicas.",
-            ).optional(),
-          disableHighPriorityCpuAutoscaling: z.boolean().describe(
+          autoscalingTargetTotalCpuUtilizationPercent: z.unknown().describe(
+            "Optional. If specified, overrides the autoscaling target `total_cpu_utilization_percent` in the top-level autoscaling configuration for the selected replicas.",
+          ).optional(),
+          disableHighPriorityCpuAutoscaling: z.unknown().describe(
             "Optional. If true, disables high priority CPU autoscaling for the selected replicas and ignores high_priority_cpu_utilization_percent in the top-level autoscaling configuration. When setting this field to true, setting autoscaling_target_high_priority_cpu_utilization_percent field to a non-zero value for the same replica is not supported. If false, the autoscaling_target_high_priority_cpu_utilization_percent field in the replica will be used if set to a non-zero value. Otherwise, the high_priority_cpu_utilization_percent field in the top-level autoscaling configuration will be used. Setting both disable_high_priority_cpu_autoscaling and disable_total_cpu_autoscaling to true for the same replica is not supported.",
           ).optional(),
-          disableTotalCpuAutoscaling: z.boolean().describe(
+          disableTotalCpuAutoscaling: z.unknown().describe(
             "Optional. If true, disables total CPU autoscaling for the selected replicas and ignores total_cpu_utilization_percent in the top-level autoscaling configuration. When setting this field to true, setting autoscaling_target_total_cpu_utilization_percent field to a non-zero value for the same replica is not supported. If false, the autoscaling_target_total_cpu_utilization_percent field in the replica will be used if set to a non-zero value. Otherwise, the total_cpu_utilization_percent field in the top-level autoscaling configuration will be used. Setting both disable_high_priority_cpu_autoscaling and disable_total_cpu_autoscaling to true for the same replica is not supported.",
           ).optional(),
         }).describe(
           "Overrides the top-level autoscaling configuration for the replicas identified by `replica_selection`. All fields in this message are optional. Any unspecified fields will use the corresponding values from the top-level autoscaling configuration.",
         ).optional(),
         replicaSelection: z.object({
-          location: z.string().describe(
+          location: z.unknown().describe(
             'Required. Name of the location of the replicas (for example, "us-central1").',
           ).optional(),
         }).describe(
@@ -493,7 +465,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/spanner/instances",
-  version: "2026.04.03.3",
+  version: "2026.04.04.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -517,6 +489,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.3",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.04.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

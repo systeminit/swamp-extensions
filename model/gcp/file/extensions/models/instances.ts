@@ -140,7 +140,7 @@ const GlobalArgsSchema = z.object({
       anonUid: z.string().describe(
         "An integer representing the anonymous user id with a default value of 65534. Anon_uid may only be set with squash_mode of ROOT_SQUASH. An error will be returned if this field is specified for other squash_mode settings.",
       ).optional(),
-      ipRanges: z.array(z.string()).describe(
+      ipRanges: z.array(z.unknown()).describe(
         "List of either an IPv4 addresses in the format `{octet1}.{octet2}.{octet3}.{octet4}` or CIDR ranges in the format `{octet1}.{octet2}.{octet3}.{octet4}/{mask size}` which may mount the file share. Overlapping IP ranges are not allowed, both within and across NfsExportOptions. An error will be returned. The limit is 64 IP ranges/addresses for each FileShareConfig among all NfsExportOptions.",
       ).optional(),
       network: z.string().describe(
@@ -319,7 +319,7 @@ const StateSchema = z.object({
       accessMode: z.string(),
       anonGid: z.string(),
       anonUid: z.string(),
-      ipRanges: z.array(z.string()),
+      ipRanges: z.array(z.unknown()),
       network: z.string(),
       squashMode: z.string(),
     })),
@@ -427,7 +427,7 @@ const InputsSchema = z.object({
       anonUid: z.string().describe(
         "An integer representing the anonymous user id with a default value of 65534. Anon_uid may only be set with squash_mode of ROOT_SQUASH. An error will be returned if this field is specified for other squash_mode settings.",
       ).optional(),
-      ipRanges: z.array(z.string()).describe(
+      ipRanges: z.array(z.unknown()).describe(
         "List of either an IPv4 addresses in the format `{octet1}.{octet2}.{octet3}.{octet4}` or CIDR ranges in the format `{octet1}.{octet2}.{octet3}.{octet4}/{mask size}` which may mount the file share. Overlapping IP ranges are not allowed, both within and across NfsExportOptions. An error will be returned. The limit is 64 IP ranges/addresses for each FileShareConfig among all NfsExportOptions.",
       ).optional(),
       network: z.string().describe(
@@ -585,7 +585,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/file/instances",
-  version: "2026.04.03.3",
+  version: "2026.04.04.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -609,6 +609,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.3",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.04.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

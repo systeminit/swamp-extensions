@@ -123,7 +123,7 @@ const GlobalArgsSchema = z.object({
       ).optional(),
       machinePreferences: z.object({
         allowedMachineSeries: z.array(z.object({
-          code: z.string().describe(
+          code: z.unknown().describe(
             "Code to identify a machine series. Consult this for more details on the available series for Compute Engine: https://cloud.google.com/compute/docs/machine-resource#machine_type_comparison Consult this for more details on the available series for Google Cloud VMware Engine: https://cloud.google.com/vmware-engine/pricing",
           ).optional(),
         })).describe(
@@ -240,7 +240,7 @@ const StateSchema = z.object({
       licenseType: z.string(),
       machinePreferences: z.object({
         allowedMachineSeries: z.array(z.object({
-          code: z.string(),
+          code: z.unknown(),
         })),
       }),
       persistentDiskType: z.string(),
@@ -295,7 +295,7 @@ const InputsSchema = z.object({
       ).optional(),
       machinePreferences: z.object({
         allowedMachineSeries: z.array(z.object({
-          code: z.string().describe(
+          code: z.unknown().describe(
             "Code to identify a machine series. Consult this for more details on the available series for Compute Engine: https://cloud.google.com/compute/docs/machine-resource#machine_type_comparison Consult this for more details on the available series for Google Cloud VMware Engine: https://cloud.google.com/vmware-engine/pricing",
           ).optional(),
         })).describe(
@@ -402,7 +402,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/migrationcenter/preferencesets",
-  version: "2026.04.03.3",
+  version: "2026.04.04.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -426,6 +426,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.3",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.04.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

@@ -1,12 +1,12 @@
 # Auto-generated manifest. Re-generate with the appropriate deno task.
 manifestVersion: 1
-name: "@swamp/gcp/siteVerification"
-version: "2026.04.03.3"
+name: "@swamp/gcp/siteverification"
+version: "2026.04.04.1"
 description: "Google Cloud siteVerification infrastructure models"
 labels:
   - gcp
   - google-cloud
-  - siteVerification
+  - siteverification
   - cloud
   - infrastructure
 releaseNotes: |

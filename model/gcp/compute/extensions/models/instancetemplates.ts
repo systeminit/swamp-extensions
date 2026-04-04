@@ -165,24 +165,8 @@ const GlobalArgsSchema = z.object({
         "[Input Only] Whether to force attach the regional disk even if it's currently attached to another instance. If you try to force attach a zonal disk to an instance, you will receive an error.",
       ).optional(),
       guestOsFeatures: z.array(z.object({
-        type: z.enum([
-          "BARE_METAL_LINUX_COMPATIBLE",
-          "FEATURE_TYPE_UNSPECIFIED",
-          "GVNIC",
-          "IDPF",
-          "MULTI_IP_SUBNET",
-          "SECURE_BOOT",
-          "SEV_CAPABLE",
-          "SEV_LIVE_MIGRATABLE",
-          "SEV_LIVE_MIGRATABLE_V2",
-          "SEV_SNP_CAPABLE",
-          "SNP_SVSM_CAPABLE",
-          "TDX_CAPABLE",
-          "UEFI_COMPATIBLE",
-          "VIRTIO_SCSI_MULTIQUEUE",
-          "WINDOWS",
-        ]).describe(
-          "The ID of a supported feature. To add multiple values, use commas to separate values. Set to one or more of the following values: - VIRTIO_SCSI_MULTIQUEUE - WINDOWS - MULTI_IP_SUBNET - UEFI_COMPATIBLE - GVNIC - SEV_CAPABLE - SUSPEND_RESUME_COMPATIBLE - SEV_LIVE_MIGRATABLE_V2 - SEV_SNP_CAPABLE - TDX_CAPABLE - IDPF - SNP_SVSM_CAPABLE For more information, see Enabling guest operating system features.",
+        type: z.unknown().describe(
+          "The ID of a supported feature. To add multiple values, use commas to separate values. Set to one or more of the following values: - VIRTIO_SCSI_MULTIQUEUE - WINDOWS - MULTI_IP_SUBNET - UEFI_COMPATIBLE - GVNIC - SEV_CAPABLE - SUSPEND_RESUME_COMPATIBLE - SEV_LIVE_MIGRATABLE_V2 - SEV_SNP_CAPABLE - TDX_CAPABLE - IDPF - SNP_SVSM_CAPABLE - CCA_CAPABLE For more information, see Enabling guest operating system features.",
         ).optional(),
       })).describe(
         "A list of features to enable on the guest operating system. Applicable only for bootable images. Read Enabling guest operating system features to see a list of available options.",
@@ -210,10 +194,10 @@ const GlobalArgsSchema = z.object({
         enableConfidentialCompute: z.boolean().describe(
           "Whether this disk is using confidential compute mode.",
         ).optional(),
-        labels: z.record(z.string(), z.string()).describe(
+        labels: z.record(z.string(), z.unknown()).describe(
           "Labels to apply to this disk. These can be later modified by thedisks.setLabels method. This field is only applicable for persistent disks.",
         ).optional(),
-        licenses: z.array(z.string()).describe(
+        licenses: z.array(z.unknown()).describe(
           "A list of publicly visible licenses. Reserved for Google's use.",
         ).optional(),
         onUpdateAction: z.enum([
@@ -229,32 +213,32 @@ const GlobalArgsSchema = z.object({
         provisionedThroughput: z.string().describe(
           "Indicates how much throughput to provision for the disk. This sets the number of throughput mb per second that the disk can handle. Values must greater than or equal to 1.",
         ).optional(),
-        replicaZones: z.array(z.string()).describe(
+        replicaZones: z.array(z.unknown()).describe(
           "Required for each regional disk associated with the instance. Specify the URLs of the zones where the disk should be replicated to. You must provide exactly two replica zones, and one zone must be the same as the instance zone.",
         ).optional(),
-        resourceManagerTags: z.record(z.string(), z.string()).describe(
+        resourceManagerTags: z.record(z.string(), z.unknown()).describe(
           "Input only. Resource manager tags to be bound to the disk. Tag keys and values have the same definition as resource manager tags. Keys and values can be either in numeric format, such as `tagKeys/{tag_key_id}` and `tagValues/456` or in namespaced format such as `{org_id|project_id}/{tag_key_short_name}` and `{tag_value_short_name}`. The field is ignored (both PUT & PATCH) when empty.",
         ).optional(),
-        resourcePolicies: z.array(z.string()).describe(
+        resourcePolicies: z.array(z.unknown()).describe(
           "Resource policies applied to this disk for automatic snapshot creations. Specified using the full or partial URL. For instance template, specify only the resource policy name.",
         ).optional(),
         sourceImage: z.string().describe(
           "The source image to create this disk. When creating a new instance boot disk, one of initializeParams.sourceImage orinitializeParams.sourceSnapshot or disks.source is required. To create a disk with one of the public operating system images, specify the image by its family name. For example, specifyfamily/debian-9 to use the latest Debian 9 image: projects/debian-cloud/global/images/family/debian-9 Alternatively, use a specific version of a public operating system image: projects/debian-cloud/global/images/debian-9-stretch-vYYYYMMDD To create a disk with a custom image that you created, specify the image name in the following format: global/images/my-custom-image You can also specify a custom image by its image family, which returns the latest version of the image in that family. Replace the image name with family/family-name: global/images/family/my-image-family If the source image is deleted later, this field will not be set.",
         ).optional(),
         sourceImageEncryptionKey: z.object({
-          kmsKeyName: z.string().describe(
+          kmsKeyName: z.unknown().describe(
             'The name of the encryption key that is stored in Google Cloud KMS. For example: "kmsKeyName": "projects/kms_project_id/locations/region/keyRings/ key_region/cryptoKeys/key The fully-qualifed key name may be returned for resource GET requests. For example: "kmsKeyName": "projects/kms_project_id/locations/region/keyRings/ key_region/cryptoKeys/key /cryptoKeyVersions/1',
           ).optional(),
-          kmsKeyServiceAccount: z.string().describe(
+          kmsKeyServiceAccount: z.unknown().describe(
             'The service account being used for the encryption request for the given KMS key. If absent, the Compute Engine default service account is used. For example: "kmsKeyServiceAccount": "name@project_id.iam.gserviceaccount.com/',
           ).optional(),
-          rawKey: z.string().describe(
+          rawKey: z.unknown().describe(
             'Specifies a 256-bit customer-supplied encryption key, encoded in RFC 4648 base64 to either encrypt or decrypt this resource. You can provide either the rawKey or thersaEncryptedKey. For example: "rawKey": "SGVsbG8gZnJvbSBHb29nbGUgQ2xvdWQgUGxhdGZvcm0="',
           ).optional(),
-          rsaEncryptedKey: z.string().describe(
+          rsaEncryptedKey: z.unknown().describe(
             'Specifies an RFC 4648 base64 encoded, RSA-wrapped 2048-bit customer-supplied encryption key to either encrypt or decrypt this resource. You can provide either the rawKey or thersaEncryptedKey. For example: "rsaEncryptedKey": "ieCx/NcW06PcT7Ep1X6LUTc/hLvUDYyzSZPPVCVPTVEohpeHASqC8uw5TzyO9U+Fka9JFH z0mBibXUInrC/jEk014kCK/NPjYgEMOyssZ4ZINPKxlUh2zn1bV+MCaTICrdmuSBTWlUUiFoD D6PYznLwh8ZNdaheCeZ8ewEXgFQ8V+sDroLaN3Xs3MDTXQEMMoNUXMCZEIpg9Vtp9x2oe==" The key must meet the following requirements before you can provide it to Compute Engine: 1. The key is wrapped using a RSA public key certificate provided by Google. 2. After being wrapped, the key must be encoded in RFC 4648 base64 encoding. Gets the RSA public key certificate provided by Google at: https://cloud-certs.storage.googleapis.com/google-cloud-csek-ingress.pem',
           ).optional(),
-          sha256: z.string().describe(
+          sha256: z.unknown().describe(
             "[Output only] TheRFC 4648 base64 encoded SHA-256 hash of the customer-supplied encryption key that protects this resource.",
           ).optional(),
         }).optional(),
@@ -262,19 +246,19 @@ const GlobalArgsSchema = z.object({
           "The source snapshot to create this disk. When creating a new instance boot disk, one of initializeParams.sourceSnapshot orinitializeParams.sourceImage or disks.source is required. To create a disk with a snapshot that you created, specify the snapshot name in the following format: global/snapshots/my-backup If the source snapshot is deleted later, this field will not be set. Note: You cannot create VMs in bulk using a snapshot as the source. Use an image instead when you create VMs using the bulk insert method.",
         ).optional(),
         sourceSnapshotEncryptionKey: z.object({
-          kmsKeyName: z.string().describe(
+          kmsKeyName: z.unknown().describe(
             'The name of the encryption key that is stored in Google Cloud KMS. For example: "kmsKeyName": "projects/kms_project_id/locations/region/keyRings/ key_region/cryptoKeys/key The fully-qualifed key name may be returned for resource GET requests. For example: "kmsKeyName": "projects/kms_project_id/locations/region/keyRings/ key_region/cryptoKeys/key /cryptoKeyVersions/1',
           ).optional(),
-          kmsKeyServiceAccount: z.string().describe(
+          kmsKeyServiceAccount: z.unknown().describe(
             'The service account being used for the encryption request for the given KMS key. If absent, the Compute Engine default service account is used. For example: "kmsKeyServiceAccount": "name@project_id.iam.gserviceaccount.com/',
           ).optional(),
-          rawKey: z.string().describe(
+          rawKey: z.unknown().describe(
             'Specifies a 256-bit customer-supplied encryption key, encoded in RFC 4648 base64 to either encrypt or decrypt this resource. You can provide either the rawKey or thersaEncryptedKey. For example: "rawKey": "SGVsbG8gZnJvbSBHb29nbGUgQ2xvdWQgUGxhdGZvcm0="',
           ).optional(),
-          rsaEncryptedKey: z.string().describe(
+          rsaEncryptedKey: z.unknown().describe(
             'Specifies an RFC 4648 base64 encoded, RSA-wrapped 2048-bit customer-supplied encryption key to either encrypt or decrypt this resource. You can provide either the rawKey or thersaEncryptedKey. For example: "rsaEncryptedKey": "ieCx/NcW06PcT7Ep1X6LUTc/hLvUDYyzSZPPVCVPTVEohpeHASqC8uw5TzyO9U+Fka9JFH z0mBibXUInrC/jEk014kCK/NPjYgEMOyssZ4ZINPKxlUh2zn1bV+MCaTICrdmuSBTWlUUiFoD D6PYznLwh8ZNdaheCeZ8ewEXgFQ8V+sDroLaN3Xs3MDTXQEMMoNUXMCZEIpg9Vtp9x2oe==" The key must meet the following requirements before you can provide it to Compute Engine: 1. The key is wrapped using a RSA public key certificate provided by Google. 2. After being wrapped, the key must be encoded in RFC 4648 base64 encoding. Gets the RSA public key certificate provided by Google at: https://cloud-certs.storage.googleapis.com/google-cloud-csek-ingress.pem',
           ).optional(),
-          sha256: z.string().describe(
+          sha256: z.unknown().describe(
             "[Output only] TheRFC 4648 base64 encoded SHA-256 hash of the customer-supplied encryption key that protects this resource.",
           ).optional(),
         }).optional(),
@@ -301,37 +285,17 @@ const GlobalArgsSchema = z.object({
           "Output only. For LocalSSD disks on VM Instances in STOPPED or SUSPENDED state, this field is set to PRESERVED if the LocalSSD data has been saved to a persistent location by customer request. (see the discard_local_ssd option on Stop/Suspend). Read-only in the api.",
         ).optional(),
       shieldedInstanceInitialState: z.object({
-        dbs: z.array(z.object({
-          content: z.string().describe(
-            "The raw content in the secure keys file.",
-          ).optional(),
-          fileType: z.enum(["BIN", "UNDEFINED", "X509"]).describe(
-            "The file type of source file.",
-          ).optional(),
-        })).describe("The Key Database (db).").optional(),
-        dbxs: z.array(z.object({
-          content: z.string().describe(
-            "The raw content in the secure keys file.",
-          ).optional(),
-          fileType: z.enum(["BIN", "UNDEFINED", "X509"]).describe(
-            "The file type of source file.",
-          ).optional(),
-        })).describe("The forbidden key database (dbx).").optional(),
-        keks: z.array(z.object({
-          content: z.string().describe(
-            "The raw content in the secure keys file.",
-          ).optional(),
-          fileType: z.enum(["BIN", "UNDEFINED", "X509"]).describe(
-            "The file type of source file.",
-          ).optional(),
-        })).describe("The Key Exchange Key (KEK).").optional(),
+        dbs: z.array(z.unknown()).describe("The Key Database (db).").optional(),
+        dbxs: z.array(z.unknown()).describe("The forbidden key database (dbx).")
+          .optional(),
+        keks: z.array(z.unknown()).describe("The Key Exchange Key (KEK).")
+          .optional(),
         pk: z.object({
-          content: z.string().describe(
+          content: z.unknown().describe(
             "The raw content in the secure keys file.",
           ).optional(),
-          fileType: z.enum(["BIN", "UNDEFINED", "X509"]).describe(
-            "The file type of source file.",
-          ).optional(),
+          fileType: z.unknown().describe("The file type of source file.")
+            .optional(),
         }).optional(),
       }).describe(
         "Initial State for shielded instance, these are public keys which are safe to store in public",
@@ -391,49 +355,44 @@ const GlobalArgsSchema = z.object({
     ).optional(),
     networkInterfaces: z.array(z.object({
       accessConfigs: z.array(z.object({
-        externalIpv6: z.string().describe(
+        externalIpv6: z.unknown().describe(
           "Applies to ipv6AccessConfigs only. The first IPv6 address of the external IPv6 range associated with this instance, prefix length is stored inexternalIpv6PrefixLength in ipv6AccessConfig. To use a static external IP address, it must be unused and in the same region as the instance's zone. If not specified, Google Cloud will automatically assign an external IPv6 address from the instance's subnetwork.",
         ).optional(),
-        externalIpv6PrefixLength: z.number().int().describe(
+        externalIpv6PrefixLength: z.unknown().describe(
           "Applies to ipv6AccessConfigs only. The prefix length of the external IPv6 range.",
         ).optional(),
-        kind: z.string().describe(
+        kind: z.unknown().describe(
           "Output only. [Output Only] Type of the resource. Alwayscompute#accessConfig for access configs.",
         ).optional(),
-        name: z.string().describe(
+        name: z.unknown().describe(
           "The name of this access configuration. In accessConfigs (IPv4), the default and recommended name is External NAT, but you can use any arbitrary string, such as My external IP orNetwork Access. In ipv6AccessConfigs, the recommend name is External IPv6.",
         ).optional(),
-        natIP: z.string().describe(
+        natIP: z.unknown().describe(
           "Applies to accessConfigs (IPv4) only. Anexternal IP address associated with this instance. Specify an unused static external IP address available to the project or leave this field undefined to use an IP from a shared ephemeral IP address pool. If you specify a static external IP address, it must live in the same region as the zone of the instance.",
         ).optional(),
-        networkTier: z.enum([
-          "FIXED_STANDARD",
-          "PREMIUM",
-          "STANDARD",
-          "STANDARD_OVERRIDES_FIXED_STANDARD",
-        ]).describe(
+        networkTier: z.unknown().describe(
           "This signifies the networking tier used for configuring this access configuration and can only take the following values: PREMIUM,STANDARD. If an AccessConfig is specified without a valid external IP address, an ephemeral IP will be created with this networkTier. If an AccessConfig with a valid external IP address is specified, it must match that of the networkTier associated with the Address resource owning that IP.",
         ).optional(),
-        publicPtrDomainName: z.string().describe(
+        publicPtrDomainName: z.unknown().describe(
           "The DNS domain name for the public PTR record. You can set this field only if the `setPublicPtr` field is enabled inaccessConfig. If this field is unspecified inipv6AccessConfig, a default PTR record will be created for first IP in associated external IPv6 range.",
         ).optional(),
-        securityPolicy: z.string().describe(
+        securityPolicy: z.unknown().describe(
           "The resource URL for the security policy associated with this access config.",
         ).optional(),
-        setPublicPtr: z.boolean().describe(
+        setPublicPtr: z.unknown().describe(
           "Specifies whether a public DNS 'PTR' record should be created to map the external IP address of the instance to a DNS domain name. This field is not used in ipv6AccessConfig. A default PTR record will be created if the VM has external IPv6 range associated.",
         ).optional(),
-        type: z.enum(["DIRECT_IPV6", "ONE_TO_ONE_NAT"]).describe(
+        type: z.unknown().describe(
           "The type of configuration. In accessConfigs (IPv4), the default and only option is ONE_TO_ONE_NAT. Inipv6AccessConfigs, the default and only option isDIRECT_IPV6.",
         ).optional(),
       })).describe(
         "An array of configurations for this interface. Currently, only one access config, ONE_TO_ONE_NAT, is supported. If there are noaccessConfigs specified, then this instance will have no external internet access.",
       ).optional(),
       aliasIpRanges: z.array(z.object({
-        ipCidrRange: z.string().describe(
+        ipCidrRange: z.unknown().describe(
           "The IP alias ranges to allocate for this interface. This IP CIDR range must belong to the specified subnetwork and cannot contain IP addresses reserved by system or used by other network interfaces. This range may be a single IP address (such as 10.2.3.4), a netmask (such as/24) or a CIDR-formatted string (such as10.1.2.0/24).",
         ).optional(),
-        subnetworkRangeName: z.string().describe(
+        subnetworkRangeName: z.unknown().describe(
           "The name of a subnetwork secondary IP range from which to allocate an IP alias range. If not specified, the primary range of the subnetwork is used.",
         ).optional(),
       })).describe(
@@ -452,39 +411,34 @@ const GlobalArgsSchema = z.object({
         "The prefix length of the primary internal IPv6 range.",
       ).optional(),
       ipv6AccessConfigs: z.array(z.object({
-        externalIpv6: z.string().describe(
+        externalIpv6: z.unknown().describe(
           "Applies to ipv6AccessConfigs only. The first IPv6 address of the external IPv6 range associated with this instance, prefix length is stored inexternalIpv6PrefixLength in ipv6AccessConfig. To use a static external IP address, it must be unused and in the same region as the instance's zone. If not specified, Google Cloud will automatically assign an external IPv6 address from the instance's subnetwork.",
         ).optional(),
-        externalIpv6PrefixLength: z.number().int().describe(
+        externalIpv6PrefixLength: z.unknown().describe(
           "Applies to ipv6AccessConfigs only. The prefix length of the external IPv6 range.",
         ).optional(),
-        kind: z.string().describe(
+        kind: z.unknown().describe(
           "Output only. [Output Only] Type of the resource. Alwayscompute#accessConfig for access configs.",
         ).optional(),
-        name: z.string().describe(
+        name: z.unknown().describe(
           "The name of this access configuration. In accessConfigs (IPv4), the default and recommended name is External NAT, but you can use any arbitrary string, such as My external IP orNetwork Access. In ipv6AccessConfigs, the recommend name is External IPv6.",
         ).optional(),
-        natIP: z.string().describe(
+        natIP: z.unknown().describe(
           "Applies to accessConfigs (IPv4) only. Anexternal IP address associated with this instance. Specify an unused static external IP address available to the project or leave this field undefined to use an IP from a shared ephemeral IP address pool. If you specify a static external IP address, it must live in the same region as the zone of the instance.",
         ).optional(),
-        networkTier: z.enum([
-          "FIXED_STANDARD",
-          "PREMIUM",
-          "STANDARD",
-          "STANDARD_OVERRIDES_FIXED_STANDARD",
-        ]).describe(
+        networkTier: z.unknown().describe(
           "This signifies the networking tier used for configuring this access configuration and can only take the following values: PREMIUM,STANDARD. If an AccessConfig is specified without a valid external IP address, an ephemeral IP will be created with this networkTier. If an AccessConfig with a valid external IP address is specified, it must match that of the networkTier associated with the Address resource owning that IP.",
         ).optional(),
-        publicPtrDomainName: z.string().describe(
+        publicPtrDomainName: z.unknown().describe(
           "The DNS domain name for the public PTR record. You can set this field only if the `setPublicPtr` field is enabled inaccessConfig. If this field is unspecified inipv6AccessConfig, a default PTR record will be created for first IP in associated external IPv6 range.",
         ).optional(),
-        securityPolicy: z.string().describe(
+        securityPolicy: z.unknown().describe(
           "The resource URL for the security policy associated with this access config.",
         ).optional(),
-        setPublicPtr: z.boolean().describe(
+        setPublicPtr: z.unknown().describe(
           "Specifies whether a public DNS 'PTR' record should be created to map the external IP address of the instance to a DNS domain name. This field is not used in ipv6AccessConfig. A default PTR record will be created if the VM has external IPv6 range associated.",
         ).optional(),
-        type: z.enum(["DIRECT_IPV6", "ONE_TO_ONE_NAT"]).describe(
+        type: z.unknown().describe(
           "The type of configuration. In accessConfigs (IPv4), the default and only option is ONE_TO_ONE_NAT. Inipv6AccessConfigs, the default and only option isDIRECT_IPV6.",
         ).optional(),
       })).describe(
@@ -526,6 +480,9 @@ const GlobalArgsSchema = z.object({
       ).optional(),
       queueCount: z.number().int().describe(
         "The networking queue count that's specified by users for the network interface. Both Rx and Tx queues will be set to this number. It'll be empty if not specified by the users.",
+      ).optional(),
+      serviceClassId: z.string().describe(
+        "Optional. Producer Service's Service class Id for the region of this network interface. Can only be used with network_attachment. It is not possible to use on its own however, network_attachment can be used without service_class_id.",
       ).optional(),
       stackType: z.enum(["IPV4_IPV6", "IPV4_ONLY", "IPV6_ONLY"]).describe(
         "The stack type for this network interface. To assign only IPv4 addresses, use IPV4_ONLY. To assign both IPv4 and IPv6 addresses, useIPV4_IPV6. If not specified, IPV4_ONLY is used. This field can be both set at instance creation and update network interface operations.",
@@ -622,7 +579,7 @@ const GlobalArgsSchema = z.object({
         operator: z.enum(["IN", "NOT_IN", "OPERATOR_UNSPECIFIED"]).describe(
           "Defines the operation of node selection. Valid operators areIN for affinity and NOT_IN for anti-affinity.",
         ).optional(),
-        values: z.array(z.string()).describe(
+        values: z.array(z.unknown()).describe(
           "Corresponds to the label values of Node resource.",
         ).optional(),
       })).describe(
@@ -760,7 +717,7 @@ const StateSchema = z.object({
       diskSizeGb: z.string(),
       forceAttach: z.boolean(),
       guestOsFeatures: z.array(z.object({
-        type: z.string(),
+        type: z.unknown(),
       })),
       index: z.number(),
       initializeParams: z.object({
@@ -771,28 +728,28 @@ const StateSchema = z.object({
         diskType: z.string(),
         enableConfidentialCompute: z.boolean(),
         labels: z.record(z.string(), z.unknown()),
-        licenses: z.array(z.string()),
+        licenses: z.array(z.unknown()),
         onUpdateAction: z.string(),
         provisionedIops: z.string(),
         provisionedThroughput: z.string(),
-        replicaZones: z.array(z.string()),
+        replicaZones: z.array(z.unknown()),
         resourceManagerTags: z.record(z.string(), z.unknown()),
-        resourcePolicies: z.array(z.string()),
+        resourcePolicies: z.array(z.unknown()),
         sourceImage: z.string(),
         sourceImageEncryptionKey: z.object({
-          kmsKeyName: z.string(),
-          kmsKeyServiceAccount: z.string(),
-          rawKey: z.string(),
-          rsaEncryptedKey: z.string(),
-          sha256: z.string(),
+          kmsKeyName: z.unknown(),
+          kmsKeyServiceAccount: z.unknown(),
+          rawKey: z.unknown(),
+          rsaEncryptedKey: z.unknown(),
+          sha256: z.unknown(),
         }),
         sourceSnapshot: z.string(),
         sourceSnapshotEncryptionKey: z.object({
-          kmsKeyName: z.string(),
-          kmsKeyServiceAccount: z.string(),
-          rawKey: z.string(),
-          rsaEncryptedKey: z.string(),
-          sha256: z.string(),
+          kmsKeyName: z.unknown(),
+          kmsKeyServiceAccount: z.unknown(),
+          rawKey: z.unknown(),
+          rsaEncryptedKey: z.unknown(),
+          sha256: z.unknown(),
         }),
         storagePool: z.string(),
       }),
@@ -802,21 +759,12 @@ const StateSchema = z.object({
       mode: z.string(),
       savedState: z.string(),
       shieldedInstanceInitialState: z.object({
-        dbs: z.array(z.object({
-          content: z.string(),
-          fileType: z.string(),
-        })),
-        dbxs: z.array(z.object({
-          content: z.string(),
-          fileType: z.string(),
-        })),
-        keks: z.array(z.object({
-          content: z.string(),
-          fileType: z.string(),
-        })),
+        dbs: z.array(z.unknown()),
+        dbxs: z.array(z.unknown()),
+        keks: z.array(z.unknown()),
         pk: z.object({
-          content: z.string(),
-          fileType: z.string(),
+          content: z.unknown(),
+          fileType: z.unknown(),
         }),
       }),
       source: z.string(),
@@ -840,36 +788,36 @@ const StateSchema = z.object({
     minCpuPlatform: z.string(),
     networkInterfaces: z.array(z.object({
       accessConfigs: z.array(z.object({
-        externalIpv6: z.string(),
-        externalIpv6PrefixLength: z.number(),
-        kind: z.string(),
-        name: z.string(),
-        natIP: z.string(),
-        networkTier: z.string(),
-        publicPtrDomainName: z.string(),
-        securityPolicy: z.string(),
-        setPublicPtr: z.boolean(),
-        type: z.string(),
+        externalIpv6: z.unknown(),
+        externalIpv6PrefixLength: z.unknown(),
+        kind: z.unknown(),
+        name: z.unknown(),
+        natIP: z.unknown(),
+        networkTier: z.unknown(),
+        publicPtrDomainName: z.unknown(),
+        securityPolicy: z.unknown(),
+        setPublicPtr: z.unknown(),
+        type: z.unknown(),
       })),
       aliasIpRanges: z.array(z.object({
-        ipCidrRange: z.string(),
-        subnetworkRangeName: z.string(),
+        ipCidrRange: z.unknown(),
+        subnetworkRangeName: z.unknown(),
       })),
       enableVpcScopedDns: z.boolean(),
       fingerprint: z.string(),
       igmpQuery: z.string(),
       internalIpv6PrefixLength: z.number(),
       ipv6AccessConfigs: z.array(z.object({
-        externalIpv6: z.string(),
-        externalIpv6PrefixLength: z.number(),
-        kind: z.string(),
-        name: z.string(),
-        natIP: z.string(),
-        networkTier: z.string(),
-        publicPtrDomainName: z.string(),
-        securityPolicy: z.string(),
-        setPublicPtr: z.boolean(),
-        type: z.string(),
+        externalIpv6: z.unknown(),
+        externalIpv6PrefixLength: z.unknown(),
+        kind: z.unknown(),
+        name: z.unknown(),
+        natIP: z.unknown(),
+        networkTier: z.unknown(),
+        publicPtrDomainName: z.unknown(),
+        securityPolicy: z.unknown(),
+        setPublicPtr: z.unknown(),
+        type: z.unknown(),
       })),
       ipv6AccessType: z.string(),
       ipv6Address: z.string(),
@@ -881,6 +829,7 @@ const StateSchema = z.object({
       nicType: z.string(),
       parentNicName: z.string(),
       queueCount: z.number(),
+      serviceClassId: z.string(),
       stackType: z.string(),
       subnetwork: z.string(),
       vlan: z.number(),
@@ -914,7 +863,7 @@ const StateSchema = z.object({
       nodeAffinities: z.array(z.object({
         key: z.string(),
         operator: z.string(),
-        values: z.array(z.string()),
+        values: z.array(z.unknown()),
       })),
       onHostMaintenance: z.string(),
       onInstanceStopAction: z.object({
@@ -1048,24 +997,8 @@ const InputsSchema = z.object({
         "[Input Only] Whether to force attach the regional disk even if it's currently attached to another instance. If you try to force attach a zonal disk to an instance, you will receive an error.",
       ).optional(),
       guestOsFeatures: z.array(z.object({
-        type: z.enum([
-          "BARE_METAL_LINUX_COMPATIBLE",
-          "FEATURE_TYPE_UNSPECIFIED",
-          "GVNIC",
-          "IDPF",
-          "MULTI_IP_SUBNET",
-          "SECURE_BOOT",
-          "SEV_CAPABLE",
-          "SEV_LIVE_MIGRATABLE",
-          "SEV_LIVE_MIGRATABLE_V2",
-          "SEV_SNP_CAPABLE",
-          "SNP_SVSM_CAPABLE",
-          "TDX_CAPABLE",
-          "UEFI_COMPATIBLE",
-          "VIRTIO_SCSI_MULTIQUEUE",
-          "WINDOWS",
-        ]).describe(
-          "The ID of a supported feature. To add multiple values, use commas to separate values. Set to one or more of the following values: - VIRTIO_SCSI_MULTIQUEUE - WINDOWS - MULTI_IP_SUBNET - UEFI_COMPATIBLE - GVNIC - SEV_CAPABLE - SUSPEND_RESUME_COMPATIBLE - SEV_LIVE_MIGRATABLE_V2 - SEV_SNP_CAPABLE - TDX_CAPABLE - IDPF - SNP_SVSM_CAPABLE For more information, see Enabling guest operating system features.",
+        type: z.unknown().describe(
+          "The ID of a supported feature. To add multiple values, use commas to separate values. Set to one or more of the following values: - VIRTIO_SCSI_MULTIQUEUE - WINDOWS - MULTI_IP_SUBNET - UEFI_COMPATIBLE - GVNIC - SEV_CAPABLE - SUSPEND_RESUME_COMPATIBLE - SEV_LIVE_MIGRATABLE_V2 - SEV_SNP_CAPABLE - TDX_CAPABLE - IDPF - SNP_SVSM_CAPABLE - CCA_CAPABLE For more information, see Enabling guest operating system features.",
         ).optional(),
       })).describe(
         "A list of features to enable on the guest operating system. Applicable only for bootable images. Read Enabling guest operating system features to see a list of available options.",
@@ -1093,10 +1026,10 @@ const InputsSchema = z.object({
         enableConfidentialCompute: z.boolean().describe(
           "Whether this disk is using confidential compute mode.",
         ).optional(),
-        labels: z.record(z.string(), z.string()).describe(
+        labels: z.record(z.string(), z.unknown()).describe(
           "Labels to apply to this disk. These can be later modified by thedisks.setLabels method. This field is only applicable for persistent disks.",
         ).optional(),
-        licenses: z.array(z.string()).describe(
+        licenses: z.array(z.unknown()).describe(
           "A list of publicly visible licenses. Reserved for Google's use.",
         ).optional(),
         onUpdateAction: z.enum([
@@ -1112,32 +1045,32 @@ const InputsSchema = z.object({
         provisionedThroughput: z.string().describe(
           "Indicates how much throughput to provision for the disk. This sets the number of throughput mb per second that the disk can handle. Values must greater than or equal to 1.",
         ).optional(),
-        replicaZones: z.array(z.string()).describe(
+        replicaZones: z.array(z.unknown()).describe(
           "Required for each regional disk associated with the instance. Specify the URLs of the zones where the disk should be replicated to. You must provide exactly two replica zones, and one zone must be the same as the instance zone.",
         ).optional(),
-        resourceManagerTags: z.record(z.string(), z.string()).describe(
+        resourceManagerTags: z.record(z.string(), z.unknown()).describe(
           "Input only. Resource manager tags to be bound to the disk. Tag keys and values have the same definition as resource manager tags. Keys and values can be either in numeric format, such as `tagKeys/{tag_key_id}` and `tagValues/456` or in namespaced format such as `{org_id|project_id}/{tag_key_short_name}` and `{tag_value_short_name}`. The field is ignored (both PUT & PATCH) when empty.",
         ).optional(),
-        resourcePolicies: z.array(z.string()).describe(
+        resourcePolicies: z.array(z.unknown()).describe(
           "Resource policies applied to this disk for automatic snapshot creations. Specified using the full or partial URL. For instance template, specify only the resource policy name.",
         ).optional(),
         sourceImage: z.string().describe(
           "The source image to create this disk. When creating a new instance boot disk, one of initializeParams.sourceImage orinitializeParams.sourceSnapshot or disks.source is required. To create a disk with one of the public operating system images, specify the image by its family name. For example, specifyfamily/debian-9 to use the latest Debian 9 image: projects/debian-cloud/global/images/family/debian-9 Alternatively, use a specific version of a public operating system image: projects/debian-cloud/global/images/debian-9-stretch-vYYYYMMDD To create a disk with a custom image that you created, specify the image name in the following format: global/images/my-custom-image You can also specify a custom image by its image family, which returns the latest version of the image in that family. Replace the image name with family/family-name: global/images/family/my-image-family If the source image is deleted later, this field will not be set.",
         ).optional(),
         sourceImageEncryptionKey: z.object({
-          kmsKeyName: z.string().describe(
+          kmsKeyName: z.unknown().describe(
             'The name of the encryption key that is stored in Google Cloud KMS. For example: "kmsKeyName": "projects/kms_project_id/locations/region/keyRings/ key_region/cryptoKeys/key The fully-qualifed key name may be returned for resource GET requests. For example: "kmsKeyName": "projects/kms_project_id/locations/region/keyRings/ key_region/cryptoKeys/key /cryptoKeyVersions/1',
           ).optional(),
-          kmsKeyServiceAccount: z.string().describe(
+          kmsKeyServiceAccount: z.unknown().describe(
             'The service account being used for the encryption request for the given KMS key. If absent, the Compute Engine default service account is used. For example: "kmsKeyServiceAccount": "name@project_id.iam.gserviceaccount.com/',
           ).optional(),
-          rawKey: z.string().describe(
+          rawKey: z.unknown().describe(
             'Specifies a 256-bit customer-supplied encryption key, encoded in RFC 4648 base64 to either encrypt or decrypt this resource. You can provide either the rawKey or thersaEncryptedKey. For example: "rawKey": "SGVsbG8gZnJvbSBHb29nbGUgQ2xvdWQgUGxhdGZvcm0="',
           ).optional(),
-          rsaEncryptedKey: z.string().describe(
+          rsaEncryptedKey: z.unknown().describe(
             'Specifies an RFC 4648 base64 encoded, RSA-wrapped 2048-bit customer-supplied encryption key to either encrypt or decrypt this resource. You can provide either the rawKey or thersaEncryptedKey. For example: "rsaEncryptedKey": "ieCx/NcW06PcT7Ep1X6LUTc/hLvUDYyzSZPPVCVPTVEohpeHASqC8uw5TzyO9U+Fka9JFH z0mBibXUInrC/jEk014kCK/NPjYgEMOyssZ4ZINPKxlUh2zn1bV+MCaTICrdmuSBTWlUUiFoD D6PYznLwh8ZNdaheCeZ8ewEXgFQ8V+sDroLaN3Xs3MDTXQEMMoNUXMCZEIpg9Vtp9x2oe==" The key must meet the following requirements before you can provide it to Compute Engine: 1. The key is wrapped using a RSA public key certificate provided by Google. 2. After being wrapped, the key must be encoded in RFC 4648 base64 encoding. Gets the RSA public key certificate provided by Google at: https://cloud-certs.storage.googleapis.com/google-cloud-csek-ingress.pem',
           ).optional(),
-          sha256: z.string().describe(
+          sha256: z.unknown().describe(
             "[Output only] TheRFC 4648 base64 encoded SHA-256 hash of the customer-supplied encryption key that protects this resource.",
           ).optional(),
         }).optional(),
@@ -1145,19 +1078,19 @@ const InputsSchema = z.object({
           "The source snapshot to create this disk. When creating a new instance boot disk, one of initializeParams.sourceSnapshot orinitializeParams.sourceImage or disks.source is required. To create a disk with a snapshot that you created, specify the snapshot name in the following format: global/snapshots/my-backup If the source snapshot is deleted later, this field will not be set. Note: You cannot create VMs in bulk using a snapshot as the source. Use an image instead when you create VMs using the bulk insert method.",
         ).optional(),
         sourceSnapshotEncryptionKey: z.object({
-          kmsKeyName: z.string().describe(
+          kmsKeyName: z.unknown().describe(
             'The name of the encryption key that is stored in Google Cloud KMS. For example: "kmsKeyName": "projects/kms_project_id/locations/region/keyRings/ key_region/cryptoKeys/key The fully-qualifed key name may be returned for resource GET requests. For example: "kmsKeyName": "projects/kms_project_id/locations/region/keyRings/ key_region/cryptoKeys/key /cryptoKeyVersions/1',
           ).optional(),
-          kmsKeyServiceAccount: z.string().describe(
+          kmsKeyServiceAccount: z.unknown().describe(
             'The service account being used for the encryption request for the given KMS key. If absent, the Compute Engine default service account is used. For example: "kmsKeyServiceAccount": "name@project_id.iam.gserviceaccount.com/',
           ).optional(),
-          rawKey: z.string().describe(
+          rawKey: z.unknown().describe(
             'Specifies a 256-bit customer-supplied encryption key, encoded in RFC 4648 base64 to either encrypt or decrypt this resource. You can provide either the rawKey or thersaEncryptedKey. For example: "rawKey": "SGVsbG8gZnJvbSBHb29nbGUgQ2xvdWQgUGxhdGZvcm0="',
           ).optional(),
-          rsaEncryptedKey: z.string().describe(
+          rsaEncryptedKey: z.unknown().describe(
             'Specifies an RFC 4648 base64 encoded, RSA-wrapped 2048-bit customer-supplied encryption key to either encrypt or decrypt this resource. You can provide either the rawKey or thersaEncryptedKey. For example: "rsaEncryptedKey": "ieCx/NcW06PcT7Ep1X6LUTc/hLvUDYyzSZPPVCVPTVEohpeHASqC8uw5TzyO9U+Fka9JFH z0mBibXUInrC/jEk014kCK/NPjYgEMOyssZ4ZINPKxlUh2zn1bV+MCaTICrdmuSBTWlUUiFoD D6PYznLwh8ZNdaheCeZ8ewEXgFQ8V+sDroLaN3Xs3MDTXQEMMoNUXMCZEIpg9Vtp9x2oe==" The key must meet the following requirements before you can provide it to Compute Engine: 1. The key is wrapped using a RSA public key certificate provided by Google. 2. After being wrapped, the key must be encoded in RFC 4648 base64 encoding. Gets the RSA public key certificate provided by Google at: https://cloud-certs.storage.googleapis.com/google-cloud-csek-ingress.pem',
           ).optional(),
-          sha256: z.string().describe(
+          sha256: z.unknown().describe(
             "[Output only] TheRFC 4648 base64 encoded SHA-256 hash of the customer-supplied encryption key that protects this resource.",
           ).optional(),
         }).optional(),
@@ -1184,37 +1117,17 @@ const InputsSchema = z.object({
           "Output only. For LocalSSD disks on VM Instances in STOPPED or SUSPENDED state, this field is set to PRESERVED if the LocalSSD data has been saved to a persistent location by customer request. (see the discard_local_ssd option on Stop/Suspend). Read-only in the api.",
         ).optional(),
       shieldedInstanceInitialState: z.object({
-        dbs: z.array(z.object({
-          content: z.string().describe(
-            "The raw content in the secure keys file.",
-          ).optional(),
-          fileType: z.enum(["BIN", "UNDEFINED", "X509"]).describe(
-            "The file type of source file.",
-          ).optional(),
-        })).describe("The Key Database (db).").optional(),
-        dbxs: z.array(z.object({
-          content: z.string().describe(
-            "The raw content in the secure keys file.",
-          ).optional(),
-          fileType: z.enum(["BIN", "UNDEFINED", "X509"]).describe(
-            "The file type of source file.",
-          ).optional(),
-        })).describe("The forbidden key database (dbx).").optional(),
-        keks: z.array(z.object({
-          content: z.string().describe(
-            "The raw content in the secure keys file.",
-          ).optional(),
-          fileType: z.enum(["BIN", "UNDEFINED", "X509"]).describe(
-            "The file type of source file.",
-          ).optional(),
-        })).describe("The Key Exchange Key (KEK).").optional(),
+        dbs: z.array(z.unknown()).describe("The Key Database (db).").optional(),
+        dbxs: z.array(z.unknown()).describe("The forbidden key database (dbx).")
+          .optional(),
+        keks: z.array(z.unknown()).describe("The Key Exchange Key (KEK).")
+          .optional(),
         pk: z.object({
-          content: z.string().describe(
+          content: z.unknown().describe(
             "The raw content in the secure keys file.",
           ).optional(),
-          fileType: z.enum(["BIN", "UNDEFINED", "X509"]).describe(
-            "The file type of source file.",
-          ).optional(),
+          fileType: z.unknown().describe("The file type of source file.")
+            .optional(),
         }).optional(),
       }).describe(
         "Initial State for shielded instance, these are public keys which are safe to store in public",
@@ -1274,49 +1187,44 @@ const InputsSchema = z.object({
     ).optional(),
     networkInterfaces: z.array(z.object({
       accessConfigs: z.array(z.object({
-        externalIpv6: z.string().describe(
+        externalIpv6: z.unknown().describe(
           "Applies to ipv6AccessConfigs only. The first IPv6 address of the external IPv6 range associated with this instance, prefix length is stored inexternalIpv6PrefixLength in ipv6AccessConfig. To use a static external IP address, it must be unused and in the same region as the instance's zone. If not specified, Google Cloud will automatically assign an external IPv6 address from the instance's subnetwork.",
         ).optional(),
-        externalIpv6PrefixLength: z.number().int().describe(
+        externalIpv6PrefixLength: z.unknown().describe(
           "Applies to ipv6AccessConfigs only. The prefix length of the external IPv6 range.",
         ).optional(),
-        kind: z.string().describe(
+        kind: z.unknown().describe(
           "Output only. [Output Only] Type of the resource. Alwayscompute#accessConfig for access configs.",
         ).optional(),
-        name: z.string().describe(
+        name: z.unknown().describe(
           "The name of this access configuration. In accessConfigs (IPv4), the default and recommended name is External NAT, but you can use any arbitrary string, such as My external IP orNetwork Access. In ipv6AccessConfigs, the recommend name is External IPv6.",
         ).optional(),
-        natIP: z.string().describe(
+        natIP: z.unknown().describe(
           "Applies to accessConfigs (IPv4) only. Anexternal IP address associated with this instance. Specify an unused static external IP address available to the project or leave this field undefined to use an IP from a shared ephemeral IP address pool. If you specify a static external IP address, it must live in the same region as the zone of the instance.",
         ).optional(),
-        networkTier: z.enum([
-          "FIXED_STANDARD",
-          "PREMIUM",
-          "STANDARD",
-          "STANDARD_OVERRIDES_FIXED_STANDARD",
-        ]).describe(
+        networkTier: z.unknown().describe(
           "This signifies the networking tier used for configuring this access configuration and can only take the following values: PREMIUM,STANDARD. If an AccessConfig is specified without a valid external IP address, an ephemeral IP will be created with this networkTier. If an AccessConfig with a valid external IP address is specified, it must match that of the networkTier associated with the Address resource owning that IP.",
         ).optional(),
-        publicPtrDomainName: z.string().describe(
+        publicPtrDomainName: z.unknown().describe(
           "The DNS domain name for the public PTR record. You can set this field only if the `setPublicPtr` field is enabled inaccessConfig. If this field is unspecified inipv6AccessConfig, a default PTR record will be created for first IP in associated external IPv6 range.",
         ).optional(),
-        securityPolicy: z.string().describe(
+        securityPolicy: z.unknown().describe(
           "The resource URL for the security policy associated with this access config.",
         ).optional(),
-        setPublicPtr: z.boolean().describe(
+        setPublicPtr: z.unknown().describe(
           "Specifies whether a public DNS 'PTR' record should be created to map the external IP address of the instance to a DNS domain name. This field is not used in ipv6AccessConfig. A default PTR record will be created if the VM has external IPv6 range associated.",
         ).optional(),
-        type: z.enum(["DIRECT_IPV6", "ONE_TO_ONE_NAT"]).describe(
+        type: z.unknown().describe(
           "The type of configuration. In accessConfigs (IPv4), the default and only option is ONE_TO_ONE_NAT. Inipv6AccessConfigs, the default and only option isDIRECT_IPV6.",
         ).optional(),
       })).describe(
         "An array of configurations for this interface. Currently, only one access config, ONE_TO_ONE_NAT, is supported. If there are noaccessConfigs specified, then this instance will have no external internet access.",
       ).optional(),
       aliasIpRanges: z.array(z.object({
-        ipCidrRange: z.string().describe(
+        ipCidrRange: z.unknown().describe(
           "The IP alias ranges to allocate for this interface. This IP CIDR range must belong to the specified subnetwork and cannot contain IP addresses reserved by system or used by other network interfaces. This range may be a single IP address (such as 10.2.3.4), a netmask (such as/24) or a CIDR-formatted string (such as10.1.2.0/24).",
         ).optional(),
-        subnetworkRangeName: z.string().describe(
+        subnetworkRangeName: z.unknown().describe(
           "The name of a subnetwork secondary IP range from which to allocate an IP alias range. If not specified, the primary range of the subnetwork is used.",
         ).optional(),
       })).describe(
@@ -1335,39 +1243,34 @@ const InputsSchema = z.object({
         "The prefix length of the primary internal IPv6 range.",
       ).optional(),
       ipv6AccessConfigs: z.array(z.object({
-        externalIpv6: z.string().describe(
+        externalIpv6: z.unknown().describe(
           "Applies to ipv6AccessConfigs only. The first IPv6 address of the external IPv6 range associated with this instance, prefix length is stored inexternalIpv6PrefixLength in ipv6AccessConfig. To use a static external IP address, it must be unused and in the same region as the instance's zone. If not specified, Google Cloud will automatically assign an external IPv6 address from the instance's subnetwork.",
         ).optional(),
-        externalIpv6PrefixLength: z.number().int().describe(
+        externalIpv6PrefixLength: z.unknown().describe(
           "Applies to ipv6AccessConfigs only. The prefix length of the external IPv6 range.",
         ).optional(),
-        kind: z.string().describe(
+        kind: z.unknown().describe(
           "Output only. [Output Only] Type of the resource. Alwayscompute#accessConfig for access configs.",
         ).optional(),
-        name: z.string().describe(
+        name: z.unknown().describe(
           "The name of this access configuration. In accessConfigs (IPv4), the default and recommended name is External NAT, but you can use any arbitrary string, such as My external IP orNetwork Access. In ipv6AccessConfigs, the recommend name is External IPv6.",
         ).optional(),
-        natIP: z.string().describe(
+        natIP: z.unknown().describe(
           "Applies to accessConfigs (IPv4) only. Anexternal IP address associated with this instance. Specify an unused static external IP address available to the project or leave this field undefined to use an IP from a shared ephemeral IP address pool. If you specify a static external IP address, it must live in the same region as the zone of the instance.",
         ).optional(),
-        networkTier: z.enum([
-          "FIXED_STANDARD",
-          "PREMIUM",
-          "STANDARD",
-          "STANDARD_OVERRIDES_FIXED_STANDARD",
-        ]).describe(
+        networkTier: z.unknown().describe(
           "This signifies the networking tier used for configuring this access configuration and can only take the following values: PREMIUM,STANDARD. If an AccessConfig is specified without a valid external IP address, an ephemeral IP will be created with this networkTier. If an AccessConfig with a valid external IP address is specified, it must match that of the networkTier associated with the Address resource owning that IP.",
         ).optional(),
-        publicPtrDomainName: z.string().describe(
+        publicPtrDomainName: z.unknown().describe(
           "The DNS domain name for the public PTR record. You can set this field only if the `setPublicPtr` field is enabled inaccessConfig. If this field is unspecified inipv6AccessConfig, a default PTR record will be created for first IP in associated external IPv6 range.",
         ).optional(),
-        securityPolicy: z.string().describe(
+        securityPolicy: z.unknown().describe(
           "The resource URL for the security policy associated with this access config.",
         ).optional(),
-        setPublicPtr: z.boolean().describe(
+        setPublicPtr: z.unknown().describe(
           "Specifies whether a public DNS 'PTR' record should be created to map the external IP address of the instance to a DNS domain name. This field is not used in ipv6AccessConfig. A default PTR record will be created if the VM has external IPv6 range associated.",
         ).optional(),
-        type: z.enum(["DIRECT_IPV6", "ONE_TO_ONE_NAT"]).describe(
+        type: z.unknown().describe(
           "The type of configuration. In accessConfigs (IPv4), the default and only option is ONE_TO_ONE_NAT. Inipv6AccessConfigs, the default and only option isDIRECT_IPV6.",
         ).optional(),
       })).describe(
@@ -1409,6 +1312,9 @@ const InputsSchema = z.object({
       ).optional(),
       queueCount: z.number().int().describe(
         "The networking queue count that's specified by users for the network interface. Both Rx and Tx queues will be set to this number. It'll be empty if not specified by the users.",
+      ).optional(),
+      serviceClassId: z.string().describe(
+        "Optional. Producer Service's Service class Id for the region of this network interface. Can only be used with network_attachment. It is not possible to use on its own however, network_attachment can be used without service_class_id.",
       ).optional(),
       stackType: z.enum(["IPV4_IPV6", "IPV4_ONLY", "IPV6_ONLY"]).describe(
         "The stack type for this network interface. To assign only IPv4 addresses, use IPV4_ONLY. To assign both IPv4 and IPv6 addresses, useIPV4_IPV6. If not specified, IPV4_ONLY is used. This field can be both set at instance creation and update network interface operations.",
@@ -1505,7 +1411,7 @@ const InputsSchema = z.object({
         operator: z.enum(["IN", "NOT_IN", "OPERATOR_UNSPECIFIED"]).describe(
           "Defines the operation of node selection. Valid operators areIN for affinity and NOT_IN for anti-affinity.",
         ).optional(),
-        values: z.array(z.string()).describe(
+        values: z.array(z.unknown()).describe(
           "Corresponds to the label values of Node resource.",
         ).optional(),
       })).describe(
@@ -1609,7 +1515,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/compute/instancetemplates",
-  version: "2026.04.03.3",
+  version: "2026.04.04.1",
   upgrades: [
     {
       toVersion: "2026.03.31.1",
@@ -1643,6 +1549,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.3",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.04.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

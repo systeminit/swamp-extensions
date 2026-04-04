@@ -75,39 +75,33 @@ const StateSchema = z.object({
   messages: z.array(z.object({
     chunks: z.array(z.object({
       agentTransfer: z.object({
-        displayName: z.string(),
-        targetAgent: z.string(),
+        displayName: z.unknown(),
+        targetAgent: z.unknown(),
       }),
       blob: z.object({
-        data: z.string(),
-        mimeType: z.string(),
+        data: z.unknown(),
+        mimeType: z.unknown(),
       }),
       defaultVariables: z.record(z.string(), z.unknown()),
       image: z.object({
-        data: z.string(),
-        mimeType: z.string(),
+        data: z.unknown(),
+        mimeType: z.unknown(),
       }),
       payload: z.record(z.string(), z.unknown()),
       text: z.string(),
       toolCall: z.object({
-        args: z.record(z.string(), z.unknown()),
-        displayName: z.string(),
-        id: z.string(),
-        tool: z.string(),
-        toolsetTool: z.object({
-          toolId: z.string(),
-          toolset: z.string(),
-        }),
+        args: z.unknown(),
+        displayName: z.unknown(),
+        id: z.unknown(),
+        tool: z.unknown(),
+        toolsetTool: z.unknown(),
       }),
       toolResponse: z.object({
-        displayName: z.string(),
-        id: z.string(),
-        response: z.record(z.string(), z.unknown()),
-        tool: z.string(),
-        toolsetTool: z.object({
-          toolId: z.string(),
-          toolset: z.string(),
-        }),
+        displayName: z.unknown(),
+        id: z.unknown(),
+        response: z.unknown(),
+        tool: z.unknown(),
+        toolsetTool: z.unknown(),
       }),
       transcript: z.string(),
       updatedVariables: z.record(z.string(), z.unknown()),
@@ -121,45 +115,7 @@ const StateSchema = z.object({
   turnCount: z.number().optional(),
   turns: z.array(z.object({
     messages: z.array(z.object({
-      chunks: z.array(z.object({
-        agentTransfer: z.object({
-          displayName: z.string(),
-          targetAgent: z.string(),
-        }),
-        blob: z.object({
-          data: z.string(),
-          mimeType: z.string(),
-        }),
-        defaultVariables: z.record(z.string(), z.unknown()),
-        image: z.object({
-          data: z.string(),
-          mimeType: z.string(),
-        }),
-        payload: z.record(z.string(), z.unknown()),
-        text: z.string(),
-        toolCall: z.object({
-          args: z.record(z.string(), z.unknown()),
-          displayName: z.string(),
-          id: z.string(),
-          tool: z.string(),
-          toolsetTool: z.object({
-            toolId: z.string(),
-            toolset: z.string(),
-          }),
-        }),
-        toolResponse: z.object({
-          displayName: z.string(),
-          id: z.string(),
-          response: z.record(z.string(), z.unknown()),
-          tool: z.string(),
-          toolsetTool: z.object({
-            toolId: z.string(),
-            toolset: z.string(),
-          }),
-        }),
-        transcript: z.string(),
-        updatedVariables: z.record(z.string(), z.unknown()),
-      })),
+      chunks: z.array(z.unknown()),
       eventTime: z.string(),
       role: z.string(),
     })),
@@ -185,7 +141,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/ces/apps-conversations",
-  version: "2026.04.03.3",
+  version: "2026.04.04.1",
   upgrades: [
     {
       toVersion: "2026.04.01.2",
@@ -209,6 +165,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.3",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.04.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

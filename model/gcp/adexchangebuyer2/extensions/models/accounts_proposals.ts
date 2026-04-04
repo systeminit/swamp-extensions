@@ -134,39 +134,12 @@ const GlobalArgsSchema = z.object({
         "The format of the environment that the creatives will be displayed in.",
       ).optional(),
       creativeSpecifications: z.array(z.object({
-        creativeCompanionSizes: z.array(z.object({
-          height: z.string().describe(
-            "The height of the ad slot in pixels. This field will be present only when size type is `PIXEL`.",
-          ).optional(),
-          sizeType: z.enum([
-            "SIZE_TYPE_UNSPECIFIED",
-            "PIXEL",
-            "INTERSTITIAL",
-            "NATIVE",
-            "FLUID",
-          ]).describe("The size type of the ad slot.").optional(),
-          width: z.string().describe(
-            "The width of the ad slot in pixels. This field will be present only when size type is `PIXEL`.",
-          ).optional(),
-        })).describe(
+        creativeCompanionSizes: z.unknown().describe(
           "Companion sizes may be filled in only when this is a video creative.",
         ).optional(),
-        creativeSize: z.object({
-          height: z.string().describe(
-            "The height of the ad slot in pixels. This field will be present only when size type is `PIXEL`.",
-          ).optional(),
-          sizeType: z.enum([
-            "SIZE_TYPE_UNSPECIFIED",
-            "PIXEL",
-            "INTERSTITIAL",
-            "NATIVE",
-            "FLUID",
-          ]).describe("The size type of the ad slot.").optional(),
-          width: z.string().describe(
-            "The width of the ad slot in pixels. This field will be present only when size type is `PIXEL`.",
-          ).optional(),
-        }).describe("Represents size of a single ad slot, or a creative.")
-          .optional(),
+        creativeSize: z.unknown().describe(
+          "Represents size of a single ad slot, or a creative.",
+        ).optional(),
       })).optional(),
       skippableAdType: z.enum([
         "SKIPPABLE_AD_TYPE_UNSPECIFIED",
@@ -226,13 +199,13 @@ const GlobalArgsSchema = z.object({
       ).optional(),
       estimatedGrossSpend: z.object({
         amount: z.object({
-          currencyCode: z.string().describe(
+          currencyCode: z.unknown().describe(
             "The three-letter currency code defined in ISO 4217.",
           ).optional(),
-          nanos: z.number().int().describe(
+          nanos: z.unknown().describe(
             "Number of nano (10^-9) units of the amount. The value must be between -999,999,999 and +999,999,999 inclusive. If `units` is positive, `nanos` must be positive or zero. If `units` is zero, `nanos` can be positive, zero, or negative. If `units` is negative, `nanos` must be negative or zero. For example $-1.75 is represented as `units`=-1 and `nanos`=-750,000,000.",
           ).optional(),
-          units: z.string().describe(
+          units: z.unknown().describe(
             'The whole units of the amount. For example if `currencyCode` is `"USD"`, then 1 unit is one US dollar.',
           ).optional(),
         }).describe("Represents an amount of money with its currency type.")
@@ -249,40 +222,9 @@ const GlobalArgsSchema = z.object({
         "Non-binding estimate of the impressions served per day. Can be set by buyer or seller.",
       ).optional(),
       guaranteedFixedPriceTerms: z.object({
-        fixedPrices: z.array(z.object({
-          advertiserIds: z.array(z.string()).describe(
-            "The list of advertisers for this price when associated with this buyer. If empty, all advertisers with this buyer pay this price.",
-          ).optional(),
-          buyer: z.object({
-            accountId: z.string().describe(
-              "Authorized Buyers account ID of the buyer.",
-            ).optional(),
-          }).describe(
-            "Represents a buyer of inventory. Each buyer is identified by a unique Authorized Buyers account ID.",
-          ).optional(),
-          price: z.object({
-            amount: z.object({
-              currencyCode: z.string().describe(
-                "The three-letter currency code defined in ISO 4217.",
-              ).optional(),
-              nanos: z.number().int().describe(
-                "Number of nano (10^-9) units of the amount. The value must be between -999,999,999 and +999,999,999 inclusive. If `units` is positive, `nanos` must be positive or zero. If `units` is zero, `nanos` can be positive, zero, or negative. If `units` is negative, `nanos` must be negative or zero. For example $-1.75 is represented as `units`=-1 and `nanos`=-750,000,000.",
-              ).optional(),
-              units: z.string().describe(
-                'The whole units of the amount. For example if `currencyCode` is `"USD"`, then 1 unit is one US dollar.',
-              ).optional(),
-            }).describe("Represents an amount of money with its currency type.")
-              .optional(),
-            pricingType: z.enum([
-              "PRICING_TYPE_UNSPECIFIED",
-              "COST_PER_MILLE",
-              "COST_PER_DAY",
-            ]).describe("The pricing type for the deal/product. (default: CPM)")
-              .optional(),
-          }).describe(
-            "Represents a price and a pricing type for a product / deal.",
-          ).optional(),
-        })).describe("Fixed price for the specified buyer.").optional(),
+        fixedPrices: z.array(z.unknown()).describe(
+          "Fixed price for the specified buyer.",
+        ).optional(),
         guaranteedImpressions: z.string().describe(
           "Guaranteed impressions as a percentage. This is the percentage of guaranteed looks that the buyer is guaranteeing to buy.",
         ).optional(),
@@ -310,78 +252,16 @@ const GlobalArgsSchema = z.object({
         autoOptimizePrivateAuction: z.boolean().describe(
           "True if open auction buyers are allowed to compete with invited buyers in this private auction.",
         ).optional(),
-        reservePricesPerBuyer: z.array(z.object({
-          advertiserIds: z.array(z.string()).describe(
-            "The list of advertisers for this price when associated with this buyer. If empty, all advertisers with this buyer pay this price.",
-          ).optional(),
-          buyer: z.object({
-            accountId: z.string().describe(
-              "Authorized Buyers account ID of the buyer.",
-            ).optional(),
-          }).describe(
-            "Represents a buyer of inventory. Each buyer is identified by a unique Authorized Buyers account ID.",
-          ).optional(),
-          price: z.object({
-            amount: z.object({
-              currencyCode: z.string().describe(
-                "The three-letter currency code defined in ISO 4217.",
-              ).optional(),
-              nanos: z.number().int().describe(
-                "Number of nano (10^-9) units of the amount. The value must be between -999,999,999 and +999,999,999 inclusive. If `units` is positive, `nanos` must be positive or zero. If `units` is zero, `nanos` can be positive, zero, or negative. If `units` is negative, `nanos` must be negative or zero. For example $-1.75 is represented as `units`=-1 and `nanos`=-750,000,000.",
-              ).optional(),
-              units: z.string().describe(
-                'The whole units of the amount. For example if `currencyCode` is `"USD"`, then 1 unit is one US dollar.',
-              ).optional(),
-            }).describe("Represents an amount of money with its currency type.")
-              .optional(),
-            pricingType: z.enum([
-              "PRICING_TYPE_UNSPECIFIED",
-              "COST_PER_MILLE",
-              "COST_PER_DAY",
-            ]).describe("The pricing type for the deal/product. (default: CPM)")
-              .optional(),
-          }).describe(
-            "Represents a price and a pricing type for a product / deal.",
-          ).optional(),
-        })).describe("Reserve price for the specified buyer.").optional(),
+        reservePricesPerBuyer: z.array(z.unknown()).describe(
+          "Reserve price for the specified buyer.",
+        ).optional(),
       }).describe(
         "Terms for Private Auctions. Note that Private Auctions can be created only by the seller, but they can be returned in a get or list request.",
       ).optional(),
       nonGuaranteedFixedPriceTerms: z.object({
-        fixedPrices: z.array(z.object({
-          advertiserIds: z.array(z.string()).describe(
-            "The list of advertisers for this price when associated with this buyer. If empty, all advertisers with this buyer pay this price.",
-          ).optional(),
-          buyer: z.object({
-            accountId: z.string().describe(
-              "Authorized Buyers account ID of the buyer.",
-            ).optional(),
-          }).describe(
-            "Represents a buyer of inventory. Each buyer is identified by a unique Authorized Buyers account ID.",
-          ).optional(),
-          price: z.object({
-            amount: z.object({
-              currencyCode: z.string().describe(
-                "The three-letter currency code defined in ISO 4217.",
-              ).optional(),
-              nanos: z.number().int().describe(
-                "Number of nano (10^-9) units of the amount. The value must be between -999,999,999 and +999,999,999 inclusive. If `units` is positive, `nanos` must be positive or zero. If `units` is zero, `nanos` can be positive, zero, or negative. If `units` is negative, `nanos` must be negative or zero. For example $-1.75 is represented as `units`=-1 and `nanos`=-750,000,000.",
-              ).optional(),
-              units: z.string().describe(
-                'The whole units of the amount. For example if `currencyCode` is `"USD"`, then 1 unit is one US dollar.',
-              ).optional(),
-            }).describe("Represents an amount of money with its currency type.")
-              .optional(),
-            pricingType: z.enum([
-              "PRICING_TYPE_UNSPECIFIED",
-              "COST_PER_MILLE",
-              "COST_PER_DAY",
-            ]).describe("The pricing type for the deal/product. (default: CPM)")
-              .optional(),
-          }).describe(
-            "Represents a price and a pricing type for a product / deal.",
-          ).optional(),
-        })).describe("Fixed price for the specified buyer.").optional(),
+        fixedPrices: z.array(z.unknown()).describe(
+          "Fixed price for the specified buyer.",
+        ).optional(),
       }).describe("Terms for Preferred Deals.").optional(),
       sellerTimeZone: z.string().describe(
         'The time zone name. For deals with Cost Per Day billing, defines the time zone used to mark the boundaries of a day. It should be an IANA TZ name, such as "America/Los_Angeles". For more information, see https://en.wikipedia.org/wiki/List_of_tz_database_time_zones.',
@@ -406,23 +286,13 @@ const GlobalArgsSchema = z.object({
         "Output only. Specifies how the impression delivery will be paced.",
       ).optional(),
       frequencyCaps: z.array(z.object({
-        maxImpressions: z.number().int().describe(
+        maxImpressions: z.unknown().describe(
           "The maximum number of impressions that can be served to a user within the specified time period.",
         ).optional(),
-        numTimeUnits: z.number().int().describe(
+        numTimeUnits: z.unknown().describe(
           "The amount of time, in the units specified by time_unit_type. Defines the amount of time over which impressions per user are counted and capped.",
         ).optional(),
-        timeUnitType: z.enum([
-          "TIME_UNIT_TYPE_UNSPECIFIED",
-          "MINUTE",
-          "HOUR",
-          "DAY",
-          "WEEK",
-          "MONTH",
-          "LIFETIME",
-          "POD",
-          "STREAM",
-        ]).describe(
+        timeUnitType: z.unknown().describe(
           "The time unit. Along with num_time_units defines the amount of time over which impressions per user are counted and capped.",
         ).optional(),
       })).describe("Output only. Specifies any frequency caps.").optional(),
@@ -463,69 +333,36 @@ const GlobalArgsSchema = z.object({
     ).optional(),
     targeting: z.object({
       geoTargeting: z.object({
-        excludedCriteriaIds: z.array(z.string()).describe(
+        excludedCriteriaIds: z.array(z.unknown()).describe(
           "A list of numeric IDs to be excluded.",
         ).optional(),
-        targetedCriteriaIds: z.array(z.string()).describe(
+        targetedCriteriaIds: z.array(z.unknown()).describe(
           "A list of numeric IDs to be included.",
         ).optional(),
       }).describe(
         "Generic targeting used for targeting dimensions that contains a list of included and excluded numeric IDs.",
       ).optional(),
       inventorySizeTargeting: z.object({
-        excludedInventorySizes: z.array(z.object({
-          height: z.string().describe(
-            "The height of the ad slot in pixels. This field will be present only when size type is `PIXEL`.",
-          ).optional(),
-          sizeType: z.enum([
-            "SIZE_TYPE_UNSPECIFIED",
-            "PIXEL",
-            "INTERSTITIAL",
-            "NATIVE",
-            "FLUID",
-          ]).describe("The size type of the ad slot.").optional(),
-          width: z.string().describe(
-            "The width of the ad slot in pixels. This field will be present only when size type is `PIXEL`.",
-          ).optional(),
-        })).describe("A list of inventory sizes to be excluded.").optional(),
-        targetedInventorySizes: z.array(z.object({
-          height: z.string().describe(
-            "The height of the ad slot in pixels. This field will be present only when size type is `PIXEL`.",
-          ).optional(),
-          sizeType: z.enum([
-            "SIZE_TYPE_UNSPECIFIED",
-            "PIXEL",
-            "INTERSTITIAL",
-            "NATIVE",
-            "FLUID",
-          ]).describe("The size type of the ad slot.").optional(),
-          width: z.string().describe(
-            "The width of the ad slot in pixels. This field will be present only when size type is `PIXEL`.",
-          ).optional(),
-        })).describe("A list of inventory sizes to be included.").optional(),
+        excludedInventorySizes: z.array(z.unknown()).describe(
+          "A list of inventory sizes to be excluded.",
+        ).optional(),
+        targetedInventorySizes: z.array(z.unknown()).describe(
+          "A list of inventory sizes to be included.",
+        ).optional(),
       }).describe(
         "Represents the size of an ad unit that can be targeted on an ad request. It only applies to Private Auction, AdX Preferred Deals and Auction Packages. This targeting does not apply to Programmatic Guaranteed and Preferred Deals in Ad Manager.",
       ).optional(),
       placementTargeting: z.object({
         mobileApplicationTargeting: z.object({
-          firstPartyTargeting: z.object({
-            excludedAppIds: z.array(z.string()).describe(
-              "A list of application IDs to be excluded.",
-            ).optional(),
-            targetedAppIds: z.array(z.string()).describe(
-              "A list of application IDs to be included.",
-            ).optional(),
-          }).describe(
+          firstPartyTargeting: z.unknown().describe(
             "Represents a list of targeted and excluded mobile application IDs that publishers own. Mobile application IDs are from App Store and Google Play Store. Android App ID, for example, com.google.android.apps.maps, can be found in Google Play Store URL. iOS App ID (which is a number) can be found at the end of iTunes store URL. First party mobile applications is either included or excluded.",
           ).optional(),
         }).describe("Mobile application targeting settings.").optional(),
         urlTargeting: z.object({
-          excludedUrls: z.array(z.string()).describe(
-            "A list of URLs to be excluded.",
-          ).optional(),
-          targetedUrls: z.array(z.string()).describe(
-            "A list of URLs to be included.",
-          ).optional(),
+          excludedUrls: z.unknown().describe("A list of URLs to be excluded.")
+            .optional(),
+          targetedUrls: z.unknown().describe("A list of URLs to be included.")
+            .optional(),
         }).describe(
           "Represents a list of targeted and excluded URLs (for example, google.com). For Private Auction and AdX Preferred Deals, URLs are either included or excluded. For Programmatic Guaranteed and Preferred Deals, this doesn't apply.",
         ).optional(),
@@ -534,44 +371,30 @@ const GlobalArgsSchema = z.object({
       ).optional(),
       technologyTargeting: z.object({
         deviceCapabilityTargeting: z.object({
-          excludedCriteriaIds: z.array(z.string()).describe(
+          excludedCriteriaIds: z.unknown().describe(
             "A list of numeric IDs to be excluded.",
           ).optional(),
-          targetedCriteriaIds: z.array(z.string()).describe(
+          targetedCriteriaIds: z.unknown().describe(
             "A list of numeric IDs to be included.",
           ).optional(),
         }).describe(
           "Generic targeting used for targeting dimensions that contains a list of included and excluded numeric IDs.",
         ).optional(),
         deviceCategoryTargeting: z.object({
-          excludedCriteriaIds: z.array(z.string()).describe(
+          excludedCriteriaIds: z.unknown().describe(
             "A list of numeric IDs to be excluded.",
           ).optional(),
-          targetedCriteriaIds: z.array(z.string()).describe(
+          targetedCriteriaIds: z.unknown().describe(
             "A list of numeric IDs to be included.",
           ).optional(),
         }).describe(
           "Generic targeting used for targeting dimensions that contains a list of included and excluded numeric IDs.",
         ).optional(),
         operatingSystemTargeting: z.object({
-          operatingSystemCriteria: z.object({
-            excludedCriteriaIds: z.array(z.string()).describe(
-              "A list of numeric IDs to be excluded.",
-            ).optional(),
-            targetedCriteriaIds: z.array(z.string()).describe(
-              "A list of numeric IDs to be included.",
-            ).optional(),
-          }).describe(
+          operatingSystemCriteria: z.unknown().describe(
             "Generic targeting used for targeting dimensions that contains a list of included and excluded numeric IDs.",
           ).optional(),
-          operatingSystemVersionCriteria: z.object({
-            excludedCriteriaIds: z.array(z.string()).describe(
-              "A list of numeric IDs to be excluded.",
-            ).optional(),
-            targetedCriteriaIds: z.array(z.string()).describe(
-              "A list of numeric IDs to be included.",
-            ).optional(),
-          }).describe(
+          operatingSystemVersionCriteria: z.unknown().describe(
             "Generic targeting used for targeting dimensions that contains a list of included and excluded numeric IDs.",
           ).optional(),
         }).describe("Represents targeting information for operating systems.")
@@ -579,24 +402,10 @@ const GlobalArgsSchema = z.object({
       }).describe("Represents targeting about various types of technology.")
         .optional(),
       videoTargeting: z.object({
-        excludedPositionTypes: z.array(
-          z.enum([
-            "POSITION_TYPE_UNSPECIFIED",
-            "PREROLL",
-            "MIDROLL",
-            "POSTROLL",
-          ]),
-        ).describe(
+        excludedPositionTypes: z.array(z.unknown()).describe(
           "A list of video positions to be excluded. Position types can either be included or excluded (XOR).",
         ).optional(),
-        targetedPositionTypes: z.array(
-          z.enum([
-            "POSITION_TYPE_UNSPECIFIED",
-            "PREROLL",
-            "MIDROLL",
-            "POSTROLL",
-          ]),
-        ).describe(
+        targetedPositionTypes: z.array(z.unknown()).describe(
           "A list of video positions to be included. When the included list is present, the excluded list must be empty. When the excluded list is present, the included list must be empty.",
         ).optional(),
       }).describe("Represents targeting information about video.").optional(),
@@ -604,220 +413,10 @@ const GlobalArgsSchema = z.object({
       "Targeting represents different criteria that can be used by advertisers to target ad inventory. For example, they can choose to target ad requests only if the user is in the US. Multiple types of targeting are always applied as a logical AND, unless noted otherwise.",
     ).optional(),
     targetingCriterion: z.array(z.object({
-      exclusions: z.array(z.object({
-        creativeSizeValue: z.object({
-          allowedFormats: z.array(z.enum(["UNKNOWN", "AUDIO"])).describe(
-            "What formats are allowed by the publisher. If this repeated field is empty then all formats are allowed. For example, if this field contains AllowedFormatType.AUDIO then the publisher only allows an audio ad (without any video).",
-          ).optional(),
-          companionSizes: z.array(z.object({
-            height: z.number().int().describe("The height of the creative.")
-              .optional(),
-            width: z.number().int().describe("The width of the creative")
-              .optional(),
-          })).describe(
-            "For video creatives specifies the sizes of companion ads (if present). Companion sizes may be filled in only when creative_size_type = VIDEO",
-          ).optional(),
-          creativeSizeType: z.enum([
-            "CREATIVE_SIZE_TYPE_UNSPECIFIED",
-            "REGULAR",
-            "INTERSTITIAL",
-            "VIDEO",
-            "NATIVE",
-          ]).describe("The creative size type.").optional(),
-          nativeTemplate: z.enum([
-            "UNKNOWN_NATIVE_TEMPLATE",
-            "NATIVE_CONTENT_AD",
-            "NATIVE_APP_INSTALL_AD",
-            "NATIVE_VIDEO_CONTENT_AD",
-            "NATIVE_VIDEO_APP_INSTALL_AD",
-          ]).describe(
-            "Output only. The native template for this creative. It will have a value only if creative_size_type = CreativeSizeType.NATIVE.",
-          ).optional(),
-          size: z.object({
-            height: z.number().int().describe("The height of the creative.")
-              .optional(),
-            width: z.number().int().describe("The width of the creative")
-              .optional(),
-          }).describe(
-            "Message depicting the size of the creative. The units of width and height depend on the type of the targeting.",
-          ).optional(),
-          skippableAdType: z.enum([
-            "SKIPPABLE_AD_TYPE_UNSPECIFIED",
-            "GENERIC",
-            "INSTREAM_SELECT",
-            "NOT_SKIPPABLE",
-          ]).describe(
-            "The type of skippable ad for this creative. It will have a value only if creative_size_type = CreativeSizeType.VIDEO.",
-          ).optional(),
-        }).describe("Specifies the size of the creative.").optional(),
-        dayPartTargetingValue: z.object({
-          dayParts: z.array(z.object({
-            dayOfWeek: z.enum([
-              "DAY_OF_WEEK_UNSPECIFIED",
-              "MONDAY",
-              "TUESDAY",
-              "WEDNESDAY",
-              "THURSDAY",
-              "FRIDAY",
-              "SATURDAY",
-              "SUNDAY",
-            ]).describe(
-              "The day of the week to target. If unspecified, applicable to all days.",
-            ).optional(),
-            endTime: z.object({
-              hours: z.number().int().describe(
-                'Hours of a day in 24 hour format. Must be greater than or equal to 0 and typically must be less than or equal to 23. An API may choose to allow the value "24:00:00" for scenarios like business closing time.',
-              ).optional(),
-              minutes: z.number().int().describe(
-                "Minutes of an hour. Must be greater than or equal to 0 and less than or equal to 59.",
-              ).optional(),
-              nanos: z.number().int().describe(
-                "Fractions of seconds, in nanoseconds. Must be greater than or equal to 0 and less than or equal to 999,999,999.",
-              ).optional(),
-              seconds: z.number().int().describe(
-                "Seconds of a minute. Must be greater than or equal to 0 and typically must be less than or equal to 59. An API may allow the value 60 if it allows leap-seconds.",
-              ).optional(),
-            }).describe(
-              "Represents a time of day. The date and time zone are either not significant or are specified elsewhere. An API may choose to allow leap seconds. Related types are google.type.Date and `google.protobuf.Timestamp`.",
-            ).optional(),
-            startTime: z.object({
-              hours: z.number().int().describe(
-                'Hours of a day in 24 hour format. Must be greater than or equal to 0 and typically must be less than or equal to 23. An API may choose to allow the value "24:00:00" for scenarios like business closing time.',
-              ).optional(),
-              minutes: z.number().int().describe(
-                "Minutes of an hour. Must be greater than or equal to 0 and less than or equal to 59.",
-              ).optional(),
-              nanos: z.number().int().describe(
-                "Fractions of seconds, in nanoseconds. Must be greater than or equal to 0 and less than or equal to 999,999,999.",
-              ).optional(),
-              seconds: z.number().int().describe(
-                "Seconds of a minute. Must be greater than or equal to 0 and typically must be less than or equal to 59. An API may allow the value 60 if it allows leap-seconds.",
-              ).optional(),
-            }).describe(
-              "Represents a time of day. The date and time zone are either not significant or are specified elsewhere. An API may choose to allow leap seconds. Related types are google.type.Date and `google.protobuf.Timestamp`.",
-            ).optional(),
-          })).describe("A list of day part targeting criterion.").optional(),
-          timeZoneType: z.enum([
-            "TIME_ZONE_SOURCE_UNSPECIFIED",
-            "PUBLISHER",
-            "USER",
-          ]).describe(
-            "The timezone to use for interpreting the day part targeting.",
-          ).optional(),
-        }).describe("Specifies the day part targeting criteria.").optional(),
-        longValue: z.string().describe("The long value to include/exclude.")
-          .optional(),
-        stringValue: z.string().describe("The string value to include/exclude.")
-          .optional(),
-      })).describe(
+      exclusions: z.array(z.unknown()).describe(
         "The list of values to exclude from targeting. Each value is AND'd together.",
       ).optional(),
-      inclusions: z.array(z.object({
-        creativeSizeValue: z.object({
-          allowedFormats: z.array(z.enum(["UNKNOWN", "AUDIO"])).describe(
-            "What formats are allowed by the publisher. If this repeated field is empty then all formats are allowed. For example, if this field contains AllowedFormatType.AUDIO then the publisher only allows an audio ad (without any video).",
-          ).optional(),
-          companionSizes: z.array(z.object({
-            height: z.number().int().describe("The height of the creative.")
-              .optional(),
-            width: z.number().int().describe("The width of the creative")
-              .optional(),
-          })).describe(
-            "For video creatives specifies the sizes of companion ads (if present). Companion sizes may be filled in only when creative_size_type = VIDEO",
-          ).optional(),
-          creativeSizeType: z.enum([
-            "CREATIVE_SIZE_TYPE_UNSPECIFIED",
-            "REGULAR",
-            "INTERSTITIAL",
-            "VIDEO",
-            "NATIVE",
-          ]).describe("The creative size type.").optional(),
-          nativeTemplate: z.enum([
-            "UNKNOWN_NATIVE_TEMPLATE",
-            "NATIVE_CONTENT_AD",
-            "NATIVE_APP_INSTALL_AD",
-            "NATIVE_VIDEO_CONTENT_AD",
-            "NATIVE_VIDEO_APP_INSTALL_AD",
-          ]).describe(
-            "Output only. The native template for this creative. It will have a value only if creative_size_type = CreativeSizeType.NATIVE.",
-          ).optional(),
-          size: z.object({
-            height: z.number().int().describe("The height of the creative.")
-              .optional(),
-            width: z.number().int().describe("The width of the creative")
-              .optional(),
-          }).describe(
-            "Message depicting the size of the creative. The units of width and height depend on the type of the targeting.",
-          ).optional(),
-          skippableAdType: z.enum([
-            "SKIPPABLE_AD_TYPE_UNSPECIFIED",
-            "GENERIC",
-            "INSTREAM_SELECT",
-            "NOT_SKIPPABLE",
-          ]).describe(
-            "The type of skippable ad for this creative. It will have a value only if creative_size_type = CreativeSizeType.VIDEO.",
-          ).optional(),
-        }).describe("Specifies the size of the creative.").optional(),
-        dayPartTargetingValue: z.object({
-          dayParts: z.array(z.object({
-            dayOfWeek: z.enum([
-              "DAY_OF_WEEK_UNSPECIFIED",
-              "MONDAY",
-              "TUESDAY",
-              "WEDNESDAY",
-              "THURSDAY",
-              "FRIDAY",
-              "SATURDAY",
-              "SUNDAY",
-            ]).describe(
-              "The day of the week to target. If unspecified, applicable to all days.",
-            ).optional(),
-            endTime: z.object({
-              hours: z.number().int().describe(
-                'Hours of a day in 24 hour format. Must be greater than or equal to 0 and typically must be less than or equal to 23. An API may choose to allow the value "24:00:00" for scenarios like business closing time.',
-              ).optional(),
-              minutes: z.number().int().describe(
-                "Minutes of an hour. Must be greater than or equal to 0 and less than or equal to 59.",
-              ).optional(),
-              nanos: z.number().int().describe(
-                "Fractions of seconds, in nanoseconds. Must be greater than or equal to 0 and less than or equal to 999,999,999.",
-              ).optional(),
-              seconds: z.number().int().describe(
-                "Seconds of a minute. Must be greater than or equal to 0 and typically must be less than or equal to 59. An API may allow the value 60 if it allows leap-seconds.",
-              ).optional(),
-            }).describe(
-              "Represents a time of day. The date and time zone are either not significant or are specified elsewhere. An API may choose to allow leap seconds. Related types are google.type.Date and `google.protobuf.Timestamp`.",
-            ).optional(),
-            startTime: z.object({
-              hours: z.number().int().describe(
-                'Hours of a day in 24 hour format. Must be greater than or equal to 0 and typically must be less than or equal to 23. An API may choose to allow the value "24:00:00" for scenarios like business closing time.',
-              ).optional(),
-              minutes: z.number().int().describe(
-                "Minutes of an hour. Must be greater than or equal to 0 and less than or equal to 59.",
-              ).optional(),
-              nanos: z.number().int().describe(
-                "Fractions of seconds, in nanoseconds. Must be greater than or equal to 0 and less than or equal to 999,999,999.",
-              ).optional(),
-              seconds: z.number().int().describe(
-                "Seconds of a minute. Must be greater than or equal to 0 and typically must be less than or equal to 59. An API may allow the value 60 if it allows leap-seconds.",
-              ).optional(),
-            }).describe(
-              "Represents a time of day. The date and time zone are either not significant or are specified elsewhere. An API may choose to allow leap seconds. Related types are google.type.Date and `google.protobuf.Timestamp`.",
-            ).optional(),
-          })).describe("A list of day part targeting criterion.").optional(),
-          timeZoneType: z.enum([
-            "TIME_ZONE_SOURCE_UNSPECIFIED",
-            "PUBLISHER",
-            "USER",
-          ]).describe(
-            "The timezone to use for interpreting the day part targeting.",
-          ).optional(),
-        }).describe("Specifies the day part targeting criteria.").optional(),
-        longValue: z.string().describe("The long value to include/exclude.")
-          .optional(),
-        stringValue: z.string().describe("The string value to include/exclude.")
-          .optional(),
-      })).describe(
+      inclusions: z.array(z.unknown()).describe(
         "The list of value to include as part of the targeting. Each value is OR'd together.",
       ).optional(),
       key: z.string().describe(
@@ -876,16 +475,8 @@ const StateSchema = z.object({
     creativeRestrictions: z.object({
       creativeFormat: z.string(),
       creativeSpecifications: z.array(z.object({
-        creativeCompanionSizes: z.array(z.object({
-          height: z.string(),
-          sizeType: z.string(),
-          width: z.string(),
-        })),
-        creativeSize: z.object({
-          height: z.string(),
-          sizeType: z.string(),
-          width: z.string(),
-        }),
+        creativeCompanionSizes: z.unknown(),
+        creativeSize: z.unknown(),
       })),
       skippableAdType: z.string(),
     }),
@@ -905,28 +496,15 @@ const StateSchema = z.object({
       description: z.string(),
       estimatedGrossSpend: z.object({
         amount: z.object({
-          currencyCode: z.string(),
-          nanos: z.number(),
-          units: z.string(),
+          currencyCode: z.unknown(),
+          nanos: z.unknown(),
+          units: z.unknown(),
         }),
         pricingType: z.string(),
       }),
       estimatedImpressionsPerDay: z.string(),
       guaranteedFixedPriceTerms: z.object({
-        fixedPrices: z.array(z.object({
-          advertiserIds: z.array(z.string()),
-          buyer: z.object({
-            accountId: z.string(),
-          }),
-          price: z.object({
-            amount: z.object({
-              currencyCode: z.string(),
-              nanos: z.number(),
-              units: z.string(),
-            }),
-            pricingType: z.string(),
-          }),
-        })),
+        fixedPrices: z.array(z.unknown()),
         guaranteedImpressions: z.string(),
         guaranteedLooks: z.string(),
         impressionCap: z.string(),
@@ -936,36 +514,10 @@ const StateSchema = z.object({
       }),
       nonGuaranteedAuctionTerms: z.object({
         autoOptimizePrivateAuction: z.boolean(),
-        reservePricesPerBuyer: z.array(z.object({
-          advertiserIds: z.array(z.string()),
-          buyer: z.object({
-            accountId: z.string(),
-          }),
-          price: z.object({
-            amount: z.object({
-              currencyCode: z.string(),
-              nanos: z.number(),
-              units: z.string(),
-            }),
-            pricingType: z.string(),
-          }),
-        })),
+        reservePricesPerBuyer: z.array(z.unknown()),
       }),
       nonGuaranteedFixedPriceTerms: z.object({
-        fixedPrices: z.array(z.object({
-          advertiserIds: z.array(z.string()),
-          buyer: z.object({
-            accountId: z.string(),
-          }),
-          price: z.object({
-            amount: z.object({
-              currencyCode: z.string(),
-              nanos: z.number(),
-              units: z.string(),
-            }),
-            pricingType: z.string(),
-          }),
-        })),
+        fixedPrices: z.array(z.unknown()),
       }),
       sellerTimeZone: z.string(),
     }),
@@ -973,9 +525,9 @@ const StateSchema = z.object({
       creativeBlockingLevel: z.string(),
       deliveryRateType: z.string(),
       frequencyCaps: z.array(z.object({
-        maxImpressions: z.number(),
-        numTimeUnits: z.number(),
-        timeUnitType: z.string(),
+        maxImpressions: z.unknown(),
+        numTimeUnits: z.unknown(),
+        timeUnitType: z.unknown(),
       })),
     }),
     description: z.string(),
@@ -991,131 +543,44 @@ const StateSchema = z.object({
     syndicationProduct: z.string(),
     targeting: z.object({
       geoTargeting: z.object({
-        excludedCriteriaIds: z.array(z.string()),
-        targetedCriteriaIds: z.array(z.string()),
+        excludedCriteriaIds: z.array(z.unknown()),
+        targetedCriteriaIds: z.array(z.unknown()),
       }),
       inventorySizeTargeting: z.object({
-        excludedInventorySizes: z.array(z.object({
-          height: z.string(),
-          sizeType: z.string(),
-          width: z.string(),
-        })),
-        targetedInventorySizes: z.array(z.object({
-          height: z.string(),
-          sizeType: z.string(),
-          width: z.string(),
-        })),
+        excludedInventorySizes: z.array(z.unknown()),
+        targetedInventorySizes: z.array(z.unknown()),
       }),
       placementTargeting: z.object({
         mobileApplicationTargeting: z.object({
-          firstPartyTargeting: z.object({
-            excludedAppIds: z.array(z.string()),
-            targetedAppIds: z.array(z.string()),
-          }),
+          firstPartyTargeting: z.unknown(),
         }),
         urlTargeting: z.object({
-          excludedUrls: z.array(z.string()),
-          targetedUrls: z.array(z.string()),
+          excludedUrls: z.unknown(),
+          targetedUrls: z.unknown(),
         }),
       }),
       technologyTargeting: z.object({
         deviceCapabilityTargeting: z.object({
-          excludedCriteriaIds: z.array(z.string()),
-          targetedCriteriaIds: z.array(z.string()),
+          excludedCriteriaIds: z.unknown(),
+          targetedCriteriaIds: z.unknown(),
         }),
         deviceCategoryTargeting: z.object({
-          excludedCriteriaIds: z.array(z.string()),
-          targetedCriteriaIds: z.array(z.string()),
+          excludedCriteriaIds: z.unknown(),
+          targetedCriteriaIds: z.unknown(),
         }),
         operatingSystemTargeting: z.object({
-          operatingSystemCriteria: z.object({
-            excludedCriteriaIds: z.array(z.string()),
-            targetedCriteriaIds: z.array(z.string()),
-          }),
-          operatingSystemVersionCriteria: z.object({
-            excludedCriteriaIds: z.array(z.string()),
-            targetedCriteriaIds: z.array(z.string()),
-          }),
+          operatingSystemCriteria: z.unknown(),
+          operatingSystemVersionCriteria: z.unknown(),
         }),
       }),
       videoTargeting: z.object({
-        excludedPositionTypes: z.array(z.string()),
-        targetedPositionTypes: z.array(z.string()),
+        excludedPositionTypes: z.array(z.unknown()),
+        targetedPositionTypes: z.array(z.unknown()),
       }),
     }),
     targetingCriterion: z.array(z.object({
-      exclusions: z.array(z.object({
-        creativeSizeValue: z.object({
-          allowedFormats: z.array(z.string()),
-          companionSizes: z.array(z.object({
-            height: z.number(),
-            width: z.number(),
-          })),
-          creativeSizeType: z.string(),
-          nativeTemplate: z.string(),
-          size: z.object({
-            height: z.number(),
-            width: z.number(),
-          }),
-          skippableAdType: z.string(),
-        }),
-        dayPartTargetingValue: z.object({
-          dayParts: z.array(z.object({
-            dayOfWeek: z.string(),
-            endTime: z.object({
-              hours: z.number(),
-              minutes: z.number(),
-              nanos: z.number(),
-              seconds: z.number(),
-            }),
-            startTime: z.object({
-              hours: z.number(),
-              minutes: z.number(),
-              nanos: z.number(),
-              seconds: z.number(),
-            }),
-          })),
-          timeZoneType: z.string(),
-        }),
-        longValue: z.string(),
-        stringValue: z.string(),
-      })),
-      inclusions: z.array(z.object({
-        creativeSizeValue: z.object({
-          allowedFormats: z.array(z.string()),
-          companionSizes: z.array(z.object({
-            height: z.number(),
-            width: z.number(),
-          })),
-          creativeSizeType: z.string(),
-          nativeTemplate: z.string(),
-          size: z.object({
-            height: z.number(),
-            width: z.number(),
-          }),
-          skippableAdType: z.string(),
-        }),
-        dayPartTargetingValue: z.object({
-          dayParts: z.array(z.object({
-            dayOfWeek: z.string(),
-            endTime: z.object({
-              hours: z.number(),
-              minutes: z.number(),
-              nanos: z.number(),
-              seconds: z.number(),
-            }),
-            startTime: z.object({
-              hours: z.number(),
-              minutes: z.number(),
-              nanos: z.number(),
-              seconds: z.number(),
-            }),
-          })),
-          timeZoneType: z.string(),
-        }),
-        longValue: z.string(),
-        stringValue: z.string(),
-      })),
+      exclusions: z.array(z.unknown()),
+      inclusions: z.array(z.unknown()),
       key: z.string(),
     })),
     updateTime: z.string(),
@@ -1214,39 +679,12 @@ const InputsSchema = z.object({
         "The format of the environment that the creatives will be displayed in.",
       ).optional(),
       creativeSpecifications: z.array(z.object({
-        creativeCompanionSizes: z.array(z.object({
-          height: z.string().describe(
-            "The height of the ad slot in pixels. This field will be present only when size type is `PIXEL`.",
-          ).optional(),
-          sizeType: z.enum([
-            "SIZE_TYPE_UNSPECIFIED",
-            "PIXEL",
-            "INTERSTITIAL",
-            "NATIVE",
-            "FLUID",
-          ]).describe("The size type of the ad slot.").optional(),
-          width: z.string().describe(
-            "The width of the ad slot in pixels. This field will be present only when size type is `PIXEL`.",
-          ).optional(),
-        })).describe(
+        creativeCompanionSizes: z.unknown().describe(
           "Companion sizes may be filled in only when this is a video creative.",
         ).optional(),
-        creativeSize: z.object({
-          height: z.string().describe(
-            "The height of the ad slot in pixels. This field will be present only when size type is `PIXEL`.",
-          ).optional(),
-          sizeType: z.enum([
-            "SIZE_TYPE_UNSPECIFIED",
-            "PIXEL",
-            "INTERSTITIAL",
-            "NATIVE",
-            "FLUID",
-          ]).describe("The size type of the ad slot.").optional(),
-          width: z.string().describe(
-            "The width of the ad slot in pixels. This field will be present only when size type is `PIXEL`.",
-          ).optional(),
-        }).describe("Represents size of a single ad slot, or a creative.")
-          .optional(),
+        creativeSize: z.unknown().describe(
+          "Represents size of a single ad slot, or a creative.",
+        ).optional(),
       })).optional(),
       skippableAdType: z.enum([
         "SKIPPABLE_AD_TYPE_UNSPECIFIED",
@@ -1306,13 +744,13 @@ const InputsSchema = z.object({
       ).optional(),
       estimatedGrossSpend: z.object({
         amount: z.object({
-          currencyCode: z.string().describe(
+          currencyCode: z.unknown().describe(
             "The three-letter currency code defined in ISO 4217.",
           ).optional(),
-          nanos: z.number().int().describe(
+          nanos: z.unknown().describe(
             "Number of nano (10^-9) units of the amount. The value must be between -999,999,999 and +999,999,999 inclusive. If `units` is positive, `nanos` must be positive or zero. If `units` is zero, `nanos` can be positive, zero, or negative. If `units` is negative, `nanos` must be negative or zero. For example $-1.75 is represented as `units`=-1 and `nanos`=-750,000,000.",
           ).optional(),
-          units: z.string().describe(
+          units: z.unknown().describe(
             'The whole units of the amount. For example if `currencyCode` is `"USD"`, then 1 unit is one US dollar.',
           ).optional(),
         }).describe("Represents an amount of money with its currency type.")
@@ -1329,40 +767,9 @@ const InputsSchema = z.object({
         "Non-binding estimate of the impressions served per day. Can be set by buyer or seller.",
       ).optional(),
       guaranteedFixedPriceTerms: z.object({
-        fixedPrices: z.array(z.object({
-          advertiserIds: z.array(z.string()).describe(
-            "The list of advertisers for this price when associated with this buyer. If empty, all advertisers with this buyer pay this price.",
-          ).optional(),
-          buyer: z.object({
-            accountId: z.string().describe(
-              "Authorized Buyers account ID of the buyer.",
-            ).optional(),
-          }).describe(
-            "Represents a buyer of inventory. Each buyer is identified by a unique Authorized Buyers account ID.",
-          ).optional(),
-          price: z.object({
-            amount: z.object({
-              currencyCode: z.string().describe(
-                "The three-letter currency code defined in ISO 4217.",
-              ).optional(),
-              nanos: z.number().int().describe(
-                "Number of nano (10^-9) units of the amount. The value must be between -999,999,999 and +999,999,999 inclusive. If `units` is positive, `nanos` must be positive or zero. If `units` is zero, `nanos` can be positive, zero, or negative. If `units` is negative, `nanos` must be negative or zero. For example $-1.75 is represented as `units`=-1 and `nanos`=-750,000,000.",
-              ).optional(),
-              units: z.string().describe(
-                'The whole units of the amount. For example if `currencyCode` is `"USD"`, then 1 unit is one US dollar.',
-              ).optional(),
-            }).describe("Represents an amount of money with its currency type.")
-              .optional(),
-            pricingType: z.enum([
-              "PRICING_TYPE_UNSPECIFIED",
-              "COST_PER_MILLE",
-              "COST_PER_DAY",
-            ]).describe("The pricing type for the deal/product. (default: CPM)")
-              .optional(),
-          }).describe(
-            "Represents a price and a pricing type for a product / deal.",
-          ).optional(),
-        })).describe("Fixed price for the specified buyer.").optional(),
+        fixedPrices: z.array(z.unknown()).describe(
+          "Fixed price for the specified buyer.",
+        ).optional(),
         guaranteedImpressions: z.string().describe(
           "Guaranteed impressions as a percentage. This is the percentage of guaranteed looks that the buyer is guaranteeing to buy.",
         ).optional(),
@@ -1390,78 +797,16 @@ const InputsSchema = z.object({
         autoOptimizePrivateAuction: z.boolean().describe(
           "True if open auction buyers are allowed to compete with invited buyers in this private auction.",
         ).optional(),
-        reservePricesPerBuyer: z.array(z.object({
-          advertiserIds: z.array(z.string()).describe(
-            "The list of advertisers for this price when associated with this buyer. If empty, all advertisers with this buyer pay this price.",
-          ).optional(),
-          buyer: z.object({
-            accountId: z.string().describe(
-              "Authorized Buyers account ID of the buyer.",
-            ).optional(),
-          }).describe(
-            "Represents a buyer of inventory. Each buyer is identified by a unique Authorized Buyers account ID.",
-          ).optional(),
-          price: z.object({
-            amount: z.object({
-              currencyCode: z.string().describe(
-                "The three-letter currency code defined in ISO 4217.",
-              ).optional(),
-              nanos: z.number().int().describe(
-                "Number of nano (10^-9) units of the amount. The value must be between -999,999,999 and +999,999,999 inclusive. If `units` is positive, `nanos` must be positive or zero. If `units` is zero, `nanos` can be positive, zero, or negative. If `units` is negative, `nanos` must be negative or zero. For example $-1.75 is represented as `units`=-1 and `nanos`=-750,000,000.",
-              ).optional(),
-              units: z.string().describe(
-                'The whole units of the amount. For example if `currencyCode` is `"USD"`, then 1 unit is one US dollar.',
-              ).optional(),
-            }).describe("Represents an amount of money with its currency type.")
-              .optional(),
-            pricingType: z.enum([
-              "PRICING_TYPE_UNSPECIFIED",
-              "COST_PER_MILLE",
-              "COST_PER_DAY",
-            ]).describe("The pricing type for the deal/product. (default: CPM)")
-              .optional(),
-          }).describe(
-            "Represents a price and a pricing type for a product / deal.",
-          ).optional(),
-        })).describe("Reserve price for the specified buyer.").optional(),
+        reservePricesPerBuyer: z.array(z.unknown()).describe(
+          "Reserve price for the specified buyer.",
+        ).optional(),
       }).describe(
         "Terms for Private Auctions. Note that Private Auctions can be created only by the seller, but they can be returned in a get or list request.",
       ).optional(),
       nonGuaranteedFixedPriceTerms: z.object({
-        fixedPrices: z.array(z.object({
-          advertiserIds: z.array(z.string()).describe(
-            "The list of advertisers for this price when associated with this buyer. If empty, all advertisers with this buyer pay this price.",
-          ).optional(),
-          buyer: z.object({
-            accountId: z.string().describe(
-              "Authorized Buyers account ID of the buyer.",
-            ).optional(),
-          }).describe(
-            "Represents a buyer of inventory. Each buyer is identified by a unique Authorized Buyers account ID.",
-          ).optional(),
-          price: z.object({
-            amount: z.object({
-              currencyCode: z.string().describe(
-                "The three-letter currency code defined in ISO 4217.",
-              ).optional(),
-              nanos: z.number().int().describe(
-                "Number of nano (10^-9) units of the amount. The value must be between -999,999,999 and +999,999,999 inclusive. If `units` is positive, `nanos` must be positive or zero. If `units` is zero, `nanos` can be positive, zero, or negative. If `units` is negative, `nanos` must be negative or zero. For example $-1.75 is represented as `units`=-1 and `nanos`=-750,000,000.",
-              ).optional(),
-              units: z.string().describe(
-                'The whole units of the amount. For example if `currencyCode` is `"USD"`, then 1 unit is one US dollar.',
-              ).optional(),
-            }).describe("Represents an amount of money with its currency type.")
-              .optional(),
-            pricingType: z.enum([
-              "PRICING_TYPE_UNSPECIFIED",
-              "COST_PER_MILLE",
-              "COST_PER_DAY",
-            ]).describe("The pricing type for the deal/product. (default: CPM)")
-              .optional(),
-          }).describe(
-            "Represents a price and a pricing type for a product / deal.",
-          ).optional(),
-        })).describe("Fixed price for the specified buyer.").optional(),
+        fixedPrices: z.array(z.unknown()).describe(
+          "Fixed price for the specified buyer.",
+        ).optional(),
       }).describe("Terms for Preferred Deals.").optional(),
       sellerTimeZone: z.string().describe(
         'The time zone name. For deals with Cost Per Day billing, defines the time zone used to mark the boundaries of a day. It should be an IANA TZ name, such as "America/Los_Angeles". For more information, see https://en.wikipedia.org/wiki/List_of_tz_database_time_zones.',
@@ -1486,23 +831,13 @@ const InputsSchema = z.object({
         "Output only. Specifies how the impression delivery will be paced.",
       ).optional(),
       frequencyCaps: z.array(z.object({
-        maxImpressions: z.number().int().describe(
+        maxImpressions: z.unknown().describe(
           "The maximum number of impressions that can be served to a user within the specified time period.",
         ).optional(),
-        numTimeUnits: z.number().int().describe(
+        numTimeUnits: z.unknown().describe(
           "The amount of time, in the units specified by time_unit_type. Defines the amount of time over which impressions per user are counted and capped.",
         ).optional(),
-        timeUnitType: z.enum([
-          "TIME_UNIT_TYPE_UNSPECIFIED",
-          "MINUTE",
-          "HOUR",
-          "DAY",
-          "WEEK",
-          "MONTH",
-          "LIFETIME",
-          "POD",
-          "STREAM",
-        ]).describe(
+        timeUnitType: z.unknown().describe(
           "The time unit. Along with num_time_units defines the amount of time over which impressions per user are counted and capped.",
         ).optional(),
       })).describe("Output only. Specifies any frequency caps.").optional(),
@@ -1543,69 +878,36 @@ const InputsSchema = z.object({
     ).optional(),
     targeting: z.object({
       geoTargeting: z.object({
-        excludedCriteriaIds: z.array(z.string()).describe(
+        excludedCriteriaIds: z.array(z.unknown()).describe(
           "A list of numeric IDs to be excluded.",
         ).optional(),
-        targetedCriteriaIds: z.array(z.string()).describe(
+        targetedCriteriaIds: z.array(z.unknown()).describe(
           "A list of numeric IDs to be included.",
         ).optional(),
       }).describe(
         "Generic targeting used for targeting dimensions that contains a list of included and excluded numeric IDs.",
       ).optional(),
       inventorySizeTargeting: z.object({
-        excludedInventorySizes: z.array(z.object({
-          height: z.string().describe(
-            "The height of the ad slot in pixels. This field will be present only when size type is `PIXEL`.",
-          ).optional(),
-          sizeType: z.enum([
-            "SIZE_TYPE_UNSPECIFIED",
-            "PIXEL",
-            "INTERSTITIAL",
-            "NATIVE",
-            "FLUID",
-          ]).describe("The size type of the ad slot.").optional(),
-          width: z.string().describe(
-            "The width of the ad slot in pixels. This field will be present only when size type is `PIXEL`.",
-          ).optional(),
-        })).describe("A list of inventory sizes to be excluded.").optional(),
-        targetedInventorySizes: z.array(z.object({
-          height: z.string().describe(
-            "The height of the ad slot in pixels. This field will be present only when size type is `PIXEL`.",
-          ).optional(),
-          sizeType: z.enum([
-            "SIZE_TYPE_UNSPECIFIED",
-            "PIXEL",
-            "INTERSTITIAL",
-            "NATIVE",
-            "FLUID",
-          ]).describe("The size type of the ad slot.").optional(),
-          width: z.string().describe(
-            "The width of the ad slot in pixels. This field will be present only when size type is `PIXEL`.",
-          ).optional(),
-        })).describe("A list of inventory sizes to be included.").optional(),
+        excludedInventorySizes: z.array(z.unknown()).describe(
+          "A list of inventory sizes to be excluded.",
+        ).optional(),
+        targetedInventorySizes: z.array(z.unknown()).describe(
+          "A list of inventory sizes to be included.",
+        ).optional(),
       }).describe(
         "Represents the size of an ad unit that can be targeted on an ad request. It only applies to Private Auction, AdX Preferred Deals and Auction Packages. This targeting does not apply to Programmatic Guaranteed and Preferred Deals in Ad Manager.",
       ).optional(),
       placementTargeting: z.object({
         mobileApplicationTargeting: z.object({
-          firstPartyTargeting: z.object({
-            excludedAppIds: z.array(z.string()).describe(
-              "A list of application IDs to be excluded.",
-            ).optional(),
-            targetedAppIds: z.array(z.string()).describe(
-              "A list of application IDs to be included.",
-            ).optional(),
-          }).describe(
+          firstPartyTargeting: z.unknown().describe(
             "Represents a list of targeted and excluded mobile application IDs that publishers own. Mobile application IDs are from App Store and Google Play Store. Android App ID, for example, com.google.android.apps.maps, can be found in Google Play Store URL. iOS App ID (which is a number) can be found at the end of iTunes store URL. First party mobile applications is either included or excluded.",
           ).optional(),
         }).describe("Mobile application targeting settings.").optional(),
         urlTargeting: z.object({
-          excludedUrls: z.array(z.string()).describe(
-            "A list of URLs to be excluded.",
-          ).optional(),
-          targetedUrls: z.array(z.string()).describe(
-            "A list of URLs to be included.",
-          ).optional(),
+          excludedUrls: z.unknown().describe("A list of URLs to be excluded.")
+            .optional(),
+          targetedUrls: z.unknown().describe("A list of URLs to be included.")
+            .optional(),
         }).describe(
           "Represents a list of targeted and excluded URLs (for example, google.com). For Private Auction and AdX Preferred Deals, URLs are either included or excluded. For Programmatic Guaranteed and Preferred Deals, this doesn't apply.",
         ).optional(),
@@ -1614,44 +916,30 @@ const InputsSchema = z.object({
       ).optional(),
       technologyTargeting: z.object({
         deviceCapabilityTargeting: z.object({
-          excludedCriteriaIds: z.array(z.string()).describe(
+          excludedCriteriaIds: z.unknown().describe(
             "A list of numeric IDs to be excluded.",
           ).optional(),
-          targetedCriteriaIds: z.array(z.string()).describe(
+          targetedCriteriaIds: z.unknown().describe(
             "A list of numeric IDs to be included.",
           ).optional(),
         }).describe(
           "Generic targeting used for targeting dimensions that contains a list of included and excluded numeric IDs.",
         ).optional(),
         deviceCategoryTargeting: z.object({
-          excludedCriteriaIds: z.array(z.string()).describe(
+          excludedCriteriaIds: z.unknown().describe(
             "A list of numeric IDs to be excluded.",
           ).optional(),
-          targetedCriteriaIds: z.array(z.string()).describe(
+          targetedCriteriaIds: z.unknown().describe(
             "A list of numeric IDs to be included.",
           ).optional(),
         }).describe(
           "Generic targeting used for targeting dimensions that contains a list of included and excluded numeric IDs.",
         ).optional(),
         operatingSystemTargeting: z.object({
-          operatingSystemCriteria: z.object({
-            excludedCriteriaIds: z.array(z.string()).describe(
-              "A list of numeric IDs to be excluded.",
-            ).optional(),
-            targetedCriteriaIds: z.array(z.string()).describe(
-              "A list of numeric IDs to be included.",
-            ).optional(),
-          }).describe(
+          operatingSystemCriteria: z.unknown().describe(
             "Generic targeting used for targeting dimensions that contains a list of included and excluded numeric IDs.",
           ).optional(),
-          operatingSystemVersionCriteria: z.object({
-            excludedCriteriaIds: z.array(z.string()).describe(
-              "A list of numeric IDs to be excluded.",
-            ).optional(),
-            targetedCriteriaIds: z.array(z.string()).describe(
-              "A list of numeric IDs to be included.",
-            ).optional(),
-          }).describe(
+          operatingSystemVersionCriteria: z.unknown().describe(
             "Generic targeting used for targeting dimensions that contains a list of included and excluded numeric IDs.",
           ).optional(),
         }).describe("Represents targeting information for operating systems.")
@@ -1659,24 +947,10 @@ const InputsSchema = z.object({
       }).describe("Represents targeting about various types of technology.")
         .optional(),
       videoTargeting: z.object({
-        excludedPositionTypes: z.array(
-          z.enum([
-            "POSITION_TYPE_UNSPECIFIED",
-            "PREROLL",
-            "MIDROLL",
-            "POSTROLL",
-          ]),
-        ).describe(
+        excludedPositionTypes: z.array(z.unknown()).describe(
           "A list of video positions to be excluded. Position types can either be included or excluded (XOR).",
         ).optional(),
-        targetedPositionTypes: z.array(
-          z.enum([
-            "POSITION_TYPE_UNSPECIFIED",
-            "PREROLL",
-            "MIDROLL",
-            "POSTROLL",
-          ]),
-        ).describe(
+        targetedPositionTypes: z.array(z.unknown()).describe(
           "A list of video positions to be included. When the included list is present, the excluded list must be empty. When the excluded list is present, the included list must be empty.",
         ).optional(),
       }).describe("Represents targeting information about video.").optional(),
@@ -1684,220 +958,10 @@ const InputsSchema = z.object({
       "Targeting represents different criteria that can be used by advertisers to target ad inventory. For example, they can choose to target ad requests only if the user is in the US. Multiple types of targeting are always applied as a logical AND, unless noted otherwise.",
     ).optional(),
     targetingCriterion: z.array(z.object({
-      exclusions: z.array(z.object({
-        creativeSizeValue: z.object({
-          allowedFormats: z.array(z.enum(["UNKNOWN", "AUDIO"])).describe(
-            "What formats are allowed by the publisher. If this repeated field is empty then all formats are allowed. For example, if this field contains AllowedFormatType.AUDIO then the publisher only allows an audio ad (without any video).",
-          ).optional(),
-          companionSizes: z.array(z.object({
-            height: z.number().int().describe("The height of the creative.")
-              .optional(),
-            width: z.number().int().describe("The width of the creative")
-              .optional(),
-          })).describe(
-            "For video creatives specifies the sizes of companion ads (if present). Companion sizes may be filled in only when creative_size_type = VIDEO",
-          ).optional(),
-          creativeSizeType: z.enum([
-            "CREATIVE_SIZE_TYPE_UNSPECIFIED",
-            "REGULAR",
-            "INTERSTITIAL",
-            "VIDEO",
-            "NATIVE",
-          ]).describe("The creative size type.").optional(),
-          nativeTemplate: z.enum([
-            "UNKNOWN_NATIVE_TEMPLATE",
-            "NATIVE_CONTENT_AD",
-            "NATIVE_APP_INSTALL_AD",
-            "NATIVE_VIDEO_CONTENT_AD",
-            "NATIVE_VIDEO_APP_INSTALL_AD",
-          ]).describe(
-            "Output only. The native template for this creative. It will have a value only if creative_size_type = CreativeSizeType.NATIVE.",
-          ).optional(),
-          size: z.object({
-            height: z.number().int().describe("The height of the creative.")
-              .optional(),
-            width: z.number().int().describe("The width of the creative")
-              .optional(),
-          }).describe(
-            "Message depicting the size of the creative. The units of width and height depend on the type of the targeting.",
-          ).optional(),
-          skippableAdType: z.enum([
-            "SKIPPABLE_AD_TYPE_UNSPECIFIED",
-            "GENERIC",
-            "INSTREAM_SELECT",
-            "NOT_SKIPPABLE",
-          ]).describe(
-            "The type of skippable ad for this creative. It will have a value only if creative_size_type = CreativeSizeType.VIDEO.",
-          ).optional(),
-        }).describe("Specifies the size of the creative.").optional(),
-        dayPartTargetingValue: z.object({
-          dayParts: z.array(z.object({
-            dayOfWeek: z.enum([
-              "DAY_OF_WEEK_UNSPECIFIED",
-              "MONDAY",
-              "TUESDAY",
-              "WEDNESDAY",
-              "THURSDAY",
-              "FRIDAY",
-              "SATURDAY",
-              "SUNDAY",
-            ]).describe(
-              "The day of the week to target. If unspecified, applicable to all days.",
-            ).optional(),
-            endTime: z.object({
-              hours: z.number().int().describe(
-                'Hours of a day in 24 hour format. Must be greater than or equal to 0 and typically must be less than or equal to 23. An API may choose to allow the value "24:00:00" for scenarios like business closing time.',
-              ).optional(),
-              minutes: z.number().int().describe(
-                "Minutes of an hour. Must be greater than or equal to 0 and less than or equal to 59.",
-              ).optional(),
-              nanos: z.number().int().describe(
-                "Fractions of seconds, in nanoseconds. Must be greater than or equal to 0 and less than or equal to 999,999,999.",
-              ).optional(),
-              seconds: z.number().int().describe(
-                "Seconds of a minute. Must be greater than or equal to 0 and typically must be less than or equal to 59. An API may allow the value 60 if it allows leap-seconds.",
-              ).optional(),
-            }).describe(
-              "Represents a time of day. The date and time zone are either not significant or are specified elsewhere. An API may choose to allow leap seconds. Related types are google.type.Date and `google.protobuf.Timestamp`.",
-            ).optional(),
-            startTime: z.object({
-              hours: z.number().int().describe(
-                'Hours of a day in 24 hour format. Must be greater than or equal to 0 and typically must be less than or equal to 23. An API may choose to allow the value "24:00:00" for scenarios like business closing time.',
-              ).optional(),
-              minutes: z.number().int().describe(
-                "Minutes of an hour. Must be greater than or equal to 0 and less than or equal to 59.",
-              ).optional(),
-              nanos: z.number().int().describe(
-                "Fractions of seconds, in nanoseconds. Must be greater than or equal to 0 and less than or equal to 999,999,999.",
-              ).optional(),
-              seconds: z.number().int().describe(
-                "Seconds of a minute. Must be greater than or equal to 0 and typically must be less than or equal to 59. An API may allow the value 60 if it allows leap-seconds.",
-              ).optional(),
-            }).describe(
-              "Represents a time of day. The date and time zone are either not significant or are specified elsewhere. An API may choose to allow leap seconds. Related types are google.type.Date and `google.protobuf.Timestamp`.",
-            ).optional(),
-          })).describe("A list of day part targeting criterion.").optional(),
-          timeZoneType: z.enum([
-            "TIME_ZONE_SOURCE_UNSPECIFIED",
-            "PUBLISHER",
-            "USER",
-          ]).describe(
-            "The timezone to use for interpreting the day part targeting.",
-          ).optional(),
-        }).describe("Specifies the day part targeting criteria.").optional(),
-        longValue: z.string().describe("The long value to include/exclude.")
-          .optional(),
-        stringValue: z.string().describe("The string value to include/exclude.")
-          .optional(),
-      })).describe(
+      exclusions: z.array(z.unknown()).describe(
         "The list of values to exclude from targeting. Each value is AND'd together.",
       ).optional(),
-      inclusions: z.array(z.object({
-        creativeSizeValue: z.object({
-          allowedFormats: z.array(z.enum(["UNKNOWN", "AUDIO"])).describe(
-            "What formats are allowed by the publisher. If this repeated field is empty then all formats are allowed. For example, if this field contains AllowedFormatType.AUDIO then the publisher only allows an audio ad (without any video).",
-          ).optional(),
-          companionSizes: z.array(z.object({
-            height: z.number().int().describe("The height of the creative.")
-              .optional(),
-            width: z.number().int().describe("The width of the creative")
-              .optional(),
-          })).describe(
-            "For video creatives specifies the sizes of companion ads (if present). Companion sizes may be filled in only when creative_size_type = VIDEO",
-          ).optional(),
-          creativeSizeType: z.enum([
-            "CREATIVE_SIZE_TYPE_UNSPECIFIED",
-            "REGULAR",
-            "INTERSTITIAL",
-            "VIDEO",
-            "NATIVE",
-          ]).describe("The creative size type.").optional(),
-          nativeTemplate: z.enum([
-            "UNKNOWN_NATIVE_TEMPLATE",
-            "NATIVE_CONTENT_AD",
-            "NATIVE_APP_INSTALL_AD",
-            "NATIVE_VIDEO_CONTENT_AD",
-            "NATIVE_VIDEO_APP_INSTALL_AD",
-          ]).describe(
-            "Output only. The native template for this creative. It will have a value only if creative_size_type = CreativeSizeType.NATIVE.",
-          ).optional(),
-          size: z.object({
-            height: z.number().int().describe("The height of the creative.")
-              .optional(),
-            width: z.number().int().describe("The width of the creative")
-              .optional(),
-          }).describe(
-            "Message depicting the size of the creative. The units of width and height depend on the type of the targeting.",
-          ).optional(),
-          skippableAdType: z.enum([
-            "SKIPPABLE_AD_TYPE_UNSPECIFIED",
-            "GENERIC",
-            "INSTREAM_SELECT",
-            "NOT_SKIPPABLE",
-          ]).describe(
-            "The type of skippable ad for this creative. It will have a value only if creative_size_type = CreativeSizeType.VIDEO.",
-          ).optional(),
-        }).describe("Specifies the size of the creative.").optional(),
-        dayPartTargetingValue: z.object({
-          dayParts: z.array(z.object({
-            dayOfWeek: z.enum([
-              "DAY_OF_WEEK_UNSPECIFIED",
-              "MONDAY",
-              "TUESDAY",
-              "WEDNESDAY",
-              "THURSDAY",
-              "FRIDAY",
-              "SATURDAY",
-              "SUNDAY",
-            ]).describe(
-              "The day of the week to target. If unspecified, applicable to all days.",
-            ).optional(),
-            endTime: z.object({
-              hours: z.number().int().describe(
-                'Hours of a day in 24 hour format. Must be greater than or equal to 0 and typically must be less than or equal to 23. An API may choose to allow the value "24:00:00" for scenarios like business closing time.',
-              ).optional(),
-              minutes: z.number().int().describe(
-                "Minutes of an hour. Must be greater than or equal to 0 and less than or equal to 59.",
-              ).optional(),
-              nanos: z.number().int().describe(
-                "Fractions of seconds, in nanoseconds. Must be greater than or equal to 0 and less than or equal to 999,999,999.",
-              ).optional(),
-              seconds: z.number().int().describe(
-                "Seconds of a minute. Must be greater than or equal to 0 and typically must be less than or equal to 59. An API may allow the value 60 if it allows leap-seconds.",
-              ).optional(),
-            }).describe(
-              "Represents a time of day. The date and time zone are either not significant or are specified elsewhere. An API may choose to allow leap seconds. Related types are google.type.Date and `google.protobuf.Timestamp`.",
-            ).optional(),
-            startTime: z.object({
-              hours: z.number().int().describe(
-                'Hours of a day in 24 hour format. Must be greater than or equal to 0 and typically must be less than or equal to 23. An API may choose to allow the value "24:00:00" for scenarios like business closing time.',
-              ).optional(),
-              minutes: z.number().int().describe(
-                "Minutes of an hour. Must be greater than or equal to 0 and less than or equal to 59.",
-              ).optional(),
-              nanos: z.number().int().describe(
-                "Fractions of seconds, in nanoseconds. Must be greater than or equal to 0 and less than or equal to 999,999,999.",
-              ).optional(),
-              seconds: z.number().int().describe(
-                "Seconds of a minute. Must be greater than or equal to 0 and typically must be less than or equal to 59. An API may allow the value 60 if it allows leap-seconds.",
-              ).optional(),
-            }).describe(
-              "Represents a time of day. The date and time zone are either not significant or are specified elsewhere. An API may choose to allow leap seconds. Related types are google.type.Date and `google.protobuf.Timestamp`.",
-            ).optional(),
-          })).describe("A list of day part targeting criterion.").optional(),
-          timeZoneType: z.enum([
-            "TIME_ZONE_SOURCE_UNSPECIFIED",
-            "PUBLISHER",
-            "USER",
-          ]).describe(
-            "The timezone to use for interpreting the day part targeting.",
-          ).optional(),
-        }).describe("Specifies the day part targeting criteria.").optional(),
-        longValue: z.string().describe("The long value to include/exclude.")
-          .optional(),
-        stringValue: z.string().describe("The string value to include/exclude.")
-          .optional(),
-      })).describe(
+      inclusions: z.array(z.unknown()).describe(
         "The list of value to include as part of the targeting. Each value is OR'd together.",
       ).optional(),
       key: z.string().describe(
@@ -1931,7 +995,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/adexchangebuyer2/accounts-proposals",
-  version: "2026.04.03.3",
+  version: "2026.04.04.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -1955,6 +1019,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.3",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.04.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

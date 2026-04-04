@@ -63,81 +63,37 @@ const StateSchema = z.object({
         brightness: z.number(),
         contrast: z.number(),
         cropProperties: z.object({
-          angle: z.number(),
-          bottomOffset: z.number(),
-          leftOffset: z.number(),
-          rightOffset: z.number(),
-          topOffset: z.number(),
+          angle: z.unknown(),
+          bottomOffset: z.unknown(),
+          leftOffset: z.unknown(),
+          rightOffset: z.unknown(),
+          topOffset: z.unknown(),
         }),
         link: z.object({
-          pageObjectId: z.string(),
-          relativeLink: z.string(),
-          slideIndex: z.number(),
-          url: z.string(),
+          pageObjectId: z.unknown(),
+          relativeLink: z.unknown(),
+          slideIndex: z.unknown(),
+          url: z.unknown(),
         }),
         outline: z.object({
-          dashStyle: z.string(),
-          outlineFill: z.object({
-            solidFill: z.object({
-              alpha: z.number(),
-              color: z.object({
-                rgbColor: z.object({
-                  blue: z.number(),
-                  green: z.number(),
-                  red: z.number(),
-                }),
-                themeColor: z.string(),
-              }),
-            }),
-          }),
-          propertyState: z.string(),
-          weight: z.object({
-            magnitude: z.number(),
-            unit: z.string(),
-          }),
+          dashStyle: z.unknown(),
+          outlineFill: z.unknown(),
+          propertyState: z.unknown(),
+          weight: z.unknown(),
         }),
         recolor: z.object({
-          name: z.string(),
-          recolorStops: z.array(z.object({
-            alpha: z.number(),
-            color: z.object({
-              rgbColor: z.object({
-                blue: z.number(),
-                green: z.number(),
-                red: z.number(),
-              }),
-              themeColor: z.string(),
-            }),
-            position: z.number(),
-          })),
+          name: z.unknown(),
+          recolorStops: z.unknown(),
         }),
         shadow: z.object({
-          alignment: z.string(),
-          alpha: z.number(),
-          blurRadius: z.object({
-            magnitude: z.number(),
-            unit: z.string(),
-          }),
-          color: z.object({
-            rgbColor: z.object({
-              blue: z.number(),
-              green: z.number(),
-              red: z.number(),
-            }),
-            themeColor: z.string(),
-          }),
-          propertyState: z.string(),
-          rotateWithShape: z.boolean(),
-          transform: z.object({
-            scaleX: z.number(),
-            scaleY: z.number(),
-            shearX: z.number(),
-            shearY: z.number(),
-            translateX: z.number(),
-            translateY: z.number(),
-            unit: z.string(),
-          }),
-          type: z.string(),
+          alignment: z.unknown(),
+          alpha: z.unknown(),
+          blurRadius: z.unknown(),
+          color: z.unknown(),
+          propertyState: z.unknown(),
+          rotateWithShape: z.unknown(),
+          transform: z.unknown(),
+          type: z.unknown(),
         }),
         transparency: z.number(),
       }),
@@ -154,36 +110,26 @@ const StateSchema = z.object({
         dashStyle: z.string(),
         endArrow: z.string(),
         endConnection: z.object({
-          connectedObjectId: z.string(),
-          connectionSiteIndex: z.number(),
+          connectedObjectId: z.unknown(),
+          connectionSiteIndex: z.unknown(),
         }),
         lineFill: z.object({
-          solidFill: z.object({
-            alpha: z.number(),
-            color: z.object({
-              rgbColor: z.object({
-                blue: z.number(),
-                green: z.number(),
-                red: z.number(),
-              }),
-              themeColor: z.string(),
-            }),
-          }),
+          solidFill: z.unknown(),
         }),
         link: z.object({
-          pageObjectId: z.string(),
-          relativeLink: z.string(),
-          slideIndex: z.number(),
-          url: z.string(),
+          pageObjectId: z.unknown(),
+          relativeLink: z.unknown(),
+          slideIndex: z.unknown(),
+          url: z.unknown(),
         }),
         startArrow: z.string(),
         startConnection: z.object({
-          connectedObjectId: z.string(),
-          connectionSiteIndex: z.number(),
+          connectedObjectId: z.unknown(),
+          connectionSiteIndex: z.unknown(),
         }),
         weight: z.object({
-          magnitude: z.number(),
-          unit: z.string(),
+          magnitude: z.unknown(),
+          unit: z.unknown(),
         }),
       }),
       lineType: z.string(),
@@ -197,257 +143,42 @@ const StateSchema = z.object({
       }),
       shapeProperties: z.object({
         autofit: z.object({
-          autofitType: z.string(),
-          fontScale: z.number(),
-          lineSpacingReduction: z.number(),
+          autofitType: z.unknown(),
+          fontScale: z.unknown(),
+          lineSpacingReduction: z.unknown(),
         }),
         contentAlignment: z.string(),
         link: z.object({
-          pageObjectId: z.string(),
-          relativeLink: z.string(),
-          slideIndex: z.number(),
-          url: z.string(),
+          pageObjectId: z.unknown(),
+          relativeLink: z.unknown(),
+          slideIndex: z.unknown(),
+          url: z.unknown(),
         }),
         outline: z.object({
-          dashStyle: z.string(),
-          outlineFill: z.object({
-            solidFill: z.object({
-              alpha: z.number(),
-              color: z.object({
-                rgbColor: z.object({
-                  blue: z.number(),
-                  green: z.number(),
-                  red: z.number(),
-                }),
-                themeColor: z.string(),
-              }),
-            }),
-          }),
-          propertyState: z.string(),
-          weight: z.object({
-            magnitude: z.number(),
-            unit: z.string(),
-          }),
+          dashStyle: z.unknown(),
+          outlineFill: z.unknown(),
+          propertyState: z.unknown(),
+          weight: z.unknown(),
         }),
         shadow: z.object({
-          alignment: z.string(),
-          alpha: z.number(),
-          blurRadius: z.object({
-            magnitude: z.number(),
-            unit: z.string(),
-          }),
-          color: z.object({
-            rgbColor: z.object({
-              blue: z.number(),
-              green: z.number(),
-              red: z.number(),
-            }),
-            themeColor: z.string(),
-          }),
-          propertyState: z.string(),
-          rotateWithShape: z.boolean(),
-          transform: z.object({
-            scaleX: z.number(),
-            scaleY: z.number(),
-            shearX: z.number(),
-            shearY: z.number(),
-            translateX: z.number(),
-            translateY: z.number(),
-            unit: z.string(),
-          }),
-          type: z.string(),
+          alignment: z.unknown(),
+          alpha: z.unknown(),
+          blurRadius: z.unknown(),
+          color: z.unknown(),
+          propertyState: z.unknown(),
+          rotateWithShape: z.unknown(),
+          transform: z.unknown(),
+          type: z.unknown(),
         }),
         shapeBackgroundFill: z.object({
-          propertyState: z.string(),
-          solidFill: z.object({
-            alpha: z.number(),
-            color: z.object({
-              rgbColor: z.object({
-                blue: z.number(),
-                green: z.number(),
-                red: z.number(),
-              }),
-              themeColor: z.string(),
-            }),
-          }),
+          propertyState: z.unknown(),
+          solidFill: z.unknown(),
         }),
       }),
       shapeType: z.string(),
       text: z.object({
         lists: z.record(z.string(), z.unknown()),
-        textElements: z.array(z.object({
-          autoText: z.object({
-            content: z.string(),
-            style: z.object({
-              backgroundColor: z.object({
-                opaqueColor: z.object({
-                  rgbColor: z.object({
-                    blue: z.number(),
-                    green: z.number(),
-                    red: z.number(),
-                  }),
-                  themeColor: z.string(),
-                }),
-              }),
-              baselineOffset: z.string(),
-              bold: z.boolean(),
-              fontFamily: z.string(),
-              fontSize: z.object({
-                magnitude: z.number(),
-                unit: z.string(),
-              }),
-              foregroundColor: z.object({
-                opaqueColor: z.object({
-                  rgbColor: z.object({
-                    blue: z.number(),
-                    green: z.number(),
-                    red: z.number(),
-                  }),
-                  themeColor: z.string(),
-                }),
-              }),
-              italic: z.boolean(),
-              link: z.object({
-                pageObjectId: z.string(),
-                relativeLink: z.string(),
-                slideIndex: z.number(),
-                url: z.string(),
-              }),
-              smallCaps: z.boolean(),
-              strikethrough: z.boolean(),
-              underline: z.boolean(),
-              weightedFontFamily: z.object({
-                fontFamily: z.string(),
-                weight: z.number(),
-              }),
-            }),
-            type: z.string(),
-          }),
-          endIndex: z.number(),
-          paragraphMarker: z.object({
-            bullet: z.object({
-              bulletStyle: z.object({
-                backgroundColor: z.object({
-                  opaqueColor: z.object({
-                    rgbColor: z.object({
-                      blue: z.number(),
-                      green: z.number(),
-                      red: z.number(),
-                    }),
-                    themeColor: z.string(),
-                  }),
-                }),
-                baselineOffset: z.string(),
-                bold: z.boolean(),
-                fontFamily: z.string(),
-                fontSize: z.object({
-                  magnitude: z.number(),
-                  unit: z.string(),
-                }),
-                foregroundColor: z.object({
-                  opaqueColor: z.object({
-                    rgbColor: z.object({
-                      blue: z.number(),
-                      green: z.number(),
-                      red: z.number(),
-                    }),
-                    themeColor: z.string(),
-                  }),
-                }),
-                italic: z.boolean(),
-                link: z.object({
-                  pageObjectId: z.string(),
-                  relativeLink: z.string(),
-                  slideIndex: z.number(),
-                  url: z.string(),
-                }),
-                smallCaps: z.boolean(),
-                strikethrough: z.boolean(),
-                underline: z.boolean(),
-                weightedFontFamily: z.object({
-                  fontFamily: z.string(),
-                  weight: z.number(),
-                }),
-              }),
-              glyph: z.string(),
-              listId: z.string(),
-              nestingLevel: z.number(),
-            }),
-            style: z.object({
-              alignment: z.string(),
-              direction: z.string(),
-              indentEnd: z.object({
-                magnitude: z.number(),
-                unit: z.string(),
-              }),
-              indentFirstLine: z.object({
-                magnitude: z.number(),
-                unit: z.string(),
-              }),
-              indentStart: z.object({
-                magnitude: z.number(),
-                unit: z.string(),
-              }),
-              lineSpacing: z.number(),
-              spaceAbove: z.object({
-                magnitude: z.number(),
-                unit: z.string(),
-              }),
-              spaceBelow: z.object({
-                magnitude: z.number(),
-                unit: z.string(),
-              }),
-              spacingMode: z.string(),
-            }),
-          }),
-          startIndex: z.number(),
-          textRun: z.object({
-            content: z.string(),
-            style: z.object({
-              backgroundColor: z.object({
-                opaqueColor: z.object({
-                  rgbColor: z.object({
-                    blue: z.number(),
-                    green: z.number(),
-                    red: z.number(),
-                  }),
-                  themeColor: z.string(),
-                }),
-              }),
-              baselineOffset: z.string(),
-              bold: z.boolean(),
-              fontFamily: z.string(),
-              fontSize: z.object({
-                magnitude: z.number(),
-                unit: z.string(),
-              }),
-              foregroundColor: z.object({
-                opaqueColor: z.object({
-                  rgbColor: z.object({
-                    blue: z.number(),
-                    green: z.number(),
-                    red: z.number(),
-                  }),
-                  themeColor: z.string(),
-                }),
-              }),
-              italic: z.boolean(),
-              link: z.object({
-                pageObjectId: z.string(),
-                relativeLink: z.string(),
-                slideIndex: z.number(),
-                url: z.string(),
-              }),
-              smallCaps: z.boolean(),
-              strikethrough: z.boolean(),
-              underline: z.boolean(),
-              weightedFontFamily: z.object({
-                fontFamily: z.string(),
-                weight: z.number(),
-              }),
-            }),
-          }),
-        })),
+        textElements: z.array(z.unknown()),
       }),
     }),
     sheetsChart: z.object({
@@ -455,86 +186,14 @@ const StateSchema = z.object({
       contentUrl: z.string(),
       sheetsChartProperties: z.object({
         chartImageProperties: z.object({
-          brightness: z.number(),
-          contrast: z.number(),
-          cropProperties: z.object({
-            angle: z.number(),
-            bottomOffset: z.number(),
-            leftOffset: z.number(),
-            rightOffset: z.number(),
-            topOffset: z.number(),
-          }),
-          link: z.object({
-            pageObjectId: z.string(),
-            relativeLink: z.string(),
-            slideIndex: z.number(),
-            url: z.string(),
-          }),
-          outline: z.object({
-            dashStyle: z.string(),
-            outlineFill: z.object({
-              solidFill: z.object({
-                alpha: z.number(),
-                color: z.object({
-                  rgbColor: z.object({
-                    blue: z.number(),
-                    green: z.number(),
-                    red: z.number(),
-                  }),
-                  themeColor: z.string(),
-                }),
-              }),
-            }),
-            propertyState: z.string(),
-            weight: z.object({
-              magnitude: z.number(),
-              unit: z.string(),
-            }),
-          }),
-          recolor: z.object({
-            name: z.string(),
-            recolorStops: z.array(z.object({
-              alpha: z.number(),
-              color: z.object({
-                rgbColor: z.object({
-                  blue: z.number(),
-                  green: z.number(),
-                  red: z.number(),
-                }),
-                themeColor: z.string(),
-              }),
-              position: z.number(),
-            })),
-          }),
-          shadow: z.object({
-            alignment: z.string(),
-            alpha: z.number(),
-            blurRadius: z.object({
-              magnitude: z.number(),
-              unit: z.string(),
-            }),
-            color: z.object({
-              rgbColor: z.object({
-                blue: z.number(),
-                green: z.number(),
-                red: z.number(),
-              }),
-              themeColor: z.string(),
-            }),
-            propertyState: z.string(),
-            rotateWithShape: z.boolean(),
-            transform: z.object({
-              scaleX: z.number(),
-              scaleY: z.number(),
-              shearX: z.number(),
-              shearY: z.number(),
-              translateX: z.number(),
-              translateY: z.number(),
-              unit: z.string(),
-            }),
-            type: z.string(),
-          }),
-          transparency: z.number(),
+          brightness: z.unknown(),
+          contrast: z.unknown(),
+          cropProperties: z.unknown(),
+          link: z.unknown(),
+          outline: z.unknown(),
+          recolor: z.unknown(),
+          shadow: z.unknown(),
+          transparency: z.unknown(),
         }),
       }),
       spreadsheetId: z.string(),
@@ -552,333 +211,39 @@ const StateSchema = z.object({
     speakerSpotlight: z.object({
       speakerSpotlightProperties: z.object({
         outline: z.object({
-          dashStyle: z.string(),
-          outlineFill: z.object({
-            solidFill: z.object({
-              alpha: z.number(),
-              color: z.object({
-                rgbColor: z.object({
-                  blue: z.number(),
-                  green: z.number(),
-                  red: z.number(),
-                }),
-                themeColor: z.string(),
-              }),
-            }),
-          }),
-          propertyState: z.string(),
-          weight: z.object({
-            magnitude: z.number(),
-            unit: z.string(),
-          }),
+          dashStyle: z.unknown(),
+          outlineFill: z.unknown(),
+          propertyState: z.unknown(),
+          weight: z.unknown(),
         }),
         shadow: z.object({
-          alignment: z.string(),
-          alpha: z.number(),
-          blurRadius: z.object({
-            magnitude: z.number(),
-            unit: z.string(),
-          }),
-          color: z.object({
-            rgbColor: z.object({
-              blue: z.number(),
-              green: z.number(),
-              red: z.number(),
-            }),
-            themeColor: z.string(),
-          }),
-          propertyState: z.string(),
-          rotateWithShape: z.boolean(),
-          transform: z.object({
-            scaleX: z.number(),
-            scaleY: z.number(),
-            shearX: z.number(),
-            shearY: z.number(),
-            translateX: z.number(),
-            translateY: z.number(),
-            unit: z.string(),
-          }),
-          type: z.string(),
+          alignment: z.unknown(),
+          alpha: z.unknown(),
+          blurRadius: z.unknown(),
+          color: z.unknown(),
+          propertyState: z.unknown(),
+          rotateWithShape: z.unknown(),
+          transform: z.unknown(),
+          type: z.unknown(),
         }),
       }),
     }),
     table: z.object({
       columns: z.number(),
       horizontalBorderRows: z.array(z.object({
-        tableBorderCells: z.array(z.object({
-          location: z.object({
-            columnIndex: z.number(),
-            rowIndex: z.number(),
-          }),
-          tableBorderProperties: z.object({
-            dashStyle: z.string(),
-            tableBorderFill: z.object({
-              solidFill: z.object({
-                alpha: z.number(),
-                color: z.object({
-                  rgbColor: z.object({
-                    blue: z.number(),
-                    green: z.number(),
-                    red: z.number(),
-                  }),
-                  themeColor: z.string(),
-                }),
-              }),
-            }),
-            weight: z.object({
-              magnitude: z.number(),
-              unit: z.string(),
-            }),
-          }),
-        })),
+        tableBorderCells: z.unknown(),
       })),
       rows: z.number(),
       tableColumns: z.array(z.object({
-        columnWidth: z.object({
-          magnitude: z.number(),
-          unit: z.string(),
-        }),
+        columnWidth: z.unknown(),
       })),
       tableRows: z.array(z.object({
-        rowHeight: z.object({
-          magnitude: z.number(),
-          unit: z.string(),
-        }),
-        tableCells: z.array(z.object({
-          columnSpan: z.number(),
-          location: z.object({
-            columnIndex: z.number(),
-            rowIndex: z.number(),
-          }),
-          rowSpan: z.number(),
-          tableCellProperties: z.object({
-            contentAlignment: z.string(),
-            tableCellBackgroundFill: z.object({
-              propertyState: z.string(),
-              solidFill: z.object({
-                alpha: z.number(),
-                color: z.object({
-                  rgbColor: z.object({
-                    blue: z.number(),
-                    green: z.number(),
-                    red: z.number(),
-                  }),
-                  themeColor: z.string(),
-                }),
-              }),
-            }),
-          }),
-          text: z.object({
-            lists: z.record(z.string(), z.unknown()),
-            textElements: z.array(z.object({
-              autoText: z.object({
-                content: z.string(),
-                style: z.object({
-                  backgroundColor: z.object({
-                    opaqueColor: z.object({
-                      rgbColor: z.object({
-                        blue: z.number(),
-                        green: z.number(),
-                        red: z.number(),
-                      }),
-                      themeColor: z.string(),
-                    }),
-                  }),
-                  baselineOffset: z.string(),
-                  bold: z.boolean(),
-                  fontFamily: z.string(),
-                  fontSize: z.object({
-                    magnitude: z.number(),
-                    unit: z.string(),
-                  }),
-                  foregroundColor: z.object({
-                    opaqueColor: z.object({
-                      rgbColor: z.object({
-                        blue: z.number(),
-                        green: z.number(),
-                        red: z.number(),
-                      }),
-                      themeColor: z.string(),
-                    }),
-                  }),
-                  italic: z.boolean(),
-                  link: z.object({
-                    pageObjectId: z.string(),
-                    relativeLink: z.string(),
-                    slideIndex: z.number(),
-                    url: z.string(),
-                  }),
-                  smallCaps: z.boolean(),
-                  strikethrough: z.boolean(),
-                  underline: z.boolean(),
-                  weightedFontFamily: z.object({
-                    fontFamily: z.string(),
-                    weight: z.number(),
-                  }),
-                }),
-                type: z.string(),
-              }),
-              endIndex: z.number(),
-              paragraphMarker: z.object({
-                bullet: z.object({
-                  bulletStyle: z.object({
-                    backgroundColor: z.object({
-                      opaqueColor: z.object({
-                        rgbColor: z.object({
-                          blue: z.number(),
-                          green: z.number(),
-                          red: z.number(),
-                        }),
-                        themeColor: z.string(),
-                      }),
-                    }),
-                    baselineOffset: z.string(),
-                    bold: z.boolean(),
-                    fontFamily: z.string(),
-                    fontSize: z.object({
-                      magnitude: z.number(),
-                      unit: z.string(),
-                    }),
-                    foregroundColor: z.object({
-                      opaqueColor: z.object({
-                        rgbColor: z.object({
-                          blue: z.number(),
-                          green: z.number(),
-                          red: z.number(),
-                        }),
-                        themeColor: z.string(),
-                      }),
-                    }),
-                    italic: z.boolean(),
-                    link: z.object({
-                      pageObjectId: z.string(),
-                      relativeLink: z.string(),
-                      slideIndex: z.number(),
-                      url: z.string(),
-                    }),
-                    smallCaps: z.boolean(),
-                    strikethrough: z.boolean(),
-                    underline: z.boolean(),
-                    weightedFontFamily: z.object({
-                      fontFamily: z.string(),
-                      weight: z.number(),
-                    }),
-                  }),
-                  glyph: z.string(),
-                  listId: z.string(),
-                  nestingLevel: z.number(),
-                }),
-                style: z.object({
-                  alignment: z.string(),
-                  direction: z.string(),
-                  indentEnd: z.object({
-                    magnitude: z.number(),
-                    unit: z.string(),
-                  }),
-                  indentFirstLine: z.object({
-                    magnitude: z.number(),
-                    unit: z.string(),
-                  }),
-                  indentStart: z.object({
-                    magnitude: z.number(),
-                    unit: z.string(),
-                  }),
-                  lineSpacing: z.number(),
-                  spaceAbove: z.object({
-                    magnitude: z.number(),
-                    unit: z.string(),
-                  }),
-                  spaceBelow: z.object({
-                    magnitude: z.number(),
-                    unit: z.string(),
-                  }),
-                  spacingMode: z.string(),
-                }),
-              }),
-              startIndex: z.number(),
-              textRun: z.object({
-                content: z.string(),
-                style: z.object({
-                  backgroundColor: z.object({
-                    opaqueColor: z.object({
-                      rgbColor: z.object({
-                        blue: z.number(),
-                        green: z.number(),
-                        red: z.number(),
-                      }),
-                      themeColor: z.string(),
-                    }),
-                  }),
-                  baselineOffset: z.string(),
-                  bold: z.boolean(),
-                  fontFamily: z.string(),
-                  fontSize: z.object({
-                    magnitude: z.number(),
-                    unit: z.string(),
-                  }),
-                  foregroundColor: z.object({
-                    opaqueColor: z.object({
-                      rgbColor: z.object({
-                        blue: z.number(),
-                        green: z.number(),
-                        red: z.number(),
-                      }),
-                      themeColor: z.string(),
-                    }),
-                  }),
-                  italic: z.boolean(),
-                  link: z.object({
-                    pageObjectId: z.string(),
-                    relativeLink: z.string(),
-                    slideIndex: z.number(),
-                    url: z.string(),
-                  }),
-                  smallCaps: z.boolean(),
-                  strikethrough: z.boolean(),
-                  underline: z.boolean(),
-                  weightedFontFamily: z.object({
-                    fontFamily: z.string(),
-                    weight: z.number(),
-                  }),
-                }),
-              }),
-            })),
-          }),
-        })),
-        tableRowProperties: z.object({
-          minRowHeight: z.object({
-            magnitude: z.number(),
-            unit: z.string(),
-          }),
-        }),
+        rowHeight: z.unknown(),
+        tableCells: z.unknown(),
+        tableRowProperties: z.unknown(),
       })),
       verticalBorderRows: z.array(z.object({
-        tableBorderCells: z.array(z.object({
-          location: z.object({
-            columnIndex: z.number(),
-            rowIndex: z.number(),
-          }),
-          tableBorderProperties: z.object({
-            dashStyle: z.string(),
-            tableBorderFill: z.object({
-              solidFill: z.object({
-                alpha: z.number(),
-                color: z.object({
-                  rgbColor: z.object({
-                    blue: z.number(),
-                    green: z.number(),
-                    red: z.number(),
-                  }),
-                  themeColor: z.string(),
-                }),
-              }),
-            }),
-            weight: z.object({
-              magnitude: z.number(),
-              unit: z.string(),
-            }),
-          }),
-        })),
+        tableBorderCells: z.unknown(),
       })),
     }),
     title: z.string(),
@@ -900,25 +265,10 @@ const StateSchema = z.object({
         end: z.number(),
         mute: z.boolean(),
         outline: z.object({
-          dashStyle: z.string(),
-          outlineFill: z.object({
-            solidFill: z.object({
-              alpha: z.number(),
-              color: z.object({
-                rgbColor: z.object({
-                  blue: z.number(),
-                  green: z.number(),
-                  red: z.number(),
-                }),
-                themeColor: z.string(),
-              }),
-            }),
-          }),
-          propertyState: z.string(),
-          weight: z.object({
-            magnitude: z.number(),
-            unit: z.string(),
-          }),
+          dashStyle: z.unknown(),
+          outlineFill: z.unknown(),
+          propertyState: z.unknown(),
+          weight: z.unknown(),
         }),
         start: z.number(),
       }),
@@ -931,9 +281,9 @@ const StateSchema = z.object({
     colorScheme: z.object({
       colors: z.array(z.object({
         color: z.object({
-          blue: z.number(),
-          green: z.number(),
-          red: z.number(),
+          blue: z.unknown(),
+          green: z.unknown(),
+          red: z.unknown(),
         }),
         type: z.string(),
       })),
@@ -944,9 +294,9 @@ const StateSchema = z.object({
         alpha: z.number(),
         color: z.object({
           rgbColor: z.object({
-            blue: z.number(),
-            green: z.number(),
-            red: z.number(),
+            blue: z.unknown(),
+            green: z.unknown(),
+            red: z.unknown(),
           }),
           themeColor: z.string(),
         }),
@@ -955,12 +305,12 @@ const StateSchema = z.object({
         contentUrl: z.string(),
         size: z.object({
           height: z.object({
-            magnitude: z.number(),
-            unit: z.string(),
+            magnitude: z.unknown(),
+            unit: z.unknown(),
           }),
           width: z.object({
-            magnitude: z.number(),
-            unit: z.string(),
+            magnitude: z.unknown(),
+            unit: z.unknown(),
           }),
         }),
       }),
@@ -988,914 +338,80 @@ const StateSchema = z.object({
       pageElements: z.array(z.object({
         description: z.string(),
         elementGroup: z.object({
-          children: z.array(z.string()),
+          children: z.unknown(),
         }),
         image: z.object({
-          contentUrl: z.string(),
-          imageProperties: z.object({
-            brightness: z.number(),
-            contrast: z.number(),
-            cropProperties: z.object({
-              angle: z.number(),
-              bottomOffset: z.number(),
-              leftOffset: z.number(),
-              rightOffset: z.number(),
-              topOffset: z.number(),
-            }),
-            link: z.object({
-              pageObjectId: z.string(),
-              relativeLink: z.string(),
-              slideIndex: z.number(),
-              url: z.string(),
-            }),
-            outline: z.object({
-              dashStyle: z.string(),
-              outlineFill: z.object({
-                solidFill: z.object({
-                  alpha: z.number(),
-                  color: z.object({
-                    rgbColor: z.object({
-                      blue: z.number(),
-                      green: z.number(),
-                      red: z.number(),
-                    }),
-                    themeColor: z.string(),
-                  }),
-                }),
-              }),
-              propertyState: z.string(),
-              weight: z.object({
-                magnitude: z.number(),
-                unit: z.string(),
-              }),
-            }),
-            recolor: z.object({
-              name: z.string(),
-              recolorStops: z.array(z.object({
-                alpha: z.number(),
-                color: z.object({
-                  rgbColor: z.object({
-                    blue: z.number(),
-                    green: z.number(),
-                    red: z.number(),
-                  }),
-                  themeColor: z.string(),
-                }),
-                position: z.number(),
-              })),
-            }),
-            shadow: z.object({
-              alignment: z.string(),
-              alpha: z.number(),
-              blurRadius: z.object({
-                magnitude: z.number(),
-                unit: z.string(),
-              }),
-              color: z.object({
-                rgbColor: z.object({
-                  blue: z.number(),
-                  green: z.number(),
-                  red: z.number(),
-                }),
-                themeColor: z.string(),
-              }),
-              propertyState: z.string(),
-              rotateWithShape: z.boolean(),
-              transform: z.object({
-                scaleX: z.number(),
-                scaleY: z.number(),
-                shearX: z.number(),
-                shearY: z.number(),
-                translateX: z.number(),
-                translateY: z.number(),
-                unit: z.string(),
-              }),
-              type: z.string(),
-            }),
-            transparency: z.number(),
-          }),
-          placeholder: z.object({
-            index: z.number(),
-            parentObjectId: z.string(),
-            type: z.string(),
-          }),
-          sourceUrl: z.string(),
+          contentUrl: z.unknown(),
+          imageProperties: z.unknown(),
+          placeholder: z.unknown(),
+          sourceUrl: z.unknown(),
         }),
         line: z.object({
-          lineCategory: z.string(),
-          lineProperties: z.object({
-            dashStyle: z.string(),
-            endArrow: z.string(),
-            endConnection: z.object({
-              connectedObjectId: z.string(),
-              connectionSiteIndex: z.number(),
-            }),
-            lineFill: z.object({
-              solidFill: z.object({
-                alpha: z.number(),
-                color: z.object({
-                  rgbColor: z.object({
-                    blue: z.number(),
-                    green: z.number(),
-                    red: z.number(),
-                  }),
-                  themeColor: z.string(),
-                }),
-              }),
-            }),
-            link: z.object({
-              pageObjectId: z.string(),
-              relativeLink: z.string(),
-              slideIndex: z.number(),
-              url: z.string(),
-            }),
-            startArrow: z.string(),
-            startConnection: z.object({
-              connectedObjectId: z.string(),
-              connectionSiteIndex: z.number(),
-            }),
-            weight: z.object({
-              magnitude: z.number(),
-              unit: z.string(),
-            }),
-          }),
-          lineType: z.string(),
+          lineCategory: z.unknown(),
+          lineProperties: z.unknown(),
+          lineType: z.unknown(),
         }),
         objectId: z.string(),
         shape: z.object({
-          placeholder: z.object({
-            index: z.number(),
-            parentObjectId: z.string(),
-            type: z.string(),
-          }),
-          shapeProperties: z.object({
-            autofit: z.object({
-              autofitType: z.string(),
-              fontScale: z.number(),
-              lineSpacingReduction: z.number(),
-            }),
-            contentAlignment: z.string(),
-            link: z.object({
-              pageObjectId: z.string(),
-              relativeLink: z.string(),
-              slideIndex: z.number(),
-              url: z.string(),
-            }),
-            outline: z.object({
-              dashStyle: z.string(),
-              outlineFill: z.object({
-                solidFill: z.object({
-                  alpha: z.number(),
-                  color: z.object({
-                    rgbColor: z.object({
-                      blue: z.number(),
-                      green: z.number(),
-                      red: z.number(),
-                    }),
-                    themeColor: z.string(),
-                  }),
-                }),
-              }),
-              propertyState: z.string(),
-              weight: z.object({
-                magnitude: z.number(),
-                unit: z.string(),
-              }),
-            }),
-            shadow: z.object({
-              alignment: z.string(),
-              alpha: z.number(),
-              blurRadius: z.object({
-                magnitude: z.number(),
-                unit: z.string(),
-              }),
-              color: z.object({
-                rgbColor: z.object({
-                  blue: z.number(),
-                  green: z.number(),
-                  red: z.number(),
-                }),
-                themeColor: z.string(),
-              }),
-              propertyState: z.string(),
-              rotateWithShape: z.boolean(),
-              transform: z.object({
-                scaleX: z.number(),
-                scaleY: z.number(),
-                shearX: z.number(),
-                shearY: z.number(),
-                translateX: z.number(),
-                translateY: z.number(),
-                unit: z.string(),
-              }),
-              type: z.string(),
-            }),
-            shapeBackgroundFill: z.object({
-              propertyState: z.string(),
-              solidFill: z.object({
-                alpha: z.number(),
-                color: z.object({
-                  rgbColor: z.object({
-                    blue: z.number(),
-                    green: z.number(),
-                    red: z.number(),
-                  }),
-                  themeColor: z.string(),
-                }),
-              }),
-            }),
-          }),
-          shapeType: z.string(),
-          text: z.object({
-            lists: z.record(z.string(), z.unknown()),
-            textElements: z.array(z.object({
-              autoText: z.object({
-                content: z.string(),
-                style: z.object({
-                  backgroundColor: z.object({
-                    opaqueColor: z.object({
-                      rgbColor: z.object({
-                        blue: z.number(),
-                        green: z.number(),
-                        red: z.number(),
-                      }),
-                      themeColor: z.string(),
-                    }),
-                  }),
-                  baselineOffset: z.string(),
-                  bold: z.boolean(),
-                  fontFamily: z.string(),
-                  fontSize: z.object({
-                    magnitude: z.number(),
-                    unit: z.string(),
-                  }),
-                  foregroundColor: z.object({
-                    opaqueColor: z.object({
-                      rgbColor: z.object({
-                        blue: z.number(),
-                        green: z.number(),
-                        red: z.number(),
-                      }),
-                      themeColor: z.string(),
-                    }),
-                  }),
-                  italic: z.boolean(),
-                  link: z.object({
-                    pageObjectId: z.string(),
-                    relativeLink: z.string(),
-                    slideIndex: z.number(),
-                    url: z.string(),
-                  }),
-                  smallCaps: z.boolean(),
-                  strikethrough: z.boolean(),
-                  underline: z.boolean(),
-                  weightedFontFamily: z.object({
-                    fontFamily: z.string(),
-                    weight: z.number(),
-                  }),
-                }),
-                type: z.string(),
-              }),
-              endIndex: z.number(),
-              paragraphMarker: z.object({
-                bullet: z.object({
-                  bulletStyle: z.object({
-                    backgroundColor: z.object({
-                      opaqueColor: z.object({
-                        rgbColor: z.object({
-                          blue: z.number(),
-                          green: z.number(),
-                          red: z.number(),
-                        }),
-                        themeColor: z.string(),
-                      }),
-                    }),
-                    baselineOffset: z.string(),
-                    bold: z.boolean(),
-                    fontFamily: z.string(),
-                    fontSize: z.object({
-                      magnitude: z.number(),
-                      unit: z.string(),
-                    }),
-                    foregroundColor: z.object({
-                      opaqueColor: z.object({
-                        rgbColor: z.object({
-                          blue: z.number(),
-                          green: z.number(),
-                          red: z.number(),
-                        }),
-                        themeColor: z.string(),
-                      }),
-                    }),
-                    italic: z.boolean(),
-                    link: z.object({
-                      pageObjectId: z.string(),
-                      relativeLink: z.string(),
-                      slideIndex: z.number(),
-                      url: z.string(),
-                    }),
-                    smallCaps: z.boolean(),
-                    strikethrough: z.boolean(),
-                    underline: z.boolean(),
-                    weightedFontFamily: z.object({
-                      fontFamily: z.string(),
-                      weight: z.number(),
-                    }),
-                  }),
-                  glyph: z.string(),
-                  listId: z.string(),
-                  nestingLevel: z.number(),
-                }),
-                style: z.object({
-                  alignment: z.string(),
-                  direction: z.string(),
-                  indentEnd: z.object({
-                    magnitude: z.number(),
-                    unit: z.string(),
-                  }),
-                  indentFirstLine: z.object({
-                    magnitude: z.number(),
-                    unit: z.string(),
-                  }),
-                  indentStart: z.object({
-                    magnitude: z.number(),
-                    unit: z.string(),
-                  }),
-                  lineSpacing: z.number(),
-                  spaceAbove: z.object({
-                    magnitude: z.number(),
-                    unit: z.string(),
-                  }),
-                  spaceBelow: z.object({
-                    magnitude: z.number(),
-                    unit: z.string(),
-                  }),
-                  spacingMode: z.string(),
-                }),
-              }),
-              startIndex: z.number(),
-              textRun: z.object({
-                content: z.string(),
-                style: z.object({
-                  backgroundColor: z.object({
-                    opaqueColor: z.object({
-                      rgbColor: z.object({
-                        blue: z.number(),
-                        green: z.number(),
-                        red: z.number(),
-                      }),
-                      themeColor: z.string(),
-                    }),
-                  }),
-                  baselineOffset: z.string(),
-                  bold: z.boolean(),
-                  fontFamily: z.string(),
-                  fontSize: z.object({
-                    magnitude: z.number(),
-                    unit: z.string(),
-                  }),
-                  foregroundColor: z.object({
-                    opaqueColor: z.object({
-                      rgbColor: z.object({
-                        blue: z.number(),
-                        green: z.number(),
-                        red: z.number(),
-                      }),
-                      themeColor: z.string(),
-                    }),
-                  }),
-                  italic: z.boolean(),
-                  link: z.object({
-                    pageObjectId: z.string(),
-                    relativeLink: z.string(),
-                    slideIndex: z.number(),
-                    url: z.string(),
-                  }),
-                  smallCaps: z.boolean(),
-                  strikethrough: z.boolean(),
-                  underline: z.boolean(),
-                  weightedFontFamily: z.object({
-                    fontFamily: z.string(),
-                    weight: z.number(),
-                  }),
-                }),
-              }),
-            })),
-          }),
+          placeholder: z.unknown(),
+          shapeProperties: z.unknown(),
+          shapeType: z.unknown(),
+          text: z.unknown(),
         }),
         sheetsChart: z.object({
-          chartId: z.number(),
-          contentUrl: z.string(),
-          sheetsChartProperties: z.object({
-            chartImageProperties: z.object({
-              brightness: z.number(),
-              contrast: z.number(),
-              cropProperties: z.object({
-                angle: z.number(),
-                bottomOffset: z.number(),
-                leftOffset: z.number(),
-                rightOffset: z.number(),
-                topOffset: z.number(),
-              }),
-              link: z.object({
-                pageObjectId: z.string(),
-                relativeLink: z.string(),
-                slideIndex: z.number(),
-                url: z.string(),
-              }),
-              outline: z.object({
-                dashStyle: z.string(),
-                outlineFill: z.object({
-                  solidFill: z.object({
-                    alpha: z.number(),
-                    color: z.object({
-                      rgbColor: z.object({
-                        blue: z.number(),
-                        green: z.number(),
-                        red: z.number(),
-                      }),
-                      themeColor: z.string(),
-                    }),
-                  }),
-                }),
-                propertyState: z.string(),
-                weight: z.object({
-                  magnitude: z.number(),
-                  unit: z.string(),
-                }),
-              }),
-              recolor: z.object({
-                name: z.string(),
-                recolorStops: z.array(z.object({
-                  alpha: z.number(),
-                  color: z.object({
-                    rgbColor: z.object({
-                      blue: z.number(),
-                      green: z.number(),
-                      red: z.number(),
-                    }),
-                    themeColor: z.string(),
-                  }),
-                  position: z.number(),
-                })),
-              }),
-              shadow: z.object({
-                alignment: z.string(),
-                alpha: z.number(),
-                blurRadius: z.object({
-                  magnitude: z.number(),
-                  unit: z.string(),
-                }),
-                color: z.object({
-                  rgbColor: z.object({
-                    blue: z.number(),
-                    green: z.number(),
-                    red: z.number(),
-                  }),
-                  themeColor: z.string(),
-                }),
-                propertyState: z.string(),
-                rotateWithShape: z.boolean(),
-                transform: z.object({
-                  scaleX: z.number(),
-                  scaleY: z.number(),
-                  shearX: z.number(),
-                  shearY: z.number(),
-                  translateX: z.number(),
-                  translateY: z.number(),
-                  unit: z.string(),
-                }),
-                type: z.string(),
-              }),
-              transparency: z.number(),
-            }),
-          }),
-          spreadsheetId: z.string(),
+          chartId: z.unknown(),
+          contentUrl: z.unknown(),
+          sheetsChartProperties: z.unknown(),
+          spreadsheetId: z.unknown(),
         }),
         size: z.object({
-          height: z.object({
-            magnitude: z.number(),
-            unit: z.string(),
-          }),
-          width: z.object({
-            magnitude: z.number(),
-            unit: z.string(),
-          }),
+          height: z.unknown(),
+          width: z.unknown(),
         }),
         speakerSpotlight: z.object({
-          speakerSpotlightProperties: z.object({
-            outline: z.object({
-              dashStyle: z.string(),
-              outlineFill: z.object({
-                solidFill: z.object({
-                  alpha: z.number(),
-                  color: z.object({
-                    rgbColor: z.object({
-                      blue: z.number(),
-                      green: z.number(),
-                      red: z.number(),
-                    }),
-                    themeColor: z.string(),
-                  }),
-                }),
-              }),
-              propertyState: z.string(),
-              weight: z.object({
-                magnitude: z.number(),
-                unit: z.string(),
-              }),
-            }),
-            shadow: z.object({
-              alignment: z.string(),
-              alpha: z.number(),
-              blurRadius: z.object({
-                magnitude: z.number(),
-                unit: z.string(),
-              }),
-              color: z.object({
-                rgbColor: z.object({
-                  blue: z.number(),
-                  green: z.number(),
-                  red: z.number(),
-                }),
-                themeColor: z.string(),
-              }),
-              propertyState: z.string(),
-              rotateWithShape: z.boolean(),
-              transform: z.object({
-                scaleX: z.number(),
-                scaleY: z.number(),
-                shearX: z.number(),
-                shearY: z.number(),
-                translateX: z.number(),
-                translateY: z.number(),
-                unit: z.string(),
-              }),
-              type: z.string(),
-            }),
-          }),
+          speakerSpotlightProperties: z.unknown(),
         }),
         table: z.object({
-          columns: z.number(),
-          horizontalBorderRows: z.array(z.object({
-            tableBorderCells: z.array(z.object({
-              location: z.object({
-                columnIndex: z.number(),
-                rowIndex: z.number(),
-              }),
-              tableBorderProperties: z.object({
-                dashStyle: z.string(),
-                tableBorderFill: z.object({
-                  solidFill: z.object({
-                    alpha: z.number(),
-                    color: z.object({
-                      rgbColor: z.object({
-                        blue: z.number(),
-                        green: z.number(),
-                        red: z.number(),
-                      }),
-                      themeColor: z.string(),
-                    }),
-                  }),
-                }),
-                weight: z.object({
-                  magnitude: z.number(),
-                  unit: z.string(),
-                }),
-              }),
-            })),
-          })),
-          rows: z.number(),
-          tableColumns: z.array(z.object({
-            columnWidth: z.object({
-              magnitude: z.number(),
-              unit: z.string(),
-            }),
-          })),
-          tableRows: z.array(z.object({
-            rowHeight: z.object({
-              magnitude: z.number(),
-              unit: z.string(),
-            }),
-            tableCells: z.array(z.object({
-              columnSpan: z.number(),
-              location: z.object({
-                columnIndex: z.number(),
-                rowIndex: z.number(),
-              }),
-              rowSpan: z.number(),
-              tableCellProperties: z.object({
-                contentAlignment: z.string(),
-                tableCellBackgroundFill: z.object({
-                  propertyState: z.string(),
-                  solidFill: z.object({
-                    alpha: z.number(),
-                    color: z.object({
-                      rgbColor: z.object({
-                        blue: z.number(),
-                        green: z.number(),
-                        red: z.number(),
-                      }),
-                      themeColor: z.string(),
-                    }),
-                  }),
-                }),
-              }),
-              text: z.object({
-                lists: z.record(z.string(), z.unknown()),
-                textElements: z.array(z.object({
-                  autoText: z.object({
-                    content: z.string(),
-                    style: z.object({
-                      backgroundColor: z.object({
-                        opaqueColor: z.object({
-                          rgbColor: z.object({
-                            blue: z.number(),
-                            green: z.number(),
-                            red: z.number(),
-                          }),
-                          themeColor: z.string(),
-                        }),
-                      }),
-                      baselineOffset: z.string(),
-                      bold: z.boolean(),
-                      fontFamily: z.string(),
-                      fontSize: z.object({
-                        magnitude: z.number(),
-                        unit: z.string(),
-                      }),
-                      foregroundColor: z.object({
-                        opaqueColor: z.object({
-                          rgbColor: z.object({
-                            blue: z.number(),
-                            green: z.number(),
-                            red: z.number(),
-                          }),
-                          themeColor: z.string(),
-                        }),
-                      }),
-                      italic: z.boolean(),
-                      link: z.object({
-                        pageObjectId: z.string(),
-                        relativeLink: z.string(),
-                        slideIndex: z.number(),
-                        url: z.string(),
-                      }),
-                      smallCaps: z.boolean(),
-                      strikethrough: z.boolean(),
-                      underline: z.boolean(),
-                      weightedFontFamily: z.object({
-                        fontFamily: z.string(),
-                        weight: z.number(),
-                      }),
-                    }),
-                    type: z.string(),
-                  }),
-                  endIndex: z.number(),
-                  paragraphMarker: z.object({
-                    bullet: z.object({
-                      bulletStyle: z.object({
-                        backgroundColor: z.object({
-                          opaqueColor: z.object({
-                            rgbColor: z.object({
-                              blue: z.number(),
-                              green: z.number(),
-                              red: z.number(),
-                            }),
-                            themeColor: z.string(),
-                          }),
-                        }),
-                        baselineOffset: z.string(),
-                        bold: z.boolean(),
-                        fontFamily: z.string(),
-                        fontSize: z.object({
-                          magnitude: z.number(),
-                          unit: z.string(),
-                        }),
-                        foregroundColor: z.object({
-                          opaqueColor: z.object({
-                            rgbColor: z.object({
-                              blue: z.number(),
-                              green: z.number(),
-                              red: z.number(),
-                            }),
-                            themeColor: z.string(),
-                          }),
-                        }),
-                        italic: z.boolean(),
-                        link: z.object({
-                          pageObjectId: z.string(),
-                          relativeLink: z.string(),
-                          slideIndex: z.number(),
-                          url: z.string(),
-                        }),
-                        smallCaps: z.boolean(),
-                        strikethrough: z.boolean(),
-                        underline: z.boolean(),
-                        weightedFontFamily: z.object({
-                          fontFamily: z.string(),
-                          weight: z.number(),
-                        }),
-                      }),
-                      glyph: z.string(),
-                      listId: z.string(),
-                      nestingLevel: z.number(),
-                    }),
-                    style: z.object({
-                      alignment: z.string(),
-                      direction: z.string(),
-                      indentEnd: z.object({
-                        magnitude: z.number(),
-                        unit: z.string(),
-                      }),
-                      indentFirstLine: z.object({
-                        magnitude: z.number(),
-                        unit: z.string(),
-                      }),
-                      indentStart: z.object({
-                        magnitude: z.number(),
-                        unit: z.string(),
-                      }),
-                      lineSpacing: z.number(),
-                      spaceAbove: z.object({
-                        magnitude: z.number(),
-                        unit: z.string(),
-                      }),
-                      spaceBelow: z.object({
-                        magnitude: z.number(),
-                        unit: z.string(),
-                      }),
-                      spacingMode: z.string(),
-                    }),
-                  }),
-                  startIndex: z.number(),
-                  textRun: z.object({
-                    content: z.string(),
-                    style: z.object({
-                      backgroundColor: z.object({
-                        opaqueColor: z.object({
-                          rgbColor: z.object({
-                            blue: z.number(),
-                            green: z.number(),
-                            red: z.number(),
-                          }),
-                          themeColor: z.string(),
-                        }),
-                      }),
-                      baselineOffset: z.string(),
-                      bold: z.boolean(),
-                      fontFamily: z.string(),
-                      fontSize: z.object({
-                        magnitude: z.number(),
-                        unit: z.string(),
-                      }),
-                      foregroundColor: z.object({
-                        opaqueColor: z.object({
-                          rgbColor: z.object({
-                            blue: z.number(),
-                            green: z.number(),
-                            red: z.number(),
-                          }),
-                          themeColor: z.string(),
-                        }),
-                      }),
-                      italic: z.boolean(),
-                      link: z.object({
-                        pageObjectId: z.string(),
-                        relativeLink: z.string(),
-                        slideIndex: z.number(),
-                        url: z.string(),
-                      }),
-                      smallCaps: z.boolean(),
-                      strikethrough: z.boolean(),
-                      underline: z.boolean(),
-                      weightedFontFamily: z.object({
-                        fontFamily: z.string(),
-                        weight: z.number(),
-                      }),
-                    }),
-                  }),
-                })),
-              }),
-            })),
-            tableRowProperties: z.object({
-              minRowHeight: z.object({
-                magnitude: z.number(),
-                unit: z.string(),
-              }),
-            }),
-          })),
-          verticalBorderRows: z.array(z.object({
-            tableBorderCells: z.array(z.object({
-              location: z.object({
-                columnIndex: z.number(),
-                rowIndex: z.number(),
-              }),
-              tableBorderProperties: z.object({
-                dashStyle: z.string(),
-                tableBorderFill: z.object({
-                  solidFill: z.object({
-                    alpha: z.number(),
-                    color: z.object({
-                      rgbColor: z.object({
-                        blue: z.number(),
-                        green: z.number(),
-                        red: z.number(),
-                      }),
-                      themeColor: z.string(),
-                    }),
-                  }),
-                }),
-                weight: z.object({
-                  magnitude: z.number(),
-                  unit: z.string(),
-                }),
-              }),
-            })),
-          })),
+          columns: z.unknown(),
+          horizontalBorderRows: z.unknown(),
+          rows: z.unknown(),
+          tableColumns: z.unknown(),
+          tableRows: z.unknown(),
+          verticalBorderRows: z.unknown(),
         }),
         title: z.string(),
         transform: z.object({
-          scaleX: z.number(),
-          scaleY: z.number(),
-          shearX: z.number(),
-          shearY: z.number(),
-          translateX: z.number(),
-          translateY: z.number(),
-          unit: z.string(),
+          scaleX: z.unknown(),
+          scaleY: z.unknown(),
+          shearX: z.unknown(),
+          shearY: z.unknown(),
+          translateX: z.unknown(),
+          translateY: z.unknown(),
+          unit: z.unknown(),
         }),
         video: z.object({
-          id: z.string(),
-          source: z.string(),
-          url: z.string(),
-          videoProperties: z.object({
-            autoPlay: z.boolean(),
-            end: z.number(),
-            mute: z.boolean(),
-            outline: z.object({
-              dashStyle: z.string(),
-              outlineFill: z.object({
-                solidFill: z.object({
-                  alpha: z.number(),
-                  color: z.object({
-                    rgbColor: z.object({
-                      blue: z.number(),
-                      green: z.number(),
-                      red: z.number(),
-                    }),
-                    themeColor: z.string(),
-                  }),
-                }),
-              }),
-              propertyState: z.string(),
-              weight: z.object({
-                magnitude: z.number(),
-                unit: z.string(),
-              }),
-            }),
-            start: z.number(),
-          }),
+          id: z.unknown(),
+          source: z.unknown(),
+          url: z.unknown(),
+          videoProperties: z.unknown(),
         }),
         wordArt: z.object({
-          renderedText: z.string(),
+          renderedText: z.unknown(),
         }),
       })),
       pageProperties: z.object({
         colorScheme: z.object({
-          colors: z.array(z.object({
-            color: z.object({
-              blue: z.number(),
-              green: z.number(),
-              red: z.number(),
-            }),
-            type: z.string(),
-          })),
+          colors: z.array(z.unknown()),
         }),
         pageBackgroundFill: z.object({
           propertyState: z.string(),
           solidFill: z.object({
-            alpha: z.number(),
-            color: z.object({
-              rgbColor: z.object({
-                blue: z.number(),
-                green: z.number(),
-                red: z.number(),
-              }),
-              themeColor: z.string(),
-            }),
+            alpha: z.unknown(),
+            color: z.unknown(),
           }),
           stretchedPictureFill: z.object({
-            contentUrl: z.string(),
-            size: z.object({
-              height: z.object({
-                magnitude: z.number(),
-                unit: z.string(),
-              }),
-              width: z.object({
-                magnitude: z.number(),
-                unit: z.string(),
-              }),
-            }),
+            contentUrl: z.unknown(),
+            size: z.unknown(),
           }),
         }),
       }),
@@ -1914,7 +430,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/slides/presentations-pages",
-  version: "2026.04.03.3",
+  version: "2026.04.04.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -1938,6 +454,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.3",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.04.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

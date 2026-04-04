@@ -110,10 +110,10 @@ const GlobalArgsSchema = z.object({
   gcpConfig: z.object({
     accessConfig: z.object({
       networkConfigs: z.array(z.object({
-        additionalSubnets: z.array(z.string()).describe(
+        additionalSubnets: z.array(z.unknown()).describe(
           "Optional. Deprecated: Managed Kafka Connect clusters can now reach any endpoint accessible from the primary subnet without the need to define additional subnets. Please see https://cloud.google.com/managed-service-for-apache-kafka/docs/connect-cluster/create-connect-cluster#worker-subnet for more information.",
         ).optional(),
-        dnsDomainNames: z.array(z.string()).describe(
+        dnsDomainNames: z.array(z.unknown()).describe(
           "Optional. Additional DNS domain names from the subnet's network to be made visible to the Connect Cluster. When using MirrorMaker2, it's necessary to add the bootstrap address's dns domain name of the target cluster to make it visible to the connector. For example: my-kafka-cluster.us-central1.managedkafka.my-project.cloud.goog",
         ).optional(),
         primarySubnet: z.string().describe(
@@ -160,8 +160,8 @@ const StateSchema = z.object({
   gcpConfig: z.object({
     accessConfig: z.object({
       networkConfigs: z.array(z.object({
-        additionalSubnets: z.array(z.string()),
-        dnsDomainNames: z.array(z.string()),
+        additionalSubnets: z.array(z.unknown()),
+        dnsDomainNames: z.array(z.unknown()),
         primarySubnet: z.string(),
       })),
     }),
@@ -193,10 +193,10 @@ const InputsSchema = z.object({
   gcpConfig: z.object({
     accessConfig: z.object({
       networkConfigs: z.array(z.object({
-        additionalSubnets: z.array(z.string()).describe(
+        additionalSubnets: z.array(z.unknown()).describe(
           "Optional. Deprecated: Managed Kafka Connect clusters can now reach any endpoint accessible from the primary subnet without the need to define additional subnets. Please see https://cloud.google.com/managed-service-for-apache-kafka/docs/connect-cluster/create-connect-cluster#worker-subnet for more information.",
         ).optional(),
-        dnsDomainNames: z.array(z.string()).describe(
+        dnsDomainNames: z.array(z.unknown()).describe(
           "Optional. Additional DNS domain names from the subnet's network to be made visible to the Connect Cluster. When using MirrorMaker2, it's necessary to add the bootstrap address's dns domain name of the target cluster to make it visible to the connector. For example: my-kafka-cluster.us-central1.managedkafka.my-project.cloud.goog",
         ).optional(),
         primarySubnet: z.string().describe(
@@ -235,7 +235,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/managedkafka/connectclusters",
-  version: "2026.04.03.3",
+  version: "2026.04.04.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -259,6 +259,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.3",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.04.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

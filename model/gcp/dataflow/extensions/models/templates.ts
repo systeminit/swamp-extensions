@@ -151,9 +151,9 @@ const StateSchema = z.object({
       customMetadata: z.record(z.string(), z.unknown()),
       defaultValue: z.string(),
       enumOptions: z.array(z.object({
-        description: z.string(),
-        label: z.string(),
-        value: z.string(),
+        description: z.unknown(),
+        label: z.unknown(),
+        value: z.unknown(),
       })),
       groupName: z.string(),
       helpText: z.string(),
@@ -176,9 +176,9 @@ const StateSchema = z.object({
       customMetadata: z.record(z.string(), z.unknown()),
       defaultValue: z.string(),
       enumOptions: z.array(z.object({
-        description: z.string(),
-        label: z.string(),
-        value: z.string(),
+        description: z.unknown(),
+        label: z.unknown(),
+        value: z.unknown(),
       })),
       groupName: z.string(),
       helpText: z.string(),
@@ -289,7 +289,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/dataflow/templates",
-  version: "2026.04.03.3",
+  version: "2026.04.04.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -313,6 +313,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.3",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.04.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

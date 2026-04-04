@@ -103,7 +103,7 @@ const GlobalArgsSchema = z.object({
     })).describe("Metric specs for the study.").optional(),
     parameters: z.array(z.object({
       categoricalValueSpec: z.object({
-        values: z.array(z.string()).describe(
+        values: z.array(z.unknown()).describe(
           "Must be specified if type is `CATEGORICAL`. The list of possible categories.",
         ).optional(),
       }).optional(),
@@ -111,7 +111,7 @@ const GlobalArgsSchema = z.object({
         "A child node is active if the parameter's value matches the child node's matching_parent_values. If two items in child_parameter_specs have the same name, they must have disjoint matching_parent_values.",
       ).optional(),
       discreteValueSpec: z.object({
-        values: z.array(z.number()).describe(
+        values: z.array(z.unknown()).describe(
           "Must be specified if type is `DISCRETE`. A list of feasible points. The list should be in strictly increasing order. For instance, this parameter might have possible settings of 1.5, 2.5, and 4.0. This list should not contain more than 1,000 values.",
         ).optional(),
       }).optional(),
@@ -135,21 +135,21 @@ const GlobalArgsSchema = z.object({
         "Required. The parameter name must be unique amongst all ParameterSpecs.",
       ).optional(),
       parentCategoricalValues: z.object({
-        values: z.array(z.string()).describe(
+        values: z.array(z.unknown()).describe(
           "Matches values of the parent parameter with type 'CATEGORICAL'. All values must exist in `categorical_value_spec` of parent parameter.",
         ).optional(),
       }).describe(
         "Represents the spec to match categorical values from parent parameter.",
       ).optional(),
       parentDiscreteValues: z.object({
-        values: z.array(z.number()).describe(
+        values: z.array(z.unknown()).describe(
           "Matches values of the parent parameter with type 'DISCRETE'. All values must exist in `discrete_value_spec` of parent parameter.",
         ).optional(),
       }).describe(
         "Represents the spec to match discrete values from parent parameter.",
       ).optional(),
       parentIntValues: z.object({
-        values: z.array(z.string()).describe(
+        values: z.array(z.unknown()).describe(
           "Matches values of the parent parameter with type 'INTEGER'. All values must lie in `integer_value_spec` of parent parameter.",
         ).optional(),
       }).describe(
@@ -201,11 +201,11 @@ const StateSchema = z.object({
     })),
     parameters: z.array(z.object({
       categoricalValueSpec: z.object({
-        values: z.array(z.string()),
+        values: z.array(z.unknown()),
       }),
       childParameterSpecs: z.array(z.string()),
       discreteValueSpec: z.object({
-        values: z.array(z.number()),
+        values: z.array(z.unknown()),
       }),
       doubleValueSpec: z.object({
         maxValue: z.number(),
@@ -217,13 +217,13 @@ const StateSchema = z.object({
       }),
       parameter: z.string(),
       parentCategoricalValues: z.object({
-        values: z.array(z.string()),
+        values: z.array(z.unknown()),
       }),
       parentDiscreteValues: z.object({
-        values: z.array(z.number()),
+        values: z.array(z.unknown()),
       }),
       parentIntValues: z.object({
-        values: z.array(z.string()),
+        values: z.array(z.unknown()),
       }),
       scaleType: z.string(),
       type: z.string(),
@@ -267,7 +267,7 @@ const InputsSchema = z.object({
     })).describe("Metric specs for the study.").optional(),
     parameters: z.array(z.object({
       categoricalValueSpec: z.object({
-        values: z.array(z.string()).describe(
+        values: z.array(z.unknown()).describe(
           "Must be specified if type is `CATEGORICAL`. The list of possible categories.",
         ).optional(),
       }).optional(),
@@ -275,7 +275,7 @@ const InputsSchema = z.object({
         "A child node is active if the parameter's value matches the child node's matching_parent_values. If two items in child_parameter_specs have the same name, they must have disjoint matching_parent_values.",
       ).optional(),
       discreteValueSpec: z.object({
-        values: z.array(z.number()).describe(
+        values: z.array(z.unknown()).describe(
           "Must be specified if type is `DISCRETE`. A list of feasible points. The list should be in strictly increasing order. For instance, this parameter might have possible settings of 1.5, 2.5, and 4.0. This list should not contain more than 1,000 values.",
         ).optional(),
       }).optional(),
@@ -299,21 +299,21 @@ const InputsSchema = z.object({
         "Required. The parameter name must be unique amongst all ParameterSpecs.",
       ).optional(),
       parentCategoricalValues: z.object({
-        values: z.array(z.string()).describe(
+        values: z.array(z.unknown()).describe(
           "Matches values of the parent parameter with type 'CATEGORICAL'. All values must exist in `categorical_value_spec` of parent parameter.",
         ).optional(),
       }).describe(
         "Represents the spec to match categorical values from parent parameter.",
       ).optional(),
       parentDiscreteValues: z.object({
-        values: z.array(z.number()).describe(
+        values: z.array(z.unknown()).describe(
           "Matches values of the parent parameter with type 'DISCRETE'. All values must exist in `discrete_value_spec` of parent parameter.",
         ).optional(),
       }).describe(
         "Represents the spec to match discrete values from parent parameter.",
       ).optional(),
       parentIntValues: z.object({
-        values: z.array(z.string()).describe(
+        values: z.array(z.unknown()).describe(
           "Matches values of the parent parameter with type 'INTEGER'. All values must lie in `integer_value_spec` of parent parameter.",
         ).optional(),
       }).describe(
@@ -346,7 +346,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/ml/studies",
-  version: "2026.04.03.3",
+  version: "2026.04.04.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -370,6 +370,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.3",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.04.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

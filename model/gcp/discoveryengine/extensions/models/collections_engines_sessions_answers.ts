@@ -84,9 +84,9 @@ const StateSchema = z.object({
     }),
     unstructuredDocumentInfo: z.object({
       chunkContents: z.array(z.object({
-        content: z.string(),
-        pageIdentifier: z.string(),
-        relevanceScore: z.number(),
+        content: z.unknown(),
+        pageIdentifier: z.unknown(),
+        relevanceScore: z.unknown(),
       })),
       document: z.string(),
       structData: z.record(z.string(), z.unknown()),
@@ -107,24 +107,10 @@ const StateSchema = z.object({
   steps: z.array(z.object({
     actions: z.array(z.object({
       observation: z.object({
-        searchResults: z.array(z.object({
-          chunkInfo: z.array(z.object({
-            chunk: z.string(),
-            content: z.string(),
-            relevanceScore: z.number(),
-          })),
-          document: z.string(),
-          snippetInfo: z.array(z.object({
-            snippet: z.string(),
-            snippetStatus: z.string(),
-          })),
-          structData: z.record(z.string(), z.unknown()),
-          title: z.string(),
-          uri: z.string(),
-        })),
+        searchResults: z.unknown(),
       }),
       searchAction: z.object({
-        query: z.string(),
+        query: z.unknown(),
       }),
     })),
     description: z.string(),
@@ -141,7 +127,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/discoveryengine/collections-engines-sessions-answers",
-  version: "2026.04.03.3",
+  version: "2026.04.04.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -165,6 +151,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.3",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.04.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

@@ -124,7 +124,7 @@ const GlobalArgsSchema = z.object({
     userManaged: z.object({
       replicas: z.array(z.object({
         customerManagedEncryption: z.object({
-          kmsKeyName: z.string().describe(
+          kmsKeyName: z.unknown().describe(
             "Required. The resource name of the Cloud KMS CryptoKey used to encrypt secret payloads. For secrets using the UserManaged replication policy type, Cloud KMS CryptoKeys must reside in the same location as the replica location. For secrets using the Automatic replication policy type, Cloud KMS CryptoKeys must reside in `global`. The expected format is `projects/*/locations/*/keyRings/*/cryptoKeys/*`.",
           ).optional(),
         }).describe(
@@ -196,7 +196,7 @@ const StateSchema = z.object({
     userManaged: z.object({
       replicas: z.array(z.object({
         customerManagedEncryption: z.object({
-          kmsKeyName: z.string(),
+          kmsKeyName: z.unknown(),
         }),
         location: z.string(),
       })),
@@ -250,7 +250,7 @@ const InputsSchema = z.object({
     userManaged: z.object({
       replicas: z.array(z.object({
         customerManagedEncryption: z.object({
-          kmsKeyName: z.string().describe(
+          kmsKeyName: z.unknown().describe(
             "Required. The resource name of the Cloud KMS CryptoKey used to encrypt secret payloads. For secrets using the UserManaged replication policy type, Cloud KMS CryptoKeys must reside in the same location as the replica location. For secrets using the Automatic replication policy type, Cloud KMS CryptoKeys must reside in `global`. The expected format is `projects/*/locations/*/keyRings/*/cryptoKeys/*`.",
           ).optional(),
         }).describe(
@@ -305,7 +305,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/secretmanager/secrets",
-  version: "2026.04.03.3",
+  version: "2026.04.04.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -329,6 +329,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.3",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.04.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

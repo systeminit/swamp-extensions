@@ -102,121 +102,41 @@ const StateSchema = z.object({
     analysisResult: z.object({
       callAnalysisMetadata: z.object({
         annotations: z.array(z.object({
-          annotationEndBoundary: z.object({
-            transcriptIndex: z.number(),
-            wordIndex: z.number(),
-          }),
-          annotationStartBoundary: z.object({
-            transcriptIndex: z.number(),
-            wordIndex: z.number(),
-          }),
-          channelTag: z.number(),
-          entityMentionData: z.object({
-            entityUniqueId: z.string(),
-            sentiment: z.object({
-              magnitude: z.number(),
-              score: z.number(),
-            }),
-            type: z.string(),
-          }),
-          holdData: z.object({}),
-          intentMatchData: z.object({
-            intentUniqueId: z.string(),
-          }),
-          interruptionData: z.object({}),
-          issueMatchData: z.object({
-            issueAssignment: z.object({
-              displayName: z.string(),
-              issue: z.string(),
-              score: z.number(),
-            }),
-          }),
-          phraseMatchData: z.object({
-            displayName: z.string(),
-            phraseMatcher: z.string(),
-          }),
-          sentimentData: z.object({
-            magnitude: z.number(),
-            score: z.number(),
-          }),
-          silenceData: z.object({}),
+          annotationEndBoundary: z.unknown(),
+          annotationStartBoundary: z.unknown(),
+          channelTag: z.unknown(),
+          entityMentionData: z.unknown(),
+          holdData: z.unknown(),
+          intentMatchData: z.unknown(),
+          interruptionData: z.unknown(),
+          issueMatchData: z.unknown(),
+          phraseMatchData: z.unknown(),
+          sentimentData: z.unknown(),
+          silenceData: z.unknown(),
         })),
         entities: z.record(z.string(), z.unknown()),
         intents: z.record(z.string(), z.unknown()),
         issueModelResult: z.object({
           issueModel: z.string(),
-          issues: z.array(z.object({
-            displayName: z.string(),
-            issue: z.string(),
-            score: z.number(),
-          })),
+          issues: z.array(z.unknown()),
         }),
         phraseMatchers: z.record(z.string(), z.unknown()),
         qaScorecardResults: z.array(z.object({
-          agentId: z.string(),
-          conversation: z.string(),
-          createTime: z.string(),
-          name: z.string(),
-          normalizedScore: z.number(),
-          potentialScore: z.number(),
-          qaAnswers: z.array(z.object({
-            answerSources: z.array(z.object({
-              answerValue: z.object({
-                boolValue: z.boolean(),
-                key: z.string(),
-                naValue: z.boolean(),
-                normalizedScore: z.number(),
-                numValue: z.number(),
-                potentialScore: z.number(),
-                score: z.number(),
-                skipValue: z.boolean(),
-                strValue: z.string(),
-              }),
-              sourceType: z.string(),
-            })),
-            answerValue: z.object({
-              boolValue: z.boolean(),
-              key: z.string(),
-              naValue: z.boolean(),
-              normalizedScore: z.number(),
-              numValue: z.number(),
-              potentialScore: z.number(),
-              score: z.number(),
-              skipValue: z.boolean(),
-              strValue: z.string(),
-            }),
-            conversation: z.string(),
-            qaQuestion: z.string(),
-            questionBody: z.string(),
-            tags: z.array(z.string()),
-          })),
-          qaScorecardRevision: z.string(),
-          qaTagResults: z.array(z.object({
-            normalizedScore: z.number(),
-            potentialScore: z.number(),
-            score: z.number(),
-            tag: z.string(),
-          })),
-          score: z.number(),
-          scoreSources: z.array(z.object({
-            normalizedScore: z.number(),
-            potentialScore: z.number(),
-            qaTagResults: z.array(z.object({
-              normalizedScore: z.number(),
-              potentialScore: z.number(),
-              score: z.number(),
-              tag: z.string(),
-            })),
-            score: z.number(),
-            sourceType: z.string(),
-          })),
+          agentId: z.unknown(),
+          conversation: z.unknown(),
+          createTime: z.unknown(),
+          name: z.unknown(),
+          normalizedScore: z.unknown(),
+          potentialScore: z.unknown(),
+          qaAnswers: z.unknown(),
+          qaScorecardRevision: z.unknown(),
+          qaTagResults: z.unknown(),
+          score: z.unknown(),
+          scoreSources: z.unknown(),
         })),
         sentiments: z.array(z.object({
-          channelTag: z.number(),
-          sentimentData: z.object({
-            magnitude: z.number(),
-            score: z.number(),
-          }),
+          channelTag: z.unknown(),
+          sentimentData: z.unknown(),
         })),
         silence: z.object({
           silenceDuration: z.string(),
@@ -230,7 +150,7 @@ const StateSchema = z.object({
       phraseMatchers: z.array(z.string()),
       qaConfig: z.object({
         scorecardList: z.object({
-          qaScorecardRevisions: z.array(z.string()),
+          qaScorecardRevisions: z.array(z.unknown()),
         }),
       }),
       runAutoLabelingAnnotator: z.boolean(),
@@ -393,10 +313,10 @@ const StateSchema = z.object({
         audioGcsUri: z.string(),
       }),
       words: z.array(z.object({
-        confidence: z.number(),
-        endOffset: z.string(),
-        startOffset: z.string(),
-        word: z.string(),
+        confidence: z.unknown(),
+        endOffset: z.unknown(),
+        startOffset: z.unknown(),
+        word: z.unknown(),
       })),
     })),
   }).optional(),
@@ -417,7 +337,7 @@ const InputsSchema = z.object({
 export const model = {
   type:
     "@swamp/gcp/contactcenterinsights/authorizedviewsets-authorizedviews-conversations",
-  version: "2026.04.03.3",
+  version: "2026.04.04.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -446,6 +366,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.3",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.04.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

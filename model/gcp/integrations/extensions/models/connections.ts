@@ -255,13 +255,13 @@ const StateSchema = z.object({
       additionalVariables: z.array(z.object({
         boolValue: z.boolean(),
         encryptionKeyValue: z.object({
-          kmsKeyName: z.string(),
-          type: z.string(),
+          kmsKeyName: z.unknown(),
+          type: z.unknown(),
         }),
         intValue: z.string(),
         key: z.string(),
         secretValue: z.object({
-          secretVersion: z.string(),
+          secretVersion: z.unknown(),
         }),
         stringValue: z.string(),
       })),
@@ -330,13 +330,13 @@ const StateSchema = z.object({
       additionalVariables: z.array(z.object({
         boolValue: z.boolean(),
         encryptionKeyValue: z.object({
-          kmsKeyName: z.string(),
-          type: z.string(),
+          kmsKeyName: z.unknown(),
+          type: z.unknown(),
         }),
         intValue: z.string(),
         key: z.string(),
         secretValue: z.object({
-          secretVersion: z.string(),
+          secretVersion: z.unknown(),
         }),
         stringValue: z.string(),
       })),
@@ -414,13 +414,13 @@ const StateSchema = z.object({
       additionalVariables: z.array(z.object({
         boolValue: z.boolean(),
         encryptionKeyValue: z.object({
-          kmsKeyName: z.string(),
-          type: z.string(),
+          kmsKeyName: z.unknown(),
+          type: z.unknown(),
         }),
         intValue: z.string(),
         key: z.string(),
         secretValue: z.object({
-          secretVersion: z.string(),
+          secretVersion: z.unknown(),
         }),
         stringValue: z.string(),
       })),
@@ -455,13 +455,13 @@ const StateSchema = z.object({
       additionalVariables: z.array(z.object({
         boolValue: z.boolean(),
         encryptionKeyValue: z.object({
-          kmsKeyName: z.string(),
-          type: z.string(),
+          kmsKeyName: z.unknown(),
+          type: z.unknown(),
         }),
         intValue: z.string(),
         key: z.string(),
         secretValue: z.object({
-          secretVersion: z.string(),
+          secretVersion: z.unknown(),
         }),
         stringValue: z.string(),
       })),
@@ -473,19 +473,7 @@ const StateSchema = z.object({
     }),
     webhookSubscriptions: z.object({
       webhookData: z.array(z.object({
-        additionalVariables: z.array(z.object({
-          boolValue: z.boolean(),
-          encryptionKeyValue: z.object({
-            kmsKeyName: z.string(),
-            type: z.string(),
-          }),
-          intValue: z.string(),
-          key: z.string(),
-          secretValue: z.object({
-            secretVersion: z.string(),
-          }),
-          stringValue: z.string(),
-        })),
+        additionalVariables: z.array(z.unknown()),
         createTime: z.string(),
         id: z.string(),
         name: z.string(),
@@ -572,7 +560,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/integrations/connections",
-  version: "2026.04.03.3",
+  version: "2026.04.04.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -596,6 +584,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.3",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.04.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

@@ -46,12 +46,7 @@ const StateSchema = z.object({
   userDevice: z.array(z.object({
     appReport: z.array(z.object({
       reportTime: z.string(),
-      usageData: z.array(z.object({
-        appId: z.string(),
-        appInstanceId: z.string(),
-        appType: z.string(),
-        runningDuration: z.string(),
-      })),
+      usageData: z.array(z.unknown()),
     })),
     audioStatusReport: z.array(z.object({
       inputDevice: z.string(),
@@ -73,16 +68,7 @@ const StateSchema = z.object({
     })),
     peripheralsReport: z.array(z.object({
       reportTime: z.string(),
-      usbPeripheralReport: z.array(z.object({
-        categories: z.array(z.string()),
-        classId: z.number(),
-        firmwareVersion: z.string(),
-        name: z.string(),
-        pid: z.number(),
-        subclassId: z.number(),
-        vendor: z.string(),
-        vid: z.number(),
-      })),
+      usbPeripheralReport: z.array(z.unknown()),
     })),
   })).optional(),
   userEmail: z.string().optional(),
@@ -100,7 +86,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/chromemanagement/customers-telemetry-users",
-  version: "2026.04.03.3",
+  version: "2026.04.04.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -124,6 +110,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.3",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.04.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },
