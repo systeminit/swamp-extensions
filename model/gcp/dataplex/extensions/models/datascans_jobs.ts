@@ -85,6 +85,10 @@ const StateSchema = z.object({
         encoding: z.string(),
         typeInferenceDisabled: z.boolean(),
       }),
+      unstructuredDataOptions: z.object({
+        entityInferenceEnabled: z.boolean(),
+        semanticInferenceEnabled: z.boolean(),
+      }),
     }),
   }).optional(),
   dataDocumentationResult: z.object({
@@ -105,14 +109,6 @@ const StateSchema = z.object({
         }),
         sources: z.array(z.unknown()),
         type: z.string(),
-      })),
-      tableResults: z.array(z.object({
-        name: z.string(),
-        overview: z.string(),
-        queries: z.array(z.unknown()),
-        schema: z.object({
-          fields: z.unknown(),
-        }),
       })),
     }),
     tableResult: z.object({
@@ -177,6 +173,7 @@ const StateSchema = z.object({
     includeFields: z.object({
       fieldNames: z.array(z.string()),
     }),
+    mode: z.string(),
     postScanActions: z.object({
       bigqueryExport: z.object({
         resultsTable: z.string(),
@@ -347,6 +344,7 @@ const StateSchema = z.object({
   endTime: z.string().optional(),
   message: z.string().optional(),
   name: z.string(),
+  partialFailureMessage: z.string().optional(),
   startTime: z.string().optional(),
   state: z.string().optional(),
   type: z.string().optional(),
@@ -364,7 +362,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/dataplex/datascans-jobs",
-  version: "2026.04.04.1",
+  version: "2026.04.04.2",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -403,6 +401,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.04.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.04.2",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },
