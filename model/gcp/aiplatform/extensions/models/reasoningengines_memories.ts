@@ -98,7 +98,7 @@ const GlobalArgsSchema = z.object({
     "Optional. Timestamp of when this resource is considered expired. This is *always* provided on output when `expiration` is set on input, regardless of whether `expire_time` or `ttl` was provided.",
   ).optional(),
   fact: z.string().describe(
-    "Required. Semantic knowledge extracted from the source content.",
+    "Optional. Semantic knowledge extracted from the source content.",
   ).optional(),
   metadata: z.record(
     z.string(),
@@ -186,7 +186,7 @@ const InputsSchema = z.object({
     "Optional. Timestamp of when this resource is considered expired. This is *always* provided on output when `expiration` is set on input, regardless of whether `expire_time` or `ttl` was provided.",
   ).optional(),
   fact: z.string().describe(
-    "Required. Semantic knowledge extracted from the source content.",
+    "Optional. Semantic knowledge extracted from the source content.",
   ).optional(),
   metadata: z.record(
     z.string(),
@@ -241,7 +241,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/aiplatform/reasoningengines-memories",
-  version: "2026.04.03.3",
+  version: "2026.04.05.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -265,6 +265,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.3",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.05.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },
