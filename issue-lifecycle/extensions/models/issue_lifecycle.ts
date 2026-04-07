@@ -46,7 +46,25 @@ type GlobalArgs = {
   swampClubApiKey?: string;
 };
 
-/** Get or create the swamp-club client (lazily, from globalArgs). */
+/**
+ * Get or create the swamp-club client (lazily, from globalArgs).
+ *
+ * `_swampClub` is a module-level cache. This is safe because each
+ * `swamp model method run` invocation runs in its own process — module
+ * state starts fresh per run and never crosses method boundaries. The
+ * cache exists to avoid re-running `createSwampClubClient`'s reachability
+ * check (a 5s-timeout HTTP fetch to `swamp.club/api/health`) every time
+ * `ensureSwampClub` is called within a single `execute()` call. Most
+ * methods call it once, but the cache also covers the cases where it is
+ * called more than once.
+ *
+ * If swamp ever changes its execution model so a single Deno process
+ * handles multiple method runs, this cache must be either removed (so the
+ * health check runs per call) or scoped to the `execute()` context (e.g.,
+ * stashed on the context object) — otherwise a `null` cached on the first
+ * call (no `SWAMP_API_KEY`) would persist across runs even if the user
+ * exported the env var between them.
+ */
 async function getSwampClub(
   globalArgs: GlobalArgs,
   logger?: {

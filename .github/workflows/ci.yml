@@ -17,7 +17,7 @@ jobs:
       datastores: ${{ steps.filter.outputs.datastores }}
       codegen: ${{ steps.filter.outputs.codegen }}
       models: ${{ steps.filter.outputs.models }}
-      issue-lifecycle: ${{ steps.filter.outputs.issue-lifecycle }}
+      issue-lifecycle: ${{ steps.filter.outputs['issue-lifecycle'] }}
       ci: ${{ steps.filter.outputs.ci }}
     steps:
       - name: Checkout code
@@ -153,7 +153,7 @@ jobs:
   issue-lifecycle-check:
     name: issue-lifecycle - ${{ matrix.task }}
     needs: [changes]
-    if: needs.changes.outputs.issue-lifecycle == 'true'
+    if: needs.changes.outputs['issue-lifecycle'] == 'true'
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -184,7 +184,7 @@ jobs:
   issue-lifecycle-lockfile:
     name: issue-lifecycle - lockfile up to date
     needs: [changes]
-    if: needs.changes.outputs.issue-lifecycle == 'true'
+    if: needs.changes.outputs['issue-lifecycle'] == 'true'
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -644,7 +644,7 @@ jobs:
       !failure() && !cancelled() &&
       github.event_name == 'pull_request' &&
       github.event.pull_request.draft == false &&
-      (needs.changes.outputs.vaults == 'true' || needs.changes.outputs.datastores == 'true' || needs.changes.outputs.issue-lifecycle == 'true' || needs.changes.outputs.codegen == 'true')
+      (needs.changes.outputs.vaults == 'true' || needs.changes.outputs.datastores == 'true' || needs.changes.outputs['issue-lifecycle'] == 'true' || needs.changes.outputs.codegen == 'true')
     concurrency:
       group: claude-adversarial-review-${{ github.event.pull_request.number }}
       cancel-in-progress: true

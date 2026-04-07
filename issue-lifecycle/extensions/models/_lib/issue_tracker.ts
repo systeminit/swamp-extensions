@@ -290,6 +290,17 @@ export class GitHubIssueTracker implements IssueTracker {
       pull_request_review_id: number;
     }[];
 
+    // Reviews are keyed by `user.login` so the LATEST review per reviewer
+    // wins. The GitHub API returns reviews in chronological order, and this
+    // matches GitHub's own PR UI semantics: a reviewer who first requested
+    // changes and then approved is considered to have approved, and we
+    // deliberately do NOT surface withdrawn feedback into the lifecycle's
+    // `fix` loop — it would treat resolved feedback as still actionable.
+    //
+    // Known narrow gap: a `COMMENTED` review submitted after a decisive
+    // state will overwrite that state, even though GitHub itself does not
+    // dismiss prior approvals/change-requests via a comment. Tracked in
+    // systeminit/swamp-extensions#53.
     const reviewMap = new Map<
       string,
       {
