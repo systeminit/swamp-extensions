@@ -2,8 +2,9 @@
  * Dependency audit script that checks npm packages in all deno.lock files
  * for known vulnerabilities using the OSV.dev API (https://osv.dev/).
  *
- * Discovers deno.lock files by walking vault/, datastore/, model/, and codegen/
- * directories — no hardcoded list, so new extensions are picked up automatically.
+ * Discovers deno.lock files by walking vault/, datastore/, model/, codegen/, and
+ * issue-lifecycle/ directories — no hardcoded list, so new extensions are picked
+ * up automatically.
  *
  * Direct dependency vulnerabilities fail the build. Transitive dependency
  * vulnerabilities are reported as warnings with their full dependency chain.
@@ -53,7 +54,7 @@ interface VulnFinding {
 }
 
 /** Directories to scan for deno.lock files. */
-const SCAN_ROOTS = ["vault", "datastore", "model", "codegen"];
+const SCAN_ROOTS = ["vault", "datastore", "model", "codegen", "issue-lifecycle"];
 
 /**
  * Recursively discover all deno.lock files under the given root directories.
