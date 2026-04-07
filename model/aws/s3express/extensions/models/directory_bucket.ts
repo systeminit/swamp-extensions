@@ -13,10 +13,10 @@ import {
 } from "./_lib/aws.ts";
 
 export const ServerSideEncryptionByDefaultSchema = z.object({
-  SSEAlgorithm: z.enum(["aws:kms", "AES256"]),
   KMSMasterKeyID: z.string().describe(
     "AWS Key Management Service (KMS) customer managed key ID to use for the default encryption. This parameter is allowed only if SSEAlgorithm is set to aws:kms. You can specify this parameter with the key ID or the Amazon Resource Name (ARN) of the KMS key",
   ).optional(),
+  SSEAlgorithm: z.enum(["aws:kms", "AES256"]),
 });
 
 export const ServerSideEncryptionRuleSchema = z.object({
@@ -35,25 +35,36 @@ export const AbortIncompleteMultipartUploadSchema = z.object({
 });
 
 export const RuleSchema = z.object({
-  Status: z.enum(["Enabled", "Disabled"]),
-  ExpirationInDays: z.number().int().optional(),
-  ObjectSizeGreaterThan: z.string().max(20).regex(new RegExp("[0-9]+"))
-    .optional(),
-  Id: z.string().max(255).optional(),
-  Prefix: z.string().optional(),
   AbortIncompleteMultipartUpload: AbortIncompleteMultipartUploadSchema.describe(
     "Specifies the days since the initiation of an incomplete multipart upload that Amazon S3 will wait before permanently removing all parts of the upload.",
   ).optional(),
+  ExpirationInDays: z.number().int().optional(),
+  Id: z.string().max(255).optional(),
+  Prefix: z.string().optional(),
+  Status: z.enum(["Enabled", "Disabled"]),
+  ObjectSizeGreaterThan: z.string().max(20).regex(new RegExp("[0-9]+"))
+    .optional(),
   ObjectSizeLessThan: z.string().max(20).regex(new RegExp("[0-9]+")).optional(),
 });
 
 export const TagSchema = z.object({
-  Value: z.string().min(0).max(256).regex(
-    new RegExp("^([\\p{L}\\p{Z}\\p{N}_.:=+\\/\\-@%]*)$", "u"),
-  ),
   Key: z.string().min(1).max(128).regex(
     new RegExp("^(?!aws:.*)([\\p{L}\\p{Z}\\p{N}_.:=+\\/\\-@%]*)$", "u"),
   ),
+  Value: z.string().min(0).max(256).regex(
+    new RegExp("^([\\p{L}\\p{Z}\\p{N}_.:=+\\/\\-@%]*)$", "u"),
+  ),
+});
+
+export const MetricsConfigurationSchema = z.object({
+  Id: z.string().describe("The ID used to identify the metrics configuration.")
+    .optional(),
+  Prefix: z.string().describe(
+    "The prefix used when evaluating a metrics filter.",
+  ).optional(),
+  AccessPointArn: z.string().describe(
+    "The access point ARN used when evaluating a metrics filter.",
+  ).optional(),
 });
 
 const GlobalArgsSchema = z.object({
@@ -62,16 +73,19 @@ const GlobalArgsSchema = z.object({
   ).describe(
     "Specifies a name for the bucket. The bucket name must contain only lowercase letters, numbers, and hyphens (-). A directory bucket name must be unique in the chosen Availability Zone or Local Zone. The bucket name must also follow the format 'bucket_base_name--zone_id--x-s3'. The zone_id can be the ID of an Availability Zone or a Local Zone. If you don't specify a name, AWS CloudFormation generates a unique physical ID and uses that ID for the bucket name.",
   ).optional(),
+  LocationName: z.string().describe(
+    "Specifies the Zone ID of the Availability Zone or Local Zone where the directory bucket will be created. An example Availability Zone ID value is 'use1-az5'.",
+  ),
+  DataRedundancy: z.enum(["SingleAvailabilityZone", "SingleLocalZone"])
+    .describe(
+      "Specifies the number of Availability Zone or Local Zone that's used for redundancy for the bucket.",
+    ),
   BucketEncryption: z.object({
     ServerSideEncryptionConfiguration: z.array(ServerSideEncryptionRuleSchema)
       .describe("Specifies the default server-side-encryption configuration."),
   }).describe(
     "Specifies default encryption for a bucket using server-side encryption with Amazon S3 managed keys (SSE-S3) or AWS KMS keys (SSE-KMS).",
   ).optional(),
-  DataRedundancy: z.enum(["SingleAvailabilityZone", "SingleLocalZone"])
-    .describe(
-      "Specifies the number of Availability Zone or Local Zone that's used for redundancy for the bucket.",
-    ),
   LifecycleConfiguration: z.object({
     Rules: z.array(RuleSchema).describe(
       "A lifecycle rule for individual objects in an Amazon S3 Express bucket.",
@@ -80,24 +94,25 @@ const GlobalArgsSchema = z.object({
     "Lifecycle rules that define how Amazon S3 Express manages objects during their lifetime.",
   ).optional(),
   Tags: z.array(TagSchema).optional(),
-  LocationName: z.string().describe(
-    "Specifies the Zone ID of the Availability Zone or Local Zone where the directory bucket will be created. An example Availability Zone ID value is 'use1-az5'.",
-  ),
+  MetricsConfigurations: z.array(MetricsConfigurationSchema).describe(
+    "Specifies the metrics configurations for the Amazon S3 Express bucket.",
+  ).optional(),
 });
 
 const StateSchema = z.object({
   BucketName: z.string(),
+  LocationName: z.string().optional(),
+  AvailabilityZoneName: z.string().optional(),
+  DataRedundancy: z.string().optional(),
+  Arn: z.string().optional(),
   BucketEncryption: z.object({
     ServerSideEncryptionConfiguration: z.array(ServerSideEncryptionRuleSchema),
   }).optional(),
-  AvailabilityZoneName: z.string().optional(),
-  DataRedundancy: z.string().optional(),
   LifecycleConfiguration: z.object({
     Rules: z.array(RuleSchema),
   }).optional(),
-  Arn: z.string().optional(),
   Tags: z.array(TagSchema).optional(),
-  LocationName: z.string().optional(),
+  MetricsConfigurations: z.array(MetricsConfigurationSchema).optional(),
 }).passthrough();
 
 type StateData = z.infer<typeof StateSchema>;
@@ -108,6 +123,13 @@ const InputsSchema = z.object({
   ).describe(
     "Specifies a name for the bucket. The bucket name must contain only lowercase letters, numbers, and hyphens (-). A directory bucket name must be unique in the chosen Availability Zone or Local Zone. The bucket name must also follow the format 'bucket_base_name--zone_id--x-s3'. The zone_id can be the ID of an Availability Zone or a Local Zone. If you don't specify a name, AWS CloudFormation generates a unique physical ID and uses that ID for the bucket name.",
   ).optional(),
+  LocationName: z.string().describe(
+    "Specifies the Zone ID of the Availability Zone or Local Zone where the directory bucket will be created. An example Availability Zone ID value is 'use1-az5'.",
+  ).optional(),
+  DataRedundancy: z.enum(["SingleAvailabilityZone", "SingleLocalZone"])
+    .describe(
+      "Specifies the number of Availability Zone or Local Zone that's used for redundancy for the bucket.",
+    ).optional(),
   BucketEncryption: z.object({
     ServerSideEncryptionConfiguration: z.array(ServerSideEncryptionRuleSchema)
       .describe("Specifies the default server-side-encryption configuration.")
@@ -115,10 +137,6 @@ const InputsSchema = z.object({
   }).describe(
     "Specifies default encryption for a bucket using server-side encryption with Amazon S3 managed keys (SSE-S3) or AWS KMS keys (SSE-KMS).",
   ).optional(),
-  DataRedundancy: z.enum(["SingleAvailabilityZone", "SingleLocalZone"])
-    .describe(
-      "Specifies the number of Availability Zone or Local Zone that's used for redundancy for the bucket.",
-    ).optional(),
   LifecycleConfiguration: z.object({
     Rules: z.array(RuleSchema).describe(
       "A lifecycle rule for individual objects in an Amazon S3 Express bucket.",
@@ -127,14 +145,14 @@ const InputsSchema = z.object({
     "Lifecycle rules that define how Amazon S3 Express manages objects during their lifetime.",
   ).optional(),
   Tags: z.array(TagSchema).optional(),
-  LocationName: z.string().describe(
-    "Specifies the Zone ID of the Availability Zone or Local Zone where the directory bucket will be created. An example Availability Zone ID value is 'use1-az5'.",
+  MetricsConfigurations: z.array(MetricsConfigurationSchema).describe(
+    "Specifies the metrics configurations for the Amazon S3 Express bucket.",
   ).optional(),
 });
 
 export const model = {
   type: "@swamp/aws/s3express/directory-bucket",
-  version: "2026.04.03.2",
+  version: "2026.04.07.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -149,6 +167,11 @@ export const model = {
     {
       toVersion: "2026.04.03.2",
       description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.07.1",
+      description: "Added: MetricsConfigurations",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },
   ],

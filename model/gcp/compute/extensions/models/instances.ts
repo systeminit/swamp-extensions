@@ -236,7 +236,7 @@ const GlobalArgsSchema = z.object({
         "VIRTIO_SCSI_MULTIQUEUE",
         "WINDOWS",
       ]).describe(
-        "The ID of a supported feature. To add multiple values, use commas to separate values. Set to one or more of the following values: - VIRTIO_SCSI_MULTIQUEUE - WINDOWS - MULTI_IP_SUBNET - UEFI_COMPATIBLE - GVNIC - SEV_CAPABLE - SUSPEND_RESUME_COMPATIBLE - SEV_LIVE_MIGRATABLE_V2 - SEV_SNP_CAPABLE - TDX_CAPABLE - IDPF - SNP_SVSM_CAPABLE For more information, see Enabling guest operating system features.",
+        "The ID of a supported feature. To add multiple values, use commas to separate values. Set to one or more of the following values: - VIRTIO_SCSI_MULTIQUEUE - WINDOWS - MULTI_IP_SUBNET - UEFI_COMPATIBLE - GVNIC - SEV_CAPABLE - SUSPEND_RESUME_COMPATIBLE - SEV_LIVE_MIGRATABLE_V2 - SEV_SNP_CAPABLE - TDX_CAPABLE - IDPF - SNP_SVSM_CAPABLE - CCA_CAPABLE For more information, see Enabling guest operating system features.",
       ).optional(),
     })).describe(
       "A list of features to enable on the guest operating system. Applicable only for bootable images. Read Enabling guest operating system features to see a list of available options.",
@@ -610,6 +610,9 @@ const GlobalArgsSchema = z.object({
     ).optional(),
     queueCount: z.number().int().describe(
       "The networking queue count that's specified by users for the network interface. Both Rx and Tx queues will be set to this number. It'll be empty if not specified by the users.",
+    ).optional(),
+    serviceClassId: z.string().describe(
+      "Optional. Producer Service's Service class Id for the region of this network interface. Can only be used with network_attachment. It is not possible to use on its own however, network_attachment can be used without service_class_id.",
     ).optional(),
     stackType: z.enum(["IPV4_IPV6", "IPV4_ONLY", "IPV6_ONLY"]).describe(
       "The stack type for this network interface. To assign only IPv4 addresses, use IPV4_ONLY. To assign both IPv4 and IPv6 addresses, useIPV4_IPV6. If not specified, IPV4_ONLY is used. This field can be both set at instance creation and update network interface operations.",
@@ -989,6 +992,7 @@ const StateSchema = z.object({
     nicType: z.string(),
     parentNicName: z.string(),
     queueCount: z.number(),
+    serviceClassId: z.string(),
     stackType: z.string(),
     subnetwork: z.string(),
     vlan: z.number(),
@@ -1216,7 +1220,7 @@ const InputsSchema = z.object({
         "VIRTIO_SCSI_MULTIQUEUE",
         "WINDOWS",
       ]).describe(
-        "The ID of a supported feature. To add multiple values, use commas to separate values. Set to one or more of the following values: - VIRTIO_SCSI_MULTIQUEUE - WINDOWS - MULTI_IP_SUBNET - UEFI_COMPATIBLE - GVNIC - SEV_CAPABLE - SUSPEND_RESUME_COMPATIBLE - SEV_LIVE_MIGRATABLE_V2 - SEV_SNP_CAPABLE - TDX_CAPABLE - IDPF - SNP_SVSM_CAPABLE For more information, see Enabling guest operating system features.",
+        "The ID of a supported feature. To add multiple values, use commas to separate values. Set to one or more of the following values: - VIRTIO_SCSI_MULTIQUEUE - WINDOWS - MULTI_IP_SUBNET - UEFI_COMPATIBLE - GVNIC - SEV_CAPABLE - SUSPEND_RESUME_COMPATIBLE - SEV_LIVE_MIGRATABLE_V2 - SEV_SNP_CAPABLE - TDX_CAPABLE - IDPF - SNP_SVSM_CAPABLE - CCA_CAPABLE For more information, see Enabling guest operating system features.",
       ).optional(),
     })).describe(
       "A list of features to enable on the guest operating system. Applicable only for bootable images. Read Enabling guest operating system features to see a list of available options.",
@@ -1591,6 +1595,9 @@ const InputsSchema = z.object({
     queueCount: z.number().int().describe(
       "The networking queue count that's specified by users for the network interface. Both Rx and Tx queues will be set to this number. It'll be empty if not specified by the users.",
     ).optional(),
+    serviceClassId: z.string().describe(
+      "Optional. Producer Service's Service class Id for the region of this network interface. Can only be used with network_attachment. It is not possible to use on its own however, network_attachment can be used without service_class_id.",
+    ).optional(),
     stackType: z.enum(["IPV4_IPV6", "IPV4_ONLY", "IPV6_ONLY"]).describe(
       "The stack type for this network interface. To assign only IPv4 addresses, use IPV4_ONLY. To assign both IPv4 and IPv6 addresses, useIPV4_IPV6. If not specified, IPV4_ONLY is used. This field can be both set at instance creation and update network interface operations.",
     ).optional(),
@@ -1798,7 +1805,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/compute/instances",
-  version: "2026.04.04.2",
+  version: "2026.04.07.1",
   upgrades: [
     {
       toVersion: "2026.03.31.1",
@@ -1845,6 +1852,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.04.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.07.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },
@@ -2341,6 +2353,7 @@ export const model = {
         nicType: z.any().optional(),
         parentNicName: z.any().optional(),
         queueCount: z.any().optional(),
+        serviceClassId: z.any().optional(),
         stackType: z.any().optional(),
         subnetwork: z.any().optional(),
         vlan: z.any().optional(),
@@ -2407,6 +2420,9 @@ export const model = {
         }
         if (args["queueCount"] !== undefined) {
           body["queueCount"] = args["queueCount"];
+        }
+        if (args["serviceClassId"] !== undefined) {
+          body["serviceClassId"] = args["serviceClassId"];
         }
         if (args["stackType"] !== undefined) {
           body["stackType"] = args["stackType"];
@@ -4269,6 +4285,7 @@ export const model = {
         nicType: z.any().optional(),
         parentNicName: z.any().optional(),
         queueCount: z.any().optional(),
+        serviceClassId: z.any().optional(),
         stackType: z.any().optional(),
         subnetwork: z.any().optional(),
         vlan: z.any().optional(),
@@ -4337,6 +4354,9 @@ export const model = {
         }
         if (args["queueCount"] !== undefined) {
           body["queueCount"] = args["queueCount"];
+        }
+        if (args["serviceClassId"] !== undefined) {
+          body["serviceClassId"] = args["serviceClassId"];
         }
         if (args["stackType"] !== undefined) {
           body["stackType"] = args["stackType"];

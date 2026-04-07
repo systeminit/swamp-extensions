@@ -12,6 +12,18 @@ import {
   updateResource,
 } from "./_lib/aws.ts";
 
+export const ReplicationDestinationSchema = z.object({
+  DestinationTableBucketARN: z.string().describe(
+    "The ARN of the destination table bucket",
+  ),
+});
+
+export const ReplicationRuleSchema = z.object({
+  Destinations: z.array(ReplicationDestinationSchema).describe(
+    "List of replication destinations",
+  ),
+});
+
 export const TagSchema = z.object({
   Key: z.string().min(1).max(128).describe(
     "Tag key must be between 1 to 128 characters in length. Tag key cannot start with 'aws:' and can only contain alphanumeric characters, spaces, _,., /, =, +, -, and @.",
@@ -61,6 +73,11 @@ const GlobalArgsSchema = z.object({
     ).optional(),
   }).describe("Specifies storage class settings for the table bucket")
     .optional(),
+  ReplicationConfiguration: z.object({
+    Role: z.string().describe("The ARN of the IAM role to use for replication"),
+    Rules: z.array(ReplicationRuleSchema).describe("List of replication rules"),
+  }).describe("Specifies replication configuration for the table bucket")
+    .optional(),
   Tags: z.array(TagSchema).describe(
     "User tags (key-value pairs) to associate with the table bucket.",
   ).optional(),
@@ -83,6 +100,10 @@ const StateSchema = z.object({
   }).optional(),
   StorageClassConfiguration: z.object({
     StorageClass: z.string(),
+  }).optional(),
+  ReplicationConfiguration: z.object({
+    Role: z.string(),
+    Rules: z.array(ReplicationRuleSchema),
   }).optional(),
   Tags: z.array(TagSchema).optional(),
 }).passthrough();
@@ -127,6 +148,13 @@ const InputsSchema = z.object({
     ).optional(),
   }).describe("Specifies storage class settings for the table bucket")
     .optional(),
+  ReplicationConfiguration: z.object({
+    Role: z.string().describe("The ARN of the IAM role to use for replication")
+      .optional(),
+    Rules: z.array(ReplicationRuleSchema).describe("List of replication rules")
+      .optional(),
+  }).describe("Specifies replication configuration for the table bucket")
+    .optional(),
   Tags: z.array(TagSchema).describe(
     "User tags (key-value pairs) to associate with the table bucket.",
   ).optional(),
@@ -134,7 +162,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/aws/s3tables/table-bucket",
-  version: "2026.04.03.2",
+  version: "2026.04.07.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -149,6 +177,11 @@ export const model = {
     {
       toVersion: "2026.04.03.2",
       description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.07.1",
+      description: "Added: ReplicationConfiguration",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },
   ],

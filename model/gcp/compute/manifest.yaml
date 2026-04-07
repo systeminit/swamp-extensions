@@ -1,7 +1,7 @@
 # Auto-generated manifest. Re-generate with the appropriate deno task.
 manifestVersion: 1
 name: "@swamp/gcp/compute"
-version: "2026.04.04.2"
+version: "2026.04.07.1"
 description: "Google Cloud compute infrastructure models"
 labels:
   - gcp
@@ -40,6 +40,7 @@ models:
   - instances.ts
   - instancesettings.ts
   - instancetemplates.ts
+  - instantsnapshotgroups.ts
   - instantsnapshots.ts
   - interconnectattachmentgroups.ts
   - interconnectattachments.ts
@@ -67,6 +68,7 @@ models:
   - publicadvertisedprefixes.ts
   - publicdelegatedprefixes.ts
   - regionautoscalers.ts
+  - regionbackendbuckets.ts
   - regionbackendservices.ts
   - regioncommitments.ts
   - regioncompositehealthchecks.ts
@@ -76,15 +78,19 @@ models:
   - regionhealthchecks.ts
   - regionhealthcheckservices.ts
   - regionhealthsources.ts
+  - regioninstancegroupmanagerresizerequests.ts
   - regioninstancegroupmanagers.ts
   - regioninstancegroups.ts
   - regioninstancetemplates.ts
+  - regioninstantsnapshotgroups.ts
   - regioninstantsnapshots.ts
   - regionnetworkendpointgroups.ts
   - regionnetworkfirewallpolicies.ts
   - regionnotificationendpoints.ts
   - regions.ts
   - regionsecuritypolicies.ts
+  - regionsnapshots.ts
+  - regionsnapshotsettings.ts
   - regionsslcertificates.ts
   - regionsslpolicies.ts
   - regiontargethttpproxies.ts
@@ -121,6 +127,7 @@ models:
   - vpntunnels.ts
   - wiregroups.ts
   - zones.ts
+  - zonevmextensionpolicies.ts
 additionalFiles:
   - LICENSE.txt
   - README.md

@@ -30,7 +30,7 @@ export const AccessControlAttributeSchema = z.object({
 const GlobalArgsSchema = z.object({
   InstanceArn: z.string().min(10).max(1224).regex(
     new RegExp(
-      "arn:(aws|aws-us-gov|aws-cn|aws-iso|aws-iso-b):sso:::instance/(sso)?ins-[a-zA-Z0-9-.]{16}",
+      "arn:aws(-[a-z]{1,5}){0,3}:sso:::instance/(sso)?ins-[a-zA-Z0-9-.]{16}",
     ),
   ).describe(
     "The ARN of the AWS SSO instance under which the operation will be executed.",
@@ -56,7 +56,7 @@ type StateData = z.infer<typeof StateSchema>;
 const InputsSchema = z.object({
   InstanceArn: z.string().min(10).max(1224).regex(
     new RegExp(
-      "arn:(aws|aws-us-gov|aws-cn|aws-iso|aws-iso-b):sso:::instance/(sso)?ins-[a-zA-Z0-9-.]{16}",
+      "arn:aws(-[a-z]{1,5}){0,3}:sso:::instance/(sso)?ins-[a-zA-Z0-9-.]{16}",
     ),
   ).describe(
     "The ARN of the AWS SSO instance under which the operation will be executed.",
@@ -71,7 +71,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/aws/sso/instance-access-control-attribute-configuration",
-  version: "2026.04.03.2",
+  version: "2026.04.07.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -85,6 +85,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.07.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

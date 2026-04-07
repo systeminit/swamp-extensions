@@ -36,7 +36,7 @@ const GlobalArgsSchema = z.object({
   ).describe("The permission set description.").optional(),
   InstanceArn: z.string().min(10).max(1224).regex(
     new RegExp(
-      "arn:(aws|aws-us-gov|aws-cn|aws-iso|aws-iso-b):sso:::instance/(sso)?ins-[a-zA-Z0-9-.]{16}",
+      "arn:aws(-[a-z]{1,5}){0,3}:sso:::instance/(sso)?ins-[a-zA-Z0-9-.]{16}",
     ),
   ).describe("The sso instance arn that the permission set is owned."),
   SessionDuration: z.string().min(1).max(100).regex(
@@ -99,7 +99,7 @@ const InputsSchema = z.object({
   ).describe("The permission set description.").optional(),
   InstanceArn: z.string().min(10).max(1224).regex(
     new RegExp(
-      "arn:(aws|aws-us-gov|aws-cn|aws-iso|aws-iso-b):sso:::instance/(sso)?ins-[a-zA-Z0-9-.]{16}",
+      "arn:aws(-[a-z]{1,5}){0,3}:sso:::instance/(sso)?ins-[a-zA-Z0-9-.]{16}",
     ),
   ).describe("The sso instance arn that the permission set is owned.")
     .optional(),
@@ -135,7 +135,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/aws/sso/permission-set",
-  version: "2026.04.03.2",
+  version: "2026.04.07.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -149,6 +149,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.07.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },
