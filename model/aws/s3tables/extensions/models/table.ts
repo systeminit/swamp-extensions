@@ -44,6 +44,30 @@ export const IcebergSortOrderSchema = z.object({
   ).optional(),
 });
 
+export const SchemaV2FieldSchema = z.object({
+  Required: z.boolean().describe(
+    "A Boolean value that specifies whether values are required for each row in this field",
+  ),
+  Doc: z.string().describe("Optional documentation for the field").optional(),
+  Id: z.number().int().describe("The unique identifier for the field"),
+  Name: z.string().describe("The name of the field"),
+});
+
+export const IcebergSchemaV2Schema = z.object({
+  SchemaV2FieldList: z.array(SchemaV2FieldSchema).describe(
+    "The schema fields for the table",
+  ),
+  SchemaV2FieldType: z.enum(["struct"]).describe(
+    "The type of the top-level schema, which is always 'struct'",
+  ),
+  SchemaId: z.number().int().describe(
+    "An optional unique identifier for the schema",
+  ).optional(),
+  IdentifierFieldIds: z.array(z.number().int()).describe(
+    "A list of field IDs that are used as the identifier fields for the table. Identifier fields uniquely identify a row in the table.",
+  ).optional(),
+});
+
 export const IcebergPartitionFieldSchema = z.object({
   SourceId: z.number().int().describe("The source column ID to partition on"),
   FieldId: z.number().int().describe(
@@ -103,10 +127,13 @@ const GlobalArgsSchema = z.object({
   OpenTableFormat: z.enum(["ICEBERG"]).describe("Format of the table."),
   IcebergMetadata: z.object({
     IcebergSchema: IcebergSchemaSchema.describe(
-      "Contains details about the schema for an Iceberg table",
-    ),
+      "Schema definition for flat tables with primitive types only. Mutually exclusive with IcebergSchemaV2.",
+    ).optional(),
     IcebergSortOrder: IcebergSortOrderSchema.describe(
       "Sort order specification for an Iceberg table",
+    ).optional(),
+    IcebergSchemaV2: IcebergSchemaV2Schema.describe(
+      "Schema definition that supports Apache Iceberg nested types (struct, list, map) and primitive types. Mutually exclusive with IcebergSchema.",
     ).optional(),
     IcebergPartitionSpec: IcebergPartitionSpecSchema.describe(
       "Partition specification for an Iceberg table",
@@ -114,8 +141,9 @@ const GlobalArgsSchema = z.object({
     TableProperties: z.record(z.string(), z.string()).describe(
       "Iceberg table properties (e.g., format-version, write.parquet.compression-codec)",
     ).optional(),
-  }).describe("Contains details about the metadata for an Iceberg table.")
-    .optional(),
+  }).describe(
+    "Contains details about the metadata for an Iceberg table. Specify either IcebergSchema (for simple flat schemas with primitive types only) or IcebergSchemaV2 (for schemas with nested types like struct, list, map), but not both.",
+  ).optional(),
   SnapshotManagement: z.object({
     Status: z.enum(["enabled", "disabled"]).describe(
       "Indicates whether the SnapshotManagement maintenance action is enabled.",
@@ -152,6 +180,7 @@ const StateSchema = z.object({
   IcebergMetadata: z.object({
     IcebergSchema: IcebergSchemaSchema,
     IcebergSortOrder: IcebergSortOrderSchema,
+    IcebergSchemaV2: IcebergSchemaV2Schema,
     IcebergPartitionSpec: IcebergPartitionSpecSchema,
     TableProperties: z.record(z.string(), z.unknown()),
   }).optional(),
@@ -196,10 +225,13 @@ const InputsSchema = z.object({
     .optional(),
   IcebergMetadata: z.object({
     IcebergSchema: IcebergSchemaSchema.describe(
-      "Contains details about the schema for an Iceberg table",
+      "Schema definition for flat tables with primitive types only. Mutually exclusive with IcebergSchemaV2.",
     ).optional(),
     IcebergSortOrder: IcebergSortOrderSchema.describe(
       "Sort order specification for an Iceberg table",
+    ).optional(),
+    IcebergSchemaV2: IcebergSchemaV2Schema.describe(
+      "Schema definition that supports Apache Iceberg nested types (struct, list, map) and primitive types. Mutually exclusive with IcebergSchema.",
     ).optional(),
     IcebergPartitionSpec: IcebergPartitionSpecSchema.describe(
       "Partition specification for an Iceberg table",
@@ -207,8 +239,9 @@ const InputsSchema = z.object({
     TableProperties: z.record(z.string(), z.string()).describe(
       "Iceberg table properties (e.g., format-version, write.parquet.compression-codec)",
     ).optional(),
-  }).describe("Contains details about the metadata for an Iceberg table.")
-    .optional(),
+  }).describe(
+    "Contains details about the metadata for an Iceberg table. Specify either IcebergSchema (for simple flat schemas with primitive types only) or IcebergSchemaV2 (for schemas with nested types like struct, list, map), but not both.",
+  ).optional(),
   SnapshotManagement: z.object({
     Status: z.enum(["enabled", "disabled"]).describe(
       "Indicates whether the SnapshotManagement maintenance action is enabled.",
@@ -229,7 +262,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/aws/s3tables/table",
-  version: "2026.04.03.2",
+  version: "2026.04.07.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -243,6 +276,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.07.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

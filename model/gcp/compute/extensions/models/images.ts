@@ -154,7 +154,7 @@ const GlobalArgsSchema = z.object({
       "VIRTIO_SCSI_MULTIQUEUE",
       "WINDOWS",
     ]).describe(
-      "The ID of a supported feature. To add multiple values, use commas to separate values. Set to one or more of the following values: - VIRTIO_SCSI_MULTIQUEUE - WINDOWS - MULTI_IP_SUBNET - UEFI_COMPATIBLE - GVNIC - SEV_CAPABLE - SUSPEND_RESUME_COMPATIBLE - SEV_LIVE_MIGRATABLE_V2 - SEV_SNP_CAPABLE - TDX_CAPABLE - IDPF - SNP_SVSM_CAPABLE For more information, see Enabling guest operating system features.",
+      "The ID of a supported feature. To add multiple values, use commas to separate values. Set to one or more of the following values: - VIRTIO_SCSI_MULTIQUEUE - WINDOWS - MULTI_IP_SUBNET - UEFI_COMPATIBLE - GVNIC - SEV_CAPABLE - SUSPEND_RESUME_COMPATIBLE - SEV_LIVE_MIGRATABLE_V2 - SEV_SNP_CAPABLE - TDX_CAPABLE - IDPF - SNP_SVSM_CAPABLE - CCA_CAPABLE For more information, see Enabling guest operating system features.",
     ).optional(),
   })).describe(
     "A list of features to enable on the guest operating system. Applicable only for bootable images. To see a list of available options, see theguestOSfeatures[].type parameter.",
@@ -204,7 +204,7 @@ const GlobalArgsSchema = z.object({
       "[Deprecated] This field is deprecated. An optional SHA1 checksum of the disk image before unpackaging provided by the client when the disk image is created.",
     ).optional(),
     source: z.string().describe(
-      "The full Google Cloud Storage URL where the raw disk image archive is stored. The following are valid formats for the URL: - https://storage.googleapis.com/bucket_name/image_archive_name - https://storage.googleapis.com/bucket_name/folder_name/image_archive_name In order to create an image, you must provide the full or partial URL of one of the following: - The rawDisk.source URL - The sourceDisk URL - The sourceImage URL - The sourceSnapshot URL",
+      "The full Google Cloud Storage URL or Artifact Registry path where the raw disk image archive is stored. The following are valid formats: - https://storage.googleapis.com/bucket_name/image_archive_name - https://storage.googleapis.com/bucket_name/folder_name/image_archive_name - projects/project/locations/location/repositories/repo/packages/package/versions/version_id - projects/project/locations/location/repositories/repo/packages/package/versions/version_id@dirsum_sha256:hex_value In order to create an image, you must provide the full or partial URL of one of the following: - The rawDisk.source URL - The sourceDisk URL - The sourceImage URL - The sourceSnapshot URL",
     ).optional(),
   }).describe("The parameters of the raw disk image.").optional(),
   shieldedInstanceInitialState: z.object({
@@ -458,7 +458,7 @@ const InputsSchema = z.object({
       "VIRTIO_SCSI_MULTIQUEUE",
       "WINDOWS",
     ]).describe(
-      "The ID of a supported feature. To add multiple values, use commas to separate values. Set to one or more of the following values: - VIRTIO_SCSI_MULTIQUEUE - WINDOWS - MULTI_IP_SUBNET - UEFI_COMPATIBLE - GVNIC - SEV_CAPABLE - SUSPEND_RESUME_COMPATIBLE - SEV_LIVE_MIGRATABLE_V2 - SEV_SNP_CAPABLE - TDX_CAPABLE - IDPF - SNP_SVSM_CAPABLE For more information, see Enabling guest operating system features.",
+      "The ID of a supported feature. To add multiple values, use commas to separate values. Set to one or more of the following values: - VIRTIO_SCSI_MULTIQUEUE - WINDOWS - MULTI_IP_SUBNET - UEFI_COMPATIBLE - GVNIC - SEV_CAPABLE - SUSPEND_RESUME_COMPATIBLE - SEV_LIVE_MIGRATABLE_V2 - SEV_SNP_CAPABLE - TDX_CAPABLE - IDPF - SNP_SVSM_CAPABLE - CCA_CAPABLE For more information, see Enabling guest operating system features.",
     ).optional(),
   })).describe(
     "A list of features to enable on the guest operating system. Applicable only for bootable images. To see a list of available options, see theguestOSfeatures[].type parameter.",
@@ -508,7 +508,7 @@ const InputsSchema = z.object({
       "[Deprecated] This field is deprecated. An optional SHA1 checksum of the disk image before unpackaging provided by the client when the disk image is created.",
     ).optional(),
     source: z.string().describe(
-      "The full Google Cloud Storage URL where the raw disk image archive is stored. The following are valid formats for the URL: - https://storage.googleapis.com/bucket_name/image_archive_name - https://storage.googleapis.com/bucket_name/folder_name/image_archive_name In order to create an image, you must provide the full or partial URL of one of the following: - The rawDisk.source URL - The sourceDisk URL - The sourceImage URL - The sourceSnapshot URL",
+      "The full Google Cloud Storage URL or Artifact Registry path where the raw disk image archive is stored. The following are valid formats: - https://storage.googleapis.com/bucket_name/image_archive_name - https://storage.googleapis.com/bucket_name/folder_name/image_archive_name - projects/project/locations/location/repositories/repo/packages/package/versions/version_id - projects/project/locations/location/repositories/repo/packages/package/versions/version_id@dirsum_sha256:hex_value In order to create an image, you must provide the full or partial URL of one of the following: - The rawDisk.source URL - The sourceDisk URL - The sourceImage URL - The sourceSnapshot URL",
     ).optional(),
   }).describe("The parameters of the raw disk image.").optional(),
   shieldedInstanceInitialState: z.object({
@@ -617,7 +617,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/compute/images",
-  version: "2026.04.04.2",
+  version: "2026.04.07.1",
   upgrades: [
     {
       toVersion: "2026.03.31.1",
@@ -661,6 +661,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.04.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.07.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

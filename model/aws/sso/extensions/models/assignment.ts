@@ -17,7 +17,7 @@ const GlobalArgsSchema = z.object({
   ),
   InstanceArn: z.string().min(10).max(1224).regex(
     new RegExp(
-      "arn:(aws|aws-us-gov|aws-cn|aws-iso|aws-iso-b):sso:::instance/(sso)?ins-[a-zA-Z0-9-.]{16}",
+      "arn:aws(-[a-z]{1,5}){0,3}:sso:::instance/(sso)?ins-[a-zA-Z0-9-.]{16}",
     ),
   ).describe("The sso instance that the permission set is owned."),
   TargetId: z.string().regex(new RegExp("\\d{12}")).describe(
@@ -28,7 +28,7 @@ const GlobalArgsSchema = z.object({
   ),
   PermissionSetArn: z.string().min(10).max(1224).regex(
     new RegExp(
-      "arn:(aws|aws-us-gov|aws-cn|aws-iso|aws-iso-b):sso:::permissionSet/(sso)?ins-[a-zA-Z0-9-.]{16}/ps-[a-zA-Z0-9-./]{16}",
+      "arn:aws(-[a-z]{1,5}){0,3}:sso:::permissionSet/(sso)?ins-[a-zA-Z0-9-.]{16}/ps-[a-zA-Z0-9-./]{16}",
     ),
   ).describe("The permission set that the assignment will be assigned"),
   PrincipalType: z.enum(["USER", "GROUP"]).describe(
@@ -56,7 +56,7 @@ const InputsSchema = z.object({
   name: z.string().optional(),
   InstanceArn: z.string().min(10).max(1224).regex(
     new RegExp(
-      "arn:(aws|aws-us-gov|aws-cn|aws-iso|aws-iso-b):sso:::instance/(sso)?ins-[a-zA-Z0-9-.]{16}",
+      "arn:aws(-[a-z]{1,5}){0,3}:sso:::instance/(sso)?ins-[a-zA-Z0-9-.]{16}",
     ),
   ).describe("The sso instance that the permission set is owned.").optional(),
   TargetId: z.string().regex(new RegExp("\\d{12}")).describe(
@@ -67,7 +67,7 @@ const InputsSchema = z.object({
   ).optional(),
   PermissionSetArn: z.string().min(10).max(1224).regex(
     new RegExp(
-      "arn:(aws|aws-us-gov|aws-cn|aws-iso|aws-iso-b):sso:::permissionSet/(sso)?ins-[a-zA-Z0-9-.]{16}/ps-[a-zA-Z0-9-./]{16}",
+      "arn:aws(-[a-z]{1,5}){0,3}:sso:::permissionSet/(sso)?ins-[a-zA-Z0-9-.]{16}/ps-[a-zA-Z0-9-./]{16}",
     ),
   ).describe("The permission set that the assignment will be assigned")
     .optional(),
@@ -83,7 +83,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/aws/sso/assignment",
-  version: "2026.04.03.2",
+  version: "2026.04.07.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -97,6 +97,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.07.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

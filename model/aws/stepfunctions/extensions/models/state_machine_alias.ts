@@ -25,6 +25,7 @@ const GlobalArgsSchema = z.object({
   name: z.string().describe(
     "Instance name for this resource (used as the unique identifier in the factory pattern)",
   ),
+  StateMachineArn: z.string().min(1).max(2048).optional(),
   Name: z.string().min(1).max(80).describe("The alias name.").optional(),
   Description: z.string().min(1).max(256).describe(
     "An optional description of the alias.",
@@ -52,6 +53,7 @@ const GlobalArgsSchema = z.object({
 
 const StateSchema = z.object({
   Arn: z.string(),
+  StateMachineArn: z.string().optional(),
   Name: z.string().optional(),
   Description: z.string().optional(),
   RoutingConfiguration: z.array(RoutingConfigurationVersionSchema).optional(),
@@ -68,6 +70,7 @@ type StateData = z.infer<typeof StateSchema>;
 
 const InputsSchema = z.object({
   name: z.string().optional(),
+  StateMachineArn: z.string().min(1).max(2048).optional(),
   Name: z.string().min(1).max(80).describe("The alias name.").optional(),
   Description: z.string().min(1).max(256).describe(
     "An optional description of the alias.",
@@ -95,7 +98,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/aws/stepfunctions/state-machine-alias",
-  version: "2026.04.03.2",
+  version: "2026.04.07.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -110,6 +113,11 @@ export const model = {
     {
       toVersion: "2026.04.03.2",
       description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.07.1",
+      description: "Added: StateMachineArn",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },
   ],

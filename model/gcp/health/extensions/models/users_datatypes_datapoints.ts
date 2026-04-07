@@ -41,9 +41,6 @@ const PATCH_CONFIG = {
       "location": "path",
       "required": true,
     },
-    "updateMask": {
-      "location": "query",
-    },
   },
 } as const;
 
@@ -689,13 +686,13 @@ const GlobalArgsSchema = z.object({
   dataSource: z.object({
     application: z.object({
       googleWebClientId: z.string().describe(
-        "Output only. Captures the client ID of the entity that recorded the data.",
+        "Output only. The Google OAuth 2.0 client ID of the web application or service that recorded the data. This is the client ID used during the Google OAuth flow to obtain user credentials. This field is system-populated when the data is uploaded from Google Web API.",
       ).optional(),
       packageName: z.string().describe(
-        "Output only. A unique ID from an external data source. A unique identifier of the mobile application, e.g. `com.google.fitbit`",
+        "Output only. A unique identifier for the mobile application that was the source of the data. This is typically the application's package name on Android (e.g., `com.google.fitbit`) or the bundle ID on iOS. This field is informational and helps trace data origin. This field is system-populated when the data is uploaded from the Fitbit mobile application, Health Connect or Health Kit.",
       ).optional(),
       webClientId: z.string().describe(
-        "Output only. Captures the client ID of the web application that recorded the data.",
+        "Output only. The client ID of the application that recorded the data. This ID is a legacy Fitbit API client ID, which is different from a Google OAuth client ID. Example format: `ABC123`. This field is system-populated and used for tracing data from legacy Fitbit API integrations. This field is system-populated when the data is uploaded from a legacy Fitbit API integration.",
       ).optional(),
     }).describe(
       "Optional metadata for the application that provided this data.",
@@ -1515,7 +1512,7 @@ const GlobalArgsSchema = z.object({
     ).optional(),
   }).describe("Holds information about a user logged hydration.").optional(),
   name: z.string().describe(
-    "Identifier. Data point name, only supported for the subset of identifiable data types. For the majority of the data types, individual data points do not need to be identified and this field would be empty. Format: `users/{user}/dataTypes/{data_type}/dataPoints/{data_point}` Example: `users/abcd1234/dataTypes/sleep/dataPoints/a1b2c3d4-e5f6-7890-1234-567890abcdef` The `{user}` ID is a system-generated identifier, as described in Profile.encoded_id. The `{data_type}` ID corresponds to the kebab-case version of the field names in the DataPoint data union field, e.g. `total-calories` for the `total_calories` field. The `{data_point}` ID can be client-provided or system-generated. If client-provided, it must be a string of 4-63 characters, containing only lowercase letters, numbers, and hyphens.",
+    "Identifier. Data point name, only supported for the subset of identifiable data types. For the majority of the data types, individual data points do not need to be identified and this field would be empty. Format: `users/{user}/dataTypes/{data_type}/dataPoints/{data_point}` Example: `users/abcd1234/dataTypes/sleep/dataPoints/a1b2c3d4-e5f6-7890-1234-567890abcdef` The `{user}` ID is a system-generated identifier, as described in Identity.health_user_id. The `{data_type}` ID corresponds to the kebab-case version of the field names in the DataPoint data union field, e.g. `total-calories` for the `total_calories` field. The `{data_point}` ID can be client-provided or system-generated. If client-provided, it must be a string of 4-63 characters, containing only lowercase letters, numbers, and hyphens.",
   ).optional(),
   oxygenSaturation: z.object({
     percentage: z.number().describe(
@@ -3747,13 +3744,13 @@ const InputsSchema = z.object({
   dataSource: z.object({
     application: z.object({
       googleWebClientId: z.string().describe(
-        "Output only. Captures the client ID of the entity that recorded the data.",
+        "Output only. The Google OAuth 2.0 client ID of the web application or service that recorded the data. This is the client ID used during the Google OAuth flow to obtain user credentials. This field is system-populated when the data is uploaded from Google Web API.",
       ).optional(),
       packageName: z.string().describe(
-        "Output only. A unique ID from an external data source. A unique identifier of the mobile application, e.g. `com.google.fitbit`",
+        "Output only. A unique identifier for the mobile application that was the source of the data. This is typically the application's package name on Android (e.g., `com.google.fitbit`) or the bundle ID on iOS. This field is informational and helps trace data origin. This field is system-populated when the data is uploaded from the Fitbit mobile application, Health Connect or Health Kit.",
       ).optional(),
       webClientId: z.string().describe(
-        "Output only. Captures the client ID of the web application that recorded the data.",
+        "Output only. The client ID of the application that recorded the data. This ID is a legacy Fitbit API client ID, which is different from a Google OAuth client ID. Example format: `ABC123`. This field is system-populated and used for tracing data from legacy Fitbit API integrations. This field is system-populated when the data is uploaded from a legacy Fitbit API integration.",
       ).optional(),
     }).describe(
       "Optional metadata for the application that provided this data.",
@@ -4573,7 +4570,7 @@ const InputsSchema = z.object({
     ).optional(),
   }).describe("Holds information about a user logged hydration.").optional(),
   name: z.string().describe(
-    "Identifier. Data point name, only supported for the subset of identifiable data types. For the majority of the data types, individual data points do not need to be identified and this field would be empty. Format: `users/{user}/dataTypes/{data_type}/dataPoints/{data_point}` Example: `users/abcd1234/dataTypes/sleep/dataPoints/a1b2c3d4-e5f6-7890-1234-567890abcdef` The `{user}` ID is a system-generated identifier, as described in Profile.encoded_id. The `{data_type}` ID corresponds to the kebab-case version of the field names in the DataPoint data union field, e.g. `total-calories` for the `total_calories` field. The `{data_point}` ID can be client-provided or system-generated. If client-provided, it must be a string of 4-63 characters, containing only lowercase letters, numbers, and hyphens.",
+    "Identifier. Data point name, only supported for the subset of identifiable data types. For the majority of the data types, individual data points do not need to be identified and this field would be empty. Format: `users/{user}/dataTypes/{data_type}/dataPoints/{data_point}` Example: `users/abcd1234/dataTypes/sleep/dataPoints/a1b2c3d4-e5f6-7890-1234-567890abcdef` The `{user}` ID is a system-generated identifier, as described in Identity.health_user_id. The `{data_type}` ID corresponds to the kebab-case version of the field names in the DataPoint data union field, e.g. `total-calories` for the `total_calories` field. The `{data_point}` ID can be client-provided or system-generated. If client-provided, it must be a string of 4-63 characters, containing only lowercase letters, numbers, and hyphens.",
   ).optional(),
   oxygenSaturation: z.object({
     percentage: z.number().describe(
@@ -5342,7 +5339,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/health/users-datatypes-datapoints",
-  version: "2026.04.04.1",
+  version: "2026.04.07.1",
   upgrades: [
     {
       toVersion: "2026.04.01.2",
@@ -5371,6 +5368,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.04.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.07.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },
