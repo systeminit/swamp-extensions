@@ -1,0 +1,70 @@
+manifestVersion: 1
+name: "@swamp/issue-lifecycle"
+version: "2026.04.07.1"
+description: |
+  Interactive GitHub issue triage and implementation planning. Moves the
+  triage/plan/iterate/approve/implement loop out of GitHub Actions and into a
+  local conversation with Claude, while keeping the GitHub issue thread up to
+  date as a live status dashboard.
+
+  ## State Machine
+
+  ```
+  created ──[start]──> triaging
+  triaging ──[triage]──> classified
+  classified ──[plan]──> plan_generated
+  plan_generated ──[iterate]──> plan_generated  (feedback loop)
+  plan_generated ──[approve]──> approved
+  approved ──[implement]──> implementing
+  implementing ──[ci_status]──> ci_review
+  ci_review ──[fix]──> implementing  (fix loop)
+  ci_review ──[complete]──> done
+  ```
+
+  Pre-flight checks enforce valid transitions: you cannot approve without a
+  plan, cannot implement without approval, and cannot approve while critical or
+  high adversarial findings remain unresolved.
+
+  ## Methods
+
+  - `start` — fetch issue context from GitHub
+  - `triage` — classify as bug/feature/unclear
+  - `plan` — generate an implementation plan
+  - `review` — display the current plan (read-only)
+  - `iterate` — revise the plan with feedback (versioned)
+  - `adversarial_review` — record adversarial review findings
+  - `resolve_findings` — mark adversarial findings as resolved
+  - `approve` — lock the plan and post it to the issue
+  - `implement` — signal implementation has started
+  - `record_pr` — record the PR number for CI tracking
+  - `ci_status` — fetch CI check results and review comments
+  - `fix` — direct specific fixes from review feedback
+  - `complete` — mark the lifecycle done
+
+  ## Data
+
+  All resources are versioned and immutable: `state`, `context`,
+  `classification`, `plan`, `feedback`, `adversarialReview`, `ciResults`,
+  `fixDirective`.
+
+  ## Prerequisites
+
+  - `gh` CLI installed and authenticated (`gh auth login`)
+  - swamp initialized in the repository (`swamp init`)
+  - (Optional) `SWAMP_API_KEY` env var to mirror lifecycle entries to
+    [swamp.club](https://swamp.club)
+
+repository: "https://github.com/systeminit/swamp-extensions"
+
+skills:
+  - issue-lifecycle
+
+models:
+  - issue_lifecycle.ts
+
+additionalFiles:
+  - README.md
+
+labels:
+  - issue-lifecycle
+  - sdlc
