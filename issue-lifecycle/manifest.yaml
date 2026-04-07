@@ -1,6 +1,6 @@
 manifestVersion: 1
 name: "@swamp/issue-lifecycle"
-version: "2026.04.06.1"
+version: "2026.04.07.1"
 description: |
   Interactive GitHub issue triage and implementation planning. Moves the
   triage/plan/iterate/approve/implement loop out of GitHub Actions and into a

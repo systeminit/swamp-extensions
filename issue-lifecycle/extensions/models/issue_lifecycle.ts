@@ -111,7 +111,7 @@ async function readState(
 
 export const model = {
   type: "@swamp/issue-lifecycle",
-  version: "2026.04.06.1",
+  version: "2026.04.07.1",
   globalArguments: GlobalArgsSchema,
 
   upgrades: [
@@ -125,6 +125,11 @@ export const model = {
       toVersion: "2026.04.06.1",
       description:
         "Remove default repo, relax adversarial category from enum to string for cross-repo reuse",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.07.1",
+      description: "No changes - just moving source",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },
   ],
