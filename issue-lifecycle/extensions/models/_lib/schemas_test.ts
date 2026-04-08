@@ -64,7 +64,7 @@ Deno.test("start is allowed from every non-terminal phase (restart invariant)", 
   }
 });
 
-Deno.test("happy path: created → triaging → classified → plan_generated → approved → implementing → ci_review → done", () => {
+Deno.test("happy path: created → triaging → classified → plan_generated → approved → implementing → done", () => {
   // Walk the linear happy path one method at a time and verify each method's
   // required source phase is in its TRANSITIONS entry. This catches the case
   // where someone reorders the state machine and forgets to update an edge.
@@ -74,8 +74,7 @@ Deno.test("happy path: created → triaging → classified → plan_generated �
     { method: "plan", from: "classified" },
     { method: "approve", from: "plan_generated" },
     { method: "implement", from: "approved" },
-    { method: "ci_status", from: "implementing" },
-    { method: "complete", from: "ci_review" },
+    { method: "complete", from: "implementing" },
   ];
   for (const { method, from } of happyPath) {
     const allowed = TRANSITIONS[method];
@@ -96,17 +95,16 @@ Deno.test("plan iteration loop: iterate is allowed from plan_generated only", ()
   assertEquals(TRANSITIONS.iterate, ["plan_generated"]);
 });
 
-Deno.test("fix loop: fix returns from ci_review to implementing only", () => {
-  // The fix loop must originate from ci_review (you fixed something based on
-  // CI feedback). Allowing fix from any other phase would let a user post a
-  // fix directive without ever having seen CI results.
-  assertEquals(TRANSITIONS.fix, ["ci_review"]);
-});
-
 Deno.test("approval gate: approve only allowed from plan_generated", () => {
   assertEquals(TRANSITIONS.approve, ["plan_generated"]);
 });
 
 Deno.test("implementation gate: implement only allowed from approved", () => {
   assertEquals(TRANSITIONS.implement, ["approved"]);
+});
+
+Deno.test("completion gate: complete only allowed from implementing", () => {
+  // complete is the single exit path out of implementing — there is no
+  // ci_review phase or fix loop in the swamp-club workflow.
+  assertEquals(TRANSITIONS.complete, ["implementing"]);
 });
