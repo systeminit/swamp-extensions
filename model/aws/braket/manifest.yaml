@@ -1,0 +1,17 @@
+# Auto-generated manifest. Re-generate with the appropriate deno task.
+manifestVersion: 1
+name: "@swamp/aws/braket"
+version: "2026.04.08.1"
+description: "AWS BRAKET infrastructure models"
+labels:
+  - aws
+  - braket
+  - cloud
+  - infrastructure
+releaseNotes: |
+  - Added: spending_limit
+models:
+  - spending_limit.ts
+additionalFiles:
+  - LICENSE.txt
+  - README.md

@@ -1,7 +1,7 @@
 # Auto-generated manifest. Re-generate with the appropriate deno task.
 manifestVersion: 1
 name: "@swamp/aws/bedrock"
-version: "2026.04.03.2"
+version: "2026.04.08.1"
 description: "AWS BEDROCK infrastructure models"
 labels:
   - aws
@@ -9,7 +9,7 @@ labels:
   - cloud
   - infrastructure
 releaseNotes: |
-  - Updated: agent, agent_alias, application_inference_profile, automated_reasoning_policy, automated_reasoning_policy_version, blueprint, data_automation_project, data_source, flow, flow_alias, flow_version, guardrail, guardrail_version, intelligent_prompt_router, knowledge_base, prompt, prompt_version
+  - Added: data_automation_library, enforced_guardrail_configuration, resource_policy
 models:
   - agent.ts
   - agent_alias.ts
@@ -17,8 +17,10 @@ models:
   - automated_reasoning_policy.ts
   - automated_reasoning_policy_version.ts
   - blueprint.ts
+  - data_automation_library.ts
   - data_automation_project.ts
   - data_source.ts
+  - enforced_guardrail_configuration.ts
   - flow.ts
   - flow_alias.ts
   - flow_version.ts
@@ -28,6 +30,7 @@ models:
   - knowledge_base.ts
   - prompt.ts
   - prompt_version.ts
+  - resource_policy.ts
 additionalFiles:
   - LICENSE.txt
   - README.md

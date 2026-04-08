@@ -127,6 +127,7 @@ const StateSchema = z.object({
     VpcConfiguration: S3AccessPointVpcConfigurationSchema,
     Policy: z.string(),
   }).optional(),
+  Lifecycle: z.string().optional(),
 }).passthrough();
 
 type StateData = z.infer<typeof StateSchema>;
@@ -174,7 +175,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/aws/fsx/s3access-point-attachment",
-  version: "2026.04.03.2",
+  version: "2026.04.08.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -188,6 +189,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.08.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

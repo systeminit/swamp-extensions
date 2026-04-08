@@ -133,7 +133,7 @@ const GlobalArgsSchema = z.object({
         "Whether the ad group is opted-in to YouTube shorts inventory.",
       ).optional(),
       allowYoutubeStream: z.boolean().describe(
-        "Whether the ad group is opted-in to YouTube in-stream.",
+        "Whether the ad group is opted-in to YouTube in-stream inventory.",
       ).optional(),
     }).describe("The inventory control of the ad group.").optional(),
   }).describe("The inventory control of the ad group.").optional(),
@@ -143,7 +143,7 @@ const GlobalArgsSchema = z.object({
   bidStrategy: z.object({
     demandGenBid: z.object({
       effectiveBiddingValue: z.string().describe(
-        "Output only. If AG doesn't set value for tCPA or tROAS, line item bidding value will be the effective_bidding_value, if the bidding strategy type is not tCPA or tROAS, effective_bidding_value is always 0. For line item, it will be the same as the value field.",
+        "Output only. The value effectively used by the bidding strategy. This field will be the same as value if set. If value is not set and the strategy is assigned to an ad group, this field will be inherited from the line item's bidding strategy. If type is not `DEMAND_GEN_BIDDING_STRATEGY_TYPE_TARGET_CPA` or `DEMAND_GEN_BIDDING_STRATEGY_TYPE_TARGET_ROAS`, this field will be 0.",
       ).optional(),
       effectiveBiddingValueSource: z.enum([
         "BIDDING_SOURCE_UNSPECIFIED",
@@ -159,10 +159,10 @@ const GlobalArgsSchema = z.object({
         "DEMAND_GEN_BIDDING_STRATEGY_TYPE_MAXIMIZE_CONVERSION_VALUE",
         "DEMAND_GEN_BIDDING_STRATEGY_TYPE_MAXIMIZE_CLICKS",
       ]).describe(
-        "Optional. The type of the bidding strategy. This can only be set at the line item level.",
+        "Optional. The type of the bidding strategy. This can only be set when assigned to a line item. Ad groups will inherit this value from their line item.",
       ).optional(),
       value: z.string().describe(
-        "Optional. The value used by the bidding strategy. This can be set at the line item and ad group level. This field is only applicable for the following strategy types: * `DEMAND_GEN_BIDDING_STRATEGY_TYPE_TARGET_CPA` * `DEMAND_GEN_BIDDING_STRATEGY_TYPE_TARGET_CPC` * `DEMAND_GEN_BIDDING_STRATEGY_TYPE_TARGET_ROAS` Value of this field is in micros of the advertiser's currency or ROAS value. For example, 1000000 represents 1.0 standard units of the currency or 100% ROAS value. If not using an applicable strategy, the value of this field will be 0.",
+        "Optional. The value used by the bidding strategy. This can be set when assigned to line items or ad groups. This field is only applicable for the following strategy types: * `DEMAND_GEN_BIDDING_STRATEGY_TYPE_TARGET_CPA` * `DEMAND_GEN_BIDDING_STRATEGY_TYPE_TARGET_CPC` * `DEMAND_GEN_BIDDING_STRATEGY_TYPE_TARGET_ROAS` Value of this field is in micros of the advertiser's currency or ROAS value. For example, 1000000 represents 1.0 standard units of the currency or 100% ROAS value. If not using an applicable strategy, the value of this field will be 0.",
       ).optional(),
     }).describe(
       "Settings that control the bid strategy for Demand Gen resources.",
@@ -317,7 +317,7 @@ const GlobalArgsSchema = z.object({
       "Required. Whether to enable Optimized Targeting for the line item. Optimized targeting is not compatible with all bid strategies. Attempting to set this field to `true` for a line item using the BiddingStrategy field fixed_bid or one of the following combinations of BiddingStrategy fields and BiddingStrategyPerformanceGoalType will result in an error: maximize_auto_spend_bid: * `BIDDING_STRATEGY_PERFORMANCE_GOAL_TYPE_CIVA` * `BIDDING_STRATEGY_PERFORMANCE_GOAL_TYPE_IVO_TEN` * `BIDDING_STRATEGY_PERFORMANCE_GOAL_TYPE_AV_VIEWED` performance_goal_auto_bid: * `BIDDING_STRATEGY_PERFORMANCE_GOAL_TYPE_VIEWABLE_CPM` This also applies if the line item inherits one of the above bid strategies from the parent insertion order. Bid strategies set at the insertion order-level will be inherited by their line items if the `InsertionOrder` budget field automationType is set to `INSERTION_ORDER_AUTOMATION_TYPE_BUDGET` or `INSERTION_ORDER_AUTOMATION_TYPE_BID_BUDGET`.",
     ).optional(),
     excludeDemographicExpansion: z.boolean().describe(
-      "Optional. Whether to exclude demographic expansion for Optimized Targeting. This field only applies to Demand Gen ad groups.",
+      "Optional. Whether to exclude demographic expansion for Optimized Targeting. This field can only be set for Demand Gen ad groups. Retrieval and management of Demand Gen resources is currently in beta. This field is only available to allowlisted users.",
     ).optional(),
   }).describe(
     "Settings that control the [optimized targeting](//support.google.com/displayvideo/answer/12060859) settings of the line item.",
@@ -431,7 +431,7 @@ const InputsSchema = z.object({
         "Whether the ad group is opted-in to YouTube shorts inventory.",
       ).optional(),
       allowYoutubeStream: z.boolean().describe(
-        "Whether the ad group is opted-in to YouTube in-stream.",
+        "Whether the ad group is opted-in to YouTube in-stream inventory.",
       ).optional(),
     }).describe("The inventory control of the ad group.").optional(),
   }).describe("The inventory control of the ad group.").optional(),
@@ -441,7 +441,7 @@ const InputsSchema = z.object({
   bidStrategy: z.object({
     demandGenBid: z.object({
       effectiveBiddingValue: z.string().describe(
-        "Output only. If AG doesn't set value for tCPA or tROAS, line item bidding value will be the effective_bidding_value, if the bidding strategy type is not tCPA or tROAS, effective_bidding_value is always 0. For line item, it will be the same as the value field.",
+        "Output only. The value effectively used by the bidding strategy. This field will be the same as value if set. If value is not set and the strategy is assigned to an ad group, this field will be inherited from the line item's bidding strategy. If type is not `DEMAND_GEN_BIDDING_STRATEGY_TYPE_TARGET_CPA` or `DEMAND_GEN_BIDDING_STRATEGY_TYPE_TARGET_ROAS`, this field will be 0.",
       ).optional(),
       effectiveBiddingValueSource: z.enum([
         "BIDDING_SOURCE_UNSPECIFIED",
@@ -457,10 +457,10 @@ const InputsSchema = z.object({
         "DEMAND_GEN_BIDDING_STRATEGY_TYPE_MAXIMIZE_CONVERSION_VALUE",
         "DEMAND_GEN_BIDDING_STRATEGY_TYPE_MAXIMIZE_CLICKS",
       ]).describe(
-        "Optional. The type of the bidding strategy. This can only be set at the line item level.",
+        "Optional. The type of the bidding strategy. This can only be set when assigned to a line item. Ad groups will inherit this value from their line item.",
       ).optional(),
       value: z.string().describe(
-        "Optional. The value used by the bidding strategy. This can be set at the line item and ad group level. This field is only applicable for the following strategy types: * `DEMAND_GEN_BIDDING_STRATEGY_TYPE_TARGET_CPA` * `DEMAND_GEN_BIDDING_STRATEGY_TYPE_TARGET_CPC` * `DEMAND_GEN_BIDDING_STRATEGY_TYPE_TARGET_ROAS` Value of this field is in micros of the advertiser's currency or ROAS value. For example, 1000000 represents 1.0 standard units of the currency or 100% ROAS value. If not using an applicable strategy, the value of this field will be 0.",
+        "Optional. The value used by the bidding strategy. This can be set when assigned to line items or ad groups. This field is only applicable for the following strategy types: * `DEMAND_GEN_BIDDING_STRATEGY_TYPE_TARGET_CPA` * `DEMAND_GEN_BIDDING_STRATEGY_TYPE_TARGET_CPC` * `DEMAND_GEN_BIDDING_STRATEGY_TYPE_TARGET_ROAS` Value of this field is in micros of the advertiser's currency or ROAS value. For example, 1000000 represents 1.0 standard units of the currency or 100% ROAS value. If not using an applicable strategy, the value of this field will be 0.",
       ).optional(),
     }).describe(
       "Settings that control the bid strategy for Demand Gen resources.",
@@ -615,7 +615,7 @@ const InputsSchema = z.object({
       "Required. Whether to enable Optimized Targeting for the line item. Optimized targeting is not compatible with all bid strategies. Attempting to set this field to `true` for a line item using the BiddingStrategy field fixed_bid or one of the following combinations of BiddingStrategy fields and BiddingStrategyPerformanceGoalType will result in an error: maximize_auto_spend_bid: * `BIDDING_STRATEGY_PERFORMANCE_GOAL_TYPE_CIVA` * `BIDDING_STRATEGY_PERFORMANCE_GOAL_TYPE_IVO_TEN` * `BIDDING_STRATEGY_PERFORMANCE_GOAL_TYPE_AV_VIEWED` performance_goal_auto_bid: * `BIDDING_STRATEGY_PERFORMANCE_GOAL_TYPE_VIEWABLE_CPM` This also applies if the line item inherits one of the above bid strategies from the parent insertion order. Bid strategies set at the insertion order-level will be inherited by their line items if the `InsertionOrder` budget field automationType is set to `INSERTION_ORDER_AUTOMATION_TYPE_BUDGET` or `INSERTION_ORDER_AUTOMATION_TYPE_BID_BUDGET`.",
     ).optional(),
     excludeDemographicExpansion: z.boolean().describe(
-      "Optional. Whether to exclude demographic expansion for Optimized Targeting. This field only applies to Demand Gen ad groups.",
+      "Optional. Whether to exclude demographic expansion for Optimized Targeting. This field can only be set for Demand Gen ad groups. Retrieval and management of Demand Gen resources is currently in beta. This field is only available to allowlisted users.",
     ).optional(),
   }).describe(
     "Settings that control the [optimized targeting](//support.google.com/displayvideo/answer/12060859) settings of the line item.",
@@ -624,7 +624,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/displayvideo/advertisers-adgroups",
-  version: "2026.04.03.3",
+  version: "2026.04.08.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -653,6 +653,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.3",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.08.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },
