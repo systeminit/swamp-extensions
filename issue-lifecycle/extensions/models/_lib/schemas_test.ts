@@ -15,7 +15,7 @@
 // with Swamp. If not, see <https://www.gnu.org/licenses/>.
 
 import { assert, assertEquals } from "@std/assert";
-import { Phase, TRANSITIONS } from "./schemas.ts";
+import { Phase, PullRequestSchema, TRANSITIONS } from "./schemas.ts";
 
 const validPhases = new Set<string>(Phase.options);
 
@@ -64,7 +64,7 @@ Deno.test("start is allowed from every non-terminal phase (restart invariant)", 
   }
 });
 
-Deno.test("happy path: created → triaging → classified → plan_generated → approved → implementing → done", () => {
+Deno.test("happy path: created → triaging → classified → plan_generated → approved → implementing → pr_open → done", () => {
   // Walk the linear happy path one method at a time and verify each method's
   // required source phase is in its TRANSITIONS entry. This catches the case
   // where someone reorders the state machine and forgets to update an edge.
@@ -74,7 +74,8 @@ Deno.test("happy path: created → triaging → classified → plan_generated �
     { method: "plan", from: "classified" },
     { method: "approve", from: "plan_generated" },
     { method: "implement", from: "approved" },
-    { method: "complete", from: "implementing" },
+    { method: "link_pr", from: "implementing" },
+    { method: "complete", from: "pr_open" },
   ];
   for (const { method, from } of happyPath) {
     const allowed = TRANSITIONS[method];
@@ -86,6 +87,17 @@ Deno.test("happy path: created → triaging → classified → plan_generated �
       }`,
     );
   }
+});
+
+Deno.test("legacy path: complete still accepts implementing for records that never linked a PR", () => {
+  // Records created before link_pr existed (and records where the human
+  // skips link_pr for docs-only or trivial changes) must still be able to
+  // reach done directly from implementing. Removing the implementing entry
+  // from complete's allowed list would orphan those records.
+  assert(
+    TRANSITIONS.complete.includes("implementing"),
+    "complete must accept implementing as a source phase for backwards compatibility",
+  );
 });
 
 Deno.test("plan iteration loop: iterate is allowed from plan_generated only", () => {
@@ -103,8 +115,84 @@ Deno.test("implementation gate: implement only allowed from approved", () => {
   assertEquals(TRANSITIONS.implement, ["approved"]);
 });
 
-Deno.test("completion gate: complete only allowed from implementing", () => {
-  // complete is the single exit path out of implementing — there is no
-  // ci_review phase or fix loop in the swamp-club workflow.
-  assertEquals(TRANSITIONS.complete, ["implementing"]);
+Deno.test("completion gate: complete allowed from implementing and pr_open", () => {
+  // complete is the exit path from the implementation span. It accepts
+  // both 'implementing' (legacy/no-PR path) and 'pr_open' (the new
+  // link_pr → pr_open → complete path). No ci_review phase or fix loop.
+  assertEquals(TRANSITIONS.complete, ["implementing", "pr_open"]);
+});
+
+// ---------------------------------------------------------------------------
+// PR linkage additions (v2026.04.08.2)
+// ---------------------------------------------------------------------------
+
+Deno.test("Phase: pr_open sits between implementing and done", () => {
+  const phases = Phase.options;
+  const implementingIdx = phases.indexOf("implementing");
+  const prOpenIdx = phases.indexOf("pr_open");
+  const doneIdx = phases.indexOf("done");
+
+  assertEquals(prOpenIdx, implementingIdx + 1);
+  assertEquals(doneIdx, prOpenIdx + 1);
+});
+
+Deno.test("TRANSITIONS: link_pr is idempotent from implementing and pr_open", () => {
+  // Accepting both source phases is what makes link_pr re-callable: the
+  // first call moves implementing → pr_open, subsequent calls overwrite
+  // the pullRequest resource while staying in pr_open. This supports URL
+  // corrections, replacement PRs, and force-push workflows without a
+  // separate phase.
+  assertEquals(TRANSITIONS.link_pr, ["implementing", "pr_open"]);
+});
+
+Deno.test("TRANSITIONS: link_pr is rejected from earlier lifecycle phases", () => {
+  // link_pr must not be callable before implementation has begun — calling
+  // it from any earlier phase is a sequencing bug in the agent and must be
+  // blocked by the valid-transition pre-flight check.
+  const earlierPhases: ReadonlyArray<typeof Phase.options[number]> = [
+    "created",
+    "triaging",
+    "classified",
+    "plan_generated",
+    "approved",
+  ];
+  for (const phase of earlierPhases) {
+    assertEquals(
+      TRANSITIONS.link_pr.includes(phase),
+      false,
+      `link_pr must not be allowed from phase '${phase}'`,
+    );
+  }
+});
+
+Deno.test("PullRequestSchema: accepts any non-empty URL string", () => {
+  // URLs are opaque to the model — GitHub, GitLab, Gitea, Forgejo, etc.
+  const samples = [
+    "https://github.com/systeminit/swamp/pull/1141",
+    "https://gitlab.com/group/project/-/merge_requests/42",
+    "https://codeberg.org/user/repo/pulls/7",
+    "https://git.internal/project/+/123",
+  ];
+  for (const url of samples) {
+    const parsed = PullRequestSchema.parse({
+      url,
+      linkedAt: "2026-04-08T15:00:00.000Z",
+    });
+    assertEquals(parsed.url, url);
+  }
+});
+
+Deno.test("PullRequestSchema: rejects empty url string", () => {
+  const result = PullRequestSchema.safeParse({
+    url: "",
+    linkedAt: "2026-04-08T15:00:00.000Z",
+  });
+  assertEquals(result.success, false);
+});
+
+Deno.test("PullRequestSchema: requires linkedAt", () => {
+  const result = PullRequestSchema.safeParse({
+    url: "https://github.com/systeminit/swamp/pull/1",
+  });
+  assertEquals(result.success, false);
 });

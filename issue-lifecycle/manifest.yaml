@@ -1,6 +1,6 @@
 manifestVersion: 1
 name: "@swamp/issue-lifecycle"
-version: "2026.04.08.1"
+version: "2026.04.08.2"
 description: |
   Interactive triage and implementation planning for swamp-club lab issues.
   Drives the triage/plan/iterate/approve/implement loop as a local
@@ -20,12 +20,17 @@ description: |
   plan_generated ──[iterate]──> plan_generated  (feedback loop)
   plan_generated ──[approve]──> approved
   approved ──[implement]──> implementing
-  implementing ──[complete]──> done
+  implementing ──[link_pr]──> pr_open
+  pr_open ──[link_pr]──> pr_open  (idempotent re-link)
+  pr_open ──[complete]──> done
+  implementing ──[complete]──> done  (legacy, no PR linked)
   ```
 
   Pre-flight checks enforce valid transitions: you cannot approve without a
   plan, cannot implement without approval, and cannot approve while critical
-  or high adversarial findings remain unresolved.
+  or high adversarial findings remain unresolved. `complete` accepts both
+  `implementing` and `pr_open` as source phases so legacy records (created
+  before `link_pr` existed) can still reach `done`.
 
   ## Methods
 
@@ -40,12 +45,15 @@ description: |
   - `resolve_findings` — mark adversarial findings as resolved
   - `approve` — lock the plan and transition to in_progress
   - `implement` — signal implementation has started
+  - `link_pr` — link an opaque pull request URL to the lifecycle record
+    (idempotent; transitions to `pr_open`). Git-host agnostic — the model
+    persists whatever URL the agent supplies without fetching anything.
   - `complete` — mark the lifecycle done
 
   ## Data
 
   All resources are versioned and immutable: `state`, `context`,
-  `classification`, `plan`, `feedback`, `adversarialReview`.
+  `classification`, `plan`, `feedback`, `adversarialReview`, `pullRequest`.
 
   ## Prerequisites
 
