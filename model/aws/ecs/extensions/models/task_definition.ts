@@ -60,6 +60,13 @@ export const EFSVolumeConfigurationSchema = z.object({
   ).optional(),
 });
 
+export const S3FilesVolumeConfigurationSchema = z.object({
+  FileSystemArn: z.string(),
+  AccessPointArn: z.string().optional(),
+  RootDirectory: z.string().optional(),
+  TransitEncryptionPort: z.number().int().optional(),
+});
+
 export const HostVolumePropertiesSchema = z.object({
   SourcePath: z.string().describe(
     "When the host parameter is used, specify a sourcePath to declare the path on the host container instance that's presented to the container. If this parameter is empty, then the Docker daemon has assigned a host path for you. If the host parameter contains a sourcePath file location, then the data volume persists at the specified location on the host container instance until you delete it manually. If the sourcePath value doesn't exist on the host container instance, the Docker daemon creates it. If the location does exist, the contents of the source path folder are exported. If you're using the Fargate launch type, the sourcePath parameter is not supported.",
@@ -109,6 +116,7 @@ export const VolumeSchema = z.object({
   EFSVolumeConfiguration: EFSVolumeConfigurationSchema.describe(
     "This parameter is specified when you use an Amazon Elastic File System file system for task storage.",
   ).optional(),
+  S3FilesVolumeConfiguration: S3FilesVolumeConfigurationSchema.optional(),
   Host: HostVolumePropertiesSchema.describe(
     "This parameter is specified when you use bind mount host volumes. The contents of the host parameter determine whether your bind mount host volume persists on the host container instance and where it's stored. If the host parameter is empty, then the Docker daemon assigns a host path for your data volume. However, the data isn't guaranteed to persist after the containers that are associated with it stop running. Windows containers can mount whole directories on the same drive as $env:ProgramData. Windows containers can't mount directories on a different drive, and mount point can't be across drives. For example, you can mount C:\\my\\path:C:\\my\\path and D:\\:D:\\, but not D:\\my\\path:C:\\my\\path or D:\\:C:\\my\\path.",
   ).optional(),
@@ -668,7 +676,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/aws/ecs/task-definition",
-  version: "2026.04.03.2",
+  version: "2026.04.08.1",
   upgrades: [
     {
       toVersion: "2026.04.01.2",
@@ -682,6 +690,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.08.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

@@ -84,7 +84,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/digitalocean/nfs",
-  version: "2026.04.03.2",
+  version: "2026.04.08.1",
   upgrades: [
     {
       toVersion: "2026.03.27.1",
@@ -108,6 +108,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.08.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },
@@ -336,6 +341,67 @@ export const model = {
             args.waitForCompletion ?? true,
           );
         const actionInstanceName = `${args.id}-detach`;
+        const handles = [];
+        const actionHandle = await context.writeResource(
+          "nfs_action",
+          actionInstanceName,
+          actionResult,
+        );
+        handles.push(actionHandle);
+        if (updatedResource) {
+          const resourceInstanceName =
+            (updatedResource as Record<string, unknown>).name?.toString() ??
+              args.id.toString();
+          const stateHandle = await context.writeResource(
+            "state",
+            resourceInstanceName,
+            updatedResource,
+          );
+          handles.push(stateHandle);
+        }
+        return { dataHandles: handles };
+      },
+    },
+    reassign: {
+      description: "reassign the nfs",
+      arguments: z.object({
+        id: z.union([z.string(), z.number()]).describe("The ID of the nfs"),
+        region: z.string().describe(
+          "The DigitalOcean region slug (e.g. atl1, nyc2) where the NFS snapshot resides.",
+        ).optional(),
+        old_vpc_id: z.string().describe(
+          "The ID of the VPC from which the NFS share will be reassigned",
+        ),
+        new_vpc_id: z.string().describe(
+          "The ID of the VPC to which the NFS share will be reassigned",
+        ),
+        waitForCompletion: z.boolean().describe(
+          "Wait for the action to complete before returning (default: true)",
+        ).optional(),
+      }),
+      execute: async (
+        args: {
+          id: string | number;
+          region?: string;
+          old_vpc_id: string;
+          new_vpc_id: string;
+          waitForCompletion?: boolean;
+        },
+        context: any,
+      ) => {
+        const params: Record<string, unknown> = {};
+        if (args.old_vpc_id !== undefined) params.old_vpc_id = args.old_vpc_id;
+        if (args.new_vpc_id !== undefined) params.new_vpc_id = args.new_vpc_id;
+        const body: Record<string, unknown> = { type: "reassign", params };
+        if (args.region !== undefined) body.region = args.region;
+        const { action: actionResult, resource: updatedResource } =
+          await createAndPollAction(
+            "/v2/nfs",
+            args.id,
+            body,
+            args.waitForCompletion ?? true,
+          );
+        const actionInstanceName = `${args.id}-reassign`;
         const handles = [];
         const actionHandle = await context.writeResource(
           "nfs_action",

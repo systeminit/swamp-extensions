@@ -199,6 +199,7 @@ const GlobalArgsSchema = z.object({
     S3Key: z.string().min(1).max(1024).describe(
       "The Amazon S3 key of the deployment package.",
     ).optional(),
+    S3ObjectStorageMode: z.enum(["COPY", "REFERENCE"]).optional(),
     ImageUri: z.string().describe(
       "URI of a [container image](https://docs.aws.amazon.com/lambda/latest/dg/lambda-images.html) in the Amazon ECR registry.",
     ).optional(),
@@ -321,6 +322,7 @@ const StateSchema = z.object({
     S3Bucket: z.string(),
     ZipFile: z.string(),
     S3Key: z.string(),
+    S3ObjectStorageMode: z.string(),
     ImageUri: z.string(),
   }).optional(),
   Role: z.string().optional(),
@@ -494,6 +496,7 @@ const InputsSchema = z.object({
     S3Key: z.string().min(1).max(1024).describe(
       "The Amazon S3 key of the deployment package.",
     ).optional(),
+    S3ObjectStorageMode: z.enum(["COPY", "REFERENCE"]).optional(),
     ImageUri: z.string().describe(
       "URI of a [container image](https://docs.aws.amazon.com/lambda/latest/dg/lambda-images.html) in the Amazon ECR registry.",
     ).optional(),
@@ -554,7 +557,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/aws/lambda/function",
-  version: "2026.04.03.2",
+  version: "2026.04.08.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -568,6 +571,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.08.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

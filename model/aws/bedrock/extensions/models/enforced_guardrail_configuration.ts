@@ -1,0 +1,306 @@
+// Auto-generated extension model for @swamp/aws/bedrock/enforced-guardrail-configuration
+// Do not edit manually. Re-generate with: deno task generate:aws
+
+// deno-lint-ignore-file no-explicit-any
+
+import { z } from "zod";
+import {
+  createResource,
+  deleteResource,
+  isResourceNotFoundError,
+  readResource,
+  updateResource,
+} from "./_lib/aws.ts";
+
+const GlobalArgsSchema = z.object({
+  name: z.string().describe(
+    "Instance name for this resource (used as the unique identifier in the factory pattern)",
+  ),
+  GuardrailIdentifier: z.string().min(0).max(2048).regex(
+    new RegExp(
+      "^(([a-z0-9]+)|(arn:aws(-[^:]+)?:bedrock:[a-z0-9-]{1,20}:[0-9]{12}:guardrail/[a-z0-9]+))$",
+    ),
+  ).describe("Identifier for the guardrail, could be the ID or the ARN"),
+  GuardrailVersion: z.string().regex(new RegExp("^[1-9][0-9]{0,7}$")).describe(
+    "Numerical guardrail version (not DRAFT)",
+  ),
+  SelectiveContentGuarding: z.object({
+    System: z.enum(["SELECTIVE", "COMPREHENSIVE"]).describe(
+      "Selective guarding mode for system prompts",
+    ).optional(),
+    Messages: z.enum(["SELECTIVE", "COMPREHENSIVE"]).describe(
+      "Selective guarding mode for user messages",
+    ).optional(),
+  }).describe("Selective content guarding controls for enforced guardrails")
+    .optional(),
+  ModelEnforcement: z.object({
+    IncludedModels: z.array(
+      z.string().regex(
+        new RegExp(
+          "^(ALL|([a-z0-9-]{1,63}[.]{1}[a-z0-9-]{1,63})([:][a-z0-9-]{1,63}){0,2}(/[a-z0-9]{12}){0,1})$",
+        ),
+      ),
+    ).describe("Models to enforce the guardrail on"),
+    ExcludedModels: z.array(
+      z.string().regex(
+        new RegExp(
+          "^([a-z0-9-]{1,63}[.]{1}[a-z0-9-]{1,63})([:][a-z0-9-]{1,63}){0,2}(/[a-z0-9]{12}){0,1}$",
+        ),
+      ),
+    ).describe(
+      "Models to exclude from enforcement. If a model is in both lists, it is excluded",
+    ),
+  }).describe(
+    "Model-specific information for the enforced guardrail configuration. If not present, the configuration is enforced on all models",
+  ).optional(),
+});
+
+const StateSchema = z.object({
+  ConfigId: z.string(),
+  GuardrailIdentifier: z.string().optional(),
+  GuardrailVersion: z.string().optional(),
+  SelectiveContentGuarding: z.object({
+    System: z.string(),
+    Messages: z.string(),
+  }).optional(),
+  ModelEnforcement: z.object({
+    IncludedModels: z.array(z.string()),
+    ExcludedModels: z.array(z.string()),
+  }).optional(),
+  GuardrailArn: z.string().optional(),
+  GuardrailId: z.string().optional(),
+  CreatedAt: z.string().optional(),
+  CreatedBy: z.string().optional(),
+  UpdatedAt: z.string().optional(),
+  UpdatedBy: z.string().optional(),
+  Owner: z.string().optional(),
+}).passthrough();
+
+type StateData = z.infer<typeof StateSchema>;
+
+const InputsSchema = z.object({
+  name: z.string().optional(),
+  GuardrailIdentifier: z.string().min(0).max(2048).regex(
+    new RegExp(
+      "^(([a-z0-9]+)|(arn:aws(-[^:]+)?:bedrock:[a-z0-9-]{1,20}:[0-9]{12}:guardrail/[a-z0-9]+))$",
+    ),
+  ).describe("Identifier for the guardrail, could be the ID or the ARN")
+    .optional(),
+  GuardrailVersion: z.string().regex(new RegExp("^[1-9][0-9]{0,7}$")).describe(
+    "Numerical guardrail version (not DRAFT)",
+  ).optional(),
+  SelectiveContentGuarding: z.object({
+    System: z.enum(["SELECTIVE", "COMPREHENSIVE"]).describe(
+      "Selective guarding mode for system prompts",
+    ).optional(),
+    Messages: z.enum(["SELECTIVE", "COMPREHENSIVE"]).describe(
+      "Selective guarding mode for user messages",
+    ).optional(),
+  }).describe("Selective content guarding controls for enforced guardrails")
+    .optional(),
+  ModelEnforcement: z.object({
+    IncludedModels: z.array(
+      z.string().regex(
+        new RegExp(
+          "^(ALL|([a-z0-9-]{1,63}[.]{1}[a-z0-9-]{1,63})([:][a-z0-9-]{1,63}){0,2}(/[a-z0-9]{12}){0,1})$",
+        ),
+      ),
+    ).describe("Models to enforce the guardrail on").optional(),
+    ExcludedModels: z.array(
+      z.string().regex(
+        new RegExp(
+          "^([a-z0-9-]{1,63}[.]{1}[a-z0-9-]{1,63})([:][a-z0-9-]{1,63}){0,2}(/[a-z0-9]{12}){0,1}$",
+        ),
+      ),
+    ).describe(
+      "Models to exclude from enforcement. If a model is in both lists, it is excluded",
+    ).optional(),
+  }).describe(
+    "Model-specific information for the enforced guardrail configuration. If not present, the configuration is enforced on all models",
+  ).optional(),
+});
+
+export const model = {
+  type: "@swamp/aws/bedrock/enforced-guardrail-configuration",
+  version: "2026.04.08.1",
+  globalArguments: GlobalArgsSchema,
+  inputsSchema: InputsSchema,
+  resources: {
+    state: {
+      description: "Bedrock EnforcedGuardrailConfiguration resource state",
+      schema: StateSchema,
+      lifetime: "infinite",
+      garbageCollection: 10,
+    },
+  },
+  methods: {
+    create: {
+      description: "Create a Bedrock EnforcedGuardrailConfiguration",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const desiredState: Record<string, unknown> = {};
+        for (const [key, value] of Object.entries(g)) {
+          if (key === "name") continue;
+          if (value !== undefined) desiredState[key] = value;
+        }
+        const result = await createResource(
+          "AWS::Bedrock::EnforcedGuardrailConfiguration",
+          desiredState,
+        ) as StateData;
+        const instanceName = (g.name?.toString() ?? "current").replace(
+          /[\/\\]/g,
+          "_",
+        ).replace(/\.\./g, "_").replace(/\0/g, "");
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    get: {
+      description: "Get a Bedrock EnforcedGuardrailConfiguration",
+      arguments: z.object({
+        identifier: z.string().describe(
+          "The primary identifier of the Bedrock EnforcedGuardrailConfiguration",
+        ),
+      }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const result = await readResource(
+          "AWS::Bedrock::EnforcedGuardrailConfiguration",
+          args.identifier,
+        ) as StateData;
+        const instanceName =
+          (context.globalArgs.name?.toString() ?? args.identifier).replace(
+            /[\/\\]/g,
+            "_",
+          ).replace(/\.\./g, "_").replace(/\0/g, "");
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    update: {
+      description: "Update a Bedrock EnforcedGuardrailConfiguration",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const instanceName = (g.name?.toString() ?? "current").replace(
+          /[\/\\]/g,
+          "_",
+        ).replace(/\.\./g, "_").replace(/\0/g, "");
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          instanceName,
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        const identifier = existing.ConfigId?.toString();
+        if (!identifier) {
+          throw new Error("No identifier found in existing state");
+        }
+        const currentState = await readResource(
+          "AWS::Bedrock::EnforcedGuardrailConfiguration",
+          identifier,
+        ) as StateData;
+        const desiredState: Record<string, unknown> = { ...currentState };
+        for (const [key, value] of Object.entries(g)) {
+          if (key === "name") continue;
+          if (value !== undefined) desiredState[key] = value;
+        }
+        const result = await updateResource(
+          "AWS::Bedrock::EnforcedGuardrailConfiguration",
+          identifier,
+          currentState,
+          desiredState,
+        );
+        const handle = await context.writeResource(
+          "state",
+          instanceName,
+          result,
+        );
+        return { dataHandles: [handle] };
+      },
+    },
+    delete: {
+      description: "Delete a Bedrock EnforcedGuardrailConfiguration",
+      arguments: z.object({
+        identifier: z.string().describe(
+          "The primary identifier of the Bedrock EnforcedGuardrailConfiguration",
+        ),
+      }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const { existed } = await deleteResource(
+          "AWS::Bedrock::EnforcedGuardrailConfiguration",
+          args.identifier,
+        );
+        const instanceName =
+          (context.globalArgs.name?.toString() ?? args.identifier).replace(
+            /[\/\\]/g,
+            "_",
+          ).replace(/\.\./g, "_").replace(/\0/g, "");
+        const handle = await context.writeResource("state", instanceName, {
+          identifier: args.identifier,
+          existed,
+          status: existed ? "deleted" : "not_found",
+          deletedAt: new Date().toISOString(),
+        });
+        return { dataHandles: [handle] };
+      },
+    },
+    sync: {
+      description: "Sync Bedrock EnforcedGuardrailConfiguration state from AWS",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, never>, context: any) => {
+        const g = context.globalArgs;
+        const instanceName = (g.name?.toString() ?? "current").replace(
+          /[\/\\]/g,
+          "_",
+        ).replace(/\.\./g, "_").replace(/\0/g, "");
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          instanceName,
+        );
+        if (!content) {
+          throw new Error("No existing state found - run create or get first");
+        }
+        const existing = JSON.parse(new TextDecoder().decode(content));
+        const identifier = existing.ConfigId?.toString();
+        if (!identifier) {
+          throw new Error("No identifier found in existing state");
+        }
+        try {
+          const result = await readResource(
+            "AWS::Bedrock::EnforcedGuardrailConfiguration",
+            identifier,
+          ) as StateData;
+          const handle = await context.writeResource(
+            "state",
+            instanceName,
+            result,
+          );
+          return { dataHandles: [handle] };
+        } catch (error: unknown) {
+          if (isResourceNotFoundError(error)) {
+            const handle = await context.writeResource("state", instanceName, {
+              identifier,
+              status: "not_found",
+              syncedAt: new Date().toISOString(),
+            });
+            return { dataHandles: [handle] };
+          }
+          throw error;
+        }
+      },
+    },
+  },
+};
