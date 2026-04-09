@@ -27,6 +27,8 @@ import {
   type PlanData,
   PlanSchema,
   PlanStepSchema,
+  PR_COOLDOWN_MS,
+  type PullRequestData,
   PullRequestSchema,
   type StateData,
   StateSchema,
@@ -68,7 +70,7 @@ async function readState(
 
 export const model = {
   type: "@swamp/issue-lifecycle",
-  version: "2026.04.08.2",
+  version: "2026.04.09.1",
   globalArguments: GlobalArgsSchema,
 
   upgrades: [
@@ -103,6 +105,17 @@ export const model = {
         "Restores PR linkage dropped in 2026.04.08.1 without re-introducing git-host coupling — " +
         "the model persists whatever PR URL the agent supplies. " +
         "complete now accepts pr_open as a valid source phase alongside implementing.",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.09.1",
+      description: "Add post-PR lifecycle phases: pr_failed, releasing. " +
+        "New methods: pr_merged (pr_open → releasing), pr_failed (pr_open → pr_failed), " +
+        "ship (releasing → done). " +
+        "New check: pr-cooldown enforces 3-minute wait after link_pr before status checks. " +
+        "link_pr now accepts pr_failed as source phase for recovery. " +
+        "implement now accepts pr_failed for rework scenarios. " +
+        "complete now accepts releasing for backwards compatibility.",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },
   ],
@@ -254,11 +267,59 @@ export const model = {
         if (!state) {
           return { pass: false, errors: ["No state found."] };
         }
-        if (state.phase !== "approved") {
+        if (state.phase !== "approved" && state.phase !== "pr_failed") {
           return {
             pass: false,
             errors: [
-              "Plan must be approved before implementation can begin.",
+              "Plan must be approved (or PR must have failed) before implementation can begin.",
+            ],
+          };
+        }
+        return { pass: true };
+      },
+    },
+
+    "pr-cooldown": {
+      description:
+        "Enforces a minimum cooldown after link_pr before the PR status can be " +
+        "reported, giving CI time to run",
+      labels: ["policy"],
+      appliesTo: ["pr_merged", "pr_failed"],
+      execute: async (context: {
+        dataRepository: {
+          getContent: (
+            type: string,
+            modelId: string,
+            dataName: string,
+          ) => Promise<Uint8Array | null>;
+        };
+        modelType: string;
+        modelId: string;
+      }) => {
+        const content = await context.dataRepository.getContent(
+          context.modelType,
+          context.modelId,
+          "pullRequest-main",
+        );
+        if (!content) {
+          return {
+            pass: false,
+            errors: ["No pull request linked. Call link_pr first."],
+          };
+        }
+        const pr = JSON.parse(
+          new TextDecoder().decode(content),
+        ) as PullRequestData;
+        const linkedAt = new Date(pr.linkedAt).getTime();
+        const now = Date.now();
+        const elapsed = now - linkedAt;
+        if (elapsed < PR_COOLDOWN_MS) {
+          const remaining = Math.ceil((PR_COOLDOWN_MS - elapsed) / 1000);
+          return {
+            pass: false,
+            errors: [
+              `PR was linked ${Math.floor(elapsed / 1000)}s ago. ` +
+              `Wait ${remaining}s more before checking PR status (3-minute cooldown for CI).`,
             ],
           };
         }
@@ -1106,7 +1167,7 @@ export const model = {
       description:
         "Link a pull request to the implementation. Idempotent — calling " +
         "again overwrites the recorded URL with the latest link. " +
-        "Transitions the phase to pr_open if currently implementing.",
+        "Transitions the phase to pr_open from implementing or pr_failed.",
       arguments: z.object({
         url: z.string().min(1).describe(
           "Canonical pull request URL. Opaque to the model — pass whatever " +
@@ -1126,16 +1187,26 @@ export const model = {
             instanceName: string,
             data: Record<string, unknown>,
           ) => Promise<{ name: string }>;
+          readResource: (
+            instanceName: string,
+            version?: number,
+          ) => Promise<Record<string, unknown> | null>;
         },
       ) => {
         const { issueNumber } = context.globalArgs;
         const now = new Date().toISOString();
+
+        const existing = await context.readResource("pullRequest-main") as
+          | PullRequestData
+          | null;
+        const attempt = existing ? (existing.attempt ?? 0) + 1 : 1;
 
         const prHandle = await context.writeResource(
           "pullRequest",
           "pullRequest-main",
           {
             url: args.url,
+            attempt,
             linkedAt: now,
           },
         );
@@ -1146,7 +1217,10 @@ export const model = {
           updatedAt: now,
         });
 
-        context.logger.info("PR linked: {url}", { url: args.url });
+        context.logger.info("PR linked (attempt {attempt}): {url}", {
+          attempt,
+          url: args.url,
+        });
 
         const sc = await createSwampClubClient(
           context.globalArgs,
@@ -1155,13 +1229,241 @@ export const model = {
         await sc?.postLifecycleEntry({
           step: "pr_linked",
           targetStatus: "in_progress",
-          summary: `PR linked: ${args.url}`,
+          summary: `PR linked (attempt ${attempt}): ${args.url}`,
           emoji: "\u{1F517}",
-          payload: { url: args.url },
+          payload: { url: args.url, attempt },
           isVerbose: false,
         });
 
         return { dataHandles: [prHandle, stateHandle] };
+      },
+    },
+
+    pr_merged: {
+      description:
+        "Record that the linked PR has been merged. Transitions to releasing.",
+      arguments: z.object({
+        mergedAt: z.string().optional().describe(
+          "ISO-8601 timestamp of when the PR was merged. Defaults to now.",
+        ),
+      }),
+      execute: async (
+        args: { mergedAt?: string },
+        context: {
+          globalArgs: GlobalArgs;
+          logger: {
+            info: (msg: string, props: Record<string, unknown>) => void;
+            warning: (msg: string, props: Record<string, unknown>) => void;
+          };
+          writeResource: (
+            specName: string,
+            instanceName: string,
+            data: Record<string, unknown>,
+          ) => Promise<{ name: string }>;
+          readResource: (
+            instanceName: string,
+            version?: number,
+          ) => Promise<Record<string, unknown> | null>;
+        },
+      ) => {
+        const { issueNumber } = context.globalArgs;
+        const now = new Date().toISOString();
+        const handles = [];
+
+        const prContent = await context.readResource("pullRequest-main") as
+          | PullRequestData
+          | null;
+        if (!prContent) {
+          throw new Error("No pull request linked. Call link_pr first.");
+        }
+
+        const attempt = prContent.attempt ?? 1;
+
+        handles.push(
+          await context.writeResource("pullRequest", "pullRequest-main", {
+            url: prContent.url,
+            attempt,
+            linkedAt: prContent.linkedAt,
+            mergedAt: args.mergedAt ?? now,
+          }),
+        );
+
+        handles.push(
+          await context.writeResource("state", "state-main", {
+            phase: "releasing",
+            issueNumber,
+            updatedAt: now,
+          }),
+        );
+
+        context.logger.info(
+          "PR merged (attempt {attempt}) \u2014 awaiting release build",
+          { attempt },
+        );
+
+        const sc = await createSwampClubClient(
+          context.globalArgs,
+          context.logger,
+        );
+        await sc?.postLifecycleEntry({
+          step: "pr_merged",
+          targetStatus: "in_progress",
+          summary:
+            `PR merged (attempt ${attempt}): ${prContent.url} \u2014 awaiting release`,
+          emoji: "\u{1F389}",
+          payload: {
+            url: prContent.url,
+            attempt,
+            mergedAt: args.mergedAt ?? now,
+          },
+          isVerbose: false,
+        });
+
+        return { dataHandles: handles };
+      },
+    },
+
+    pr_failed: {
+      description:
+        "Record that the linked PR has failed (CI failure, review rejection, etc.). " +
+        "Transitions to pr_failed so the agent knows to fix and re-link.",
+      arguments: z.object({
+        reason: z.string().min(1).describe(
+          "Why the PR failed: CI failure details, review rejection reason, etc.",
+        ),
+      }),
+      execute: async (
+        args: { reason: string },
+        context: {
+          globalArgs: GlobalArgs;
+          logger: {
+            info: (msg: string, props: Record<string, unknown>) => void;
+            warning: (msg: string, props: Record<string, unknown>) => void;
+          };
+          writeResource: (
+            specName: string,
+            instanceName: string,
+            data: Record<string, unknown>,
+          ) => Promise<{ name: string }>;
+          readResource: (
+            instanceName: string,
+            version?: number,
+          ) => Promise<Record<string, unknown> | null>;
+        },
+      ) => {
+        const { issueNumber } = context.globalArgs;
+        const now = new Date().toISOString();
+        const handles = [];
+
+        const prContent = await context.readResource("pullRequest-main") as
+          | PullRequestData
+          | null;
+        if (!prContent) {
+          throw new Error("No pull request linked. Call link_pr first.");
+        }
+
+        const attempt = prContent.attempt ?? 1;
+
+        handles.push(
+          await context.writeResource("pullRequest", "pullRequest-main", {
+            url: prContent.url,
+            attempt,
+            linkedAt: prContent.linkedAt,
+            failedAt: now,
+            failureReason: args.reason,
+          }),
+        );
+
+        handles.push(
+          await context.writeResource("state", "state-main", {
+            phase: "pr_failed",
+            issueNumber,
+            updatedAt: now,
+          }),
+        );
+
+        context.logger.info("PR failed (attempt {attempt}): {reason}", {
+          attempt,
+          reason: args.reason,
+        });
+
+        const sc = await createSwampClubClient(
+          context.globalArgs,
+          context.logger,
+        );
+        await sc?.postLifecycleEntry({
+          step: "pr_failed",
+          targetStatus: "in_progress",
+          summary: `PR failed (attempt ${attempt}): ${args.reason}`,
+          emoji: "\u{274C}",
+          payload: { url: prContent.url, attempt, reason: args.reason },
+          isVerbose: false,
+        });
+
+        return { dataHandles: handles };
+      },
+    },
+
+    ship: {
+      description:
+        "Mark the release as shipped after the release build completes. " +
+        "Transitions to done and sets swamp-club status to shipped.",
+      arguments: z.object({
+        releaseUrl: z.string().optional().describe(
+          "URL of the release (e.g., GitHub release page, package registry). Optional.",
+        ),
+        releaseNotes: z.string().optional().describe(
+          "Brief release notes or summary. Optional.",
+        ),
+      }),
+      execute: async (
+        args: { releaseUrl?: string; releaseNotes?: string },
+        context: {
+          globalArgs: GlobalArgs;
+          logger: {
+            info: (msg: string, props: Record<string, unknown>) => void;
+            warning: (msg: string, props: Record<string, unknown>) => void;
+          };
+          writeResource: (
+            specName: string,
+            instanceName: string,
+            data: Record<string, unknown>,
+          ) => Promise<{ name: string }>;
+        },
+      ) => {
+        const { issueNumber } = context.globalArgs;
+        const now = new Date().toISOString();
+
+        const stateHandle = await context.writeResource("state", "state-main", {
+          phase: "done",
+          issueNumber,
+          updatedAt: now,
+        });
+
+        context.logger.info("Shipped", {});
+
+        const sc = await createSwampClubClient(
+          context.globalArgs,
+          context.logger,
+        );
+        if (sc) {
+          await sc.postLifecycleEntry({
+            step: "shipped",
+            targetStatus: "shipped",
+            summary: args.releaseUrl
+              ? `Shipped: ${args.releaseUrl}`
+              : "Shipped",
+            emoji: "\u{1F680}",
+            payload: {
+              releaseUrl: args.releaseUrl,
+              releaseNotes: args.releaseNotes,
+            },
+            isVerbose: false,
+          });
+          await sc.transitionStatus("shipped");
+        }
+
+        return { dataHandles: [stateHandle] };
       },
     },
 

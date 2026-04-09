@@ -14,8 +14,9 @@
 // You should have received a copy of the GNU Affero General Public License along
 // with Swamp. If not, see <https://www.gnu.org/licenses/>.
 
-import { assertEquals, assertRejects } from "@std/assert";
+import { assertEquals, assertRejects, assertStringIncludes } from "@std/assert";
 import { model } from "./issue_lifecycle.ts";
+import { PR_COOLDOWN_MS } from "./_lib/schemas.ts";
 
 // ---------------------------------------------------------------------------
 // Test helpers
@@ -36,12 +37,16 @@ interface RecordedWrite {
  */
 async function buildTestContext(
   issueNumber: number,
+  opts?: { resources?: Record<string, Record<string, unknown>> },
 ): Promise<{
-  context: Parameters<typeof model.methods.link_pr.execute>[1];
+  context: Parameters<typeof model.methods.pr_merged.execute>[1];
   writes: RecordedWrite[];
   restore: () => Promise<void>;
 }> {
   const writes: RecordedWrite[] = [];
+  const resources: Record<string, Record<string, unknown>> = {
+    ...opts?.resources,
+  };
   const tempDir = await Deno.makeTempDir({ prefix: "issue_lifecycle_test_" });
 
   const original = {
@@ -79,7 +84,14 @@ async function buildTestContext(
       data: Record<string, unknown>,
     ) => {
       writes.push({ specName, instanceName, data });
+      resources[instanceName] = data;
       return Promise.resolve({ name: instanceName });
+    },
+    readResource: (
+      instanceName: string,
+      _version?: number,
+    ) => {
+      return Promise.resolve(resources[instanceName] ?? null);
     },
   };
 
@@ -90,7 +102,7 @@ async function buildTestContext(
 // link_pr
 // ---------------------------------------------------------------------------
 
-Deno.test("link_pr: writes pullRequest-main resource with url and linkedAt", async () => {
+Deno.test("link_pr: writes pullRequest-main resource with url, attempt, and linkedAt", async () => {
   const { context, writes, restore } = await buildTestContext(42);
   try {
     await model.methods.link_pr.execute(
@@ -109,6 +121,7 @@ Deno.test("link_pr: writes pullRequest-main resource with url and linkedAt", asy
       prWrite!.data.url,
       "https://github.com/systeminit/swamp/pull/1141",
     );
+    assertEquals(prWrite!.data.attempt, 1);
     assertEquals(typeof prWrite!.data.linkedAt, "string");
   } finally {
     await restore();
@@ -133,7 +146,7 @@ Deno.test("link_pr: transitions state to pr_open", async () => {
   }
 });
 
-Deno.test("link_pr: is idempotent — second call overwrites the pullRequest resource", async () => {
+Deno.test("link_pr: is idempotent — second call increments attempt", async () => {
   const { context, writes, restore } = await buildTestContext(42);
   try {
     await model.methods.link_pr.execute(
@@ -156,6 +169,8 @@ Deno.test("link_pr: is idempotent — second call overwrites the pullRequest res
       prWrites[1].data.url,
       "https://github.com/systeminit/swamp/pull/1142",
     );
+    assertEquals(prWrites[0].data.attempt, 1);
+    assertEquals(prWrites[1].data.attempt, 2);
   } finally {
     await restore();
   }
@@ -165,6 +180,123 @@ Deno.test("link_pr: rejects empty url via zod schema", async () => {
   await assertRejects(
     () => model.methods.link_pr.arguments.parseAsync({ url: "" }),
   );
+});
+
+Deno.test("link_pr: from pr_failed clears failure fields and increments attempt", async () => {
+  const { context, writes, restore } = await buildTestContext(42, {
+    resources: {
+      "pullRequest-main": {
+        url: "https://github.com/systeminit/swamp/pull/1141",
+        attempt: 1,
+        linkedAt: "2026-04-09T10:00:00.000Z",
+        failedAt: "2026-04-09T10:05:00.000Z",
+        failureReason: "CI failed",
+      },
+    },
+  });
+  try {
+    await model.methods.link_pr.execute(
+      { url: "https://github.com/systeminit/swamp/pull/1142" },
+      context,
+    );
+
+    const prWrite = writes.find((w) => w.specName === "pullRequest");
+    assertEquals(prWrite !== undefined, true);
+    assertEquals(
+      prWrite!.data.url,
+      "https://github.com/systeminit/swamp/pull/1142",
+    );
+    assertEquals(prWrite!.data.attempt, 2);
+    // link_pr overwrites the entire resource — failure fields are absent
+    assertEquals(prWrite!.data.failedAt, undefined);
+    assertEquals(prWrite!.data.failureReason, undefined);
+  } finally {
+    await restore();
+  }
+});
+
+// ---------------------------------------------------------------------------
+// pr-cooldown check
+// ---------------------------------------------------------------------------
+
+Deno.test("pr-cooldown: rejects when PR was linked too recently", async () => {
+  const recentLinkedAt = new Date().toISOString();
+  const checkContext = {
+    methodName: "pr_merged",
+    dataRepository: {
+      getContent: (
+        _type: string,
+        _modelId: string,
+        dataName: string,
+      ) => {
+        if (dataName === "pullRequest-main") {
+          return Promise.resolve(
+            new TextEncoder().encode(
+              JSON.stringify({
+                url: "https://github.com/systeminit/swamp/pull/1",
+                linkedAt: recentLinkedAt,
+              }),
+            ),
+          );
+        }
+        return Promise.resolve(null);
+      },
+    },
+    modelType: "@swamp/issue-lifecycle",
+    modelId: "issue-42",
+  };
+
+  const result = await model.checks["pr-cooldown"].execute(checkContext);
+  assertEquals(result.pass, false);
+  assertStringIncludes(result.errors![0], "Wait");
+});
+
+Deno.test("pr-cooldown: passes when enough time has elapsed", async () => {
+  const oldLinkedAt = new Date(
+    Date.now() - PR_COOLDOWN_MS - 1000,
+  ).toISOString();
+  const checkContext = {
+    methodName: "pr_merged",
+    dataRepository: {
+      getContent: (
+        _type: string,
+        _modelId: string,
+        dataName: string,
+      ) => {
+        if (dataName === "pullRequest-main") {
+          return Promise.resolve(
+            new TextEncoder().encode(
+              JSON.stringify({
+                url: "https://github.com/systeminit/swamp/pull/1",
+                linkedAt: oldLinkedAt,
+              }),
+            ),
+          );
+        }
+        return Promise.resolve(null);
+      },
+    },
+    modelType: "@swamp/issue-lifecycle",
+    modelId: "issue-42",
+  };
+
+  const result = await model.checks["pr-cooldown"].execute(checkContext);
+  assertEquals(result.pass, true);
+});
+
+Deno.test("pr-cooldown: rejects when no pullRequest is linked", async () => {
+  const checkContext = {
+    methodName: "pr_merged",
+    dataRepository: {
+      getContent: () => Promise.resolve(null),
+    },
+    modelType: "@swamp/issue-lifecycle",
+    modelId: "issue-42",
+  };
+
+  const result = await model.checks["pr-cooldown"].execute(checkContext);
+  assertEquals(result.pass, false);
+  assertStringIncludes(result.errors![0], "No pull request linked");
 });
 
 // ---------------------------------------------------------------------------
@@ -187,6 +319,185 @@ Deno.test("model: exposes the new link_pr method definition", () => {
   );
 });
 
-Deno.test("model: version bumped to 2026.04.08.2", () => {
-  assertEquals(model.version, "2026.04.08.2");
+Deno.test("model: version bumped to 2026.04.09.1", () => {
+  assertEquals(model.version, "2026.04.09.1");
+});
+
+// ---------------------------------------------------------------------------
+// pr_merged
+// ---------------------------------------------------------------------------
+
+Deno.test("pr_merged: transitions state to releasing and writes mergedAt with attempt", async () => {
+  const { context, writes, restore } = await buildTestContext(42, {
+    resources: {
+      "pullRequest-main": {
+        url: "https://github.com/systeminit/swamp/pull/1141",
+        attempt: 2,
+        linkedAt: "2026-04-09T10:00:00.000Z",
+      },
+    },
+  });
+  try {
+    await model.methods.pr_merged.execute({}, context);
+
+    const stateWrite = writes.find((w) => w.specName === "state");
+    assertEquals(stateWrite !== undefined, true);
+    assertEquals(stateWrite!.data.phase, "releasing");
+    assertEquals(stateWrite!.data.issueNumber, 42);
+
+    const prWrite = writes.find((w) => w.specName === "pullRequest");
+    assertEquals(prWrite !== undefined, true);
+    assertEquals(
+      prWrite!.data.url,
+      "https://github.com/systeminit/swamp/pull/1141",
+    );
+    assertEquals(prWrite!.data.attempt, 2);
+    assertEquals(typeof prWrite!.data.mergedAt, "string");
+  } finally {
+    await restore();
+  }
+});
+
+Deno.test("pr_merged: uses provided mergedAt when given", async () => {
+  const { context, writes, restore } = await buildTestContext(42, {
+    resources: {
+      "pullRequest-main": {
+        url: "https://github.com/systeminit/swamp/pull/1141",
+        attempt: 1,
+        linkedAt: "2026-04-09T10:00:00.000Z",
+      },
+    },
+  });
+  try {
+    await model.methods.pr_merged.execute(
+      { mergedAt: "2026-04-09T12:00:00.000Z" },
+      context,
+    );
+
+    const prWrite = writes.find((w) => w.specName === "pullRequest");
+    assertEquals(prWrite!.data.mergedAt, "2026-04-09T12:00:00.000Z");
+  } finally {
+    await restore();
+  }
+});
+
+Deno.test("pr_merged: throws if no pullRequest linked", async () => {
+  const { context, restore } = await buildTestContext(42);
+  try {
+    await assertRejects(
+      () => model.methods.pr_merged.execute({}, context),
+      Error,
+      "No pull request linked",
+    );
+  } finally {
+    await restore();
+  }
+});
+
+// ---------------------------------------------------------------------------
+// pr_failed
+// ---------------------------------------------------------------------------
+
+Deno.test("pr_failed: transitions state to pr_failed and writes failure info with attempt", async () => {
+  const { context, writes, restore } = await buildTestContext(42, {
+    resources: {
+      "pullRequest-main": {
+        url: "https://github.com/systeminit/swamp/pull/1141",
+        attempt: 1,
+        linkedAt: "2026-04-09T10:00:00.000Z",
+      },
+    },
+  });
+  try {
+    await model.methods.pr_failed.execute(
+      { reason: "CI failed: type check errors" },
+      context,
+    );
+
+    const stateWrite = writes.find((w) => w.specName === "state");
+    assertEquals(stateWrite !== undefined, true);
+    assertEquals(stateWrite!.data.phase, "pr_failed");
+    assertEquals(stateWrite!.data.issueNumber, 42);
+
+    const prWrite = writes.find((w) => w.specName === "pullRequest");
+    assertEquals(prWrite !== undefined, true);
+    assertEquals(prWrite!.data.attempt, 1);
+    assertEquals(prWrite!.data.failureReason, "CI failed: type check errors");
+    assertEquals(typeof prWrite!.data.failedAt, "string");
+  } finally {
+    await restore();
+  }
+});
+
+Deno.test("pr_failed: throws if no pullRequest linked", async () => {
+  const { context, restore } = await buildTestContext(42);
+  try {
+    await assertRejects(
+      () =>
+        model.methods.pr_failed.execute(
+          { reason: "CI failed" },
+          context,
+        ),
+      Error,
+      "No pull request linked",
+    );
+  } finally {
+    await restore();
+  }
+});
+
+Deno.test("pr_failed: rejects empty reason via zod schema", async () => {
+  await assertRejects(
+    () => model.methods.pr_failed.arguments.parseAsync({ reason: "" }),
+  );
+});
+
+// ---------------------------------------------------------------------------
+// ship
+// ---------------------------------------------------------------------------
+
+Deno.test("ship: transitions state to done", async () => {
+  const { context, writes, restore } = await buildTestContext(42);
+  try {
+    await model.methods.ship.execute({}, context);
+
+    const stateWrite = writes.find((w) => w.specName === "state");
+    assertEquals(stateWrite !== undefined, true);
+    assertEquals(stateWrite!.data.phase, "done");
+    assertEquals(stateWrite!.data.issueNumber, 42);
+  } finally {
+    await restore();
+  }
+});
+
+Deno.test("ship: accepts optional releaseUrl and releaseNotes", async () => {
+  const { context, restore } = await buildTestContext(42);
+  try {
+    // Should not throw
+    await model.methods.ship.execute(
+      {
+        releaseUrl: "https://github.com/systeminit/swamp/releases/tag/v1.0.0",
+        releaseNotes: "Bug fix release",
+      },
+      context,
+    );
+  } finally {
+    await restore();
+  }
+});
+
+// ---------------------------------------------------------------------------
+// Model registration smoke tests (new methods)
+// ---------------------------------------------------------------------------
+
+Deno.test("model: exposes pr_merged method definition", () => {
+  assertEquals("pr_merged" in model.methods, true);
+});
+
+Deno.test("model: exposes pr_failed method definition", () => {
+  assertEquals("pr_failed" in model.methods, true);
+});
+
+Deno.test("model: exposes ship method definition", () => {
+  assertEquals("ship" in model.methods, true);
 });
