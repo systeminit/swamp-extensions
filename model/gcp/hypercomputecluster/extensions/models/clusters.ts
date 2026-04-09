@@ -202,7 +202,7 @@ const GlobalArgsSchema = z.object({
       ).optional(),
     }),
   ).describe(
-    "Optional. Network resources available to the cluster. Must contain at most one value. Keys specify the ID of the network resource by which it can be referenced elsewhere, and must conform to [RFC-1034](https://datatracker.ietf.org/doc/html/rfc1034) (lower-case, alphanumeric, and at most 63 characters).",
+    "Optional. Network resources available to the cluster. Must contain exactly one value. Keys specify the ID of the network resource by which it can be referenced elsewhere, and must conform to [RFC-1034](https://datatracker.ietf.org/doc/html/rfc1034) (lower-case, alphanumeric, and at most 63 characters).",
   ).optional(),
   orchestrator: z.object({
     slurm: z.object({
@@ -266,7 +266,7 @@ const GlobalArgsSchema = z.object({
       ).optional(),
       nodeSets: z.array(z.object({
         computeId: z.string().describe(
-          "Optional. ID of the compute resource on which this nodeset will run. Must match a key in the cluster's compute_resources.",
+          "Required. ID of the compute resource on which this nodeset will run. Must match a key in the cluster's compute_resources.",
         ).optional(),
         computeInstance: z.object({
           bootDisk: z.unknown().describe(
@@ -611,7 +611,7 @@ const InputsSchema = z.object({
       ).optional(),
     }),
   ).describe(
-    "Optional. Network resources available to the cluster. Must contain at most one value. Keys specify the ID of the network resource by which it can be referenced elsewhere, and must conform to [RFC-1034](https://datatracker.ietf.org/doc/html/rfc1034) (lower-case, alphanumeric, and at most 63 characters).",
+    "Optional. Network resources available to the cluster. Must contain exactly one value. Keys specify the ID of the network resource by which it can be referenced elsewhere, and must conform to [RFC-1034](https://datatracker.ietf.org/doc/html/rfc1034) (lower-case, alphanumeric, and at most 63 characters).",
   ).optional(),
   orchestrator: z.object({
     slurm: z.object({
@@ -675,7 +675,7 @@ const InputsSchema = z.object({
       ).optional(),
       nodeSets: z.array(z.object({
         computeId: z.string().describe(
-          "Optional. ID of the compute resource on which this nodeset will run. Must match a key in the cluster's compute_resources.",
+          "Required. ID of the compute resource on which this nodeset will run. Must match a key in the cluster's compute_resources.",
         ).optional(),
         computeInstance: z.object({
           bootDisk: z.unknown().describe(
@@ -858,7 +858,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/hypercomputecluster/clusters",
-  version: "2026.04.04.1",
+  version: "2026.04.09.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -887,6 +887,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.04.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.09.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

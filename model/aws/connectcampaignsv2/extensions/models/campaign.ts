@@ -299,6 +299,16 @@ const GlobalArgsSchema = z.object({
       "Enumeration of Instance Limits handling in a Campaign",
     ).optional(),
   }).describe("Communication limits config").optional(),
+  EntryLimitsConfig: z.object({
+    MaxEntryCount: z.number().int().min(0).describe(
+      "Maximum number of entries per participant. 0 indicates unlimited entries.",
+    ),
+    MinEntryInterval: z.string().min(0).max(50).regex(
+      new RegExp("^[a-zA-Z0-9.]*$"),
+    ).describe(
+      "Minimum time interval between entries for the same participant in ISO 8601 duration format",
+    ),
+  }).describe("Entry limits config for a campaign").optional(),
   Tags: z.array(TagSchema).describe("One or more tags.").optional(),
 });
 
@@ -333,6 +343,10 @@ const StateSchema = z.object({
   CommunicationLimitsOverride: z.object({
     AllChannelsSubtypes: CommunicationLimitsSchema,
     InstanceLimitsHandling: z.string(),
+  }).optional(),
+  EntryLimitsConfig: z.object({
+    MaxEntryCount: z.number(),
+    MinEntryInterval: z.string(),
   }).optional(),
   Tags: z.array(TagSchema).optional(),
 }).passthrough();
@@ -399,12 +413,22 @@ const InputsSchema = z.object({
       "Enumeration of Instance Limits handling in a Campaign",
     ).optional(),
   }).describe("Communication limits config").optional(),
+  EntryLimitsConfig: z.object({
+    MaxEntryCount: z.number().int().min(0).describe(
+      "Maximum number of entries per participant. 0 indicates unlimited entries.",
+    ).optional(),
+    MinEntryInterval: z.string().min(0).max(50).regex(
+      new RegExp("^[a-zA-Z0-9.]*$"),
+    ).describe(
+      "Minimum time interval between entries for the same participant in ISO 8601 duration format",
+    ).optional(),
+  }).describe("Entry limits config for a campaign").optional(),
   Tags: z.array(TagSchema).describe("One or more tags.").optional(),
 });
 
 export const model = {
   type: "@swamp/aws/connectcampaignsv2/campaign",
-  version: "2026.04.03.2",
+  version: "2026.04.09.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -419,6 +443,11 @@ export const model = {
     {
       toVersion: "2026.04.03.2",
       description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.09.1",
+      description: "Added: EntryLimitsConfig",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },
   ],

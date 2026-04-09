@@ -90,19 +90,6 @@ const GlobalArgsSchema = z.object({
       }).describe(
         "The specification for how to build a geo search index for a field.",
       ).optional(),
-      numberSpec: z.object({
-        indexType: z.enum([
-          "NUMBER_INDEX_TYPE_UNSPECIFIED",
-          "FLOAT64",
-          "INT32_LOG_TREE",
-          "INT64_LOG_TREE",
-          "INT32_PREFIX_TREE",
-          "INT64_PREFIX_TREE",
-        ]).describe("Required. How to index the number field value.")
-          .optional(),
-      }).describe(
-        "The specification for how to build a number search index for a field.",
-      ).optional(),
       textSpec: z.object({
         indexSpecs: z.array(z.unknown()).describe(
           "Required. Specifications for how the field should be indexed. Repeated so that the field can be indexed in multiple ways.",
@@ -136,9 +123,6 @@ const GlobalArgsSchema = z.object({
     "Indexes with a collection query scope specified allow queries against a collection that is the child of a specific document, specified at query time, and that has the same collection ID. Indexes with a collection group query scope specified allow queries against all collections descended from a specific document, specified at query time, and that have the same collection ID as this index.",
   ).optional(),
   searchIndexOptions: z.object({
-    customPartitionFieldPaths: z.array(z.string()).describe(
-      "Optional. Custom partition fields to use for the search index. If unspecified, all indexed fields will be in the same default partition. If a search index is created specifying custom partition fields, all search queries using that index will be required to filter on the partition. For indexes with MONGODB_COMPATIBLE_API ApiScope: This must refer to a top level field name.",
-    ).optional(),
     textLanguage: z.string().describe(
       "Optional. The language to use for text search indexes. Used as the default language if not overridden at the document level by specifying the `text_language_override_field`. The language is specified as a BCP 47 language code. For indexes with MONGODB_COMPATIBLE_API ApiScope: If unspecified, the default language is English. For indexes with `ANY_API` ApiScope: If unspecified, the default behavior is autodetect.",
     ).optional(),
@@ -168,9 +152,6 @@ const StateSchema = z.object({
       geoSpec: z.object({
         geoJsonIndexingDisabled: z.boolean(),
       }),
-      numberSpec: z.object({
-        indexType: z.string(),
-      }),
       textSpec: z.object({
         indexSpecs: z.array(z.unknown()),
       }),
@@ -184,7 +165,6 @@ const StateSchema = z.object({
   name: z.string(),
   queryScope: z.string().optional(),
   searchIndexOptions: z.object({
-    customPartitionFieldPaths: z.array(z.string()),
     textLanguage: z.string(),
     textLanguageOverrideFieldPath: z.string(),
   }).optional(),
@@ -219,19 +199,6 @@ const InputsSchema = z.object({
       }).describe(
         "The specification for how to build a geo search index for a field.",
       ).optional(),
-      numberSpec: z.object({
-        indexType: z.enum([
-          "NUMBER_INDEX_TYPE_UNSPECIFIED",
-          "FLOAT64",
-          "INT32_LOG_TREE",
-          "INT64_LOG_TREE",
-          "INT32_PREFIX_TREE",
-          "INT64_PREFIX_TREE",
-        ]).describe("Required. How to index the number field value.")
-          .optional(),
-      }).describe(
-        "The specification for how to build a number search index for a field.",
-      ).optional(),
       textSpec: z.object({
         indexSpecs: z.array(z.unknown()).describe(
           "Required. Specifications for how the field should be indexed. Repeated so that the field can be indexed in multiple ways.",
@@ -265,9 +232,6 @@ const InputsSchema = z.object({
     "Indexes with a collection query scope specified allow queries against a collection that is the child of a specific document, specified at query time, and that has the same collection ID. Indexes with a collection group query scope specified allow queries against all collections descended from a specific document, specified at query time, and that have the same collection ID as this index.",
   ).optional(),
   searchIndexOptions: z.object({
-    customPartitionFieldPaths: z.array(z.string()).describe(
-      "Optional. Custom partition fields to use for the search index. If unspecified, all indexed fields will be in the same default partition. If a search index is created specifying custom partition fields, all search queries using that index will be required to filter on the partition. For indexes with MONGODB_COMPATIBLE_API ApiScope: This must refer to a top level field name.",
-    ).optional(),
     textLanguage: z.string().describe(
       "Optional. The language to use for text search indexes. Used as the default language if not overridden at the document level by specifying the `text_language_override_field`. The language is specified as a BCP 47 language code. For indexes with MONGODB_COMPATIBLE_API ApiScope: If unspecified, the default language is English. For indexes with `ANY_API` ApiScope: If unspecified, the default behavior is autodetect.",
     ).optional(),
@@ -288,7 +252,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/firestore/databases-collectiongroups-indexes",
-  version: "2026.04.04.1",
+  version: "2026.04.09.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -317,6 +281,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.04.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.09.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

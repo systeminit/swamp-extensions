@@ -718,9 +718,12 @@ const GlobalArgsSchema = z.object({
   ).optional(),
   runtimeUpdatableParams: z.object({
     acceptableBacklogDuration: z.string().describe(
-      "Optional. Deprecated: Use `autoscaling_tier` instead. The backlog threshold duration in seconds for autoscaling. Value must be non-negative.",
+      "Optional. Deprecated: Use `latency_tier` instead. The backlog threshold duration in seconds for autoscaling. Value must be non-negative.",
     ).optional(),
     autoscalingTier: z.string().describe(
+      'Optional. Deprecated: Use `latency_tier` instead. The backlog threshold tier for autoscaling. Value must be one of "low-latency", "medium-latency", or "high-latency".',
+    ).optional(),
+    latencyTier: z.string().describe(
       'Optional. The backlog threshold tier for autoscaling. Value must be one of "low-latency", "medium-latency", or "high-latency".',
     ).optional(),
     maxNumWorkers: z.number().int().describe(
@@ -1023,6 +1026,7 @@ const StateSchema = z.object({
   runtimeUpdatableParams: z.object({
     acceptableBacklogDuration: z.string(),
     autoscalingTier: z.string(),
+    latencyTier: z.string(),
     maxNumWorkers: z.number(),
     minNumWorkers: z.number(),
     workerUtilizationHint: z.number(),
@@ -1679,9 +1683,12 @@ const InputsSchema = z.object({
   ).optional(),
   runtimeUpdatableParams: z.object({
     acceptableBacklogDuration: z.string().describe(
-      "Optional. Deprecated: Use `autoscaling_tier` instead. The backlog threshold duration in seconds for autoscaling. Value must be non-negative.",
+      "Optional. Deprecated: Use `latency_tier` instead. The backlog threshold duration in seconds for autoscaling. Value must be non-negative.",
     ).optional(),
     autoscalingTier: z.string().describe(
+      'Optional. Deprecated: Use `latency_tier` instead. The backlog threshold tier for autoscaling. Value must be one of "low-latency", "medium-latency", or "high-latency".',
+    ).optional(),
+    latencyTier: z.string().describe(
       'Optional. The backlog threshold tier for autoscaling. Value must be one of "low-latency", "medium-latency", or "high-latency".',
     ).optional(),
     maxNumWorkers: z.number().int().describe(
@@ -1765,7 +1772,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/dataflow/jobs",
-  version: "2026.04.04.1",
+  version: "2026.04.09.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -1794,6 +1801,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.04.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.09.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

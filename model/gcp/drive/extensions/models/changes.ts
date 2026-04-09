@@ -176,6 +176,18 @@ const StateSchema = z.object({
       canTrashChildren: z.boolean(),
       canUntrash: z.boolean(),
     }),
+    clientEncryptionDetails: z.object({
+      decryptionMetadata: z.object({
+        aes256GcmChunkSize: z.string(),
+        encryptionResourceKeyHash: z.string(),
+        jwt: z.string(),
+        kaclsId: z.string(),
+        kaclsName: z.string(),
+        keyFormat: z.string(),
+        wrappedKey: z.string(),
+      }),
+      encryptionState: z.string(),
+    }),
     contentHints: z.object({
       indexableText: z.string(),
       thumbnail: z.object({
@@ -436,7 +448,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/drive/changes",
-  version: "2026.04.04.1",
+  version: "2026.04.09.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -465,6 +477,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.04.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.09.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

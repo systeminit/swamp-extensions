@@ -154,6 +154,35 @@ const GlobalArgsSchema = z.object({
   appProperties: z.record(z.string(), z.string()).describe(
     "A collection of arbitrary key-value pairs which are private to the requesting app. Entries with null values are cleared in update and copy requests. These properties can only be retrieved using an authenticated request. An authenticated request uses an access token obtained with a OAuth 2 client ID. You cannot use an API key to retrieve private properties.",
   ).optional(),
+  clientEncryptionDetails: z.object({
+    decryptionMetadata: z.object({
+      aes256GcmChunkSize: z.string().describe(
+        "Chunk size used if content was encrypted with the AES 256 GCM Cipher. Possible values are: - default - small",
+      ).optional(),
+      encryptionResourceKeyHash: z.string().describe(
+        "The URL-safe Base64 encoded HMAC-SHA256 digest of the resource metadata with its DEK (Data Encryption Key); see https://developers.google.com/workspace/cse/reference",
+      ).optional(),
+      jwt: z.string().describe(
+        "The signed JSON Web Token (JWT) which can be used to authorize the requesting user with the Key ACL Service (KACLS). The JWT asserts that the requesting user has at least read permissions on the file.",
+      ).optional(),
+      kaclsId: z.string().describe(
+        "The ID of the KACLS (Key ACL Service) used to encrypt the file.",
+      ).optional(),
+      kaclsName: z.string().describe(
+        "The name of the KACLS (Key ACL Service) used to encrypt the file.",
+      ).optional(),
+      keyFormat: z.string().describe(
+        "Key format for the unwrapped key. Must be `tinkAesGcmKey`.",
+      ).optional(),
+      wrappedKey: z.string().describe(
+        "The URL-safe Base64 encoded wrapped key used to encrypt the contents of the file.",
+      ).optional(),
+    }).describe("Representation of the CSE DecryptionMetadata.").optional(),
+    encryptionState: z.string().describe(
+      "The encryption state of the file. The values expected here are: - encrypted - unencrypted",
+    ).optional(),
+  }).describe("Details about the client-side encryption applied to the file.")
+    .optional(),
   contentHints: z.object({
     indexableText: z.string().describe(
       "Text to be indexed for the file to improve fullText queries. This is limited to 128 KB in length and may contain HTML elements.",
@@ -335,7 +364,7 @@ const GlobalArgsSchema = z.object({
   starred: z.boolean().describe("Whether the user has starred the file.")
     .optional(),
   trashed: z.boolean().describe(
-    "Whether the file has been trashed, either explicitly or from a trashed parent folder. Only the owner may trash a file, and other users cannot see files in the owner's trash.",
+    "Whether the file has been trashed, either explicitly or from a trashed parent folder. Only the owner may trash a file, but other users can still access the file in the owner's trash until it's permanently deleted.",
   ).optional(),
   trashedTime: z.string().describe(
     "The time that the item was trashed (RFC 3339 date-time). Only populated for items in shared drives.",
@@ -436,6 +465,18 @@ const StateSchema = z.object({
     canTrash: z.boolean(),
     canTrashChildren: z.boolean(),
     canUntrash: z.boolean(),
+  }).optional(),
+  clientEncryptionDetails: z.object({
+    decryptionMetadata: z.object({
+      aes256GcmChunkSize: z.string(),
+      encryptionResourceKeyHash: z.string(),
+      jwt: z.string(),
+      kaclsId: z.string(),
+      kaclsName: z.string(),
+      keyFormat: z.string(),
+      wrappedKey: z.string(),
+    }),
+    encryptionState: z.string(),
   }).optional(),
   contentHints: z.object({
     indexableText: z.string(),
@@ -636,6 +677,35 @@ const InputsSchema = z.object({
   appProperties: z.record(z.string(), z.string()).describe(
     "A collection of arbitrary key-value pairs which are private to the requesting app. Entries with null values are cleared in update and copy requests. These properties can only be retrieved using an authenticated request. An authenticated request uses an access token obtained with a OAuth 2 client ID. You cannot use an API key to retrieve private properties.",
   ).optional(),
+  clientEncryptionDetails: z.object({
+    decryptionMetadata: z.object({
+      aes256GcmChunkSize: z.string().describe(
+        "Chunk size used if content was encrypted with the AES 256 GCM Cipher. Possible values are: - default - small",
+      ).optional(),
+      encryptionResourceKeyHash: z.string().describe(
+        "The URL-safe Base64 encoded HMAC-SHA256 digest of the resource metadata with its DEK (Data Encryption Key); see https://developers.google.com/workspace/cse/reference",
+      ).optional(),
+      jwt: z.string().describe(
+        "The signed JSON Web Token (JWT) which can be used to authorize the requesting user with the Key ACL Service (KACLS). The JWT asserts that the requesting user has at least read permissions on the file.",
+      ).optional(),
+      kaclsId: z.string().describe(
+        "The ID of the KACLS (Key ACL Service) used to encrypt the file.",
+      ).optional(),
+      kaclsName: z.string().describe(
+        "The name of the KACLS (Key ACL Service) used to encrypt the file.",
+      ).optional(),
+      keyFormat: z.string().describe(
+        "Key format for the unwrapped key. Must be `tinkAesGcmKey`.",
+      ).optional(),
+      wrappedKey: z.string().describe(
+        "The URL-safe Base64 encoded wrapped key used to encrypt the contents of the file.",
+      ).optional(),
+    }).describe("Representation of the CSE DecryptionMetadata.").optional(),
+    encryptionState: z.string().describe(
+      "The encryption state of the file. The values expected here are: - encrypted - unencrypted",
+    ).optional(),
+  }).describe("Details about the client-side encryption applied to the file.")
+    .optional(),
   contentHints: z.object({
     indexableText: z.string().describe(
       "Text to be indexed for the file to improve fullText queries. This is limited to 128 KB in length and may contain HTML elements.",
@@ -817,7 +887,7 @@ const InputsSchema = z.object({
   starred: z.boolean().describe("Whether the user has starred the file.")
     .optional(),
   trashed: z.boolean().describe(
-    "Whether the file has been trashed, either explicitly or from a trashed parent folder. Only the owner may trash a file, and other users cannot see files in the owner's trash.",
+    "Whether the file has been trashed, either explicitly or from a trashed parent folder. Only the owner may trash a file, but other users can still access the file in the owner's trash until it's permanently deleted.",
   ).optional(),
   trashedTime: z.string().describe(
     "The time that the item was trashed (RFC 3339 date-time). Only populated for items in shared drives.",
@@ -873,7 +943,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/drive/files",
-  version: "2026.04.03.3",
+  version: "2026.04.09.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -900,6 +970,11 @@ export const model = {
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },
+    {
+      toVersion: "2026.04.09.1",
+      description: "Added: clientEncryptionDetails",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
   ],
   globalArguments: GlobalArgsSchema,
   inputsSchema: InputsSchema,
@@ -923,6 +998,9 @@ export const model = {
         const body: Record<string, unknown> = {};
         if (g["appProperties"] !== undefined) {
           body["appProperties"] = g["appProperties"];
+        }
+        if (g["clientEncryptionDetails"] !== undefined) {
+          body["clientEncryptionDetails"] = g["clientEncryptionDetails"];
         }
         if (g["contentHints"] !== undefined) {
           body["contentHints"] = g["contentHints"];
@@ -1084,6 +1162,9 @@ export const model = {
         const body: Record<string, unknown> = {};
         if (g["appProperties"] !== undefined) {
           body["appProperties"] = g["appProperties"];
+        }
+        if (g["clientEncryptionDetails"] !== undefined) {
+          body["clientEncryptionDetails"] = g["clientEncryptionDetails"];
         }
         if (g["contentHints"] !== undefined) {
           body["contentHints"] = g["contentHints"];
@@ -1256,6 +1337,7 @@ export const model = {
       arguments: z.object({
         appProperties: z.any().optional(),
         capabilities: z.any().optional(),
+        clientEncryptionDetails: z.any().optional(),
         contentHints: z.any().optional(),
         contentRestrictions: z.any().optional(),
         copyRequiresWriterPermission: z.any().optional(),
@@ -1343,6 +1425,9 @@ export const model = {
         }
         if (args["capabilities"] !== undefined) {
           body["capabilities"] = args["capabilities"];
+        }
+        if (args["clientEncryptionDetails"] !== undefined) {
+          body["clientEncryptionDetails"] = args["clientEncryptionDetails"];
         }
         if (args["contentHints"] !== undefined) {
           body["contentHints"] = args["contentHints"];
@@ -1627,6 +1712,30 @@ export const model = {
             "parameters": {
               "fileId": { "location": "path", "required": true },
               "mimeType": { "location": "query", "required": true },
+            },
+          },
+          params,
+          {},
+        );
+        return { result };
+      },
+    },
+    generate_cse_token: {
+      description: "generate cse token",
+      arguments: z.object({}),
+      execute: async (_args: Record<string, unknown>, _context: any) => {
+        const projectId = await getProjectId();
+        const params: Record<string, string> = { project: projectId };
+        const result = await createResource(
+          BASE_URL,
+          {
+            "id": "drive.files.generateCseToken",
+            "path": "files/generateCseToken",
+            "httpMethod": "GET",
+            "parameterOrder": [],
+            "parameters": {
+              "fileId": { "location": "query" },
+              "parent": { "location": "query" },
             },
           },
           params,

@@ -187,6 +187,9 @@ const GlobalArgsSchema = z.object({
     enabled: z.boolean().describe(
       "Optional. Setting this to true allows the git and http proxies to perform actions on behalf of the user configured under the account connector.",
     ).optional(),
+    httpProxyBaseUri: z.string().describe(
+      "Output only. The base URI for the HTTP proxy endpoint. Has the format `https://{generatedID}-a-h-{shortRegion}.developerconnect.dev` Populated only when `enabled` is set to `true`. This endpoint is used by other Google services that integrate with Developer Connect.",
+    ).optional(),
   }).describe("The proxy configuration.").optional(),
   accountConnectorId: z.string().describe(
     "Required. The ID to use for the AccountConnector, which will become the final component of the AccountConnector's resource name. Its format should adhere to https://google.aip.dev/122#resource-id-segments Names must be unique per-project per-location.",
@@ -227,7 +230,9 @@ const StateSchema = z.object({
   }).optional(),
   proxyConfig: z.object({
     enabled: z.boolean(),
+    httpProxyBaseUri: z.string(),
   }).optional(),
+  uid: z.string().optional(),
   updateTime: z.string().optional(),
 }).passthrough();
 
@@ -307,6 +312,9 @@ const InputsSchema = z.object({
     enabled: z.boolean().describe(
       "Optional. Setting this to true allows the git and http proxies to perform actions on behalf of the user configured under the account connector.",
     ).optional(),
+    httpProxyBaseUri: z.string().describe(
+      "Output only. The base URI for the HTTP proxy endpoint. Has the format `https://{generatedID}-a-h-{shortRegion}.developerconnect.dev` Populated only when `enabled` is set to `true`. This endpoint is used by other Google services that integrate with Developer Connect.",
+    ).optional(),
   }).describe("The proxy configuration.").optional(),
   accountConnectorId: z.string().describe(
     "Required. The ID to use for the AccountConnector, which will become the final component of the AccountConnector's resource name. Its format should adhere to https://google.aip.dev/122#resource-id-segments Names must be unique per-project per-location.",
@@ -321,7 +329,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/developerconnect/accountconnectors",
-  version: "2026.04.03.3",
+  version: "2026.04.09.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -345,6 +353,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.3",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.09.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },
