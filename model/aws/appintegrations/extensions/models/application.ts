@@ -44,7 +44,7 @@ const GlobalArgsSchema = z.object({
   ).describe("The namespace of the application."),
   Description: z.string().min(1).max(1000).describe(
     "The application description.",
-  ),
+  ).optional(),
   ApplicationSourceConfig: z.object({
     ExternalUrlConfig: ExternalUrlConfigSchema,
   }).describe("Application source config"),
@@ -58,6 +58,9 @@ const GlobalArgsSchema = z.object({
   ).optional(),
   IsService: z.boolean().describe("Indicates if the application is a service")
     .optional(),
+  ApplicationType: z.enum(["STANDARD", "SERVICE", "MCP_SERVER"]).describe(
+    "The type of application",
+  ).optional(),
   InitializationTimeout: z.number().int().describe(
     "The initialization timeout in milliseconds. Required when IsService is true.",
   ).optional(),
@@ -84,6 +87,7 @@ const StateSchema = z.object({
   Permissions: z.array(z.string()).optional(),
   Tags: z.array(TagSchema).optional(),
   IsService: z.boolean().optional(),
+  ApplicationType: z.string().optional(),
   InitializationTimeout: z.number().optional(),
   ApplicationConfig: z.object({
     ContactHandling: ContactHandlingSchema,
@@ -120,6 +124,9 @@ const InputsSchema = z.object({
   ).optional(),
   IsService: z.boolean().describe("Indicates if the application is a service")
     .optional(),
+  ApplicationType: z.enum(["STANDARD", "SERVICE", "MCP_SERVER"]).describe(
+    "The type of application",
+  ).optional(),
   InitializationTimeout: z.number().int().describe(
     "The initialization timeout in milliseconds. Required when IsService is true.",
   ).optional(),
@@ -136,7 +143,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/aws/appintegrations/application",
-  version: "2026.04.03.2",
+  version: "2026.04.09.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -151,6 +158,11 @@ export const model = {
     {
       toVersion: "2026.04.03.2",
       description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.09.1",
+      description: "Added: ApplicationType",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },
   ],
