@@ -64,7 +64,7 @@ Deno.test("start is allowed from every non-terminal phase (restart invariant)", 
   }
 });
 
-Deno.test("happy path: created → triaging → classified → plan_generated → approved → implementing → pr_open → done", () => {
+Deno.test("happy path: created → triaging → classified → plan_generated → approved → implementing → pr_open → releasing → done", () => {
   // Walk the linear happy path one method at a time and verify each method's
   // required source phase is in its TRANSITIONS entry. This catches the case
   // where someone reorders the state machine and forgets to update an edge.
@@ -75,7 +75,8 @@ Deno.test("happy path: created → triaging → classified → plan_generated �
     { method: "approve", from: "plan_generated" },
     { method: "implement", from: "approved" },
     { method: "link_pr", from: "implementing" },
-    { method: "complete", from: "pr_open" },
+    { method: "pr_merged", from: "pr_open" },
+    { method: "ship", from: "releasing" },
   ];
   for (const { method, from } of happyPath) {
     const allowed = TRANSITIONS[method];
@@ -111,38 +112,41 @@ Deno.test("approval gate: approve only allowed from plan_generated", () => {
   assertEquals(TRANSITIONS.approve, ["plan_generated"]);
 });
 
-Deno.test("implementation gate: implement only allowed from approved", () => {
-  assertEquals(TRANSITIONS.implement, ["approved"]);
+Deno.test("implementation gate: implement allowed from approved and pr_failed", () => {
+  assertEquals(TRANSITIONS.implement, ["approved", "pr_failed"]);
 });
 
-Deno.test("completion gate: complete allowed from implementing and pr_open", () => {
+Deno.test("completion gate: complete allowed from implementing, pr_open, and releasing", () => {
   // complete is the exit path from the implementation span. It accepts
-  // both 'implementing' (legacy/no-PR path) and 'pr_open' (the new
-  // link_pr → pr_open → complete path). No ci_review phase or fix loop.
-  assertEquals(TRANSITIONS.complete, ["implementing", "pr_open"]);
+  // 'implementing' (legacy/no-PR path), 'pr_open' (the link_pr → pr_open
+  // → complete path), and 'releasing' (backwards compat for new flow).
+  assertEquals(TRANSITIONS.complete, ["implementing", "pr_open", "releasing"]);
 });
 
 // ---------------------------------------------------------------------------
 // PR linkage additions (v2026.04.08.2)
 // ---------------------------------------------------------------------------
 
-Deno.test("Phase: pr_open sits between implementing and done", () => {
+Deno.test("Phase: pr_open, pr_failed, releasing sit between implementing and done", () => {
   const phases = Phase.options;
   const implementingIdx = phases.indexOf("implementing");
   const prOpenIdx = phases.indexOf("pr_open");
+  const prFailedIdx = phases.indexOf("pr_failed");
+  const releasingIdx = phases.indexOf("releasing");
   const doneIdx = phases.indexOf("done");
 
   assertEquals(prOpenIdx, implementingIdx + 1);
-  assertEquals(doneIdx, prOpenIdx + 1);
+  assertEquals(prFailedIdx, prOpenIdx + 1);
+  assertEquals(releasingIdx, prFailedIdx + 1);
+  assertEquals(doneIdx, releasingIdx + 1);
 });
 
-Deno.test("TRANSITIONS: link_pr is idempotent from implementing and pr_open", () => {
-  // Accepting both source phases is what makes link_pr re-callable: the
+Deno.test("TRANSITIONS: link_pr accepts implementing, pr_open, and pr_failed", () => {
+  // Accepting all three source phases makes link_pr re-callable: the
   // first call moves implementing → pr_open, subsequent calls overwrite
-  // the pullRequest resource while staying in pr_open. This supports URL
-  // corrections, replacement PRs, and force-push workflows without a
-  // separate phase.
-  assertEquals(TRANSITIONS.link_pr, ["implementing", "pr_open"]);
+  // the pullRequest resource while staying in pr_open. pr_failed allows
+  // recovery by linking a replacement PR after failure.
+  assertEquals(TRANSITIONS.link_pr, ["implementing", "pr_open", "pr_failed"]);
 });
 
 Deno.test("TRANSITIONS: link_pr is rejected from earlier lifecycle phases", () => {
