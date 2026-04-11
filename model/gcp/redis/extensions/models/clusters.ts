@@ -372,6 +372,9 @@ const GlobalArgsSchema = z.object({
     "REDIS_HIGHMEM_MEDIUM",
     "REDIS_HIGHMEM_XLARGE",
     "REDIS_STANDARD_SMALL",
+    "REDIS_HIGHCPU_MEDIUM",
+    "REDIS_STANDARD_LARGE",
+    "REDIS_HIGHMEM_2XLARGE",
   ]).describe(
     "Optional. The type of a redis node in the cluster. NodeType determines the underlying machine-type of a redis node.",
   ).optional(),
@@ -438,6 +441,9 @@ const GlobalArgsSchema = z.object({
         "REDIS_HIGHMEM_MEDIUM",
         "REDIS_HIGHMEM_XLARGE",
         "REDIS_STANDARD_SMALL",
+        "REDIS_HIGHCPU_MEDIUM",
+        "REDIS_STANDARD_LARGE",
+        "REDIS_HIGHMEM_2XLARGE",
       ]).describe("Target node type for redis cluster.").optional(),
       targetReplicaCount: z.number().int().describe(
         "Target number of replica nodes per shard.",
@@ -925,6 +931,9 @@ const InputsSchema = z.object({
     "REDIS_HIGHMEM_MEDIUM",
     "REDIS_HIGHMEM_XLARGE",
     "REDIS_STANDARD_SMALL",
+    "REDIS_HIGHCPU_MEDIUM",
+    "REDIS_STANDARD_LARGE",
+    "REDIS_HIGHMEM_2XLARGE",
   ]).describe(
     "Optional. The type of a redis node in the cluster. NodeType determines the underlying machine-type of a redis node.",
   ).optional(),
@@ -991,6 +1000,9 @@ const InputsSchema = z.object({
         "REDIS_HIGHMEM_MEDIUM",
         "REDIS_HIGHMEM_XLARGE",
         "REDIS_STANDARD_SMALL",
+        "REDIS_HIGHCPU_MEDIUM",
+        "REDIS_STANDARD_LARGE",
+        "REDIS_HIGHMEM_2XLARGE",
       ]).describe("Target node type for redis cluster.").optional(),
       targetReplicaCount: z.number().int().describe(
         "Target number of replica nodes per shard.",
@@ -1034,7 +1046,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/redis/clusters",
-  version: "2026.04.04.1",
+  version: "2026.04.11.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -1063,6 +1075,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.04.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.11.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

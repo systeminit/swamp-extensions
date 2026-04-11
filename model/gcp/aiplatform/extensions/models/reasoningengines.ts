@@ -92,22 +92,25 @@ const GlobalArgsSchema = z.object({
       customizationConfigs: z.array(z.object({
         consolidationConfig: z.object({
           revisionsPerCandidateCount: z.unknown().describe(
-            "Optional. The maximum number of revisions to consider for each candidate memory. If not set, then the default value (1) will be used, which means that only the latest revision will be considered.",
+            "Optional. Represents the maximum number of revisions to consider for each candidate memory. If not set, then the default value (1) will be used, which means that only the latest revision will be considered.",
           ).optional(),
         }).describe(
           "Represents configuration for customizing how memories are consolidated.",
         ).optional(),
+        disableNaturalLanguageMemories: z.boolean().describe(
+          "Optional. Indicates whether natural language memory generation should be disabled for all requests. By default, natural language memory generation is enabled. Set this to `true` when you only want to generate structured memories.",
+        ).optional(),
         enableThirdPersonMemories: z.boolean().describe(
-          'Optional. If true, then the memories will be generated in the third person (i.e. "The user generates memories with Memory Bank."). By default, the memories will be generated in the first person (i.e. "I generate memories with Memory Bank.")',
+          'Optional. Indicates whether the memories will be generated in the third person (i.e. "The user generates memories with Memory Bank."). By default, the memories will be generated in the first person (i.e. "I generate memories with Memory Bank.")',
         ).optional(),
         generateMemoriesExamples: z.array(z.unknown()).describe(
-          "Optional. Examples of how to generate memories for a particular scope.",
+          "Optional. Provides examples of how to generate memories for a particular scope.",
         ).optional(),
         memoryTopics: z.array(z.unknown()).describe(
-          "Optional. Topics of information that should be extracted from conversations and stored as memories. If not set, then Memory Bank's default topics will be used.",
+          "Optional. Represents topics of information that should be extracted from conversations and stored as memories. If not set, then Memory Bank's default topics will be used.",
         ).optional(),
         scopeKeys: z.array(z.unknown()).describe(
-          "Optional. The scope keys (i.e. 'user_id') for which to use this config. A request's scope must include all of the provided keys for the config to be used (order does not matter). If empty, then the config will be used for all requests that do not have a more specific config. Only one default config is allowed per Memory Bank.",
+          "Optional. Represents the scope keys (i.e. 'user_id') for which to use this config. A request's scope must include all of the provided keys for the config to be used (order does not matter). If empty, then the config will be used for all requests that do not have a more specific config. Only one default config is allowed per Memory Bank.",
         ).optional(),
       })).describe(
         "Optional. Configuration for how to customize Memory Bank behavior for a particular scope.",
@@ -116,8 +119,24 @@ const GlobalArgsSchema = z.object({
         "If true, no memory revisions will be created for any requests to the Memory Bank.",
       ).optional(),
       generationConfig: z.object({
+        generationTriggerConfig: z.object({
+          generationRule: z.object({
+            eventCount: z.unknown().describe(
+              "Optional. Specifies to trigger generation when the event count reaches this limit.",
+            ).optional(),
+            fixedInterval: z.unknown().describe(
+              "Optional. Specifies to trigger generation at a fixed interval. The duration must have a minute-level granularity.",
+            ).optional(),
+            idleDuration: z.unknown().describe(
+              "Optional. Specifies to trigger generation if the stream is inactive for the specified duration after the most recent event. The duration must have a minute-level granularity.",
+            ).optional(),
+          }).describe(
+            "Represents the active rule that determines when to flush the buffer.",
+          ).optional(),
+        }).describe("Represents configuration for triggering generation.")
+          .optional(),
         model: z.string().describe(
-          "Required. The model used to generate memories. Format: `projects/{project}/locations/{location}/publishers/google/models/{model}`.",
+          "Optional. The model used to generate memories. Format: `projects/{project}/locations/{location}/publishers/google/models/{model}`.",
         ).optional(),
       }).describe("Configuration for how to generate memories.").optional(),
       similaritySearchConfig: z.object({
@@ -366,6 +385,7 @@ const StateSchema = z.object({
         consolidationConfig: z.object({
           revisionsPerCandidateCount: z.unknown(),
         }),
+        disableNaturalLanguageMemories: z.boolean(),
         enableThirdPersonMemories: z.boolean(),
         generateMemoriesExamples: z.array(z.unknown()),
         memoryTopics: z.array(z.unknown()),
@@ -373,6 +393,13 @@ const StateSchema = z.object({
       })),
       disableMemoryRevisions: z.boolean(),
       generationConfig: z.object({
+        generationTriggerConfig: z.object({
+          generationRule: z.object({
+            eventCount: z.unknown(),
+            fixedInterval: z.unknown(),
+            idleDuration: z.unknown(),
+          }),
+        }),
         model: z.string(),
       }),
       similaritySearchConfig: z.object({
@@ -486,22 +513,25 @@ const InputsSchema = z.object({
       customizationConfigs: z.array(z.object({
         consolidationConfig: z.object({
           revisionsPerCandidateCount: z.unknown().describe(
-            "Optional. The maximum number of revisions to consider for each candidate memory. If not set, then the default value (1) will be used, which means that only the latest revision will be considered.",
+            "Optional. Represents the maximum number of revisions to consider for each candidate memory. If not set, then the default value (1) will be used, which means that only the latest revision will be considered.",
           ).optional(),
         }).describe(
           "Represents configuration for customizing how memories are consolidated.",
         ).optional(),
+        disableNaturalLanguageMemories: z.boolean().describe(
+          "Optional. Indicates whether natural language memory generation should be disabled for all requests. By default, natural language memory generation is enabled. Set this to `true` when you only want to generate structured memories.",
+        ).optional(),
         enableThirdPersonMemories: z.boolean().describe(
-          'Optional. If true, then the memories will be generated in the third person (i.e. "The user generates memories with Memory Bank."). By default, the memories will be generated in the first person (i.e. "I generate memories with Memory Bank.")',
+          'Optional. Indicates whether the memories will be generated in the third person (i.e. "The user generates memories with Memory Bank."). By default, the memories will be generated in the first person (i.e. "I generate memories with Memory Bank.")',
         ).optional(),
         generateMemoriesExamples: z.array(z.unknown()).describe(
-          "Optional. Examples of how to generate memories for a particular scope.",
+          "Optional. Provides examples of how to generate memories for a particular scope.",
         ).optional(),
         memoryTopics: z.array(z.unknown()).describe(
-          "Optional. Topics of information that should be extracted from conversations and stored as memories. If not set, then Memory Bank's default topics will be used.",
+          "Optional. Represents topics of information that should be extracted from conversations and stored as memories. If not set, then Memory Bank's default topics will be used.",
         ).optional(),
         scopeKeys: z.array(z.unknown()).describe(
-          "Optional. The scope keys (i.e. 'user_id') for which to use this config. A request's scope must include all of the provided keys for the config to be used (order does not matter). If empty, then the config will be used for all requests that do not have a more specific config. Only one default config is allowed per Memory Bank.",
+          "Optional. Represents the scope keys (i.e. 'user_id') for which to use this config. A request's scope must include all of the provided keys for the config to be used (order does not matter). If empty, then the config will be used for all requests that do not have a more specific config. Only one default config is allowed per Memory Bank.",
         ).optional(),
       })).describe(
         "Optional. Configuration for how to customize Memory Bank behavior for a particular scope.",
@@ -510,8 +540,24 @@ const InputsSchema = z.object({
         "If true, no memory revisions will be created for any requests to the Memory Bank.",
       ).optional(),
       generationConfig: z.object({
+        generationTriggerConfig: z.object({
+          generationRule: z.object({
+            eventCount: z.unknown().describe(
+              "Optional. Specifies to trigger generation when the event count reaches this limit.",
+            ).optional(),
+            fixedInterval: z.unknown().describe(
+              "Optional. Specifies to trigger generation at a fixed interval. The duration must have a minute-level granularity.",
+            ).optional(),
+            idleDuration: z.unknown().describe(
+              "Optional. Specifies to trigger generation if the stream is inactive for the specified duration after the most recent event. The duration must have a minute-level granularity.",
+            ).optional(),
+          }).describe(
+            "Represents the active rule that determines when to flush the buffer.",
+          ).optional(),
+        }).describe("Represents configuration for triggering generation.")
+          .optional(),
         model: z.string().describe(
-          "Required. The model used to generate memories. Format: `projects/{project}/locations/{location}/publishers/google/models/{model}`.",
+          "Optional. The model used to generate memories. Format: `projects/{project}/locations/{location}/publishers/google/models/{model}`.",
         ).optional(),
       }).describe("Configuration for how to generate memories.").optional(),
       similaritySearchConfig: z.object({
@@ -755,7 +801,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/aiplatform/reasoningengines",
-  version: "2026.04.04.1",
+  version: "2026.04.11.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -784,6 +830,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.04.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.11.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

@@ -28,7 +28,7 @@ const GlobalArgsSchema = z.object({
   Authentication: z.object({
     SecretArn: z.string().regex(
       new RegExp(
-        "^arn:(aws|aws-cn|aws-us-gov):secretsmanager:[a-z0-9-]+:\\d{12}:secret:[a-zA-Z0-9/_+=,.@-]+$",
+        "^arn:(aws|aws-cn|aws-us-gov|aws-eusc):secretsmanager:[a-z0-9-]+:\\d{12}:secret:[a-zA-Z0-9/_+=,.@-]+$",
       ),
     ).optional(),
     NoAuthentication: z.string().optional(),
@@ -62,7 +62,7 @@ const InputsSchema = z.object({
   Authentication: z.object({
     SecretArn: z.string().regex(
       new RegExp(
-        "^arn:(aws|aws-cn|aws-us-gov):secretsmanager:[a-z0-9-]+:\\d{12}:secret:[a-zA-Z0-9/_+=,.@-]+$",
+        "^arn:(aws|aws-cn|aws-us-gov|aws-eusc):secretsmanager:[a-z0-9-]+:\\d{12}:secret:[a-zA-Z0-9/_+=,.@-]+$",
       ),
     ).optional(),
     NoAuthentication: z.string().optional(),
@@ -77,7 +77,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/aws/ses/mail-manager-relay",
-  version: "2026.04.03.2",
+  version: "2026.04.11.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -91,6 +91,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.11.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

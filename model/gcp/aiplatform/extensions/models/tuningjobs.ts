@@ -622,6 +622,9 @@ const GlobalArgsSchema = z.object({
           predefinedRubricGenerationSpec: z.unknown().describe(
             "The spec for a pre-defined metric.",
           ).optional(),
+          resultParserConfig: z.unknown().describe(
+            "Config for parsing LLM responses. It can be used to parse the LLM response to be evaluated, or the LLM response from LLM-based metrics/Autoraters.",
+          ).optional(),
           rubricGenerationSpec: z.unknown().describe(
             "Specification for how rubrics should be generated.",
           ).optional(),
@@ -1292,6 +1295,7 @@ const StateSchema = z.object({
           judgeAutoraterConfig: z.unknown(),
           metricPromptTemplate: z.unknown(),
           predefinedRubricGenerationSpec: z.unknown(),
+          resultParserConfig: z.unknown(),
           rubricGenerationSpec: z.unknown(),
           rubricGroupKey: z.unknown(),
           systemInstruction: z.unknown(),
@@ -2054,6 +2058,9 @@ const InputsSchema = z.object({
           predefinedRubricGenerationSpec: z.unknown().describe(
             "The spec for a pre-defined metric.",
           ).optional(),
+          resultParserConfig: z.unknown().describe(
+            "Config for parsing LLM responses. It can be used to parse the LLM response to be evaluated, or the LLM response from LLM-based metrics/Autoraters.",
+          ).optional(),
           rubricGenerationSpec: z.unknown().describe(
             "Specification for how rubrics should be generated.",
           ).optional(),
@@ -2494,7 +2501,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/aiplatform/tuningjobs",
-  version: "2026.04.04.1",
+  version: "2026.04.11.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -2523,6 +2530,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.04.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.11.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

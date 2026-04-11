@@ -166,6 +166,7 @@ const StateSchema = z.object({
     unit: z.string(),
   })).optional(),
   etag: z.string().optional(),
+  flagRevisions: z.array(z.string()).optional(),
   inputVariables: z.array(z.object({
     type: z.string(),
     value: z.string(),
@@ -241,7 +242,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/saasservicemgmt/units",
-  version: "2026.04.03.3",
+  version: "2026.04.11.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -265,6 +266,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.3",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.11.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

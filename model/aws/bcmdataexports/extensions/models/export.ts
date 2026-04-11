@@ -32,6 +32,8 @@ export const S3OutputConfigurationsSchema = z.object({
 
 export const S3DestinationSchema = z.object({
   S3Bucket: z.string().min(0).max(1024).regex(new RegExp("^[\\S\\s]*$")),
+  S3BucketOwner: z.string().min(12).max(12).regex(new RegExp("^[0-9]{12}$"))
+    .optional(),
   S3Prefix: z.string().min(0).max(1024).regex(new RegExp("^[\\S\\s]*$")),
   S3Region: z.string().min(0).max(1024).regex(new RegExp("^[\\S\\s]*$")),
   S3OutputConfigurations: S3OutputConfigurationsSchema,
@@ -96,7 +98,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/aws/bcmdataexports/export",
-  version: "2026.04.03.2",
+  version: "2026.04.11.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -110,6 +112,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.11.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

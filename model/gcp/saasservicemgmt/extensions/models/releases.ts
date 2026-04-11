@@ -125,7 +125,14 @@ const GlobalArgsSchema = z.object({
     "Blueprints are OCI Images that contain all of the artifacts needed to provision a unit. Metadata such as, type of the engine used to actuate the blueprint (e.g. terraform, helm etc) and version will come from the image manifest. If the hostname is omitted, it will be assumed to be the regional path to Artifact Registry (eg. us-east1-docker.pkg.dev).",
   ).optional(),
   inputVariableDefaults: z.array(z.object({
-    type: z.enum(["TYPE_UNSPECIFIED", "STRING", "INT", "BOOL"]).describe(
+    type: z.enum([
+      "TYPE_UNSPECIFIED",
+      "STRING",
+      "INT",
+      "BOOL",
+      "STRUCT",
+      "LIST",
+    ]).describe(
       "Optional. Immutable. Name of a supported variable type. Supported types are string, int, bool.",
     ).optional(),
     value: z.string().describe(
@@ -217,7 +224,14 @@ const InputsSchema = z.object({
     "Blueprints are OCI Images that contain all of the artifacts needed to provision a unit. Metadata such as, type of the engine used to actuate the blueprint (e.g. terraform, helm etc) and version will come from the image manifest. If the hostname is omitted, it will be assumed to be the regional path to Artifact Registry (eg. us-east1-docker.pkg.dev).",
   ).optional(),
   inputVariableDefaults: z.array(z.object({
-    type: z.enum(["TYPE_UNSPECIFIED", "STRING", "INT", "BOOL"]).describe(
+    type: z.enum([
+      "TYPE_UNSPECIFIED",
+      "STRING",
+      "INT",
+      "BOOL",
+      "STRUCT",
+      "LIST",
+    ]).describe(
       "Optional. Immutable. Name of a supported variable type. Supported types are string, int, bool.",
     ).optional(),
     value: z.string().describe(
@@ -257,7 +271,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/saasservicemgmt/releases",
-  version: "2026.04.03.3",
+  version: "2026.04.11.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -281,6 +295,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.3",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.11.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

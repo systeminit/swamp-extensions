@@ -34,11 +34,18 @@ export const ApiKeyCredentialProviderSchema = z.object({
   CredentialLocation: z.enum(["HEADER", "QUERY_PARAMETER"]).optional(),
 });
 
+export const IamCredentialProviderSchema = z.object({
+  Service: z.string().min(1).max(64).regex(new RegExp("^[a-zA-Z0-9._-]+$")),
+  Region: z.string().min(1).max(32).regex(new RegExp("^[a-zA-Z0-9-]+$"))
+    .optional(),
+});
+
 export const CredentialProviderConfigurationSchema = z.object({
   CredentialProviderType: z.enum(["GATEWAY_IAM_ROLE", "OAUTH", "API_KEY"]),
   CredentialProvider: z.object({
     OauthCredentialProvider: OAuthCredentialProviderSchema.optional(),
     ApiKeyCredentialProvider: ApiKeyCredentialProviderSchema.optional(),
+    IamCredentialProvider: IamCredentialProviderSchema.optional(),
   }).optional(),
 });
 
@@ -103,7 +110,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/aws/bedrockagentcore/gateway-target",
-  version: "2026.04.03.2",
+  version: "2026.04.11.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -117,6 +124,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.11.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

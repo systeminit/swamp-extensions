@@ -30,7 +30,7 @@ const GlobalArgsSchema = z.object({
   ).optional(),
   KmsKeyArn: z.string().regex(
     new RegExp(
-      "^arn:aws(|-cn|-us-gov):kms:[a-z0-9-]{1,20}:[0-9]{12}:(key|alias)/.+$",
+      "^arn:aws(|-cn|-us-gov|-eusc):kms:[a-z0-9-]{1,20}:[0-9]{12}:(key|alias)/.+$",
     ),
   ).optional(),
   Retention: z.object({
@@ -77,7 +77,7 @@ const InputsSchema = z.object({
   ).optional(),
   KmsKeyArn: z.string().regex(
     new RegExp(
-      "^arn:aws(|-cn|-us-gov):kms:[a-z0-9-]{1,20}:[0-9]{12}:(key|alias)/.+$",
+      "^arn:aws(|-cn|-us-gov|-eusc):kms:[a-z0-9-]{1,20}:[0-9]{12}:(key|alias)/.+$",
     ),
   ).optional(),
   Retention: z.object({
@@ -105,7 +105,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/aws/ses/mail-manager-archive",
-  version: "2026.04.03.2",
+  version: "2026.04.11.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -119,6 +119,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.11.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

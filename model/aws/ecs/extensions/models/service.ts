@@ -456,7 +456,7 @@ const GlobalArgsSchema = z.object({
       "Configuration for canary deployment strategy. Only valid when the deployment strategy is CANARY. This configuration enables shifting a fixed percentage of traffic for testing, followed by shifting the remaining traffic after a bake period.",
     ).optional(),
     BakeTimeInMinutes: z.number().int().min(0).max(1440).describe(
-      "The duration when both blue and green service revisions are running simultaneously after the production traffic has shifted. The following rules apply when you don't specify a value: For rolling deployments, the value is set to 3 hours (180 minutes). When you use an external deployment controller ( EXTERNAL), or the ACD blue/green deployment controller ( CODE_DEPLOY), the value is set to 3 hours (180 minutes). For all other cases, the value is set to 36 hours (2160 minutes).",
+      "The duration waiting before terminating the previous service revision and marking a deployment complete. The following rules apply when you don't specify a value: For blue/green, linear, and canary deployments, the value is set to 15 minutes. For rolling deployments, there is no bake time set by default. The external deployment controller ( EXTERNAL) and the ACD blue/green deployment controller ( CODE_DEPLOY) do not support the BakeTimeInMinutes parameter. If you provide a bake time for a rolling deployment, the CloudFormation handler timeout is increased to the maximum of 36 hours, matching the timeout for blue/green, linear, and canary deployments.",
     ).optional(),
     LifecycleHooks: z.array(DeploymentLifecycleHookSchema).describe(
       "An array of deployment lifecycle hook objects to run custom logic at specific stages of the deployment lifecycle.",
@@ -653,7 +653,7 @@ const InputsSchema = z.object({
       "Configuration for canary deployment strategy. Only valid when the deployment strategy is CANARY. This configuration enables shifting a fixed percentage of traffic for testing, followed by shifting the remaining traffic after a bake period.",
     ).optional(),
     BakeTimeInMinutes: z.number().int().min(0).max(1440).describe(
-      "The duration when both blue and green service revisions are running simultaneously after the production traffic has shifted. The following rules apply when you don't specify a value: For rolling deployments, the value is set to 3 hours (180 minutes). When you use an external deployment controller ( EXTERNAL), or the ACD blue/green deployment controller ( CODE_DEPLOY), the value is set to 3 hours (180 minutes). For all other cases, the value is set to 36 hours (2160 minutes).",
+      "The duration waiting before terminating the previous service revision and marking a deployment complete. The following rules apply when you don't specify a value: For blue/green, linear, and canary deployments, the value is set to 15 minutes. For rolling deployments, there is no bake time set by default. The external deployment controller ( EXTERNAL) and the ACD blue/green deployment controller ( CODE_DEPLOY) do not support the BakeTimeInMinutes parameter. If you provide a bake time for a rolling deployment, the CloudFormation handler timeout is increased to the maximum of 36 hours, matching the timeout for blue/green, linear, and canary deployments.",
     ).optional(),
     LifecycleHooks: z.array(DeploymentLifecycleHookSchema).describe(
       "An array of deployment lifecycle hook objects to run custom logic at specific stages of the deployment lifecycle.",
@@ -683,7 +683,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/aws/ecs/service",
-  version: "2026.04.03.2",
+  version: "2026.04.11.1",
   upgrades: [
     {
       toVersion: "2026.04.01.2",
@@ -697,6 +697,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.11.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },
