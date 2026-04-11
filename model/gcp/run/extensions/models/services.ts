@@ -452,7 +452,7 @@ const GlobalArgsSchema = z.object({
           "Required. This must match the Name of a Volume.",
         ).optional(),
         subPath: z.unknown().describe(
-          "Optional. Path within the volume from which the container's volume should be mounted. Defaults to \"\" (volume's root). This field is currently ignored for Secret volumes.",
+          "Optional. Path within the volume from which the container's volume should be mounted. Defaults to \"\" (volume's root). This field is currently rejected in Secret volume mounts.",
         ).optional(),
       })).describe("Volume to mount into the container's filesystem.")
         .optional(),
@@ -1307,7 +1307,7 @@ const InputsSchema = z.object({
           "Required. This must match the Name of a Volume.",
         ).optional(),
         subPath: z.unknown().describe(
-          "Optional. Path within the volume from which the container's volume should be mounted. Defaults to \"\" (volume's root). This field is currently ignored for Secret volumes.",
+          "Optional. Path within the volume from which the container's volume should be mounted. Defaults to \"\" (volume's root). This field is currently rejected in Secret volume mounts.",
         ).optional(),
       })).describe("Volume to mount into the container's filesystem.")
         .optional(),
@@ -1564,7 +1564,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/run/services",
-  version: "2026.04.04.1",
+  version: "2026.04.11.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -1593,6 +1593,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.04.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.11.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

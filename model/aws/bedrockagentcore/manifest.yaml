@@ -1,7 +1,7 @@
 # Auto-generated manifest. Re-generate with the appropriate deno task.
 manifestVersion: 1
 name: "@swamp/aws/bedrockagentcore"
-version: "2026.04.04.1"
+version: "2026.04.11.1"
 description: "AWS BEDROCKAGENTCORE infrastructure models"
 labels:
   - aws
@@ -9,7 +9,7 @@ labels:
   - cloud
   - infrastructure
 releaseNotes: |
-  - Added: oauth2credential_provider
+  - Updated: gateway_target
 models:
   - api_key_credential_provider.ts
   - browser_custom.ts

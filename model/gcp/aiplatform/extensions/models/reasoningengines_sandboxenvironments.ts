@@ -75,6 +75,9 @@ const GlobalArgsSchema = z.object({
     loadBalancerIp: z.string().describe(
       "Output only. The IP address of the load balancer.",
     ).optional(),
+    sandboxHostname: z.string().describe(
+      "Output only. The hostname of the SandboxEnvironment.",
+    ).optional(),
     sandboxInternalIp: z.string().describe(
       "Output only. The internal IP address of the SandboxEnvironment.",
     ).optional(),
@@ -116,6 +119,7 @@ const StateSchema = z.object({
   connectionInfo: z.object({
     loadBalancerHostname: z.string(),
     loadBalancerIp: z.string(),
+    sandboxHostname: z.string(),
     sandboxInternalIp: z.string(),
   }).optional(),
   createTime: z.string().optional(),
@@ -142,6 +146,9 @@ const InputsSchema = z.object({
     ).optional(),
     loadBalancerIp: z.string().describe(
       "Output only. The IP address of the load balancer.",
+    ).optional(),
+    sandboxHostname: z.string().describe(
+      "Output only. The hostname of the SandboxEnvironment.",
     ).optional(),
     sandboxInternalIp: z.string().describe(
       "Output only. The internal IP address of the SandboxEnvironment.",
@@ -182,7 +189,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/aiplatform/reasoningengines-sandboxenvironments",
-  version: "2026.04.03.3",
+  version: "2026.04.11.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -206,6 +213,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.3",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.11.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },
@@ -399,6 +411,75 @@ export const model = {
             "id":
               "aiplatform.projects.locations.reasoningEngines.sandboxEnvironments.execute",
             "path": "v1/{+name}:execute",
+            "httpMethod": "POST",
+            "parameterOrder": ["name"],
+            "parameters": { "name": { "location": "path", "required": true } },
+          },
+          params,
+          body,
+        );
+        return { result };
+      },
+    },
+    snapshot: {
+      description: "snapshot",
+      arguments: z.object({
+        createTime: z.any().optional(),
+        displayName: z.any().optional(),
+        expireTime: z.any().optional(),
+        name: z.any().optional(),
+        owner: z.any().optional(),
+        parentSnapshot: z.any().optional(),
+        postSnapshotAction: z.any().optional(),
+        sizeBytes: z.any().optional(),
+        sourceSandboxEnvironment: z.any().optional(),
+        ttl: z.any().optional(),
+        updateTime: z.any().optional(),
+      }),
+      execute: async (args: Record<string, unknown>, context: any) => {
+        const g = context.globalArgs;
+        const projectId = await getProjectId();
+        const params: Record<string, string> = { project: projectId };
+        if (g["parent"] !== undefined && g["name"] !== undefined) {
+          params["name"] = buildResourceName(
+            String(g["parent"]),
+            String(g["name"]),
+          );
+        }
+        const body: Record<string, unknown> = {};
+        if (args["createTime"] !== undefined) {
+          body["createTime"] = args["createTime"];
+        }
+        if (args["displayName"] !== undefined) {
+          body["displayName"] = args["displayName"];
+        }
+        if (args["expireTime"] !== undefined) {
+          body["expireTime"] = args["expireTime"];
+        }
+        if (args["name"] !== undefined) body["name"] = args["name"];
+        if (args["owner"] !== undefined) body["owner"] = args["owner"];
+        if (args["parentSnapshot"] !== undefined) {
+          body["parentSnapshot"] = args["parentSnapshot"];
+        }
+        if (args["postSnapshotAction"] !== undefined) {
+          body["postSnapshotAction"] = args["postSnapshotAction"];
+        }
+        if (args["sizeBytes"] !== undefined) {
+          body["sizeBytes"] = args["sizeBytes"];
+        }
+        if (args["sourceSandboxEnvironment"] !== undefined) {
+          body["sourceSandboxEnvironment"] = args["sourceSandboxEnvironment"];
+        }
+        if (args["ttl"] !== undefined) body["ttl"] = args["ttl"];
+        if (args["updateTime"] !== undefined) {
+          body["updateTime"] = args["updateTime"];
+        }
+        const result = await createResource(
+          BASE_URL,
+          {
+            "id":
+              "aiplatform.projects.locations.reasoningEngines.sandboxEnvironments.snapshot",
+            "path": "v1/{+name}:snapshot",
             "httpMethod": "POST",
             "parameterOrder": ["name"],
             "parameters": { "name": { "location": "path", "required": true } },

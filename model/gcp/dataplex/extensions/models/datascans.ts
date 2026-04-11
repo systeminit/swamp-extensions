@@ -519,6 +519,9 @@ const GlobalArgsSchema = z.object({
         "Output only. The number of rows which passed a rule evaluation.This field is only valid for row-level type rules.This field is not set for rule SqlAssertion.",
       ).optional(),
       rule: z.object({
+        attributes: z.record(z.string(), z.unknown()).describe(
+          "Optional. Map of attribute name and value linked to the rule. The rules to evaluate can be filtered based on attributes provided here and a filter expression provided in the DataQualitySpec.filter field.",
+        ).optional(),
         column: z.string().describe(
           "Optional. The unnested column which this rule is evaluated against.",
         ).optional(),
@@ -569,6 +572,12 @@ const GlobalArgsSchema = z.object({
         }).describe(
           "Evaluates whether each row passes the specified condition.The SQL expression needs to use GoogleSQL syntax (https://cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax) and should produce a boolean value per row as the result.Example: col1 >= 0 AND col2 < 10",
         ).optional(),
+        ruleSource: z.object({
+          rulePathElements: z.unknown().describe(
+            "Output only. Rule path elements represent information about the individual items in the relationship path between the scan resource and rule origin in that order.",
+          ).optional(),
+        }).describe("Represents the rule source information from Catalog.")
+          .optional(),
         setExpectation: z.object({
           values: z.unknown().describe(
             "Optional. Expected values for the column value.",
@@ -610,6 +619,22 @@ const GlobalArgsSchema = z.object({
         }).describe(
           "Evaluates whether the provided expression is true.The SQL expression needs to use GoogleSQL syntax (https://cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax) and should produce a scalar boolean result.Example: MIN(col1) >= 0",
         ).optional(),
+        templateReference: z.object({
+          name: z.unknown().describe(
+            "Required. The template entry name. Entry must be of EntryType projects/dataplex-types/locations/global/entryTypes/data-quality-rule-template and contains top-level aspect of AspectType projects/dataplex-types/locations/global/aspectTypes/data-quality-rule-template. The format is: projects/{project_id_or_number}/locations/{location_id}/entryGroups/{entry_group_id}/entries/{entry_id}",
+          ).optional(),
+          resolvedSql: z.unknown().describe(
+            "Output only. The resolved SQL statement generated from the template with parameters substituted. It is only populated in the result.",
+          ).optional(),
+          ruleTemplate: z.unknown().describe(
+            "DataQualityRuleTemplate represents a template which can be reused across multiple data quality rules.",
+          ).optional(),
+          values: z.unknown().describe(
+            "Optional. Provides the map of parameter name and value. The maximum size of the field is 120KB (encoded as UTF-8).",
+          ).optional(),
+        }).describe(
+          "A rule that constructs a SQL statement to evaluate using a rule template and parameter values. If the constructed statement returns any rows, this rule fails",
+        ).optional(),
         threshold: z.number().describe(
           "Optional. The minimum ratio of passing_rows / total_rows required to pass this rule, with a range of 0.0, 1.0.0 indicates default value (i.e. 1.0).This field is only valid for row-level type rules.",
         ).optional(),
@@ -645,6 +670,12 @@ const GlobalArgsSchema = z.object({
   dataQualitySpec: z.object({
     catalogPublishingEnabled: z.boolean().describe(
       "Optional. If set, the latest DataScan job result will be published as Dataplex Universal Catalog metadata.",
+    ).optional(),
+    enableCatalogBasedRules: z.boolean().describe(
+      "Optional. If enabled, the data scan will retrieve rules defined in the dataplex-types.global.data-rules aspect on all paths of the catalog entry corresponding to the BigQuery table resource and all attached glossary terms. The path that data-rules aspect is attached on the table entry defines the column that the rule will be evaluated against. For glossary terms, the path that the terms are attached on the table entry defines the column that the rule will be evaluated against. At the start of scan execution, the rules reflect the latest state retrieved from the catalog entry and any updates on the rules thereafter are ignored for that execution. The updates will be reflected from the next execution. Rules defined in the datascan must be empty if this field is enabled.",
+    ).optional(),
+    filter: z.string().describe(
+      "Optional. Filter for selectively running a subset of rules. You can filter the request by the name or attribute key-value pairs defined on the rule. If not specified, all rules are run. The filter is applicable to both, the rules retrieved from catalog and explicitly defined rules in the scan. Please see filter syntax (https://docs.cloud.google.com/dataplex/docs/auto-data-quality-overview#rule-filtering) for more details.",
     ).optional(),
     postScanActions: z.object({
       bigqueryExport: z.object({
@@ -682,6 +713,9 @@ const GlobalArgsSchema = z.object({
       "Optional. A filter applied to all rows in a single DataScan job. The filter needs to be a valid SQL expression for a WHERE clause in GoogleSQL syntax (https://cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax#where_clause).Example: col1 >= 0 AND col2 < 10",
     ).optional(),
     rules: z.array(z.object({
+      attributes: z.record(z.string(), z.string()).describe(
+        "Optional. Map of attribute name and value linked to the rule. The rules to evaluate can be filtered based on attributes provided here and a filter expression provided in the DataQualitySpec.filter field.",
+      ).optional(),
       column: z.string().describe(
         "Optional. The unnested column which this rule is evaluated against.",
       ).optional(),
@@ -739,6 +773,12 @@ const GlobalArgsSchema = z.object({
       }).describe(
         "Evaluates whether each row passes the specified condition.The SQL expression needs to use GoogleSQL syntax (https://cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax) and should produce a boolean value per row as the result.Example: col1 >= 0 AND col2 < 10",
       ).optional(),
+      ruleSource: z.object({
+        rulePathElements: z.array(z.unknown()).describe(
+          "Output only. Rule path elements represent information about the individual items in the relationship path between the scan resource and rule origin in that order.",
+        ).optional(),
+      }).describe("Represents the rule source information from Catalog.")
+        .optional(),
       setExpectation: z.object({
         values: z.array(z.unknown()).describe(
           "Optional. Expected values for the column value.",
@@ -778,6 +818,38 @@ const GlobalArgsSchema = z.object({
           .optional(),
       }).describe(
         "Evaluates whether the provided expression is true.The SQL expression needs to use GoogleSQL syntax (https://cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax) and should produce a scalar boolean result.Example: MIN(col1) >= 0",
+      ).optional(),
+      templateReference: z.object({
+        name: z.string().describe(
+          "Required. The template entry name. Entry must be of EntryType projects/dataplex-types/locations/global/entryTypes/data-quality-rule-template and contains top-level aspect of AspectType projects/dataplex-types/locations/global/aspectTypes/data-quality-rule-template. The format is: projects/{project_id_or_number}/locations/{location_id}/entryGroups/{entry_group_id}/entries/{entry_id}",
+        ).optional(),
+        resolvedSql: z.string().describe(
+          "Output only. The resolved SQL statement generated from the template with parameters substituted. It is only populated in the result.",
+        ).optional(),
+        ruleTemplate: z.object({
+          capabilities: z.unknown().describe(
+            "Output only. A list of features or properties supported by this rule template.",
+          ).optional(),
+          dimension: z.unknown().describe(
+            "Output only. The dimension a rule template belongs to. Rule level results are also aggregated at the dimension level.",
+          ).optional(),
+          inputParameters: z.unknown().describe(
+            "Output only. Description for input parameters",
+          ).optional(),
+          name: z.unknown().describe(
+            "Output only. The name of the rule template in the format: projects/{project_id_or_number}/locations/{location_id}/entryGroups/{entry_group_id}/entries/{entry_id}",
+          ).optional(),
+          sqlCollection: z.unknown().describe(
+            "Output only. Collection of SQLs for data quality rules. Currently only one SQL is supported.",
+          ).optional(),
+        }).describe(
+          "DataQualityRuleTemplate represents a template which can be reused across multiple data quality rules.",
+        ).optional(),
+        values: z.record(z.string(), z.unknown()).describe(
+          "Optional. Provides the map of parameter name and value. The maximum size of the field is 120KB (encoded as UTF-8).",
+        ).optional(),
+      }).describe(
+        "A rule that constructs a SQL statement to evaluate using a rule template and parameter values. If the constructed statement returns any rows, this rule fails",
       ).optional(),
       threshold: z.number().describe(
         "Optional. The minimum ratio of passing_rows / total_rows required to pass this rule, with a range of 0.0, 1.0.0 indicates default value (i.e. 1.0).This field is only valid for row-level type rules.",
@@ -1039,6 +1111,7 @@ const StateSchema = z.object({
       passed: z.boolean(),
       passedCount: z.string(),
       rule: z.object({
+        attributes: z.record(z.string(), z.unknown()),
         column: z.string(),
         debugQueries: z.array(z.unknown()),
         description: z.string(),
@@ -1058,6 +1131,9 @@ const StateSchema = z.object({
         rowConditionExpectation: z.object({
           sqlExpression: z.unknown(),
         }),
+        ruleSource: z.object({
+          rulePathElements: z.unknown(),
+        }),
         setExpectation: z.object({
           values: z.unknown(),
         }),
@@ -1075,6 +1151,12 @@ const StateSchema = z.object({
         tableConditionExpectation: z.object({
           sqlExpression: z.unknown(),
         }),
+        templateReference: z.object({
+          name: z.unknown(),
+          resolvedSql: z.unknown(),
+          ruleTemplate: z.unknown(),
+          values: z.unknown(),
+        }),
         threshold: z.number(),
         uniquenessExpectation: z.object({}),
       }),
@@ -1090,6 +1172,8 @@ const StateSchema = z.object({
   }).optional(),
   dataQualitySpec: z.object({
     catalogPublishingEnabled: z.boolean(),
+    enableCatalogBasedRules: z.boolean(),
+    filter: z.string(),
     postScanActions: z.object({
       bigqueryExport: z.object({
         resultsTable: z.string(),
@@ -1107,6 +1191,7 @@ const StateSchema = z.object({
     }),
     rowFilter: z.string(),
     rules: z.array(z.object({
+      attributes: z.record(z.string(), z.unknown()),
       column: z.string(),
       debugQueries: z.array(z.object({
         description: z.unknown(),
@@ -1129,6 +1214,9 @@ const StateSchema = z.object({
       rowConditionExpectation: z.object({
         sqlExpression: z.string(),
       }),
+      ruleSource: z.object({
+        rulePathElements: z.array(z.unknown()),
+      }),
       setExpectation: z.object({
         values: z.array(z.unknown()),
       }),
@@ -1145,6 +1233,18 @@ const StateSchema = z.object({
       suspended: z.boolean(),
       tableConditionExpectation: z.object({
         sqlExpression: z.string(),
+      }),
+      templateReference: z.object({
+        name: z.string(),
+        resolvedSql: z.string(),
+        ruleTemplate: z.object({
+          capabilities: z.unknown(),
+          dimension: z.unknown(),
+          inputParameters: z.unknown(),
+          name: z.unknown(),
+          sqlCollection: z.unknown(),
+        }),
+        values: z.record(z.string(), z.unknown()),
       }),
       threshold: z.number(),
       uniquenessExpectation: z.object({}),
@@ -1606,6 +1706,9 @@ const InputsSchema = z.object({
         "Output only. The number of rows which passed a rule evaluation.This field is only valid for row-level type rules.This field is not set for rule SqlAssertion.",
       ).optional(),
       rule: z.object({
+        attributes: z.record(z.string(), z.unknown()).describe(
+          "Optional. Map of attribute name and value linked to the rule. The rules to evaluate can be filtered based on attributes provided here and a filter expression provided in the DataQualitySpec.filter field.",
+        ).optional(),
         column: z.string().describe(
           "Optional. The unnested column which this rule is evaluated against.",
         ).optional(),
@@ -1656,6 +1759,12 @@ const InputsSchema = z.object({
         }).describe(
           "Evaluates whether each row passes the specified condition.The SQL expression needs to use GoogleSQL syntax (https://cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax) and should produce a boolean value per row as the result.Example: col1 >= 0 AND col2 < 10",
         ).optional(),
+        ruleSource: z.object({
+          rulePathElements: z.unknown().describe(
+            "Output only. Rule path elements represent information about the individual items in the relationship path between the scan resource and rule origin in that order.",
+          ).optional(),
+        }).describe("Represents the rule source information from Catalog.")
+          .optional(),
         setExpectation: z.object({
           values: z.unknown().describe(
             "Optional. Expected values for the column value.",
@@ -1697,6 +1806,22 @@ const InputsSchema = z.object({
         }).describe(
           "Evaluates whether the provided expression is true.The SQL expression needs to use GoogleSQL syntax (https://cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax) and should produce a scalar boolean result.Example: MIN(col1) >= 0",
         ).optional(),
+        templateReference: z.object({
+          name: z.unknown().describe(
+            "Required. The template entry name. Entry must be of EntryType projects/dataplex-types/locations/global/entryTypes/data-quality-rule-template and contains top-level aspect of AspectType projects/dataplex-types/locations/global/aspectTypes/data-quality-rule-template. The format is: projects/{project_id_or_number}/locations/{location_id}/entryGroups/{entry_group_id}/entries/{entry_id}",
+          ).optional(),
+          resolvedSql: z.unknown().describe(
+            "Output only. The resolved SQL statement generated from the template with parameters substituted. It is only populated in the result.",
+          ).optional(),
+          ruleTemplate: z.unknown().describe(
+            "DataQualityRuleTemplate represents a template which can be reused across multiple data quality rules.",
+          ).optional(),
+          values: z.unknown().describe(
+            "Optional. Provides the map of parameter name and value. The maximum size of the field is 120KB (encoded as UTF-8).",
+          ).optional(),
+        }).describe(
+          "A rule that constructs a SQL statement to evaluate using a rule template and parameter values. If the constructed statement returns any rows, this rule fails",
+        ).optional(),
         threshold: z.number().describe(
           "Optional. The minimum ratio of passing_rows / total_rows required to pass this rule, with a range of 0.0, 1.0.0 indicates default value (i.e. 1.0).This field is only valid for row-level type rules.",
         ).optional(),
@@ -1732,6 +1857,12 @@ const InputsSchema = z.object({
   dataQualitySpec: z.object({
     catalogPublishingEnabled: z.boolean().describe(
       "Optional. If set, the latest DataScan job result will be published as Dataplex Universal Catalog metadata.",
+    ).optional(),
+    enableCatalogBasedRules: z.boolean().describe(
+      "Optional. If enabled, the data scan will retrieve rules defined in the dataplex-types.global.data-rules aspect on all paths of the catalog entry corresponding to the BigQuery table resource and all attached glossary terms. The path that data-rules aspect is attached on the table entry defines the column that the rule will be evaluated against. For glossary terms, the path that the terms are attached on the table entry defines the column that the rule will be evaluated against. At the start of scan execution, the rules reflect the latest state retrieved from the catalog entry and any updates on the rules thereafter are ignored for that execution. The updates will be reflected from the next execution. Rules defined in the datascan must be empty if this field is enabled.",
+    ).optional(),
+    filter: z.string().describe(
+      "Optional. Filter for selectively running a subset of rules. You can filter the request by the name or attribute key-value pairs defined on the rule. If not specified, all rules are run. The filter is applicable to both, the rules retrieved from catalog and explicitly defined rules in the scan. Please see filter syntax (https://docs.cloud.google.com/dataplex/docs/auto-data-quality-overview#rule-filtering) for more details.",
     ).optional(),
     postScanActions: z.object({
       bigqueryExport: z.object({
@@ -1769,6 +1900,9 @@ const InputsSchema = z.object({
       "Optional. A filter applied to all rows in a single DataScan job. The filter needs to be a valid SQL expression for a WHERE clause in GoogleSQL syntax (https://cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax#where_clause).Example: col1 >= 0 AND col2 < 10",
     ).optional(),
     rules: z.array(z.object({
+      attributes: z.record(z.string(), z.string()).describe(
+        "Optional. Map of attribute name and value linked to the rule. The rules to evaluate can be filtered based on attributes provided here and a filter expression provided in the DataQualitySpec.filter field.",
+      ).optional(),
       column: z.string().describe(
         "Optional. The unnested column which this rule is evaluated against.",
       ).optional(),
@@ -1826,6 +1960,12 @@ const InputsSchema = z.object({
       }).describe(
         "Evaluates whether each row passes the specified condition.The SQL expression needs to use GoogleSQL syntax (https://cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax) and should produce a boolean value per row as the result.Example: col1 >= 0 AND col2 < 10",
       ).optional(),
+      ruleSource: z.object({
+        rulePathElements: z.array(z.unknown()).describe(
+          "Output only. Rule path elements represent information about the individual items in the relationship path between the scan resource and rule origin in that order.",
+        ).optional(),
+      }).describe("Represents the rule source information from Catalog.")
+        .optional(),
       setExpectation: z.object({
         values: z.array(z.unknown()).describe(
           "Optional. Expected values for the column value.",
@@ -1865,6 +2005,38 @@ const InputsSchema = z.object({
           .optional(),
       }).describe(
         "Evaluates whether the provided expression is true.The SQL expression needs to use GoogleSQL syntax (https://cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax) and should produce a scalar boolean result.Example: MIN(col1) >= 0",
+      ).optional(),
+      templateReference: z.object({
+        name: z.string().describe(
+          "Required. The template entry name. Entry must be of EntryType projects/dataplex-types/locations/global/entryTypes/data-quality-rule-template and contains top-level aspect of AspectType projects/dataplex-types/locations/global/aspectTypes/data-quality-rule-template. The format is: projects/{project_id_or_number}/locations/{location_id}/entryGroups/{entry_group_id}/entries/{entry_id}",
+        ).optional(),
+        resolvedSql: z.string().describe(
+          "Output only. The resolved SQL statement generated from the template with parameters substituted. It is only populated in the result.",
+        ).optional(),
+        ruleTemplate: z.object({
+          capabilities: z.unknown().describe(
+            "Output only. A list of features or properties supported by this rule template.",
+          ).optional(),
+          dimension: z.unknown().describe(
+            "Output only. The dimension a rule template belongs to. Rule level results are also aggregated at the dimension level.",
+          ).optional(),
+          inputParameters: z.unknown().describe(
+            "Output only. Description for input parameters",
+          ).optional(),
+          name: z.unknown().describe(
+            "Output only. The name of the rule template in the format: projects/{project_id_or_number}/locations/{location_id}/entryGroups/{entry_group_id}/entries/{entry_id}",
+          ).optional(),
+          sqlCollection: z.unknown().describe(
+            "Output only. Collection of SQLs for data quality rules. Currently only one SQL is supported.",
+          ).optional(),
+        }).describe(
+          "DataQualityRuleTemplate represents a template which can be reused across multiple data quality rules.",
+        ).optional(),
+        values: z.record(z.string(), z.unknown()).describe(
+          "Optional. Provides the map of parameter name and value. The maximum size of the field is 120KB (encoded as UTF-8).",
+        ).optional(),
+      }).describe(
+        "A rule that constructs a SQL statement to evaluate using a rule template and parameter values. If the constructed statement returns any rows, this rule fails",
       ).optional(),
       threshold: z.number().describe(
         "Optional. The minimum ratio of passing_rows / total_rows required to pass this rule, with a range of 0.0, 1.0.0 indicates default value (i.e. 1.0).This field is only valid for row-level type rules.",
@@ -1940,7 +2112,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/dataplex/datascans",
-  version: "2026.04.04.2",
+  version: "2026.04.11.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -1985,6 +2157,11 @@ export const model = {
     {
       toVersion: "2026.04.04.2",
       description: "Added: executionIdentity",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.11.1",
+      description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },
   ],

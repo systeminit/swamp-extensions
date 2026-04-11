@@ -171,7 +171,7 @@ export const SnsActionSchema = z.object({
   ActionFailurePolicy: z.enum(["CONTINUE", "DROP"]).optional(),
   TopicArn: z.string().min(20).max(2048).regex(
     new RegExp(
-      "^arn:(aws|aws-cn|aws-us-gov):sns:[a-z]{2}-[a-z]+-\\d{1}:\\d{12}:[\\w\\-]{1,256}$",
+      "^arn:(aws|aws-cn|aws-us-gov|aws-eusc):sns:[a-z]{2}-[a-z]+-\\d{1}:\\d{12}:[\\w\\-]{1,256}$",
     ),
   ),
   RoleArn: z.string().min(20).max(2048).regex(
@@ -253,7 +253,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/aws/ses/mail-manager-rule-set",
-  version: "2026.04.03.2",
+  version: "2026.04.11.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -267,6 +267,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.11.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

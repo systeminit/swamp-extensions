@@ -1,10 +1,11 @@
-// Auto-generated extension model for @swamp/gcp/bigquerydatatransfer/transferconfigs-transferresources
+// Auto-generated extension model for @swamp/gcp/aiplatform/reasoningengines-sandboxenvironmentsnapshots
 // Do not edit manually. Re-generate with: deno task generate:gcp
 
 // deno-lint-ignore-file no-explicit-any
 
 import { z } from "zod";
 import {
+  deleteResource,
   getProjectId,
   isResourceNotFoundError,
   readResource,
@@ -12,16 +13,32 @@ import {
 
 /** Construct the fully-qualified resource name from parent and short name. */
 function buildResourceName(parent: string, shortName: string): string {
-  return `${parent}/transferResources/${shortName}`;
+  return `${parent}/sandboxEnvironmentSnapshots/${shortName}`;
 }
 
-const BASE_URL = "https://bigquerydatatransfer.googleapis.com/";
+const BASE_URL = "https://aiplatform.googleapis.com/";
 
 const GET_CONFIG = {
   "id":
-    "bigquerydatatransfer.projects.locations.transferConfigs.transferResources.get",
+    "aiplatform.projects.locations.reasoningEngines.sandboxEnvironmentSnapshots.get",
   "path": "v1/{+name}",
   "httpMethod": "GET",
+  "parameterOrder": [
+    "name",
+  ],
+  "parameters": {
+    "name": {
+      "location": "path",
+      "required": true,
+    },
+  },
+} as const;
+
+const DELETE_CONFIG = {
+  "id":
+    "aiplatform.projects.locations.reasoningEngines.sandboxEnvironmentSnapshots.delete",
+  "path": "v1/{+name}",
+  "httpMethod": "DELETE",
   "parameterOrder": [
     "name",
   ],
@@ -43,44 +60,16 @@ const GlobalArgsSchema = z.object({
 });
 
 const StateSchema = z.object({
-  destination: z.string().optional(),
-  hierarchyDetail: z.object({
-    partitionDetail: z.object({
-      table: z.string(),
-    }),
-    tableDetail: z.object({
-      partitionCount: z.string(),
-    }),
-  }).optional(),
-  lastSuccessfulRun: z.object({
-    run: z.string(),
-    startTime: z.string(),
-  }).optional(),
-  latestRun: z.object({
-    run: z.string(),
-    startTime: z.string(),
-  }).optional(),
-  latestStatusDetail: z.object({
-    completedPercentage: z.number(),
-    error: z.object({
-      code: z.number(),
-      details: z.array(z.record(z.string(), z.unknown())),
-      message: z.string(),
-    }),
-    state: z.string(),
-    summary: z.object({
-      metrics: z.array(z.object({
-        completed: z.string(),
-        failed: z.string(),
-        pending: z.string(),
-        total: z.string(),
-        unit: z.string(),
-      })),
-      progressUnit: z.string(),
-    }),
-  }).optional(),
+  createTime: z.string().optional(),
+  displayName: z.string().optional(),
+  expireTime: z.string().optional(),
   name: z.string(),
-  type: z.string().optional(),
+  owner: z.string().optional(),
+  parentSnapshot: z.string().optional(),
+  postSnapshotAction: z.string().optional(),
+  sizeBytes: z.string().optional(),
+  sourceSandboxEnvironment: z.string().optional(),
+  ttl: z.string().optional(),
   updateTime: z.string().optional(),
 }).passthrough();
 
@@ -94,45 +83,14 @@ const InputsSchema = z.object({
 });
 
 export const model = {
-  type: "@swamp/gcp/bigquerydatatransfer/transferconfigs-transferresources",
+  type: "@swamp/gcp/aiplatform/reasoningengines-sandboxenvironmentsnapshots",
   version: "2026.04.11.1",
-  upgrades: [
-    {
-      toVersion: "2026.04.01.1",
-      description: "No schema changes",
-      upgradeAttributes: (old: Record<string, unknown>) => old,
-    },
-    {
-      toVersion: "2026.04.02.2",
-      description: "No schema changes",
-      upgradeAttributes: (old: Record<string, unknown>) => old,
-    },
-    {
-      toVersion: "2026.04.03.1",
-      description: "No schema changes",
-      upgradeAttributes: (old: Record<string, unknown>) => old,
-    },
-    {
-      toVersion: "2026.04.03.2",
-      description: "No schema changes",
-      upgradeAttributes: (old: Record<string, unknown>) => old,
-    },
-    {
-      toVersion: "2026.04.03.3",
-      description: "No schema changes",
-      upgradeAttributes: (old: Record<string, unknown>) => old,
-    },
-    {
-      toVersion: "2026.04.11.1",
-      description: "No schema changes",
-      upgradeAttributes: (old: Record<string, unknown>) => old,
-    },
-  ],
   globalArguments: GlobalArgsSchema,
   inputsSchema: InputsSchema,
   resources: {
     state: {
-      description: "Resource (table/partition) that is being transferred.",
+      description:
+        "SandboxEnvironmentSnapshot is a snapshot of the SandboxEnvironment.",
       schema: StateSchema,
       lifetime: "infinite",
       garbageCollection: 10,
@@ -140,9 +98,11 @@ export const model = {
   },
   methods: {
     get: {
-      description: "Get a transferResources",
+      description: "Get a sandboxEnvironmentSnapshots",
       arguments: z.object({
-        identifier: z.string().describe("The name of the transferResources"),
+        identifier: z.string().describe(
+          "The name of the sandboxEnvironmentSnapshots",
+        ),
       }),
       execute: async (args: { identifier: string }, context: any) => {
         const projectId = await getProjectId();
@@ -169,8 +129,41 @@ export const model = {
         return { dataHandles: [handle] };
       },
     },
+    delete: {
+      description: "Delete the sandboxEnvironmentSnapshots",
+      arguments: z.object({
+        identifier: z.string().describe(
+          "The name of the sandboxEnvironmentSnapshots",
+        ),
+      }),
+      execute: async (args: { identifier: string }, context: any) => {
+        const g = context.globalArgs;
+        const projectId = await getProjectId();
+        const params: Record<string, string> = { project: projectId };
+        params["name"] = buildResourceName(
+          String(g["parent"] ?? ""),
+          args.identifier,
+        );
+        const { existed } = await deleteResource(
+          BASE_URL,
+          DELETE_CONFIG,
+          params,
+        );
+        const instanceName = (g.name?.toString() ?? args.identifier).replace(
+          /[\/\\]/g,
+          "_",
+        ).replace(/\.\./g, "_").replace(/\0/g, "");
+        const handle = await context.writeResource("state", instanceName, {
+          identifier: args.identifier,
+          existed,
+          status: existed ? "deleted" : "not_found",
+          deletedAt: new Date().toISOString(),
+        });
+        return { dataHandles: [handle] };
+      },
+    },
     sync: {
-      description: "Sync transferResources state from GCP",
+      description: "Sync sandboxEnvironmentSnapshots state from GCP",
       arguments: z.object({}),
       execute: async (_args: Record<string, never>, context: any) => {
         const g = context.globalArgs;

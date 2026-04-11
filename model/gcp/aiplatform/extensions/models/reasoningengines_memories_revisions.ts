@@ -45,11 +45,14 @@ const StateSchema = z.object({
   createTime: z.string().optional(),
   expireTime: z.string().optional(),
   extractedMemories: z.array(z.object({
+    context: z.string(),
     fact: z.string(),
+    structuredData: z.record(z.string(), z.unknown()),
   })).optional(),
   fact: z.string().optional(),
   labels: z.record(z.string(), z.unknown()).optional(),
   name: z.string(),
+  structuredData: z.record(z.string(), z.unknown()).optional(),
 }).passthrough();
 
 type StateData = z.infer<typeof StateSchema>;
@@ -63,7 +66,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/aiplatform/reasoningengines-memories-revisions",
-  version: "2026.04.03.3",
+  version: "2026.04.11.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -87,6 +90,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.3",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.11.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

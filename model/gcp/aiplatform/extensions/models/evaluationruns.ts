@@ -476,6 +476,9 @@ const GlobalArgsSchema = z.object({
           predefinedRubricGenerationSpec: z.unknown().describe(
             "The spec for a pre-defined metric.",
           ).optional(),
+          resultParserConfig: z.unknown().describe(
+            "Config for parsing LLM responses. It can be used to parse the LLM response to be evaluated, or the LLM response from LLM-based metrics/Autoraters.",
+          ).optional(),
           rubricGenerationSpec: z.unknown().describe(
             "Specification for how rubrics should be generated.",
           ).optional(),
@@ -1033,6 +1036,9 @@ const GlobalArgsSchema = z.object({
       model: z.string().describe(
         "Optional. The fully qualified name of the publisher model or endpoint to use. Anthropic and Llama third-party models are also supported through Model Garden. Publisher model format: `projects/{project}/locations/{location}/publishers/*/models/*` Third-party model formats: `projects/{project}/locations/{location}/publishers/anthropic/models/{model}` or `projects/{project}/locations/{location}/publishers/llama/models/{model}` Endpoint format: `projects/{project}/locations/{location}/endpoints/{endpoint}`",
       ).optional(),
+      parallelism: z.number().int().describe(
+        "Optional. The parallelism of the evaluation run for the inference step. If not specified, the default parallelism will be used.",
+      ).optional(),
     }),
   ).describe(
     "Optional. The candidate to inference config map for the evaluation run. The candidate can be up to 128 characters long and can consist of any UTF-8 characters.",
@@ -1208,6 +1214,7 @@ const StateSchema = z.object({
           judgeAutoraterConfig: z.unknown(),
           metricPromptTemplate: z.unknown(),
           predefinedRubricGenerationSpec: z.unknown(),
+          resultParserConfig: z.unknown(),
           rubricGenerationSpec: z.unknown(),
           rubricGroupKey: z.unknown(),
           systemInstruction: z.unknown(),
@@ -1725,6 +1732,9 @@ const InputsSchema = z.object({
           predefinedRubricGenerationSpec: z.unknown().describe(
             "The spec for a pre-defined metric.",
           ).optional(),
+          resultParserConfig: z.unknown().describe(
+            "Config for parsing LLM responses. It can be used to parse the LLM response to be evaluated, or the LLM response from LLM-based metrics/Autoraters.",
+          ).optional(),
           rubricGenerationSpec: z.unknown().describe(
             "Specification for how rubrics should be generated.",
           ).optional(),
@@ -2282,6 +2292,9 @@ const InputsSchema = z.object({
       model: z.string().describe(
         "Optional. The fully qualified name of the publisher model or endpoint to use. Anthropic and Llama third-party models are also supported through Model Garden. Publisher model format: `projects/{project}/locations/{location}/publishers/*/models/*` Third-party model formats: `projects/{project}/locations/{location}/publishers/anthropic/models/{model}` or `projects/{project}/locations/{location}/publishers/llama/models/{model}` Endpoint format: `projects/{project}/locations/{location}/endpoints/{endpoint}`",
       ).optional(),
+      parallelism: z.number().int().describe(
+        "Optional. The parallelism of the evaluation run for the inference step. If not specified, the default parallelism will be used.",
+      ).optional(),
     }),
   ).describe(
     "Optional. The candidate to inference config map for the evaluation run. The candidate can be up to 128 characters long and can consist of any UTF-8 characters.",
@@ -2302,7 +2315,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/aiplatform/evaluationruns",
-  version: "2026.04.04.1",
+  version: "2026.04.11.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -2331,6 +2344,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.04.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.11.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

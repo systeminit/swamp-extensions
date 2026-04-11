@@ -111,7 +111,7 @@ const GlobalArgsSchema = z.object({
         "Denotes that nodes belonging to this node pool are Autopilot nodes.",
       ).optional(),
     }).describe(
-      "AutopilotConfig contains configuration of autopilot feature for this nodepool.",
+      "AutopilotConfig contains configuration of autopilot feature for this node pool.",
     ).optional(),
     autoscaling: z.object({
       autoprovisioned: z.boolean().describe(
@@ -121,7 +121,7 @@ const GlobalArgsSchema = z.object({
         "Is autoscaling enabled for this node pool.",
       ).optional(),
       locationPolicy: z.enum(["LOCATION_POLICY_UNSPECIFIED", "BALANCED", "ANY"])
-        .describe("Location policy used when scaling up a nodepool.")
+        .describe("Location policy used when scaling up a node pool.")
         .optional(),
       maxNodeCount: z.number().int().describe(
         "Maximum number of nodes for one location in the node pool. Must be >= min_node_count. There has to be enough quota to scale up the cluster.",
@@ -247,7 +247,7 @@ const GlobalArgsSchema = z.object({
           "Disk size in GB. Replaces NodeConfig.disk_size_gb",
         ).optional(),
       }).describe(
-        "BootDisk specifies the boot disk configuration for nodepools.",
+        "BootDisk specifies the boot disk configuration for node pools.",
       ).optional(),
       bootDiskKmsKey: z.string().describe(
         "The Customer Managed Encryption Key used to encrypt the boot disk attached to each node in the node pool. This should be of the form projects/[KEY_PROJECT_ID]/locations/[LOCATION]/keyRings/[RING_NAME]/cryptoKeys/[KEY_NAME]. For more information about protecting resources with Cloud KMS Keys please see: https://cloud.google.com/compute/docs/disks/customer-managed-encryption",
@@ -616,7 +616,7 @@ const GlobalArgsSchema = z.object({
           "LoggingVariantConfig specifies the behaviour of the logging component.",
         ).optional(),
       }).describe(
-        "NodePoolLoggingConfig specifies logging configuration for nodepools.",
+        "NodePoolLoggingConfig specifies logging configuration for node pools.",
       ).optional(),
       machineType: z.string().describe(
         "The name of a Google Compute Engine [machine type](https://cloud.google.com/compute/docs/machine-types) If unspecified, the default machine type is `e2-medium`.",
@@ -879,7 +879,7 @@ const GlobalArgsSchema = z.object({
         "Whether to respect PDB during node pool deletion.",
       ).optional(),
     }).describe(
-      "NodeDrainConfig contains the node drain related configurations for this nodepool.",
+      "NodeDrainConfig contains the node drain related configurations for this node pool.",
     ).optional(),
     placementPolicy: z.object({
       policyName: z.string().describe(
@@ -899,7 +899,7 @@ const GlobalArgsSchema = z.object({
     ).optional(),
     queuedProvisioning: z.object({
       enabled: z.boolean().describe(
-        "Denotes that this nodepool is QRM specific, meaning nodes can be only obtained through queuing via the Cluster Autoscaler ProvisioningRequest API.",
+        "Denotes that this node pool is QRM specific, meaning nodes can be only obtained through queuing via the Cluster Autoscaler ProvisioningRequest API.",
       ).optional(),
     }).describe(
       "QueuedProvisioning defines the queued provisioning used by the node pool.",
@@ -1046,7 +1046,7 @@ const GlobalArgsSchema = z.object({
     sizeGb: z.string().describe(
       "Disk size in GB. Replaces NodeConfig.disk_size_gb",
     ).optional(),
-  }).describe("BootDisk specifies the boot disk configuration for nodepools.")
+  }).describe("BootDisk specifies the boot disk configuration for node pools.")
     .optional(),
   confidentialNodes: z.object({
     confidentialInstanceType: z.enum([
@@ -1400,7 +1400,7 @@ const GlobalArgsSchema = z.object({
       "LoggingVariantConfig specifies the behaviour of the logging component.",
     ).optional(),
   }).describe(
-    "NodePoolLoggingConfig specifies logging configuration for nodepools.",
+    "NodePoolLoggingConfig specifies logging configuration for node pools.",
   ).optional(),
   machineType: z.string().describe(
     "Optional. The desired [Google Compute Engine machine type](https://cloud.google.com/compute/docs/machine-types) for nodes in the node pool. Initiates an upgrade operation that migrates the nodes in the node pool to the specified machine type.",
@@ -1416,7 +1416,7 @@ const GlobalArgsSchema = z.object({
       "Whether to respect PDB during node pool deletion.",
     ).optional(),
   }).describe(
-    "NodeDrainConfig contains the node drain related configurations for this nodepool.",
+    "NodeDrainConfig contains the node drain related configurations for this node pool.",
   ).optional(),
   nodeNetworkConfig: z.object({
     acceleratorNetworkProfile: z.string().describe(
@@ -1494,7 +1494,7 @@ const GlobalArgsSchema = z.object({
   ).optional(),
   queuedProvisioning: z.object({
     enabled: z.boolean().describe(
-      "Denotes that this nodepool is QRM specific, meaning nodes can be only obtained through queuing via the Cluster Autoscaler ProvisioningRequest API.",
+      "Denotes that this node pool is QRM specific, meaning nodes can be only obtained through queuing via the Cluster Autoscaler ProvisioningRequest API.",
     ).optional(),
   }).describe(
     "QueuedProvisioning defines the queued provisioning used by the node pool.",
@@ -1936,7 +1936,7 @@ const InputsSchema = z.object({
         "Denotes that nodes belonging to this node pool are Autopilot nodes.",
       ).optional(),
     }).describe(
-      "AutopilotConfig contains configuration of autopilot feature for this nodepool.",
+      "AutopilotConfig contains configuration of autopilot feature for this node pool.",
     ).optional(),
     autoscaling: z.object({
       autoprovisioned: z.boolean().describe(
@@ -1946,7 +1946,7 @@ const InputsSchema = z.object({
         "Is autoscaling enabled for this node pool.",
       ).optional(),
       locationPolicy: z.enum(["LOCATION_POLICY_UNSPECIFIED", "BALANCED", "ANY"])
-        .describe("Location policy used when scaling up a nodepool.")
+        .describe("Location policy used when scaling up a node pool.")
         .optional(),
       maxNodeCount: z.number().int().describe(
         "Maximum number of nodes for one location in the node pool. Must be >= min_node_count. There has to be enough quota to scale up the cluster.",
@@ -2072,7 +2072,7 @@ const InputsSchema = z.object({
           "Disk size in GB. Replaces NodeConfig.disk_size_gb",
         ).optional(),
       }).describe(
-        "BootDisk specifies the boot disk configuration for nodepools.",
+        "BootDisk specifies the boot disk configuration for node pools.",
       ).optional(),
       bootDiskKmsKey: z.string().describe(
         "The Customer Managed Encryption Key used to encrypt the boot disk attached to each node in the node pool. This should be of the form projects/[KEY_PROJECT_ID]/locations/[LOCATION]/keyRings/[RING_NAME]/cryptoKeys/[KEY_NAME]. For more information about protecting resources with Cloud KMS Keys please see: https://cloud.google.com/compute/docs/disks/customer-managed-encryption",
@@ -2441,7 +2441,7 @@ const InputsSchema = z.object({
           "LoggingVariantConfig specifies the behaviour of the logging component.",
         ).optional(),
       }).describe(
-        "NodePoolLoggingConfig specifies logging configuration for nodepools.",
+        "NodePoolLoggingConfig specifies logging configuration for node pools.",
       ).optional(),
       machineType: z.string().describe(
         "The name of a Google Compute Engine [machine type](https://cloud.google.com/compute/docs/machine-types) If unspecified, the default machine type is `e2-medium`.",
@@ -2704,7 +2704,7 @@ const InputsSchema = z.object({
         "Whether to respect PDB during node pool deletion.",
       ).optional(),
     }).describe(
-      "NodeDrainConfig contains the node drain related configurations for this nodepool.",
+      "NodeDrainConfig contains the node drain related configurations for this node pool.",
     ).optional(),
     placementPolicy: z.object({
       policyName: z.string().describe(
@@ -2724,7 +2724,7 @@ const InputsSchema = z.object({
     ).optional(),
     queuedProvisioning: z.object({
       enabled: z.boolean().describe(
-        "Denotes that this nodepool is QRM specific, meaning nodes can be only obtained through queuing via the Cluster Autoscaler ProvisioningRequest API.",
+        "Denotes that this node pool is QRM specific, meaning nodes can be only obtained through queuing via the Cluster Autoscaler ProvisioningRequest API.",
       ).optional(),
     }).describe(
       "QueuedProvisioning defines the queued provisioning used by the node pool.",
@@ -2871,7 +2871,7 @@ const InputsSchema = z.object({
     sizeGb: z.string().describe(
       "Disk size in GB. Replaces NodeConfig.disk_size_gb",
     ).optional(),
-  }).describe("BootDisk specifies the boot disk configuration for nodepools.")
+  }).describe("BootDisk specifies the boot disk configuration for node pools.")
     .optional(),
   confidentialNodes: z.object({
     confidentialInstanceType: z.enum([
@@ -3225,7 +3225,7 @@ const InputsSchema = z.object({
       "LoggingVariantConfig specifies the behaviour of the logging component.",
     ).optional(),
   }).describe(
-    "NodePoolLoggingConfig specifies logging configuration for nodepools.",
+    "NodePoolLoggingConfig specifies logging configuration for node pools.",
   ).optional(),
   machineType: z.string().describe(
     "Optional. The desired [Google Compute Engine machine type](https://cloud.google.com/compute/docs/machine-types) for nodes in the node pool. Initiates an upgrade operation that migrates the nodes in the node pool to the specified machine type.",
@@ -3241,7 +3241,7 @@ const InputsSchema = z.object({
       "Whether to respect PDB during node pool deletion.",
     ).optional(),
   }).describe(
-    "NodeDrainConfig contains the node drain related configurations for this nodepool.",
+    "NodeDrainConfig contains the node drain related configurations for this node pool.",
   ).optional(),
   nodeNetworkConfig: z.object({
     acceleratorNetworkProfile: z.string().describe(
@@ -3319,7 +3319,7 @@ const InputsSchema = z.object({
   ).optional(),
   queuedProvisioning: z.object({
     enabled: z.boolean().describe(
-      "Denotes that this nodepool is QRM specific, meaning nodes can be only obtained through queuing via the Cluster Autoscaler ProvisioningRequest API.",
+      "Denotes that this node pool is QRM specific, meaning nodes can be only obtained through queuing via the Cluster Autoscaler ProvisioningRequest API.",
     ).optional(),
   }).describe(
     "QueuedProvisioning defines the queued provisioning used by the node pool.",
@@ -3423,7 +3423,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/container/clusters-nodepools",
-  version: "2026.04.04.1",
+  version: "2026.04.11.1",
   upgrades: [
     {
       toVersion: "2026.03.31.1",
@@ -3462,6 +3462,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.04.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.11.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },
