@@ -94,13 +94,16 @@ const DELETE_CONFIG = {
 
 const GlobalArgsSchema = z.object({
   agentTool: z.object({
+    agent: z.string().describe(
+      "Optional. The resource name of the agent that is the entry point of the tool. Format: `projects/{project}/locations/{location}/agents/{agent}`",
+    ).optional(),
     description: z.string().describe(
       "Optional. Description of the tool's purpose.",
     ).optional(),
     name: z.string().describe("Required. The name of the agent tool.")
       .optional(),
     rootAgent: z.string().describe(
-      "Optional. The resource name of the root agent that is the entry point of the tool. Format: `projects/{project}/locations/{location}/agents/{agent}`",
+      "Optional. Deprecated: Use `agent` instead. The resource name of the root agent that is the entry point of the tool. Format: `projects/{project}/locations/{location}/agents/{agent}`",
     ).optional(),
   }).describe("Represents a tool that allows the agent to call another agent.")
     .optional(),
@@ -941,6 +944,7 @@ const GlobalArgsSchema = z.object({
 
 const StateSchema = z.object({
   agentTool: z.object({
+    agent: z.string(),
     description: z.string(),
     name: z.string(),
     rootAgent: z.string(),
@@ -1279,13 +1283,16 @@ type StateData = z.infer<typeof StateSchema>;
 
 const InputsSchema = z.object({
   agentTool: z.object({
+    agent: z.string().describe(
+      "Optional. The resource name of the agent that is the entry point of the tool. Format: `projects/{project}/locations/{location}/agents/{agent}`",
+    ).optional(),
     description: z.string().describe(
       "Optional. Description of the tool's purpose.",
     ).optional(),
     name: z.string().describe("Required. The name of the agent tool.")
       .optional(),
     rootAgent: z.string().describe(
-      "Optional. The resource name of the root agent that is the entry point of the tool. Format: `projects/{project}/locations/{location}/agents/{agent}`",
+      "Optional. Deprecated: Use `agent` instead. The resource name of the root agent that is the entry point of the tool. Format: `projects/{project}/locations/{location}/agents/{agent}`",
     ).optional(),
   }).describe("Represents a tool that allows the agent to call another agent.")
     .optional(),
@@ -2126,7 +2133,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/ces/apps-tools",
-  version: "2026.04.04.1",
+  version: "2026.04.13.1",
   upgrades: [
     {
       toVersion: "2026.04.01.2",
@@ -2155,6 +2162,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.04.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.13.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

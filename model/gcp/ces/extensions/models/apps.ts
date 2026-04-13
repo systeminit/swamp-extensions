@@ -230,12 +230,27 @@ const GlobalArgsSchema = z.object({
   displayName: z.string().describe("Required. Display name of the app.")
     .optional(),
   errorHandlingSettings: z.object({
+    endSessionConfig: z.object({
+      escalateSession: z.boolean().describe(
+        "Optional. Whether to escalate the session in EndSession. If session is escalated, metadata in EndSession will contain `session_escalated = true`. See https://docs.cloud.google.com/customer-engagement-ai/conversational-agents/ps/deploy/google-telephony-platform#transfer_a_call_to_a_human_agent for details.",
+      ).optional(),
+    }).describe(
+      "Configuration for ending the session in case of system errors (e.g. LLM errors).",
+    ).optional(),
     errorHandlingStrategy: z.enum([
       "ERROR_HANDLING_STRATEGY_UNSPECIFIED",
       "NONE",
       "FALLBACK_RESPONSE",
       "END_SESSION",
     ]).describe("Optional. The strategy to use for error handling.").optional(),
+    fallbackResponseConfig: z.object({
+      customFallbackMessages: z.record(z.string(), z.string()).describe(
+        "Optional. The fallback messages in case of system errors (e.g. LLM errors), mapped by [supported language code](https://docs.cloud.google.com/customer-engagement-ai/conversational-agents/ps/reference/language).",
+      ).optional(),
+      maxFallbackAttempts: z.number().int().describe(
+        "Optional. The maximum number of fallback attempts to make before the agent emitting EndSession Signal.",
+      ).optional(),
+    }).describe("Configuration for handling fallback responses.").optional(),
   }).describe("Settings to describe how errors should be handled in the app.")
     .optional(),
   evaluationMetricsThresholds: z.object({
@@ -348,6 +363,9 @@ const GlobalArgsSchema = z.object({
     conversationLoggingSettings: z.object({
       disableConversationLogging: z.boolean().describe(
         "Optional. Whether to disable conversation logging for the sessions.",
+      ).optional(),
+      retentionWindow: z.string().describe(
+        "Optional. Controls the retention window for the conversation. If not set, the conversation will be retained for 365 days.",
       ).optional(),
     }).describe(
       "Settings to describe the conversation logging behaviors for the app.",
@@ -546,7 +564,14 @@ const StateSchema = z.object({
   description: z.string().optional(),
   displayName: z.string().optional(),
   errorHandlingSettings: z.object({
+    endSessionConfig: z.object({
+      escalateSession: z.boolean(),
+    }),
     errorHandlingStrategy: z.string(),
+    fallbackResponseConfig: z.object({
+      customFallbackMessages: z.record(z.string(), z.unknown()),
+      maxFallbackAttempts: z.number(),
+    }),
   }).optional(),
   etag: z.string().optional(),
   evaluationMetricsThresholds: z.object({
@@ -591,6 +616,7 @@ const StateSchema = z.object({
     }),
     conversationLoggingSettings: z.object({
       disableConversationLogging: z.boolean(),
+      retentionWindow: z.string(),
     }),
     evaluationAudioRecordingConfig: z.object({
       gcsBucket: z.string(),
@@ -813,12 +839,27 @@ const InputsSchema = z.object({
   displayName: z.string().describe("Required. Display name of the app.")
     .optional(),
   errorHandlingSettings: z.object({
+    endSessionConfig: z.object({
+      escalateSession: z.boolean().describe(
+        "Optional. Whether to escalate the session in EndSession. If session is escalated, metadata in EndSession will contain `session_escalated = true`. See https://docs.cloud.google.com/customer-engagement-ai/conversational-agents/ps/deploy/google-telephony-platform#transfer_a_call_to_a_human_agent for details.",
+      ).optional(),
+    }).describe(
+      "Configuration for ending the session in case of system errors (e.g. LLM errors).",
+    ).optional(),
     errorHandlingStrategy: z.enum([
       "ERROR_HANDLING_STRATEGY_UNSPECIFIED",
       "NONE",
       "FALLBACK_RESPONSE",
       "END_SESSION",
     ]).describe("Optional. The strategy to use for error handling.").optional(),
+    fallbackResponseConfig: z.object({
+      customFallbackMessages: z.record(z.string(), z.string()).describe(
+        "Optional. The fallback messages in case of system errors (e.g. LLM errors), mapped by [supported language code](https://docs.cloud.google.com/customer-engagement-ai/conversational-agents/ps/reference/language).",
+      ).optional(),
+      maxFallbackAttempts: z.number().int().describe(
+        "Optional. The maximum number of fallback attempts to make before the agent emitting EndSession Signal.",
+      ).optional(),
+    }).describe("Configuration for handling fallback responses.").optional(),
   }).describe("Settings to describe how errors should be handled in the app.")
     .optional(),
   evaluationMetricsThresholds: z.object({
@@ -931,6 +972,9 @@ const InputsSchema = z.object({
     conversationLoggingSettings: z.object({
       disableConversationLogging: z.boolean().describe(
         "Optional. Whether to disable conversation logging for the sessions.",
+      ).optional(),
+      retentionWindow: z.string().describe(
+        "Optional. Controls the retention window for the conversation. If not set, the conversation will be retained for 365 days.",
       ).optional(),
     }).describe(
       "Settings to describe the conversation logging behaviors for the app.",
@@ -1079,7 +1123,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/ces/apps",
-  version: "2026.04.03.3",
+  version: "2026.04.13.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -1113,6 +1157,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.3",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.13.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },
@@ -1430,6 +1479,7 @@ export const model = {
       arguments: z.object({
         args: z.any().optional(),
         context: z.any().optional(),
+        mockConfig: z.any().optional(),
         tool: z.any().optional(),
         toolsetTool: z.any().optional(),
         variables: z.any().optional(),
@@ -1442,6 +1492,9 @@ export const model = {
         const body: Record<string, unknown> = {};
         if (args["args"] !== undefined) body["args"] = args["args"];
         if (args["context"] !== undefined) body["context"] = args["context"];
+        if (args["mockConfig"] !== undefined) {
+          body["mockConfig"] = args["mockConfig"];
+        }
         if (args["tool"] !== undefined) body["tool"] = args["tool"];
         if (args["toolsetTool"] !== undefined) {
           body["toolsetTool"] = args["toolsetTool"];
