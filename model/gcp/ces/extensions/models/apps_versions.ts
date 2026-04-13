@@ -414,12 +414,28 @@ const GlobalArgsSchema = z.object({
       displayName: z.string().describe("Required. Display name of the app.")
         .optional(),
       errorHandlingSettings: z.object({
+        endSessionConfig: z.object({
+          escalateSession: z.boolean().describe(
+            "Optional. Whether to escalate the session in EndSession. If session is escalated, metadata in EndSession will contain `session_escalated = true`. See https://docs.cloud.google.com/customer-engagement-ai/conversational-agents/ps/deploy/google-telephony-platform#transfer_a_call_to_a_human_agent for details.",
+          ).optional(),
+        }).describe(
+          "Configuration for ending the session in case of system errors (e.g. LLM errors).",
+        ).optional(),
         errorHandlingStrategy: z.enum([
           "ERROR_HANDLING_STRATEGY_UNSPECIFIED",
           "NONE",
           "FALLBACK_RESPONSE",
           "END_SESSION",
         ]).describe("Optional. The strategy to use for error handling.")
+          .optional(),
+        fallbackResponseConfig: z.object({
+          customFallbackMessages: z.record(z.string(), z.unknown()).describe(
+            "Optional. The fallback messages in case of system errors (e.g. LLM errors), mapped by [supported language code](https://docs.cloud.google.com/customer-engagement-ai/conversational-agents/ps/reference/language).",
+          ).optional(),
+          maxFallbackAttempts: z.number().int().describe(
+            "Optional. The maximum number of fallback attempts to make before the agent emitting EndSession Signal.",
+          ).optional(),
+        }).describe("Configuration for handling fallback responses.")
           .optional(),
       }).describe(
         "Settings to describe how errors should be handled in the app.",
@@ -531,6 +547,9 @@ const GlobalArgsSchema = z.object({
         conversationLoggingSettings: z.object({
           disableConversationLogging: z.boolean().describe(
             "Optional. Whether to disable conversation logging for the sessions.",
+          ).optional(),
+          retentionWindow: z.string().describe(
+            "Optional. Controls the retention window for the conversation. If not set, the conversation will be retained for 365 days.",
           ).optional(),
         }).describe(
           "Settings to describe the conversation logging behaviors for the app.",
@@ -988,13 +1007,16 @@ const GlobalArgsSchema = z.object({
     })).describe("Optional. List of guardrails in the app.").optional(),
     tools: z.array(z.object({
       agentTool: z.object({
+        agent: z.string().describe(
+          "Optional. The resource name of the agent that is the entry point of the tool. Format: `projects/{project}/locations/{location}/agents/{agent}`",
+        ).optional(),
         description: z.string().describe(
           "Optional. Description of the tool's purpose.",
         ).optional(),
         name: z.string().describe("Required. The name of the agent tool.")
           .optional(),
         rootAgent: z.string().describe(
-          "Optional. The resource name of the root agent that is the entry point of the tool. Format: `projects/{project}/locations/{location}/agents/{agent}`",
+          "Optional. Deprecated: Use `agent` instead. The resource name of the root agent that is the entry point of the tool. Format: `projects/{project}/locations/{location}/agents/{agent}`",
         ).optional(),
       }).describe(
         "Represents a tool that allows the agent to call another agent.",
@@ -1884,7 +1906,14 @@ const StateSchema = z.object({
       description: z.string(),
       displayName: z.string(),
       errorHandlingSettings: z.object({
+        endSessionConfig: z.object({
+          escalateSession: z.boolean(),
+        }),
         errorHandlingStrategy: z.string(),
+        fallbackResponseConfig: z.object({
+          customFallbackMessages: z.record(z.string(), z.unknown()),
+          maxFallbackAttempts: z.number(),
+        }),
       }),
       etag: z.string(),
       evaluationMetricsThresholds: z.object({
@@ -1929,6 +1958,7 @@ const StateSchema = z.object({
         }),
         conversationLoggingSettings: z.object({
           disableConversationLogging: z.boolean(),
+          retentionWindow: z.string(),
         }),
         evaluationAudioRecordingConfig: z.object({
           gcsBucket: z.string(),
@@ -2105,6 +2135,7 @@ const StateSchema = z.object({
     })),
     tools: z.array(z.object({
       agentTool: z.object({
+        agent: z.string(),
         description: z.string(),
         name: z.string(),
         rootAgent: z.string(),
@@ -2748,12 +2779,28 @@ const InputsSchema = z.object({
       displayName: z.string().describe("Required. Display name of the app.")
         .optional(),
       errorHandlingSettings: z.object({
+        endSessionConfig: z.object({
+          escalateSession: z.boolean().describe(
+            "Optional. Whether to escalate the session in EndSession. If session is escalated, metadata in EndSession will contain `session_escalated = true`. See https://docs.cloud.google.com/customer-engagement-ai/conversational-agents/ps/deploy/google-telephony-platform#transfer_a_call_to_a_human_agent for details.",
+          ).optional(),
+        }).describe(
+          "Configuration for ending the session in case of system errors (e.g. LLM errors).",
+        ).optional(),
         errorHandlingStrategy: z.enum([
           "ERROR_HANDLING_STRATEGY_UNSPECIFIED",
           "NONE",
           "FALLBACK_RESPONSE",
           "END_SESSION",
         ]).describe("Optional. The strategy to use for error handling.")
+          .optional(),
+        fallbackResponseConfig: z.object({
+          customFallbackMessages: z.record(z.string(), z.unknown()).describe(
+            "Optional. The fallback messages in case of system errors (e.g. LLM errors), mapped by [supported language code](https://docs.cloud.google.com/customer-engagement-ai/conversational-agents/ps/reference/language).",
+          ).optional(),
+          maxFallbackAttempts: z.number().int().describe(
+            "Optional. The maximum number of fallback attempts to make before the agent emitting EndSession Signal.",
+          ).optional(),
+        }).describe("Configuration for handling fallback responses.")
           .optional(),
       }).describe(
         "Settings to describe how errors should be handled in the app.",
@@ -2865,6 +2912,9 @@ const InputsSchema = z.object({
         conversationLoggingSettings: z.object({
           disableConversationLogging: z.boolean().describe(
             "Optional. Whether to disable conversation logging for the sessions.",
+          ).optional(),
+          retentionWindow: z.string().describe(
+            "Optional. Controls the retention window for the conversation. If not set, the conversation will be retained for 365 days.",
           ).optional(),
         }).describe(
           "Settings to describe the conversation logging behaviors for the app.",
@@ -3322,13 +3372,16 @@ const InputsSchema = z.object({
     })).describe("Optional. List of guardrails in the app.").optional(),
     tools: z.array(z.object({
       agentTool: z.object({
+        agent: z.string().describe(
+          "Optional. The resource name of the agent that is the entry point of the tool. Format: `projects/{project}/locations/{location}/agents/{agent}`",
+        ).optional(),
         description: z.string().describe(
           "Optional. Description of the tool's purpose.",
         ).optional(),
         name: z.string().describe("Required. The name of the agent tool.")
           .optional(),
         rootAgent: z.string().describe(
-          "Optional. The resource name of the root agent that is the entry point of the tool. Format: `projects/{project}/locations/{location}/agents/{agent}`",
+          "Optional. Deprecated: Use `agent` instead. The resource name of the root agent that is the entry point of the tool. Format: `projects/{project}/locations/{location}/agents/{agent}`",
         ).optional(),
       }).describe(
         "Represents a tool that allows the agent to call another agent.",
@@ -4088,7 +4141,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/ces/apps-versions",
-  version: "2026.04.04.1",
+  version: "2026.04.13.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -4127,6 +4180,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.04.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.13.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },
