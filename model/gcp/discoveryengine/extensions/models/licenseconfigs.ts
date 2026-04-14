@@ -108,24 +108,6 @@ const GlobalArgsSchema = z.object({
   name: z.string().describe(
     "Immutable. Identifier. The fully qualified resource name of the license config. Format: `projects/{project}/locations/{location}/licenseConfigs/{license_config}`",
   ).optional(),
-  scheduledUpdate: z.object({
-    effectiveDate: z.object({
-      day: z.number().int().describe(
-        "Day of a month. Must be from 1 to 31 and valid for the year and month, or 0 to specify a year by itself or a year and month where the day isn't significant.",
-      ).optional(),
-      month: z.number().int().describe(
-        "Month of a year. Must be from 1 to 12, or 0 to specify a year without a month and day.",
-      ).optional(),
-      year: z.number().int().describe(
-        "Year of the date. Must be from 1 to 9999, or 0 to specify a date without a year.",
-      ).optional(),
-    }).describe(
-      "Represents a whole or partial calendar date, such as a birthday. The time of day and time zone are either specified elsewhere or are insignificant. The date is relative to the Gregorian Calendar. This can represent one of the following: * A full date, with non-zero year, month, and day values. * A month and day, with a zero year (for example, an anniversary). * A year on its own, with a zero month and a zero day. * A year and month, with a zero day (for example, a credit card expiration date). Related types: * google.type.TimeOfDay * google.type.DateTime * google.protobuf.Timestamp",
-    ).optional(),
-    seatCount: z.string().describe(
-      "The seat count scheduled for the next update.",
-    ).optional(),
-  }).describe("Message containing data for a scheduled update.").optional(),
   startDate: z.object({
     day: z.number().int().describe(
       "Day of a month. Must be from 1 to 31 and valid for the year and month, or 0 to specify a year by itself or a year and month where the day isn't significant.",
@@ -188,14 +170,6 @@ const StateSchema = z.object({
   geminiBundle: z.boolean().optional(),
   licenseCount: z.string().optional(),
   name: z.string(),
-  scheduledUpdate: z.object({
-    effectiveDate: z.object({
-      day: z.number(),
-      month: z.number(),
-      year: z.number(),
-    }),
-    seatCount: z.string(),
-  }).optional(),
   startDate: z.object({
     day: z.number(),
     month: z.number(),
@@ -246,24 +220,6 @@ const InputsSchema = z.object({
   name: z.string().describe(
     "Immutable. Identifier. The fully qualified resource name of the license config. Format: `projects/{project}/locations/{location}/licenseConfigs/{license_config}`",
   ).optional(),
-  scheduledUpdate: z.object({
-    effectiveDate: z.object({
-      day: z.number().int().describe(
-        "Day of a month. Must be from 1 to 31 and valid for the year and month, or 0 to specify a year by itself or a year and month where the day isn't significant.",
-      ).optional(),
-      month: z.number().int().describe(
-        "Month of a year. Must be from 1 to 12, or 0 to specify a year without a month and day.",
-      ).optional(),
-      year: z.number().int().describe(
-        "Year of the date. Must be from 1 to 9999, or 0 to specify a date without a year.",
-      ).optional(),
-    }).describe(
-      "Represents a whole or partial calendar date, such as a birthday. The time of day and time zone are either specified elsewhere or are insignificant. The date is relative to the Gregorian Calendar. This can represent one of the following: * A full date, with non-zero year, month, and day values. * A month and day, with a zero year (for example, an anniversary). * A year on its own, with a zero month and a zero day. * A year and month, with a zero day (for example, a credit card expiration date). Related types: * google.type.TimeOfDay * google.type.DateTime * google.protobuf.Timestamp",
-    ).optional(),
-    seatCount: z.string().describe(
-      "The seat count scheduled for the next update.",
-    ).optional(),
-  }).describe("Message containing data for a scheduled update.").optional(),
   startDate: z.object({
     day: z.number().int().describe(
       "Day of a month. Must be from 1 to 31 and valid for the year and month, or 0 to specify a year by itself or a year and month where the day isn't significant.",
@@ -311,7 +267,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/discoveryengine/licenseconfigs",
-  version: "2026.04.08.1",
+  version: "2026.04.14.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -342,6 +298,14 @@ export const model = {
       toVersion: "2026.04.08.1",
       description: "Added: scheduledUpdate",
       upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.14.1",
+      description: "Removed: scheduledUpdate",
+      upgradeAttributes: (old: Record<string, unknown>) => {
+        const { scheduledUpdate: _scheduledUpdate, ...rest } = old;
+        return rest;
+      },
     },
   ],
   globalArguments: GlobalArgsSchema,
@@ -378,9 +342,6 @@ export const model = {
           body["licenseCount"] = g["licenseCount"];
         }
         if (g["name"] !== undefined) body["name"] = g["name"];
-        if (g["scheduledUpdate"] !== undefined) {
-          body["scheduledUpdate"] = g["scheduledUpdate"];
-        }
         if (g["startDate"] !== undefined) body["startDate"] = g["startDate"];
         if (g["subscriptionTerm"] !== undefined) {
           body["subscriptionTerm"] = g["subscriptionTerm"];
@@ -489,9 +450,6 @@ export const model = {
         if (g["freeTrial"] !== undefined) body["freeTrial"] = g["freeTrial"];
         if (g["licenseCount"] !== undefined) {
           body["licenseCount"] = g["licenseCount"];
-        }
-        if (g["scheduledUpdate"] !== undefined) {
-          body["scheduledUpdate"] = g["scheduledUpdate"];
         }
         if (g["startDate"] !== undefined) body["startDate"] = g["startDate"];
         if (g["subscriptionTerm"] !== undefined) {

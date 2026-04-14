@@ -1,7 +1,7 @@
 # Auto-generated manifest. Re-generate with the appropriate deno task.
 manifestVersion: 1
 name: "@swamp/gcp/compute"
-version: "2026.04.07.1"
+version: "2026.04.14.1"
 description: "Google Cloud compute infrastructure models"
 labels:
   - gcp
@@ -10,7 +10,7 @@ labels:
   - cloud
   - infrastructure
 releaseNotes: |
-  - Updated: backendbuckets, backendservices, disks, futurereservations, images, instancegroupmanagerresizerequests, instancegroupmanagers, instancetemplates, instances, instantsnapshots, machineimages, networkattachments, regionbackendservices, regioncommitments, regioncompositehealthchecks, regiondisks, regionhealthsources, regioninstancegroupmanagers, regioninstancetemplates, regioninstantsnapshots, reservations, snapshotsettings, snapshots
+  - Updated: regionurlmaps, urlmaps
 models:
   - acceleratortypes.ts
   - addresses.ts

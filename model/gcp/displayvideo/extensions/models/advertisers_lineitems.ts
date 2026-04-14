@@ -118,6 +118,7 @@ const GlobalArgsSchema = z.object({
         "DEMAND_GEN_BIDDING_STRATEGY_TYPE_MAXIMIZE_CONVERSIONS",
         "DEMAND_GEN_BIDDING_STRATEGY_TYPE_MAXIMIZE_CONVERSION_VALUE",
         "DEMAND_GEN_BIDDING_STRATEGY_TYPE_MAXIMIZE_CLICKS",
+        "DEMAND_GEN_BIDDING_STRATEGY_TYPE_TARGET_CPC",
       ]).describe(
         "Optional. The type of the bidding strategy. This can only be set when assigned to a line item. Ad groups will inherit this value from their line item.",
       ).optional(),
@@ -530,6 +531,9 @@ const GlobalArgsSchema = z.object({
       .optional(),
   }).describe("A mobile app promoted by a mobile app install line item.")
     .optional(),
+  optimizeFixedBidding: z.boolean().describe(
+    "Optional. Whether to enable DV360's bid optimization for fixed bid line items. By default, DV360 optimizes your fixed bid by automatically lowering bids for impressions that are less likely to perform well. This optimization is enabled by default (value is true). When this field is set to `false`, this optimization is disabled, and the bid will not be lowered for any reason. This setting only applies to line items with a `bidding_strategy` of type `FIXED_BID`.",
+  ).optional(),
   pacing: z.object({
     dailyMaxImpressions: z.string().describe(
       "Maximum number of impressions to serve every day. Applicable when the budget is impression based. Must be greater than 0.",
@@ -1007,6 +1011,7 @@ const StateSchema = z.object({
     publisher: z.string(),
   }).optional(),
   name: z.string(),
+  optimizeFixedBidding: z.boolean().optional(),
   pacing: z.object({
     dailyMaxImpressions: z.string(),
     dailyMaxMicros: z.string(),
@@ -1116,6 +1121,7 @@ const InputsSchema = z.object({
         "DEMAND_GEN_BIDDING_STRATEGY_TYPE_MAXIMIZE_CONVERSIONS",
         "DEMAND_GEN_BIDDING_STRATEGY_TYPE_MAXIMIZE_CONVERSION_VALUE",
         "DEMAND_GEN_BIDDING_STRATEGY_TYPE_MAXIMIZE_CLICKS",
+        "DEMAND_GEN_BIDDING_STRATEGY_TYPE_TARGET_CPC",
       ]).describe(
         "Optional. The type of the bidding strategy. This can only be set when assigned to a line item. Ad groups will inherit this value from their line item.",
       ).optional(),
@@ -1528,6 +1534,9 @@ const InputsSchema = z.object({
       .optional(),
   }).describe("A mobile app promoted by a mobile app install line item.")
     .optional(),
+  optimizeFixedBidding: z.boolean().describe(
+    "Optional. Whether to enable DV360's bid optimization for fixed bid line items. By default, DV360 optimizes your fixed bid by automatically lowering bids for impressions that are less likely to perform well. This optimization is enabled by default (value is true). When this field is set to `false`, this optimization is disabled, and the bid will not be lowered for any reason. This setting only applies to line items with a `bidding_strategy` of type `FIXED_BID`.",
+  ).optional(),
   pacing: z.object({
     dailyMaxImpressions: z.string().describe(
       "Maximum number of impressions to serve every day. Applicable when the budget is impression based. Must be greater than 0.",
@@ -1898,7 +1907,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/displayvideo/advertisers-lineitems",
-  version: "2026.04.08.1",
+  version: "2026.04.14.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -1933,6 +1942,11 @@ export const model = {
     {
       toVersion: "2026.04.08.1",
       description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.14.1",
+      description: "Added: optimizeFixedBidding",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },
   ],
@@ -1997,6 +2011,9 @@ export const model = {
           body["lineItemType"] = g["lineItemType"];
         }
         if (g["mobileApp"] !== undefined) body["mobileApp"] = g["mobileApp"];
+        if (g["optimizeFixedBidding"] !== undefined) {
+          body["optimizeFixedBidding"] = g["optimizeFixedBidding"];
+        }
         if (g["pacing"] !== undefined) body["pacing"] = g["pacing"];
         if (g["partnerCosts"] !== undefined) {
           body["partnerCosts"] = g["partnerCosts"];
@@ -2117,6 +2134,9 @@ export const model = {
           body["integrationDetails"] = g["integrationDetails"];
         }
         if (g["mobileApp"] !== undefined) body["mobileApp"] = g["mobileApp"];
+        if (g["optimizeFixedBidding"] !== undefined) {
+          body["optimizeFixedBidding"] = g["optimizeFixedBidding"];
+        }
         if (g["pacing"] !== undefined) body["pacing"] = g["pacing"];
         if (g["partnerCosts"] !== undefined) {
           body["partnerCosts"] = g["partnerCosts"];
