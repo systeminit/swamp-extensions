@@ -183,6 +183,7 @@ const GlobalArgsSchema = z.object({
 });
 
 const StateSchema = z.object({
+  createTime: z.string().optional(),
   customerPolicy: z.object({
     bannedPhrases: z.array(z.object({
       ignoreDiacritics: z.boolean(),
@@ -208,6 +209,7 @@ const StateSchema = z.object({
     }),
   }).optional(),
   name: z.string(),
+  updateTime: z.string().optional(),
   webGroundingType: z.string().optional(),
 }).passthrough();
 
@@ -308,7 +310,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/discoveryengine/collections-engines-assistants",
-  version: "2026.04.03.3",
+  version: "2026.04.14.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -332,6 +334,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.3",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.14.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

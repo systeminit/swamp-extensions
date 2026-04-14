@@ -158,6 +158,7 @@ const GlobalArgsSchema = z.object({
         "DEMAND_GEN_BIDDING_STRATEGY_TYPE_MAXIMIZE_CONVERSIONS",
         "DEMAND_GEN_BIDDING_STRATEGY_TYPE_MAXIMIZE_CONVERSION_VALUE",
         "DEMAND_GEN_BIDDING_STRATEGY_TYPE_MAXIMIZE_CLICKS",
+        "DEMAND_GEN_BIDDING_STRATEGY_TYPE_TARGET_CPC",
       ]).describe(
         "Optional. The type of the bidding strategy. This can only be set when assigned to a line item. Ad groups will inherit this value from their line item.",
       ).optional(),
@@ -456,6 +457,7 @@ const InputsSchema = z.object({
         "DEMAND_GEN_BIDDING_STRATEGY_TYPE_MAXIMIZE_CONVERSIONS",
         "DEMAND_GEN_BIDDING_STRATEGY_TYPE_MAXIMIZE_CONVERSION_VALUE",
         "DEMAND_GEN_BIDDING_STRATEGY_TYPE_MAXIMIZE_CLICKS",
+        "DEMAND_GEN_BIDDING_STRATEGY_TYPE_TARGET_CPC",
       ]).describe(
         "Optional. The type of the bidding strategy. This can only be set when assigned to a line item. Ad groups will inherit this value from their line item.",
       ).optional(),
@@ -624,7 +626,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/displayvideo/advertisers-adgroups",
-  version: "2026.04.08.1",
+  version: "2026.04.14.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -658,6 +660,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.08.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.14.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },
