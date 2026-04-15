@@ -1,4 +1,4 @@
-// Auto-generated extension model for @swamp/gcp/searchads360/customers-customcolumns
+// Auto-generated extension model for @swamp/gcp/searchads360/customers-paymentsaccounts
 // Do not edit manually. Re-generate with: deno task generate:gcp
 
 // deno-lint-ignore-file no-explicit-any
@@ -7,20 +7,20 @@ import { z } from "zod";
 import {
   getProjectId,
   isResourceNotFoundError,
-  readResource,
+  readViaList,
 } from "./_lib/gcp.ts";
 
 const BASE_URL = "https://searchads360.googleapis.com/";
 
-const GET_CONFIG = {
-  "id": "searchads360.customers.customColumns.get",
-  "path": "v23/{+resourceName}",
+const LIST_CONFIG = {
+  "id": "searchads360.customers.paymentsAccounts.list",
+  "path": "v23/customers/{+customerId}/paymentsAccounts",
   "httpMethod": "GET",
   "parameterOrder": [
-    "resourceName",
+    "customerId",
   ],
   "parameters": {
-    "resourceName": {
+    "customerId": {
       "location": "path",
       "required": true,
     },
@@ -34,16 +34,13 @@ const GlobalArgsSchema = z.object({
 });
 
 const StateSchema = z.object({
-  description: z.string().optional(),
-  id: z.string().optional(),
+  currencyCode: z.string().optional(),
   name: z.string(),
-  queryable: z.boolean().optional(),
-  referencedSystemColumns: z.array(z.string()).optional(),
-  referencesAttributes: z.boolean().optional(),
-  referencesMetrics: z.boolean().optional(),
-  renderType: z.string().optional(),
+  payingManagerCustomer: z.string().optional(),
+  paymentsAccountId: z.string().optional(),
+  paymentsProfileId: z.string().optional(),
   resourceName: z.string().optional(),
-  valueType: z.string().optional(),
+  secondaryPaymentsProfileId: z.string().optional(),
 }).passthrough();
 
 type StateData = z.infer<typeof StateSchema>;
@@ -53,46 +50,14 @@ const InputsSchema = z.object({
 });
 
 export const model = {
-  type: "@swamp/gcp/searchads360/customers-customcolumns",
+  type: "@swamp/gcp/searchads360/customers-paymentsaccounts",
   version: "2026.04.15.1",
-  upgrades: [
-    {
-      toVersion: "2026.04.01.1",
-      description: "No schema changes",
-      upgradeAttributes: (old: Record<string, unknown>) => old,
-    },
-    {
-      toVersion: "2026.04.02.2",
-      description: "No schema changes",
-      upgradeAttributes: (old: Record<string, unknown>) => old,
-    },
-    {
-      toVersion: "2026.04.03.1",
-      description: "No schema changes",
-      upgradeAttributes: (old: Record<string, unknown>) => old,
-    },
-    {
-      toVersion: "2026.04.03.2",
-      description: "No schema changes",
-      upgradeAttributes: (old: Record<string, unknown>) => old,
-    },
-    {
-      toVersion: "2026.04.03.3",
-      description: "No schema changes",
-      upgradeAttributes: (old: Record<string, unknown>) => old,
-    },
-    {
-      toVersion: "2026.04.15.1",
-      description: "No schema changes",
-      upgradeAttributes: (old: Record<string, unknown>) => old,
-    },
-  ],
   globalArguments: GlobalArgsSchema,
   inputsSchema: InputsSchema,
   resources: {
     state: {
       description:
-        "A custom column. See Search Ads 360 custom column at https://support.google.c...",
+        "A payments account, which can be used to set up billing for an Ads customer.",
       schema: StateSchema,
       lifetime: "infinite",
       garbageCollection: 10,
@@ -100,19 +65,23 @@ export const model = {
   },
   methods: {
     get: {
-      description: "Get a customColumns",
+      description: "Get a paymentsAccounts",
       arguments: z.object({
-        identifier: z.string().describe("The name of the customColumns"),
+        identifier: z.string().describe("The name of the paymentsAccounts"),
       }),
       execute: async (args: { identifier: string }, context: any) => {
         const projectId = await getProjectId();
         const params: Record<string, string> = { project: projectId };
         const g = context.globalArgs;
-        params["resourceName"] = args.identifier;
-        const result = await readResource(
+        if (g["customerId"] !== undefined) {
+          params["customerId"] = String(g["customerId"]);
+        }
+        const result = await readViaList(
           BASE_URL,
-          GET_CONFIG,
+          LIST_CONFIG,
           params,
+          "name",
+          args.identifier,
         ) as StateData;
         const instanceName = (g.name?.toString() ?? args.identifier).replace(
           /[\/\\]/g,
@@ -127,7 +96,7 @@ export const model = {
       },
     },
     sync: {
-      description: "Sync customColumns state from GCP",
+      description: "Sync paymentsAccounts state from GCP",
       arguments: z.object({}),
       execute: async (_args: Record<string, never>, context: any) => {
         const g = context.globalArgs;
@@ -147,17 +116,23 @@ export const model = {
         const existing = JSON.parse(new TextDecoder().decode(content));
         try {
           const params: Record<string, string> = { project: projectId };
+          if (g["customerId"] !== undefined) {
+            params["customerId"] = String(g["customerId"]);
+          } else if (existing["customerId"]) {
+            params["customerId"] = String(existing["customerId"]);
+          }
           const identifier = existing.name?.toString() ?? g["name"]?.toString();
           if (!identifier) {
             throw new Error(
               "No identifier found in existing state or globalArgs",
             );
           }
-          params["resourceName"] = identifier;
-          const result = await readResource(
+          const result = await readViaList(
             BASE_URL,
-            GET_CONFIG,
+            LIST_CONFIG,
             params,
+            "name",
+            identifier,
           ) as StateData;
           const handle = await context.writeResource(
             "state",

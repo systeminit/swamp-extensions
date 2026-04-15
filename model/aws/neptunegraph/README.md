@@ -14,8 +14,8 @@ methods:
 - **delete** — remove the resource from AWS
 - **sync** — refresh all resource properties from AWS
 
-Use `swamp model type describe @swamp/aws/neptunegraph/graph` to see the full
-list of configurable properties and available methods for this model.
+Use `swamp model type describe @swamp/aws/neptunegraph/graph_snapshot` to see
+the full list of configurable properties and available methods for this model.
 
 ## Authentication
 
@@ -47,17 +47,17 @@ export AWS_SECRET_ACCESS_KEY=wJal...
 ## Usage
 
 ```bash
-# Create a new graph model
-swamp model create @swamp/aws/neptunegraph/graph my-graph
+# Create a new graph_snapshot model
+swamp model create @swamp/aws/neptunegraph/graph_snapshot my-graph_snapshot
 
 # Edit the model to configure its properties
-swamp model edit my-graph
+swamp model edit my-graph_snapshot
 
 # Create the resource in AWS
-swamp model method run my-graph create
+swamp model method run my-graph_snapshot create
 
 # Sync current state from AWS
-swamp model method run my-graph sync
+swamp model method run my-graph_snapshot sync
 ```
 
 ## License

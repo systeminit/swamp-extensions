@@ -416,7 +416,7 @@ const GlobalArgsSchema = z.object({
           "Optional. The IANA standard MIME type of the response. The model will generate output that conforms to this MIME type. Supported values include 'text/plain' (default) and 'application/json'. The model needs to be prompted to output the appropriate response type, otherwise the behavior is undefined.",
         ).optional(),
         responseModalities: z.array(
-          z.enum(["MODALITY_UNSPECIFIED", "TEXT", "IMAGE", "AUDIO"]),
+          z.enum(["MODALITY_UNSPECIFIED", "TEXT", "IMAGE", "AUDIO", "VIDEO"]),
         ).describe(
           "Optional. The modalities of the response. The model will generate a response that includes all the specified modalities. For example, if this is set to `[TEXT, IMAGE]`, the response will include both text and an image.",
         ).optional(),
@@ -1852,7 +1852,7 @@ const InputsSchema = z.object({
           "Optional. The IANA standard MIME type of the response. The model will generate output that conforms to this MIME type. Supported values include 'text/plain' (default) and 'application/json'. The model needs to be prompted to output the appropriate response type, otherwise the behavior is undefined.",
         ).optional(),
         responseModalities: z.array(
-          z.enum(["MODALITY_UNSPECIFIED", "TEXT", "IMAGE", "AUDIO"]),
+          z.enum(["MODALITY_UNSPECIFIED", "TEXT", "IMAGE", "AUDIO", "VIDEO"]),
         ).describe(
           "Optional. The modalities of the response. The model will generate a response that includes all the specified modalities. For example, if this is set to `[TEXT, IMAGE]`, the response will include both text and an image.",
         ).optional(),
@@ -2501,7 +2501,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/aiplatform/tuningjobs",
-  version: "2026.04.11.1",
+  version: "2026.04.15.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -2535,6 +2535,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.11.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.15.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

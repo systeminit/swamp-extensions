@@ -1,7 +1,7 @@
 # Auto-generated manifest. Re-generate with the appropriate deno task.
 manifestVersion: 1
 name: "@swamp/gcp/contactcenterinsights"
-version: "2026.04.04.1"
+version: "2026.04.15.1"
 description: "Google Cloud contactcenterinsights infrastructure models"
 labels:
   - gcp
@@ -10,7 +10,8 @@ labels:
   - cloud
   - infrastructure
 releaseNotes: |
-  - Updated: authorizedviewsets_authorizedviews_conversations, conversations, conversations_analyses, dashboards, dashboards_charts, datasets_conversations, phrasematchers
+  - Added: diagnostics
+  - Updated: authorizedviewsets_authorizedviews_conversations, conversations, datasets_conversations
 models:
   - analysisrules.ts
   - assessmentrules.ts
@@ -31,6 +32,7 @@ models:
   - datasets.ts
   - datasets_conversations.ts
   - datasets_conversations_feedbacklabels.ts
+  - diagnostics.ts
   - issuemodels.ts
   - issuemodels_issues.ts
   - phrasematchers.ts
