@@ -88,6 +88,16 @@ const DELETE_CONFIG = {
 
 const GlobalArgsSchema = z.object({
   dataPolicy: z.object({
+    dataGovernanceTag: z.object({
+      key: z.string().describe(
+        "Optional. Tag keys are globally unique. Tag key is expected to be in the namespaced format, for example `parent-id/pii` where `parent-id` is the ID of the parent organization or project resource for this tag key.",
+      ).optional(),
+      value: z.string().describe(
+        "Optional. Specifies the tag value as the short name, for example `sensitive`.",
+      ).optional(),
+    }).describe(
+      "Data Governance tag This is a namespaced name specifying the key and the value. For example: `project-id/pii/sensitive`.",
+    ).optional(),
     dataMaskingPolicy: z.object({
       predefinedExpression: z.enum([
         "PREDEFINED_EXPRESSION_UNSPECIFIED",
@@ -131,6 +141,16 @@ const GlobalArgsSchema = z.object({
   }).describe("Represents the label-policy binding.").optional(),
   dataPolicyId: z.string().describe(
     "Output only. User-assigned (human readable) ID of the data policy that needs to be unique within a project. Used as {data_policy_id} in part of the resource name.",
+  ).optional(),
+  dataGovernanceTag: z.object({
+    key: z.string().describe(
+      "Optional. Tag keys are globally unique. Tag key is expected to be in the namespaced format, for example `parent-id/pii` where `parent-id` is the ID of the parent organization or project resource for this tag key.",
+    ).optional(),
+    value: z.string().describe(
+      "Optional. Specifies the tag value as the short name, for example `sensitive`.",
+    ).optional(),
+  }).describe(
+    "Data Governance tag This is a namespaced name specifying the key and the value. For example: `project-id/pii/sensitive`.",
   ).optional(),
   dataMaskingPolicy: z.object({
     predefinedExpression: z.enum([
@@ -175,6 +195,10 @@ const GlobalArgsSchema = z.object({
 });
 
 const StateSchema = z.object({
+  dataGovernanceTag: z.object({
+    key: z.string(),
+    value: z.string(),
+  }).optional(),
   dataMaskingPolicy: z.object({
     predefinedExpression: z.string(),
     routine: z.string(),
@@ -192,6 +216,16 @@ type StateData = z.infer<typeof StateSchema>;
 
 const InputsSchema = z.object({
   dataPolicy: z.object({
+    dataGovernanceTag: z.object({
+      key: z.string().describe(
+        "Optional. Tag keys are globally unique. Tag key is expected to be in the namespaced format, for example `parent-id/pii` where `parent-id` is the ID of the parent organization or project resource for this tag key.",
+      ).optional(),
+      value: z.string().describe(
+        "Optional. Specifies the tag value as the short name, for example `sensitive`.",
+      ).optional(),
+    }).describe(
+      "Data Governance tag This is a namespaced name specifying the key and the value. For example: `project-id/pii/sensitive`.",
+    ).optional(),
     dataMaskingPolicy: z.object({
       predefinedExpression: z.enum([
         "PREDEFINED_EXPRESSION_UNSPECIFIED",
@@ -235,6 +269,16 @@ const InputsSchema = z.object({
   }).describe("Represents the label-policy binding.").optional(),
   dataPolicyId: z.string().describe(
     "Output only. User-assigned (human readable) ID of the data policy that needs to be unique within a project. Used as {data_policy_id} in part of the resource name.",
+  ).optional(),
+  dataGovernanceTag: z.object({
+    key: z.string().describe(
+      "Optional. Tag keys are globally unique. Tag key is expected to be in the namespaced format, for example `parent-id/pii` where `parent-id` is the ID of the parent organization or project resource for this tag key.",
+    ).optional(),
+    value: z.string().describe(
+      "Optional. Specifies the tag value as the short name, for example `sensitive`.",
+    ).optional(),
+  }).describe(
+    "Data Governance tag This is a namespaced name specifying the key and the value. For example: `project-id/pii/sensitive`.",
   ).optional(),
   dataMaskingPolicy: z.object({
     predefinedExpression: z.enum([
@@ -280,7 +324,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/bigquerydatapolicy/datapolicies",
-  version: "2026.04.13.1",
+  version: "2026.04.15.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -345,6 +389,11 @@ export const model = {
         const { dataGovernanceTag: _dataGovernanceTag, ...rest } = old;
         return rest;
       },
+    },
+    {
+      toVersion: "2026.04.15.1",
+      description: "Added: dataGovernanceTag",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
     },
   ],
   globalArguments: GlobalArgsSchema,
@@ -452,6 +501,9 @@ export const model = {
         const body: Record<string, unknown> = {};
         if (g["dataPolicyId"] !== undefined) {
           body["dataPolicyId"] = g["dataPolicyId"];
+        }
+        if (g["dataGovernanceTag"] !== undefined) {
+          body["dataGovernanceTag"] = g["dataGovernanceTag"];
         }
         if (g["dataMaskingPolicy"] !== undefined) {
           body["dataMaskingPolicy"] = g["dataMaskingPolicy"];

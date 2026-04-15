@@ -237,6 +237,26 @@ const StateSchema = z.object({
       title: z.string(),
       uri: z.string(),
     }),
+    cesEndSessionAnnotation: z.object({
+      endSession: z.object({
+        metadata: z.record(z.string(), z.unknown()),
+      }),
+    }),
+    cesTurnAnnotation: z.object({
+      messages: z.array(z.object({
+        chunks: z.unknown(),
+        eventTime: z.unknown(),
+        role: z.unknown(),
+      })),
+      rootSpan: z.object({
+        attributes: z.record(z.string(), z.unknown()),
+        childSpans: z.array(z.unknown()),
+        duration: z.string(),
+        endTime: z.string(),
+        name: z.string(),
+        startTime: z.string(),
+      }),
+    }),
     conversationSummarizationSuggestion: z.object({
       answerRecord: z.string(),
       confidence: z.number(),
@@ -335,7 +355,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/contactcenterinsights/datasets-conversations",
-  version: "2026.04.04.1",
+  version: "2026.04.15.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -369,6 +389,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.04.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.15.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

@@ -8,11 +8,31 @@ import {
   createResource,
   getProjectId,
   isResourceNotFoundError,
-  readViaList,
+  readResource,
   updateResource,
 } from "./_lib/gcp.ts";
 
+/** Construct the fully-qualified resource name from parent and short name. */
+function buildResourceName(parent: string, shortName: string): string {
+  return `${parent}/dataPoints/${shortName}`;
+}
+
 const BASE_URL = "https://health.googleapis.com/";
+
+const GET_CONFIG = {
+  "id": "health.users.dataTypes.dataPoints.get",
+  "path": "v4/{+name}",
+  "httpMethod": "GET",
+  "parameterOrder": [
+    "name",
+  ],
+  "parameters": {
+    "name": {
+      "location": "path",
+      "required": true,
+    },
+  },
+} as const;
 
 const INSERT_CONFIG = {
   "id": "health.users.dataTypes.dataPoints.create",
@@ -38,30 +58,6 @@ const PATCH_CONFIG = {
   ],
   "parameters": {
     "name": {
-      "location": "path",
-      "required": true,
-    },
-  },
-} as const;
-
-const LIST_CONFIG = {
-  "id": "health.users.dataTypes.dataPoints.list",
-  "path": "v4/{+parent}/dataPoints",
-  "httpMethod": "GET",
-  "parameterOrder": [
-    "parent",
-  ],
-  "parameters": {
-    "filter": {
-      "location": "query",
-    },
-    "pageSize": {
-      "location": "query",
-    },
-    "pageToken": {
-      "location": "query",
-    },
-    "parent": {
       "location": "path",
       "required": true,
     },
@@ -1410,6 +1406,53 @@ const GlobalArgsSchema = z.object({
   }).describe(
     "Captures user's heart rate variability (HRV) as measured by the root mean square of successive differences (RMSSD) between normal heartbeats or by standard deviation of the inter-beat intervals (SDNN).",
   ).optional(),
+  height: z.object({
+    heightMillimeters: z.string().describe(
+      "Required. Height of the user in millimeters.",
+    ).optional(),
+    sampleTime: z.object({
+      civilTime: z.object({
+        date: z.object({
+          day: z.number().int().describe(
+            "Day of a month. Must be from 1 to 31 and valid for the year and month, or 0 to specify a year by itself or a year and month where the day isn't significant.",
+          ).optional(),
+          month: z.number().int().describe(
+            "Month of a year. Must be from 1 to 12, or 0 to specify a year without a month and day.",
+          ).optional(),
+          year: z.number().int().describe(
+            "Year of the date. Must be from 1 to 9999, or 0 to specify a date without a year.",
+          ).optional(),
+        }).describe(
+          "Represents a whole or partial calendar date, such as a birthday. The time of day and time zone are either specified elsewhere or are insignificant. The date is relative to the Gregorian Calendar. This can represent one of the following: * A full date, with non-zero year, month, and day values. * A month and day, with a zero year (for example, an anniversary). * A year on its own, with a zero month and a zero day. * A year and month, with a zero day (for example, a credit card expiration date). Related types: * google.type.TimeOfDay * google.type.DateTime * google.protobuf.Timestamp",
+        ).optional(),
+        time: z.object({
+          hours: z.number().int().describe(
+            'Hours of a day in 24 hour format. Must be greater than or equal to 0 and typically must be less than or equal to 23. An API may choose to allow the value "24:00:00" for scenarios like business closing time.',
+          ).optional(),
+          minutes: z.number().int().describe(
+            "Minutes of an hour. Must be greater than or equal to 0 and less than or equal to 59.",
+          ).optional(),
+          nanos: z.number().int().describe(
+            "Fractions of seconds, in nanoseconds. Must be greater than or equal to 0 and less than or equal to 999,999,999.",
+          ).optional(),
+          seconds: z.number().int().describe(
+            "Seconds of a minute. Must be greater than or equal to 0 and typically must be less than or equal to 59. An API may allow the value 60 if it allows leap-seconds.",
+          ).optional(),
+        }).describe(
+          "Represents a time of day. The date and time zone are either not significant or are specified elsewhere. An API may choose to allow leap seconds. Related types are google.type.Date and `google.protobuf.Timestamp`.",
+        ).optional(),
+      }).describe(
+        "Civil time representation similar to google.type.DateTime, but ensures that neither the timezone nor the UTC offset can be set to avoid confusion between civil and physical time queries.",
+      ).optional(),
+      physicalTime: z.string().describe(
+        "Required. The time of the observation.",
+      ).optional(),
+      utcOffset: z.string().describe(
+        "Required. The offset of the user's local time during the observation relative to the Coordinated Universal Time (UTC).",
+      ).optional(),
+    }).describe("Represents a sample time of an observed data point.")
+      .optional(),
+  }).describe("Body height measurement.").optional(),
   hydrationLog: z.object({
     amountConsumed: z.object({
       milliliters: z.number().describe(
@@ -2073,6 +2116,96 @@ const GlobalArgsSchema = z.object({
     }).describe("Represents a time interval of an observed data point.")
       .optional(),
   }).describe("Step count over the time interval.").optional(),
+  swimLengthsData: z.object({
+    interval: z.object({
+      civilEndTime: z.object({
+        date: z.object({
+          day: z.number().int().describe(
+            "Day of a month. Must be from 1 to 31 and valid for the year and month, or 0 to specify a year by itself or a year and month where the day isn't significant.",
+          ).optional(),
+          month: z.number().int().describe(
+            "Month of a year. Must be from 1 to 12, or 0 to specify a year without a month and day.",
+          ).optional(),
+          year: z.number().int().describe(
+            "Year of the date. Must be from 1 to 9999, or 0 to specify a date without a year.",
+          ).optional(),
+        }).describe(
+          "Represents a whole or partial calendar date, such as a birthday. The time of day and time zone are either specified elsewhere or are insignificant. The date is relative to the Gregorian Calendar. This can represent one of the following: * A full date, with non-zero year, month, and day values. * A month and day, with a zero year (for example, an anniversary). * A year on its own, with a zero month and a zero day. * A year and month, with a zero day (for example, a credit card expiration date). Related types: * google.type.TimeOfDay * google.type.DateTime * google.protobuf.Timestamp",
+        ).optional(),
+        time: z.object({
+          hours: z.number().int().describe(
+            'Hours of a day in 24 hour format. Must be greater than or equal to 0 and typically must be less than or equal to 23. An API may choose to allow the value "24:00:00" for scenarios like business closing time.',
+          ).optional(),
+          minutes: z.number().int().describe(
+            "Minutes of an hour. Must be greater than or equal to 0 and less than or equal to 59.",
+          ).optional(),
+          nanos: z.number().int().describe(
+            "Fractions of seconds, in nanoseconds. Must be greater than or equal to 0 and less than or equal to 999,999,999.",
+          ).optional(),
+          seconds: z.number().int().describe(
+            "Seconds of a minute. Must be greater than or equal to 0 and typically must be less than or equal to 59. An API may allow the value 60 if it allows leap-seconds.",
+          ).optional(),
+        }).describe(
+          "Represents a time of day. The date and time zone are either not significant or are specified elsewhere. An API may choose to allow leap seconds. Related types are google.type.Date and `google.protobuf.Timestamp`.",
+        ).optional(),
+      }).describe(
+        "Civil time representation similar to google.type.DateTime, but ensures that neither the timezone nor the UTC offset can be set to avoid confusion between civil and physical time queries.",
+      ).optional(),
+      civilStartTime: z.object({
+        date: z.object({
+          day: z.number().int().describe(
+            "Day of a month. Must be from 1 to 31 and valid for the year and month, or 0 to specify a year by itself or a year and month where the day isn't significant.",
+          ).optional(),
+          month: z.number().int().describe(
+            "Month of a year. Must be from 1 to 12, or 0 to specify a year without a month and day.",
+          ).optional(),
+          year: z.number().int().describe(
+            "Year of the date. Must be from 1 to 9999, or 0 to specify a date without a year.",
+          ).optional(),
+        }).describe(
+          "Represents a whole or partial calendar date, such as a birthday. The time of day and time zone are either specified elsewhere or are insignificant. The date is relative to the Gregorian Calendar. This can represent one of the following: * A full date, with non-zero year, month, and day values. * A month and day, with a zero year (for example, an anniversary). * A year on its own, with a zero month and a zero day. * A year and month, with a zero day (for example, a credit card expiration date). Related types: * google.type.TimeOfDay * google.type.DateTime * google.protobuf.Timestamp",
+        ).optional(),
+        time: z.object({
+          hours: z.number().int().describe(
+            'Hours of a day in 24 hour format. Must be greater than or equal to 0 and typically must be less than or equal to 23. An API may choose to allow the value "24:00:00" for scenarios like business closing time.',
+          ).optional(),
+          minutes: z.number().int().describe(
+            "Minutes of an hour. Must be greater than or equal to 0 and less than or equal to 59.",
+          ).optional(),
+          nanos: z.number().int().describe(
+            "Fractions of seconds, in nanoseconds. Must be greater than or equal to 0 and less than or equal to 999,999,999.",
+          ).optional(),
+          seconds: z.number().int().describe(
+            "Seconds of a minute. Must be greater than or equal to 0 and typically must be less than or equal to 59. An API may allow the value 60 if it allows leap-seconds.",
+          ).optional(),
+        }).describe(
+          "Represents a time of day. The date and time zone are either not significant or are specified elsewhere. An API may choose to allow leap seconds. Related types are google.type.Date and `google.protobuf.Timestamp`.",
+        ).optional(),
+      }).describe(
+        "Civil time representation similar to google.type.DateTime, but ensures that neither the timezone nor the UTC offset can be set to avoid confusion between civil and physical time queries.",
+      ).optional(),
+      endTime: z.string().describe("Required. Observed interval end time.")
+        .optional(),
+      endUtcOffset: z.string().describe(
+        "Required. The offset of the user's local time at the end of the observation relative to the Coordinated Universal Time (UTC).",
+      ).optional(),
+      startTime: z.string().describe("Required. Observed interval start time.")
+        .optional(),
+      startUtcOffset: z.string().describe(
+        "Required. The offset of the user's local time at the start of the observation relative to the Coordinated Universal Time (UTC).",
+      ).optional(),
+    }).describe("Represents a time interval of an observed data point.")
+      .optional(),
+    strokeCount: z.string().describe("Required. Number of strokes in the lap.")
+      .optional(),
+    swimStrokeType: z.enum([
+      "SWIM_STROKE_TYPE_UNSPECIFIED",
+      "FREESTYLE",
+      "BACKSTROKE",
+      "BREASTSTROKE",
+      "BUTTERFLY",
+    ]).describe("Required. Swim stroke type.").optional(),
+  }).describe("Swim lengths data over the time interval.").optional(),
   timeInHeartRateZone: z.object({
     heartRateZoneType: z.enum([
       "HEART_RATE_ZONE_TYPE_UNSPECIFIED",
@@ -2787,6 +2920,26 @@ const StateSchema = z.object({
     }),
     standardDeviationMilliseconds: z.number(),
   }).optional(),
+  height: z.object({
+    heightMillimeters: z.string(),
+    sampleTime: z.object({
+      civilTime: z.object({
+        date: z.object({
+          day: z.number(),
+          month: z.number(),
+          year: z.number(),
+        }),
+        time: z.object({
+          hours: z.number(),
+          minutes: z.number(),
+          nanos: z.number(),
+          seconds: z.number(),
+        }),
+      }),
+      physicalTime: z.string(),
+      utcOffset: z.string(),
+    }),
+  }).optional(),
   hydrationLog: z.object({
     amountConsumed: z.object({
       milliliters: z.number(),
@@ -3044,6 +3197,42 @@ const StateSchema = z.object({
       startTime: z.string(),
       startUtcOffset: z.string(),
     }),
+  }).optional(),
+  swimLengthsData: z.object({
+    interval: z.object({
+      civilEndTime: z.object({
+        date: z.object({
+          day: z.number(),
+          month: z.number(),
+          year: z.number(),
+        }),
+        time: z.object({
+          hours: z.number(),
+          minutes: z.number(),
+          nanos: z.number(),
+          seconds: z.number(),
+        }),
+      }),
+      civilStartTime: z.object({
+        date: z.object({
+          day: z.number(),
+          month: z.number(),
+          year: z.number(),
+        }),
+        time: z.object({
+          hours: z.number(),
+          minutes: z.number(),
+          nanos: z.number(),
+          seconds: z.number(),
+        }),
+      }),
+      endTime: z.string(),
+      endUtcOffset: z.string(),
+      startTime: z.string(),
+      startUtcOffset: z.string(),
+    }),
+    strokeCount: z.string(),
+    swimStrokeType: z.string(),
   }).optional(),
   timeInHeartRateZone: z.object({
     heartRateZoneType: z.string(),
@@ -4468,6 +4657,53 @@ const InputsSchema = z.object({
   }).describe(
     "Captures user's heart rate variability (HRV) as measured by the root mean square of successive differences (RMSSD) between normal heartbeats or by standard deviation of the inter-beat intervals (SDNN).",
   ).optional(),
+  height: z.object({
+    heightMillimeters: z.string().describe(
+      "Required. Height of the user in millimeters.",
+    ).optional(),
+    sampleTime: z.object({
+      civilTime: z.object({
+        date: z.object({
+          day: z.number().int().describe(
+            "Day of a month. Must be from 1 to 31 and valid for the year and month, or 0 to specify a year by itself or a year and month where the day isn't significant.",
+          ).optional(),
+          month: z.number().int().describe(
+            "Month of a year. Must be from 1 to 12, or 0 to specify a year without a month and day.",
+          ).optional(),
+          year: z.number().int().describe(
+            "Year of the date. Must be from 1 to 9999, or 0 to specify a date without a year.",
+          ).optional(),
+        }).describe(
+          "Represents a whole or partial calendar date, such as a birthday. The time of day and time zone are either specified elsewhere or are insignificant. The date is relative to the Gregorian Calendar. This can represent one of the following: * A full date, with non-zero year, month, and day values. * A month and day, with a zero year (for example, an anniversary). * A year on its own, with a zero month and a zero day. * A year and month, with a zero day (for example, a credit card expiration date). Related types: * google.type.TimeOfDay * google.type.DateTime * google.protobuf.Timestamp",
+        ).optional(),
+        time: z.object({
+          hours: z.number().int().describe(
+            'Hours of a day in 24 hour format. Must be greater than or equal to 0 and typically must be less than or equal to 23. An API may choose to allow the value "24:00:00" for scenarios like business closing time.',
+          ).optional(),
+          minutes: z.number().int().describe(
+            "Minutes of an hour. Must be greater than or equal to 0 and less than or equal to 59.",
+          ).optional(),
+          nanos: z.number().int().describe(
+            "Fractions of seconds, in nanoseconds. Must be greater than or equal to 0 and less than or equal to 999,999,999.",
+          ).optional(),
+          seconds: z.number().int().describe(
+            "Seconds of a minute. Must be greater than or equal to 0 and typically must be less than or equal to 59. An API may allow the value 60 if it allows leap-seconds.",
+          ).optional(),
+        }).describe(
+          "Represents a time of day. The date and time zone are either not significant or are specified elsewhere. An API may choose to allow leap seconds. Related types are google.type.Date and `google.protobuf.Timestamp`.",
+        ).optional(),
+      }).describe(
+        "Civil time representation similar to google.type.DateTime, but ensures that neither the timezone nor the UTC offset can be set to avoid confusion between civil and physical time queries.",
+      ).optional(),
+      physicalTime: z.string().describe(
+        "Required. The time of the observation.",
+      ).optional(),
+      utcOffset: z.string().describe(
+        "Required. The offset of the user's local time during the observation relative to the Coordinated Universal Time (UTC).",
+      ).optional(),
+    }).describe("Represents a sample time of an observed data point.")
+      .optional(),
+  }).describe("Body height measurement.").optional(),
   hydrationLog: z.object({
     amountConsumed: z.object({
       milliliters: z.number().describe(
@@ -5131,6 +5367,96 @@ const InputsSchema = z.object({
     }).describe("Represents a time interval of an observed data point.")
       .optional(),
   }).describe("Step count over the time interval.").optional(),
+  swimLengthsData: z.object({
+    interval: z.object({
+      civilEndTime: z.object({
+        date: z.object({
+          day: z.number().int().describe(
+            "Day of a month. Must be from 1 to 31 and valid for the year and month, or 0 to specify a year by itself or a year and month where the day isn't significant.",
+          ).optional(),
+          month: z.number().int().describe(
+            "Month of a year. Must be from 1 to 12, or 0 to specify a year without a month and day.",
+          ).optional(),
+          year: z.number().int().describe(
+            "Year of the date. Must be from 1 to 9999, or 0 to specify a date without a year.",
+          ).optional(),
+        }).describe(
+          "Represents a whole or partial calendar date, such as a birthday. The time of day and time zone are either specified elsewhere or are insignificant. The date is relative to the Gregorian Calendar. This can represent one of the following: * A full date, with non-zero year, month, and day values. * A month and day, with a zero year (for example, an anniversary). * A year on its own, with a zero month and a zero day. * A year and month, with a zero day (for example, a credit card expiration date). Related types: * google.type.TimeOfDay * google.type.DateTime * google.protobuf.Timestamp",
+        ).optional(),
+        time: z.object({
+          hours: z.number().int().describe(
+            'Hours of a day in 24 hour format. Must be greater than or equal to 0 and typically must be less than or equal to 23. An API may choose to allow the value "24:00:00" for scenarios like business closing time.',
+          ).optional(),
+          minutes: z.number().int().describe(
+            "Minutes of an hour. Must be greater than or equal to 0 and less than or equal to 59.",
+          ).optional(),
+          nanos: z.number().int().describe(
+            "Fractions of seconds, in nanoseconds. Must be greater than or equal to 0 and less than or equal to 999,999,999.",
+          ).optional(),
+          seconds: z.number().int().describe(
+            "Seconds of a minute. Must be greater than or equal to 0 and typically must be less than or equal to 59. An API may allow the value 60 if it allows leap-seconds.",
+          ).optional(),
+        }).describe(
+          "Represents a time of day. The date and time zone are either not significant or are specified elsewhere. An API may choose to allow leap seconds. Related types are google.type.Date and `google.protobuf.Timestamp`.",
+        ).optional(),
+      }).describe(
+        "Civil time representation similar to google.type.DateTime, but ensures that neither the timezone nor the UTC offset can be set to avoid confusion between civil and physical time queries.",
+      ).optional(),
+      civilStartTime: z.object({
+        date: z.object({
+          day: z.number().int().describe(
+            "Day of a month. Must be from 1 to 31 and valid for the year and month, or 0 to specify a year by itself or a year and month where the day isn't significant.",
+          ).optional(),
+          month: z.number().int().describe(
+            "Month of a year. Must be from 1 to 12, or 0 to specify a year without a month and day.",
+          ).optional(),
+          year: z.number().int().describe(
+            "Year of the date. Must be from 1 to 9999, or 0 to specify a date without a year.",
+          ).optional(),
+        }).describe(
+          "Represents a whole or partial calendar date, such as a birthday. The time of day and time zone are either specified elsewhere or are insignificant. The date is relative to the Gregorian Calendar. This can represent one of the following: * A full date, with non-zero year, month, and day values. * A month and day, with a zero year (for example, an anniversary). * A year on its own, with a zero month and a zero day. * A year and month, with a zero day (for example, a credit card expiration date). Related types: * google.type.TimeOfDay * google.type.DateTime * google.protobuf.Timestamp",
+        ).optional(),
+        time: z.object({
+          hours: z.number().int().describe(
+            'Hours of a day in 24 hour format. Must be greater than or equal to 0 and typically must be less than or equal to 23. An API may choose to allow the value "24:00:00" for scenarios like business closing time.',
+          ).optional(),
+          minutes: z.number().int().describe(
+            "Minutes of an hour. Must be greater than or equal to 0 and less than or equal to 59.",
+          ).optional(),
+          nanos: z.number().int().describe(
+            "Fractions of seconds, in nanoseconds. Must be greater than or equal to 0 and less than or equal to 999,999,999.",
+          ).optional(),
+          seconds: z.number().int().describe(
+            "Seconds of a minute. Must be greater than or equal to 0 and typically must be less than or equal to 59. An API may allow the value 60 if it allows leap-seconds.",
+          ).optional(),
+        }).describe(
+          "Represents a time of day. The date and time zone are either not significant or are specified elsewhere. An API may choose to allow leap seconds. Related types are google.type.Date and `google.protobuf.Timestamp`.",
+        ).optional(),
+      }).describe(
+        "Civil time representation similar to google.type.DateTime, but ensures that neither the timezone nor the UTC offset can be set to avoid confusion between civil and physical time queries.",
+      ).optional(),
+      endTime: z.string().describe("Required. Observed interval end time.")
+        .optional(),
+      endUtcOffset: z.string().describe(
+        "Required. The offset of the user's local time at the end of the observation relative to the Coordinated Universal Time (UTC).",
+      ).optional(),
+      startTime: z.string().describe("Required. Observed interval start time.")
+        .optional(),
+      startUtcOffset: z.string().describe(
+        "Required. The offset of the user's local time at the start of the observation relative to the Coordinated Universal Time (UTC).",
+      ).optional(),
+    }).describe("Represents a time interval of an observed data point.")
+      .optional(),
+    strokeCount: z.string().describe("Required. Number of strokes in the lap.")
+      .optional(),
+    swimStrokeType: z.enum([
+      "SWIM_STROKE_TYPE_UNSPECIFIED",
+      "FREESTYLE",
+      "BACKSTROKE",
+      "BREASTSTROKE",
+      "BUTTERFLY",
+    ]).describe("Required. Swim stroke type.").optional(),
+  }).describe("Swim lengths data over the time interval.").optional(),
   timeInHeartRateZone: z.object({
     heartRateZoneType: z.enum([
       "HEART_RATE_ZONE_TYPE_UNSPECIFIED",
@@ -5339,7 +5665,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/health/users-datatypes-datapoints",
-  version: "2026.04.07.1",
+  version: "2026.04.15.1",
   upgrades: [
     {
       toVersion: "2026.04.01.2",
@@ -5374,6 +5700,11 @@ export const model = {
     {
       toVersion: "2026.04.07.1",
       description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.15.1",
+      description: "Added: height, swimLengthsData",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },
   ],
@@ -5438,6 +5769,7 @@ export const model = {
         if (g["heartRateVariability"] !== undefined) {
           body["heartRateVariability"] = g["heartRateVariability"];
         }
+        if (g["height"] !== undefined) body["height"] = g["height"];
         if (g["hydrationLog"] !== undefined) {
           body["hydrationLog"] = g["hydrationLog"];
         }
@@ -5455,16 +5787,26 @@ export const model = {
         }
         if (g["sleep"] !== undefined) body["sleep"] = g["sleep"];
         if (g["steps"] !== undefined) body["steps"] = g["steps"];
+        if (g["swimLengthsData"] !== undefined) {
+          body["swimLengthsData"] = g["swimLengthsData"];
+        }
         if (g["timeInHeartRateZone"] !== undefined) {
           body["timeInHeartRateZone"] = g["timeInHeartRateZone"];
         }
         if (g["vo2Max"] !== undefined) body["vo2Max"] = g["vo2Max"];
         if (g["weight"] !== undefined) body["weight"] = g["weight"];
+        if (g["parent"] !== undefined && g["name"] !== undefined) {
+          params["name"] = buildResourceName(
+            String(g["parent"]),
+            String(g["name"]),
+          );
+        }
         const result = await createResource(
           BASE_URL,
           INSERT_CONFIG,
           params,
           body,
+          GET_CONFIG,
         ) as StateData;
         const instanceName = ((result.name ?? g.name)?.toString() ?? "current")
           .replace(/[\/\\]/g, "_").replace(/\.\./g, "_").replace(/\0/g, "");
@@ -5485,13 +5827,14 @@ export const model = {
         const projectId = await getProjectId();
         const params: Record<string, string> = { project: projectId };
         const g = context.globalArgs;
-        if (g["parent"] !== undefined) params["parent"] = String(g["parent"]);
-        const result = await readViaList(
-          BASE_URL,
-          LIST_CONFIG,
-          params,
-          "name",
+        params["name"] = buildResourceName(
+          String(g["parent"] ?? ""),
           args.identifier,
+        );
+        const result = await readResource(
+          BASE_URL,
+          GET_CONFIG,
+          params,
         ) as StateData;
         const instanceName =
           ((result.name ?? g.name)?.toString() ?? args.identifier).replace(
@@ -5526,7 +5869,10 @@ export const model = {
         }
         const existing = JSON.parse(new TextDecoder().decode(content));
         const params: Record<string, string> = { project: projectId };
-        params["name"] = existing["name"]?.toString() ?? "";
+        params["name"] = buildResourceName(
+          String(g["parent"] ?? ""),
+          existing["name"]?.toString() ?? g["name"]?.toString() ?? "",
+        );
         const body: Record<string, unknown> = {};
         if (g["activeMinutes"] !== undefined) {
           body["activeMinutes"] = g["activeMinutes"];
@@ -5569,6 +5915,7 @@ export const model = {
         if (g["heartRateVariability"] !== undefined) {
           body["heartRateVariability"] = g["heartRateVariability"];
         }
+        if (g["height"] !== undefined) body["height"] = g["height"];
         if (g["hydrationLog"] !== undefined) {
           body["hydrationLog"] = g["hydrationLog"];
         }
@@ -5585,6 +5932,9 @@ export const model = {
         }
         if (g["sleep"] !== undefined) body["sleep"] = g["sleep"];
         if (g["steps"] !== undefined) body["steps"] = g["steps"];
+        if (g["swimLengthsData"] !== undefined) {
+          body["swimLengthsData"] = g["swimLengthsData"];
+        }
         if (g["timeInHeartRateZone"] !== undefined) {
           body["timeInHeartRateZone"] = g["timeInHeartRateZone"];
         }
@@ -5603,6 +5953,7 @@ export const model = {
           PATCH_CONFIG,
           params,
           body,
+          GET_CONFIG,
         ) as StateData;
         const handle = await context.writeResource(
           "state",
@@ -5633,22 +5984,16 @@ export const model = {
         const existing = JSON.parse(new TextDecoder().decode(content));
         try {
           const params: Record<string, string> = { project: projectId };
-          if (g["parent"] !== undefined) params["parent"] = String(g["parent"]);
-          else if (existing["parent"]) {
-            params["parent"] = String(existing["parent"]);
-          }
-          const identifier = existing.name?.toString() ?? g["name"]?.toString();
-          if (!identifier) {
-            throw new Error(
-              "No identifier found in existing state or globalArgs",
-            );
-          }
-          const result = await readViaList(
+          const shortName = existing.name?.toString() ?? g["name"]?.toString();
+          if (!shortName) throw new Error("No identifier found");
+          params["name"] = buildResourceName(
+            String(g["parent"] ?? ""),
+            shortName,
+          );
+          const result = await readResource(
             BASE_URL,
-            LIST_CONFIG,
+            GET_CONFIG,
             params,
-            "name",
-            identifier,
           ) as StateData;
           const handle = await context.writeResource(
             "state",
@@ -5747,7 +6092,12 @@ export const model = {
         const g = context.globalArgs;
         const projectId = await getProjectId();
         const params: Record<string, string> = { project: projectId };
-        if (g["name"] !== undefined) params["name"] = String(g["name"]);
+        if (g["parent"] !== undefined && g["name"] !== undefined) {
+          params["name"] = buildResourceName(
+            String(g["parent"]),
+            String(g["name"]),
+          );
+        }
         const result = await createResource(
           BASE_URL,
           {

@@ -239,7 +239,7 @@ const GlobalArgsSchema = z.object({
         "Optional. The maximum number of application instances that can be launched to handle increased traffic. Defaults to 100. Range: [1, 1000]. If VPC-SC or PSC-I is enabled, the acceptable range is [1, 100].",
       ).optional(),
       minInstances: z.number().int().describe(
-        "Optional. The minimum number of application instances that will be kept running at all times. Defaults to 1. Range: [0, 10].",
+        "Optional. The minimum number of application instances that will be kept running at all times. Defaults to 1. Range: [0, 75].",
       ).optional(),
       pscInterfaceConfig: z.object({
         dnsPeeringConfigs: z.array(z.object({
@@ -660,7 +660,7 @@ const InputsSchema = z.object({
         "Optional. The maximum number of application instances that can be launched to handle increased traffic. Defaults to 100. Range: [1, 1000]. If VPC-SC or PSC-I is enabled, the acceptable range is [1, 100].",
       ).optional(),
       minInstances: z.number().int().describe(
-        "Optional. The minimum number of application instances that will be kept running at all times. Defaults to 1. Range: [0, 10].",
+        "Optional. The minimum number of application instances that will be kept running at all times. Defaults to 1. Range: [0, 75].",
       ).optional(),
       pscInterfaceConfig: z.object({
         dnsPeeringConfigs: z.array(z.object({
@@ -801,7 +801,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/aiplatform/reasoningengines",
-  version: "2026.04.11.1",
+  version: "2026.04.15.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -835,6 +835,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.11.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.15.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

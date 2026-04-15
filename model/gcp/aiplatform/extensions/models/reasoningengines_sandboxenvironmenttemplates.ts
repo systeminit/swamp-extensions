@@ -107,6 +107,12 @@ const GlobalArgsSchema = z.object({
   displayName: z.string().describe(
     "Required. The display name of the SandboxEnvironmentTemplate.",
   ).optional(),
+  egressControlConfig: z.object({
+    internetAccess: z.boolean().describe(
+      "Optional. Whether to allow internet access.",
+    ).optional(),
+  }).describe("Configuration for egress control of sandbox instances.")
+    .optional(),
   name: z.string().describe(
     "Identifier. The resource name of the SandboxEnvironmentTemplate. Format: `projects/{project}/locations/{location}/reasoningEngines/{reasoning_engine}/sandboxEnvironmentTemplates/{sandbox_environment_template}`",
   ).optional(),
@@ -139,6 +145,9 @@ const StateSchema = z.object({
     defaultContainerCategory: z.string(),
   }).optional(),
   displayName: z.string().optional(),
+  egressControlConfig: z.object({
+    internetAccess: z.boolean(),
+  }).optional(),
   name: z.string(),
   state: z.string().optional(),
   updateTime: z.string().optional(),
@@ -189,6 +198,12 @@ const InputsSchema = z.object({
   displayName: z.string().describe(
     "Required. The display name of the SandboxEnvironmentTemplate.",
   ).optional(),
+  egressControlConfig: z.object({
+    internetAccess: z.boolean().describe(
+      "Optional. Whether to allow internet access.",
+    ).optional(),
+  }).describe("Configuration for egress control of sandbox instances.")
+    .optional(),
   name: z.string().describe(
     "Identifier. The resource name of the SandboxEnvironmentTemplate. Format: `projects/{project}/locations/{location}/reasoningEngines/{reasoning_engine}/sandboxEnvironmentTemplates/{sandbox_environment_template}`",
   ).optional(),
@@ -204,7 +219,14 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/aiplatform/reasoningengines-sandboxenvironmenttemplates",
-  version: "2026.04.11.1",
+  version: "2026.04.15.1",
+  upgrades: [
+    {
+      toVersion: "2026.04.15.1",
+      description: "Added: egressControlConfig",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+  ],
   globalArguments: GlobalArgsSchema,
   inputsSchema: InputsSchema,
   resources: {
@@ -239,6 +261,9 @@ export const model = {
         }
         if (g["displayName"] !== undefined) {
           body["displayName"] = g["displayName"];
+        }
+        if (g["egressControlConfig"] !== undefined) {
+          body["egressControlConfig"] = g["egressControlConfig"];
         }
         if (g["name"] !== undefined) body["name"] = g["name"];
         if (g["warmPoolConfig"] !== undefined) {

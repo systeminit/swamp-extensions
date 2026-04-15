@@ -214,10 +214,10 @@ const GlobalArgsSchema = z.object({
       "EXTERNAL_MANAGED",
       "INTERNAL_SELF_MANAGED",
     ]).describe(
-      "Optional. All gateways and forwarding rules referenced by this policy and extensions must share the same load balancing scheme. Supported values: `INTERNAL_MANAGED` and `EXTERNAL_MANAGED`. For more information, refer to [Backend services overview](https://cloud.google.com/load-balancing/docs/backend-service).",
+      "Optional. All gateways and forwarding rules referenced by this policy and extensions must share the same load balancing scheme. Required only when targeting forwarding rules. If targeting Secure Web Proxy, this field must be `INTERNAL_MANAGED` or not specified. Must not be specified when targeting Agent Gateway. Supported values: `INTERNAL_MANAGED` and `EXTERNAL_MANAGED`. For more information, refer to [Backend services overview](https://cloud.google.com/load-balancing/docs/backend-service).",
     ).optional(),
     resources: z.array(z.string()).describe(
-      "Required. A list of references to the Forwarding Rules on which this policy will be applied.",
+      "Required. A list of references to the Forwarding Rules, Secure Web Proxy Gateways, or Agent Gateways on which this policy will be applied.",
     ).optional(),
   }).describe(
     "Specifies the set of targets to which this policy should be applied to.",
@@ -405,10 +405,10 @@ const InputsSchema = z.object({
       "EXTERNAL_MANAGED",
       "INTERNAL_SELF_MANAGED",
     ]).describe(
-      "Optional. All gateways and forwarding rules referenced by this policy and extensions must share the same load balancing scheme. Supported values: `INTERNAL_MANAGED` and `EXTERNAL_MANAGED`. For more information, refer to [Backend services overview](https://cloud.google.com/load-balancing/docs/backend-service).",
+      "Optional. All gateways and forwarding rules referenced by this policy and extensions must share the same load balancing scheme. Required only when targeting forwarding rules. If targeting Secure Web Proxy, this field must be `INTERNAL_MANAGED` or not specified. Must not be specified when targeting Agent Gateway. Supported values: `INTERNAL_MANAGED` and `EXTERNAL_MANAGED`. For more information, refer to [Backend services overview](https://cloud.google.com/load-balancing/docs/backend-service).",
     ).optional(),
     resources: z.array(z.string()).describe(
-      "Required. A list of references to the Forwarding Rules on which this policy will be applied.",
+      "Required. A list of references to the Forwarding Rules, Secure Web Proxy Gateways, or Agent Gateways on which this policy will be applied.",
     ).optional(),
   }).describe(
     "Specifies the set of targets to which this policy should be applied to.",
@@ -426,7 +426,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/networksecurity/authzpolicies",
-  version: "2026.04.04.1",
+  version: "2026.04.15.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -465,6 +465,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.04.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.15.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },
