@@ -118,7 +118,6 @@ const GlobalArgsSchema = z.object({
       "LOOKER_STUDIO",
       "DATAPROC",
       "VERTEX_AI",
-      "DATAFLOW",
       "LOOKER_CORE",
     ]).describe(
       "Type of the source. Use of a source_type other than `CUSTOM` for process creation or updating is highly discouraged. It might be restricted in the future without notice. There will be increase in cost if you use any of the source types other than `CUSTOM`.",
@@ -167,7 +166,6 @@ const InputsSchema = z.object({
       "LOOKER_STUDIO",
       "DATAPROC",
       "VERTEX_AI",
-      "DATAFLOW",
       "LOOKER_CORE",
     ]).describe(
       "Type of the source. Use of a source_type other than `CUSTOM` for process creation or updating is highly discouraged. It might be restricted in the future without notice. There will be increase in cost if you use any of the source types other than `CUSTOM`.",
@@ -183,7 +181,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/datalineage/processes",
-  version: "2026.04.15.1",
+  version: "2026.04.16.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -212,6 +210,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.15.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.16.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },
