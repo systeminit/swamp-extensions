@@ -52,6 +52,9 @@ const INSERT_CONFIG = {
 } as const;
 
 const GlobalArgsSchema = z.object({
+  keyPortabilityEnabled: z.boolean().describe(
+    "Optional. Immutable. Indicates whether key portability is enabled for the SingleTenantHsmInstance. This can only be set at creation time. Key portability features are disabled by default and not yet available in GA.",
+  ).optional(),
   name: z.string().describe(
     "Identifier. The resource name for this SingleTenantHsmInstance in the format `projects/*/locations/*/singleTenantHsmInstances/*`.",
   ).optional(),
@@ -78,6 +81,7 @@ const StateSchema = z.object({
   createTime: z.string().optional(),
   deleteTime: z.string().optional(),
   disableTime: z.string().optional(),
+  keyPortabilityEnabled: z.boolean().optional(),
   name: z.string(),
   quorumAuth: z.object({
     requiredApproverCount: z.number(),
@@ -91,6 +95,9 @@ const StateSchema = z.object({
 type StateData = z.infer<typeof StateSchema>;
 
 const InputsSchema = z.object({
+  keyPortabilityEnabled: z.boolean().describe(
+    "Optional. Immutable. Indicates whether key portability is enabled for the SingleTenantHsmInstance. This can only be set at creation time. Key portability features are disabled by default and not yet available in GA.",
+  ).optional(),
   name: z.string().describe(
     "Identifier. The resource name for this SingleTenantHsmInstance in the format `projects/*/locations/*/singleTenantHsmInstances/*`.",
   ).optional(),
@@ -115,7 +122,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/cloudkms/singletenanthsminstances",
-  version: "2026.04.03.3",
+  version: "2026.04.16.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -140,6 +147,11 @@ export const model = {
     {
       toVersion: "2026.04.03.3",
       description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.16.1",
+      description: "Added: keyPortabilityEnabled",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },
   ],
@@ -168,6 +180,9 @@ export const model = {
         const params: Record<string, string> = { project: projectId };
         if (g["parent"] !== undefined) params["parent"] = String(g["parent"]);
         const body: Record<string, unknown> = {};
+        if (g["keyPortabilityEnabled"] !== undefined) {
+          body["keyPortabilityEnabled"] = g["keyPortabilityEnabled"];
+        }
         if (g["name"] !== undefined) body["name"] = g["name"];
         if (g["quorumAuth"] !== undefined) body["quorumAuth"] = g["quorumAuth"];
         if (g["singleTenantHsmInstanceId"] !== undefined) {
