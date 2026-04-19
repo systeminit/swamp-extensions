@@ -40,6 +40,7 @@ const StateSchema = z.object({
     })),
   }).optional(),
   appId: z.string().optional(),
+  categoryIds: z.array(z.string()).optional(),
   chromeAppInfo: z.object({
     googleOwned: z.boolean(),
     isCwsHosted: z.boolean(),
@@ -90,7 +91,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/chromemanagement/customers-apps-chrome",
-  version: "2026.04.03.3",
+  version: "2026.04.19.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -114,6 +115,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.3",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.19.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

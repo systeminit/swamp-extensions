@@ -1,7 +1,7 @@
 # Auto-generated manifest. Re-generate with the appropriate deno task.
 manifestVersion: 1
 name: "@swamp/gcp/container"
-version: "2026.04.11.1"
+version: "2026.04.19.1"
 description: "Google Cloud container infrastructure models"
 labels:
   - gcp
@@ -10,7 +10,7 @@ labels:
   - cloud
   - infrastructure
 releaseNotes: |
-  - Updated: clusters, clusters_nodepools
+  - Updated: clusters
 models:
   - aggregated_usablesubnetworks.ts
   - clusters.ts

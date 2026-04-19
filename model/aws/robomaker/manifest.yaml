@@ -1,0 +1,22 @@
+# Auto-generated manifest. Re-generate with the appropriate deno task.
+manifestVersion: 1
+name: "@swamp/aws/robomaker"
+version: "2026.04.19.1"
+description: "AWS ROBOMAKER infrastructure models"
+labels:
+  - aws
+  - robomaker
+  - cloud
+  - infrastructure
+releaseNotes: |
+  - Added: fleet, robot, robot_application, robot_application_version, simulation_application, simulation_application_version
+models:
+  - fleet.ts
+  - robot.ts
+  - robot_application.ts
+  - robot_application_version.ts
+  - simulation_application.ts
+  - simulation_application_version.ts
+additionalFiles:
+  - LICENSE.txt
+  - README.md

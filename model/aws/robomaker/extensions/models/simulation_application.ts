@@ -1,4 +1,4 @@
-// Auto-generated extension model for @swamp/aws/organizations/organizational-unit
+// Auto-generated extension model for @swamp/aws/robomaker/simulation-application
 // Do not edit manually. Re-generate with: deno task generate:aws
 
 // deno-lint-ignore-file no-explicit-any
@@ -12,12 +12,12 @@ import {
   updateResource,
 } from "./_lib/aws.ts";
 
-export const TagSchema = z.object({
-  Key: z.string().min(1).max(128).describe(
-    "The key identifier, or name, of the tag.",
-  ),
-  Value: z.string().min(0).max(256).describe(
-    "The string value that's associated with the key of the tag. You can set the value of a tag to an empty string, but you can't set the value of a tag to null.",
+export const SourceConfigSchema = z.object({
+  S3Bucket: z.string().regex(new RegExp("[a-z0-9][a-z0-9.\\-]*[a-z0-9]"))
+    .describe("The Amazon S3 bucket name."),
+  S3Key: z.string().min(1).max(1024).describe("The s3 object key."),
+  Architecture: z.enum(["X86_64", "ARM64", "ARMHF"]).describe(
+    "The target processor architecture for the application.",
   ),
 });
 
@@ -25,75 +25,117 @@ const GlobalArgsSchema = z.object({
   name: z.string().describe(
     "Instance name for this resource (used as the unique identifier in the factory pattern)",
   ),
-  Name: z.string().min(1).max(128).regex(new RegExp("[\\s\\S]*")).describe(
-    "The friendly name of this OU.",
+  Name: z.string().min(1).max(255).regex(new RegExp("[a-zA-Z0-9_\\-]*"))
+    .describe("The name of the simulation application.").optional(),
+  CurrentRevisionId: z.string().describe("The current revision id.").optional(),
+  RenderingEngine: z.object({
+    Name: z.enum(["OGRE"]).describe("The name of the rendering engine."),
+    Version: z.string().regex(new RegExp("1.x")).describe(
+      "The version of the rendering engine.",
+    ),
+  }).describe("The rendering engine for the simulation application.")
+    .optional(),
+  RobotSoftwareSuite: z.object({
+    Name: z.enum(["ROS", "ROS2", "General"]).describe(
+      "The name of the robot software suite.",
+    ),
+    Version: z.enum(["Kinetic", "Melodic", "Dashing", "Foxy"]).describe(
+      "The version of the robot software suite.",
+    ).optional(),
+  }).describe("The robot software suite used by the simulation application."),
+  SimulationSoftwareSuite: z.object({
+    Name: z.enum(["Gazebo", "RosbagPlay", "SimulationRuntime"]).describe(
+      "The name of the simulation software suite.",
+    ),
+    Version: z.enum(["7", "9", "11", "Kinetic", "Melodic", "Dashing", "Foxy"])
+      .describe("The version of the simulation software suite.").optional(),
+  }).describe(
+    "The simulation software suite used by the simulation application.",
   ),
-  ParentId: z.string().max(100).regex(
-    new RegExp("^(r-[0-9a-z]{4,32})|(ou-[0-9a-z]{4,32}-[a-z0-9]{8,32})$"),
-  ).describe(
-    "The unique identifier (ID) of the parent root or OU that you want to create the new OU in.",
-  ),
-  Tags: z.array(TagSchema).describe(
-    "A list of tags that you want to attach to the newly created OU.",
+  Sources: z.array(SourceConfigSchema).describe(
+    "The sources of the simulation application.",
+  ).optional(),
+  Environment: z.string().describe(
+    "The URI of the Docker image for the robot application.",
+  ).optional(),
+  Tags: z.record(z.string(), z.string().min(1).max(256)).describe(
+    "A key-value pair to associate with a resource.",
   ).optional(),
 });
 
 const StateSchema = z.object({
-  Arn: z.string().optional(),
-  Id: z.string(),
+  Arn: z.string(),
   Name: z.string().optional(),
-  Path: z.string().optional(),
-  ParentId: z.string().optional(),
-  Tags: z.array(TagSchema).optional(),
+  CurrentRevisionId: z.string().optional(),
+  RenderingEngine: z.object({
+    Name: z.string(),
+    Version: z.string(),
+  }).optional(),
+  RobotSoftwareSuite: z.object({
+    Name: z.string(),
+    Version: z.string(),
+  }).optional(),
+  SimulationSoftwareSuite: z.object({
+    Name: z.string(),
+    Version: z.string(),
+  }).optional(),
+  Sources: z.array(SourceConfigSchema).optional(),
+  Environment: z.string().optional(),
+  Tags: z.record(z.string(), z.unknown()).optional(),
 }).passthrough();
 
 type StateData = z.infer<typeof StateSchema>;
 
 const InputsSchema = z.object({
   name: z.string().optional(),
-  Name: z.string().min(1).max(128).regex(new RegExp("[\\s\\S]*")).describe(
-    "The friendly name of this OU.",
+  Name: z.string().min(1).max(255).regex(new RegExp("[a-zA-Z0-9_\\-]*"))
+    .describe("The name of the simulation application.").optional(),
+  CurrentRevisionId: z.string().describe("The current revision id.").optional(),
+  RenderingEngine: z.object({
+    Name: z.enum(["OGRE"]).describe("The name of the rendering engine.")
+      .optional(),
+    Version: z.string().regex(new RegExp("1.x")).describe(
+      "The version of the rendering engine.",
+    ).optional(),
+  }).describe("The rendering engine for the simulation application.")
+    .optional(),
+  RobotSoftwareSuite: z.object({
+    Name: z.enum(["ROS", "ROS2", "General"]).describe(
+      "The name of the robot software suite.",
+    ).optional(),
+    Version: z.enum(["Kinetic", "Melodic", "Dashing", "Foxy"]).describe(
+      "The version of the robot software suite.",
+    ).optional(),
+  }).describe("The robot software suite used by the simulation application.")
+    .optional(),
+  SimulationSoftwareSuite: z.object({
+    Name: z.enum(["Gazebo", "RosbagPlay", "SimulationRuntime"]).describe(
+      "The name of the simulation software suite.",
+    ).optional(),
+    Version: z.enum(["7", "9", "11", "Kinetic", "Melodic", "Dashing", "Foxy"])
+      .describe("The version of the simulation software suite.").optional(),
+  }).describe(
+    "The simulation software suite used by the simulation application.",
   ).optional(),
-  ParentId: z.string().max(100).regex(
-    new RegExp("^(r-[0-9a-z]{4,32})|(ou-[0-9a-z]{4,32}-[a-z0-9]{8,32})$"),
-  ).describe(
-    "The unique identifier (ID) of the parent root or OU that you want to create the new OU in.",
+  Sources: z.array(SourceConfigSchema).describe(
+    "The sources of the simulation application.",
   ).optional(),
-  Tags: z.array(TagSchema).describe(
-    "A list of tags that you want to attach to the newly created OU.",
+  Environment: z.string().describe(
+    "The URI of the Docker image for the robot application.",
+  ).optional(),
+  Tags: z.record(z.string(), z.string().min(1).max(256)).describe(
+    "A key-value pair to associate with a resource.",
   ).optional(),
 });
 
 export const model = {
-  type: "@swamp/aws/organizations/organizational-unit",
+  type: "@swamp/aws/robomaker/simulation-application",
   version: "2026.04.19.1",
-  upgrades: [
-    {
-      toVersion: "2026.04.01.1",
-      description: "No schema changes",
-      upgradeAttributes: (old: Record<string, unknown>) => old,
-    },
-    {
-      toVersion: "2026.04.03.1",
-      description: "No schema changes",
-      upgradeAttributes: (old: Record<string, unknown>) => old,
-    },
-    {
-      toVersion: "2026.04.03.2",
-      description: "No schema changes",
-      upgradeAttributes: (old: Record<string, unknown>) => old,
-    },
-    {
-      toVersion: "2026.04.19.1",
-      description: "No schema changes",
-      upgradeAttributes: (old: Record<string, unknown>) => old,
-    },
-  ],
   globalArguments: GlobalArgsSchema,
   inputsSchema: InputsSchema,
   resources: {
     state: {
-      description: "Organizations OrganizationalUnit resource state",
+      description: "RoboMaker SimulationApplication resource state",
       schema: StateSchema,
       lifetime: "infinite",
       garbageCollection: 10,
@@ -101,7 +143,7 @@ export const model = {
   },
   methods: {
     create: {
-      description: "Create a Organizations OrganizationalUnit",
+      description: "Create a RoboMaker SimulationApplication",
       arguments: z.object({}),
       execute: async (_args: Record<string, never>, context: any) => {
         const g = context.globalArgs;
@@ -111,7 +153,7 @@ export const model = {
           if (value !== undefined) desiredState[key] = value;
         }
         const result = await createResource(
-          "AWS::Organizations::OrganizationalUnit",
+          "AWS::RoboMaker::SimulationApplication",
           desiredState,
         ) as StateData;
         const instanceName = (g.name?.toString() ?? "current").replace(
@@ -127,15 +169,15 @@ export const model = {
       },
     },
     get: {
-      description: "Get a Organizations OrganizationalUnit",
+      description: "Get a RoboMaker SimulationApplication",
       arguments: z.object({
         identifier: z.string().describe(
-          "The primary identifier of the Organizations OrganizationalUnit",
+          "The primary identifier of the RoboMaker SimulationApplication",
         ),
       }),
       execute: async (args: { identifier: string }, context: any) => {
         const result = await readResource(
-          "AWS::Organizations::OrganizationalUnit",
+          "AWS::RoboMaker::SimulationApplication",
           args.identifier,
         ) as StateData;
         const instanceName =
@@ -152,7 +194,7 @@ export const model = {
       },
     },
     update: {
-      description: "Update a Organizations OrganizationalUnit",
+      description: "Update a RoboMaker SimulationApplication",
       arguments: z.object({}),
       execute: async (_args: Record<string, never>, context: any) => {
         const g = context.globalArgs;
@@ -169,12 +211,12 @@ export const model = {
           throw new Error("No existing state found - run create or get first");
         }
         const existing = JSON.parse(new TextDecoder().decode(content));
-        const identifier = existing.Id?.toString();
+        const identifier = existing.Arn?.toString();
         if (!identifier) {
           throw new Error("No identifier found in existing state");
         }
         const currentState = await readResource(
-          "AWS::Organizations::OrganizationalUnit",
+          "AWS::RoboMaker::SimulationApplication",
           identifier,
         ) as StateData;
         const desiredState: Record<string, unknown> = { ...currentState };
@@ -183,11 +225,11 @@ export const model = {
           if (value !== undefined) desiredState[key] = value;
         }
         const result = await updateResource(
-          "AWS::Organizations::OrganizationalUnit",
+          "AWS::RoboMaker::SimulationApplication",
           identifier,
           currentState,
           desiredState,
-          ["ParentId"],
+          ["Name"],
         );
         const handle = await context.writeResource(
           "state",
@@ -198,15 +240,15 @@ export const model = {
       },
     },
     delete: {
-      description: "Delete a Organizations OrganizationalUnit",
+      description: "Delete a RoboMaker SimulationApplication",
       arguments: z.object({
         identifier: z.string().describe(
-          "The primary identifier of the Organizations OrganizationalUnit",
+          "The primary identifier of the RoboMaker SimulationApplication",
         ),
       }),
       execute: async (args: { identifier: string }, context: any) => {
         const { existed } = await deleteResource(
-          "AWS::Organizations::OrganizationalUnit",
+          "AWS::RoboMaker::SimulationApplication",
           args.identifier,
         );
         const instanceName =
@@ -224,7 +266,7 @@ export const model = {
       },
     },
     sync: {
-      description: "Sync Organizations OrganizationalUnit state from AWS",
+      description: "Sync RoboMaker SimulationApplication state from AWS",
       arguments: z.object({}),
       execute: async (_args: Record<string, never>, context: any) => {
         const g = context.globalArgs;
@@ -241,13 +283,13 @@ export const model = {
           throw new Error("No existing state found - run create or get first");
         }
         const existing = JSON.parse(new TextDecoder().decode(content));
-        const identifier = existing.Id?.toString();
+        const identifier = existing.Arn?.toString();
         if (!identifier) {
           throw new Error("No identifier found in existing state");
         }
         try {
           const result = await readResource(
-            "AWS::Organizations::OrganizationalUnit",
+            "AWS::RoboMaker::SimulationApplication",
             identifier,
           ) as StateData;
           const handle = await context.writeResource(

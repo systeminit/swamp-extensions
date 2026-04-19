@@ -31,6 +31,11 @@ const GlobalArgsSchema = z.object({
       "^arn:(aws|aws-us-gov|aws-cn|aws-iso|aws-iso-b):sso:::instance/(sso)?ins-[a-zA-Z0-9-.]{16}$",
     ),
   ),
+  IdentityCenterRegion: z.string().min(1).max(25).regex(
+    new RegExp("^[a-z0-9-]+$"),
+  ).describe(
+    "The AWS region where IAM Identity Center is enabled. Required when Identity Center is in a different region than the monitor.",
+  ).optional(),
   RoleArn: z.string().regex(
     new RegExp(
       "^arn:(aws[a-zA-Z-]*):iam::\\d{12}:role(/[!-.0-~]+)*/[\\w+=,.@-]+$",
@@ -46,6 +51,7 @@ const StateSchema = z.object({
   DisplayName: z.string().optional(),
   IdentityCenterApplicationArn: z.string().optional(),
   IdentityCenterInstanceArn: z.string().optional(),
+  IdentityCenterRegion: z.string().optional(),
   MonitorId: z.string().optional(),
   RoleArn: z.string().optional(),
   Subdomain: z.string().optional(),
@@ -64,6 +70,11 @@ const InputsSchema = z.object({
       "^arn:(aws|aws-us-gov|aws-cn|aws-iso|aws-iso-b):sso:::instance/(sso)?ins-[a-zA-Z0-9-.]{16}$",
     ),
   ).optional(),
+  IdentityCenterRegion: z.string().min(1).max(25).regex(
+    new RegExp("^[a-z0-9-]+$"),
+  ).describe(
+    "The AWS region where IAM Identity Center is enabled. Required when Identity Center is in a different region than the monitor.",
+  ).optional(),
   RoleArn: z.string().regex(
     new RegExp(
       "^arn:(aws[a-zA-Z-]*):iam::\\d{12}:role(/[!-.0-~]+)*/[\\w+=,.@-]+$",
@@ -77,7 +88,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/aws/deadline/monitor",
-  version: "2026.04.03.2",
+  version: "2026.04.19.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -92,6 +103,11 @@ export const model = {
     {
       toVersion: "2026.04.03.2",
       description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.19.1",
+      description: "Added: IdentityCenterRegion",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },
   ],
@@ -193,7 +209,7 @@ export const model = {
           identifier,
           currentState,
           desiredState,
-          ["IdentityCenterInstanceArn"],
+          ["IdentityCenterInstanceArn", "IdentityCenterRegion"],
         );
         const handle = await context.writeResource(
           "state",

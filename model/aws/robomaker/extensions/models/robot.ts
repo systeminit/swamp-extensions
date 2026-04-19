@@ -1,4 +1,4 @@
-// Auto-generated extension model for @swamp/aws/organizations/organizational-unit
+// Auto-generated extension model for @swamp/aws/robomaker/robot
 // Do not edit manually. Re-generate with: deno task generate:aws
 
 // deno-lint-ignore-file no-explicit-any
@@ -12,88 +12,63 @@ import {
   updateResource,
 } from "./_lib/aws.ts";
 
-export const TagSchema = z.object({
-  Key: z.string().min(1).max(128).describe(
-    "The key identifier, or name, of the tag.",
-  ),
-  Value: z.string().min(0).max(256).describe(
-    "The string value that's associated with the key of the tag. You can set the value of a tag to an empty string, but you can't set the value of a tag to null.",
-  ),
-});
-
 const GlobalArgsSchema = z.object({
   name: z.string().describe(
     "Instance name for this resource (used as the unique identifier in the factory pattern)",
   ),
-  Name: z.string().min(1).max(128).regex(new RegExp("[\\s\\S]*")).describe(
-    "The friendly name of this OU.",
-  ),
-  ParentId: z.string().max(100).regex(
-    new RegExp("^(r-[0-9a-z]{4,32})|(ou-[0-9a-z]{4,32}-[a-z0-9]{8,32})$"),
-  ).describe(
-    "The unique identifier (ID) of the parent root or OU that you want to create the new OU in.",
-  ),
-  Tags: z.array(TagSchema).describe(
-    "A list of tags that you want to attach to the newly created OU.",
+  Fleet: z.string().min(1).max(1224).describe(
+    "The Amazon Resource Name (ARN) of the fleet.",
   ).optional(),
+  Architecture: z.enum(["X86_64", "ARM64", "ARMHF"]).describe(
+    "The target architecture of the robot.",
+  ),
+  GreengrassGroupId: z.string().min(1).max(1224).describe(
+    "The Greengrass group id.",
+  ),
+  Tags: z.record(z.string(), z.string().min(1).max(256)).describe(
+    "A key-value pair to associate with a resource.",
+  ).optional(),
+  Name: z.string().min(1).max(255).describe("The name for the robot.")
+    .optional(),
 });
 
 const StateSchema = z.object({
-  Arn: z.string().optional(),
-  Id: z.string(),
+  Arn: z.string(),
+  Fleet: z.string().optional(),
+  Architecture: z.string().optional(),
+  GreengrassGroupId: z.string().optional(),
+  Tags: z.record(z.string(), z.unknown()).optional(),
   Name: z.string().optional(),
-  Path: z.string().optional(),
-  ParentId: z.string().optional(),
-  Tags: z.array(TagSchema).optional(),
 }).passthrough();
 
 type StateData = z.infer<typeof StateSchema>;
 
 const InputsSchema = z.object({
   name: z.string().optional(),
-  Name: z.string().min(1).max(128).regex(new RegExp("[\\s\\S]*")).describe(
-    "The friendly name of this OU.",
+  Fleet: z.string().min(1).max(1224).describe(
+    "The Amazon Resource Name (ARN) of the fleet.",
   ).optional(),
-  ParentId: z.string().max(100).regex(
-    new RegExp("^(r-[0-9a-z]{4,32})|(ou-[0-9a-z]{4,32}-[a-z0-9]{8,32})$"),
-  ).describe(
-    "The unique identifier (ID) of the parent root or OU that you want to create the new OU in.",
+  Architecture: z.enum(["X86_64", "ARM64", "ARMHF"]).describe(
+    "The target architecture of the robot.",
   ).optional(),
-  Tags: z.array(TagSchema).describe(
-    "A list of tags that you want to attach to the newly created OU.",
+  GreengrassGroupId: z.string().min(1).max(1224).describe(
+    "The Greengrass group id.",
   ).optional(),
+  Tags: z.record(z.string(), z.string().min(1).max(256)).describe(
+    "A key-value pair to associate with a resource.",
+  ).optional(),
+  Name: z.string().min(1).max(255).describe("The name for the robot.")
+    .optional(),
 });
 
 export const model = {
-  type: "@swamp/aws/organizations/organizational-unit",
+  type: "@swamp/aws/robomaker/robot",
   version: "2026.04.19.1",
-  upgrades: [
-    {
-      toVersion: "2026.04.01.1",
-      description: "No schema changes",
-      upgradeAttributes: (old: Record<string, unknown>) => old,
-    },
-    {
-      toVersion: "2026.04.03.1",
-      description: "No schema changes",
-      upgradeAttributes: (old: Record<string, unknown>) => old,
-    },
-    {
-      toVersion: "2026.04.03.2",
-      description: "No schema changes",
-      upgradeAttributes: (old: Record<string, unknown>) => old,
-    },
-    {
-      toVersion: "2026.04.19.1",
-      description: "No schema changes",
-      upgradeAttributes: (old: Record<string, unknown>) => old,
-    },
-  ],
   globalArguments: GlobalArgsSchema,
   inputsSchema: InputsSchema,
   resources: {
     state: {
-      description: "Organizations OrganizationalUnit resource state",
+      description: "RoboMaker Robot resource state",
       schema: StateSchema,
       lifetime: "infinite",
       garbageCollection: 10,
@@ -101,7 +76,7 @@ export const model = {
   },
   methods: {
     create: {
-      description: "Create a Organizations OrganizationalUnit",
+      description: "Create a RoboMaker Robot",
       arguments: z.object({}),
       execute: async (_args: Record<string, never>, context: any) => {
         const g = context.globalArgs;
@@ -111,7 +86,7 @@ export const model = {
           if (value !== undefined) desiredState[key] = value;
         }
         const result = await createResource(
-          "AWS::Organizations::OrganizationalUnit",
+          "AWS::RoboMaker::Robot",
           desiredState,
         ) as StateData;
         const instanceName = (g.name?.toString() ?? "current").replace(
@@ -127,15 +102,15 @@ export const model = {
       },
     },
     get: {
-      description: "Get a Organizations OrganizationalUnit",
+      description: "Get a RoboMaker Robot",
       arguments: z.object({
         identifier: z.string().describe(
-          "The primary identifier of the Organizations OrganizationalUnit",
+          "The primary identifier of the RoboMaker Robot",
         ),
       }),
       execute: async (args: { identifier: string }, context: any) => {
         const result = await readResource(
-          "AWS::Organizations::OrganizationalUnit",
+          "AWS::RoboMaker::Robot",
           args.identifier,
         ) as StateData;
         const instanceName =
@@ -152,7 +127,7 @@ export const model = {
       },
     },
     update: {
-      description: "Update a Organizations OrganizationalUnit",
+      description: "Update a RoboMaker Robot",
       arguments: z.object({}),
       execute: async (_args: Record<string, never>, context: any) => {
         const g = context.globalArgs;
@@ -169,12 +144,12 @@ export const model = {
           throw new Error("No existing state found - run create or get first");
         }
         const existing = JSON.parse(new TextDecoder().decode(content));
-        const identifier = existing.Id?.toString();
+        const identifier = existing.Arn?.toString();
         if (!identifier) {
           throw new Error("No identifier found in existing state");
         }
         const currentState = await readResource(
-          "AWS::Organizations::OrganizationalUnit",
+          "AWS::RoboMaker::Robot",
           identifier,
         ) as StateData;
         const desiredState: Record<string, unknown> = { ...currentState };
@@ -183,11 +158,11 @@ export const model = {
           if (value !== undefined) desiredState[key] = value;
         }
         const result = await updateResource(
-          "AWS::Organizations::OrganizationalUnit",
+          "AWS::RoboMaker::Robot",
           identifier,
           currentState,
           desiredState,
-          ["ParentId"],
+          ["GreengrassGroupId", "Name", "Architecture", "Fleet"],
         );
         const handle = await context.writeResource(
           "state",
@@ -198,15 +173,15 @@ export const model = {
       },
     },
     delete: {
-      description: "Delete a Organizations OrganizationalUnit",
+      description: "Delete a RoboMaker Robot",
       arguments: z.object({
         identifier: z.string().describe(
-          "The primary identifier of the Organizations OrganizationalUnit",
+          "The primary identifier of the RoboMaker Robot",
         ),
       }),
       execute: async (args: { identifier: string }, context: any) => {
         const { existed } = await deleteResource(
-          "AWS::Organizations::OrganizationalUnit",
+          "AWS::RoboMaker::Robot",
           args.identifier,
         );
         const instanceName =
@@ -224,7 +199,7 @@ export const model = {
       },
     },
     sync: {
-      description: "Sync Organizations OrganizationalUnit state from AWS",
+      description: "Sync RoboMaker Robot state from AWS",
       arguments: z.object({}),
       execute: async (_args: Record<string, never>, context: any) => {
         const g = context.globalArgs;
@@ -241,13 +216,13 @@ export const model = {
           throw new Error("No existing state found - run create or get first");
         }
         const existing = JSON.parse(new TextDecoder().decode(content));
-        const identifier = existing.Id?.toString();
+        const identifier = existing.Arn?.toString();
         if (!identifier) {
           throw new Error("No identifier found in existing state");
         }
         try {
           const result = await readResource(
-            "AWS::Organizations::OrganizationalUnit",
+            "AWS::RoboMaker::Robot",
             identifier,
           ) as StateData;
           const handle = await context.writeResource(
