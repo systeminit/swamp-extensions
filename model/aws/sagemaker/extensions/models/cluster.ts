@@ -48,15 +48,19 @@ export const ClusterKubernetesConfigSchema = z.object({
 });
 
 export const ClusterLifeCycleConfigSchema = z.object({
+  OnInitComplete: z.string().min(1).max(128).regex(new RegExp("^[\\S\\s]+$"))
+    .describe(
+      "The file name of the extension script under SourceS3Uri. This script runs after HyperPod configures the default software on the instance. Mutually exclusive with OnCreate.",
+    ).optional(),
   SourceS3Uri: z.string().max(1024).regex(
     new RegExp("^(https|s3)://([^/]+)/?(.*)$"),
   ).describe(
     "An Amazon S3 bucket path where your lifecycle scripts are stored.",
-  ),
+  ).optional(),
   OnCreate: z.string().min(1).max(128).regex(new RegExp("^[\\S\\s]+$"))
     .describe(
-      "The file name of the entrypoint script of lifecycle scripts under SourceS3Uri. This entrypoint script runs during cluster creation.",
-    ),
+      "The file name of the entrypoint script of lifecycle scripts under SourceS3Uri. This entrypoint script runs during cluster creation. Mutually exclusive with OnInitComplete.",
+    ).optional(),
 });
 
 export const VpcConfigSchema = z.object({
@@ -137,8 +141,8 @@ export const ClusterInstanceGroupSchema = z.object({
     "Kubernetes configuration for cluster nodes including labels and taints.",
   ).optional(),
   LifeCycleConfig: ClusterLifeCycleConfigSchema.describe(
-    "The lifecycle configuration for a SageMaker HyperPod cluster.",
-  ),
+    "The lifecycle configuration for a SageMaker HyperPod cluster. When omitted, the instance group uses Bootstrap mode. When provided with SourceS3Uri and OnCreate, uses Customer Managed mode. When provided with SourceS3Uri and OnInitComplete, uses Extended mode.",
+  ).optional(),
   TrainingPlanArn: z.string().min(50).max(2048).regex(
     new RegExp(
       "^arn:aws[a-z\\-]*:sagemaker:[a-z0-9\\-]*:[0-9]{12}:training-plan/.*$",
@@ -400,7 +404,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/aws/sagemaker/cluster",
-  version: "2026.04.03.2",
+  version: "2026.04.19.1",
   upgrades: [
     {
       toVersion: "2026.04.01.2",
@@ -414,6 +418,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.19.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

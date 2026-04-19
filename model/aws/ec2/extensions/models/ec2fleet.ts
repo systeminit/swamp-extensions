@@ -265,6 +265,7 @@ const GlobalArgsSchema = z.object({
     DefaultTargetCapacityType: z.enum([
       "on-demand",
       "spot",
+      "capacity-block",
       "reserved-capacity",
     ]).optional(),
     TargetCapacityUnitType: z.enum(["vcpu", "memory-mib", "units"]).optional(),
@@ -368,6 +369,7 @@ const InputsSchema = z.object({
     DefaultTargetCapacityType: z.enum([
       "on-demand",
       "spot",
+      "capacity-block",
       "reserved-capacity",
     ]).optional(),
     TargetCapacityUnitType: z.enum(["vcpu", "memory-mib", "units"]).optional(),
@@ -424,7 +426,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/aws/ec2/ec2fleet",
-  version: "2026.04.03.2",
+  version: "2026.04.19.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -438,6 +440,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.19.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

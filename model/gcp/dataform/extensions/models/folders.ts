@@ -85,7 +85,7 @@ const DELETE_CONFIG = {
 
 const GlobalArgsSchema = z.object({
   containingFolder: z.string().describe(
-    "Optional. The containing Folder resource name. This should take the format: projects/{project}/locations/{location}/folders/{folder}, projects/{project}/locations/{location}/teamFolders/{teamFolder}, or just projects/{project}/locations/{location} if this is a root Folder. This field can only be updated through MoveFolder.",
+    'Optional. The containing Folder resource name. This should take the format: projects/{project}/locations/{location}/folders/{folder}, projects/{project}/locations/{location}/teamFolders/{teamFolder}, or just "" if this is a root Folder. This field can only be updated through MoveFolder.',
   ).optional(),
   displayName: z.string().describe("Required. The Folder's user-friendly name.")
     .optional(),
@@ -110,7 +110,7 @@ type StateData = z.infer<typeof StateSchema>;
 
 const InputsSchema = z.object({
   containingFolder: z.string().describe(
-    "Optional. The containing Folder resource name. This should take the format: projects/{project}/locations/{location}/folders/{folder}, projects/{project}/locations/{location}/teamFolders/{teamFolder}, or just projects/{project}/locations/{location} if this is a root Folder. This field can only be updated through MoveFolder.",
+    'Optional. The containing Folder resource name. This should take the format: projects/{project}/locations/{location}/folders/{folder}, projects/{project}/locations/{location}/teamFolders/{teamFolder}, or just "" if this is a root Folder. This field can only be updated through MoveFolder.',
   ).optional(),
   displayName: z.string().describe("Required. The Folder's user-friendly name.")
     .optional(),
@@ -122,7 +122,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/dataform/folders",
-  version: "2026.04.03.3",
+  version: "2026.04.19.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -146,6 +146,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.3",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.19.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

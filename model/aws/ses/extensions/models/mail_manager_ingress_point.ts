@@ -12,6 +12,21 @@ import {
   updateResource,
 } from "./_lib/aws.ts";
 
+export const TrustStoreSchema = z.object({
+  CAContent: z.string().min(1).max(500000).regex(new RegExp("^[\\P{C}\\s]*$")),
+  CrlContent: z.string().min(1).max(500000).regex(new RegExp("^[\\P{C}\\s]*$"))
+    .optional(),
+  KmsKeyArn: z.string().regex(
+    new RegExp(
+      "^arn:(aws|aws-cn|aws-us-gov|aws-eusc):kms:[a-z0-9-]+:\\d{12}:(key|alias)/[a-zA-Z0-9/_-]+$",
+    ),
+  ).optional(),
+});
+
+export const TlsAuthConfigurationSchema = z.object({
+  TrustStore: TrustStoreSchema,
+});
+
 export const PublicNetworkConfigurationSchema = z.object({
   IpType: z.unknown(),
 });
@@ -43,6 +58,7 @@ const GlobalArgsSchema = z.object({
         "^arn:(aws|aws-cn|aws-us-gov|aws-eusc):secretsmanager:[a-z0-9-]+:\\d{12}:secret:[a-zA-Z0-9/_+=,.@-]+$",
       ),
     ).optional(),
+    TlsAuthConfiguration: TlsAuthConfigurationSchema.optional(),
   }).optional(),
   IngressPointName: z.string().min(3).max(63).regex(
     new RegExp("^[A-Za-z0-9_\\-]+$"),
@@ -54,7 +70,8 @@ const GlobalArgsSchema = z.object({
   RuleSetId: z.string().min(1).max(100),
   StatusToUpdate: z.enum(["ACTIVE", "CLOSED"]).optional(),
   Tags: z.array(TagSchema).optional(),
-  Type: z.enum(["OPEN", "AUTH"]),
+  TlsPolicy: z.enum(["REQUIRED", "OPTIONAL", "FIPS"]).optional(),
+  Type: z.enum(["OPEN", "AUTH", "MTLS"]),
 });
 
 const StateSchema = z.object({
@@ -63,6 +80,7 @@ const StateSchema = z.object({
   IngressPointConfiguration: z.object({
     SmtpPassword: z.string(),
     SecretArn: z.string(),
+    TlsAuthConfiguration: TlsAuthConfigurationSchema,
   }).optional(),
   IngressPointArn: z.string().optional(),
   IngressPointId: z.string(),
@@ -75,6 +93,7 @@ const StateSchema = z.object({
   Status: z.string().optional(),
   StatusToUpdate: z.string().optional(),
   Tags: z.array(TagSchema).optional(),
+  TlsPolicy: z.string().optional(),
   Type: z.string().optional(),
 }).passthrough();
 
@@ -92,6 +111,7 @@ const InputsSchema = z.object({
         "^arn:(aws|aws-cn|aws-us-gov|aws-eusc):secretsmanager:[a-z0-9-]+:\\d{12}:secret:[a-zA-Z0-9/_+=,.@-]+$",
       ),
     ).optional(),
+    TlsAuthConfiguration: TlsAuthConfigurationSchema.optional(),
   }).optional(),
   IngressPointName: z.string().min(3).max(63).regex(
     new RegExp("^[A-Za-z0-9_\\-]+$"),
@@ -103,12 +123,13 @@ const InputsSchema = z.object({
   RuleSetId: z.string().min(1).max(100).optional(),
   StatusToUpdate: z.enum(["ACTIVE", "CLOSED"]).optional(),
   Tags: z.array(TagSchema).optional(),
-  Type: z.enum(["OPEN", "AUTH"]).optional(),
+  TlsPolicy: z.enum(["REQUIRED", "OPTIONAL", "FIPS"]).optional(),
+  Type: z.enum(["OPEN", "AUTH", "MTLS"]).optional(),
 });
 
 export const model = {
   type: "@swamp/aws/ses/mail-manager-ingress-point",
-  version: "2026.04.11.1",
+  version: "2026.04.19.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -128,6 +149,11 @@ export const model = {
     {
       toVersion: "2026.04.11.1",
       description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.19.1",
+      description: "Added: TlsPolicy",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },
   ],

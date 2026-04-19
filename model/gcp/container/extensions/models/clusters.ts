@@ -227,6 +227,11 @@ const GlobalArgsSchema = z.object({
           "Optional. Indicates whether Slice Controller is enabled in the cluster.",
         ).optional(),
       }).describe("Configuration for the Slice Controller.").optional(),
+      slurmOperatorConfig: z.object({
+        enabled: z.boolean().describe(
+          "When enabled, it runs a Slurm Operator that manages the set of compute pods for Slurm Cluster.",
+        ).optional(),
+      }).describe("Configuration for the Slurm Operator.").optional(),
       statefulHaConfig: z.object({
         enabled: z.boolean().describe(
           "Whether the Stateful HA add-on is enabled for this cluster.",
@@ -3167,6 +3172,11 @@ const GlobalArgsSchema = z.object({
           "Optional. Indicates whether Slice Controller is enabled in the cluster.",
         ).optional(),
       }).describe("Configuration for the Slice Controller.").optional(),
+      slurmOperatorConfig: z.object({
+        enabled: z.boolean().describe(
+          "When enabled, it runs a Slurm Operator that manages the set of compute pods for Slurm Cluster.",
+        ).optional(),
+      }).describe("Configuration for the Slurm Operator.").optional(),
       statefulHaConfig: z.object({
         enabled: z.boolean().describe(
           "Whether the Stateful HA add-on is enabled for this cluster.",
@@ -4548,6 +4558,9 @@ const StateSchema = z.object({
     sliceControllerConfig: z.object({
       enabled: z.boolean(),
     }),
+    slurmOperatorConfig: z.object({
+      enabled: z.boolean(),
+    }),
     statefulHaConfig: z.object({
       enabled: z.boolean(),
     }),
@@ -5813,6 +5826,11 @@ const InputsSchema = z.object({
           "Optional. Indicates whether Slice Controller is enabled in the cluster.",
         ).optional(),
       }).describe("Configuration for the Slice Controller.").optional(),
+      slurmOperatorConfig: z.object({
+        enabled: z.boolean().describe(
+          "When enabled, it runs a Slurm Operator that manages the set of compute pods for Slurm Cluster.",
+        ).optional(),
+      }).describe("Configuration for the Slurm Operator.").optional(),
       statefulHaConfig: z.object({
         enabled: z.boolean().describe(
           "Whether the Stateful HA add-on is enabled for this cluster.",
@@ -8753,6 +8771,11 @@ const InputsSchema = z.object({
           "Optional. Indicates whether Slice Controller is enabled in the cluster.",
         ).optional(),
       }).describe("Configuration for the Slice Controller.").optional(),
+      slurmOperatorConfig: z.object({
+        enabled: z.boolean().describe(
+          "When enabled, it runs a Slurm Operator that manages the set of compute pods for Slurm Cluster.",
+        ).optional(),
+      }).describe("Configuration for the Slurm Operator.").optional(),
       statefulHaConfig: z.object({
         enabled: z.boolean().describe(
           "Whether the Stateful HA add-on is enabled for this cluster.",
@@ -10074,7 +10097,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/container/clusters",
-  version: "2026.04.11.1",
+  version: "2026.04.19.1",
   upgrades: [
     {
       toVersion: "2026.03.31.1",
@@ -10118,6 +10141,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.11.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.19.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

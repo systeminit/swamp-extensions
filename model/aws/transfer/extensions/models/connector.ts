@@ -118,6 +118,9 @@ const GlobalArgsSchema = z.object({
   SecurityPolicyName: z.string().max(50).regex(
     new RegExp("TransferSFTPConnectorSecurityPolicy-[A-Za-z0-9-]+"),
   ).describe("Security policy for SFTP Connector").optional(),
+  IpAddressType: z.enum(["IPV4", "DUALSTACK"]).describe(
+    "IP address type for Connector",
+  ).optional(),
 });
 
 const StateSchema = z.object({
@@ -153,6 +156,7 @@ const StateSchema = z.object({
   Url: z.string().optional(),
   SecurityPolicyName: z.string().optional(),
   ErrorMessage: z.string().optional(),
+  IpAddressType: z.string().optional(),
 }).passthrough();
 
 type StateData = z.infer<typeof StateSchema>;
@@ -234,11 +238,14 @@ const InputsSchema = z.object({
   SecurityPolicyName: z.string().max(50).regex(
     new RegExp("TransferSFTPConnectorSecurityPolicy-[A-Za-z0-9-]+"),
   ).describe("Security policy for SFTP Connector").optional(),
+  IpAddressType: z.enum(["IPV4", "DUALSTACK"]).describe(
+    "IP address type for Connector",
+  ).optional(),
 });
 
 export const model = {
   type: "@swamp/aws/transfer/connector",
-  version: "2026.04.03.2",
+  version: "2026.04.19.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -253,6 +260,11 @@ export const model = {
     {
       toVersion: "2026.04.03.2",
       description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.19.1",
+      description: "Added: IpAddressType",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },
   ],

@@ -106,7 +106,7 @@ const GlobalArgsSchema = z.object({
       "Optional. The name of the Secret Manager secret version to use as an authentication token for Git operations. Must be in the format `projects/*/secrets/*/versions/*`.",
     ).optional(),
     defaultBranch: z.string().describe(
-      "Required. The Git remote's default branch name.",
+      "Required. The Git remote's default branch name. If not set, `main` will be used and stored for the repository.",
     ).optional(),
     sshAuthenticationConfig: z.object({
       hostPublicKey: z.string().describe(
@@ -214,7 +214,7 @@ const InputsSchema = z.object({
       "Optional. The name of the Secret Manager secret version to use as an authentication token for Git operations. Must be in the format `projects/*/secrets/*/versions/*`.",
     ).optional(),
     defaultBranch: z.string().describe(
-      "Required. The Git remote's default branch name.",
+      "Required. The Git remote's default branch name. If not set, `main` will be used and stored for the repository.",
     ).optional(),
     sshAuthenticationConfig: z.object({
       hostPublicKey: z.string().describe(
@@ -273,7 +273,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/gcp/dataform/repositories",
-  version: "2026.04.03.3",
+  version: "2026.04.19.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -297,6 +297,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.3",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.19.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

@@ -198,7 +198,7 @@ const GlobalArgsSchema = z.object({
       "Indicates whether expired client certificates are ignored.",
     ).optional(),
     Mode: z.string().describe(
-      "The client certificate handling method. Options are off, passthrough or verify. The default value is off.",
+      "The client certificate handling method. Options are off, passthrough or verify. The default value on initial resource creation is off. After mutual authentication is turned on, you must explicitly set the Mode to off to turn it off; removing the property from your template will not turn it off.",
     ).optional(),
     TrustStoreArn: z.string().describe(
       "The Amazon Resource Name (ARN) of the trust store.",
@@ -261,7 +261,7 @@ const InputsSchema = z.object({
       "Indicates whether expired client certificates are ignored.",
     ).optional(),
     Mode: z.string().describe(
-      "The client certificate handling method. Options are off, passthrough or verify. The default value is off.",
+      "The client certificate handling method. Options are off, passthrough or verify. The default value on initial resource creation is off. After mutual authentication is turned on, you must explicitly set the Mode to off to turn it off; removing the property from your template will not turn it off.",
     ).optional(),
     TrustStoreArn: z.string().describe(
       "The Amazon Resource Name (ARN) of the trust store.",
@@ -299,7 +299,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/aws/elasticloadbalancingv2/listener",
-  version: "2026.04.03.2",
+  version: "2026.04.19.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -313,6 +313,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.19.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

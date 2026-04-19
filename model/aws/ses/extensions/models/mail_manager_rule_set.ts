@@ -49,6 +49,16 @@ export const RuleStringExpressionSchema = z.object({
     MimeHeaderAttribute: z.string().regex(new RegExp("^X-[a-zA-Z0-9-]{1,256}$"))
       .optional(),
     Analysis: AnalysisSchema.optional(),
+    ClientCertificateAttribute: z.enum([
+      "CN",
+      "SAN_RFC822_NAME",
+      "SAN_DNS_NAME",
+      "SAN_DIRECTORY_NAME",
+      "SAN_UNIFORM_RESOURCE_IDENTIFIER",
+      "SAN_IP_ADDRESS",
+      "SAN_REGISTERED_ID",
+      "SERIAL_NUMBER",
+    ]).optional(),
   }),
   Operator: z.enum([
     "EQUALS",
@@ -181,6 +191,36 @@ export const SnsActionSchema = z.object({
   PayloadType: z.enum(["CONTENT", "HEADERS"]).optional(),
 });
 
+export const BounceActionSchema = z.object({
+  ActionFailurePolicy: z.enum(["CONTINUE", "DROP"]).optional(),
+  RoleArn: z.string().min(20).max(2048).regex(
+    new RegExp("^[a-zA-Z0-9:_/+=,@.#-]+$"),
+  ),
+  Sender: z.string().min(0).max(254).regex(new RegExp("^[0-9A-Za-z@+.-]+$")),
+  StatusCode: z.string().min(5).max(9).regex(
+    new RegExp("^[45]\\.[0-9]{1,3}\\.[0-9]{1,3}$"),
+  ),
+  SmtpReplyCode: z.string().min(3).max(3).regex(new RegExp("^[45][0-9][0-9]$")),
+  DiagnosticMessage: z.string().min(1).max(256).regex(
+    new RegExp("^[\\x20-\\x7e]+$"),
+  ),
+  Message: z.string().min(1).max(500).regex(
+    new RegExp("^[\\r\\n\\x20-\\x7e]+$"),
+  ).optional(),
+});
+
+export const InvokeLambdaActionSchema = z.object({
+  ActionFailurePolicy: z.enum(["CONTINUE", "DROP"]).optional(),
+  FunctionArn: z.string().min(20).max(2048).regex(
+    new RegExp("^[a-zA-Z0-9:_/+=,@.#-]+$"),
+  ),
+  InvocationType: z.enum(["EVENT", "REQUEST_RESPONSE"]),
+  RoleArn: z.string().min(20).max(2048).regex(
+    new RegExp("^[a-zA-Z0-9:_/+=,@.#-]+$"),
+  ),
+  RetryTimeMinutes: z.number().int().min(0).max(2160).optional(),
+});
+
 export const RuleSchema = z.object({
   Name: z.string().min(1).max(32).regex(new RegExp("^[a-zA-Z0-9_.-]+$"))
     .optional(),
@@ -211,6 +251,8 @@ export const RuleSchema = z.object({
     DeliverToMailbox: DeliverToMailboxActionSchema.optional(),
     DeliverToQBusiness: DeliverToQBusinessActionSchema.optional(),
     PublishToSns: SnsActionSchema.optional(),
+    Bounce: BounceActionSchema.optional(),
+    InvokeLambda: InvokeLambdaActionSchema.optional(),
   })),
 });
 
@@ -253,7 +295,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/aws/ses/mail-manager-rule-set",
-  version: "2026.04.11.1",
+  version: "2026.04.19.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -272,6 +314,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.11.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.19.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },
