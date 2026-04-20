@@ -319,10 +319,6 @@ Deno.test("model: exposes the new link_pr method definition", () => {
   );
 });
 
-Deno.test("model: version bumped to 2026.04.12.1", () => {
-  assertEquals(model.version, "2026.04.12.1");
-});
-
 // ---------------------------------------------------------------------------
 // pr_merged
 // ---------------------------------------------------------------------------

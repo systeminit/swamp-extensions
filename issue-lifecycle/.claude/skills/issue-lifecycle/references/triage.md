@@ -28,11 +28,20 @@ swamp model create @swamp/issue-lifecycle issue-<N> \
   --global-arg issueNumber=<N> --json
 ```
 
-**Worktree note:** If you are in a Claude Code worktree (`.claude/worktrees/`),
-the worktree is not an initialized swamp repository. Add
-`--repo-dir <path-to-main-repo>` to all `swamp` commands, where the main repo is
-the parent of the `.claude/worktrees/` directory. All subsequent `swamp`
-commands in this skill also need `--repo-dir`.
+**Worktree note:** A Claude Code worktree (`.claude/worktrees/`) is not an
+initialized swamp repository, so `swamp` commands need to be pointed at one.
+Mirror swamp's own resolution order:
+
+1. If `SWAMP_REPO_DIR` is set in the environment, use `swamp` commands
+   unmodified — swamp will pick it up automatically. Do **not** add
+   `--repo-dir`, as that would override the user's deliberate choice.
+2. Otherwise, if the current working directory is inside `.claude/worktrees/`,
+   add `--repo-dir <path-to-main-repo>` to all `swamp` commands, where the main
+   repo is the parent of the `.claude/worktrees/` directory.
+3. Otherwise, run `swamp` commands unmodified and let CWD auto-detection resolve
+   the repo.
+
+Apply the same rule to all subsequent `swamp` commands in this skill.
 
 ## 2. Fetch the Issue Context
 

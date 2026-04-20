@@ -70,7 +70,7 @@ async function readState(
 
 export const model = {
   type: "@swamp/issue-lifecycle",
-  version: "2026.04.12.1",
+  version: "2026.04.20.1",
   globalArguments: GlobalArgsSchema,
 
   upgrades: [
@@ -125,6 +125,17 @@ export const model = {
         "Reads username from local auth, resolves userId via the " +
         "eligible-assignees endpoint, and PATCHes the issue's assignees. " +
         "Best-effort — assignment failures are warnings, never errors.",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.20.1",
+      description:
+        "Skill update: bundled triage.md worktree note now mirrors swamp's " +
+        "repo-dir resolution order (SWAMP_REPO_DIR > --repo-dir fallback when " +
+        "CWD is inside .claude/worktrees/ > CWD auto-detection). " +
+        "Stops the agent from clobbering a user-set SWAMP_REPO_DIR with an " +
+        "incorrect --repo-dir derived from the worktree parent. " +
+        "No model schema, method, or attribute changes.",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },
   ],
