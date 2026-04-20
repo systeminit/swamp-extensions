@@ -21,6 +21,11 @@
  * Thin wrapper around AWS S3 SDK for datastore operations.
  */
 
+// NOTE: The version pin here is load-bearing. Swamp's bundler pulls extension
+// sources without the repo's deno.json, so bare specifiers like
+// "@aws-sdk/client-s3" don't resolve at bundle time (rule 7 in CLAUDE.md).
+// Keep this pin in sync with the version declared in this extension's
+// deno.json for consistent type-checking during local dev.
 import {
   DeleteObjectCommand,
   type DeleteObjectCommandOutput,
@@ -35,7 +40,7 @@ import {
   PutObjectCommand,
   type PutObjectCommandOutput,
   S3Client as AwsS3Client,
-} from "@aws-sdk/client-s3";
+} from "npm:@aws-sdk/client-s3@3.1024.0";
 import { Readable } from "node:stream";
 
 export interface S3ClientConfig {
