@@ -24,9 +24,9 @@ const GlobalArgsSchema = z.object({
   Description: z.string().max(1000).describe(
     "The description of the collection",
   ).optional(),
-  Name: z.string().min(3).max(32).regex(new RegExp("^[a-z][a-z0-9-]{2,31}$"))
+  Name: z.string().min(3).max(64).regex(new RegExp("^[a-z][a-z0-9-]{2,63}$"))
     .describe(
-      "The name of the collection. The name must meet the following criteria: Unique to your account and AWS Region Starts with a lowercase letter Contains only lowercase letters a-z, the numbers 0-9 and the hyphen (-) Contains between 3 and 32 characters",
+      "The name of the collection. The name must meet the following criteria: Unique to your account and AWS Region Starts with a lowercase letter Contains only lowercase letters a-z, the numbers 0-9 and the hyphen (-) Contains between 3 and 64 characters",
     ),
   Tags: z.array(TagSchema).describe("List of tags to be added to the resource")
     .optional(),
@@ -85,9 +85,9 @@ const InputsSchema = z.object({
   Description: z.string().max(1000).describe(
     "The description of the collection",
   ).optional(),
-  Name: z.string().min(3).max(32).regex(new RegExp("^[a-z][a-z0-9-]{2,31}$"))
+  Name: z.string().min(3).max(64).regex(new RegExp("^[a-z][a-z0-9-]{2,63}$"))
     .describe(
-      "The name of the collection. The name must meet the following criteria: Unique to your account and AWS Region Starts with a lowercase letter Contains only lowercase letters a-z, the numbers 0-9 and the hyphen (-) Contains between 3 and 32 characters",
+      "The name of the collection. The name must meet the following criteria: Unique to your account and AWS Region Starts with a lowercase letter Contains only lowercase letters a-z, the numbers 0-9 and the hyphen (-) Contains between 3 and 64 characters",
     ).optional(),
   Tags: z.array(TagSchema).describe("List of tags to be added to the resource")
     .optional(),
@@ -116,7 +116,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/aws/opensearchserverless/collection",
-  version: "2026.04.03.2",
+  version: "2026.04.20.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -130,6 +130,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.20.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },
