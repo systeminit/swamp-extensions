@@ -330,6 +330,50 @@ Deno.test({
 });
 
 Deno.test({
+  name: "ensureBucket: treats BucketAlreadyOwnedByYou race as reuse",
+  // S3Client keeps connection pools; Deno's sanitizer flags them as leaks.
+  sanitizeResources: false,
+  fn: async () => {
+    // HeadBucket says it's missing, but by the time we call CreateBucket a
+    // concurrent run has already created the bucket in our account. The
+    // SDK surfaces BucketAlreadyOwnedByYou; we should treat that as reuse.
+    const server = startMockServer((req) => {
+      if (req.method === "HEAD") return new Response(null, { status: 404 });
+      if (req.method === "PUT") {
+        return new Response(
+          `<?xml version="1.0" encoding="UTF-8"?>
+<Error>
+  <Code>BucketAlreadyOwnedByYou</Code>
+  <Message>Your previous request to create the named bucket succeeded and you already own it.</Message>
+</Error>`,
+          { status: 409, headers: { "content-type": "application/xml" } },
+        );
+      }
+      return new Response(null, { status: 500 });
+    });
+    try {
+      const s3 = new S3Client({
+        region: "us-east-1",
+        endpoint: server.endpoint,
+        forcePathStyle: true,
+        credentials: TEST_CREDS,
+      });
+
+      const status = await ensureBucket(
+        s3,
+        "us-east-1",
+        "my-bucket",
+        SILENT_LOGGER,
+      );
+
+      assertEquals(status, "reused");
+    } finally {
+      await server.shutdown();
+    }
+  },
+});
+
+Deno.test({
   name: "ensureBucket: skips CreateBucket when HeadBucket is 200",
   // S3Client keeps connection pools; Deno's sanitizer flags them as leaks.
   sanitizeResources: false,

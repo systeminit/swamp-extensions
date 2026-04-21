@@ -122,10 +122,7 @@ export async function ensureBucket(
 ): Promise<"created" | "reused"> {
   try {
     await s3.send(new HeadBucketCommand({ Bucket: bucketName }));
-    logger.info(
-      `Bucket ${bucketName} already exists — reusing. Existing versioning, ` +
-        `encryption, and public-access-block settings are NOT modified.`,
-    );
+    logger.info(`Bucket ${bucketName} already exists — reusing.`);
     return "reused";
   } catch (err) {
     const name = (err as { name?: string }).name;
@@ -133,16 +130,31 @@ export async function ensureBucket(
   }
 
   logger.info(`Creating bucket ${bucketName} in ${region}.`);
-  await s3.send(
-    new CreateBucketCommand({
-      Bucket: bucketName,
-      // us-east-1 rejects LocationConstraint; every other region requires it.
-      CreateBucketConfiguration: region === "us-east-1"
-        ? undefined
-        : { LocationConstraint: region as never },
-    }),
-  );
-  return "created";
+  try {
+    await s3.send(
+      new CreateBucketCommand({
+        Bucket: bucketName,
+        // us-east-1 rejects LocationConstraint; every other region requires it.
+        CreateBucketConfiguration: region === "us-east-1"
+          ? undefined
+          : { LocationConstraint: region as never },
+      }),
+    );
+    return "created";
+  } catch (err) {
+    // TOCTOU: a concurrent provision run could win the race between our
+    // HeadBucket probe and this CreateBucket call. BucketAlreadyOwnedByYou
+    // means we own it; treat as reused. BucketAlreadyExists (different
+    // owner) is a real error — let it propagate.
+    const name = (err as { name?: string }).name;
+    if (name === "BucketAlreadyOwnedByYou") {
+      logger.info(
+        `Bucket ${bucketName} was created concurrently — reusing.`,
+      );
+      return "reused";
+    }
+    throw err;
+  }
 }
 
 export async function hardenBucket(
@@ -274,24 +286,13 @@ export const model = {
         try {
           const accountId = await getAccountId(sts);
 
-          const bucketStatus = await ensureBucket(
-            s3,
-            g.region,
-            g.bucket_name,
-            context.logger,
-          );
-          if (bucketStatus === "created") {
-            await hardenBucket(s3, g.bucket_name);
-          } else {
-            // Don't silently rewrite someone else's bucket config — existing
-            // KMS encryption or a different versioning/public-access-block
-            // posture would be clobbered by hardenBucket's AES256 + defaults.
-            context.logger.warn(
-              `Bucket ${g.bucket_name} already existed; skipping hardening. ` +
-                `Verify versioning is Enabled, encryption is set, and ` +
-                `public access is blocked manually if needed.`,
-            );
-          }
+          await ensureBucket(s3, g.region, g.bucket_name, context.logger);
+          // hardenBucket's three operations (PutPublicAccessBlock,
+          // PutBucketVersioning, PutBucketEncryption) are declarative
+          // set-the-state calls — safe to re-run on every invocation. This
+          // also self-heals a partial failure where bucket creation
+          // succeeded but one of the hardening calls previously errored.
+          await hardenBucket(s3, g.bucket_name);
 
           const policyArn = await ensurePolicy(
             iam,

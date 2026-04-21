@@ -127,12 +127,28 @@ swamp datastore setup extension @swamp/s3-datastore \
 
 ## Idempotency
 
-- `HeadBucket` probes first; if the bucket already exists, creation is
-  skipped but the hardening steps still re-apply (they are idempotent).
-- `GetPolicy` probes the expected ARN (derived from `sts:GetCallerIdentity`
-  - `policy_name`); if the policy already exists, its ARN is reused **as
-    is**. The document is _not_ updated. Delete the policy and re-run if you
-    need to pick up a changed statement set.
+- **Bucket:** `HeadBucket` probes first; if the bucket exists, creation
+  is skipped. `CreateBucket` also catches `BucketAlreadyOwnedByYou` so a
+  concurrent provision run on the same name degrades to a reuse instead
+  of an error. The three hardening calls (`PutPublicAccessBlock`,
+  `PutBucketVersioning`, `PutBucketEncryption`) are declarative
+  set-the-state operations and are re-applied on every run, so
+  re-running after a partial failure restores the intended posture.
+
+  > Note: this means pointing the bootstrap at an existing bucket will
+  > overwrite its public-access-block, versioning, and SSE configuration
+  > with swamp's defaults (AES256, versioning on, all public access
+  > blocked). If the target bucket uses SSE-KMS or a different posture
+  > you want to preserve, don't run the bootstrap against it —
+  > provision a policy separately instead.
+
+- **Policy:** `GetPolicy` probes the expected ARN (derived from
+  `sts:GetCallerIdentity` + `policy_name`); if the policy exists, its
+  ARN is reused as-is and the document is **not** updated. If
+  `GetPolicy` misses and `CreatePolicy` loses a race against a concurrent
+  run (`EntityAlreadyExistsException`), the expected ARN is still
+  returned. Delete the policy and re-run if you need to pick up a
+  changed statement set.
 
 ## Inputs
 
