@@ -18,6 +18,15 @@ export const AmazonMskClusterSchema = z.object({
   ).describe("The ARN of an Amazon MSK cluster."),
 });
 
+export const ApacheKafkaClusterSchema = z.object({
+  ApacheKafkaClusterId: z.string().describe(
+    "The ID of the Apache Kafka cluster.",
+  ),
+  BootstrapBrokerString: z.string().describe(
+    "The bootstrap broker string of the Apache Kafka cluster.",
+  ),
+});
+
 export const KafkaClusterClientVpcConfigSchema = z.object({
   SecurityGroupIds: z.array(z.string()).describe(
     "The AWS security groups to associate with the elastic network interfaces in order to specify what the replicator has access to. If a security group is not specified, the default security group associated with the VPC is used.",
@@ -27,13 +36,44 @@ export const KafkaClusterClientVpcConfigSchema = z.object({
   ),
 });
 
+export const KafkaClusterSaslScramAuthenticationSchema = z.object({
+  Mechanism: z.enum(["SHA256", "SHA512"]).describe(
+    "The SASL/SCRAM authentication mechanism.",
+  ),
+  SecretArn: z.string().describe(
+    "The Amazon Resource Name (ARN) of the Secrets Manager secret.",
+  ),
+});
+
+export const KafkaClusterClientAuthenticationSchema = z.object({
+  SaslScram: KafkaClusterSaslScramAuthenticationSchema.describe(
+    "Details for SASL/SCRAM client authentication.",
+  ),
+});
+
+export const KafkaClusterEncryptionInTransitSchema = z.object({
+  EncryptionType: z.enum(["TLS"]).describe(
+    "The type of encryption in transit to the Apache Kafka cluster.",
+  ),
+  RootCaCertificate: z.string().describe("The root CA certificate.").optional(),
+});
+
 export const KafkaClusterSchema = z.object({
   AmazonMskCluster: AmazonMskClusterSchema.describe(
-    "Details of an Amazon MSK cluster. Exactly one of AmazonMskCluster is required.",
-  ),
+    "Details of an Amazon MSK cluster.",
+  ).optional(),
+  ApacheKafkaCluster: ApacheKafkaClusterSchema.describe(
+    "Details of an Apache Kafka cluster.",
+  ).optional(),
   VpcConfig: KafkaClusterClientVpcConfigSchema.describe(
     "Details of an Amazon VPC which has network connectivity to the Apache Kafka cluster.",
-  ),
+  ).optional(),
+  ClientAuthentication: KafkaClusterClientAuthenticationSchema.describe(
+    "Details of the client authentication used by the Apache Kafka cluster.",
+  ).optional(),
+  EncryptionInTransit: KafkaClusterEncryptionInTransitSchema.describe(
+    "Details of encryption in transit to the Apache Kafka cluster.",
+  ).optional(),
 });
 
 export const ReplicationStartingPositionSchema = z.object({
@@ -85,15 +125,24 @@ export const ConsumerGroupReplicationSchema = z.object({
   DetectAndCopyNewConsumerGroups: z.boolean().describe(
     "Whether to periodically check for new consumer groups.",
   ).optional(),
+  ConsumerGroupOffsetSyncMode: z.enum(["LEGACY", "ENHANCED"]).describe(
+    "The consumer group offset synchronization mode.",
+  ).optional(),
 });
 
 export const ReplicationInfoSchema = z.object({
   SourceKafkaClusterArn: z.string().regex(
     new RegExp("arn:(aws|aws-us-gov|aws-cn):kafka:.*"),
-  ).describe("Amazon Resource Name of the source Kafka cluster."),
+  ).describe("Amazon Resource Name of the source Kafka cluster.").optional(),
+  SourceKafkaClusterId: z.string().describe(
+    "The ID of the source Kafka cluster.",
+  ).optional(),
   TargetKafkaClusterArn: z.string().regex(
     new RegExp("arn:(aws|aws-us-gov|aws-cn):kafka:.*"),
-  ).describe("Amazon Resource Name of the target Kafka cluster."),
+  ).describe("Amazon Resource Name of the target Kafka cluster.").optional(),
+  TargetKafkaClusterId: z.string().describe(
+    "The ID of the target Kafka cluster.",
+  ).optional(),
   TargetCompressionType: z.enum(["NONE", "GZIP", "SNAPPY", "LZ4", "ZSTD"])
     .describe(
       "The type of compression to use writing records to target Kafka cluster.",
@@ -109,6 +158,44 @@ export const ReplicationInfoSchema = z.object({
 export const TagSchema = z.object({
   Key: z.string().min(1).max(128),
   Value: z.string().max(256),
+});
+
+export const CloudWatchLogsSchema = z.object({
+  Enabled: z.boolean().describe(
+    "Whether log delivery to CloudWatch Logs is enabled.",
+  ),
+  LogGroup: z.string().describe(
+    "The CloudWatch log group that is the destination for log delivery.",
+  ).optional(),
+});
+
+export const FirehoseSchema = z.object({
+  Enabled: z.boolean().describe("Whether log delivery to Firehose is enabled."),
+  DeliveryStream: z.string().describe(
+    "The Firehose delivery stream that is the destination for log delivery.",
+  ).optional(),
+});
+
+export const S3Schema = z.object({
+  Enabled: z.boolean().describe("Whether log delivery to S3 is enabled."),
+  Bucket: z.string().describe(
+    "The S3 bucket that is the destination for log delivery.",
+  ).optional(),
+  Prefix: z.string().describe(
+    "The S3 prefix that is the destination for log delivery.",
+  ).optional(),
+});
+
+export const ReplicatorLogDeliverySchema = z.object({
+  CloudWatchLogs: CloudWatchLogsSchema.describe(
+    "Details of the CloudWatch Logs destination for replicator logs.",
+  ).optional(),
+  Firehose: FirehoseSchema.describe(
+    "Details of the Kinesis Data Firehose delivery stream that is the destination for replicator logs.",
+  ).optional(),
+  S3: S3Schema.describe(
+    "Details of the Amazon S3 destination for replicator logs.",
+  ).optional(),
 });
 
 const GlobalArgsSchema = z.object({
@@ -135,6 +222,11 @@ const GlobalArgsSchema = z.object({
   Tags: z.array(TagSchema).describe(
     "A collection of tags associated with a resource",
   ).optional(),
+  LogDelivery: z.object({
+    ReplicatorLogDelivery: ReplicatorLogDeliverySchema.describe(
+      "The replicator logs configuration.",
+    ).optional(),
+  }).describe("Configuration for log delivery for the replicator.").optional(),
 });
 
 const StateSchema = z.object({
@@ -146,6 +238,9 @@ const StateSchema = z.object({
   ReplicationInfoList: z.array(ReplicationInfoSchema).optional(),
   ServiceExecutionRoleArn: z.string().optional(),
   Tags: z.array(TagSchema).optional(),
+  LogDelivery: z.object({
+    ReplicatorLogDelivery: ReplicatorLogDeliverySchema,
+  }).optional(),
 }).passthrough();
 
 type StateData = z.infer<typeof StateSchema>;
@@ -172,11 +267,16 @@ const InputsSchema = z.object({
   Tags: z.array(TagSchema).describe(
     "A collection of tags associated with a resource",
   ).optional(),
+  LogDelivery: z.object({
+    ReplicatorLogDelivery: ReplicatorLogDeliverySchema.describe(
+      "The replicator logs configuration.",
+    ).optional(),
+  }).describe("Configuration for log delivery for the replicator.").optional(),
 });
 
 export const model = {
   type: "@swamp/aws/msk/replicator",
-  version: "2026.04.03.2",
+  version: "2026.04.21.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -191,6 +291,11 @@ export const model = {
     {
       toVersion: "2026.04.03.2",
       description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.21.1",
+      description: "Added: LogDelivery",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },
   ],
@@ -298,8 +403,11 @@ export const model = {
             "KafkaClusters",
             "ServiceExecutionRoleArn",
             "SourceKafkaClusterArn",
+            "SourceKafkaClusterId",
             "TargetKafkaClusterArn",
+            "TargetKafkaClusterId",
             "TargetCompressionType",
+            "ConsumerGroupOffsetSyncMode",
             "StartingPosition",
             "TopicNameConfiguration",
           ],
