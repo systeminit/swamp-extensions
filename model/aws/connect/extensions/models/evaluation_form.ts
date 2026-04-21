@@ -68,15 +68,24 @@ const GlobalArgsSchema = z.object({
     "The status of the evaluation form. *Allowed values*: DRAFT | ACTIVE",
   ),
   TargetConfiguration: z.object({
-    ContactInteractionType: z.enum(["AGENT", "AUTOMATED"]).describe(
+    ContactInteractionType: z.enum(["AGENT", "AUTOMATED", "CUSTOMER"]).describe(
       "The contact interaction type for this evaluation form.",
     ),
   }).describe(
     "Configuration that specifies the target for this evaluation form.",
   ).optional(),
   LanguageConfiguration: z.object({
-    FormLanguage: z.enum(["de-DE", "en-US", "es-ES", "fr-FR", "it-IT", "pt-BR"])
-      .describe("The language for the evaluation form.").optional(),
+    FormLanguage: z.enum([
+      "de-DE",
+      "en-US",
+      "es-ES",
+      "fr-FR",
+      "it-IT",
+      "pt-BR",
+      "ja-JP",
+      "ko-KR",
+      "zh-CN",
+    ]).describe("The language for the evaluation form.").optional(),
   }).describe("Configuration for language settings of this evaluation form.")
     .optional(),
   ReviewConfiguration: z.object({
@@ -158,15 +167,24 @@ const InputsSchema = z.object({
     "The status of the evaluation form. *Allowed values*: DRAFT | ACTIVE",
   ).optional(),
   TargetConfiguration: z.object({
-    ContactInteractionType: z.enum(["AGENT", "AUTOMATED"]).describe(
+    ContactInteractionType: z.enum(["AGENT", "AUTOMATED", "CUSTOMER"]).describe(
       "The contact interaction type for this evaluation form.",
     ).optional(),
   }).describe(
     "Configuration that specifies the target for this evaluation form.",
   ).optional(),
   LanguageConfiguration: z.object({
-    FormLanguage: z.enum(["de-DE", "en-US", "es-ES", "fr-FR", "it-IT", "pt-BR"])
-      .describe("The language for the evaluation form.").optional(),
+    FormLanguage: z.enum([
+      "de-DE",
+      "en-US",
+      "es-ES",
+      "fr-FR",
+      "it-IT",
+      "pt-BR",
+      "ja-JP",
+      "ko-KR",
+      "zh-CN",
+    ]).describe("The language for the evaluation form.").optional(),
   }).describe("Configuration for language settings of this evaluation form.")
     .optional(),
   ReviewConfiguration: z.object({
@@ -188,7 +206,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/aws/connect/evaluation-form",
-  version: "2026.04.03.2",
+  version: "2026.04.21.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -202,6 +220,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.21.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

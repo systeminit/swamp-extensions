@@ -13,31 +13,58 @@ import {
 } from "./_lib/aws.ts";
 
 export const DaemonAlarmConfigurationSchema = z.object({
-  AlarmNames: z.array(z.string()).optional(),
-  Enable: z.boolean().optional(),
+  AlarmNames: z.array(z.string()).describe(
+    "The CloudWatch alarm names to monitor during a daemon deployment.",
+  ).optional(),
+  Enable: z.boolean().describe(
+    "Determines whether to use the CloudWatch alarm option in the daemon deployment process. The default value is false.",
+  ).optional(),
 });
 
 export const TagSchema = z.object({
-  Value: z.string().optional(),
-  Key: z.string(),
+  Value: z.string().describe(
+    "The optional part of a key-value pair that make up a tag. A value acts as a descriptor within a tag category (key).",
+  ).optional(),
+  Key: z.string().describe(
+    "One part of a key-value pair that make up a tag. A key is a general label that acts like a category for more specific tag values.",
+  ),
 });
 
 const GlobalArgsSchema = z.object({
   name: z.string().describe(
     "Instance name for this resource (used as the unique identifier in the factory pattern)",
   ),
-  ClusterArn: z.string().optional(),
-  DaemonTaskDefinitionArn: z.string().optional(),
+  ClusterArn: z.string().describe(
+    "The Amazon Resource Name (ARN) of the cluster that the daemon is running in.",
+  ).optional(),
+  DaemonTaskDefinitionArn: z.string().describe(
+    "The Amazon Resource Name (ARN) of the daemon task definition used by this revision.",
+  ).optional(),
   DaemonName: z.string().optional(),
-  EnableECSManagedTags: z.boolean().optional(),
-  EnableExecuteCommand: z.boolean().optional(),
-  PropagateTags: z.enum(["DAEMON", "NONE"]).optional(),
-  CapacityProviderArns: z.array(z.string()).optional(),
+  EnableECSManagedTags: z.boolean().describe(
+    "Specifies whether Amazon ECS managed tags are turned on for the daemon tasks.",
+  ).optional(),
+  EnableExecuteCommand: z.boolean().describe(
+    "Specifies whether the execute command functionality is turned on for the daemon tasks.",
+  ).optional(),
+  PropagateTags: z.enum(["DAEMON", "NONE"]).describe(
+    "Specifies whether tags are propagated from the daemon to the daemon tasks.",
+  ).optional(),
+  CapacityProviderArns: z.array(z.string()).describe(
+    "The Amazon Resource Names (ARNs) of the capacity providers associated with the daemon.",
+  ).optional(),
   DeploymentConfiguration: z.object({
-    DrainPercent: z.number().min(0).max(100).optional(),
-    BakeTimeInMinutes: z.number().int().min(0).max(1440).optional(),
-    Alarms: DaemonAlarmConfigurationSchema.optional(),
-  }).optional(),
+    DrainPercent: z.number().min(0).max(100).describe(
+      "The percentage of container instances to drain simultaneously during a daemon deployment. Valid values are between 0.0 and 100.0.",
+    ).optional(),
+    BakeTimeInMinutes: z.number().int().min(0).max(1440).describe(
+      "The amount of time (in minutes) to wait after a successful deployment step before proceeding. This allows time to monitor for issues before continuing. The default value is 0.",
+    ).optional(),
+    Alarms: DaemonAlarmConfigurationSchema.describe(
+      "The CloudWatch alarm configuration for the daemon deployment. When alarms are triggered during a deployment, the deployment can be automatically rolled back.",
+    ).optional(),
+  }).describe("The deployment configuration used for this daemon deployment.")
+    .optional(),
   Tags: z.array(TagSchema).optional(),
 });
 
@@ -66,24 +93,43 @@ type StateData = z.infer<typeof StateSchema>;
 
 const InputsSchema = z.object({
   name: z.string().optional(),
-  ClusterArn: z.string().optional(),
-  DaemonTaskDefinitionArn: z.string().optional(),
+  ClusterArn: z.string().describe(
+    "The Amazon Resource Name (ARN) of the cluster that the daemon is running in.",
+  ).optional(),
+  DaemonTaskDefinitionArn: z.string().describe(
+    "The Amazon Resource Name (ARN) of the daemon task definition used by this revision.",
+  ).optional(),
   DaemonName: z.string().optional(),
-  EnableECSManagedTags: z.boolean().optional(),
-  EnableExecuteCommand: z.boolean().optional(),
-  PropagateTags: z.enum(["DAEMON", "NONE"]).optional(),
-  CapacityProviderArns: z.array(z.string()).optional(),
+  EnableECSManagedTags: z.boolean().describe(
+    "Specifies whether Amazon ECS managed tags are turned on for the daemon tasks.",
+  ).optional(),
+  EnableExecuteCommand: z.boolean().describe(
+    "Specifies whether the execute command functionality is turned on for the daemon tasks.",
+  ).optional(),
+  PropagateTags: z.enum(["DAEMON", "NONE"]).describe(
+    "Specifies whether tags are propagated from the daemon to the daemon tasks.",
+  ).optional(),
+  CapacityProviderArns: z.array(z.string()).describe(
+    "The Amazon Resource Names (ARNs) of the capacity providers associated with the daemon.",
+  ).optional(),
   DeploymentConfiguration: z.object({
-    DrainPercent: z.number().min(0).max(100).optional(),
-    BakeTimeInMinutes: z.number().int().min(0).max(1440).optional(),
-    Alarms: DaemonAlarmConfigurationSchema.optional(),
-  }).optional(),
+    DrainPercent: z.number().min(0).max(100).describe(
+      "The percentage of container instances to drain simultaneously during a daemon deployment. Valid values are between 0.0 and 100.0.",
+    ).optional(),
+    BakeTimeInMinutes: z.number().int().min(0).max(1440).describe(
+      "The amount of time (in minutes) to wait after a successful deployment step before proceeding. This allows time to monitor for issues before continuing. The default value is 0.",
+    ).optional(),
+    Alarms: DaemonAlarmConfigurationSchema.describe(
+      "The CloudWatch alarm configuration for the daemon deployment. When alarms are triggered during a deployment, the deployment can be automatically rolled back.",
+    ).optional(),
+  }).describe("The deployment configuration used for this daemon deployment.")
+    .optional(),
   Tags: z.array(TagSchema).optional(),
 });
 
 export const model = {
   type: "@swamp/aws/ecs/daemon",
-  version: "2026.04.03.3",
+  version: "2026.04.21.1",
   upgrades: [
     {
       toVersion: "2026.04.03.2",
@@ -92,6 +138,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.3",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.21.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },
