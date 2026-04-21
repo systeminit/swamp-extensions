@@ -29,13 +29,29 @@ description: |
 
   ```bash
   swamp extension pull @swamp/s3-datastore-bootstrap
-  swamp model create @swamp/s3-datastore-bootstrap/provisioner swamp-s3-store
-  # edit globalArguments to set bucket_name / region via CEL against workflow inputs
+
+  swamp model create @swamp/s3-datastore-bootstrap/provisioner \
+    swamp-s3-datastore-provisioner
+
+  # Edit the instance so globalArguments are wired to workflow inputs:
+  #   bucket_name: ${{ inputs.bucket_name }}
+  #   region:      ${{ inputs.region }}
+  #   prefix:      ${{ inputs.prefix }}
+  #   policy_name: ${{ inputs.policy_name }}
+  swamp model edit swamp-s3-datastore-provisioner
+
+  # The command/shell instance used by the final workflow step
+  swamp model create command/shell swamp-s3-datastore-setup
+
   swamp workflow run bootstrap-s3-datastore \
     --input bucket_name=my-swamp-state \
     --input region=us-east-1
+
   swamp datastore status
   ```
+
+  See the bundled README for optional inputs (`prefix`, `policy_name`),
+  the exact IAM policy produced, and idempotency / self-reentrancy notes.
 repository: "https://github.com/systeminit/swamp-extensions"
 dependencies:
   - "@swamp/s3-datastore"
