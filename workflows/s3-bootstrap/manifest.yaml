@@ -1,0 +1,52 @@
+manifestVersion: 1
+name: "@swamp/s3-datastore-bootstrap"
+version: "2026.04.21.1"
+description: |
+  One-shot bootstrap for @swamp/s3-datastore. Ships a single provisioner
+  model that creates an S3 bucket and a least-privilege IAM managed policy,
+  plus a workflow that runs the provisioner and then switches the current
+  swamp repository over to the S3 datastore.
+
+  ## Prerequisites
+
+  - AWS credentials in the default credential chain (env / profile / role)
+    with permissions to create the bucket, create the managed policy, and
+    exercise the runtime actions documented in @swamp/s3-datastore.
+  - The caller that will run swamp after setup must already hold, or will
+    attach, the managed policy produced by this workflow.
+
+  ## What it does
+
+  1. `provision` creates a private S3 bucket (versioning on, SSE-S3, public
+     access blocked) and a scoped IAM managed policy granting the four
+     runtime IAM actions (`ListBucket`, `GetObject`, `PutObject`,
+     `DeleteObject`) limited to that bucket.
+  2. A final `command/shell` step runs
+     `swamp datastore setup extension @swamp/s3-datastore --config ...`
+     to flip the repo's datastore to S3.
+
+  ## Running
+
+  ```bash
+  swamp extension pull @swamp/s3-datastore-bootstrap
+  swamp model create @swamp/s3-datastore-bootstrap/provisioner swamp-s3-store
+  # edit globalArguments to set bucket_name / region via CEL against workflow inputs
+  swamp workflow run bootstrap-s3-datastore \
+    --input bucket_name=my-swamp-state \
+    --input region=us-east-1
+  swamp datastore status
+  ```
+repository: "https://github.com/systeminit/swamp-extensions"
+dependencies:
+  - "@swamp/s3-datastore"
+models:
+  - provisioner.ts
+workflows:
+  - bootstrap-s3-datastore.yaml
+additionalFiles:
+  - README.md
+labels:
+  - datastore
+  - bootstrap
+  - aws
+  - s3

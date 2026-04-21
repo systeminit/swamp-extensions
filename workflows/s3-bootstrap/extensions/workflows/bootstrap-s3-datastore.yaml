@@ -1,0 +1,64 @@
+id: f06908d9-bfe7-40cd-b797-686b1e80b5aa
+name: "@swamp/bootstrap-s3-datastore"
+description: |
+  Provision an S3 bucket + least-privilege IAM managed policy for
+  @swamp/s3-datastore, then switch the current repo to use S3.
+version: 1
+tags:
+  extension: "@swamp/s3-datastore-bootstrap"
+inputs:
+  properties:
+    bucket_name:
+      type: string
+      description: S3 bucket name (3-63 chars, lowercase, AWS naming rules).
+    region:
+      type: string
+      description: AWS region for the bucket (e.g. us-east-1).
+    prefix:
+      type: string
+      description: Optional key prefix within the bucket.
+      default: ""
+    policy_name:
+      type: string
+      description: |
+        IAM managed policy name. Empty string defaults to
+        `swamp-s3-datastore-<bucket_name>` inside the provisioner.
+      default: ""
+  required:
+    - bucket_name
+    - region
+jobs:
+  - name: infra
+    description: Create the S3 bucket and IAM managed policy.
+    steps:
+      - name: provision
+        description: |
+          Run the provisioner model to create/verify the bucket + scoped
+          managed policy. Instance `swamp-s3-datastore-provisioner` must be
+          pre-created with globalArguments wired to the workflow inputs:
+            bucket_name: ${{ inputs.bucket_name }}
+            region:      ${{ inputs.region }}
+            prefix:      ${{ inputs.prefix }}
+            policy_name: ${{ inputs.policy_name }}
+        task:
+          type: model_method
+          modelIdOrName: swamp-s3-datastore-provisioner
+          methodName: provision
+  - name: configure
+    description: Point this repo's datastore at the new bucket.
+    dependsOn:
+      - job: infra
+        condition:
+          type: succeeded
+    steps:
+      - name: run-setup
+        description: Run `swamp datastore setup extension @swamp/s3-datastore`.
+        task:
+          type: model_method
+          modelIdOrName: swamp-s3-datastore-setup
+          methodName: execute
+          inputs:
+            run: >-
+              swamp datastore setup extension @swamp/s3-datastore
+              --config '{"bucket":"${{ inputs.bucket_name }}","region":"${{ inputs.region }}","prefix":"${{ inputs.prefix }}"}'
+              --skip-migration --json
