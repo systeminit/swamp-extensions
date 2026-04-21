@@ -71,4 +71,4 @@ jobs:
             run: >-
               swamp datastore setup extension @swamp/s3-datastore
               --config '{"bucket":"${{ inputs.bucket_name }}","region":"${{ inputs.region }}","prefix":"${{ inputs.prefix }}"}'
-              --skip-migration --json
+              --json

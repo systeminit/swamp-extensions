@@ -121,8 +121,7 @@ swamp model method run my-store provision --json
 
 # Inspect outputs, then attach the policy to your principal, then:
 swamp datastore setup extension @swamp/s3-datastore \
-  --config '{"bucket":"my-swamp-state","region":"us-east-1"}' \
-  --skip-migration --json
+  --config '{"bucket":"my-swamp-state","region":"us-east-1"}' --json
 ```
 
 ## Idempotency
@@ -161,11 +160,6 @@ swamp datastore setup extension @swamp/s3-datastore \
 
 ## Caveats
 
-- **Self-reentrancy.** The workflow's final step invokes another `swamp`
-  process to run `datastore setup` while the outer run still holds the
-  filesystem datastore's lock. The `--skip-migration` flag is hardcoded to
-  keep that path as shallow as possible, but this is the most likely spot
-  for surprises — verify against a throwaway repo before trusting it.
 - **Policy attachment is your job.** This extension creates the policy; it
   does not attach it to a principal. After the workflow completes, attach
   `policy_arn` to whichever IAM user, role, or instance profile will run
