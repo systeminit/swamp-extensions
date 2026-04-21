@@ -1,0 +1,74 @@
+manifestVersion: 1
+name: "@swamp/gcs-datastore-bootstrap"
+version: "2026.04.21.1"
+description: |
+  One-shot bootstrap for @swamp/gcs-datastore. Ships a single provisioner
+  model that creates a GCS bucket and a project-scoped custom IAM role,
+  plus a workflow that runs the provisioner and then switches the current
+  swamp repository over to the GCS datastore.
+
+  ## Prerequisites
+
+  - GCP Application Default Credentials in the environment (env var,
+    `gcloud auth application-default login`, or attached service account)
+    bound to a principal with `roles/storage.admin` and `roles/iam.roleAdmin`
+    (or equivalent) on the target project.
+  - The target project has the Cloud Storage API and the IAM API enabled.
+  - The caller that will run swamp after setup must already hold, or will
+    have bound to it, the custom role produced by this workflow.
+
+  ## What it does
+
+  1. `provision` creates a private GCS bucket with hardened defaults
+     (uniform bucket-level access on, public access prevention `enforced`,
+     versioning on) and a project-scoped custom IAM role granting the five
+     runtime permissions (`storage.buckets.get`, `storage.objects.get`,
+     `storage.objects.create`, `storage.objects.delete`,
+     `storage.objects.list`) the datastore uses.
+  2. A final `command/shell` step runs
+     `swamp datastore setup extension @swamp/gcs-datastore --config ...`
+     to flip the repo's datastore to GCS.
+
+  ## Running
+
+  ```bash
+  swamp extension pull @swamp/gcs-datastore-bootstrap
+
+  swamp model create @swamp/gcs-datastore-bootstrap/provisioner \
+    swamp-gcs-datastore-provisioner
+
+  # Edit the instance so globalArguments are wired to workflow inputs:
+  #   bucket_name: ${{ inputs.bucket_name }}
+  #   project_id:  ${{ inputs.project_id }}
+  #   location:    ${{ inputs.location }}
+  #   prefix:      ${{ inputs.prefix }}
+  #   role_id:     ${{ inputs.role_id }}
+  swamp model edit swamp-gcs-datastore-provisioner
+
+  # The command/shell instance used by the final workflow step
+  swamp model create command/shell swamp-gcs-datastore-setup
+
+  swamp workflow run @swamp/bootstrap-gcs-datastore \
+    --input bucket_name=my-swamp-state \
+    --input project_id=my-gcp-project \
+    --input location=US
+
+  swamp datastore status
+  ```
+
+  See the bundled README for optional inputs (`prefix`, `role_id`), the
+  exact permission set granted by the role, and idempotency notes.
+repository: "https://github.com/systeminit/swamp-extensions"
+dependencies:
+  - "@swamp/gcs-datastore"
+models:
+  - provisioner.ts
+workflows:
+  - bootstrap-gcs-datastore.yaml
+additionalFiles:
+  - README.md
+labels:
+  - datastore
+  - bootstrap
+  - gcp
+  - gcs

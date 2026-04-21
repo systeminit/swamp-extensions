@@ -1,0 +1,82 @@
+id: 2d7f4b1e-9c3a-4e5b-8a6f-1b4e7c9d2f8a
+name: "@swamp/bootstrap-gcs-datastore"
+description: |
+  Provision a GCS bucket + least-privilege project-scoped custom IAM role for
+  @swamp/gcs-datastore, then switch the current repo to use GCS.
+version: 1
+tags:
+  extension: "@swamp/gcs-datastore-bootstrap"
+inputs:
+  # Patterns mirror the Zod regexes in the provisioner's GlobalArgsSchema
+  # as defense-in-depth. The provisioner revalidates — this catches bad
+  # input at the workflow boundary in case `configure` is ever rerun
+  # independently of `infra`.
+  properties:
+    bucket_name:
+      type: string
+      description: GCS bucket name (3-63 chars, lowercase, GCS naming rules).
+      minLength: 3
+      maxLength: 63
+      pattern: "^[a-z0-9][a-z0-9._\\-]{1,61}[a-z0-9]$"
+    project_id:
+      type: string
+      description: GCP project ID that will own the bucket and custom IAM role.
+      pattern: "^[a-z][-a-z0-9]{4,28}[a-z0-9]$"
+    location:
+      type: string
+      description: GCS location (e.g. `US`, `us-central1`, `NAM4`).
+      pattern: "^[A-Za-z0-9-]+$"
+    prefix:
+      type: string
+      description: Optional object-name prefix within the bucket.
+      default: ""
+      pattern: "^[a-zA-Z0-9/_.\\-]*$"
+    role_id:
+      type: string
+      description: |
+        Custom IAM role ID. Empty string defaults to
+        `swampGcsDatastore_<bucket_name_with_hyphens_as_underscores>`
+        inside the provisioner. Hyphens are NOT permitted in role IDs.
+      default: ""
+      pattern: "^([A-Za-z0-9._]{3,64})?$"
+  required:
+    - bucket_name
+    - project_id
+    - location
+jobs:
+  - name: infra
+    description: Create the GCS bucket and the custom IAM role.
+    steps:
+      - name: provision
+        description: |
+          Run the provisioner model to create/verify the bucket + scoped
+          custom role. Instance `swamp-gcs-datastore-provisioner` must be
+          pre-created with globalArguments wired to the workflow inputs:
+            bucket_name: ${{ inputs.bucket_name }}
+            project_id:  ${{ inputs.project_id }}
+            location:    ${{ inputs.location }}
+            prefix:      ${{ inputs.prefix }}
+            role_id:     ${{ inputs.role_id }}
+          (No `name` globalArg — state is keyed on bucket_name.)
+        task:
+          type: model_method
+          modelIdOrName: swamp-gcs-datastore-provisioner
+          methodName: provision
+  - name: configure
+    description: Point this repo's datastore at the new bucket.
+    dependsOn:
+      - job: infra
+        condition:
+          type: succeeded
+    steps:
+      - name: run-setup
+        description: Run `swamp datastore setup extension @swamp/gcs-datastore`.
+        task:
+          type: model_method
+          modelIdOrName: swamp-gcs-datastore-setup
+          methodName: execute
+          inputs:
+            run: >-
+              swamp datastore setup extension @swamp/gcs-datastore
+              --config '{"bucket":"${{ inputs.bucket_name }}","prefix":"${{ inputs.prefix }}","projectId":"${{ inputs.project_id }}"}'
+              --json

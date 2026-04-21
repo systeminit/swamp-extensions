@@ -106,10 +106,6 @@ class GcsDatastoreProviderImpl implements DatastoreProvider {
   resolveDatastorePath(repoDir: string): string {
     return join(repoDir, ".swamp");
   }
-
-  resolveCachePath(_repoDir: string): string {
-    return join(Deno.env.get("HOME") ?? ".", ".swamp", "repos", "unknown");
-  }
 }
 
 // ---------------------------------------------------------------------------
