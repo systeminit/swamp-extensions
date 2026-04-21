@@ -260,8 +260,7 @@ function extractAction(body: string): string | undefined {
 Deno.test({
   name:
     "ensureBucket: creates bucket when HeadBucket is 404 (us-east-1, no LocationConstraint)",
-  // S3Client keeps connection pools; the SDK expects the parent runtime to
-  // shut down, which Deno's sanitizer flags as a leak.
+  // S3Client keeps connection pools; Deno's sanitizer flags them as leaks.
   sanitizeResources: false,
   fn: async () => {
     const server = startMockServer((req) => {
@@ -276,8 +275,14 @@ Deno.test({
         credentials: TEST_CREDS,
       });
 
-      await ensureBucket(s3, "us-east-1", "my-bucket", SILENT_LOGGER);
+      const status = await ensureBucket(
+        s3,
+        "us-east-1",
+        "my-bucket",
+        SILENT_LOGGER,
+      );
 
+      assertEquals(status, "created");
       const heads = server.records.filter((r) => r.method === "HEAD");
       const puts = server.records.filter((r) => r.method === "PUT");
       assertEquals(heads.length, 1);
@@ -291,6 +296,7 @@ Deno.test({
 
 Deno.test({
   name: "ensureBucket: sends LocationConstraint for non-us-east-1",
+  // S3Client keeps connection pools; Deno's sanitizer flags them as leaks.
   sanitizeResources: false,
   fn: async () => {
     const server = startMockServer((req) => {
@@ -305,8 +311,14 @@ Deno.test({
         credentials: TEST_CREDS,
       });
 
-      await ensureBucket(s3, "eu-west-1", "my-bucket", SILENT_LOGGER);
+      const status = await ensureBucket(
+        s3,
+        "eu-west-1",
+        "my-bucket",
+        SILENT_LOGGER,
+      );
 
+      assertEquals(status, "created");
       const puts = server.records.filter((r) => r.method === "PUT");
       assertEquals(puts.length, 1);
       assertStringIncludes(puts[0].body, "LocationConstraint");
@@ -319,6 +331,7 @@ Deno.test({
 
 Deno.test({
   name: "ensureBucket: skips CreateBucket when HeadBucket is 200",
+  // S3Client keeps connection pools; Deno's sanitizer flags them as leaks.
   sanitizeResources: false,
   fn: async () => {
     const server = startMockServer((req) => {
@@ -333,8 +346,14 @@ Deno.test({
         credentials: TEST_CREDS,
       });
 
-      await ensureBucket(s3, "us-east-1", "my-bucket", SILENT_LOGGER);
+      const status = await ensureBucket(
+        s3,
+        "us-east-1",
+        "my-bucket",
+        SILENT_LOGGER,
+      );
 
+      assertEquals(status, "reused");
       assertEquals(
         server.records.filter((r) => r.method === "PUT").length,
         0,
@@ -352,6 +371,7 @@ Deno.test({
 Deno.test({
   name:
     "hardenBucket: sends PutPublicAccessBlock, PutBucketVersioning, PutBucketEncryption",
+  // S3Client keeps connection pools; Deno's sanitizer flags them as leaks.
   sanitizeResources: false,
   fn: async () => {
     const server = startMockServer(() => new Response(null, { status: 200 }));
@@ -384,6 +404,7 @@ Deno.test({
 
 Deno.test({
   name: "getAccountId: parses Account from GetCallerIdentity response",
+  // STSClient keeps connection pools; Deno's sanitizer flags them as leaks.
   sanitizeResources: false,
   fn: async () => {
     const server = startMockServer(() =>
@@ -420,6 +441,7 @@ Deno.test({
 
 Deno.test({
   name: "ensurePolicy: creates new policy when GetPolicy returns NoSuchEntity",
+  // IAMClient keeps connection pools; Deno's sanitizer flags them as leaks.
   sanitizeResources: false,
   fn: async () => {
     const server = startMockServer((_req, record) => {
@@ -482,7 +504,72 @@ Deno.test({
 });
 
 Deno.test({
+  name:
+    "ensurePolicy: returns expected ARN when CreatePolicy races (EntityAlreadyExists)",
+  // IAMClient keeps connection pools; Deno's sanitizer flags them as leaks.
+  sanitizeResources: false,
+  fn: async () => {
+    // Simulates a concurrent bootstrap run: GetPolicy says it's missing,
+    // CreatePolicy loses the race and returns EntityAlreadyExists.
+    const server = startMockServer((_req, record) => {
+      const action = extractAction(record.body);
+      if (action === "GetPolicy") {
+        return new Response(
+          `<?xml version="1.0" encoding="UTF-8"?>
+<ErrorResponse xmlns="https://iam.amazonaws.com/doc/2010-05-08/">
+  <Error>
+    <Type>Sender</Type>
+    <Code>NoSuchEntity</Code>
+    <Message>Policy does not exist.</Message>
+  </Error>
+  <RequestId>req-4</RequestId>
+</ErrorResponse>`,
+          { status: 404, headers: { "content-type": "text/xml" } },
+        );
+      }
+      if (action === "CreatePolicy") {
+        return new Response(
+          `<?xml version="1.0" encoding="UTF-8"?>
+<ErrorResponse xmlns="https://iam.amazonaws.com/doc/2010-05-08/">
+  <Error>
+    <Type>Sender</Type>
+    <Code>EntityAlreadyExists</Code>
+    <Message>Policy with name my-policy already exists.</Message>
+  </Error>
+  <RequestId>req-5</RequestId>
+</ErrorResponse>`,
+          { status: 409, headers: { "content-type": "text/xml" } },
+        );
+      }
+      return new Response("", { status: 500 });
+    });
+    try {
+      const iam = new IAMClient({
+        region: "us-east-1",
+        endpoint: server.endpoint,
+        credentials: TEST_CREDS,
+      });
+
+      const arn = await ensurePolicy(
+        iam,
+        "123456789012",
+        "my-policy",
+        "my-bucket",
+        SILENT_LOGGER,
+      );
+      assertEquals(arn, "arn:aws:iam::123456789012:policy/my-policy");
+
+      const actions = server.records.map((r) => extractAction(r.body));
+      assertEquals(actions, ["GetPolicy", "CreatePolicy"]);
+    } finally {
+      await server.shutdown();
+    }
+  },
+});
+
+Deno.test({
   name: "ensurePolicy: reuses existing policy when GetPolicy returns 200",
+  // IAMClient keeps connection pools; Deno's sanitizer flags them as leaks.
   sanitizeResources: false,
   fn: async () => {
     const server = startMockServer((_req, record) => {

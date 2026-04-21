@@ -119,11 +119,14 @@ export async function ensureBucket(
   region: string,
   bucketName: string,
   logger: ProvisionerLogger,
-): Promise<void> {
+): Promise<"created" | "reused"> {
   try {
     await s3.send(new HeadBucketCommand({ Bucket: bucketName }));
-    logger.info(`Bucket ${bucketName} already exists — reusing.`);
-    return;
+    logger.info(
+      `Bucket ${bucketName} already exists — reusing. Existing versioning, ` +
+        `encryption, and public-access-block settings are NOT modified.`,
+    );
+    return "reused";
   } catch (err) {
     const name = (err as { name?: string }).name;
     if (name !== "NotFound" && name !== "NoSuchBucket") throw err;
@@ -139,6 +142,7 @@ export async function ensureBucket(
         : { LocationConstraint: region as never },
     }),
   );
+  return "created";
 }
 
 export async function hardenBucket(
@@ -210,17 +214,33 @@ export async function ensurePolicy(
   }
 
   logger.info(`Creating IAM managed policy ${policyName}.`);
-  const created = await iam.send(
-    new CreatePolicyCommand({
-      PolicyName: policyName,
-      Description:
-        `Least-privilege policy for @swamp/s3-datastore on bucket ${bucketName}.`,
-      PolicyDocument: policyDocumentFor(bucketName),
-    }),
-  );
-  const arn = created.Policy?.Arn;
-  if (!arn) throw new Error("IAM CreatePolicy returned no ARN.");
-  return arn;
+  try {
+    const created = await iam.send(
+      new CreatePolicyCommand({
+        PolicyName: policyName,
+        Description:
+          `Least-privilege policy for @swamp/s3-datastore on bucket ${bucketName}.`,
+        PolicyDocument: policyDocumentFor(bucketName),
+      }),
+    );
+    const arn = created.Policy?.Arn;
+    if (!arn) throw new Error("IAM CreatePolicy returned no ARN.");
+    return arn;
+  } catch (err) {
+    // TOCTOU: a concurrent provision run could win the race between our
+    // GetPolicy probe and this CreatePolicy call. The ARN is deterministic
+    // from accountId + policyName, so return the expected ARN rather than
+    // treating this as a failure.
+    const name = (err as { name?: string }).name;
+    if (name === "EntityAlreadyExistsException") {
+      logger.info(
+        `IAM managed policy ${policyName} was created concurrently — ` +
+          `reusing its ARN.`,
+      );
+      return expectedArn;
+    }
+    throw err;
+  }
 }
 
 export const model = {
@@ -251,30 +271,54 @@ export const model = {
         const iam = new IAMClient({ region: g.region });
         const sts = new STSClient({ region: g.region });
 
-        const accountId = await getAccountId(sts);
+        try {
+          const accountId = await getAccountId(sts);
 
-        await ensureBucket(s3, g.region, g.bucket_name, context.logger);
-        await hardenBucket(s3, g.bucket_name);
+          const bucketStatus = await ensureBucket(
+            s3,
+            g.region,
+            g.bucket_name,
+            context.logger,
+          );
+          if (bucketStatus === "created") {
+            await hardenBucket(s3, g.bucket_name);
+          } else {
+            // Don't silently rewrite someone else's bucket config — existing
+            // KMS encryption or a different versioning/public-access-block
+            // posture would be clobbered by hardenBucket's AES256 + defaults.
+            context.logger.warn(
+              `Bucket ${g.bucket_name} already existed; skipping hardening. ` +
+                `Verify versioning is Enabled, encryption is set, and ` +
+                `public access is blocked manually if needed.`,
+            );
+          }
 
-        const policyArn = await ensurePolicy(
-          iam,
-          accountId,
-          policyName,
-          g.bucket_name,
-          context.logger,
-        );
+          const policyArn = await ensurePolicy(
+            iam,
+            accountId,
+            policyName,
+            g.bucket_name,
+            context.logger,
+          );
 
-        const state: StateData = {
-          bucket_name: g.bucket_name,
-          bucket_arn: `arn:aws:s3:::${g.bucket_name}`,
-          region: g.region,
-          prefix: g.prefix ?? "",
-          policy_name: policyName,
-          policy_arn: policyArn,
-          created_at: new Date().toISOString(),
-        };
-        const handle = await context.writeResource("state", g.name, state);
-        return { dataHandles: [handle] };
+          const state: StateData = {
+            bucket_name: g.bucket_name,
+            bucket_arn: `arn:aws:s3:::${g.bucket_name}`,
+            region: g.region,
+            prefix: g.prefix ?? "",
+            policy_name: policyName,
+            policy_arn: policyArn,
+            created_at: new Date().toISOString(),
+          };
+          const handle = await context.writeResource("state", g.name, state);
+          return { dataHandles: [handle] };
+        } finally {
+          // Release HTTP connection pools. Benign for one-shot workflow runs
+          // but essential if the model is ever invoked in a long-lived host.
+          s3.destroy();
+          iam.destroy();
+          sts.destroy();
+        }
       },
     },
   },
