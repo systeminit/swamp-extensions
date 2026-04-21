@@ -17,6 +17,16 @@ Official extensions for [swamp](https://github.com/systeminit/swamp).
 | [`@swamp/s3-datastore`](datastore/s3/)   | Amazon S3 datastore with local cache sync and distributed locking            | `@aws-sdk/client-s3`                 |
 | [`@swamp/gcs-datastore`](datastore/gcs/) | Google Cloud Storage datastore with local cache sync and distributed locking | None (GCS JSON REST API via `fetch`) |
 
+## Workflow Extensions
+
+| Extension                                                                    | Description                                                                                     | Dependencies                                                             |
+| ---------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------ |
+| [`@swamp/s3-datastore-bootstrap`](workflows/s3-bootstrap/) | One-shot bootstrap that provisions an S3 bucket + least-privilege IAM policy and flips the current repo to `@swamp/s3-datastore`. | `@aws-sdk/client-s3`, `@aws-sdk/client-iam`, `@aws-sdk/client-sts` |
+
+Workflow extensions bundle a workflow YAML with one or more helper models so
+a multi-step operation (like bootstrapping another extension) can be executed
+end-to-end with a single `swamp workflow run`.
+
 ## Model Extensions (Auto-Generated)
 
 | Extension                                      | Description                         |
@@ -45,6 +55,9 @@ swamp extension pull @swamp/azure-kv
 # Datastore extensions
 swamp extension pull @swamp/s3-datastore
 swamp extension pull @swamp/gcs-datastore
+
+# Workflow extensions
+swamp extension pull @swamp/s3-datastore-bootstrap
 
 # Model extensions
 swamp extension pull @swamp/hetzner-cloud
@@ -105,6 +118,19 @@ swamp datastore setup @swamp/gcs-datastore \
   --config '{"bucket":"my-bucket","prefix":"swamp-data"}'
 ```
 
+### Workflow extensions
+
+Run a packaged workflow by name. For the S3 datastore bootstrap:
+
+```bash
+swamp workflow run bootstrap-s3-datastore \
+  --input bucket_name=my-swamp-state \
+  --input region=us-east-1
+```
+
+The workflow's own README describes its inputs, prerequisites, and what it
+provisions (e.g. [`workflows/s3-bootstrap/README.md`](workflows/s3-bootstrap/README.md)).
+
 ### Contributing
 
 Swamp Extensions uses an **issue-driven contribution model**. We don't accept pull requests
@@ -153,11 +179,17 @@ service factories. See `datastore/s3/` for the canonical example.
 AWS models are structured as `model/aws/<service>/` (one directory per service,
 ~249 services). Hetzner and DigitalOcean each have a single directory.
 
+**Workflow extensions** live in `workflows/<name>/` and list a workflow YAML
+under `extensions/workflows/` plus any helper models under `extensions/models/`
+in the manifest's `workflows:` and `models:` fields. Models referenced by the
+workflow are auto-packaged at publish time. See `workflows/s3-bootstrap/` for
+the canonical example.
+
 ### Running Checks
 
 ```bash
 # From any extension directory:
-cd vault/aws-sm  # or datastore/s3, model/hetzner-cloud, etc.
+cd vault/aws-sm  # or datastore/s3, workflows/s3-bootstrap, model/hetzner-cloud, etc.
 deno check extensions/<type>/*.ts
 deno lint extensions/<type>/
 deno fmt extensions/<type>/
