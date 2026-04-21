@@ -17,7 +17,16 @@ import {
   STSClient,
 } from "npm:@aws-sdk/client-sts@3.1024.0";
 
+// All character classes are intentionally strict: these values are interpolated
+// into a shell command + JSON blob in the workflow's `run-setup` step (see
+// extensions/workflows/bootstrap-s3-datastore.yaml). Characters outside of
+// these classes would break shell quoting or the surrounding JSON.
 const S3_BUCKET_NAME_RE = /^[a-z0-9][a-z0-9.\-]{1,61}[a-z0-9]$/;
+const AWS_REGION_RE = /^[a-z0-9-]+$/;
+const S3_PREFIX_RE = /^[a-zA-Z0-9/_.\-]*$/;
+// Allow empty (empty string is the workflow's sentinel for "use the default")
+// or 1-128 chars of IAM-valid characters.
+const IAM_POLICY_NAME_RE = /^([\w+=,.@-]{1,128})?$/;
 
 export const GlobalArgsSchema = z.object({
   name: z.string().describe(
@@ -27,11 +36,20 @@ export const GlobalArgsSchema = z.object({
     S3_BUCKET_NAME_RE,
     "Bucket names must be 3-63 chars, lowercase, letters/numbers/hyphens/dots.",
   ).describe("S3 bucket name to create."),
-  region: z.string().describe("AWS region for the bucket (e.g. us-east-1)."),
-  prefix: z.string().optional().describe(
+  region: z.string().regex(
+    AWS_REGION_RE,
+    "Region must contain only lowercase letters, digits, and hyphens.",
+  ).describe("AWS region for the bucket (e.g. us-east-1)."),
+  prefix: z.string().regex(
+    S3_PREFIX_RE,
+    "Prefix may only contain letters, digits, `/`, `_`, `.`, or `-`.",
+  ).optional().describe(
     "Optional key prefix within the bucket (surfaced in state for the setup step).",
   ),
-  policy_name: z.string().optional().describe(
+  policy_name: z.string().regex(
+    IAM_POLICY_NAME_RE,
+    "Policy name must match IAM rules (letters, digits, and `+=,.@-`, up to 128 chars).",
+  ).optional().describe(
     "IAM managed policy name. Defaults to `swamp-s3-datastore-<bucket_name>`.",
   ),
 });

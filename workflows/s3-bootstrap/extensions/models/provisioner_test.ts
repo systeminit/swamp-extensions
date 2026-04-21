@@ -81,6 +81,83 @@ Deno.test("globalArgs requires name, bucket_name, region", () => {
   );
 });
 
+Deno.test("globalArgs rejects shell/JSON injection in region", () => {
+  // These values flow into a single-quoted JSON blob inside a shell command
+  // in the workflow's run-setup step. A quote or shell metacharacter would
+  // break either the quoting or the surrounding JSON.
+  for (
+    const bad of [
+      "us-east-1'",
+      'us-east-1"',
+      "us-east-1; rm -rf /",
+      "us-east-1 && echo pwned",
+      "us_east_1",
+    ]
+  ) {
+    assertThrows(() =>
+      GlobalArgsSchema.parse({
+        name: "x",
+        bucket_name: "ok-bucket",
+        region: bad,
+      })
+    );
+  }
+});
+
+Deno.test("globalArgs rejects shell/JSON injection in prefix", () => {
+  for (
+    const bad of [
+      "owner's-data",
+      'prefix"with"quotes',
+      "prefix; rm -rf /",
+      "prefix with spaces",
+      "prefix\nwith-newline",
+    ]
+  ) {
+    assertThrows(() =>
+      GlobalArgsSchema.parse({
+        name: "x",
+        bucket_name: "ok-bucket",
+        region: "us-east-1",
+        prefix: bad,
+      })
+    );
+  }
+});
+
+Deno.test("globalArgs accepts the empty-string default for prefix and policy_name", () => {
+  // The workflow YAML defaults both to "" — the provisioner's resolvePolicyName
+  // treats empty as "use the default", and the empty prefix is safe in both
+  // shell quoting and JSON.
+  GlobalArgsSchema.parse({
+    name: "x",
+    bucket_name: "ok-bucket",
+    region: "us-east-1",
+    prefix: "",
+    policy_name: "",
+  });
+});
+
+Deno.test("globalArgs rejects shell/JSON injection in policy_name", () => {
+  for (
+    const bad of [
+      "policy'name",
+      'policy"name',
+      "policy;rm",
+      "policy name",
+    ]
+  ) {
+    assertThrows(() =>
+      GlobalArgsSchema.parse({
+        name: "x",
+        bucket_name: "ok-bucket",
+        region: "us-east-1",
+        policy_name: bad,
+      })
+    );
+  }
+});
+
 // ---------------------------------------------------------------------------
 // resolvePolicyName — empty string must fall back to the default
 // ---------------------------------------------------------------------------
