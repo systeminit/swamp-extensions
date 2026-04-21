@@ -212,7 +212,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        workflow: [s3-bootstrap]
+        workflow: [s3-bootstrap, gcs-bootstrap]
         task: [check, lint, fmt, test]
     defaults:
       run:
@@ -244,7 +244,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        workflow: [s3-bootstrap]
+        workflow: [s3-bootstrap, gcs-bootstrap]
     defaults:
       run:
         working-directory: workflows/${{ matrix.workflow }}

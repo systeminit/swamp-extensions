@@ -21,7 +21,8 @@ Official extensions for [swamp](https://github.com/systeminit/swamp).
 
 | Extension                                                                    | Description                                                                                     | Dependencies                                                             |
 | ---------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------ |
-| [`@swamp/s3-datastore-bootstrap`](workflows/s3-bootstrap/) | One-shot bootstrap that provisions an S3 bucket + least-privilege IAM policy and flips the current repo to `@swamp/s3-datastore`. | `@aws-sdk/client-s3`, `@aws-sdk/client-iam`, `@aws-sdk/client-sts` |
+| [`@swamp/s3-datastore-bootstrap`](workflows/s3-bootstrap/)   | One-shot bootstrap that provisions an S3 bucket + least-privilege IAM policy and flips the current repo to `@swamp/s3-datastore`. | `@aws-sdk/client-s3`, `@aws-sdk/client-iam`, `@aws-sdk/client-sts` |
+| [`@swamp/gcs-datastore-bootstrap`](workflows/gcs-bootstrap/) | One-shot bootstrap that provisions a GCS bucket + least-privilege custom IAM role and flips the current repo to `@swamp/gcs-datastore`. | None (GCS + IAM JSON REST APIs via `fetch`) |
 
 Workflow extensions bundle a workflow YAML with one or more helper models so
 a multi-step operation (like bootstrapping another extension) can be executed
@@ -58,6 +59,7 @@ swamp extension pull @swamp/gcs-datastore
 
 # Workflow extensions
 swamp extension pull @swamp/s3-datastore-bootstrap
+swamp extension pull @swamp/gcs-datastore-bootstrap
 
 # Model extensions
 swamp extension pull @swamp/hetzner-cloud
