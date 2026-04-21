@@ -1088,7 +1088,6 @@
   },
   "workspace": {
     "dependencies": [
-      "jsr:@systeminit/swamp-testing@0.20260331.5",
       "npm:@aws-sdk/client-iam@3.1024.0",
       "npm:@aws-sdk/client-s3@3.1024.0",
       "npm:@aws-sdk/client-sts@3.1024.0",
