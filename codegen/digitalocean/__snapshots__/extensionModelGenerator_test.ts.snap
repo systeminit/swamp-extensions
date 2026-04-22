@@ -6,6 +6,15 @@ snapshot[`generateDigitalOceanExtensionModel - all handlers, natural name 1`] = 
 
 // deno-lint-ignore-file no-explicit-any
 
+/**
+ * Swamp extension model for a DigitalOcean droplet.
+ *
+ * Wraps the \`/v2/droplets\` API as a swamp model so create, get, update,
+ * delete, and sync can be driven through \`swamp model\`.
+ *
+ * @module
+ */
+
 import { z } from "zod";
 import { create, read, tryRead, remove, tryFindByField, update } from "./_lib/digitalocean.ts";
 
@@ -36,6 +45,7 @@ const InputsSchema = z.object({
   image: z.string().optional(),
 });
 
+/** Swamp extension model for DigitalOcean droplet. Registered at \`@swamp/digitalocean/droplet\`. */
 export const model = {
   type: "@swamp/digitalocean/droplet",
   version: "2026.01.01.1",
@@ -150,6 +160,15 @@ snapshot[`generateDigitalOceanExtensionModel - resource with actions 1`] = `
 
 // deno-lint-ignore-file no-explicit-any
 
+/**
+ * Swamp extension model for a DigitalOcean droplet.
+ *
+ * Wraps the \`/v2/droplets\` API as a swamp model so create, get, update,
+ * delete, and sync can be driven through \`swamp model\`.
+ *
+ * @module
+ */
+
 import { z } from "zod";
 import { create, read, tryRead, remove, tryFindByField, update, createAndPollAction } from "./_lib/digitalocean.ts";
 
@@ -169,6 +188,7 @@ const InputsSchema = z.object({
   name: z.string().optional(),
 });
 
+/** Swamp extension model for DigitalOcean droplet. Registered at \`@swamp/digitalocean/droplet\`. */
 export const model = {
   type: "@swamp/digitalocean/droplet",
   version: "2026.01.01.1",
@@ -331,6 +351,15 @@ snapshot[`generateDigitalOceanExtensionModel - resource with sub-resource method
 
 // deno-lint-ignore-file no-explicit-any
 
+/**
+ * Swamp extension model for a DigitalOcean database cluster.
+ *
+ * Wraps the \`/v2/databases\` API as a swamp model so create, get, update,
+ * delete, and sync can be driven through \`swamp model\`.
+ *
+ * @module
+ */
+
 import { z } from "zod";
 import { create, read, tryRead, remove, subResourceUpdate, tryFindByField, update } from "./_lib/digitalocean.ts";
 
@@ -353,6 +382,7 @@ const InputsSchema = z.object({
   engine: z.string().optional(),
 });
 
+/** Swamp extension model for DigitalOcean database cluster. Registered at \`@swamp/digitalocean/database-cluster\`. */
 export const model = {
   type: "@swamp/digitalocean/database-cluster",
   version: "2026.01.01.1",
@@ -498,6 +528,15 @@ snapshot[`generateDigitalOceanExtensionModel - synthetic name 1`] = `
 
 // deno-lint-ignore-file no-explicit-any
 
+/**
+ * Swamp extension model for a DigitalOcean reserved ip.
+ *
+ * Wraps the \`/v2/reserved_ips\` API as a swamp model so create, get, update,
+ * delete, and sync can be driven through \`swamp model\`.
+ *
+ * @module
+ */
+
 import { z } from "zod";
 import { create, read, tryRead, remove, update } from "./_lib/digitalocean.ts";
 
@@ -527,6 +566,7 @@ const InputsSchema = z.object({
   droplet_id: z.number().int().optional(),
 });
 
+/** Swamp extension model for DigitalOcean reserved ip. Registered at \`@swamp/digitalocean/reserved-ip\`. */
 export const model = {
   type: "@swamp/digitalocean/reserved-ip",
   version: "2026.01.01.1",
@@ -632,6 +672,15 @@ snapshot[`generateDigitalOceanExtensionModel - resource with readiness polling 1
 
 // deno-lint-ignore-file no-explicit-any
 
+/**
+ * Swamp extension model for a DigitalOcean droplet.
+ *
+ * Wraps the \`/v2/droplets\` API as a swamp model so create, get, update,
+ * delete, and sync can be driven through \`swamp model\`.
+ *
+ * @module
+ */
+
 import { z } from "zod";
 import { create, read, tryRead, remove, tryFindByField, update, pollResourceReady } from "./_lib/digitalocean.ts";
 
@@ -655,6 +704,7 @@ const InputsSchema = z.object({
   size: z.string().optional(),
 });
 
+/** Swamp extension model for DigitalOcean droplet. Registered at \`@swamp/digitalocean/droplet\`. */
 export const model = {
   type: "@swamp/digitalocean/droplet",
   version: "2026.01.01.1",
@@ -780,6 +830,15 @@ snapshot[`generateDigitalOceanExtensionModel - checkExists direct lookup 1`] = `
 
 // deno-lint-ignore-file no-explicit-any
 
+/**
+ * Swamp extension model for a DigitalOcean domain.
+ *
+ * Wraps the \`/v2/domains\` API as a swamp model so create, get, update,
+ * delete, and sync can be driven through \`swamp model\`.
+ *
+ * @module
+ */
+
 import { z } from "zod";
 import { create, read, tryRead, remove, update } from "./_lib/digitalocean.ts";
 
@@ -801,6 +860,7 @@ const InputsSchema = z.object({
   ip_address: z.string().optional(),
 });
 
+/** Swamp extension model for DigitalOcean domain. Registered at \`@swamp/digitalocean/domain\`. */
 export const model = {
   type: "@swamp/digitalocean/domain",
   version: "2026.01.01.1",
@@ -912,6 +972,15 @@ snapshot[`generateDigitalOceanExtensionModel - checkExists list filter 1`] = `
 
 // deno-lint-ignore-file no-explicit-any
 
+/**
+ * Swamp extension model for a DigitalOcean firewall.
+ *
+ * Wraps the \`/v2/firewalls\` API as a swamp model so create, get, update,
+ * delete, and sync can be driven through \`swamp model\`.
+ *
+ * @module
+ */
+
 import { z } from "zod";
 import { create, read, tryRead, remove, tryFindByField, update } from "./_lib/digitalocean.ts";
 
@@ -943,6 +1012,7 @@ const InputsSchema = z.object({
   })).optional(),
 });
 
+/** Swamp extension model for DigitalOcean firewall. Registered at \`@swamp/digitalocean/firewall\`. */
 export const model = {
   type: "@swamp/digitalocean/firewall",
   version: "2026.01.01.1",
@@ -1054,6 +1124,15 @@ snapshot[`generateDigitalOceanExtensionModel - discovery endpoint 1`] = `
 
 // deno-lint-ignore-file no-explicit-any
 
+/**
+ * Swamp extension model for a DigitalOcean kubernetes cluster.
+ *
+ * Wraps the \`/v2/kubernetes/clusters\` API as a swamp model so create, get, update,
+ * delete, and sync can be driven through \`swamp model\`.
+ *
+ * @module
+ */
+
 import { z } from "zod";
 import { create, read, tryRead, discover, remove, tryFindByField, update } from "./_lib/digitalocean.ts";
 
@@ -1081,6 +1160,7 @@ const InputsSchema = z.object({
   version: z.string().optional(),
 });
 
+/** Swamp extension model for DigitalOcean kubernetes cluster. Registered at \`@swamp/digitalocean/kubernetes-cluster\`. */
 export const model = {
   type: "@swamp/digitalocean/kubernetes-cluster",
   version: "2026.01.01.1",
@@ -1202,6 +1282,15 @@ snapshot[`generateDigitalOceanExtensionModel - no update, no delete 1`] = `
 
 // deno-lint-ignore-file no-explicit-any
 
+/**
+ * Swamp extension model for a DigitalOcean snapshot.
+ *
+ * Wraps the \`/v2/snapshots\` API as a swamp model so create, get, update,
+ * delete, and sync can be driven through \`swamp model\`.
+ *
+ * @module
+ */
+
 import { z } from "zod";
 import { create, read, tryRead, tryFindByField } from "./_lib/digitalocean.ts";
 
@@ -1225,6 +1314,7 @@ const InputsSchema = z.object({
   name: z.string().optional(),
 });
 
+/** Swamp extension model for DigitalOcean snapshot. Registered at \`@swamp/digitalocean/snapshot\`. */
 export const model = {
   type: "@swamp/digitalocean/snapshot",
   version: "2026.01.01.1",
@@ -1304,6 +1394,15 @@ snapshot[`generateDigitalOceanExtensionModel - with upgrades block 1`] = `
 
 // deno-lint-ignore-file no-explicit-any
 
+/**
+ * Swamp extension model for a DigitalOcean volume.
+ *
+ * Wraps the \`/v2/volumes\` API as a swamp model so create, get, update,
+ * delete, and sync can be driven through \`swamp model\`.
+ *
+ * @module
+ */
+
 import { z } from "zod";
 import { create, read, tryRead, remove, tryFindByField, update } from "./_lib/digitalocean.ts";
 
@@ -1331,6 +1430,7 @@ const InputsSchema = z.object({
   region: z.enum(["nyc1", "sfo1", "nyc2", "ams2", "sgp1", "lon1", "nyc3", "ams3", "fra1", "tor1", "sfo2", "blr1", "sfo3", "syd1", "atl1"]).optional(),
 });
 
+/** Swamp extension model for DigitalOcean volume. Registered at \`@swamp/digitalocean/volume\`. */
 export const model = {
   type: "@swamp/digitalocean/volume",
   version: "2026.01.02.1",

@@ -3,6 +3,15 @@
 
 // deno-lint-ignore-file no-explicit-any
 
+/**
+ * Swamp extension model for a DigitalOcean container registry.
+ *
+ * Wraps the `/v2/registries` API as a swamp model so create, get, update,
+ * delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
 import { z } from "zod";
 import {
   create,
@@ -73,9 +82,10 @@ const InputsSchema = z.object({
   ]).optional(),
 });
 
+/** Swamp extension model for DigitalOcean container registry. Registered at `@swamp/digitalocean/container-registry`. */
 export const model = {
   type: "@swamp/digitalocean/container-registry",
-  version: "2026.04.03.2",
+  version: "2026.04.22.1",
   upgrades: [
     {
       toVersion: "2026.03.27.1",
@@ -94,6 +104,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.22.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

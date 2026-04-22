@@ -3,6 +3,15 @@
 
 // deno-lint-ignore-file no-explicit-any
 
+/**
+ * Swamp extension model for a DigitalOcean nfs.
+ *
+ * Wraps the `/v2/nfs` API as a swamp model so create, get, update,
+ * delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
 import { z } from "zod";
 import {
   create,
@@ -82,9 +91,10 @@ const InputsSchema = z.object({
   performance_tier: z.string().optional(),
 });
 
+/** Swamp extension model for DigitalOcean nfs. Registered at `@swamp/digitalocean/nfs`. */
 export const model = {
   type: "@swamp/digitalocean/nfs",
-  version: "2026.04.08.1",
+  version: "2026.04.22.1",
   upgrades: [
     {
       toVersion: "2026.03.27.1",
@@ -113,6 +123,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.08.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.22.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

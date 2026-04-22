@@ -3,6 +3,15 @@
 
 // deno-lint-ignore-file no-explicit-any
 
+/**
+ * Swamp extension model for a DigitalOcean partner network connect attachment.
+ *
+ * Wraps the `/v2/partner_network_connect/attachments` API as a swamp model so create, get, update,
+ * delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
 import { z } from "zod";
 import {
   create,
@@ -114,9 +123,10 @@ const InputsSchema = z.object({
   redundancy_zone: z.enum(["MEGAPORT_BLUE", "MEGAPORT_RED"]).optional(),
 });
 
+/** Swamp extension model for DigitalOcean partner network connect attachment. Registered at `@swamp/digitalocean/partner-network-connect-attachment`. */
 export const model = {
   type: "@swamp/digitalocean/partner-network-connect-attachment",
-  version: "2026.04.03.2",
+  version: "2026.04.22.1",
   upgrades: [
     {
       toVersion: "2026.03.27.1",
@@ -135,6 +145,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.22.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },
