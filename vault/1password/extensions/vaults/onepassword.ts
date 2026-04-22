@@ -17,12 +17,32 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with Swamp.  If not, see <https://www.gnu.org/licenses/>.
 
+/**
+ * Swamp vault provider backed by 1Password.
+ *
+ * Delegates all secret operations to the official `op` CLI, so the provider
+ * inherits whichever authentication mechanism `op` is configured with
+ * (service account token, desktop app, or Connect server). Use this
+ * entrypoint when a swamp deployment should store its secrets in 1Password.
+ *
+ * @module
+ */
+
 import { z } from "npm:zod@4.3.6";
 
-interface VaultProvider {
+/**
+ * Minimal contract implemented by swamp vault providers. Exported so that
+ * downstream consumers and tests can type-check against a public interface
+ * rather than an inferred shape.
+ */
+export interface VaultProvider {
+  /** Fetches the current value of the given secret. */
   get(secretKey: string): Promise<string>;
+  /** Writes a new value for the given secret, creating it if it does not exist. */
   put(secretKey: string, secretValue: string): Promise<void>;
+  /** Lists all secret keys visible to the vault. */
   list(): Promise<string[]>;
+  /** Returns the swamp-assigned name of this vault instance. */
   getName(): string;
 }
 
@@ -254,6 +274,10 @@ class OnePasswordVaultProvider implements VaultProvider {
   }
 }
 
+/**
+ * Extension entrypoint registered with swamp. Declares the vault type, its
+ * configuration schema, and the factory used to instantiate a provider.
+ */
 export const vault = {
   type: "@swamp/1password",
   name: "1Password",

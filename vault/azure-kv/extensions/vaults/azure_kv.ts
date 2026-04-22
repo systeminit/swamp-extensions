@@ -17,14 +17,33 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with Swamp.  If not, see <https://www.gnu.org/licenses/>.
 
+/**
+ * Swamp vault provider backed by Azure Key Vault.
+ *
+ * Reads and writes secrets through the official `@azure/keyvault-secrets`
+ * client, authenticating with `DefaultAzureCredential`. Use this entrypoint
+ * when a swamp deployment should store its secrets in Azure Key Vault.
+ *
+ * @module
+ */
+
 import { z } from "npm:zod@4.3.6";
 import { DefaultAzureCredential } from "npm:@azure/identity@4.13.0";
 import { SecretClient } from "npm:@azure/keyvault-secrets@4.10.0";
 
-interface VaultProvider {
+/**
+ * Minimal contract implemented by swamp vault providers. Exported so that
+ * downstream consumers and tests can type-check against a public interface
+ * rather than an inferred shape.
+ */
+export interface VaultProvider {
+  /** Fetches the current value of the given secret. */
   get(secretKey: string): Promise<string>;
+  /** Writes a new value for the given secret. */
   put(secretKey: string, secretValue: string): Promise<void>;
+  /** Lists all secret keys visible to the vault. */
   list(): Promise<string[]>;
+  /** Returns the swamp-assigned name of this vault instance. */
   getName(): string;
 }
 
@@ -97,6 +116,10 @@ class AzureKvVaultProvider implements VaultProvider {
   }
 }
 
+/**
+ * Extension entrypoint registered with swamp. Declares the vault type, its
+ * configuration schema, and the factory used to instantiate a provider.
+ */
 export const vault = {
   type: "@swamp/azure-kv",
   name: "Azure Key Vault",

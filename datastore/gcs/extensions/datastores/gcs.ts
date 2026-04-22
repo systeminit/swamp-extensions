@@ -17,6 +17,17 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with Swamp.  If not, see <https://www.gnu.org/licenses/>.
 
+/**
+ * Swamp datastore backend that stores repository state in Google Cloud Storage.
+ *
+ * Provides distributed locking via GCS generation-based preconditions and
+ * bidirectional sync between a local cache directory and a GCS bucket. Use
+ * this entrypoint when a swamp deployment should share state between multiple
+ * processes or machines through GCS rather than a local directory.
+ *
+ * @module
+ */
+
 import { z } from "npm:zod@4.3.6";
 import { join } from "jsr:@std/path@1";
 import type {
@@ -30,6 +41,14 @@ import { GcsClient } from "./_lib/gcs_client.ts";
 import { GcsLock } from "./_lib/gcs_lock.ts";
 import { GcsDatastoreVerifier } from "./_lib/gcs_verifier.ts";
 import { GcsCacheSyncService } from "./_lib/gcs_cache_sync.ts";
+
+export type {
+  DatastoreProvider,
+  DatastoreSyncService,
+  DatastoreVerifier,
+  DistributedLock,
+  LockOptions,
+};
 
 // ---------------------------------------------------------------------------
 // Config schema
@@ -112,6 +131,10 @@ class GcsDatastoreProviderImpl implements DatastoreProvider {
 // Extension export
 // ---------------------------------------------------------------------------
 
+/**
+ * Extension entrypoint registered with swamp. Declares the datastore type,
+ * its configuration schema, and the factory used to instantiate a provider.
+ */
 export const datastore = {
   type: "@swamp/gcs-datastore",
   name: "Google Cloud Storage",
