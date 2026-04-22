@@ -11,11 +11,11 @@ import {
   type GcpClient,
   GlobalArgsSchema,
   hardenBucket,
-  model,
   resolveRoleId,
   roleNameFor,
   SWAMP_GCS_PERMISSIONS,
-} from "./provisioner.ts";
+} from "./_lib/provisioner_impl.ts";
+import { model } from "./provisioner.ts";
 
 const SILENT_LOGGER = { info: () => {}, warn: () => {} };
 
