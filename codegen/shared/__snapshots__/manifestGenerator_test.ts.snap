@@ -6,6 +6,7 @@ manifestVersion: 1
 name: "@swamp/hetzner-cloud"
 version: "2026.04.03.1"
 description: "Hetzner Cloud infrastructure models"
+repository: "https://github.com/systeminit/swamp-extensions"
 labels:
   - hetzner
   - cloud
@@ -20,6 +21,7 @@ models:
 additionalFiles:
   - LICENSE.txt
   - README.md
+platforms: []
 '
 `;
 
@@ -85,5 +87,21 @@ releaseNotes: |
   - Removed: resource_c
 models:
   - a.ts
+'
+`;
+
+snapshot[`generateManifest - explicit platforms list 1`] = `
+'# Auto-generated manifest. Re-generate with the appropriate deno task.
+manifestVersion: 1
+name: "@swamp/test"
+version: "2026.01.01.1"
+description: "Platform-specific test"
+labels:
+  - test
+models:
+  - model.ts
+platforms:
+  - linux-x86_64
+  - darwin-aarch64
 '
 `;

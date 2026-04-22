@@ -3,6 +3,15 @@
 
 // deno-lint-ignore-file no-explicit-any
 
+/**
+ * Swamp extension model for a Hetzner Cloud ssh key.
+ *
+ * Wraps the `/ssh_keys` API as a swamp model so create, get, update,
+ * delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
 import { z } from "zod";
 import { create, read, remove, tryRead, update } from "./_lib/hetzner.ts";
 
@@ -31,9 +40,10 @@ const InputsSchema = z.object({
   public_key: z.string().optional(),
 });
 
+/** Swamp extension model for Hetzner Cloud ssh key. Registered at `@swamp/hetzner-cloud/ssh-keys`. */
 export const model = {
   type: "@swamp/hetzner-cloud/ssh-keys",
-  version: "2026.04.03.2",
+  version: "2026.04.22.1",
   upgrades: [
     {
       toVersion: "2026.04.03.1",
@@ -42,6 +52,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.22.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },
