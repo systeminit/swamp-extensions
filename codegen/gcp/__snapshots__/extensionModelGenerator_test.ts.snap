@@ -6,7 +6,7 @@ snapshot[`generateGcpExtensionModel - all handlers, natural naming 1`] = `
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+import { z } from "npm:zod@4.3.6";
 import { createResource, deleteResource, getProjectId, isResourceNotFoundError, readResource, updateResource } from "./_lib/gcp.ts";
 
 const BASE_URL = "https://compute.googleapis.com/compute/v1";
@@ -268,7 +268,7 @@ snapshot[`generateGcpExtensionModel - readiness polling 1`] = `
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+import { z } from "npm:zod@4.3.6";
 import { createResource, deleteResource, getProjectId, isResourceNotFoundError, readResource, updateResource } from "./_lib/gcp.ts";
 
 const BASE_URL = "https://compute.googleapis.com/compute/v1";
@@ -525,7 +525,7 @@ snapshot[`generateGcpExtensionModel - listOnly resource 1`] = `
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+import { z } from "npm:zod@4.3.6";
 import { createResource, getProjectId, isResourceNotFoundError, readViaList } from "./_lib/gcp.ts";
 
 const BASE_URL = "https://compute.googleapis.com/compute/v1";
@@ -660,7 +660,7 @@ snapshot[`generateGcpExtensionModel - full resource name pattern 1`] = `
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+import { z } from "npm:zod@4.3.6";
 import { createResource, deleteResource, getProjectId, isResourceNotFoundError, readResource } from "./_lib/gcp.ts";
 
 /** Construct the fully-qualified resource name from parent and short name. */
@@ -837,7 +837,7 @@ snapshot[`generateGcpExtensionModel - action methods 1`] = `
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+import { z } from "npm:zod@4.3.6";
 import { createResource, deleteResource, getProjectId, isResourceNotFoundError, readResource } from "./_lib/gcp.ts";
 
 const BASE_URL = "https://compute.googleapis.com/compute/v1";
@@ -1077,7 +1077,7 @@ snapshot[`generateGcpExtensionModel - no update or delete handlers 1`] = `
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+import { z } from "npm:zod@4.3.6";
 import { createResource, getProjectId, isResourceNotFoundError, readResource } from "./_lib/gcp.ts";
 
 const BASE_URL = "https://compute.googleapis.com/compute/v1";
@@ -1224,7 +1224,7 @@ snapshot[`generateGcpExtensionModel - with upgrades block 1`] = `
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+import { z } from "npm:zod@4.3.6";
 import { createResource, deleteResource, getProjectId, isResourceNotFoundError, readResource, updateResource } from "./_lib/gcp.ts";
 
 const BASE_URL = "https://compute.googleapis.com/compute/v1";

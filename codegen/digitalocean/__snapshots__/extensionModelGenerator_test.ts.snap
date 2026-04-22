@@ -15,7 +15,7 @@ snapshot[`generateDigitalOceanExtensionModel - all handlers, natural name 1`] = 
  * @module
  */
 
-import { z } from "zod";
+import { z } from "npm:zod@4.3.6";
 import { create, read, tryRead, remove, tryFindByField, update } from "./_lib/digitalocean.ts";
 
 const GlobalArgsSchema = z.object({
@@ -169,7 +169,7 @@ snapshot[`generateDigitalOceanExtensionModel - resource with actions 1`] = `
  * @module
  */
 
-import { z } from "zod";
+import { z } from "npm:zod@4.3.6";
 import { create, read, tryRead, remove, tryFindByField, update, createAndPollAction } from "./_lib/digitalocean.ts";
 
 const GlobalArgsSchema = z.object({
@@ -360,7 +360,7 @@ snapshot[`generateDigitalOceanExtensionModel - resource with sub-resource method
  * @module
  */
 
-import { z } from "zod";
+import { z } from "npm:zod@4.3.6";
 import { create, read, tryRead, remove, subResourceUpdate, tryFindByField, update } from "./_lib/digitalocean.ts";
 
 const GlobalArgsSchema = z.object({
@@ -537,7 +537,7 @@ snapshot[`generateDigitalOceanExtensionModel - synthetic name 1`] = `
  * @module
  */
 
-import { z } from "zod";
+import { z } from "npm:zod@4.3.6";
 import { create, read, tryRead, remove, update } from "./_lib/digitalocean.ts";
 
 const GlobalArgsSchema = z.object({
@@ -681,7 +681,7 @@ snapshot[`generateDigitalOceanExtensionModel - resource with readiness polling 1
  * @module
  */
 
-import { z } from "zod";
+import { z } from "npm:zod@4.3.6";
 import { create, read, tryRead, remove, tryFindByField, update, pollResourceReady } from "./_lib/digitalocean.ts";
 
 const GlobalArgsSchema = z.object({
@@ -839,7 +839,7 @@ snapshot[`generateDigitalOceanExtensionModel - checkExists direct lookup 1`] = `
  * @module
  */
 
-import { z } from "zod";
+import { z } from "npm:zod@4.3.6";
 import { create, read, tryRead, remove, update } from "./_lib/digitalocean.ts";
 
 const GlobalArgsSchema = z.object({
@@ -981,7 +981,7 @@ snapshot[`generateDigitalOceanExtensionModel - checkExists list filter 1`] = `
  * @module
  */
 
-import { z } from "zod";
+import { z } from "npm:zod@4.3.6";
 import { create, read, tryRead, remove, tryFindByField, update } from "./_lib/digitalocean.ts";
 
 const GlobalArgsSchema = z.object({
@@ -1133,7 +1133,7 @@ snapshot[`generateDigitalOceanExtensionModel - discovery endpoint 1`] = `
  * @module
  */
 
-import { z } from "zod";
+import { z } from "npm:zod@4.3.6";
 import { create, read, tryRead, discover, remove, tryFindByField, update } from "./_lib/digitalocean.ts";
 
 const GlobalArgsSchema = z.object({
@@ -1291,7 +1291,7 @@ snapshot[`generateDigitalOceanExtensionModel - no update, no delete 1`] = `
  * @module
  */
 
-import { z } from "zod";
+import { z } from "npm:zod@4.3.6";
 import { create, read, tryRead, tryFindByField } from "./_lib/digitalocean.ts";
 
 const GlobalArgsSchema = z.object({
@@ -1403,7 +1403,7 @@ snapshot[`generateDigitalOceanExtensionModel - with upgrades block 1`] = `
  * @module
  */
 
-import { z } from "zod";
+import { z } from "npm:zod@4.3.6";
 import { create, read, tryRead, remove, tryFindByField, update } from "./_lib/digitalocean.ts";
 
 const GlobalArgsSchema = z.object({

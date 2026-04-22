@@ -79,8 +79,9 @@ export function generateDigitalOceanExtensionModel(
   lines.push(` */`);
   lines.push("");
 
-  // Imports
-  lines.push(`import { z } from "zod";`);
+  // Imports. The `npm:` prefix is required so `deno doc --lint` can resolve
+  // zod standalone — it doesn't read the package's deno.json import map.
+  lines.push(`import { z } from "npm:zod@4.3.6";`);
 
   const helperImports: string[] = ["create", "read", "tryRead"];
   if (resource.discoveryEndpoint) helperImports.push("discover");
