@@ -15,6 +15,13 @@ export interface ManifestInput {
   releaseNotes?: string;
   /** Optional additional files to include in the package (e.g., ["README.md", "LICENSE.txt"]) */
   additionalFiles?: string[];
+  /** Public repository URL (GitHub/GitLab/Codeberg/Bitbucket) for the verification factor */
+  repository?: string;
+  /**
+   * Platforms the extension supports. An empty array means "all platforms",
+   * which earns both platform factors on the quality scorecard.
+   */
+  platforms?: string[];
 }
 
 /**
@@ -27,9 +34,13 @@ export function generateManifest(input: ManifestInput): string {
     `name: "${input.name}"`,
     `version: "${input.version}"`,
     `description: "${input.description}"`,
-    `labels:`,
   ];
 
+  if (input.repository) {
+    lines.push(`repository: "${input.repository}"`);
+  }
+
+  lines.push(`labels:`);
   for (const label of input.labels) {
     lines.push(`  - ${label}`);
   }
@@ -50,6 +61,17 @@ export function generateManifest(input: ManifestInput): string {
     lines.push(`additionalFiles:`);
     for (const file of input.additionalFiles.sort()) {
       lines.push(`  - ${file}`);
+    }
+  }
+
+  if (input.platforms !== undefined) {
+    if (input.platforms.length === 0) {
+      lines.push(`platforms: []`);
+    } else {
+      lines.push(`platforms:`);
+      for (const platform of input.platforms) {
+        lines.push(`  - ${platform}`);
+      }
     }
   }
 

@@ -38,6 +38,24 @@ export function generateHetznerExtensionModel(
   lines.push(`// deno-lint-ignore-file no-explicit-any`);
   lines.push("");
 
+  // Module-level JSDoc
+  const singular = singularize(resource.modelSlug).replace(/-/g, " ");
+  lines.push(`/**`);
+  lines.push(
+    ` * Swamp extension model for a Hetzner Cloud ${singular}.`,
+  );
+  lines.push(` *`);
+  lines.push(
+    ` * Wraps the \`${endpoint}\` API as a swamp model so create, get, update,`,
+  );
+  lines.push(
+    ` * delete, and sync can be driven through \`swamp model\`.`,
+  );
+  lines.push(` *`);
+  lines.push(` * @module`);
+  lines.push(` */`);
+  lines.push("");
+
   // Imports
   lines.push(`import { z } from "zod";`);
 
@@ -95,6 +113,9 @@ export function generateHetznerExtensionModel(
   lines.push("");
 
   // Model export
+  lines.push(
+    `/** Swamp extension model for Hetzner Cloud ${singular}. Registered at \`${modelType}\`. */`,
+  );
   lines.push(`export const model = {`);
   lines.push(`  type: "${modelType}",`);
   lines.push(`  version: "${version}",`);
@@ -105,7 +126,7 @@ export function generateHetznerExtensionModel(
   lines.push(`  inputsSchema: InputsSchema,`);
   lines.push(`  resources: {`);
   lines.push(`    state: {`);
-  const singularName = singularize(resource.modelSlug).replace(/-/g, " ");
+  const singularName = singular;
 
   lines.push(
     `      description: "${capitalize(singularName)} resource state",`,

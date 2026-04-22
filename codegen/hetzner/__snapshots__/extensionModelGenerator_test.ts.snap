@@ -6,6 +6,15 @@ snapshot[`generateHetznerExtensionModel - all handlers, natural name 1`] = `
 
 // deno-lint-ignore-file no-explicit-any
 
+/**
+ * Swamp extension model for a Hetzner Cloud server.
+ *
+ * Wraps the \`/servers\` API as a swamp model so create, get, update,
+ * delete, and sync can be driven through \`swamp model\`.
+ *
+ * @module
+ */
+
 import { z } from "zod";
 import { create, read, tryRead, remove, update } from "./_lib/hetzner.ts";
 
@@ -38,6 +47,7 @@ const InputsSchema = z.object({
   image: z.string().optional(),
 });
 
+/** Swamp extension model for Hetzner Cloud server. Registered at \`@swamp/hetzner-cloud/servers\`. */
 export const model = {
   type: "@swamp/hetzner-cloud/servers",
   version: "2026.01.01.1",
@@ -145,6 +155,15 @@ snapshot[`generateHetznerExtensionModel - read-only (no update, no delete) 1`] =
 
 // deno-lint-ignore-file no-explicit-any
 
+/**
+ * Swamp extension model for a Hetzner Cloud zone.
+ *
+ * Wraps the \`/zones\` API as a swamp model so create, get, update,
+ * delete, and sync can be driven through \`swamp model\`.
+ *
+ * @module
+ */
+
 import { z } from "zod";
 import { create, read, tryRead } from "./_lib/hetzner.ts";
 
@@ -167,6 +186,7 @@ const InputsSchema = z.object({
   ttl: z.number().int().optional(),
 });
 
+/** Swamp extension model for Hetzner Cloud zone. Registered at \`@swamp/hetzner-cloud/zones\`. */
 export const model = {
   type: "@swamp/hetzner-cloud/zones",
   version: "2026.01.01.1",
@@ -240,6 +260,15 @@ snapshot[`generateHetznerExtensionModel - synthetic name 1`] = `
 
 // deno-lint-ignore-file no-explicit-any
 
+/**
+ * Swamp extension model for a Hetzner Cloud primary ip.
+ *
+ * Wraps the \`/primary_ips\` API as a swamp model so create, get, update,
+ * delete, and sync can be driven through \`swamp model\`.
+ *
+ * @module
+ */
+
 import { z } from "zod";
 import { create, read, tryRead, remove } from "./_lib/hetzner.ts";
 
@@ -269,6 +298,7 @@ const InputsSchema = z.object({
   assignee_type: z.string().optional(),
 });
 
+/** Swamp extension model for Hetzner Cloud primary ip. Registered at \`@swamp/hetzner-cloud/primary-ips\`. */
 export const model = {
   type: "@swamp/hetzner-cloud/primary-ips",
   version: "2026.01.01.1",
@@ -358,6 +388,15 @@ snapshot[`generateHetznerExtensionModel - label-based naming 1`] = `
 
 // deno-lint-ignore-file no-explicit-any
 
+/**
+ * Swamp extension model for a Hetzner Cloud placement group.
+ *
+ * Wraps the \`/placement_groups\` API as a swamp model so create, get, update,
+ * delete, and sync can be driven through \`swamp model\`.
+ *
+ * @module
+ */
+
 import { z } from "zod";
 import { create, read, tryRead, remove, update } from "./_lib/hetzner.ts";
 
@@ -379,6 +418,7 @@ const InputsSchema = z.object({
   type: z.string().optional(),
 });
 
+/** Swamp extension model for Hetzner Cloud placement group. Registered at \`@swamp/hetzner-cloud/placement-groups\`. */
 export const model = {
   type: "@swamp/hetzner-cloud/placement-groups",
   version: "2026.01.01.1",
@@ -485,6 +525,15 @@ snapshot[`generateHetznerExtensionModel - with upgrades block 1`] = `
 
 // deno-lint-ignore-file no-explicit-any
 
+/**
+ * Swamp extension model for a Hetzner Cloud ssh key.
+ *
+ * Wraps the \`/ssh_keys\` API as a swamp model so create, get, update,
+ * delete, and sync can be driven through \`swamp model\`.
+ *
+ * @module
+ */
+
 import { z } from "zod";
 import { create, read, tryRead, remove, update } from "./_lib/hetzner.ts";
 
@@ -507,6 +556,7 @@ const InputsSchema = z.object({
   public_key: z.string().optional(),
 });
 
+/** Swamp extension model for Hetzner Cloud ssh key. Registered at \`@swamp/hetzner-cloud/ssh-keys\`. */
 export const model = {
   type: "@swamp/hetzner-cloud/ssh-keys",
   version: "2026.01.02.1",
@@ -623,6 +673,15 @@ snapshot[`generateHetznerExtensionModel - properties with enums and constraints 
 
 // deno-lint-ignore-file no-explicit-any
 
+/**
+ * Swamp extension model for a Hetzner Cloud firewall.
+ *
+ * Wraps the \`/firewalls\` API as a swamp model so create, get, update,
+ * delete, and sync can be driven through \`swamp model\`.
+ *
+ * @module
+ */
+
 import { z } from "zod";
 import { create, read, tryRead, remove, update } from "./_lib/hetzner.ts";
 
@@ -655,6 +714,7 @@ const InputsSchema = z.object({
   })).optional(),
 });
 
+/** Swamp extension model for Hetzner Cloud firewall. Registered at \`@swamp/hetzner-cloud/firewalls\`. */
 export const model = {
   type: "@swamp/hetzner-cloud/firewalls",
   version: "2026.01.01.1",

@@ -3,6 +3,15 @@
 
 // deno-lint-ignore-file no-explicit-any
 
+/**
+ * Swamp extension model for a Hetzner Cloud server.
+ *
+ * Wraps the `/servers` API as a swamp model so create, get, update,
+ * delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
 import { z } from "zod";
 import { create, read, remove, tryRead, update } from "./_lib/hetzner.ts";
 
@@ -251,9 +260,10 @@ const InputsSchema = z.object({
   }).optional(),
 });
 
+/** Swamp extension model for Hetzner Cloud server. Registered at `@swamp/hetzner-cloud/servers`. */
 export const model = {
   type: "@swamp/hetzner-cloud/servers",
-  version: "2026.04.03.2",
+  version: "2026.04.22.1",
   upgrades: [
     {
       toVersion: "2026.04.02.1",
@@ -267,6 +277,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.22.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

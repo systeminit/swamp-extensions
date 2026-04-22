@@ -12,6 +12,8 @@ Deno.test("generateManifest - full manifest with release notes and additional fi
       modelFiles: ["servers.ts", "ssh_keys.ts", "volumes.ts"],
       releaseNotes: "- Updated: servers, volumes\n- New: ssh_keys",
       additionalFiles: ["README.md", "LICENSE.txt"],
+      repository: "https://github.com/systeminit/swamp-extensions",
+      platforms: [],
     }),
   );
 });
@@ -67,6 +69,20 @@ Deno.test("generateManifest - multiline release notes", async (t) => {
       modelFiles: ["a.ts"],
       releaseNotes:
         "- New: resource_a\n- Updated: resource_b\n- Removed: resource_c",
+    }),
+  );
+});
+
+Deno.test("generateManifest - explicit platforms list", async (t) => {
+  await assertSnapshot(
+    t,
+    generateManifest({
+      name: "@swamp/test",
+      version: "2026.01.01.1",
+      description: "Platform-specific test",
+      labels: ["test"],
+      modelFiles: ["model.ts"],
+      platforms: ["linux-x86_64", "darwin-aarch64"],
     }),
   );
 });
