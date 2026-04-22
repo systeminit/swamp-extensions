@@ -129,6 +129,11 @@ class GcsDatastoreProviderImpl implements DatastoreProvider {
   resolveDatastorePath(repoDir: string): string {
     return join(repoDir, ".swamp");
   }
+
+  resolveCachePath(_repoDir: string): string | undefined {
+    // Let swamp core determine the cache path based on repoId.
+    return undefined;
+  }
 }
 
 // ---------------------------------------------------------------------------
