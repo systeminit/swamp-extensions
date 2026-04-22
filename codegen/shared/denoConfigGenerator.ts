@@ -2,12 +2,26 @@
 // Provides import mappings so bare specifiers resolve correctly
 // both for swamp's bundler and for local type-checking.
 
+// The publish pipeline enforces `no-import-prefix`, so bare specifiers in
+// generated source files need to be resolved through an import map. Our
+// generated source uses full `npm:` specifiers directly (so
+// `deno doc --lint` can resolve zod standalone, which the swamp.club scorer
+// requires). To keep both checks happy, we also exclude `no-import-prefix`
+// from the generated deno.json — matching the pattern the hand-written
+// datastore / vault extensions already use.
+const LINT_CONFIG = {
+  rules: {
+    exclude: ["no-import-prefix"],
+  },
+} as const;
+
 /**
  * Generates a deno.json with import mappings for an AWS extension package.
  */
 export function generateAwsDenoConfig(): string {
   return JSON.stringify(
     {
+      lint: LINT_CONFIG,
       imports: {
         "zod": "npm:zod@4.3.6",
         "@aws-sdk/client-cloudcontrol":
@@ -26,6 +40,7 @@ export function generateAwsDenoConfig(): string {
 export function generateGcpDenoConfig(): string {
   return JSON.stringify(
     {
+      lint: LINT_CONFIG,
       imports: {
         "zod": "npm:zod@4.3.6",
       },
@@ -41,6 +56,7 @@ export function generateGcpDenoConfig(): string {
 export function generateHetznerDenoConfig(): string {
   return JSON.stringify(
     {
+      lint: LINT_CONFIG,
       imports: {
         "zod": "npm:zod@4.3.6",
       },
@@ -56,6 +72,7 @@ export function generateHetznerDenoConfig(): string {
 export function generateDigitalOceanDenoConfig(): string {
   return JSON.stringify(
     {
+      lint: LINT_CONFIG,
       imports: {
         "zod": "npm:zod@4.3.6",
       },
