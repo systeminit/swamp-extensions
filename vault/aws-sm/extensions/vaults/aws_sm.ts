@@ -17,6 +17,16 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with Swamp.  If not, see <https://www.gnu.org/licenses/>.
 
+/**
+ * Swamp vault provider backed by AWS Secrets Manager.
+ *
+ * Reads and writes secrets through the AWS SDK v3, using the default AWS
+ * credential chain. Use this entrypoint when a swamp deployment should store
+ * its secrets in AWS Secrets Manager rather than the local vault.
+ *
+ * @module
+ */
+
 import { z } from "npm:zod@4.3.6";
 import {
   CreateSecretCommand,
@@ -27,10 +37,19 @@ import {
   SecretsManagerClient,
 } from "npm:@aws-sdk/client-secrets-manager@3.1010.0";
 
-interface VaultProvider {
+/**
+ * Minimal contract implemented by swamp vault providers. Exported so that
+ * downstream consumers and tests can type-check against a public interface
+ * rather than an inferred shape.
+ */
+export interface VaultProvider {
+  /** Fetches the current value of the given secret. */
   get(secretKey: string): Promise<string>;
+  /** Writes a new value for the given secret, creating it if it does not exist. */
   put(secretKey: string, secretValue: string): Promise<void>;
+  /** Lists all secret keys visible to the vault. */
   list(): Promise<string[]>;
+  /** Returns the swamp-assigned name of this vault instance. */
   getName(): string;
 }
 
@@ -106,6 +125,10 @@ class AwsSmVaultProvider implements VaultProvider {
   }
 }
 
+/**
+ * Extension entrypoint registered with swamp. Declares the vault type, its
+ * configuration schema, and the factory used to instantiate a provider.
+ */
 export const vault = {
   type: "@swamp/aws-sm",
   name: "AWS Secrets Manager",

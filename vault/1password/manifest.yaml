@@ -1,6 +1,6 @@
 manifestVersion: 1
 name: "@swamp/1password"
-version: "2026.03.31.1"
+version: "2026.04.22.1"
 description: |
   Read and write secrets stored in 1Password using the `op` CLI.
 
@@ -31,6 +31,10 @@ description: |
 repository: "https://github.com/systeminit/swamp-extensions"
 vaults:
   - onepassword.ts
+additionalFiles:
+  - LICENSE
+  - README.md
+platforms: []
 labels:
   - vault
   - 1password

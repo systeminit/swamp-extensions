@@ -1,6 +1,6 @@
 manifestVersion: 1
 name: "@swamp/gcs-datastore"
-version: "2026.04.21.1"
+version: "2026.04.22.1"
 description: |
   Store data in a Google Cloud Storage bucket with local cache synchronization.
   Provides distributed locking via GCS generation-based preconditions and
@@ -34,6 +34,10 @@ description: |
 repository: "https://github.com/systeminit/swamp-extensions"
 datastores:
   - gcs.ts
+additionalFiles:
+  - LICENSE
+  - README.md
+platforms: []
 labels:
   - datastore
   - gcp

@@ -1,6 +1,6 @@
 manifestVersion: 1
 name: "@swamp/aws-sm"
-version: "2026.04.03.1"
+version: "2026.04.22.1"
 description: |
   Read and write secrets stored in AWS Secrets Manager.
 
@@ -37,6 +37,10 @@ description: |
 repository: "https://github.com/systeminit/swamp-extensions"
 vaults:
   - aws_sm.ts
+additionalFiles:
+  - LICENSE
+  - README.md
+platforms: []
 labels:
   - vault
   - aws

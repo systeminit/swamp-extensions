@@ -17,6 +17,17 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with Swamp.  If not, see <https://www.gnu.org/licenses/>.
 
+/**
+ * Swamp datastore backend that stores repository state in Amazon S3.
+ *
+ * Provides distributed locking via S3 conditional writes and bidirectional
+ * sync between a local cache directory and an S3 bucket. Use this entrypoint
+ * when a swamp deployment should share state between multiple processes or
+ * machines through S3 rather than a local directory.
+ *
+ * @module
+ */
+
 import { z } from "npm:zod@4.3.6";
 import { join } from "jsr:@std/path@1";
 import type {
@@ -30,6 +41,14 @@ import { S3Client } from "./_lib/s3_client.ts";
 import { S3Lock } from "./_lib/s3_lock.ts";
 import { S3DatastoreVerifier } from "./_lib/s3_verifier.ts";
 import { S3CacheSyncService } from "./_lib/s3_cache_sync.ts";
+
+export type {
+  DatastoreProvider,
+  DatastoreSyncService,
+  DatastoreVerifier,
+  DistributedLock,
+  LockOptions,
+};
 
 // ---------------------------------------------------------------------------
 // Config schema
@@ -111,6 +130,10 @@ class S3DatastoreProviderImpl implements DatastoreProvider {
 // Extension export
 // ---------------------------------------------------------------------------
 
+/**
+ * Extension entrypoint registered with swamp. Declares the datastore type,
+ * its configuration schema, and the factory used to instantiate a provider.
+ */
 export const datastore = {
   type: "@swamp/s3-datastore",
   name: "Amazon S3",
