@@ -65,6 +65,15 @@ Deno.test("provider.resolveDatastorePath returns .swamp under repoDir", () => {
   );
 });
 
+// swamp core duck-types `resolveCachePath`: a missing method and a method
+// returning `undefined` take different code paths. The method must be defined
+// AND return `undefined` for the repoId-keyed fallback in core to fire.
+Deno.test("provider defines resolveCachePath and returns undefined", () => {
+  const provider = datastore.createProvider({ bucket: "my-test-bucket" });
+  assertEquals(typeof provider.resolveCachePath, "function");
+  assertEquals(provider.resolveCachePath!("/tmp/my-repo"), undefined);
+});
+
 // --- Verifier behavioral test using a local mock GCS server ---
 
 // The GCS client uses fetch() which keeps TCP connections alive in the
