@@ -20,8 +20,6 @@
 /**
  * Domain interfaces mirrored from swamp core.
  * Extensions must be self-contained — they cannot import from swamp internals.
- *
- * @module
  */
 
 /** Metadata describing the current holder of a distributed lock. */
