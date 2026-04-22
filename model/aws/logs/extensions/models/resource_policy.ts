@@ -1,7 +1,7 @@
 // Auto-generated extension model for @swamp/aws/logs/resource-policy
 // Do not edit manually. Re-generate with: deno task generate:aws
 
-// deno-lint-ignore-file no-explicit-any no-control-regex
+// deno-lint-ignore-file no-explicit-any
 
 import { z } from "zod";
 import {
@@ -16,9 +16,7 @@ const GlobalArgsSchema = z.object({
   PolicyName: z.string().min(1).max(255).regex(
     new RegExp("^([^:*\\/]+\\/?)*[^:*\\/]+$"),
   ).describe("A name for resource policy"),
-  PolicyDocument: z.string().min(1).max(5120).regex(
-    new RegExp("[\\u0009\\u000A\\u000D\\u0020-\\u00FF]+"),
-  ).describe("The policy document"),
+  PolicyDocument: z.string().describe("The policy document"),
 });
 
 const StateSchema = z.object({
@@ -32,14 +30,12 @@ const InputsSchema = z.object({
   PolicyName: z.string().min(1).max(255).regex(
     new RegExp("^([^:*\\/]+\\/?)*[^:*\\/]+$"),
   ).describe("A name for resource policy").optional(),
-  PolicyDocument: z.string().min(1).max(5120).regex(
-    new RegExp("[\\u0009\\u000A\\u000D\\u0020-\\u00FF]+"),
-  ).describe("The policy document").optional(),
+  PolicyDocument: z.string().describe("The policy document").optional(),
 });
 
 export const model = {
   type: "@swamp/aws/logs/resource-policy",
-  version: "2026.04.03.2",
+  version: "2026.04.22.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -53,6 +49,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.22.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

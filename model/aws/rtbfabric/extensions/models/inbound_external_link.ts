@@ -13,7 +13,9 @@ import {
 } from "./_lib/aws.ts";
 
 export const TagSchema = z.object({
-  Key: z.string().min(1).max(128).describe(
+  Key: z.string().min(1).max(128).regex(
+    new RegExp("^(resourceArn|internalId|[a-zA-Z0-9+\\-=._:/@]+)$"),
+  ).describe(
     "The key name of the tag. You can specify a value that is 1 to 128 Unicode characters in length and cannot be prefixed with aws:. You can use any of the following characters: the set of Unicode letters, digits, whitespace, _,., /, =, +, and -.",
   ),
   Value: z.string().min(0).max(256).describe(
@@ -98,7 +100,7 @@ const InputsSchema = z.object({
 
 export const model = {
   type: "@swamp/aws/rtbfabric/inbound-external-link",
-  version: "2026.04.03.2",
+  version: "2026.04.22.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -112,6 +114,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.22.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

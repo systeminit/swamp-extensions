@@ -74,7 +74,9 @@ const GlobalArgsSchema = z.object({
   DeletionProtectionEnabled: z.boolean().describe(
     "Indicates whether deletion protection is enabled for this log group. When enabled, deletion protection blocks all deletion operations until it is explicitly disabled.",
   ).optional(),
-  BearerTokenAuthenticationEnabled: z.boolean().optional(),
+  BearerTokenAuthenticationEnabled: z.boolean().describe(
+    "Indicates whether bearer token authentication is enabled for this log group. When enabled, bearer token authentication is allowed on operations until it is explicitly disabled.",
+  ).optional(),
 });
 
 const StateSchema = z.object({
@@ -148,12 +150,14 @@ const InputsSchema = z.object({
   DeletionProtectionEnabled: z.boolean().describe(
     "Indicates whether deletion protection is enabled for this log group. When enabled, deletion protection blocks all deletion operations until it is explicitly disabled.",
   ).optional(),
-  BearerTokenAuthenticationEnabled: z.boolean().optional(),
+  BearerTokenAuthenticationEnabled: z.boolean().describe(
+    "Indicates whether bearer token authentication is enabled for this log group. When enabled, bearer token authentication is allowed on operations until it is explicitly disabled.",
+  ).optional(),
 });
 
 export const model = {
   type: "@swamp/aws/logs/log-group",
-  version: "2026.04.03.2",
+  version: "2026.04.22.1",
   upgrades: [
     {
       toVersion: "2026.04.01.1",
@@ -167,6 +171,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.22.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },
