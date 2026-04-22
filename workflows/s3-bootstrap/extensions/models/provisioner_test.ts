@@ -12,10 +12,10 @@ import {
   getAccountId,
   GlobalArgsSchema,
   hardenBucket,
-  model,
   policyDocumentFor,
   resolvePolicyName,
-} from "./provisioner.ts";
+} from "./_lib/provisioner_impl.ts";
+import { model } from "./provisioner.ts";
 
 const TEST_CREDS = { accessKeyId: "test", secretAccessKey: "test" };
 const SILENT_LOGGER = { info: () => {}, warn: () => {} };
