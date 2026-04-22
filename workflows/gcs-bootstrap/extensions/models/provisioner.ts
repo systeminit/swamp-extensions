@@ -1,3 +1,14 @@
+/**
+ * Provisioner model for @swamp/gcs-datastore-bootstrap.
+ *
+ * Creates (or verifies) a private GCS bucket with hardened defaults and a
+ * project-scoped custom IAM role, then records the resulting identifiers so
+ * the bootstrap workflow can hand them to
+ * `swamp datastore setup extension @swamp/gcs-datastore`.
+ *
+ * @module
+ */
+
 import { z } from "npm:zod@4.3.6";
 
 // All character classes are intentionally strict: these values are interpolated
@@ -15,6 +26,7 @@ const GCS_PREFIX_RE = /^[a-zA-Z0-9/_.\-]*$/;
 // Hyphens are NOT permitted in custom role IDs (docs.cloud.google.com/iam/docs).
 const IAM_ROLE_ID_RE = /^([A-Za-z0-9._]{3,64})?$/;
 
+/** Inputs the workflow passes into each provisioner invocation. */
 export const GlobalArgsSchema = z.object({
   bucket_name: z.string().min(3).max(63).regex(
     GCS_BUCKET_NAME_RE,
@@ -52,6 +64,7 @@ export const GlobalArgsSchema = z.object({
   ),
 });
 
+/** State persisted after a successful provision run. */
 export const StateSchema = z.object({
   bucket_name: z.string(),
   project_id: z.string(),
@@ -64,6 +77,7 @@ export const StateSchema = z.object({
 
 type StateData = z.infer<typeof StateSchema>;
 
+/** Minimal logger interface used by the provisioner helpers. */
 export type ProvisionerLogger = {
   info: (msg: string) => void;
   warn: (msg: string) => void;
@@ -79,6 +93,7 @@ type ProvisionerContext = {
   ) => Promise<unknown>;
 };
 
+/** Runtime IAM permissions @swamp/gcs-datastore requires on the bucket. */
 export const SWAMP_GCS_PERMISSIONS: readonly string[] = [
   "storage.buckets.get",
   "storage.objects.create",
@@ -87,6 +102,10 @@ export const SWAMP_GCS_PERMISSIONS: readonly string[] = [
   "storage.objects.list",
 ];
 
+/**
+ * Returns the explicit `role_id` if provided, otherwise derives a default of
+ * the form `swampGcsDatastore<PascalCaseBucketName>`.
+ */
 export function resolveRoleId(
   bucketName: string,
   roleId: string | undefined,
@@ -96,6 +115,7 @@ export function resolveRoleId(
   return `swampGcsDatastore_${bucketName.replace(/-/g, "_")}`;
 }
 
+/** Builds the fully-qualified GCP custom-role name for a project and role id. */
 export function roleNameFor(projectId: string, roleId: string): string {
   return `projects/${projectId}/roles/${roleId}`;
 }
@@ -238,6 +258,10 @@ async function tokenFromMetadataServer(): Promise<TokenResponse> {
   return await resp.json() as TokenResponse;
 }
 
+/**
+ * Resolves a short-lived GCP OAuth2 access token from Application Default
+ * Credentials, caching the result in-process for its lifetime.
+ */
 export async function getAccessToken(): Promise<string> {
   if (cachedToken && Date.now() < cachedToken.expiresAt - 60_000) {
     return cachedToken.token;
@@ -296,6 +320,7 @@ export async function getAccessToken(): Promise<string> {
   return cachedToken.token;
 }
 
+/** Clears the in-process access-token cache. Intended for tests. */
 export function clearTokenCache(): void {
   cachedToken = null;
 }
@@ -304,14 +329,18 @@ export function clearTokenCache(): void {
 // GCP client abstraction (thin wrapper over fetch + auth + base URLs)
 // ---------------------------------------------------------------------------
 
+/** Default base URL for the GCS JSON API (overridable for emulators/tests). */
 export const DEFAULT_STORAGE_BASE = "https://storage.googleapis.com";
+/** Default base URL for the GCP IAM API (overridable for emulators/tests). */
 export const DEFAULT_IAM_BASE = "https://iam.googleapis.com";
 
+/** Minimal GCP HTTP client interface used by the provisioner helpers. */
 export interface GcpClient {
   storage(path: string, init?: RequestInit): Promise<Response>;
   iam(path: string, init?: RequestInit): Promise<Response>;
 }
 
+/** Optional overrides for the GCP HTTP client (base URLs, token fetcher). */
 export interface GcpClientOptions {
   storageBase?: string;
   iamBase?: string;
@@ -319,6 +348,10 @@ export interface GcpClientOptions {
   getToken?: (() => Promise<string>) | null;
 }
 
+/**
+ * Builds a GCP HTTP client that attaches a bearer token to every request.
+ * Base URLs and the token fetcher can be overridden for tests or emulators.
+ */
 export function createGcpClient(opts: GcpClientOptions = {}): GcpClient {
   const storageBase = (opts.storageBase ?? DEFAULT_STORAGE_BASE).replace(
     /\/+$/,
@@ -376,6 +409,10 @@ async function probeBucket(
   return resp.status;
 }
 
+/**
+ * Creates the bucket if it does not exist, or confirms that it already does.
+ * Returns whether the bucket was newly created or an existing one was reused.
+ */
 export async function ensureBucket(
   client: GcpClient,
   projectId: string,
@@ -440,6 +477,10 @@ export async function ensureBucket(
   );
 }
 
+/**
+ * Enforces uniform bucket-level access, public-access prevention, and
+ * versioning so the bucket matches @swamp/gcs-datastore's expected posture.
+ */
 export async function hardenBucket(
   client: GcpClient,
   bucketName: string,
@@ -495,6 +536,11 @@ async function getRole(
   }
 }
 
+/**
+ * Creates or reuses a project-scoped custom IAM role and returns its fully
+ * qualified name. Handles TOCTOU races where another run created the role
+ * concurrently.
+ */
 export async function ensureCustomRole(
   client: GcpClient,
   projectId: string,
@@ -573,9 +619,13 @@ export async function ensureCustomRole(
 // Model export
 // ---------------------------------------------------------------------------
 
+/**
+ * Swamp extension model export. Declares the provisioner type, its argument
+ * schema, and the `provision` method invoked by the bootstrap workflow.
+ */
 export const model = {
   type: "@swamp/gcs-datastore-bootstrap/provisioner",
-  version: "2026.04.21.1",
+  version: "2026.04.22.1",
   globalArguments: GlobalArgsSchema,
   resources: {
     state: {

@@ -14,6 +14,16 @@
 // You should have received a copy of the GNU Affero General Public License along
 // with Swamp. If not, see <https://www.gnu.org/licenses/>.
 
+/**
+ * Issue-lifecycle model for @swamp/issue-lifecycle.
+ *
+ * Drives the triage → plan → iterate → approve → implement loop as a local
+ * conversation with Claude, while posting structured lifecycle entries and
+ * status transitions back to a swamp-club lab issue on every step.
+ *
+ * @module
+ */
+
 import { z } from "zod";
 import {
   AdversarialFindingSchema,
@@ -68,9 +78,14 @@ async function readState(
 // Model Definition
 // ---------------------------------------------------------------------------
 
+/**
+ * Swamp extension model export. Declares the issue-lifecycle type and the
+ * methods (`start`, `triage`, `plan`, `iterate`, `approve`, `implement`,
+ * `link_pr`, `complete`, …) that drive the lifecycle state machine.
+ */
 export const model = {
   type: "@swamp/issue-lifecycle",
-  version: "2026.04.20.1",
+  version: "2026.04.22.1",
   globalArguments: GlobalArgsSchema,
 
   upgrades: [
