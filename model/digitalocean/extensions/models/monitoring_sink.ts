@@ -3,6 +3,15 @@
 
 // deno-lint-ignore-file no-explicit-any
 
+/**
+ * Swamp extension model for a DigitalOcean monitoring sink.
+ *
+ * Wraps the `/v2/monitoring/sinks` API as a swamp model so create, get, update,
+ * delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
 import { z } from "zod";
 import { create, read, remove, tryRead } from "./_lib/digitalocean.ts";
 
@@ -54,9 +63,10 @@ const InputsSchema = z.object({
   })).optional(),
 });
 
+/** Swamp extension model for DigitalOcean monitoring sink. Registered at `@swamp/digitalocean/monitoring-sink`. */
 export const model = {
   type: "@swamp/digitalocean/monitoring-sink",
-  version: "2026.04.03.2",
+  version: "2026.04.22.1",
   upgrades: [
     {
       toVersion: "2026.03.27.1",
@@ -70,6 +80,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.22.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

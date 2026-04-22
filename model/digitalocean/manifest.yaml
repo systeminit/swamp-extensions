@@ -1,14 +1,15 @@
 # Auto-generated manifest. Re-generate with the appropriate deno task.
 manifestVersion: 1
 name: "@swamp/digitalocean"
-version: "2026.04.08.1"
+version: "2026.04.22.1"
 description: "DigitalOcean infrastructure models"
+repository: "https://github.com/systeminit/swamp-extensions"
 labels:
   - digitalocean
   - cloud
   - infrastructure
 releaseNotes: |
-  - Updated: nfs
+  - Updated: app_platform, byoip_prefix, cdn_endpoint, container_registry, custom_image, database_cluster, dedicated_inference, domain, droplet, droplet_autoscale, firewall, floating_ip, function_namespace, kubernetes_cluster, load_balancer, monitoring_alert_policy, monitoring_sink, monitoring_sink_destination, nfs, partner_network_connect_attachment, project, reserved_ip, reserved_ipv6, security_scan, space_key, ssh_key, ssl_certificate, tag, uptime_check, volume, vpc, vpc_nat_gateway, vpc_peering
 models:
   - app_platform.ts
   - byoip_prefix.ts
@@ -46,3 +47,4 @@ models:
 additionalFiles:
   - LICENSE.txt
   - README.md
+platforms: []

@@ -61,6 +61,24 @@ export function generateDigitalOceanExtensionModel(
   lines.push(`// deno-lint-ignore-file no-explicit-any`);
   lines.push("");
 
+  // Module-level JSDoc
+  const doSingular = resource.modelSlug.replace(/-/g, " ");
+  lines.push(`/**`);
+  lines.push(
+    ` * Swamp extension model for a DigitalOcean ${doSingular}.`,
+  );
+  lines.push(` *`);
+  lines.push(
+    ` * Wraps the \`${endpoint}\` API as a swamp model so create, get, update,`,
+  );
+  lines.push(
+    ` * delete, and sync can be driven through \`swamp model\`.`,
+  );
+  lines.push(` *`);
+  lines.push(` * @module`);
+  lines.push(` */`);
+  lines.push("");
+
   // Imports
   lines.push(`import { z } from "zod";`);
 
@@ -135,6 +153,9 @@ export function generateDigitalOceanExtensionModel(
   // Model export
   const identifyingField = resource.identifyingField;
 
+  lines.push(
+    `/** Swamp extension model for DigitalOcean ${doSingular}. Registered at \`${modelType}\`. */`,
+  );
   lines.push(`export const model = {`);
   lines.push(`  type: "${modelType}",`);
   lines.push(`  version: "${version}",`);

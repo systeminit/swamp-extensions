@@ -3,6 +3,15 @@
 
 // deno-lint-ignore-file no-explicit-any
 
+/**
+ * Swamp extension model for a DigitalOcean security scan.
+ *
+ * Wraps the `/v2/security/scans` API as a swamp model so create, get, update,
+ * delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
 import { z } from "zod";
 import { create, read, tryRead } from "./_lib/digitalocean.ts";
 
@@ -39,9 +48,10 @@ const InputsSchema = z.object({
   name: z.string().optional(),
 });
 
+/** Swamp extension model for DigitalOcean security scan. Registered at `@swamp/digitalocean/security-scan`. */
 export const model = {
   type: "@swamp/digitalocean/security-scan",
-  version: "2026.04.03.2",
+  version: "2026.04.22.1",
   upgrades: [
     {
       toVersion: "2026.03.27.1",
@@ -55,6 +65,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.22.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

@@ -3,6 +3,15 @@
 
 // deno-lint-ignore-file no-explicit-any
 
+/**
+ * Swamp extension model for a DigitalOcean vpc nat gateway.
+ *
+ * Wraps the `/v2/vpc_nat_gateways` API as a swamp model so create, get, update,
+ * delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
 import { z } from "zod";
 import {
   create,
@@ -104,9 +113,10 @@ const InputsSchema = z.object({
   ]).optional(),
 });
 
+/** Swamp extension model for DigitalOcean vpc nat gateway. Registered at `@swamp/digitalocean/vpc-nat-gateway`. */
 export const model = {
   type: "@swamp/digitalocean/vpc-nat-gateway",
-  version: "2026.04.03.2",
+  version: "2026.04.22.1",
   upgrades: [
     {
       toVersion: "2026.03.27.1",
@@ -125,6 +135,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.22.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

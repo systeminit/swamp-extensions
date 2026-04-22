@@ -3,6 +3,15 @@
 
 // deno-lint-ignore-file no-explicit-any
 
+/**
+ * Swamp extension model for a DigitalOcean function namespace.
+ *
+ * Wraps the `/v2/functions/namespaces` API as a swamp model so create, get, update,
+ * delete, and sync can be driven through `swamp model`.
+ *
+ * @module
+ */
+
 import { z } from "zod";
 import {
   create,
@@ -69,9 +78,10 @@ const InputsSchema = z.object({
   label: z.string().optional(),
 });
 
+/** Swamp extension model for DigitalOcean function namespace. Registered at `@swamp/digitalocean/function-namespace`. */
 export const model = {
   type: "@swamp/digitalocean/function-namespace",
-  version: "2026.04.03.2",
+  version: "2026.04.22.1",
   upgrades: [
     {
       toVersion: "2026.03.27.1",
@@ -90,6 +100,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.03.2",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.22.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },
