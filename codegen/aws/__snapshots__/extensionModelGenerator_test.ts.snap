@@ -6,7 +6,7 @@ snapshot[`generateAwsExtensionModel - all handlers, natural name 1`] = `
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+import { z } from "npm:zod@4.3.6";
 import { createResource, isResourceNotFoundError, readResource, updateResource, deleteResource } from "./_lib/aws.ts";
 
 const GlobalArgsSchema = z.object({
@@ -142,7 +142,7 @@ snapshot[`generateAwsExtensionModel - synthetic name 1`] = `
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+import { z } from "npm:zod@4.3.6";
 import { createResource, isResourceNotFoundError, readResource, updateResource, deleteResource } from "./_lib/aws.ts";
 
 const GlobalArgsSchema = z.object({
@@ -285,7 +285,7 @@ snapshot[`generateAwsExtensionModel - composite primary identifier 1`] = `
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+import { z } from "npm:zod@4.3.6";
 import { createResource, isResourceNotFoundError, readResource, updateResource, deleteResource } from "./_lib/aws.ts";
 
 const GlobalArgsSchema = z.object({
@@ -430,7 +430,7 @@ snapshot[`generateAwsExtensionModel - createOnly properties filtered in update 1
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+import { z } from "npm:zod@4.3.6";
 import { createResource, isResourceNotFoundError, readResource, updateResource, deleteResource } from "./_lib/aws.ts";
 
 const GlobalArgsSchema = z.object({
@@ -573,7 +573,7 @@ snapshot[`generateAwsExtensionModel - read-only resource (no update, no delete) 
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+import { z } from "npm:zod@4.3.6";
 import { createResource, isResourceNotFoundError, readResource } from "./_lib/aws.ts";
 
 const GlobalArgsSchema = z.object({
@@ -674,7 +674,7 @@ snapshot[`generateAwsExtensionModel - extracted schemas and StateSchema collisio
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+import { z } from "npm:zod@4.3.6";
 import { createResource, isResourceNotFoundError, readResource, deleteResource } from "./_lib/aws.ts";
 
 const StateSchema = z.object({
@@ -794,7 +794,7 @@ snapshot[`generateAwsExtensionModel - with upgrades block 1`] = `
 
 // deno-lint-ignore-file no-explicit-any
 
-import { z } from "zod";
+import { z } from "npm:zod@4.3.6";
 import { createResource, isResourceNotFoundError, readResource, updateResource, deleteResource } from "./_lib/aws.ts";
 
 const GlobalArgsSchema = z.object({

@@ -12,7 +12,7 @@
  * @module
  */
 
-import { z } from "zod";
+import { z } from "npm:zod@4.3.6";
 import { create, read, remove, tryRead } from "./_lib/digitalocean.ts";
 
 const GlobalArgsSchema = z.object({
@@ -66,7 +66,7 @@ const InputsSchema = z.object({
 /** Swamp extension model for DigitalOcean monitoring sink. Registered at `@swamp/digitalocean/monitoring-sink`. */
 export const model = {
   type: "@swamp/digitalocean/monitoring-sink",
-  version: "2026.04.22.1",
+  version: "2026.04.23.1",
   upgrades: [
     {
       toVersion: "2026.03.27.1",
@@ -85,6 +85,11 @@ export const model = {
     },
     {
       toVersion: "2026.04.22.1",
+      description: "No schema changes",
+      upgradeAttributes: (old: Record<string, unknown>) => old,
+    },
+    {
+      toVersion: "2026.04.23.1",
       description: "No schema changes",
       upgradeAttributes: (old: Record<string, unknown>) => old,
     },

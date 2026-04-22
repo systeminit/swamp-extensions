@@ -15,7 +15,7 @@ snapshot[`generateHetznerExtensionModel - all handlers, natural name 1`] = `
  * @module
  */
 
-import { z } from "zod";
+import { z } from "npm:zod@4.3.6";
 import { create, read, tryRead, remove, update } from "./_lib/hetzner.ts";
 
 const GlobalArgsSchema = z.object({
@@ -164,7 +164,7 @@ snapshot[`generateHetznerExtensionModel - read-only (no update, no delete) 1`] =
  * @module
  */
 
-import { z } from "zod";
+import { z } from "npm:zod@4.3.6";
 import { create, read, tryRead } from "./_lib/hetzner.ts";
 
 const GlobalArgsSchema = z.object({
@@ -269,7 +269,7 @@ snapshot[`generateHetznerExtensionModel - synthetic name 1`] = `
  * @module
  */
 
-import { z } from "zod";
+import { z } from "npm:zod@4.3.6";
 import { create, read, tryRead, remove } from "./_lib/hetzner.ts";
 
 const GlobalArgsSchema = z.object({
@@ -397,7 +397,7 @@ snapshot[`generateHetznerExtensionModel - label-based naming 1`] = `
  * @module
  */
 
-import { z } from "zod";
+import { z } from "npm:zod@4.3.6";
 import { create, read, tryRead, remove, update } from "./_lib/hetzner.ts";
 
 const GlobalArgsSchema = z.object({
@@ -534,7 +534,7 @@ snapshot[`generateHetznerExtensionModel - with upgrades block 1`] = `
  * @module
  */
 
-import { z } from "zod";
+import { z } from "npm:zod@4.3.6";
 import { create, read, tryRead, remove, update } from "./_lib/hetzner.ts";
 
 const GlobalArgsSchema = z.object({
@@ -682,7 +682,7 @@ snapshot[`generateHetznerExtensionModel - properties with enums and constraints 
  * @module
  */
 
-import { z } from "zod";
+import { z } from "npm:zod@4.3.6";
 import { create, read, tryRead, remove, update } from "./_lib/hetzner.ts";
 
 const GlobalArgsSchema = z.object({
