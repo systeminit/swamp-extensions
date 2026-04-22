@@ -1,3 +1,14 @@
+/**
+ * Provisioner model for @swamp/s3-datastore-bootstrap.
+ *
+ * Creates (or verifies) a private S3 bucket with hardened defaults and a
+ * least-privilege IAM managed policy scoped to that bucket, then records the
+ * resulting ARNs so the bootstrap workflow can hand them to
+ * `swamp datastore setup extension @swamp/s3-datastore`.
+ *
+ * @module
+ */
+
 import { z } from "npm:zod@4.3.6";
 import {
   CreateBucketCommand,
@@ -28,6 +39,7 @@ const S3_PREFIX_RE = /^[a-zA-Z0-9/_.\-]*$/;
 // or 1-128 chars of IAM-valid characters.
 const IAM_POLICY_NAME_RE = /^([\w+=,.@-]{1,128})?$/;
 
+/** Inputs the workflow passes into each provisioner invocation. */
 export const GlobalArgsSchema = z.object({
   name: z.string().describe(
     "Instance name for this provisioner (used as the unique identifier).",
@@ -54,6 +66,7 @@ export const GlobalArgsSchema = z.object({
   ),
 });
 
+/** State persisted after a successful provision run. */
 export const StateSchema = z.object({
   bucket_name: z.string(),
   bucket_arn: z.string(),
@@ -66,6 +79,7 @@ export const StateSchema = z.object({
 
 type StateData = z.infer<typeof StateSchema>;
 
+/** Minimal logger interface used by the provisioner helpers. */
 export type ProvisionerLogger = {
   info: (msg: string) => void;
   warn: (msg: string) => void;
@@ -81,6 +95,10 @@ type ProvisionerContext = {
   ) => Promise<unknown>;
 };
 
+/**
+ * Returns the explicit `policy_name` if provided, otherwise derives a default
+ * of the form `swamp-s3-datastore-<bucket>`.
+ */
 export function resolvePolicyName(
   bucketName: string,
   policyName: string | undefined,
@@ -90,6 +108,10 @@ export function resolvePolicyName(
     : `swamp-s3-datastore-${bucketName}`;
 }
 
+/**
+ * Builds the IAM policy document JSON for the managed policy attached to the
+ * bucket. Scoped to the four runtime actions @swamp/s3-datastore requires.
+ */
 export function policyDocumentFor(bucketName: string): string {
   return JSON.stringify({
     Version: "2012-10-17",
@@ -114,6 +136,10 @@ export function policyDocumentFor(bucketName: string): string {
   });
 }
 
+/**
+ * Creates the bucket if it does not exist, or confirms that it already does.
+ * Returns whether the bucket was newly created or an existing one was reused.
+ */
 export async function ensureBucket(
   s3: S3Client,
   region: string,
@@ -157,6 +183,10 @@ export async function ensureBucket(
   }
 }
 
+/**
+ * Applies public-access blocks, default SSE-S3 encryption, and versioning to
+ * the bucket so it matches @swamp/s3-datastore's expected posture.
+ */
 export async function hardenBucket(
   s3: S3Client,
   bucketName: string,
@@ -193,6 +223,7 @@ export async function hardenBucket(
   );
 }
 
+/** Resolves the caller's AWS account ID via STS `GetCallerIdentity`. */
 export async function getAccountId(sts: STSClient): Promise<string> {
   const resp = await sts.send(new GetCallerIdentityCommand({}));
   if (!resp.Account) {
@@ -201,6 +232,10 @@ export async function getAccountId(sts: STSClient): Promise<string> {
   return resp.Account;
 }
 
+/**
+ * Creates or reuses a scoped IAM managed policy and returns its ARN. Handles
+ * TOCTOU races where another run created the same policy concurrently.
+ */
 export async function ensurePolicy(
   iam: IAMClient,
   accountId: string,
@@ -255,9 +290,13 @@ export async function ensurePolicy(
   }
 }
 
+/**
+ * Swamp extension model export. Declares the provisioner type, its argument
+ * schema, and the `provision` method invoked by the bootstrap workflow.
+ */
 export const model = {
   type: "@swamp/s3-datastore-bootstrap/provisioner",
-  version: "2026.04.21.1",
+  version: "2026.04.22.1",
   globalArguments: GlobalArgsSchema,
   resources: {
     state: {

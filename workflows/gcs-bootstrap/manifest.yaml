@@ -1,6 +1,6 @@
 manifestVersion: 1
 name: "@swamp/gcs-datastore-bootstrap"
-version: "2026.04.21.1"
+version: "2026.04.22.1"
 description: |
   One-shot bootstrap for @swamp/gcs-datastore. Ships a single provisioner
   model that creates a GCS bucket and a project-scoped custom IAM role,
@@ -66,7 +66,9 @@ models:
 workflows:
   - bootstrap-gcs-datastore.yaml
 additionalFiles:
+  - LICENSE
   - README.md
+platforms: []
 labels:
   - datastore
   - bootstrap
