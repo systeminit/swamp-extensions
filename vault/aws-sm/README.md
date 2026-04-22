@@ -53,4 +53,4 @@ non-existent secret will create it on demand.
 
 ## License
 
-AGPLv3 — see [LICENSE](./LICENSE) for details.
+AGPLv3 — see [LICENSE.txt](./LICENSE.txt) for details.
