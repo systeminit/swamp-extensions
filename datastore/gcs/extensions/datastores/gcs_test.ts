@@ -67,6 +67,10 @@ Deno.test("provider.resolveDatastorePath returns .swamp under repoDir", () => {
 
 // --- Verifier behavioral test using a local mock GCS server ---
 
+// The GCS client uses fetch() which keeps TCP connections alive in the
+// global HTTP agent, which trips Deno's resource leak detection.
+// sanitizeResources: false is safe here because those connections are
+// reclaimed when the runtime tears down between test runs.
 Deno.test({
   name: "gcs verifier: reports healthy when bucket is accessible",
   sanitizeResources: false,
@@ -111,6 +115,9 @@ Deno.test({
   },
 });
 
+// sanitizeResources: false is required here for the same reason as the
+// healthy-probe test above — fetch()'s pooled connections outlive the
+// test body.
 Deno.test({
   name: "gcs verifier: reports unhealthy when bucket is not accessible",
   sanitizeResources: false,

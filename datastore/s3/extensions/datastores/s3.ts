@@ -31,10 +31,12 @@
 import { z } from "npm:zod@4.3.6";
 import { join } from "jsr:@std/path@1";
 import type {
+  DatastoreHealthResult,
   DatastoreProvider,
   DatastoreSyncService,
   DatastoreVerifier,
   DistributedLock,
+  LockInfo,
   LockOptions,
 } from "./_lib/interfaces.ts";
 import { S3Client } from "./_lib/s3_client.ts";
@@ -43,10 +45,12 @@ import { S3DatastoreVerifier } from "./_lib/s3_verifier.ts";
 import { S3CacheSyncService } from "./_lib/s3_cache_sync.ts";
 
 export type {
+  DatastoreHealthResult,
   DatastoreProvider,
   DatastoreSyncService,
   DatastoreVerifier,
   DistributedLock,
+  LockInfo,
   LockOptions,
 };
 

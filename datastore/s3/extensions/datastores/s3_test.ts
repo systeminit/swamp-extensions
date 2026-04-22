@@ -64,6 +64,10 @@ Deno.test("provider.resolveDatastorePath returns .swamp under repoDir", () => {
 
 // --- Verifier behavioral test using a local mock S3 server ---
 
+// The AWS SDK keeps TCP connections alive (connection pooling), which
+// triggers Deno's resource leak detection. sanitizeResources: false is safe
+// here because the connections are cleaned up when the SDK client is
+// garbage collected at end-of-test.
 Deno.test({
   name: "s3 verifier: reports healthy when bucket is accessible",
   sanitizeResources: false,
@@ -119,6 +123,9 @@ Deno.test({
   },
 });
 
+// sanitizeResources: false is required here for the same reason as the
+// healthy-probe test above — the AWS SDK's pooled connections outlive the
+// test body but are reclaimed by GC.
 Deno.test({
   name: "s3 verifier: reports unhealthy when bucket is not accessible",
   sanitizeResources: false,
